@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE skin SYSTEM "../config/dtd/skin.dtd">
+<skin>
+    <head>
+        <title>Standard-Skin</title>
+        <author>Thomas Meyer</author>
+        <url>http://www.yanaframework.net</url>
+        <description>
+            This is the standard skin of the application.
+            It includes templates for the main program and all official plugins.
+            This skin must not be uninstalled! All other skins are based on it.
+            When a template is required that is not available in any other skin,
+            the application automatically fall back to this standard skin to create the output.
+        </description>
+        <description lang="de">
+            Dies ist der Standardskin der Anwendung.
+            Er umfasst Templates für das Hauptprogramm und alle offiziellen Plugins.
+            Dieser Skin darf nicht deinstalliert werden! Alle anderen Skins basieren auf diesem.
+            Falls ein Template benötigt wird, das in einem anderen Skin nicht verfügbar ist,
+            verwendet die Anwendung automatisch diesen um die Seite darzustellen.
+        </description>
+    </head>
+    <body>
+        <template id="SETUP_ANTISPAM" file="default/antispam/config.html.tpl">
+            <language>admin</language>
+            <language>antispam</language>
+            <style>default/styles/config.css</style>
+            <style id="config">default/antispam/default.css</style>
+            <script>default/styles/dynamic-styles.js</script>
+            <script>default/scripts/gui_generator.js</script>
+            <script id="config">default/antispam/default.js</script>
+        </template>
+        <template id="BLANK" file="default/blank.html.tpl">
+            <style id="default">default/styles/default.css</style>
+        </template>
+        <template id="MESSAGE" file="default/message.html.tpl">
+            <language>message</language>
+            <style>default/styles/default.css</style>
+        </template>
+        <template id="STDOUT" file="default/stdout.html.tpl">
+            <style id="stdout">default/styles/stdout.css</style>
+        </template>
+        <template id="COLORPICKER" file="default/color/index.html.tpl">
+            <style>default/color/default.css</style>
+            <script>default/color/program.js</script>
+            <language id="color">color</language>
+        </template>
+        <template id="COLORMAP" file="default/color/map.html.tpl">
+            <style>default/color/default.css</style>
+            <language id="color">color</language>
+        </template>
+        <template id="INDEX" file="default/index.html.tpl">
+            <style id="default">default/styles/default.css</style>
+            <style id="btn">default/styles/btn.css</style>
+            <style id="menu">default/styles/menu.css</style>
+            <style id="skin">default/styles/default_local.css</style>
+            <style id="jquery_theme">default/scripts/jquery/css/smoothness/jquery-ui-1.8.custom.css</style>
+            <script id="default">default/scripts/default.js</script>
+            <script id="ajax">default/scripts/ajax.js</script>
+            <script id="configuration">default/configuration/index.js</script>
+            <script id="jquery">default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script id="applicationbar">default/scripts/applicationbar.js</script>
+        </template>
+        <template id="GUI_FORM" file="default/gui_generator/form.html.tpl">
+            <style>default/styles/gui_defaultform.css</style>
+            <script id="jquery">default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script id="jquerytabs">default/scripts/jquery/jquery-ui-1.8.custom.min.js</script>
+            <script id="jquerycookie">default/scripts/jquery/jquery.cookie.js</script>
+            <style id="calendar">default/scripts/calendar/calendar.css</style>
+            <style>default/scripts/photodesk/css/jquery.fancybox-1.3.1.css</style>
+            <style>default/scripts/photodesk/css/jquery.photodesk.css</style>
+            <script id="gui">default/scripts/gui_generator.js</script>
+            <script id="tinymce">default/scripts/tiny_mce/tiny_mce_config.js</script>
+            <script id="calendar">default/scripts/calendar/calendar.js</script>
+            <script id="calendar_setup">default/scripts/calendar/calendar-setup.js</script>
+            <script id="jquerytransform">default/scripts/photodesk/jquery.transform-0.6.2.min.js</script>
+            <script id="jqueryshadow">default/scripts/photodesk/jquery.animate-shadow-min.js</script>
+            <script id="jqueryfancybox">default/scripts/photodesk/jquery.fancybox-1.3.1.min.js</script>
+            <script id="jqueryphotodesk">default/scripts/photodesk/jquery.photodesk-1.0.0.js</script>
+        </template>
+        <template id="GUI_FORM_0" file="default/gui_generator/layout0.html.tpl">
+            <style>default/styles/gui_defaultform.css</style>
+            <script id="jquery">default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script id="jquerytabs">default/scripts/jquery/jquery-ui-1.8.custom.min.js</script>
+            <style id="calendar">default/scripts/calendar/calendar.css</style>
+            <style>default/scripts/photodesk/css/jquery.fancybox-1.3.1.css</style>
+            <script id="gui">default/scripts/gui_generator.js</script>
+            <script id="tinymce">default/scripts/tiny_mce/tiny_mce_config.js</script>
+            <script id="calendar">default/scripts/calendar/calendar.js</script>
+            <script id="calendar_setup">default/scripts/calendar/calendar-setup.js</script>
+            <script id="jqueryfancybox">default/scripts/photodesk/jquery.fancybox-1.3.1.min.js</script>
+        </template>
+        <template id="GUI_FORM_1" file="default/gui_generator/layout1.html.tpl">
+            <style>default/styles/gui_defaultform.css</style>
+            <script id="jquery">default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script id="jquerytabs">default/scripts/jquery/jquery-ui-1.8.custom.min.js</script>
+            <style id="calendar">default/scripts/calendar/calendar.css</style>
+            <style>default/scripts/photodesk/css/jquery.fancybox-1.3.1.css</style>
+            <script id="gui">default/scripts/gui_generator.js</script>
+            <script id="tinymce">default/scripts/tiny_mce/tiny_mce_config.js</script>
+            <script id="calendar">default/scripts/calendar/calendar.js</script>
+            <script id="calendar_setup">default/scripts/calendar/calendar-setup.js</script>
+            <script id="jqueryfancybox">default/scripts/photodesk/jquery.fancybox-1.3.1.min.js</script>
+        </template>
+        <template id="GUI_FORM_2" file="default/gui_generator/layout2.html.tpl">
+            <style>default/styles/gui_defaultform.css</style>
+            <script id="jquery">default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script id="jquerytabs">default/scripts/jquery/jquery-ui-1.8.custom.min.js</script>
+            <style id="calendar">default/scripts/calendar/calendar.css</style>
+            <style>default/scripts/photodesk/css/jquery.fancybox-1.3.1.css</style>
+            <script id="gui">default/scripts/gui_generator.js</script>
+            <script id="tinymce">default/scripts/tiny_mce/tiny_mce_config.js</script>
+            <script id="calendar">default/scripts/calendar/calendar.js</script>
+            <script id="calendar_setup">default/scripts/calendar/calendar-setup.js</script>
+            <script id="jqueryfancybox">default/scripts/photodesk/jquery.fancybox-1.3.1.min.js</script>
+        </template>
+        <template id="GUI_FORM_3" file="default/gui_generator/layout3.html.tpl">
+            <style>default/styles/gui_defaultform.css</style>
+            <script id="jquery">default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script id="jquerytabs">default/scripts/jquery/jquery-ui-1.8.custom.min.js</script>
+            <style id="calendar">default/scripts/calendar/calendar.css</style>
+            <style>default/scripts/photodesk/css/jquery.fancybox-1.3.1.css</style>
+            <script id="gui">default/scripts/gui_generator.js</script>
+            <script id="tinymce">default/scripts/tiny_mce/tiny_mce_config.js</script>
+            <script id="calendar">default/scripts/calendar/calendar.js</script>
+            <script id="calendar_setup">default/scripts/calendar/calendar-setup.js</script>
+            <script id="jqueryfancybox">default/scripts/photodesk/jquery.fancybox-1.3.1.min.js</script>
+        </template>
+        <template id="GUI_FORM_4" file="default/gui_generator/layout4.html.tpl">
+            <style>default/styles/gui_defaultform.css</style>
+            <script id="jquery">default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script id="jquerytabs">default/scripts/jquery/jquery-ui-1.8.custom.min.js</script>
+            <style id="calendar">default/scripts/calendar/calendar.css</style>
+            <script id="gui">default/scripts/gui_generator.js</script>
+            <script id="tinymce">default/scripts/tiny_mce/tiny_mce_config.js</script>
+            <script id="calendar">default/scripts/calendar/calendar.js</script>
+            <script id="calendar_setup">default/scripts/calendar/calendar-setup.js</script>
+        </template>
+        <template id="GUI_FORM_5" file="default/gui_generator/layout5.html.tpl">
+            <style>default/styles/gui_defaultform.css</style>
+            <style>default/scripts/photodesk/css/jquery.fancybox-1.3.1.css</style>
+            <style>default/scripts/photodesk/css/jquery.photodesk.css</style>
+            <script id="jquery">default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script id="jquerytabs">default/scripts/jquery/jquery-ui-1.8.custom.min.js</script>
+            <style id="calendar">default/scripts/calendar/calendar.css</style>
+            <script id="gui">default/scripts/gui_generator.js</script>
+            <script id="tinymce">default/scripts/tiny_mce/tiny_mce_config.js</script>
+            <script id="calendar">default/scripts/calendar/calendar.js</script>
+            <script id="calendar_setup">default/scripts/calendar/calendar-setup.js</script>
+            <script id="jquerytransform">default/scripts/photodesk/jquery.transform-0.6.2.min.js</script>
+            <script id="jqueryshadow">default/scripts/photodesk/jquery.animate-shadow-min.js</script>
+            <script id="jqueryfancybox">default/scripts/photodesk/jquery.fancybox-1.3.1.min.js</script>
+            <script id="jqueryphotodesk">default/scripts/photodesk/jquery.photodesk-1.0.0.min.js</script>
+        </template>
+        <template id="GUI_EMBEDDED_TAGS" file="default/gui_generator/embtags.html.tpl">
+            <style id="tags">default/styles/gui_tags.css</style>
+            <script>default/scripts/embtags.js</script>
+        </template>
+        <template id="GUI_PREVIEW" file="default/gui_generator/preview.html.tpl">
+            <style id="tags">default/styles/gui_tags.css</style>
+            <script>default/scripts/embtags.js</script>
+        </template>
+        <template id="GUI_SLIDER" file="default/scripts/slider/slider.html.tpl">
+            <style id="tags">default/scripts/slider/slider.css</style>
+            <script>default/scripts/slider/sliderclass.js</script>
+        </template>
+        <template id="SITEMAP" file="default/sitemap.html.tpl">
+            <style>default/styles/sitemap.css</style>
+        </template>
+        <template id="RSS_TEMPLATE" file="default/default.rss"></template>
+        <template id="BLOCK_TEMPLATE" file="default/ipblock/config.html.tpl">
+            <language>ipblock</language>
+            <style>default/styles/config.css</style>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="RSS_NEWS" file="default/rss2html/template.html.tpl">
+            <language>rss</language>
+        </template>
+        <template id="RSS_CONFIG_TEMPLATE" file="default/rss2html/config.html.tpl">
+            <language>rss</language>
+            <style>default/styles/config.css</style>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="SEARCH_START" file="default/search/index.html.tpl">
+            <language>search</language>
+            <style>default/styles/searchengine.css</style>
+            <script id="HITLIST">default/search/program.js</script>
+        </template>
+        <template id="SEARCH_SETUP" file="default/search/setup.html.tpl">
+            <language>search</language>
+            <style>default/styles/config.css</style>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="LOGIN_TEMPLATE" file="default/user/login.html.tpl">
+            <language>user</language>
+            <language>default</language>
+            <script>default/scripts/ajax.js</script>
+        </template>
+        <template id="PASSWORD_TEMPLATE" file="default/configuration/password.html.tpl">
+            <language>admin</language>
+            <language>user</language>
+            <style>default/styles/admin.css</style>
+            <script>default/configuration/index.js</script>
+            <script>default/scripts/jquery/jquery-1.4.2.min.js</script>
+        </template>
+        <template id="USER_CONFIGURATION_TEMPLATE" file="default/user/config.html.tpl">
+            <language>admin</language>
+            <language>user</language>
+            <style>default/styles/config.css</style>
+            <style>default/styles/user.css</style>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="USER_ROLE_TEMPLATE" file="default/user/roles.html.tpl">
+            <language>admin</language>
+            <language>user</language>
+            <style>default/styles/config.css</style>
+            <style>default/styles/user.css</style>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="USER_GROUP_TEMPLATE" file="default/user/groups.html.tpl">
+            <language>admin</language>
+            <language>user</language>
+            <style>default/styles/config.css</style>
+            <style>default/styles/user.css</style>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="USER_ACTION_SETTINGS_TEMPLATE" file="default/user/actionsettings.html.tpl">
+            <language>admin</language>
+            <language>user</language>
+            <style>default/styles/config.css</style>
+            <style>default/styles/user.css</style>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="USER_PROXY" file="default/user/proxy.html.tpl">
+            <language>admin</language>
+            <language>user</language>
+            <style>default/styles/config.css</style>
+            <style>default/styles/user.css</style>
+            <style>default/styles/gui_generator.css</style>
+            <style>default/styles/proxy.css</style>
+            <script>default/styles/dynamic-styles.js</script>
+            <script>default/user/proxy.js</script>
+            <script>default/scripts/jquery/jquery-1.4.2.min.js</script>
+        </template>
+        <template id="USER_LOST_PASSWORD" file="default/user/lostpwd.html.tpl">
+            <language>user</language>
+        </template>
+        <template id="USER_PASSWORD_MAIL" file="default/user/password.mail.tpl">
+            <language>user</language>
+        </template>
+        <template id="USER_LOST_PWD" file="default/user/lostpwd.mail.tpl">
+            <language>user</language>
+        </template>
+        <template id="USER_RESET_PWD" file="default/user/userreset.html.tpl">
+            <language>user</language>
+            <style>default/styles/config.css</style>
+            <style>default/styles/userreset.css</style>
+        </template>
+        <template id="USER_CREATE_TEMPLATE" file="default/user/createuser.html.tpl">
+            <language>user</language>
+            <style>default/styles/config.css</style>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="USER_CONFIRM_MAIL" file="default/user/confirmation.mail.tpl">
+            <language>user</language>
+        </template>
+        <template id="PROFILE_EDIT_TEMPLATE" file="default/user/editprofile.html.tpl">
+            <language>admin</language>
+            <language>user</language>
+            <style>default/styles/config.css</style>
+            <style>default/styles/user.css</style>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="PROFILE_VIEW_TEMPLATE" file="default/user/viewprofile.html.tpl">
+            <language>user</language>
+            <style>default/styles/config.css</style>
+            <style>default/styles/user.css</style>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="PROFILE_LIST_TEMPLATE" file="default/user/listprofiles.html.tpl">
+            <language>admin</language>
+            <language>user</language>
+            <style>default/styles/config.css</style>
+            <style>default/styles/user.css</style>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="USER_PWD_QUALITY" file="default/user_pwd/quality.html.tpl">
+            <language>admin</language>
+            <language>user</language>
+            <style>default/styles/config.css</style>
+            <style>default/styles/user.css</style>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="INDEX_TEMPLATE" file="default/configuration/index.html.tpl">
+            <language>admin</language>
+            <style>default/styles/admin.css</style>
+            <script>default/scripts/index.js</script>
+            <script>default/configuration/index.js</script>
+        </template>
+        <template id="INDEX_PLUGINS" file="default/configuration/plugins.html.tpl">
+            <language>admin</language>
+            <style>default/styles/admin.css</style>
+        </template>
+        <template id="COLORPICKERHOVER_TEMPLATE" file="default/color/colorpickerhover.html.tpl">
+            <language>admin</language>
+            <script>default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script>default/color/program.js</script>
+        </template>
+        <template id="ABOUT_TEMPLATE" file="default/configuration/about.html.tpl">
+            <language>admin</language>
+            <style>default/styles/admin.css</style>
+            <style>default/styles/config.css</style>
+            <script id="default">default/scripts/default.js</script>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="CONFIG_FILESET_TEMPLATE" file="default/configuration/config/fileset.html.tpl">
+            <language>admin</language>
+            <style>default/styles/config.css</style>
+            <script id="default">default/scripts/default.js</script>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="CONFIG_LAYOUT_TEMPLATE" file="default/configuration/config/layout.html.tpl">
+            <language>admin</language>
+            <style>default/styles/config.css</style>
+            <script id="default">default/scripts/default.js</script>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="DB_CONFIGURATION" file="default/database_config/config.html.tpl">
+            <language>admin</language>
+            <style>default/styles/config.css</style>
+            <style>default/database_config/default.css</style>
+            <script>default/styles/dynamic-styles.js</script>
+            <script>default/scripts/database_config.js</script>
+        </template>
+        <template id="DB_TOOLS_IMPORT" file="default/database_tools/import.html.tpl">
+            <style>default/styles/config.css</style>
+            <language>admin</language>
+            <language>db_tools</language>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="DB_TOOLS_EXPORT" file="default/database_tools/export.html.tpl">
+            <style>default/styles/config.css</style>
+            <language>admin</language>
+            <language>db_tools</language>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+        <template id="DB_MEDIA" file="default/db_media/db_media.html.tpl">
+            <style>default/styles/config.css</style>
+            <style>default/db_media/media.css</style>
+            <script>default/styles/dynamic-styles.js</script>
+        </template>
+    </body>
+</skin>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE system SYSTEM "dtd/system.config.dtd">
+<system>
+    <!--
+        Diese Datei enthält Pfadangaben zu Konfigurationsdateien!
+        Die enthaltenen Einträge dürfen auf keinen Fall geändert werden.
+        
+        This file contains information about paths to configuration files!
+        The contained entries may not be changed at any case.
+    -->
+    <configdir>config/</configdir>
+    <configdrive>config/system.drive.xml</configdrive>
+    <tempdir>cache/</tempdir>
+    <plugincache>cache/pluginmanager.tmp</plugincache>
+    <plugindir>plugins/</plugindir>
+    <pluginfile>config/plugins.cfg</pluginfile>
+    <php_self>index.php</php_self>
+    <default>
+    	<profile>default</profile>
+    	<homepage>sitemap</homepage>
+    	<message>false</message>
+    	<event>
+    		<type>default</type>
+    		<safemode>0</safemode>
+    		<template>index</template>
+    	</event>
+    	<skin>
+    		<directory>default/</directory>
+    	</skin>
+    	<language>de</language>
+    	<database>
+    		<options>
+    			<autofree>true</autofree>
+    			<persistent>true</persistent>
+    			<ssl>false</ssl>
+    		</options>
+    		<require_odbc>db2</require_odbc>
+    		<require_odbc>access</require_odbc>
+    	</database>
+    	<user>
+    		<group>REGISTERED</group>
+    		<role>DEFAULT</role>
+    		<level>0</level>
+    		<user_active>true</user_active>
+    	</user>
+    	<multicast_groups>
+    		<read>
+    			<security>true</security>
+    			<library>true</library>
+    			<read>true</read>
+    			<primary>true</primary>
+    			<default>true</default>
+            </read>
+    		<write>
+    			<security>true</security>
+    			<library>true</library>
+    			<write>true</write>
+    			<primary>true</primary>
+    			<default>true</default>
+            </write>
+    		<security>
+    			<security>true</security>
+    			<library>true</library>
+            </security>
+    		<config>
+    			<security>true</security>
+    			<library>true</library>
+    			<config>true</config>
+            </config>
+    		<primary>
+    			<security>true</security>
+    			<library>true</library>
+    			<primary>true</primary>
+            </primary>
+    		<default>
+    			<security>true</security>
+    			<library>true</library>
+    			<default>true</default>
+            </default>
+    	</multicast_groups>
+    	<update_server>http://yanaframework.net/pages/update.php?version={$VERSION}&#38;amp;stable={$IS_STABLE}&#38;amp;lang={$LANG}&#38;amp;asnumber={$AS_NUMBER}</update_server>
+    </default>
+    <date>
+		<js>date.getDate() +'-'+ (date.getMonth()+1) +'-'+ date.getFullYear()</js>
+		<php>j-n-Y</php>
+    </date>
+    <date>
+		<js>date.toLocaleTimeString()</js>
+		<php>G:i:s</php>
+    </date>
+    <date>
+		<js>date.getDate() +'-'+ (date.getMonth()+1) +'-'+ date.getFullYear() +' '+ date.toLocaleTimeString()</js>
+		<php>j-n-Y G:i:s</php>
+    </date>
+    <date>
+		<js>date.getDate() +'-'+ (date.getMonth()+1) +'-'+ date.getFullYear() +' '+ date.toTimeString()</js>
+		<php>j-n-Y G:i:s O</php>
+    </date>
+    <date>
+		<js>date.toLocaleDateString()</js>
+		<php>l, j F Y</php>
+    </date>
+    <date>
+		<js>date.toLocaleString()</js>
+		<php>r</php>
+    </date>
+</system>

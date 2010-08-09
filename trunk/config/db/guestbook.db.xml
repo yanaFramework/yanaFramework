@@ -1,0 +1,87 @@
+<?xml version="1.0" ?>
+<!DOCTYPE database SYSTEM "../dtd/database.dtd">
+<database>
+    <table name="guestbook">
+        <primarykey>guestbook_id</primarykey>
+        <declaration>
+            <integer
+                name="guestbook_id"
+                notnull="yes"
+                autoincrement="yes">
+                <default>0</default>
+            </integer>
+            <inet
+                name="guestbook_ip"
+                title="IP">
+                <default>REMOTE_ADDR</default>
+            </inet>
+            <string
+                name="guestbook_name"
+                notnull="yes"
+                length="128"
+                title='{lang id="21"}'>
+            </string>
+            <text
+                name="guestbook_message"
+                length="3000"
+                notnull="yes"
+                title='{lang id="8"}'>
+            </text>
+            <mail
+                name="guestbook_mail"
+                length="255"
+                title="E-Mail">
+            </mail>
+            <string
+                name="guestbook_hometown"
+                length="100"
+                title='{lang id="4"}'>
+            </string>
+            <url
+                name="guestbook_homepage"
+                title='{lang id="2"}'>
+            </url>
+            <string
+                name="guestbook_messenger"
+                length="255"
+                title="Messenger">
+            </string>
+            <enum
+                name="guestbook_msgtyp"
+                title="Typ">
+                <option value="icq">ICQ</option>
+                <option value="aol">AOL</option>
+                <option value="yahoo">Yahoo!</option>
+                <option value="msn">MSN</option>
+            </enum>
+            <enum
+                name="guestbook_opinion"
+                title='{lang id="RATE_0"}'>
+                <option>{lang id="23"}:</option>
+                <option>{lang id="RATE_1"}</option>
+                <option>{lang id="RATE_2"}</option>
+                <option>{lang id="RATE_3"}</option>
+                <option>{lang id="RATE_4"}</option>
+                <option>{lang id="RATE_5"}</option>
+            </enum>
+            <timestamp
+                name="guestbook_date"
+                readonly="yes"
+                title='{lang id="DATE_TIME"}'>
+                <default>CURRENT_TIMESTAMP</default>
+            </timestamp>
+            <text
+                name="guestbook_comment"
+                length="1024"
+                title='{lang id="5"}'>
+            </text>
+            <integer
+                name="guestbook_is_registered"
+                readonly="yes"
+                length="1">
+                <default>0</default>
+            </integer>
+            <string name="profile_id" notnull="yes" length="128"/>
+        </declaration>
+    </table>
+</database>

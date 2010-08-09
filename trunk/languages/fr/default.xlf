@@ -1,0 +1,359 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="fr">
+        <header/>
+        <body>
+            <trans-unit id="program_title">
+                <source>application settings</source>
+                <target>commande de programme</target>
+            </trans-unit>
+            <trans-unit id="title">
+                <source>application</source>
+                <target>Programme</target>
+            </trans-unit>
+            <trans-unit id="title_smilies">
+                <source>add smiley</source>
+                <target>insère un smiley</target>
+            </trans-unit>
+            <trans-unit id="visitor_count">
+                <source>Page views:</source>
+                <target>Visiteurs du site:</target>
+            </trans-unit>
+            <trans-unit id="preview">
+                <source>Preview</source>
+                <target>bande-annonce</target>
+            </trans-unit>
+            <trans-unit id="configmenu">
+                <source>administration panel</source>
+                <target>Administration</target>
+            </trans-unit>
+            <trans-unit id="configsetup">
+                <source>program setup</source>
+                <target>setup de software</target>
+            </trans-unit>
+            <trans-unit id="configdisplay">
+                <source>page layout</source>
+                <target>page layout</target>
+            </trans-unit>
+            <trans-unit id="date_time">
+                <source>Date/Time</source>
+                <target>Date/Heure</target>
+            </trans-unit>
+            <trans-unit id="login">
+                <source>Login</source>
+                <target>Login</target>
+            </trans-unit>
+            <trans-unit id="logout">
+                <source>Logout</source>
+                <target>Logout</target>
+            </trans-unit>
+            <trans-unit id="button_entries">
+                <source>Entries per page</source>
+                <target>Entrées par page</target>
+            </trans-unit>
+            <trans-unit id="button_new">
+                <source>save new entry</source>
+                <target>mémorise entrée</target>
+            </trans-unit>
+            <trans-unit id="button_open">
+                <source>open entry</source>
+                <target>ouvre entrée</target>
+            </trans-unit>
+            <trans-unit id="button_delete">
+                <source>delete marked entries</source>
+                <target>décharge entrées</target>
+            </trans-unit>
+            <trans-unit id="button_delete_one">
+                <source>delete entry</source>
+                <target>décharge entrée</target>
+            </trans-unit>
+            <trans-unit id="button_reset">
+                <source>Reset</source>
+                <target>Reculer</target>
+            </trans-unit>
+            <trans-unit id="button_search">
+                <source>search</source>
+                <target>recherche</target>
+            </trans-unit>
+            <trans-unit id="button_previous">
+                <source>previous</source>
+                <target>retour</target>
+            </trans-unit>
+            <trans-unit id="button_next">
+                <source>next</source>
+                <target>avancer</target>
+            </trans-unit>
+            <trans-unit id="button_save">
+                <source>save changes</source>
+                <target>enregistrer les modifications</target>
+            </trans-unit>
+            <trans-unit id="button_saveasnew">
+                <source>save as new entry</source>
+                <target>enregistrer en nouveaux entrée</target>
+            </trans-unit>
+            <trans-unit id="button_submit">
+                <source>submit</source>
+                <target>Envoyer</target>
+            </trans-unit>
+            <trans-unit id="button_abort">
+                <source>abort</source>
+                <target>Abandonner</target>
+            </trans-unit>
+            <trans-unit id="remove">
+                <source>remove</source>
+                <target>éliminer</target>
+            </trans-unit>
+            <trans-unit id="entry">
+                <source>entry</source>
+                <target>Entrée</target>
+            </trans-unit>
+            <group id="security_image">
+                <trans-unit id="security_image.title">
+                    <source>Security check</source>
+                    <target>Test de sécurité</target>
+                </trans-unit>
+            </group>
+            <trans-unit id="yes">
+                <source>yes</source>
+                <target>oui</target>
+            </trans-unit>
+            <trans-unit id="no">
+                <source>no</source>
+                <target>no</target>
+            </trans-unit>
+            <trans-unit id="ok">
+                <source>OK</source>
+                <target>avant</target>
+            </trans-unit>
+            <trans-unit id="any">
+                <source>arbitrary</source>
+                <target>facultatif</target>
+            </trans-unit>
+            <trans-unit id="setup">
+                <source>setup</source>
+                <target>Setup</target>
+            </trans-unit>
+            <trans-unit id="install">
+                <source>installation</source>
+                <target>Installation</target>
+            </trans-unit>
+            <trans-unit id="logout">
+                <source>Logout</source>
+                <target>Logout</target>
+            </trans-unit>
+            <trans-unit id="title_lang">
+                <source>language</source>
+                <target>langue</target>
+            </trans-unit>
+            <trans-unit id="select_lang">
+                <source>select language</source>
+                <target>choisir langue</target>
+            </trans-unit>
+            <trans-unit id="dir">
+                <source>directory</source>
+                <target>Dossier</target>
+            </trans-unit>
+            <group id="order">
+                <trans-unit id="order.by">
+                    <source>order by</source>
+                    <target>calibrer après</target>
+                </trans-unit>
+                <trans-unit id="order.ascending">
+                    <source>ascending</source>
+                    <target>ascendant</target>
+                </trans-unit>
+                <trans-unit id="order.descending">
+                    <source>descending</source>
+                    <target>descendant</target>
+                </trans-unit>
+            </group>
+            <group id="menu">
+                <trans-unit id="menu.edit">
+                    <source>edit</source>
+                    <target>éditer</target>
+                </trans-unit>
+                <trans-unit id="menu.new">
+                    <source>new</source>
+                    <target>nouveau</target>
+                </trans-unit>
+                <trans-unit id="menu.search">
+                    <source>search</source>
+                    <target>Recherche</target>
+                </trans-unit>
+                <trans-unit id="menu.view">
+                    <source>browse</source>
+                    <target>regarder</target>
+                </trans-unit>
+            </group>
+            <group id="tags.text">
+                <trans-unit id="tags.text.b">
+                    <source>bold</source>
+                    <target>grosse</target>
+                </trans-unit>
+                <trans-unit id="tags.text.i">
+                    <source>italic</source>
+                    <target>cursive</target>
+                </trans-unit>
+                <trans-unit id="tags.text.u">
+                    <source>underlined</source>
+                    <target>souligner</target>
+                </trans-unit>
+                <trans-unit id="tags.text.h">
+                    <source>headline</source>
+                    <target>titre</target>
+                </trans-unit>
+                <trans-unit id="tags.text.emp">
+                    <source>emphasized</source>
+                    <target>accentuer</target>
+                </trans-unit>
+                <trans-unit id="tags.text.c">
+                    <source>comment</source>
+                    <target>commentaire</target>
+                </trans-unit>
+                <trans-unit id="tags.text.small">
+                    <source>smaller text</source>
+                    <target>diminuer</target>
+                </trans-unit>
+                <trans-unit id="tags.text.big">
+                    <source>bigger text</source>
+                    <target>grandir</target>
+                </trans-unit>
+                <trans-unit id="tags.text.hide">
+                    <source>hidden text</source>
+                    <target>camoufler</target>
+                </trans-unit>
+                <trans-unit id="tags.text.code">
+                    <source>code</source>
+                    <target>code</target>
+                </trans-unit>
+                <trans-unit id="tags.text.img">
+                    <source>http://...</source>
+                    <target>http://...</target>
+                </trans-unit>
+                <trans-unit id="tags.text.url">
+                    <source>http://...</source>
+                    <target>http://...</target>
+                </trans-unit>
+                <trans-unit id="tags.text.mail">
+                    <source>mail@domain.tld</source>
+                    <target>mail@domain.tld</target>
+                </trans-unit>
+                <trans-unit id="tags.text.color">
+                    <source>colored text</source>
+                    <target>couleur</target>
+                </trans-unit>
+                <trans-unit id="tags.text.mark">
+                    <source>marked text</source>
+                    <target>marquer</target>
+                </trans-unit>
+            </group>
+            <group id="tags.colors">
+                <trans-unit id="tags.colors.0">
+                    <source>black</source>
+                    <target>noir</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.1">
+                    <source>gray</source>
+                    <target>gris</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.2">
+                    <source>silver</source>
+                    <target>argent</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.3">
+                    <source>white</source>
+                    <target>blanche</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.4">
+                    <source>red</source>
+                    <target>rouge</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.5">
+                    <source>green</source>
+                    <target>verte</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.6">
+                    <source>yellow</source>
+                    <target>ambre</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.7">
+                    <source>blue</source>
+                    <target>bleue</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.8">
+                    <source>violet</source>
+                    <target>violette</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.9">
+                    <source>brown</source>
+                    <target>brune</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.10">
+                    <source>orange</source>
+                    <target>orange</target>
+                </trans-unit>
+            </group>
+            <trans-unit id="smilies">
+                <source>smileys</source>
+                <target>Émoticones</target>
+            </trans-unit>
+            <trans-unit id="choose_option">
+                <source>choose an option</source>
+                <target>sélectionner</target>
+            </trans-unit>
+            <trans-unit id="standard_search">
+                <source>standard search</source>
+                <target>simple</target>
+            </trans-unit>
+            <trans-unit id="advanced_search">
+                <source>advanced search</source>
+                <target>avancée</target>
+            </trans-unit>
+            <trans-unit id="rss_title">
+                <source>read RSS feed</source>
+                <target>lis RSS feed</target>
+            </trans-unit>
+            <trans-unit id="about">
+                <source>about this plugin</source>
+                <target>Information</target>
+            </trans-unit>
+            <group id="groups">
+                <trans-unit id="groups.0">
+                    <source>blocked</source>
+                    <target>barrée</target>
+                </trans-unit>
+                <trans-unit id="groups.1">
+                    <source>guest</source>
+                    <target>Hôte</target>
+                </trans-unit>
+                <trans-unit id="groups.2">
+                    <source>moderator</source>
+                    <target>Modérateur</target>
+                </trans-unit>
+                <trans-unit id="groups.3">
+                    <source>owner</source>
+                    <target>Possesseur</target>
+                </trans-unit>
+                <trans-unit id="groups.4">
+                    <source>administrator</source>
+                    <target>Administrateur</target>
+                </trans-unit>
+                <trans-unit id="groups.5">
+                    <source>user</source>
+                    <target>Usager</target>
+                </trans-unit>
+            </group>
+            <group id="help">
+                <trans-unit id="help.0">
+                    <source><bpt id="b1">&lt;b&gt;</bpt>Help:<ept id="b1">&lt;/b&gt;</ept> </source>
+                    <target><bpt id="b1">&lt;b&gt;</bpt>Auxiliaire:<ept id="b1">&lt;/b&gt;</ept> </target>
+                </trans-unit>
+            </group>
+            <trans-unit id="calendar.js">
+                <source>calendar-en.js</source>
+                <target>calendar-fr.js</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

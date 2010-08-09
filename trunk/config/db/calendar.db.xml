@@ -1,0 +1,61 @@
+<?xml version="1.0" ?>
+<!DOCTYPE database SYSTEM "../dtd/database.dtd">
+<database>
+    <table
+        name="calendar">
+        <primarykey>calendar_id</primarykey>
+        <declaration>
+            <string name="profile_id" notnull="yes" length="128"/>
+            <string name="user_created" notnull="yes" length="128"/>
+            <string name="user_modified" length="128"/>
+            <timestamp name="time_created" notnull="yes">
+                <default>CURRENT_TIMESTAMP</default>
+            </timestamp>
+            <timestamp name="time_modified">
+                <default>CURRENT_TIMESTAMP</default>
+            </timestamp>
+            <integer
+                name="calendar_id"
+                notnull="yes"
+                autoincrement="yes"
+                title="Id">
+                <default>0</default>
+            </integer>
+            <string
+                name="calendar_name"
+                length="255"
+                notnull="yes"
+                readonly="no"
+                title='{lang id="user.calendar.name"}'>
+            </string>
+            <string
+                name="calendar_filename"
+                length="255"
+                notnull="yes"
+                readonly="no"
+                title='{lang id="user.calendar.file"}'>
+            </string>
+            <bool
+                name="calendar_default"
+                notnull="yes"
+                readonly="no"
+                title="Dafault Kalender">
+                <default>1</default>
+            </bool>
+            <bool
+                name="calendar_subscribe"
+                notnull="yes"
+                readonly="no"
+                title="Aboniert ?">
+                <default>0</default>
+            </bool>
+            <string
+                name="calendar_url"
+                length="512"
+                notnull="no"
+                readonly="no"
+                title="path">
+            </string>
+        </declaration>
+    </table>
+</database>

@@ -1,0 +1,58 @@
+.proxy_optionalbody
+{
+    padding: 30px 10px;
+}
+
+.proxy_table
+{
+    width:100%;
+    margin-bottom:5px;
+}
+
+.proxy_clear
+{
+    clear:both;
+}
+
+.proxy_right
+{
+    float:right;
+}
+
+.proxy_left
+{
+    float:left;
+}
+
+.proxy_checkbox
+{
+    margin:0px 5px 0px 20px;
+}
+
+.proxy_mark_all_checkbox
+{
+   float:left;
+   margin:0px 15px 0px 16px;
+}
+
+.proxy_table_td
+{
+    text-align:center;
+    padding:10px 0px 10px 0px;
+}
+
+.proxy_remove_button
+{
+    margin-top:10px;
+}
+
+.proxy_remove_button input
+{
+    float:right;
+    margin-right:10px;
+}
+.proxy_granted_user
+{
+    margin-left: 25px;
+    margin-top: 5px;
+}

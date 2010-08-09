@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN"
+ "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" >
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="en">
+        <header/>
+        <body>
+            <trans-unit id="program_title">
+                <source/>
+                <target>Project Management</target>
+            </trans-unit>
+            <group id="prj">
+                <trans-unit id="prj.h1">
+                    <source/>
+                    <target>projects</target>
+                </trans-unit>
+                <trans-unit id="prj.h2">
+                    <source/>
+                    <target>efforts</target>
+                </trans-unit>
+                <trans-unit id="prj.desc2">
+                    <source/>
+                    <target>open items</target>
+                </trans-unit>
+                <trans-unit id="prj.edit">
+                    <source/>
+                    <target>edit entries</target>
+                </trans-unit>
+                <trans-unit id="prj.new1">
+                    <source/>
+                    <target>new project</target>
+                </trans-unit>
+                <trans-unit id="prj.new2">
+                    <source/>
+                    <target>new effort</target>
+                </trans-unit>
+                <trans-unit id="prj.search">
+                    <source/>
+                    <target>search</target>
+                </trans-unit>
+                <trans-unit id="prj.view">
+                    <source/>
+                    <target>view entries</target>
+                </trans-unit>
+                <trans-unit id="prj.list">
+                    <source/>
+                    <target>current projects</target>
+                </trans-unit>
+                <trans-unit id="prj.id">
+                    <source/>
+                    <target>project</target>
+                </trans-unit>
+                <trans-unit id="prj.name">
+                    <source/>
+                    <target>name</target>
+                </trans-unit>
+                <trans-unit id="prj.created">
+                    <source/>
+                    <target>created</target>
+                </trans-unit>
+                <trans-unit id="prj.loan">
+                    <source/>
+                    <target>hourly wage rate</target>
+                </trans-unit>
+                <trans-unit id="prj.desc">
+                    <source/>
+                    <target>description</target>
+                </trans-unit>
+                <trans-unit id="prj.file">
+                    <source/>
+                    <target>attachment</target>
+                </trans-unit>
+                <trans-unit id="prj.user">
+                    <source/>
+                    <target>responsible person</target>
+                </trans-unit>
+                <trans-unit id="prj.short">
+                    <source/>
+                    <target>activity</target>
+                </trans-unit>
+                <trans-unit id="prj.date">
+                    <source/>
+                    <target>date</target>
+                </trans-unit>
+                <trans-unit id="prj.dur">
+                    <source/>
+                    <target>hours</target>
+                </trans-unit>
+                <trans-unit id="prj.state">
+                    <source/>
+                    <target>billed?</target>
+                </trans-unit>
+                <trans-unit id="prj.choose">
+                    <source/>
+                    <target>choose project</target>
+                </trans-unit>
+            </group>
+            <group id="prj.sum">
+                <trans-unit id="prj.sum.hours">
+                    <source/>
+                    <target>sum: {$COUNT} item(s) with {$SUM} hours</target>
+                </trans-unit>
+                <trans-unit id="prj.sum.loan">
+                    <source/>
+                    <target>at {$LOAN} ¤ per hour</target>
+                </trans-unit>
+                <trans-unit id="prj.sum.total">
+                    <source/>
+                    <target>total: {$TOTAL} ¤</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

@@ -1,0 +1,2 @@
+hier werden Konfigurationsdateien für Templates gespeichert -
+configuration files for templates are stored here 

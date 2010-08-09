@@ -1,0 +1,117 @@
+.guestbook_message
+{
+    padding: 5px;
+    overflow: auto;
+}
+.guestbook_value
+{
+    font-size: 12px;
+    font-weight: normal;
+}
+.guestbook_head
+{
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-weight: bold;
+    font-size: 16pt;
+    background: #e8e8e8 url('head_bgd.gif');
+    padding: 5px;
+    border-bottom: 2px solid #ccc;
+}
+.guestbook_name
+{
+    text-align: center;
+    width: 50%;
+    margin: auto;
+}
+.guestbook_entry
+{
+    background: #d3d3d3;
+    margin-bottom: 10px;
+    border: 2px solid #ccc;
+    width: 640px;
+}
+.guestbook_details
+{
+    width: 100px;
+    margin-left: -7px;
+    padding: 5px;
+    position: absolute;
+    text-align: left;
+}
+.guestbook_details:hover
+{
+    width: 320px;
+    border-left: 1px solid #c0c0c0;
+    border-bottom: 1px solid #c0c0c0;
+    background: url('details_bgd.gif');
+    padding-top: 20px;
+    z-index: 2;
+}
+.guestbook_details:hover .guestbook_details_content
+{
+    display: block;
+}
+.guestbook_details:hover .guestbook_details_title
+{
+   display: none;
+}
+.guestbook_details_title
+{
+    font-weight: bold;
+    color: #888;
+    font-size: 11px;
+    padding-top: 5px;
+}
+.guestbook_details_content
+{
+    display: none;
+}
+.guestbook_form
+{
+    background: #d3d3d3;
+    border: 2px solid #ccc;
+    width: 640px;
+    margin-bottom: 20px;
+}
+.guestbook_entry .guestbook_form
+{
+    border: 0px none;
+    margin-bottom: 0px;
+}
+.guestbook_comment .guestbook_form,
+.guestbook_comment .comment
+{
+    background: #d8d8d8;
+    margin: 0px;
+    border: 0px none;
+    width: auto;
+    margin-bottom: 0px;
+    font-size: 12px;
+}
+.guestbook_comment .comment
+{
+    padding: 5px;
+}
+#guestbook #yana_stdout #messagebox
+{
+    margin: 0px;
+}
+.guestbook_form .guestbook_head
+{
+    background: #e0e8ef url('new_bgd.gif');
+}
+.guestbook_form .guestbook_form_content_hidden
+{
+    display: none;
+}
+.guestbook_form .guestbook_form_content
+{
+    padding: 10px;
+}
+.guestbook_delete,
+.guestbook_delete a,
+.guestbook_delete img
+{
+    text-decoration: none;
+    border: 0px none;
+}

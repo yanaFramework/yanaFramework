@@ -1,0 +1,7 @@
+<USER_ID>
+	<ADMINISTRATOR>
+		<USERPROFILE_DESCRIPTION>Das ist ein vordefiniertes Nutzerkonto für den Administrator des Programms.[br] [br][c]Dieses Konto kann nicht gelöscht werden.[/c]</USERPROFILE_DESCRIPTION>
+		<USERPROFILE_IMAGE_ACTIVE>0</USERPROFILE_IMAGE_ACTIVE>
+		<USERPROFILE_MODIFIED>1252950962</USERPROFILE_MODIFIED>
+	</ADMINISTRATOR>
+</USER_ID>

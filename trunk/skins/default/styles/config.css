@@ -1,0 +1,161 @@
+@import url("admin_base.css");
+
+tr.title td,
+td.title,
+.config_head
+{
+    background: #333 url('highlight2.jpg');
+    color: #eee;
+    border: 1px solid #aaa;
+    -moz-border-radius: 4px 4px 0 0;
+    -webkit-border-radius: 4px 4px 0 0;
+    border-radius: 4px 4px 0 0;
+}
+
+.config_title
+{
+    background: url('icon_cogs.png') no-repeat 10px 10px;
+    padding: 10px 10px 15px 50px;
+    height: 20px;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+.config_head > a
+{
+    display: inline-block;
+    float: right;
+    margin: 10px 15px 0px 0px;
+}
+.help_text
+{
+    background: url('icon1.gif') no-repeat 10px 0px;
+    padding-left: 50px;
+    min-height: 40px;
+}
+.help_text a, .help_text a:hover
+{
+    color: #555;
+}
+.title td, td.title, .config_title
+{
+    font-weight: bold;
+    font-size: 18px;
+}
+div.title:before
+{ 
+    content: url("icon_cogs.gif")" ";
+}
+div.title
+{ 
+    padding: 5px; 
+}
+.config_head + .help
+{
+    -moz-border-radius: 0 0 4px 4px;
+    -webkit-border-radius: 0 0 4px 4px;
+    border-radius: 0 0 4px 4px;
+    border-top-width: 0;
+}
+.help
+{
+    font-size: 12px;
+    font-weight: normal;
+    border: 1px solid #aaa;
+    background: #d7dadf url("highlight3.jpg") repeat-x;
+    vertical-align: top; 
+    color: #555555; 
+    padding: 5px;
+    text-align: justify;
+    margin-bottom: 10px;
+}
+.help img
+{ 
+    border: 0px none; 
+    float: left; 
+    margin: 10px; 
+}
+.option .help
+{
+    padding-left: 20px;
+    padding-right: 10px;
+    background: #e1e1e1 url('config_white_bgd.gif');
+    background-repeat: no-repeat;
+    border-color: #ccc;
+}
+td.optionhead, div.optionhead, .optionhead
+{
+    background: #becfdf url('config_optionhead_bgd.gif');
+    font-size: 18px;
+    font-family: 'Tahoma', 'Helvetica', 'Arial', sans-serif;
+    font-weight: bold;
+    color: #334;
+    margin: 0;
+    padding-left: 20px;
+    text-align: left;
+    height: 28px;
+    line-height: 28px;
+    vertical-align: middle;
+}
+.optionhead
+{
+    border: 1px solid #becfdf;
+    -moz-border-radius: 4px 4px 0 0;
+    -webkit-border-radius: 4px 4px 0 0;
+    border-radius: 4px 4px 0 0;
+}
+.optionhead + .help
+{
+    -moz-border-radius: 0 0 4px 4px;
+    -webkit-border-radius: 0 0 4px 4px;
+    border-radius: 0 0 4px 4px;
+    border-top-width: 0;
+}
+.option
+{
+    color: #000;
+    padding: 2px;
+}
+.optionbody
+{
+    font-size: 13px;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-weight: bold;
+}
+.option .optionbody
+{
+    padding-bottom: 10px;
+}
+.optionitem
+{
+    display: block;
+    padding: 5px;
+    text-align: left;
+}
+.optionitem .label
+{
+    display: block;
+    width: 250px;
+    float: left;
+    text-align: right;
+    padding-right: 10px;
+}
+#index_display
+{
+    min-width: 640px;
+    max-width: 1024px;
+}
+* html #index_display
+{
+    width: 700px;
+}
+#config_about
+{
+    margin: 10px 50px;
+}
+#config_about .option
+{
+    overflow: auto;
+}
+#config_about .option .optionbody
+{
+    margin: auto;
+}

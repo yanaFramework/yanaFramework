@@ -1,0 +1,596 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN"
+ "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" >
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="en">
+        <header/>
+        <body>
+            <trans-unit id="program_title">
+                <source/>
+                <target>application settings</target>
+            </trans-unit>
+            <trans-unit id="title">
+                <source/>
+                <target>application</target>
+            </trans-unit>
+            <trans-unit id="title_smilies">
+                <source/>
+                <target>add smiley</target>
+            </trans-unit>
+            <trans-unit id="title_abort">
+                <source/>
+                <target>Click here to abort</target>
+            </trans-unit>
+            <trans-unit id="title_preview">
+                <source/>
+                <target>Click here to se a preview of your entry</target>
+            </trans-unit>
+            <trans-unit id="title_download">
+                <source/>
+                <target>download this file</target>
+            </trans-unit>
+            <trans-unit id="title_previous">
+                <source/>
+                <target>show previous page</target>
+            </trans-unit>
+            <trans-unit id="title_next">
+                <source/>
+                <target>show next page</target>
+            </trans-unit>
+            <trans-unit id="title_details">
+                <source/>
+                <target>switch to detailed view</target>
+            </trans-unit>
+            <trans-unit id="title_overview">
+                <source/>
+                <target>switch to standard view</target>
+            </trans-unit>
+            <trans-unit id="title_list">
+                <source/>
+                <target>click here, to view these entries</target>
+            </trans-unit>
+            <trans-unit id="visitor_count">
+                <source/>
+                <target>Page views:</target>
+            </trans-unit>
+            <trans-unit id="preview">
+                <source/>
+                <target>Preview</target>
+            </trans-unit>
+            <trans-unit id="configmenu">
+                <source/>
+                <target>Administration Panel</target>
+            </trans-unit>
+            <trans-unit id="configsetup">
+                <source/>
+                <target>program setup</target>
+            </trans-unit>
+            <trans-unit id="configdisplay">
+                <source/>
+                <target>page layout</target>
+            </trans-unit>
+            <trans-unit id="create_user">
+                <source/>
+                <target>create new user</target>
+            </trans-unit>
+            <trans-unit id="invalid_input">
+                <source/>
+                <target>The input was invalid. Please correct your entry.</target>
+            </trans-unit>
+            <trans-unit id="date_time">
+                <source/>
+                <target>Date/Time</target>
+            </trans-unit>
+            <trans-unit id="login">
+                <source/>
+                <target>Login</target>
+            </trans-unit>
+            <trans-unit id="logout">
+                <source/>
+                <target>Logout</target>
+            </trans-unit>
+            <trans-unit id="button_entries">
+                <source/>
+                <target>Entries per page</target>
+            </trans-unit>
+            <trans-unit id="button_new">
+                <source/>
+                <target>save new entry</target>
+            </trans-unit>
+            <trans-unit id="button_open">
+                <source/>
+                <target>open entry</target>
+            </trans-unit>
+            <trans-unit id="button_delete">
+                <source/>
+                <target>delete marked entries</target>
+            </trans-unit>
+            <trans-unit id="button_delete_one">
+                <source/>
+                <target>delete entry</target>
+            </trans-unit>
+            <trans-unit id="prompt_delete">
+                <source/>
+                <target>Do you really want to delete this entry?</target>
+            </trans-unit>
+            <trans-unit id="button_reset">
+                <source/>
+                <target>Reset</target>
+            </trans-unit>
+            <trans-unit id="button_search">
+                <source/>
+                <target>Search</target>
+            </trans-unit>
+            <trans-unit id="button_previous">
+                <source/>
+                <target>previous</target>
+            </trans-unit>
+            <trans-unit id="button_next">
+                <source/>
+                <target>next</target>
+            </trans-unit>
+            <trans-unit id="button_save">
+                <source/>
+                <target>save changes</target>
+            </trans-unit>
+            <trans-unit id="button_saveasnew">
+                <source/>
+                <target>save as new entry</target>
+            </trans-unit>
+            <trans-unit id="button_submit">
+                <source/>
+                <target>submit</target>
+            </trans-unit>
+            <trans-unit id="button_abort">
+                <source/>
+                <target>abort</target>
+            </trans-unit>
+            <trans-unit id="button_send">
+                <source/>
+                <target>send</target>
+            </trans-unit>
+            <trans-unit id="remove">
+                <source/>
+                <target>remove</target>
+            </trans-unit>
+            <trans-unit id="mandatory">
+                <source/>
+                <target>fields marked by an asterisk (*) are mandatory</target>
+            </trans-unit>
+            <trans-unit id="redirect">
+                <source/>
+                <target>in case you are not redirected automatically, click here to proceed</target>
+            </trans-unit>
+            <trans-unit id="entry">
+                <source/>
+                <target>entry</target>
+            </trans-unit>
+            <group id="security_image">
+                <trans-unit id="security_image.title">
+                    <source/>
+                    <target>Security check</target>
+                </trans-unit>
+                <trans-unit id="security_image.description">
+                    <source/>
+                    <target>please enter the text on the image</target>
+                </trans-unit>
+            </group>
+            <trans-unit id="yes">
+                <source/>
+                <target>yes</target>
+            </trans-unit>
+            <trans-unit id="no">
+                <source/>
+                <target>no</target>
+            </trans-unit>
+            <trans-unit id="ok">
+                <source/>
+                <target>OK</target>
+            </trans-unit>
+            <trans-unit id="any">
+                <source/>
+                <target>arbitrary</target>
+            </trans-unit>
+            <trans-unit id="setup">
+                <source/>
+                <target>setup</target>
+            </trans-unit>
+            <trans-unit id="install">
+                <source/>
+                <target>installation</target>
+            </trans-unit>
+            <trans-unit id="title_lang">
+                <source/>
+                <target>language</target>
+            </trans-unit>
+            <trans-unit id="select_lang">
+                <source/>
+                <target>select language</target>
+            </trans-unit>
+            <trans-unit id="dir">
+                <source/>
+                <target>directory</target>
+            </trans-unit>
+            <trans-unit id="profile_id">
+                <source/>
+                <target>profile-id</target>
+            </trans-unit>
+            <group id="order">
+                <trans-unit id="order.by">
+                    <source/>
+                    <target>order by</target>
+                </trans-unit>
+                <trans-unit id="order.ascending">
+                    <source/>
+                    <target>ascending</target>
+                </trans-unit>
+                <trans-unit id="order.descending">
+                    <source/>
+                    <target>descending</target>
+                </trans-unit>
+            </group>
+            <group id="where">
+                <trans-unit id="where.set">
+                    <source/>
+                    <target>apply filter to this column</target>
+                </trans-unit>
+                <trans-unit id="where.edit">
+                    <source/>
+                    <target>filter is active (delete/replace?)</target>
+                </trans-unit>
+                <trans-unit id="where.prompt">
+                    <source/>
+                    <target>Filter this column by value: (Wildcards *,?)</target>
+                </trans-unit>
+                <trans-unit id="where.delete">
+                    <source/>
+                    <target>remove filter</target>
+                </trans-unit>
+            </group>
+            <group id="menu">
+                <trans-unit id="menu.edit">
+                    <source/>
+                    <target>edit</target>
+                </trans-unit>
+                <trans-unit id="menu.new">
+                    <source/>
+                    <target>new</target>
+                </trans-unit>
+                <trans-unit id="menu.search">
+                    <source/>
+                    <target>search</target>
+                </trans-unit>
+                <trans-unit id="menu.view">
+                    <source/>
+                    <target>browse</target>
+                </trans-unit>
+            </group>
+            <group id="tags.text">
+                <trans-unit id="tags.text.b">
+                    <source/>
+                    <target>bold</target>
+                </trans-unit>
+                <trans-unit id="tags.text.i">
+                    <source/>
+                    <target>italic</target>
+                </trans-unit>
+                <trans-unit id="tags.text.u">
+                    <source/>
+                    <target>underlined</target>
+                </trans-unit>
+                <trans-unit id="tags.text.h">
+                    <source/>
+                    <target>headline</target>
+                </trans-unit>
+                <trans-unit id="tags.text.emp">
+                    <source/>
+                    <target>emphasized</target>
+                </trans-unit>
+                <trans-unit id="tags.text.c">
+                    <source/>
+                    <target>comment</target>
+                </trans-unit>
+                <trans-unit id="tags.text.small">
+                    <source/>
+                    <target>smaller text</target>
+                </trans-unit>
+                <trans-unit id="tags.text.big">
+                    <source/>
+                    <target>bigger text</target>
+                </trans-unit>
+                <trans-unit id="tags.text.hide">
+                    <source/>
+                    <target>hidden text</target>
+                </trans-unit>
+                <trans-unit id="tags.text.code">
+                    <source/>
+                    <target>code</target>
+                </trans-unit>
+                <trans-unit id="tags.text.img">
+                    <source/>
+                    <target>http://...</target>
+                </trans-unit>
+                <trans-unit id="tags.text.url">
+                    <source/>
+                    <target>http://...</target>
+                </trans-unit>
+                <trans-unit id="tags.text.mail">
+                    <source/>
+                    <target>mail@domain.tld</target>
+                </trans-unit>
+                <trans-unit id="tags.text.color">
+                    <source/>
+                    <target>colored text</target>
+                </trans-unit>
+                <trans-unit id="tags.text.mark">
+                    <source/>
+                    <target>marked text</target>
+                </trans-unit>
+            </group>
+            <group id="tags.title">
+                 <trans-unit id="tags.title.b">
+                     <source/>
+                     <target>insert bold text</target>
+                 </trans-unit>
+                <trans-unit id="tags.title.i">
+                    <source/>
+                    <target>insert italic text</target>
+                </trans-unit>
+                <trans-unit id="tags.title.u">
+                    <source/>
+                    <target>underline text</target>
+                </trans-unit>
+                <trans-unit id="tags.title.h">
+                    <source/>
+                    <target>insert text as headline</target>
+                </trans-unit>
+                <trans-unit id="tags.title.c">
+                    <source/>
+                    <target>insert a comment</target>
+                </trans-unit>
+                <trans-unit id="tags.title.small">
+                    <source/>
+                    <target>reduce font size</target>
+                </trans-unit>
+                <trans-unit id="tags.title.big">
+                    <source/>
+                    <target>increase font size</target>
+                </trans-unit>
+                <trans-unit id="tags.title.hide">
+                    <source/>
+                    <target>insert hidden text</target>
+                </trans-unit>
+                <trans-unit id="tags.title.img">
+                    <source/>
+                    <target>insert image</target>
+                </trans-unit>
+                <trans-unit id="tags.title.url">
+                    <source/>
+                    <target>insert hyperlink</target>
+                </trans-unit>
+                <trans-unit id="tags.title.mail">
+                    <source/>
+                    <target>insert mail address</target>
+                </trans-unit>
+                <trans-unit id="tags.title.code">
+                    <source/>
+                    <target>insert source code</target>
+                </trans-unit>
+                <trans-unit id="tags.title.emp">
+                    <source/>
+                    <target>emphasize text</target>
+                </trans-unit>
+                <trans-unit id="tags.title.color">
+                    <source/>
+                    <target>change text color</target>
+                </trans-unit>
+                <trans-unit id="tags.title.mark">
+                    <source/>
+                    <target>change background color</target>
+                </trans-unit>
+                <trans-unit id="tags.title.br">
+                    <source/>
+                    <target>insert line break</target>
+                </trans-unit>
+                <trans-unit id="tags.title.wbr">
+                    <source/>
+                    <target>allow word to break on this position</target>
+                </trans-unit>
+                <trans-unit id="tags.title.php">
+                    <source/>
+                    <target>insert PHP source code</target>
+                </trans-unit>
+            </group>
+            <group id="tags.colors">
+                <trans-unit id="tags.colors.0">
+                    <source/>
+                    <target>black</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.1">
+                    <source/>
+                    <target>gray</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.2">
+                    <source/>
+                    <target>silver</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.3">
+                    <source/>
+                    <target>white</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.4">
+                    <source/>
+                    <target>red</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.5">
+                    <source/>
+                    <target>green</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.6">
+                    <source/>
+                    <target>yellow</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.7">
+                    <source/>
+                    <target>blue</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.8">
+                    <source/>
+                    <target>violet</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.9">
+                    <source/>
+                    <target>brown</target>
+                </trans-unit>
+                <trans-unit id="tags.colors.10">
+                    <source/>
+                    <target>orange</target>
+                </trans-unit>
+            </group>
+            <group id="tags.js">
+                <trans-unit id="tags.js.err">
+                    <source/>
+                    <target>You have a syntax error in your text</target>
+                </trans-unit>
+                <trans-unit id="tags.js.char">
+                    <source/>
+                    <target>near character number</target>
+                </trans-unit>
+                <trans-unit id="tags.js.end">
+                    <source/>
+                    <target>Unexpected tag</target>
+                </trans-unit>
+                <trans-unit id="tags.js.unknown">
+                    <source/>
+                    <target>Unknown tag</target>
+                </trans-unit>
+                <trans-unit id="tags.js.unexp">
+                    <source/>
+                    <target>This tag has never been opened</target>
+                </trans-unit>
+                <trans-unit id="tags.js.exp">
+                    <source/>
+                    <target>Expected tag</target>
+                </trans-unit>
+                <trans-unit id="tags.js.uncl">
+                    <source/>
+                    <target>The following tags are not closed</target>
+                </trans-unit>
+                <trans-unit id="tags.js.br">
+                    <source/>
+                    <target>The text should not start with a line break</target>
+                </trans-unit>
+                <trans-unit id="tags.js.proceed">
+                    <source/>
+                    <target>Do you want to proceed anyway?</target>
+                </trans-unit>
+            </group>
+            <group id="tags">
+                <trans-unit id="tags.noselection">
+                    <source/>
+                    <target>Please mark the section of your text first, on which you want to apply this style!</target>
+                </trans-unit>
+            </group>
+            <trans-unit id="preview_js">
+                <source/>
+                <target>preview for your entry:</target>
+            </trans-unit>
+            <trans-unit id="format_text">
+                <source/>
+                <target>format text</target>
+            </trans-unit>
+            <trans-unit id="smilies">
+                <source/>
+                <target>smileys</target>
+            </trans-unit>
+            <trans-unit id="sitemap_title">
+                <source/>
+                <target>Sitemap</target>
+            </trans-unit>
+            <trans-unit id="sitemap_description">
+                <source/>
+                <target>The following applications are installed at the moment.<it id="br1" pos="open">&lt;br /&gt;</it>Choose the application to start.</target>
+            </trans-unit>
+            <trans-unit id="no_entries_found">
+                <source/>
+                <target>no entries found</target>
+            </trans-unit>
+            <trans-unit id="choose_option">
+                <source/>
+                <target>choose an option</target>
+            </trans-unit>
+            <trans-unit id="standard_search">
+                <source/>
+                <target>standard search</target>
+            </trans-unit>
+            <trans-unit id="advanced_search">
+                <source/>
+                <target>advanced search</target>
+            </trans-unit>
+            <trans-unit id="new_entry">
+                <source/>
+                <target>new Entry</target>
+            </trans-unit>
+            <trans-unit id="descr_show">
+                <source/>
+                <target>show {$FIRST_PAGE} - {$OFFSET_PAGE} of {$LAST_PAGE} entries</target>
+            </trans-unit>
+            <trans-unit id="rss_title">
+                <source/>
+                <target>read RSS feed</target>
+            </trans-unit>
+            <trans-unit id="about">
+                <source/>
+                <target>about this plugin</target>
+            </trans-unit>
+            <trans-unit id="confirm_ext_link">
+                <source/>
+                <target>You are about to leave the current site and open an external web page in a new window. Do you want to proceed?</target>
+            </trans-unit>
+            <trans-unit id="ext_link">
+                <source/>
+                <target>link to an external web page (opens in new window)</target>
+            </trans-unit>
+            <trans-unit id="db_entity_link">
+                <source/>
+                <target>Click here, to open the linked dataset.</target>
+            </trans-unit>
+            <group id="groups">
+                <trans-unit id="groups.0">
+                    <source/>
+                    <target>blocked</target>
+                </trans-unit>
+                <trans-unit id="groups.1">
+                    <source/>
+                    <target>guest</target>
+                </trans-unit>
+                <trans-unit id="groups.2">
+                    <source/>
+                    <target>moderator</target>
+                </trans-unit>
+                <trans-unit id="groups.3">
+                    <source/>
+                    <target>owner</target>
+                </trans-unit>
+                <trans-unit id="groups.4">
+                    <source/>
+                    <target>administrator</target>
+                </trans-unit>
+                <trans-unit id="groups.5">
+                    <source/>
+                    <target>user</target>
+                </trans-unit>
+            </group>
+            <group id="help">
+                <trans-unit id="help.0">
+                    <source/>
+                    <target><bpt id="b1">&lt;b&gt;</bpt>Help:<ept id="b1">&lt;/b&gt;</ept> </target>
+                </trans-unit>
+            </group>
+            <trans-unit id="calendar.js">
+                <source/>
+                <target>calendar-en.js</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

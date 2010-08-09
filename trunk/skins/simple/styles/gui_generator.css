@@ -1,0 +1,167 @@
+/* global template style definitions */
+div.gui_generator_edit
+{
+}
+div.gui_generator_new
+{
+}
+div.gui_generator_advanced_search
+{
+}
+div.gui_generator_search
+{
+}
+div.gui_generator_view
+{
+}
+div.gui_generator_view_seperated
+{
+}
+/* header / footer */
+p.gui_generator_footer
+{
+}
+p.gui_generator_header
+{
+}
+/* template specific styles */
+div.gui_generator_edit th, div.gui_generator_search th, div.gui_generator_view th
+{
+    background: #eeeeee;
+    color: #000000;
+    border: 1px dashed gray;
+    vertical-align: middle;
+    white-space: nowrap;
+    font-size: 12px;
+    padding: 2px;
+}
+div.gui_generator_edit table
+{
+    border: 1px solid #c0c0c0;
+    background: #e0e0e0;
+    color: #000000;
+}
+div.gui_generator_edit img 
+{
+    margin: 0;
+}
+div.gui_generator_edit table tbody td, div.gui_generator_view table tbody td
+{
+    border-bottom: 1px solid #888;
+    padding-bottom: 1px; 
+    padding-top: 1px;
+}
+div.gui_generator_search select, div.gui_generator_search option
+{
+    font-size: 10px;
+}
+div.gui_generator_edit tr, div.gui_generator_view table tbody tr
+{
+    text-align: center;
+    vertical-align: top;
+}
+div.gui_generator_search table tr th
+{
+    white-space: nowrap;
+    font-size: 12px;
+    padding: 2px; 
+    text-align: left;
+}
+div.gui_generator_search table thead tr th, div.gui_generator_view table thead tr th
+{
+    white-space: nowrap;
+    padding: 5px;
+    font-size: 12px;
+    text-align: center;
+}
+div.gui_generator_view_seperated div.gui_generator_table
+{
+    border: 1px solid #c0c0c0;
+    background: #e0e0e0;
+    color: #000000;
+    margin: 5px;
+}
+div.gui_generator_view_seperated div.gui_generator_thead
+{
+    background: #eeeeee;
+    color: #000000;
+    border: 1px dashed gray;
+    white-space: nowrap;
+    font-size: 13px;
+    height: 30px !important;
+    padding-left: 5px;
+}
+div.gui_generator_view_seperated div.gui_generator_thead div.gui_generator_tr
+{
+    display: inline;
+    border-right: 1px dashed gray;
+    line-height: 200%;
+}
+div.gui_generator_view_seperated div.gui_generator_thead div.gui_generator_tr_last
+{
+    display: inline;
+    border-right: 0;
+    line-height: 30px;
+}
+div.gui_generator_view_seperated span.gui_generator_th
+{
+    font-family: 'Times New Roman', serif;
+    font-weight: bold;
+    padding: 0 5px 0 10px;
+}
+div.gui_generator_view_seperated span.gui_generator_td
+{
+    padding: 0 10px 0 5px;
+}
+div.gui_generator_view_seperated div.gui_generator_tbody
+{
+    display: inline;
+}
+div.gui_generator_view_seperated div.gui_generator_tbody div.gui_generator_tr
+{
+    padding: 5px;
+}
+div.gui_generator_edit .gui_generator_readonly_textarea
+{
+    height: 20px;
+}
+/* stuff that applies to all templates */
+img.gui_generator_arrow
+{
+    border: 0;
+    margin: 3px 0 3px 0 !important;
+}
+.gui_generator_mandatory
+{
+    color: #aa0000;
+    font-size: 12px;
+}
+span.gui_generator_mandatory
+{
+    font-size: 14px;
+    font-weight: bold;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+}
+.gui_generator_readonly_textarea
+{
+    overflow: auto;
+    height: 75px;
+    width: 100%;
+}
+div.gui_generator_no_entries_found
+{
+}
+table.gui_generator_smilies
+{
+}
+table.gui_generator_smilies td
+{
+    text-align: center;
+    vertical-align: middle;
+}
+table.gui_generator_smilies img
+{
+    border: 0;
+    margin-left: 3px;
+    margin-right: 3px;
+}

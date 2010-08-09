@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="de">
+        <header/>
+        <body>
+            <trans-unit id="program_title">
+                <source>search engine</source>
+                <target>Stichwortsuche</target>
+            </trans-unit>
+            <trans-unit id="search">
+                <source>search for:</source>
+                <target>Suche:</target>
+            </trans-unit>
+            <trans-unit id="stats_button">
+                <source>statistics</source>
+                <target>Statistik</target>
+            </trans-unit>
+            <trans-unit id="stats_title">
+                <source>click to see, what words other people are searching for</source>
+                <target>Liste der am Häufigsten gesuchten Begriffe</target>
+            </trans-unit>
+            <trans-unit id="related">
+                <source>related words to</source>
+                <target>verwandte Begriffe zu</target>
+            </trans-unit>
+            <trans-unit id="searchfor">
+                <source>searching for:</source>
+                <target>gesucht wurde nach:</target>
+            </trans-unit>
+            <trans-unit id="stats_name">
+                <source>statistics</source>
+                <target>Suchstatistiken</target>
+            </trans-unit>
+            <trans-unit id="stats_hits">
+                <source>hits</source>
+                <target>Zugriffe</target>
+            </trans-unit>
+            <trans-unit id="stats_hit">
+                <source>hit</source>
+                <target>Zugriff</target>
+            </trans-unit>
+            <trans-unit id="js_show">
+                <source>showing</source>
+                <target>Ansicht</target>
+            </trans-unit>
+            <trans-unit id="js_of">
+                <source>of</source>
+                <target>von</target>
+            </trans-unit>
+            <trans-unit id="js_results">
+                <source>search results</source>
+                <target>Suchergebnisse</target>
+            </trans-unit>
+            <trans-unit id="js_hits">
+                <source>hits</source>
+                <target>Treffer</target>
+            </trans-unit>
+            <trans-unit id="about">
+                <source>en/search/about.html</source>
+                <target>de/search/about.html</target>
+            </trans-unit>
+            <trans-unit id="whatsrelated">
+                <source>en/search/whatsrelated.html</source>
+                <target>de/search/whatsrelated.html</target>
+            </trans-unit>
+            <trans-unit id="stats_missing">
+                <source><bpt id="b1">&lt;b&gt;</bpt>Dear visitor:<ept id="b1">&lt;/b&gt;</ept> the statistics option is temporarily not available. Please inform the administrator of this site.<it id="br1" pos="open">&lt;br /&gt;</it> <it id="br2" pos="open">&lt;br /&gt;</it><bpt id="b2">&lt;b&gt;</bpt>Administrator:<ept id="b2">&lt;b&gt;</ept> Please make sure the script has writing access to the directory "{$COUNTERDIR}". This is needed in order to allow this script to store statistic information about your search engine.</source>
+                <target><bpt id="b1">&lt;b&gt;</bpt>Sehr geehrter Besucher:<ept id="b1">&lt;/b&gt;</ept> die Stastikfunktion ist zur Zeit nicht verfügbar. Bitte wenden Sie sich an den Webmaster dieser Seite.<it id="br1" pos="open">&lt;br /&gt;</it> <it id="br2" pos="open">&lt;br /&gt;</it><bpt id="b2">&lt;b&gt;</bpt>Administrator:<ept id="b2">&lt;b&gt;</ept> Achten Sie bitte darauf, dass dieses Skript für das Verzeichnis "{$COUNTERDIR}" Schreibrechte besitzen muss um eine Statistik anlegen zu können</target>
+            </trans-unit>
+            <trans-unit id="target">
+                <source>Target</source>
+                <target>Target</target>
+            </trans-unit>
+            <trans-unit id="target_description">
+                <source>Name of the target frame, to open search results in.</source>
+                <target>Name des Frame, in welchem die Suchergebnisse angezeigt werden sollen.</target>
+            </trans-unit>
+            <trans-unit id="search_link">
+                <source>URL of this program</source>
+                <target>URL der Stichwortsuche</target>
+            </trans-unit>
+            <trans-unit id="prefix">
+                <source>Prefix for Links</source>
+                <target>Präfix für Links</target>
+            </trans-unit>
+            <group id="prefix_examples">
+                <trans-unit id="prefix_examples.0">
+                    <source>will be inserted before the link, exp. http://www.domain.tld/path/ or pathA/pathB/pathC/</source>
+                    <target>Wird vor den Link gesetzt, z.Bsp. http://www.domain.tld/pfad/ oder pfadA/pfadB/pfadC/</target>
+                </trans-unit>
+                <trans-unit id="prefix_examples.1">
+                    <source>change this value, if you want to move this script to another directory or even another domain, but don't want to create new index files</source>
+                    <target>ändern Sie diesen Wert, wenn Sie das Skript in ein anderes Verzeichnis oder auf eine andere Domain kopieren wollen, aber keinen neuen Suchindex erstellen wollen</target>
+                </trans-unit>
+                <trans-unit id="prefix_examples.2">
+                    <source>all links will automatically be relocated to the URL specified by the prefix</source>
+                    <target>alle Links werden automatisch zu der als Präfix angegebenen URL umgeleitet</target>
+                </trans-unit>
+            </group>
+            <group id="target_examples">
+                <trans-unit id="target_examples.0">
+                    <source>_blank for "new window"</source>
+                    <target>_blank für "neues Fenster"</target>
+                </trans-unit>
+                <trans-unit id="target_examples.1">
+                    <source>_self for "current frame"</source>
+                    <target>_self  für "aktueller Frame"</target>
+                </trans-unit>
+                <trans-unit id="target_examples.2">
+                    <source>_top    for "current window"</source>
+                    <target>_top   für "aktuelles Fenster"</target>
+                </trans-unit>
+            </group>
+            <group id="upload">
+                <trans-unit id="upload.header">
+                    <source>upload search index</source>
+                    <target>offline erstellten Suchindex auf den Server kopieren</target>
+                </trans-unit>
+                <trans-unit id="upload.docs">
+                    <source>document-index</source>
+                    <target>Dokument-Index</target>
+                </trans-unit>
+                <trans-unit id="upload.keys">
+                    <source>keyword-index</source>
+                    <target>Keyword-Index</target>
+                </trans-unit>
+            </group>
+            <group id="indexer">
+                <trans-unit id="indexer.header">
+                    <source>create search index online</source>
+                    <target>Suchindex online erstellen</target>
+                </trans-unit>
+                <trans-unit id="indexer.dir">
+                    <source>source directory</source>
+                    <target>Quellverzeichnis</target>
+                </trans-unit>
+                <trans-unit id="indexer.recurse">
+                    <source>recurse subdirectories</source>
+                    <target>durchsuche Unterverzeichnisse</target>
+                </trans-unit>
+                <trans-unit id="indexer.meta">
+                    <source>include meta tags</source>
+                    <target>Metatags durchsuchen</target>
+                </trans-unit>
+            </group>
+            <group id="help">
+                <trans-unit id="help.upload">
+                    <source>If you created the search index offline with the included java tool, you may use this form to upload the generated files (documents.dat, keywords.dat). In case an old search index already exists, it will be replaced automatically.</source>
+                    <target>Falls Sie den Suchindex für die Suchmaschine offline mit dem beigelegten Java-Tool erstellt haben, so können Sie die dabei generierten Dateien (documents.dat, keywords.dat) über dieses Formular auf dem Server speichern. Sollte bereits ein alter Suchindex existieren, so wird dieser automatisch ersetzt.</target>
+                </trans-unit>
+                <trans-unit id="help.dir">
+                    <source>Provide the path to the directory, where the documents reside, which you want to index.</source>
+                    <target>Geben Sie den Pfad zu dem Verzeichnis an, in welchem sich die zu durchsuchenden Dokumente befinden.</target>
+                </trans-unit>
+                <trans-unit id="help.recurse">
+                    <source>Decide, whether subdirectories, inside the document directory, should be searched as well.</source>
+                    <target>Geben Sie an, ob die Unterverzeichnisse des Quellverzeichnisses ebenfalls durchsucht werden sollen, oder nicht.</target>
+                </trans-unit>
+                <trans-unit id="help.meta">
+                    <source>Decide, whether keywords, found in the meta tags of a document, should be included in the results, or not.</source>
+                    <target>Geben Sie an, ob "Keywords", welche in den Metatags eines Dokuments gefunden werden, in die Suchergebnisse mit einbezogen werden sollen, oder nicht.</target>
+                </trans-unit>
+                <trans-unit id="help.index">
+                    <source>You may use this form to create a search index now, using an included a indexer. Note: only files with the extensions html, htm, xml and shtml will be searched. Directories beginning with an underscore '_' will be ignored (you may use this to permanently prevent files from being indexed).</source>
+                    <target>Sie können dieses Formular verwenden, um mit Hilfe des eingebauten Indexierungsprogramms jetzt einen Suchindex für Ihre Suchmaschine zu erstellen. Hinweis: nur Dateien mit den Endungen html, htm, xml und shtml werden durchsucht. Verzeichnisse, deren Name mit einem Unterstrich '_' beginnt, werden nicht durchsucht (Sie können dies nutzen, um bestimmte Dateien dauerhaft von der Suche auszuschliessen).</target>
+                </trans-unit>
+            </group>
+         </body>
+    </file>
+</xliff>

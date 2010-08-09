@@ -1,0 +1,254 @@
+body
+{
+    background-color: #f8f8f8;
+    color: #000;
+}
+
+a
+{
+    color: #655545;
+    text-decoration: none;
+}
+
+a:hover
+{
+    color: #885;
+    text-decoration: underline
+}
+h2, .header
+{
+    background-image: url('highlight2.jpg');
+    background-color: #414649;
+}
+
+/* Sitemap */
+#sitemap,
+#table_configmenu
+{
+    background-image: url('sitemap_bgd.gif') !important;
+    background-color: #f0f0f8 !important;
+    border-color: #888 !important;
+}
+#sitemap_box
+{
+    background-color: #f0f0f8 !important;
+}
+
+/* Index page */
+#index_body
+{
+    background-color: #eeeff5;
+}
+#index_body_top
+{
+    background-image: url('index_box_top.gif');
+}
+#index_body_top_left
+{
+    background-image: url('index_box_left_top.gif');
+}
+#index_body_top_right
+{
+    background-image: url('index_box_right_top.gif');
+}
+#index_body_bottom
+{
+    background-image: url('index_box_bottom.gif');
+}
+#index_body_bottom_left
+{
+    background-image: url('index_box_left_bottom.gif');
+}
+#index_body_bottom_right
+{
+    background-image: url('index_box_right_bottom.gif');
+}
+#index_body_left
+{
+    background-image: url('index_box_left.gif');
+}
+#index_body_right
+{
+    background-image: url('index_box_right.gif');
+}
+#index_header.header
+{
+    background-image: url('index_title_bgd.gif');
+}
+#index_header_left
+{
+    background-image: url('index_title_left.gif');
+}
+#index_header_right
+{
+    background-image: url('index_title_right.gif');
+}
+#index_header_center.index_default_logo
+{
+    background-image: url('index_title_name.jpg');
+}
+#index_content
+{
+    background-image: url('index_content.gif');
+}
+#index_toolbar
+{
+    background: #86c246 url('index_toolbar.gif') repeat-x;
+    border-bottom: 1px solid #564;
+}
+#index_toolbar ul.hmenu
+{
+    background-image: none;
+    background-color: transparent;
+}
+#index_toolbar ul.hmenu ul.hmenu,
+#index_toolbar ul.hmenu li.hmenu
+{
+    background-color: #869b69;
+    background-image: url('index_toolbar_button.gif');
+    background-repeat: repeat-x;
+    color: #eee;
+}
+#index_toolbar ul.hmenu li.hmenu:hover,
+#index_toolbar ul.hmenu li.menu_hover,
+#index_toolbar ul.hmenu li.hmenu:hover ul.hmenu,
+#index_toolbar ul.hmenu li.menu_hover ul.hmenu
+{
+    background-color: #9ab474;
+    background-image: url('index_toolbar_menu_bgd_hover.gif');
+    color: #000;
+}
+#index_toolbar ul.hmenu li.menu_hover ul.hmenu,
+#index_toolbar ul.hmenu li.hmenu:hover ul.hmenu
+{
+    border-left-color: #999;
+    border-right-color: #777;
+    border-bottom-color: #683;
+}
+#index_toolbar ul.hmenu li.hmenu
+{
+    border-left-color: #999;
+    border-right-color: #777;
+}
+#index_toolbar ul.hmenu li.entry
+{
+    border-left-color: #999;
+    border-right-color: #777;
+}
+#index_toolbar ul.hmenu li.hmenu li.entry
+{
+    border-top-color: #999;
+    border-left-color: #999;
+    border-right-color: #777;
+    border-bottom-color: #777;
+}
+#index_toolbar ul.hmenu li.entry a
+{
+    background-color: #683;
+    background-image: url('index_toolbar_button.gif');
+    color: #eee;
+}
+#index_toolbar ul.hmenu li.entry a:hover
+{
+    background-color: #794;
+    background-image: url('index_toolbar_button_hover.gif');
+    color: #fff;
+}
+#index_header_appbar a
+{
+    /* work-around for IE7 inline-block-bug */
+    zoom: 1;
+    *display: inline;
+}
+/* Configuration pages */
+.help
+{
+    background-image: url("highlight3.jpg") ! important;
+}
+tr.title td, td.title, .config_head
+{
+    background-image: url('highlight2.jpg') ! important;
+}
+
+/* Menu */
+#index_content ul.menu li.entry,
+#index_content ul.hmenu li.entry
+{
+    background-color: #f8faf0;
+    background-image: url('menu_entry_bgd.gif');
+    border: 1px solid #888;
+}
+#index_content ul.menu li.entry :hover,
+#index_content ul.hmenu li.entry :hover
+{ 
+    background-color: #555;
+    background-image: url('menu_entry_hover_bgd.gif');
+}
+ul.menu li.entry a,
+ul.hmenu li.entry a
+{
+    color: #555;
+}
+#index_content ul.menu li.menu,
+#index_content ul.hmenu li.hmenu,
+#index_content ul.hmenu li.hmenu:hover ul.hmenu,
+#index_content ul.hmenu li.menu_hover ul.hmenu
+{ 
+    background-image: url('menu_bgd.gif');
+    border: 1px solid #888 ! important;
+}
+/* horizontal menu */
+#index_content ul.hmenu
+{
+    background-image: url('menu_h_bgd.png');
+}
+#index_content ul.hmenu:hover
+{
+    background-image: url('menu_h_bgd_hover.png');
+}
+
+/* Buttons */
+/* select boxes */
+select, option
+{
+    background-color: #eee;
+    color: #555;
+}
+select
+{
+    background-image: url('input_text.gif');
+    border-color: #a89b5c;
+}
+/* border styling and color */
+textarea, input[type="text"],
+input[type="password"],
+button[type="text"],
+button[type="password"],
+input[type="file"]
+{
+    border-color: #a89b5c;
+    color: #555;
+}
+/* textarea styles */
+textarea
+{
+    background-color: #EFE9E3;
+    background-image: url("input_textarea.gif");
+}
+/* background styles */
+input[type="text"],
+input[type="password"],
+button[type="text"],
+button[type="password"],
+input[type="file"]
+{
+    background-color: #EFE9E3;
+    background-image: url("input_text.gif");
+}
+/* button styles */
+input[type="button"], input[type="submit"], input[type="reset"], .buttonize, .buttonize_static
+{
+    background-color: #EFE9E3;
+    background-image: url("input_button.gif");
+    border-color: #a89b5c;
+}

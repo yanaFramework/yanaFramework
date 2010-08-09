@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN"
+ "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" >
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="en">
+        <header/>
+        <body>
+            <group id="spam">
+                <trans-unit id="spam.0">
+                    <source/>
+                    <target>level of protection</target>
+                </trans-unit>
+                <trans-unit id="spam.1">
+                    <source/>
+                    <target>user defined settings</target>
+                </trans-unit>
+                <trans-unit id="spam.2">
+                    <source/>
+                    <target>Should a CAPTCHA be used?</target>
+                </trans-unit>
+                <trans-unit id="spam.3">
+                    <source/>
+                    <target>Should known (logged in) users also be checked?</target>
+                </trans-unit>
+                <trans-unit id="spam.4">
+                    <source/>
+                    <target>Should rejected entries (junk) be logged?</target>
+                </trans-unit>
+                <trans-unit id="spam.5">
+                    <source/>
+                    <target>Should users be prevented from sending form data multiple times?</target>
+                </trans-unit>
+                <trans-unit id="spam.6">
+                    <source/>
+                    <target>Should header data send by the browser be included in checks?</target>
+                </trans-unit>
+                <trans-unit id="spam.7">
+                    <source/>
+                    <target>Should entries be checked for suspicious words?</target>
+                </trans-unit>
+                <trans-unit id="spam.8">
+                    <source/>
+                    <target>List of blocked words</target>
+                </trans-unit>
+                <trans-unit id="spam.9">
+                    <source/>
+                    <target>Words, that may not be found</target>
+                </trans-unit>
+                <trans-unit id="spam.10">
+                    <source/>
+                    <target>Do you want to use regular expressions?</target>
+                </trans-unit>
+            </group>
+            <group id="spam.level">
+                <trans-unit id="spam.level.0">
+                    <source/>
+                    <target>deactivated</target>
+                </trans-unit>
+                <trans-unit id="spam.level.1">
+                    <source/>
+                    <target>low</target>
+                </trans-unit>
+                <trans-unit id="spam.level.2">
+                    <source/>
+                    <target>medium</target>
+                </trans-unit>
+                <trans-unit id="spam.level.3">
+                    <source/>
+                    <target>high</target>
+                </trans-unit>
+                <trans-unit id="spam.level.user">
+                    <source/>
+                    <target>user defined</target>
+                </trans-unit>
+            </group>
+            <group id="spam.desc">
+                <trans-unit id="spam.desc.captcha">
+                    <source/>
+                    <target>Application of CAPTCHA is activated.</target>
+                </trans-unit>
+                <trans-unit id="spam.desc.nocaptcha">
+                    <source/>
+                    <target>No CAPTCHA is used.</target>
+                </trans-unit>
+                <trans-unit id="spam.desc.words">
+                    <source/>
+                    <target>Words are filtered.</target>
+                </trans-unit>
+                <trans-unit id="spam.desc.nowords">
+                    <source/>
+                    <target>Words are not filtered.</target>
+                </trans-unit>
+                <trans-unit id="spam.desc.login">
+                    <source/>
+                    <target>All users will be checked.</target>
+                </trans-unit>
+                <trans-unit id="spam.desc.nologin">
+                    <source/>
+                    <target>Only users, who are not logged in, will be checked.</target>
+                </trans-unit>
+                <trans-unit id="spam.desc.form">
+                    <source/>
+                    <target>Preventing users from sending form data multiple times.</target>
+                </trans-unit>
+                <trans-unit id="spam.desc.none">
+                    <source/>
+                    <target>The input is not checked.</target>
+                </trans-unit>
+                <trans-unit id="spam.desc.user">
+                    <source/>
+                    <target>This option enables you to choose individual settings.</target>
+                </trans-unit>
+            </group>
+            <group id="help">
+                <trans-unit id="help.1">
+                    <source/>
+                    <target>This menu enables you to choose, if and by which filters the input, the visitor sends to the server, is automatically checked. This aims at the avoidance of unrequested ads and vandalism. If the user's input is suspicious, the process will automatically be aborted. A message will be generated for the visitor, to describe the error and an entry will be added to the system's logs, for you to review.</target>
+                </trans-unit>
+                <trans-unit id="help.2">
+                    <source/>
+                    <target>This menu lets you choose a level of protection. These are meant to ease the configuration for you. Each level provides you with predefined settings. If you are not satisfied with these, you may choose the menu's option "user defined", to choose individual settings for all sections.</target>
+                </trans-unit>
+                <trans-unit id="help.3">
+                    <source/>
+                    <target>A "CAPTCHA" is an image, that shows numbers and letters, the user must type in a form field. While a human can read the image, most automated programs (bots) are not able to do this.</target>
+                </trans-unit>
+                <trans-unit id="help.4">
+                    <source/>
+                    <target>If you choose "yes", input will always be checked. If you choose "no", only unknown visitors without a login will be checked.</target>
+                </trans-unit>
+                <trans-unit id="help.5">
+                    <source/>
+                    <target>The logs can be found via the administration panel. This option is only available, if the system logs are activated.</target>
+                </trans-unit>
+                <trans-unit id="help.6">
+                    <source/>
+                    <target>Prevents user from accidentally sending form data multiple times. Also a user may submit a form no earlier than 3 seconds after it has been opened. This provides good protection against unrequested ads through automated programs.</target>
+                </trans-unit>
+                <trans-unit id="help.7">
+                    <source/>
+                    <target>Checks the header data send by the browser for signatures of known bots.</target>
+                </trans-unit>
+                <trans-unit id="help.8">
+                    <source/>
+                    <target>Checks input for suspicious words, which may not be present. If any such word is found, the entry will not be added.</target>
+                </trans-unit>
+                <trans-unit id="help.9">
+                    <source/>
+                    <target>Experienced users may increase the efficiency of this filter, by providing words as regular expressions. For regular expressions a perl-compatible syntax is used.</target>
+                </trans-unit>
+                <trans-unit id="help.10">
+                    <source/>
+                    <target></target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

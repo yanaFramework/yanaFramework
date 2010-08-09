@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="fr">
+        <header/>
+        <body>
+            <trans-unit id="index_1">
+                <source>administer homepage profiles</source>
+                <target>administrer profiles d'homepage</target>
+            </trans-unit>
+            <trans-unit id="index_3">
+                <source>Administrator</source>
+                <target>Administrateur</target>
+            </trans-unit>
+            <trans-unit id="index_4">
+                <source>create new profile</source>
+                <target>génère profilé</target>
+            </trans-unit>
+            <trans-unit id="index_5">
+                <source>enter ID</source>
+                <target>entre ID</target>
+            </trans-unit>
+            <trans-unit id="index_6">
+                <source>choose a file</source>
+                <target>choisis fichier</target>
+            </trans-unit>
+            <trans-unit id="index_7">
+                <source>settings</source>
+                <target>Paramètres</target>
+            </trans-unit>
+            <trans-unit id="index_8">
+                <source>Database</source>
+                <target>base de données</target>
+            </trans-unit>
+            <trans-unit id="index_9">
+                <source>current profile</source>
+                <target>profilé d'actualité</target>
+            </trans-unit>
+            <trans-unit id="index_10">
+                <source>default settings</source>
+                <target>configuration standard</target>
+            </trans-unit>
+            <trans-unit id="index_11">
+                <source>change profile</source>
+                <target>change profilé</target>
+            </trans-unit>
+            <trans-unit id="index_12">
+                <source>clear server-cache</source>
+                <target>dégage cache</target>
+            </trans-unit>
+            <trans-unit id="index_13">
+                <source>Check for new version</source>
+                <target>Recherche d'une nouvelle version</target>
+            </trans-unit>
+            <group id="admin">
+                <trans-unit id="admin.3">
+                    <source>basic mode</source>
+                    <target>mode débutant</target>
+                </trans-unit>
+                <trans-unit id="admin.4">
+                    <source>expert mode</source>
+                    <target>mode expert</target>
+                </trans-unit>
+                <trans-unit id="admin.6">
+                    <source>available files</source>
+                    <target>fichiers disponible</target>
+                </trans-unit>
+                <trans-unit id="admin.7">
+                    <source>Version</source>
+                    <target>version</target>
+                </trans-unit>
+                <trans-unit id="admin.10">
+                    <source>reload plugin list</source>
+                    <target>actualiser liste</target>
+                </trans-unit>
+                <trans-unit id="admin.11">
+                    <source>selected font</source>
+                    <target>caractère choisi</target>
+                </trans-unit>
+                <trans-unit id="admin.12">
+                    <source>other fonts</source>
+                    <target>choisir caractère</target>
+                </trans-unit>
+                <trans-unit id="admin.13">
+                    <source>switch to {lang id="ADMIN.3"}</source>
+                    <target>choisis {lang id="ADMIN.3"}</target>
+                </trans-unit>
+                <trans-unit id="admin.14">
+                    <source>switch to {lang id="ADMIN.4"}</source>
+                    <target>choisis {lang id="ADMIN.4"}</target>
+                </trans-unit>
+                <trans-unit id="admin.15">
+                    <source>show/hide help</source>
+                    <target>afficher/cacher aide</target>
+                </trans-unit>
+                <trans-unit id="admin.16">
+                    <source>show/hide options</source>
+                    <target>afficher/cacher options</target>
+                </trans-unit>
+                <trans-unit id="admin.22">
+                    <source>on/off</source>
+                    <target>marche/arrêt</target>
+                </trans-unit>
+                <trans-unit id="admin.31">
+                    <source>program setup</source>
+                    <target>setup de software</target>
+                </trans-unit>
+                <trans-unit id="admin.33">
+                    <source>Logout</source>
+                    <target>Logout</target>
+                </trans-unit>
+                <trans-unit id="admin.37">
+                    <source>guestbook</source>
+                    <target>livre d'or</target>
+                </trans-unit>
+                <trans-unit id="admin.38">
+                    <source>edit basic settings</source>
+                    <target>modifier préréglage</target>
+                </trans-unit>
+                <trans-unit id="admin.42">
+                    <source>search</source>
+                    <target>recherche</target>
+                </trans-unit>
+                <trans-unit id="admin.48">
+                    <source>font families</source>
+                    <target>familiale des caractères</target>
+                </trans-unit>
+                <trans-unit id="admin.55">
+                    <source>text style</source>
+                    <target>style de text</target>
+                </trans-unit>
+                <trans-unit id="admin.68">
+                    <source>Font family</source>
+                    <target>familiale des caractères</target>
+                </trans-unit>
+                <trans-unit id="admin.79">
+                    <source>Font size</source>
+                    <target>taille des caractères</target>
+                </trans-unit>
+                <trans-unit id="admin.80">
+                    <source>Font color</source>
+                    <target>couleur des caractères</target>
+                </trans-unit>
+                <trans-unit id="admin.82">
+                    <source>Journal</source>
+                    <target>Journal</target>
+                </trans-unit>
+                <trans-unit id="admin.85">
+                    <source>search engine</source>
+                    <target>moteur de recherche</target>
+                </trans-unit>
+                <trans-unit id="admin.86">
+                    <source>e-mail protocol</source>
+                    <target>protocole de transfert de messages</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

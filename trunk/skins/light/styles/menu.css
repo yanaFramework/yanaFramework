@@ -1,0 +1,59 @@
+@import url("gui_generator.css");
+ul.menu
+{ 
+    margin: 0; 
+    padding: 0; 
+    font-family: 'Arial', 'Helvetica', sans-serif; 
+    width: 200px; 
+}
+ul.menu ul.menu 
+{ 
+    background: transparent; 
+    border: 0; 
+    padding-left: 5px; 
+    margin-left: 5px;
+}
+ul.menu li 
+{ 
+    list-style-type: none; 
+    white-space: nowrap; 
+}
+ul.menu li.entry 
+{ 
+    margin: 2px 0px 2px 0px; 
+    background-color: #F8FAFF; 
+    border: 1px solid #4682B4;
+    width: 100%; 
+}
+ul.menu li.entry :hover 
+{ 
+    color: #f0f0f0 ! important;
+    background-color: #f0f0f0;
+}
+ul.menu li.entry A
+{ 
+    display: block; 
+    line-height: 200%; 
+    padding: 0px 5px 0px 5px; 
+    color: #4682B4;
+    font-weight: bold; 
+    font-size: 12px; 
+}
+ul.menu li.menu 
+{ 
+    margin: 5px 0px 5px 0px; 
+    background: #ECF1FE; 
+    border: 2px solid #6C9DC5; 
+    padding: 5px; 
+    width: 200px; 
+}
+ul.menu li.menu div 
+{
+    font-weight: 800; 
+    cursor: pointer; 
+}
+ul.menu li.menu ul 
+{ 
+    padding-left: 5px; 
+    margin-left: 5px; 
+}

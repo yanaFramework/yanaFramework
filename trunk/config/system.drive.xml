@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE drive SYSTEM "dtd/drive.dtd">
+<!--
+	Diese Datei enthält eine Liste von Mountpoints für ein virtuelles Laufwerk!
+	Die enthaltenen Einträge dürfen auf keinen Fall geändert werden.
+
+	This file contains a list of mount points for a virtual drive!
+	The contained entries may not be changed at any case.
+-->
+<drive name="system">
+    <!--
+        The var YANA_CDROM_DIR is overwritten for CD/DVD-ROM applications.
+        This will relocate all files and directories to a temp folder on the
+        host systems hard disc.
+
+        If so, the following declaration is ignored.
+        Otherwise it will make sure the value is initialized properly.
+    -->
+	<var name="YANA_CDROM_DIR" value=""/>
+	<var name="SESSION_USER_ID" value=""/>
+	<var name="CONFIGDIR" value="{$YANA_CDROM_DIR}config/"/>
+	<var name="PROFILESDIR" value="{$YANA_CDROM_DIR}config/profiles/"/>
+	<var name="COUNTERDIR" value="{$YANA_CDROM_DIR}config/counter/"/>
+	<var name="DBDIR" value="{$YANA_CDROM_DIR}config/db/"/>
+    <!--
+        Database blobs should not be moved since they might be too large -
+        however if you need to do it anyway, uncomment this option.
+
+        <var name="DBBLOB" value="{$YANA_CDROM_DIR}config/db/.blob/"/>
+    -->
+	<var name="DBBLOB" value="config/db/.blob/"/>
+	<var name="DATADIR" value="common_files/"/>
+	<var name="BRUSHDIR" value="common_files/brush/"/>
+	<var name="LANGUAGEDIR" value="languages/"/>
+	<var name="SKINDIR" value="skins/"/>
+	<var name="SKINCONFIGDIR" value="skins/.config"/>
+	<var name="TEMPDIR" value="{$YANA_CDROM_DIR}cache/"/>
+
+	<dir name="config" filter=".cfg">
+		<requirements readable="yes" writeable="yes"/>
+		<source>{$CONFIGDIR}</source>
+		<file name="reserved_sql_keywords.file">
+			<source>{$CONFIGDIR}reserved_sql_keywords.csv</source>
+			<requirements readable="yes"/>
+		</file>
+		<dir name="profiledir" filter=".cfg">
+			<source>{$CONFIGDIR}profiles/</source>
+			<requirements readable="yes" writeable="yes"/>
+			<file name="default_config.sml" automount="yes">
+				<source>{$CONFIGDIR}profiles/default.config</source>
+				<requirements readable="yes"/>
+			</file>
+			<file name="config.sml" automount="yes">
+				<source>{$CONFIGDIR}profiles/{$ID}.cfg</source>
+				<source>{$CONFIGDIR}profiles/default.config</source>
+				<requirements readable="yes" writeable="yes"/>
+			</file>
+		</dir>
+	</dir>
+
+	<dir name="dbfiles" filter=".gz">
+		<source>{$DBBLOB}</source>
+		<requirements readable="yes" writeable="yes"/>
+	</dir>
+
+	<dir name="dbimages" filter=".jpeg|.jpg|.png|.gif">
+		<source>{$DBBLOB}</source>
+		<requirements readable="yes"/>
+	</dir>
+
+	<dir name="dbinstall">
+		<source>{$DBDIR}.install/</source>
+		<requirements readable="yes"/>
+		<dir name="db2" filter="sql">
+			<source>{$DBDIR}.install/db2/</source>
+		</dir>
+		<dir name="dbase" filter="sql">
+			<source>{$DBDIR}.install/dbase/</source>
+		</dir>
+		<dir name="fbsql" filter="sql">
+			<source>{$DBDIR}.install/frontbase/</source>
+		</dir>
+		<dir name="ibase" filter="sql">
+			<source>{$DBDIR}.install/interbase/</source>
+		</dir>
+		<dir name="ifx" filter="sql">
+			<source>{$DBDIR}.install/informix/</source>
+		</dir>
+		<dir name="access" filter="sql">
+			<source>{$DBDIR}.install/msaccess/</source>
+		</dir>
+		<dir name="mssql" filter="sql">
+			<source>{$DBDIR}.install/mssql/</source>
+		</dir>
+		<dir name="mysql" filter="sql">
+			<source>{$DBDIR}.install/mysql/</source>
+		</dir>
+		<dir name="oci8" filter="sql">
+			<source>{$DBDIR}.install/oracle/</source>
+		</dir>
+		<dir name="pgsql" filter="sql">
+			<source>{$DBDIR}.install/postgresql/</source>
+		</dir>
+		<dir name="sybase" filter="sql">
+			<source>{$DBDIR}.install/sybase/</source>
+		</dir>
+	</dir>
+
+	<dir name="lang" filter=".language.xml" automount="no">
+		<source>{$LANGUAGEDIR}</source>
+		<requirements readable="yes"/>
+	</dir>
+
+	<dir name="skin" filter=".skin.xml">
+		<source>{$SKINDIR}</source>
+		<requirements readable="yes"/>
+		<dir name="skindir" automount="no">
+			<source>{$SKINDIR}{$PROFILE.SKIN}</source>
+			<requirements readable="yes"/>
+		</dir>
+	</dir>
+
+	<dir name="smile" filter=".gif" automount="yes">
+		<source>{$PROFILE.SMILEYDIR}</source>
+		<requirements readable="yes"/>
+	</dir>
+
+	<file name="skincache.textfile">
+		<source>{$TEMPDIR}skin_{$PROFILE.SKIN}.tmp</source>
+	</file>
+
+</drive>

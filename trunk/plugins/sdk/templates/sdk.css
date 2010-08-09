@@ -1,0 +1,147 @@
+body
+{
+    font-family: 'Arial', 'Helvetica', sans-serif;
+}
+h1, h2, h3
+{
+    background: inherit;
+    color:      inherit;
+}
+th, label, .label
+{
+    font-size: 14px;
+}
+#image1
+{
+    float: right;
+    margin-right: 30px;
+    margin-top: -10px;
+    border: 0px none;
+}
+#textarea_description
+{
+}
+#overwrite
+{
+    background: #dce8ef url('menu_h4_bgd.gif') repeat-x;
+    color: #555;
+    padding: 5px;
+    border-top: 1px solid #aaa;
+}
+.toolbar,
+.list_of_steps
+{
+    background: #8ac url('menu_h2_bgd.gif') repeat-x;
+    color: #fff;
+    padding-bottom: 5px;
+    padding-right: 5px;
+}
+.list_of_steps
+{
+    padding-left: 10px;
+    padding-top: 10px;
+}
+.toolbar
+{
+    padding-left: 30px;
+    background-position: bottom;
+}
+.list_of_steps button,
+.toolbar button
+{
+    background: #334 url('menu_button1.gif') repeat-x;
+    color: #fff;
+    padding: 2px;
+}
+.toolbar button
+{
+    background: #333 url('menu_button2.gif') repeat-x;
+    max-width: 200px;
+}
+.list_of_steps button
+{
+    font-size: 15px;
+    width: 120px;
+    font-weight: bold;
+}
+.list_of_steps button:hover
+{
+    background-image: url('menu_button1_hover.gif');
+}
+.list_of_steps img
+{
+    vertical-align: +1px;
+}
+#utilities
+{
+    border: 1px solid #aaa;
+    background: #ddd;
+    padding: 0px;
+}
+#pages .page
+{
+    border-top: 1px solid #aaa;
+    background: #f3f3f3;
+    padding:    20px;
+    min-height: 200px;
+}
+#utilities #list_of_databases
+{
+    margin-top: 20px;
+}
+
+/* Button */
+#navigation_top
+{
+    position:    absolute;
+    right:       10px;
+    z-index:     2;
+    padding:     10px;
+    margin:      0;
+    border:      1px solid #aaa;
+    background:  #d0d8e0;
+    white-space: nowrap;
+    text-align:  center;
+    font-weight: bold;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-size:   13px;
+}
+#navigation_top
+{
+    position: fixed;
+    right:    10px;
+}
+#navigation_top
+{
+    top: 50px;
+}
+#navigation_top button
+{
+    vertical-align: bottom;
+    font-weight: bold;
+    width: 100px;
+}
+.section_title
+{
+    background: #dce8ef url('menu_h4_bgd.gif') repeat-x;
+    color: #333;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 3px;
+}
+
+select, select:hover
+{
+    background-image: inherit;
+}
+
+div.additional, p.additional, .help
+{
+    border: 1px solid #d0d0d0;
+    padding: 5px;
+}
+
+#page_1_5_1 div
+{
+    margin-top: 1.5em;
+}

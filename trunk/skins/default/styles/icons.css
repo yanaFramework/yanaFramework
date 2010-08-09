@@ -1,0 +1,372 @@
+.icon_arrowdown, .icon_arrowdown_hover,
+.icon_arrowup, .icon_arrowup_hover,
+.icon_blank, .icon_blank_hover,
+.icon_change, .icon_change_hover,
+.icon_delete, .icon_delete_hover,
+.icon_dot, .icon_dot_hover,
+.icon_download, .icon_download_hover,
+.icon_edit, .icon_edit_hover,
+.icon_favorites, .icon_favorites_hover,
+.icon_female, .icon_female_hover,
+.icon_filter, .icon_filter_hover,
+.icon_group, .icon_group_hover,
+.icon_hint, .icon_hint_hover,
+.icon_info, .icon_info_hover,
+.icon_key, .icon_key_hover,
+.icon_magnifier, .icon_magnifier_hover,
+.icon_male, .icon_male_hover,
+.icon_new, .icon_new_hover,
+.icon_person, .icon_person_hover,
+.icon_pointer, .icon_pointer_hover,
+.icon_reload, .icon_reload_hover,
+.icon_resize, .icon_resize_hover,
+.icon_show, .icon_show_hover,
+.icon_slidedown, .icon_slidedown_hover,
+.icon_slideup, .icon_slideup_hover,
+.icon_upload, .icon_upload_hover
+{
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 17px;
+    width: 17px;
+    display: inline-block;
+    text-decoration: none;
+}
+/* these arrows are smaller than the other icons */
+.icon_arrowdown, .icon_arrowdown_hover,
+.icon_arrowup, .icon_arrowup_hover
+{
+    width: 11px;
+}
+/* the following part is generated automatically by this script:
+
+    foreach (glob('no*.png') as $file)
+    {
+        $file = preg_replace('/^no(.*?)\.png/', '$1', $file);
+        print ".icon_$file
+    {
+        background-image: url(icons/no$file.png);
+    }
+    .li_$file
+    {
+        list-style-image: url(icons/$file.png);
+    }
+    .icon_$file:hover, .icon_{$file}_hover
+    {
+        background-image: url(icons/$file.png);
+    }\n";
+    }
+
+*/
+.icon_arrowdown
+{
+    background-image: url(icons/noarrowdown.png);
+}
+.li_arrowdown
+{
+    list-style-image: url(icons/arrowdown.png);
+}
+.icon_arrowdown:hover, .icon_arrowdown_hover
+{
+    background-image: url(icons/arrowdown.png);
+}
+.icon_arrowup
+{
+    background-image: url(icons/noarrowup.png);
+}
+.li_arrowup
+{
+    list-style-image: url(icons/arrowup.png);
+}
+.icon_arrowup:hover, .icon_arrowup_hover
+{
+    background-image: url(icons/arrowup.png);
+}
+.icon_blank
+{
+    background-image: url(icons/noblank.png);
+}
+.li_blank
+{
+    list-style-image: url(icons/blank.png);
+}
+.icon_blank:hover, .icon_blank_hover
+{
+    background-image: url(icons/blank.png);
+}
+.icon_change
+{
+    background-image: url(icons/nochange.png);
+}
+.li_change
+{
+    list-style-image: url(icons/change.png);
+}
+.icon_change:hover, .icon_change_hover
+{
+    background-image: url(icons/change.png);
+}
+.icon_delete
+{
+    background-image: url(icons/nodelete.png);
+}
+.li_delete
+{
+    list-style-image: url(icons/delete.png);
+}
+.icon_delete:hover, .icon_delete_hover
+{
+    background-image: url(icons/delete.png);
+}
+.icon_dot
+{
+    background-image: url(icons/nodot.png);
+}
+.li_dot
+{
+    list-style-image: url(icons/dot.png);
+}
+.icon_dot:hover, .icon_dot_hover
+{
+    background-image: url(icons/dot.png);
+}
+.icon_download
+{
+    background-image: url(icons/nodownload.png);
+}
+.li_download
+{
+    list-style-image: url(icons/download.png);
+}
+.icon_download:hover, .icon_download_hover
+{
+    background-image: url(icons/download.png);
+}
+.icon_edit
+{
+    background-image: url(icons/noedit.png);
+}
+.li_edit
+{
+    list-style-image: url(icons/edit.png);
+}
+.icon_edit:hover, .icon_edit_hover
+{
+    background-image: url(icons/edit.png);
+}
+.icon_favorites
+{
+    background-image: url(icons/nofavorites.png);
+}
+.li_favorites
+{
+    list-style-image: url(icons/favorites.png);
+}
+.icon_favorites:hover, .icon_favorites_hover
+{
+    background-image: url(icons/favorites.png);
+}
+.icon_female
+{
+    background-image: url(icons/nofemale.png);
+}
+.li_female
+{
+    list-style-image: url(icons/female.png);
+}
+.icon_female:hover, .icon_female_hover
+{
+    background-image: url(icons/female.png);
+}
+.icon_filter
+{
+    background-image: url(icons/nofilter.png);
+}
+.li_filter
+{
+    list-style-image: url(icons/filter.png);
+}
+.icon_filter:hover, .icon_filter_hover
+{
+    background-image: url(icons/filter.png);
+}
+.icon_group
+{
+    background-image: url(icons/nogroup.png);
+}
+.li_group
+{
+    list-style-image: url(icons/group.png);
+}
+.icon_group:hover, .icon_group_hover
+{
+    background-image: url(icons/group.png);
+}
+.icon_hint
+{
+    background-image: url(icons/nohint.png);
+}
+.li_hint
+{
+    list-style-image: url(icons/hint.png);
+}
+.icon_hint:hover, .icon_hint_hover
+{
+    background-image: url(icons/hint.png);
+}
+.icon_info
+{
+    background-image: url(icons/noinfo.png);
+}
+.li_info
+{
+    list-style-image: url(icons/info.png);
+}
+.icon_info:hover, .icon_info_hover
+{
+    background-image: url(icons/info.png);
+}
+.icon_key
+{
+    background-image: url(icons/nokey.png);
+}
+.li_key
+{
+    list-style-image: url(icons/key.png);
+}
+.icon_key:hover, .icon_key_hover
+{
+    background-image: url(icons/key.png);
+}
+.icon_magnifier
+{
+    background-image: url(icons/nomagnifier.png);
+}
+.li_magnifier
+{
+    list-style-image: url(icons/magnifier.png);
+}
+.icon_magnifier:hover, .icon_magnifier_hover
+{
+    background-image: url(icons/magnifier.png);
+}
+.icon_male
+{
+    background-image: url(icons/nomale.png);
+}
+.li_male
+{
+    list-style-image: url(icons/male.png);
+}
+.icon_male:hover, .icon_male_hover
+{
+    background-image: url(icons/male.png);
+}
+.icon_new
+{
+    background-image: url(icons/nonew.png);
+}
+.li_new
+{
+    list-style-image: url(icons/new.png);
+}
+.icon_new:hover, .icon_new_hover
+{
+    background-image: url(icons/new.png);
+}
+.icon_person
+{
+    background-image: url(icons/noperson.png);
+}
+.li_person
+{
+    list-style-image: url(icons/person.png);
+}
+.icon_person:hover, .icon_person_hover
+{
+    background-image: url(icons/person.png);
+}
+.icon_pointer
+{
+    background-image: url(icons/nopointer.png);
+}
+.li_pointer
+{
+    list-style-image: url(icons/pointer.png);
+}
+.icon_pointer:hover, .icon_pointer_hover
+{
+    background-image: url(icons/pointer.png);
+}
+.icon_reload
+{
+    background-image: url(icons/noreload.png);
+}
+.li_reload
+{
+    list-style-image: url(icons/reload.png);
+}
+.icon_reload:hover, .icon_reload_hover
+{
+    background-image: url(icons/reload.png);
+}
+.icon_resize
+{
+    background-image: url(icons/noresize.png);
+}
+.li_resize
+{
+    list-style-image: url(icons/resize.png);
+}
+.icon_resize:hover, .icon_resize_hover
+{
+    background-image: url(icons/resize.png);
+}
+.icon_show
+{
+    background-image: url(icons/noshow.png);
+}
+.li_show
+{
+    list-style-image: url(icons/show.png);
+}
+.icon_show:hover, .icon_show_hover
+{
+    background-image: url(icons/show.png);
+}
+.icon_slidedown
+{
+    background-image: url(icons/noslidedown.png);
+}
+.li_slidedown
+{
+    list-style-image: url(icons/slidedown.png);
+}
+.icon_slidedown:hover, .icon_slidedown_hover
+{
+    background-image: url(icons/slidedown.png);
+}
+.icon_slideup
+{
+    background-image: url(icons/noslideup.png);
+}
+.li_slideup
+{
+    list-style-image: url(icons/slideup.png);
+}
+.icon_slideup:hover, .icon_slideup_hover
+{
+    background-image: url(icons/slideup.png);
+}
+.icon_upload
+{
+    background-image: url(icons/noupload.png);
+}
+.li_upload
+{
+    list-style-image: url(icons/upload.png);
+}
+.icon_upload:hover, .icon_upload_hover
+{
+    background-image: url(icons/upload.png);
+}

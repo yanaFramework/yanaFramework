@@ -1,0 +1,25 @@
+<!ENTITY % inc SYSTEM "database.inc.dtd"> %inc;
+
+<!-- VIEWS -->
+
+<!ELEMENT view (description?, grant*, field+, select*)>
+<!ATTLIST view
+  %name;
+  readonly     %bool;
+  tables       NMTOKENS  #REQUIRED
+  where        %implied;
+  orderby      NMTOKENS  #IMPLIED
+  sorting      (ascending|descending)  "ascending"
+  checkoption  (local|cascaded|none)   "none"
+  title        %implied;
+>
+<!ELEMENT select (#PCDATA)>
+<!ATTLIST select
+  %dbms;
+>
+<!ELEMENT field EMPTY>
+<!ATTLIST field
+  table   NMTOKEN  #IMPLIED
+  column  NMTOKEN  #REQUIRED
+  alias   NMTOKEN  #IMPLIED
+>

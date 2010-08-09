@@ -1,0 +1,387 @@
+<?xml version="1.0" ?>
+<!DOCTYPE database SYSTEM "../dtd/database.dtd">
+<database>
+    <table name="user">
+        <primarykey>user_id</primarykey>
+        <declaration>
+            <string
+                name="user_id"
+                length="32"
+                notnull="yes"
+                title='{lang id="USER.OPTION.0"}'>
+                <grant update="no"/>
+            </string>
+            <string
+                name="user_pwd"
+                length="128"
+                notnull="yes"
+                title=''>
+				<default>UNINITIALIZED</default>
+            </string>
+			<string
+                name="user_session"
+                length="32">
+			</string>
+            <mail
+                name="user_mail"
+                length="255"
+                notnull="yes"
+                title='{lang id="USER.OPTION.5"}'>
+            </mail>
+            <bool
+                name="user_active"
+                notnull="yes"
+                title='{lang id="USER.OPTION.3"}'>
+                <default>1</default>
+            </bool>
+            <string
+                name="user_language"
+                length="32">
+				<constraint>preg_match('/^[\w\d-_]+$/s', $ROW['user_language'])</constraint>
+            </string>
+            <integer
+                name="user_failure_count"
+                length="1">
+                <default>0</default>
+            </integer>
+            <timestamp
+                name="user_failure_time">
+            </timestamp>
+            <integer
+                name="user_login_count">
+                <default>0</default>
+            </integer>
+            <timestamp
+                name="user_login_last"
+                title='{lang id="user.profil.2"}'>
+            </timestamp>
+            <timestamp
+                name="user_inserted"
+                notnull="yes"
+                title='{lang id="user.profil.1"}'>
+                <default>CURRENT_TIMESTAMP</default>
+            </timestamp>
+            <bool
+                name="user_is_expert"
+                notnull="yes"
+                title="">
+                <default>1</default>
+            </bool>
+            <string
+                name="user_recover_id"
+                length="128"
+                notnull="no">
+            </string>
+            <list
+                name="user_pwd_list"
+                notnull="no"
+                readonly="no"
+                title="user password list">
+            </list>
+            <timestamp
+                name="user_pwd_time"
+                notnull="no">
+            </timestamp>
+            <timestamp
+                name="user_recover_utc"
+                notnull="no">
+            </timestamp>
+        </declaration>
+    </table>
+    <table name="userprofile">
+    	<primarykey>user_id</primarykey>
+    	<foreign table="user">
+    		<key name="user_id"/>
+    	</foreign>
+    	<declaration>
+			<reference
+                name="user_id"
+                notnull="yes"
+                table="user"
+                column="user_id"
+                readonly="yes"
+                title='{lang id="USER.OPTION.0"}'>
+            </reference>
+            <timestamp
+                name="userprofile_modified">
+            </timestamp>
+            <enum
+                name="userprofile_gender"
+                title='{lang id="USER.OPTION.19"}'>
+                <option value="G">{lang id="USER.GENDER.G"}</option>
+                <option value="M">{lang id="USER.GENDER.M"}</option>
+                <option value="F">{lang id="USER.GENDER.F"}</option>
+            </enum>
+            <image
+                name="userprofile_image"
+                maxsize="1000000"
+                width="150"
+                height="200"
+                ratio="yes"
+                background="#C8D2DC"
+                title='{lang id="USER.OPTION.6"}'>
+            </image>
+            <bool
+                name="userprofile_image_active"
+                title='{lang id="USER.24"}'>
+                <default>0</default>
+            </bool>
+            <text
+                name="userprofile_description"
+                length="3000"
+                title='{lang id="USER.OPTION.17"}'>
+            </text>
+    	</declaration>
+    </table>
+    <table name="newuser">
+        <primarykey>newuser_id</primarykey>
+        <declaration>
+            <integer
+                name="newuser_id"
+                length="5"
+                notnull="yes"
+                autoincrement="yes">
+            </integer>
+            <string
+                name="newuser_key"
+                notnull="yes">
+            </string>
+            <mail
+                name="newuser_mail"
+                length="255"
+                notnull="yes">
+            </mail>
+            <string
+                name="newuser_name"
+                length="32"
+                notnull="yes">
+                <constraint>preg_match("/^[\w_-]+$/", $ROW['newuser_name'])</constraint>
+            </string>
+            <timestamp
+                name="newuser_utc"
+                notnull="yes">
+                <default>CURRENT_TIMESTAMP</default>
+            </timestamp>
+            <inet
+                name="newuser_ip"
+                notnull="yes">
+                <default>REMOTE_ADDR</default>
+            </inet>
+        </declaration>
+    </table>
+    <table name="securitylevel">
+    	<primarykey>security_id</primarykey>
+    	<foreign table="user">
+    		<key name="user_id"/>
+    	</foreign>
+    	<declaration>
+    		<integer
+    			name="security_id"
+    			notnull="yes"
+                autoincrement="yes">
+<!--
+				<DISPLAY>
+					<HIDDEN>true</HIDDEN>
+				</DISPLAY>
+-->
+    		</integer>
+			<reference
+                name="user_id"
+                notnull="yes"
+                column="user_id"
+                label="user_name"
+                readonly="yes"
+                title='{lang id="USER.OPTION.0"}'>
+<!--
+				<DISPLAY>
+					<READONLY>100</READONLY>
+				</DISPLAY>
+-->
+            </reference>
+    		<integer
+    			name="security_level"
+    			length="3"
+    			notnull="yes"
+    			title='{lang id="USER.OPTION.23"}'>
+    		</integer>
+    		<string
+    			name="profile"
+    			length="32"
+    			notnull="yes"
+    			title='{lang id="PROFILE_ID"}'>
+<!--
+				<DISPLAY>
+					<READONLY>100</READONLY>
+				</DISPLAY>
+-->
+    		</string>
+    		<string
+    			name="user_created"
+    			length="128"
+    			notnull="yes"
+    			title='{lang id="SER.OPTION.28"}'>
+<!--
+				<DISPLAY>
+					<READONLY>100</READONLY>
+				</DISPLAY>
+-->
+    		</string>
+            <bool
+                name="user_proxy_active"
+                title='{lang id="USER.36"}'>
+                <default>true</default>
+            </bool>
+    	</declaration>
+    </table>
+    <table name="securitygroup" title='{lang id="USER.OPTION.1"}'>
+    	<primarykey>group_id</primarykey>
+    	<declaration>
+    		<string
+    			name="group_id"
+    			length="32">
+                <grant update="no"/>
+    		</string>
+    		<string
+    			name="group_name"
+    			length="64"
+    			notnull="yes"
+    			title='{lang id="USER.OPTION.1"}'>
+    		</string>
+    	</declaration>
+	</table>
+    <table name="securityrole" title='{lang id="USER.OPTION.24"}'>
+    	<primarykey>role_id</primarykey>
+    	<declaration>
+    		<string
+    			name="role_id"
+    			length="32">
+                <grant update="no"/>
+    		</string>
+    		<string
+    			name="role_name"
+    			length="64"
+    			notnull="yes"
+    			title='{lang id="USER.OPTION.24"}'>
+    		</string>
+    	</declaration>
+  	</table>
+  	<table name="securityaction">
+    	<primarykey>action_id</primarykey>
+    	<declaration>
+    		<string
+    			name="action_id"
+    			length="128"
+    			notnull="yes">
+    		</string>
+    		<string
+    			name="action_title"
+    			length="128">
+    		</string>
+    	</declaration>
+  	</table>
+    <table name="securityrules">
+    	<primarykey>rule_id</primarykey>
+    	<foreign table="securitygroup">
+    		<key name="group_id"/>
+    	</foreign>
+    	<foreign table="securityrole">
+    		<key name="role_id"/>
+    	</foreign>
+    	<foreign table="user">
+    		<key name="user_id"/>
+    	</foreign>
+    	<declaration>
+    		<integer
+    			name="rule_id"
+    			notnull="yes"
+                autoincrement="yes">
+    		</integer>
+			<reference
+                name="user_id"
+                notnull="yes"
+                column="user_id"
+                label="user_name"
+                readonly="yes"
+                title='{lang id="USER.OPTION.0"}'>
+            </reference>
+			<reference
+                name="group_id"
+                column="group_id"
+                label="group_name"
+                title='{lang id="USER.OPTION.1"}'>
+            </reference>
+			<reference
+                name="role_id"
+                column="role_id"
+                label="role_name"
+                title='{lang id="USER.OPTION.24"}'>
+            </reference>
+    		<string
+    			name="profile"
+    			length="32"
+    			title='{lang id="PROFILE_ID"}'>
+    		</string>
+    		<string
+    			name="user_created"
+    			length="128"
+    			notnull="yes"
+    			title='{lang id="USER.OPTION.28"}'>
+    		</string>
+            <bool
+                name="user_proxy_active"
+                title='{lang id="USER.36"}'>
+                <default>true</default>
+            </bool>
+    	</declaration>
+    </table>
+  	<table name="securityactionrules">
+    	<primarykey>actionrule_id</primarykey>
+    	<foreign table="securitygroup">
+    		<key name="group" column="group_id"/>
+    	</foreign>
+    	<foreign table="securityrole">
+    		<key name="role" column="role_id"/>
+    	</foreign>
+    	<declaration>
+    		<integer
+    			name="actionrule_id"
+    			notnull="yes"
+                autoincrement="yes">
+    		</integer>
+			<reference
+                name="action_id"
+                table="securityaction"
+                column="action_id"
+                label="action_title"
+                title='Name'
+                notnull="yes">
+            </reference>
+			<reference
+                name="group"
+                column="group_id"
+                label="group_name"
+                title='{lang id="USER.OPTION.1"}'>
+            </reference>
+			<reference
+                name="role"
+                column="role_id"
+                label="role_name"
+                title='{lang id="USER.OPTION.24"}'>
+            </reference>
+    		<integer
+    			name="level"
+    			length="3"
+    			title='{lang id="USER.OPTION.23"}'>
+    		</integer>
+    		<bool
+    		     name="actionrule_active"
+    		     title='Active'>
+    		     <default>true</default>
+	        </bool>
+    		<bool
+    		     name="actionrule_predefined">
+    		     <default>false</default>
+	        </bool>
+    	</declaration>
+  	</table>
+</database>

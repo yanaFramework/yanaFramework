@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="fr">
+        <header/>
+        <body>
+            <trans-unit id="program_title">
+                <source>Guestbook</source>
+                <target>livre d'or</target>
+            </trans-unit>
+            <trans-unit id="1">
+                <source>opinion about this web site</source>
+                <target>Opinion</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>Homepage</source>
+                <target>Page d'accueil</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>Mail</source>
+                <target>Mail</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>Location</source>
+                <target>Domicile</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>Comment</source>
+                <target>Comment</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>Date/Time</source>
+                <target>Date/Heure</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>more details</source>
+                <target>détails</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>Text</source>
+                <target>Text</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>Name</source>
+                <target>Nom</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>Click here to save your comment</source>
+                <target>enregistrer le comment</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>Edit entry</source>
+                <target>Éditere entrée</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>Delete entry</source>
+                <target>Décharge entrée</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>New Entry</source>
+                <target>Mémorise entrée</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>Your Name</source>
+                <target>Nom</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>Messenger</source>
+                <target>Messenger</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>this website is</source>
+                <target>sélecte</target>
+            </trans-unit>
+            <trans-unit id="32">
+                <source>Add a comment</source>
+                <target>Écris comment</target>
+            </trans-unit>
+            <trans-unit id="rate_0">
+                <source>rating</source>
+                <target>évaluation</target>
+            </trans-unit>
+            <trans-unit id="rate_1">
+                <source>very good</source>
+                <target>très bien</target>
+            </trans-unit>
+            <trans-unit id="rate_2">
+                <source>good</source>
+                <target>bien</target>
+            </trans-unit>
+            <trans-unit id="rate_3">
+                <source>average</source>
+                <target>moyenne</target>
+            </trans-unit>
+            <trans-unit id="rate_4">
+                <source>bad</source>
+                <target>mal</target>
+            </trans-unit>
+            <trans-unit id="rate_5">
+                <source>very bad</source>
+                <target>très mal</target>
+            </trans-unit>
+            <trans-unit id="descr_comment">
+                <source>Enter comment</source>
+                <target>Écris comment</target>
+            </trans-unit>
+            <trans-unit id="previous_page">
+                <source>previous page</source>
+                <target>retour</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

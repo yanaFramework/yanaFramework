@@ -1,0 +1,98 @@
+Changes for PEAR MDB2-Schema
+
+DATABASE
+
++ dropped element "was" (use element "changelog" instead)
++ dropped elements "create" and "overwrite"
+        - This feature is pointless for initialization:
+          When someone decides to install a database I suppose it is by intention.
+          You gain no benefit if you prohibit this by setting "create" to false.
+          Also: the installation kit is meant to inform you if a table already exists and will ask you if you wish to overwrite it.
+          There is also no benefit if you prohibit this, as I suppose if you click "yes", you really mean it.
+        - To control updates of existing databases use the element "changelog" instead.
++ added element "datasource" for tag "database"
+        - For PHP this is a db-connection alias
+        - For .NET this may be the name of a ODBC datasource
+        - Or for Java you may set your JNDI-datasource here!
++ added element "readonly"
+        - Driver-information: sets a database, table or column to be readonly.
+          This setting must be supported by your database or database API (e.g. Yana supports this).
+        - Use this setting if you wish to provide a viewer or reporting application, that may only read data but not modify data
++ added element "include" (include another datbase definition)
++ added elements "constraint" and "trigger"
+        - Use "trigger" to fire clientside events (e.g. call a PHP- or Java-method, that logs changes made to your database)
+        - Use "constraint" to check the validity of input values
+
+TABLE
+
++ table elements no longer allow PCDATA
++ added element "primarykey"
+        - You can simulate this in MDB2 Schema by creating a primary index, which as a side-effect will act as a primary key-constraint.
+          But no-one can prevent you from defining multiple primary indexes, which obviously will result in an error and/or unexpected behavior.
+          So the better and more direct way to do it, is to set a primary key-constraint.
+          As a side-effect the DBMS will automatically create a unique index to enforce this constraint.
++ element "initialization" moved from "table" to "database"
++ added table inheritance (this is a PostgreSQL-feature, but may also be simulated for other DBMS)
+
+COLUMNS
++ dropped element "variable"
+        - Use the text {$foo} instead
+        - or use element "include" to re-use predefined structures)
++ the field value "fixed" is supported for type integer only (where it is interpreted as "zerofill"-property)
++ you may set the default value of a field to "true", to have the database driver decide on how to implement the value
++ added tag "precision" for float-columns
++ added tag "unique" for unique-constraints
+        - "Unique" is a constraint - not an index property.
+          You could simulate this in MDB2 Schema by creating an unique index, which as a side-effect results in an unique-constraint.
+          But the more direct way to do it, is to define an unique-constraint.
+          As a side-effect an unique-constraint is implemented by some DBMS by automatically creating an unique-index.
+
+SEQUENCES
++ you may no specify an "ON" tag for sequences in XDDL. This was allowed to synchronize the sequence with a value in a column, setting
+  it to the maximum value.
+  The feature is error-prone, since you may enter any column of any type, but sequences demand an integer value.
+  Also the maximum value may be wrong, if the sequence is negative.
+  Finally you may use the same sequence in more than one column - but you could only define one single column in the sequence definition.
+  For all these reasions we decided to drop that "feature". If you need to synchronize a sequence with a certain column value, you may use
+  the "changelog" and "sql"-tag instead.
+  In addition a software implementation may still do the same thing. It may auto-detect any column that uses the sequence via XPath, scanning
+  for a column with a default value of "nextval('<sequence-name>')". So the "feature" is not needed anyway to perform that task.
+
+
+
+Changes for YANA DB-Structure
+
+DATABASE
++ new top-level tag "database"
++ added element "datasource" for tag "database"
++ tag "constraint" child elements "select", "insert", "update", "delete" renamed to "onselect", "oninsert", "onupdate", "ondelete"
++ tag "trigger" child elements "on_before_insert", "on_after_insert" and the like renamed to "onbeforeinsert", "onafterinsert" ...
++ databases my have a name tag
++ element "changelog" may have element "sql" with "stmt" sub-elements and optional attribute "dbms"
++ trigger und constraints sind auf Ebene der Datenbank nicht mehr erlaubt, da sie sich auf eine Tabelle beziehen müssen
++ Definitionen für Trigger enthalten jetzt Namen der aufzurufenden Funktion und nicht mehr den Code der Funktion selbst (wie in PostgreSQL)
++ element "constraint" does no longer support "onselect" (this feature is uncommon and non-standard)
+
+TABLE
++ tables are now enclosed by tag "tables"
++ tag "content" renamed to "declaration"
++ tag "primary_key" renamed to "primarykey"
++ dropped tag "profile_key" (use pattern {$profileId} instead)
++ element "initialization" moved from "table" to "database"
++ added table attribute "inherits"
+        - Yana already had that: it detected inheritance automatically and implicitely (temporarily) set the attribute.
+          Now you can also set it yourself.
+
+COLUMNS
++ field definitions are now enclosed by tag "field"
++ support for patterns (syntax {$patternName})
+          - supported patterns: profileId, dateCreated, dateModified, authorCreated, authorModified
++ dropped column-level tag "index" (use table-level tag "index" instead)
++ dropped tag "display" (set display property in "view" instead)
++ "background" now given as a hexadecimal value
++ for datatype "file" the tag "length" has been renamed to "maxsize"
++ element "action" has moved to element "event" in "view"
++
+
+VIEW
++ komplett neue Ergänzung und Verbindung von Views auf Ebene der Datenbank und Applikation

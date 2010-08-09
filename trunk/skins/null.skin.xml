@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE skin SYSTEM "../config/dtd/skin.dtd">
+<skin>
+    <head>
+        <title>Null (the skin that is no skin)</title>
+        <author>Thomas Meyer</author>
+        <url>http://www.yanaframework.net</url>
+        <description>
+            Doesn't have any settings at all.
+        </description>
+        <description lang="de">
+            Hat keine eigenen Layouteinstellungen
+        </description>
+    </head>
+    <body>
+        <template id="INDEX" file="null/index.html.tpl"/>
+    </body>
+</skin>

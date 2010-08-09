@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+<!DOCTYPE database SYSTEM "../dtd/database.dtd">
+<database>
+    <table name="log" title='{lang id="ADMIN.82"}'>
+        <primarykey>log_id</primarykey>
+        <declaration>
+            <integer
+                name="log_id"
+                length="8"
+                notnull="yes"
+                autoincrement="yes"
+                title="ID">
+                <default>0</default>
+            </integer>
+            <string
+                name="log_action"
+                notnull="yes"
+                length="200"
+                title="Action">
+            </string>
+            <inet
+                name="log_ip"
+                title="IP">
+                <default>REMOTE_ADDR</default>
+            </inet>
+            <string
+                name="log_user"
+                notnull="yes"
+                length="128"
+                title="User">
+                <default>{$SESSION_USER_ID}</default>
+            </string>
+            <timestamp
+                name="log_time"
+                notnull="yes"
+                title="Date">
+                <default>CURRENT_TIMESTAMP</default>
+            </timestamp>
+            <text
+                name="log_message"
+                length="1024"
+                notnull="yes"
+                title="Description">
+            </text>
+            <array
+                name="log_data"
+                notnull="no"
+                title="Data">
+            </array>            
+        </declaration>
+    </table>
+    <form name="log" table="log" allinput="yes" template="2">
+        <input name="log_id" hidden="yes"/>
+    </form>
+</database>

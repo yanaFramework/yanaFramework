@@ -1,0 +1,130 @@
+#messagebox
+{
+    color: #333;
+    background: #eee;
+    background-image: url('stdout_bgd.gif');
+    background-repeat: repeat-x;
+    margin: 10px;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-size: 13px;
+    font-weight: normal;
+    text-decoration: none;
+    min-height: 65px;
+    border: 1px solid #000;
+    width: 640px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    -moz-box-shadow: 0 0 5px #888;
+    -webkit-box-shadow: 0 0 5px #888;
+    box-shadow: 0 0 5px #888;
+}
+#messagebox img
+{
+    margin-top: 1px;
+    float: left;
+    border: 0;
+    height: 60px;
+}
+#messagebox div div
+{
+    margin-left: 70px;
+}
+#messagebox .errlvl_message, #messagebox .errlvl_ok
+{
+    background: url('symbol_message.gif') 5px 10px no-repeat;
+    padding: 5px 10px 5px 10px;
+    min-height: 75px;
+}
+#messagebox .errlvl_alert
+{
+    background-image: url('symbol_notice.gif');
+    background-position: 5px 10px;
+    background-repeat: no-repeat;
+    padding: 5px 10px 5px 10px;
+    min-height: 75px;
+}
+#messagebox .errlvl_warning
+{
+    background-image: url('symbol_alert.gif');
+    background-position: 5px 10px;
+    background-repeat: no-repeat;
+    padding: 5px 10px 5px 10px;
+    min-height: 75px;
+}
+#messagebox .errlvl_error
+{
+    background-image: url('symbol_error.gif');
+    background-position: 5px 10px;
+    background-repeat: no-repeat;
+    padding: 5px 10px 5px 10px;
+    min-height: 75px;
+}
+.message_header
+{
+    font-size: 20px;
+    font-weight: bold;
+    margin: 10px 0 10px 0;
+    text-shadow: -1px -1px 0 #333333, 1px 1px 0 #FFFFFF, 0 0 10px #fff;
+}
+.message_text
+{
+    margin: 5px 0 5px 0;
+}
+#messagebox.errlvl_message, #messagebox.errlvl_ok
+{
+    background-image: url('stdout_message_bgd.gif');
+    background-color: #cdefcd;
+    border-color: #0a0;
+    color: #080;
+}
+#messagebox.errlvl_warning
+{
+    background-image: url('stdout_warning_bgd.gif');
+    background-color: #efefcd;
+    border-color: #aa0;
+    color: #880;
+}
+#messagebox.errlvl_alert
+{
+    background-image: url('stdout_alert_bgd.gif');
+    background-color: #cdd8ef;
+    border-color: #05a;
+    color: #038;
+}
+#messagebox.errlvl_error
+{
+    background-image: url('stdout_error_bgd.gif');
+    background-color: #efd8cd;
+    border-color: #a00;
+    color: #800;
+}
+#message_pane
+{
+    border-width: 0px;
+    margin: auto;
+    width:80%;
+    height:80%;
+}
+#message_pane_redirect
+{
+    text-align: center;
+    margin: 10px;
+}
+#message_pane_section
+{
+    border-width: 0px;
+    height: 200px;
+    margin: auto;
+}
+img#message_pane_icon
+{
+    float: left;
+    margin: auto;
+}
+#message_pane_section #message_pane_text
+{
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: auto;
+}

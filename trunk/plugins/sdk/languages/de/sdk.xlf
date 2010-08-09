@@ -1,0 +1,307 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="de">
+        <header/>
+        <body>
+            <trans-unit id="program_title">
+                <source>Plugin Generator</source>
+                <target>Plugin Generator</target>
+            </trans-unit>
+            <group id="sdk">
+                <trans-unit id="sdk.title">
+                    <source>Generate new {lang id="SDK.APP"}</source>
+                    <target>Neue {lang id="SDK.APP"} generieren</target>
+                </trans-unit>
+                <trans-unit id="sdk.replace_files">
+                    <source>overwrite existing files</source>
+                    <target>vorhandene Dateien überschreiben</target>
+                </trans-unit>
+                <trans-unit id="sdk.step1">
+                    <source>Preparation</source>
+                    <target>Vorbereitung</target>
+                </trans-unit>
+                <trans-unit id="sdk.step1_1">
+                    <source>enter {lang id="SDK.APP"} data</source>
+                    <target>Angaben zur {lang id="SDK.APP"}</target>
+                </trans-unit>
+                <trans-unit id="sdk.step1_2">
+                    <source>enter {lang id="SDK.AUTHOR"} data</source>
+                    <target>Angaben zum {lang id="SDK.AUTHOR"}</target>
+                </trans-unit>
+                <trans-unit id="sdk.step1_3">
+                    <source>enter additional data</source>
+                    <target>sonstige Daten</target>
+                </trans-unit>
+                <trans-unit id="sdk.step2">
+                    <source>Interface</source>
+                    <target>Schnittstelle</target>
+                </trans-unit>
+                <trans-unit id="sdk.step2_2">
+                    <source>add more actions</source>
+                    <target>weitere Aktionen hinzufügen</target>
+                </trans-unit>
+                <trans-unit id="sdk.step2_3">
+                    <source>manipulate interface</source>
+                    <target>Schnittstelle nachbearbeiten</target>
+                </trans-unit>
+                <trans-unit id="sdk.step2_4">
+                    <source>Interface overview</source>
+                    <target>gesamte Schnittstelle</target>
+                </trans-unit>
+                <trans-unit id="sdk.step3">
+                    <source>Database</source>
+                    <target>Datenbank</target>
+                </trans-unit>
+                <trans-unit id="sdk.step3_2">
+                    <source>choose {lang id="SDK.SOURCE"}</source>
+                    <target>{lang id="SDK.SOURCE"} auswählen</target>
+                </trans-unit>
+                <trans-unit id="sdk.step4">
+                    <source>Installation</source>
+                    <target>Installation</target>
+                </trans-unit>
+                <trans-unit id="sdk.step4_1">
+                    <source>SQL file to create installation routine</source>
+                    <target>SQL-Quelldatei zum Erstellen einer Installationsroutine</target>
+                </trans-unit>
+                <trans-unit id="sdk.field2">
+                    <source>name</source>
+                    <target>Name</target>
+                </trans-unit>
+                <trans-unit id="sdk.field3">
+                    <source>name</source>
+                    <target>Name</target>
+                </trans-unit>
+                <trans-unit id="sdk.field4">
+                    <source>email</source>
+                    <target>Mailadresse</target>
+                </trans-unit>
+                <trans-unit id="sdk.field5">
+                    <source>web site (for updates)</source>
+                    <target>Homepage (für Updates)</target>
+                </trans-unit>
+                <trans-unit id="sdk.field6">
+                    <source>execution priority</source>
+                    <target>Priorität der Ausführung</target>
+                </trans-unit>
+                <trans-unit id="sdk.field7">
+                    <source>application type</source>
+                    <target>Typ der Anwendung</target>
+                </trans-unit>
+                <trans-unit id="sdk.field8">
+                    <source>requires the plugin</source>
+                    <target>benötigt das Plugin</target>
+                </trans-unit>
+                <trans-unit id="sdk.field9">
+                    <source>belongs to package</source>
+                    <target>gehört zu Paket</target>
+                </trans-unit>
+                <trans-unit id="sdk.source">
+                    <source>source file</source>
+                    <target>Quelldatei</target>
+                </trans-unit>
+                <trans-unit id="sdk.description">
+                    <source>description</source>
+                    <target>Beschreibung</target>
+                </trans-unit>
+                <trans-unit id="sdk.img">
+                    <source>image</source>
+                    <target>Grafik</target>
+                </trans-unit>
+                <trans-unit id="sdk.desc_id">
+                    <source>unique, allowed characters</source>
+                    <target>eindeutig, erlaubte Zeichen</target>
+                </trans-unit>
+                <trans-unit id="sdk.desc8">
+                    <source>id of the extended application</source>
+                    <target>ID-Kennung der Anwendung welche erweitert wird</target>
+                </trans-unit>
+                <trans-unit id="sdk.desc9">
+                    <source>id of the corresponding package</source>
+                    <target>ID-Kennung des Anwendungspakets</target>
+                </trans-unit>
+                <trans-unit id="sdk.complete">
+                    <source>Complete</source>
+                    <target>Fertigstellen</target>
+                </trans-unit>
+                <trans-unit id="sdk.app">
+                    <source>application</source>
+                    <target>Anwendung</target>
+                </trans-unit>
+                <trans-unit id="sdk.none">
+                    <source>none</source>
+                    <target>keines</target>
+                </trans-unit>
+                <trans-unit id="sdk.author">
+                    <source>author</source>
+                    <target>Autor</target>
+                </trans-unit>
+                <trans-unit id="sdk.js_0">
+                    <source>You need to set a unique name for this action.</source>
+                    <target>Sie müssen eine eindeutige Bezeichnung für diese Aktion festlegen.</target>
+                </trans-unit>
+                <trans-unit id="sdk.js_1">
+                    <source>secured</source>
+                    <target>abgesichert</target>
+                </trans-unit>
+            </group>
+            <group id="sdk.nav">
+                <trans-unit id="sdk.nav.0">
+                    <source>navigation</source>
+                    <target>Navigation</target>
+                </trans-unit>
+                <trans-unit id="sdk.nav.1">
+                    <source>previous</source>
+                    <target>zurück</target>
+                </trans-unit>
+                <trans-unit id="sdk.nav.2">
+                    <source>next</source>
+                    <target>weiter</target>
+                </trans-unit>
+            </group>
+            <group id="sdk.field10">
+                <trans-unit id="sdk.field10.0">
+                    <source>no template</source>
+                    <target>keine Vorlage</target>
+                </trans-unit>
+                <trans-unit id="sdk.field10.1">
+                    <source>database application</source>
+                    <target>Datenbankanwendung</target>
+                </trans-unit>
+                <trans-unit id="sdk.field10.2">
+                    <source>administration panel</source>
+                    <target>Administrationsmenü</target>
+                </trans-unit>
+            </group>
+            <trans-unit id="sdk.field11.2">
+                <source>templates</source>
+                <target>Templates</target>
+            </trans-unit>
+            <group id="sdk.field11.3">
+                <trans-unit id="sdk.field11.3.0">
+                    <source/>
+                    <target>Benachrichtigung</target>
+                </trans-unit>
+                <trans-unit id="sdk.field11.3.1">
+                    <source/>
+                    <target>kein Template</target>
+                </trans-unit>
+            </group>
+            <trans-unit id="sdk.field11.4">
+                <source/>
+                <target>keine Beschränkung</target>
+            </trans-unit>
+            <group id="sdk.field11.5">
+                <trans-unit id="sdk.field11.5.0">
+                    <source>Group</source>
+                    <target>Gruppe</target>
+                </trans-unit>
+                <trans-unit id="sdk.field11.5.1">
+                    <source>Role</source>
+                    <target>Rolle</target>
+                </trans-unit>
+                <trans-unit id="sdk.field11.5.2">
+                    <source>Level</source>
+                    <target>Level</target>
+                </trans-unit>
+            </group>
+            <group id="sdk.field12">
+                <trans-unit id="sdk.field12.0">
+                    <source>Menu entry</source>
+                    <target>Menüeintrag</target>
+                </trans-unit>
+                <trans-unit id="sdk.field12.1">
+                    <source>Start menu</source>
+                    <target>Startmenü</target>
+                </trans-unit>
+                <trans-unit id="sdk.field12.2">
+                    <source>Setup menu</source>
+                    <target>Konfigurationsmenü</target>
+                </trans-unit>
+            </group>
+            <trans-unit id="sdk.field11.6">
+                <source>add action</source>
+                <target>Aktion hinzufügen</target>
+            </trans-unit>
+            <group id="sdk.interface">
+                    <trans-unit id="sdk.interface.0">
+                        <source>name of action</source>
+                        <target>Name der Aktion</target>
+                    </trans-unit>
+                    <trans-unit id="sdk.interface.1">
+                        <source>type of action</source>
+                        <target>Typ der Aktion</target>
+                    </trans-unit>
+                    <trans-unit id="sdk.interface.4">
+                        <source>included page</source>
+                        <target>eingebettete Seite</target>
+                    </trans-unit>
+                    <trans-unit id="sdk.interface.5">
+                        <source>access restriction</source>
+                        <target>Zugriffsbeschränkung</target>
+                    </trans-unit>
+                    <trans-unit id="sdk.interface.desc">
+                        <source>to execute this action, the user needs to have at least the following security level</source>
+                        <target>um diese Aktion auszuführen muss der Nutzer mind. folgende Sicherheitsstufe haben</target>
+                    </trans-unit>
+                    <trans-unit id="sdk.interface.list">
+                        <source>List of actions added to the interface</source>
+                        <target>Liste neu hinzugefügter Aktionen der Schnittstelle</target>
+                    </trans-unit>
+                </group>
+            <group id="sdk.priority">
+                    <trans-unit id="sdk.priority.lowest">
+                        <source>lowest</source>
+                        <target>niedrigste</target>
+                    </trans-unit>
+                    <trans-unit id="sdk.priority.low">
+                        <source>low</source>
+                        <target>niedrig</target>
+                    </trans-unit>
+                    <trans-unit id="sdk.priority.normal">
+                        <source>normal</source>
+                        <target>normal</target>
+                    </trans-unit>
+                    <trans-unit id="sdk.priority.high">
+                        <source>high</source>
+                        <target>hoch</target>
+                    </trans-unit>
+                    <trans-unit id="sdk.priority.highest">
+                        <source>highest</source>
+                        <target>höchste</target>
+                    </trans-unit>
+                </group>
+            <group id="help">
+                <trans-unit id="help.2">
+                    <source>This step is optional. The framework is able to create the necessary sql statements for the installation of your database automatically if you provide a schema file.<it id="br1" pos="open">&lt;br /&gt;</it>The source file needs to be a valid sql file, which has the suffix ".sql".</source>
+                    <target>Dieser Schritt ist optional. Das Framework kann die SQL-Anweisungen für die Installation Ihrer Datenbank automatisch erzeugen, wenn Sie eine Schemadatei angegeben haben.<it id="br1" pos="open">&lt;br /&gt;</it>Die Quelldatei muss eine gültige SQL-Datei sein und die Dateiendung ".sql" besitzen.</target>
+                </trans-unit>
+                <trans-unit id="help.3">
+                    <source><bpt id="b1">&lt;b&gt;</bpt>suggested naming convention:<ept id="b1">&lt;/b&gt;</ept><it id="br1" pos="open">&lt;br /&gt;</it>[application name]_[{lang id="SDK.INTERFACE.1"}]_[individual name]<it id="br2" pos="open">&lt;br /&gt;</it>This ensures the chosen action id is unique. On database application it might be handy to provide the name of the table in question as well.</source>
+                    <target><bpt id="b1">&lt;b&gt;</bpt>empfohlene Namenskonvention:<ept id="b1">&lt;/b&gt;</ept><it id="br1" pos="open">&lt;br /&gt;</it>[Name der Anwendung]_[{lang id="SDK.INTERFACE.1"}]_[beliebige Bezeichnung]<it id="br2" pos="open">&lt;br /&gt;</it>Dadurch wird sichergestellt, dass der gewählte Name der Aktion eindeutig ist. Bei Datenbankanwendungen ist es außerdem sinnvoll, zusätzlich den Namen der Tabelle anzugeben, auf welche sich die Aktion bezieht.</target>
+                </trans-unit>
+                <trans-unit id="help.4">
+                    <source>format</source>
+                    <target>Format</target>
+                </trans-unit>
+                <trans-unit id="help.5">
+                    <source>If you click the button "save changes", required templates, configuration- and PHP files of your plugin will be created automatically. Next, the system's list of registered plugins is updated. For security reasons the new plugin keeps inactive, until you activate it in the administrator's panel.</source>
+                    <target>Wenn Sie auf die Schaltfläche "Änderungen speichern" klicken, werden Templates, Konfigurations- und PHP-Dateien des Plugins automatisch erstellt. Anschliessend wird die Liste der im System registrieren Plugins aktualisiert. Aus Sicherheitsgründen bleibt das neue Plugin deaktiviert, bis Sie es im Administrationsmenü aktivieren.</target>
+                </trans-unit>
+                <trans-unit id="help.6">
+                    <source>The source file should be a valid schema file for a database with the suffix ".xml".</source>
+                    <target>Die Quelldatei muss eine gültige Schemadatei für eine Datenbank sein und die Dateiendung ".xml" besitzen.</target>
+                </trans-unit>
+                <trans-unit id="help.7">
+                    <source>The file needs to be a schema file with the file extension .xml. Other files are not allowed here.</source>
+                    <target>Die Datei muss eine Schemadatei mit der Dateiendung .xml sein. Andere Dateien sind nicht erlaubt.</target>
+                </trans-unit>
+                <trans-unit id="help.8">
+                    <source>The file needs to be a SQL file with the file extension .sql. Other files are not allowed here.</source>
+                    <target>Die Datei muss eine SQL-Datei mit der Dateiendung .sql sein. Andere Dateien sind nicht erlaubt.</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

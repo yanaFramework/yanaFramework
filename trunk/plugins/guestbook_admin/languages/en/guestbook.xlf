@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN"
+ "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" >
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="en">
+        <header/>
+        <body>
+            <trans-unit id="program_title">
+                <source/>
+                <target>Guestbook</target>
+            </trans-unit>
+            <trans-unit id="1">
+                <source/>
+                <target>opinion about this web site</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source/>
+                <target>Homepage</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source/>
+                <target>Mail</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source/>
+                <target>Location</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source/>
+                <target>Comment</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source/>
+                <target>Date/Time</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source/>
+                <target>more details</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source/>
+                <target>Text</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source/>
+                <target>Dummy</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source/>
+                <target>Dummy</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source/>
+                <target>Do you really want to delete this entry?</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source/>
+                <target>Required: please insert your name here</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source/>
+                <target>Name</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source/>
+                <target>Required: please insert your text here</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source/>
+                <target>Click here to save your comment</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source/>
+                <target>Edit entry</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source/>
+                <target>Delete entry</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source/>
+                <target>Dummy</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source/>
+                <target>Click here to delete the entry</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source/>
+                <target>New Entry</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source/>
+                <target>Your Name</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source/>
+                <target>Messenger</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source/>
+                <target>this website is</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source/>
+                <target>Dummy</target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source/>
+                <target>Dummy</target>
+            </trans-unit>
+            <trans-unit id="26">
+                <source/>
+                <target>you may enter zip code or name of your location here</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source/>
+                <target>you may enter your mail address here</target>
+            </trans-unit>
+            <trans-unit id="28">
+                <source/>
+                <target>you may enter your homepage's URL here (ignore http://)</target>
+            </trans-unit>
+            <trans-unit id="29">
+                <source/>
+                <target>Here you may (in case you got one) enter an ID, which can be used by others to contact you via messenger programs</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source/>
+                <target>Dummy</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source/>
+                <target>Click here to save your entry to the guestbook</target>
+            </trans-unit>
+            <trans-unit id="32">
+                <source/>
+                <target>Add a comment</target>
+            </trans-unit>
+            <trans-unit id="rate_0">
+                <source/>
+                <target>rating</target>
+            </trans-unit>
+            <trans-unit id="rate_1">
+                <source/>
+                <target>very good</target>
+            </trans-unit>
+            <trans-unit id="rate_2">
+                <source/>
+                <target>good</target>
+            </trans-unit>
+            <trans-unit id="rate_3">
+                <source/>
+                <target>average</target>
+            </trans-unit>
+            <trans-unit id="rate_4">
+                <source/>
+                <target>bad</target>
+            </trans-unit>
+            <trans-unit id="rate_5">
+                <source/>
+                <target>very bad</target>
+            </trans-unit>
+            <trans-unit id="descr_comment">
+                <source/>
+                <target>Enter comment</target>
+            </trans-unit>
+            <trans-unit id="title_comment">
+                <source/>
+                <target>answer this entry (Webmaster only)</target>
+            </trans-unit>
+            <trans-unit id="title_update_comment">
+                <source/>
+                <target>replace comment</target>
+            </trans-unit>
+            <trans-unit id="previous_page">
+                <source/>
+                <target>previous page</target>
+            </trans-unit>
+            <trans-unit id="mail_subject">
+                <source/>
+                <target>guestbook entry</target>
+            </trans-unit>
+            <trans-unit id="mail_1">
+                <source/>
+                <target>Somebody left a message for you at your guestbook!&#10; &#10;The message reads:</target>
+            </trans-unit>
+            <trans-unit id="mail_3">
+                <source/>
+                <target>Details:</target>
+            </trans-unit>
+            <trans-unit id="rss_description">
+                <source/>
+                <target>the 10 most recent guestbook entries</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

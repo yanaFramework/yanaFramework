@@ -1,0 +1,19 @@
+<!-- CORE DEFINITIONS -->
+<!ENTITY % bool
+ '(yes|no)  "no"'
+>
+<!ENTITY % required
+ 'CDATA  #REQUIRED'
+>
+<!ENTITY % implied
+ 'CDATA  #IMPLIED'
+>
+<!ENTITY % name
+ 'name  NMTOKEN  #REQUIRED'
+>
+<!ENTITY % nameImplied
+ 'name  NMTOKEN  #IMPLIED'
+>
+<!ENTITY % fields
+ 'array|bool|color|date|enum|file|float|html|image|inet|integer|list|mail|password|range|set|string|tel|text|time|timestamp|url'
+>

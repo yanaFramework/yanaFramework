@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<!--
+	Diese Datei enthält eine Liste von Mountpoints für ein virtuelles Laufwerk!
+	Die enthaltenen Einträge dürfen auf keinen Fall geändert werden.
+
+	This file contains a list of mount points for a virtual drive!
+	The contained entries may not be changed at any case.
+-->
+<drive name="sdk">
+	<dir name="images">
+		<requirements readable="yes"/>
+		<source>images/</source>
+		<dir name="logos" filter=".png">
+			<requirements readable="yes"/>
+			<source>images/logos/</source>
+		</dir>
+		<dir name="icons" filter=".png">
+			<requirements readable="yes"/>
+			<source>images/icons/</source>
+		</dir>
+	</dir>
+	<dir name="templates">
+		<requirements readable="yes"/>
+		<source>templates/plugin/</source>
+		<file name="class.smarttemplate">
+			<requirements readable="yes"/>
+			<source>templates/plugin/plugin.tpl</source>
+		</file>
+		<file name="html.smarttemplate">
+			<requirements readable="yes"/>
+			<source>templates/plugin/template.html.tpl</source>
+		</file>
+		<file name="jsapi.smarttemplate">
+			<requirements readable="yes"/>
+			<source>templates/plugin/api.js.tpl</source>
+		</file>
+		<file name="language.smarttemplate">
+			<requirements readable="yes"/>
+			<source>templates/plugin/language.xlf.tpl</source>
+		</file>
+	</dir>
+</drive>

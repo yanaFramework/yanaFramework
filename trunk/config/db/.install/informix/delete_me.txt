@@ -1,0 +1,2 @@
+SQL installation files for "Informix" go here.
+SQL-Installationsdateien für "Informix" hier abspeichern.

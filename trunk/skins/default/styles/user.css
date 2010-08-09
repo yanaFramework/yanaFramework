@@ -1,0 +1,73 @@
+#usertable td, #usertable th
+{
+    empty-cells: show;
+    white-space: nowrap;
+    color: inherit;
+}
+#user_description:before
+{ 
+    content: url("btn-xs.gif")"  ";
+}
+#user_description:first-line
+{ 
+    font-weight: bold; 
+    font-size: 14px; 
+    line-height: 200%; 
+    color: #335588; 
+}
+#user_description
+{
+    background: #e1e1e1 url("config_white_bgd.gif");
+    background-repeat: no-repeat;
+    color: #000;
+    text-align: left;
+    border: 2px solid #aaccee;
+    padding: 20px 10px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+#user_profile .option
+{
+}
+#new_user, #user_register
+{
+    display: block;
+    white-space: nowrap;
+    padding: 10px 20px 10px 20px;
+    margin: auto;
+    color: #fff;
+}
+
+#new_user img, #user_register img
+{
+    width: 30px;
+    height: 30px;
+    float: left;
+    margin: 5px;
+}
+
+.user_title
+{
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.user_submit
+{
+    margin-top: 2px;
+}
+
+#new_user
+{
+    color: #000;
+}
+
+#new_user:first-line, #new_user div
+{
+    color: #fff;
+}
+label
+{
+    font-weight: bold;
+    font-size: 13px;
+}

@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<!--
+	Diese Datei enthält eine Liste von Mountpoints für ein virtuelles Laufwerk!
+	Die enthaltenen Einträge dürfen auf keinen Fall geändert werden.
+
+	This file contains a list of mount points for a virtual drive!
+	The contained entries may not be changed at any case.
+-->
+<drive name="counter">
+	<dir name="images" filter=".png">
+		<requirements readable="yes"/>
+		<source>images/{$target}/</source>
+		<source>images/0/</source>
+		<file name="background.file">
+			<requirements readable="yes"/>
+			<source>images/{$target}/background.jpg</source>
+			<source>images/0/background.jpg</source>
+		</file>
+		<file name="blank.file">
+			<requirements readable="yes"/>
+			<source>images/{$target}/blank.png</source>
+			<source>images/0/blank.png</source>
+		</file>
+	</dir>
+</drive>

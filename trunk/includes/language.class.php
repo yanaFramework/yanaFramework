@@ -1,0 +1,739 @@
+<?php
+/**
+ * YANA library
+ *
+ * Software:  Yana PHP-Framework
+ * Version:   {VERSION} - {DATE}
+ * License:   GNU GPL  http://www.gnu.org/licenses/
+ *
+ * This program: can be redistributed and/or modified under the
+ * terms of the GNU General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/.
+ *
+ * This notice MAY NOT be removed.
+ *
+ * @package  yana
+ * @license  http://www.gnu.org/licenses/gpl.txt
+ */
+
+/**
+ * <<Singleton>> Language
+ *
+ * This class may be used to dynamically load additional
+ * language files at runtime.
+ *
+ * @access      public
+ * @package     yana
+ * @subpackage  core
+ */
+class Language extends Singleton implements IsSerializable
+{
+    /**
+     * This is a place-holder for the singleton's instance
+     *
+     * @access  private
+     * @static
+     * @var     object
+     */
+    private static $instance = null;
+
+    /**
+     * a list of all languages installed
+     *
+     * @access  private
+     * @var     array
+     */
+    private $languages = array();
+
+    /**
+     * file extension for language definition files
+     *
+     * @access  private
+     * @static
+     * @var     string
+     */
+    private static $fileExtension = ".language.xml";
+
+    /**
+     * @access  private
+     * @var     array
+     */
+    private $directories = array();
+
+    /**
+     * @access  private
+     * @var     string
+     */
+    private $language = "";
+
+    /**
+     * @access  private
+     * @var     string
+     */
+    private $country = "";
+
+    /**
+     * @access  private
+     * @var     array
+     */
+    private $fileLoaded = array();
+
+    /**
+     * @access  private
+     * @var     array
+     */
+    private $strings = array();
+
+    /**
+     * @access  private
+     * @var     array
+     */
+    private $groups = array();
+
+    /**
+     * language information cache
+     *
+     * @access  private
+     * @var     array
+     */
+    private $info = array();
+
+    /**
+     * cache for valid language directories
+     *
+     * @access  private
+     * @var     array
+     */
+    private $validDirsCache = array();
+
+    /**
+     * get instance of this class
+     *
+     * Creates an instance if there is none.
+     * Then it returns a reference to this (single) instance.
+     *
+     * @access  public
+     * @static
+     * @return  Language
+     */
+    public static function &getInstance()
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new Language();
+        }
+        return self::$instance;
+    }
+
+    /**
+     * <<Singleton>> Constructor
+     *
+     * @ignore
+     */
+    private function __construct()
+    {
+        /* intentionally left blank */
+    }
+
+    /**
+     * get language string
+     *
+     * Alias of Language::getVar()
+     *
+     * @access  public
+     * @param   string  $id   id
+     * @return  mixed
+     * @see     Language::getVar()
+     */
+    public function __get($id)
+    {
+        assert('is_string($id); // Wrong type for argument 1. String expected');
+        return $this->getVar($id);
+    }
+
+    /**
+     * set language string
+     *
+     * Alias of Language::setVar()
+     *
+     * @access  public
+     * @param   string  $id     id
+     * @param   string  $value  value
+     * @return  mixed
+     * @see     Language::setVar()
+     */
+    public function __set($id, $value)
+    {
+        assert('is_string($id); // Wrong type for argument 1. String expected');
+        return $this->setVar($id, $value);
+    }
+
+    /**
+     * get name of selected language
+     *
+     * Returns the name of the currently selected
+     * language as a string, or bool(false) on error.
+     *
+     * Example:
+     * Returns 'en' for English, 'de' for German.
+     *
+     * Technically spoken, this is the name of the
+     * sub-directory, where the current language's
+     * files are stored. Check the directory
+     * "languages/" for a complete list.
+     *
+     * @access  public
+     * @return  string|bool(false)
+     * @since   2.9.6
+     * @name    Language::getLanguage()
+     * @see     Language::getCountry()
+     * @see     Language::getLocale()
+     */
+    public function getLanguage()
+    {
+        if (!empty($this->language)) {
+            return $this->language;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * get name of selected country
+     *
+     * Returns the name of the currently selected
+     * country as a string, or bool(false) on error.
+     *
+     * Locale settings may consist of two parts:
+     * a language plus a country. For example, 'en-US' for american English.
+     *
+     * This function returns the country part of the locale.
+     *
+     * Example:
+     * Returns 'en' for English, 'de' for German.
+     * May also return complete locales like 'en-US', if specified.
+     *
+     * @access  public
+     * @return  string|bool(false)
+     * @since   3.1.0
+     * @name    Language::getCountry()
+     * @see     Language::getLocale()
+     * @see     Language::getLanguage()
+     */
+    public function getCountry()
+    {
+        if (!empty($this->country)) {
+            return $this->country;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * get name of selected locale
+     *
+     * Returns the name of the currently selected
+     * locale as a string, or bool(false) on error.
+     *
+     * Example:
+     * Returns 'en' for English, 'de' for German, 'en-US' for american English,
+     * or 'de-AU' for austrian German. The country part of the locale is
+     * optional.
+     *
+     * @access  public
+     * @return  string|bool(false)
+     * @since   3.1.0
+     * @name    Language::getCountry()
+     * @see     Language::getLocale()
+     * @see     Language::getLanguage()
+     */
+    public function getLocale()
+    {
+        if (empty($this->language)) {
+            return false;
+
+        } elseif (!empty($this->country)) {
+            return $this->language . '-' . $this->country;
+
+        } else {
+            return $this->language;
+        }
+    }
+
+    /**
+     * read language strings from a file
+     *
+     * You may find valid filenames in the following directory 'languages/<locale>/*.xlf'.
+     * Provide the file without path and file extension.
+     *
+     * You may access the file contents via $language->getVar('some.value')
+     *
+     * This function issues an E_USER_NOTICE if the file does not exist.
+     * It returns bool(true) on success and bool(false) on error.
+     *
+     * @access  public
+     * @param   string  $file  name of translation file that should be loaded
+     * @return  bool
+     */
+    public function readFile($file)
+    {
+        assert('is_string($file); // Wrong type for argument 1. String expected');
+
+        /**
+         * If file is not yet loaded, read it now.
+         * Value $this->fileLoaded should be set to true on success and remain false on error.
+         */
+        if (empty($this->fileLoaded[$file])) {
+
+            // check syntax of filename
+            if (!preg_match("/^[\w_-\d]+$/i", $file)) {
+                $message = "The provided language-file id '$file' contains illegal characters.".
+                    " Be aware that only alphanumeric (a-z,0-9,-,_) characters are allowed.";
+                trigger_error($message, E_USER_NOTICE);
+                return false;
+            }
+
+            // override defaults where available
+            assert('!isset($directory); // Cannot redeclare var $directory');
+            assert('!isset($selectedFile); // Cannot redeclare var $selectedFile');
+            foreach ($this->_getValidDirectories() as $directory)
+            {
+                $selectedFile = "{$directory}{$file}.xlf";
+                if (file_exists($selectedFile)) {
+                    /*
+                     * Read XLIFF-file.
+                     *
+                     * This tries to read a given language file.
+                     * If the file is not valied, it writes a warning to the logs.
+                     */
+                    try {
+
+                        // LanguageInterchangeFile extends of SimpleXMLElement
+                        $xml = new LanguageInterchangeFile($selectedFile, LIBXML_NOENT, true);
+                        $xml->toArray($this->strings);
+                        $xml->getGroups($this->groups);
+                        $this->fileLoaded[$file] = true;
+                        $this->strings = array_change_key_case($this->strings, CASE_LOWER);
+                        $this->groups = array_change_key_case($this->groups, CASE_LOWER);
+
+                    } catch (Exception $e) {
+                        assert('!isset($message); // Cannot redeclare var $message');
+                        $message = "Error in language file: '$filename'.";
+                        Log::report($message, E_USER_WARNING, $e->getMessage());
+                        unset($message);
+                    }
+                }
+            }
+            unset($directory, $selectedFile);
+        }
+        if (!empty($this->fileLoaded[$file])) {
+            return true;
+        } else {
+            Log::report("No language-file found for id '$file'.");
+            return false;
+        }
+    }
+
+    /**
+     * get list of validated directories
+     *
+     * The list of directories is just a list of base directories.
+     * These directories are not specific for the given locale settings.
+     *
+     * The locale is a combined setting of language code and country code,
+     * but may also be just a language.
+     *
+     * Since checking for the right directories that match the current
+     * language settings may take some time, this function caches the results,
+     * unless the locale settings are changed.
+     *
+     * @access  private
+     * @return  array
+     */
+    private function _getValidDirectories()
+    {
+        assert('is_array($this->validDirsCache);');
+        if (empty($this->validDirsCache)) {
+            $this->validDirsCache = array();
+            $this->_validateDirectories($this->directories);
+        }
+        assert('is_array($this->validDirsCache);');
+        return $this->validDirsCache;
+    }
+
+    /**
+     * validate directories
+     *
+     * @access  private
+     * @param   array  $directories  list of paths to validate
+     */
+    private function _validateDirectories($directories)
+    {
+        foreach ($directories as $directory)
+        {
+            $this->_validateDirectory($directory);
+        }
+    }
+
+    /**
+     * validate directory
+     *
+     * @access  private
+     * @param  string  $directory  path to validate
+     */
+    private function _validateDirectory($directory)
+    {
+        if (is_dir("$directory{$this->language}-{$this->country}")) {
+            $this->validDirsCache[] = "$directory{$this->language}-{$this->country}/";
+        } elseif (is_dir("$directory{$this->language}")) {
+            $this->validDirsCache[] = "$directory{$this->language}/";
+        }
+    }
+
+    /**
+     * get language string
+     *
+     * Returns var from language file.
+     *
+     * Example:
+     * <code>
+     * $language->setVar('foo.bar', 'Hello World');
+     * // outputs 'Hello World'
+     * print $language->getVar('foo.bar');
+     * </code>
+     *
+     * Note: the key may also refer to a group id. If so the function returns
+     * all members of the group as an array.
+     *
+     * @access  public
+     * @param   string  $key  translation key (case insensitive)
+     * @return  mixed
+     * @name    Language::getVar()
+     * @see     Language::setVar()
+     */
+    public function getVar($key = '*')
+    {
+        assert('is_string($key); /* Wrong argument type for argument 1. String expected. */');
+        /* settype to STRING */
+        $key = mb_strtolower("$key");
+        if ($key == '*') {
+            return $this->strings;
+        }
+        if (isset($this->strings[$key])) {
+            return $this->strings[$key];
+        }
+        if (isset($this->groups[$key])) {
+
+            $array = array();
+            foreach($this->groups[$key] as $globalId => $localId)
+            {
+                $array[$localId] = $this->getVar($globalId);
+            }
+            return $array;
+
+        } else {
+            Log::report("No text found for key '$key'.", E_USER_NOTICE);
+            return "$key";
+        }
+    }
+
+    /**
+     * check if a translation exists
+     *
+     * Returns bool(true) if the key can be translated and bool(false) otherwise.
+     *
+     * @access  public
+     * @param   string  $key  translation key (case insensitive)
+     * @return  bool
+     */
+    public function isVar($key)
+    {
+        assert('is_string($key); /* Wrong argument type for argument 1. String expected. */');
+        $key = mb_strtolower("$key");
+        return isset($this->strings[$key]) || isset($this->groups[$key]);
+    }
+
+    /**
+     * set translation string
+     *
+     * Set's the translation string specified by parameter $key.
+     *
+     * Note that the translation is saved even if there is no source text.
+     *
+     * @access  public
+     * @param   string  $key    adress of data in memory (case insensitive)
+     * @param   string  $value  new value (may be scalar value or array)
+     * @name    Language::setVar()
+     * @see     Language::getVar()
+     */
+    public function setVar($key, $value)
+    {
+        assert('is_string($key); // Wrong argument type for argument 1. String expected.');
+        assert('is_string($value); // Wrong argument type for argument 2. String expected.');
+        $key = mb_strtolower("$key");
+
+        $this->strings[$key] = "$value";
+    }
+
+    /**
+     * returns a list of all languages
+     *
+     * Returns an associative array with a list of ids and names for all installed languages.
+     *
+     * @access  public
+     * @return  array
+     * @since   3.1.0
+     */
+    public function getLanguages()
+    {
+        assert('is_array($this->languages);');
+        if (empty($this->languages)) {
+            $this->languages = array();
+            foreach (glob($this->getDefaultDirectory() . "*" . self::$fileExtension) as $file)
+            {
+                $id = basename($file, self::$fileExtension);
+                $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
+                if (!empty($xml)) {
+                    $title = (string) $xml->title;
+                } else {
+                    $title = $id;
+                }
+                $this->languages[$id] = $title;
+            }
+        }
+        assert('is_array($this->languages);');
+        return $this->languages;
+    }
+
+    /**
+     * add directory
+     *
+     * This adds a directory to the list of language directories.
+     *
+     * @access  public
+     * @param   string  $directory  base directory
+     * @throws  NotFoundException   when the chosen directory does not exist
+     *
+     * @ignore
+     */
+    public function addDirectory($directory)
+    {
+        assert('is_string($directory); // Wrong type for argument 1. String expected');
+        if (!is_dir($directory)) {
+            throw new NotFoundException("Directory '$directory' does not exist.");
+        }
+        if (!in_array($directory, $this->directories)) {
+            $this->directories[] = "$directory/";
+            $this->_validateDirectory($directory);
+        }
+    }
+
+    /**
+     * set directory
+     *
+     * Set the system locale and store the
+     *
+     * @access  public
+     * @param   string  $selectedLanguage  current language
+     * @param   string  $selectedCountry   current country (optional)
+     * @throws  InvalidArgumentException   when the provided locale is not valid
+     *
+     * @ignore
+     */
+    public function setLocale($selectedLanguage, $selectedCountry = "")
+    {
+        assert('is_string($selectedLanguage); // Wrong type for argument 1. String expected');
+        assert('is_string($selectedCountry); // Wrong argument type for argument 2. String expected.');
+
+        $selectedLanguage = mb_strtolower($selectedLanguage);
+        $selectedCountry = mb_strtoupper($selectedCountry);
+
+        // convert to locale string
+        if ($selectedCountry != "") {
+            $locale = "$selectedLanguage-$selectedCountry";
+        } else {
+            $locale = "$selectedLanguage";
+        }
+
+        // check if locale is valid
+        if (!preg_match('/^[a-z]{2}(-[A-Z]{2})?$/s', $locale)) {
+            $message = "Invalid locale setting '$selectedLanguage'.";
+            throw new InvalidArgumentException($message, E_USER_WARNING);
+        }
+
+        // set system locale
+        setlocale(LC_ALL, $locale);
+
+        $this->language = $selectedLanguage;
+        $this->country = $selectedCountry;
+
+        // revalidate directories
+        $this->_validateDirectories($this->directories);
+        array_unique($this->validDirsCache);
+    }
+
+    /**
+     * get path of default directory
+     *
+     * @access  protected
+     * @return  string
+     * @ignore
+     */
+    protected function getDefaultDirectory()
+    {
+        assert('is_array($this->directories);');
+        if (isset($this->directories[0])) {
+            return $this->directories[0];
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * get directories
+     *
+     * @access  public
+     * @return  array
+     * @ignore
+     */
+    public function getDirectories()
+    {
+        assert('is_array($this->directories);');
+        return $this->directories;
+    }
+
+    /**
+     * get info
+     *
+     * Returns an array of language settings on success,
+     * or bool(false) on error.
+     *
+     * @access  public
+     * @param   string  $languageName  name of language pack
+     * @return  array
+     * @throws  NotFoundException  when requested file is not found
+     *
+     * @ignore
+     */
+    public function getInfo($languageName)
+    {
+        assert('is_string($languageName); // Wrong type for argument 1. String expected');
+
+        if (!isset($this->info[$languageName])) {
+            // get path to definition file
+            $file = $this->getDefaultDirectory() . "$languageName.language.xml";
+            if (!is_file($file)) {
+                throw new NotFoundException("Language definition not found: '$languageName'.");
+            }
+            // load definition
+            $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
+            // get information
+            if (!empty($xml)) {
+                $this->info[$languageName] = array(
+                    'LOGO' => $this->getDefaultDirectory() . "/$languageName/icon.png",
+                    'LAST_CHANGE' => filemtime($file),
+                    'NAME' => (string) $xml->title,
+                    'AUTHOR' => (string) implode(', ', $xml->xpath('//author')),
+                    'CONTACT' => (string) $xml->url
+                );
+                // get translated description
+                $description = $xml->xpath('//description[@lang="'. $this->getLocale() .'"]');
+                if (empty($description)) {
+                    $description = $xml->xpath('//description[@lang="'. $this->getLanguage() .'"]');
+                }
+                if (empty($description)) {
+                    $description = $xml->xpath('//description[not(@lang)]');
+                }
+                $this->info[$languageName]['DESCRIPTION'] = (string) implode(', ', $description);
+            }
+        }
+        return $this->info[$languageName];
+    }
+
+    /**
+     * serialize this object to a string
+     *
+     * Returns the serialized object as a string.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function serialize()
+    {
+        return serialize($this);
+    }
+
+    /**
+     * unserialize a string to a serializable object
+     *
+     * Returns the unserialized object.
+     *
+     * @access  public
+     * @static
+     * @param   string  $string  string to unserialize
+     * @return  IsSerializable
+     */
+    public static function unserialize($string)
+    {
+        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
+        if (!isset(self::$instance)) {
+            self::$instance = unserialize($string);
+            self::$instance->validDirsCache = array();
+            return self::$instance;
+        } else {
+            return unserialize($string);
+        }
+    }
+
+    /**
+     * replace token
+     *
+     * Replace a token within a provided text.
+     *
+     * Note that this function replaces ALL entities found.
+     * If a token refers to a non-existing value it is removed.
+     *
+     * Example:
+     * <code>
+     * // assume the token {$foo} is set to 'World'
+     * $text = 'Hello {$foo}.';
+     * // prints 'Hello World.'
+     * print String::replaceToken($string);
+     * </code>
+     *
+     * @access  public
+     * @param   string  $string   sting text (look example)
+     * @return  string
+     */
+    public function replaceToken($string)
+    {
+        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
+
+        $pattern = '/'. YANA_LEFT_DELIMITER_REGEXP . 'lang id=["\']([\w_\.]+)["\']' . YANA_RIGHT_DELIMITER_REGEXP .'/';
+        if (preg_match_all($pattern, $string, $matches)) {
+            foreach ($matches[1] as $i => $key)
+            {
+                $key = mb_strtolower("$key");
+                if (isset($this->strings[$key])) {
+                    $value = $this->strings[$key];
+
+                } else {
+                    $value = $key;
+                }
+                $string = str_replace($matches[0][$i], $value, $string);
+            }
+        }
+        return $string;
+    }
+
+}
+
+?>

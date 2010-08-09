@@ -1,0 +1,335 @@
+<?php
+/**
+ * Password quality - Setup
+ *
+ * {@translation
+ *
+ *    de:  Passwortqualität - Setup
+ *
+ *    Dieses Plugin erlaubt die Konfiguration der Anforderungen zur Passwortqualität.
+ * }
+ *
+ * @author     Dariusz Josko
+ * @type       security
+ * @extends    user
+ * @license    http://www.gnu.org/licenses/gpl.txt
+ * @priority   highest
+ *
+ * @package    yana
+ * @subpackage plugins
+ */
+
+/**
+ * password quality
+ *
+ * This implements setup functions for the password quality plugin.
+ *
+ * @access     public
+ * @package    yana
+ * @subpackage plugins
+ */
+class plugin_user_pwd_admin extends StdClass implements IsPlugin
+{
+    /**
+     * Default event handler
+     *
+     * returns bool(true) on success and bool(false) on error
+     *
+     * @access  public
+     * @param   string  $event  name of the called event in lower-case
+     * @param   array   $ARGS   array of arguments passed to the function
+     * @return  bool
+     * @ignore
+     */
+    public function _default($event, array $ARGS)
+    {
+        return true;
+    }
+
+    /**
+     * Password quality Setup (Default settings)
+     *
+     * this function does not expect any arguments
+     *
+     * @type        security
+     * @user        group: admin, level: 100
+     * @template    user_pwd_quality
+     * @menu        group: setup
+     * @safemode    true
+     *
+     * @access      public
+     * @return      bool
+     */
+    public function get_pwd_quality_default()
+    {
+        global $YANA;
+        $YANA->setVar("ON_SUBMIT", "set_config_default");
+        $configFile = $YANA->getResource('system:/config');
+        $YANA->setVar("WRITEABLE", $configFile->isWriteable());
+        return true;
+    }
+
+    /**
+     * Password quality Setup (Profile specific settings)
+     *
+     * this function does not expect any arguments
+     *
+     * @type        security
+     * @user        group: admin, level: 100
+     * @template    guestbook_config_template
+     * @menu        group: setup
+     * @safemode    false
+     *
+     * @access      public
+     * @return      bool
+     */
+    public function get_pwd_quality_profile()
+    {
+        global $YANA;
+        $YANA->setVar("ON_SUBMIT", "set_config_profile");
+        $configFile = $YANA->getResource('system:/config');
+        $YANA->setVar("WRITEABLE", $configFile->isWriteable());
+        return true;
+    }
+
+    /**
+     * Check Password time duration before login
+     *
+     * @subscribe
+     *
+     * @access  public
+     * @param   string  $user  user name
+     * @param   string  $pass  password
+     * @return  bool
+     */
+    public function check_login($user, $pass = "")
+    {
+        /* @var $YANA Yana */
+        assert('!isset($YANA); // Cannot redeclare var $YANA');
+        global $YANA;
+        $timeDuration = (int) $YANA->getVar("PROFILE.USER.PASSWORD.TIME");
+        if ($timeDuration > 0) {
+            if (self::_isExpired($user, $timeDuration)) {
+                new PasswordExpiredWarning();
+                $YANA->exitTo("get_pwd");
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Password quality
+     *
+     * this function checks if the password quality is high enough.
+     *
+     * @subscribe
+     *
+     * @access      public
+     * @param       string  $old_pwd     old password
+     * @param       string  $new_pwd     new password
+     * @param       string  $repeat_pwd  duplicate of new password
+     * @return      bool
+     */
+    public function set_pwd($old_pwd, $new_pwd, $repeat_pwd)
+    {
+        global $YANA;
+
+        /* get the minimum quality which is defined in profile */
+        $min_quality = (int) $YANA->getVar("PROFILE.USER.PASSWORD.QUALITY");
+        if ($min_quality < 0) {
+            $min_quality = 0;
+        }
+        if ($min_quality > 100) {
+            $min_quality = 100;
+        }
+        if (self::_getQuality($new_pwd) < $min_quality) {
+            throw new LowPasswordQualityWarning();
+        }
+        //check if the password does not match the last (max. 5) used passwords
+        if (!plugin_user_pwd_admin::_isAllowedPwd($old_pwd, $new_pwd)) {
+            throw new InvalidInputWarning();
+        }
+        return true;
+    }
+
+    /**
+     * get password quality
+     *
+     * This function returns an integer of (0-100).
+     *
+     * @access      private
+     * @static
+     * @param       string  $password  user's new password
+     * @return      int
+     */
+    private static function _getQuality($password)
+    {
+        assert('is_string($password); // $password must be of type string');
+        assert('!empty($password); // $password can not be empty');
+
+        /*  count the length of the password */
+        $level = 0;
+        $maxSecurityLevel = 8;
+        $length = (int)strlen($password);
+        if ($length > 4) {
+            $level ++;
+        }
+
+        if ($length > 7) {
+            $level ++;
+        }
+
+        if ($length > 11) {
+            $level ++;
+        }
+
+        /* count the numbers in the password string*/
+        $num_numeric = strlen(preg_replace('/[0-9]/', '', $password));
+        $numeric=($length - (int) $num_numeric);
+        if ($numeric > 0) {
+            $level ++;
+        }
+
+        /* count the special characters */
+        $symbols = strlen(preg_replace('/\W/', '', $password));
+        $num_symbols=($length -(int) $symbols);
+        if ($num_symbols > 0) {
+            $level ++;
+        }
+
+        /* count the upper case characters */
+        $num_upper = strlen(preg_replace('/[A-Z]/', '', $password));
+        $upper=($length - (int) $num_upper);
+        if ($upper > 0) {
+            $level ++;
+        }
+
+        /* number | not a number | number */
+        $count_numbers_in_order = strlen(preg_replace('/\d\D+\d/', '', $password));
+        $numbers= ($length - (int) $count_numbers_in_order);
+        if ($numbers > 0) {
+            $level ++;
+        }
+        /* charachter | non-character | character */
+        $num_upper_in_order = strlen(preg_replace('/[A-Z][^A-Z]+[A-Z]/', '', $password));
+        $upper=($length - (int) $num_upper_in_order);
+        if ($upper != 0) {
+            $level ++;
+        }
+        /* calculate the password strength */
+        $pwd_strength = ($level / $maxSecurityLevel) * 100;
+         
+        /* check if password strength (quality) is out of range */
+        if ($pwd_strength < 0) {
+            $pwd_strength = 0;
+        }
+        if ($pwd_strength > 100) {
+            $pwd_strength = 100;
+        }
+        return $pwd_strength;
+    }
+
+    /**
+     * Password time duration
+     *
+     * This function checks the date of expiration and returns bool(true)
+     * if the password has expired, and bool(false) otherwise.
+     *
+     * @access  private
+     * @static
+     * @param   string  $userName       user name
+     * @param   int     $timeDuration   number of months a password is valid
+     * @return  bool
+     */
+    private static function _isExpired($userName, $timeDuration)
+    {
+        assert('is_string($userName); // $userName must be of type string');
+        assert('!empty($userName); // $userName can not be empty');
+        assert('is_int($timeDuration); // $timeDuration must be of type int');
+        $db = SessionManager::getDatasource();
+
+        /* get the current user password expiry time */
+        $time = $db->select("user.$userName.user_pwd_time");
+        if (!empty($time)) {
+            $expiryTime = $time + ($timeDuration * 30 * 24 * 60 * 60);
+            if ($expiryTime < time()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Password allowed
+     *
+     * This function checks if the password was allready used by the user.
+     * So it can be guaranteed that the user will not reuse the same passwords.
+     *
+     * The maximum number of past passwords is stored in the profile settings at
+     * key $PROFILE.USER.PASSWORD.COUNT.
+     *
+     * @access      private
+     * @static
+     * @param       string $old_password  old password
+     * @param       string $new_password  new password
+     * @return      bool
+     */
+    private static function _isAllowedPwd($old_password, $new_password)
+    {
+        assert('is_string($new_password); // $new_password must be of type string');
+        assert('!empty($new_password); // $new_password can not be empty');
+        global $YANA;
+        $db = SessionManager::getDatasource();
+        
+        /* get information how many passwords which was allready used will be needed for checking with the new one */
+        $count_pwd = (int) $YANA->getVar("PROFILE.USER.PASSWORD.COUNT");
+
+        /* get the current user from session*/
+        $user = $_SESSION['user_name'];
+         
+        /* get the database information from the user table for the curren user */
+        $currentUserInformation = $db->select('user', array('USER_ID', '=', $user));
+
+        $currentUserInformation = array_pop($currentUserInformation);
+        $new_password = YanaUser::calculatePassword($user, $new_password);
+        /* needed for equal with the actually password */
+        $old_password = YanaUser::calculatePassword($user, $old_password);
+         
+        assert('is_array($currentUserInformation); // the value must be of type array');
+        assert('!empty($currentUserInformation); //   the value can not be empty');
+
+        /* check if the old password is correct */
+        if (isset($currentUserInformation['USER_PWD']) && $currentUserInformation['USER_PWD'] != $old_password) {
+            if ($currentUserInformation['USER_PWD'] != 'UNINITIALIZED') {
+                throw new InvalidLoginError();
+            }
+        }
+        /* check if the new password is the same like the last one */
+        if (isset($currentUserInformation['USER_PWD']) && $currentUserInformation['USER_PWD'] == $new_password) {
+            return false;
+        }
+        /* check if the new password is the same like the last (max. 5)*/
+        $currentPWDList = $currentUserInformation['USER_PWD_LIST'];
+        if (isset($currentPWDList)) {
+            if (in_array($new_password, $currentPWDList)) {
+                return false;
+            }
+            array_push($currentPWDList, $currentUserInformation['USER_PWD']);
+            // update the user password list or insert the list if does not exist
+            if (count($currentPWDList) >= $count_pwd) {
+                $currentPWDList = array_splice($currentPWDList, count($currentPWDList) - $count_pwd);
+            }
+        } else {
+            // create the list with the password
+            $currentPWDList = array($currentUserInformation['USER_PWD']);
+        }
+        $db->update("USER.$user.USER_PWD_LIST", $currentPWDList);
+        /* set pwd create date if not exist or update */
+        $db->update("USER.$user.USER_PWD_TIME", mktime());
+        if (!$db->commit()) {
+            throw new Error();
+        }
+        return true;
+    }
+}
+?>

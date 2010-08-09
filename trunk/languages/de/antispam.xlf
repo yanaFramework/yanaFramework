@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="de">
+        <header/>
+        <body>
+            <group id="spam">
+                <trans-unit id="spam.0">
+                    <source>level of protection</source>
+                    <target>Sicherheitsstufe</target>
+                </trans-unit>
+                <trans-unit id="spam.1">
+                    <source>user defined settings</source>
+                    <target>benutzerdefinierte Einstellungen</target>
+                </trans-unit>
+                <trans-unit id="spam.2">
+                    <source>Should a CAPTCHA be used?</source>
+                    <target>Soll ein "CAPTCHA" verwendet werden?</target>
+                </trans-unit>
+                <trans-unit id="spam.3">
+                    <source>Should known (logged in) users also be checked?</source>
+                    <target>Sollen auch angemeldete Benutzer geprüft werden?</target>
+                </trans-unit>
+                <trans-unit id="spam.4">
+                    <source>Should rejected entries (junk) be logged?</source>
+                    <target>Sollen abgewiesene Einträge (Spam) protkolliert werden?</target>
+                </trans-unit>
+                <trans-unit id="spam.5">
+                    <source>Should users be prevented from sending form data multiple times?</source>
+                    <target>Soll das doppelte Absenden von Formularen verhindert werden?</target>
+                </trans-unit>
+                <trans-unit id="spam.6">
+                    <source>Should header data send by the browser be included in checks?</source>
+                    <target>Soll der vom Browser gesendete Header geprüft werden?</target>
+                </trans-unit>
+                <trans-unit id="spam.7">
+                    <source>Should entries be checked for suspicious words?</source>
+                    <target>Soll nach verdächtigen Wörtern durchsucht werden?</target>
+                </trans-unit>
+                <trans-unit id="spam.8">
+                    <source>List of blocked words</source>
+                    <target>Liste geblockter Wörter</target>
+                </trans-unit>
+                <trans-unit id="spam.9">
+                    <source>Words, that may not be found</source>
+                    <target>Wörter, welche nicht enthalten sein dürfen</target>
+                </trans-unit>
+                <trans-unit id="spam.10">
+                    <source>Do you want to use regular expressions?</source>
+                    <target>Möchten Sie reguläre Ausdrücke verwenden?</target>
+                </trans-unit>
+            </group>
+            <group id="spam.level">
+                <trans-unit id="spam.level.0">
+                    <source>deactivated</source>
+                    <target>deaktiviert</target>
+                </trans-unit>
+                <trans-unit id="spam.level.1">
+                    <source>low</source>
+                    <target>niedrig</target>
+                </trans-unit>
+                <trans-unit id="spam.level.2">
+                    <source>medium</source>
+                    <target>mittel</target>
+                </trans-unit>
+                <trans-unit id="spam.level.3">
+                    <source>high</source>
+                    <target>hoch</target>
+                </trans-unit>
+                <trans-unit id="spam.level.user">
+                    <source>user defined</source>
+                    <target>benutzerdefiniert</target>
+                </trans-unit>
+            </group>
+            <group id="spam.desc">
+                <trans-unit id="spam.desc.captcha">
+                    <source>Application of CAPTCHA is activated.</source>
+                    <target>Die Verwendung von CAPTCHA ist aktiviert.</target>
+                </trans-unit>
+                <trans-unit id="spam.desc.nocaptcha">
+                    <source>No CAPTCHA is used.</source>
+                    <target>Es wird kein CAPTCHA verwendet.</target>
+                </trans-unit>
+                <trans-unit id="spam.desc.words">
+                    <source>Words are filtered.</source>
+                    <target>Wörter werden gefiltert.</target>
+                </trans-unit>
+                <trans-unit id="spam.desc.nowords">
+                    <source>Words are not filtered.</source>
+                    <target>Wörter werden nicht gefiltert.</target>
+                </trans-unit>
+                <trans-unit id="spam.desc.login">
+                    <source>All users will be checked.</source>
+                    <target>Es werden alle Benutzer geprüft.</target>
+                </trans-unit>
+                <trans-unit id="spam.desc.nologin">
+                    <source>Only users, who are not logged in, will be checked.</source>
+                    <target>Es werden nur Benutzer ohne Login geprüft.</target>
+                </trans-unit>
+                <trans-unit id="spam.desc.form">
+                    <source>Preventing users from sending form data multiple times.</source>
+                    <target>Doppeltes Absenden von Formularen wird unterbunden.</target>
+                </trans-unit>
+                <trans-unit id="spam.desc.none">
+                    <source>The input is not checked.</source>
+                    <target>Es wird keine Überprüfung der Nutzereingaben durchgeführt.</target>
+                </trans-unit>
+                <trans-unit id="spam.desc.user">
+                    <source>This option enables you to choose individual settings.</source>
+                    <target>Diese Option erlaubt Ihnen, individuelle Einstellungen vorzunehmen.</target>
+                </trans-unit>            
+            </group>
+            <group id="help">
+                <trans-unit id="help.1">
+                    <source>This menu enables you to choose, if and by which filters the input, the visitor sends to the server, is automatically checked. This aims at the avoidance of unrequested ads and vandalism. If the user's input is suspicious, the process will automatically be aborted. A message will be generated for the visitor, to describe the error and an entry will be added to the system's logs, for you to review.</source>
+                    <target>Dieses Menü erlaubt festzulegen, ob und auf welche Weise die Eingaben, welche der Benutzer an den Server sendet, automatisch geprüft werden. Dies dient dazu, unerwünschte Werbung und Vandalismus zu vermeiden. Sollten die Eingaben des Benutzers nicht akzeptiert werden, wird der Vorgang automatisch abgebrochen. Es wird eine Meldung für den Benutzer generiert, welche den Fehler beschreibt und es wird ein Eintrag im Protokoll des System angelegt, welchen Sie einsehen und prüfen können.</target>
+                </trans-unit>
+                <trans-unit id="help.2">
+                    <source>This menu lets you choose a level of protection. These are meant to ease the configuration for you. Each level provides you with predefined settings. If you are not satisfied with these, you may choose the menu's option "user defined", to choose individual settings for all sections.</source>
+                    <target>Dieses Menü erlaubt Ihnen eine Sicherheitsstufe auszuwählen. Diese sollen Ihnen die Konfiguration erleichtern. Jede Stufe bietet Ihnen vordefinierte Einstellungen. Sollten Sie mit diesen jedoch nicht zufrieden sein, können Sie den Menüpunkt "benutzerdefiniert" wählen, um individuelle Einstellungen für alle Bereiche vornehmen zu können.</target>
+                </trans-unit>
+                <trans-unit id="help.3">
+                    <source>A "CAPTCHA" is an image, that shows numbers and letters, the user must type in a form field. While a human can read the image, most automated programs (bots) are not able to do this.</source>
+                    <target>Ein "CAPTCHA" ist eine Grafik mit Zahlen und Buchstaben, welche der Benutzer abtippen muss. Während ein Mensch dies lesen kann, können automatische Programme (Bots) dies in der Regel nicht.</target>
+                </trans-unit>
+                <trans-unit id="help.4">
+                    <source>If you choose "yes", input will always be checked. If you choose "no", only unknown visitors without a login will be checked.</source>
+                    <target>Falls "ja" werden die Eingaben immer geprüft. Falls "nein" werden nur Gäste geprüft, die keinen eigenen Login besitzen.</target>
+                </trans-unit>
+                <trans-unit id="help.5">
+                    <source>The logs can be found via the administration panel. This option is only available, if the system logs are activated.</source>
+                    <target>Das Protokoll finden Sie über das Administrationsmenü. Dieser Optionspunkt steht nur zur Verfügung, wenn das Systemprotokoll aktiviert wurde.</target>
+                </trans-unit>
+                <trans-unit id="help.6">
+                    <source>Prevents user from accidentally sending form data multiple times. Also a user may submit a form no earlier than 3 seconds after it has been opened. This provides good protection against unrequested ads through automated programs.</source>
+                    <target>Verhindert, dass ein Benutzer ein Formular aus Versehen mehrmals abschickt. Außerdem kann ein gerade aufgerufenes Formular frühestens nach 3 Sekunden abgesendet werden. Diese Massnahme bietet einen guten Schutz vor unerwünschter Werbung durch automatische Programme.</target>
+                </trans-unit>
+                <trans-unit id="help.7">
+                    <source>Checks the header data send by the browser for signatures of known bots.</source>
+                    <target>Prüft den vom Browser gesendeten Header auf Angaben, bekannter Bots.</target>
+                </trans-unit>
+                <trans-unit id="help.8">
+                    <source>Checks input for suspicious words, which may not be present. If any such word is found, the entry will not be added.</source>
+                    <target>Durchsucht die Eingabedaten nach bestimmten Wörtern, welche diese nicht enthalten dürfen. Wird ein solches Wort gefunden, so wird der Eintrag nicht gespeichert.</target>
+                </trans-unit>
+                <trans-unit id="help.9">
+                    <source>Experienced users may increase the efficiency of this filter, by providing words as regular expressions. For regular expressions a perl-compatible syntax is used.</source>
+                    <target>Erfahrene Nutzer können die Effektivität dieses Filters erhöhen, indem Sie diese Wörter als reguläre Ausdrücke angeben. Für reguläre Ausdrücke wird die Perl-Syntax verwendet.</target>
+                </trans-unit>
+                <trans-unit id="help.10">
+                    <source/>
+                    <target/>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

@@ -1,0 +1,216 @@
+/**
+ * {@internal
+ * BE WARNED: While Opera, Firefox and others will work just fine,
+ * IE versions up to 7.x are unable to understand the
+ * attribute selector and the ":hover" pseudo-class
+ * on input-tags. IE 7.x won't display this if it is run
+ * in IE 6 compatibility mode. This is mode is activated if
+ * the template uses HTML4 instead of XHTML.
+ * Be sure to use the right Doctype - don't forget it!
+ * }}
+ */
+ 
+/* following styles are to mark required information */
+.additional
+{
+    color: #808080;
+}
+.optional
+{
+    color: #555;
+}
+.mandatory
+{
+    color: #333;
+}
+input.additional,
+select.additional,
+button.additional
+{
+    border: 1px dashed #aaaaaa;
+    background-color: #eeeeee;
+}
+input.optional,
+select.optional,
+button.optional
+{
+    border: 1px solid #888;
+    background: #e0e0e0;
+}
+input.mandatory,
+select.mandatory,
+button.mandatory
+{
+    border: 1px solid #a88;
+    background: #e6d5d2;
+}
+/* select boxes */
+select, option
+{
+    background-color: #E3E9EF;
+    color: #005080;
+}
+select:hover,
+select:hover option,
+option:hover
+{
+    background-color: #FFF8E0;
+    color: #000000;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+}
+select
+{
+    background-image: url('input_text.gif');
+    border: 1px solid #778899;
+}
+select:hover
+{
+    background-image: url('input_text_hover.gif');
+}
+/* border styling and color */
+textarea, input[type="text"],
+input[type="password"],
+input[type="file"]
+{
+    border: 1px solid #778899;
+    color: #005080;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+}
+select:hover,
+textarea:hover,
+input[type="text"]:hover,
+input[type="password"]:hover,
+input[type="file"]:hover
+{
+    border-color: #CCBB33 ! important;
+    color: #333333 ! important;
+    -moz-box-shadow: 0 0 5px rgba(120, 120, 120, 0.5);
+    -webkit-box-shadow: 0 0 5px rgba(120, 120, 120, 0.5);
+    box-shadow: 0 0 5px rgba(120, 120, 120, 0.5);
+}
+/* textarea styles */
+textarea,
+textarea.cke_source
+{
+    background-color: #E3E9EF;
+    background-image: url("input_textarea.gif");
+    background-attachment: scroll;
+    line-height: 17px;
+    font-size: 14px;
+    font-family: 'Courier New', 'Courier', monospace;
+}
+textarea.invalid
+{
+    border-color: #FF6600;
+    background-image: url("input_textarea_invalid.gif");
+    color: #FF0000;
+}
+textarea.additional
+{
+    background-image: url("input_textarea_additional.gif");
+    border-color: #aaaaaa;
+}
+textarea.optional
+{
+    background-image: url("input_textarea_optional.gif");
+    border-color: #888888;
+}
+textarea.mandatory
+{
+    background-image: url("input_textarea_mandatory.gif");
+    color: #555555;
+    border-color: #a88;
+}
+textarea:hover
+{
+    background-image: url("input_textarea_hover.gif");
+}
+/* font size and margin */
+select, button, input, .buttonize, .buttonize_static
+{
+    font-size: 13px;
+    margin: 0px;
+}
+/* background styles */
+input[type="text"],
+input[type="password"],
+input[type="file"]
+{
+    background-color: #E3E9EF;
+    background-image: url("input_text.gif");
+}
+input.invalid
+{
+    border-color: #FF6600;
+    background-image: url("input_text_invalid.gif");
+    color: #a00000;
+}
+input.additional
+{
+    background-image: url("input_text_additional.gif");
+    border-color: #aaaaaa;
+}
+input.optional
+{
+    background-image: url("input_text_optional.gif");
+    border-color: #888888;
+}
+input.mandatory
+{
+    background-image: url("input_text_mandatory.gif");
+    color: #555555;
+    border-color: #a88;
+}
+/* hover effects */
+input[type="text"]:hover,
+input[type="password"]:hover,
+input[type="file"]:hover
+{
+    background-color: #FEFFEB;
+    background-image: url("input_text_hover.gif");
+}
+/* button styles */
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+button,
+.buttonize,
+.buttonize_static
+{
+    background: #E3E9EF url("input_button.gif");
+    border:     1px solid #778899;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    display: inline-block;
+}
+input[type="button"]:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+button:hover,
+.buttonize:hover
+{
+    border-color: #CCBB33 ! important;
+    color:        #333333 ! important;
+    background:   #FEFFEB url("input_button_hover.gif");
+    -moz-box-shadow: 0 0 5px rgba(120, 120, 120, 0.5);
+    -webkit-box-shadow: 0 0 5px rgba(120, 120, 120, 0.5);
+    box-shadow: 0 0 5px rgba(120, 120, 120, 0.5);
+    text-decoration: none;
+}
+
+input[type="button"][disabled],
+input[type="submit"][disabled],
+input[type="reset"][disabled],
+button[disabled]
+{
+    background:   #E5E5E5 url("input_button_disabled.gif");
+    color:        #aaa;
+    border-color: #888;
+    /* mimic IE's (non-standard) "pressed"-effect */
+    text-shadow: 1px 1px 0px #fff;
+}

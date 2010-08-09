@@ -1,0 +1,550 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="en">
+        <header/>
+        <body>
+            <group id="user">
+                <trans-unit id="user.0">
+                    <source/>
+                    <target>user administration</target>
+                </trans-unit>
+                <trans-unit id="user.1">
+                    <source/>
+                    <target>Administrator</target>
+                </trans-unit>
+                <trans-unit id="user.2">
+                    <source/>
+                    <target>user overview</target>
+                </trans-unit>
+                <trans-unit id="user.3">
+                    <source/>
+                    <target>edit user</target>
+                </trans-unit>
+                <trans-unit id="user.4">
+                    <source/>
+                    <target>enter login</target>
+                </trans-unit>
+                <trans-unit id="user.5">
+                    <source/>
+                    <target>old password</target>
+                </trans-unit>
+                <trans-unit id="user.6">
+                    <source/>
+                    <target>new password</target>
+                </trans-unit>
+                <trans-unit id="user.6a">
+                    <source/>
+                    <target>confirm password</target>
+                </trans-unit>
+                <trans-unit id="user.6b">
+                    <source/>
+                    <target>password quality</target>
+                </trans-unit>
+                <trans-unit id="user.6c">
+                    <source/>
+                    <target>The password shouldn't be easy to guess. Birthdates, names and words from dictionaries are not well suited.
+        It should be at least 8 characters long and should contain at least 1 capital letter, 1 number and 1 special char.
+        <it id="br1" pos="open">&lt;br /&gt;</it>
+        Good passwords need not to be difficult to remember.
+        E.g.: "@n8moon&amp;amp;*sshinebr8" (at night moon and stars shine bright)
+        <it id="br2" pos="open">&lt;br /&gt;</it>
+        Also you may imagine a sentence and take the first letter of the words as the password.
+        E.g.: "my Granny drives 1 red Harley at 100 Miles / Hour to London" as password "mGd1rHa100M/HtL"</target>
+                </trans-unit>
+                <trans-unit id="user.6d">
+                    <source/>
+                    <target>Suggestions for secure passwords</target>
+                </trans-unit>
+                <trans-unit id="user.7">
+                    <source/>
+                    <target>Required: please insert your password here</target>
+                </trans-unit>
+                <trans-unit id="user.8">
+                    <source/>
+                    <target>Required: please insert your password here</target>
+                </trans-unit>
+                <trans-unit id="user.9">
+                    <source/>
+                    <target>after you entered your user name and password click here to log in</target>
+                </trans-unit>
+                <trans-unit id="user.10">
+                    <source/>
+                    <target>change password</target>
+                </trans-unit>
+                <trans-unit id="user.11">
+                    <source/>
+                    <target>Please repeat your new password:</target>
+                </trans-unit>
+                <trans-unit id="user.12">
+                    <source/>
+                    <target>Password does match. Have a nice day!</target>
+                </trans-unit>
+                <trans-unit id="user.13">
+                    <source/>
+                    <target>Password does not match. Please try again.</target>
+                </trans-unit>
+                <trans-unit id="user.14">
+                    <source/>
+                    <target>Password required</target>
+                </trans-unit>
+                <trans-unit id="user.15">
+                    <source/>
+                    <target>Password</target>
+                </trans-unit>
+                <trans-unit id="user.16">
+                    <source/>
+                    <target>Login</target>
+                </trans-unit>
+                <trans-unit id="user.17">
+                    <source/>
+                    <target>more details on this person</target>
+                </trans-unit>
+                <trans-unit id="user.18">
+                    <source/>
+                    <target>create new user</target>
+                </trans-unit>
+                <trans-unit id="user.19">
+                    <source/>
+                    <target>delete this entry</target>
+                </trans-unit>
+                <trans-unit id="user.20">
+                    <source/>
+                    <target>edit this entry</target>
+                </trans-unit>
+                <trans-unit id="user.21">
+                    <source/>
+                    <target>profiles</target>
+                </trans-unit>
+                <trans-unit id="user.22">
+                    <source/>
+                    <target>edit my profile</target>
+                </trans-unit>
+                <trans-unit id="user.23">
+                    <source/>
+                    <target>view this entry</target>
+                </trans-unit>
+                <trans-unit id="user.24">
+                    <source/>
+                    <target>picture</target>
+                </trans-unit>
+                <trans-unit id="user.25">
+                    <source/>
+                    <target>show user profiles</target>
+                </trans-unit>
+                <trans-unit id="user.26">
+                    <source/>
+                    <target>register new user</target>
+                </trans-unit>
+                <trans-unit id="user.27">
+                    <source/>
+                    <target>Please enter your email address</target>
+                </trans-unit>
+                <trans-unit id="user.28">
+                    <source/>
+                    <target>Please enter your preferred user name</target>
+                </trans-unit>
+                <trans-unit id="user.29">
+                    <source/>
+                    <target>user registration</target>
+                </trans-unit>
+                <trans-unit id="user.30">
+                    <source/>
+                    <target>visitors are allowed to create new accounts</target>
+                </trans-unit>
+                <trans-unit id="user.31">
+                    <source/>
+                    <target>please click here to login</target>
+                </trans-unit>
+                <trans-unit id="user.32">
+                    <source/>
+                    <target>user proxies</target>
+                </trans-unit>
+                <trans-unit id="user.33">
+                    <source/>
+                    <target>user</target>
+                </trans-unit>
+                <trans-unit id="user.34">
+                    <source />
+                    <target>e-mail</target>
+                </trans-unit>
+                <trans-unit id="user.35">
+                    <source/>
+                    <target>Forgotten your password?</target>
+                </trans-unit>
+                <trans-unit id="user.36">
+                    <source/>
+                    <target>proxies</target>
+                </trans-unit>
+                <trans-unit id="user.37">
+                    <source/>
+                    <target>calendar import for user</target>
+                </trans-unit>
+                <trans-unit id="user.38">
+                    <source/>
+                    <target>current calendar files</target>
+                </trans-unit>
+                <trans-unit id="user.39">
+                    <source/>
+                    <target>media database</target>
+                </trans-unit>
+                <trans-unit id="user.40">
+                    <source/>
+                    <target>press this button for download the ics file</target>
+                </trans-unit>
+                <trans-unit id="user.mail_subject">
+                    <source/>
+                    <target>password for your account</target>
+                </trans-unit>
+                <trans-unit id="user.mail_body">
+                    <source/>
+                    <target>Welcome {$NAME}!<it id="br1" pos="open">&lt;br /&gt;</it> <it id="br2" pos="open">&lt;br /&gt;</it>We are sending you this mail, because someone set up a new password for your account.<it id="br3" pos="open">&lt;br /&gt;</it> <it id="br4" pos="open">&lt;br /&gt;</it>Your new password is: {$PASSWORT}<it id="br5" pos="open">&lt;br /&gt;</it> <it id="br6" pos="open">&lt;br /&gt;</it>Hope to see you soon!!!</target>
+                </trans-unit>
+                 <trans-unit id="user.mail_lost_pwd_body">
+                    <source/>
+                    <target>Welcome,<it id="br3" pos="open">&lt;br /&gt;</it> <it id="br4" pos="open">&lt;br /&gt;</it>The user {$NAME} is connected with this E-Mail address.We are sending you this mail on {$TIME}, because someone make a request for a new password for your account.<it id="br5" pos="open">&lt;br /&gt;</it> <it id="br6" pos="open">&lt;br /&gt;</it>Pleas click on the follow link: {$WEBSITE}<it id="br7" pos="open">&lt;br /&gt;</it> <it id="br8" pos="open">&lt;br /&gt;</it>The listed link is valid left 4h. After this time you have to make a request for new password one more time. If you should not have effected this process by yourself, do not need to operate this link.</target>
+                </trans-unit>
+                <trans-unit id="user.confirmation_mail">
+                    <source/>
+                    <target>You get this mail because someone has registered on our web site {$SETTINGS.WEBSITE_URL} using your mail address {$MAIL}.<it id="br1" pos="open">&lt;br /&gt;</it> <it id="br2" pos="open">&lt;br /&gt;</it>To confirm this registration, click on this link or copy'n'paste it to your browser's address field and hit (enter)<it id="br3" pos="open">&lt;br /&gt;</it>{$SETTINGS.WEBSITE_URL}?action=USER_AUTHENTIFICATION&amp;target={$KEY}<it id="br4" pos="open">&lt;br /&gt;</it> <it id="br5" pos="open">&lt;br /&gt;</it>If you didn't register for this service, you may ignore and delete this mail.<it id="br6" pos="open">&lt;br /&gt;</it>Please note that the above link is only active for 24 hours. If you don't confirm this registration in time, the account will be deleted automatically.<it id="br7" pos="open">&lt;br /&gt;</it></target>
+                </trans-unit>
+            </group>
+            <group id="user.gender">
+                <trans-unit id="user.gender.m">
+                    <source/>
+                    <target>male</target>
+                </trans-unit>
+                <trans-unit id="user.gender.f">
+                    <source/>
+                    <target>female</target>
+                </trans-unit>
+                <trans-unit id="user.gender.g">
+                    <source/>
+                    <target>group of persons</target>
+                </trans-unit>
+            </group>
+            <group id="user.option">
+                <trans-unit id="user.option.0">
+                    <source/>
+                    <target>user name</target>
+                </trans-unit>
+                <trans-unit id="user.option.1">
+                    <source/>
+                    <target>user group</target>
+                </trans-unit>
+                <trans-unit id="user.option.2">
+                    <source/>
+                    <target>access</target>
+                </trans-unit>
+                <trans-unit id="user.option.3">
+                    <source/>
+                    <target>user active</target>
+                </trans-unit>
+                <trans-unit id="user.option.4">
+                    <source/>
+                    <target>login</target>
+                </trans-unit>
+                <trans-unit id="user.option.5">
+                    <source/>
+                    <target>contact (Mail)</target>
+                </trans-unit>
+                <trans-unit id="user.option.6">
+                    <source/>
+                    <target>picture</target>
+                </trans-unit>
+                <trans-unit id="user.option.7">
+                    <source/>
+                    <target>{$USER.USER_ID} is registered as</target>
+                </trans-unit>
+                <trans-unit id="user.option.8">
+                    <source/>
+                    <target>of profile ID</target>
+                </trans-unit>
+                <trans-unit id="user.option.9">
+                    <source/>
+                    <target>lost password</target>
+                </trans-unit>
+                <trans-unit id="user.option.10">
+                    <source/>
+                    <target>Click here to generate a new password for this user.</target>
+                </trans-unit>
+                <trans-unit id="user.option.11">
+                    <source/>
+                    <target><bpt id="b1">&lt;b&gt;</bpt><bpt id="i1">&lt;i&gt;</bpt>add a new entry<ept id="i1">&lt;/i&gt;</ept><ept id="b1">&lt;/b&gt;</ept></target>
+                </trans-unit>
+                <trans-unit id="user.option.12">
+                    <source/>
+                    <target>remove entry</target>
+                </trans-unit>
+                <trans-unit id="user.option.13">
+                    <source/>
+                    <target>chosen group</target>
+                </trans-unit>
+                <trans-unit id="user.option.14">
+                    <source/>
+                    <target>available groups</target>
+                </trans-unit>
+                <trans-unit id="user.option.15">
+                    <source/>
+                    <target>activate photo</target>
+                </trans-unit>
+                <trans-unit id="user.option.16">
+                    <source/>
+                    <target>about me</target>
+                </trans-unit>
+                <trans-unit id="user.option.17">
+                    <source/>
+                    <target>description</target>
+                </trans-unit>
+                <trans-unit id="user.option.18">
+                    <source/>
+                    <target>Picture not yet been approved!</target>
+                </trans-unit>
+                <trans-unit id="user.option.19">
+                    <source/>
+                    <target>gender</target>
+                </trans-unit>
+                <trans-unit id="user.option.20">
+                    <source/>
+                    <target>{$USER.USER_ID} is {lang id="USER.GENDER.M"}</target>
+                </trans-unit>
+                <trans-unit id="user.option.21">
+                    <source/>
+                    <target>{$USER.USER_ID} is {lang id="USER.GENDER.F"}</target>
+                </trans-unit>
+                <trans-unit id="user.option.22">
+                    <source/>
+                    <target>{$USER.USER_ID} is a {lang id="USER.GENDER.G"}</target>
+                </trans-unit>
+                <trans-unit id="user.option.23">
+                    <source/>
+                    <target>security level</target>
+                </trans-unit>
+                <trans-unit id="user.option.24">
+                    <source/>
+                    <target>user role</target>
+                </trans-unit>
+                <trans-unit id="user.option.25">
+                    <source/>
+                    <target>edit user roles</target>
+                </trans-unit>
+                <trans-unit id="user.option.26">
+                    <source/>
+                    <target>edit user groups</target>
+                </trans-unit>
+                <trans-unit id="user.option.27">
+                    <source/>
+                    <target>assign</target>
+                </trans-unit>
+                <trans-unit id="user.option.28">
+                    <source/>
+                    <target>access granted by</target>
+                </trans-unit>
+                <trans-unit id="user.option.29">
+                    <source/>
+                    <target>profile</target>
+                </trans-unit>
+                <trans-unit id="user.option.30">
+                    <source/>
+                    <target>choose all</target>
+                </trans-unit>
+                <trans-unit id="user.option.31">
+                    <source/>
+                    <target>Status information about assigned rights</target>
+                </trans-unit>
+                <trans-unit id="user.option.32">
+                    <source/>
+                    <target>Groups and Roles assign</target>
+                </trans-unit>
+                <trans-unit id="user.option.33">
+                    <source/>
+                    <target>function</target>
+                </trans-unit>
+                <trans-unit id="user.option.34">
+                    <source/>
+                    <target>rule active</target>
+                </trans-unit>
+                <trans-unit id="user.option.35">
+                    <source/>
+                    <target>predefined</target>
+                </trans-unit>
+                <trans-unit id="user.option.36">
+                    <source/>
+                    <target>password quality - setup</target>
+                </trans-unit>
+                <trans-unit id="user.option.37">
+                    <source/>
+                    <target>minimum quality in percent</target>
+                </trans-unit>
+                <trans-unit id="user.option.38">
+                    <source/>
+                    <target>number of saved passwords</target>
+                </trans-unit>
+                <trans-unit id="user.option.39">
+                    <source/>
+                    <target>password expire time</target>
+                </trans-unit>
+                <trans-unit id="user.option.40">
+                    <source/>
+                    <target>never</target>
+                </trans-unit>
+                <trans-unit id="user.option.41">
+                    <source/>
+                    <target>1 month</target>
+                </trans-unit>
+                <trans-unit id="user.option.42">
+                    <source/>
+                    <target>3 months</target>
+                </trans-unit>
+                <trans-unit id="user.option.43">
+                    <source/>
+                    <target>6 months</target>
+                </trans-unit>
+                <trans-unit id="user.option.44">
+                    <source/>
+                    <target>1 year</target>
+                </trans-unit>
+            </group>
+            <group id="user.profil">
+                <trans-unit id="user.profil.0">
+                    <source/>
+                    <target>'s profile</target>
+                </trans-unit>
+                <trans-unit id="user.profil.1">
+                    <source/>
+                    <target>was registered</target>
+                </trans-unit>
+                <trans-unit id="user.profil.1a">
+                    <source/>
+                    <target>and has been online {$USER.COUNT_LOGINS} times</target>
+                </trans-unit>
+                <trans-unit id="user.profil.2">
+                    <source/>
+                    <target>last login</target>
+                </trans-unit>
+                <trans-unit id="user.profil.3">
+                    <source/>
+                    <target>this profile has been modified on:</target>
+                </trans-unit>
+                <trans-unit id="user.profil.4">
+                    <source/>
+                    <target>{$USER.COUNT_ARTICLES} written articles</target>
+                </trans-unit>
+            </group>
+            <group id="user.calendar">
+                <trans-unit id="user.calendar.name">
+                    <source/>
+                    <target>calendar name</target>
+                </trans-unit>
+                <trans-unit id="user.calendar.file">
+                    <source/>
+                    <target>filename</target>
+                </trans-unit>
+            </group>
+            <trans-unit id="descr_user_edit">
+                <source/>
+                <target>Here you may edit {$USER.USER_ID}'s profile.</target>
+            </trans-unit>
+            <trans-unit id="descr_user_configuration">
+                <source/>
+                <target>This page offers an overview of all registered users.</target>
+            </trans-unit>
+            <group id="help">
+                <trans-unit id="help.user">
+                    <source/>
+                    <target>By using the option "active" you may block an user account temporarily, if needed.</target>
+                </trans-unit>
+                <trans-unit id="help.profile">
+                    <source/>
+                    <target>Click on the symbol in column "{lang id="USER.OPTION.0"}", to view the user's profile.</target>
+                </trans-unit>
+                <trans-unit id="help.access">
+                    <source/>
+                    <target>Click on the symbol in column "{lang id="USER.OPTION.1"}", to set advanced login rules for this user.</target>
+                </trans-unit>
+                <trans-unit id="help.new">
+                    <source/>
+                    <target>For new users the password is created automatically and will be send to the mail address you provided. Please make sure, the mail address is correct.</target>
+                </trans-unit>
+                <trans-unit id="help.user_group">
+                    <source/>
+                    <target>The user group setting tells the status this user is granted in general. This setting works as a default for all profiles.</target>
+                </trans-unit>
+                <trans-unit id="help.chg_rules">
+                    <source/>
+                    <target>If you want to set up separate rules for certain profiles, after creating a user click on "{lang id="USER.OPTION.2"}" at main administration menu to change local access rules.</target>
+                </trans-unit>
+                <trans-unit id="help.access_rules">
+                    <source/>
+                    <target>Local access rules are only used for the guestbook that matches the given ID. You may use this to express, that a user acts as a member of a specific user group when accessing a certain profile. You may use this to (for example) grant an user moderator status.</target>
+                </trans-unit>
+                <trans-unit id="help.mail">
+                    <source/>
+                    <target>Registration requires a working email address, to which your password may be emailed to. So please make sure your mail address is always up to date.<it id="br1" pos="open">&lt;br /&gt;</it> <it id="br2" pos="open">&lt;br /&gt;</it> It will only be used to manage your account and of course we <bpt id="i1">&lt;i&gt;</bpt>will not<ept id="i1">&lt;/i&gt;</ept> move your data on to any third party. You <bpt id="i2">&lt;i&gt;</bpt>will not<ept id="i2">&lt;/i&gt;</ept> get any automatic newsletter and your address <bpt id="i3">&lt;i&gt;</bpt>will not<ept id="i3">&lt;/i&gt;</ept> be shown on our web site.</target>
+                </trans-unit>
+                <trans-unit id="help.password">
+                    <source/>
+                    <target>Please note, that your user name may only consist of letter (a-z), numbers (0-9), as well as underscores or hyphens (_-). Whitespace and special characters are not allowed. It is not case sensitive.</target>
+                </trans-unit>
+                <trans-unit id="help.grants_user">
+                    <source/>
+                    <target>Via this option you may grant your security privileges to other users.</target>
+                </trans-unit>
+                <trans-unit id="help.grants_info">
+                    <source/>
+                    <target>By checking the checkboxes you may choose the privileges you want to grant to the user. Or just click "select all", if you wish to grant all privileges.</target>
+                </trans-unit>
+                <trans-unit id="help.grants_execute">
+                    <source/>
+                    <target>Select the user and confirm your choice by clicking "assign".</target>
+                </trans-unit>
+                <trans-unit id="help.grants_remove_user">
+                    <source/>
+                    <target>Here is a list of users that you previously granted security privileges.</target>
+                </trans-unit>
+                <trans-unit id="help.grants_remove_expert">
+                    <source/>
+                    <target>The list shows the groups, roles and security levels you gave to the user. Mark the entries you wish to remove, or click "select all" to removes all the existing entries.</target>
+                </trans-unit>
+                <trans-unit id="help.grants_remove_non_expert">
+                    <source/>
+                    <target>To remove privileges you previously gave, select the corresponding user and confirm your choice by clicking "remove".</target>
+                </trans-unit>
+                <trans-unit id="help.action_settings">
+                    <source/>
+                    <target>Via this option you can set grant your security privileges to a function. Note that the new defined function can only by used by users which have the expected rules that you set.</target>
+                </trans-unit>
+                <trans-unit id="help.action_settings_execute">
+                    <source/>
+                    <target>Choose a group, role, level and matching function to them this rule is supposed to count you store with "submit".</target>
+                </trans-unit>
+                <trans-unit id="help.password_quality">
+                    <source/>
+                    <target>This options set the password quality requirements. You can choose the minimum password quality and a time duration for a password. Additionally you can choose the number of allready used passwords, too check it and make sure that the new one is not the same like the last x-passwords.</target>
+                </trans-unit>
+                <trans-unit id="help.media_head">
+                    <source/>
+                    <target>This Option has enebeled the view mode for overview current images and additional option for upload a new one. </target>
+                </trans-unit>
+                <trans-unit id="help.media_footer">
+                    <source/>
+                    <target>For change the image into active mode you need only too set the current checkbox.</target>
+                </trans-unit>
+                <trans-unit id="help.new_calendar_head">
+                    <source/>
+                    <target>Use this Option for load the *.ical calendar file into the system.</target>
+                </trans-unit>
+                <trans-unit id="help.new_calendar_description">
+                    <source/>
+                    <target>Please choose the *.ical calendar file from your PC which you want to import:</target>
+                </trans-unit>
+                <trans-unit id="help.view_calendar_head">
+                    <source/>
+                    <target>This Option is used for export your calendar file into the *.ical file format.
+                            For this action you need to press the download icon.
+                            Additionally you can remove your own calendar files from the system</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

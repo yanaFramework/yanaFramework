@@ -1,0 +1,234 @@
+@import url("admin_base.css");
+
+#index_display
+{
+    min-width: 640px;
+    max-width: 1024px;
+}
+* html #index_display
+{
+    width: 700px;
+}
+
+#table_configmenu
+{
+    padding: 20px;
+    background: #f0f0f0 url('configuration_bgd.gif') repeat-x;
+    border: 1px solid #aaa;
+    font-size: 12px;
+    text-align: left;
+    font-family: "Arial", "Helvetica", sans-serif;
+}
+#table_configmenu li
+{
+    list-style-type: none;
+}
+#config_update
+{
+    margin: 20px;
+    text-align: center;
+    font-weight: bold;
+    color: #555;
+    border-top: 1px solid #909090;
+}
+#table_config_profile,
+#table_configmenu h1
+{
+    text-align: center;
+}
+#table_config_profile .profile_default
+{
+    background-color: #fff;
+    color: #000;
+}
+#table_configmenu .config_title #config_refresh_pluginlist
+{
+    margin-top: 5px;
+    float: right;
+}
+#table_configmenu img
+{
+    border: 0px none;
+}
+#table_config_profile img,
+#table_configmenu .config_title img,
+#config_pass img
+{
+    margin: 0 5px -5px 0;
+}
+#table_configmenu input
+{
+    margin-top: 2px;
+}
+#table_configmenu #table_config_profile form
+{
+    display: inline;
+    margin-left: 10px;
+}
+#table_configmenu .config_title
+{
+    border-bottom: 2px solid #909090;
+    color: #333;
+    font-weight: bold;
+    font-size: 22px;
+    padding: 5px;
+    margin-bottom: 10px;
+    margin-top: 30px;
+    text-align: left;
+}
+#config_plugins
+{
+    width: 100%;
+}
+#config_plugins td
+{
+    vertical-align: top;
+}
+#config_plugins li,
+#config_plugins td
+{
+    margin: 15px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+#config_plugins li ul,
+#config_plugins li ul li,
+#config_plugins td ul,
+#config_plugins td ul li
+{
+    margin: 0px;
+    margin-left: 35px;
+    padding-bottom: 2px;
+    border-bottom: 0px none;
+    font-size: 14px;
+}
+/* setup links for active plug-ins */
+#config_plugins a
+{
+    color: #000;
+}
+#config_plugins a.plugin_setup
+{
+    text-decoration: underline;
+}
+#config_plugins .title
+{
+    padding-left: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    vertical-align: top;
+    border-bottom: 1px solid #999;
+}
+#config_plugins .unselected_option .title
+{
+    border-bottom-color: #aac;
+}
+.default_selected_option
+{
+    color: #909090;
+    font-weight: bold;
+}
+.default_selected_option .title
+{
+    font-style: italic;
+}
+.selected_option
+{
+    color: #555;
+    font-weight: bold;
+}
+.unselected_option
+{
+    color: #aaa;
+    font-weight: normal;
+}
+
+
+
+.optionsetting
+{
+    padding: 5px;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 175%;
+}
+.optionhead
+{
+    display: block;
+    cursor: pointer;
+}
+.config_menu_open, .config_menu_closed
+{
+    display: block;
+    overflow: hidden;
+    float: right;
+    height: 21px;
+    width: 21px;
+    margin: 10px;
+    background-repeat: no-repeat;
+    background-position: right top;
+}
+div.config_menu
+{
+}
+div.config_menu .optionbody
+{
+    display: none;
+}
+div.config_menu:hover .optionbody
+{
+    display: block;
+}
+.config_menu_open
+{
+    background-image: url("icon4.gif");
+}
+.config_menu_closed
+{
+    background-image: url("icon3.gif");
+}
+ol
+{
+    list-style-image: url("array_list_item.gif");
+}
+ul.small_bullet
+{
+    list-style-image: url('btn-xs.gif');
+    margin-top: 0;
+    margin-bottom: 0;
+}
+div.optionsetting div.plugin_setup_button
+{
+    float: right;
+    margin: 10px;
+    display: block;
+}
+#config_pass .floating_menu
+{
+    width: 400px;
+    display: block;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 2px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: normal;
+    display: none;
+}
+#config_pass .floating_menu .header
+{
+    height: 20px;
+}
+.progressbar
+{
+    background-color: #000;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    background-image: url('progressbar.png');
+    background-position: 0px 0px;
+}
+#config_pass .floating_menu .help
+{
+    padding: 5px;
+}
