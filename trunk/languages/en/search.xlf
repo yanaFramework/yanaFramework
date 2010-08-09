@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN"
+ "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" >
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="en">
+        <header/>
+        <body>
+            <trans-unit id="program_title">
+                <source/>
+                <target>search engine</target>
+            </trans-unit>
+            <trans-unit id="search">
+                <source/>
+                <target>search for:</target>
+            </trans-unit>
+            <trans-unit id="stats_button">
+                <source/>
+                <target>statistics</target>
+            </trans-unit>
+            <trans-unit id="stats_title">
+                <source/>
+                <target>click to see, what words other people are searching for</target>
+            </trans-unit>
+            <trans-unit id="related">
+                <source/>
+                <target>related words to</target>
+            </trans-unit>
+            <trans-unit id="searchfor">
+                <source/>
+                <target>searching for:</target>
+            </trans-unit>
+            <trans-unit id="stats_name">
+                <source/>
+                <target>statistics</target>
+            </trans-unit>
+            <trans-unit id="stats_hits">
+                <source/>
+                <target>hits</target>
+            </trans-unit>
+            <trans-unit id="stats_hit">
+                <source/>
+                <target>hit</target>
+            </trans-unit>
+            <trans-unit id="js_show">
+                <source/>
+                <target>showing</target>
+            </trans-unit>
+            <trans-unit id="js_of">
+                <source/>
+                <target>of</target>
+            </trans-unit>
+            <trans-unit id="js_results">
+                <source/>
+                <target>search results</target>
+            </trans-unit>
+            <trans-unit id="js_hits">
+                <source/>
+                <target>hits</target>
+            </trans-unit>
+            <trans-unit id="about">
+                <source/>
+                <target>en/search/about.html</target>
+            </trans-unit>
+            <trans-unit id="whatsrelated">
+                <source/>
+                <target>en/search/whatsrelated.html</target>
+            </trans-unit>
+            <trans-unit id="stats_missing">
+                <source/>
+                <target><bpt id="b1">&lt;b&gt;</bpt>Dear visitor:<ept id="b1">&lt;/b&gt;</ept> the statistics option is temporarily not available. Please inform the administrator of this site.<it id="br1" pos="open">&lt;br /&gt;</it> <it id="br2" pos="open">&lt;br /&gt;</it><bpt id="b2">&lt;b&gt;</bpt>Administrator:<ept id="b2">&lt;b&gt;</ept> Please make sure the script has writing access to the directory "{$COUNTERDIR}". This is needed in order to allow this script to store statistic information about your search engine.</target>
+            </trans-unit>
+            <trans-unit id="target">
+                <source/>
+                <target>Target</target>
+            </trans-unit>
+            <trans-unit id="target_description">
+                <source/>
+                <target>Name of the target frame, to open search results in.</target>
+            </trans-unit>
+            <group id="target_examples">
+                <trans-unit id="target_examples.0">
+                    <source/>
+                    <target>_blank for "new window"</target>
+                </trans-unit>
+                <trans-unit id="target_examples.1">
+                    <source/>
+                    <target>_self for "current frame"</target>
+                </trans-unit>
+                <trans-unit id="target_examples.2">
+                    <source/>
+                    <target>_top    for "current window"</target>
+                </trans-unit>
+            </group>
+            <trans-unit id="search_link">
+                <source/>
+                <target>URL of this program</target>
+            </trans-unit>
+            <trans-unit id="prefix">
+                <source/>
+                <target>Prefix for Links</target>
+            </trans-unit>
+            <group id="prefix_examples">
+                <trans-unit id="prefix_examples.0">
+                    <source/>
+                    <target>will be inserted before the link, exp. http://www.domain.tld/path/ or pathA/pathB/pathC/</target>
+                </trans-unit>
+                <trans-unit id="prefix_examples.1">
+                    <source/>
+                    <target>change this value, if you want to move this script to another directory or even another domain, but don't want to create new index files</target>
+                </trans-unit>
+                <trans-unit id="prefix_examples.2">
+                    <source/>
+                    <target>all links will automatically be relocated to the URL specified by the prefix</target>
+                </trans-unit>
+            </group>
+            <group id="upload">
+                <trans-unit id="upload.header">
+                    <source/>
+                    <target>upload search index</target>
+                </trans-unit>
+                <trans-unit id="upload.docs">
+                    <source/>
+                    <target>document-index</target>
+                </trans-unit>
+                <trans-unit id="upload.keys">
+                    <source/>
+                    <target>keyword-index</target>
+                </trans-unit>
+            </group>
+            <group id="indexer">
+                <trans-unit id="indexer.header">
+                    <source/>
+                    <target>create search index online</target>
+                </trans-unit>
+                <trans-unit id="indexer.dir">
+                    <source/>
+                    <target>source directory</target>
+                </trans-unit>
+                <trans-unit id="indexer.recurse">
+                    <source/>
+                    <target>recurse subdirectories</target>
+                </trans-unit>
+                <trans-unit id="indexer.meta">
+                    <source/>
+                    <target>include meta tags</target>
+                </trans-unit>
+            </group>
+            <group id="help">
+                <trans-unit id="help.upload">
+                    <source/>
+                    <target>If you created the search index offline with the included java tool, you may use this form to upload the generated files (documents.dat, keywords.dat). In case an old search index already exists, it will be replaced automatically.</target>
+                </trans-unit>
+                <trans-unit id="help.dir">
+                    <source/>
+                    <target>Provide the path to the directory, where the documents reside, which you want to index.</target>
+                </trans-unit>
+                <trans-unit id="help.recurse">
+                    <source/>
+                    <target>Decide, whether subdirectories, inside the document directory, should be searched as well.</target>
+                </trans-unit>
+                <trans-unit id="help.meta">
+                    <source/>
+                    <target>Decide, whether keywords, found in the meta tags of a document, should be included in the results, or not.</target>
+                </trans-unit>
+                <trans-unit id="help.index">
+                    <source/>
+                    <target>You may use this form to create a search index now, using an included a indexer. Note: only files with the extensions html, htm, xml and shtml will be searched. Directories beginning with an underscore '_' will be ignored (you may use this to permanently prevent files from being indexed).</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

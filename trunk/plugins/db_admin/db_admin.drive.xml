@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<!--
+	Diese Datei enthält eine Liste von Mountpoints für ein virtuelles Laufwerk!
+	Die enthaltenen Einträge dürfen auf keinen Fall geändert werden.
+
+	This file contains a list of mount points for a virtual drive!
+	The contained entries may not be changed at any case.
+-->
+<drive name="db_admin">
+    <file name="dbconfig.textfile">
+    	<source>{$CONFIGDIR}dbconfig.php</source>
+    	<requirements readable="yes" writeable="yes" executable="yes"/>
+    </file>
+</drive>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE language SYSTEM "../config/dtd/language.dtd">
+<language>
+    <title>Deutsch (Deutschland)</title>
+    <author>Thomas Meyer</author>
+    <url>http://www.yanaframework.net</url>
+    <description>German language files</description>
+    <description lang="de">Deutsche Sprachdateien</description>
+</language>

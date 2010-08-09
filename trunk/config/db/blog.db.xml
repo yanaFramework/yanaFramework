@@ -1,0 +1,106 @@
+<?xml version="1.0" ?>
+<!DOCTYPE database SYSTEM "../dtd/database.dtd">
+<database title="Blog">
+    <table name="blog" title="Blog">
+        <primarykey>blog_id</primarykey>
+        <declaration>
+            <integer
+                name="blog_id"
+                length="8"
+                notnull="yes"
+                autoincrement="yes"/>
+            <string
+                name="blog_title"
+                length="80"
+                notnull="yes"
+                title='{lang id="BLOG.TITLE"}' />
+            <html
+                name="blog_text"
+                length="3000"
+                notnull="yes"
+                title='{lang id="BLOG.TEXT"}'>
+            </html>
+            <timestamp
+                name="blog_created"
+                notnull="yes"
+                title='{lang id="BLOG.CREATED"}'>
+                <grant update="no"/>
+                <default>CURRENT_TIMESTAMP</default>
+            </timestamp>
+            <string
+                name="blog_author"
+                length="80"
+                title='{lang id="BLOG.NAME"}'>
+            </string>
+            <string name="profile_id" notnull="yes" length="128"/>
+        </declaration>
+    </table>
+    <table name="blogcmt" title='{lang id="BLOG.CMTS"}'>
+        <primarykey>blogcmt_id</primarykey>
+        <foreign table="blog">
+            <key name="blog_id"/>
+        </foreign>
+        <declaration>
+            <integer
+                name="blogcmt_id"
+                length="8"
+                notnull="yes"
+                autoincrement="yes">
+            </integer>
+            <text
+                name="blogcmt_text"
+                length="1500"
+                notnull="yes"
+                title='{lang id="BLOG.TEXT"}'>
+            </text>
+            <timestamp
+                name="blogcmt_created"
+                notnull="yes"
+                readonly="yes"
+                title='{lang id="BLOG.CREATED"}'>
+                <default>CURRENT_TIMESTAMP</default>
+            </timestamp>
+            <string
+                name="blogcmt_author"
+                length="80"
+                title='{lang id="BLOG.NAME"}'>
+            </string>
+            <reference
+                name="blog_id"
+                notnull="yes"
+                table="blog"
+                column="blog_id" label="blog_title"
+                title='{lang id="BLOG.TOPIC"}'>
+            </reference>
+            <string name="profile_id" notnull="yes" length="128"/>
+        </declaration>
+    </table>
+    <form name="blog" table="blog" allinput="yes" template="1">
+        <grant delete="no" insert="no" update="no"/>
+        <grant user="admin" level="75"/>
+        <grant user="blog" role="moderator"/>
+        <input name="blog_id" hidden="yes"/>
+        <input name="profile_id" hidden="yes"/>
+        <input name="blog_created" readonly="yes">
+            <grant insert="no"/>
+        </input>
+        <form name="blogcmt" table="blogcmt" allinput="yes" template="1">
+            <grant delete="no" update="no"/>
+            <grant user="admin" level="75"/>
+            <grant user="blog" role="moderator"/>
+            <input name="blog_id" hidden="yes"/>
+            <input name="blogcmt_id" hidden="yes"/>
+            <input name="profile_id" hidden="yes"/>
+            <input name="blogcmt_created">
+                <grant insert="no"/>
+            </input>
+            <event name="insert">blog_new_blogcmt</event>
+            <event name="update">blog_edit_blogcmt</event>
+            <event name="delete">blog_delete_blogcmt</event>
+        </form>
+        <event name="insert">blog_new_blog</event>
+        <event name="update">blog_edit_blog</event>
+        <event name="delete">blog_delete_blog</event>
+        <event name="search">blog_search_blog</event>
+    </form>
+</database>

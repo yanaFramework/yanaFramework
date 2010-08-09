@@ -1,0 +1,29 @@
+<!ENTITY % inc SYSTEM "database.inc.dtd"> %inc;
+
+<!ELEMENT form (description?, grant*, input*, form*, event*)>
+<!ATTLIST form
+  %name;
+  table     %required;
+  template  %implied;
+  key       %implied;
+  title     %implied;
+  allinput  %bool;
+>
+<!ELEMENT input (((description?, grant*)|(%fields;)), event*)>
+<!ATTLIST input
+  %name;
+  hidden    %bool;
+  readonly  %bool;
+  cssclass  %implied;
+  tabindex  %implied;
+  title     %implied;
+>
+
+<!ELEMENT event (#PCDATA)>
+<!ATTLIST event
+  %name;
+  language  %implied;
+  title     %implied;
+  label     %implied;
+  icon      %implied;
+>

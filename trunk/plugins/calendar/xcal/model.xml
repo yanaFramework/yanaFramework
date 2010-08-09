@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE iCalendar SYSTEM "../../../config/dtd/xcal.dtd">
+<iCalendar>
+  <vcalendar prodid="-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN" version="2.0">
+    <vtimezone>
+      <tzid>Europe/Berlin</tzid>
+      <daylight>
+        <tzoffsetfrom>+0100</tzoffsetfrom>
+        <tzoffsetto>+0200</tzoffsetto>
+        <dtstart>19700329T020000Z</dtstart>
+        <rrule>FREQ=YEARLY;BYDAY=-1SU;BYMONTH=3</rrule>
+        <tzname>CEST</tzname>
+      </daylight>
+      <standard>
+        <tzoffsetfrom>+0200</tzoffsetfrom>
+        <tzoffsetto>+0100</tzoffsetto>
+        <dtstart>19701025T030000Z</dtstart>
+        <rrule>FREQ=YEARLY;BYDAY=-1SU;BYMONTH=10</rrule>
+        <tzname>CET</tzname>
+      </standard>
+    </vtimezone>
+</vcalendar>
+</iCalendar>

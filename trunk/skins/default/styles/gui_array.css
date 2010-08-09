@@ -1,0 +1,88 @@
+.gui_generator_view_details .gui_generator_array
+{
+    width: 100%;
+    height: 100px;
+    overflow: auto;
+}
+
+ul.gui_array_list
+{
+    font-size: 11px;
+}
+ul.gui_array_list a img
+{
+    border: 0;
+}
+ul li .gui_array_key
+{
+    color: #000;
+    font-weight: bold;
+}
+li.gui_array_head > .gui_array_key, li.gui_array_head_open > .gui_array_key
+{
+    text-decoration: underline;
+}
+ul li .gui_array_value
+{
+    white-space: pre;
+    margin-left: 10px;
+    font-style: italic;
+    font-weight: normal;
+}
+li.gui_array_list
+{
+    list-style-image: url('array_list_item.gif');
+    list-style-position: inside;
+}
+li.gui_array_head, li.gui_array_head_open
+{
+    list-style-image: url('array_list_close.gif');
+}
+li.gui_array_head:hover,  li.gui_array_head_open
+{
+    list-style-image: url('array_list_open.gif');
+}
+li.gui_array_head ul.gui_array_list
+{
+    display: none;
+}
+li.gui_array_head:hover > ul.gui_array_list, li.gui_array_head_open > ul.gui_array_list
+{
+    display: block;
+}
+
+li.gui_generator_array_reference
+{
+    display: none;
+}
+
+.gui_generator_array
+{
+    font-weight: bold;
+    font-size: 10px;
+}
+
+.gui_generator_array ul
+{
+    overflow: auto;
+    text-align: left;
+}
+.gui_generator_array > ul
+{
+    padding-left: 0px;
+}
+
+.gui_generator_array li
+{
+    white-space: nowrap;
+}
+
+.gui_generator_array img, div.gui_generator_edit .gui_generator_array img
+{
+    vertical-align: -5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 0;
+    margin-bottom: 0;
+    border: 0 none;
+}

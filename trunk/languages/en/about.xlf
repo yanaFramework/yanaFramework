@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN"
+ "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" >
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="en">
+        <header>
+            <note>
+                 This file contains information that will be shown in the "about" information window
+                 when the user clicks on the name of a skin-package in the administration panel.
+            </note>
+        </header>
+        <body>
+            <group id="skin.description">
+                <trans-unit id="skin.description.blue">
+                    <source/>
+                    <target>A lightweight skin for good performance. Tables without rounded edges. The skin uses blue colors (this also makes the name).</target>
+                </trans-unit>
+                <trans-unit id="skin.description.default">
+                    <source/>
+                    <target>This is the standard skin of the application. It includes templates for the main program and all official plugins. This skin must not be uninstalled! All other skins are based on it. When a template is required that is not available in any other skin, the application automatically fall back to this standard skin to create the output.<it id="br1" pos="open">&lt;br /&gt;</it> <it id="br2" pos="open">&lt;br /&gt;</it> <bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt><bpt id="b1">&lt;b&gt;</bpt>Hint:<ept id="b1">&lt;/b&gt;</ept> When writing you own plugins, you do NOT need to write templates for all skins that exist somewhere on the web. Instead templates ONLY NEED to exist for this standard skin to be available and stylable to all other skins as well.<ept id="c1">&lt;/span&gt;</ept></target>
+                </trans-unit>
+                <trans-unit id="skin.description.light">
+                    <source/>
+                    <target>This skin drops the buttons "New", "Details" and "Overview". Instead there is only one view for all.</target>
+                </trans-unit>
+                <trans-unit id="skin.description.minimal">
+                    <source/>
+                    <target>An elegant, text based skin without unnecessary images. The layout is produced by stylesheets.</target>
+                </trans-unit>
+                <trans-unit id="skin.description.natural">
+                    <source/>
+                    <target>This is a colorful skin that mainly uses brown and yellow, which creates some kind of "autumn" mood.</target>
+                </trans-unit>
+                <trans-unit id="skin.description.simple">
+                    <source/>
+                    <target>A light weight skin for the purists. Uses a decent, light gray, with blue highlights.</target>
+                </trans-unit>
+                <trans-unit id="skin.description.tabular">
+                    <source/>
+                    <target>This skin replaces the guestbook plugin's standard output by tabular lists.</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

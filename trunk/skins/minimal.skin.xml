@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE skin SYSTEM "../config/dtd/skin.dtd">
+<skin>
+    <head>
+        <title>Minimal (text only)</title>
+        <author>Thomas Meyer</author>
+        <url>http://www.yanaframework.net</url>
+        <description>
+            An elegant, text based skin without unnecessary images.
+            The layout is produced by stylesheets.
+        </description>
+        <description lang="de">
+            Ein eleganter, textbasierter Skin ohne überflüssige Grafiken.
+            Das Layout wird von Stylesheets geprägt.
+        </description>
+    </head>
+    <body>
+        <template id="INDEX" file="minimal/index.html.tpl">
+            <style>minimal/styles/menu.css</style>
+            <style id="skin">minimal/styles/default.css</style>
+        </template>
+    </body>
+</skin>

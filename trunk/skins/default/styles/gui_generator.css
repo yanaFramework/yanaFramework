@@ -1,0 +1,914 @@
+@import url("gui_array.css");
+
+/* global template style definitions */
+.gui_generator_edit
+{
+    overflow: auto;
+    width: 100%;
+}
+.gui_generator_config textarea
+{
+    width: 350px;
+    height: 100px;
+}
+.gui_generator_search
+{
+    overflow: auto;
+}
+.gui_generator_search .gui_generator_search_form
+{
+    font-size: 13px;
+}
+.gui_generator_table.gui_generator_search_form .gui_generator_thead,
+.gui_generator_view .gui_generator_search_form th
+{
+    background: url('td_bgd.png') repeat-x #f3f3f3;
+    border-color: #ddd;
+    color: #888;
+}
+.gui_generator_search table caption
+{
+    text-align: left;
+    background: url('td_bgd.png') repeat-x #f3f3f3;
+    color: #444;
+    border: 1px solid #ddd;
+    padding: 2px;
+}
+.gui_generator_table.gui_generator_search_form:hover .gui_generator_thead,
+.gui_generator_view tr.gui_generator_search_form:hover th,
+.gui_generator_view tr.gui_generator_search_form:hover td,
+.gui_generator_view .gui_generator_search_form tr:hover th,
+.gui_generator_view .gui_generator_search_form tr:hover td
+{
+    background: url('td_hover_bgd.gif');
+    color: #555;
+}
+.gui_generator_search_form input,
+.gui_generator_search_form input[type="submit"],
+.gui_generator_search_form select
+{
+    border-color: #ccc;
+    color: #888;
+}
+.gui_generator_radio_none,
+.gui_generator_radio_true,
+.gui_generator_radio_false
+{
+    margin-right: 10px;
+}
+.gui_generator_radio
+{
+    margin-left: 5px;
+    margin-right: 5px;
+    vertical-align: bottom;
+}
+.gui_generator_view
+{
+    overflow: auto;
+    /* width: 100%; */
+    padding: 5px;
+}
+.gui_generator_single_entry table
+{
+    margin: auto;
+}
+.gui_generator_view table, .gui_generator_search table
+{
+    border: 1px solid #c0c0c0;
+}
+.gui_generator_view td
+{
+    padding: 5px;
+    margin: 0;
+    background-color: #f3f3f3;
+    background-image: url('td_bgd.png');
+    background-repeat: repeat-x;
+    color: #000;
+    border-left: 1px solid #d0d0d0;
+}
+.gui_generator_view tr.gui_generator_odd_row td
+{
+    background-color: #f3f3f3;
+    background-image: url('td_bgd.png');
+    background-repeat: repeat-x;
+}
+.gui_generator_view tr.gui_generator_even_row td
+{
+    background-color: #f8f8f8;
+    background-image: url('td_even_bgd.png');
+    background-repeat: repeat-x;
+}
+.gui_generator_edit th:hover,
+.gui_generator_search th:hover,
+.gui_generator_view th:hover
+{
+    background-image: url('th_hover_bgd.gif');
+}
+.gui_generator_search tr:hover th,
+.gui_generator_new tr:hover th,
+.gui_generator_view .gui_generator_view_details tr:hover th,
+.gui_generator_edit .gui_generator_single_entry tr:hover th
+{
+    background-image: url('th_v_hover_bgd.gif');
+}
+.gui_generator_view .gui_generator_view_details tr:hover td,
+.gui_generator_edit .gui_generator_single_entry tr:hover td,
+.gui_generator_new tr:hover td,
+.gui_generator_search td:hover
+.gui_generator_view_seperated .gui_generator_tbody .gui_generator_tr:hover,
+.gui_generator_view .gui_generator_view_list li:hover,
+.gui_generator_view tbody tr.gui_generator_odd_row:hover td,
+.gui_generator_view tbody tr.gui_generator_even_row:hover td
+{
+    background-image: url('td_hover_bgd.gif');
+    background-repeat: repeat;
+}
+.gui_generator_edit tr:hover td
+{
+    background-color: #f0e8d0;
+}
+.gui_generator_view_seperated
+{
+}
+/* header / footer */
+.gui_generator_footer
+{
+    font-size: 13px;
+    margin: 10px;
+    text-align: center;
+}
+.gui_generator_header
+{
+    font-weight: bold;
+    font-size: 13px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 2px;
+    border: 1px solid #ccc;
+    background: url(gui_generator_header.png) #f0f0f0;
+    color: #4863A0;
+}
+/* template specific styles */
+.gui_generator_view table.gui_generator_view_details
+{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.gui_generator_view .gui_generator_view_details th
+{
+    width: 10%;
+}    
+.gui_generator_view .gui_generator_view_details td,
+.gui_generator_edit .gui_generator_single_entry td,
+.gui_generator_new td, .gui_generator_search td
+{
+    padding: 2px;
+    background-color: #f3f3f3;
+    background-image: url('td_bgd.png');
+    background-repeat: repeat-x;
+}
+.gui_generator_view .gui_generator_view_details th,
+.gui_generator_edit .gui_generator_single_entry th
+{
+    padding: 2px;
+    background-color: #d8d3ce;
+    background-image: url('th_v_bgd.gif');
+    background-repeat: repeat-y;
+    border-right: 1px solid #4863A0;
+    border-bottom: 1px solid #888;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ccc;
+    white-space: nowrap;
+}
+/* single entry */
+.gui_generator_edit .gui_generator_single_entry th
+{
+    width: 120px;
+    border-left: 0px none;
+}
+.gui_generator_edit .gui_generator_filter a,
+.gui_generator_edit .gui_generator_filter a:hover,
+.gui_generator_single_entry th a,
+.gui_generator_single_entry th a:hover
+{
+    text-decoration: none;
+}
+.gui_generator_edit .gui_generator_sort
+{
+    display: inline;
+}
+.gui_generator_edit .gui_generator_sort a
+{
+    display: inline;
+}
+.gui_generator_edit .gui_generator_single_entry .gui_generator_sort
+{
+    display: table-cell;
+    vertical-align: middle;
+    background: #eae7e4 none;
+    border-right: 0px none;
+}
+.gui_generator_edit .gui_generator_single_entry tr:hover .gui_generator_sort
+{
+    background: #f1eadd none;
+}
+.gui_generator_edit .gui_generator_single_entry .gui_generator_sort a
+{
+    display: block;
+}
+.gui_generator_edit .gui_generator_sort a img.gui_generator_arrow
+{
+}
+.gui_generator_edit .gui_generator_filter
+{
+    display: inline;
+}
+.gui_generator_edit .gui_generator_filter a
+{
+    vertical-align: -2px;
+}
+.gui_generator_edit .gui_generator_description
+{
+    display: inline;
+}
+.gui_generator_new th,
+.gui_generator_search th
+{
+    background-color: #d8d3ce;
+    background-image: url('th_v_bgd.gif');
+    background-repeat: repeat-y;
+    color: #000000;
+    border: 1px solid #d0d0d0;
+    vertical-align: middle;
+    text-align: left;
+    white-space: nowrap;
+    font-size: 12px;
+    padding: 2px;
+    min-width: 120px;
+    border-right: 1px solid #4863A0;
+    border-bottom: 1px solid #888;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ccc;
+}
+.gui_generator_view_details .gui_generator_readonly_textarea,
+.gui_generator_view_details .gui_generator_array
+{
+    height: 100px;
+    overflow: auto;
+}
+.gui_generator_array a
+{
+    white-space: nowrap;
+}
+/* work-around for IE box-model bug */
+* html .gui_generator_view .gui_generator_view_details
+{
+    width: 640px;
+}
+* html .gui_generator_view .gui_generator_view_details .gui_generator_readonly_textarea,
+* html .gui_generator_view .gui_generator_view_details .gui_generator_array
+{
+    width: 100%;
+    overflow: auto;
+}
+* html .gui_generator_view .gui_generator_readonly_textarea,
+* html .gui_generator_view .gui_generator_array
+{
+    width: 200px;
+    overflow: auto;
+}
+.gui_generator_view_seperated .gui_generator_table .gui_generator_thead .gui_generator_file_download
+{
+    width: auto;
+    display: inline;
+}
+.gui_generator_edit tr th, .gui_generator_search tr th, .gui_generator_view tr th
+{
+    background-color: #d8d3ce;
+    background-image: url('th_bgd.gif');
+    background-repeat: repeat-x;
+    color: #000000;
+    border: 1px solid #d0d0d0;
+    vertical-align: middle;
+    white-space: nowrap;
+    font-size: 12px;
+    padding: 2px;
+}
+.gui_generator_edit table,
+.gui_generator_new table,
+.gui_generator_search table,
+table.gui_generator_view_details
+{
+    border: 1px solid #c0c0c0;
+    background: #e0e0e0;
+    color: #000000;
+    margin: auto;
+}
+.gui_generator_new td,
+.gui_generator_search td
+{
+    border-bottom: 1px solid #888;
+    padding-bottom: 1px; 
+    padding-top: 1px;
+    text-align: left;
+}
+.gui_generator_edit img
+{
+    margin: 0;
+}
+.gui_generator_edit table tbody td,
+.gui_generator_view table tbody td
+{
+    border-bottom: 1px solid #888;
+    padding-bottom: 1px;
+    padding-top: 1px;
+}
+.gui_generator_edit table tbody td
+{
+}
+.gui_generator_edit table tbody tr.gui_generator_even_row,
+.gui_generator_view table tbody tr.gui_generator_even_row
+{
+    background-color: #e8e8e8;
+}
+.gui_generator_edit table tbody tr.gui_generator_odd_row,
+.gui_generator_view table tbody tr.gui_generator_odd_row
+{
+    background-color: #e2deda;
+}
+.gui_generator_edit table tbody tr.gui_generator_new_row
+{
+    background-color: #f2efec;
+    opacity: 0.5;
+    /* work-around for IE8 opacity-bug */
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+    /* work-around for IE6-7 opacity-bug */
+    filter: alpha(opacity=50);
+}
+.gui_generator_edit table tbody tr.gui_generator_new_row:hover
+{
+    opacity: 1.0;
+    /* work-around for IE8 opacity-bug */
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    /* work-around for IE6-7 opacity-bug */
+    filter: alpha(opacity=100);
+}
+.gui_generator_edit table tbody tr.gui_generator_new_row td
+{
+    padding-top: 5px;
+}
+.gui_generator_search select,
+.gui_generator_search option
+{
+    font-size: 10px;
+}
+.gui_generator_edit tr,
+.gui_generator_view table tbody tr,
+.gui_generator_new tr,
+.gui_generator_search tr
+{
+    text-align: center;
+    vertical-align: top;
+}
+.gui_generator_search table tr th
+{
+    white-space: nowrap;
+    font-size: 12px;
+    padding: 2px; 
+    text-align: left;
+}
+.gui_generator_search table thead tr th,
+.gui_generator_view table thead tr th
+{
+    white-space: nowrap;
+    padding: 5px;
+    font-size: 12px;
+    text-align: center;
+}
+.gui_generator_view_seperated .gui_generator_table
+{
+    border: 1px solid #c0c0c0;
+    background: #e0e0e0;
+    color: #000000;
+    margin: 5px;
+}
+.gui_generator_view_seperated .gui_generator_thead
+{
+    background-color: #d8d3ce;
+    background-image: url('th_bgd.gif');
+    background-repeat: repeat-x;
+    color: #000000;
+    border: 1px dashed gray;
+    font-size: 13px;
+    padding-left: 5px;
+    /* white-space: nowrap; */
+    /* height: 30px; */
+    /* overflow: hidden; */
+}
+.gui_generator_view_seperated .gui_generator_thead .gui_generator_tr
+{
+    display: inline;
+    border-right: 1px dashed gray;
+    line-height: 200%;
+}
+.gui_generator_view_seperated .gui_generator_thead .gui_generator_tr_last
+{
+    display: inline;
+    border-right: 0;
+    line-height: 30px;
+}
+.gui_generator_view_seperated .gui_generator_thead .gui_generator_th
+{
+    font-family: 'Times New Roman', serif;
+    font-weight: bold;
+    padding: 0 5px 0 10px;
+    display: inline;
+}
+.gui_generator_view_seperated .gui_generator_thead .gui_generator_td
+{
+    padding: 0 10px 0 5px;
+    display: inline;
+}
+.gui_generator_view_seperated .gui_generator_tbody
+{
+    display: inline;
+}
+.gui_generator_view_seperated .gui_generator_tbody .gui_generator_tr
+{
+    padding: 5px;
+    background-color: #f3f3f3;
+    background-image: url('td_bgd.png');
+    background-repeat: repeat-x;
+    color: #000000;
+    border: 1px solid #c0c0c0;
+}
+.gui_generator_edit .gui_generator_multi_entry .gui_generator_readonly_textarea
+{
+    height: 20px;
+}
+.gui_generator_view .gui_generator_view_details .gui_generator_readonly_textarea
+{
+    height: inherit;
+}
+/* stuff that applies to all templates */
+img.gui_generator_arrow
+{
+    border: 0;
+    margin: 3px 0 3px 0 !important;
+}
+.gui_generator_mandatory
+{
+    color: #aa0000;
+    font-size: 12px;
+}
+span.gui_generator_mandatory
+{
+    font-size: 14px;
+    font-weight: bold;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+.gui_generator_readonly_textarea
+{
+    overflow: auto;
+    height: 75px;
+    width: 100%;
+}
+.gui_generator_readonly_textarea ul, .gui_generator_textarea ul
+{
+    overflow: auto;
+    text-align: left;
+}
+.gui_generator_no_entries_found
+{
+}
+table.gui_generator_smilies
+{
+}
+table.gui_generator_smilies td
+{
+    text-align: center;
+    vertical-align: middle;
+}
+table.gui_generator_smilies img
+{
+    border: 0;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+.gui_generator_edit .gui_generator_file_download,
+.gui_generator_edit .gui_generator_image
+{
+    white-space: nowrap;
+    font-size: 10px;
+}
+.gui_generator_edit .gui_generator_image
+{
+    width: 250px;
+    overflow: hidden;
+}
+.gui_generator_edit .gui_generator_file_download input,
+.gui_generator_edit .gui_generator_image input
+{
+    font-size: 10px;
+}
+.gui_generator_edit .gui_generator_single_entry .gui_generator_file_download,
+.gui_generator_edit .gui_generator_single_entry .gui_generator_image
+{
+    width: auto;
+    overflow: auto;
+}
+.gui_generator_edit .gui_generator_multi_entry .gui_generator_file_delete
+{
+    font-size: 0px;
+    color: #fff;
+}
+.gui_generator_edit .gui_generator_multi_entry .gui_generator_filter a
+{
+    vertical-align: -2px;
+    margin-right: 5px;
+}
+.gui_generator_file_delete
+{
+    font-weight: bold;
+    color: #888;
+    display: inline;
+}
+.gui_generator_file_delete input
+{
+    margin-left: 5px;
+    margin-right: 5px;
+    display: inline;
+}
+.gui_generator_file_download a, span.gui_generator_file_download a
+{
+    margin-left: 2px;
+    margin-right: 2px;
+    text-decoration: none;
+}
+.gui_generator_file_download a img, span.gui_generator_file_download a img
+{
+    border: 0 none;
+    vertical-align: bottom;
+}
+
+.gui_generator_image a
+{
+    display: block;
+}
+
+.gui_generator_time .gui_generator_radio_true
+{
+    display: block;
+}
+
+.gui_generator_time
+{
+    white-space: nowrap;
+}
+.gui_generator_bool
+{
+    margin: 5px 0px 0px 0px;
+}
+.gui_generator_set
+{
+    margin-left: 5px;
+    margin-right: 5px;
+    font-size: 12px;
+}
+.gui_generator_set input
+{
+    margin-right: 5px;
+}
+.gui_generator_select input
+{
+}
+.gui_generator_details a
+{
+    display: block;
+    height: 20px;
+}
+.gui_generator_details img
+{
+    border: 0px none;
+    vertical-align: middle;
+}
+.gui_generator_view_list
+{
+    background-color: #f3f3f3;
+    background-image: url('td_bgd.png');
+    background-repeat: repeat-x;
+    border: 1px solid #c0c0c0;
+    text-align: left;
+}
+.gui_generator_view_list li
+{
+    font-size: 13px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-right: 20px;
+    list-style-image: url('array_list_item.gif');
+    list-style-position: inside;
+}
+.gui_generator_view_list li img
+{
+    border: 0px none;
+}
+.gui_generator_edit .gui_generator_single_entry textarea
+{
+    width: 300px;
+    height: 100px;
+}
+.gui_generator_list_title
+{
+    font-weight: bold;
+}
+.gui_generator_list_value
+{
+    font-style: italic;
+}
+a.gui_generator_int_link
+{
+    text-decoration: none;
+    margin-right: 5px;
+    margin-left: 2px;
+    float: left;
+    white-space: nowrap;
+}
+.gui_generator_view_seperated a.gui_generator_int_link
+{
+    float: none;
+}
+a.gui_generator_ext_link
+{
+    text-decoration: none;
+    white-space: nowrap;
+}
+a.gui_generator_int_link img
+{
+    border: 0px none;
+}
+a.gui_generator_ext_link img
+{
+    border: 0px none;
+}
+.gui_generator_layout .gui_generator_layout_preview
+{
+    display: none;
+    border: 1px solid #888;
+}
+.gui_generator_layout a.gui_generator_layout_select:hover .gui_generator_layout_preview
+{
+    display: inline;
+    position: absolute;
+}
+.gui_generator_calendar
+{
+    padding-left: 5px;
+    padding-right: 2px;
+    cursor: pointer;
+}
+/* Top Frame */
+.gui_generator_frame_top_right
+{
+    background: url('index_box_right_top_transparent.gif') no-repeat top right;
+    height: 15px;
+    margin: 0;
+    overflow: hidden;
+    padding-right: 15px;
+}
+.gui_generator_frame_top_left
+{
+    background: url('index_box_left_top_transparent.gif') no-repeat top left;
+    height: 15px;
+    overflow: hidden;
+    padding-left: 15px;
+}
+.gui_generator_frame_top
+{
+    background: url('index_box_top.gif');
+    height: 15px;
+}
+/* Bottom Frame */
+.gui_generator_frame_bottom_right
+{
+    background: url('index_box_right_bottom_transparent.gif') no-repeat bottom right;
+    height: 15px;
+    overflow: hidden;
+    padding-right: 15px;
+}
+.gui_generator_frame_bottom_left
+{
+    background: url('index_box_left_bottom_transparent.gif') no-repeat bottom left;
+    height: 15px;
+    overflow: hidden;
+    padding-left: 15px;
+}
+.gui_generator_frame_bottom
+{
+    background: url('index_box_bottom.gif');
+    height: 15px;
+}
+/* Bottom Center */
+.gui_generator_frame_left
+{
+    background: url('index_box_left.gif') repeat-y left;
+    padding-left: 15px;
+    height: 100%;
+}
+.gui_generator_frame_right
+{
+    background: url('index_box_right.gif') repeat-y right;
+    padding-right: 15px;
+    height: 100%;
+}
+.gui_generator_frame_center
+{
+    background: #282828 url('highlight2.jpg') repeat-x;
+    color: #f0f0f0;
+    height: 100%;
+    text-align: center;
+}
+.gui_generator_frame_image
+{
+    display: block;
+    padding: 20px;
+}
+.gui_generator_frame_close
+{
+    background: url('icon_close.gif') no-repeat right;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+/* new content */
+
+.gui_tabs *
+{
+    font-size: 12px;
+}
+
+.gui_accordion *
+{
+    font-size: 12px;
+}
+
+.gui_generator_footer
+{
+    margin-bottom: 20px;
+    vertical-align: bottom;
+}
+
+.gui_generator_footer .gui_generator_mandatory
+{
+    color: #a55;
+}
+
+.gui_generator_view textarea
+{
+    width: 100%;
+}
+
+.gui_generator_view
+{
+    margin: auto;
+    max-width: 1024px;
+}
+
+/* Layout 1 */
+
+.gui_generator_multi_entry *
+{
+    vertical-align: middle;
+}
+
+/* textarea hover effect */
+.gui_generator_multi_entry textarea
+{
+    height: 17px;
+    overflow: hidden;
+    width: 200px;
+}
+
+.gui_generator_multi_entry tr:hover textarea
+{
+    height: 51px;
+    overflow: visible;
+}
+/* Layout 4 */
+.gui_generator_config
+{
+    color: #000;
+}
+.gui_generator_config a
+{
+    color: #4863A0;
+}
+.gui_generator_config a:hover
+{
+    color: #08a;
+}
+.gui_generator_config .optionbody
+{
+    font-size: 13px;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-weight: bold;
+}
+.gui_generator_config .optionbody
+{
+    padding-bottom: 10px;
+}
+.gui_generator_config .optionitem
+{
+    display: block;
+    padding: 5px;
+    text-align: left;
+}
+.gui_generator_config .optionitem .label
+{
+    display: block;
+    width: 250px;
+    float: left;
+    text-align: right;
+    padding-right: 10px;
+}
+.gui_accordion .header
+{
+    font-size: 16px;
+    color: #f0f0f0;
+    background: url('highlight2.jpg') repeat-x;
+    background-color: #414649;
+    font-weight: bold;
+    padding: 3px;
+}
+
+.gui_generator_toolbar
+{
+    text-align: right;
+}
+
+.gui_generator_toolbar .gui_generator_search,
+.gui_generator_toolbar .gui_generator_settings,
+.gui_generator_toolbar .gui_generator_new
+{
+    background: #f0f0f0;
+    padding: 5px;
+    margin-left: 40%;
+    border-left: 1px solid #aaa;
+    border-bottom: 1px solid #aaa;
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-bottomleft: 4px;
+}
+
+.gui_generator_new table,
+.gui_generator_search table
+{
+    margin-left: auto;
+    margin-right: 0px;
+    min-width: 480px;
+}
+
+.gui_generator_toolbar .gui_select_layout img.gui_layout
+{
+    border: 1px solid #3C6DA5;
+    height: 18px;
+    width: 25px;
+    opacity: 0.5;
+    vertical-align: bottom;
+}
+
+.gui_generator_toolbar .gui_select_layout img.gui_layout_preview
+{
+    border: 2px solid #eee;
+    position: absolute;
+    margin-top: 20px;
+    margin-left: -80px;
+    display: none;
+    z-index: 1;
+}
+
+.gui_generator_toolbar .gui_select_layout a:hover img.gui_layout_preview
+{
+    display: inline;
+}
+
+.gui_generator_toolbar > img
+{
+    display: inline;
+    padding: 5px;
+    padding-top: 0px;
+    opacity: 0.8;
+    background: #282828;
+    -moz-border-radius-bottomleft: 4px;
+    -moz-border-radius-bottomright: 4px;
+    border: 1px solid #282828;
+}
+
+.gui_generator_toolbar > img:hover
+{
+    opacity: 1;
+    background: url('highlight2.jpg') repeat-x;
+    border-color: #888;
+}

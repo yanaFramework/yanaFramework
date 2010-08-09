@@ -1,0 +1,620 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN"
+ "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" >
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="en">
+        <header/>
+        <body>
+            <trans-unit id="index_1">
+                <source/>
+                <target>administer homepage profiles</target>
+            </trans-unit>
+            <trans-unit id="index_2">
+                <source/>
+                <target>Here you may edit the look and feel of your application</target>
+            </trans-unit>
+            <trans-unit id="index_3">
+                <source/>
+                <target>Administrator</target>
+            </trans-unit>
+            <trans-unit id="index_4">
+                <source/>
+                <target>create new profile</target>
+            </trans-unit>
+            <trans-unit id="index_5">
+                <source/>
+                <target>enter ID</target>
+            </trans-unit>
+            <trans-unit id="index_6">
+                <source/>
+                <target>choose a file</target>
+            </trans-unit>
+            <trans-unit id="index_7">
+                <source/>
+                <target>settings</target>
+            </trans-unit>
+            <trans-unit id="index_8">
+                <source/>
+                <target>Database</target>
+            </trans-unit>
+            <trans-unit id="index_9">
+                <source/>
+                <target>current profile</target>
+            </trans-unit>
+            <trans-unit id="index_10">
+                <source/>
+                <target>default settings</target>
+            </trans-unit>
+            <trans-unit id="index_11">
+                <source/>
+                <target>change profile</target>
+            </trans-unit>
+            <trans-unit id="index_12">
+                <source/>
+                <target>clear server-cache</target>
+            </trans-unit>
+            <trans-unit id="index_13">
+                <source/>
+                <target>Check for new version</target>
+            </trans-unit>
+            <trans-unit id="index_14">
+                <source/>
+                <target>You got the latest version</target>
+            </trans-unit>
+            <trans-unit id="index_15">
+                <source/>
+                <target>A new version is available</target>
+            </trans-unit>
+            <trans-unit id="index_16">
+                <source/>
+                <target>Click here to download</target>
+            </trans-unit>
+            <trans-unit id="descr_admin">
+                <source/>
+                <target>Edit basic settings for all profiles:<it id="br1" pos="open">&lt;br /&gt;</it><bpt id="i1">&lt;i&gt;</bpt>Link to your application<ept id="i1">&lt;/i&gt;</ept> <bpt id="b1">&lt;b&gt;</bpt>{$PHP_SELF}<ept id="b1">&lt;/b&gt;</ept></target>
+            </trans-unit>
+            <trans-unit id="descr_mod">
+                <source/>
+                <target>Edit settings for current profile "{$ID}":<it id="br1" pos="open">&lt;br /&gt;</it><bpt id="i1">&lt;i&gt;</bpt>Link to your application<ept id="i1">&lt;/i&gt;</ept> <bpt id="b1">&lt;b&gt;</bpt>{$PHP_SELF}?id={$ID}<ept id="b1">&lt;/b&gt;</ept></target>
+            </trans-unit>
+            <trans-unit id="descr_create">
+                <source/>
+                <target>Create a new profile id = "{$ID}":<it id="br1" pos="open">&lt;br /&gt;</it><bpt id="i1">&lt;i&gt;</bpt>Link to your application<ept id="i1">&lt;/i&gt;</ept> <bpt id="b1">&lt;b&gt;</bpt>{$PHP_SELF}?id={$ID}<ept id="b1">&lt;/b&gt;</ept></target>
+            </trans-unit>
+            <group id="database">
+                <trans-unit id="database.0">
+                    <source/>
+                    <target>database server host address (URL)</target>
+                </trans-unit>
+                <trans-unit id="database.1">
+                    <source/>
+                    <target>default "localhost"</target>
+                </trans-unit>
+                <trans-unit id="database.2">
+                    <source/>
+                    <target>database server port</target>
+                </trans-unit>
+                <trans-unit id="database.3">
+                    <source/>
+                    <target>default "3306"</target>
+                </trans-unit>
+                <trans-unit id="database.4">
+                    <source/>
+                    <target>username for database</target>
+                </trans-unit>
+                <trans-unit id="database.5">
+                    <source/>
+                    <target>password for database</target>
+                </trans-unit>
+                <trans-unit id="database.6">
+                    <source/>
+                    <target>prefix for database</target>
+                </trans-unit>
+                <trans-unit id="database.7">
+                    <source/>
+                    <target>leave blank if not needed</target>
+                </trans-unit>
+                <trans-unit id="database.8">
+                    <source/>
+                    <target>database name</target>
+                </trans-unit>
+                <trans-unit id="database.9">
+                    <source/>
+                    <target>type of database</target>
+                </trans-unit>
+                <trans-unit id="database.10">
+                    <source/>
+                    <target>use database</target>
+                </trans-unit>
+                <trans-unit id="database.11">
+                    <source/>
+                    <target>Setup a connection to your database</target>
+                </trans-unit>
+                <trans-unit id="database.12">
+                    <source/>
+                    <target>install selected databases</target>
+                </trans-unit>
+                <trans-unit id="database.13">
+                    <source/>
+                    <target>The choosen databases should be used:</target>
+                </trans-unit>
+                <trans-unit id="database.14">
+                    <source/>
+                    <target>synchronize databases</target>
+                </trans-unit>
+                <trans-unit id="database.15">
+                    <source/>
+                    <target>create backup</target>
+                </trans-unit>
+                <trans-unit id="database.16">
+                    <source/>
+                    <target>installation / backup</target>
+                </trans-unit>
+                <trans-unit id="database.17">
+                    <source/>
+                    <target>export structure</target>
+                </trans-unit>
+                <trans-unit id="database.18">
+                    <source/>
+                    <target>export data</target>
+                </trans-unit>
+                <trans-unit id="database.19">
+                    <source/>
+                    <target>compress as GZip</target>
+                </trans-unit>
+                <trans-unit id="database.20">
+                    <source/>
+                    <target>SQL syntax</target>
+                </trans-unit>
+                <trans-unit id="database.21">
+                    <source/>
+                    <target>create tables automatically</target>
+                </trans-unit>
+                <trans-unit id="database.22">
+                    <source/>
+                    <target>copy table rows</target>
+                </trans-unit>
+            </group>
+            <group id="admin">
+                <trans-unit id="admin.0">
+                    <source/>
+                    <target>Next time start in:</target>
+                </trans-unit>
+                <trans-unit id="admin.1">
+                    <source/>
+                    <target>active skin-file</target>
+                </trans-unit>
+                <trans-unit id="admin.2">
+                    <source/>
+                    <target>available skins</target>
+                </trans-unit>
+                <trans-unit id="admin.3">
+                    <source/>
+                    <target>basic mode</target>
+                </trans-unit>
+                <trans-unit id="admin.4">
+                    <source/>
+                    <target>expert mode</target>
+                </trans-unit>
+                <trans-unit id="admin.5">
+                    <source/>
+                    <target>active file</target>
+                </trans-unit>
+                <trans-unit id="admin.6">
+                    <source/>
+                    <target>available files</target>
+                </trans-unit>
+                <trans-unit id="admin.7">
+                    <source/>
+                    <target>Version</target>
+                </trans-unit>
+                <trans-unit id="admin.8">
+                    <source/>
+                    <target>search for Updates</target>
+                </trans-unit>
+                <trans-unit id="admin.9">
+                    <source/>
+                    <target>Options</target>
+                </trans-unit>
+                <trans-unit id="admin.10">
+                    <source/>
+                    <target>reload plugin list</target>
+                </trans-unit>
+                <trans-unit id="admin.11">
+                    <source/>
+                    <target>selected font</target>
+                </trans-unit>
+                <trans-unit id="admin.12">
+                    <source/>
+                    <target>other fonts</target>
+                </trans-unit>
+                <trans-unit id="admin.13">
+                    <source/>
+                    <target>switch to {lang id="ADMIN.3"}</target>
+                </trans-unit>
+                <trans-unit id="admin.14">
+                    <source/>
+                    <target>switch to {lang id="ADMIN.4"}</target>
+                </trans-unit>
+                <trans-unit id="admin.15">
+                    <source/>
+                    <target>show/hide help</target>
+                </trans-unit>
+                <trans-unit id="admin.16">
+                    <source/>
+                    <target>show/hide options</target>
+                </trans-unit>
+                <trans-unit id="admin.17">
+                    <source/>
+                    <target>save changes to disk</target>
+                </trans-unit>
+                <trans-unit id="admin.18">
+                    <source/>
+                    <target>This file is write-protected, changes may not be saved.</target>
+                </trans-unit>
+                <trans-unit id="admin.19">
+                    <source/>
+                    <target>Plugins</target>
+                </trans-unit>
+                <trans-unit id="admin.20">
+                    <source/>
+                    <target>Disabling a plugin will remove options provided by it. Are you sure you want to go on and save your new settings?</target>
+                </trans-unit>
+                <trans-unit id="admin.21">
+                    <source/>
+                    <target>name of plugin</target>
+                </trans-unit>
+                <trans-unit id="admin.22">
+                    <source/>
+                    <target>on/off</target>
+                </trans-unit>
+                <trans-unit id="admin.23">
+                    <source/>
+                    <target>this plugin is active</target>
+                </trans-unit>
+                <trans-unit id="admin.24">
+                    <source/>
+                    <target>Installed skins</target>
+                </trans-unit>
+                <trans-unit id="admin.25">
+                    <source/>
+                    <target>name of skin</target>
+                </trans-unit>
+                <trans-unit id="admin.26">
+                    <source/>
+                    <target>this plugin is deactivated</target>
+                </trans-unit>
+                <trans-unit id="admin.27">
+                    <source/>
+                    <target>installed language versions</target>
+                </trans-unit>
+                <trans-unit id="admin.29">
+                    <source/>
+                    <target>Look &amp; Feel</target>
+                </trans-unit>
+                <trans-unit id="admin.30">
+                    <source/>
+                    <target>advanced settings</target>
+                </trans-unit>
+                <trans-unit id="admin.31">
+                    <source/>
+                    <target>program setup</target>
+                </trans-unit>
+                <trans-unit id="admin.32">
+                    <source/>
+                    <target>name of language pack</target>
+                </trans-unit>
+                <trans-unit id="admin.33">
+                    <source/>
+                    <target>Logout</target>
+                </trans-unit>
+                <trans-unit id="admin.34">
+                    <source/>
+                    <target>author's name</target>
+                </trans-unit>
+                <trans-unit id="admin.35">
+                    <source/>
+                    <target>contact</target>
+                </trans-unit>
+                <trans-unit id="admin.36">
+                    <source/>
+                    <target>Description</target>
+                </trans-unit>
+                <trans-unit id="admin.37">
+                    <source/>
+                    <target>guestbook</target>
+                </trans-unit>
+                <trans-unit id="admin.38">
+                    <source/>
+                    <target>edit basic settings</target>
+                </trans-unit>
+                <trans-unit id="admin.39">
+                    <source/>
+                    <target>IP-blocking</target>
+                </trans-unit>
+                <trans-unit id="admin.40">
+                    <source/>
+                    <target>block IPs</target>
+                </trans-unit>
+                <trans-unit id="admin.41">
+                    <source/>
+                    <target>this plugin is activated by default and must not be switched off</target>
+                </trans-unit>
+                <trans-unit id="admin.42">
+                    <source/>
+                    <target>search</target>
+                </trans-unit>
+                <trans-unit id="admin.43">
+                    <source/>
+                    <target>any number of entries</target>
+                </trans-unit>
+                <trans-unit id="admin.44">
+                    <source/>
+                    <target>only 1 entry</target>
+                </trans-unit>
+                <trans-unit id="admin.45">
+                    <source/>
+                    <target>consecutive entries</target>
+                </trans-unit>
+                <trans-unit id="admin.46">
+                    <source/>
+                    <target>automatically</target>
+                </trans-unit>
+                <trans-unit id="admin.47">
+                    <source/>
+                    <target>Saturday, January 01, 2005</target>
+                </trans-unit>
+                <trans-unit id="admin.48">
+                    <source/>
+                    <target>font families</target>
+                </trans-unit>
+                <trans-unit id="admin.49">
+                    <source/>
+                    <target>The name that you choose contained illegal symbols that might not be used. Please use Letters, Numbers or '_' only.</target>
+                </trans-unit>
+                <trans-unit id="admin.50">
+                    <source/>
+                    <target>allow each visitor</target>
+                </trans-unit>
+                <trans-unit id="admin.51">
+                    <source/>
+                    <target>on new entries</target>
+                </trans-unit>
+                <trans-unit id="admin.53">
+                    <source/>
+                    <target>page layout</target>
+                </trans-unit>
+                <trans-unit id="admin.54">
+                    <source/>
+                    <target>headlines</target>
+                </trans-unit>
+                <trans-unit id="admin.55">
+                    <source/>
+                    <target>text style</target>
+                </trans-unit>
+                <trans-unit id="admin.56">
+                    <source/>
+                    <target>show how many entries per page</target>
+                </trans-unit>
+                <trans-unit id="admin.57">
+                    <source/>
+                    <target>appearance of dates and times</target>
+                </trans-unit>
+                <trans-unit id="admin.58">
+                    <source/>
+                    <target>spam protection</target>
+                </trans-unit>
+                <trans-unit id="admin.59">
+                    <source/>
+                    <target>time settings</target>
+                </trans-unit>
+                <trans-unit id="admin.60">
+                    <source/>
+                    <target>community settings</target>
+                </trans-unit>
+                <trans-unit id="admin.61">
+                    <source/>
+                    <target>data source</target>
+                </trans-unit>
+                <trans-unit id="admin.62">
+                    <source/>
+                    <target>show journal entries</target>
+                </trans-unit>
+                <trans-unit id="admin.63">
+                    <source/>
+                    <target>use my default settings and go on</target>
+                </trans-unit>
+                <trans-unit id="admin.64">
+                    <source/>
+                    <target>show an error message and don't go on</target>
+                </trans-unit>
+                <trans-unit id="admin.65">
+                    <source/>
+                    <target>get data from</target>
+                </trans-unit>
+                <trans-unit id="admin.66">
+                    <source/>
+                    <target>load smileys from</target>
+                </trans-unit>
+                <trans-unit id="admin.67">
+                    <source/>
+                    <target>show per page</target>
+                </trans-unit>
+                <trans-unit id="admin.68">
+                    <source/>
+                    <target>Font family</target>
+                </trans-unit>
+                <trans-unit id="admin.69">
+                    <source/>
+                    <target>click here if you want to be notified by email if someone leaves an entry in your guestbook</target>
+                </trans-unit>
+                <trans-unit id="admin.70">
+                    <source/>
+                    <target>enter your email address here</target>
+                </trans-unit>
+                <trans-unit id="admin.71">
+                    <source/>
+                    <target>click here if you want to automatically send visitors an email to thank them for signing your guestbook</target>
+                </trans-unit>
+                <trans-unit id="admin.72">
+                    <source/>
+                    <target>enter an email address you want to appear as sender when sending mails</target>
+                </trans-unit>
+                <trans-unit id="admin.73">
+                    <source/>
+                    <target>activate</target>
+                </trans-unit>
+                <trans-unit id="admin.74">
+                    <source/>
+                    <target>send mail to</target>
+                </trans-unit>
+                <trans-unit id="admin.75">
+                    <source/>
+                    <target>sender of this mail is</target>
+                </trans-unit>
+                <trans-unit id="admin.76">
+                    <source/>
+                    <target>Background color</target>
+                </trans-unit>
+                <trans-unit id="admin.77">
+                    <source/>
+                    <target>Background image</target>
+                </trans-unit>
+                <trans-unit id="admin.78">
+                    <source/>
+                    <target>Logo (image)</target>
+                </trans-unit>
+                <trans-unit id="admin.79">
+                    <source/>
+                    <target>Font size</target>
+                </trans-unit>
+                <trans-unit id="admin.80">
+                    <source/>
+                    <target>Font color</target>
+                </trans-unit>
+                <trans-unit id="admin.81">
+                    <source/>
+                    <target>edit entries</target>
+                </trans-unit>
+                <trans-unit id="admin.82">
+                    <source/>
+                    <target>Journal</target>
+                </trans-unit>
+                <trans-unit id="admin.83">
+                    <source/>
+                    <target>You may choose, wether the program should use the journal to report important events, like errors or deletion of an entry. You may want to turn this feature off to conserve resources and increase performance.</target>
+                </trans-unit>
+                <trans-unit id="admin.84">
+                    <source/>
+                    <target>Limit number of entries to</target>
+                </trans-unit>
+                <trans-unit id="admin.85">
+                    <source/>
+                    <target>search engine</target>
+                </trans-unit>
+                <trans-unit id="admin.86">
+                    <source/>
+                    <target>e-mail protocol</target>
+                </trans-unit>
+            </group>
+            <group id="help">
+                <trans-unit id="help.1">
+                    <source/>
+                    <target>With this option you may use multiple profiles with the same data. To do so enter the ID of the foreign profile, with which you want to share the data, here. If you do not require this option, you may leave the field blank. In this case, all data will be stored separately, which is the default behaviour. For your information: the default profile is named "default". Please note that changing this setting will NOT ex post affect previously added data.</target>
+                </trans-unit>
+                <trans-unit id="help.2">
+                    <source/>
+                    <target>You may set, wether you want to be notified via email when a visitors leaves an entry at your guestbook.</target>
+                </trans-unit>
+                <trans-unit id="help.3">
+                    <source/>
+                    <target>Here you may set an e-mail address that should be used as default sender, whenever an e-mail is send. It should be the address of an administrator or support. Note that some mail-servers may reject an e-mail if this address is not valid.</target>
+                </trans-unit>
+                <trans-unit id="help.4">
+                    <source/>
+                    <target>Visitors may navigate through the entries using "next" and "previous" keys. Here you may set how many entries will be shown on each page.</target>
+                </trans-unit>
+                <trans-unit id="help.5">
+                    <source/>
+                    <target>Here you may set the Appearance of dates and times in the application. If supported by the visitor's browser, the appearance will be adapted automatically to your visitor's local language and timezone.</target>
+                </trans-unit>
+                <trans-unit id="help.6">
+                    <source/>
+                    <target>The system will try to create the tables belonging to the chosen databases on the dbms. Therefore it will try to import stored sql files, appropriate to the database and dbms you choose. In some uncommon cases this process may fail. E.g. if: connecting to the sql-server fails, there is no no sql file available for the choosen dbms, the provided sql files contains errors, another table with the same name already exists, the user does not have the appropriate rights to create the tables. In those cases the installation must be done by hand.</target>
+                </trans-unit>
+                <trans-unit id="help.7">
+                    <source/>
+                    <target>How is the program supposed to react, if it is called with a nonexisting profile-id (parameter "index.php?id=xyz"); or in other words: with a profile, for which you have not set up yet.</target>
+                </trans-unit>
+                <trans-unit id="help.8">
+                    <source/>
+                    <target>Here you may choose directories, where you want your files to be stored. Please make sure, you have the required permission set for the program to access these files or direcotries. Overwise your visitors may get an error message.</target>
+                </trans-unit>
+                <trans-unit id="help.9">
+                    <source/>
+                    <target>Here you may choose the directory, where the program shall search for smileys. Please make sure, you have set permission to read from that directory for the program. Overwise your visitors may get an error message.</target>
+                </trans-unit>
+                <trans-unit id="help.10">
+                    <source/>
+                    <target>You may have the content of the protocol emailed to you from time to time. This mail will be send to you automatically, as soon as the maximum number of entries for the protocol has been reached.</target>
+                </trans-unit>
+                <trans-unit id="help.13">
+                    <source/>
+                    <target>At this section you may set the look of your application. Please note, that settings for "logo" and "background" should be URL's to Images on the web. Colors should be enterd as hexadecimal values.</target>
+                </trans-unit>
+                <trans-unit id="help.14">
+                    <source/>
+                    <target>To improve your protection against "flooding" and "spam", you may limit the number of consecutive entries a visitor may write to a certain number. After this maximum number is reached, the visitor must wait for someone else to respond, before being allowed to post another entry.</target>
+                </trans-unit>
+                <trans-unit id="help.15">
+                    <source/>
+                    <target>If necessary you may enter your own pathnames for the program here. You may choose the directory where your smileys are stored, the skin and the language file you want to use.</target>
+                </trans-unit>
+                <trans-unit id="help.16">
+                    <source/>
+                    <target>This section let's you decide, which text files you want to use as templates for automatically generated email.</target>
+                </trans-unit>
+                <trans-unit id="help.17">
+                    <source/>
+                    <target><bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt>(recommended setting for communities)<ept id="c1">&lt;/span&gt;</ept><it id="br1" pos="open">&lt;br /&gt;</it>Use this setting if you have a community in which each user is to get its own profile-id and you don't want to set up each profile by hand.</target>
+                </trans-unit>
+                <trans-unit id="help.18">
+                    <source/>
+                    <target><bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt>(recommended setting for standard sites)<ept id="c1">&lt;/span&gt;</ept><it id="br1" pos="open">&lt;br /&gt;</it>Use this setting if you have a "standard" web site and want to use only those profiles which you set up by yourself.</target>
+                </trans-unit>
+                <trans-unit id="help.19">
+                    <source/>
+                    <target>Here you can setup a connection to your database, install new databases and when switching to a database you may import your old entries from local text files.</target>
+                </trans-unit>
+                <trans-unit id="help.20">
+                    <source/>
+                    <target>If you choose "use database" with the value "yes", all future entries will be stored in the database, rather than using text files. Otherwise entries will be stored in filesystem.</target>
+                </trans-unit>
+                <trans-unit id="help.21">
+                    <source/>
+                    <target>Database server address in most cases is "localhost", thus this is uncommon, it may also be another.</target>
+                </trans-unit>
+                <trans-unit id="help.22">
+                    <source/>
+                    <target>Port address of database server is by default "3306". In some uncommon cases it may be another. If you don't now it, try to leave this field blank. Only if this does'nt work, try to look it up in your server configuration or ask your provider or administrator.</target>
+                </trans-unit>
+                <trans-unit id="help.23">
+                    <source/>
+                    <target>As a rule you get your user name and password when registering your account. Please note! Your database login is most often NOT the same as your FTP login. If you don't know it, ask your provider or administrator.</target>
+                </trans-unit>
+                <trans-unit id="help.24">
+                    <source/>
+                    <target>A database prefix may be used, if you want to run several instances of the same program at a time on the same site and database server settings, without having these installations influencing each other. Please use extra prefix for each installation. If you don't need it, leave the field blank.</target>
+                </trans-unit>
+                <trans-unit id="help.25">
+                    <source/>
+                    <target>This synchronizes the entries in your text files with those in your database. The process does NOT delete or update any existing entries, but only create non-existing ones. Please be patient! This may take a few seconds. When operating on very big ammounts of data you may expirience a timeout before the process is completed. If this happens, redo this procedure multiple times until all data has been transfered.</target>
+                </trans-unit>
+                <trans-unit id="help.26">
+                    <source/>
+                    <target>The entries in the database are extracted, encoded as SQL file and provided for download.</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

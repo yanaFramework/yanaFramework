@@ -1,0 +1,437 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="de">
+        <header/>
+        <body>
+            <group id="SuccessMessage">
+                <trans-unit id="SuccessMessage.h">
+                    <source>Your changes have been saved.</source>
+                    <target>Änderungen wurden gespeichert.</target>
+                </trans-unit>
+                <trans-unit id="SuccessMessage.p">
+                    <source>Thank You !!!</source>
+                    <target>Vielen Dank !!!</target>
+                </trans-unit>
+            </group>
+            <group id="Error">
+                <trans-unit id="Error.h">
+                    <source>The requested action could not be completed.</source>
+                    <target>Es ist ein Fehler aufgetreten.</target>
+                </trans-unit>
+                <trans-unit id="Error.p">
+                    <source>Required files may have been removed or may not be accessable at the moment. Please check back later.<it id="br1" pos="open">&lt;br /&gt;</it>If you (even though) continue to get this message, please contact the administrator.</source>
+                    <target>Die gewünschte Aktion konnte nicht ausgeführt werden. Bitte versuchen Sie es erneut.<it id="br1" pos="open">&lt;br /&gt;</it>Sollte der Fehler weiterhin auftreten, wenden Sie sich an den Webmaster.</target>
+                </trans-unit>
+            </group>
+            <group id="LoginRequiredWarning">
+                <trans-unit id="LoginRequiredWarning.h">
+                    <source>Password required.</source>
+                    <target>Passwort erforderlich.</target>
+                </trans-unit>
+                <trans-unit id="LoginRequiredWarning.p">
+                    <source>You are entering a protected area. Please enter your user name and password to proceed.</source>
+                    <target>Sie betreten einen geschützten Bereich. Bitte geben Sie Ihren Nutzernamen und Passwort ein, um sich anzumelden.</target>
+                </trans-unit>
+            </group>
+            <group id="LowPasswordQualityWarning">
+                <trans-unit id="LowPasswordQualityWarning.h">
+                    <source>Password quality is too low.</source>
+                    <target>Passwort qualität is zu niedrig.</target>
+                </trans-unit>
+                <trans-unit id="LowPasswordQualityWarning.p">
+                    <source>Required action can not be saved. Please use for you password numbers and special characters.</source>
+                    <target>Die gewünschte Aktion konnte nicht gespeichert werden. Bitte verwenden Sie zahlen und sonderzeichen für Ihr passwort.</target>
+                </trans-unit>
+            </group>
+            <group id="InsufficientRightsWarning">
+                <trans-unit id="InsufficientRightsWarning.h">
+                    <source>Permission denied.</source>
+                    <target>Zugriff verweigert.</target>
+                </trans-unit>
+                <trans-unit id="InsufficientRightsWarning.p">
+                    <source>Your login is correct, but the requested action is not available, since you got insufficient permission for this section. Please check your URL. If you feel this is an error and want your settings checked, please inform your administrator.</source>
+                    <target>Ihr Login ist korrekt, aber die gewünschte Aktion ist nicht verfügbar weil Ihre Zugriffsrechte nicht ausreichend sind. Bitte prüfen Sie gegebenenfalls, ob die gewählte URL korrekt ist. Falls Sie Ihre Zugriffsrechte aktualisieren lassen wollen, wenden Sie sich bitte an Ihren Administrator.</target>
+                </trans-unit>
+            </group>
+            <group id="InvalidImageError">
+                <trans-unit id="InvalidImageError.h">
+                    <source>The file {$FILE} is not a valid image.</source>
+                    <target>Die Datei {$FILE} ist keine gültige Grafik.</target>
+                </trans-unit>
+            </group>
+            <group id="UploadFailedError">
+                <trans-unit id="UploadFailedError.h">
+                    <source>The file {$FILE} could not be saved.</source>
+                    <target>Die Datei {$FILE} konnte nicht gespeichert werden.</target>
+                </trans-unit>
+            </group>
+            <group id="FilesizeError">
+                <trans-unit id="FilesizeError.h">
+                    <source>Input is not valid.</source>
+                    <target>Eingabe ist ungültig.</target>
+                </trans-unit>
+                <trans-unit id="FilesizeError.p">
+                    <source>The file {$FILE} is too large. It must not exceed a maximum size of {$MAXIMUM} byte.</source>
+                    <target>Die Datei {$FILE} ist zu groß. Sie darf nicht größer sein als {$MAXIMUM} byte.</target>
+                </trans-unit>
+            </group>
+            <group id="InvalidActionError">
+                <trans-unit id="InvalidActionError.h">
+                    <source>Page not found.</source>
+                    <target>Seite nicht gefunden.</target>
+                </trans-unit>
+                <trans-unit id="InvalidActionError.p">
+                    <source>The action '{$ACTION}' is undefined, operation aborted.<it id="br1" pos="open">&lt;br /&gt;</it><bpt id="noscript1">&lt;noscript&gt;</bpt>Note to IE users: there exists a known issue with nonstandard compliant handling of the HTML "button" tag in some IE versions. This software has a JavaScript work-around for this problem. Activate JavaScript and try again.<ept id="noscript1">&lt;/noscript&gt;</ept></source>
+                    <target>Die Aktion '{$ACTION}' ist undefiniert, Operation abgebrochen.<it id="br1" pos="open">&lt;br /&gt;</it><bpt id="noscript1">&lt;noscript&gt;</bpt>Hinweis an IE-Nutzer: In einigen IE-Versionen gibt es ein bekanntes Problem mit einer nicht standardkonformen Verarbeitung des HTML "button" tags. Diese Software besitzt einen JavaScript-Workaround für das Problem. Aktivieren Sie JavaScript und versuchen Sie es erneut.<ept id="noscript1">&lt;/noscript&gt;</ept></target>
+                </trans-unit>
+            </group>
+            <group id="InvalidLoginError">
+                <trans-unit id="InvalidLoginError.h">
+                    <source>Access denied.</source>
+                    <target>Zugriff verweigert.</target>
+                </trans-unit>
+                <trans-unit id="InvalidLoginError.p">
+                    <source>The given user name and/or password is incorrect. Please check the text you entered and try again.</source>
+                    <target>Der eingegebene Nutzername und/oder Passwort sind leider nicht korrekt. Bitte prüfen Sie Ihre Eingabe und versuchen Sie es erneut.</target>
+                </trans-unit>
+            </group>
+            <group id="LoginMessage">
+                <trans-unit id="LoginMessage.h">
+                    <source>Access granted.</source>
+                    <target>Zugriff gewährt.</target>
+                </trans-unit>
+                <trans-unit id="LoginMessage.p">
+                    <source>Welcome!</source>
+                    <target>Herzlich Willkommen</target>
+                </trans-unit>
+            </group>
+            <group id="LogoutMessage">
+                <trans-unit id="LogoutMessage.h">
+                    <source>You have been logged out.</source>
+                    <target>Sie wurden erfolgreich abgemeldet.</target>
+                </trans-unit>
+                <trans-unit id="LogoutMessage.p">
+                    <source>Have a nice day!</source>
+                    <target>Vielen Dank für Ihren Besuch!</target>
+                </trans-unit>
+            </group>
+            <group id="SpamWarning">
+                <trans-unit id="SpamWarning.h">
+                    <source>Your entry has already been saved.</source>
+                    <target>Dieser Eintrag wurde bereits gespeichert.</target>
+                </trans-unit>
+                <trans-unit id="SpamWarning.p">
+                    <source>Please remember to submit your entries only once.</source>
+                    <target>Bitte achten Sie darauf Beiträge nicht mehrmals abzusenden.</target>
+                </trans-unit>
+            </group>
+            <group id="FloodWarning">
+                <trans-unit id="FloodWarning.h">
+                    <source>Your entry has already been saved.</source>
+                    <target>Ihr Beitrag wurde bereits gespeichert.</target>
+                </trans-unit>
+                <trans-unit id="FloodWarning.p">
+                    <source>No additional entries allowed this time.<it id="br1" pos="open">&lt;br /&gt;</it>Please give me and other visitors some time to react on the entries you already made.</source>
+                    <target>Weitere Einträge sind zur Zeit nicht erlaubt.<it id="br1" pos="open">&lt;br /&gt;</it>Bitte geben Sie mir und anderen Besuchern etwas Zeit, auf Ihren Eintrag zu reagieren.</target>
+                </trans-unit>
+            </group>
+            <group id="FileNotFoundError">
+                <trans-unit id="FileNotFoundError.h">
+                    <source>The requested file could not be found.</source>
+                    <target>Die gewünschte Datei ist leider nicht vorhanden.</target>
+                </trans-unit>
+                <trans-unit id="FileNotFoundError.p">
+                    <source>Please check the URL and try again.</source>
+                    <target>Bitte überprüfen Sie die angegebene URL und versuchen Sie es erneut.</target>
+                </trans-unit>
+            </group>
+            <group id="InvalidCharacterWarning">
+                <trans-unit id="InvalidCharacterWarning.h">
+                    <source>A chosen parameter is not valid.</source>
+                    <target>Eingabe ist ungültig.</target>
+                </trans-unit>
+                <trans-unit id="InvalidCharacterWarning.p">
+                    <source>The value "{$VALUE}" at field "{$FIELD}" contains illegal characters. Allowed characters are: "{$VALID}".</source>
+                    <target>Der Wert "{$VALUE}" im Feld "{$FIELD}" enthält ungültige Zeichen. Erlaubte Zeichen sind: "{$VALID}".</target>
+                </trans-unit>
+            </group>
+            <group id="InvalidSyntaxWarning">
+                <trans-unit id="InvalidSyntaxWarning.h">
+                    <source>A chosen parameter is not valid.</source>
+                    <target>Eingabe ist ungültig.</target>
+                </trans-unit>
+                <trans-unit id="InvalidSyntaxWarning.p">
+                    <source>The value "{$VALUE}" at field "{$FIELD}" has an invalid format. Valid is: "{$VALID}".</source>
+                    <target>Der Wert "{$VALUE}" im Feld "{$FIELD}" hat ein ungültiges Format. Gültig ist: "{$VALID}".</target>
+                </trans-unit>
+            </group>
+            <group id="InvalidInputWarning">
+                <trans-unit id="InvalidInputWarning.h">
+                    <source>A chosen parameter is not valid.</source>
+                    <target>Eingabe ist ungültig.</target>
+                </trans-unit>
+                <trans-unit id="InvalidInputWarning.p">
+                    <source>A parameter you have chosen is not valid. This is because you entered no or an incorrect value, or the link that brought you here does not work. For example, this may happen, if you chose to safe a file without giving a destination to safe the file to.<it id="br1" pos="open">&lt;br /&gt;</it>Try chosing another parameter setting. If you still keep getting this message, please inform the administrator.</source>
+                    <target>Ein gewählter Parameter ist ungültig. Entweder wurde ein ungültiger bzw. gar kein Wert angegeben, oder der gewählte Link ist defekt. Dies kann zum Beispiel passieren, wenn eine Datei zum Speichern gewählt wurde, aber kein Dateiname angegeben wird.<it id="br1" pos="open">&lt;br /&gt;</it>Bitte wählen Sie eine andere Belegung für Ihre Parameter. Sollte dieser Fehler trotzdem weiterhin bestehen bleiben, wenden Sie sich an den Webmaster.</target>
+                </trans-unit>
+            </group>
+            <group id="MissingInputWarning">
+                <trans-unit id="MissingInputWarning.h">
+                    <source>Input is invalid.</source>
+                    <target>Eingabe ist ungültig.</target>
+                </trans-unit>
+                <trans-unit id="MissingInputWarning.p">
+                    <source>Please fill in all required information before you submit the form.</source>
+                    <target>Bitte füllen Sie alle erforderlichen Felder aus, bevor Sie einen Eintrag abschicken.</target>
+                </trans-unit>
+            </group>
+            <group id="MissingFieldWarning">
+                <trans-unit id="MissingFieldWarning.h">
+                    <source>Input is invalid.</source>
+                    <target>Eingabe ist ungültig.</target>
+                </trans-unit>
+                <trans-unit id="MissingFieldWarning.p">
+                    <source>The following mandatory information is missing: <bpt id="b1">&lt;b&gt;</bpt>{$MESSAGE}<ept id="b1">&lt;/b&gt;</ept></source>
+                    <target>Die folgenden Pflichtangaben fehlen: <bpt id="b1">&lt;b&gt;</bpt>{$MESSAGE}<ept id="b1">&lt;/b&gt;</ept></target>
+                </trans-unit>
+            </group>
+            <group id="InvalidValueWarning">
+                <trans-unit id="InvalidValueWarning.h">
+                    <source>Your entry could not be saved.</source>
+                    <target>Die Aktion konnte nicht durchgeführt werden.</target>
+                </trans-unit>
+                <trans-unit id="InvalidValueWarning.p">
+                    <source>The following fields contain invalid input: <bpt id="b1">&lt;b&gt;</bpt>{$MESSAGE}<ept id="b1">&lt;/b&gt;</ept></source>
+                    <target>Die folgenden Felder enthalten ungültige Werte: <bpt id="b1">&lt;b&gt;</bpt>{$MESSAGE}<ept id="b1">&lt;/b&gt;</ept></target>
+                </trans-unit>
+            </group>
+            <group id="PermissionDeniedError">
+                <trans-unit id="PermissionDeniedError.h">
+                    <source>Permission denied.</source>
+                    <target>Zugriff verweigert.</target>
+                </trans-unit>
+                <trans-unit id="PermissionDeniedError.p">
+                    <source>We are sorry: you don't have permission to perform the requested action.<it id="br1" pos="open">&lt;br /&gt;</it>If you feel this is an error, report this message to the administrator.</source>
+                    <target>Sie haben keine ausreichenden Rechte die gewünschte Funktion aufzurufen.<it id="br1" pos="open">&lt;br /&gt;</it>Wenn Sie diese Sperre aufheben möchten, wenden Sie sich bitte an den Administrator.</target>
+                </trans-unit>
+            </group>
+            <group id="AllreadyExistsWarning">
+                <trans-unit id="AllreadyExistsWarning.h">
+                    <source>Permission denied.</source>
+                    <target>Zugriff verweigert.</target>
+                </trans-unit>
+                <trans-unit id="AllreadyExistsWarning.p">
+                    <source>Unable to create an entry with the id "{$ID}" because another entry with the same name already exists.</source>
+                    <target>Es konnte kein neuer Eintrag mit der id "{$ID}" erzeugt werden, weil bereits ein anderer Eintrag mit diesem Namen existiert.</target>
+                </trans-unit>
+            </group>
+            <group id="UserNotFoundError">
+                <trans-unit id="UserNotFoundError.h">
+                    <source>User unknown.</source>
+                    <target>Nutzer unbekannt.</target>
+                </trans-unit>
+                <trans-unit id="UserNotFoundError.p">
+                    <source>Please check the name you provided and try again.</source>
+                    <target>Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut.</target>
+                </trans-unit>
+            </group>
+            <group id="UserAllreadyExistsWarning">
+                <trans-unit id="UserAllreadyExistsWarning.h">
+                    <source>User already exists.</source>
+                    <target>Nutzer existiert bereits.</target>
+                </trans-unit>
+                <trans-unit id="UserAllreadyExistsWarning.p">
+                    <source>Another user with the same user name already exists. Please choose another login and try again.</source>
+                    <target>Ein anderer Nutzer mit dem selben Nutzernamen existiert bereits am System. Bitte wählen Sie einen anderen Namen und versuchen Sie es erneut.</target>
+                </trans-unit>
+            </group>
+            <group id="UserDeleteSelfError">
+                <trans-unit id="UserDeleteSelfError.h">
+                    <source>User is not allowed to delete it's own account.</source>
+                    <target>Nutzer kann sich nicht selbst löschen.</target>
+                </trans-unit>
+                <trans-unit id="UserDeleteSelfError.p">
+                    <source>You have tried to delete the own user account. This action is prohibited for security reasons.</source>
+                    <target>Sie haben versucht Ihr eigenes Nutzerkonto zu löschen. Diese Aktion ist aus Sicherheitsgründen nicht gestattet.</target>
+                </trans-unit>
+            </group>
+            <group id="UserDeleteAdminError">
+                <trans-unit id="UserDeleteAdminError.h">
+                    <source>Administrator is a protected account.</source>
+                    <target>Systemadministrator ist ein geschütztes Konto.</target>
+                </trans-unit>
+                <trans-unit id="UserDeleteAdminError.p">
+                    <source>This account is protected and may not be deleted or deactivated for security reasons. Changes to this user's groups are prohibited.</source>
+                    <target>Dieses Konto ist geschützt und darf aus Sicherheitsgründen nicht gelöscht, oder deaktiviert werden. Veränderungen der Nutzergruppe sind nicht gestattet.</target>
+                </trans-unit>
+            </group>
+            <group id="LoginDeniedError">
+                <trans-unit id="LoginDeniedError.h">
+                    <source>Login currently not possible.</source>
+                    <target>Login vorübergehend nicht möglich.</target>
+                </trans-unit>
+                <trans-unit id="LoginDeniedError.p">
+                    <source>Because a wrong password has been entered more than 3 times, any login to this account is suspended for 5 minutes. Please wait to the end of this period and try again. If you forgot your password, please notify your administrator.</source>
+                    <target>Das Passwort wurde mehr als 3 Mal falsch eingegeben. Der Login ist für 5 Minuten gesperrt. Bitte warten Sie diese Frist ab und versuchen Sie es dann erneut. Falls Sie Ihr Passwort vergessen haben sollten, benachrichtigen Sie Ihren Administrator.</target>
+                </trans-unit>
+            </group>
+            <group id="FileNotCreatedError">
+                 <trans-unit id="FileNotCreatedError.h">
+                    <source>File could not be created</source>
+                    <target>Datei konnte nicht erzeugt werden</target>
+                 </trans-unit>
+                 <trans-unit id="FileNotCreatedError.p">
+                    <source>Unable to create file <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept>. Possible reason: access restriction in effect. Please inform administrator on this error.</source>
+                    <target>Die Datei <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept> konnte nicht erzeugt werden. Möglicherweise sind unzureichende Rechte gesetzt oder das Verzeichnis ist schreibgeschützt. Bitte informieren Sie den Webmaster dieser Seite.</target>
+                 </trans-unit>
+            </group>
+            <group id="NotWriteableError">
+                 <trans-unit id="NotWriteableError.h">
+                    <source>Data could not be saved</source>
+                    <target>Daten konnten nicht gespeichert werden</target>
+                 </trans-unit>
+                 <trans-unit id="NotWriteableError.p">
+                    <source>Unable to perform write operation on resource <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept>. Possible reason: access restriction in effect. Please inform administrator on this error.</source>
+                    <target>Der Schreibzugriff auf die Ressource <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept> ist gescheitert. Möglicherweise ist die Ressource gerade durch einen anderen Nutzer zur Bearbeitung gesperrt, oder es sind unzureichende Rechte gesetzt oder die Ressource ist schreibgeschützt. Bitte informieren Sie den Webmaster dieser Seite.</target>
+                 </trans-unit>
+            </group>
+            <group id="NotReadableError">
+                 <trans-unit id="NotReadableError.h">
+                    <source>Data could not be read</source>
+                    <target>Daten konnten nicht gelesen werden</target>
+                 </trans-unit>
+                 <trans-unit id="NotReadableError.p">
+                    <source>Unable to perform read operation on resource <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept>. Possible reason: access restriction in effect, or resource is not available. Please inform administrator on this error.</source>
+                    <target>Der Zugriff auf die Ressource <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept> ist gescheitert. Möglicherweise ist die Ressource gerade durch einen anderen Nutzer zur Bearbeitung gesperrt, oder es sind unzureichende Rechte gesetzt oder die Ressource ist nicht verfügbar. Bitte informieren Sie den Webmaster dieser Seite.</target>
+                 </trans-unit>
+            </group>
+            <group id="FirstLoginMessage">
+                 <trans-unit id="FirstLoginMessage.h">
+                     <source>Thank you for your registration.</source>
+                     <target>Vielen Dank für Ihre Anmeldung.</target>
+                 </trans-unit>
+                 <trans-unit id="FirstLoginMessage.p">
+                     <source>Your password has been emailed to you! Please check your inbox!</source>
+                     <target>Ihr Passwort wurde Ihnen gemailt! Bitte schauen Sie in Ihr Postfach!</target>
+                 </trans-unit>
+            </group>
+            <group id="SearchFailedError">
+                <trans-unit id="SearchFailedError.h">
+                    <source>ERROR 500: search index has not been found.</source>
+                    <target>Suchindex nicht gefunden.</target>
+                </trans-unit>
+                <trans-unit id="SearchFailedError.p">
+                    <source><bpt id="b1">&lt;b&gt;</bpt>Dear visitor:<ept id="b1">&lt;/b&gt;</ept> the search engine is temporarily not available. Please inform the administrator of this site.<it id="br1" pos="open">&lt;br /&gt;</it> <it id="br2" pos="open">&lt;br /&gt;</it><bpt id="b2">&lt;b&gt;</bpt>Administrator:<ept id="b2">&lt;/b&gt;</ept> Before using this search engine for the first time, you have to use the tool "suchindexErstellen" provided with this program to generate index-files for your web site. This index consists of 2 files: "keywords.dat" and "documents.dat" which need to placed in the directory: "plugins/search". For details on how to do this see the provided readme file!</source>
+                    <target><bpt id="b1">&lt;b&gt;</bpt>Sehr geehrter Besucher:<ept id="b1">&lt;/b&gt;</ept> die Suchmaschine ist zur Zeit nicht verfügbar. Bitte wenden Sie sich an den Webmaster dieser Seite.<it id="br1" pos="open">&lt;br /&gt;</it> <it id="br2" pos="open">&lt;br /&gt;</it><bpt id="b2">&lt;b&gt;</bpt>Administrator:<ept id="b2">&lt;/b&gt;</ept> Bevor Sie diese Suchmaschine das erste Mal benutzen müssen Sie mit dem beigelegten Tool "suchindexErstellen" einen Index für Ihre Webseite erstellen. Der Suchindex muss in den Dateien "keywords.dat" und "documents.dat" im Verzeichnis "plugins/search" gespeichert werden. Details dazu finden Sie in der Online-Hilfe!</target>
+                </trans-unit>
+            </group>
+            <group id="PearDbError">
+                <trans-unit id="PearDbError.h">
+                    <source>PHP configuration error</source>
+                    <target>Fehler in PHP-Konfiguration</target>
+                </trans-unit>
+                <trans-unit id="PearDbError.p">
+                    <source>This database application requires PEAR-MDB2. Since it could not be found on your server, this plugin was unable to start. <bpt id="h1">&lt;span class="embtag_tag_h"&gt;</bpt>Administrators:<ept id="h1">&lt;/span</ept> Check the server configuration and make sure the variable "include_path"    in file "php.ini" refers to the PEAR installation path.<bpt id="h2">&lt;span class="embtag_tag_h"&gt;</bpt>Administrator:<ept id="h2">&lt;/span</ept> Inform your admin on this problem. In case you are not allowed to use PEAR-MDB2 on your server, I am afraid you won't be able to run database applications on this server.</source>
+                    <target>Diese Datenbankanwendung benötigt PEAR-MDB2. Leider konnte diese auf Ihrem Server nicht gefunden werden. Deshalb konnte dieses Plugin nicht gestartet werden.<bpt id="h1">&lt;span class="embtag_tag_h"&gt;</bpt>Administratoren:<ept id="h1">&lt;/span</ept> Überprüfen Sie die Serverkonfiguration und stellen Sie sicher, dass in der Datei "php.ini" der Installationspfad von PEAR in der Variable "include_path" genannt wird.<bpt id="h2">&lt;span class="embtag_tag_h"&gt;</bpt>Administrator:<ept id="h2">&lt;/span</ept> Melden Sie dieses Problem Ihrem Administrator. Sollten Sie PEAR-MDB2 auf Ihrem Server nicht nutzen dürfen, müssen Sie auf die Datenbankunterstützung leider verzichten.</target>
+                </trans-unit>
+            </group>
+            <group id="SpamError">
+                <trans-unit id="SpamError.h">
+                    <source>Access denied</source>
+                    <target>Zugriff verweigert</target>
+                </trans-unit>
+                <trans-unit id="SpamError.p">
+                    <source>To protect this site from spam, access to the requested resource was temporarily not granted to you.</source>
+                    <target>Wegen Spam-Verdacht wurde Ihnen der Zugriff auf die gewünschte Ressource vorübergehend nicht gewährt.</target>
+                </trans-unit>
+            </group>
+            <group id="FormSuspendedWarning">
+                <trans-unit id="FormSuspendedWarning.h">
+                    <source>Please be patient</source>
+                    <target>Bitte haben Sie einen Moment Geduld</target>
+                </trans-unit>
+                <trans-unit id="FormSuspendedWarning.p">
+                    <source>You did submit the form too recently. Please wait a few seconds and try again.</source>
+                    <target>Sie haben das Formular zu schnell abgesendet. Bitte warten Sie einige Sekunden und versuchen Sie es erneut.</target>
+                </trans-unit>
+            </group>
+            <group id="FormTimeoutWarning">
+                <trans-unit id="FormTimeoutWarning.h">
+                    <source>Form data has expired</source>
+                    <target>Formulardaten sind abgelaufen</target>
+                </trans-unit>
+                <trans-unit id="FormTimeoutWarning.p">
+                    <source>The data contained in the submitted form is more than half an hour old. Before you submit this entry, you should check if the provided data is still up to date.</source>
+                    <target>Die Daten im Formular sind mehr als eine halbe Stunde alt. Bevor Sie den Eintrag abschicken, prüfen Sie bitte ob Ihre Daten noch aktuell sind.</target>
+                </trans-unit>
+            </group>
+            <group id="MailMessage">
+                <trans-unit id="MailMessage.h">
+                    <source>E-mail sent</source>
+                    <target>E-Mail gesendet</target>
+                </trans-unit>
+                <trans-unit id="MailMessage.p">
+                    <source>A message has been sent to the entered e-mail address. Please check your e-mail inbox.</source>
+                    <target>Es wurde eine Nachricht an die angegebene Mailadresse gesendet. Bitte überprüfen Sie Ihr Mailpostfach.</target>
+                </trans-unit>
+            </group>
+            <group id="InvalidMailWarning">
+                <trans-unit id="InvalidMailWarning.h">
+                    <source>Invalid e-mail address</source>
+                    <target>Ungültige Mailadresse</target>
+                </trans-unit>
+                <trans-unit id="InvalidMailWarning.p">
+                    <source>Please check the entered e-mail address.</source>
+                    <target>Überprüfen Sie bitte die von Ihnen angegebene Mailadresse.</target>
+                </trans-unit>
+            </group>
+            <group id="MailNotFoundError">
+                <trans-unit id="MailNotFoundError.h">
+                    <source>The entered e-mail address is not registered.</source>
+                    <target>Die angegebene Mailadresse ist nicht registriert.</target>
+                </trans-unit>
+            </group>
+            <group id="PasswordExpiredWarning">
+                <trans-unit id="PasswordExpiredWarning.h">
+                    <source>Permission denied</source>
+                    <target>Zugriff verweigert</target>
+                </trans-unit>
+                <trans-unit id="PasswordExpiredWarning.p">
+                    <source>The time limit for changing your password has expired. Please re-request a new password. If you need assistance, contact your administrator for help.</source>
+                    <target>Das Zeitlimit zum Ändern Ihres Passworts ist überschritten. Bitte fordern Sie erneut ein neues Passwort an. Falls Sie Unterstützung benötigen, wenden Sie sich bitte an Ihren Administrator.</target>
+                </trans-unit>
+            </group>
+            <group id="InvalidUrlError">
+                <trans-unit id="InvalidUrlError.h">
+                    <source>Permission denied</source>
+                    <target>Zugriff verweigert</target>
+                </trans-unit>
+                <trans-unit id="InvalidUrlError.p">
+                    <source>Please make sure that the entered URL is correct.</source>
+                    <target>Bitte überprüfen Sie die Korrektheit der eingetragenen URL.</target>
+                </trans-unit>
+            </group>
+            <group id="EmptySelectionWarning">
+                <trans-unit id="EmptySelectionWarning.h">
+                    <source>Changes could not be saved</source>
+                    <target>Änderungen konnten nicht gespeichert werden</target>
+                </trans-unit>
+                <trans-unit id="EmptySelectionWarning.p">
+                    <source>Please select at least one entry for this operation.</source>
+                    <target>Bitte wählen Sie für diese Operation mindestens einen Eintrag aus.</target>
+                </trans-unit>
+            </group>
+            <group id="DbConnectionError">
+                <trans-unit id="DbConnectionError.h">
+                    <source>An error occurred</source>
+                    <target>Es ist ein Fehler aufgetreten</target>
+                </trans-unit>
+                <trans-unit id="DbConnectionError.p">
+                    <source>Unable to establish database connection.<it id="br3" pos="open">&lt;br /&gt;</it>The service may be temporarily unavailable. Please try again later. If you continue to get this message, please report this issue to your administrator.<it id="br4" pos="open">&lt;br /&gt;</it>Administrator: Please check your connection settings on your administration panel. Check if your database server is running and reachable.</source>
+                    <target>Verbindung zur Datenbank konnte nicht hergestellt werden.<it id="br3" pos="open">&lt;br /&gt;</it>Dieser Dienst ist möglicherweise vorübergehend nicht verfügbar. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut. Sollten Sie weiterhin diese Meldung erhalten, informieren Sie bitte den Administrator über dieses Problem.<it id="br4" pos="open">&lt;br /&gt;</it>Administrator: bitte prüfen Sie im Administrationsmenü, ob die Einstellungen der Datenbankverbindung korrekt sind. Stellen Sie sicher, dass der Datenbankserver aktiviert und erreichbar ist.</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

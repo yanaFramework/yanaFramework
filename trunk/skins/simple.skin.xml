@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE skin SYSTEM "../config/dtd/skin.dtd">
+<skin>
+    <head>
+        <title>Simple Skin</title>
+        <author>Thomas Meyer</author>
+        <url>http://www.yanaframework.net</url>
+        <description>
+            A light weight skin for the purists.
+            Uses a decent, light gray, with blue highlights.
+        </description>
+        <description lang="de">
+            Ein schlichter Skin für Puristen.
+            Farblich wird ein dezentes Grau verwendet, welches blau abgesetzt ist.
+        </description>
+    </head>
+    <body>
+        <template id="INDEX" file="simple/index.html.tpl">
+            <style>simple/styles/menu.css</style>
+            <style id="skin">simple/styles/default.css</style>
+        </template>
+    </body>
+</skin>

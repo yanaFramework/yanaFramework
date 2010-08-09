@@ -1,0 +1,110 @@
+body
+{
+    font-family: 'Arial', 'Helvetica', sans-serif;
+}
+
+#toolbar
+{
+    margin: 10px;
+}
+
+#toolbar .hmenu
+{
+    border: 1px solid #888;
+}
+
+.hmenu,
+.hmenu .entry,
+.hmenu .entry :hover
+{
+    background-image: none !important;
+}
+
+a
+{
+    color: #191970;
+    text-decoration: none;
+}
+
+a:hover
+{
+    color: #4682B4;
+    text-decoration: underline;
+}
+
+hr
+{
+    background-color: #4682B4;
+    color: #4682B4;
+    height: 2pt;
+    width: 98%
+}
+
+.header
+{
+    font-size: 18pt;
+    font-weight: bold;
+    color: #003355;
+    background-color: #D3D3D3;
+    text-align: center;
+    background-image: url('h2_bgd.gif');
+    border: 1px solid #888888;
+}
+
+.details
+{
+    border: 2px dashed #888888;
+    background: #EEEEEE;
+    width: 50%;
+    margin: 5px;
+    padding: 5px;
+}
+
+.embtag_tag_h
+{
+    color: #668899;
+}
+
+.embtag_tag_h:first-letter
+{
+    /* steelblue */
+    color: #4682B4;
+}
+
+h1
+{
+    font-weight: bold;
+    font-size: 24pt;
+    color: #ffffff ! important;
+    background-color: #5588aa;
+    text-align: center;
+}
+
+h2
+{
+    font-weight: bold;
+    font-size: 18pt;
+    color: #ffffff;
+    background-color: #5588aa;
+    text-align: center;
+}
+
+h3
+{
+    font-weight: bold;
+    font-size: 16pt;
+    color: #ffffff;
+    background-color: #5588aa;
+    text-align: center;
+}
+
+p
+{
+    font-size: 11pt;
+    color: #000000;
+}
+/* internal CSS classes, do NOT change! */
+.yana_button
+{
+    display: none;
+}

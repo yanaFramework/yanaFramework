@@ -1,0 +1,14 @@
+SQL installation files for "PostgreSQL" go here.
+SQL-Installationsdateien für "PostgreSQL" hier abspeichern.
+
+Note: this is OPTIONAL!
+
+The framework is able to create SQL files
+for "PostgreSQL" automatically at runtime,
+if a database structure file exists.
+
+Hinweis: dies ist OPTIONAL!
+
+Das Framework ist in der Lage SQL-Dateien
+für "PostgreSQL" automatisch zur Laufzeit zu erzeugen,
+falls eine Datenbankstrukturdatei existiert.

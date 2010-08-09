@@ -1,0 +1,214 @@
+<?php
+/**
+ * RSS-to-HTML Factory
+ *
+ * Reads an RSS feed and creates an HTML page.
+ *
+ * {@translation
+ *
+ *    de: RSS-to-HTML Factory
+ *
+ *    Liest einen RSS-Feed und erzeugt daraus eine HTML-Seite.
+ * }
+ *
+ * @author     Thomas Meyer
+ * @type       read
+ * @priority   high
+ * @group      rss_factory
+ * @license    http://www.gnu.org/licenses/gpl.txt
+ *
+ * @package    yana
+ * @subpackage plugins
+ */
+
+/**
+ * RSS to HTML factory plugin
+ *
+ * creates HTML from RSS files
+ *
+ * @access     public
+ * @package    yana
+ * @subpackage plugins
+ */
+class plugin_rss extends StdClass implements IsPlugin
+{
+    /**#@+
+     * @ignore
+     * @access  private
+     */
+
+    /** @var array  */ private $rss;
+
+    /** "file" should be a valid path to an existing XML-File
+     * @var string  */ private $file;
+
+    /**  maximum number of entries to show
+     * @var int     */ private $max;
+
+    /** @var string */ private $currentTag = "";
+    /** @var int    */ private $currentEntry = -1;
+
+    /**#@-*/
+
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @ignore
+     */
+    public function __construct()
+    {
+        global $YANA;
+        if (isset($YANA)) {
+            $this->file = $YANA->getVar("PROFILE.RSS.FILE");
+            $this->max  = $YANA->getVar("PROFILE.RSS.MAX");
+            settype($this->file, "string");
+            settype($this->max, "integer");
+    
+            if (!$this->max > 0) {
+                $this->max  = 5;
+            }
+            if (!$this->file > 0) {
+                $this->file = 'plugins/rss/test.rss';
+            }
+        }    
+    }
+
+    /**
+     * Default event handler
+     *
+     * returns bool(true) on success and bool(false) on error
+     *
+     * @access  public
+     * @return  bool
+     * @param   string  $event  name of the called event in lower-case
+     * @param   array   $ARGS   array of arguments passed to the function
+     * @ignore
+     */
+    public function _default($event, array $ARGS)
+    {
+        return true;
+    }
+
+    /**
+     * Transform RSS/XML to HTML
+     *
+     * This creates the output.
+     *
+     * This function does not expect any arguments
+     *
+     * @type        read
+     * @template    RSS_NEWS
+     * @menu        group: start
+     *
+     * @access  public
+     * @return  bool
+     */
+    public function get_news()
+    {
+        /* this function expects no arguments */
+
+        global $YANA;
+        $parser = xml_parser_create();
+        xml_set_element_handler($parser, array(&$this, "_startElement"), array(&$this, "_endElement"));
+        xml_set_character_data_handler($parser, array(&$this, "_characterData"));
+
+        if (!($fp = @fopen($this->file, "r"))) {
+            $message = "Could not open XML input. Check if '".print_r($this->file).
+                "' is a correct path to a valid XML file!";
+            trigger_error($message, E_USER_WARNING);
+            return false;
+
+        } else {
+
+            while ($data = fread($fp, 4096))
+            {
+                if (!xml_parse($parser, $data, feof($fp))) {
+                    $errorMessage = "XML error: ".
+                    xml_error_string(xml_get_error_code($parser)) .
+                    " in file '" . $this->file .
+                    "' at line " . xml_get_current_line_number($parser);
+                    trigger_error($errorMessage, E_USER_WARNING);
+                    return false;
+                }
+            }
+            xml_parser_free($parser);
+            $YANA->setVar("RSS", array_slice($this->rss, 0, $this->max));
+            $YANA->setVar("FILE", $this->file);
+
+            /* Microsummaries */
+            if (class_exists('Microsummary')) {
+                Microsummary::publishSummary(__CLASS__);
+            }
+
+            if (class_exists('Microsummary') && count($this->rss) > 0) {
+                $latest = array_shift($this->rss);
+                Microsummary::setText(__CLASS__, 'RSS latest: '.$latest['TITLE'].
+                    ' ('.$latest['PUBDATE'].')');
+            }
+
+            return true;
+
+        } /* end if */
+    }
+
+    /**
+     * _startElement
+     *
+     * @access  private
+     * @param   int     $parser parser
+     * @param   string  $name   name
+     * @param   array   $attrs  attributes
+     * @return  bool
+     * @ignore
+     */
+    function _startElement($parser, $name, $attrs)
+    {
+        if (preg_match("/title|pubDate|description|link|author|category|comments/i", $name)) {
+            $this->currentTag = mb_strtoupper($name);
+        }
+        if (mb_strtoupper($name) == "ITEM" && $this->currentEntry == -1) {
+            $this->currentEntry = 0;
+        }
+    }
+
+    /**
+     * _endElement
+     *
+     * @access  private
+     * @param   int     $parser parser
+     * @param   string  $name   name
+     * @return  bool
+     * @ignore
+     */
+    function _endElement($parser, $name)
+    {
+        if (mb_strtoupper($name) == "ITEM") {
+            $this->currentEntry++;
+        }
+    }
+
+    /**
+     * _characterData
+     *
+     * @access  private
+     * @param   int     $parser parser
+     * @param   string  $data   data
+     * @return  bool
+     * @ignore
+     */
+    function _characterData($parser, $data)
+    {
+
+        if ( trim($data) && $this->currentEntry > -1) {
+            if ($this->currentTag != "LINK") {
+                $data = preg_replace("/'/u", "\\'", $data);
+            }
+            settype($this->rss[$this->currentEntry][$this->currentTag], "string");
+            $this->rss[$this->currentEntry][$this->currentTag] .= $data;
+        }
+    }
+
+}
+
+?>

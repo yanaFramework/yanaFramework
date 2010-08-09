@@ -1,0 +1,32 @@
+<!ENTITY % inc SYSTEM "database.inc.dtd"> %inc;
+
+<!-- TABLE -->
+
+<!ELEMENT function (description?, implementation+)>
+<!ATTLIST function
+  %name;
+  title  %implied;
+>
+
+<!--
+  You should have at most 1 implementation per DBMS.
+  The default DBMS is "generic".
+  Generic implementations will be simulated using PHP and not submitted to the
+  database server, since function implementations are not portable between
+  vendors.
+-->
+<!ELEMENT implementation (param*, return?, code)>
+<!ATTLIST implementation
+  %dbms;
+  language  %implied;
+>
+
+<!ELEMENT param EMPTY>
+<!ATTLIST param
+  %name;
+  type  %required;
+  mode  (in|out|inout) "in"
+>
+
+<!ELEMENT return (#PCDATA)>
+<!ELEMENT code (#PCDATA)>

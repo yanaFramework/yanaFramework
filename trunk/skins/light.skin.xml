@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE skin SYSTEM "../config/dtd/skin.dtd">
+<skin>
+    <head>
+        <title>Light Skin</title>
+        <author>Thomas Meyer</author>
+        <url>http://www.yanaframework.net</url>
+        <description>
+            This skin drops the buttons "New", "Details" and "Overview".
+            Instead there is only one view for all.
+        </description>
+        <description lang="de">
+            Dieser Skin verzichtet auf die Schalter "Details", "Einträge" und "Neu".
+            Es gibt nur noch eine Ansicht für alles.
+        </description>
+    </head>
+    <body>
+        <template id="INDEX" file="light/index.html.tpl">
+            <style>light/styles/menu.css</style>
+            <style id="skin">light/styles/default.css</style>
+        </template>
+    </body>
+</skin>

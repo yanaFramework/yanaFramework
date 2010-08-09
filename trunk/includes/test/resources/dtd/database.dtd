@@ -1,0 +1,53 @@
+<!ENTITY % inc SYSTEM "database.inc.dtd"> %inc;
+
+<!-- ENTITIES -->
+<!ENTITY % dbms
+ 'dbms  (db2|dbase|frontbase|informix|interbase|msaccess|mssql|mysql|oracle|postgresql|sybase|sqlite|generic)  "generic"'
+>
+
+<!-- DATABASE -->
+
+<!ELEMENT database (description?, (include | table | view | form | function | sequence | initialization)*, changelog?)>
+<!ATTLIST database
+    %nameImplied;
+    charset     %implied;
+    datasource  %implied;
+    readonly    %bool;
+    title       %implied;
+>
+
+<!ELEMENT description (#PCDATA)>
+
+<!ELEMENT include (#PCDATA)>
+
+<!--ELEMENT table -->
+<!ENTITY % tables SYSTEM "database.tables.dtd"> %tables;
+
+<!--ELEMENT view -->
+<!ENTITY % views SYSTEM "database.views.dtd"> %views;
+
+<!--ELEMENT forms -->
+<!ENTITY % forms SYSTEM "database.forms.dtd"> %forms;
+
+<!--ELEMENT function -->
+<!ENTITY % func SYSTEM "database.functions.dtd"> %func;
+
+<!-- SEQUENCES -->
+
+<!ELEMENT sequence (description?)>
+<!ATTLIST sequence
+  %name;
+  start       %implied;
+  increment   CDATA     "1"
+  min         %implied;
+  max         %implied;
+  cycle       %bool;
+>
+
+<!--ELEMENT changelog -->
+<!ENTITY % changelog SYSTEM "database.changelog.dtd"> %changelog;
+
+<!ELEMENT initialization (#PCDATA)>
+<!ATTLIST initialization
+  %dbms;
+>

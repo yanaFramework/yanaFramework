@@ -1,0 +1,29 @@
+/* intern verwendete Klassen, nicht verändern!
+ * classes used by system, do not change!
+ */
+.yana_button
+{
+    display: none;
+}
+.ajax_loading
+{
+    width: 80px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    background-color: #fff;
+    background-image: url('load_medium.gif');
+    background-position: 50% 0%;
+    background-repeat: no-repeat;
+    color: #335;
+    border: 1px solid #aaa;
+    padding: 5px;
+    margin: 5px;
+    padding-top: 50px;
+    /* Note: box-shadow is a CSS 3.0 rule
+     * As most current browser don't support CSS 3 yet,
+     * it is meant for future use.
+     */
+    box-shadow: 3px 3px 2px 2px #ccc;
+}

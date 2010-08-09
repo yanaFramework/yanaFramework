@@ -1,0 +1,2 @@
+SQL installation files for "Frontbase" go here.
+SQL-Installationsdateien für "Frontbase" hier abspeichern.

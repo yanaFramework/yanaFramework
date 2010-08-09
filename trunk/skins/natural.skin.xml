@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE skin SYSTEM "../config/dtd/skin.dtd">
+<skin>
+    <head>
+        <title>Natural Skin</title>
+        <author>Thomas Meyer</author>
+        <url>http://www.yanaframework.net</url>
+        <description>
+            This is a colorful skin that mainly uses brown and yellow,
+            which creates some kind of "autumn" mood.
+        </description>
+        <description lang="de">
+            Dies ist ein bunter Skin der gelbe und braune Farbtöne verwendet.
+            Dies erzeugt eine gewisse "Herbststimmung".
+        </description>
+    </head>
+    <body>
+        <template id="INDEX">
+            <style id="natural">natural/styles/default.css</style>
+        </template>
+        <template id="GUESTBOOK_ENTRY">
+            <style>natural/guestbook/default.css</style>
+        </template>
+        <template id="GUESTBOOK_READ">
+            <style>natural/guestbook/default.css</style>
+        </template>
+        <template id="GUESTBOOK_DEFAULT_COMMENT">
+            <style>natural/guestbook/default.css</style>
+        </template>
+        <template id="GUESTBOOK_READ_EDIT">
+            <style>natural/guestbook/default.css</style>
+        </template>
+    </body>
+</skin>

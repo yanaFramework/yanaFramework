@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="de">
+        <header/>
+        <body>
+            <trans-unit id="program_title">
+                <source>RSS feed</source>
+                <target>RSS-Feed</target>
+            </trans-unit>
+            <group id="rss_config">
+                <trans-unit id="rss_config.title">
+                    <source>RSS feed</source>
+                    <target>RSS-Feed</target>
+                </trans-unit>
+                <trans-unit id="rss_config.txt_entry">
+                    <source>entry</source>
+                    <target>Eintrag</target>
+                </trans-unit>
+                <trans-unit id="rss_config.txt_entries">
+                    <source>entries</source>
+                    <target>Einträge</target>
+                </trans-unit>
+            </group>
+            <group id="rss_config.options">
+                    <trans-unit id="rss_config.options.0">
+                        <source>path to RSS file</source>
+                        <target>Pfad der RSS-Datei</target>
+                    </trans-unit>
+                    <trans-unit id="rss_config.options.1">
+                        <source>max. shown entries</source>
+                        <target>max. angezeigte Einträge</target>
+                    </trans-unit>
+                    <trans-unit id="rss_config.options.2">
+                        <source>language</source>
+                        <target>Sprache</target>
+                    </trans-unit>
+                    <trans-unit id="rss_config.options.3">
+                        <source>selected language</source>
+                        <target>gewählte Sprache</target>
+                    </trans-unit>
+                    <trans-unit id="rss_config.options.4">
+                        <source>available languages</source>
+                        <target>verfügbare Sprachen</target>
+                    </trans-unit>
+                    <trans-unit id="rss_config.options.5">
+                        <source>Click here to view the RSS feed</source>
+                        <target>Hier klicken um den RSS-Feed anzuzeigen</target>
+                    </trans-unit>
+                </group>
+        </body>
+    </file>
+</xliff>

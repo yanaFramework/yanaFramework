@@ -1,0 +1,168 @@
+/* both */
+ul.menu, ul.hmenu
+{
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+}
+ul.menu li.menu div,
+ul.hmenu li.hmenu div
+{
+    font-weight: 800;
+    cursor: pointer;
+    font-size: 14px;
+}
+ul.menu li.entry,
+ul.hmenu li.entry
+{
+    margin: 2px 0px;
+    background-color: #E6EAEE;
+    background-image: url('menu_entry_bgd.gif');
+    background-repeat: repeat-x;
+    border: 1px solid #4863A0;
+    white-space: nowrap;
+}
+ul.menu li.entry :hover,
+ul.hmenu li.entry :hover
+{ 
+    color: #f0f0f0 ! important;
+    background-color: #4863A0;
+    background-image: url('menu_entry_hover_bgd.gif');
+}
+ul.menu li.entry a,
+ul.hmenu li.entry a
+{ 
+    display: block; 
+    line-height: 200%; 
+    padding: 0px 5px 0px 5px; 
+    color: #4863A0;
+    font-weight: normal; 
+    font-size: 12px;
+    cursor: pointer;
+}
+ul.menu li.menu,
+ul.hmenu li.hmenu,
+ul.hmenu li.hmenu:hover ul.hmenu,
+ul.hmenu li.menu_hover ul.hmenu
+{ 
+    background-color: #a3c0d7;
+    background-image: url('menu_bgd.gif');
+    background-repeat: repeat-y;
+    border: 1px solid #6C9DC5;
+}
+/* horizontal menu */
+ul.hmenu
+{
+    display: block;
+    height: 40px;
+    margin-bottom: 10px;
+    padding-top: 5px;
+    position: relative;
+    z-index: 30;
+    background: #d9d9d9 url('menu_h_bgd.png') repeat-x;
+    border-top: 1px solid #ddd;
+    border-right: 1px solid #dfdfdf;
+    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #d0d0d0;
+}
+ul.hmenu:hover
+{
+    background: #efe9d9 url('menu_h_bgd_hover.png') repeat-x;
+    border-top-color: #cfcfcf;
+    border-right-color: #d0d0d0;
+    border-bottom-color: #bbb;
+    border-left-color: #c0c0c0;
+}
+ul.hmenu li
+{
+    float: left;
+    display: block;
+    list-style-type: none;
+    list-style-position: outside;
+    padding: 0px;
+}
+ul.hmenu ul li
+{
+    float: none;
+}
+ul.hmenu li.entry
+{
+    margin-left: 10px;
+}
+ul.hmenu ul.hmenu li.entry
+{
+    float: none;
+    margin-left: 0px;
+}
+ul.hmenu ul.hmenu
+{
+    display: none;
+    padding-left: 10px;
+    height: auto;
+    position: relative;
+    z-index: 40;
+    margin-left: 10px;
+}
+ul.hmenu li.hmenu
+{
+    border-width: 1px;
+    margin-top: 2px;
+    margin-left: 5px;
+    margin-right: 5px;
+    line-height: 100%;
+}
+ul.hmenu li.hmenu div
+{
+    display: block;
+    padding: 5px;
+}
+ul.hmenu li.hmenu:hover > ul.hmenu,
+ul.hmenu li.menu_hover > ul.hmenu
+{
+    border-top-style: dotted;
+    position: absolute;
+    display: block;
+    padding-left: 10px;
+    padding-right: 20px;
+    padding-bottom: 5px;
+    margin-left: 10px;
+    border-width: 1px;
+}
+/* vertical menu */
+ul.menu
+{
+    width: 170px;
+}
+ul.menu ul.menu 
+{
+    background: transparent; 
+    border: 0; 
+    padding-left: 5px;
+    margin-left: 5px;
+}
+ul.menu li div
+{
+}
+ul.menu li a
+{
+}
+ul.menu li
+{
+    list-style-type: none;
+    white-space: nowrap;
+}
+ul.menu li.entry 
+{ 
+    width: 140px;
+}
+ul.menu li.menu
+{ 
+    margin: 5px 0px 5px 0px;
+    padding: 5px;
+    width: 150px;
+}
+ul.menu li.menu ul
+{ 
+    padding-left: 5px; 
+    margin-left: 5px; 
+}

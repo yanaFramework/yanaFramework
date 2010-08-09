@@ -1,0 +1,189 @@
+/* 
+    Document   : print
+    Created on : 07.09.2009, 12:16:23
+    Author     : djosko
+    Description:
+        the following css sheet is for print view.
+        all sheets that are he defined will be executed in printview mode.
+*/
+
+body
+{
+    background: #ffffff;
+}
+
+select,
+input,
+textarea,
+option,
+fieldset,
+button,
+checkbox
+{
+    color: #000000 !important;
+    border-style: none !important;
+    background: #ffffff !important;
+    display: inline;
+    font-weight: normal;
+}
+
+input[type="button"],
+input[type="submit"],
+#index_header.header,
+#index_header_left,
+#index_header_right,
+#index_header_center,
+#index_toolbar,
+#index_body_bottom,
+#index_content .help,
+#index_content .blue_box,
+#index_content .config_toolbar,
+#navigation_top,
+#toc2,
+#toc3,
+#pages img,
+#index_display img,
+#index_content .gui_generator_footer,
+.gui_generator_new_row,
+.gui_generator_select,
+.gui_generator_details
+{
+    background: none !important;
+    background-color: #ffffff;
+    background-image:none !important;
+    display: none;
+}
+
+#index_body_right,
+#index_body_left
+{
+    background: none;
+    background-color: #ffffff;
+    width: 100%;
+    padding: 0px;
+}
+#index_content,
+#sitemap
+{
+    background: none;
+    background-color: #ffffff;
+    border: 0px;
+    font-weight: normal;
+    margin: 0px;
+}
+
+#sitemap_box
+{
+    background: none;
+    margin: 0px;
+    padding: 0px 0px 0px 5px;
+}
+#index_display h2,
+#index_display h2.header,
+#index_display h1.header,
+#index_display .header,
+#index_display .gui_generator_header
+{
+    background:none;
+    color: black;
+}
+
+/* neuen nutzer anlegen*/
+#index_content .optionbody
+{
+    padding: 0px;
+}
+
+#index_content .white_box
+{
+    border:0px;
+    margin: 0px 0px 0px 10px;
+}
+
+#index_content .config_title
+{
+    color: black;
+    background-color: #ffffff !important;
+    background-image: none;
+    padding: 10px 10px 10px 25px;
+}
+
+#index_content #pages div.section_title
+{
+    color: black;
+    background-image: none;
+    background-color: #ffffff !important;
+}
+
+#index_display th,
+#index_display th,
+#index_display th,
+#index_display td
+{
+    background-color: #ffffff;
+    background-image: none;
+}
+#messagebox.errlvl_message,
+#messagebox.errlvl_alert
+{
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: black !important;
+    border-color: black !important;
+}
+
+#messagebox .errlvl_alert,
+#messagebox .errlvl_message
+{
+    background-color: #ffffff;
+    background-image: none !important;
+    color: black !important;
+}
+
+#index_display .config_form,
+#index_display .config_head
+{
+    background-color: #ffffff !important;
+    border-style: none;
+}
+
+#utilities,
+#pages .page,
+#pages #overwrite,
+#legend,
+#table_configmenu
+{
+    background-image: none;
+    background-color: #ffffff !important;
+    border-style: none !important;
+}
+
+#utilities input
+{
+    background: #ffffff !important;
+}
+.guestbook_entry,
+#index_content table
+{
+    width: 100%;
+}
+
+td.optionhead, div.optionhead, .optionhead
+{
+    background: #ffffff;
+}
+
+#index_content p.additional
+{
+    background-color: #ffffff;
+    color: #000000;
+}
+
+#index_content div.mandatory,
+#index_content div.additional,
+#index_content div.optional,
+#index_content li.optional
+{
+    background-color: #ffffff;
+    color: #000000;
+}

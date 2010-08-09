@@ -1,0 +1,47 @@
+/* 
+    Document   : slider
+    Created on : 14.10.2009, 10:17:07
+    Author     : djosko
+*/
+
+
+
+.slider_box {
+    height: 19px;
+    border: 1px solid #b0c0c8;
+    float:left;
+    background:#BECFDF url(images/config_optionhead_bgd.gif) repeat scroll 0 0;
+}
+
+.slider_linie_top {
+    width: 276px;
+}
+
+.slider_line {
+    margin: 9px;
+    color: black;
+    height:1px;
+    background-color: #666;
+    overflow:hidden;
+    position:absolute;
+}
+
+.slider_controler {
+    background:transparent url(images/button_blue.gif) no-repeat;
+    cursor: default;
+    font-size: 1px;
+    position: relative;
+    height: 16px;
+    width: 10px;
+    margin:2px;
+}
+
+.slider_input {
+    float: left;
+    padding:0px 10px 0px 0px;
+}
+
+.slider_input input{
+    width: 35px;
+    height: 16px;
+}

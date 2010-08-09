@@ -1,0 +1,458 @@
+<?php
+/**
+ * YANA PHP-Framework
+ *
+ * Constant definitions and basic configuration-file
+ *
+ * Software:  Yana PHP-Framework
+ * Version:   {VERSION} - {DATE}
+ * License:   GNU GPL  http://www.gnu.org/licenses/
+ *
+ * This program: can be redistributed and/or modified under the
+ * terms of the GNU General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/.
+ *
+ * This notice MAY NOT be removed.
+ *
+ * @package  yana
+ * @license  http://www.gnu.org/licenses/gpl.txt
+ */
+
+/*
+ * When debugging, make sure error reporting is at maximum.
+ */
+if (error_reporting() > 0) {
+    error_reporting(E_ALL | E_STRICT);
+}
+
+/**
+ * Set encoding to UTF-8
+ */
+iconv_set_encoding("input_encoding", "UTF-8");
+iconv_set_encoding("internal_encoding", "UTF-8");
+iconv_set_encoding("output_encoding", "UTF-8");
+mb_internal_encoding("UTF-8");
+mb_language('uni');
+
+/**#@+
+ * preload common tools
+ *
+ * @ignore
+ */
+
+require_once 'includes/toolbox.php';
+require_once 'includes/php4fallback.php';
+
+/**#@-*/
+
+/**#@+
+ * escape method
+ *
+ * These constants are used by the function untaintInput() to identify the
+ * method that should be used to escape characters of an input string.
+ *
+ * See the API-documentation for details and examples.
+ *
+ * We use an Integer as an array of bool at this point.
+ * Thus the "strange" choice of numbers, which are all elements of {n^2}.
+ *
+ * @see  untaintInput()
+ */
+
+if (!defined('YANA_ESCAPE_NONE')) {
+    define('YANA_ESCAPE_NONE',       0);
+}
+if (!defined('YANA_ESCAPE_SLASHED')) {
+    // Don't use integer 1 as value, to avoid accidental evaluation to bool(true).
+    define('YANA_ESCAPE_SLASHED',    2);
+}
+if (!defined('YANA_ESCAPE_TOKEN')) {
+    define('YANA_ESCAPE_TOKEN',      4);
+}
+if (!defined('YANA_ESCAPE_CODED')) {
+    define('YANA_ESCAPE_CODED',      8);
+}
+if (!defined('YANA_ESCAPE_LINEBREAK')) {
+    define('YANA_ESCAPE_LINEBREAK',  16);
+}
+if (!defined('YANA_ESCAPE_USERTEXT')) {
+    define('YANA_ESCAPE_USERTEXT',   32);
+}
+if (!defined('YANA_ESCAPE_ALL')) {
+    /* Don't change the value of YANA_ESCAPE_ALL unless you got a real good reason.
+     */
+    define('YANA_ESCAPE_ALL',        PHP_INT_MAX -2);
+}
+
+/**#@-*/
+/**#@+
+ * counter settings
+ *
+ * These constants are used by the class Counter to identify wether the visitor's
+ * remote address (IP) should be remembered or not, to avoid counting twice when
+ * the page reloads in the visitor's browser.
+ *
+ * @see  Counter
+ */
+
+if (!defined('YANA_COUNTER_USE_IP')) {
+    define('YANA_COUNTER_USE_IP',    0);
+}
+if (!defined('YANA_COUNTER_IGNORE_IP')) {
+    define('YANA_COUNTER_IGNORE_IP', 1);
+}
+
+/**#@-*/
+/**#@+
+ * directory scanning
+ *
+ * These constants are used by the functions dirlist() and Dir::dirlist().
+ * See the documentation of these for details.
+ *
+ * @see  dirlist()
+ * @see  Dir::dirlist()
+ */
+
+if (!defined('YANA_GET_ALL')) {
+    define('YANA_GET_ALL',   0);
+}
+if (!defined('YANA_GET_FILES')) {
+    define('YANA_GET_FILES', 1);
+}
+if (!defined('YANA_GET_DIRS')) {
+    define('YANA_GET_DIRS',  2);
+}
+
+/**#@-*/
+if (!defined('YANA_VERSION')) {
+    /**
+     * currently installed version of the Yana Framework
+     *
+     * Note: you can compare two version strings using the PHP-function
+     * version_compare(). See the PHP manual for details.
+     */
+    define('YANA_VERSION', '{VERSION}');
+}
+if (!defined('YANA_IS_STABLE')) {
+    /**
+     * this is true, if the current version is stable
+     */
+    define('YANA_IS_STABLE', false);
+}
+
+/**#@+
+ * error reporting
+ *
+ * @see  ErrorUtility::setErrorReporting()
+ */
+if (!defined('YANA_ERROR_OFF')) {
+    /**
+     * turn error reporting off
+     *
+     * Use this in any production environment to prevent information leak to
+     * possible attackers.
+     */
+    define('YANA_ERROR_OFF', 'off');
+}
+if (!defined('YANA_ERROR_ON')) {
+    /**
+     * turn error reporting on
+     *
+     * Use this to debug your scripts.
+     */
+    define('YANA_ERROR_ON',  'on');
+}
+if (!defined('YANA_ERROR_LOG')) {
+    /**
+     * send errors to a log file
+     *
+     * Write all reported messages to 'cache/error.log'.
+     * Use this for testing.
+     */
+    define('YANA_ERROR_LOG', 'log');
+}
+/**#@-*/
+if (!defined('ENT_FULL')) {
+    /**
+     * Constant ENT_FULL
+     *
+     * This adds a new constant ENT_FULL to the php predefined constants
+     * ENT_COMPAT=2, ENT_QUOTES=3, ENT_NOQUOTES=0
+     *
+     * Use of this constant with the method String::encode(), will force
+     * ALL characters of the string to be encoded as html entities.
+     *
+     * See this example:
+     * <code>$string->encode('entities', ENT_FULL)</code>
+     *
+     * {@internal
+     * Note:
+     * There is no '1' for a good reason. In PHP as in some other
+     * languages int(1) is fairly equivalent to bool(true), while
+     * string(""), int(0) are equivalent to bool(false).
+     * So you might encounter unexpected results when using int(1)
+     * in other than an int-context. Not using int(1) is a way
+     * (or propably a soft kind of "hack") to evade this.
+     *
+     * Note:
+     * Just in case there may be any additional constants in future
+     * there is a good chance they will continue as 4, 5, ...
+     * So setting proprietary value ENT_FULL to 10 should'nt collide
+     * for now and the near future ;-)
+     * }}
+     *
+     * @see  String::encode()
+     */
+    define('ENT_FULL', 10);
+}
+
+if (!defined('STRING_UNSUPPORTED_ENCRYPTION')) {
+    /**
+     * Constant UNSUPPORTED_ENCRYPTION
+     *
+     * This is returned by String::encrypt()
+     * when an invalid encryption method is
+     * encountered.
+     *
+     * @see  String
+     */
+    define('STRING_UNSUPPORTED_ENCRYPTION', 1);
+}
+
+/**#@-*/
+
+if (!defined('YANA_INSTALL_DIR')) {
+    /**
+     * this is true, if the current version is stable
+     */
+    define('YANA_INSTALL_DIR', dirname(__FILE__) . DIRECTORY_SEPARATOR);
+}
+if (!defined('YANA_CDROM')) {
+    /**
+     * select type of media (online / offline)
+     *
+     * This should be bool(false) when installed on a webserver.
+     * If you want to run yana from a DVD or CD-ROM, this should be set to bool(true).
+     *
+     * In more detail: This setting defines where to store user settings and files.
+     * When false they will be kept in the yana installation directory.
+     * When true they will be moved to a temporary directory on a local HDD.
+     */
+    define('YANA_CDROM', false);
+}
+
+if (!defined('YANA_CDROM_DIR')) {
+    if (YANA_CDROM === true) {
+
+        /**
+         * temporary directory when running on CD-ROM or DVD
+         *
+         * Here you may specify a path, where files should be stored, when running
+         * the YANA framework on a media, where you can't store files.
+         *
+         * Example:
+         * <code>
+         * // Try to determine the system's temporary directory automatically, ...
+         * define('YANA_CDROM_DIR', sys_get_temp_dir() . "yana/");
+         * // or set it to a fixed directory.
+         * define('YANA_CDROM_DIR', "c:/temp/yana/");
+         * // for Server2Go on CD-ROM you may also use the following ...
+         * define('YANA_CDROM_DIR', $_ENV['S2G_TEMP_FOLDER'] . "yana/");
+         * </code>
+         */
+        define('YANA_CDROM_DIR', sys_get_temp_dir() . "yana/");
+
+    } else {
+        /**
+         * @ignore
+         */
+        define('YANA_CDROM_DIR', '');
+    }
+}
+
+if (!defined('YANA_EMBTAG_ALLOW_PHP')) {
+    /**
+     * activate/deactivate php emb-tag
+     *
+     * This enables/disables the emb-tag "php", which transfers php code in guestbook
+     * or forum posts to a higlighted text representation in HTML.
+     * Note that this does NOT execute the code.
+     *
+     * Under certain circumstances, e.g. where you do not need this feature, you may want
+     * to disable it. To do so, set this constant to bool(false). Otherwise it should be
+     * set to bool(true).
+     */
+    define('YANA_EMBTAG_ALLOW_PHP', true);
+}
+
+if (!defined('YANA_CACHE_ACTIVE')) {
+    /**
+     * activate/deactivate Yana Framework's system cache
+     *
+     * This constant enables/disables the framework's internal system cache, that
+     * accelerates the startup process of the framework in productive environments.
+     *
+     * You may want to turn this feature off for debugging.
+     *
+     * Set to bool(true) to enable, or bool(false) to disable the feature.
+     * By default this setting is activated and deactivated automatically
+     * together with the debugging mode.
+     */
+    define("YANA_CACHE_ACTIVE", error_reporting() === 0);
+}
+
+if (!defined('YANA_AUTODEQUOTE')) {
+    /**
+     * reverse the effect of magic quotes
+     *
+     * Set this to bool(true) if you want to enforce that magic-quoting is off.
+     */
+    define('YANA_AUTODEQUOTE',           true);
+}
+
+if (!defined('YANA_DB_STRICT')) {
+    /**
+     * activate/deactivate strict database checks
+     *
+     * This enables validation of database queries against the stored database schema.
+     * Disabling this may slightly increase performance, but may also reduce the security
+     * for poorly written database applications.
+     * If you are in an environment where your application is available to the public,
+     * you should keep this setting to true.
+     */
+    define('YANA_DB_STRICT',             true);
+}
+
+/**#@+
+ * database constants
+ *
+ * @ignore
+ */
+if (!defined('YANA_DB_UNKNOWN')) {
+    define('YANA_DB_UNKNOWN',            0);
+}
+if (!defined('YANA_DB_SELECT')) {
+    define('YANA_DB_SELECT',             8);
+}
+if (!defined('YANA_DB_UPDATE')) {
+    define('YANA_DB_UPDATE',             16);
+}
+if (!defined('YANA_DB_INSERT')) {
+    define('YANA_DB_INSERT',             32);
+}
+if (!defined('YANA_DB_DELETE')) {
+    define('YANA_DB_DELETE',             64);
+}
+if (!defined('YANA_DB_EXISTS')) {
+    define('YANA_DB_EXISTS',             128);
+}
+if (!defined('YANA_DB_LENGTH')) {
+    define('YANA_DB_LENGTH',             256);
+}
+if (!defined('YANA_DB_TABLE')) {
+    define('YANA_DB_TABLE',              1);
+}
+if (!defined('YANA_DB_ROW')) {
+    define('YANA_DB_ROW',                2);
+}
+if (!defined('YANA_DB_CELL')) {
+    define('YANA_DB_CELL',               3);
+}
+if (!defined('YANA_DB_COLUMN')) {
+    define('YANA_DB_COLUMN',             4);
+}
+
+/**#@-*/
+
+/**#@+
+ * regular expressions and word filter constants
+ *
+ * @ignore
+ */
+
+if (!defined('YANA_DB_DELIMITER')) {
+    define('YANA_DB_DELIMITER',          '"');
+}
+if (!defined('YANA_LEFT_DELIMITER')) {
+    define('YANA_LEFT_DELIMITER',        '{');
+}
+if (!defined('YANA_RIGHT_DELIMITER')) {
+    define('YANA_RIGHT_DELIMITER',       '}');
+}
+if (!defined('YANA_LEFT_DELIMITER_REGEXP')) {
+    define('YANA_LEFT_DELIMITER_REGEXP', '\{');
+}
+if (!defined('YANA_RIGHT_DELIMITER_REGEXP')) {
+    define('YANA_RIGHT_DELIMITER_REGEXP', '\}');
+}
+
+/**#@-*/
+/**#@+
+ * configurations and settings
+ *
+ * @ignore
+ */
+
+if (!defined('YANA_SESSION_NAME')) {
+    define('YANA_SESSION_NAME',          'ysid');
+}
+
+if (!defined('YANA_TPL_CACHE')) {
+    define('YANA_TPL_CACHE',             0);
+}
+if (!defined('YANA_TPL_CACHE_DIR')) {
+    define('YANA_TPL_CACHE_DIR',         true);
+}
+if (!defined('YANA_TPL_FUNCTION')) {
+    define('YANA_TPL_FUNCTION',          0);
+}
+if (!defined('YANA_TPL_MODIFIER')) {
+    define('YANA_TPL_MODIFIER',          1);
+}
+if (!defined('YANA_TPL_BLOCK')) {
+    define('YANA_TPL_BLOCK',             2);
+}
+
+/**#@-*/
+/**#@+
+ * constants required for error handling
+ *
+ * @ignore
+ */
+
+if (!defined('YANA_ERROR_WRONG_ARGUMENT')) {
+    define('YANA_ERROR_WRONG_ARGUMENT',  'Wrong argument type for argument %s. %s expected, found \'%s\' instead.');
+}
+if (!defined('E_USER_ASSERT')) {
+    define('E_USER_ASSERT',              10);
+}
+if (!defined('E_UNKNOWN_ERROR')) {
+    define('E_UNKNOWN_ERROR',            -1);
+}
+
+/**#@-*/
+/**#@+
+ * import external definitions
+ *
+ * @ignore
+ */
+
+/* [database settings] */
+
+require_once 'config/dbconfig.php';
+
+/* [main class] */
+
+require_once 'includes/utility.class.php';
+require_once 'includes/index.class.php';
+/**#@-*/
+?>

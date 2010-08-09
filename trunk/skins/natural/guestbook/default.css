@@ -1,0 +1,9 @@
+.guestbook_form .guestbook_head
+{
+    background-color: #e8efe0 ! important;
+    background-image: url('new_bgd.gif')! important;
+}
+.guestbook_form
+{
+    background-color: #e8e8e0 ! important;
+}

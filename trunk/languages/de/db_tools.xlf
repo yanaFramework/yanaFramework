@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="de">
+        <header/>
+        <body>
+            <trans-unit id="program_title">
+                <source>DB-Tools</source>
+                <target>DB-Tools</target>
+            </trans-unit>
+            <group id="db_tools">
+                <trans-unit id="db_tools.field1">
+                    <source>SQL dialect</source>
+                    <target>SQL-Dialekt</target>
+                </trans-unit>
+                <trans-unit id="db_tools.field2">
+                    <source>export structure of following databases</source>
+                    <target>exportiere Struktur folgender Datenbanken</target>
+                </trans-unit>
+                <trans-unit id="db_tools.field3">
+                    <source>import from existing database</source>
+                    <target>Import aus bestehender Datenbank</target>
+                </trans-unit>
+                <trans-unit id="db_tools.field4">
+                    <source>import from MDB2 Schema</source>
+                    <target>Import aus MDB2 Schema</target>
+                </trans-unit>
+                <trans-unit id="db_tools.field5">
+                    <source>XML file</source>
+                    <target>XML-Datei</target>
+                </trans-unit>
+                <trans-unit id="db_tools.field6">
+                    <source>import from DB Designer 4</source>
+                    <target>Import aus DB Designer 4</target>
+                </trans-unit>
+                <trans-unit id="db_tools.field7">
+                    <source>export data of following databases</source>
+                    <target>exportiere Daten folgender Datenbanken</target>
+                </trans-unit>
+                <trans-unit id="db_tools.import">
+                    <source>Create structure file from existing database</source>
+                    <target>Strukturdatei aus vorhandener Datenbank erzeugen</target>
+                </trans-unit>
+                <trans-unit id="db_tools.exportsql">
+                    <source>Export database structure to SQL</source>
+                    <target>Export der Datenbankstruktur nach SQL</target>
+                </trans-unit>
+                <trans-unit id="db_tools.exportxml">
+                    <source>Export database contents to XML</source>
+                    <target>Export der Datenbankinhalte nach XML</target>
+                </trans-unit>
+            </group>
+            <group id="help">
+                <trans-unit id="help.1">
+                    <source>Click on the button "submit". The generated file will be send to your browser as a download. Structure files may for example be used as input for the Yana SDK.</source>
+                    <target>Klicken Sie auf die Schaltfläche "Abschicken". Die generierte Datei wird Ihnen automatisch zum Download bereitgestellt. Strukturdateien können z.Bsp. als Eingabe für das Yana SDK verwendet werden.</target>
+                </trans-unit>
+                <trans-unit id="help.2">
+                    <source>This exports the structure of a database to a SQL file. Choose the SQL dialect that corresponds with the type of server you use and click on the button "submit". The generated SQL file will be send to your browser as a download.</source>
+                    <target>Diese Funktion exportiert die Struktur einer Datenbank in eine SQL-Datei. Wählen Sie den SQL-Dialekt aus, welcher Ihrem Datenbankserver entspricht und klicken Sie auf die Schaltfläche 'Abschicken'. Die generierte SQL-Datei wird Ihnen automatisch zum Download bereitgestellt.</target>
+                </trans-unit>
+                <trans-unit id="help.3">
+                    <source>This option is available for the following DBMS: MySQL, MS-SQL, FrontBase, PostgreSQL. It is recommended to edit the file in a text editor, to add changes that you might feel necessary (e.g. provide easy-to-read names for your columns). Please note when editing: the file is case sensitive.</source>
+                    <target>Diese Option steht für folgende DBMS zur Verfügung: MySQL, MS-SQL, FrontBase, PostgreSQL. Es ist empfehlenswert die generierte Datei mit einem Texteditor zu editieren, um eventuelle Ergänzungen vorzunehmen (z.Bsp. Tabellenspalten leicht verständliche Namen zuordnen). Beim Editieren beachten Sie bitte, dass die erzeugte Datei zwischen Groß- und Kleinschreibung unterscheidet. Eine Anleitung finden Sie im Kochbuch für Entwickler im Abschnitt Datenbanken, sowie im den Handbuch beiliegenden Tutorial.</target>
+                </trans-unit>
+                <trans-unit id="help.4">
+                    <source>This option enables you to import a database structure from a PEAR MDB2 Schema XML file.</source>
+                    <target>Diese Option gestattet es Ihnen, eine vorhandene Datenbankstruktur aus PEAR MDB2 Schema XML-Datei zu importieren.</target>
+                </trans-unit>
+                <trans-unit id="help.5">
+                    <source>This option enables you to import a database structure from a DB Designer 4 XML file.</source>
+                    <target>Diese Option gestattet es Ihnen, eine vorhandene Datenbankstruktur aus einer DB Designer 4 XML-Datei zu importieren.</target>
+                </trans-unit>
+                <trans-unit id="help.6">
+                    <source>This exports the data of a database to a XML file. The generated file will be send to your browser as a download.</source>
+                    <target>Diese Funktion exportiert die Daten einer Datenbank in eine XML-Datei. Die generierte Datei wird Ihnen automatisch zum Download bereitgestellt.</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

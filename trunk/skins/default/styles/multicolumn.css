@@ -1,0 +1,46 @@
+/* Multicolumn Layout */
+.multicol3, .multicol2
+{
+    display: block;
+    width: auto;
+    padding-top: 0;
+}
+.col_foot, .col_head
+{
+    clear: both;
+}
+/* Multicolumn Layout: 3 columns */
+.multicol3 .col_left, .multicol3 .col_center, .multicol3 .col_right
+{
+    padding-top: 1px;
+}
+.multicol3 .col_left, .multicol3 .col_center, .multicol3 .col_right
+{
+    float: left;
+    display: block;
+    width: 32%;
+}
+.multicol3 .col_center
+{
+    margin-left: 2%;
+    margin-right: 2%;
+}
+.multicol3 .col_right
+{
+    float: right;
+}
+/* Multicolumn Layout: 2 columns */
+.multicol2 .col_left
+{
+    float: left;
+    display: block;
+    width: 49%;
+    margin-right: 1%;
+}
+.multicol2 .col_right
+{
+    float: right;
+    display: block;
+    width: 49%;
+    margin-left: 1%;
+}

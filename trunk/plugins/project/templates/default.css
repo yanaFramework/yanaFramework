@@ -1,0 +1,20 @@
+.ajax_loading
+{
+    background: #fff url('../styles/load_small.gif') no-repeat 1px 1px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 20px;
+    border-color: #4682B4;
+}
+#project_sum
+{
+    display: block;
+    white-space: pre;
+    font-size: 13px;
+    margin-top: 10px;
+    height: 100px;
+}
+.header
+{
+    padding: 5px;
+}

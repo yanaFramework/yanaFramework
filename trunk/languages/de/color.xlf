@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="de">
+        <header/>
+        <body>
+            <trans-unit id="program_title">
+                <source>color palette</source>
+                <target>Farbpalette</target>
+            </trans-unit>
+            <group id="colors">
+                <trans-unit id="colors.table">
+                    <source>color tables</source>
+                    <target>Farbtabellen</target>
+                </trans-unit>
+                <trans-unit id="colors.hue">
+                    <source>hue</source>
+                    <target>Farbton</target>
+                </trans-unit>
+                <trans-unit id="colors.sat">
+                    <source>saturation</source>
+                    <target>Kontrast</target>
+                </trans-unit>
+                <trans-unit id="colors.light">
+                    <source>lightness</source>
+                    <target>Helligkeit</target>
+                </trans-unit>
+                <trans-unit id="colors.r">
+                    <source>red</source>
+                    <target>Rot</target>
+                </trans-unit>
+                <trans-unit id="colors.g">
+                    <source>green</source>
+                    <target>Grün</target>
+                </trans-unit>
+                <trans-unit id="colors.b">
+                    <source>blue</source>
+                    <target>Blau</target>
+                </trans-unit>
+                <trans-unit id="colors.current">
+                    <source>cur. color</source>
+                    <target>akt. Farbe</target>
+                </trans-unit>
+                <trans-unit id="colors.new">
+                    <source>new color</source>
+                    <target>neue Farbe</target>
+                </trans-unit>
+                <trans-unit id="colors.prompt">
+                    <source>Please input a hexadecimal color value</source>
+                    <target>Bitte hexadezimalen Farbwert eingeben</target>
+                </trans-unit>
+                <trans-unit id="colors.more">
+                    <source>more colors</source>
+                    <target>mehr Farben</target>
+                </trans-unit>
+            </group>
+            <group id="colors.heading">
+                <trans-unit id="colors.heading.0">
+                    <source>hexadecimal values</source>
+                    <target>hexadezimal Schreibweise</target>
+                </trans-unit>
+                <trans-unit id="colors.heading.1">
+                    <source>named colors</source>
+                    <target>benannte Farben</target>
+                </trans-unit>
+            </group>
+            <group id="help">
+                <trans-unit id="help.1">
+                    <source>Hexadecimal color values use the following syntax: #RRGGBB. The '#' sign expresses, that it is a hexadecimal value. The first two numbers (RR) stand for the red portion of the color. The second (GG) for the green portion. The last (BB) for the blue portion. The hexadecimal numbers run from 00-FF and stand for the decimal values 0-255. Using hexadecimal values, 0 through 9 count as usual. Then "A" = 10, "B" = 11, "C" = 12, ... to "F" = 15 and "10" = 16. These numbers are used in HTML codes and on many other places in informatics. This way 16 mill. colors may be expressed.</source>
+                    <target>Hexadezimale Farbangaben haben folgende Syntax: #RRGGBB. Das Zeichen '#' drückt aus, dass es sich um eine hexadezimale Zahl handelt. Die ersten beiden Zahlen (RR) stehen für den Rotanteil der Farbe. Die Zweiten (GG) für den Grünanteil. Die Letzten (BB) für den Blauanteil. Die Zahlen verlaufen von 00-FF und stehen für die Zahlen 0-255. Bei hexadezimalen Zahlen wird jeweils von "0" bis "9" normal gezählt. Danach folgt "A" = 10, "B" = 11, "C" = 12, ... bis "F" = 15 und "10" = 16. Diese Zahlen werden in HTML-Codes und bei vielen anderen Gelegenheiten in der Informatik verwendet. Auf diese Weise können 16 Millionen Farben dargestellt werden.</target>
+                </trans-unit>
+                <trans-unit id="help.2">
+                    <source>The fundamental color palette consists of 16 base colors named: aqua, black, blue, fuchsia, gray, green, lime, maroon, navy, olive, purple, red, silver, teal, white, yellow. There are additional "fixed" colors with names. Some of these names you find on the list below.</source>
+                    <target>Die Basis-Farbpalette besteht aus 16 Grundfarben: aqua, black, blue, fuchsia, gray, green, lime, maroon, navy, olive, purple, red, silver, teal, white, yellow. Darüber hinaus gibt es weitere "feste" Farben denen eindeutige Namen zugeordnet sind. Einige dieser Namen finden Sie in dieser Liste.</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

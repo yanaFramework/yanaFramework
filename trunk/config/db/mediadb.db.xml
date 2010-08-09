@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!DOCTYPE database SYSTEM "../dtd/database.dtd">
+<database name="mediadb">
+    <table name="media">
+        <primarykey>media_id</primarykey>
+        <foreign table="mediafolder" match="simple" ondelete="no-action" onupdate="no-action">
+            <key column="" name="mediafolder_id"/>
+        </foreign>
+        <declaration>
+            <integer name="media_id" title="{lang id=&quot;media_id&quot;}" notnull="yes" autoincrement="yes">
+                <default dbms="generic">0</default>
+            </integer>
+            <reference name="mediafolder_id" title="{lang id=&quot;mediafolder_id&quot;}" notnull="yes" table="mediafolder" column="mediafolder_id" label="mediafolder_name"/>
+            <string name="media_name" title="{lang id=&quot;media_name&quot;}" notnull="yes" length="80"/>
+            <text name="media_description" title="{lang id=&quot;media_description&quot;}" length="2000"/>
+            <string name="media_mimetype" title="{lang id=&quot;media_mimetype&quot;}" length="255"/>
+            <image name="media_preview" title="{lang id=&quot;media_preview&quot;}"/>
+            <string name="media_filename" title="{lang id=&quot;media_filename&quot;}" readonly="yes" length="80"/>
+            <integer name="media_filesize" title="{lang id=&quot;media_filesize&quot;}" length="10"/>
+            <file name="media_file" title="{lang id=&quot;media_file&quot;}" notnull="yes"/>
+            <bool name="public" title="{lang id=&quot;media_public&quot;}" notnull="yes">
+                <default dbms="generic">0</default>
+            </bool>
+            <string name="profile_id" notnull="yes" length="128"/>
+            <string name="user_created" notnull="yes" length="128"/>
+            <string name="user_modified" length="128"/>
+            <timestamp name="time_created" notnull="yes">
+                <default>CURRENT_TIMESTAMP</default>
+            </timestamp>
+            <timestamp name="time_modified">
+                <default>CURRENT_TIMESTAMP</default>
+            </timestamp>
+        </declaration>
+    </table>
+    <table name="mediafolder">
+        <primarykey>mediafolder_id</primarykey>
+        <declaration>
+            <integer name="mediafolder_id" title="{lang id=&quot;mediafolder_id&quot;}" notnull="yes" autoincrement="yes"/>
+            <string name="mediafolder_name" title="{lang id=&quot;mediafolder_name&quot;}" notnull="yes" length="80"/>
+            <text name="mediafolder_description" title="{lang id=&quot;mediafolder_description&quot;}" length="500"/>
+            <string name="mediafolder_location" title="{lang id=&quot;mediafolder_location&quot;}" length="80"/>
+            <bool name="public" title="{lang id=&quot;media_public&quot;}" notnull="yes">
+                <default dbms="generic">0</default>
+            </bool>
+            <string name="profile_id" notnull="yes" length="128"/>
+            <string name="user_created" notnull="yes" length="128"/>
+            <string name="user_modified" length="128"/>
+            <timestamp name="time_created" notnull="yes">
+                <default>CURRENT_TIMESTAMP</default>
+            </timestamp>
+            <timestamp name="time_modified">
+                <default>CURRENT_TIMESTAMP</default>
+            </timestamp>
+        </declaration>
+    </table>
+    <form name="mediafolder" table="mediafolder" allinput="yes" template="3" title="{lang id=&quot;mediafolder&quot;}">
+        <input name="mediafolder_id" hidden="yes"/>
+        <input name="profile_id" hidden="yes"/>
+        <input name="user_created" hidden="yes"/>
+        <input name="user_modified" hidden="yes"/>
+        <input name="time_created" hidden="yes"/>
+        <input name="time_modified" hidden="yes"/>
+        <form name="media" table="media" allinput="yes" template="0" title="{lang id=&quot;media&quot;}">
+            <grant select="no" insert="no" update="no" delete="no" grant="yes"/>
+            <grant user="admin" level="100" select="yes" insert="yes" update="yes" delete="yes" grant="yes"/>
+            <input name="media_id" hidden="yes"/>
+            <input name="mediafolder_id" hidden="yes"/>
+            <input name="profile_id" hidden="yes"/>
+            <input name="user_created" hidden="yes"/>
+            <input name="user_modified" hidden="yes"/>
+            <input name="time_created" hidden="yes"/>
+            <input name="time_modified" hidden="yes"/>
+            <input name="media_mimetype" hidden="yes"/>
+            <input name="media_filename" hidden="yes"/>
+            <input name="media_filesize" hidden="yes"/>
+            <event name="update">mediadb_edit_media</event>
+            <event name="delete">mediadb_delete_media</event>
+            <event name="insert">mediadb_new_media</event>
+        </form>
+        <event name="search">mediadb_search_mediafolder</event>
+        <event name="insert">mediadb_insert_mediafolder</event>
+        <event name="update">mediadb_update_mediafolder</event>
+        <event name="delete">mediadb_delete_mediafolder</event>
+        <event name="export">mediadb_export_mediafolder</event>
+    </form>
+</database>

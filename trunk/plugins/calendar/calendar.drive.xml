@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<!DOCTYPE drive SYSTEM "../../config/dtd/drive.dtd">
+<!--
+	Diese Datei enthält eine Liste von Mountpoints für ein virtuelles Laufwerk!
+	Die enthaltenen Einträge dürfen auf keinen Fall geändert werden.
+
+	This file contains a list of mount points for a virtual drive!
+	The contained entries may not be changed at any case.
+-->
+<drive name="calendar">
+	<dir name="xcal" filter="xml">
+		<requirements readable="yes" writeable="yes"/>
+		<source>xcal/</source>
+	</dir>
+	<file name="config.sxml" automount="yes">
+		<requirements readable="yes" writeable="yes"/>
+		<source>config.xml</source>
+	</file>
+</drive>

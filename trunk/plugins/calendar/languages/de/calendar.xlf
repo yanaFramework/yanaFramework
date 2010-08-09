@@ -1,0 +1,481 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="de">
+        <header/>
+        <body>
+            <trans-unit id="program_title">
+                <source>Calendar</source>
+                <target>Kalender</target>
+            </trans-unit>
+            <trans-unit id="calendar_description">
+                <source></source>
+                <target></target>
+            </trans-unit>
+            <group id="calendar">
+                <trans-unit id="calendar.list">
+                    <source>calendar list</source>
+                    <target>Kalenderliste</target>
+                </trans-unit>
+                <trans-unit id="calendar.today">
+                    <source>today</source>
+                    <target>heute</target>
+                </trans-unit>
+                <trans-unit id="calendar.month">
+                    <source>month</source>
+                    <target>Monat</target>
+                </trans-unit>
+                <trans-unit id="calendar.day">
+                    <source>day</source>
+                    <target>Tag</target>
+                </trans-unit>
+                <trans-unit id="calendar.week">
+                    <source>week</source>
+                    <target>Woche</target>
+                </trans-unit>
+                <trans-unit id="calendar.import">
+                    <source>import</source>
+                    <target>importieren</target>
+                </trans-unit>
+                <trans-unit id="calendar.all_day">
+                    <source>all-day</source>
+                    <target>Tagestermine</target>
+                </trans-unit>
+                <trans-unit id="calendar.upload_description">
+                    <source>Please choose a *.ical calendar file which you want to import:</source>
+                    <target>Wählen Sie die *.ical Kalenderdatei, welche Sie importieren möchten:</target>
+                </trans-unit>
+                <trans-unit id="calendar.upload_name">
+                    <source>name</source>
+                    <target>Name</target>
+                </trans-unit>
+                <trans-unit id="calendar.title_empty_message">
+                    <source>The title can not be empty</source>
+                    <target>Der Titel darf nicht leer sein</target>
+                </trans-unit>
+                <trans-unit id="calendar.location_empty_message">
+                    <source>The location can not be empty</source>
+                    <target>Der Ort darf nicht leer sein</target>
+                </trans-unit>
+                <trans-unit id="calendar.subscribe_calendar">
+                    <source>subscribe to calendar</source>
+                    <target>Kalender abonnieren</target>
+                </trans-unit>
+                <trans-unit id="calendar.import_calendar">
+                    <source>import calendar</source>
+                    <target>Kalender importieren</target>
+                </trans-unit>
+                <trans-unit id="calendar.create_calendar">
+                    <source>create calendar</source>
+                    <target>Kalender erstellen</target>
+                </trans-unit>
+            </group>
+            <group id="month_names">
+                <trans-unit id="month_names.january">
+                    <source>January</source>
+                    <target>Januar</target>
+                </trans-unit>
+                <trans-unit id="month_names.february">
+                    <source>February</source>
+                    <target>Februar</target>
+                </trans-unit>
+                <trans-unit id="month_names.march">
+                    <source>March</source>
+                    <target>März</target>
+                </trans-unit>
+                <trans-unit id="month_names.april">
+                    <source>April</source>
+                    <target>April</target>
+                </trans-unit>
+                <trans-unit id="month_names.may">
+                    <source>May</source>
+                    <target>Mai</target>
+                </trans-unit>
+                <trans-unit id="month_names.june">
+                    <source>June</source>
+                    <target>Juni</target>
+                </trans-unit>
+                <trans-unit id="month_names.july">
+                    <source>July</source>
+                    <target>Juli</target>
+                </trans-unit>
+                <trans-unit id="month_names.august">
+                    <source>August</source>
+                    <target>August</target>
+                </trans-unit>
+                <trans-unit id="month_names.september">
+                    <source>September</source>
+                    <target>September</target>
+                </trans-unit>
+                <trans-unit id="month_names.october">
+                    <source>October</source>
+                    <target>Oktober</target>
+                </trans-unit>
+                <trans-unit id="month_names.november">
+                    <source>November</source>
+                    <target>November</target>
+                </trans-unit>
+                <trans-unit id="month_names.december">
+                    <source>December</source>
+                    <target>Dezember</target>
+                </trans-unit>
+            </group>
+            <group id="short_month_names">
+                <trans-unit id="short_month_names.january">
+                    <source>Jan</source>
+                    <target>Jan</target>
+                </trans-unit>
+                <trans-unit id="short_month_names.february">
+                    <source>Feb</source>
+                    <target>Feb</target>
+                </trans-unit>
+                <trans-unit id="short_month_names.march">
+                    <source>Mar</source>
+                    <target>Mär</target>
+                </trans-unit>
+                <trans-unit id="short_month_names.april">
+                    <source>Apr</source>
+                    <target>Apr</target>
+                </trans-unit>
+                <trans-unit id="short_month_names.may">
+                    <source>May</source>
+                    <target>Mai</target>
+                </trans-unit>
+                <trans-unit id="short_month_names.june">
+                    <source>Jun</source>
+                    <target>Jun</target>
+                </trans-unit>
+                <trans-unit id="short_month_names.july">
+                    <source>Jul</source>
+                    <target>Jul</target>
+                </trans-unit>
+                <trans-unit id="short_month_names.august">
+                    <source>Aug</source>
+                    <target>Aug</target>
+                </trans-unit>
+                <trans-unit id="short_month_names.september">
+                    <source>Sep</source>
+                    <target>Sep</target>
+                </trans-unit>
+                <trans-unit id="short_month_names.october">
+                    <source>Oct</source>
+                    <target>Okt</target>
+                </trans-unit>
+                <trans-unit id="short_month_names.november">
+                    <source>Nov</source>
+                    <target>Nov</target>
+                </trans-unit>
+                <trans-unit id="short_month_names.december">
+                    <source>Dec</source>
+                    <target>Dez</target>
+                </trans-unit>
+            </group>
+            <group id="day_names">
+                <trans-unit id="day_names.sunday">
+                    <source>Sunday</source>
+                    <target>Sonntag</target>
+                </trans-unit>
+                <trans-unit id="day_names.monday">
+                    <source>Monday</source>
+                    <target>Montag</target>
+                </trans-unit>
+                <trans-unit id="day_names.tuesday">
+                    <source>Tuesday</source>
+                    <target>Dienstag</target>
+                </trans-unit>
+                <trans-unit id="day_names.wednesday">
+                    <source>Wednesday</source>
+                    <target>Mittwoch</target>
+                </trans-unit>
+                <trans-unit id="day_names.thursday">
+                    <source>Thursday</source>
+                    <target>Donnerstag</target>
+                </trans-unit>
+                <trans-unit id="day_names.friday">
+                    <source>Friday</source>
+                    <target>Freitag</target>
+                </trans-unit>
+                <trans-unit id="day_names.saturday">
+                    <source>Saturday</source>
+                    <target>Samstag</target>
+                </trans-unit>
+            </group>
+            <group id="short_day_names">
+                <trans-unit id="short_day_names.sunday">
+                    <source>Su</source>
+                    <target>So</target>
+                </trans-unit>
+                <trans-unit id="short_day_names.monday">
+                    <source>Mo</source>
+                    <target>Mo</target>
+                </trans-unit>
+                <trans-unit id="short_day_names.tuesday">
+                    <source>Tu</source>
+                    <target>Di</target>
+                </trans-unit>
+                <trans-unit id="short_day_names.wednesday">
+                    <source>We</source>
+                    <target>Mi</target>
+                </trans-unit>
+                <trans-unit id="short_day_names.thursday">
+                    <source>Th</source>
+                    <target>Do</target>
+                </trans-unit>
+                <trans-unit id="short_day_names.friday">
+                    <source>Fr</source>
+                    <target>Fr</target>
+                </trans-unit>
+                <trans-unit id="short_day_names.saturday">
+                    <source>Sa</source>
+                    <target>Sa</target>
+                </trans-unit>
+            </group>
+            <group id="calendar_buttons">
+                <trans-unit id="calendar_buttons.send">
+                    <source>send</source>
+                    <target>Senden</target>
+                </trans-unit>
+                <trans-unit id="calendar_buttons.save">
+                    <source>Save</source>
+                    <target>Speichern</target>
+                </trans-unit>
+                <trans-unit id="calendar_buttons.remove">
+                    <source>remove</source>
+                    <target>Löschen</target>
+                </trans-unit>
+                <trans-unit id="calendar_buttons.close">
+                    <source>close</source>
+                    <target>Abbrechen</target>
+                </trans-unit>
+                <trans-unit id="calendar_buttons.remove_serial_element">
+                    <source>remove serial element</source>
+                    <target>Serienelement löschen</target>
+                </trans-unit>
+            </group>
+            <group id="calendar_fields">
+                <trans-unit id="calendar_fields.title">
+                    <source>Title</source>
+                    <target>Title</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.date">
+                    <source>date</source>
+                    <target>Datum</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.content">
+                    <source>content</source>
+                    <target>Inhalt</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.category">
+                    <source>Category</source>
+                    <target>Kategorie</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.memo">
+                    <source>memo</source>
+                    <target>Memo</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.created_by">
+                    <source>created by</source>
+                    <target>Erstelt von</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.location">
+                    <source>Location</source>
+                    <target>Ort</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.begin">
+                    <source>Start</source>
+                    <target>Start</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.end">
+                    <source>End</source>
+                    <target>Ende</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.description">
+                    <source>Description</source>
+                    <target>Beschreibung</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.appointment">
+                    <source>appointment</source>
+                    <target>Termin</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.new_appointment">
+                    <source>New appointment</source>
+                    <target>Neuer Termin</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.edit_appointment">
+                    <source>Edit appointment</source>
+                    <target>Termin bearbeiten</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.serial">
+                    <source>serial type</source>
+                    <target>Serientyp</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.none">
+                    <source>none</source>
+                    <target>Keine</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.daily">
+                    <source>daily</source>
+                    <target>täglich</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.weekly">
+                    <source>weekly</source>
+                    <target>wöchentlich</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.monthly">
+                    <source>monthly</source>
+                    <target>monatlich</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.yearly">
+                    <source>yearly</source>
+                    <target>jährlich</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.count">
+                    <source>Create x appointments</source>
+                    <target>Erstelle x Termine</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.until">
+                    <source>repeat until</source>
+                    <target>Wiederhole bis</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.all_day">
+                    <source>each x day</source>
+                    <target>Jeden x Tag</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.by_workday">
+                    <source>each workday</source>
+                    <target>Jeden Arbeitstag</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.recurs_in">
+                    <source>Recurs in</source>
+                    <target>Wiederholt sich am</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.each">
+                    <source>each</source>
+                    <target>Jeden</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.by_first">
+                    <source>by first</source>
+                    <target>Am ersten</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.by_second">
+                    <source>by second</source>
+                    <target>Am zweiten</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.by_third">
+                    <source>by third</source>
+                    <target>Am dritten</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.by_fourth">
+                    <source>by fourth</source>
+                    <target>Am vierten</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.by_fifth">
+                    <source>by fifth</source>
+                    <target>Am fünften</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.by_last">
+                    <source>by last</source>
+                    <target>Am letzten</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.endless_serial">
+                    <source>endless serial</source>
+                    <target>Endlose Serie</target>
+                </trans-unit>
+            </group>
+            <group id="categories">
+                <trans-unit id="categories.none">
+                    <source>none</source>
+                    <target>Keine</target>
+                </trans-unit>
+                <trans-unit id="categories.calls">
+                    <source>calls</source>
+                    <target>Anrufe</target>
+                </trans-unit>
+                <trans-unit id="categories.meeting">
+                    <source>meeting</source>
+                    <target>Besprechung</target>
+                </trans-unit>
+                <trans-unit id="categories.favorite">
+                    <source>favorite</source>
+                    <target>Favoriten</target>
+                </trans-unit>
+                <trans-unit id="categories.public_holiday">
+                    <source>public holiday</source>
+                    <target>Feiertag</target>
+                </trans-unit>
+                <trans-unit id="categories.vacation">
+                    <source>vacation</source>
+                    <target>Ferien</target>
+                </trans-unit>
+                <trans-unit id="categories.question">
+                    <source>question</source>
+                    <target>Fragen</target>
+                </trans-unit>
+                <trans-unit id="categories.birthday">
+                    <source>birthday</source>
+                    <target>Geburtstag</target>
+                </trans-unit>
+                <trans-unit id="categories.business">
+                    <source>business</source>
+                    <target>Geschäft</target>
+                </trans-unit>
+                <trans-unit id="categories.presents">
+                    <source>presents</source>
+                    <target>Geschenke</target>
+                </trans-unit>
+                <trans-unit id="categories.ideas">
+                    <source>ideas</source>
+                    <target>Ideen</target>
+                </trans-unit>
+                <trans-unit id="categories.jubilee">
+                    <source>jubilee</source>
+                    <target>Jubiläum</target>
+                </trans-unit>
+                <trans-unit id="categories.client">
+                    <source>client</source>
+                    <target>Klienten</target>
+                </trans-unit>
+                <trans-unit id="categories.business_competition">
+                    <source>business competition</source>
+                    <target>Konkurenz</target>
+                </trans-unit>
+                <trans-unit id="categories.customer">
+                    <source>customer</source>
+                    <target>Kunde</target>
+                </trans-unit>
+                <trans-unit id="categories.suppliers">
+                    <source>suppliers</source>
+                    <target>Liferanten</target>
+                </trans-unit>
+                <trans-unit id="categories.to_pursue">
+                    <source>to pursue</source>
+                    <target>Nachgehen</target>
+                </trans-unit>
+                <trans-unit id="categories.individually">
+                    <source>individually</source>
+                    <target>Persönlich</target>
+                </trans-unit>
+                <trans-unit id="categories.projects">
+                    <source>projects</source>
+                    <target>Projekte</target>
+                </trans-unit>
+                <trans-unit id="categories.travel">
+                    <source>travel</source>
+                    <target>Reise</target>
+                </trans-unit>
+                <trans-unit id="categories.status">
+                    <source>status</source>
+                    <target>Status</target>
+                </trans-unit>
+                <trans-unit id="categories.holiday">
+                    <source>holiday</source>
+                    <target>Urlaub</target>
+                </trans-unit>
+                <trans-unit id="categories.miscellaneous">
+                    <source>miscellaneous</source>
+                    <target>Verschiedenes</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

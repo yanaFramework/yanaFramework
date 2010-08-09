@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN"
+ "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" >
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="en">
+        <header/>
+        <body>
+            <group id="help">
+                <trans-unit id="help.ipblock">
+                    <source/>
+                    <target>You may use the "blacklist" to block IPs and "whitelist" to enter IPs, that will always be granted access. Please use a separate line for each IP that you want to block. You may use the symbol <bpt id="b1">&lt;b&gt;</bpt>*<ept id="b1">&lt;/b&gt;</ept> as a wildcard. Enter new IPs as follows: xxx.xxx.xxx.xxx<it id="br1" pos="open">&lt;br /&gt;</it><bpt id="i1">&lt;i&gt;</bpt>Example: 127.0.12.345 or 127.0.*.*<ept id="i1">&lt;/i&gt;</ept></target>
+                </trans-unit>
+            </group>
+            <group id="admin">
+                <trans-unit id="admin.0">
+                    <source/>
+                    <target>Blacklist:<bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt>(blocked IPs)<ept id="c1">&lt;/span</ept></target>
+                </trans-unit>
+                <trans-unit id="admin.1">
+                    <source/>
+                    <target>IP exclusion</target>
+                </trans-unit>
+                <trans-unit id="admin.2">
+                    <source/>
+                    <target>Whitelist:<bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt>(allowed IPs)<ept id="c1">&lt;/span</ept></target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

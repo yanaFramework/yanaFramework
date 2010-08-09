@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <!--Created by RSS Builder (http://home.hetnet.nl/~bsoft/rssbuilder)-->
+  <channel>
+    <generator>RSS Builder by B!Soft</generator>
+    <title>Test RSS-Feed</title>
+    <link>about:blank</link>
+    <description />
+    <language>de-de</language>
+    <item>
+      <title>Testeintrag 1</title>
+      <pubDate>Do, 9 Jun 2005 13:23:18 +0200</pubDate>
+      <description><![CDATA[Dies ist ein Testeintrag. Wenn Sie das lesen können, funktioniert das Plugin korrekt.]]></description>
+      <link />
+      <author>Testautor</author>
+    </item>
+    <item>
+      <title>Testeintrag 2</title>
+      <pubDate>Do, 9 Jun 2005 13:23:53 +0200</pubDate>
+      <description><![CDATA[Im Administrationsmenü können Sie einen eigenen RSS-Feed auswählen.]]></description>
+      <link />
+      <author>Testautor</author>
+    </item>
+    <item>
+      <title>Testeintrag 3</title>
+      <pubDate>Do, 9 Jun 2005 13:24:18 +0200</pubDate>
+      <description><![CDATA[Vielen Dank, dass Sie sich für unsere Software entschieden haben!]]></description>
+      <link />
+      <author>Testautor</author>
+    </item>
+    <item>
+      <title>Linktest</title>
+      <pubDate>Do, 9 Jun 2005 13:24:36 +0200</pubDate>
+      <description><![CDATA[auf unserer Webseite <A HREF="http://www.pub.de.vu">www.pub.de.vu</A> finden Sie stets kostenlose Updates für dieses und weitere Plugins.]]></description>
+      <link>http://www.pub.de.vu</link>
+      <author>Testautor</author>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<!DOCTYPE drive SYSTEM "drive.dtd">
+<!--
+	Diese Datei enthält eine Liste von Mountpoints für ein virtuelles Laufwerk!
+	Die enthaltenen Einträge dürfen auf keinen Fall geändert werden.
+
+	This file contains a list of mount points for a virtual drive!
+	The contained entries may not be changed at any case.
+-->
+<drive name="ipblock">
+    <dir name="dir" filter=".cfg">
+    	<source>../../{$PROFILESDIR}</source>
+    	<requirements readable="yes" writeable="yes"/>
+    	<file name="whitelist.blockfile">
+   			<source>{$ID}.whitelist</source>
+   			<source>default_whitelist.config</source>
+    		<requirements writeable="yes"/>
+    	</file>
+    	<file name="blacklist.blockfile">
+   			<source>{$ID}.blacklist</source>
+   			<source>default_blacklist.config</source>
+    		<requirements writeable="yes"/>
+    	</file>
+    </dir>
+</drive>

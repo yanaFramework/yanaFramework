@@ -1,0 +1,14 @@
+SQL installation files for "Oracle" databases go here.
+SQL-Installationsdateien für "Oracle" Datenbanken hier abspeichern.
+
+Note: this is OPTIONAL!
+
+The framework is able to create SQL files
+for "Oracle" databases automatically at runtime,
+if a database structure file exists.
+
+Hinweis: dies ist OPTIONAL!
+
+Das Framework ist in der Lage SQL-Dateien
+für "Oracle" Datenbanken automatisch zur Laufzeit zu erzeugen,
+falls eine Datenbankstrukturdatei existiert.

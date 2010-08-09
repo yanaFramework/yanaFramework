@@ -1,0 +1,14 @@
+SQL installation files for "IBM DB2" go here.
+SQL-Installationsdateien für "IBM DB2" hier abspeichern.
+
+Note: this is OPTIONAL!
+
+The framework is able to create SQL files
+for "IBM DB2" automatically at runtime,
+if a database structure file exists.
+
+Hinweis: dies ist OPTIONAL!
+
+Das Framework ist in der Lage SQL-Dateien
+für "IBM DB2" automatisch zur Laufzeit zu erzeugen,
+falls eine Datenbankstrukturdatei existiert.

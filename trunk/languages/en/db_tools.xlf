@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN"
+ "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" >
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="en">
+        <header/>
+        <body>
+            <trans-unit id="program_title">
+                <source/>
+                <target>DB-Tools</target>
+            </trans-unit>
+            <group id="db_tools">
+                <trans-unit id="db_tools.field1">
+                    <source/>
+                    <target>SQL dialect</target>
+                </trans-unit>
+                <trans-unit id="db_tools.field2">
+                    <source/>
+                    <target>export structure of following databases</target>
+                </trans-unit>
+                <trans-unit id="db_tools.field3">
+                    <source/>
+                    <target>import from existing database</target>
+                </trans-unit>
+                <trans-unit id="db_tools.field4">
+                    <source/>
+                    <target>import from MDB2 Schema</target>
+                </trans-unit>
+                <trans-unit id="db_tools.field5">
+                    <source/>
+                    <target>XML file</target>
+                </trans-unit>
+                <trans-unit id="db_tools.field6">
+                    <source/>
+                    <target>import from DB Designer 4</target>
+                </trans-unit>
+                <trans-unit id="db_tools.field7">
+                    <source/>
+                    <target>export data of following databases</target>
+                </trans-unit>
+                <trans-unit id="db_tools.import">
+                    <source/>
+                    <target>Create structure file from existing database</target>
+                </trans-unit>
+                <trans-unit id="db_tools.exportsql">
+                    <source/>
+                    <target>Export database structure to SQL</target>
+                </trans-unit>
+                <trans-unit id="db_tools.exportxml">
+                    <source/>
+                    <target>Export database contents to XML</target>
+                </trans-unit>
+            </group>
+            <group id="help">
+                <trans-unit id="help.1">
+                    <source/>
+                    <target>Click on the button "submit". The generated file will be send to your browser as a download. Structure files may for example be used as input for the Yana SDK.</target>
+                </trans-unit>
+                <trans-unit id="help.2">
+                    <source/>
+                    <target>This exports the structure of a database to a SQL file. Choose the SQL dialect that corresponds with the type of server you use and click on the button "submit". The generated SQL file will be send to your browser as a download.</target>
+                </trans-unit>
+                <trans-unit id="help.3">
+                    <source/>
+                    <target>This option is available for the following DBMS: MySQL, MS-SQL, FrontBase, PostgreSQL. It is recommended to edit the file in a text editor, to add changes that you might feel necessary (e.g. provide easy-to-read names for your columns). Please note when editing: the file is case sensitive.</target>
+                </trans-unit>
+                <trans-unit id="help.4">
+                    <source/>
+                    <target>This option enables you to import a database structure from a PEAR MDB2 Schema XML file.</target>
+                </trans-unit>
+                <trans-unit id="help.5">
+                    <source/>
+                    <target>This option enables you to import a database structure from a DB Designer 4 XML file.</target>
+                </trans-unit>
+                <trans-unit id="help.6">
+                    <source/>
+                    <target>This exports the data of a database to a XML file. The generated file will be send to your browser as a download.</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

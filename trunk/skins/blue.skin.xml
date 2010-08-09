@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE skin SYSTEM "../config/dtd/skin.dtd">
+<skin>
+    <head>
+        <title>the BLUE skin</title>
+        <author>Thomas Meyer</author>
+        <url>http://www.yanaframework.net</url>
+        <description>
+            A lightweight skin for good performance. Tables without rounded edges.
+            The skin uses blue colors (this also makes the name).
+        </description>
+        <description lang="de">
+            Ein schlichter Skin für kurze Ladezeiten. Tabelle ohne runde Kanten.
+            Der Skin verwendet primär blaue Farbtöne (daher der Name).
+        </description>
+    </head>
+    <body>
+        <template id="INDEX">
+        	<style id="blue">blue/styles/default.css</style>
+        </template>
+    </body>
+</skin>

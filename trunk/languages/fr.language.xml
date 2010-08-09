@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE language SYSTEM "../config/dtd/language.dtd">
+<language>
+    <title>Francaise (France)</title>
+    <author>Thomas Meyer</author>
+    <url>http://www.yanaframework.net</url>
+    <description>French language files</description>
+    <description lang="de">Französische Sprachdateien</description>
+    <description lang="fr">langue française</description>
+</language>

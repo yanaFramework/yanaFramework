@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN"
+ "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" >
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="en">
+        <header/>
+        <body>
+            <trans-unit id="program_title">
+                <source/>
+                <target>RSS feed</target>
+            </trans-unit>
+            <group id="rss_config">
+                <trans-unit id="rss_config.title">
+                    <source/>
+                    <target>RSS feed</target>
+                </trans-unit>
+                <trans-unit id="rss_config.txt_entry">
+                    <source/>
+                    <target>entry</target>
+                </trans-unit>
+                <trans-unit id="rss_config.txt_entries">
+                    <source/>
+                    <target>entries</target>
+                </trans-unit>
+            </group>
+            <group id="rss_config.options">
+                <trans-unit id="rss_config.options.0">
+                    <source/>
+                    <target>path to RSS file</target>
+                </trans-unit>
+                <trans-unit id="rss_config.options.1">
+                    <source/>
+                    <target>max. shown entries</target>
+                </trans-unit>
+                <trans-unit id="rss_config.options.2">
+                    <source/>
+                    <target>language</target>
+                </trans-unit>
+                <trans-unit id="rss_config.options.3">
+                    <source/>
+                    <target>selected language</target>
+                </trans-unit>
+                <trans-unit id="rss_config.options.4">
+                    <source/>
+                    <target>available languages</target>
+                </trans-unit>
+                <trans-unit id="rss_config.options.5">
+                    <source/>
+                    <target>Click here to view the RSS feed</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

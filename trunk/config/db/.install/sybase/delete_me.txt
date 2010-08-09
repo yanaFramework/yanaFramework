@@ -1,0 +1,2 @@
+SQL installation files for "Sybase" databases go here.
+SQL-Installationsdateien für "Sybase" Datenbanken hier abspeichern.

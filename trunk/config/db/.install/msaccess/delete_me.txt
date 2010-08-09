@@ -1,0 +1,14 @@
+SQL installation files for "MS-Access" go here.
+SQL-Installationsdateien für "MS-Access" hier abspeichern.
+
+Note: this is OPTIONAL!
+
+The framework is able to create SQL files
+for "MS-Access" automatically at runtime,
+if a database structure file exists.
+
+Hinweis: dies ist OPTIONAL!
+
+Das Framework ist in der Lage SQL-Dateien
+für "MS-Access" automatisch zur Laufzeit zu erzeugen,
+falls eine Datenbankstrukturdatei existiert.

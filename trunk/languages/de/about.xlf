@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.0">
+    <file source-language="en" datatype="html" original="" target-language="de">
+        <header>
+            <note>
+                 This file contains information that will be shown in the "about" information window
+                 when the user clicks on the name of a skin-package in the administration panel.
+            </note>
+        </header>
+        <body>
+            <group id="skin.description">
+                <trans-unit id="skin.description.blue">
+                    <source>A lightweight skin for good performance. Tables without rounded edges. The skin uses blue colors (this also makes the name).</source>
+                    <target>Ein schlichter Skin für kurze Ladezeiten. Tabelle ohne runde Kanten. Der Skin verwendet primär blaue Farbtöne (daher der Name)</target>
+                </trans-unit>
+                <trans-unit id="skin.description.default">
+                    <source>This is the standard skin of the application. It includes templates for the main program and all official plugins. This skin must not be uninstalled! All other skins are based on it. When a template is required that is not available in any other skin, the application automatically fall back to this standard skin to create the output.<it id="br1" pos="open">&lt;br /&gt;</it> <it id="br2" pos="open">&lt;br /&gt;</it> <bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt><bpt id="b1">&lt;b&gt;</bpt>Hint:<ept id="b1">&lt;/b&gt;</ept> When writing you own plugins, you do NOT need to write templates for all skins that exist somewhere on the web. Instead templates ONLY NEED to exist for this standard skin to be available and stylable to all other skins as well.<ept id="c1">&lt;/span&gt;</ept></source>
+                    <target>Dies ist der Standardskin der Anwendung. Er umfasst Templates für das Hauptprogramm und alle offiziellen Plugins. Dieser Skin darf nicht deinstalliert werden! Alle anderen Skins basieren auf diesem. Falls ein Template benötigt wird, das in einem anderen Skin nicht verfügbar ist, verwendet die Anwendung automatisch diesen um die Seite darzustellen.<it id="br1" pos="open">&lt;br /&gt;</it> <it id="br2" pos="open">&lt;br /&gt;</it> <bpt id="c1">&lt;span class="embtag_tag_c"&gt;</bpt><bpt id="b1">&lt;b&gt;</bpt>Tipp:<ept id="b1">&lt;/b&gt;</ept> Falls Sie eigene Plugins schreiben, müssen Sie NICHT für alle im Web verfügbaren Skins eigene Templates erstellen. NUR für den Standard-Skin MÜSSEN Templates verfügbar sein. Alle anderen Skins verwenden die Standard-Templates automatisch.<ept id="c1">&lt;/span&gt;</ept></target>
+                </trans-unit>
+                <trans-unit id="skin.description.light">
+                    <source>This skin drops the buttons "New", "Details" and "Overview". Instead there is only one view for all.</source>
+                    <target>Dieser Skin verzichtet auf die Schalter "Details", "Einträge" und "Neu". Es gibt nur noch eine Ansicht für alles.</target>
+                </trans-unit>
+                <trans-unit id="skin.description.minimal">
+                    <source>An elegant, text based skin without unnecessary images. The layout is produced by stylesheets.</source>
+                    <target>Ein eleganter, textbasierter Skin ohne überflüssige Grafiken. Das Layout wird von Stylesheets geprägt.</target>
+                </trans-unit>
+                <trans-unit id="skin.description.natural">
+                    <source>This is a colorful skin that mainly uses brown and yellow, which creates some kind of "autumn" mood.</source>
+                    <target>Dies ist ein bunter Skin der gelbe und braune Farbtöne verwendet. Dies erzeugt eine gewisse "Herbststimmung".</target>
+                </trans-unit>
+                <trans-unit id="skin.description.simple">
+                    <source>A light weight skin for the purists. Uses a decent, light gray, with blue highlights.</source>
+                    <target>Ein schlichter Skin für Puristen. Farblich wird ein dezentes Grau verwendet, welches blau abgesetzt ist. Kommentieren und Löschen von Beiträgen ist in diesem Skin deaktiviert.</target>
+                </trans-unit>
+                <trans-unit id="skin.description.tabular">
+                    <source>This skin replaces the guestbook plugin's standard output by tabular lists.</source>
+                    <target>Ein einfacher Skin für das Gästebuch mit einer tabellarischen Darstellung der Einträge. Nur wenige Änderung im Vergleich zum Standardskin.</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

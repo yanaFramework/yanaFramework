@@ -1,0 +1,92 @@
+.option
+{
+    padding-bottom: 10px;
+}
+.fieldset
+{
+    margin: 0px 50px 0px 50px;
+}
+.optionbody
+{
+    padding: 0px 50px 0px 50px;
+}
+#antispam_security_level
+{
+}
+#antispam_security_level ol
+{
+    display: block;
+    list-style-type: none;
+    padding-left: 30px;
+    background: url('arrow.png') no-repeat 5px 5px;
+    color: #000;
+}
+#antispam_security_level li
+{
+    display: block;
+    width: 350px;
+    padding: 5px;
+    color: #000;
+    background: #fff repeat-x;
+    margin-bottom: 2px;
+    border: 1px solid #aaa;
+    overflow: hidden;
+}
+#antispam_security_level li label
+{
+    display: block;
+}
+#antispam_security_level li .description
+{
+    display: none;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #777;
+}
+#antispam_security_level li:hover .description
+{
+    display: block;
+}
+#antispam_security_level li#antispam_level_high
+{
+    background-image: url('level_high.gif');
+}
+#antispam_security_level li#antispam_level_medium
+{
+    background-image: url('level_medium.gif');
+}
+#antispam_security_level li#antispam_level_low
+{
+    background-image: url('level_low.gif');
+}
+#antispam_security_level li#antispam_level_off
+{
+    background-image: url('level_off.gif');
+}
+#antispam_security_level li#antispam_level_user
+{
+    background-image: url('level_user.gif');
+}
+#antispam_user_settings
+{
+    
+}
+#antispam_user_settings .label
+{
+    display: block;
+    margin-right: 20px;
+    margin-top: 10px;
+}
+#antispam_user_settings label, #antispam_words label
+{
+    font-weight: normal;
+}
+#antispam_words textarea
+{
+    width: 400px;
+    height: 100px;
+}
+#antispam_reference
+{
+    display: none;
+}

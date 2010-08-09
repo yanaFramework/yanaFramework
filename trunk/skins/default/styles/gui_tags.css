@@ -1,0 +1,161 @@
+.embtag
+{
+    display: inline;
+}
+.embtag img
+{
+    border: 0;
+    width:  18px;
+    height: 18px;
+}
+.embtag select
+{
+    vertical-align: top;
+}
+span.embtag_nobreak
+{
+    white-space: nowrap;
+}    
+.embtag a, .embtag a:hover
+{
+    text-decoration: none;
+}
+img.embtag_space
+{
+    background: url('tags/_space.gif');
+    height: 18px;
+    width:  4px;
+}
+span.embtag_smilies img
+{
+    background: url('tags/smilies.gif');
+}
+.embtag .embtag_smilies_list
+{
+    display: none;
+    position: absolute;
+    padding: 2px;
+    background: #f0f0f0;
+    border: 1px solid #aaa;
+    margin-left: -10px;
+}
+.embtag .embtag_smilies_list img
+{
+    width: auto;
+    height: auto;
+}
+.embtag:hover .embtag_smilies_list
+{
+    display: inline;
+}
+span.embtag_b img
+{
+    background: url('tags/b.gif');
+}
+span.embtag_i img
+{
+    background: url('tags/i.gif');
+}
+span.embtag_u img
+{
+    background: url('tags/u.gif');
+}
+span.embtag_h img
+{
+    background: url('tags/h.gif');
+}
+span.embtag_img img
+{
+    background: url('tags/img.gif');
+}
+span.embtag_url img
+{
+    background: url('tags/url.gif');
+}
+span.embtag_mail img
+{
+    background: url('tags/mail.gif');
+}
+span.embtag_code img
+{
+    background: url('tags/code.gif');
+}
+span.embtag_emp img
+{
+    background: url('tags/emp.gif');
+}
+span.embtag_color img
+{
+    background: url('tags/color.gif');
+}
+span.embtag_mark img
+{
+    background: url('tags/mark.gif');
+}
+span.embtag_small img
+{
+    background: url('tags/small.gif');
+}
+span.embtag_big img
+{
+    background: url('tags/big.gif');
+}
+span.embtag_c img
+{
+    background: url('tags/c.gif');
+}
+span.embtag_hide img
+{
+    background: url('tags/hide.gif');
+}
+span.embtag_wbr img
+{
+    background: url('tags/wbr.gif');
+}
+span.embtag_br img
+{
+    background: url('tags/br.gif');
+}
+span.embtag_php img
+{
+    background: url('tags/php.gif');
+}
+/* preview */
+.gui_preview
+{
+    font-size: small;
+}
+.gui_preview fieldset,
+.gui_preview .fieldset
+{
+    display: block;
+    background: #dadfe2 url('preview_bgd.gif') repeat-x;
+    color: #000;
+    margin: auto;
+    padding: 2px;
+}
+.gui_preview .ajax_loading
+{
+    margin: auto;
+}
+.gui_preview .fieldset
+{
+    border: 1px solid #4863A0;
+}
+.gui_preview .gui_preview_head
+{
+    font-weight: bold;
+}
+.gui_preview .gui_preview_body
+{
+    padding: 1px;
+    overflow: auto;
+}
+.gui_preview .ajax_loading
+{
+    background-image: url('load_medium.gif');
+    border: 1px solid #4863A0;
+    margin: 2px;
+    padding: 3px;
+    padding-top: 50px;
+}

@@ -1,0 +1,97 @@
+{literal}<?xml version="1.0"?>{/literal}
+{if $rss.css }
+{literal}<?xml-stylesheet{/literal} type="text/css" href="{$rss.css}" media="screen"{literal}?>{/literal}
+{/if}
+{if $rss.xslt }
+{literal}<?xml-stylesheet{/literal} type="text/xsl" href="{$rss.xslt}" version="1.0"{literal}?>{/literal}
+{/if}
+<rss version="2.0">
+  <channel>
+      <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+{*
+
+   The following fields are mandatory, as stated in
+   the documentation at http://blogs.law.harvard.edu/tech/rss
+
+*}
+      <title>{$rss.title}</title>
+      <link><![CDATA[{$rss.link}]]></link>
+      <description>{$rss.description}</description>
+{*
+
+   The following fields are optional
+
+*}
+{if $rss.language }
+      <language>{$rss.language}</language>
+{/if}
+{if $rss.pubDate }
+      <pubDate>{$rss.pubDate}</pubDate>
+{/if}
+{if $rss.lastBuildDate }
+      <lastBuildDate>{$rss.lastBuildDate}</lastBuildDate>
+{/if}
+{if $rss.generator }
+      <generator>{$rss.generator}</generator>
+{/if}
+{if $rss.copyright }
+      <copyright>{$rss.copyright}</copyright>
+{/if}
+{if $rss.managingEditor }
+      <managingEditor>{$rss.managingEditor}</managingEditor>
+{/if}
+{if $rss.webMaster }
+      <webMaster>{$rss.webMaster}</webMaster>
+{/if}
+{if $rss.ttl }
+      <ttl>{$rss.ttl}</ttl>
+{/if}
+{if $rss.webMaster }
+      <webMaster>{$rss.webMaster}</webMaster>
+{/if}
+{if $rss.categories}
+    {foreach from=$rss.category item="category" }
+      <category>$category</category>
+    {/foreach}
+{/if}
+{if $rss.image }
+      <image>
+          <title>{$rss.title}</title>
+          <link>{$rss.link}</link>
+          <url>{$rss.image}</url>
+      </image>
+{/if}
+{*
+
+   List of Items
+
+*}
+{foreach from=$rss.item item="item" }
+      <item>
+{if $item.title }
+          <title>{$item.title}</title>
+{/if}
+{if $item.pubDate }
+          <pubDate>{$item.pubDate}</pubDate>
+{/if}
+{if $item.description }
+          <description><![CDATA[{$item.description}]]></description>
+{/if}
+{if $item.link }
+          <link><![CDATA[{$item.link}]]></link>
+{/if}
+{if $item.categories}
+    {foreach from=$item.category item="category"}
+          <category>$category</category>
+    {/foreach}
+{/if}
+{if $item.guid}
+          <guid isPermaLink="false">{$item.guid}</guid>
+{/if}
+{if $item.author}
+          <author>{$item.author}</author>
+{/if}
+      </item>
+{/foreach}
+  </channel>
+</rss>

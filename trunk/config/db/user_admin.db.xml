@@ -1,0 +1,78 @@
+<?xml version="1.0" ?>
+<!DOCTYPE database SYSTEM "../dtd/database.dtd">
+<database>
+    <include>user</include>
+    <form name="user" table="user">
+        <input name="user_id" readonly="yes"/>
+        <input name="user_session" hidden="yes"/>
+        <input name="user_mail" readonly="yes">
+            <grant insert="no" update="no"/>
+        </input>
+        <input name="user_active">
+            <grant insert="no" update="no"/>
+            <grant user="admin" level="100"/>
+        </input>
+        <input name="user_login_last" readonly="yes">
+            <grant insert="no" update="no"/>
+        </input>
+        <input name="user_inserted" readonly="yes">
+            <grant insert="no" update="no"/>
+        </input>
+        <form name="securityrules" table="securityrules" allinput="yes">
+            <grant select="no"/>
+            <grant user="admin" level="100"/>
+            <input name="user_id" hidden="yes"/>
+            <input name="rule_id" hidden="yes"/>
+            <input name="user_created" hidden="yes"/>
+            <input name="user_proxy_active" hidden="yes"/>
+            <event name="insert">set_access_new</event>
+            <event name="update">set_access_edit</event>
+            <event name="delete">set_access_delete</event>
+        </form>
+        <event name="insert">set_user_new</event>
+        <event name="update">set_user_edit</event>
+        <event name="delete">set_user_delete</event>
+    </form>
+    <form name="securityactionrules" table="securityactionrules" allinput="yes">
+        <input name="actionrule_id" hidden="yes"/>
+        <input name="actionrule_predefined" hidden="yes"/>
+        <event name="insert">set_user_action_settings_new</event>
+        <event name="update">set_user_action_settings_edit</event>
+        <event name="delete">set_user_action_settings_delete</event>
+    </form>
+    <form name="securitygroup" table="securitygroup" allinput="yes">
+        <event name="insert">set_usergroup_new</event>
+        <event name="update">set_usergroup_edit</event>
+        <event name="delete">set_usergroup_delete</event>
+    </form>
+    <form name="securityrole" table="securityrole" allinput="yes">
+        <event name="insert">set_userrole_new</event>
+        <event name="update">set_userrole_edit</event>
+        <event name="delete">set_userrole_delete</event>
+    </form>
+    <form name="userprofile" table="userprofile">
+        <grant select="no"/>
+        <grant level="1"/>
+        <input name="user_id" readonly="yes">
+            <event name="view_profile" title='{lang id="USER.17"}' label='&lt;span class="icon_person"&gt; &lt;/span&gt;'/>
+        </input>
+        <input name="userprofile_gender" readonly="yes"/>
+        <input name="userprofile_image_active">
+            <grant insert="no" update="no"/>
+            <grant insert="no" user="admin" level="100"/>
+        </input>
+        <input name="userprofile_image" readonly="yes"/>
+        <input name="userprofile_description" readonly="yes"/>
+        <event name="update">set_profiles_edit</event>
+    </form>
+    <form name="userdetails" table="userprofile" allinput="yes" template="1">
+        <grant select="no"/>
+        <grant level="1"/>
+        <input name="userprofile_modified" hidden="yes"/>
+        <input name="userprofile_image_active">
+            <grant select="no" insert="no" update="no"/>
+            <grant insert="no" user="admin" level="100"/>
+        </input>
+        <event name="update">set_profile_edit</event>
+    </form>
+</database>

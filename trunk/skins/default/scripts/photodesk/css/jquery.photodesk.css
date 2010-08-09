@@ -1,0 +1,115 @@
+a.pd_next_photo
+{
+	z-index:999999;
+	cursor:pointer;
+	border:1px solid #aaa;
+	width:50px;
+	height:50px;
+	position:absolute;
+	top:50%;
+	left:50%;
+	opacity:0.8;
+	margin:-25px 0px 0px -25px;
+	-moz-border-radius:8px;
+	-webkit-border-radius:8px;
+	border-radius:8px;
+}
+a.pd_next_photo
+{
+	background:#B8B8B8 url(../images/next.png) no-repeat 50% 50%;
+}
+a.pd_next_photo:hover
+{
+	opacity:1.0;
+}
+.pd_viewall,
+.pd_shuffle,
+.pd_backdesk
+{
+	outline:none;
+	padding:0px 15px 0px 50px;
+	line-height:47px;
+	text-decoration:none;
+	font-size:24px;
+	color:#333;
+	text-shadow:1px 1px 1px #f0f0f0;
+	height:50px;
+	float:right;
+	margin:5px 10px 0px 0px;
+	-moz-box-shadow:1px 1px 2px #666;
+	-webkit-box-shadow:1px 1px 2px #666;
+	box-shadow:1px 1px 2px #666;
+	opacity:0.8;
+	-moz-border-radius:8px;
+	-webkit-border-radius:8px;
+	border-radius:8px;
+}
+.pd_viewall
+{
+	background:#B8B8B8 url(../images/viewall.png) no-repeat 10px 50%;
+}
+.pd_shuffle
+{
+	background:#B8B8B8 url(../images/shuffle.png) no-repeat 10px 50%;
+}
+.pd_backdesk
+{
+	background:#B8B8B8 url(../images/backdesk.png) no-repeat 10px 50%;
+}
+.pd_viewall:hover,
+.pd_shuffle:hover,
+.pd_backdesk:hover
+{
+	opacity:1.0;
+	text-shadow:1px 1px 1px #fff;
+	-moz-box-shadow:1px 1px 2px #fff;
+	-webkit-box-shadow:1px 1px 2px #fff;
+	box-shadow:1px 1px 2px #fff;
+}
+.pd_photo
+{
+	position:absolute;
+	z-index:10;
+	border:7px solid #f9f9f9;
+	border-bottom:28px solid #f9f9f9;
+	top:0px;
+	left:0px;
+	display:none;
+	-moz-box-shadow:1px 1px 5px #555;
+	-webkit-box-shadow:1px 1px 5px #555;
+	box-shadow:1px 1px 5px #555;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    background-color: #fff;
+    color: #000;
+}
+.pd_photo img
+{
+    border: 0px none;
+}
+.pd_photo span.delete
+{
+	position:absolute;
+	width:16px;
+	height:16px;
+	right:-16px;
+	top:2px;
+	cursor:pointer;
+	background:#fff url(../images/close.png) no-repeat center center;
+	-moz-border-radius:0px 8px 8px 0px;
+	-webkit-border-top-right-radius:8px;
+	-webkit-border-bottom-right-radius:8px;
+	border-top-right-radius:8px;
+	border-bottom-right-radius:8px;
+	-moz-box-shadow:1px 1px 5px #555;
+	-webkit-box-shadow:1px 1px 5px #555;
+	box-shadow:1px 1px 5px #555;
+}
+.pd_paperball
+{
+	background:transparent url(../images/paperball.png) no-repeat center center;
+	position:absolute;
+}

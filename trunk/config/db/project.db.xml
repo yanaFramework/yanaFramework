@@ -1,0 +1,130 @@
+<?xml version="1.0" ?>
+<!DOCTYPE database SYSTEM "../dtd/database.dtd">
+<database>
+     <table name="project" title='{lang id="PRJ.H1"}'>
+         <primarykey>project_id</primarykey>
+         <declaration>
+            <integer
+                name="project_id"
+                length="8"
+                notnull="yes"
+                autoincrement="yes">
+            </integer>
+            <string
+                name="project_name"
+                length="255"
+                notnull="yes"
+                title='{lang id="PRJ.NAME"}'>
+            </string>
+            <timestamp
+                name="project_created"
+                notnull="yes"
+                title='{lang id="PRJ.CREATED"}'>
+                <default>CURRENT_TIMESTAMP</default>
+            </timestamp>
+            <float
+                name="project_loan"
+                length="7"
+                notnull="yes"
+                precision="2"
+                title='{lang id="PRJ.LOAN"}'>
+            </float>
+            <text
+                name="project_description"
+                length="3000"
+                notnull="no"
+                title='{lang id="PRJ.DESC"}'>
+            </text>
+            <file
+                name="project_file"
+                maxsize="500000"
+                title='{lang id="PRJ.FILE"}'>
+            </file>
+            <string name="profile_id" notnull="yes" length="128"/>
+         </declaration>
+     </table>
+     <table name="effort" title='{lang id="PRJ.H2"}'>
+         <primarykey>effort_id</primarykey>
+         <foreign table="project">
+             <key name="project_id"/>
+         </foreign>
+         <declaration>
+            <integer
+                name="effort_id"
+                length="8"
+                notnull="yes"
+                autoincrement="yes">
+            </integer>
+            <reference
+                name="project_id"
+                notnull="yes"
+                column="project_id"
+                label="project_name"
+                title='{lang id="PRJ.ID"}'>
+            </reference>
+            <string
+                name="effort_user"
+                length="100"
+                notnull="yes"
+                title='{lang id="PRJ.USER"}'>
+                <default>{$SESSION_USER_ID}</default>
+            </string>
+            <string
+                name="effort_short"
+                length="50"
+                notnull="yes"
+                title='{lang id="PRJ.SHORT"}'>
+            </string>
+            <timestamp
+                name="effort_date"
+                notnull="yes"
+                title='{lang id="PRJ.DATE"}'>
+                <default>CURRENT_TIMESTAMP</default>
+            </timestamp>
+            <float
+                name="effort_duration"
+                length="6"
+                notnull="yes"
+                precision="2"
+                title='{lang id="PRJ.DUR"}'>
+            </float>
+            <text
+                name="effort_description"
+                length="3000"
+                notnull="no"
+                title='{lang id="PRJ.DESC"}'>
+            </text>
+            <bool
+                name="effort_state"
+                notnull="yes"
+                title='{lang id="PRJ.STATE"}'>
+                <default>0</default>
+            </bool>
+            <string name="profile_id" notnull="yes" length="128"/>
+         </declaration>
+     </table>
+     <form name="project" table="project" allinput="yes">
+         <input name="project_id" hidden="yes"/>
+         <input name="project_created" readonly="yes">
+             <grant insert="no" update="no"/>
+         </input>
+         <input name="profile_id" hidden="yes"/>
+         <form name="effort" table="effort" allinput="yes">
+             <input name="effort_id" hidden="yes"/>
+             <input name="effort_user" readonly="yes">
+                 <grant insert="no" update="no"/>
+             </input>
+             <input name="effort_state">
+                 <grant insert="no"/>
+             </input>
+             <event name="insert">project_new_effort</event>
+             <event name="update">project_edit_effort</event>
+             <event name="delete">project_delete_effort</event>
+             <event name="search">project_search_effort</event>
+         </form>
+         <event name="insert">project_new_project</event>
+         <event name="update">project_edit_project</event>
+         <event name="delete">project_delete_project</event>
+         <event name="search">project_search_project</event>
+     </form>
+</database>

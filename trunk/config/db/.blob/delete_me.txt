@@ -1,0 +1,2 @@
+Dieses Verzeichnis enthält Binärdateien (binary large objects)
+This directory contains binary files (binary large objects)
