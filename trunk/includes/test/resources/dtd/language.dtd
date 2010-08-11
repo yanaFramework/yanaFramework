@@ -1,9 +1,0 @@
-<!ELEMENT language (title, author*, url?, description*)>
-
-<!ELEMENT title (#PCDATA)>
-<!ELEMENT author (#PCDATA)>
-<!ELEMENT url (#PCDATA)>
-<!ELEMENT description (#PCDATA)>
-<!ATTLIST description
-    lang  CDATA  #IMPLIED
->
