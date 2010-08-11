@@ -1,7 +1,7 @@
 {if $form->isSelectable()}
     {if $form->getFields() && $form->getSearchAction()}
         <fieldset>
-            <legend>{$form->getTitle()}</legend>
+            <legend onclick="$(this).find('~ div, ~ input').toggle('slow')">{$form->getTitle()}</legend>
             {assign var="iterator" value=$form->getSearchIterator()}
             {if $form->getLayout() < 3}
                 {import file="layout2.html.tpl" form=$form iterator=$iterator}

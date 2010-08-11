@@ -85,10 +85,12 @@
                 ++cntPhotos;
                 var $image     = $(this);
 
-                var r        = Math.floor(Math.random()*201)-100;//*41
+                var r = Math.floor(Math.random()*201)-100;//*41
                 var maxzidx = parseInt(findHighestZIndex()) + 1;
                 calcPosition();
                 var param    = {
+                    'width'   : $settings.pWidth + 'px',
+                    'height'  : $settings.pHeight + 'px',
                     'top'     : (Math.floor(Math.random() * (maxH - minH + 1)) + minH) +'px',
                     'left'    : (Math.floor(Math.random() * (maxW - minW + 1)) + minW) +'px',
                     'z-index' : maxzidx
@@ -103,10 +105,17 @@
                     bindEvents();
                 }
             }).attr('src',$photo.find('img').attr('src'));
-            $photo.html('<div class="pd_hold">' + $photo.html() + '</div>');
-            $photo.append('<span class="delete"></span>');
+            if (!$photo.has('.pd_hold').length) {
+                $photo.html('<div class="pd_hold">' + $photo.html() + '</div>');
+            }
+            if (!$photo.has('.delete').length) {
+                $photo.append('<span class="delete"></span>');
+            }
         });
-
+        $container.find('.pd_photo img').css({
+            width: $settings.pWidth + 'px',
+            height: $settings.pHeight + 'px'
+        });
         /**
          * grab a photo
          */
@@ -178,6 +187,8 @@
             var $photoT      = parseFloat($photo.css('top'),10);
             var $photoL      = parseFloat($photo.css('left'),10);
             var $photoZIndex = $photo.css('z-index');
+            var trashWidth   = ($settings.photoW > 120) ? $settings.photoW : 120;
+            var trashHeight  = ($settings.photoH > 120) ? $settings.photoH : 120;
             var $trash = $('<div />',{
                 'className' : 'pd_paperball',
                 'style'     : 'top:' + parseInt($photoT + $settings.photoH/2) + 'px;' +
@@ -186,11 +197,11 @@
             }).appendTo($container);
 
             $trash.animate({
-                'width'  : $settings.photoW + 'px',
-                'height' : $settings.photoH + 'px',
+                'width'  : trashWidth + 'px',
+                'height' : trashHeight + 'px',
                 'top'    : $photoT + 'px',
                 'left'   : $photoL + 'px'
-            },100,function(){
+            },500,function(){
                 var $this = $(this);
                 setTimeout(function(){
                     $this.remove();
@@ -201,7 +212,7 @@
                 'height' : '0px',
                 'top'    : $photoT + $settings.photoH/2 + 'px',
                 'left'   : $photoL + $settings.photoW/2 +'px'
-            },200,function(){
+            },1000,function(){
                 --photosSize;
                 $(this).remove();
             });

@@ -2281,7 +2281,7 @@ class DDLColumn extends DDLNamedObject
                 self::_serializeOptions($optgroup, $item);
                 unset($optgroup);
             } else {
-                $option = $node->addChild('option', $item);
+                $option = $node->addChild('option', String::htmlEntities($item));
                 if ($key !== $item) {
                     $option->addAttribute('value', $key);
                 }

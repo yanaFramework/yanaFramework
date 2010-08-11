@@ -21,7 +21,7 @@
                     <fieldset id="{$form->getName()}-search" class="gui_generator_search">
                         <legend>
                             <a class="buttonize" href="javascript://"
-                               onclick="return yanaGuiToggleVisibility('{$form->getName()}-search');">
+                               onclick="$('#{$form->getName()}-search').hide('slow')">
                                 <span class="icon_magnifier">&nbsp;</span>
                                 {lang id="advanced_search"}
                             </a>
@@ -37,9 +37,9 @@
                 <input type="hidden" name="{$SESSION_NAME}" value="{$SESSION_ID}"/>
                 <fieldset id="{$form->getName()}-new" class="gui_generator_new">
                     <legend>
-                        <a class="buttonize" href="javascript://" onclick="return yanaGuiToggleVisibility('{$form->getName()}-new');">
+                        <a class="buttonize" href="javascript://" onclick="$('#{$form->getName()}-new').hide('slow')">
                             <span class="icon_new">&nbsp;</span>
-                            {$form->getTitle()}: {lang id="new_entry"}
+                            {lang id="new_entry"}
                         </a>
                     </legend>
                     {import file="insert.html.tpl" form=$form}
@@ -70,18 +70,18 @@
                 {if $form->isSelectable()}
                     $('#{$form->getName()}-search-small').after(
                         '<a class="gui_generator_icon_search" href="javascript://" ' +
-                        'onclick="return yanaGuiToggleVisibility(\'{$form->getName()}-search-small\');">' +
+                        'onclick="$(\'#{$form->getName()}-search-small\').toggle(\'slow\')">' +
                         '<span class="icon_magnifier">&nbsp;</span></a>'
                         {if $form->getInsertAction() || $form->hasInsertableChildren()}
                         + '<a class="gui_generator_icon_new" href="javascript://" ' +
-                        'onclick="return yanaGuiToggleVisibility(\'{$form->getName()}-new\');">' +
+                        'onclick="$(\'#{$form->getName()}-new\').toggle(\'slow\')">' +
                         '<span class="icon_new">&nbsp;</span></a>'
                         {/if}
                     );
                     {if $form->getSearchAction() || $form->hasSearchableChildren()}
                     $('#{$form->getName()}-search-small').append(
                         '<a class="buttonize" href="javascript://" ' +
-                        'onclick="return yanaGuiToggleVisibility(\'{$form->getName()}-search\');">' +
+                        'onclick="$(\'#{$form->getName()}-search\').toggle(\'slow\')">' +
                         '<span class="icon_pointer">&nbsp;</span></a>'
                     );
                     {/if}

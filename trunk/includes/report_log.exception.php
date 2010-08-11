@@ -155,7 +155,7 @@ class Log extends Report
 
         /* 3. create entry */
         if (!empty($message)) {
-            $report[$prefix.'MESSAGE']= (string) $message;
+            $report[$prefix.'MESSAGE'] = (string) $message;
         }
         if (!empty($_SESSION['user_name'])) {
             $report[$prefix.'USER'] = $_SESSION['user_name'];

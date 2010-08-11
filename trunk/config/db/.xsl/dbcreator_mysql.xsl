@@ -300,7 +300,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:when test="name() = 'range'">DOUBLE</xsl:when>
         <xsl:when test="name() = 'text'">TEXT</xsl:when>
         <xsl:when test="name() = 'time'">DATETIME</xsl:when>
-        <xsl:when test="name() = 'timestamp'">TIMESTAMP</xsl:when>
+        <xsl:when test="name() = 'timestamp'">INT</xsl:when>
         <xsl:when test="name() = 'integer'">INT</xsl:when>
         <xsl:when test="name() = 'string' and @fixed = 'yes'">CHAR</xsl:when>
         <xsl:when test="not(@length)">TEXT</xsl:when>

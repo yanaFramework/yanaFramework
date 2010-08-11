@@ -1222,12 +1222,12 @@ class FileDbConnection extends Object
             }
             if ($collapse) {
                 if (!isset($result[$lastResult])) {
-                    $result[$lastResult] = array($alias => $rowSet[$column]);
+                    $result[$lastResult] = array($alias => $value);
                 } else {
-                    $result[$lastResult][$alias] = $rowSet[$column];
+                    $result[$lastResult][$alias] = $value;
                 }
             } else {
-                $result[] = array($alias => $rowSet[$column]);
+                $result[] = array($alias => $value);
             }
         }
         unset($alias, $column);
