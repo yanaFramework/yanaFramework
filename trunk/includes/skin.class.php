@@ -960,8 +960,7 @@ class Skin implements IsReportable, IsSerializable
                         $subReport->addText("File: $filename");
                     }
                 } catch (NotFoundException $e) {
-                    $subReport->addError("The definition of template '$template' contains errors: " .
-                        $e->getMessage());
+                    $subReport->addWarning($e->getMessage());
                 }
                 
                 /*
@@ -973,10 +972,9 @@ class Skin implements IsReportable, IsSerializable
                     {
                         if (!empty($value)) {
                             if (!$language->readFile($value)) {
-                                $subReport->addError("A required language file '{$value}.config' is not available." .
+                                $subReport->addWarning("A required language file '{$value}' is not available. " .
                                     "Please check if the chosen language file is correct and update your ".
                                     "language pack if needed.");
-                                $hasError = true;
                             }
                         }
                     }

@@ -3,7 +3,7 @@
         {assign var="iterator" value=$form->getIterator()}
         {if $iterator->getRowCount()}
             <fieldset id="{$form->getName()}-edit">
-                {if $form->getTitle()}<legend>{$form->getTitle()}</legend>{/if}
+                {if $form->getTitle()}<legend onclick="$(this).find('~ div, ~ input').toggle('slow')">{$form->getTitle()}</legend>{/if}
                 <div class="gui_generator_toolbar" id="{$form->getName()}-toolbar">
                     <div class="gui_generator_settings" id="{$form->getName()}-settings">
                         <!-- BEGIN settings {assign var="formName" value=$form->getName()} -->

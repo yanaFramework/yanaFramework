@@ -1,5 +1,6 @@
 {if $form->isInsertable() && $form->getFields() && $form->getInsertAction() && ($form->getEntriesPerPage() > 1 || !$form->getForms())}
-    <div title="{$form->getTitle()}">
+    <fieldset title="{$form->getTitle()}">
+        <legend onclick="$(this).find('~ div, ~ input').toggle('slow')">{$form->getTitle()}</legend>
         {assign var="iterator" value=$form->getInsertIterator()}
         {if $form->getLayout() === 0}
             {import file="layout2.html.tpl" form=$form iterator=$iterator}
@@ -13,7 +14,7 @@
             {import file="layout4.html.tpl" form=$form iterator=$iterator}
         {/if}
         <input type="submit" name="action[{$form->getInsertAction()}]" value='{lang id="button_save"}'/>
-    </div>
+    </fieldset>
 {/if}
 {foreach from=$form->getForms() item="subform"}
     {if !$subform->getKey() || $form->getEntriesPerPage() === 1}

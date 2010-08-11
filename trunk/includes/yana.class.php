@@ -460,7 +460,6 @@ final class Yana extends Singleton implements IsReportable
             {
                 case isset($action) && !is_string($action):
                 case isset($action) && !$this->_getPlugins()->isEvent($action):
-                    $this->_getLanguage();
                     $error = new InvalidActionError();
                     $error->setData(array('ACTION' => $action));
                 // fall through

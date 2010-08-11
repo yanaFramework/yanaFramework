@@ -90,7 +90,7 @@ a.pd_next_photo:hover
 {
     border: 0px none;
 }
-.pd_photo span.delete
+.pd_photo .delete
 {
 	position:absolute;
 	width:16px;
@@ -112,4 +112,12 @@ a.pd_next_photo:hover
 {
 	background:transparent url(../images/paperball.png) no-repeat center center;
 	position:absolute;
+    width: 120px;
+    height: 120px;
+    display: block;
+    overflow: visible;
+}
+.pd_hold img
+{
+    display: block
 }
