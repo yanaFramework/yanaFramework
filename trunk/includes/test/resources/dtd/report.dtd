@@ -1,7 +1,0 @@
-<!ELEMENT report (title?, (report | text | notice | warning | error)*)>
-
-<!ELEMENT title (#PCDATA)>
-<!ELEMENT text (#PCDATA)>
-<!ELEMENT notice (#PCDATA)>
-<!ELEMENT warning (#PCDATA)>
-<!ELEMENT error (#PCDATA)>
