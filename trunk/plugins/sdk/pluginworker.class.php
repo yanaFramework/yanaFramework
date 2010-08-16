@@ -297,8 +297,10 @@ class PluginWorker extends Object
 
         $plugin = $this->getPlugin();
         $directory = DDL::getDirectory() . '/';
+        $dom = dom_import_simplexml($this->schema->serializeToXDDL())->ownerDocument;
+        $dom->formatOutput = true;
         $this->filesToCopy[] = array(
-            'content' => $this->schema->toString(),
+            'content' => $dom->saveXML(),
             'dest' => $directory . $plugin->getId() . '.db.xml'
         );
     }
