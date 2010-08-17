@@ -1163,6 +1163,9 @@ class FileDbConnection extends Object
         assert('!isset($current); // Cannot redeclare var $current');
         foreach ($data as $current)
         {
+            if (!is_array($current)) {
+                continue;
+            }
             // implements the resultset
             if ($this->_doWhere($current, $where) === true) {
                 $this->_buildResultset($result, $columns, $current, array(), $doCollapse);
