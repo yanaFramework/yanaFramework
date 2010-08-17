@@ -148,7 +148,9 @@ class PluginConfigurator extends PluginConfiguration
             break;
             default:
                 $parent = strip_tags(nl2br($parent));
-                $this->configuration[PluginAnnotation::PARENT] = $parent;
+                if (!empty($parent)) {
+                    $this->configuration[PluginAnnotation::PARENT] = $parent;
+                }
             break;
         }
     }
@@ -176,7 +178,9 @@ class PluginConfigurator extends PluginConfiguration
             break;
             default:
                 $group = strip_tags(nl2br($group));
-                $this->configuration[PluginAnnotation::GROUP] = $group;
+                if (!empty($group)) {
+                    $this->configuration[PluginAnnotation::GROUP] = $group;
+                }
             break;
         }
     }
@@ -240,7 +244,10 @@ class PluginConfigurator extends PluginConfiguration
         if (!is_string($author)) {
             throw new InvalidInputWarning();
         }
-        $this->configuration[PluginAnnotation::AUTHOR][] = strip_tags(nl2br($author));
+        $author = strip_tags(nl2br($author));
+        if (!empty($author)) {
+            $this->configuration[PluginAnnotation::AUTHOR][] = $author;
+        }
     }
 
     /**
@@ -254,8 +261,11 @@ class PluginConfigurator extends PluginConfiguration
         if (!is_string($description)) {
             throw new InvalidInputWarning();
         }
+        $description = str_replace("\n", '<br/>', strip_tags($description));
 
-        $this->configuration[parent::DEFAULT_TEXT] = str_replace("\n", '<br/>', strip_tags($description));
+        if (!empty($description)) {
+            $this->configuration[parent::DEFAULT_TEXT] = $description;
+        }
     }
 
     /**
@@ -272,7 +282,10 @@ class PluginConfigurator extends PluginConfiguration
         if (!is_string($url)) {
             throw new InvalidInputWarning();
         }
-        $this->configuration[PluginAnnotation::URL] = str_replace("\n", '<br/>', strip_tags($url));
+        $url = str_replace("\n", '<br/>', strip_tags($url));
+        if (!empty($url)) {
+            $this->configuration[PluginAnnotation::URL] = $url;
+        }
     }
 
     /**
@@ -290,7 +303,8 @@ class PluginConfigurator extends PluginConfiguration
         $method->setTitle($name);
         $methodName = $method->getMethodName();
         if (isset($this->methods[$methodName])) {
-            throw new AlreadyExistsException("Another method by the name '$methodName' already exists.");
+            $message = "There are two methods by the name '$methodName'. Chek your interace settings";
+            throw new AlreadyExistsWarning($message);
         }
         $this->methods[$methodName] = $method;
         return $method;
@@ -307,10 +321,12 @@ class PluginConfigurator extends PluginConfiguration
     {
         assert('is_string($group); // Wrong argument type argument 1. String expected');
         assert('is_string($title); // Wrong argument type argument 2. String expected');
-        $this->configuration[PluginAnnotation::MENU][] = array(
-            PluginAnnotation::GROUP => "$group",
-            PluginAnnotation::TITLE => "$title"
-        );
+        if (!empty($group)) {
+            $this->configuration[PluginAnnotation::MENU][] = array(
+                PluginAnnotation::GROUP => "$group",
+                PluginAnnotation::TITLE => "$title"
+            );
+        }
     }
 
     /**
