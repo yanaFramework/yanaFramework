@@ -90,6 +90,9 @@ class ErrorUtility extends Utility
         {
             case E_ERROR:
             case E_USER_ERROR:
+            case E_COMPILE_ERROR:
+            case E_RECOVERABLE_ERROR:
+            case E_CORE_ERROR:
                 if (ob_get_length() !== false) {
                     ob_end_flush();
                 }
@@ -516,7 +519,7 @@ class ErrorUtility extends Utility
             E_USER_ERROR        => array('Yana Error',             $colors['error']),
             E_WARNING           => array('Warning',                $colors['warning']),
             E_USER_WARNING      => array('Yana Warning',           $colors['warning']),
-            E_RECOVERABLE_ERROR => array('Catchable Fatal Error',  $colors['warning']),
+            E_RECOVERABLE_ERROR => array('Catchable Fatal Error',  $colors['error']),
             E_NOTICE            => array('Notice',                 $colors['notice']),
             E_USER_NOTICE       => array('Yana Notice',            $colors['notice']),
             E_USER_ASSERT       => array('Assertion failed',       $colors['assert']),
@@ -552,7 +555,8 @@ class ErrorUtility extends Utility
         /* @var $isTraceableError bool */
         assert('!isset($isTraceableError); // Cannot redeclare var $isTraceableError');
         $isTraceableError = ($error_nr === E_USER_ASSERT || $error_nr === E_USER_ERROR ||
-            $error_nr === E_ERROR || $error_nr === E_USER_WARNING || $error_nr === E_WARNING);
+            $error_nr === E_ERROR || $error_nr === E_USER_WARNING || $error_nr === E_WARNING ||
+            $error_nr === E_RECOVERABLE_ERROR);
         if ($show_details === true && function_exists('debug_backtrace') && $isTraceableError) {
             /* Note: debug_backtrace became available in PHP 4.3 */
             assert('!isset($temp); /* Cannot redeclare variable $temp */');
