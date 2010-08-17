@@ -230,23 +230,15 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * The default event handler catches all events, whatever they might be.
      * If you don't need it, you may deactive it by adding an @ignore to the annotations below.
      *
+     * @access  public
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
      * @return  bool
      * @ignore
      */
-    function _default($event, array $ARGS)
+    public function _default($event, array $ARGS)
     {ldelim}
-        $event = strtolower("$event");
-
-        /* global variables */
-        global $YANA;
-
-        /* do something */
-
-        /* NOTE: event handlers should always return a boolean value.
-         * Return "true" on success or "false" on error.
-         */
+        /* @todo implement this function */
         return true;
     {rdelim}
 
@@ -282,11 +274,10 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @template  templates/{$form->getName()}.html.tpl
      * @language  {$plugin->getId()}
      * @access    public
-     * @return    bool
      */
     public function {$plugin->getId()}_{$form->getName()}()
     {ldelim}
-        return true;
+        // @todo add your code here
     {rdelim}
 
 {if $form->getSearchAction()}
@@ -299,7 +290,6 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @template  templates/{$form->getName()}.html.tpl
      * @language  {$plugin->getId()}
      * @access    public
-     * @return    bool
      */
     public function {$form->getSearchAction()}()
     {ldelim}
@@ -308,7 +298,6 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
         if (!is_null($having)) {ldelim}
             $form->getQuery()->setHaving($having);
         {rdelim}
-        return true;
     {rdelim}
 
 {/if}

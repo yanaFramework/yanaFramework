@@ -143,8 +143,11 @@ class PluginMethodConfigurator extends PluginConfigurationMethod
         if (!is_string($text)) {
             throw new InvalidInputWarning();
         }
+        $text = strip_tags($text);
 
-        $this->configuration[PluginAnnotation::TEXT] = strip_tags($text);
+        if (!empty($text)) {
+            $this->configuration[PluginAnnotation::TEXT] = $text;
+        }
     }
 
     /**
@@ -158,8 +161,11 @@ class PluginMethodConfigurator extends PluginConfigurationMethod
         if (!is_string($template)) {
             throw new InvalidInputWarning();
         }
+        $template = strip_tags($template);
 
-        $this->configuration[PluginAnnotation::TEMPLATE] = strip_tags($template);
+        if (!empty($template)) {
+            $this->configuration[PluginAnnotation::TEMPLATE] = $template;
+        }
     }
 
     /**
@@ -208,11 +214,19 @@ class PluginMethodConfigurator extends PluginConfigurationMethod
                 throw new $error;
             break;
             default:
-                $this->configuration[PluginAnnotation::USER][] = array(
-                    PluginAnnotation::GROUP => $group,
-                    PluginAnnotation::ROLE => $role,
-                    PluginAnnotation::LEVEL => (int) $level
-                );
+                $settings = array();
+                if (!empty($group)) {
+                    $settings[PluginAnnotation::GROUP] = $group;
+                }
+                if (!empty($role)) {
+                    $settings[PluginAnnotation::ROLE] = $role;
+                }
+                if (!empty($level)) {
+                    $settings[PluginAnnotation::LEVEL] = (int) $level;
+                }
+                if (!empty($settings)) {
+                    $this->configuration[PluginAnnotation::USER][] = $settings;
+                }
             break;
         }
     }
@@ -228,10 +242,13 @@ class PluginMethodConfigurator extends PluginConfigurationMethod
         if (!is_string($menu)) {
             throw new InvalidInputWarning();
         }
+        $menu = trim($menu);
 
-        $this->configuration[PluginAnnotation::MENU] = array(
-            PluginAnnotation::GROUP => $menu
-        );
+        if (!empty($menu)) {
+            $this->configuration[PluginAnnotation::MENU] = array(
+                PluginAnnotation::GROUP => $menu
+            );
+        }
     }
 
     /**
@@ -245,9 +262,11 @@ class PluginMethodConfigurator extends PluginConfigurationMethod
         if (!is_string($action)) {
             throw new InvalidInputWarning();
         }
-        $this->configuration[PluginAnnotation::ONSUCCESS] = array(
-            PluginAnnotation::GO => $action
-        );
+        if (!empty($action)) {
+            $this->configuration[PluginAnnotation::ONSUCCESS] = array(
+                PluginAnnotation::GO => $action
+            );
+        }
     }
 
     /**
@@ -261,9 +280,11 @@ class PluginMethodConfigurator extends PluginConfigurationMethod
         if (!is_string($action)) {
             throw new InvalidInputWarning();
         }
-        $this->configuration[PluginAnnotation::ONERROR] = array(
-            PluginAnnotation::GO => $action
-        );
+        if (!empty($action)) {
+            $this->configuration[PluginAnnotation::ONERROR] = array(
+                PluginAnnotation::GO => $action
+            );
+        }
     }
 
     /**
