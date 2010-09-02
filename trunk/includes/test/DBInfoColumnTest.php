@@ -51,7 +51,10 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function __construct()
     {
-        // intentionally left blank
+        /**
+         * @ignore
+         */
+        include_once dirname(__FILE__) . '/../../plugins/db_tools/dbinfocolumn.class.php';
     }
 
     /**
@@ -86,9 +89,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function testSetType()
     {
-        $setType = $this->dbinfocolumn->setType('foo');
+        $this->dbinfocolumn->setType('foo');
         $getType = $this->dbinfocolumn->getType();
-        $this->assertTrue($setType, 'assert failed, type is not set');
         $this->assertEquals('foo', $getType, 'assert failed, the giving value does not match the expected value "foo"');
     }
 
@@ -112,14 +114,12 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function testSetNullable()
     {
-        $setNullable = $this->dbinfocolumn->setNullable(true);
+        $this->dbinfocolumn->setNullable(true);
         $isNullable = $this->dbinfocolumn->isNullable();
-        $this->assertTrue($setNullable, 'assert failed, nullable is not set');
         $this->assertTrue($isNullable, 'assert failed, nullable must be true');
 
-        $setNullable = $this->dbinfocolumn->setNullable(false);
+        $this->dbinfocolumn->setNullable(false);
         $isNullable = $this->dbinfocolumn->isNullable();
-        $this->assertTrue($setNullable, 'assert failed, nullable is not set');
         $this->assertFalse($isNullable, 'assert failed, nullable must be false');
     }
 
@@ -143,14 +143,12 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function testSetPrimaryKey()
     {
-        $setPrimaryKey = $this->dbinfocolumn->setPrimaryKey(true);
+        $this->dbinfocolumn->setPrimaryKey(true);
         $isPrimaryKey = $this->dbinfocolumn->isPrimaryKey();
-        $this->assertTrue($setPrimaryKey, 'assert failed, PrimaryKey is not set');
         $this->assertTrue($isPrimaryKey, 'assert failed, PrimaryKey must be true');
 
-        $setPrimaryKey = $this->dbinfocolumn->setPrimaryKey(false);
+        $this->dbinfocolumn->setPrimaryKey(false);
         $isPrimaryKey = $this->dbinfocolumn->isPrimaryKey();
-        $this->assertTrue($setPrimaryKey, 'assert failed, PrimaryKey is not set');
         $this->assertFalse($isPrimaryKey, 'assert failed, PrimaryKey must be false');
 
     }
@@ -175,14 +173,12 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function testSetForeignKey()
     {
-        $setForeignKey = $this->dbinfocolumn->setForeignKey(true);
+        $this->dbinfocolumn->setForeignKey(true);
         $isForeignKey = $this->dbinfocolumn->isForeignKey();
-        $this->assertTrue($setForeignKey, 'assert failed, ForeignKey is not set');
         $this->assertTrue($isForeignKey, 'assert failed, ForeignKey must be true');
 
-        $setForeignKey = $this->dbinfocolumn->setForeignKey(false);
+        $this->dbinfocolumn->setForeignKey(false);
         $isForeignKey = $this->dbinfocolumn->isForeignKey();
-        $this->assertTrue($setForeignKey, 'assert failed, ForeignKey is not set');
         $this->assertFalse($isForeignKey, 'assert failed, ForeignKey must be false');
     }
 
@@ -206,14 +202,12 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function testSetUnique()
     {
-        $setUnique = $this->dbinfocolumn->setUnique(true);
+        $this->dbinfocolumn->setUnique(true);
         $isUnique = $this->dbinfocolumn->isUnique();
-        $this->assertTrue($setUnique, 'assert failed, Unique is not set');
         $this->assertTrue($isUnique, 'assert failed, Unique must be true');
 
-        $setUnique = $this->dbinfocolumn->setUnique(false);
+        $this->dbinfocolumn->setUnique(false);
         $isUnique = $this->dbinfocolumn->isUnique();
-        $this->assertTrue($setUnique, 'assert failed, Unique is not set');
         $this->assertFalse($isUnique, 'assert failed, Unique must be false');
     }
 
@@ -237,14 +231,12 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function testSetIndex()
     {
-        $setIndex = $this->dbinfocolumn->setIndex(true);
+        $this->dbinfocolumn->setIndex(true);
         $hasIndex = $this->dbinfocolumn->hasIndex();
-        $this->assertTrue($setIndex, 'assert failed, Index is not set');
         $this->assertTrue($hasIndex, 'assert failed, Index must be true');
 
-        $setIndex = $this->dbinfocolumn->setIndex(false);
+        $this->dbinfocolumn->setIndex(false);
         $hasIndex = $this->dbinfocolumn->hasIndex();
-        $this->assertTrue($setIndex, 'assert failed, Index is not set');
         $this->assertFalse($hasIndex, 'assert failed, Index must be false');
     }
 
@@ -299,14 +291,12 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function testSetUpdate()
     {
-        $setUpdate = $this->dbinfocolumn->setUpdate(true);
+        $this->dbinfocolumn->setUpdate(true);
         $isUpdatable = $this->dbinfocolumn->isUpdatable();
-        $this->assertTrue($setUpdate, 'assert failed, Update is not set');
         $this->assertTrue($isUpdatable, 'assert failed, Update must be true');
 
-        $setUpdate = $this->dbinfocolumn->setUpdate(false);
+        $this->dbinfocolumn->setUpdate(false);
         $isUpdatable = $this->dbinfocolumn->isUpdatable();
-        $this->assertTrue($setUpdate, 'assert failed, Update is not set');
         $this->assertFalse($isUpdatable, 'assert failed, Update must be false');
     }
 
@@ -330,14 +320,12 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function testSetSelect()
     {
-        $setSelect = $this->dbinfocolumn->setSelect(true);
+        $this->dbinfocolumn->setSelect(true);
         $isSelectable = $this->dbinfocolumn->isSelectable();
-        $this->assertTrue($setSelect, 'assert failed, Select is not set');
         $this->assertTrue($isSelectable, 'assert failed, Select must be true');
 
-        $setSelect = $this->dbinfocolumn->setSelect(false);
+        $this->dbinfocolumn->setSelect(false);
         $isSelectable = $this->dbinfocolumn->isSelectable();
-        $this->assertTrue($setSelect, 'assert failed, Select is not set');
         $this->assertFalse($isSelectable, 'assert failed, Select must be false');
     }
 
@@ -361,14 +349,12 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function testSetInsert()
     {
-        $setInsert = $this->dbinfocolumn->setInsert(true);
+        $this->dbinfocolumn->setInsert(true);
         $isInsertable = $this->dbinfocolumn->isInsertable();
-        $this->assertTrue($setInsert, 'assert failed, Insert is not set');
         $this->assertTrue($isInsertable, 'assert failed, Insert must be true');
 
-        $setInsert = $this->dbinfocolumn->setInsert(false);
+        $this->dbinfocolumn->setInsert(false);
         $isInsertable = $this->dbinfocolumn->isInsertable();
-        $this->assertTrue($setInsert, 'assert failed, Insert is not set');
         $this->assertFalse($isInsertable, 'assert failed, Insert must be false');
     }
 
@@ -392,14 +378,12 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function testSetUnsigned()
     {
-        $setUnsigned = $this->dbinfocolumn->setUnsigned(true);
+        $this->dbinfocolumn->setUnsigned(true);
         $isUnsigned = $this->dbinfocolumn->isUnsigned();
-        $this->assertTrue($setUnsigned, 'assert failed, Unsigned is not set');
         $this->assertTrue($isUnsigned, 'assert failed, Unsigned must be true');
 
-        $setUnsigned = $this->dbinfocolumn->setUnsigned(false);
+        $this->dbinfocolumn->setUnsigned(false);
         $isUnsigned = $this->dbinfocolumn->isUnsigned();
-        $this->assertTrue($setUnsigned, 'assert failed, Unsigned is not set');
         $this->assertFalse($isUnsigned, 'assert failed, Unsigned must be false');
     }
 
@@ -423,14 +407,12 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function testSetZerofill()
     {
-        $setZerofill = $this->dbinfocolumn->setZerofill(true);
+        $this->dbinfocolumn->setZerofill(true);
         $isZerofill = $this->dbinfocolumn->isZerofill();
-        $this->assertTrue($setZerofill, 'assert failed, Zerofill is not set');
         $this->assertTrue($isZerofill, 'assert failed, Zerofill must be true');
 
-        $setZerofill = $this->dbinfocolumn->setZerofill(false);
+        $this->dbinfocolumn->setZerofill(false);
         $isZerofill = $this->dbinfocolumn->isZerofill();
-        $this->assertTrue($setZerofill, 'assert failed, Zerofill is not set');
         $this->assertFalse($isZerofill, 'assert failed, Zerofill must be false');
     }
 
@@ -454,9 +436,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function testSetTable()
     {
-        $setTable = $this->dbinfocolumn->setTable('bar');
+        $this->dbinfocolumn->setTable('bar');
         $getTable = $this->dbinfocolumn->getTable();
-        $this->assertTrue($setTable, 'assert failed, Table is not set');
         $this->assertEquals('bar', $getTable, 'assert failed, the giving value does not match the expected value "bar"');
     }
 
@@ -480,9 +461,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function testSetName()
     {
-        $setName = $this->dbinfocolumn->setName('foobar');
+        $this->dbinfocolumn->setName('foobar');
         $getName = $this->dbinfocolumn->getName();
-        $this->assertTrue($setName, 'assert failed, Name is not set');
         $this->assertEquals('foobar', $getName, 'assert failed, the giving value does not match the expected value "foobar"');
     }
 
@@ -509,9 +489,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
         $getDefault = $this->dbinfocolumn->getDefault();
         $this->assertNull($getDefault, 'assert failed, Default is not set');
 
-        $setDefault = $this->dbinfocolumn->setDefault('default foo bar');
+        $this->dbinfocolumn->setDefault('default foo bar');
         $getDefault = $this->dbinfocolumn->getDefault();
-        $this->assertTrue($setDefault, 'assert failed, Default is not set');
         $this->assertEquals('default foo bar', $getDefault, 'assert failed, the giving value does not match the expected value "default foo bar"');
     }
 
@@ -535,9 +514,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function testGetComment()
     {
-        $setComment = $this->dbinfocolumn->setComment('comments of foo');
+        $this->dbinfocolumn->setComment('comments of foo');
         $getComment = $this->dbinfocolumn->getComment();
-        $this->assertTrue($setComment, 'assert failed, Comment is not set');
         $this->assertEquals('comments of foo', $getComment, 'assert failed, the giving value does not match the expected value "comments of foo"');
     }
 
@@ -561,14 +539,12 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function testGetLength()
     {
-        $setLength = $this->dbinfocolumn->setLength(20);
+        $this->dbinfocolumn->setLength(20);
         $getLength = $this->dbinfocolumn->getLength();
-        $this->assertTrue($setLength, 'assert failed, Length is not set');
         $this->assertEquals(20, $getLength, 'assert failed, the giving value does not match the expected value "20"');
 
-        $setLength = $this->dbinfocolumn->setLength(-10);
+        $this->dbinfocolumn->setLength(-10);
         $getLength = $this->dbinfocolumn->getLength();
-        $this->assertFalse($setLength, 'assert failed, Length has a out of range number');
         $this->assertFalse($getLength, 'assert failed, the length attribute is null false is giving');
     }
 
@@ -592,10 +568,9 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     public function teastGetReference()
     {
-        $setReference = $this->dbinfocolumn->setReference('ftable', 'fcolumn');
+        $this->dbinfocolumn->setReference('ftable', 'fcolumn');
         $getReference = $this->dbinfocolumn->getReference();
         $valid = array(0=>'ftable', 1=>'fcolumn');
-        $this->assertTrue($setReference, 'assert failed, Reference is not set');
         $this->assertEquals($valid, $getReference, 'assert failed, the giving value does not match the expected value');
     }
 
