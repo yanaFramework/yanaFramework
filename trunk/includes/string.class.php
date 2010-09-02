@@ -533,7 +533,7 @@ class String extends Utility
                         return htmlentities($string, $style, $charset);
                     break;
                     case ENT_FULL:
-                        return mb_encode_numericentity($string, array (0x0, 0xffff, 0, 0xffff));
+                        return mb_encode_numericentity($string, array(0x0, 0xffff, 0, 0xffff), $charset);
                     break;
                     default:
                         return htmlentities($string, ENT_COMPAT, $charset);
