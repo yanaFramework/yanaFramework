@@ -49,7 +49,7 @@ class plugin_spellcheck extends StdClass implements IsPlugin
      *
      * @ignore
      */
-    public function _default($event, array $ARGS)
+    public function catchAll($event, array $ARGS)
     {
         return true;
     }

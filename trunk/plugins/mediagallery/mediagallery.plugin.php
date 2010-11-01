@@ -97,7 +97,7 @@ class plugin_mediagallery extends StdClass implements IsPlugin
      * @return  bool
      * @ignore
      */
-    public function _default($event, array $ARGS)
+    public function catchAll($event, array $ARGS)
     {
         return true;
     }
