@@ -30,7 +30,7 @@
     -->
 	<var name="DBBLOB" value="config/db/.blob/"/>
 	<var name="DATADIR" value="common_files/"/>
-	<var name="BRUSHDIR" value="common_files/brush/"/>
+	<var name="BRUSHDIR" value="{$CONFIGDIR}brush/"/>
 	<var name="LANGUAGEDIR" value="languages/"/>
 	<var name="SKINDIR" value="skins/"/>
 	<var name="SKINCONFIGDIR" value="skins/.config"/>
