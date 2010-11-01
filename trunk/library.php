@@ -49,8 +49,8 @@ mb_language('uni');
  * @ignore
  */
 
-require_once 'includes/toolbox.php';
-require_once 'includes/php4fallback.php';
+require_once 'libs/yana/toolbox.php';
+require_once 'libs/yana/php4fallback.php';
 
 /**#@-*/
 
@@ -452,7 +452,7 @@ require_once 'config/dbconfig.php';
 
 /* [main class] */
 
-require_once 'includes/utility.class.php';
-require_once 'includes/index.class.php';
+require_once 'libs/yana/utility.class.php';
+require_once 'libs/yana/index.class.php';
 /**#@-*/
 ?>
