@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE skin SYSTEM "../../../../config/dtd/skin.dtd">
+<skin>
+    <head>
+        <title>Default</title>
+    </head>
+    <body>
+        <template id="FOO" file="default/default.txt">
+            <script>default/default.txt</script>
+            <script>default/default.txt</script>
+            <style id="test">default/default.txt</style>
+            <language>default</language>
+        </template>
+    </body>
+</skin>
