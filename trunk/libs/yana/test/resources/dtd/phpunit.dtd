@@ -1,0 +1,99 @@
+<!--
+    <phpunit> is the root element.
+    It is used to configure PHPUnit's behavior.
+-->
+
+<!ELEMENT phpunit (testsuite|groups|filter|logging|php|selenium)*>
+<!ATTLIST phpunit
+    bootstrap  CDATA  #IMPLIED
+    colors  (true|false)  #IMPLIED
+    convertErrorsToExceptions  (true|false)  #IMPLIED
+    convertNoticesToExceptions  (true|false)  #IMPLIED
+    convertWarningsToExceptions  (true|false)  #IMPLIED
+    stopOnFailure  (true|false)  #IMPLIED
+>
+
+<!--
+    You may use the <testsuite> element to compose generic test suites by using
+    files or directories containing test suites and cases.
+-->
+
+<!ELEMENT testsuite (directory|file)*>
+<!ATTLIST testsuite
+    name  CDATA  #REQUIRED
+>
+
+<!ELEMENT directory (#PCDATA)>
+<!ATTLIST directory
+    suffix  CDATA  #IMPLIED
+>
+<!ELEMENT file (#PCDATA)>
+
+<!--
+    Use <groups> to define groups of tests from a test suite, which you wish to
+    include or exclude from a certain test scenario.
+-->
+
+<!ELEMENT groups (include?, exclude?)>
+<!ELEMENT include (group|directory|file)*>
+<!ELEMENT exclude (group|directory|file)*>
+<!ELEMENT group (#PCDATA)>
+
+<!--
+    Use this element to influence the contents of code coverage reports.
+    You may either define a blacklist or/and whitelist for files and directories
+    to include or exclude.
+-->
+
+<!ELEMENT filter (blacklist|whitelist)*>
+<!ELEMENT blacklist (directory|file|exclude)*>
+<!ELEMENT whitelist (directory|file|exclude)*>
+
+<!--
+    Use the <logging> element to configure the output of test results.
+-->
+
+<!ELEMENT logging (log)*>
+<!ELEMENT log EMPTY>
+<!ATTLIST log
+    type  (coverage-html|coverage-xml|json|tap|test-xml|testdox-html|testdox-text)  #REQUIRED
+    target  CDATA  #REQUIRED
+    charset  CDATA  #IMPLIED
+    yui  (true|false)  #IMPLIED
+    highlight  (true|false)  #IMPLIED
+    lowUpperBound  CDATA  #IMPLIED
+    highLowerBound  CDATA  #IMPLIED
+    logIncompleteSkipped  (true|false)  #IMPLIED
+>
+
+<!--
+    You may use the <php> element to modify PHP.ini settings and global vars.
+-->
+
+<!ELEMENT php (ini|var)*>
+<!ELEMENT ini EMPTY>
+<!ATTLIST ini
+    name  CDATA  #REQUIRED
+    value  CDATA  #REQUIRED
+>
+<!ELEMENT var EMPTY>
+<!ATTLIST var
+    name  CDATA  #REQUIRED
+    value  CDATA  #REQUIRED
+>
+
+<!--
+    Selenium is an extension, that allows you to run GUI-tests.
+    The <browser> element enables you to configure the path to the browser you
+    wish to use.
+-->
+
+<!ELEMENT selenium (browser)*>
+<!ELEMENT browser EMPTY>
+<!ATTLIST browser
+    name  CDATA  #REQUIRED
+    browser  CDATA  #IMPLIED
+    host  CDATA  #IMPLIED
+    port  CDATA  #IMPLIED
+    timeout  CDATA  #IMPLIED
+>

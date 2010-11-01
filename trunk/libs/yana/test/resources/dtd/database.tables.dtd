@@ -1,0 +1,299 @@
+<!ENTITY % inc SYSTEM "database.inc.dtd"> %inc;
+
+<!-- TABLE -->
+
+<!ELEMENT table (description?, grant*, primarykey, foreign*, trigger*, constraint*, declaration, index*)>
+<!ATTLIST table
+  %name;
+  readonly  %bool;
+  inherits  NMTOKEN  #IMPLIED
+  title     %implied;
+>
+<!ELEMENT grant EMPTY>
+<!ATTLIST grant
+  role      %implied;
+  user      %implied;
+  level     %implied;
+  select    (yes|no)  "yes"
+  insert    (yes|no)  "yes"
+  update    (yes|no)  "yes"
+  delete    (yes|no)  "yes"
+  grant     (yes|no)  "yes"
+>
+<!ELEMENT primarykey (#PCDATA)>
+
+<!ELEMENT declaration (%fields;|reference)*>
+<!ELEMENT trigger (#PCDATA)>
+<!ATTLIST trigger
+  %nameImplied;
+  %dbms;
+  on      (before|after|instead)  "before"
+  insert  %bool;
+  update  %bool;
+  delete  %bool;
+>
+
+<!ELEMENT constraint (#PCDATA)>
+<!ATTLIST constraint
+  %nameImplied;
+  %dbms;
+>
+
+<!-- DATA TYPES -->
+
+<!ELEMENT bool (description?, grant*, constraint*, default*)>
+<!ATTLIST bool
+  %name;
+  notnull   %bool;
+  readonly  %bool;
+  title     %implied;
+>
+<!ELEMENT color (description?, grant*, constraint*, default*)>
+<!ATTLIST color
+  %name;
+  notnull   %bool;
+  unique    %bool;
+  readonly  %bool;
+  title     %implied;
+>
+<!ELEMENT integer (description?, grant*, constraint*, default*)>
+<!ATTLIST integer
+  %name;
+  autoincrement  %bool;
+  unsigned       %bool;
+  fixed          %bool;
+  length         %implied;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT float (description?, grant*, constraint*, default*)>
+<!ATTLIST float
+  %name;
+  unsigned       %bool;
+  fixed          %bool;
+  length         %implied;
+  precision      %implied;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT range (description?, grant*, constraint*, default*)>
+<!ATTLIST range
+  %name;
+  notnull   %bool;
+  unique    %bool;
+  readonly  %bool;
+  min       %required;
+  max       %required;
+  step      CDATA  "1"
+  title     %implied;
+>
+<!ELEMENT string (description?, grant*, constraint*, default*)>
+<!ATTLIST string
+  %name;
+  length         %implied;
+  pattern        %implied;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT tel (description?, grant*, constraint*, default*)>
+<!ATTLIST tel
+  %name;
+  length         %implied;
+  pattern        %implied;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT mail (description?, grant*, constraint*, default*)>
+<!ATTLIST mail
+  %name;
+  length         %implied;
+  pattern        %implied;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT url (description?, grant*, constraint*, default*)>
+<!ATTLIST url
+  %name;
+  length         %implied;
+  pattern        %implied;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT password (description?, grant*, constraint*, default*)>
+<!ATTLIST password
+  %name;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT inet (description?, grant*, constraint*, default*)>
+<!ATTLIST inet
+  %name;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT text (description?, grant*, constraint*)>
+<!ATTLIST text
+  %name;
+  length         %implied;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT html (description?, grant*, constraint*)>
+<!ATTLIST html
+  %name;
+  length         %implied;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT date (description?, grant*, constraint*, default*)>
+<!ATTLIST date
+  %name;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT time (description?, grant*, constraint*, default*)>
+<!ATTLIST time
+  %name;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT timestamp (description?, grant*, constraint*, default*)>
+<!ATTLIST timestamp
+  %name;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT enum (description?, grant*, constraint*, default*, (optgroup|option)+)>
+<!ATTLIST enum
+  %name;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT set (description?, grant*, constraint*, default*, (optgroup|option)+)>
+<!ATTLIST set
+  %name;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT optgroup (option+)>
+<!ATTLIST optgroup
+  label  %required;
+>
+<!ELEMENT option (#PCDATA)>
+<!ATTLIST option
+  value  %implied;
+>
+<!ELEMENT list (description?, grant*, constraint*)>
+<!ATTLIST list
+  %name;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT array (description?, grant*, constraint*)>
+<!ATTLIST array
+  %name;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT file (description?, grant*, constraint*)>
+<!ATTLIST file
+  %name;
+  notnull        %bool;
+  maxsize        %implied;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT image (description?, grant*, constraint*)>
+<!ATTLIST image
+  %name;
+  notnull        %bool;
+  width          %implied;
+  height         %implied;
+  ratio          %bool;
+  background     %implied;
+  maxsize        %implied;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT reference (description?, grant*, constraint*, default*)>
+<!ATTLIST reference
+  %name;
+  table          %implied;
+  column         %implied;
+  label          %implied;
+  notnull        %bool;
+  unique         %bool;
+  readonly       %bool;
+  title          %implied;
+>
+<!ELEMENT default (#PCDATA)>
+<!ATTLIST default
+  %dbms;
+>
+
+<!-- FOREIGN KEYS -->
+
+<!ELEMENT foreign (key+)>
+<!ATTLIST foreign
+  %nameImplied;
+  table       %required;
+  match       (full|partial|simple)  "simple"
+  ondelete    (no-action|restrict|cascade|set-null|set-default)  "no-action"
+  onupdate    (no-action|restrict|cascade|set-null|set-default)  "no-action"
+  deferrable  %bool;
+>
+<!ELEMENT key EMPTY>
+<!ATTLIST key
+  %name;
+  column  %implied;
+>
+
+<!-- INDEXES -->
+
+<!ELEMENT index (description?, column+)>
+<!ATTLIST index
+  %nameImplied;
+  unique      %bool;
+  clustered   %bool;
+  title       %implied;
+>
+<!ELEMENT column EMPTY>
+<!ATTLIST column
+  %name;
+  sorting  (ascending|descending)  "ascending"
+  length   %implied;
+>
