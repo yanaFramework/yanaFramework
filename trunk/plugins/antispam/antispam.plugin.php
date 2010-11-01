@@ -47,7 +47,7 @@ class plugin_antispam extends StdClass implements IsPlugin
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
      */
-    public function _default($event, array $ARGS)
+    public function catchAll($event, array $ARGS)
     {
         assert('is_string($event); // Wrong type for argument 1. String expected');
 

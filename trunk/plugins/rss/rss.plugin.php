@@ -85,7 +85,7 @@ class plugin_rss extends StdClass implements IsPlugin
      * @param   array   $ARGS   array of arguments passed to the function
      * @ignore
      */
-    public function _default($event, array $ARGS)
+    public function catchAll($event, array $ARGS)
     {
         return true;
     }

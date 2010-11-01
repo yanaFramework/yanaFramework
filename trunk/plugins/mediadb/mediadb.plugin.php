@@ -136,7 +136,7 @@ class plugin_mediadb extends StdClass implements IsPlugin
      * @param   array   $ARGS   array of arguments passed to the function
      * @return  bool
      */
-    function _default($event, array $ARGS)
+    function catchAll($event, array $ARGS)
     {
         $event = strtolower("$event");
 

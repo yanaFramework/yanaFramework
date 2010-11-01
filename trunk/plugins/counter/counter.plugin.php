@@ -53,7 +53,7 @@ class plugin_counter extends StdClass implements IsPlugin
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
      */
-    public function _default($event, array $ARGS)
+    public function catchAll($event, array $ARGS)
     {
         self::$id = __CLASS__ . '\\' . Yana::getId();
         if (!Counter::exists(self::$id)) {
