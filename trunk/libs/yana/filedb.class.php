@@ -114,42 +114,26 @@ class FileDb extends DbStream
      */
     public function query($sqlStmt, $offset = 0, $limit = 0)
     {
-        /**
-         * 1) check sql statement
-         */
+        assert('is_int($offset) && $offset >= 0; // Invalid argument $offset. Must be a positive integer.');
+        assert('is_int($limit) && $limit >= 0; // Invalid argument $limit. Must be a positive integer.');
+
+        // check input
         if ($sqlStmt instanceof DbQuery) {
             return $this->getConnection()->dbQuery($sqlStmt);
+        } elseif (!is_string($sqlStmt)) {
+            throw new InvalidArgumentException('Argument $sqlStmt is expected to be a string.');
         }
 
-        if (!is_string($sqlStmt)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'String', gettype($sqlStmt)), E_USER_WARNING);
-            return false;
-        }
-        $pattern = "/;.*(?:select|insert|delete|update|create|alter|grant|revoke).*$/is";
-        if (is_int(strpos($sqlStmt, ';')) && preg_match($pattern, $sqlStmt)) {
-            $message = "A semicolon has been found in the current input '{$sqlStmt}', ".
-            "indicating multiple queries.\n\t\tAs this might be the result of a hacking attempt it is prohibited ".
-            "for security reasons and the queries won't be executed.";
-            trigger_error($message, E_USER_WARNING);
-            return false;
+        $reg = "/;.*(?:select|insert|delete|update|create|alter|grant|revoke).*$/is";
+        if (strpos($sqlStmt, ';') !== false && preg_match($reg, $sqlStmt)) {
+            $message = "A semicolon has been found in the current input '{$sqlStmt}', " .
+                "indicating multiple queries.\n\t\t As this might be the result of a hacking attempt " .
+                "it is prohibited for security reasons and the queries won't be executed.";
+            throw new InvalidArgumentException($message);
         }
 
-        /*
-         * 2) check other arguments
-         */
-        if (!is_int($offset) || $offset < 0) {
-            trigger_error("Invalid argument 2. Must be a positive integer.", E_USER_WARNING);
-            return false;
-        } elseif (!is_int($limit) || $limit < 0) {
-            trigger_error("Invalid argument 3. Must be a positive integer.", E_USER_WARNING);
-            return false;
-
-        /*
-         * 3) send query to database
-         */
-        } else {
-            return $this->getConnection()->limitQuery($sqlStmt, $offset, $limit);
-        }
+        // send query to database
+        return $this->getConnection()->limitQuery($sqlStmt, $offset, $limit);
     }
 
     /**

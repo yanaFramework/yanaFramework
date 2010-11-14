@@ -37,25 +37,26 @@ require_once dirname(__FILE__) . '/include.php';
  */
 class VDriveTest extends PHPUnit_Framework_TestCase
 {
+
     /**
      * @var    VDrive
      * @access protected
      */
-    protected $object;
+    protected $_object;
 
     /**
      * @var    path
      *
      * @access protected
      */
-    protected $path = 'resources/my.drive.xml';
+    protected $_path = 'resources/my.drive.xml';
 
     /**
      * @var    basDir
      *
      * @access protected
      */
-    protected $baseDir = '/resources/';
+    protected $_baseDir = '/resources/';
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -65,7 +66,7 @@ class VDriveTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new VDrive(CWD.$this->path, CWD.$this->baseDir);
+        $this->_object = new VDrive(CWD.$this->_path, CWD.$this->_baseDir);
         VDrive::useDefaults(false);
         // create a vdrive with a non exist path
         $this->no_vdrive = new VDrive(CWD.'/resources/noexist.xml', CWD.'/resources/');
@@ -79,7 +80,7 @@ class VDriveTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        unset($this->object, $this->no_vdrive);
+        unset($this->_object, $this->no_vdrive);
     }
 
     /**
@@ -102,7 +103,7 @@ class VDriveTest extends PHPUnit_Framework_TestCase
      */
     function testGetInvalidArgument()
     {
-        $vDrive = new VDrive(CWD.$this->path);
+        $vDrive = new VDrive(CWD.$this->_path);
         $vDrive->getResource('noexist');
     }
 
@@ -113,7 +114,7 @@ class VDriveTest extends PHPUnit_Framework_TestCase
      */
     function testGetContent()
     {
-        $vDrive = new VDrive(CWD.$this->path);
+        $vDrive = new VDrive(CWD.$this->_path);
         $content = $vDrive->getContent();
         $this->assertType('string', $content, 'assert failed, the value should be of type string');
         unset($vDrive, $content);
@@ -154,72 +155,74 @@ class VDriveTest extends PHPUnit_Framework_TestCase
         $xml = simplexml_load_file(CWD . 'resources/my.drive.xml');
 
         // test file loading
-        $this->assertEquals($this->object->getContent(), $xml->asXML(), '"file loading" test failed');
+        $this->assertEquals($this->_object->getContent(), $xml->asXML(), '"file loading" test failed');
 
 
-        $path = $this->object->getPath();
-        $this->assertEquals(CWD.$this->path, $path, 'assert failed, the expected path should be the same as givin');
+        $path = $this->_object->getPath();
+        $this->assertEquals(CWD.$this->_path, $path, 'assert failed, the expected path should be the same as givin');
 
         // expected an object from element name default_config.sml
-        $get = $this->object->getResource('system:/config/profiledir/default_config.sml');
+        $get = $this->_object->getResource('system:/config/profiledir/default_config.sml');
         //$get = $this->object->getResource('config/profiles/default.sml');
         $this->assertType('object', $get, 'assert failed, the value should be of type object');
-        $this->assertEquals(CWD.$this->baseDir.'{$CONFIGDIR}profiles/default.config', $get->getPath(), 'assert failed, the given path should be match the expected');
+        $this->assertEquals(CWD.$this->_baseDir.'{$CONFIGDIR}profiles/default.config', $get->getPath(), 'assert failed, the given path should be match the expected');
 
         // expected the same result like in get() function
-        $_get = $this->object->__get('system:/config/profiledir/default_config.sml');
+        $_get = $this->_object->__get('system:/config/profiledir/default_config.sml');
         $this->assertType('object', $_get, 'assert failed, the value should be of type object');
         $this->assertEquals($get, $_get, 'assert failed, the values should be equal');
 
         unset($get, $_get);
 
-        $get = $this->object->__get('system:/config/profiledir/config.sml');
+        $get = $this->_object->__get('system:/config/profiledir/config.sml');
         $this->assertType('object', $get, 'assert failed, the value should be of type object');
-        $this->assertEquals(CWD.$this->baseDir.'{$CONFIGDIR}profiles/default.config', $get->getPath(), 'assert failed, the given path should be match the expected');
+        $this->assertEquals(CWD.$this->_baseDir.'{$CONFIGDIR}profiles/default.config', $get->getPath(), 'assert failed, the given path should be match the expected');
         unset($get);
 
         // get content of the xml file - xml string expected
-        $getContent = $this->object->getContent();
+        $getContent = $this->_object->getContent();
         $this->assertType('string', $getContent, 'assert failed, the value should be of type string');
         $this->assertNotEquals(0, strlen($getContent), 'assert failed, the expected value should be not empty');
-        
+
 
         // array of an xml file
-        $get = $this->object->getMountpoints();
+        $get = $this->_object->getMountpoints();
         $this->assertType('array', $get, 'assert failed, the value should be of type array');
         $this->assertArrayHasKey('system:/skin/skindir', $get, 'assert failed, the expected key should be in array');
         $this->assertArrayHasKey('system:/smile', $get, 'assert failed, the expected key should be in array');
 
         // expected false for existing path
-        $empty = $this->object->isEmpty();
+        $empty = $this->_object->isEmpty();
         $this->assertFalse($empty, 'assert failed, the expected value can not be empty');
 
         // expected an object instanceof reportxml without errors and warnings
-        $getReport = $this->object->getReport();
+        $getReport = $this->_object->getReport();
         $this->assertType('object', $getReport, 'assert failed, the value should be of type object');
         $this->assertTrue($getReport instanceof ReportXML, 'assert failed, the value should be an instance of ReportXML');
         $this->assertEquals(0, count($getReport->getErrors()), 'assert failed, there should be no errors');
         $this->assertEquals(0, count($getReport->getWarnings()), 'assert failed, there should be no warnings');
 
-        $string = $this->object->toString();
+        $string = $this->_object->toString();
         $this->assertType('string', $string, 'assert faield, the value should be of type string');
         $this->assertNotEquals(0, strlen($string), 'assert failed, the value can not be empty');
 
-        $serialize = serialize($this->object);
+        $serialize = serialize($this->_object);
         $this->assertType('string', $serialize, 'assert faield, the value should be of type string');
-        
+
         // expected an object
         $unserialize = unserialize($serialize);
         $this->assertType('object', $unserialize, 'assert failed, the value should be of type object');
-        $this->assertEquals($this->object, $unserialize, 'assert failed, both ojects must be the same');
+        $this->assertEquals($this->_object, $unserialize, 'assert failed, both ojects must be the same');
 
-        $vDrive = new VDrive(CWD.$this->path, CWD.$this->baseDir);
+        $vDrive = new VDrive(CWD.$this->_path, CWD.$this->_baseDir);
         VDrive::useDefaults(true);
         // expected the last path in source
-        $get = $this->object->__get('system:/config/profiledir/config.sml');
+        $get = $this->_object->__get('system:/config/profiledir/config.sml');
         $this->assertType('object', $get, 'assert failed, the value should be of type object');
-        $this->assertEquals(CWD.$this->baseDir.'{$CONFIGDIR}profiles/default.config', $get->getPath(), 'assert failed, the given path should be match the expected');
+        $this->assertEquals(CWD.$this->_baseDir.'{$CONFIGDIR}profiles/default.config', $get->getPath(), 'assert failed, the given path should be match the expected');
         unset($vDrive);
     }
+
 }
+
 ?>

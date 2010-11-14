@@ -47,10 +47,10 @@ class FileDbIndex extends Object
      * @access  private
      */
 
-    /** @var DDLTable */ private $table = "";
-    /** @var SML      */ private $data = null;
-    /** @var string   */ private $filename = "";
-    /** @var array    */ private $indexes = array();
+    /** @var DDLTable */ private $_table = "";
+    /** @var SML      */ private $_data = null;
+    /** @var string   */ private $_filename = "";
+    /** @var array    */ private $_indexes = array();
 
     /**#@-*/
 
@@ -65,9 +65,9 @@ class FileDbIndex extends Object
     {
         assert('is_string($filename); // Wrong type for argument 3. String expected');
 
-        $this->table = $table;
-        $this->data = $data;
-        $this->filename = "$filename";
+        $this->_table = $table;
+        $this->_data = $data;
+        $this->_filename = "$filename";
         // initialize contents
         $this->rollback();
     }
@@ -98,7 +98,7 @@ class FileDbIndex extends Object
             $indexes = array();
             assert('empty($update); // No column name provided. Unable to build index');
             // get indexed columns
-            foreach ($this->table->getIndexes() as $index)
+            foreach ($this->_table->getIndexes() as $index)
             {
                 foreach($index->getColumns() as $indexColumn)
                 {
@@ -106,7 +106,7 @@ class FileDbIndex extends Object
                 }
             }
             // auto-create indexes for unique constraints
-            foreach ($this->table->getUniqueConstraints() as $indexColumn)
+            foreach ($this->_table->getUniqueConstraints() as $indexColumn)
             {
                 $indexes[] = $indexColumn->getName();
             } // end foreach
@@ -131,12 +131,12 @@ class FileDbIndex extends Object
         /**
          * continue without scan
          */
-        if (!$this->table->isColumn($column)) {
+        if (!$this->_table->isColumn($column)) {
             Log::report("SQL syntax error. ".
                 "No such column '$column' in table '{$this->table->getName()}'.", E_USER_WARNING);
             return false;
         }
-        $primaryKey = $this->table->getPrimaryKey();
+        $primaryKey = $this->_table->getPrimaryKey();
 
         /* no need to index primary key, it is an index by itself */
         if (strcasecmp($primaryKey, $column) === 0) {
@@ -146,9 +146,9 @@ class FileDbIndex extends Object
         $column = mb_strtoupper("$column");
 
         /* create / recreate index */
-        if (empty($update) || !isset($this->indexes[$column])) {
+        if (empty($update) || !isset($this->_indexes[$column])) {
 
-            $dataset = $this->data->getVar($primaryKey);
+            $dataset = $this->_data->getVar($primaryKey);
             // table is empty
             if (empty($dataset)) {
                 $dataset = array();
@@ -167,7 +167,7 @@ class FileDbIndex extends Object
         } else {
 
             $dataset = array(mb_strtoupper($update[0]) => array($column => $update[1]));
-            $data = $this->indexes[$column];
+            $data = $this->_indexes[$column];
             if (!is_array($data)) {
                 $data = array();
             }
@@ -192,9 +192,9 @@ class FileDbIndex extends Object
             }
         } /* end foreach */
         ksort($data);
-        unset($this->indexes[$column]);
+        unset($this->_indexes[$column]);
 
-        $this->indexes[$column] = $data;
+        $this->_indexes[$column] = $data;
         return true;
     }
 
@@ -218,27 +218,27 @@ class FileDbIndex extends Object
 
         $isError = false;
         $emptyIndex = array();
-        if (!$this->table->isColumn($column)) {
+        if (!$this->_table->isColumn($column)) {
             throw new NotFoundException("SQL syntax error. ".
                 "No such column '{$column}' in table '{$this->table->getName()}'.", E_USER_WARNING);
         }
 
-        if (strcasecmp($this->table->getPrimaryKey(), $column) === 0) {
+        if (strcasecmp($this->_table->getPrimaryKey(), $column) === 0) {
             return $emptyIndex;
         }
 
         $column = mb_strtoupper("$column");
         if (is_null($value)) {
-            if (isset($this->indexes[$column]) && is_array($this->indexes[$column])) {
-                return $this->indexes[$column];
+            if (isset($this->_indexes[$column]) && is_array($this->_indexes[$column])) {
+                return $this->_indexes[$column];
             } else {
                 throw new NotFoundException("SQL syntax error. ".
                     "No such index '$column' in table '{$this->table->getName()}'.", E_USER_WARNING);
             }
         } else {
             $value = mb_strtoupper("$value");
-            if (isset($this->indexes[$column][$value])) {
-                return $this->indexes[$column][$value];
+            if (isset($this->_indexes[$column][$value])) {
+                return $this->_indexes[$column][$value];
             } else {
                 throw new NotFoundException("SQL syntax error. ".
                     "No such index '$column' in table '{$this->table->getName()}'.", E_USER_WARNING);
@@ -292,7 +292,7 @@ class FileDbIndex extends Object
      */
     public function commit()
     {
-        if (file_put_contents($this->filename, serialize($this->indexes)) !== false) {
+        if (file_put_contents($this->_filename, serialize($this->_indexes)) !== false) {
             return true;
         } else {
             return false;
@@ -322,15 +322,15 @@ class FileDbIndex extends Object
      */
     public function rollback()
     {
-        if (file_exists($this->filename) === false) {
-            if (!touch($this->filename)) {
-                throw new InvalidArgumentException("Not a valid filename '{$this->filename}'.");
+        if (file_exists($this->_filename) === false) {
+            if (!touch($this->_filename)) {
+                throw new InvalidArgumentException("Not a valid filename '{$this->_filename}'.");
             }
             $this->create();
         } else {
-            $indexes = unserialize(file_get_contents($this->filename));
+            $indexes = unserialize(file_get_contents($this->_filename));
             if (is_array($indexes)) {
-                $this->indexes = $indexes;
+                $this->_indexes = $indexes;
             } else {
                 $this->create();
             }

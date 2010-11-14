@@ -37,29 +37,30 @@ require_once dirname(__FILE__) . '/include.php';
  */
 class CounterTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @var    Counter
-     * @access protected
-     */
-    protected $object;
 
     /**
      * @var    Counter
      * @access protected
      */
-    protected $objectNoIP;
+    protected $_object;
+
+    /**
+     * @var    Counter
+     * @access protected
+     */
+    protected $_objectNoIP;
 
     /**
      * @var    string
      * @access protected
      */
-    protected $counterId = "";
+    protected $_counterId = "";
 
     /**
      * @var    string
      * @access protected
      */
-    protected $counterNoIPId = "";
+    protected $_counterNoIPId = "";
 
     /**
      * constructor
@@ -73,8 +74,8 @@ class CounterTest extends PHPUnit_Framework_TestCase
      */
     public function __construct()
     {
-        $this->counterId = __CLASS__ . '\\IP';
-        $this->counterNoIPId = __CLASS__ . '\\NOIP';
+        $this->_counterId = __CLASS__ . '\\IP';
+        $this->_counterNoIPId = __CLASS__ . '\\NOIP';
     }
 
     /**
@@ -85,21 +86,21 @@ class CounterTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
+        chdir(CWD . '../../../');
         FileDbConnection::setBaseDirectory(CWD . '/resources/db/');
         try {
-            Counter::create($this->counterId, 1, null, null, null, true);
-            Counter::create($this->counterNoIPId, 1, null, null, null, true, false);
+            Counter::create($this->_counterId, 1, null, null, null, true);
+            Counter::create($this->_counterNoIPId, 1, null, null, null, true, false);
         } catch (Exception $e) {
             $this->fail($e->getMessage());
             chdir(CWD);
         }
-        
-        $this->object = new Counter($this->counterId);
-        $this->objectNoIP = new Counter($this->counterNoIPId);
+
+        $this->_object = new Counter($this->_counterId);
+        $this->_objectNoIP = new Counter($this->_counterNoIPId);
 
         // check if counter exist - expected true
-        $counter = Counter::exists($this->counterNoIPId);
+        $counter = Counter::exists($this->_counterNoIPId);
         $this->assertTrue($counter, 'assert failed, the counter should be exist');
         // expected false for a non existing counter name
         $counter = Counter::exists('nonIP');
@@ -114,10 +115,10 @@ class CounterTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        unset($this->object);
-        unset($this->objectNoIP);
-        Counter::drop($this->counterId);
-        Counter::drop($this->counterNoIPId);
+        unset($this->_object);
+        unset($this->_objectNoIP);
+        Counter::drop($this->_counterId);
+        Counter::drop($this->_counterNoIPId);
         chdir(CWD);
     }
 
@@ -129,12 +130,12 @@ class CounterTest extends PHPUnit_Framework_TestCase
     public function testUseIp()
     {
         // devfault value
-        $this->object->useIp();
-        $hasIp = $this->object->hasIp();
+        $this->_object->useIp();
+        $hasIp = $this->_object->hasIp();
         $this->assertTrue($hasIp, "Counter::useIP() should default to true.");
 
-        $this->object->useIp(false);
-        $hasIp = $this->object->hasIp();
+        $this->_object->useIp(false);
+        $hasIp = $this->_object->hasIp();
         $this->assertFalse($hasIp, "Counter::hasIP() should return the value previously set by Counter::useIP().");
     }
 
@@ -145,8 +146,8 @@ class CounterTest extends PHPUnit_Framework_TestCase
      */
     public function testInfo()
     {
-        $this->object->setInfo("info");
-        $info = $this->object->getInfo();
+        $this->_object->setInfo("info");
+        $info = $this->_object->getInfo();
         $this->assertEquals("info", $info, "getInfo() should return the value previously set via setInfo()");
     }
 
@@ -158,42 +159,41 @@ class CounterTest extends PHPUnit_Framework_TestCase
     public function testGetIps()
     {
         $ipList = array("1.2.3.4", "1.2.3.5");
-        $expectedValueUsingIp = $this->object->getCurrentValue() + ($this->object->getIncrement() * 2);
-        $expectedValueNoIp = $this->objectNoIP->getCurrentValue() + ($this->objectNoIP->getIncrement() * 3);
+        $expectedValueUsingIp = $this->_object->getCurrentValue() + ($this->_object->getIncrement() * 2);
+        $expectedValueNoIp = $this->_objectNoIP->getCurrentValue() + ($this->_objectNoIP->getIncrement() * 3);
 
         // should incremet both
         $_SERVER['REMOTE_ADDR'] = $ipList[0];
-        $this->object->getNextValue();
-        $this->objectNoIP->getNextValue();
+        $this->_object->getNextValue();
+        $this->_objectNoIP->getNextValue();
 
         // should incremet both
         $_SERVER['REMOTE_ADDR'] = $ipList[1];
-        $this->object->getNextValue();
-        $this->objectNoIP->getNextValue();
+        $this->_object->getNextValue();
+        $this->_objectNoIP->getNextValue();
 
         // should not incremet Counter using IP checking
-        $nextValueUsingIp = $this->object->getNextValue();
-        $nextValueNoIp = $this->objectNoIP->getNextValue();
+        $nextValueUsingIp = $this->_object->getNextValue();
+        $nextValueNoIp = $this->_objectNoIP->getNextValue();
 
         $this->assertEquals($expectedValueUsingIp, $nextValueUsingIp, "Counter with IP does not increment properly");
         $this->assertEquals($expectedValueNoIp, $nextValueNoIp, "Counter without IP does not increment properly");
 
-        $ips = $this->object->getIps();
+        $ips = $this->_object->getIps();
         $this->assertEquals($ips, $ipList, "IPs are not stored correctly");
     }
 
     /**
-     * test instance 
+     * test instance
      *
      * @test
      */
     public function testInstance()
     {
-        $counterInstance = Counter::getInstance($this->counterId);
-        $compareResult = $this->object->equals($counterInstance);
+        $counterInstance = Counter::getInstance($this->_counterId);
+        $compareResult = $this->_object->equals($counterInstance);
         $this->assertTrue($compareResult, 'assert failed, objects need too be equal - true expected');
     }
-
 
     /**
      * Counter NotFoundException
@@ -205,5 +205,7 @@ class CounterTest extends PHPUnit_Framework_TestCase
     {
         $newInstance = Counter::getInstance('new_counter');
     }
+
 }
+
 ?>

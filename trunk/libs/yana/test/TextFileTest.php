@@ -37,17 +37,18 @@ require_once dirname(__FILE__) . '/include.php';
  */
 class TextFileTest extends PHPUnit_Framework_TestCase
 {
+
     /**
      * @var     FileReadonly
      * @access  protected
      */
-    protected $object;
+    protected $_object;
 
     /**
      * @var     string
      * @access  protected
      */
-    protected $path = 'resources/fileread.txt';
+    protected $_path = 'resources/fileread.txt';
 
     /**
      * Constructor
@@ -67,8 +68,8 @@ class TextFileTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new TextFile(CWD . $this->path);
-        $this->object->read();
+        $this->_object = new TextFile(CWD . $this->_path);
+        $this->_object->read();
     }
 
     /**
@@ -79,7 +80,7 @@ class TextFileTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        $this->object->reset();
+        $this->_object->reset();
     }
 
     /**
@@ -88,10 +89,10 @@ class TextFileTest extends PHPUnit_Framework_TestCase
     public function testSetContent()
     {
         $content = "a\nb";
-        $this->object->setContent($content);
-        $line1 = $this->object->getLine(0);
-        $line2 = $this->object->getLine(1);
-        $newContent = $this->object->getContent();
+        $this->_object->setContent($content);
+        $line1 = $this->_object->getLine(0);
+        $line2 = $this->_object->getLine(1);
+        $newContent = $this->_object->getContent();
         $this->assertEquals($newContent, $content, 'expecting getContent() to return same value as previously set by setContent()');
         $this->assertEquals('a', $line1, 'expecting getLine() to return first line as set by setContent()');
         $this->assertEquals('b', $line2, 'expecting getLine() to return any line as set by setContent()');
@@ -104,11 +105,11 @@ class TextFileTest extends PHPUnit_Framework_TestCase
      */
     public function testGetLine()
     {
-        $get = $this->object->getLine(1);
+        $get = $this->_object->getLine(1);
         $valid = 'the second entry.';
         $this->assertEquals($get, $valid, 'assert failed, the two variables are equal');
 
-        $get = $this->object->getLine(3);
+        $get = $this->_object->getLine(3);
         $this->assertFalse($get, 'assert failed, no entry for expected line');
 
         $nonExistFile = new TextFile('resources/nonExistfile.txt');
@@ -124,14 +125,14 @@ class TextFileTest extends PHPUnit_Framework_TestCase
      */
     public function testAppendLine()
     {
-        $getBefore = $this->object->getContent();
+        $getBefore = $this->_object->getContent();
         $this->assertType('string', $getBefore, 'there is no content');
 
         $content = 'this is the yana description';
-        $this->object->appendLine($content);
+        $this->_object->appendLine($content);
         $result = $getBefore . "\n" . $content;
 
-        $getAfter = $this->object->getContent();
+        $getAfter = $this->_object->getContent();
 
         $this->assertNotEquals($getBefore, $getAfter, 'two variables "$getBefore" and "$getAfter" are equal - insert has been failed');
         $this->assertEquals($result, $getAfter, 'File content should match prior content plus appended line.');
@@ -145,8 +146,8 @@ class TextFileTest extends PHPUnit_Framework_TestCase
     public function testSetLine()
     {
         $line = 'a';
-        $this->object->setLine(1, $line);
-        $result = $this->object->getLine(1);
+        $this->_object->setLine(1, $line);
+        $result = $this->_object->getLine(1);
         $this->assertEquals($line, $result, 'getLine() should return the value previously set by setLine()');
     }
 
@@ -157,14 +158,14 @@ class TextFileTest extends PHPUnit_Framework_TestCase
      */
     public function testWrite()
     {
-        $getBefore = $this->object->getContent();
+        $getBefore = $this->_object->getContent();
 
         $content = 'das steht in dem file';
-        $insert = $this->object->setContent($content);
-        $this->object->write();
+        $insert = $this->_object->setContent($content);
+        $this->_object->write();
 
-        $getAfter = file_get_contents($this->object->getPath());
-        file_put_contents($this->object->getPath(), $getBefore);
+        $getAfter = file_get_contents($this->_object->getPath());
+        file_put_contents($this->_object->getPath(), $getBefore);
 
         $this->assertNotEquals($getBefore, $getAfter, 'Write failed. File has not changed.');
         $this->assertEquals($content, $getAfter, 'Write failed. File should contain the previously set contents.');
@@ -178,9 +179,9 @@ class TextFileTest extends PHPUnit_Framework_TestCase
     public function testRemoveLine()
     {
        $content = 'das ist das haus vom nikolaus';
-       $this->object->setContent($content);
-       $this->object->removeLine(0);
-       $this->assertEquals($this->object->getContent(), '', 'remove() failed');
+       $this->_object->setContent($content);
+       $this->_object->removeLine(0);
+       $this->assertEquals($this->_object->getContent(), '', 'remove() failed');
     }
 
     /**
@@ -193,7 +194,7 @@ class TextFileTest extends PHPUnit_Framework_TestCase
      */
     public function testRemoveLineOutOfBounds()
     {
-       $this->object->removeLine(2);
+       $this->_object->removeLine(2);
     }
 
     /**
@@ -203,7 +204,7 @@ class TextFileTest extends PHPUnit_Framework_TestCase
      */
     public function testLength()
     {
-       $length = $this->object->length();
+       $length = $this->_object->length();
        $this->assertType('integer', $length, 'not valid type "integer"');
 
        // try with non existing path
@@ -212,5 +213,7 @@ class TextFileTest extends PHPUnit_Framework_TestCase
        $this->assertEquals($length, 0, 'assert failed, source doesnt exist');
        unset($newFile);
     }
+
 }
+
 ?>

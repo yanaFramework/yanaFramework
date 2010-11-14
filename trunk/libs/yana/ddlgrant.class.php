@@ -454,9 +454,9 @@ class DDLGrant extends DDL
                     return true;
                 }
                 $required = array(
-                    PluginAnnotation::GROUP => $user,
-                    PluginAnnotation::ROLE => $role,
-                    PluginAnnotation::LEVEL => $level
+                    PluginAnnotationEnumeration::GROUP => $user,
+                    PluginAnnotationEnumeration::ROLE => $role,
+                    PluginAnnotationEnumeration::LEVEL => $level
                 );
                 $profileId = Yana::getId();
                 $action = PluginManager::getLastEvent();

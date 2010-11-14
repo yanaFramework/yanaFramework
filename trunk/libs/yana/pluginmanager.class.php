@@ -65,7 +65,7 @@
  * @package     yana
  * @subpackage  core
  */
-class PluginManager extends Singleton implements IsReportable, IsSerializable
+class PluginManager extends Singleton implements IsReportable
 {
     /**#@+
      * class constants
@@ -88,22 +88,33 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      * @static
      * @var     object
      */
-    private static $instance = null;
+    private static $_instance = null;
 
     /**#@+
      * @ignore
      * @access  private
      */
 
-    /** @var string */  private static $pluginDir = "plugins/";
-    /** @var string */  private static $path = "config/pluginconfig.cfg";
-    /** @var bool   */  private $isLoaded = false;
+    /**
+     * @var string
+     */
+    private static $_pluginDir = "plugins/";
+
+    /**
+     * @var string
+     */
+    private static $_path = "config/pluginconfig.cfg";
+
+    /**
+     * @var bool
+     */
+    private $_isLoaded = false;
 
     /**
      * configuration
      * @var array
      */
-    private $config = array();
+    private $_config = array();
 
     /**
      * result of last handled action
@@ -111,7 +122,7 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      * @var bool
      * @static
      */
-    private static $lastResult = null;
+    private static $_lastResult = null;
 
     /**
      * name of currently handled event
@@ -119,7 +130,7 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      * @var string
      * @static
      */
-    private static $lastEvent = "";
+    private static $_lastEvent = "";
 
     /**
      * name of initially handled event
@@ -127,7 +138,7 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      * @var string
      * @static
      */
-    private static $firstEvent = "";
+    private static $_firstEvent = "";
 
     /**
      * definition of next event in queue
@@ -135,25 +146,25 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      * @var array()
      * @static
      */
-    private static $nextEvent = null;
+    private static $_nextEvent = null;
 
     /**
      * virtual drive
      * @var array
      */
-    private $drive = array();
+    private $_drive = array();
 
     /**
      * plugin objects
      * @var array
      */
-    private $plugins = array();
+    private $_plugins = array();
 
     /**
      * currently loaded plugins
      * @var array
      */
-    private $loadedPlugins = array();
+    private $_loadedPlugins = array();
 
     /**#@-*/
     /**#@+
@@ -178,12 +189,12 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      */
     public static function &getInstance()
     {
-        assert('isset(self::$pluginDir);');
-        assert('isset(self::$path);');
-        if (!isset(self::$instance)) {
-            self::$instance = new PluginManager();
+        assert('isset(self::$_pluginDir);');
+        assert('isset(self::$_path);');
+        if (!isset(self::$_instance)) {
+            self::$_instance = new PluginManager();
         }
-        return self::$instance;
+        return self::$_instance;
     }
 
     /**
@@ -198,12 +209,12 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      */
     private function __construct()
     {
-        if (!file_exists(self::$path)) {
-            touch(self::$path);
+        if (!file_exists(self::$_path)) {
+            touch(self::$_path);
             clearstatcache();
             $this->refreshPluginFile();
         }
-        $this->config = unserialize(file_get_contents(self::$path));
+        $this->_config = unserialize(file_get_contents(self::$_path));
     }
 
     /**
@@ -237,8 +248,8 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
             throw new NotFoundException("No such directory: '$pluginDirectory'.", E_USER_ERROR);
         }
 
-        self::$path = $configurationFile;
-        self::$pluginDir = $pluginDirectory;
+        self::$_path = $configurationFile;
+        self::$_pluginDir = $pluginDirectory;
     }
 
     /**
@@ -253,7 +264,7 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      */
     public static function getConfigFilePath()
     {
-        return self::$path;
+        return self::$_path;
     }
 
     /**
@@ -268,7 +279,7 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      */
     public static function getPluginDirectoryPath()
     {
-        return self::$pluginDir;
+        return self::$_pluginDir;
     }
 
     /**
@@ -304,31 +315,31 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
             throw new $error;
         }
 
-        if (empty(self::$firstEvent)) {
-            self::$firstEvent = $event;
+        if (empty(self::$_firstEvent)) {
+            self::$_firstEvent = $event;
         }
-        self::$lastEvent = $event;
+        self::$_lastEvent = $event;
         $eventSubscribers = $this->_getEventSubscribers($event);
         $this->_loadPlugins(array_keys($eventSubscribers));
-        self::$lastResult = true;
+        self::$_lastResult = true;
 
         $config->setEventArguments($args);
 
         assert('!isset($element); /* cannot redeclare variable $element */');
-        foreach ($this->plugins as $element)
+        foreach ($this->_plugins as $element)
         {
             $lastResult = $config->sendEvent($element);
             if ($lastResult === false) {
-                self::$lastResult = false;
+                self::$_lastResult = false;
                 break;
             }
             if ($config->hasMethod($element)) {
-                self::$lastResult = $lastResult;
+                self::$_lastResult = $lastResult;
             }
         }
         unset($element);
 
-        return self::$lastResult;
+        return self::$_lastResult;
     }
 
     /**
@@ -344,7 +355,7 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      */
     public static function getLastResult()
     {
-        return self::$lastResult;
+        return self::$_lastResult;
     }
 
     /**
@@ -360,7 +371,7 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      */
     public static function getLastEvent()
     {
-        return self::$lastEvent;
+        return self::$_lastEvent;
     }
 
     /**
@@ -376,7 +387,7 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      */
     public static function getFirstEvent()
     {
-        return self::$firstEvent;
+        return self::$_firstEvent;
     }
 
     /**
@@ -386,9 +397,9 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      * of the next action in the queue as an array with the following items:
      * <code>
      * array(
-     *     PluginAnnotation::TEXT => 'Id of text message to display',
-     *     PluginAnnotation::TEMPLATE => 'Id of message template to display',
-     *     PluginAnnotation::GO => 'Id of next action'
+     *     PluginAnnotationEnumeration::TEXT => 'Id of text message to display',
+     *     PluginAnnotationEnumeration::TEMPLATE => 'Id of message template to display',
+     *     PluginAnnotationEnumeration::GO => 'Id of next action'
      * );
      * </code>
      *
@@ -400,21 +411,21 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      */
     public static function getNextEvent()
     {
-        if (!isset(self::$nextEvent)) {
+        if (!isset(self::$_nextEvent)) {
             $event = self::getFirstEvent();
             $result = self::getLastResult();
             $plugin = self::getInstance();
             if ($result !== false) {
-                self::$nextEvent = $plugin->config[self::METHODS][$event]->getOnSuccess();
+                self::$_nextEvent = $plugin->_config[self::METHODS][$event]->getOnSuccess();
             } else {
-                self::$nextEvent = $plugin->config[self::METHODS][$event]->getOnError();
+                self::$_nextEvent = $plugin->_config[self::METHODS][$event]->getOnError();
             }
-            if (empty(self::$nextEvent)) {
-                self::$nextEvent = array();
+            if (empty(self::$_nextEvent)) {
+                self::$_nextEvent = array();
             }
         }
-        assert('is_array(self::$nextEvent);');
-        return self::$nextEvent;
+        assert('is_array(self::$_nextEvent);');
+        return self::$_nextEvent;
     }
 
     /**
@@ -432,7 +443,13 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      */
     public function refreshPluginFile()
     {
-        $plugins = dirlist(self::$pluginDir, "", YANA_GET_DIRS);
+        $plugins = scandir(self::$_pluginDir);
+        foreach ($plugins as $key => $plugin)
+        {
+            if ($plugin[0] === '.' || !is_dir($plugin)) {
+                unset($plugin[$key]);
+            }
+        }
         $this->_loadPlugins($plugins);
 
         // output var
@@ -446,8 +463,8 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
         );
 
         // copy settings from old plugin repository
-        if (isset($this->config[self::ACTIVE])) {
-            $newPluginFile[self::ACTIVE] = $this->config[self::ACTIVE];
+        if (isset($this->_config[self::ACTIVE])) {
+            $newPluginFile[self::ACTIVE] = $this->_config[self::ACTIVE];
         }
 
         // initialize list for later use (see step 3)
@@ -468,7 +485,7 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
         assert('!isset($config); // Cannot redeclare var $config');
         assert('!isset($id); // Cannot redeclare var $id');
         assert('!isset($plugin); // Cannot redeclare var $plugin');
-        foreach ($this->plugins as $id => $plugin)
+        foreach ($this->_plugins as $id => $plugin)
         {
             $className = get_class($plugin);
             $reflectionClass = new PluginReflectionClass($className);
@@ -485,10 +502,10 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
              * use the setting defined by the plugin.
              */
             if (!isset($newPluginFile[self::ACTIVE][$id])) {
-                $newPluginFile[self::ACTIVE][$id] = PluginActivity::getActiveState($config->getActive());
+                $newPluginFile[self::ACTIVE][$id] = PluginActivityEnumeration::getActiveState($config->getActive());
             }
             // ignore methods if plugin is not active
-            if ($newPluginFile[self::ACTIVE][$id] === PluginActivity::INACTIVE) {
+            if ($newPluginFile[self::ACTIVE][$id] === PluginActivityEnumeration::INACTIVE) {
                 continue;
             }
             /**
@@ -637,11 +654,11 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
         unset($methodName, $config);
 
         // create repository cache
-        if (file_put_contents(self::$path, serialize($newPluginFile))) {
+        if (file_put_contents(self::$_path, serialize($newPluginFile))) {
             // cache has been written and is not empty
 
             // actuate current config setting
-            $this->config = $newPluginFile;
+            $this->_config = $newPluginFile;
             return true;
         } else {
             // an error occured - unable to write cache file
@@ -664,8 +681,8 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
     {
         assert('is_string($pluginName); // Wrong type for argument 1. String expected');
 
-        $active = @$this->config[self::ACTIVE][$pluginName];
-        if ($active === PluginActivity::ACTIVE || $active === PluginActivity::DEFAULT_ACTIVE) {
+        $active = @$this->_config[self::ACTIVE][$pluginName];
+        if ($active === PluginActivityEnumeration::ACTIVE || $active === PluginActivityEnumeration::DEFAULT_ACTIVE) {
             return true;
         } else {
             return false;
@@ -689,8 +706,8 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
     {
         assert('is_string($pluginName); // Wrong type for argument 1. String expected');
 
-        $active = @$this->config[self::ACTIVE][$pluginName];
-        if ($active === PluginActivity::DEFAULT_ACTIVE) {
+        $active = @$this->_config[self::ACTIVE][$pluginName];
+        if ($active === PluginActivityEnumeration::DEFAULT_ACTIVE) {
             return true;
         } else {
             return false;
@@ -712,14 +729,14 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      *
      * @ignore
      */
-    public function setActive($pluginName, $state = PluginActivity::ACTIVE)
+    public function setActive($pluginName, $state = PluginActivityEnumeration::ACTIVE)
     {
         assert('is_string($pluginName); // Wrong type for argument 1. String expected');
         assert('is_int($state); // Wrong type for argument 2. Integer expected');
 
-        if (isset($this->config[self::PLUGINS][$pluginName])) {
-            if ($this->config[self::ACTIVE][$pluginName] != PluginActivity::DEFAULT_ACTIVE) {
-                $this->config[self::ACTIVE][$pluginName] = $state;
+        if (isset($this->_config[self::PLUGINS][$pluginName])) {
+            if ($this->_config[self::ACTIVE][$pluginName] != PluginActivityEnumeration::DEFAULT_ACTIVE) {
+                $this->_config[self::ACTIVE][$pluginName] = $state;
                 return true;
             } else {
                 return false;
@@ -754,8 +771,8 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
         $pluginName = (string) $pluginName;
         $key = (string) $key;
 
-        if (isset($this->drive[$pluginName])) {
-            return $this->drive[$pluginName]->getResource($key);
+        if (isset($this->_drive[$pluginName])) {
+            return $this->_drive[$pluginName]->getResource($key);
         } else {
             throw new InvalidArgumentException("There is no plugin named '".$pluginName."'.", E_USER_WARNING);
         }
@@ -773,16 +790,16 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
     public function __get($name)
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
-        if (!isset($this->drive[$name])) {
+        if (!isset($this->_drive[$name])) {
             // recursive search
             $drive = substr($name, 0, strpos($name, ':/'));
-            if (isset($this->drive[$drive])) {
-                $this->drive[$name] = $this->drive[$drive]->$name;
+            if (isset($this->_drive[$drive])) {
+                $this->_drive[$name] = $this->_drive[$drive]->$name;
             } else {
-                $this->drive[$name] = null;
+                $this->_drive[$name] = null;
             }
         }
-        return $this->drive[$name];
+        return $this->_drive[$name];
     }
 
     /**
@@ -798,8 +815,8 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      */
     public function isInstalled($pluginName)
     {
-        assert('is_bool($this->isLoaded);');
-        if ($this->isLoaded && isset($this->plugins[mb_strtolower("$pluginName")])) {
+        assert('is_bool($this->_isLoaded);');
+        if ($this->_isLoaded && isset($this->_plugins[mb_strtolower("$pluginName")])) {
             return true;
         } else {
             return false;
@@ -816,9 +833,9 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      */
     public function toString()
     {
-        if ($this->config) {
+        if ($this->_config) {
             $txt = "";
-            foreach ($this->config[self::PLUGINS] as $pluginName => $pluginConfig)
+            foreach ($this->_config[self::PLUGINS] as $pluginName => $pluginConfig)
             {
                 $txt .= "Plugin \"$pluginName\":\n" .
                 "\t- active = " . (($this->isActive($pluginName)) ? "yes" : "no") . "\n" .
@@ -844,8 +861,8 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      */
     public function getPluginDir()
     {
-        assert('is_string(self::$pluginDir);');
-        return self::$pluginDir;
+        assert('is_string(self::$_pluginDir);');
+        return self::$_pluginDir;
     }
 
     /**
@@ -864,9 +881,9 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
     {
         assert('is_string($pluginName); // Wrong type for argument 1. String expected');
 
-        $this->_loadPlugin(self::$pluginDir, $pluginName);
-        if (isset($this->config[self::PLUGINS][$pluginName])) {
-            return $this->config[self::PLUGINS][$pluginName];
+        $this->_loadPlugin(self::$_pluginDir, $pluginName);
+        if (isset($this->_config[self::PLUGINS][$pluginName])) {
+            return $this->_config[self::PLUGINS][$pluginName];
         } else {
             return new PluginConfiguration(self::PREFIX . $pluginName);
         }
@@ -884,7 +901,7 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      */
     public function getPluginNames()
     {
-        return array_keys($this->config[self::PLUGINS]);
+        return array_keys($this->_config[self::PLUGINS]);
     }
 
     /**
@@ -905,18 +922,18 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
     public function getEventType($eventName = null)
     {
         if (is_null($eventName)) {
-            $eventName = self::$lastEvent;
+            $eventName = self::$_lastEvent;
         }
         assert('is_string($eventName); // Wrong type for argument 1. String expected');
 
-        if (isset($this->config[self::METHODS][$eventName])) {
-            /* String */ $type = $this->config[self::METHODS][$eventName]->getType();
+        if (isset($this->_config[self::METHODS][$eventName])) {
+            /* String */ $type = $this->_config[self::METHODS][$eventName]->getType();
         } else {
             assert('!isset($defaultEvent); // Cannot redeclare var $defaultEvent');
             /* array */ $defaultEvent = Yana::getDefault("EVENT");
             assert('is_array($defaultEvent);');
-            if (is_array($defaultEvent) && isset($defaultEvent[PluginAnnotation::TYPE])) {
-                /* string */ $type = $defaultEvent[PluginAnnotation::TYPE];
+            if (is_array($defaultEvent) && isset($defaultEvent[PluginAnnotationEnumeration::TYPE])) {
+                /* string */ $type = $defaultEvent[PluginAnnotationEnumeration::TYPE];
             } else {
                 /* string */ $type = "default";
             }
@@ -938,8 +955,8 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
     {
         assert('is_string($eventName); // Wrong argument type for argument 1. String expected.');
         $eventName = mb_strtolower("$eventName");
-        if (isset($this->config[self::METHODS][$eventName])) {
-            return $this->config[self::METHODS][$eventName];
+        if (isset($this->_config[self::METHODS][$eventName])) {
+            return $this->_config[self::METHODS][$eventName];
         } else {
             return null;
         }
@@ -954,8 +971,8 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
      */
     public function getEventConfigurations()
     {
-        assert('is_array($this->config[self::METHODS]); // List of methods not available');
-        return $this->config[self::METHODS];
+        assert('is_array($this->_config[self::METHODS]); // List of methods not available');
+        return $this->_config[self::METHODS];
     }
 
     /**
@@ -971,7 +988,7 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
     public function isEvent($eventName)
     {
         assert('is_string($eventName); // Wrong argument type for argument 1. String expected.');
-        if (isset($this->config[self::METHODS][mb_strtolower("$eventName")])) {
+        if (isset($this->_config[self::METHODS][mb_strtolower("$eventName")])) {
             return true;
         } else {
             return false;
@@ -988,7 +1005,7 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
     public function isLoaded($pluginName)
     {
         assert('is_string($pluginName); // Wrong argument type for argument 1. String expected.');
-        if (isset($this->loadedPlugins[mb_strtolower("$pluginName")])) {
+        if (isset($this->_loadedPlugins[mb_strtolower("$pluginName")])) {
             return true;
         } else {
             return false;
@@ -1008,15 +1025,15 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
     {
         assert('is_string($event); // Wrong argument type for argument 1. String expected.');
 
-        $this->loadedPlugins = array();
+        $this->_loadedPlugins = array();
 
         $result = array();
 
-        if (isset($this->config[self::IMPLEMENTATIONS][$event])) {
-            foreach ($this->config[self::IMPLEMENTATIONS][$event] as $pluginName => $priority)
+        if (isset($this->_config[self::IMPLEMENTATIONS][$event])) {
+            foreach ($this->_config[self::IMPLEMENTATIONS][$event] as $pluginName => $priority)
             {
                 if ($this->isActive($pluginName)) {
-                    $this->loadedPlugins[$pluginName] = true;
+                    $this->_loadedPlugins[$pluginName] = true;
                     $result[$pluginName] = $priority;
                 }
             }
@@ -1039,7 +1056,7 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
     private function _loadPlugins(array $plugins = null)
     {
         if (is_null($plugins)) {
-            $plugins = array_keys($this->config[self::PLUGINS]);
+            $plugins = array_keys($this->_config[self::PLUGINS]);
         }
         assert('is_array($plugins); // Wrong type for argument 1. Array expected');
 
@@ -1050,7 +1067,7 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
         {
             $this->_loadPlugin($pluginDir, $name);
         }
-        $this->isLoaded = true;
+        $this->_isLoaded = true;
     }
 
     /**
@@ -1067,13 +1084,13 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
         assert('is_string($pluginDir); // Wrong type for argument 1. String expected');
         assert('is_string($name); // Wrong type for argument 2. String expected');
 
-        if (!isset($this->plugins[$name])) {
+        if (!isset($this->_plugins[$name])) {
             // load virtual drive, if it exists
             assert('!isset($driveFile); // Cannot redeclare var $driveFile');
             $driveFile = "$pluginDir$name/$name.drive.xml";
             if (is_file($driveFile)) {
-                $this->drive[$name] = new Registry($driveFile, $this->getPluginDir().$name."/");
-                $this->drive[$name]->read();
+                $this->_drive[$name] = new Registry($driveFile, $this->getPluginDir().$name."/");
+                $this->_drive[$name]->read();
             }
             unset($driveFile);
             // load base class, if it exists
@@ -1086,7 +1103,7 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
             // instantiate class, if it exists
             if (class_exists(PluginManager::PREFIX . $name)) {
                 $class = PluginManager::PREFIX . $name;
-                $this->plugins[$name] = new $class();
+                $this->_plugins[$name] = new $class();
             }
         } else {
             /* plugin is already loaded */
@@ -1137,9 +1154,9 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
         if (is_null($report)) {
             $report = ReportXML::createReport(__CLASS__);
         }
-        $report->addText("Plugin directory: " . PluginManager::$pluginDir);
+        $report->addText("Plugin directory: " . PluginManager::$_pluginDir);
 
-        if (empty($this->config[self::METHODS])) {
+        if (empty($this->_config[self::METHODS])) {
             $report->addWarning("Cannot perform check! No interface definitions found.");
 
         } else {
@@ -1148,7 +1165,7 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
             /**
              * loop through interface definitions
              */
-            foreach ($this->config[self::METHODS] as $key => $element)
+            foreach ($this->_config[self::METHODS] as $key => $element)
             {
                 // @todo  check if $element is really an array (and not a PluginConfigurationMethod)
                 if (!is_array($element)) {
@@ -1198,37 +1215,13 @@ class PluginManager extends Singleton implements IsReportable, IsSerializable
     }
 
     /**
-     * serialize this object to a string
-     *
-     * Returns the serialized object as a string.
+     * Reinitialize instance.
      *
      * @access  public
-     * @return  string
      */
-    public function serialize()
+    public function __wakeup()
     {
-        return serialize($this);
-    }
-
-    /**
-     * unserialize a string to a serializable object
-     *
-     * Returns the unserialized object.
-     *
-     * @access  public
-     * @static
-     * @param   string  $string  string to unserialize
-     * @return  IsSerializable
-     */
-    public static function unserialize($string)
-    {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        if (!isset(self::$instance)) {
-            self::$instance = unserialize($string);
-            return self::$instance;
-        } else {
-            return unserialize($string);
-        }
+        self::$_instance = $this;
     }
 
 }

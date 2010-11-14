@@ -33,7 +33,7 @@
  * @package     yana
  * @subpackage  database
  */
-abstract class DDLAbstractForm extends DDLForm implements IsSerializable, IteratorAggregate
+abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
 {
     /**
      * tags for persistance mapping: object <-> XDDL
@@ -306,7 +306,7 @@ abstract class DDLAbstractForm extends DDLForm implements IsSerializable, Iterat
             $this->setGrant($grant);
         }
         unset($grant);
-        if ($selectQuery->getExpectedResult() != YANA_DB_TABLE) {
+        if ($selectQuery->getExpectedResult() != DbResultEnumeration::TABLE) {
             $columns = array();
             foreach ($selectQuery->getColumns() as $alias => $columnDef)
             {

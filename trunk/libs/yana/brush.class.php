@@ -50,9 +50,9 @@ class Brush extends Object
      * @ignore
      */
 
-    private $brushname = null;
-    private static $brushdir = null;
-    private $image = null;
+    private $_brushname = null;
+    private static $_brushdir = null;
+    private $_image = null;
 
     /**#@-*/
 
@@ -88,11 +88,11 @@ class Brush extends Object
         /**
          * Set Brush directory
          */
-        if (is_null(self::$brushdir)) {
+        if (is_null(self::$_brushdir)) {
             if (isset($YANA)) {
-                self::$brushdir = $YANA->getVar('BRUSHDIR');
+                self::$_brushdir = $YANA->getVar('BRUSHDIR');
             } else {
-                self::$brushdir = 'common_files/brush/';
+                self::$_brushdir = 'common_files/brush/';
             }
         }
 
@@ -116,22 +116,22 @@ class Brush extends Object
             if (!is_string($brushname)) {
                 $brushFile = null;
             } else {
-                $brushFile = self::$brushdir . str_replace(' ', '-', $brushname) . '.png';
+                $brushFile = self::$_brushdir . str_replace(' ', '-', $brushname) . '.png';
             }
 
             /* 2 create image resource */
             if (!is_string($brushFile) || !file_exists($brushFile)) {
                 trigger_error("The brush '{$brushname}' does not exist.", E_USER_NOTICE);
             } else {
-                $this->brushname = $brushname;
-                $this->image     = imagecreatefrompng($brushFile);
+                $this->_brushname = $brushname;
+                $this->_image     = imagecreatefrompng($brushFile);
             }
 
             /* check if result is valid */
-            if (!is_resource($this->image)) {
+            if (!is_resource($this->_image)) {
                 trigger_error("The brush {$brushname} is invalid.", E_USER_WARNING);
             } else {
-                imagecolortransparent($this->image, 1);
+                imagecolortransparent($this->_image, 1);
             }
         } /* end of section "create image resource" */
     }
@@ -146,10 +146,10 @@ class Brush extends Object
      */
     public function getName()
     {
-        if (!is_string($this->brushname)) {
+        if (!is_string($this->_brushname)) {
             return false;
         } else {
-            return $this->brushname;
+            return $this->_brushname;
         }
     }
 
@@ -177,7 +177,7 @@ class Brush extends Object
             return false;
 
         } else {
-            self::$brushdir = $directory;
+            self::$_brushdir = $directory;
             return true;
         }
     }
@@ -192,14 +192,14 @@ class Brush extends Object
      */
     public function getSize()
     {
-        if (!is_resource($this->image)) {
+        if (!is_resource($this->_image)) {
             return false;
 
         } elseif (!function_exists('imagesx')) {
             return false;
 
         } else {
-            return imagesx($this->image);
+            return imagesx($this->_image);
 
         }
     }
@@ -221,7 +221,7 @@ class Brush extends Object
     {
         assert('is_int($size); // Wrong type for argument 1. Integer expected');
 
-        if (!is_resource($this->image)) {
+        if (!is_resource($this->_image)) {
             return false;
         } elseif (!function_exists('imagepalettecopy')) {
             return false;
@@ -243,12 +243,12 @@ class Brush extends Object
 
             } else {
 
-                $oldImage    = $this->image;
-                $this->image = imagecreate($size, $size);
-                imagepalettecopy($this->image, $oldImage);
-                imagefill($this->image, 0, 0, 1);
-                imagecopyresized($this->image, $oldImage, 0, 0, 0, 0, $size, $size, $currentSize, $currentSize);
-                imagecolortransparent($this->image, 1);
+                $oldImage    = $this->_image;
+                $this->_image = imagecreate($size, $size);
+                imagepalettecopy($this->_image, $oldImage);
+                imagefill($this->_image, 0, 0, 1);
+                imagecopyresized($this->_image, $oldImage, 0, 0, 0, 0, $size, $size, $currentSize, $currentSize);
+                imagecolortransparent($this->_image, 1);
                 imagedestroy($oldImage);
                 return true;
 
@@ -296,7 +296,7 @@ class Brush extends Object
         unset($test, $i);
 
         /* is image? */
-        if (!is_resource($this->image)) {
+        if (!is_resource($this->_image)) {
             return false;
         }
 
@@ -306,7 +306,7 @@ class Brush extends Object
         }
 
         /* set color */
-        imagecolorset($this->image, 0, $r, $g, $b);
+        imagecolorset($this->_image, 0, $r, $g, $b);
         return true;
     }
 
@@ -322,12 +322,12 @@ class Brush extends Object
      */
     public function getColor()
     {
-        if (!is_resource($this->image)) {
+        if (!is_resource($this->_image)) {
             return false;
         } elseif (!function_exists('imagecolorsforindex')) {
             return false;
         } else {
-            return imagecolorsforindex($this->image, 0);
+            return imagecolorsforindex($this->_image, 0);
         }
     }
 
@@ -376,8 +376,8 @@ class Brush extends Object
                 return false;
             }
 
-            imagecopy($copiedImage, $this->image, 0, 0, 0, 0, $width, $height);
-            $this->image = $copiedImage;
+            imagecopy($copiedImage, $this->_image, 0, 0, 0, 0, $width, $height);
+            $this->_image = $copiedImage;
         }
     }
 
@@ -396,7 +396,7 @@ class Brush extends Object
     public function equals(object $anotherObject)
     {
         if ($anotherObject instanceof $this) {
-            return ( $this->image === $anotherObject->getResource() );
+            return ( $this->_image === $anotherObject->getResource() );
         } else {
             return false;
         }
@@ -418,7 +418,7 @@ class Brush extends Object
     public function equalsResoure($resource)
     {
         assert('is_resource($resource); // Wrong type for argument 1. Resource expected');
-        if (is_resource($resource) && $this->image === $resource) {
+        if (is_resource($resource) && $this->_image === $resource) {
             return true;
         } else {
             return false;
@@ -439,11 +439,11 @@ class Brush extends Object
         /**
          * error - broken image
          */
-        if (!is_resource($this->image)) {
+        if (!is_resource($this->_image)) {
             return false;
 
         } else {
-            return $this->image;
+            return $this->_image;
         }
     }
 
@@ -460,8 +460,8 @@ class Brush extends Object
     public function __destruct()
     {
         if (function_exists('imagedestroy')) {
-            if (is_resource($this->image)) {
-                imagedestroy($this->image);
+            if (is_resource($this->_image)) {
+                imagedestroy($this->_image);
             }
         }
     }

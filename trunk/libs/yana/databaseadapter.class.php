@@ -124,9 +124,9 @@ class DatabaseAdapter extends Object implements IsDataAdapter
      * Takes an instance, checks it's state and updates the data respondingly.
      *
      * @access  public
-     * @param   AbstractDataContainer $container  instance that should be updated
+     * @param   DataContainerAbstract $container  instance that should be updated
      */
-    public function updateInstance(AbstractDataContainer $container)
+    public function updateInstance(DataContainerAbstract $container)
     {
         $data = get_object_vars($container);
         $id = $container->id;

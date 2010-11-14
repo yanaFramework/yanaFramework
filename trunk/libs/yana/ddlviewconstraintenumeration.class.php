@@ -26,17 +26,28 @@
  */
 
 /**
- * Value is invalid
+ * <<Enumeration>> ConstraintEnumeration
  *
- * Thrown when a user-generated value is validated and found to be invalid.
+ * Values describing the match type of a check constraint.
+ * Eihter: local, cascaded or none.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  database
+ *
+ * @ignore
  */
-class InvalidValueException extends Report
+class DDLViewConstraintEnumeration
 {
-    // intentionally left blank
+
+    /**#@+
+     * Check-constraint settings
+     */
+    const NONE = 0;
+    const CASCADED = 1;
+    const LOCAL = 2;
+    /**#@-*/
+
 }
 
 ?>

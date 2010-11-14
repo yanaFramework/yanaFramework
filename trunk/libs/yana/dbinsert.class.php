@@ -44,7 +44,7 @@ class DbInsert extends DbQuery
      * @ignore
      */
 
-    /** @var int   */ protected $type    = DbQuery::INSERT;
+    /** @var int   */ protected $type    = DbQueryTypeEnumeration::INSERT;
     /** @var array */ protected $column  = array();
     /** @var array */ protected $profile = array();
     /** @var array */ protected $values  = null;
@@ -114,7 +114,7 @@ class DbInsert extends DbQuery
         if (is_array($values)) {
             $values = Hashtable::changeCase($values, CASE_LOWER);
 
-        } elseif ($this->type === YANA_DB_INSERT) {
+        } elseif ($this->type === DbQueryTypeEnumeration::INSERT) {
             throw new InvalidArgumentException("Invalid type. " .
                 "Database values must be an array for insert-statements.");
 
@@ -172,13 +172,13 @@ class DbInsert extends DbQuery
         $primaryKey = $table->getPrimaryKey();
 
         // copy primary key to row property
-        if ($this->expectedResult === YANA_DB_TABLE && isset($values[$primaryKey])) {
+        if ($this->expectedResult === DbResultEnumeration::TABLE && isset($values[$primaryKey])) {
             $this->setRow($values[$primaryKey]);
         }
 
         assert('!isset($isInsert); // Cannot redeclare var $isInsert');
         $isInsert = false;
-        if ($this->type === YANA_DB_INSERT) {
+        if ($this->type === DbQueryTypeEnumeration::INSERT) {
             $isInsert = true;
             assert('is_array($values);');
 
@@ -207,7 +207,7 @@ class DbInsert extends DbQuery
 
         }
 
-        if ($this->expectedResult === YANA_DB_ROW) {
+        if ($this->expectedResult === DbResultEnumeration::ROW) {
             assert('is_array($values); // Row must be an array');
             // upper-case primary key
             if (isset($values[$primaryKey])) {
@@ -217,7 +217,8 @@ class DbInsert extends DbQuery
             $values = $table->sanitizeRow($values, $this->db->getDBMS(), $isInsert, $this->files);
         } else {
             assert('!$isInsert; // May only insert rows, not tables, cells or columns');
-            assert('$this->expectedResult === YANA_DB_CELL || $this->expectedResult ===  YANA_DB_COLUMN;');
+            assert('$this->expectedResult === DbResultEnumeration::CELL || ' .
+                '$this->expectedResult ===  DbResultEnumeration::COLUMN;');
             if (empty($this->arrayAddress) && isset($this->column[0]) && is_array($this->column[0])) {
                 assert('count($this->column) === 1;');
                 assert('count($this->column[0]) === 2;');
@@ -522,7 +523,7 @@ class DbInsert extends DbQuery
         $query->setValues($set);
 
         // check security constraint
-        if ($query->getExpectedResult() !== YANA_DB_ROW) {
+        if ($query->getExpectedResult() !== DbResultEnumeration::ROW) {
             if (!$query->table->getColumn($query->table->getPrimaryKey())->isAutoFill()) {
                 $message = "SQL security restriction. Cannot insert a table (only rows).";
                 throw new InvalidArgumentException($message, E_USER_WARNING);

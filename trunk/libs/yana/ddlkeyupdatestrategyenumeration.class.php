@@ -1,6 +1,6 @@
 <?php
 /**
- * include this before any test-case
+ * YANA library
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -21,23 +21,35 @@
  *
  * This notice MAY NOT be removed.
  *
- * @package  test
+ * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- * @ignore
  */
-
-date_default_timezone_set('Europe/Paris');
 
 /**
+ * <<Enumeration>> Foreign key update strategy Enumeration
+ *
+ * Values for possible update strategies.
+ * Either no-action, restrict, cascade, set-null, set-default.
+ *
+ * @access      public
+ * @package     yana
+ * @subpackage  database
+ *
  * @ignore
  */
-require_once dirname(__FILE__) . '/../../../library.php';
-if (!defined('CWD')) {
-    define('CWD', dirname(__FILE__) . DIRECTORY_SEPARATOR);
-}
-if (empty($_SERVER['DOCUMENT_ROOT']) && isset($_SERVER['OS']) && preg_match('/windows/i', $_SERVER['OS'])) {
-    $_SERVER['DOCUMENT_ROOT'] =  realpath(CWD . "../../../../../") . '/htdocs/';
-    $path = dirname($_SERVER["DOCUMENT_ROOT"]);
+class DDLKeyUpdateStrategyEnumeration
+{
+
+    /**#@+
+     * Values for on update/delete
+     */
+    const NOACTION = 0;
+    const RESTRICT = 1;
+    const CASCADE = 2;
+    const SETNULL = 3;
+    const SETDEFAULT = 4;
+    /**#@-*/
+
 }
 
 ?>

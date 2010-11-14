@@ -60,38 +60,6 @@
  */
 abstract class DbQuery extends Object implements Serializable
 {
-    /**
-     * unknown or undefined statement type
-     */
-    const UNKNOWN = 0;
-    /**
-     * select statement
-     */
-    const SELECT = 8;
-    /**
-     * update statement
-     */
-    const UPDATE = 16;
-    /**
-     * insert statement
-     */
-    const INSERT = 32;
-    /**
-     * delete statement
-     */
-    const DELETE = 64;
-    /**
-     * checks if a database object exists
-     */
-    const EXISTS = 128;
-    /**
-     * checks number of occurences
-     */
-    const LENGTH = 256;
-    /**
-     * alias of LENGTH
-     */
-    const COUNT = DbQuery::LENGTH;
 
     /**#@+
      * @access  protected
@@ -99,8 +67,8 @@ abstract class DbQuery extends Object implements Serializable
      */
 
     /** @var string   */ protected $id             = null;
-    /** @var int      */ protected $type           = DbQuery::UNKNOWN;
-    /** @var int      */ protected $expectedResult = DbQuery::UNKNOWN;
+    /** @var int      */ protected $type           = DbQueryTypeEnumeration::UNKNOWN;
+    /** @var int      */ protected $expectedResult = DbQueryTypeEnumeration::UNKNOWN;
 
     /** @var string   */ protected $tableName      = null;
     /** @var string   */ protected $row            = '*';
@@ -228,13 +196,13 @@ abstract class DbQuery extends Object implements Serializable
      *
      * The argument type can be one of the following:
      * <ul>
-     *  <li> DbQuery::UNKNOWN = to reset type </li>
-     *  <li> DbQuery::SELECT = Select column from table ... </li>
-     *  <li> DbQuery::UPDATE = Update table ... </li>
-     *  <li> DbQuery::INSERT = Insert into table ... </li>
-     *  <li> DbQuery::DELETE = Delete from table where ... </li>
-     *  <li> DbQuery::EXISTS = Select 1 from ... where ... </li>
-     *  <li> DbQuery::COUNT  = Select count(*) from ...  </li>
+     *  <li> DbQueryTypeEnumeration::UNKNOWN = to reset type </li>
+     *  <li> DbQueryTypeEnumeration::SELECT = Select column from table ... </li>
+     *  <li> DbQueryTypeEnumeration::UPDATE = Update table ... </li>
+     *  <li> DbQueryTypeEnumeration::INSERT = Insert into table ... </li>
+     *  <li> DbQueryTypeEnumeration::DELETE = Delete from table where ... </li>
+     *  <li> DbQueryTypeEnumeration::EXISTS = Select 1 from ... where ... </li>
+     *  <li> DbQueryTypeEnumeration::COUNT  = Select count(*) from ...  </li>
      * </ul>
      *
      * Note: For security reasons all delete queries will automatically
@@ -254,28 +222,28 @@ abstract class DbQuery extends Object implements Serializable
 
         switch ($type)
         {
-            case DbQuery::INSERT:
-                if ($this->row === '*' && $this->expectedResult === YANA_DB_TABLE) {
+            case DbQueryTypeEnumeration::INSERT:
+                if ($this->row === '*' && $this->expectedResult === DbResultEnumeration::TABLE) {
                     if ($table->getColumn($table->getPrimaryKey())->isAutoFill()) {
-                        $this->expectedResult = YANA_DB_ROW;
+                        $this->expectedResult = DbResultEnumeration::ROW;
                     }
                 }
                 $this->type = $type;
             break;
 
-            case DbQuery::COUNT:
+            case DbQueryTypeEnumeration::COUNT:
                 if (is_array($this->column) && count($this->column) > 1) {
                     throw new InvalidArgumentException("Cannot use query type 'length' " .
                         "with multiple columns.", E_USER_WARNING);
                 }
-            case DbQuery::UNKNOWN:
-            case DbQuery::SELECT:
-            case DbQuery::UPDATE:
-            case DbQuery::EXISTS:
+            case DbQueryTypeEnumeration::UNKNOWN:
+            case DbQueryTypeEnumeration::SELECT:
+            case DbQueryTypeEnumeration::UPDATE:
+            case DbQueryTypeEnumeration::EXISTS:
                 $this->type = $type;
             break;
 
-            case DbQuery::DELETE:
+            case DbQueryTypeEnumeration::DELETE:
                 $this->type = $type;
                 $this->limit = 1;
             break;
@@ -307,16 +275,16 @@ abstract class DbQuery extends Object implements Serializable
      * Returns currently selected constant.
      *
      * <ul>
-     *  <li> YANA_DB_UNKNOWN - no input </li>
-     *  <li> YANA_DB_TABLE   - table only </li>
-     *  <li> YANA_DB_ROW     - table + row </li>
-     *  <li> YANA_DB_COLUMN  - table + column </li>
-     *  <li> YANA_DB_CELL    - table + row + column </li>
+     *  <li> DbResultEnumeration::UNKNOWN - no input </li>
+     *  <li> DbResultEnumeration::TABLE   - table only </li>
+     *  <li> DbResultEnumeration::ROW     - table + row </li>
+     *  <li> DbResultEnumeration::COLUMN  - table + column </li>
+     *  <li> DbResultEnumeration::CELL    - table + row + column </li>
      * </ul>
      *
-     * Note: YANA_DB_CELL means to refer to exactly 1 column.
+     * Note: DbResultEnumeration::CELL means to refer to exactly 1 column.
      * When retrieving multiple columns from a row,
-     * use YANA_DB_ROW instead.
+     * use DbResultEnumeration::ROW instead.
      *
      * @access  public
      * @return  int
@@ -452,7 +420,7 @@ abstract class DbQuery extends Object implements Serializable
     /**
      * get table by column name
      *
-     * If multiple tables are joined (either automatically or manually) 
+     * If multiple tables are joined (either automatically or manually)
      * you may use this function to get the source table for a certain row.
      *
      * @access  public
@@ -750,8 +718,8 @@ abstract class DbQuery extends Object implements Serializable
         }
 
         // We expect the result to be a table.
-        if ($this->expectedResult === YANA_DB_UNKNOWN) {
-            $this->expectedResult = YANA_DB_TABLE;
+        if ($this->expectedResult === DbResultEnumeration::UNKNOWN) {
+            $this->expectedResult = DbResultEnumeration::FTABLE;
         }
 
         // assign table name and definition
@@ -839,11 +807,11 @@ abstract class DbQuery extends Object implements Serializable
              */
             $this->column = array();
             if ($this->row === '*') {
-                if ($this->expectedResult !== YANA_DB_ROW) {
-                    $this->expectedResult = YANA_DB_TABLE;
+                if ($this->expectedResult !== DbResultEnumeration::ROW) {
+                    $this->expectedResult = DbResultEnumeration::TABLE;
                 }
             } else {
-                $this->expectedResult = YANA_DB_ROW;
+                $this->expectedResult = DbResultEnumeration::ROW;
             }
 
 
@@ -880,13 +848,13 @@ abstract class DbQuery extends Object implements Serializable
              * 3.3) set column
              */
             $this->column = array(array($this->tableName, mb_strtolower($column)));
-            if ($this->row !== '*' || $this->expectedResult === YANA_DB_ROW) {
-                $this->expectedResult = YANA_DB_CELL;
+            if ($this->row !== '*' || $this->expectedResult === DbResultEnumeration::ROW) {
+                $this->expectedResult = DbResultEnumeration::CELL;
             } else {
                 if (!$this->currentTable()->getColumn($column)->isPrimaryKey()) {
                     $this->column[] = array($this->tableName, $this->table->getPrimaryKey());
                 }
-                $this->expectedResult = YANA_DB_COLUMN;
+                $this->expectedResult = DbResultEnumeration::COLUMN;
             }
 
         }
@@ -919,7 +887,7 @@ abstract class DbQuery extends Object implements Serializable
             /**
              * error - cannot set array address on a table
              */
-            if ($this->expectedResult !== YANA_DB_CELL && $this->expectedResult !== YANA_DB_COLUMN) {
+            if ($this->expectedResult !== DbResultEnumeration::CELL && $this->expectedResult !== DbResultEnumeration::COLUMN) {
                 throw new InvalidArgumentException("Array address may only be used on cells, " .
                         "not rows or tables.", E_USER_WARNING);
             }
@@ -1080,16 +1048,16 @@ abstract class DbQuery extends Object implements Serializable
              * 2.3) update type of expected result
              */
             $auto = $table->getColumn($table->getPrimaryKey());
-            if ($row === '?' || ($this->type === YANA_DB_INSERT && $auto->isAutoFill())) {
+            if ($row === '?' || ($this->type === DbQueryTypeEnumeration::INSERT && $auto->isAutoFill())) {
                 if (empty($this->column)) {
-                    $this->expectedResult = YANA_DB_ROW;
+                    $this->expectedResult = DbResultEnumeration::ROW;
                 } else {
-                    $this->expectedResult = YANA_DB_CELL;
+                    $this->expectedResult = DbResultEnumeration::CELL;
                 }
             } elseif (empty($this->column)) {
-                $this->expectedResult = YANA_DB_TABLE;
+                $this->expectedResult = DbResultEnumeration::TABLE;
             } else {
-                $this->expectedResult = YANA_DB_COLUMN;
+                $this->expectedResult = DbResultEnumeration::COLUMN;
             }
             unset ($auto);
 
@@ -1112,9 +1080,9 @@ abstract class DbQuery extends Object implements Serializable
              * 3.3) update type of expected result
              */
             if (empty($this->column) || count($this->column) > 1) {
-                $this->expectedResult = YANA_DB_ROW;
+                $this->expectedResult = DbResultEnumeration::ROW;
             } else {
-                $this->expectedResult = YANA_DB_CELL;
+                $this->expectedResult = DbResultEnumeration::CELL;
             }
         }
     }
@@ -1717,7 +1685,7 @@ abstract class DbQuery extends Object implements Serializable
                 $where = array($this->rowId, 'and', $where);
             }
         }
-        if ($this->type === YANA_DB_EXISTS && !empty($this->column)) {
+        if ($this->type === DbQueryTypeEnumeration::EXISTS && !empty($this->column)) {
             assert('!isset($column); // Cannot redeclare var $column');
             foreach ($this->getColumns() as $column)
             {
@@ -2227,6 +2195,7 @@ abstract class DbQuery extends Object implements Serializable
             $this->$key = $value;
         }
     }
+
 }
 
 ?>

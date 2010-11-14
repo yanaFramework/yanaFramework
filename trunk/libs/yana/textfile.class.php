@@ -36,6 +36,7 @@
  */
 class TextFile extends File
 {
+
     /**
      * set file content
      *
@@ -82,15 +83,12 @@ class TextFile extends File
      */
     public function appendLine($content)
     {
-        if (is_scalar($content)) {
-            if (!isset($this->content)) {
-                $this->content = array();
-            }
-            assert('is_array($this->content);');
-            array_push($this->content, $content);
-        } else {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'Scalar value', gettype($content)), E_USER_WARNING);
+        assert('is_scalar($content); // Wrong argument type $content. Scalar value expected.');
+        if (!isset($this->content)) {
+            $this->content = array();
         }
+        assert('is_array($this->content);');
+        array_push($this->content, "$content");
     }
 
     /**

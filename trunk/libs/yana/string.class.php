@@ -317,9 +317,6 @@ class String extends Utility
      *                       is not always praticable.                          </li>
      * </ul>
      *
-     * This method issues an E_USER_NOTICE and returns the integer constant
-     * STRING_UNSUPPORTED_ENCRYPTION if the $encryption parameter has an invalid value.
-     *
      * {@internal
      *
      * Note:
@@ -349,6 +346,7 @@ class String extends Utility
      * @assert ("test", "soundex") == "T230"
      * @assert ("test", "metaphone") == "TST"
      * @assert ("aaaa", "xor", "    ") == "AAAA"
+     * @throws NotImplementedException when the requested encryption method is not available
      */
     public static function encrypt($string, $encryption = "md5", $salt = "")
     {
@@ -362,8 +360,8 @@ class String extends Utility
                 if (function_exists('crc32')) {
                     return crc32($string);
                 } else {
-                    trigger_error("Unsupported encryption method: '$encryption'.", E_USER_NOTICE);
-                    return STRING_UNSUPPORTED_ENCRYPTION;
+                    $message = "Unsupported encryption method: '$encryption'.";
+                    throw new NotImplementedException($message);
                 }
             break;
             case 'md5':
@@ -378,8 +376,8 @@ class String extends Utility
                 if (function_exists('sha1')) {
                     return sha1($string);
                 } else {
-                    trigger_error("Unsupported encryption method: '$encryption'.", E_USER_NOTICE);
-                    return STRING_UNSUPPORTED_ENCRYPTION;
+                    $message = "Unsupported encryption method: '$encryption'.";
+                    throw new NotImplementedException($message);
                 }
             break;
             case 'crypt':
@@ -416,8 +414,8 @@ class String extends Utility
                     return soundex($string);
 
                 } else {
-                    trigger_error("Unsupported encryption method: '$encryption'.", E_USER_NOTICE);
-                    return STRING_UNSUPPORTED_ENCRYPTION;
+                    $message = "Unsupported encryption method: '$encryption'.";
+                    throw new NotImplementedException($message);
                 }
             break;
             case 'metaphone':
@@ -430,8 +428,8 @@ class String extends Utility
                         return metaphone($string);
                     }
                 } else {
-                    trigger_error("Unsupported encryption method: '$encryption'.", E_USER_NOTICE);
-                    return STRING_UNSUPPORTED_ENCRYPTION;
+                    $message = "Unsupported encryption method: '$encryption'.";
+                    throw new NotImplementedException($message);
                 }
             break;
             case 'xor':
@@ -443,7 +441,8 @@ class String extends Utility
                 return $string;
             break;
             default:
-                return STRING_UNSUPPORTED_ENCRYPTION;
+                $message = "Unsupported encryption method: '$encryption'.";
+                throw new NotImplementedException($message);
             break;
         }
     }

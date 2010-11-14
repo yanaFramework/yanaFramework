@@ -26,18 +26,28 @@
  */
 
 /**
- * Resource not readable
+ * <<Enumeration>> ParameterTypeEnumeration
  *
- * Thrown when you try to read from a resource, but fail: due to missing privileges, resource is
- * busy, or locked, or simply does not exist.
+ * Values describing the possible types of parameters.
+ * Eihter: input, output or both.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  database
+ *
+ * @ignore
  */
-class NotReadableException extends Report
+class DDLParameterTypeEnumeration
 {
-    /* intentionally left blank */
+
+    /**#@+
+     * Function parameter modes
+     */
+    const IN = 0;
+    const OUT = 1;
+    const INOUT = 2;
+    /**#@-*/
+
 }
 
 ?>

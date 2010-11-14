@@ -53,8 +53,8 @@ class DbBlob extends FileReadonly
      * @access  private
      */
 
-    /** @var int    */ private $size = 0;
-    /** @var string */ private $type = 'application/unknown';
+    /** @var int    */ private $_size = 0;
+    /** @var string */ private $_type = 'application/unknown';
 
     /**#@-*/
 
@@ -111,7 +111,7 @@ class DbBlob extends FileReadonly
                 case 1:
                     $buffer = trim($buffer);
                     if (is_numeric($buffer)) {
-                        $this->size = $buffer;
+                        $this->_size = $buffer;
                     } else {
                         trigger_error("Invalid filesize: '{$buffer}'.", E_USER_NOTICE);
                     }
@@ -120,7 +120,7 @@ class DbBlob extends FileReadonly
                 case 2:
                     $buffer = trim($buffer);
                     if (preg_match('/^\w+\/[\w-]+$/s', $buffer)) {
-                        $this->type = $buffer;
+                        $this->_type = $buffer;
                     } else {
                         trigger_error("Invalid MIME-Type: '{$buffer}'.", E_USER_NOTICE);
                     }
@@ -146,8 +146,8 @@ class DbBlob extends FileReadonly
      */
     public function getMimeType()
     {
-        if (isset($this->type)) {
-            return $this->type;
+        if (isset($this->_type)) {
+            return $this->_type;
         } else {
             return false;
         }
@@ -164,8 +164,8 @@ class DbBlob extends FileReadonly
      */
     public function getFilesize()
     {
-        if (isset($this->size)) {
-            return $this->size;
+        if (isset($this->_size)) {
+            return $this->_size;
         } else {
             return false;
         }

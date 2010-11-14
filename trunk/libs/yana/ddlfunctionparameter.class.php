@@ -39,13 +39,7 @@
  */
 class DDLFunctionParameter extends DDLNamedObject
 {
-    /**#@+
-     * Function parameter modes
-     */
-    const IN = 0;
-    const OUT = 1;
-    const INOUT = 2;
-    /**#@-*/
+
     /**#@+
      * @ignore
      * @access  protected
@@ -67,7 +61,7 @@ class DDLFunctionParameter extends DDLNamedObject
         'mode' => array('_mode', 'string')
     );
 
-    /** @var int    */ protected $mode = self::IN;
+    /** @var int    */ protected $mode = DDLParameterTypeEnumeration::IN;
     /** @var string */ protected $type = "";
 
     /**#@-*/
@@ -79,11 +73,6 @@ class DDLFunctionParameter extends DDLNamedObject
      */
 
     /** @var string  */ protected $_mode = null;
-    /** @var array   */ protected $_map = array(
-                            self::IN => 'in',
-                            self::OUT => 'out',
-                            self::INOUT => 'inout'
-                        );
     /**#@-*/
 
     /**
@@ -148,18 +137,18 @@ class DDLFunctionParameter extends DDLNamedObject
      * @access  public
      * @param   int  $mode  parameter input mode
      */
-    public function setMode($mode = self::IN)
+    public function setMode($mode = DDLParameterTypeEnumeration::IN)
     {
         assert('is_int($mode); // Wrong type for argument 1. Integer expected');
         switch($mode)
         {
-            case self::IN:
-            case self::OUT:
-            case self::INOUT:
+            case DDLParameterTypeEnumeration::IN:
+            case DDLParameterTypeEnumeration::OUT:
+            case DDLParameterTypeEnumeration::INOUT:
                 $this->mode = $mode;
             break;
             default:
-                $this->mode = self::IN;
+                $this->mode = DDLParameterTypeEnumeration::IN;
             break;
         }
     }
@@ -177,14 +166,14 @@ class DDLFunctionParameter extends DDLNamedObject
     {
         switch ($this->mode)
         {
-            case self::OUT:
-                $this->_mode = $this->_map[self::OUT];
+            case DDLParameterTypeEnumeration::OUT:
+                $this->_mode = 'out';
             break;
-            case self::INOUT:
-                $this->_mode = $this->_map[self::INOUT];
+            case DDLParameterTypeEnumeration::INOUT:
+                $this->_mode = 'inout';
             break;
             default:
-                $this->_mode = $this->_map[self::IN];
+                $this->_mode = 'in';
             break;
         }
         return parent::serializeToXDDL($parentNode);
@@ -212,17 +201,19 @@ class DDLFunctionParameter extends DDLNamedObject
         $ddl->_unserializeFromXDDL($node);
         switch ($ddl->_mode)
         {
-            case $ddl->_map[self::OUT]:
-                $ddl->mode = self::OUT;
+            case 'out':
+                $ddl->mode = DDLParameterTypeEnumeration::OUT;
             break;
-            case $ddl->_map[self::INOUT]:
-                $ddl->mode = self::INOUT;
+            case 'inout':
+                $ddl->mode = DDLParameterTypeEnumeration::INOUT;
             break;
             default:
-                $ddl->mode = self::IN;
+                $ddl->mode = DDLParameterTypeEnumeration::IN;
             break;
         }
         return $ddl;
     }
+
 }
+
 ?>

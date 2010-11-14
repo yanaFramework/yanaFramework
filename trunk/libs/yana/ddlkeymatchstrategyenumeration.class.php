@@ -1,6 +1,6 @@
 <?php
 /**
- * include this before any test-case
+ * YANA library
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -21,23 +21,33 @@
  *
  * This notice MAY NOT be removed.
  *
- * @package  test
+ * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- * @ignore
  */
-
-date_default_timezone_set('Europe/Paris');
 
 /**
+ * <<Enumeration>> Foreign key matching strategy Enumeration
+ *
+ * Values for possible matching strategies.
+ * Either full, partial, or simple matches.
+ *
+ * @access      public
+ * @package     yana
+ * @subpackage  database
+ *
  * @ignore
  */
-require_once dirname(__FILE__) . '/../../../library.php';
-if (!defined('CWD')) {
-    define('CWD', dirname(__FILE__) . DIRECTORY_SEPARATOR);
-}
-if (empty($_SERVER['DOCUMENT_ROOT']) && isset($_SERVER['OS']) && preg_match('/windows/i', $_SERVER['OS'])) {
-    $_SERVER['DOCUMENT_ROOT'] =  realpath(CWD . "../../../../../") . '/htdocs/';
-    $path = dirname($_SERVER["DOCUMENT_ROOT"]);
+class DDLKeyMatchStrategyEnumeration
+{
+
+    /**#@+
+     * Values for match
+     */
+    const SIMPLE = 5;
+    const FULL = 6;
+    const PARTIAL = 7;
+    /**#@-*/
+
 }
 
 ?>

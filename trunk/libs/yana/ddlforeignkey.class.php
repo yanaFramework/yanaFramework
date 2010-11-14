@@ -41,22 +41,6 @@
  */
 class DDLForeignKey extends DDLObject
 {
-    /**#@+
-     * Values for on update/delete
-     */
-    const NOACTION = 0;
-    const RESTRICT = 1;
-    const CASCADE = 2;
-    const SETNULL = 3;
-    const SETDEFAULT = 4;
-    /**#@-*/
-    /**#@+
-     * Values for match
-     */
-    const SIMPLE = 5;
-    const FULL = 6;
-    const PARTIAL = 7;
-    /**#@-*/
 
     /**#@+
      * @ignore
@@ -94,9 +78,9 @@ class DDLForeignKey extends DDLObject
     /** @var string   */ protected $description = null;
     /** @var string   */ protected $targetTable = null;
     /** @var array    */ protected $columns = array();
-    /** @var int      */ protected $match = self::SIMPLE;
-    /** @var int      */ protected $onDelete = self::NOACTION;
-    /** @var int      */ protected $onUpdate = self::NOACTION;
+    /** @var int      */ protected $match = DDLKeyMatchStrategyEnumeration::SIMPLE;
+    /** @var int      */ protected $onDelete = DDLKeyUpdateStrategyEnumeration::NOACTION;
+    /** @var int      */ protected $onUpdate = DDLKeyUpdateStrategyEnumeration::NOACTION;
     /** @var bool     */ protected $deferrable = null;
     /** @var DDLTable */ protected $parent = null;
 
@@ -111,17 +95,6 @@ class DDLForeignKey extends DDLObject
     /** @var string  */ protected $_match = null;
     /** @var string  */ protected $_onDelete = null;
     /** @var string  */ protected $_onUpdate = null;
-    /** @var array   */ protected $_map = array(
-                            self::NOACTION => 'no-action',
-                            self::RESTRICT => 'restrict',
-                            self::CASCADE => 'cascade',
-                            self::SETNULL => 'set-null',
-                            self::SETDEFAULT => 'set-default',
-                            self::SIMPLE => 'simple',
-                            self::FULL => 'full',
-                            self::PARTIAL => 'partial'
-                        );
-    /**#@-*/
 
     /**
      * constructor
@@ -235,7 +208,7 @@ class DDLForeignKey extends DDLObject
     public function setColumns(array $columns)
     {
         if (isset($this->parent)) {
-            foreach ($columns as $column) 
+            foreach ($columns as $column)
             {
                 if (!$this->parent->isColumn($column)) {
                     $message = "No such column '$column' in table '{$this->getSourceTable()}'.";
@@ -348,13 +321,13 @@ class DDLForeignKey extends DDLObject
         assert('is_numeric($match); // Wrong type for argument 1. Integer expected');
         switch($match)
         {
-            case self::SIMPLE:
-            case self::PARTIAL:
-            case self::FULL:
+            case DDLKeyMatchStrategyEnumeration::SIMPLE:
+            case DDLKeyMatchStrategyEnumeration::PARTIAL:
+            case DDLKeyMatchStrategyEnumeration::FULL:
                 $this->match = $match;
             break;
             default:
-                $this->match = self::SIMPLE;
+                $this->match = DDLKeyMatchStrategyEnumeration::SIMPLE;
             break;
         }
     }
@@ -434,15 +407,15 @@ class DDLForeignKey extends DDLObject
 
         switch($match)
         {
-            case self::NOACTION:
-            case self::RESTRICT:
-            case self::CASCADE:
-            case self::SETNULL:
-            case self::SETDEFAULT:
+            case DDLKeyUpdateStrategyEnumeration::NOACTION:
+            case DDLKeyUpdateStrategyEnumeration::RESTRICT:
+            case DDLKeyUpdateStrategyEnumeration::CASCADE:
+            case DDLKeyUpdateStrategyEnumeration::SETNULL:
+            case DDLKeyUpdateStrategyEnumeration::SETDEFAULT:
                 $this->onDelete = $match;
             break;
             default:
-                $this->onDelete = self::NOACTION;
+                $this->onDelete = DDLKeyUpdateStrategyEnumeration::NOACTION;
             break;
         }
     }
@@ -493,15 +466,15 @@ class DDLForeignKey extends DDLObject
         assert('is_int($match); // Wrong type for argument 1. Integer expected');
         switch($match)
         {
-            case self::NOACTION:
-            case self::RESTRICT:
-            case self::CASCADE:
-            case self::SETNULL:
-            case self::SETDEFAULT:
+            case DDLKeyUpdateStrategyEnumeration::NOACTION:
+            case DDLKeyUpdateStrategyEnumeration::RESTRICT:
+            case DDLKeyUpdateStrategyEnumeration::CASCADE:
+            case DDLKeyUpdateStrategyEnumeration::SETNULL:
+            case DDLKeyUpdateStrategyEnumeration::SETDEFAULT:
                 $this->onUpdate = $match;
             break;
             default:
-                $this->onUpdate = self::NOACTION;
+                $this->onUpdate = DDLKeyUpdateStrategyEnumeration::NOACTION;
             break;
         }
     }
@@ -576,50 +549,50 @@ class DDLForeignKey extends DDLObject
     {
         switch ($this->match)
         {
-            case self::PARTIAL:
-                $this->_match = $this->_map[self::PARTIAL];
+            case DDLKeyMatchStrategyEnumeration::PARTIAL:
+                $this->_match = 'partial';
             break;
-            case self::FULL:
-                $this->_match = $this->_map[self::FULL];
+            case DDLKeyMatchStrategyEnumeration::FULL:
+                $this->_match = 'full';
             break;
             default:
-                $this->_match = $this->_map[self::SIMPLE];
+                $this->_match = 'simple';
             break;
         }
         switch ($this->onDelete)
         {
-            case self::RESTRICT:
-                $this->_onDelete = $this->_map[self::RESTRICT];
+            case DDLKeyUpdateStrategyEnumeration::RESTRICT:
+                $this->_onDelete = 'restrict';
             break;
-            case self::CASCADE:
-                $this->_onDelete = $this->_map[self::CASCADE];
+            case DDLKeyUpdateStrategyEnumeration::CASCADE:
+                $this->_onDelete = 'cascade';
             break;
-            case self::SETNULL:
-                $this->_onDelete = $this->_map[self::SETNULL];
+            case DDLKeyUpdateStrategyEnumeration::SETNULL:
+                $this->_onDelete = 'set-null';
             break;
-            case self::SETDEFAULT:
-                $this->_onDelete = $this->_map[self::SETDEFAULT];
+            case DDLKeyUpdateStrategyEnumeration::SETDEFAULT:
+                $this->_onDelete = 'set-default';
             break;
             default:
-                $this->_onDelete = $this->_map[self::NOACTION];
+                $this->_onDelete = 'no-action';
             break;
         }
         switch ($this->_onUpdate)
         {
-            case self::RESTRICT:
-                $this->_onUpdate = $this->_map[self::RESTRICT];
+            case DDLKeyUpdateStrategyEnumeration::RESTRICT:
+                $this->_onUpdate = 'restrict';
             break;
-            case self::CASCADE:
-                $this->_onUpdate = $this->_map[self::CASCADE];
+            case DDLKeyUpdateStrategyEnumeration::CASCADE:
+                $this->_onUpdate = 'cascade';
             break;
-            case self::SETNULL:
-                $this->_onUpdate = $this->_map[self::SETNULL];
+            case DDLKeyUpdateStrategyEnumeration::SETNULL:
+                $this->_onUpdate = 'set-null';
             break;
-            case self::SETDEFAULT:
-                $this->_onUpdate = $this->_map[self::SETDEFAULT];
+            case DDLKeyUpdateStrategyEnumeration::SETDEFAULT:
+                $this->_onUpdate = 'set-default';
             break;
             default:
-                $this->_onUpdate = $this->_map[self::NOACTION];
+                $this->_onUpdate = 'no-action';
             break;
         }
         return parent::serializeToXDDL($parentNode);
@@ -648,50 +621,50 @@ class DDLForeignKey extends DDLObject
         $ddl->_unserializeFromXDDL($node);
         switch ($ddl->_match)
         {
-            case $ddl->_map[self::PARTIAL]:
-                $ddl->match = self::PARTIAL;
+            case 'partial':
+                $ddl->match = DDLKeyMatchStrategyEnumeration::PARTIAL;
             break;
-            case $ddl->_map[self::FULL]:
-                $ddl->match = self::FULL;
+            case 'full':
+                $ddl->match = DDLKeyMatchStrategyEnumeration::FULL;
             break;
             default:
-                $ddl->match = self::SIMPLE;
+                $ddl->match = DDLKeyMatchStrategyEnumeration::SIMPLE;
             break;
         }
         switch ($ddl->_onDelete)
         {
-            case $ddl->_map[self::RESTRICT]:
-                $ddl->onDelete = self::RESTRICT;
+            case 'restrict':
+                $ddl->onDelete = DDLKeyUpdateStrategyEnumeration::RESTRICT;
             break;
-            case $ddl->_map[self::CASCADE]:
-                $ddl->onDelete = self::CASCADE;
+            case 'cascade':
+                $ddl->onDelete = DDLKeyUpdateStrategyEnumeration::CASCADE;
             break;
-            case $ddl->_map[self::SETNULL]:
-                $ddl->onDelete = self::SETNULL;
+            case 'set-null':
+                $ddl->onDelete = DDLKeyUpdateStrategyEnumeration::SETNULL;
             break;
-            case $ddl->_map[self::SETDEFAULT]:
-                $ddl->onDelete = self::SETDEFAULT;
+            case 'set-default':
+                $ddl->onDelete = DDLKeyUpdateStrategyEnumeration::SETDEFAULT;
             break;
             default:
-                $ddl->onDelete = self::NOACTION;
+                $ddl->onDelete = DDLKeyUpdateStrategyEnumeration::NOACTION;
             break;
         }
         switch ($ddl->_onUpdate)
         {
-            case $ddl->_map[self::RESTRICT]:
-                $ddl->onUpdate = self::RESTRICT;
+            case 'restrict':
+                $ddl->onUpdate = DDLKeyUpdateStrategyEnumeration::RESTRICT;
             break;
-            case $ddl->_map[self::CASCADE]:
-                $ddl->onUpdate = self::CASCADE;
+            case 'cascade':
+                $ddl->onUpdate = DDLKeyUpdateStrategyEnumeration::CASCADE;
             break;
-            case $ddl->_map[self::SETNULL]:
-                $ddl->onUpdate = self::SETNULL;
+            case 'set-null':
+                $ddl->onUpdate = DDLKeyUpdateStrategyEnumeration::SETNULL;
             break;
-            case $ddl->_map[self::SETDEFAULT]:
-                $ddl->onUpdate = self::SETDEFAULT;
+            case 'set-default':
+                $ddl->onUpdate = DDLKeyUpdateStrategyEnumeration::SETDEFAULT;
             break;
             default:
-                $ddl->onUpdate = self::NOACTION;
+                $ddl->onUpdate = DDLKeyUpdateStrategyEnumeration::NOACTION;
             break;
         }
         if (!empty($ddl->columns)) {
@@ -700,6 +673,7 @@ class DDLForeignKey extends DDLObject
         }
         return $ddl;
     }
+
 }
 
 ?>

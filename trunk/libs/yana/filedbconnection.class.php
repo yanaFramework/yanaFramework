@@ -48,20 +48,20 @@ class FileDbConnection extends Object
      * @access  private
      */
 
-    /** @var Counter     */ private $autoIncrement = null;
-    /** @var DDLDatabase */ private $schema = null;
-    /** @var string      */ private $database = "";
-    /** @var DDLTable    */ private $table = null;
-    /** @var string      */ private $tableName = "";
-    /** @var array       */ private $src = array();
-    /** @var array       */ private $idx = array();
-    /** @var string      */ private $sort = "";
-    /** @var bool        */ private $desc = false;
-    /** @var bool        */ private $autoCommit = true;
-    /** @var array       */ private $cache = array();
-    /** @var DbQuery     */ private $query = null;
-    /** @var int         */ private $limit = 0;
-    /** @var int         */ private $offset = 0;
+    /** @var Counter     */ private $_autoIncrement = null;
+    /** @var DDLDatabase */ private $_schema = null;
+    /** @var string      */ private $_database = "";
+    /** @var DDLTable    */ private $_table = null;
+    /** @var string      */ private $_tableName = "";
+    /** @var array       */ private $_src = array();
+    /** @var array       */ private $_idx = array();
+    /** @var string      */ private $_sort = "";
+    /** @var bool        */ private $_desc = false;
+    /** @var bool        */ private $_autoCommit = true;
+    /** @var array       */ private $_cache = array();
+    /** @var DbQuery     */ private $_query = null;
+    /** @var int         */ private $_limit = 0;
+    /** @var int         */ private $_offset = 0;
 
     /**#@-*/
     /**
@@ -70,7 +70,7 @@ class FileDbConnection extends Object
      * @access  private
      * @var     string
      */
-    private static $baseDir = null;
+    private static $_baseDir = null;
 
     /**
      * constructor
@@ -79,22 +79,22 @@ class FileDbConnection extends Object
      */
     public function __construct(DDLDatabase $schema)
     {
-        if (!isset(self::$baseDir)) {
+        if (!isset(self::$_baseDir)) {
             self::setBaseDirectory();
         }
 
-        $this->schema = $schema;
-        $this->database = $schema->getName();
-        assert('!empty($this->database); // database name must not be empty');
+        $this->_schema = $schema;
+        $this->_database = $schema->getName();
+        assert('!empty($this->_database); // database name must not be empty');
 
-        if (!is_dir(self::$baseDir . $this->database)) {
-            mkdir(self::$baseDir . $this->database);
-            chmod(self::$baseDir . $this->database, 0700);
+        if (!is_dir(self::$_baseDir . $this->_database)) {
+            mkdir(self::$_baseDir . $this->_database);
+            chmod(self::$_baseDir . $this->_database, 0700);
         }
-        if (is_readable(self::$baseDir . $this->database)) {
-            $this->src[$this->database] = array();
-            $this->idx[$this->database] = array();
-            $this->cache = array();
+        if (is_readable(self::$_baseDir . $this->_database)) {
+            $this->_src[$this->_database] = array();
+            $this->_idx[$this->_database] = array();
+            $this->_cache = array();
         }
     }
 
@@ -116,7 +116,7 @@ class FileDbConnection extends Object
             $directory = DDL::getDirectory();
         }
         assert('is_dir($directory); // Wrong type for argument 1. Directory expected');
-        self::$baseDir = "$directory";
+        self::$_baseDir = "$directory";
     }
 
     /**
@@ -131,9 +131,9 @@ class FileDbConnection extends Object
         assert('is_bool($mode); // Wrong type for argument 1. Boolean expected.');
 
         if ($mode) {
-            $this->autoCommit = true;
+            $this->_autoCommit = true;
         } else {
-            $this->autoCommit = false;
+            $this->_autoCommit = false;
         }
         return 1;
     }
@@ -163,7 +163,7 @@ class FileDbConnection extends Object
      */
     public function beginTransaction()
     {
-        $this->autoCommit = false;
+        $this->_autoCommit = false;
         return 1;
     }
 
@@ -175,9 +175,9 @@ class FileDbConnection extends Object
      */
     public function rollback()
     {
-        $this->cache = array();
-        $this->src[$this->database][$this->tableName]->reset();
-        $this->idx[$this->database][$this->tableName]->rollback();
+        $this->_cache = array();
+        $this->_src[$this->_database][$this->_tableName]->reset();
+        $this->_idx[$this->_database][$this->_tableName]->rollback();
         return 1;
     }
 
@@ -245,7 +245,7 @@ class FileDbConnection extends Object
      */
     public function listTables($database = null)
     {
-        return $this->schema->getTableNames();
+        return $this->_schema->getTableNames();
     }
 
     /**
@@ -256,7 +256,7 @@ class FileDbConnection extends Object
      */
     public function listFunctions()
     {
-        return $this->schema->getFunctionNames();
+        return $this->_schema->getFunctionNames();
     }
 
     /**
@@ -268,7 +268,7 @@ class FileDbConnection extends Object
      */
     public function listSequences($database = null)
     {
-        return $this->schema->getSequenceNames();
+        return $this->_schema->getSequenceNames();
     }
 
     /**
@@ -280,7 +280,7 @@ class FileDbConnection extends Object
      */
     public function listTableFields($table)
     {
-        $table = $this->schema->getTable($table);
+        $table = $this->_schema->getTable($table);
         $columns = array();
         if ($table instanceof DDLTable) {
             $columns = $table->getColumnNames();
@@ -297,7 +297,7 @@ class FileDbConnection extends Object
      */
     public function listTableIndexes($table)
     {
-        $table = $this->schema->getTable($table);
+        $table = $this->_schema->getTable($table);
         $indexes = array();
         if ($table instanceof DDLTable) {
             foreach ($table->getIndexes() as $name)
@@ -326,9 +326,9 @@ class FileDbConnection extends Object
          *
          * error_log($dbQuery->toString() . "\n", 3, 'test.log');
          */
-        $this->query =& $dbQuery;
-        $offset = $this->query->getOffset();
-        $limit  = $this->query->getLimit();
+        $this->_query =& $dbQuery;
+        $offset = $this->_query->getOffset();
+        $limit  = $this->_query->getLimit();
 
         switch (true)
         {
@@ -336,33 +336,33 @@ class FileDbConnection extends Object
              * 1) SELECT statement
              */
             case $dbQuery instanceof DbSelect:
-                $id = $this->query->toId();
+                $id = $this->_query->toId();
                 /*
                  * 1.1) result is cached
                  */
-                if (isset($this->cache[$id])) {
+                if (isset($this->_cache[$id])) {
                     /*
                      * 1.1.1) return result
                      */
-                    return $this->cache[$id];
+                    return $this->_cache[$id];
                 }
                 /*
                  * 1.2) result is not cached
                  */
                 try {
-                    $this->_select($this->query->getTable());
+                    $this->_select($this->_query->getTable());
                 } catch (NotFoundException $e) {
-                    return new FileDbResult(null, "SQL ERROR: Table '" . $this->query->getTable() . "' is unknown.");
+                    return new FileDbResult(null, "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.");
                 }
                 /*
                  * 1.2.1) analyse query object
                  */
-                $this->sort = $this->query->getOrderBy();
-                $this->desc = $this->query->getDescending();
-                $columns = $this->query->getColumns();
-                $where = $this->query->getWhere();
-                $having = $this->query->getHaving();
-                $joins = $this->query->getJoins();
+                $this->_sort = $this->_query->getOrderBy();
+                $this->_desc = $this->_query->getDescending();
+                $columns = $this->_query->getColumns();
+                $where = $this->_query->getWhere();
+                $having = $this->_query->getHaving();
+                $joins = $this->_query->getJoins();
                 /*
                  * 1.2.2) no joined tables (simple request)
                  */
@@ -399,7 +399,7 @@ class FileDbConnection extends Object
                     $listOfResultSets = array();
                     foreach ($joins as $tableB => $clause)
                     {
-                        $resultset = $this->_join($this->tableName, $tableB, $clause[0],
+                        $resultset = $this->_join($this->_tableName, $tableB, $clause[0],
                                                   $clause[1], $columns, $where, $clause[2]);
                         if (!empty($resultset)) {
                             $listOfResultSets[] = $resultset;
@@ -433,7 +433,7 @@ class FileDbConnection extends Object
                 /*
                  * 1.2.4) move to cache
                  */
-                $this->cache[$id] = $result;
+                $this->_cache[$id] = $result;
 
                 /*
                  * 1.2.5) return result
@@ -444,26 +444,26 @@ class FileDbConnection extends Object
              * 2) SELECT count(*) statement
              */
             case $dbQuery instanceof DbSelectCount:
-                $id = $this->query->toId();
+                $id = $this->_query->toId();
                 /*
                  * 1.1) result is cached
                  */
-                if (isset($this->cache[$id])) {
+                if (isset($this->_cache[$id])) {
                     /*
                      * 1.1.1) return result
                      */
-                    return $this->cache[$id];
+                    return $this->_cache[$id];
                 }
                 /*
                  * 1.2) result is not cached
                  */
                 try {
-                    $this->_select($this->query->getTable());
+                    $this->_select($this->_query->getTable());
                 } catch (NotFoundException $e) {
-                    $message = "SQL ERROR: Table '" . $this->query->getTable() . "' is unknown.";
+                    $message = "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.";
                     return new FileDbResult(null, $message);
                 }
-                $where = $this->query->getWhere();
+                $where = $this->_query->getWhere();
 
                 /*
                  * 1.2.1) look up
@@ -478,12 +478,12 @@ class FileDbConnection extends Object
                     /*
                      * 1.2.4) move to cache
                      */
-                    $this->cache[$id] = $result;
+                    $this->_cache[$id] = $result;
                     /*
                      * 1.2.5) return result
                      */
                     return $result;
-                    $this->cache[$id] = $result;
+                    $this->_cache[$id] = $result;
                 } else {
                     return new FileDbResult(null, 'SQL ERROR: Syntax error.');
                 }
@@ -492,26 +492,26 @@ class FileDbConnection extends Object
              * 3) SELECT 1 statement
              */
             case $dbQuery instanceof DbSelectExist:
-                $id = $this->query->toId();
+                $id = $this->_query->toId();
                 /*
                  * 1.1) result is cached
                  */
-                if (isset($this->cache[$id])) {
+                if (isset($this->_cache[$id])) {
                     /*
                      * 1.1.1) return result
                      */
-                    return $this->cache[$id];
+                    return $this->_cache[$id];
                 }
                 /*
                  * 1.2) result is not cached
                  */
                 try {
-                    $this->_select($this->query->getTable());
+                    $this->_select($this->_query->getTable());
                 } catch (NotFoundException $e) {
-                    $message = "SQL ERROR: Table '" . $this->query->getTable() . "' is unknown.";
+                    $message = "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.";
                     return new FileDbResult(null, $message);
                 }
-                $where = $this->query->getWhere();
+                $where = $this->_query->getWhere();
 
                 /*
                  * 1.2.1) look up
@@ -526,7 +526,7 @@ class FileDbConnection extends Object
                 /*
                  * 1.2.3) move to cache
                  */
-                $this->cache[$id] = $result;
+                $this->_cache[$id] = $result;
                 /*
                  * 1.2.4) return result
                  */
@@ -537,25 +537,25 @@ class FileDbConnection extends Object
              */
             case $dbQuery instanceof DbUpdate:
                 try {
-                    $this->_select($this->query->getTable());
+                    $this->_select($this->_query->getTable());
                 } catch (NotFoundException $e) {
-                    $message = "SQL ERROR: Table '" . $this->query->getTable() . "' is unknown.";
+                    $message = "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.";
                     return new FileDbResult(null, $message);
                 }
-                $set = $this->query->getValues();
-                $where = $this->query->getWhere();
-                $this->sort = $this->query->getOrderBy();
-                $this->desc = $this->query->getDescending();
+                $set = $this->_query->getValues();
+                $where = $this->_query->getWhere();
+                $this->_sort = $this->_query->getOrderBy();
+                $this->_desc = $this->_query->getDescending();
 
-                $row = mb_strtoupper($this->query->getRow());
+                $row = mb_strtoupper($this->_query->getRow());
                 if ($row === '*') {
                     $message = "SQL ERROR: Cannot update entry. No primary key provided.";
                     return new FileDbResult(null, $message);
                 }
 
                 /* update cell */
-                if ($this->query->getExpectedResult() === YANA_DB_CELL) {
-                    $column = mb_strtoupper($this->query->getColumn());
+                if ($this->_query->getExpectedResult() === DbResultEnumeration::CELL) {
+                    $column = mb_strtoupper($this->_query->getColumn());
                     if ($column !== '*') {
                         $set = array($column => $set);
                     } else {
@@ -569,7 +569,7 @@ class FileDbConnection extends Object
                 }
 
                 assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
-                $primaryKey = mb_strtoupper($this->table->getPrimaryKey());
+                $primaryKey = mb_strtoupper($this->_table->getPrimaryKey());
 
                 /* get reference to Index file */
                 assert('!isset($idxfile); // Cannot redeclare var $idxfile');
@@ -577,7 +577,7 @@ class FileDbConnection extends Object
 
                 assert('!isset($columnName); // Cannot redeclare var $columnName');
                 assert('!isset($column); // Cannot redeclare var $column');
-                foreach ($this->table->getColumns() as $column)
+                foreach ($this->_table->getColumns() as $column)
                 {
                     $columnName = mb_strtoupper($column->getName());
                     if (isset($set[$columnName])) {
@@ -674,17 +674,17 @@ class FileDbConnection extends Object
              */
             case $dbQuery instanceof DbInsert:
                 try {
-                    $this->_select($this->query->getTable());
+                    $this->_select($this->_query->getTable());
                 } catch (NotFoundException $e) {
-                    $message = "SQL ERROR: Table '" . $this->query->getTable() . "' is unknown.";
+                    $message = "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.";
                     return new FileDbResult(null, $message);
                 }
-                $set = $this->query->getValues();
+                $set = $this->_query->getValues();
                 assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
-                $primaryKey = $this->table->getPrimaryKey();
+                $primaryKey = $this->_table->getPrimaryKey();
                 if (empty($set)) {
                     return new FileDbResult(null, 'SQL ERROR: The statement contains illegal values.');
-                } elseif ($this->table->getColumn($primaryKey)->isAutoIncrement()) {
+                } elseif ($this->_table->getColumn($primaryKey)->isAutoIncrement()) {
                     $this->_increment($set);
                 }
 
@@ -692,7 +692,7 @@ class FileDbConnection extends Object
                     $primaryValue = $set[$primaryKey];
                     unset($set[$primaryKey]);
                 } else {
-                    $primaryValue = $this->query->getRow();
+                    $primaryValue = $this->_query->getRow();
                     if ($primaryValue === '*') {
                         $message = "SQL ERROR: Cannot insert entry. No primary key provided.";
                         return new FileDbResult(null, $message);
@@ -709,7 +709,7 @@ class FileDbConnection extends Object
                 /* create column */
                 assert('!isset($column); // Cannot redeclare var $column');
                 assert('!isset($columnName); // Cannot redeclare var $columnName');
-                foreach ($this->table->getColumns() as $column)
+                foreach ($this->_table->getColumns() as $column)
                 {
                     $columnName = mb_strtoupper($column->getName());
                     if (isset($set[$columnName])) {
@@ -780,34 +780,34 @@ class FileDbConnection extends Object
              */
             case $dbQuery instanceof DbDelete:
                 try {
-                    $this->_select($this->query->getTable());
+                    $this->_select($this->_query->getTable());
                 } catch (NotFoundException $e) {
-                    $message = "SQL ERROR: Table '" . $this->query->getTable() . "' is unknown.";
+                    $message = "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.";
                     return new FileDbResult(null, $message);
                 }
 
-                $where = $this->query->getWhere();
-                $this->sort = $this->query->getOrderBy();
-                $this->desc = $this->query->getDescending();
-                $limit = $this->query->getLimit();
+                $where = $this->_query->getWhere();
+                $this->_sort = $this->_query->getOrderBy();
+                $this->_desc = $this->_query->getDescending();
+                $limit = $this->_query->getLimit();
 
                 $smlfile =& $this->_getSmlFile();
                 $idxfile =& $this->_getIndexFile();
 
                 assert('!isset($rows); // Cannot redeclare var $rows');
-                $rows = $this->_get(array($this->table->getPrimaryKey()), $where, array(), 0, $limit);
+                $rows = $this->_get(array($this->_table->getPrimaryKey()), $where, array(), 0, $limit);
 
                 if (empty($rows)) {
                     /* error */
 
-                    if ($dbQuery->getExpectedResult() === YANA_DB_ROW) {
+                    if ($dbQuery->getExpectedResult() === DbResultEnumeration::ROW) {
                         return new FileDbResult(null, "SQL-ERROR: unable to delete; entry does not exist");
                     } else {
                         return new FileDbResult(array());
                     }
                 } else {
                     assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
-                    $primaryKey = mb_strtoupper($this->table->getPrimaryKey());
+                    $primaryKey = mb_strtoupper($this->_table->getPrimaryKey());
                     assert('!isset($row); // Cannot redeclare var $row');
                     foreach ($rows as $row)
                     {
@@ -827,7 +827,7 @@ class FileDbConnection extends Object
              * 7) invalid or unknown statement
              */
             default:
-                $message = "Invalid or unknown SQL statement: {$this->query}.";
+                $message = "Invalid or unknown SQL statement: {$this->_query}.";
                 throw new InvalidArgumentException($message, E_USER_ERROR);
             break;
         }
@@ -857,7 +857,7 @@ class FileDbConnection extends Object
         /*
          * 1) parse SQL
          */
-        $dbQuery = new DbQueryParser(Yana::connect($this->database));
+        $dbQuery = new DbQueryParser(Yana::connect($this->_database));
         /*
          * 2) error - throw a line if invalid or (possibly) hazardous statement is encountered
          */
@@ -886,9 +886,9 @@ class FileDbConnection extends Object
     public function query($sqlStmt)
     {
         assert('is_string($sqlStmt); // Wrong type for argument 1. String expected');
-        $offset = $this->offset;
-        $limit = $this->limit;
-        $this->offset = $this->limit = 0;
+        $offset = $this->_offset;
+        $limit = $this->_limit;
+        $this->_offset = $this->_limit = 0;
         return $this->limitQuery("$sqlStmt", $offset, $limit);
     }
 
@@ -907,10 +907,10 @@ class FileDbConnection extends Object
         assert('is_string($limit); // Wrong type for argument 1. Integer expected');
         assert('is_null($offset) || is_int($offset); // Wrong type for argument 2. Integer expected');
         if ($limit >= 0) {
-            $this->limit = (int) $limit;
+            $this->_limit = (int) $limit;
         }
         if (!is_null($offset) && $offset >= 0) {
-            $this->offset = (int) $offset;
+            $this->_offset = (int) $offset;
         }
         return 1;
     }
@@ -984,9 +984,9 @@ class FileDbConnection extends Object
         $tableName = mb_strtolower(trim("$tableName"));
 
         // if is cached, set current table from cache
-        if (isset($this->src[$this->database][$tableName])) {
-            $this->tableName = $tableName;
-            $this->table = $this->schema->getTable($tableName);
+        if (isset($this->_src[$this->_database][$tableName])) {
+            $this->_tableName = $tableName;
+            $this->_table = $this->_schema->getTable($tableName);
             return;
         }
 
@@ -994,7 +994,7 @@ class FileDbConnection extends Object
          * get associated data-source for selected table
          */
         assert('!isset($table); // Cannot redeclare $table');
-        $table = $this->schema->getTable($tableName);
+        $table = $this->_schema->getTable($tableName);
 
         if (!$table instanceof DDLTable) {
             throw new NotFoundException("No such table '$tableName'.");
@@ -1004,21 +1004,21 @@ class FileDbConnection extends Object
         assert('!isset($database); // Cannot redeclare $database');
         // get data source from parent (if it exists)
         if (!$parent instanceof DDLDatabase) {
-            $database = $this->schema->getName();
+            $database = $this->_schema->getName();
         } else {
             $database = $parent->getName();
         }
         unset($parent);
 
         if (is_null($database)) {
-            $database = $this->database;
+            $database = $this->_database;
         }
         assert('is_string($database); // Unexpected result: $database must be a string');
-        assert('!empty($this->database); // Unexpected result: $database must not be empty');
+        assert('!empty($this->_database); // Unexpected result: $database must not be empty');
 
         // set current table
-        $this->tableName = $tableName;
-        $this->table = $table;
+        $this->_tableName = $tableName;
+        $this->_table = $table;
 
         /*
          * open source file(s)
@@ -1026,9 +1026,9 @@ class FileDbConnection extends Object
         $this->_setSmlFile($database);
         $this->_setIndexFile($database);
 
-        assert('$this->table instanceof DDLTable; // Table not found in Schema');
-        assert('is_string($this->tableName); // Unexpected result: $this->tableName must be a string');
-        assert('$this->tableName !== ""; // Unexpected result: $this->tableName must not be empty');
+        assert('$this->_table instanceof DDLTable; // Table not found in Schema');
+        assert('is_string($this->_tableName); // Unexpected result: $this->_tableName must be a string');
+        assert('$this->_tableName !== ""; // Unexpected result: $this->_tableName must not be empty');
     }
 
     /**
@@ -1045,13 +1045,13 @@ class FileDbConnection extends Object
         /*
          * 1) initialize counter
          */
-        if (is_null($this->autoIncrement)) {
+        if (is_null($this->_autoIncrement)) {
             try {
-                $name = __CLASS__ . '\\' . $this->database . '\\' . $this->tableName;
-                $this->autoIncrement = new Sequence($name);
+                $name = __CLASS__ . '\\' . $this->_database . '\\' . $this->_tableName;
+                $this->_autoIncrement = new Sequence($name);
             } catch (NotFoundException $e) {
                 Sequence::create($name);
-                $this->autoIncrement = new Sequence($name);
+                $this->_autoIncrement = new Sequence($name);
                 unset($e);
             }
             unset($name);
@@ -1060,9 +1060,9 @@ class FileDbConnection extends Object
         /*
          * 2) simulate auto-increment
          */
-        $primaryKey = $this->table->getPrimaryKey();
+        $primaryKey = $this->_table->getPrimaryKey();
         if (empty($set[$primaryKey])) {
-            $index = $this->autoIncrement->getNextValue();
+            $index = $this->_autoIncrement->getNextValue();
             $set[$primaryKey] = $index;
         }
     }
@@ -1080,16 +1080,16 @@ class FileDbConnection extends Object
     private function _length(array $where)
     {
         /* if table does not exist, then there is nothing to get */
-        if (!isset($this->src[$this->database][$this->tableName])) {
+        if (!isset($this->_src[$this->_database][$this->_tableName])) {
             return 0;
         }
 
         if (empty($where)) {
-            $smlfile =& $this->src[$this->database][$this->tableName];
+            $smlfile =& $this->_src[$this->_database][$this->_tableName];
             /*
              * note: the first index is the primary key - NOT the table name
              */
-            return $smlfile->length($this->table->getPrimaryKey());
+            return $smlfile->length($this->_table->getPrimaryKey());
         } else {
             $result = $this->_get(array(), $where);
             return count($result);
@@ -1122,14 +1122,14 @@ class FileDbConnection extends Object
         $offset = (int) $offset;
 
         // if table does not exist, then there is nothing to get
-        if (!isset($this->src[$this->database][$this->tableName])) {
+        if (!isset($this->_src[$this->_database][$this->_tableName])) {
             return array();
         }
 
         // initialize vars
         $result     =  array();
         $smlfile    =& $this->_getSmlFile();
-        $primaryKey =  mb_strtoupper($this->table->getPrimaryKey($this->tableName));
+        $primaryKey =  mb_strtoupper($this->_table->getPrimaryKey($this->_tableName));
         $data       =  $smlfile->getVar($primaryKey);
 
         // if the target table is empty ...
@@ -1150,10 +1150,10 @@ class FileDbConnection extends Object
         $this->_doSort($data);
 
         // 3) apply where clause
-        switch ($this->query->getExpectedResult())
+        switch ($this->_query->getExpectedResult())
         {
-            case YANA_DB_TABLE:
-            case YANA_DB_COLUMN:
+            case DbResultEnumeration::TABLE:
+            case DbResultEnumeration::COLUMN:
                 $doCollapse = count($columns) > 1;
             break;
             default:
@@ -1250,13 +1250,13 @@ class FileDbConnection extends Object
          * in which the entries where inserted. If descending order is requested, the
          * order will be reversed, so the latest entries will come first and the oldest last.
          */
-        if (!empty($this->desc) && empty($this->sort)) {
+        if (!empty($this->_desc) && empty($this->_sort)) {
             $result = array_reverse($result);
         /*
          * If a column has been provided to sort entries by, then the resultset will get sorted
          * by it.
          */
-        } elseif (!empty($this->sort)) {
+        } elseif (!empty($this->_sort)) {
             uasort($result, array($this, '_sort'));
         }
     }
@@ -1275,10 +1275,10 @@ class FileDbConnection extends Object
     private function _sort(array $a, array $b, array $columns = null, array $desc = null)
     {
         if (is_null($columns)) {
-            $columns = $this->sort;
+            $columns = $this->_sort;
         }
         if (is_null($desc)) {
-            $desc = $this->desc;
+            $desc = $this->_desc;
         }
         if (count($columns) === 0) {
             return 0;
@@ -1355,15 +1355,15 @@ class FileDbConnection extends Object
         /* settype to BOOLEAN */
         $commit = (bool) $commit;
 
-        $this->cache = array();
+        $this->_cache = array();
 
         /* wait for commit */
-        if (!$commit && !$this->autoCommit) {
+        if (!$commit && !$this->_autoCommit) {
             return new FileDbResult(array());
         }
 
         /* commit */
-        foreach ($this->src[$this->database] as $table)
+        foreach ($this->_src[$this->_database] as $table)
         {
             if (!$table->exists()) {
                 // auto-create missing file
@@ -1420,7 +1420,7 @@ class FileDbConnection extends Object
         /* get a cursor on A */
         try {
             $this->_select($tableA); // may throw NotFoundException
-            $tableADef = $this->schema->getTable($tableA);
+            $tableADef = $this->_schema->getTable($tableA);
             $columnADef = $tableADef->getColumn($columnA);
             $aIsPk = $columnADef->isPrimaryKey();
             $pkA = mb_strtoupper($tableADef->getPrimaryKey());
@@ -1436,7 +1436,7 @@ class FileDbConnection extends Object
         /* get a cursor on B */
         try {
             $this->_select($tableB); // may throw NotFoundException
-            $tableBDef = $this->schema->getTable($tableB);
+            $tableBDef = $this->_schema->getTable($tableB);
             $columnBDef = $tableBDef->getColumn($columnB);
             $bIsPk = $columnBDef->isPrimaryKey();
             $pkB = mb_strtoupper($tableBDef->getPrimaryKey());
@@ -1459,10 +1459,10 @@ class FileDbConnection extends Object
         $indexA =  null;
         $indexB =  null;
         if ($columnADef->hasIndex()) {
-            $indexA =& $this->idx[$this->database][$this->tableName];
+            $indexA =& $this->_idx[$this->_database][$this->_tableName];
         }
         if ($columnBDef->hasIndex()) {
-            $indexB =& $this->idx[$this->database][$this->tableName];
+            $indexB =& $this->_idx[$this->_database][$this->_tableName];
         }
 
         if (empty($columns)) {
@@ -1699,11 +1699,11 @@ class FileDbConnection extends Object
         if (is_array($leftOperand)) { // content is: table.column
             $tableName = array_shift($leftOperand); // get table name
             $leftOperand = array_shift($leftOperand); // get just the column
-            $table = $this->schema->getTable($tableName);
+            $table = $this->_schema->getTable($tableName);
             assert('$table instanceof DDLTable; // Table not found: ' . $tableName);
             unset($tableName);
         } else {
-            $table = $this->table;
+            $table = $this->_table;
         }
         if (isset($current[mb_strtoupper($leftOperand)])) {
             $value = $current[mb_strtoupper($leftOperand)];
@@ -1801,7 +1801,7 @@ class FileDbConnection extends Object
      */
     private function &_getIndexFile()
     {
-        $idxfile =& $this->idx[$this->database][$this->tableName];
+        $idxfile =& $this->_idx[$this->_database][$this->_tableName];
         if (!is_object($idxfile)) {
             trigger_error("No index-file found.", E_USER_ERROR);
         }
@@ -1819,8 +1819,8 @@ class FileDbConnection extends Object
     {
         $filename = $this->_getFilename($database, 'idx');
         $smlfile =& $this->_getSmlFile();
-        $idxfile = new FileDbIndex($this->table, $smlfile, $filename);
-        $this->idx[$this->database][$this->tableName] =& $idxfile;
+        $idxfile = new FileDbIndex($this->_table, $smlfile, $filename);
+        $this->_idx[$this->_database][$this->_tableName] =& $idxfile;
     }
 
     /**
@@ -1832,7 +1832,7 @@ class FileDbConnection extends Object
      */
     private function &_getSmlFile()
     {
-        return $this->src[$this->database][$this->tableName];
+        return $this->_src[$this->_database][$this->_tableName];
     }
 
     /**
@@ -1845,13 +1845,13 @@ class FileDbConnection extends Object
      */
     private function _setSmlFile($database)
     {
-        if (!isset($this->src[$this->database][$this->tableName])) {
+        if (!isset($this->_src[$this->_database][$this->_tableName])) {
             $filename = $this->_getFilename($database, 'sml');
             $smlfile = new SML($filename, CASE_UPPER);
             if (!$smlfile->exists()) {
                 $smlfile->create();
-                if ($database != $this->database) {
-                    $filename = $this->_getFilename($this->database, 'sml');
+                if ($database != $this->_database) {
+                    $filename = $this->_getFilename($this->_database, 'sml');
                     $smlfile = new SML($filename, CASE_UPPER);
                     if (!$smlfile->exists()) {
                         $smlfile->create();
@@ -1860,7 +1860,7 @@ class FileDbConnection extends Object
             }
             $smlfile->failSafeRead();
 
-            $this->src[$this->database][$this->tableName] =& $smlfile;
+            $this->_src[$this->_database][$this->_tableName] =& $smlfile;
         }
     }
 
@@ -1869,13 +1869,13 @@ class FileDbConnection extends Object
      *
      * @access  private
      * @param   string  $database   database name
-     * @param   string  $extension  extension 
+     * @param   string  $extension  extension
      * @return  string
      * @ignore
      */
     private function _getFilename($database, $extension)
     {
-        return realpath(self::$baseDir) . '/' . $database . '/' . $this->tableName . '.' . $extension;
+        return realpath(self::$_baseDir) . '/' . $database . '/' . $this->_tableName . '.' . $extension;
     }
 
     /**
@@ -1895,10 +1895,10 @@ class FileDbConnection extends Object
     public function equals(object $anotherObject)
     {
         if ($anotherObject instanceof $this) {
-            if (!isset($this->schema) || !isset($anotherObject->schema)) {
-                return isset($this->schema) === isset($anotherObject->schema);
+            if (!isset($this->_schema) || !isset($anotherObject->_schema)) {
+                return isset($this->_schema) === isset($anotherObject->_schema);
 
-            } elseif ($this->schema->equals($anotherObject->schema)) {
+            } elseif ($this->_schema->equals($anotherObject->_schema)) {
 
                 return true;
             } else {

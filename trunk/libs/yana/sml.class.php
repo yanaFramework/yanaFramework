@@ -49,6 +49,7 @@ if (!defined('CASE_MIXED')) {
  */
 class SML extends File
 {
+
     /**
      * is file already loaded
      *
@@ -56,7 +57,7 @@ class SML extends File
      * @var     bool
      * @ignore
      */
-    private $isReady = false;
+    private $_isReady = false;
 
     /**
      * treat keys as
@@ -264,7 +265,7 @@ class SML extends File
     {
         assert('is_scalar($key); /* Wrong argument type for argument 1. String expected. */');
         $key = $this->_convertKey($key);
-        $this->isReady = true;
+        $this->_isReady = true;
         if (is_array($value)) {
             $this->_setKeyCase($value);
         }
@@ -287,7 +288,7 @@ class SML extends File
     {
         assert('is_scalar($key); // Wrong argument type for argument 1. String expected.');
         $key = $this->_convertKey($key);
-        $this->isReady = true;
+        $this->_isReady = true;
         if (is_array($value)) {
             $this->_setKeyCase($value);
         }
@@ -319,7 +320,7 @@ class SML extends File
     {
         $this->_setKeyCase($array);
         $this->content = $array;
-        $this->isReady = true;
+        $this->_isReady = true;
         return true;
     }
 
@@ -373,14 +374,14 @@ class SML extends File
      */
     public function read()
     {
-        if (!$this->isReady) {
+        if (!$this->_isReady) {
             parent::read();
             assert('is_array($this->content); /* unexpected result: $this->content */');
 
             $this->content = $this->decoder->_getFile($this->content, $this->caseSensitive);
             assert('is_array($this->content); /* unexpected result: $this->content */');
 
-            $this->isReady = true; // setting $this->ready state
+            $this->_isReady = true; // setting $this->ready state
         }
     }
 
@@ -1016,6 +1017,7 @@ class SML extends File
     {
         return self::getFile($input, $caseSensitive);
     }
+
 }
 
 ?>

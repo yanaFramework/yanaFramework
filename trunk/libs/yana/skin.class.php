@@ -36,7 +36,7 @@
  *
  * @ignore
  */
-class Skin implements IsReportable, IsSerializable
+class Skin implements IsReportable
 {
     /**
      * Name of currently selected main skin
@@ -45,7 +45,7 @@ class Skin implements IsReportable, IsSerializable
      * @static
      * @var     string
      */
-    private static $selectedSkin = "default";
+    private static $_selectedSkin = "default";
 
     /**
      * List of existing instances
@@ -54,7 +54,7 @@ class Skin implements IsReportable, IsSerializable
      * @static
      * @var     array
      */
-    private static $instances = array();
+    private static $_instances = array();
 
     /**
      * a list of all skins installed
@@ -63,7 +63,7 @@ class Skin implements IsReportable, IsSerializable
      * @static
      * @var     array
      */
-    private static $skins;
+    private static $_skins;
 
     /**
      * file extension for language definition files
@@ -72,19 +72,19 @@ class Skin implements IsReportable, IsSerializable
      * @static
      * @var     string
      */
-    private static $fileExtension = ".skin.xml";
+    private static $_fileExtension = ".skin.xml";
 
     /**#@+
      * @ignore
      * @access  private
      */
 
-    /** @var string */ private $name = "default";
-    /** @var array  */ private $value = array();
-    /** @var string */ private $title = "";
-    /** @var string */ private $author = "";
-    /** @var string */ private $url = "";
-    /** @var array  */ private $descriptions = array();
+    /** @var string */ private $_name = "default";
+    /** @var array  */ private $_value = array();
+    /** @var string */ private $_title = "";
+    /** @var string */ private $_author = "";
+    /** @var string */ private $_url = "";
+    /** @var array  */ private $_descriptions = array();
 
     /**#@-*/
 
@@ -96,7 +96,7 @@ class Skin implements IsReportable, IsSerializable
      * @var array
      * @ignore
      */
-    private static $filePaths = array();
+    private static $_filePaths = array();
 
     /**
      * base directory
@@ -105,7 +105,7 @@ class Skin implements IsReportable, IsSerializable
      * @static
      * @var     string
      */
-    private static $baseDirectory = "";
+    private static $_baseDirectory = "";
 
     /**
      * get skin
@@ -124,12 +124,12 @@ class Skin implements IsReportable, IsSerializable
     public static function &getInstance($skinName = null)
     {
         if (empty($skinName)) {
-            $skinName = self::$selectedSkin;
+            $skinName = self::$_selectedSkin;
         }
-        if (!isset(self::$instances[$skinName])) {
-            self::$instances[$skinName] = new Skin($skinName);
+        if (!isset(self::$_instances[$skinName])) {
+            self::$_instances[$skinName] = new Skin($skinName);
         }
-        return self::$instances[$skinName];
+        return self::$_instances[$skinName];
     }
 
     /**
@@ -145,34 +145,20 @@ class Skin implements IsReportable, IsSerializable
     {
         assert('is_string($skinName); // Wrong type for argument 1. String expected');
 
-        $this->name = "$skinName";
-        $this->value = array();
+        $this->_name = "$skinName";
+        $this->_value = array();
 
         /* Load Defaults first */
-        if ($this->name !== 'default') {
+        if ($this->_name !== 'default') {
             $this->_loadTemplates('default');
         }
 
         /* Overwrite Defaults where needed */
-        $this->_loadTemplates($this->name);
+        $this->_loadTemplates($this->_name);
 
         /* select as main skin, if there is no other */
-        if (!isset(self::$selectedSkin)) {
+        if (!isset(self::$_selectedSkin)) {
             $this->selectMainSkin();
-        }
-    }
-
-    /**
-     * re-initialize main instance
-     *
-     * @access  public
-     * @ignore
-     */
-    public function __wakeup()
-    {
-        self::$instances[$this->getName()] = $this;
-        if (!isset(self::$selectedSkin)) {
-            self::selectSkin($this);
         }
     }
 
@@ -185,7 +171,7 @@ class Skin implements IsReportable, IsSerializable
      */
     public function selectMainSkin()
     {
-        self::$selectedSkin = $this->getName();
+        self::$_selectedSkin = $this->getName();
     }
 
     /**
@@ -199,7 +185,7 @@ class Skin implements IsReportable, IsSerializable
      */
     public function isSelected()
     {
-        return self::$selectedSkin === $this->getName();
+        return self::$_selectedSkin === $this->getName();
     }
 
     /**
@@ -215,7 +201,7 @@ class Skin implements IsReportable, IsSerializable
      */
     public static function setBaseDirectory(Dir $baseDirectory)
     {
-        self::$baseDirectory = $baseDirectory->getPath();
+        self::$_baseDirectory = $baseDirectory->getPath();
     }
 
     /**
@@ -249,16 +235,16 @@ class Skin implements IsReportable, IsSerializable
         unset($file);
         // get information
         if (!empty($xml)) {
-            $dir = self::$baseDirectory;
+            $dir = self::$_baseDirectory;
             // head
             if ($xml->head) {
-                $this->title = (string) $xml->head->title;
-                $this->author = (string) implode(', ', (array) $xml->head->author);
-                $this->url = (string) $xml->head->url;
+                $this->_title = (string) $xml->head->_title;
+                $this->_author = (string) implode(', ', (array) $xml->head->_author);
+                $this->_url = (string) $xml->head->_url;
                 assert('!isset($description); // Cannot redeclare var $description');
                 foreach ($xml->head->description as $description)
                 {
-                    $this->descriptions[(string) $description->attributes()->lang] = (string) $description;
+                    $this->_descriptions[(string) $description->attributes()->lang] = (string) $description;
                 }
                 unset($description);
             }
@@ -279,7 +265,7 @@ class Skin implements IsReportable, IsSerializable
                         unset($file);
                         continue;
                     }
-                    $this->value[$id]['FILE'] = $file;
+                    $this->_value[$id]['FILE'] = $file;
                     unset($file);
                 }
                 unset($attributes);
@@ -303,9 +289,9 @@ class Skin implements IsReportable, IsSerializable
                         // fall through
                         case 'LANGUAGE':
                             if (!isset($attributes['id'])) {
-                                $this->value[$id][$name][] = "$item";
+                                $this->_value[$id][$name][] = "$item";
                             } else {
-                                $this->value[$id][$name][(string) $attributes['id']] = "$item";
+                                $this->_value[$id][$name][(string) $attributes['id']] = "$item";
                             }
                         break;
                     }
@@ -333,20 +319,20 @@ class Skin implements IsReportable, IsSerializable
         $key = mb_strtoupper("$key");
 
         // load file
-        if (!isset(self::$filePaths[$key])) {
+        if (!isset(self::$_filePaths[$key])) {
 
             // load language files, stylesheets and scripts
             self::loadDependencies($key); // throws NotFoundException
 
             // cache the name of the file
-            if (!isset($this->value[$key]['FILE'])) {
+            if (!isset($this->_value[$key]['FILE'])) {
                 throw new NotFoundException("Missing file attribute for template with id '$key'.");
             }
-            self::$filePaths[$key] = $this->value[$key]['FILE'];
+            self::$_filePaths[$key] = $this->_value[$key]['FILE'];
 
         }
 
-        return self::$filePaths[$key];
+        return self::$_filePaths[$key];
     }
 
     /**
@@ -364,7 +350,7 @@ class Skin implements IsReportable, IsSerializable
         assert('is_string($key); // Wrong type for argument 1. String expected');
         $key = mb_strtoupper("$key");
 
-        if (!isset($this->value[$key])) {
+        if (!isset($this->_value[$key])) {
             throw new NotFoundException("Template '$key' not found.");
         }
 
@@ -400,10 +386,10 @@ class Skin implements IsReportable, IsSerializable
         assert('is_string($filename); // Wrong argument type argument 2. String expected');
         assert('is_file($filename); // Invalid argument 2. File not found');
         $key = mb_strtoupper("$key");
-        if (empty($this->value[$key])) {
-            $this->value[$key] = array();
+        if (empty($this->_value[$key])) {
+            $this->_value[$key] = array();
         }
-        $this->value[$key]['FILE'] = $filename;
+        $this->_value[$key]['FILE'] = $filename;
     }
 
     /**
@@ -424,7 +410,7 @@ class Skin implements IsReportable, IsSerializable
             return false;
         } else {
             $key = mb_strtoupper("$key");
-            return isset($this->value[$key]['FILE']);
+            return isset($this->_value[$key]['FILE']);
         }
     }
 
@@ -571,7 +557,7 @@ class Skin implements IsReportable, IsSerializable
         } else {
             $key = mb_strtoupper("$key");
         }
-        if (!isset($this->value[$key])) {
+        if (!isset($this->_value[$key])) {
             return false;
         }
 
@@ -584,8 +570,8 @@ class Skin implements IsReportable, IsSerializable
              * 1.1) unset list
              */
             if ($file === "") {
-                if (isset($this->value[$key][$propertyName])) {
-                    unset($this->value[$key][$propertyName]);
+                if (isset($this->_value[$key][$propertyName])) {
+                    unset($this->_value[$key][$propertyName]);
                 }
                 return true;
 
@@ -593,10 +579,10 @@ class Skin implements IsReportable, IsSerializable
              * 1.2) add file
              */
             } else {
-                if (!isset($this->value[$key][$propertyName])) {
-                    $this->value[$key][$propertyName] = array();
+                if (!isset($this->_value[$key][$propertyName])) {
+                    $this->_value[$key][$propertyName] = array();
                 }
-                $this->value[$key][$propertyName][] = $file;
+                $this->_value[$key][$propertyName][] = $file;
                 return true;
 
             }
@@ -604,7 +590,7 @@ class Skin implements IsReportable, IsSerializable
         /*
          * 2) modify particular entry
          */
-        } elseif (!isset($this->value[$key][$propertyName]) || !is_array($this->value[$key][$propertyName])) {
+        } elseif (!isset($this->_value[$key][$propertyName]) || !is_array($this->_value[$key][$propertyName])) {
             return false;
 
         } else {
@@ -612,8 +598,8 @@ class Skin implements IsReportable, IsSerializable
              * 2.1) unset file
              */
             if ($file === "") {
-                if (isset($this->value[$key][$propertyName][$name])) {
-                    unset($this->value[$key][$propertyName][$name]);
+                if (isset($this->_value[$key][$propertyName][$name])) {
+                    unset($this->_value[$key][$propertyName][$name]);
                     return true;
 
                 } else {
@@ -624,10 +610,10 @@ class Skin implements IsReportable, IsSerializable
              * 2.2) replace file
              */
             } else {
-                if (!isset($this->value[$key][$propertyName])) {
-                    $this->value[$key][$propertyName] = array();
+                if (!isset($this->_value[$key][$propertyName])) {
+                    $this->_value[$key][$propertyName] = array();
                 }
-                $this->value[$key][$propertyName][$name] = $file;
+                $this->_value[$key][$propertyName][$name] = $file;
                 return true;
 
             }
@@ -656,14 +642,14 @@ class Skin implements IsReportable, IsSerializable
             $key = mb_strtoupper("$key");
         }
 
-        if (!isset($this->value[$key])) {
+        if (!isset($this->_value[$key])) {
             return array();
         }
 
-        if (!isset($this->value[$key][$propertyName]) || !is_array($this->value[$key][$propertyName])) {
+        if (!isset($this->_value[$key][$propertyName]) || !is_array($this->_value[$key][$propertyName])) {
             return array();
         } else {
-            return $this->value[$key][$propertyName];
+            return $this->_value[$key][$propertyName];
         }
     }
 
@@ -707,24 +693,24 @@ class Skin implements IsReportable, IsSerializable
      */
     public static function getSkins()
     {
-        if (!isset(self::$skins)) {
-            self::$skins = array();
-            $path = self::$baseDirectory;
-            foreach (glob($path . "*" . self::$fileExtension) as $file)
+        if (!isset(self::$_skins)) {
+            self::$_skins = array();
+            $path = self::$_baseDirectory;
+            foreach (glob($path . "*" . self::$_fileExtension) as $file)
             {
-                $id = basename($file, self::$fileExtension);
+                $id = basename($file, self::$_fileExtension);
                 $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
                 if (!empty($xml)) {
-                    $title = (string) $xml->head->title;
+                    $title = (string) $xml->head->_title;
                 } else {
                     $title = $id;
                 }
-                self::$skins[$id] = $title;
+                self::$_skins[$id] = $title;
             }
         }
-        assert('is_array(self::$skins);');
-        if (is_array(self::$skins)) {
-            return self::$skins;
+        assert('is_array(self::$_skins);');
+        if (is_array(self::$_skins)) {
+            return self::$_skins;
         } else {
             return array();
         }
@@ -741,8 +727,8 @@ class Skin implements IsReportable, IsSerializable
      */
     public function getName()
     {
-        assert('is_string($this->name);');
-        return $this->name;
+        assert('is_string($this->_name);');
+        return $this->_name;
     }
 
     /**
@@ -753,7 +739,7 @@ class Skin implements IsReportable, IsSerializable
      */
     public function getPath()
     {
-        return self::getSkinPath($this->name);
+        return self::getSkinPath($this->_name);
     }
 
     /**
@@ -764,7 +750,7 @@ class Skin implements IsReportable, IsSerializable
      */
     public function getDirectory()
     {
-        return self::getSkinDirectory($this->name);
+        return self::getSkinDirectory($this->_name);
     }
 
     /**
@@ -780,7 +766,7 @@ class Skin implements IsReportable, IsSerializable
     public static function getSkinDirectory($skinName)
     {
         assert('is_string($skinName); // Wrong type for argument 1. String expected');
-        return self::$baseDirectory . "$skinName/";
+        return self::$_baseDirectory . "$skinName/";
     }
 
     /**
@@ -796,7 +782,7 @@ class Skin implements IsReportable, IsSerializable
     public static function getSkinPath($skinName)
     {
         assert('is_string($skinName); // Wrong type for argument 1. String expected');
-        return self::$baseDirectory . "$skinName" . self::$fileExtension;
+        return self::$_baseDirectory . "$skinName" . self::$_fileExtension;
     }
 
     /**
@@ -814,14 +800,14 @@ class Skin implements IsReportable, IsSerializable
         $lang = Language::getInstance();
         switch (true)
         {
-            case isset($this->descriptions[$lang->getLocale()]):
-                return $this->descriptions[$lang->getLocale()];
+            case isset($this->_descriptions[$lang->getLocale()]):
+                return $this->_descriptions[$lang->getLocale()];
             break;
-            case isset($this->descriptions[$lang->getLanguage()]):
-                return $this->descriptions[$lang->getLanguage()];
+            case isset($this->_descriptions[$lang->getLanguage()]):
+                return $this->_descriptions[$lang->getLanguage()];
             break;
-            case isset($this->descriptions['']):
-                return $this->descriptions[''];
+            case isset($this->_descriptions['']):
+                return $this->_descriptions[''];
             break;
             default:
                 return "";
@@ -850,7 +836,7 @@ class Skin implements IsReportable, IsSerializable
      */
     public function getTitle()
     {
-        return $this->title;
+        return $this->_title;
     }
 
     /**
@@ -865,7 +851,7 @@ class Skin implements IsReportable, IsSerializable
      */
     public function getUrl()
     {
-        return $this->title;
+        return $this->_title;
     }
 
     /**
@@ -879,7 +865,7 @@ class Skin implements IsReportable, IsSerializable
      */
     public function getAuthor()
     {
-        return $this->author;
+        return $this->_author;
     }
 
     /**
@@ -893,7 +879,7 @@ class Skin implements IsReportable, IsSerializable
      */
     public function getPreviewImage()
     {
-        return self::$baseDirectory . $this->name . "/icon.png";
+        return self::$_baseDirectory . $this->_name . "/icon.png";
     }
 
     /**
@@ -930,9 +916,9 @@ class Skin implements IsReportable, IsSerializable
         if (is_null($report)) {
             $report = ReportXML::createReport(__CLASS__);
         }
-        $report->addText("Skin directory: {$this->name}");
+        $report->addText("Skin directory: {$this->_name}");
 
-        if (empty($this->value)) {
+        if (empty($this->_value)) {
             $report->addWarning("Cannot perform check! No template definitions found.");
 
         } else {
@@ -941,7 +927,7 @@ class Skin implements IsReportable, IsSerializable
             /*
              * loop through template definition and create a report for each
              */
-            foreach ($this->value as $key => $element)
+            foreach ($this->_value as $key => $element)
             {
                 $subReport = $report->addReport("$key");
                 $hasError = false;
@@ -1023,38 +1009,18 @@ class Skin implements IsReportable, IsSerializable
     }
 
     /**
-     * serialize this object to a string
-     *
-     * Returns the serialized object as a string.
+     * Reinitialize instance.
      *
      * @access  public
-     * @return  string
      */
-    public function serialize()
+    public function __wakeup()
     {
-        return serialize($this);
-    }
-
-    /**
-     * unserialize a string to a serializable object
-     *
-     * Returns the unserialized object.
-     *
-     * @access  public
-     * @static
-     * @param   string  $string  string to unserialize
-     * @return  IsSerializable
-     */
-    public static function unserialize($string)
-    {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        if (!isset(self::$selectedSkin)) {
-            self::$selectedSkin = unserialize($string);
-            return self::$selectedSkin;
-        } else {
-            return unserialize($string);
+        self::$_instances[$this->getName()] = $this;
+        if (!isset(self::$_selectedSkin)) {
+            self::selectSkin($this);
         }
     }
+
 }
 
 ?>

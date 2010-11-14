@@ -50,8 +50,9 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class Log extends Report
+class Log extends ReportAbstract
 {
+
     /**
      * Message queue
      *
@@ -190,7 +191,7 @@ class Log extends Report
         $report = Log::getLogFromMessage($message, $prefix);
 
         /* 1. get data (if available) */
-        if ($exception instanceof Report) {
+        if ($exception instanceof ReportAbstract) {
             $data = $exception->getData();
             if (empty($data)) {
                 $data = null;
@@ -248,6 +249,7 @@ class Log extends Report
             return false;
         }
     }
+
 }
 
 ?>

@@ -40,22 +40,21 @@ class DbStructure extends SML
     /**
      * File extensions
      *
-     * @access  protected
+     * @access  private
      * @static
      * @var     string
-     * @ignore
      */
-    protected static $extension = ".config";
+    private static $_extension = ".config";
 
     /**#@+
      * @ignore
      * @access  private
      */
 
-    /** @var  array  */   private $cachedFields = array();
-    /** @var  array  */   private $changedItems = array();
-    /** @var  string */   private $logText = "";
-    /** @var  string */   private $dbName = null;
+    /** @var  array  */   private $_cachedFields = array();
+    /** @var  array  */   private $_changedItems = array();
+    /** @var  string */   private $_logText = "";
+    /** @var  string */   private $_dbName = null;
 
     /**#@-*/
 
@@ -96,10 +95,10 @@ class DbStructure extends SML
      */
     public function getDatabaseName()
     {
-        if (!isset($this->dbName)) {
-            $this->dbName = basename($this->getPath(), self::$extension);
+        if (!isset($this->_dbName)) {
+            $this->_dbName = basename($this->getPath(), self::$_extension);
         }
-        return $this->dbName;
+        return $this->_dbName;
     }
 
     /**
@@ -3862,7 +3861,7 @@ class DbStructure extends SML
         $operation = mb_strtoupper("$operation");
         $table = mb_strtoupper("$table");
 
-        $cache =& $this->cachedFields[(int)$as_assoc][$fieldname][$operation][$table];
+        $cache =& $this->_cachedFields[(int)$as_assoc][$fieldname][$operation][$table];
 
         /* if this result has already been cached than there is nothing to do here */
         if (isset($cache)) {
@@ -4379,7 +4378,7 @@ class DbStructure extends SML
     {
         assert('is_string($databaseName); // Wrong argument type argument 1. String expected');
         if (preg_match('/^([\w\d_]+)$/', $databaseName)) {
-            $databaseName = self::getDirectory() . "$databaseName" . self::$extension;
+            $databaseName = self::getDirectory() . "$databaseName" . self::$_extension;
         }
         return "$databaseName";
     }
@@ -4423,7 +4422,7 @@ class DbStructure extends SML
         $directory = self::getDirectory();
         $dir = new Dir($directory);
         $list = array();
-        $dirList = $dir->dirlist('*' . self::$extension);
+        $dirList = $dir->dirlist('*' . self::$_extension);
         if (is_array($dirList)) {
             foreach ($dirList as $filename)
             {
@@ -4433,7 +4432,7 @@ class DbStructure extends SML
 
                 /* remove suffix: '.config' */
                 } else {
-                    $list[] = basename($filename, self::$extension);
+                    $list[] = basename($filename, self::$_extension);
                 }
             }
         }
@@ -4691,25 +4690,25 @@ class DbStructure extends SML
         /*
          * don't log changes on newly created tables and columns
          */
-        if (isset($this->changedItems[$table])) {
+        if (isset($this->_changedItems[$table])) {
             $this->content['CHANGELOG'][] = array('DESCRIPTION' => $comment);
             return null;
         }
         if (empty($column)) {
-            $this->changedItems[$table] = true;
+            $this->_changedItems[$table] = true;
 
-        } elseif (isset($this->changedItems["$table.$column"])) {
+        } elseif (isset($this->_changedItems["$table.$column"])) {
             $this->content['CHANGELOG'][] = array('DESCRIPTION' => $comment);
             return null;
 
         } else {
-            $this->changedItems["$table.$column"] = true;
+            $this->_changedItems["$table.$column"] = true;
         }
 
         /*
          * prepare data for new entry
          */
-        if ($this->logText == "") {
+        if ($this->_logText == "") {
             $date = (string) date('d M Y h:i:s');
 
             if (isset($_SESSION['user_name'])) {
@@ -4717,7 +4716,7 @@ class DbStructure extends SML
             } else {
                 $user = '';
             }
-            $this->logText = "$date$user ";
+            $this->_logText = "$date$user ";
         }
         $arguments = array($table);
         if (!empty($column)) {
@@ -4735,7 +4734,7 @@ class DbStructure extends SML
         }
 
         $this->content['CHANGELOG'][] = array(
-            'DESCRIPTION' => $this->logText . $comment,
+            'DESCRIPTION' => $this->_logText . $comment,
             'FUNCTION' => $function,
             'ARGS' => $arguments
         );

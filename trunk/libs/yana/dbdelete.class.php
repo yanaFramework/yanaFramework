@@ -37,12 +37,13 @@
  */
 class DbDelete extends DbQuery
 {
+
     /**
      * @access  protected
      * @ignore
      * @var int
      */
-    protected $type = DbQuery::DELETE;
+    protected $type = DbQueryTypeEnumeration::DELETE;
 
     /**
      * set column to sort the resultset by

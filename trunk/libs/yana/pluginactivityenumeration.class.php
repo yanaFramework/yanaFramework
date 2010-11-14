@@ -26,9 +26,9 @@
  */
 
 /**
- * <<Enumeration>> PluginPriority
+ * <<Enumeration>> PluginActivity
  *
- * Values for plugin priority
+ * Values for plugin activity status
  *
  * @access      public
  * @name        PluginActivity
@@ -37,13 +37,22 @@
  *
  * @ignore
  */
-class PluginPriority
+class PluginActivityEnumeration
 {
-    const LOWEST = 0;
-    const LOW = 1;
-    const NORMAL = 2;
-    const HIGH = 3;
-    const HIGHEST = 4;
+    /**
+     * plugin is not active
+     */
+    const INACTIVE = 0;
+
+    /**
+     * plugin is active
+     */
+    const ACTIVE = 1;
+
+    /**
+     * plugin is active by default
+     */
+    const DEFAULT_ACTIVE = 2;
 
     /**
      * get enumeration item from string representation
@@ -57,34 +66,30 @@ class PluginPriority
      * @param   string  $string  text representation to convert
      * @return  int
      */
-    public static function getPriority($string)
+    public static function getActiveState($string)
     {
         assert('is_string($string); // Wrong type for argument 1. String expected');
 
         switch (mb_strtolower($string))
         {
-            case 'lowest':
-            case '0':
-                return self::LOWEST;
-            break;
-            case 'low':
+            case 'active':
             case '1':
-                return self::LOW;
+                return PluginActivityEnumeration::ACTIVE;
             break;
-            case 'normal':
+            case 'inactive':
+            case '0':
+                return PluginActivityEnumeration::INACTIVE;
+            break;
+            case 'always':
+            case 'always_active':
+            case 'always active':
+            case 'default_active':
+            case 'default active':
             case '2':
-                return self::NORMAL;
-            break;
-            case 'high':
-            case '3':
-                return self::HIGH;
-            break;
-            case 'highest':
-            case '4':
-                return self::HIGHEST;
+                return PluginActivityEnumeration::DEFAULT_ACTIVE;
             break;
             default:
-                return self::NORMAL;
+                return PluginActivityEnumeration::INACTIVE;
             break;
         }
     }

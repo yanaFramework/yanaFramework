@@ -26,17 +26,31 @@
  */
 
 /**
- * Resource not writeable
+ * Database error
  *
- * Thrown when you try to modify a resource, but you are denied permission to do so.
+ * This class represents errors passed to the user.
+ * The error is automatically added to the log-files.
  *
  * @access      public
  * @package     yana
  * @subpackage  error_reporting
  */
-class NotWriteableException extends Report
+class DbError extends Error
 {
-    /* intentionally left blank */
+
+    /**
+     * constructor
+     *
+     * @param  string     $message   the message that should be reported
+     * @param  int        $code      optional error code
+     * @param  Exception  $previous  use this when you need to rethrow a catched exception
+     */
+    public function __construct($message = "", $code = E_USER_ERROR, Exception $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+        Log::report($message, $code);
+    }
+
 }
 
 ?>

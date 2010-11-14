@@ -527,7 +527,7 @@ class DbCreator extends Object
                 if ($this->structure->isForeignKey($table, $column) === true) {
                     $ftable = $this->structure->getTableByForeignKey($table, $column);
                     assert('is_array($lastSQL);');
-                    $lastSQL[] = "ALTER TABLE [dbo].[".YANA_DATABASE_PREFIX."{$table}] " . 
+                    $lastSQL[] = "ALTER TABLE [dbo].[".YANA_DATABASE_PREFIX."{$table}] " .
                         "ADD CONSTRAINT {$table}_{$ftable}_fk FOREIGN KEY ({$column}) " .
                         "REFERENCES [dbo].[".YANA_DATABASE_PREFIX."{$ftable}];";
                 }
@@ -631,7 +631,7 @@ class DbCreator extends Object
         {
             assert('is_string($table) && !empty($table);');
             $tableName = YANA_DATABASE_PREFIX . $table;
-            if (qSearchArray($sql_keywords, $tableName) !== false) {
+            if (Hashtable::quickSearch($sql_keywords, $tableName) !== false) {
                 $tableName = "\"{$tableName}\"";
             }
 
@@ -649,7 +649,7 @@ class DbCreator extends Object
             {
                 $column = $listOfColumns[$i];
 
-                if (qSearchArray($sql_keywords, $column) !== false) {
+                if (Hashtable::quickSearch($sql_keywords, $column) !== false) {
                     $columnName = "\"{$column}\"";
                 } else {
                     $columnName = $column;
@@ -837,7 +837,7 @@ class DbCreator extends Object
                 assert('!isset($index); /* cannot redeclare variable $index */');
                 foreach ($listOfIndexes as $index)
                 {
-                    if (qSearchArray($sql_keywords, $index) !== false) {
+                    if (Hashtable::quickSearch($sql_keywords, $index) !== false) {
                         $indexName = "\"{$index}\"";
                     } else {
                         $indexName = $index;
@@ -859,12 +859,12 @@ class DbCreator extends Object
                     $foreignKey = mb_strtolower($foreignKey);
                     $foreignPrimaryKey = $this->structure->getPrimaryKey($foreignTable);
                     $foreignTableName = YANA_DATABASE_PREFIX . $foreignTable;
-                    if (qSearchArray($sql_keywords, $foreignTableName) !== false) {
+                    if (Hashtable::quickSearch($sql_keywords, $foreignTableName) !== false) {
                         $foreignTableName = "\"{$foreignTableName}\"";
                     } else {
                         $foreignTableName = $foreignTableName;
                     }
-                    if (qSearchArray($sql_keywords, $foreignKey) !== false) {
+                    if (Hashtable::quickSearch($sql_keywords, $foreignKey) !== false) {
                         $foreignKeyName = "\"{$foreignKey}\"";
                     } else {
                         $foreignKeyName = $foreignKey;

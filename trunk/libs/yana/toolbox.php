@@ -29,6 +29,101 @@
  * @license     http://www.gnu.org/licenses/gpl.txt
  */
 
+/**#@+
+ * CONSTANTS
+ *
+ * @ignore
+ */
+
+/* yana framework only */
+if (!defined('UPLOAD_ERR_SIZE')) {
+    define('UPLOAD_ERR_SIZE', -1);
+}
+if (!defined('UPLOAD_ERR_FILE_TYPE')) {
+    define('UPLOAD_ERR_FILE_TYPE', -2);
+}
+if (!defined('UPLOAD_ERR_INVALID_TARGET')) {
+    define('UPLOAD_ERR_INVALID_TARGET', -4);
+}
+if (!defined('UPLOAD_ERR_OTHER')) {
+    define('UPLOAD_ERR_OTHER', -5);
+}
+
+if (!function_exists('sys_get_temp_dir')) {
+    /**
+     * This function is new to PHP 5.
+     * Currently no version information available.
+     *
+     * Will try to return the system's temporary directory,
+     * or bool(false) on failure.
+     *
+     * Note: in some previous releases of PHP this function
+     * was named 'php_get_temp_dir()'.
+     *
+     * This function will try several known settings starting
+     * with the system's environment vars, through to PHP's
+     * ini settings.
+     *
+     * Important note: This function MAY NOT return the real
+     * temporary directory of the system. It returns SOME
+     * temporary directory.
+     *
+     * Seems to work fine with Windows. Not tested with POSIX.
+     *
+     * @since   2.9.4
+     * @return  string
+     */
+    function sys_get_temp_dir()
+    {
+        /* This will work for Server2Go */
+        if (isset($_ENV['S2G_TEMP_FOLDER'])) {
+            return $_ENV['S2G_TEMP_FOLDER'];
+
+        /* previous name of the same function in an early PHP-release */
+        } elseif (function_exists('php_get_temp_dir')) {
+            return php_get_temp_dir();
+
+        /* environment vars */
+        } elseif (isset($_ENV['TEMP'])) {
+            return $_ENV['TEMP'];
+        } elseif (isset($_ENV['TMP'])) {
+            return $_ENV['TMP'];
+
+        /* ini and config vars */
+        } else {
+            $tmp = ini_get('temp_dir');
+            if (!empty($tmp)) {
+                return $tmp;
+            }
+            $tmp = ini_get('upload_tmp_dir');
+            if (!empty($tmp)) {
+                return $tmp;
+            }
+            $tmp = ini_get('session.save_path');
+            if (!empty($tmp)) {
+                return $tmp;
+            }
+            $tmp = get_cfg_var('upload_tmp_dir');
+            if (!empty($tmp)) {
+                return $tmp;
+            }
+            $tmp = get_cfg_var('session.save_path');
+            if (!empty($tmp)) {
+                return $tmp;
+            }
+
+            /**
+             * No value found.
+             *
+             * Note: that this function does not return
+             * a bogus "tmp" directory (which possibly
+             * might not even exist) in this case.
+             */
+            return false;
+        }
+    }
+}
+
 /**
  * list contents of a directory
  *
@@ -109,92 +204,6 @@ function dirlist($dir, $filter = "", $switch = YANA_GET_ALL)
         return array();
     }
 
-}
-
-/**
- * search for a value in a sorted list
- *
- * If the array contains $needle, the key of $needle is
- * returned. Otherwise this functions returns bool(false).
- *
- * This function does something similar to PHP's in_array(),
- * except, that it expects the input to be a numeric, unique,
- * sorted array.
- *
- * If the input is sorted, searching for a value will be faster
- * using this function than the original, especially for large arrays.
- *
- * To be more technical: qSearchArray() performs a search
- * on a sorted array in O(log(n)) running time, which is the
- * same as searching for a key in a red-black tree.
- * While a "normal", linear scan of the array takes O(n) running
- * time.
- *
- * Example:
- * <code>
- * // Search through a large, sorted, numeric array of strings.
- * // E.g. a file where each line is representing a value.
- * $list = file('large_file.txt');
- * if (is_array($list)) {
- *     $i = qSearchArray($list, 'foo');
- *     if ($i === false) {
- *         print "Value 'foo' not found!\n";
- *     } else {
- *         print "Found 'foo' in line $i.\n";
- *     }
- * }
- * </code>
- *
- * @param   array   &$array     array
- * @param   scalar  $needle     needle
- * @return  int|bool(false)
- * @name    function_qSearchArray()
- */
-function qSearchArray(array &$array, $needle)
-{
-    assert('is_scalar($needle); // Wrong type for argument 2. Scalar expected');
-
-    /* Input handling */
-    /* settype to STRING */
-    $needle = (string) $needle;
-    $max = count($array) -1;
-    $min = 0;
-    $n = floor($max / 2);
-    $previousN = array(-1, -1);
-
-    if ($max === $min) {
-        if ($array[$max] === $needle) {
-            return $max;
-        } else {
-            return false;
-        }
-    }
-
-    while ($max > $min)
-    {
-        $temp = strcmp(trim($array[$n]), $needle);
-        if ($temp > 0) {
-            $max = $n;
-        } elseif ($temp < 0) {
-            $min = $n;
-        } else {
-            return (int) $n;
-        }
-
-        array_shift($previousN);
-        $previousN[] = $n;
-
-        if ($min!=$n) {
-            $n = $min + floor(($max - $min) /2);
-        } else {
-            $n = $min + ceil(($max - $min) /2);
-        }
-
-        if ($previousN[0] == $n || $previousN[1] == $n) {
-            return false;
-        }
-    } /* end while */    
-    return false;
 }
 
 /**
@@ -610,4 +619,5 @@ function untaintInput($value, $type = "", $length = 0, $escape = 0, $doubleEncod
     return $value;
 
 }
+
 ?>

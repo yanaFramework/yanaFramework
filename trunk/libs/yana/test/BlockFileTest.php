@@ -38,8 +38,16 @@ require_once dirname(__FILE__) . '/include.php';
  */
 class BlockFileTest extends PHPUnit_Framework_TestCase
 {
-    /** @var  BlockFile */  protected $object;
-    /** @var  string    */  protected $source = 'resources/blockFile.txt';
+
+    /**
+     * @var  BlockFile
+     */
+    protected $_object;
+
+    /**
+     * @var  string
+     */
+    protected $_source = 'resources/blockFile.txt';
 
     /**
      * Constructor
@@ -59,8 +67,8 @@ class BlockFileTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new BlockFile(CWD . $this->source);
-        $this->object->reset();
+        $this->_object = new BlockFile(CWD . $this->_source);
+        $this->_object->reset();
     }
 
     /**
@@ -71,7 +79,7 @@ class BlockFileTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-       unset ($this->object);
+       unset ($this->_object);
     }
 
     /**
@@ -83,24 +91,26 @@ class BlockFileTest extends PHPUnit_Framework_TestCase
     function test()
     {
         $input = 'qwertyTest';
-        $set = $this->object->setContent($input);
+        $set = $this->_object->setContent($input);
         $this->assertTrue($set, 'assert failed, expected true for set content');
 
-        $this->assertTrue($this->object->write(), 'assert failed, write has failed');
+        $this->assertTrue($this->_object->write(), 'assert failed, write has failed');
 
-        $this->object->read();
-        
-        $this->assertEquals($input, $this->object->getContent(), 'assert failed, the given content should be match the expected');
-        $this->assertFalse($this->object->isBlocked(), 'assert failed, the users premissions are too low');
+        $this->_object->read();
+
+        $this->assertEquals($input, $this->_object->getContent(), 'assert failed, the given content should be match the expected');
+        $this->assertFalse($this->_object->isBlocked(), 'assert failed, the users premissions are too low');
 
         $input2 = 'ytrewq';
-        $this->assertTrue($this->object->set($input2), 'assert failed, set content has failed');
+        $this->assertTrue($this->_object->set($input2), 'assert failed, set content has failed');
 
-        $this->assertTrue($this->object->write(), 'assert failed, write has failed');
+        $this->assertTrue($this->_object->write(), 'assert failed, write has failed');
 
-        $get = $this->object->getContent();
+        $get = $this->_object->getContent();
         $this->assertEquals($input2."\n", $get, 'assert failed, the given content should be match the expected');
-        $this->assertEquals($input2."\n", $this->object->toString(), 'assert failed, the given string should be match the expected');
+        $this->assertEquals($input2."\n", $this->_object->toString(), 'assert failed, the given string should be match the expected');
     }
+
 }
+
 ?>

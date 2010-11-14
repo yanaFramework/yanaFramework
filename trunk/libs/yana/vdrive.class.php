@@ -78,7 +78,7 @@
  * @subpackage vdrive
  * @name       VDrive
  */
-class VDrive extends FileSystemResource implements IsReportable, IsSerializable
+class VDrive extends FileSystemResource implements IsReportable, Serializable
 {
 
     /**#@+
@@ -620,35 +620,26 @@ class VDrive extends FileSystemResource implements IsReportable, IsSerializable
      */
     public function serialize()
     {
-        $vDrive = clone $this;
-        $vDrive->content = null;
-        return serialize($vDrive);
+        // returns a list of key => value pairs
+        $properties = get_object_vars($this);
+        // remove the table object (it is redundant)
+        unset($properties['content']);
+        return serialize($properties);
     }
 
     /**
-     * re-initialize content on wakeup
-     *
-     * @access public
-     */
-    public function  __wakeup()
-    {
-        $this->content = VDriveConfiguration::loadFile($this->path);
-    }
-
-    /**
-     * unserialize a string to a serializable object
-     *
-     * Returns the unserialized object.
+     * Reinitializes the object.
      *
      * @access  public
-     * @static
      * @param   string  $string  string to unserialize
-     * @return  VDrive
      */
-    public static function unserialize($string)
+    public function unserialize($string)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        return unserialize($string);
+        foreach (unserialize($string) as $key => $value)
+        {
+            $this->$key = $value;
+        }
+        $this->content = VDriveConfiguration::loadFile($this->path);
     }
 }
 

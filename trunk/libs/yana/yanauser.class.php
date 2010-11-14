@@ -67,7 +67,7 @@ class YanaUser extends Object
      * @access  private
      * @var     DBStream
      */
-    private static $database = null;
+    private static $_database = null;
 
     /**
      * Is the currently selected user logged-in (yes/no)
@@ -76,7 +76,7 @@ class YanaUser extends Object
      * @static
      * @var     bool
      */
-    private static $isLoggedIn = null;
+    private static $_isLoggedIn = null;
 
     /**
      * list of user names
@@ -85,31 +85,31 @@ class YanaUser extends Object
      * @static
      * @var     array
      */
-    private static $userNames = null;
+    private static $_userNames = null;
 
     /**#@+
      * @ignore
      * @access  private
      */
 
-    /** @var string */ private $name = null;
-    /** @var string */ private $language = null;
-    /** @var string */ private $password = null;
-    /** @var string */ private $mail = null;
-    /** @var bool   */ private $isActive = false;
-    /** @var int    */ private $failureCount = 0;
-    /** @var int    */ private $failureTime = 0;
-    /** @var int    */ private $loginCount = 0;
-    /** @var int    */ private $loginTime = 0;
-    /** @var bool   */ private $isExpert = false;
-    /** @var string */ private $passwordRecoveryId = null;
-    /** @var int    */ private $passwordRecoveryTime = null;
-    /** @var int    */ private $passwordTime = null;
-    /** @var array  */ private $passwords = array();
-    /** @var int    */ private $timeCreated = null;
-    /** @var string */ private $session = null;
-    /** @var array  */ private $groups = null;
-    /** @var array  */ private $roles = null;
+    /** @var string */ private $_name = null;
+    /** @var string */ private $_language = null;
+    /** @var string */ private $_password = null;
+    /** @var string */ private $_mail = null;
+    /** @var bool   */ private $_isActive = false;
+    /** @var int    */ private $_failureCount = 0;
+    /** @var int    */ private $_failureTime = 0;
+    /** @var int    */ private $_loginCount = 0;
+    /** @var int    */ private $_loginTime = 0;
+    /** @var bool   */ private $_isExpert = false;
+    /** @var string */ private $_passwordRecoveryId = null;
+    /** @var int    */ private $_passwordRecoveryTime = null;
+    /** @var int    */ private $_passwordTime = null;
+    /** @var array  */ private $_passwords = array();
+    /** @var int    */ private $_timeCreated = null;
+    /** @var string */ private $_session = null;
+    /** @var array  */ private $_groups = null;
+    /** @var array  */ private $_roles = null;
     /**#@-*/
 
     /**
@@ -212,14 +212,14 @@ class YanaUser extends Object
      */
     public static function getUserNames()
     {
-        if (!isset(self::$userNames)) {
+        if (!isset(self::$_userNames)) {
             $db = self::getDatasource();
             $query = new DbSelect($db);
             $query->setTable('user');
             $query->setColumn('user_id');
-            self::$userNames = $query->getResults();
+            self::$_userNames = $query->getResults();
         }
-        return self::$userNames;
+        return self::$_userNames;
     }
 
     /**
@@ -241,43 +241,43 @@ class YanaUser extends Object
             throw new NotFoundException("User '$userName' not found.");
         }
 
-        $this->name = "$userName";
+        $this->_name = "$userName";
         if (isset($userInfo['USER_LANGUAGE'])) {
-            $this->language = $userInfo['USER_LANGUAGE'];
+            $this->_language = $userInfo['USER_LANGUAGE'];
         }
-        $this->password = $userInfo['USER_PWD'];
-        $this->mail = $userInfo['USER_MAIL'];
-        $this->isActive = !empty($userInfo['USER_ACTIVE']);
+        $this->_password = $userInfo['USER_PWD'];
+        $this->_mail = $userInfo['USER_MAIL'];
+        $this->_isActive = !empty($userInfo['USER_ACTIVE']);
         if (isset($userInfo['USER_FAILURE_COUNT'])) {
-            $this->failureCount = $userInfo['USER_FAILURE_COUNT'];
+            $this->_failureCount = $userInfo['USER_FAILURE_COUNT'];
         }
         if (isset($userInfo['USER_FAILURE_TIME'])) {
-            $this->failureTime = $userInfo['USER_FAILURE_TIME'];
+            $this->_failureTime = $userInfo['USER_FAILURE_TIME'];
         }
         if (isset($userInfo['USER_LOGIN_COUNT'])) {
-            $this->loginCount = $userInfo['USER_LOGIN_COUNT'];
+            $this->_loginCount = $userInfo['USER_LOGIN_COUNT'];
         }
         if (isset($userInfo['USER_LOGIN_LAST'])) {
-            $this->loginTime = $userInfo['USER_LOGIN_LAST'];
+            $this->_loginTime = $userInfo['USER_LOGIN_LAST'];
         }
-        $this->isExpert = !empty($userInfo['USER_IS_EXPERT']);
+        $this->_isExpert = !empty($userInfo['USER_IS_EXPERT']);
         if (isset($userInfo['USER_RECOVER_ID'])) {
-            $this->passwordRecoveryId = $userInfo['USER_RECOVER_ID'];
+            $this->_passwordRecoveryId = $userInfo['USER_RECOVER_ID'];
         }
         if (isset($userInfo['USER_RECOVER_UTC'])) {
-            $this->passwordRecoveryTime = $userInfo['USER_RECOVER_UTC'];
+            $this->_passwordRecoveryTime = $userInfo['USER_RECOVER_UTC'];
         }
         if (isset($userInfo['USER_PWD_TIME'])) {
-            $this->passwordTime = $userInfo['USER_PWD_TIME'];
+            $this->_passwordTime = $userInfo['USER_PWD_TIME'];
         }
         if (isset($userInfo['USER_PWD_LIST'])) {
-            $this->passwords = (array) $userInfo['USER_PWD_LIST'];
+            $this->_passwords = (array) $userInfo['USER_PWD_LIST'];
         }
         if (isset($userInfo['USER_SESSION'])) {
-            $this->session = $userInfo['USER_SESSION'];
+            $this->_session = $userInfo['USER_SESSION'];
         }
         if (isset($userInfo['USER_INSERTED'])) {
-            $this->timeCreated = $userInfo['USER_INSERTED'];
+            $this->_timeCreated = $userInfo['USER_INSERTED'];
         }
     }
 
@@ -291,7 +291,7 @@ class YanaUser extends Object
      */
     public static function setDatasource(DbStream $database)
     {
-        self::$database = $database;
+        self::$_database = $database;
     }
 
     /**
@@ -304,10 +304,10 @@ class YanaUser extends Object
      */
     public static function getDatasource()
     {
-        if (!isset(self::$database)) {
-            self::$database = Yana::connect('user');
+        if (!isset(self::$_database)) {
+            self::$_database = Yana::connect('user');
         }
-        return self::$database;
+        return self::$_database;
     }
 
     /**
@@ -321,8 +321,8 @@ class YanaUser extends Object
     public function __destruct()
     {
         if (!empty($this->updates)) {
-            self::$database->update("user.{$this->name}", $this->updates);
-            self::$database->commit();
+            self::$_database->update("user.{$this->_name}", $this->updates);
+            self::$_database->commit();
         }
     }
 
@@ -339,10 +339,10 @@ class YanaUser extends Object
      */
     public function getGroups()
     {
-        if (!isset($this->groups)) {
-            $this->groups = self::$database->select("securityrules.*.group_id", array('user_id', '=', $this->name));
+        if (!isset($this->_groups)) {
+            $this->_groups = self::$_database->select("securityrules.*.group_id", array('user_id', '=', $this->_name));
         }
-        return $this->groups;
+        return $this->_groups;
     }
 
     /**
@@ -358,10 +358,10 @@ class YanaUser extends Object
      */
     public function getRoles()
     {
-        if (!isset($this->roles)) {
-            $this->roles = self::$database->select("securityrules.*.role_id", array('user_id', '=', $this->name));
+        if (!isset($this->_roles)) {
+            $this->_roles = self::$_database->select("securityrules.*.role_id", array('user_id', '=', $this->_name));
         }
-        return $this->roles;
+        return $this->_roles;
     }
 
     /**
@@ -385,14 +385,14 @@ class YanaUser extends Object
             return true;
         }
 
-        $currentPwd = self::calculatePassword($this->name, $userPwd);
+        $currentPwd = self::calculatePassword($this->_name, $userPwd);
         if ($currentPwd === $savedPwd) {
             // reset failure count
             $this->resetFailureCount();
             return true;
         } else {
-            $this->updates['USER_FAILURE_COUNT'] = ++$this->failureCount;
-            $this->updates['USER_FAILURE_TIME'] = $this->failureTime = time();
+            $this->updates['USER_FAILURE_COUNT'] = ++$this->_failureCount;
+            $this->updates['USER_FAILURE_TIME'] = $this->_failureTime = time();
             return false;
         }
     }
@@ -417,7 +417,7 @@ class YanaUser extends Object
      */
     public static function isLoggedIn()
     {
-        if (!isset(self::$isLoggedIn)) {
+        if (!isset(self::$_isLoggedIn)) {
             $name = self::getUserName();
             if (empty($name)) {
                 return false;
@@ -432,15 +432,15 @@ class YanaUser extends Object
                 case function_exists('sha1') && strlen(session_id()) < 20:
                 case !isset($_SESSION['prog_id']) || $_SESSION['prog_id'] !== self::getApplicationId():
                 case !isset($_SESSION['user_name']) || $_SESSION['user_name'] !== $name:
-                case !isset($_SESSION['user_session']) || $_SESSION['user_session'] !== $user->session:
-                    self::$isLoggedIn = false;
+                case !isset($_SESSION['user_session']) || $_SESSION['user_session'] !== $user->_session:
+                    self::$_isLoggedIn = false;
                 break;
                 default:
-                    self::$isLoggedIn = true;
+                    self::$_isLoggedIn = true;
                 break;
             }
         }
-        return self::$isLoggedIn;
+        return self::$_isLoggedIn;
     }
 
     /**
@@ -453,7 +453,7 @@ class YanaUser extends Object
      */
     public function getName()
     {
-        return $this->name;
+        return $this->_name;
     }
 
     /**
@@ -464,7 +464,7 @@ class YanaUser extends Object
      */
     private function _getPassword()
     {
-        return $this->password;
+        return $this->_password;
     }
 
     /**
@@ -490,23 +490,23 @@ class YanaUser extends Object
 
         assert('is_string($password); // Wrong type for argument 1. String expected');
 
-        $newPwd = self::calculatePassword($this->name, $password);
+        $newPwd = self::calculatePassword($this->_name, $password);
         switch (false)
         {
-            case self::$database->update("USER.{$this->name}.USER_PWD", $newPwd):
-            case self::$database->commit():
-                throw new DbError("A new password was requested for user '{$this->name}'. " .
+            case self::$_database->update("USER.{$this->_name}.USER_PWD", $newPwd):
+            case self::$_database->commit():
+                throw new DbError("A new password was requested for user '{$this->_name}'. " .
                     "But the database entry could not be updated.");
             break;
             default:
-                $this->passwords[] = $this->_getPassword();
-                if (count($this->passwords) > 10) {
-                    array_shift($this->passwords);
+                $this->_passwords[] = $this->_getPassword();
+                if (count($this->_passwords) > 10) {
+                    array_shift($this->_passwords);
                 }
-                $this->updates['USER_PWD_LIST'] = $this->passwords;
-                $this->updates['USER_PWD_TIME'] = $this->passwordTime = time();
+                $this->updates['USER_PWD_LIST'] = $this->_passwords;
+                $this->updates['USER_PWD_TIME'] = $this->_passwordTime = time();
                 $this->_resetPasswordRecoveryId();
-                $this->password = $newPwd;
+                $this->_password = $newPwd;
                 return $password;
             break;
         }
@@ -550,13 +550,13 @@ class YanaUser extends Object
         $_SESSION['user_session'] = md5(session_id());
 
         // initialize language settings
-        if (!empty($this->language)) {
+        if (!empty($this->_language)) {
             assert('!isset($languageManager); // Cannot redeclare var $languageManager');
             $languageManager = Language::getInstance();
             try {
 
-                $languageManager->setLocale($this->language);
-                $_SESSION['language'] = $this->language;
+                $languageManager->setLocale($this->_language);
+                $_SESSION['language'] = $this->_language;
 
             } catch (InvalidArgumentException $e) {
                 // ignore
@@ -565,14 +565,14 @@ class YanaUser extends Object
         } // end if
 
         // set time of last login to current timestamp
-        $this->updates['USER_LOGIN_LAST'] = $this->loginTime = time();
+        $this->updates['USER_LOGIN_LAST'] = $this->_loginTime = time();
         // mark user as logged-in in database
         $this->updates['USER_SESSION'] = $_SESSION['user_session'];
         // increment login count
-        $this->updates['USER_LOGIN_COUNT'] = ++$this->loginCount;
+        $this->updates['USER_LOGIN_COUNT'] = ++$this->_loginCount;
 
-        self::$isLoggedIn = true;
-        self::$selectedUser = $this->name;
+        self::$_isLoggedIn = true;
+        self::$selectedUser = $this->_name;
     }
 
     /**
@@ -600,7 +600,7 @@ class YanaUser extends Object
         @session_regenerate_id();
         // mark user as logged-out in database
         $this->updates["USER_SESSION"] = "";
-        self::$isLoggedIn = false;
+        self::$_isLoggedIn = false;
     }
 
     /**
@@ -615,8 +615,8 @@ class YanaUser extends Object
     {
         assert('is_string($language); // Wrong type for argument 1. String expected');
 
-        $this->language = "$language";
-        $this->updates['USER_LANGUAGE'] = $this->language;
+        $this->_language = "$language";
+        $this->updates['USER_LANGUAGE'] = $this->_language;
     }
 
     /**
@@ -627,7 +627,7 @@ class YanaUser extends Object
      */
     public function getLanguage()
     {
-        return $this->language;
+        return $this->_language;
     }
 
     /**
@@ -643,7 +643,7 @@ class YanaUser extends Object
      */
     public function getFailureCount()
     {
-        return (int) $this->failureCount;
+        return (int) $this->_failureCount;
     }
 
     /**
@@ -659,7 +659,7 @@ class YanaUser extends Object
      */
     public function getFailureTime()
     {
-        return (int) $this->failureTime;
+        return (int) $this->_failureTime;
     }
 
     /**
@@ -672,8 +672,8 @@ class YanaUser extends Object
      */
     public function resetFailureCount()
     {
-        $this->updates['USER_FAILURE_COUNT'] = $this->failureCount = 0;
-        $this->updates['USER_FAILURE_TIME'] = $this->failureTime = 0;
+        $this->updates['USER_FAILURE_COUNT'] = $this->_failureCount = 0;
+        $this->updates['USER_FAILURE_TIME'] = $this->_failureTime = 0;
     }
 
     /**
@@ -683,8 +683,8 @@ class YanaUser extends Object
      */
     private function _resetPasswordRecoveryId()
     {
-        $this->updates['USER_RECOVER_ID'] = $this->passwordRecoveryId = "";
-        $this->updates['USER_RECOVER_UTC'] = $this->passwordRecoveryTime = 0;
+        $this->updates['USER_RECOVER_ID'] = $this->_passwordRecoveryId = "";
+        $this->updates['USER_RECOVER_UTC'] = $this->_passwordRecoveryTime = 0;
     }
 
     /**
@@ -699,7 +699,7 @@ class YanaUser extends Object
      */
     public function getLoginCount()
     {
-        return (int) $this->loginCount;
+        return (int) $this->_loginCount;
     }
 
     /**
@@ -717,7 +717,7 @@ class YanaUser extends Object
      */
     public function getLoginTime()
     {
-        return (int) $this->loginTime;
+        return (int) $this->_loginTime;
     }
 
     /**
@@ -732,8 +732,8 @@ class YanaUser extends Object
     {
         assert('is_string($mail); // Wrong type for argument 1. String expected');
 
-        $this->mail = "$mail";
-        $this->updates['USER_MAIL'] = $this->mail;
+        $this->_mail = "$mail";
+        $this->updates['USER_MAIL'] = $this->_mail;
     }
 
     /**
@@ -744,7 +744,7 @@ class YanaUser extends Object
      */
     public function getMail()
     {
-        return $this->mail;
+        return $this->_mail;
     }
 
     /**
@@ -760,8 +760,8 @@ class YanaUser extends Object
     {
         assert('is_bool($isExpert); // Wrong type for argument 1. Boolean expected');
 
-        $this->isExpert = !empty($isExpert);
-        $this->updates['USER_IS_EXPERT'] = $this->isExpert;
+        $this->_isExpert = !empty($isExpert);
+        $this->updates['USER_IS_EXPERT'] = $this->_isExpert;
     }
 
     /**
@@ -775,7 +775,7 @@ class YanaUser extends Object
      */
     public function isExpert()
     {
-        return !empty($this->isExpert);
+        return !empty($this->_isExpert);
     }
 
     /**
@@ -791,8 +791,8 @@ class YanaUser extends Object
     {
         assert('is_bool($isActive); // Wrong type for argument 1. Boolean expected');
 
-        $this->isActive = !empty($isActive);
-        $this->updates['USER_ACTIVE'] = $this->isActive;
+        $this->_isActive = !empty($isActive);
+        $this->updates['USER_ACTIVE'] = $this->_isActive;
     }
 
     /**
@@ -805,7 +805,7 @@ class YanaUser extends Object
      */
     public function isActive()
     {
-        return !empty($this->isActive);
+        return !empty($this->_isActive);
     }
 
     /**
@@ -816,7 +816,7 @@ class YanaUser extends Object
      */
     public function getTimeCreated()
     {
-        return $this->timeCreated;
+        return $this->_timeCreated;
     }
 
     /**
@@ -833,7 +833,7 @@ class YanaUser extends Object
      */
     public function getPasswordChangedTime()
     {
-        return (int) $this->passwordTime;
+        return (int) $this->_passwordTime;
     }
 
     /**
@@ -851,7 +851,7 @@ class YanaUser extends Object
      */
     public function getRecentPasswords()
     {
-        return (int) $this->passwords;
+        return (int) $this->_passwords;
     }
 
     /**
@@ -865,7 +865,7 @@ class YanaUser extends Object
      */
     public function getPasswordRecoveryId()
     {
-        return $this->passwordRecoveryId;
+        return $this->_passwordRecoveryId;
     }
 
     /**
@@ -881,7 +881,7 @@ class YanaUser extends Object
      */
     public function getPasswordRecoveryTime()
     {
-        return (int) $this->passwordRecoveryTime;
+        return (int) $this->_passwordRecoveryTime;
     }
 
     /**
@@ -898,11 +898,11 @@ class YanaUser extends Object
      */
     public function createPasswordRecoveryId()
     {
-        $this->passwordRecoveryId = uniqid(substr(md5($this->getMail()), 0, 3));
-        $this->updates['USER_RECOVER_ID'] = $this->passwordRecoveryId;
-        $this->passwordRecoveryTime = time();
-        $this->updates['USER_RECOVER_UTC'] = $this->passwordRecoveryTime;
-        return $this->passwordRecoveryId;
+        $this->_passwordRecoveryId = uniqid(substr(md5($this->getMail()), 0, 3));
+        $this->updates['USER_RECOVER_ID'] = $this->_passwordRecoveryId;
+        $this->_passwordRecoveryTime = time();
+        $this->updates['USER_RECOVER_UTC'] = $this->_passwordRecoveryTime;
+        return $this->_passwordRecoveryId;
     }
 
     /**
@@ -931,11 +931,11 @@ class YanaUser extends Object
         switch (false)
         {
             // insert user settings
-            case self::$database->insert("user.$userName", array('USER_MAIL' => $mail)):
+            case self::$_database->insert("user.$userName", array('USER_MAIL' => $mail)):
             // initialize user profile
-            case self::$database->insert("userprofile.$userName", array("userprofile_modified" => time())):
+            case self::$_database->insert("userprofile.$userName", array("userprofile_modified" => time())):
             // commit changes
-            case self::$database->commit():
+            case self::$_database->commit():
                 throw new DbError("Unable to commit changes to the database server while trying to update " .
                     "settings for user '{$userName}'.");
             break;
@@ -979,16 +979,16 @@ class YanaUser extends Object
         switch (false)
         {
             // delete profile
-            case self::$database->remove("userprofile.$userName"):
+            case self::$_database->remove("userprofile.$userName"):
             // delete user's security level
-            case self::$database->remove("securitylevel", array("user_id", "=", $userName), 0):
+            case self::$_database->remove("securitylevel", array("user_id", "=", $userName), 0):
             // delete access permissions (temporarily) granted by this user
-            case self::$database->remove("securityrules", array("user_created", "=", $userName), 0):
-            case self::$database->remove("securitylevel.*", array("user_created", "=", $userName), 0):
+            case self::$_database->remove("securityrules", array("user_created", "=", $userName), 0):
+            case self::$_database->remove("securitylevel.*", array("user_created", "=", $userName), 0):
             // delete user settings
-            case self::$database->remove("user.$userName"):
+            case self::$_database->remove("user.$userName"):
             // commit changes
-            case self::$database->commit():
+            case self::$_database->commit():
                 throw new DbError("Unable to commit changes to the database server while trying to remove".
                     "user '{$userName}'.");
             break;

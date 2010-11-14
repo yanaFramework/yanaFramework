@@ -56,7 +56,7 @@ final class Yana extends Singleton implements IsReportable
      * @static
      * @var     Yana
      */
-    private static $instance = null;
+    private static $_instance = null;
 
     /**
      * Name of system configuration file
@@ -65,7 +65,7 @@ final class Yana extends Singleton implements IsReportable
      * @static
      * @var     array
      */
-    private static $config = null;
+    private static $_config = array();
 
     /**
      * profile id
@@ -74,7 +74,7 @@ final class Yana extends Singleton implements IsReportable
      * @static
      * @var string
      */
-    private static $id = null;
+    private static $_id = null;
 
     /**
      * action parameter
@@ -83,7 +83,7 @@ final class Yana extends Singleton implements IsReportable
      * @static
      * @var string
      */
-    private static $action = null;
+    private static $_action = null;
 
     /**
      * safe-mode settings
@@ -95,7 +95,7 @@ final class Yana extends Singleton implements IsReportable
      * @var     bool
      * @ignore
      */
-    protected $isSafeMode = null;
+    protected $_isSafeMode = null;
 
     /**#@+
      * This variable is <<readonly>>
@@ -163,14 +163,14 @@ final class Yana extends Singleton implements IsReportable
      */
     public static function &getInstance()
     {
-        if (!isset(self::$instance)) {
+        if (!isset(self::$_instance)) {
             /* auto-load configuration file */
-            if (!isset(self::$config)) {
+            if (empty(self::$_config)) {
                 self::setConfiguration();
             }
-            self::$instance = new Yana();
+            self::$_instance = new Yana();
         }
-        return self::$instance;
+        return self::$_instance;
     }
 
     /**
@@ -214,12 +214,12 @@ final class Yana extends Singleton implements IsReportable
         if (!isset($this->isSafemode)) {
             $eventConfiguration = $this->_getPlugins()->getEventConfiguration($this->getAction());
             if ($eventConfiguration instanceof PluginConfigurationMethod) {
-                $this->isSafeMode = ($eventConfiguration->getSafemode() === true);
+                $this->_isSafeMode = ($eventConfiguration->getSafemode() === true);
             } else {
-                $this->isSafeMode = !empty(self::$config['DEFAULT']['EVENT'][PluginAnnotation::SAFEMODE]);
+                $this->_isSafeMode = !empty(self::$_config['DEFAULT']['EVENT'][PluginAnnotationEnumeration::SAFEMODE]);
             }
         }
-        return $this->isSafeMode;
+        return $this->_isSafeMode;
     }
 
     /**
@@ -233,20 +233,20 @@ final class Yana extends Singleton implements IsReportable
      */
     private static function _activateCDApplication()
     {
-        assert('isset(self::$config); // Configuration must be loaded first');
+        assert('isset(self::$_config); // Configuration must be loaded first');
         if (!file_exists(YANA_CDROM_DIR)) {
             mkdir(YANA_CDROM_DIR);
             chmod(YANA_CDROM_DIR, 0777);
         }
-        $configDir = self::$config['CONFIGDIR'];
+        $configDir = self::$_config['CONFIGDIR'];
         self::_setRealPaths(YANA_CDROM_DIR);
-        if (!file_exists(self::$config['TEMPDIR'])) {
-            mkdir(self::$config['TEMPDIR']);
-            chmod(self::$config['TEMPDIR'], 0777);
+        if (!file_exists(self::$_config['TEMPDIR'])) {
+            mkdir(self::$_config['TEMPDIR']);
+            chmod(self::$_config['TEMPDIR'], 0777);
         }
-        if (!file_exists(self::$config['CONFIGDIR'])) {
+        if (!file_exists(self::$_config['CONFIGDIR'])) {
             $configSrc = new Dir($configDir);
-            $configSrc->copy(self::$config['CONFIGDIR'], true, 0777, true, null, '/^(?!\.blob$)/i', true);
+            $configSrc->copy(self::$_config['CONFIGDIR'], true, 0777, true, null, '/^(?!\.blob$)/i', true);
             unset($configSrc);
         }
         unset($configDir);
@@ -262,10 +262,10 @@ final class Yana extends Singleton implements IsReportable
     private static function _setRealPaths($cwd)
     {
         $cwd .= '/';
-        self::$config['TEMPDIR'] = $cwd . self::$config['TEMPDIR'];
-        self::$config['CONFIGDIR'] = $cwd . self::$config['CONFIGDIR'];
-        self::$config['CONFIGDRIVE'] = $cwd . self::$config['CONFIGDRIVE'];
-        self::$config['PLUGINFILE'] = $cwd . self::$config['PLUGINFILE'];
+        self::$_config['TEMPDIR'] = $cwd . self::$_config['TEMPDIR'];
+        self::$_config['CONFIGDIR'] = $cwd . self::$_config['CONFIGDIR'];
+        self::$_config['CONFIGDRIVE'] = $cwd . self::$_config['CONFIGDRIVE'];
+        self::$_config['PLUGINFILE'] = $cwd . self::$_config['PLUGINFILE'];
     }
 
     /**
@@ -292,7 +292,7 @@ final class Yana extends Singleton implements IsReportable
         assert('is_file($filename);     // Invalid argument 1. Input is not a file.');
         assert('is_readable($filename); // Invalid argument 1. Configuration file is not readable.');
         // get System Config file
-        self::$config = SXML::getFile($filename, CASE_UPPER);
+        self::$_config = SXML::getFile($filename, CASE_UPPER);
         // load CD-ROM application settings on demand
         if (YANA_CDROM === true) {
             self::_activateCDApplication();
@@ -445,7 +445,7 @@ final class Yana extends Singleton implements IsReportable
      */
     protected function getAction()
     {
-        if (!isset(self::$action)) {
+        if (!isset(self::$_action)) {
             $action = Request::getVars('action');
             // work-around for IE-bug
             if (is_array($action)) {
@@ -464,16 +464,16 @@ final class Yana extends Singleton implements IsReportable
                     $error->setData(array('ACTION' => $action));
                 // fall through
                 case empty($action):
-                    assert('!empty(self::$config["DEFAULT"]["HOMEPAGE"]); // Configuration missing default homepage.');
-                    $action = self::$config['DEFAULT']['HOMEPAGE'];
+                    assert('!empty(self::$_config["DEFAULT"]["HOMEPAGE"]); // Configuration missing default homepage.');
+                    $action = self::$_config['DEFAULT']['HOMEPAGE'];
                 // fall through
                 default:
                     $action = mb_strtolower($action);
                 break;
             }
-            self::$action = $action;
+            self::$_action = $action;
         }
-        return self::$action;
+        return self::$_action;
     }
 
     /**
@@ -490,7 +490,7 @@ final class Yana extends Singleton implements IsReportable
     {
         if (!isset($this->registry)) {
             // path to cache file
-            $cacheFile = self::$config['TEMPDIR'] . 'registry_' . self::getId() . '.tmp';
+            $cacheFile = self::$_config['TEMPDIR'] . 'registry_' . self::getId() . '.tmp';
 
             // get configuration mode
             Registry::useDefaults($this->isSafemode());
@@ -499,9 +499,9 @@ final class Yana extends Singleton implements IsReportable
                 $this->registry = unserialize(file_get_contents($cacheFile));
                 assert('$this->registry instanceof Registry;');
             } else {
-                $this->registry = new Registry(self::$config['CONFIGDRIVE'], "");
+                $this->registry = new Registry(self::$_config['CONFIGDRIVE'], "");
                 $this->registry->setVar("ID", self::getId());
-                $this->registry->mergeVars('*', self::$config);
+                $this->registry->mergeVars('*', self::$_config);
             }
             $request = Request::getVars();
             $this->registry->mergeVars('*', $request);
@@ -554,8 +554,8 @@ final class Yana extends Singleton implements IsReportable
     private function _getPlugins()
     {
         if (!isset($this->plugins)) {
-            $cacheFile = self::$config['PLUGINCACHE'];
-            PluginManager::setPath(self::$config['PLUGINFILE'], self::$config['PLUGINDIR']);
+            $cacheFile = self::$_config['PLUGINCACHE'];
+            PluginManager::setPath(self::$_config['PLUGINFILE'], self::$_config['PLUGINDIR']);
 
             if (YANA_CACHE_ACTIVE === true && file_exists($cacheFile)) {
                 $this->plugins = unserialize(file_get_contents($cacheFile));
@@ -600,7 +600,7 @@ final class Yana extends Singleton implements IsReportable
             $languageDir = $this->getVar('LANGUAGEDIR');
             $this->language = Language::getInstance();
             $this->language->addDirectory($languageDir);
-            $this->language->setLocale(self::$config['DEFAULT']['LANGUAGE']);
+            $this->language->setLocale(self::$_config['DEFAULT']['LANGUAGE']);
             if (isset($_SESSION['language'])) {
                 try {
                     $this->language->setLocale($_SESSION['language']);
@@ -690,19 +690,19 @@ final class Yana extends Singleton implements IsReportable
      */
     public static function getId()
     {
-        if (!isset(self::$id)) {
+        if (!isset(self::$_id)) {
             $id = Request::getVars('id');
             if (!empty($id)) {
-                self::$id = mb_strtolower($id);
-            } elseif (!empty(self::$config['DEFAULT']['PROFILE'])) {
-                self::$id = self::$config['DEFAULT']['PROFILE'];
+                self::$_id = mb_strtolower($id);
+            } elseif (!empty(self::$_config['DEFAULT']['PROFILE'])) {
+                self::$_id = self::$_config['DEFAULT']['PROFILE'];
             } elseif (!empty($_REQUEST['id'])) {
-                self::$id = mb_strtolower($_REQUEST['id']);
+                self::$_id = mb_strtolower($_REQUEST['id']);
             } else {
-                self::$id = 'default';
+                self::$_id = 'default';
             }
         }
-        return self::$id;
+        return self::$_id;
     }
 
     /**
@@ -1040,7 +1040,7 @@ final class Yana extends Singleton implements IsReportable
          * and the translated message will be read from there
          * depending on the user's prefered language setting.
          */
-        if (strcasecmp($template, 'MESSAGE') === 0 || ($result === false && Report::countMessages() === 0)) {
+        if (strcasecmp($template, 'MESSAGE') === 0 || ($result === false && ReportAbstract::countMessages() === 0)) {
 
             // get vars
             $route = PluginManager::getNextEvent();
@@ -1050,8 +1050,8 @@ final class Yana extends Singleton implements IsReportable
 
             // create default message if there is none
             if (Message::countMessages() === 0) {
-                if (!empty($route[PluginAnnotation::TEXT])) {
-                    $messageClass = $route[PluginAnnotation::TEXT];
+                if (!empty($route[PluginAnnotationEnumeration::TEXT])) {
+                    $messageClass = $route[PluginAnnotationEnumeration::TEXT];
                 } else {
                     if ($result !== false) {
                         $messageClass = 'SuccessMessage';
@@ -1066,19 +1066,19 @@ final class Yana extends Singleton implements IsReportable
             }
 
             // if not other destination is defined, route back to default homepage
-            if (!isset($route[PluginAnnotation::GO])) {
-                $route[PluginAnnotation::GO] = self::getDefault("homepage");
+            if (!isset($route[PluginAnnotationEnumeration::GO])) {
+                $route[PluginAnnotationEnumeration::GO] = self::getDefault("homepage");
             }
 
-            $this->exitTo($route[PluginAnnotation::GO]);
+            $this->exitTo($route[PluginAnnotationEnumeration::GO]);
 
         /* 3) all other template settings go here
          */
         } else {
 
             $view = $this->_getView();
-            if (!empty(self::$config['DEFAULT']['EVENT'][mb_strtoupper(PluginAnnotation::TEMPLATE)])) {
-                $baseTemplate = self::$config['DEFAULT']['EVENT'][mb_strtoupper(PluginAnnotation::TEMPLATE)];
+            if (!empty(self::$_config['DEFAULT']['EVENT'][mb_strtoupper(PluginAnnotationEnumeration::TEMPLATE)])) {
+                $baseTemplate = self::$_config['DEFAULT']['EVENT'][mb_strtoupper(PluginAnnotationEnumeration::TEMPLATE)];
                 $view->setPath($baseTemplate);
             }
             /* register templates with view sub-system */
@@ -1135,14 +1135,14 @@ final class Yana extends Singleton implements IsReportable
     public static function getDefault($key)
     {
         assert('is_scalar($key); /* Wrong argument type for argument 1. String expected. */');
-        if (!isset(self::$config['DEFAULT'])) {
+        if (!isset(self::$_config['DEFAULT'])) {
             return null;
         }
         $key = mb_strtoupper("$key");
-        if (isset(self::$config['DEFAULT'][$key])) {
-            return self::$config['DEFAULT'][$key];
+        if (isset(self::$_config['DEFAULT'][$key])) {
+            return self::$_config['DEFAULT'][$key];
         } else {
-            return Hashtable::get(self::$config['DEFAULT'], $key);
+            return Hashtable::get(self::$_config['DEFAULT'], $key);
         }
     }
 
@@ -1306,32 +1306,23 @@ final class Yana extends Singleton implements IsReportable
             $subreport->addNotice($message);
         }
 
-        $root = dirlist(".", '.php');
-        assert('!isset($i); /* Cannot redeclare variable $i */');
-        for ($i = 0; $i < count($root); $i++)
+        foreach (glob('./*.php') as $root)
         {
-            if ($root[$i] != 'index.php' && $root[$i] != 'library.php' && $root[$i] != 'cli.php') {
-                if (mb_strpos($root[$i], 'update') !== false) {
-                    $message = "Unexpected file '" . $root[$i] . "' found. " .
-                        "If you did'nt place this file here, " .
-                        "it might be the result of an hijacking attempt. " .
-                        "You should consider removing this file.";
-                    $subreport->addWarning($message);
-                }
+            $root = basename($root);
+            if (!in_array($root, array('index.php', 'library.php', 'cli.php'))) {
+                $message = "Unexpected file '" . $root . "' found. " .
+                    "If you did'nt place this file here, " .
+                    "it might be the result of an hijacking attempt. " .
+                    "You should consider removing this file.";
+                $subreport->addWarning($message);
             } else {
-                $subreport->addText("{$root[$i]} = " . md5_file($root[$i]));
+                $subreport->addText("{$root} = " . md5_file($root));
             }
-        } /* end for */
-        unset($i);
-        assert('!isset($dir); /* Cannot redeclare variable $dir */');
-        $dir = dirname(__FILE__);
-        $root = dirlist(dirname(__FILE__), '.php');
-        assert('!isset($i); /* Cannot redeclare variable $i */');
-        for ($i = 0; $i < count($root); $i++)
+        } /* end foreach */
+        foreach (glob(dirname(__FILE__) . '/*.php') as $root)
         {
-            $subreport->addText("{$dir}/{$root[$i]} = " . md5_file("{$dir}/{$root[$i]}"));
+            $subreport->addText("{$root} = " . md5_file($root));
         }
-        unset($i, $dir);
 
         /**
          *  5) Add subreports
@@ -1381,7 +1372,7 @@ final class Yana extends Singleton implements IsReportable
 
         assert('!isset($messages); // Cannot redeclare variable $messages');
         if (defined('YANA_ERROR_REPORTING') && YANA_ERROR_REPORTING === YANA_ERROR_ON) {
-            $messages = Report::getMessages();
+            $messages = ReportAbstract::getMessages();
         } else {
             $messages = Message::getMessages();
         }

@@ -38,6 +38,7 @@ require_once dirname(__FILE__) . '/include.php';
  */
 class MySessionManager extends SessionManager
 {
+
     /**
      * drop security
      */
@@ -46,6 +47,7 @@ class MySessionManager extends SessionManager
         SessionManager::$rules = array();
         SessionManager::getInstance()->cache = array();
     }
+
 }
 
 /**
@@ -56,6 +58,7 @@ class MySessionManager extends SessionManager
  */
 class MyYanaUser extends YanaUser
 {
+
     /**
      * drop security
      */
@@ -68,7 +71,9 @@ class MyYanaUser extends YanaUser
         YanaUser::$instances = array();
         YanaUser::$selectedUser = null;
     }
+
 }
+
 /**
  * SessionManager test-case
  *
@@ -76,17 +81,18 @@ class MyYanaUser extends YanaUser
  */
 class SessionManagerTest extends PHPUnit_Framework_TestCase
 {
+
     /**
      * @var    SessionManager
      * @access protected
      */
-    protected $sessionManager;
+    protected $_sessionManager;
 
     /**
      * @var    FileDb
      * @access protected
      */
-    protected $database;
+    protected $_database;
 
     /**
      * Constructor
@@ -95,10 +101,10 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     public function __construct()
     {
-        DDL::setDirectory(CWD . '/../../config/db/');
+        DDL::setDirectory(CWD . '/../../../config/db/');
         FileDbConnection::setBaseDirectory(CWD . '/resources/db/');
         // path to plugins configuration file
-        PluginManager::setPath(CWD.'resources/db/user/plugins.cfg', CWD.'../../plugins/');
+        PluginManager::setPath(CWD . '/resources/db/user/plugins.cfg', CWD . '/../../../plugins/');
     }
 
     /**
@@ -109,13 +115,13 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        chdir(CWD . '/../../');
+        chdir(CWD . '/../../../');
         DDL::setDirectory('config/db/');
         $schema = XDDL::getDatabase('user');
-        $this->database = new FileDb($schema);
-        SessionManager::setDatasource($this->database);
-        YanaUser::setDatasource($this->database);
-        $this->sessionManager = SessionManager::getInstance();
+        $this->_database = new FileDb($schema);
+        SessionManager::setDatasource($this->_database);
+        YanaUser::setDatasource($this->_database);
+        $this->_sessionManager = SessionManager::getInstance();
     }
 
     /**
@@ -319,24 +325,24 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testGetSecurityLevel()
     {
-        $this->sessionManager->setSecurityLevel(70, 'TESTUsEr', 'FOO');
+        $this->_sessionManager->setSecurityLevel(70, 'TESTUsEr', 'FOO');
         // expected an integer value "70"
-        $getSecurityLevel = $this->sessionManager->getSecurityLevel('testuser', 'foo');
+        $getSecurityLevel = $this->_sessionManager->getSecurityLevel('testuser', 'foo');
         $this->assertEquals(70 , (int) $getSecurityLevel, 'assert failed, the security level for the user "testuser" should be "70"');
 
-        $this->sessionManager->setSecurityLevel(80, 'TESTuSER');
+        $this->_sessionManager->setSecurityLevel(80, 'TESTuSER');
         // expected an integer value "80"
-        $getSecurityLevel = $this->sessionManager->getSecurityLevel('testUser');
+        $getSecurityLevel = $this->_sessionManager->getSecurityLevel('testUser');
         $this->assertEquals(80 , (int) $getSecurityLevel, 'assert failed, the security level for the user "testuser" should be "80"');
 
-        $this->sessionManager->setSecurityLevel(100, 'administrator', 'TT');
+        $this->_sessionManager->setSecurityLevel(100, 'administrator', 'TT');
         // expected an integer value "100"
-        $getSecurityLevel = $this->sessionManager->getSecurityLevel('administrator');
+        $getSecurityLevel = $this->_sessionManager->getSecurityLevel('administrator');
 
         $this->assertEquals(100 , (int) $getSecurityLevel, 'assert failed, the security level for the user "administrator" should be "100"');
 
         // expected an integer value "0"
-        $getSecurityLevel = $this->sessionManager->getSecurityLevel();
+        $getSecurityLevel = $this->_sessionManager->getSecurityLevel();
         $this->assertEquals(0 , (int) $getSecurityLevel, 'assert failed, the security level should be "0"');
     }
 
@@ -365,7 +371,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testCheckPremission()
     {
-        require_once(CWD.'../../plugins/user_group/user_group.plugin.php');
+        require_once(CWD.'../../../plugins/user_group/user_group.plugin.php');
         MySessionManager::dropSecurityRules();
         SessionManager::addSecurityRule(array('plugin_user_group', 'checkGroupsAndRoles'));
 
@@ -376,19 +382,19 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
          */
 
          // expected true - has rights for the expected role
-         $checkAccess = $this->sessionManager->checkPermission('default', 'check_addfoobar', 'administrator');
+         $checkAccess = $this->_sessionManager->checkPermission('default', 'check_addfoobar', 'administrator');
          $this->assertTrue($checkAccess, 'assert failed,  the user "administrator" has all needed rights');
 
          // expected true - has rights for the expected group
-         $checkAccess = $this->sessionManager->checkPermission('default', 'check_addfoobar', 'testuser1');
+         $checkAccess = $this->_sessionManager->checkPermission('default', 'check_addfoobar', 'testuser1');
          $this->assertTrue($checkAccess, 'assert failed,  the user "testuser1" has all needed rights');
 
          // expected true - has rights for expected role and group
-         $checkAccess = $this->sessionManager->checkPermission('default', 'check_addfoobar', 'manager');
+         $checkAccess = $this->_sessionManager->checkPermission('default', 'check_addfoobar', 'manager');
          $this->assertTrue($checkAccess, 'assert failed,  the user "manager" has all needed rights');
 
          // expected fales - user has no access to use this function
-         $checkAccess = $this->sessionManager->checkPermission('default', 'check_addfoobar', 'user');
+         $checkAccess = $this->_sessionManager->checkPermission('default', 'check_addfoobar', 'user');
          $this->assertFalse($checkAccess, 'assert failed, the user "user" does not match the expected rights');
 
          /**
@@ -397,13 +403,13 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
           *
           */
 
-         $checkAccess = $this->sessionManager->checkPermission('ng', 'check_oldfoo', 'user');
+         $checkAccess = $this->_sessionManager->checkPermission('ng', 'check_oldfoo', 'user');
          $this->assertTrue($checkAccess, 'assert failed,  the user "user" has all needed rights');
 
-         $checkAccess = $this->sessionManager->checkPermission('ng', 'check_oldfoo', 'administrator');
+         $checkAccess = $this->_sessionManager->checkPermission('ng', 'check_oldfoo', 'administrator');
          $this->assertFalse($checkAccess, 'assert failed,  the user "administrator" does not match the expected rights');
 
-         $checkAccess = $this->sessionManager->checkPermission('default', 'check_oldfoo', 'dealer');
+         $checkAccess = $this->_sessionManager->checkPermission('default', 'check_oldfoo', 'dealer');
          $this->assertTrue($checkAccess, 'assert failed,  the user "dealer" has all needed rights');
 
 
@@ -413,15 +419,15 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
          *
          */
 
-        $checkAccess = $this->sessionManager->checkPermission('default', 'check_presentfoo', 'manager');
+        $checkAccess = $this->_sessionManager->checkPermission('default', 'check_presentfoo', 'manager');
         // expected true for user "manager" - he match the expected group and role
         $this->assertTrue($checkAccess, 'assert failed, the user "manager" has all needed rights');
 
-        $checkAccess = $this->sessionManager->checkPermission('default', 'check_presentfoo', 'user');
+        $checkAccess = $this->_sessionManager->checkPermission('default', 'check_presentfoo', 'user');
         // expected false for the user "user" - does not match the expected role
         $this->assertFalse($checkAccess, 'assert failed, the user "user" does not match the expected rights');
 
-        $checkAccess = $this->sessionManager->checkPermission('default', 'check_presentfoo', 'administrator');
+        $checkAccess = $this->_sessionManager->checkPermission('default', 'check_presentfoo', 'administrator');
         // expected false for the user "user" - does not match the expected role
         $this->assertFalse($checkAccess, 'assert failed, the user "administrator" does not match the expected rights');
      }
@@ -435,7 +441,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testCheckPremission1()
     {
-        require_once(CWD.'../../plugins/user/user.plugin.php');
+        require_once(CWD.'../../../plugins/user/user.plugin.php');
         MySessionManager::dropSecurityRules();
         SessionManager::addSecurityRule(array('plugin_user', 'checkSecurityLevel'));
         /**
@@ -445,15 +451,15 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
          * @user        level: 60
          */
 
-        $checkAccess = $this->sessionManager->checkPermission('bar', 'check_baricons', 'user');
+        $checkAccess = $this->_sessionManager->checkPermission('bar', 'check_baricons', 'user');
         // expecting true for the user "user"
         $this->assertTrue($checkAccess, 'assert failed, the user "user" has all needed rights');
 
-        $checkAccess = $this->sessionManager->checkPermission('bar', 'check_baricons', 'dealer');
+        $checkAccess = $this->_sessionManager->checkPermission('bar', 'check_baricons', 'dealer');
         // expecting false for the user "dealer" - security level is too low
         $this->assertFalse($checkAccess, 'assert failed, the user "dealer" does not match the expected rights');
 
-        $checkAccess = $this->sessionManager->checkPermission('bar', 'check_baricons', 'administrator');
+        $checkAccess = $this->_sessionManager->checkPermission('bar', 'check_baricons', 'administrator');
         // expecting true for the user "administrator"
         $this->assertTrue($checkAccess, 'assert failed, the user "administrator" does not match the expected rights');
 
@@ -463,10 +469,10 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
          *
          */
 
-        $checkAccess = $this->sessionManager->checkPermission('default', 'check_foo', 'user');
+        $checkAccess = $this->_sessionManager->checkPermission('default', 'check_foo', 'user');
         $this->assertFalse($checkAccess, 'assert failed, the user "user" does not match the expected rights');
 
-        $checkAccess = $this->sessionManager->checkPermission('default', 'check_foo', 'manager');
+        $checkAccess = $this->_sessionManager->checkPermission('default', 'check_foo', 'manager');
         $this->assertTrue($checkAccess, 'assert failed, the user "manager" does not match the expecteg group');
 
         /**
@@ -475,10 +481,10 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
           *
           */
 
-        $checkAccess = $this->sessionManager->checkPermission('default', 'check_oldfoo', 'user');
+        $checkAccess = $this->_sessionManager->checkPermission('default', 'check_oldfoo', 'user');
         $this->assertTrue($checkAccess, 'assert failed,  the user "user" has all needed rights');
 
-        $checkAccess = $this->sessionManager->checkPermission('default', 'check_oldfoo', 'dealer');
+        $checkAccess = $this->_sessionManager->checkPermission('default', 'check_oldfoo', 'dealer');
         $this->assertFalse($checkAccess, 'assert failed,  the user "user" has all needed rights');
     }
 
@@ -492,8 +498,8 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testCheckPremission2()
     {
-        require_once(CWD.'../../plugins/user_group/user_group.plugin.php');
-        require_once(CWD.'../../plugins/user/user.plugin.php');
+        require_once(CWD.'../../../plugins/user_group/user_group.plugin.php');
+        require_once(CWD.'../../../plugins/user/user.plugin.php');
         MySessionManager::dropSecurityRules();
         SessionManager::addSecurityRule(array('plugin_user_group', 'checkGroupsAndRoles'));
         SessionManager::addSecurityRule(array('plugin_user', 'checkSecurityLevel'));
@@ -501,19 +507,19 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
         /**
          * check_foo
          * group: default, level: 100
-         * 
+         *
          */
 
-        $checkAccess = $this->sessionManager->checkPermission('default', 'check_foo', 'user');
+        $checkAccess = $this->_sessionManager->checkPermission('default', 'check_foo', 'user');
         $this->assertFalse($checkAccess, 'assert failed, the user "user" does not match the expected rights');
 
-        $checkAccess = $this->sessionManager->checkPermission('default', 'check_foo', 'employer');
+        $checkAccess = $this->_sessionManager->checkPermission('default', 'check_foo', 'employer');
         $this->assertTrue($checkAccess, 'assert failed, the user "employer" has all needed rights to use this function');
 
-        $checkAccess = $this->sessionManager->checkPermission('default', 'check_foo', 'dealer');
+        $checkAccess = $this->_sessionManager->checkPermission('default', 'check_foo', 'dealer');
         $this->assertFalse($checkAccess, 'assert failed, the user "dealer" does not match the expected rights');
 
-        $checkAccess = $this->sessionManager->checkPermission('default', 'check_foo', 'manager');
+        $checkAccess = $this->_sessionManager->checkPermission('default', 'check_foo', 'manager');
         $this->assertTrue($checkAccess, 'assert failed, the user "manager" does not match the expecteg group');
 
 
@@ -524,15 +530,15 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
          *
          */
 
-        $check = $this->sessionManager->checkPermission('default', 'check_insertfoo', 'manager');
+        $check = $this->_sessionManager->checkPermission('default', 'check_insertfoo', 'manager');
         // expecting true for the user "manager" - has all needed rights
         $this->assertTrue($check, 'assert failed, the user "manager" has all needed rights');
 
-        $check = $this->sessionManager->checkPermission('default', 'check_insertfoo', 'administrator');
+        $check = $this->_sessionManager->checkPermission('default', 'check_insertfoo', 'administrator');
         // expecting true for the user "administrator" - has all needed rights
         $this->assertTrue($check, 'assert failed, the user "administrator" has all needed rights');
 
-        $check = $this->sessionManager->checkPermission('default', 'check_insertfoo', 'user');
+        $check = $this->_sessionManager->checkPermission('default', 'check_insertfoo', 'user');
         // expected false for user "user" - the user does not match the expected rights
         $this->assertFalse($check, 'assert failed, the user "user" does not match the expected rights');
 
@@ -540,17 +546,17 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
         /**
          * check_barfoo
          * @user        group: bar, role: sales, level: 80
-         * 
+         *
          */
-        $check = $this->sessionManager->checkPermission('default', 'check_barfoo', 'testuser1');
+        $check = $this->_sessionManager->checkPermission('default', 'check_barfoo', 'testuser1');
         // expecting true for the user "testuser" - the testuser match the expected group , role and sec_level
         $this->assertTrue($check, 'assert failed, the user "testuser" has all needed rights');
 
-        $check = $this->sessionManager->checkPermission('default', 'check_barfoo', 'user3');
+        $check = $this->_sessionManager->checkPermission('default', 'check_barfoo', 'user3');
         // expecting true for the user "testuser" - the testuser match the expected group , role and sec_level
         $this->assertTrue($check, 'assert failed, the user "user2" has all needed rights');
 
-        $check = $this->sessionManager->checkPermission('foo', 'check_barfoo', 'user2');
+        $check = $this->_sessionManager->checkPermission('foo', 'check_barfoo', 'user2');
         // expecting true for the user "testuser" - the testuser match the expected group , role and sec_level
         $this->assertFalse($check, 'assert failed, the user "user3" does not match the expected rights');
 
@@ -559,22 +565,22 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
          *
          * @user        group: bar, role: sales, level: 70
          * @user        group: foobar, level: 50
-         * 
+         *
          */
 
-        $checkAccess = $this->sessionManager->checkPermission('default', 'check_redirectfoo', 'testuser1');
+        $checkAccess = $this->_sessionManager->checkPermission('default', 'check_redirectfoo', 'testuser1');
         // expected true for the user "testuser"
         $this->assertTrue($checkAccess, 'assert failed, the user "testuser" has all needed rights');
 
-        $checkAccess = $this->sessionManager->checkPermission('default', 'check_redirectfoo', 'administrator');
+        $checkAccess = $this->_sessionManager->checkPermission('default', 'check_redirectfoo', 'administrator');
         // expected true for the user "administrator"
         $this->assertFalse($checkAccess, 'assert failed, the user "testuser" does not match the expected rights');
 
-        $checkAccess = $this->sessionManager->checkPermission('foo', 'check_redirectfoo', 'user2');
+        $checkAccess = $this->_sessionManager->checkPermission('foo', 'check_redirectfoo', 'user2');
         // expected false - the user "user2" does not match the expected rights (security_level is too low)
         $this->assertFalse($checkAccess, 'assert failed, the user "user2" does not match the expected rights');
 
-        $checkAccess = $this->sessionManager->checkPermission('default', 'check_redirectfoo', 'user3');
+        $checkAccess = $this->_sessionManager->checkPermission('default', 'check_redirectfoo', 'user3');
         // expected true - the user "user3" has match all needed rights
         $this->assertTrue($checkAccess, 'assert failed, the user "user3" has match all needed rights');
     }
@@ -626,19 +632,21 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
 
     /**
      * Serialze
-     * 
+     *
      * @covers SessionManager::serialize
      * @covers SessionManager::unserialize
      * @test
      */
     public function testSerialize()
     {
-        $serialize = serialize($this->sessionManager);
+        $serialize = serialize($this->_sessionManager);
         $this->assertType('string', $serialize, 'assert failed, the value should be of type string');
 
         $unserialize = unserialize($serialize);
         $this->assertTrue($unserialize instanceof SessionManager, 'assert failed, the value should be an instance of SessionManager');
-        $this->assertEquals($unserialize, $this->sessionManager, 'assert failed , there are the same objects');
+        $this->assertEquals($unserialize, $this->_sessionManager, 'assert failed , there are the same objects');
     }
+
 }
+
 ?>

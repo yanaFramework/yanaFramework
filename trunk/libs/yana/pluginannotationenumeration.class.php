@@ -41,7 +41,7 @@
  *
  * @ignore
  */
-class PluginAnnotation
+class PluginAnnotationEnumeration
 {
     /**#@+
      * class constants

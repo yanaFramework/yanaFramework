@@ -58,12 +58,13 @@
  */
 class DbSelectExist extends DbQuery
 {
+
     /**
      * @access  protected
      * @ignore
      * @var int
      */
-    protected $type = DbQuery::EXISTS;
+    protected $type = DbQueryTypeEnumeration::EXISTS;
 
     /**
      * set where clause

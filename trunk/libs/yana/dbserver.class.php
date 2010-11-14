@@ -44,9 +44,9 @@ class DbServer extends Object
      * @access  private
      */
 
-    /** @var mixed */ private $database = null;
-    /** @var array */ private $dsn      = array();
-    /** @var array */ private $options  = array();
+    /** @var mixed */ private $_database = null;
+    /** @var array */ private $_dsn      = array();
+    /** @var array */ private $_options  = array();
 
     /**#@-*/
 
@@ -116,7 +116,7 @@ class DbServer extends Object
             /* error handling */
             Log::report("Unable to open connection to database using PEAR-DB. Might not be installed.");
             throw new PearDbError();
-            $this->database = null;
+            $this->_database = null;
         }
 
         /*
@@ -132,15 +132,15 @@ class DbServer extends Object
         assert('is_array($require_odbc);');
 
         // get list of default connection options
-        $this->options = Yana::getDefault('database.options');
-        if (!is_array($this->options)) {
+        $this->_options = Yana::getDefault('database.options');
+        if (!is_array($this->_options)) {
             // no default options available
-            $this->options = array();
+            $this->_options = array();
         }
-        assert('is_array($this->options);');
+        assert('is_array($this->_options);');
 
         // get connection settings
-        $this->dsn = array('DBMS'     => YANA_DATABASE_DBMS,
+        $this->_dsn = array('DBMS'     => YANA_DATABASE_DBMS,
                            'HOST'     => YANA_DATABASE_HOST,
                            'PORT'     => YANA_DATABASE_PORT,
                            'USERNAME' => YANA_DATABASE_USER,
@@ -151,54 +151,54 @@ class DbServer extends Object
          * 1.2 auto-detect MySQL port for Server2Go application
          */
         $dbms = strpos(YANA_DATABASE_DBMS, 'mysql');
-        if (isset($_ENV["S2G_MYSQL_PORT"]) && empty($this->dsn["PORT"]) && $dbms !== false) {
-            $this->dsn["PORT"] = $_ENV["S2G_MYSQL_PORT"];
+        if (isset($_ENV["S2G_MYSQL_PORT"]) && empty($this->_dsn["PORT"]) && $dbms !== false) {
+            $this->_dsn["PORT"] = $_ENV["S2G_MYSQL_PORT"];
         }
 
         /*
          * 1.3 there are some static options that always have to be there and can't be changed
          */
-        $this->options['portability'] = MDB2_PORTABILITY_ALL;
+        $this->_options['portability'] = MDB2_PORTABILITY_ALL;
 
         /*
          * 2 process settings provided by the user
          */
         if (is_array($dsn)) {
             $dsn = Hashtable::changeCase($dsn, CASE_UPPER);
-            $this->dsn = Hashtable::merge($this->dsn, $dsn);
+            $this->_dsn = Hashtable::merge($this->_dsn, $dsn);
         }
-        assert('is_array($this->dsn);');
+        assert('is_array($this->_dsn);');
         $dsn = array();
 
         /*
          * 3 create PEAR-DB compatible dsn-array
          */
         /* 3.1 determine if odbc is required to connect to this dbms */
-        if (!empty($this->dsn['DBMS'])) {
-            if (@$this->dsn['USE_ODBC'] == true || in_array(mb_strtolower($this->dsn['DBMS']), $require_odbc)) {
+        if (!empty($this->_dsn['DBMS'])) {
+            if (@$this->_dsn['USE_ODBC'] == true || in_array(mb_strtolower($this->_dsn['DBMS']), $require_odbc)) {
                 $dsn['phptype']  = 'ODBC';
-                $dsn['dbsyntax'] = $this->dsn['DBMS'];
+                $dsn['dbsyntax'] = $this->_dsn['DBMS'];
             } else {
-                $dsn['phptype']  = $this->dsn['DBMS'];
+                $dsn['phptype']  = $this->_dsn['DBMS'];
             }
         }
         /* 3.2 now for the database host */
-        if (!empty($this->dsn['HOST'])) {
-            $dsn['hostspec'] = $this->dsn['HOST'];
-            if (is_numeric($this->dsn['PORT']) && $this->dsn['PORT'] > 0) {
-                $dsn['hostspec'] .= ':'.$this->dsn['PORT'];
+        if (!empty($this->_dsn['HOST'])) {
+            $dsn['hostspec'] = $this->_dsn['HOST'];
+            if (is_numeric($this->_dsn['PORT']) && $this->_dsn['PORT'] > 0) {
+                $dsn['hostspec'] .= ':'.$this->_dsn['PORT'];
             }
         }
         /* 3.3 database name */
-        if (!empty($this->dsn['DATABASE'])) {
-            $dsn['database'] = $this->dsn['DATABASE'];
+        if (!empty($this->_dsn['DATABASE'])) {
+            $dsn['database'] = $this->_dsn['DATABASE'];
         }
         /* 3.4 collect login information */
-        if (!empty($this->dsn['USERNAME'])) {
-            $dsn['username'] = $this->dsn['USERNAME'];
+        if (!empty($this->_dsn['USERNAME'])) {
+            $dsn['username'] = $this->_dsn['USERNAME'];
         }
-        if (!empty($this->dsn['PASSWORD'])) {
-            $dsn['password'] = $this->dsn['PASSWORD'];
+        if (!empty($this->_dsn['PASSWORD'])) {
+            $dsn['password'] = $this->_dsn['PASSWORD'];
         }
         assert('is_array($dsn);');
 
@@ -221,13 +221,13 @@ class DbServer extends Object
         if (defined('YANA_ERROR_REPORTING')) {
             restore_error_handler();
         }
-        $this->database = MDB2::connect($dsn);
+        $this->_database = MDB2::connect($dsn);
         if (defined('YANA_ERROR_REPORTING')) {
             ErrorUtility::setErrorReporting(YANA_ERROR_REPORTING);
         }
 
         /* error handling */
-        if (!MDB2::isConnection($this->database)) {
+        if (!MDB2::isConnection($this->_database)) {
             $err_msg = "DATABASE NOT AVAILABLE: Unable to establish connection with database server.\n\t\t".
                         "Open administration panel and choose \"database administration\" to edit settings";
             /* Don't output passwords */
@@ -236,7 +236,7 @@ class DbServer extends Object
             } else {
                 $dsn['password'] = 'YES';
             }
-            $data = $this->database->getMessage() . "\nUsing DSN:\n" . print_r($dsn, true);
+            $data = $this->_database->getMessage() . "\nUsing DSN:\n" . print_r($dsn, true);
             Log::report($err_msg, E_USER_NOTICE, $data);
             throw new Warning($err_msg.': '.$data, E_USER_WARNING);
         }
@@ -278,7 +278,7 @@ class DbServer extends Object
         if (!class_exists("MDB2")) {
             return null;
         } else {
-            return $this->database;
+            return $this->_database;
         }
     }
 
@@ -307,8 +307,8 @@ class DbServer extends Object
      */
     public function getDsn()
     {
-        if (is_array($this->dsn)) {
-            return $this->dsn;
+        if (is_array($this->_dsn)) {
+            return $this->_dsn;
 
         } else {
             return false;
@@ -341,7 +341,7 @@ class DbServer extends Object
          * NOTE: the constructor already created a log-entry if the connection failed,
          * so there's no need to do this again
          */
-        return MDB2::isConnection($db->database);
+        return MDB2::isConnection($db->_database);
     }
 
 }

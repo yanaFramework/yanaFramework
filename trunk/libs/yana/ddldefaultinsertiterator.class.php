@@ -59,7 +59,7 @@ class DDLDefaultInsertIterator extends DDLAbstractFieldIterator
      * @access  public
      * @ignore
      */
-    public function  __wakeup()
+    public function __wakeup()
     {
         $this->referenceValues = null;
         $this->references = null;
@@ -210,9 +210,12 @@ class DDLDefaultInsertIterator extends DDLAbstractFieldIterator
                 /* template for new entries */
                 $template = '<input' . $attr . ' size="5" type="text" name="' . $name . '[names][]" value="%s"/>' .
                     '&nbsp;=&nbsp;<input size="10" type="text" name="' . $name . '[values][]" value="%s"/>' .
-                    '<a class="buttonize" href="javascript://yanaRemoveItem(this)" onclick="yanaRemoveItem(this)"' .
-                    'title="'. $lang->getVar('remove') . '"><span class="icon_delete">&nbsp;</span></a>';
-                $newFunction = 'yanaAddItem';
+                    '<a class="buttonize" href="javascript://yanaRemoveItem(this)" ' .
+                    'onclick="yanaRemoveItem(this)" title="'. $lang->getVar('remove') . '">' .
+                    '<span class="icon_delete">&nbsp;</span></a>' .
+                    '<a class="buttonize" href="javascript://yanaAddItem(this)" onclick="yanaAddItem(this)" ' .
+                    'title="' . $lang->getVar('button_new') . '">' .
+                    '<span class="icon_new">&nbsp;</span></a>';
             // fall through
 
             /*
@@ -221,18 +224,19 @@ class DDLDefaultInsertIterator extends DDLAbstractFieldIterator
             case 'list':
                 /* template for new entries */
                 if (!isset($template)) {
-                    $template = '<input' . $attr . ' size="21" type="text" name="' . $name .'[]" value="%s"/>' .
+                    $template = '<input' . $attr . ' size="21" type="text" name="' . $name .'[%i]" value="%s"/>' .
                         '<a class="buttonize" href="javascript://yanaRemoveItem(this)" ' .
                         'onclick="yanaRemoveItem(this)" title="'. $lang->getVar('remove') . '">' .
-                        '<span class="icon_delete">&nbsp;</span></a>';
-                    $newFunction = 'yanaAddItemAutonumber';
+                        '<span class="icon_delete">&nbsp;</span></a>' .
+                        '<a class="buttonize" href="javascript://yanaAddItem(this)" onclick="yanaAddItem(this)" ' .
+                        'title="' . $lang->getVar('button_new') . '">' .
+                        '<span class="icon_new">&nbsp;</span></a>';
                 }
 
                 $result = '<div class="gui_generator_array">';
 
                 /* list of entries*/
-                $result .= '<ol><li id="' . $id . '" class="gui_generator_array_reference">' .
-                    sprintf($template, '', '') . '</li>';
+                $result .= '<ol>';
 
                 if (!empty($value)) {
                     $template = '<li>' . $template . '</li>';
@@ -241,13 +245,12 @@ class DDLDefaultInsertIterator extends DDLAbstractFieldIterator
                     {
                         $result .= sprintf($template, $key, $text);
                     }
+                } else {
+                    $result .= '<li>' . sprintf($template, '', '') . '</li>';
                 }
 
                 // link to add new entry
-                $result .= '</ol>' .
-                    '<a class="buttonize" href="javascript:' . $newFunction . '(\'' . $id . '\')" title="' .
-                    $lang->getVar('button_new') . '"><span class="icon_new">&nbsp;</span>' .
-                    $lang->getVar('button_new') . '</a></div>';
+                $result .= '</ol></div>';
 
                 return $result;
             break;

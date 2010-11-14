@@ -1,6 +1,6 @@
 <?php
 /**
- * include this before any test-case
+ * YANA library
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -21,23 +21,57 @@
  *
  * This notice MAY NOT be removed.
  *
- * @package  test
+ * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- * @ignore
  */
-
-date_default_timezone_set('Europe/Paris');
 
 /**
+ * <<Enumeration>> Database query type enumeration.
+ *
+ * Values for possible database statements.
+ *
+ * @access      public
+ * @package     yana
+ * @subpackage  database
+ *
  * @ignore
  */
-require_once dirname(__FILE__) . '/../../../library.php';
-if (!defined('CWD')) {
-    define('CWD', dirname(__FILE__) . DIRECTORY_SEPARATOR);
-}
-if (empty($_SERVER['DOCUMENT_ROOT']) && isset($_SERVER['OS']) && preg_match('/windows/i', $_SERVER['OS'])) {
-    $_SERVER['DOCUMENT_ROOT'] =  realpath(CWD . "../../../../../") . '/htdocs/';
-    $path = dirname($_SERVER["DOCUMENT_ROOT"]);
+class DbQueryTypeEnumeration
+{
+
+    /**
+     * unknown or undefined statement type
+     */
+    const UNKNOWN = 0;
+    /**
+     * select statement
+     */
+    const SELECT = 8;
+    /**
+     * update statement
+     */
+    const UPDATE = 16;
+    /**
+     * insert statement
+     */
+    const INSERT = 32;
+    /**
+     * delete statement
+     */
+    const DELETE = 64;
+    /**
+     * checks if a database object exists
+     */
+    const EXISTS = 128;
+    /**
+     * checks number of occurences
+     */
+    const LENGTH = 256;
+    /**
+     * alias of LENGTH
+     */
+    const COUNT = self::LENGTH;
+
 }
 
 ?>

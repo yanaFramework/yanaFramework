@@ -1700,8 +1700,8 @@ class SmartUtility extends Utility
 
         foreach ($pluginMenu->getMenuEntries('start') as $action => $entry)
         {
-            $title = $entry[PluginAnnotation::TITLE];
-            $image = $entry[PluginAnnotation::IMAGE];
+            $title = $entry[PluginAnnotationEnumeration::TITLE];
+            $image = $entry[PluginAnnotationEnumeration::IMAGE];
 
             if (!is_file($image)) {
                 if (is_file($dir . $image)) {

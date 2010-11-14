@@ -26,29 +26,18 @@
  */
 
 /**
- * Database error
+ * Item not found
  *
- * This class represents errors passed to the user.
- * The error is automatically added to the log-files.
+ * Thrown when you try to add access a named item, but no item with the given
+ * name is found.
  *
  * @access      public
  * @package     yana
  * @subpackage  error_reporting
  */
-class DbError extends Error
+class NotFoundException extends ReportAbstract
 {
-    /**
-     * constructor
-     *
-     * @param  string     $message   the message that should be reported
-     * @param  int        $code      optional error code
-     * @param  Exception  $previous  use this when you need to rethrow a catched exception
-     */
-    public function __construct($message = "", $code = E_USER_ERROR, Exception $previous = null)
-    {
-        parent::__construct($message, $code, $previous);
-        Log::report($message, $code);
-    }
+    /* intentionally left blank */
 }
 
 ?>

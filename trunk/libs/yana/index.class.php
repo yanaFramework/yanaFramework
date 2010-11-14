@@ -24,7 +24,6 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
-spl_autoload_register(array('Index' , 'autoload'));
 
 /**
  * <<utility>> controller
@@ -203,81 +202,6 @@ class Index extends Utility
         }
     }
 
-    /**
-     * YANA auto-loader
-     *
-     * This static function implements lazy class-loading for the Yana framework.
-     * It is registered using the Standard PHP-library (SPL) function spl_autoload_register().
-     *
-     * For more information see the following manual pages:
-     * # http://de.php.net/manual/en/language.oop5.autoload.php
-     * # http://de.php.net/manual/de/function.spl-autoload-register.php
-     *
-     * @static
-     * @access  public
-     * @param   string  $className  class name
-     */
-    public static function autoload($className)
-    {
-        if (!isset(self::$dir)) {
-            self::$dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-        }
-        $className = strtolower($className);
-        switch ($className)
-        {
-            case 'smarty':
-                $path = '/../smarty/Smarty.class.php';
-                break;
-            break;
-            case 'sql_parser':
-                $path = '/../sql_parser/Parser.php';
-                break;
-            break;
-            case 'mdb2':
-                include_once "MDB2.php";
-                return;
-            break;
-            case 'iscloneable':
-            case 'isdataadapter':
-            case 'isreadable':
-            case 'iswritable':
-            case 'isobject':
-            case 'isreportable':
-            case 'isserializable':
-            case 'issingleton':
-            case 'isplugin':
-            case 'isincludableddl':
-            case 'issmartresource':
-                $path = $className . '.interface.php';
-            break;
-            case 'report':
-                $path = 'report.exception.php';
-            break;
-            case 'log':
-            case 'dbwarninglog':
-            case 'dbeventlog':
-            case 'dberrorlog':
-            case 'dbinvalidsyntax':
-                $path = 'report_' . $className . '.exception.php';
-            break;
-            case 'pluginactivity':
-            case 'pluginpriority':
-            case 'pluginannotation':
-                $path = $className . '.enumeration.php';
-            break;
-            default:
-                if (preg_match('/exception$/', $className)) {
-                $path = 'report_' . str_replace('exception', '.exception.php', $className);
-                } elseif (preg_match('/(warning|error|message|alert|notice)$/', $className)) {
-                    $path = 'report_' . $className . '.exception.php';
-                } else {
-                    $path = $className . '.class.php';
-                }
-            break;
-        }
-        if (file_exists(self::$dir . $path)) {
-            include_once self::$dir . $path;
-        }
-    }
 }
+
 ?>

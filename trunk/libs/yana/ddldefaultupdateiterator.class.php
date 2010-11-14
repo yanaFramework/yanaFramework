@@ -368,7 +368,7 @@ class DDLDefaultUpdateIterator extends DDLDefaultInsertIterator
 
                 $this->values = $query->getResults();
                 $this->values = Hashtable::changeCase($this->values, CASE_LOWER);
-                if (!empty($this->values) && $query->getExpectedResult() === YANA_DB_ROW) {
+                if (!empty($this->values) && $query->getExpectedResult() === DbResultEnumeration::ROW) {
                         $id = $this->values[strtolower($this->primaryColumn())];
                         $this->values = array($id => $this->values);
                 }

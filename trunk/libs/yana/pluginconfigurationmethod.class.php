@@ -38,7 +38,7 @@
  *
  * @ignore
  */
-class PluginConfigurationMethod extends Object implements IsSerializable
+class PluginConfigurationMethod extends Object
 {
     /**#@+
      * @ignore
@@ -55,10 +55,10 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      * @ignore
      * @access  private
      */
-    /** @var array  */ private $args = array();
-    /** @var array  */ private $defaults = array();
-    /** @var bool   */ private $hasGenericParams = false;
-    /** @var array  */ private $paths = array();
+    /** @var array  */ private $_args = array();
+    /** @var array  */ private $_defaults = array();
+    /** @var bool   */ private $_hasGenericParams = false;
+    /** @var array  */ private $_paths = array();
 
     /**#@-*/
 
@@ -74,66 +74,66 @@ class PluginConfigurationMethod extends Object implements IsSerializable
         $this->className = $method->getClassName();
         $this->methodName = $method->getName();
 
-        $typeClassTag = $class->getTag(PluginAnnotation::TYPE, 'default');
-        $this->paths[] = $class->getDirectory();
+        $typeClassTag = $class->getTag(PluginAnnotationEnumeration::TYPE, 'default');
+        $this->_paths[] = $class->getDirectory();
         $this->configuration = array
         (
             /* reserved for future use
 
-                PluginAnnotation::TITLE => $method->getTitle(),
-                PluginAnnotation::TEXT => $method->getText(),
+                PluginAnnotationEnumeration::TITLE => $method->getTitle(),
+                PluginAnnotationEnumeration::TEXT => $method->getText(),
 
             */
 
-            PluginAnnotation::TITLE => $method->getTag(PluginAnnotation::TITLE),
-            PluginAnnotation::TEXT => "",
-            PluginAnnotation::PARAM => array(),
-            PluginAnnotation::RETURN_VALUE => $method->getTags(PluginAnnotation::RETURN_VALUE),
-            PluginAnnotation::TYPE => mb_strtolower($method->getTag(PluginAnnotation::TYPE, $typeClassTag)),
-            PluginAnnotation::TEMPLATE => mb_strtolower($method->getTag(PluginAnnotation::TEMPLATE, 'null')),
-            PluginAnnotation::USER => $method->getTags(PluginAnnotation::USER),
-            PluginAnnotation::SAFEMODE => $method->getTag(PluginAnnotation::SAFEMODE),
-            PluginAnnotation::MENU => $method->getTag(PluginAnnotation::MENU),
-            PluginAnnotation::ONERROR => $method->getTag(PluginAnnotation::ONERROR),
-            PluginAnnotation::ONSUCCESS => $method->getTag(PluginAnnotation::ONSUCCESS),
-            PluginAnnotation::GROUP => mb_strtolower((!is_null($class)) ? $class->getTag(PluginAnnotation::GROUP) : ''),
-            PluginAnnotation::OVERWRITE => $method->getTag(PluginAnnotation::OVERWRITE, '0'),
-            PluginAnnotation::SUBSCRIBE => $method->getTag(PluginAnnotation::SUBSCRIBE, '0'),
-            PluginAnnotation::LANGUAGE => $method->getTags(PluginAnnotation::LANGUAGE, array()),
-            PluginAnnotation::SCRIPT => array(),
-            PluginAnnotation::STYLE => array()
+            PluginAnnotationEnumeration::TITLE => $method->getTag(PluginAnnotationEnumeration::TITLE),
+            PluginAnnotationEnumeration::TEXT => "",
+            PluginAnnotationEnumeration::PARAM => array(),
+            PluginAnnotationEnumeration::RETURN_VALUE => $method->getTags(PluginAnnotationEnumeration::RETURN_VALUE),
+            PluginAnnotationEnumeration::TYPE => mb_strtolower($method->getTag(PluginAnnotationEnumeration::TYPE, $typeClassTag)),
+            PluginAnnotationEnumeration::TEMPLATE => mb_strtolower($method->getTag(PluginAnnotationEnumeration::TEMPLATE, 'null')),
+            PluginAnnotationEnumeration::USER => $method->getTags(PluginAnnotationEnumeration::USER),
+            PluginAnnotationEnumeration::SAFEMODE => $method->getTag(PluginAnnotationEnumeration::SAFEMODE),
+            PluginAnnotationEnumeration::MENU => $method->getTag(PluginAnnotationEnumeration::MENU),
+            PluginAnnotationEnumeration::ONERROR => $method->getTag(PluginAnnotationEnumeration::ONERROR),
+            PluginAnnotationEnumeration::ONSUCCESS => $method->getTag(PluginAnnotationEnumeration::ONSUCCESS),
+            PluginAnnotationEnumeration::GROUP => mb_strtolower((!is_null($class)) ? $class->getTag(PluginAnnotationEnumeration::GROUP) : ''),
+            PluginAnnotationEnumeration::OVERWRITE => $method->getTag(PluginAnnotationEnumeration::OVERWRITE, '0'),
+            PluginAnnotationEnumeration::SUBSCRIBE => $method->getTag(PluginAnnotationEnumeration::SUBSCRIBE, '0'),
+            PluginAnnotationEnumeration::LANGUAGE => $method->getTags(PluginAnnotationEnumeration::LANGUAGE, array()),
+            PluginAnnotationEnumeration::SCRIPT => array(),
+            PluginAnnotationEnumeration::STYLE => array()
         );
         // process and add scripts
         assert('!isset($script); // Cannot redeclare var $script');
-        foreach ($method->getTags(PluginAnnotation::SCRIPT, array()) as $script)
+        foreach ($method->getTags(PluginAnnotationEnumeration::SCRIPT, array()) as $script)
         {
             if (!is_string($script)) {
                 $message = 'Syntax error in @script: ' .$this->className . '::' . $this->methodName . '()';
                 Log::report($message, E_USER_ERROR, $param);
                 continue;
             }
-            $script = $this->paths[0] . "/$script";
-            $this->configuration[PluginAnnotation::SCRIPT][] = $script;
+            $script = $this->_paths[0] . "/$script";
+            $this->configuration[PluginAnnotationEnumeration::SCRIPT][] = $script;
         }
         unset($script);
         // process and add styles
         assert('!isset($style); // Cannot redeclare var $style');
-        foreach ($method->getTags(PluginAnnotation::STYLE, array()) as $style)
+        foreach ($method->getTags(PluginAnnotationEnumeration::STYLE, array()) as $style)
         {
             if (!is_string($style)) {
                 $message = 'Syntax error in @style: ' .$this->className . '::' . $this->methodName . '()';
                 Log::report($message, E_USER_ERROR, $param);
                 continue;
             }
-            $style = $this->paths[0] . "/$style";
-            $this->configuration[PluginAnnotation::STYLE][] = $style;
+            $style = $this->_paths[0] . "/$style";
+            $this->configuration[PluginAnnotationEnumeration::STYLE][] = $style;
         }
         unset($style);
         // process template
         assert('!isset($template); // Cannot redeclare var $template');
-        $template = $this->paths[0] . "/" . $this->configuration[PluginAnnotation::TEMPLATE];
+        $template = $this->_paths[0] . "/" . $this->configuration[PluginAnnotationEnumeration::TEMPLATE];
         if (is_file($template)) {
-            $this->configuration[PluginAnnotation::TEMPLATE] = $template;
+            $this->configuration[PluginAnnotationEnumeration::TEMPLATE] = $template;
         }
         unset($template);
         // process params
@@ -141,7 +141,7 @@ class PluginConfigurationMethod extends Object implements IsSerializable
         assert('!isset($match); // Cannot redeclare var $match');
         assert('!isset($name); // Cannot redeclare var $name');
         assert('!isset($type); // Cannot redeclare var $type');
-        foreach ($method->getTags(PluginAnnotation::PARAM, array()) as $param)
+        foreach ($method->getTags(PluginAnnotationEnumeration::PARAM, array()) as $param)
         {
             if (!is_string($param)) {
                 $message = 'Syntax error in @param: ' .$this->className . '::' . $this->methodName . '()';
@@ -151,17 +151,17 @@ class PluginConfigurationMethod extends Object implements IsSerializable
             if (preg_match('/^(\w+)\s+\$(\w+)/', $param, $match)) {
                 $name = $match[2];
                 $type = $match[1];
-                $this->configuration[PluginAnnotation::PARAM][$name] = $type;
+                $this->configuration[PluginAnnotationEnumeration::PARAM][$name] = $type;
             }
         }
         unset($match, $name, $type, $param);
-        $this->hasGenericParams = isset($this->configuration[PluginAnnotation::PARAM]['ARGS']);
+        $this->_hasGenericParams = isset($this->configuration[PluginAnnotationEnumeration::PARAM]['ARGS']);
         /* @var $param ReflectionParameter */
         assert('!isset($param); // Cannot redeclare var $param');
         foreach($method->getParameters() as $i => $param)
         {
             if ($param->isDefaultValueAvailable()) {
-                $this->defaults[$i] = $param->getDefaultValue();
+                $this->_defaults[$i] = $param->getDefaultValue();
             }
         }
         unset($param);
@@ -175,7 +175,7 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getType()
     {
-        return $this->configuration[PluginAnnotation::TYPE];
+        return $this->configuration[PluginAnnotationEnumeration::TYPE];
     }
 
     /**
@@ -186,7 +186,7 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getPath()
     {
-        return $this->paths[0];
+        return $this->_paths[0];
     }
 
     /**
@@ -199,7 +199,7 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getPaths()
     {
-        return $this->paths;
+        return $this->_paths;
     }
 
     /**
@@ -211,13 +211,13 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function addSubscription(PluginConfigurationMethod $subscriberConfig)
     {
-        $this->paths[] = $subscriberConfig->getPath();
-        $scripts = $this->configuration[PluginAnnotation::SCRIPT];
-        $this->configuration[PluginAnnotation::SCRIPT] = array_merge($scripts, $subscriberConfig->getScripts());
-        $lang = $this->configuration[PluginAnnotation::LANGUAGE];
-        $this->configuration[PluginAnnotation::LANGUAGE] = array_merge($lang, $subscriberConfig->getLanguages());
-        $styles = $this->configuration[PluginAnnotation::STYLE];
-        $this->configuration[PluginAnnotation::STYLE] = array_merge($styles, $subscriberConfig->getStyles());
+        $this->_paths[] = $subscriberConfig->getPath();
+        $scripts = $this->configuration[PluginAnnotationEnumeration::SCRIPT];
+        $this->configuration[PluginAnnotationEnumeration::SCRIPT] = array_merge($scripts, $subscriberConfig->getScripts());
+        $lang = $this->configuration[PluginAnnotationEnumeration::LANGUAGE];
+        $this->configuration[PluginAnnotationEnumeration::LANGUAGE] = array_merge($lang, $subscriberConfig->getLanguages());
+        $styles = $this->configuration[PluginAnnotationEnumeration::STYLE];
+        $this->configuration[PluginAnnotationEnumeration::STYLE] = array_merge($styles, $subscriberConfig->getStyles());
     }
 
     /**
@@ -231,10 +231,10 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getScripts()
     {
-        if (!isset($this->configuration[PluginAnnotation::SCRIPT])) {
-            $this->configuration[PluginAnnotation::SCRIPT] = array();
+        if (!isset($this->configuration[PluginAnnotationEnumeration::SCRIPT])) {
+            $this->configuration[PluginAnnotationEnumeration::SCRIPT] = array();
         }
-        return $this->configuration[PluginAnnotation::SCRIPT];
+        return $this->configuration[PluginAnnotationEnumeration::SCRIPT];
     }
 
     /**
@@ -248,10 +248,10 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getStyles()
     {
-        if (!isset($this->configuration[PluginAnnotation::STYLE])) {
-            $this->configuration[PluginAnnotation::STYLE] = array();
+        if (!isset($this->configuration[PluginAnnotationEnumeration::STYLE])) {
+            $this->configuration[PluginAnnotationEnumeration::STYLE] = array();
         }
-        return $this->configuration[PluginAnnotation::STYLE];
+        return $this->configuration[PluginAnnotationEnumeration::STYLE];
     }
 
     /**
@@ -265,10 +265,10 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getLanguages()
     {
-        if (!isset($this->configuration[PluginAnnotation::LANGUAGE])) {
-            $this->configuration[PluginAnnotation::LANGUAGE] = array();
+        if (!isset($this->configuration[PluginAnnotationEnumeration::LANGUAGE])) {
+            $this->configuration[PluginAnnotationEnumeration::LANGUAGE] = array();
         }
-        return $this->configuration[PluginAnnotation::LANGUAGE];
+        return $this->configuration[PluginAnnotationEnumeration::LANGUAGE];
     }
 
     /**
@@ -290,7 +290,7 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getParams()
     {
-        return $this->configuration[PluginAnnotation::PARAM];
+        return $this->configuration[PluginAnnotationEnumeration::PARAM];
     }
 
     /**
@@ -303,7 +303,7 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getReturn()
     {
-        return $this->configuration[PluginAnnotation::RETURN_VALUE];
+        return $this->configuration[PluginAnnotationEnumeration::RETURN_VALUE];
     }
 
     /**
@@ -319,7 +319,7 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getGroup()
     {
-        return $this->configuration[PluginAnnotation::GROUP];
+        return $this->configuration[PluginAnnotationEnumeration::GROUP];
     }
 
     /**
@@ -336,7 +336,7 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getMenu()
     {
-        return $this->configuration[PluginAnnotation::MENU];
+        return $this->configuration[PluginAnnotationEnumeration::MENU];
     }
 
     /**
@@ -347,9 +347,9 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getOnSuccess()
     {
-        assert('empty($this->configuration[PluginAnnotation::ONSUCCESS]) || ' .
-               'is_array($this->configuration[PluginAnnotation::ONSUCCESS]);');
-        return $this->configuration[PluginAnnotation::ONSUCCESS];
+        assert('empty($this->configuration[PluginAnnotationEnumeration::ONSUCCESS]) || ' .
+               'is_array($this->configuration[PluginAnnotationEnumeration::ONSUCCESS]);');
+        return $this->configuration[PluginAnnotationEnumeration::ONSUCCESS];
     }
 
     /**
@@ -360,9 +360,9 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getOnError()
     {
-        assert('empty($this->configuration[PluginAnnotation::ONERROR]) || ' .
-               'is_array($this->configuration[PluginAnnotation::ONERROR]);');
-        return $this->configuration[PluginAnnotation::ONERROR];
+        assert('empty($this->configuration[PluginAnnotationEnumeration::ONERROR]) || ' .
+               'is_array($this->configuration[PluginAnnotationEnumeration::ONERROR]);');
+        return $this->configuration[PluginAnnotationEnumeration::ONERROR];
     }
 
     /**
@@ -375,8 +375,8 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getName()
     {
-        if (isset($this->configuration[PluginAnnotation::TITLE])) {
-            return $this->configuration[PluginAnnotation::TITLE];
+        if (isset($this->configuration[PluginAnnotationEnumeration::TITLE])) {
+            return $this->configuration[PluginAnnotationEnumeration::TITLE];
         } else {
             return null;
         }
@@ -390,8 +390,8 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getText()
     {
-        if (isset($this->configuration[PluginAnnotation::TEXT])) {
-            return $this->configuration[PluginAnnotation::TEXT];
+        if (isset($this->configuration[PluginAnnotationEnumeration::TEXT])) {
+            return $this->configuration[PluginAnnotationEnumeration::TEXT];
         } else {
             return null;
         }
@@ -418,11 +418,11 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getSafeMode()
     {
-        if (is_bool($this->configuration[PluginAnnotation::SAFEMODE])) {
-            return $this->configuration[PluginAnnotation::SAFEMODE];
+        if (is_bool($this->configuration[PluginAnnotationEnumeration::SAFEMODE])) {
+            return $this->configuration[PluginAnnotationEnumeration::SAFEMODE];
 
         } else {
-            switch ($this->configuration[PluginAnnotation::SAFEMODE])
+            switch ($this->configuration[PluginAnnotationEnumeration::SAFEMODE])
             {
                 case 'false':
                 case 'no':
@@ -447,8 +447,8 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getTemplate()
     {
-        if (isset($this->configuration[PluginAnnotation::TEMPLATE])) {
-            return $this->configuration[PluginAnnotation::TEMPLATE];
+        if (isset($this->configuration[PluginAnnotationEnumeration::TEMPLATE])) {
+            return $this->configuration[PluginAnnotationEnumeration::TEMPLATE];
         } else {
             return null;
         }
@@ -461,9 +461,9 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      * <code>
      * array(
      *     0 => array(
-     *         PluginAnnotation::ROLE => "string",
-     *         PluginAnnotation::GROUP => "string",
-     *         PluginAnnotation::LEVEL => int(0:100)
+     *         PluginAnnotationEnumeration::ROLE => "string",
+     *         PluginAnnotationEnumeration::GROUP => "string",
+     *         PluginAnnotationEnumeration::LEVEL => int(0:100)
      *     ),
      *     1 => ...
      * );
@@ -474,8 +474,8 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getUserLevels()
     {
-        if (isset($this->configuration[PluginAnnotation::USER])) {
-            return $this->configuration[PluginAnnotation::USER];
+        if (isset($this->configuration[PluginAnnotationEnumeration::USER])) {
+            return $this->configuration[PluginAnnotationEnumeration::USER];
         } else {
             return null;
         }
@@ -497,7 +497,7 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getOverwrite()
     {
-        if (!empty($this->configuration[PluginAnnotation::OVERWRITE])) {
+        if (!empty($this->configuration[PluginAnnotationEnumeration::OVERWRITE])) {
             return true;
 
         } else {
@@ -522,7 +522,7 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function getSubscribe()
     {
-        if (!empty($this->configuration[PluginAnnotation::SUBSCRIBE])) {
+        if (!empty($this->configuration[PluginAnnotationEnumeration::SUBSCRIBE])) {
             return true;
 
         } else {
@@ -561,10 +561,10 @@ class PluginConfigurationMethod extends Object implements IsSerializable
      */
     public function setEventArguments(array $args)
     {
-        $this->args = array();
+        $this->_args = array();
 
-        if ($this->hasGenericParams) {
-            $this->args = $args;
+        if ($this->_hasGenericParams) {
+            $this->_args = $args;
             return;
         }
 
@@ -581,7 +581,7 @@ class PluginConfigurationMethod extends Object implements IsSerializable
                         if (!is_numeric($value)) {
                             throw new InvalidValueWarning($name);
                         } else {
-                            $this->args[$name] = (int) $value;
+                            $this->_args[$name] = (int) $value;
                         }
                     break;
                     case 'float':
@@ -589,30 +589,30 @@ class PluginConfigurationMethod extends Object implements IsSerializable
                         if (!is_numeric($value)) {
                             throw new InvalidValueWarning($name);
                         } else {
-                            $this->args[$name] = (float) $value;
+                            $this->_args[$name] = (float) $value;
                         }
                     break;
                     case 'bool':
                     case 'boolean':
-                        $this->args[$name] = !empty($value);
+                        $this->_args[$name] = !empty($value);
                     break;
                     case 'array':
                         if (!is_array($value)) {
                             throw new InvalidValueWarning($name);
                         } else {
-                            $this->args[$name] = $value;
+                            $this->_args[$name] = $value;
                         }
                     break;
                     default:
                         if (!is_string($value)) {
                             throw new InvalidValueWarning($name);
                         } else {
-                            $this->args[$name] = $value;
+                            $this->_args[$name] = $value;
                         }
                     break;
                 }
-            } elseif (array_key_exists($i, $this->defaults)) {
-                $this->args[$name] = $this->defaults[$i];
+            } elseif (array_key_exists($i, $this->_defaults)) {
+                $this->_args[$name] = $this->_defaults[$i];
             } else {
                 // missing parameter
                 throw new MissingFieldWarning($name);
@@ -633,13 +633,13 @@ class PluginConfigurationMethod extends Object implements IsSerializable
     public function sendEvent(IsPlugin $instance)
     {
         if ($this->hasMethod($instance)) {
-            if ($this->hasGenericParams) {
-                return $instance->{$this->methodName}($this->args);
+            if ($this->_hasGenericParams) {
+                return $instance->{$this->methodName}($this->_args);
             } else {
-                return call_user_func_array(array($instance, $this->methodName), $this->args);
+                return call_user_func_array(array($instance, $this->methodName), $this->_args);
             }
         } else {
-            return $instance->catchAll($this->methodName, $this->args);
+            return $instance->catchAll($this->methodName, $this->_args);
         }
     }
 
@@ -658,34 +658,15 @@ class PluginConfigurationMethod extends Object implements IsSerializable
     }
 
     /**
-     * serialize this object to a string
-     *
-     * Returns the serialized object as a string.
+     * Reinitialize instance.
      *
      * @access  public
-     * @return  string
      */
-    public function serialize()
+    public function __wakeup()
     {
-        $this->args = array();
-        return serialize($this);
+        $this->_args = array();
     }
 
-    /**
-     * unserialize a string to a serializable object
-     *
-     * Returns the unserialized object.
-     *
-     * @access  public
-     * @static
-     * @param   string  $string  string to unserialize
-     * @return  IsSerializable
-     */
-    public static function unserialize($string)
-    {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        return unserialize($string);
-    }
 }
 
 ?>

@@ -50,8 +50,7 @@ class LanguageInterchangeFile extends SimpleXMLElement
     public function getSourceLanguage()
     {
         $node = $this->xpath("//file");
-        $sourceLanguage = (string) $node[0]->attributes()->__get('source-language');
-        return $sourceLanguage;
+        return (string) $node[0]->attributes()->{'source-language'};
     }
 
     /**
@@ -65,8 +64,7 @@ class LanguageInterchangeFile extends SimpleXMLElement
     public function getTargetLanguage()
     {
         $node = $this->xpath("//file");
-        $targetLanguage = (string) $node[0]->attributes()->__get('target-language');
-        return $targetLanguage;
+        return (string) $node[0]->attributes()->{'target-language'};
     }
 
     /**
@@ -80,7 +78,7 @@ class LanguageInterchangeFile extends SimpleXMLElement
         assert('is_string($languageCode); // Wrong argument type for argument 1. String expected.');
         foreach ($this->xpath("//file") as $node)
         {
-            $sourceLanguage = $node->attributes()->__get('source-language');
+            $sourceLanguage = $node->attributes()->{'source-language'};
             if (empty($sourceLanguage)) {
                 $node->addAttribute('source-language', $languageCode);
             } else {

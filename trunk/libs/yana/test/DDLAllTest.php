@@ -33,7 +33,7 @@ require_once dirname(__FILE__) . '/include.php';
 
 /**
  * DDL test-case
- * 
+ *
  * @package  test
  */
 class DDLAllTest extends PHPUnit_Framework_TestCase
@@ -70,7 +70,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /** @var DDLConstraint             */ protected $ddlconstraint;
 
     /**#@-*/
-    
+
     /**
      * sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -112,7 +112,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $this->ddltrigger = new DDLTrigger();
         $this->ddlconstraint = new DDLConstraint();
     }
-        
+
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
@@ -513,20 +513,20 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $hasChecked = $this->ddlview->hasCheckOption();
         $this->assertFalse($hasChecked, 'assert failed, "DDLView" : false expected - no checkOption is set');
 
-        $this->ddlview->setCheckOption(DDLView::CASCADED);
+        $this->ddlview->setCheckOption(DDLViewConstraintEnumeration::CASCADED);
         $result = $this->ddlview->getCheckOption();
-        $this->assertEquals(DDLView::CASCADED, $result, 'assert failed, DDLColumn : expected "1" as value - the values should be equal');
-        
+        $this->assertEquals(DDLViewConstraintEnumeration::CASCADED, $result, 'assert failed, DDLColumn : expected "1" as value - the values should be equal');
+
         $hasChecked = $this->ddlview->hasCheckOption();
         $this->assertTrue($hasChecked, 'assert failed, "DDLView" : true expected - checkOption is set ');
 
-        $this->ddlview->setCheckOption(DDLView::LOCAL);
+        $this->ddlview->setCheckOption(DDLViewConstraintEnumeration::LOCAL);
         $result = $this->ddlview->getCheckOption();
-        $this->assertEquals(DDLView::LOCAL, $result, 'assert failed, DDLColumn : expected "2" as value - the values should be equal');
+        $this->assertEquals(DDLViewConstraintEnumeration::LOCAL, $result, 'assert failed, DDLColumn : expected "2" as value - the values should be equal');
 
-        $this->ddlview->setCheckOption(DDLView::NONE);
+        $this->ddlview->setCheckOption(DDLViewConstraintEnumeration::NONE);
         $result = $this->ddlview->getCheckOption();
-        $this->assertEquals(DDLView::NONE, $result, 'assert failed, DDLColumn : expected "0" as value - the values should be equal');
+        $this->assertEquals(DDLViewConstraintEnumeration::NONE, $result, 'assert failed, DDLColumn : expected "0" as value - the values should be equal');
 
         $this->ddlview->setCheckOption(20);
         $result = $this->ddlview->getCheckOption();
@@ -558,7 +558,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      *
      * @covers DDLLogCreate::getSubject
      * @covers DDLLogCreate::setSubject
-     * 
+     *
      * @test
      */
     public function testSubject()
@@ -781,7 +781,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
        $this->ddlcolumn->setUnique(true);
        $result = $this->ddlcolumn->isUnique();
        $this->assertTrue($result, 'assert failed, DDLColumn : expected true - setUnique was set with true');
-      
+
        $this->ddlcolumn->setUnique(false);
        $result = $this->ddlcolumn->isUnique();
        $this->assertFalse($result, 'assert failed, DDLColumn : expected false - setUnique was set with false');
@@ -1123,7 +1123,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $get = $this->ddlcolumn->getDefault('mysql');
         $this->assertType('string', $get, 'assert failed, DDLColumn : the value is not from type string');
         $this->assertEquals('b', $get, 'assert failed, DDLColumn : the variables should be equal - expected key of value "mysql"');
-        
+
         $get = $this->ddlcolumn->getDefault('oracle');
         $this->assertEquals('a', $get, 'Function getDefault() must fall back to "generic" if setting is not found.');
         $this->ddlcolumn->setDefault('');
@@ -1207,7 +1207,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * @covers DDLTable::getUniqueConstraints
      * @covers DDLConstraint::getConstraints
      * @covers DDLConstraint::setConstraint
-     * 
+     *
      * @test
      */
     public function testConstraint()
@@ -1280,7 +1280,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $result1 = $this->ddltable->getConstraints();
 
         $this->assertEquals($result1[0]->getConstraint(), $testArray1[0], 'DDLTable::getConstraints failed, both arrays should be equal');
-        
+
         $testArray2 = array("someMoreConstraints 1", "someMoreConstraints 2", "someMoreConstraints 3");
         $this->ddltable->addConstraint($testArray2[0], "", "mysql");
         $this->ddltable->addConstraint($testArray2[1], "", "mysql");
@@ -1336,7 +1336,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testIncludes()
     {
         $array = array('first');
-        // ddl database       
+        // ddl database
         $this->ddldatabase->setIncludes($array);
         $result = $this->ddldatabase->getIncludes();
         $this->assertEquals($array, $result, 'assert failed, DDLDatabase : expected an array with one entire "first", values should be equal');
@@ -1584,7 +1584,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $add = $this->ddldatabase->addView('qwerty');
         $this->assertType('object', $add, 'assert failed, the value should be from type object');
         $this->assertEquals('qwerty', $add->getName(), 'assert failed, the values should be equal, "qwerty" is a view');
-        
+
         $add = $this->ddldatabase->addView('trewq');
         $this->assertType('object', $add, 'assert failed, the value should be from type object');
         $this->assertEquals('trewq', $add->getName(), 'assert failed, the values should be equal, "trewq" is a view');
@@ -2331,7 +2331,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $this->ddltable->addColumn($someNames[0], 'integer');
         $this->ddltable->addColumn($someNames[1], 'integer');
         $this->ddltable->addColumn($someNames[2], 'integer');
-        
+
         $result = $this->ddlindex->addColumn($someNames[0]);
         $this->assertType('DDLIndexColumn', $result, "unexpectet Returntype from addcolumn");
 
@@ -2419,7 +2419,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     function testSetNameInvalidArgument()
     {
-        // DDL Object exception 
+        // DDL Object exception
         $new = new DDLIndex(' 123df');
     }
 
@@ -2704,7 +2704,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      *
      * @covers DDLForeignKey::getTargetTable
      * @covers DDLForeignKey::setTargetTable
-     * 
+     *
      * @test
      */
     public function testTargetTable()
@@ -2732,12 +2732,15 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         // DDL ForeignKey
         $this->ddlforeignkey->setMatch(2);
         $result = $this->ddlforeignkey->getMatch();
-        $this->assertEquals(DDLForeignKey::SIMPLE, $result, 'assert failed, DDLForeignKey : expected value is the number 2');
+        $message = 'assert failed, DDLForeignKey : expected value is the number 2';
+        $this->assertEquals(DDLKeyMatchStrategyEnumeration::SIMPLE, $result, $message);
 
         $this->ddlforeignkey->setMatch(12);
         $result = $this->ddlforeignkey->getMatch();
-        // expected default 0 
-        $this->assertEquals(DDLForeignKey::SIMPLE, $result, 'assert failed, DDLForeignKey : expected 0 as value, the 0 number will be choosen when the number by setMatch does not match the numbers 0, 1, 2');
+        // expected default 0
+        $message = 'assert failed, DDLForeignKey : expected 0 as value, the 0 number will be choosen when the number ' .
+            'by setMatch does not match the numbers 0, 1, 2';
+        $this->assertEquals(DDLKeyMatchStrategyEnumeration::SIMPLE, $result, $message);
     }
 
     /**
@@ -2829,7 +2832,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $this->ddlfunctionimplementation->addParameter('control');
         $valid = $this->ddlfunctionimplementation->getParameters();
         $this->assertArrayHasKey('control', $valid, 'assert failed, DDLFunctionImplementation : expected "control" as value');
-        
+
         $valid = $this->ddlfunctionimplementation->getParameterNames();
         $this->assertEquals('control', $valid[0], 'assert failed, DDLFunctionImplementation : expected "control" as value');
 
@@ -3256,7 +3259,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * @covers DDLIndex::getParent
      * @covers DDLView::getParent
      * @covers DDLTable::getParent
-     * 
+     *
      * @test
      */
     public function testParent()
@@ -3329,29 +3332,36 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testOnDelete()
     {
-        $this->ddlforeignkey->setOnDelete(DDLForeignKey::NOACTION);
+        $this->ddlforeignkey->setOnDelete(DDLKeyUpdateStrategyEnumeration::NOACTION);
         $get = $this->ddlforeignkey->getOnDelete();
-        $this->assertEquals(DDLForeignKey::NOACTION, $get, 'assert failed, expected value is "0" - the values should be equal');
+        $message = 'assert failed, expected value is "0" - the values should be equal';
+        $this->assertEquals(DDLKeyUpdateStrategyEnumeration::NOACTION, $get, $message);
 
-        $this->ddlforeignkey->setOnDelete(DDLForeignKey::RESTRICT);
+        $this->ddlforeignkey->setOnDelete(DDLKeyUpdateStrategyEnumeration::RESTRICT);
         $get = $this->ddlforeignkey->getOnDelete();
-        $this->assertEquals(DDLForeignKey::RESTRICT, $get, 'assert failed, expected value is "1" - the values should be equal');
+        $message ='assert failed, expected value is "1" - the values should be equal';
+        $this->assertEquals(DDLKeyUpdateStrategyEnumeration::RESTRICT, $get, $message);
 
-        $this->ddlforeignkey->setOnDelete(DDLForeignKey::CASCADE);
+        $this->ddlforeignkey->setOnDelete(DDLKeyUpdateStrategyEnumeration::CASCADE);
         $get = $this->ddlforeignkey->getOnDelete();
-        $this->assertEquals(DDLForeignKey::CASCADE, $get, 'assert failed, expected value is "2" - the values should be equal');
+        $message = 'assert failed, expected value is "2" - the values should be equal';
+        $this->assertEquals(DDLKeyUpdateStrategyEnumeration::CASCADE, $get, $message);
 
-        $this->ddlforeignkey->setOnDelete(DDLForeignKey::SETNULL);
+        $this->ddlforeignkey->setOnDelete(DDLKeyUpdateStrategyEnumeration::SETNULL);
         $get = $this->ddlforeignkey->getOnDelete();
-        $this->assertEquals(DDLForeignKey::SETNULL, $get, 'assert failed, expected value is "3" - the values should be equal');
+        $message = 'assert failed, expected value is "3" - the values should be equal';
+        $this->assertEquals(DDLKeyUpdateStrategyEnumeration::SETNULL, $get, $message);
 
-        $this->ddlforeignkey->setOnDelete(DDLForeignKey::SETDEFAULT);
+        $this->ddlforeignkey->setOnDelete(DDLKeyUpdateStrategyEnumeration::SETDEFAULT);
         $get = $this->ddlforeignkey->getOnDelete();
-        $this->assertEquals(DDLForeignKey::SETDEFAULT, $get, 'assert failed, expected value is "4" - the values should be equal');
+        $message = 'assert failed, expected value is "4" - the values should be equal';
+        $this->assertEquals(DDLKeyUpdateStrategyEnumeration::SETDEFAULT, $get, $message);
 
         $this->ddlforeignkey->setOnDelete(14);
         $get = $this->ddlforeignkey->getOnDelete();
-        $this->assertEquals(DDLForeignKey::NOACTION, $get, 'assert failed, expected value is "0" - only numbers between 0-4 can be set otherwise the default value "0" will be set');
+        $message = 'assert failed, expected value is "0" - only numbers between 0-4 can be set ' .
+            'otherwise the default value "0" will be set';
+        $this->assertEquals(DDLKeyUpdateStrategyEnumeration::NOACTION, $get, $message);
     }
 
     /**
@@ -3536,7 +3546,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         // DDLLogDrop
         DDLLogDrop::setHandler('dummy');
     }
-    
+
     /**
      * addColumn
      *
@@ -3688,7 +3698,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $this->assertNull($result2, 'DDLTable::setVersionCheck time_modified should not be NULL');
         $this->assertFalse($get1, 'DDLTable::setVersionCheck Versioncheck should be False');
         $this->assertTrue($get2, 'DDLTable::setVersionCheck Versioncheck should be False');
-        
+
         // check if column time_created exist - expected true
         $this->ddltable->setVersionCheck(true, true);
         $get1 = $this->ddltable->hasVersionCheck();
@@ -3728,7 +3738,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         // DDLTable
         $this->ddltable->dropColumn('test');
     }
-    
+
     /**
      * Foreign-key
      *

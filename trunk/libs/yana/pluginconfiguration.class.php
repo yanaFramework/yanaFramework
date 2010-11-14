@@ -38,7 +38,7 @@
  *
  * @ignore
  */
-class PluginConfiguration extends Object implements IsSerializable
+class PluginConfiguration extends Object
 {
     /**#@+
      * class constant
@@ -84,24 +84,24 @@ class PluginConfiguration extends Object implements IsSerializable
         (
             self::DEFAULT_TITLE => $pluginClass->getTitle(),
             self::DEFAULT_TEXT => $pluginClass->getText(),
-            PluginAnnotation::TITLE => $title,
-            PluginAnnotation::TEXT => $text,
+            PluginAnnotationEnumeration::TITLE => $title,
+            PluginAnnotationEnumeration::TEXT => $text,
             self::DIR => $pluginClass->getDirectory(),
-            PluginAnnotation::TYPE => mb_strtolower($pluginClass->getTag(PluginAnnotation::TYPE, 'default')),
-            PluginAnnotation::AUTHOR => $pluginClass->getTags(PluginAnnotation::AUTHOR),
-            PluginAnnotation::PRIORITY => PluginPriority::getPriority($pluginClass->getTag(PluginAnnotation::PRIORITY)),
-            PluginAnnotation::GROUP => mb_strtolower($pluginClass->getTag(PluginAnnotation::GROUP)),
-            PluginAnnotation::PARENT => $pluginClass->getTag(PluginAnnotation::PARENT),
-            PluginAnnotation::REQUIRES => $pluginClass->getTags(PluginAnnotation::REQUIRES),
-            PluginAnnotation::LICENSE => $pluginClass->getTag(PluginAnnotation::LICENSE),
-            PluginAnnotation::URL => $pluginClass->getTag(PluginAnnotation::URL),
-            PluginAnnotation::VERSION => $pluginClass->getTag(PluginAnnotation::VERSION),
-            PluginAnnotation::CATEGORY => $pluginClass->getTag(PluginAnnotation::CATEGORY),
-            PluginAnnotation::PACKAGE => $pluginClass->getTag(PluginAnnotation::PACKAGE, 'yana'),
-            PluginAnnotation::SUBPACKAGE => $pluginClass->getTag(PluginAnnotation::SUBPACKAGE, 'plugins'),
+            PluginAnnotationEnumeration::TYPE => mb_strtolower($pluginClass->getTag(PluginAnnotationEnumeration::TYPE, 'default')),
+            PluginAnnotationEnumeration::AUTHOR => $pluginClass->getTags(PluginAnnotationEnumeration::AUTHOR),
+            PluginAnnotationEnumeration::PRIORITY => PluginPriorityEnumeration::getPriority($pluginClass->getTag(PluginAnnotationEnumeration::PRIORITY)),
+            PluginAnnotationEnumeration::GROUP => mb_strtolower($pluginClass->getTag(PluginAnnotationEnumeration::GROUP)),
+            PluginAnnotationEnumeration::PARENT => $pluginClass->getTag(PluginAnnotationEnumeration::PARENT),
+            PluginAnnotationEnumeration::REQUIRES => $pluginClass->getTags(PluginAnnotationEnumeration::REQUIRES),
+            PluginAnnotationEnumeration::LICENSE => $pluginClass->getTag(PluginAnnotationEnumeration::LICENSE),
+            PluginAnnotationEnumeration::URL => $pluginClass->getTag(PluginAnnotationEnumeration::URL),
+            PluginAnnotationEnumeration::VERSION => $pluginClass->getTag(PluginAnnotationEnumeration::VERSION),
+            PluginAnnotationEnumeration::CATEGORY => $pluginClass->getTag(PluginAnnotationEnumeration::CATEGORY),
+            PluginAnnotationEnumeration::PACKAGE => $pluginClass->getTag(PluginAnnotationEnumeration::PACKAGE, 'yana'),
+            PluginAnnotationEnumeration::SUBPACKAGE => $pluginClass->getTag(PluginAnnotationEnumeration::SUBPACKAGE, 'plugins'),
             self::MODIFIED => $pluginClass->getLastModified(),
-            PluginAnnotation::MENU => $pluginClass->getTags(PluginAnnotation::MENU),
-            PluginAnnotation::ACTIVE => $pluginClass->getTag(PluginAnnotation::ACTIVE, '0')
+            PluginAnnotationEnumeration::MENU => $pluginClass->getTags(PluginAnnotationEnumeration::MENU),
+            PluginAnnotationEnumeration::ACTIVE => $pluginClass->getTag(PluginAnnotationEnumeration::ACTIVE, '0')
         );
 
         // check priority settings
@@ -111,7 +111,7 @@ class PluginConfiguration extends Object implements IsSerializable
         foreach ($pluginClass->getMethods(ReflectionProperty::IS_PUBLIC) as $method)
         {
             $name = $method->getName();
-            if (!$method->getTag(PluginAnnotation::IGNORE)) {
+            if (!$method->getTag(PluginAnnotationEnumeration::IGNORE)) {
                 $this->methods[$name] = new PluginConfigurationMethod($method, $pluginClass);
             }
         } /* end foreach */
@@ -128,38 +128,38 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     private function _checkPriority()
     {
-        $MIN_PRIORITY_LIBRARY = PluginPriority::HIGHEST + 1;
-        $MAX_PRIORITY_LIBRARY = PluginPriority::HIGHEST * 2;
+        $MIN_PRIORITY_LIBRARY = PluginPriorityEnumeration::HIGHEST + 1;
+        $MAX_PRIORITY_LIBRARY = PluginPriorityEnumeration::HIGHEST * 2;
         $MIN_PRIORITY_SECURITY = $MAX_PRIORITY_LIBRARY + 1;
-        $MAX_PRIORITY_SECURITY = PluginPriority::HIGHEST * 3;
-        $MIN_PRIORITY = PluginPriority::LOWEST;
-        $MAX_PRIORITY = PluginPriority::HIGHEST;
+        $MAX_PRIORITY_SECURITY = PluginPriorityEnumeration::HIGHEST * 3;
+        $MIN_PRIORITY = PluginPriorityEnumeration::LOWEST;
+        $MAX_PRIORITY = PluginPriorityEnumeration::HIGHEST;
 
         // check priority settings
-        switch ($this->configuration[PluginAnnotation::TYPE])
+        switch ($this->configuration[PluginAnnotationEnumeration::TYPE])
         {
             case 'security':
-                if ($this->configuration[PluginAnnotation::PRIORITY] < $MIN_PRIORITY_SECURITY) {
-                    $this->configuration[PluginAnnotation::PRIORITY] += $MIN_PRIORITY_SECURITY;
+                if ($this->configuration[PluginAnnotationEnumeration::PRIORITY] < $MIN_PRIORITY_SECURITY) {
+                    $this->configuration[PluginAnnotationEnumeration::PRIORITY] += $MIN_PRIORITY_SECURITY;
                 }
-                if ($this->configuration[PluginAnnotation::PRIORITY] > $MAX_PRIORITY_SECURITY) {
-                    $this->configuration[PluginAnnotation::PRIORITY] = $MAX_PRIORITY_SECURITY;
+                if ($this->configuration[PluginAnnotationEnumeration::PRIORITY] > $MAX_PRIORITY_SECURITY) {
+                    $this->configuration[PluginAnnotationEnumeration::PRIORITY] = $MAX_PRIORITY_SECURITY;
                 }
             break;
             case 'library':
-                if ($this->configuration[PluginAnnotation::PRIORITY] < $MIN_PRIORITY_LIBRARY) {
-                    $this->configuration[PluginAnnotation::PRIORITY] += $MIN_PRIORITY_LIBRARY;
+                if ($this->configuration[PluginAnnotationEnumeration::PRIORITY] < $MIN_PRIORITY_LIBRARY) {
+                    $this->configuration[PluginAnnotationEnumeration::PRIORITY] += $MIN_PRIORITY_LIBRARY;
                 }
-                if ($this->configuration[PluginAnnotation::PRIORITY] > $MAX_PRIORITY_LIBRARY) {
-                    $this->configuration[PluginAnnotation::PRIORITY] = $MAX_PRIORITY_LIBRARY;
+                if ($this->configuration[PluginAnnotationEnumeration::PRIORITY] > $MAX_PRIORITY_LIBRARY) {
+                    $this->configuration[PluginAnnotationEnumeration::PRIORITY] = $MAX_PRIORITY_LIBRARY;
                 }
             break;
             default:
-                if ($this->configuration[PluginAnnotation::PRIORITY] < $MIN_PRIORITY) {
-                    $this->configuration[PluginAnnotation::PRIORITY] = $MIN_PRIORITY;
+                if ($this->configuration[PluginAnnotationEnumeration::PRIORITY] < $MIN_PRIORITY) {
+                    $this->configuration[PluginAnnotationEnumeration::PRIORITY] = $MIN_PRIORITY;
                 }
-                if ($this->configuration[PluginAnnotation::PRIORITY] > $MAX_PRIORITY) {
-                    $this->configuration[PluginAnnotation::PRIORITY] = $MAX_PRIORITY;
+                if ($this->configuration[PluginAnnotationEnumeration::PRIORITY] > $MAX_PRIORITY) {
+                    $this->configuration[PluginAnnotationEnumeration::PRIORITY] = $MAX_PRIORITY;
                 }
             break;
         }
@@ -175,7 +175,7 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     private function _getTranslation(PluginReflectionClass $pluginClass, array &$title, array &$text)
     {
-        $translation = $pluginClass->getTag(PluginAnnotation::TRANSLATION);
+        $translation = $pluginClass->getTag(PluginAnnotationEnumeration::TRANSLATION);
         $title = array();
         $text = array();
 
@@ -216,7 +216,7 @@ class PluginConfiguration extends Object implements IsSerializable
     {
         assert('is_null($language) || is_string($language); // Wrong type for argument 1. String expected');
         assert('is_null($country) || is_string($country); // Wrong type for argument 2. String expected');
-        $node = $this->configuration[PluginAnnotation::TITLE];
+        $node = $this->configuration[PluginAnnotationEnumeration::TITLE];
 
         // get defaults
         if (is_null($language)) {
@@ -246,7 +246,7 @@ class PluginConfiguration extends Object implements IsSerializable
     {
         assert('is_null($language) || is_string($language); // Wrong type for argument 1. String expected');
         assert('is_null($country) || is_string($country); // Wrong type for argument 2. String expected');
-        $node = $this->configuration[PluginAnnotation::TEXT];
+        $node = $this->configuration[PluginAnnotationEnumeration::TEXT];
 
         // get defaults
         if (is_null($language) && class_exists('Language')) {
@@ -272,7 +272,7 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     public function getType()
     {
-        return $this->configuration[PluginAnnotation::TYPE];
+        return $this->configuration[PluginAnnotationEnumeration::TYPE];
     }
 
     /**
@@ -286,7 +286,7 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     public function getAuthor()
     {
-        return implode(', ', $this->configuration[PluginAnnotation::AUTHOR]);
+        return implode(', ', $this->configuration[PluginAnnotationEnumeration::AUTHOR]);
     }
 
     /**
@@ -299,7 +299,7 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     public function getAuthors()
     {
-        return $this->configuration[PluginAnnotation::AUTHOR];
+        return $this->configuration[PluginAnnotationEnumeration::AUTHOR];
     }
 
     /**
@@ -317,9 +317,9 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     public function getPriority()
     {
-        assert('is_numeric($this->configuration[PluginAnnotation::PRIORITY]); // '.
+        assert('is_numeric($this->configuration[PluginAnnotationEnumeration::PRIORITY]); // '.
             'Priority is expected to be a numeric value');
-        return (int) $this->configuration[PluginAnnotation::PRIORITY];
+        return (int) $this->configuration[PluginAnnotationEnumeration::PRIORITY];
     }
 
     /**
@@ -335,7 +335,7 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     public function getGroup()
     {
-        return $this->configuration[PluginAnnotation::GROUP];
+        return $this->configuration[PluginAnnotationEnumeration::GROUP];
     }
 
     /**
@@ -353,7 +353,7 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     public function getParent()
     {
-        return $this->configuration[PluginAnnotation::PARENT];
+        return $this->configuration[PluginAnnotationEnumeration::PARENT];
     }
 
     /**
@@ -366,7 +366,7 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     public function getDependencies()
     {
-        return $this->configuration[PluginAnnotation::REQUIRES];
+        return $this->configuration[PluginAnnotationEnumeration::REQUIRES];
     }
 
     /**
@@ -383,7 +383,7 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     public function getVersion()
     {
-        return $this->configuration[PluginAnnotation::VERSION];
+        return $this->configuration[PluginAnnotationEnumeration::VERSION];
     }
 
     /**
@@ -398,7 +398,7 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     public function getUrl()
     {
-        return $this->configuration[PluginAnnotation::URL];
+        return $this->configuration[PluginAnnotationEnumeration::URL];
     }
 
     /**
@@ -413,7 +413,7 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     public function getCategory()
     {
-        return $this->configuration[PluginAnnotation::CATEGORY];
+        return $this->configuration[PluginAnnotationEnumeration::CATEGORY];
     }
 
     /**
@@ -427,7 +427,7 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     public function getPackage()
     {
-        return $this->configuration[PluginAnnotation::PACKAGE];
+        return $this->configuration[PluginAnnotationEnumeration::PACKAGE];
     }
 
     /**
@@ -443,7 +443,7 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     public function getSubPackage()
     {
-        return $this->configuration[PluginAnnotation::SUBPACKAGE];
+        return $this->configuration[PluginAnnotationEnumeration::SUBPACKAGE];
     }
 
     /**
@@ -458,7 +458,7 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     public function getLicense()
     {
-        return $this->configuration[PluginAnnotation::LICENSE];
+        return $this->configuration[PluginAnnotationEnumeration::LICENSE];
     }
 
     /**
@@ -479,7 +479,7 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     public function getMenuNames()
     {
-        return $this->configuration[PluginAnnotation::MENU];
+        return $this->configuration[PluginAnnotationEnumeration::MENU];
     }
 
     /**
@@ -507,7 +507,7 @@ class PluginConfiguration extends Object implements IsSerializable
         {
             $menu = $configuration->getMenu();
             if (!empty($menu)) {
-                if (is_null($group) || $group == @$menu[PluginAnnotation::GROUP]) {
+                if (is_null($group) || $group == @$menu[PluginAnnotationEnumeration::GROUP]) {
                     $menuEntries[$name] = $menu;
                 }
             }
@@ -539,7 +539,7 @@ class PluginConfiguration extends Object implements IsSerializable
      */
     public function getActive()
     {
-        return $this->configuration[PluginAnnotation::ACTIVE];
+        return $this->configuration[PluginAnnotationEnumeration::ACTIVE];
     }
 
     /**
@@ -629,35 +629,6 @@ class PluginConfiguration extends Object implements IsSerializable
         if (isset($this->methods[$methodName])) {
             unset($this->methods[$methodName]);
         }
-    }
-
-    /**
-     * serialize this object to a string
-     *
-     * Returns the serialized object as a string.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function serialize()
-    {
-        return serialize($this);
-    }
-
-    /**
-     * unserialize a string to a serializable object
-     *
-     * Returns the unserialized object.
-     *
-     * @access  public
-     * @static
-     * @param   string  $string  string to unserialize
-     * @return  IsSerializable
-     */
-    public static function unserialize($string)
-    {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        return unserialize($string);
     }
 }
 ?>

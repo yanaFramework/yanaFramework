@@ -26,9 +26,9 @@
  */
 
 /**
- * <<Enumeration>> PluginActivity
+ * <<Enumeration>> PluginPriority
  *
- * Values for plugin activity status
+ * Values for plugin priority
  *
  * @access      public
  * @name        PluginActivity
@@ -37,22 +37,14 @@
  *
  * @ignore
  */
-class PluginActivity
+class PluginPriorityEnumeration
 {
-    /**
-     * plugin is not active
-     */
-    const INACTIVE = 0;
 
-    /**
-     * plugin is active
-     */
-    const ACTIVE = 1;
-
-    /**
-     * plugin is active by default
-     */
-    const DEFAULT_ACTIVE = 2;
+    const LOWEST = 0;
+    const LOW = 1;
+    const NORMAL = 2;
+    const HIGH = 3;
+    const HIGHEST = 4;
 
     /**
      * get enumeration item from string representation
@@ -66,33 +58,38 @@ class PluginActivity
      * @param   string  $string  text representation to convert
      * @return  int
      */
-    public static function getActiveState($string)
+    public static function getPriority($string)
     {
         assert('is_string($string); // Wrong type for argument 1. String expected');
 
         switch (mb_strtolower($string))
         {
-            case 'active':
-            case '1':
-                return PluginActivity::ACTIVE;
-            break;
-            case 'inactive':
+            case 'lowest':
             case '0':
-                return PluginActivity::INACTIVE;
+                return self::LOWEST;
             break;
-            case 'always':
-            case 'always_active':
-            case 'always active':
-            case 'default_active':
-            case 'default active':
+            case 'low':
+            case '1':
+                return self::LOW;
+            break;
+            case 'normal':
             case '2':
-                return PluginActivity::DEFAULT_ACTIVE;
+                return self::NORMAL;
+            break;
+            case 'high':
+            case '3':
+                return self::HIGH;
+            break;
+            case 'highest':
+            case '4':
+                return self::HIGHEST;
             break;
             default:
-                return PluginActivity::INACTIVE;
+                return self::NORMAL;
             break;
         }
     }
+
 }
 
 ?>
