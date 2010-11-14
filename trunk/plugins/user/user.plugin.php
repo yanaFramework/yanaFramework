@@ -151,15 +151,15 @@ class plugin_user extends StdClass implements IsPlugin
      */
     public static function checkSecurityLevel(DBStream $database, array $required, $profileId, $action, $userName)
     {
-        if (!isset($required[PluginAnnotation::LEVEL])) {
+        if (!isset($required[PluginAnnotationEnumeration::LEVEL])) {
             return null;
         }
         // skip if nothing to check
-        if (empty($required[PluginAnnotation::LEVEL])) {
+        if (empty($required[PluginAnnotationEnumeration::LEVEL])) {
             return true;
         }
 
-        $requiredLevel = (int) $required[PluginAnnotation::LEVEL];
+        $requiredLevel = (int) $required[PluginAnnotationEnumeration::LEVEL];
 
         if (!YanaUser::isLoggedIn()) {
             return false;

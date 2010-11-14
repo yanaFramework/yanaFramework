@@ -47,7 +47,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
         {rdelim}
         return self::$database;
     {rdelim}
-    
+
     /**
      * auto-update form values
      *
@@ -236,7 +236,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @return  bool
      * @ignore
      */
-    public function _default($event, array $ARGS)
+    public function catchAll($event, array $ARGS)
     {ldelim}
         /* @todo implement this function */
         return true;

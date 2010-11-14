@@ -135,10 +135,7 @@ class DbDesigner4 extends File implements IsDbImport
      */
     public static function getStructureFromString($dbDesignerConfig)
     {
-        if (!is_string($dbDesignerConfig)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'String', gettype($dbDesignerConfig)), E_USER_WARNING);
-            return false;
-        }
+        assert('is_string($dbDesignerConfig); // Wrong argument type $dbDesignerConfig. String expected.');
         if (is_file($dbDesignerConfig)) {
             $DbDesigner4 = new DbDesigner4($dbDesignerConfig);
             $DbDesigner4->read();
@@ -195,7 +192,7 @@ class DbDesigner4 extends File implements IsDbImport
             case 'globalsettings':
                 $this->name = @$attrs['MODELNAME'];
             break;
-            
+
             case 'datatype':
                 $this->dataTypes[$attrs['ID']] = $attrs['TYPENAME'];
             break;
@@ -254,7 +251,7 @@ class DbDesigner4 extends File implements IsDbImport
                                     $this->currentColumn->setDefault($attrs['DEFAULTVALUE']);
                                 } else {
                                     $this->currentColumn->setDefault(null);
-                                }                        
+                                }
                             } /* end if */
                         break;
                         default;
@@ -262,7 +259,7 @@ class DbDesigner4 extends File implements IsDbImport
                             $this->currentColumn->setDefault($attrs['DEFAULTVALUE']);
                         } else {
                             $this->currentColumn->setDefault(null);
-                        }                        
+                        }
                         break;
                     } /* end switch */
 

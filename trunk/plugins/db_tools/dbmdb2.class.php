@@ -150,10 +150,7 @@ class DbMDB2 extends File implements IsDbImport
      */
     public static function getStructureFromString($mdb2Schema)
     {
-        if (!is_string($mdb2Schema)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'String', gettype($mdb2Schema)), E_USER_WARNING);
-            return false;
-        }
+        assert('is_string($mdb2Schema); // Wrong argument type $dbDesignerConfig. String expected.');
         if (is_file($mdb2Schema)) {
             $MDB2 = new DbMDB2($mdb2Schema);
             $MDB2->read();
@@ -477,7 +474,7 @@ class DbMDB2 extends File implements IsDbImport
                     $value = $this->_handleValue($field, $string);
                     if (is_string($value)) {
                         $set[$field['name']] = $value;
-                    } /* end if */                    
+                    } /* end if */
                 } /* end if */
             } /* end foreach */
         } /* end if */

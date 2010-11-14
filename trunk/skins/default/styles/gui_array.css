@@ -53,7 +53,7 @@ li.gui_array_head:hover > ul.gui_array_list, li.gui_array_head_open > ul.gui_arr
 
 li.gui_generator_array_reference
 {
-    display: none;
+    /* display: none; */
 }
 
 .gui_generator_array
@@ -75,6 +75,7 @@ li.gui_generator_array_reference
 .gui_generator_array li
 {
     white-space: nowrap;
+    list-style-position: inside;
 }
 
 .gui_generator_array img, div.gui_generator_edit .gui_generator_array img

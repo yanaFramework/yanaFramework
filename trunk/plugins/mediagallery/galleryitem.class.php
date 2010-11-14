@@ -17,7 +17,7 @@
  * @package     yana
  * @subpackage  plugins
  */
-class GalleryItem extends AbstractDataContainer
+class GalleryItem extends DataContainerAbstract
 {
 
     /**
@@ -54,7 +54,7 @@ class GalleryItem extends AbstractDataContainer
      * @param   string  $id             instance id
      * @param   mixed   $mediaFolderId  must match column 'mediafolder_id'
      * @throws  NotFoundException  if the instance does not exist
-     * @return  AbstractDataContainer
+     * @return  DataContainerAbstract
      */
     public static function getInstance($id, $mediaFolderId = null)
     {
