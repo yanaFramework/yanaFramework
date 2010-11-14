@@ -168,13 +168,9 @@ class JsonFile extends SML
      */
     public static function decode($input, $caseSensitive = CASE_MIXED)
     {
-        if (!is_string($input)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'String', gettype($input)), E_USER_WARNING);
-            return null;
-        } else {
-            $input = explode("\n", $input);
-            return self::getFile($input, $caseSensitive);
-        }
+        assert('is_string($input); // Wrong argument type $input. String expected.');
+        $input = explode("\n", "$input");
+        return self::getFile($input, $caseSensitive);
     }
 
     /**

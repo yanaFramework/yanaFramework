@@ -1,6 +1,6 @@
 <?php
 /**
- * include this before any test-case
+ * YANA library
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -21,23 +21,22 @@
  *
  * This notice MAY NOT be removed.
  *
- * @package  test
+ * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- * @ignore
  */
-
-date_default_timezone_set('Europe/Paris');
 
 /**
- * @ignore
+ * Resource not writeable
+ *
+ * Thrown when you try to modify a resource, but you are denied permission to do so.
+ *
+ * @access      public
+ * @package     yana
+ * @subpackage  error_reporting
  */
-require_once dirname(__FILE__) . '/../../../library.php';
-if (!defined('CWD')) {
-    define('CWD', dirname(__FILE__) . DIRECTORY_SEPARATOR);
-}
-if (empty($_SERVER['DOCUMENT_ROOT']) && isset($_SERVER['OS']) && preg_match('/windows/i', $_SERVER['OS'])) {
-    $_SERVER['DOCUMENT_ROOT'] =  realpath(CWD . "../../../../../") . '/htdocs/';
-    $path = dirname($_SERVER["DOCUMENT_ROOT"]);
+class NotWriteableException extends ReportAbstract
+{
+    /* intentionally left blank */
 }
 
 ?>

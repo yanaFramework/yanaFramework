@@ -26,18 +26,41 @@
  */
 
 /**
- * Syntax error
+ * <<Enumeration>> Database query result type enumeration.
  *
- * Thrown when a certain syntax is expected for a given value or resource and the input
- * does not satisfy this constraint.
+ * Values for possible database results.
+ * Including: whole table, rows, columns and cells.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  database
+ *
+ * @ignore
  */
-class InvalidSyntaxException extends Report
+class DbResultEnumeration
 {
-    /* intentionally left blank */
+
+    /**
+     * Unknown or undefined result type.
+     */
+    const UNKNOWN = 0;
+    /**
+     * Result is two-dimensional array, representing a table.
+     */
+    const TABLE = 1;
+    /**
+     * Result is an array, representing a row.
+     */
+    const ROW = 2;
+    /**
+     * Result is representing a single cell.
+     */
+    const CELL = 3;
+    /**
+     * Result is an array, representing a column.
+     */
+    const COLUMN = 4;
+
 }
 
 ?>

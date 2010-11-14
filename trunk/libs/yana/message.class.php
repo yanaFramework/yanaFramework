@@ -37,7 +37,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class Message extends Report
+class Message extends ReportAbstract
 {
 
     /**

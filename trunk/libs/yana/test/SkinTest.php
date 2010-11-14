@@ -37,21 +37,22 @@ require_once dirname(__FILE__) . '/include.php';
  */
 class SkinTest extends PHPUnit_Framework_TestCase
 {
+
     /**
      * @var    Skin
      * @access protected
      */
-    protected $object;
+    protected $_object;
     /**
      * @var    Dir
      * @access protected
      */
-    protected $defaultDir;
+    protected $_defaultDir;
     /**
      * @var    Dir
      * @access protected
      */
-    protected $testDir;
+    protected $_testDir;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -61,12 +62,12 @@ class SkinTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->defaultDir = new Dir(CWD . '/resources/skin/default');
-        $this->defaultDir->setFilter('*.skin.xml');
-        $this->testDir = new Dir(CWD . '/resources/skin/test');
-        $this->testDir->setFilter('*.skin.xml');
+        $this->_defaultDir = new Dir(CWD . '/resources/skin/default');
+        $this->_defaultDir->setFilter('*.skin.xml');
+        $this->_testDir = new Dir(CWD . '/resources/skin/test');
+        $this->_testDir->setFilter('*.skin.xml');
         Skin::setBaseDirectory(new Dir(CWD . '/resources/skin/'));
-        $this->object = Skin::getInstance('test');
+        $this->_object = Skin::getInstance('test');
     }
 
     /**
@@ -88,29 +89,29 @@ class SkinTest extends PHPUnit_Framework_TestCase
     {
         $temp = array();
 
-        $file =  $this->testDir->getPath() . 'test.txt';
-        $this->assertEquals(array('test' => $file), $this->object->getStyle('foo'), "read stylesheet failed");
-        $this->object->setStyle('foo');
+        $file =  $this->_testDir->getPath() . 'test.txt';
+        $this->assertEquals(array('test' => $file), $this->_object->getStyle('foo'), "read stylesheet failed");
+        $this->_object->setStyle('foo');
 
         // add stylesheet
-        $test = $this->object->setStyle('foo', 'foo.css');
+        $test = $this->_object->setStyle('foo', 'foo.css');
         $temp[] = 'foo.css';
-        $this->assertEquals($temp, $this->object->getStyle('foo'), "add stylesheet failed");
+        $this->assertEquals($temp, $this->_object->getStyle('foo'), "add stylesheet failed");
 
         // replace stylesheet 'bar'
-        $test = $this->object->setStyle('foo', 'bar.css', 'bar');
+        $test = $this->_object->setStyle('foo', 'bar.css', 'bar');
         $temp['bar'] = 'bar.css';
-        $this->assertEquals($temp, $this->object->getStyle('foo'), "replace stylesheet 'bar' failed");
+        $this->assertEquals($temp, $this->_object->getStyle('foo'), "replace stylesheet 'bar' failed");
 
         // remove stylesheet 'bar'
-        $test = $this->object->setStyle('foo', '', 'bar');
+        $test = $this->_object->setStyle('foo', '', 'bar');
         unset($temp['bar']);
-        $this->assertEquals($temp, $this->object->getStyle('foo'), "remove stylesheet 'bar' failed");
+        $this->assertEquals($temp, $this->_object->getStyle('foo'), "remove stylesheet 'bar' failed");
 
         // remove all stylesheets
-        $test = $this->object->setStyle('foo');
+        $test = $this->_object->setStyle('foo');
         $temp = array();
-        $this->assertEquals($temp, $this->object->getStyle('foo'), "remove all stylesheets");
+        $this->assertEquals($temp, $this->_object->getStyle('foo'), "remove all stylesheets");
     }
 
     /**
@@ -122,29 +123,29 @@ class SkinTest extends PHPUnit_Framework_TestCase
     {
         $temp = array();
 
-        $file =  $this->defaultDir->getPath() . 'default.txt';
-        $this->assertEquals(array($file, $file), $this->object->getScript('foo'), "read script failed");
-        $this->object->setScript('foo');
+        $file =  $this->_defaultDir->getPath() . 'default.txt';
+        $this->assertEquals(array($file, $file), $this->_object->getScript('foo'), "read script failed");
+        $this->_object->setScript('foo');
 
         // add script
-        $test = $this->object->setScript('foo', 'foo.js');
+        $test = $this->_object->setScript('foo', 'foo.js');
         $temp[] = 'foo.js';
-        $this->assertEquals($this->object->getScript('foo'), $temp, "add script failed");
+        $this->assertEquals($this->_object->getScript('foo'), $temp, "add script failed");
 
         // replace script 'bar'
-        $test = $this->object->setScript('foo', 'bar.js', 'bar');
+        $test = $this->_object->setScript('foo', 'bar.js', 'bar');
         $temp['bar'] = 'bar.js';
-        $this->assertEquals($this->object->getScript('foo'), $temp, "replace script 'bar' failed");
+        $this->assertEquals($this->_object->getScript('foo'), $temp, "replace script 'bar' failed");
 
         // remove script 'bar'
-        $test = $this->object->setScript('foo', '', 'bar');
+        $test = $this->_object->setScript('foo', '', 'bar');
         unset($temp['bar']);
-        $this->assertEquals($this->object->getScript('foo'), $temp, "remove script 'bar' failed");
+        $this->assertEquals($this->_object->getScript('foo'), $temp, "remove script 'bar' failed");
 
         // remove all scripts
-        $test = $this->object->setScript('foo');
+        $test = $this->_object->setScript('foo');
         $temp = array();
-        $this->assertEquals($this->object->getScript('foo'), $temp, "remove all scripts");
+        $this->assertEquals($this->_object->getScript('foo'), $temp, "remove all scripts");
     }
 
     /**
@@ -156,28 +157,30 @@ class SkinTest extends PHPUnit_Framework_TestCase
     {
         $temp = array();
 
-        $this->assertEquals($this->object->getLanguage('foo'), array('default'), "read language failed");
-        $this->object->setLanguage('foo');
+        $this->assertEquals($this->_object->getLanguage('foo'), array('default'), "read language failed");
+        $this->_object->setLanguage('foo');
 
         // add language
-        $test = $this->object->setLanguage('foo', 'foo.config');
+        $test = $this->_object->setLanguage('foo', 'foo.config');
         $temp[] = 'foo.config';
-        $this->assertEquals($this->object->getLanguage('foo'), $temp, "add language");
+        $this->assertEquals($this->_object->getLanguage('foo'), $temp, "add language");
 
         // replace language 'bar'
-        $test = $this->object->setLanguage('foo', 'bar.config', 'bar');
+        $test = $this->_object->setLanguage('foo', 'bar.config', 'bar');
         $temp['bar'] = 'bar.config';
-        $this->assertEquals($this->object->getLanguage('foo'), $temp, "replace language 'bar' failed");
+        $this->assertEquals($this->_object->getLanguage('foo'), $temp, "replace language 'bar' failed");
 
         // remove language 'bar'
-        $test = $this->object->setLanguage('foo', '', 'bar');
+        $test = $this->_object->setLanguage('foo', '', 'bar');
         unset($temp['bar']);
-        $this->assertEquals($this->object->getLanguage('foo'), $temp, "remove language 'bar' failed");
+        $this->assertEquals($this->_object->getLanguage('foo'), $temp, "remove language 'bar' failed");
 
         // remove all language-files
-        $test = $this->object->setLanguage('foo');
+        $test = $this->_object->setLanguage('foo');
         $temp = array();
-        $this->assertEquals($this->object->getLanguage('foo'), $temp, "remove all language-files");
+        $this->assertEquals($this->_object->getLanguage('foo'), $temp, "remove all language-files");
     }
+
 }
+
 ?>

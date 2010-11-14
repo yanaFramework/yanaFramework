@@ -58,12 +58,13 @@
  */
 class DbSelectCount extends DbSelectExist
 {
+
     /**
      * @access  protected
      * @ignore
      * @var int
      */
-    protected $type = DbQuery::COUNT;
+    protected $type = DbQueryTypeEnumeration::COUNT;
 
     /**
      * set source column
@@ -180,7 +181,7 @@ class DbSelectCount extends DbSelectExist
                     /* When selecting a column, the framework automaticall adds the primary key as second column.
                      * This second column must be dropped for sub-queries or otherwise the query will fail.
                      */
-                    if ($this->isSubQuery && $this->getExpectedResult() === YANA_DB_COLUMN) {
+                    if ($this->isSubQuery && $this->getExpectedResult() === DbResultEnumeration::COLUMN) {
                         break;
                     }
                 }
@@ -283,6 +284,7 @@ class DbSelectCount extends DbSelectExist
 
         return $query;
     }
+
 }
 
 ?>

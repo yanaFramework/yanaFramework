@@ -340,19 +340,19 @@ class DDLDatabaseFactory extends DDLDatabase
                     switch ($info['onupdate'])
                     {
                         case 'CASCADE':
-                            $foreign->setOnUpdate(DDLForeignKey::CASCADE);
+                            $foreign->setOnUpdate(DDLKeyUpdateStrategyEnumeration::CASCADE);
                         break;
                         case 'RESTRICT':
-                            $foreign->setOnUpdate(DDLForeignKey::RESTRICT);
+                            $foreign->setOnUpdate(DDLKeyUpdateStrategyEnumeration::RESTRICT);
                         break;
                         case 'SET NULL':
-                            $foreign->setOnUpdate(DDLForeignKey::SETNULL);
+                            $foreign->setOnUpdate(DDLKeyUpdateStrategyEnumeration::SETNULL);
                         break;
                         case 'SET DEFAULT':
-                            $foreign->setOnUpdate(DDLForeignKey::SETDEFAULT);
+                            $foreign->setOnUpdate(DDLKeyUpdateStrategyEnumeration::SETDEFAULT);
                         break;
                         case 'NO ACTION':
-                            $foreign->setOnUpdate(DDLForeignKey::NOACTION);
+                            $foreign->setOnUpdate(DDLKeyUpdateStrategyEnumeration::NOACTION);
                         break;
                     }
                 }
@@ -360,19 +360,19 @@ class DDLDatabaseFactory extends DDLDatabase
                     switch ($info['ondelete'])
                     {
                         case 'CASCADE':
-                            $foreign->setOnDelete(DDLForeignKey::CASCADE);
+                            $foreign->setOnDelete(DDLKeyUpdateStrategyEnumeration::CASCADE);
                         break;
                         case 'RESTRICT':
-                            $foreign->setOnDelete(DDLForeignKey::RESTRICT);
+                            $foreign->setOnDelete(DDLKeyUpdateStrategyEnumeration::RESTRICT);
                         break;
                         case 'SET NULL':
-                            $foreign->setOnDelete(DDLForeignKey::SETNULL);
+                            $foreign->setOnDelete(DDLKeyUpdateStrategyEnumeration::SETNULL);
                         break;
                         case 'SET DEFAULT':
-                            $foreign->setOnDelete(DDLForeignKey::SETDEFAULT);
+                            $foreign->setOnDelete(DDLKeyUpdateStrategyEnumeration::SETDEFAULT);
                         break;
                         case 'NO ACTION':
-                            $foreign->setOnDelete(DDLForeignKey::NOACTION);
+                            $foreign->setOnDelete(DDLKeyUpdateStrategyEnumeration::NOACTION);
                         break;
                     }
                 }
@@ -380,13 +380,13 @@ class DDLDatabaseFactory extends DDLDatabase
                     switch ($info['match'])
                     {
                         case 'SIMPLE':
-                            $foreign->setMatch(DDLForeignKey::SIMPLE);
+                            $foreign->setMatch(DDLKeyMatchStrategyEnumeration::SIMPLE);
                         break;
                         case 'PARTIAL':
-                            $foreign->setMatch(DDLForeignKey::PARTIAL);
+                            $foreign->setMatch(DDLKeyMatchStrategyEnumeration::PARTIAL);
                         break;
                         case 'FULL':
-                            $foreign->setMatch(DDLForeignKey::FULL);
+                            $foreign->setMatch(DDLKeyMatchStrategyEnumeration::FULL);
                         break;
                     }
                 }

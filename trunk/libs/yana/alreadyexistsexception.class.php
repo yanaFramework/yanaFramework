@@ -26,16 +26,16 @@
  */
 
 /**
- * Item not found
+ * Item already exists
  *
- * Thrown when you try to add access a named item, but no item with the given
- * name is found.
+ * Thrown when you try to add an item, but another item of the same name does
+ * already exist.
  *
  * @access      public
  * @package     yana
  * @subpackage  error_reporting
  */
-class NotFoundException extends Report
+class AlreadyExistsException extends ReportAbstract
 {
     /* intentionally left blank */
 }

@@ -40,7 +40,7 @@
  *
  * @ignore
  */
-class SessionManager extends Singleton implements IsSerializable
+class SessionManager extends Singleton implements Serializable
 {
     /**
      * This is a place-holder for the singleton's instance
@@ -49,7 +49,7 @@ class SessionManager extends Singleton implements IsSerializable
      * @static
      * @var     object
      */
-    private static $instance = null;
+    private static $_instance = null;
 
     /**
      * database connection
@@ -58,7 +58,7 @@ class SessionManager extends Singleton implements IsSerializable
      * @access  private
      * @var     DBStream
      */
-    private static $database = null;
+    private static $_database = null;
 
     /**
      * default profile id
@@ -67,7 +67,7 @@ class SessionManager extends Singleton implements IsSerializable
      * @access  private
      * @var     string
      */
-    private static $defaultProfileId = "DEFAULT";
+    private static $_defaultProfileId = "DEFAULT";
 
     /**
      * result cache
@@ -97,16 +97,16 @@ class SessionManager extends Singleton implements IsSerializable
      */
     public static function &getInstance()
     {
-        if (!isset(self::$instance)) {
+        if (!isset(self::$_instance)) {
             self::getDatasource();
-            self::$instance = new self();
+            self::$_instance = new self();
             $defaultProfileId = Yana::getDefault('profile');
             if (is_string($defaultProfileId)) {
-                self::$defaultProfileId = mb_strtoupper($defaultProfileId);
+                self::$_defaultProfileId = mb_strtoupper($defaultProfileId);
             }
         }
-        assert('isset(self::$database);');
-        return self::$instance;
+        assert('isset(self::$_database);');
+        return self::$_instance;
     }
 
     /**
@@ -167,7 +167,7 @@ class SessionManager extends Singleton implements IsSerializable
      */
     public static function setDatasource(DbStream $database)
     {
-        self::$database = $database;
+        self::$_database = $database;
     }
 
     /**
@@ -180,10 +180,10 @@ class SessionManager extends Singleton implements IsSerializable
      */
     public static function getDatasource()
     {
-        if (!isset(self::$database)) {
-            self::$database = Yana::connect('user');
+        if (!isset(self::$_database)) {
+            self::$_database = Yana::connect('user');
         }
-        return self::$database;
+        return self::$_database;
     }
 
     /**
@@ -218,9 +218,9 @@ class SessionManager extends Singleton implements IsSerializable
      *                               definition of the requested action.
      *                               It may contain one or all of the following items:
      *     <ul>
-     *       <li> PluginAnnotation::GROUP  required user group </li>
-     *       <li> PluginAnnotation::ROLE   required user role </li>
-     *       <li> PluginAnnotation::LEVEL  required security level </li>
+     *       <li> PluginAnnotationEnumeration::GROUP  required user group </li>
+     *       <li> PluginAnnotationEnumeration::ROLE   required user role </li>
+     *       <li> PluginAnnotationEnumeration::LEVEL  required security level </li>
      *     </ul>
      *   </li>
      *   <li> string    $profileId   current application profile id, see: {@see Yana::getId()} </li>
@@ -241,7 +241,7 @@ class SessionManager extends Singleton implements IsSerializable
      *   {
      *     $manager = SessionManager::getInstance();
      *     $level = $manager->getSecurityLevel($userName, $profileId);
-     *     return $required[PluginAnnotation::LEVEL] <= $level;
+     *     return $required[PluginAnnotationEnumeration::LEVEL] <= $level;
      *   }
      * }
      * </code>
@@ -279,13 +279,13 @@ class SessionManager extends Singleton implements IsSerializable
     {
         // remove old predefined security settings
         $where = array('actionrule_predefined', '=', true);
-        if (!self::$database->remove('securityactionrules', $where, 0)) {
-            self::$database->rollback();
+        if (!self::$_database->remove('securityactionrules', $where, 0)) {
+            self::$_database->rollback();
             throw new DbAlert("Unable to delete old entries.");
         }
         // remove old actions
-        if (!self::$database->remove('securityaction', array(), 0)) {
-            self::$database->rollback();
+        if (!self::$_database->remove('securityaction', array(), 0)) {
+            self::$_database->rollback();
             throw new DbAlert("Unable to delete old entries.");
         }
         $rows = array();
@@ -319,16 +319,16 @@ class SessionManager extends Singleton implements IsSerializable
                     'actionrule_predefined' => true,
                     'action_id' => $name
                 );
-                if (isset($level[PluginAnnotation::GROUP])) {
-                    $row['group'] = mb_strtolower($level[PluginAnnotation::GROUP]);
+                if (isset($level[PluginAnnotationEnumeration::GROUP])) {
+                    $row['group'] = mb_strtolower($level[PluginAnnotationEnumeration::GROUP]);
                     $groups[] = $row['group'];
                 }
-                if (isset($level[PluginAnnotation::ROLE])) {
-                    $row['role'] = mb_strtolower($level[PluginAnnotation::ROLE]);
+                if (isset($level[PluginAnnotationEnumeration::ROLE])) {
+                    $row['role'] = mb_strtolower($level[PluginAnnotationEnumeration::ROLE]);
                     $roles[] = $row['role'];
                 }
-                if (isset($level[PluginAnnotation::LEVEL])) {
-                    $row['level'] = (int) $level[PluginAnnotation::LEVEL];
+                if (isset($level[PluginAnnotationEnumeration::LEVEL])) {
+                    $row['level'] = (int) $level[PluginAnnotationEnumeration::LEVEL];
                 }
                 $rows[] = $row;
             }
@@ -339,8 +339,8 @@ class SessionManager extends Singleton implements IsSerializable
         assert('!isset($row); // Cannot redeclare var $row');
         foreach ($actions as $row)
         {
-            if (!self::$database->insert('securityaction', $row)) {
-                self::$database->rollback();
+            if (!self::$_database->insert('securityaction', $row)) {
+                self::$_database->rollback();
                 throw new DbAlert("Unable to insert new action.");
             }
         }
@@ -350,12 +350,12 @@ class SessionManager extends Singleton implements IsSerializable
         assert('!isset($group); // Cannot redeclare var $group');
         foreach (array_unique($groups) as $groupId)
         {
-            if (self::$database->exists("securitygroup.$groupId")) {
+            if (self::$_database->exists("securitygroup.$groupId")) {
                 continue;
             }
             $group = array('group_id' => $groupId, 'group_name' => $groupId);
-            if (!self::$database->insert("securitygroup.$groupId", $group)) {
-                self::$database->rollback();
+            if (!self::$_database->insert("securitygroup.$groupId", $group)) {
+                self::$_database->rollback();
                 throw new DbAlert("Unable to insert new group.");
             }
         }
@@ -365,12 +365,12 @@ class SessionManager extends Singleton implements IsSerializable
         assert('!isset($role); // Cannot redeclare var $role');
         foreach (array_unique($roles) as $roleId)
         {
-            if (self::$database->exists("securityrole.$roleId")) {
+            if (self::$_database->exists("securityrole.$roleId")) {
                 continue;
             }
             $role = array('role_id' => $roleId, 'role_name' => $roleId);
-            if (!self::$database->insert("securityrole.$roleId", $role)) {
-                self::$database->rollback();
+            if (!self::$_database->insert("securityrole.$roleId", $role)) {
+                self::$_database->rollback();
                 throw new DbAlert("Unable to insert new role.");
             }
         }
@@ -379,13 +379,13 @@ class SessionManager extends Singleton implements IsSerializable
         assert('!isset($row); // Cannot redeclare var $row');
         foreach ($rows as $row)
         {
-            if (!self::$database->insert('securityactionrules', $row)) {
-                self::$database->rollback();
+            if (!self::$_database->insert('securityactionrules', $row)) {
+                self::$_database->rollback();
                 throw new DbAlert("Unable to insert new security setting.");
             }
         }
         unset($row);
-        if (!self::$database->commit()) {
+        if (!self::$_database->commit()) {
             throw new DbAlert("Unable to commit changes.");
         }
     }
@@ -465,14 +465,14 @@ class SessionManager extends Singleton implements IsSerializable
         }
 
         // if security settings are missing, auto-refresh them and issue a warning
-        if (self::$database->isEmpty("securityactionrules")) {
+        if (self::$_database->isEmpty("securityactionrules")) {
             self::refreshPluginSecuritySettings();
             Log::report("No security settings found. Trying to auto-refresh table 'securityactionrules'.");
             return false;
         }
         // find out what the required permission level is to perform the current action
         assert('!isset($requiredLevels); // Cannot redeclare var $requiredLevels');
-        $requiredLevels = self::$database->select("securityactionrules", array('action_id', '=', $action));
+        $requiredLevels = self::$_database->select("securityactionrules", array('action_id', '=', $action));
         // if not defined, load defaults
         if (empty($requiredLevels)) {
             $requiredLevels = Yana::getDefault('event.user');
@@ -532,7 +532,7 @@ class SessionManager extends Singleton implements IsSerializable
         assert('!isset($function); // cannot redeclare $function');
         foreach (self::$rules as $function)
         {
-            $allowed = call_user_func($function, self::$database, $required, $profileId, $action, $userName);
+            $allowed = call_user_func($function, self::$_database, $required, $profileId, $action, $userName);
             if ($allowed === false) {
                 $result = false;
                 break;
@@ -599,7 +599,7 @@ class SessionManager extends Singleton implements IsSerializable
             throw new NotFoundException("No such user '$userName'.", E_USER_WARNING);
         }
 
-        $remove = self::$database->remove("securitylevel", array(
+        $remove = self::$_database->remove("securitylevel", array(
                 array("user_id", '=', $userName),
                 'and',
                 array(
@@ -609,16 +609,16 @@ class SessionManager extends Singleton implements IsSerializable
                 )
             ), 1);
         if ($remove) {
-            self::$database->commit();
+            self::$_database->commit();
         }
-        $result = self::$database->insert("securitylevel", array(
+        $result = self::$_database->insert("securitylevel", array(
                 "user_id" => $userName,
                 "profile" => $profileId,
                 "security_level" => $level,
                 "user_created" => $currentUser,
                 "user_proxy_active" => true
             ));
-        if (!$result || !self::$database->commit()) {
+        if (!$result || !self::$_database->commit()) {
             throw new Error("Unable to commit changed security level for user '$userName'.", E_USER_WARNING);
         }
     }
@@ -659,7 +659,7 @@ class SessionManager extends Singleton implements IsSerializable
 
         if (!empty($userName)) {
             // 1) get security level for current profile
-            $query = new DbSelect(self::$database);
+            $query = new DbSelect(self::$_database);
             $query->setKey('securitylevel.*.security_level');
             $query->setWhere(array(
                 array('user_id', '=', $userName),
@@ -668,17 +668,17 @@ class SessionManager extends Singleton implements IsSerializable
             ));
             $query->setOrderBy(array('security_level'), array(true));
             $query->setLimit(1);
-            $level = self::$database->select($query);
+            $level = self::$_database->select($query);
 
             // 2) fall-back to security level for default profile
             if (empty($level) || !is_array($level)) {
-                if (self::$defaultProfileId != $profileId) {
+                if (self::$_defaultProfileId != $profileId) {
                     $query->setWhere(array(
                         array('user_id', '=', $userName),
                         'and',
-                        array('profile', '=', self::$defaultProfileId)
+                        array('profile', '=', self::$_defaultProfileId)
                     ));
-                    $level = self::$database->select($query);
+                    $level = self::$_database->select($query);
                 }
             }
 
@@ -708,28 +708,25 @@ class SessionManager extends Singleton implements IsSerializable
      */
     public function serialize()
     {
-        return serialize($this);
+        // returns a list of key => value pairs
+        $properties = get_object_vars($this);
+        // return the names
+        return serialize($properties);
     }
 
     /**
-     * unserialize a string to a serializable object
-     *
-     * Returns the unserialized object.
+     * Reinitializes the object.
      *
      * @access  public
-     * @static
      * @param   string  $string  string to unserialize
-     * @return  IsSerializable
      */
-    public static function unserialize($string)
+    public function unserialize($string)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        if (!isset(self::$instance)) {
-            self::$instance = unserialize($string);
-            return self::$instance;
-        } else {
-            return unserialize($string);
+        foreach (unserialize($string) as $key => $value)
+        {
+            $this->$key = $value;
         }
+        self::$_instance = $this;
     }
 
 }

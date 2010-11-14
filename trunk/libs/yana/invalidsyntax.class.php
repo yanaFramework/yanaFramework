@@ -26,16 +26,16 @@
  */
 
 /**
- * Item already exists
+ * Syntax error
  *
- * Thrown when you try to add an item, but another item of the same name does
- * already exist.
+ * Thrown when a certain syntax is expected for a given value or resource and the input
+ * does not satisfy this constraint.
  *
  * @access      public
  * @package     yana
  * @subpackage  error_reporting
  */
-class AlreadyExistsException extends Report
+class InvalidSyntaxException extends ReportAbstract
 {
     /* intentionally left blank */
 }

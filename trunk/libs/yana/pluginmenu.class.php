@@ -35,7 +35,7 @@
  *
  * @ignore
  */
-class PluginMenu extends Singleton implements IsSerializable
+class PluginMenu extends Singleton
 {
     /**
      * This is a place-holder for the singleton's instance
@@ -44,42 +44,42 @@ class PluginMenu extends Singleton implements IsSerializable
      * @static
      * @var     PluginMenu
      */
-    private static $instance = null;
+    private static $_instance = null;
 
     /**
      * @access  private
      * @static
      * @var     string
      */
-    private static $locale = null;
+    private static $_locale = null;
 
     /**
      * @access  private
      * @static
      * @var     array
      */
-    private $names = array();
+    private $_names = array();
 
     /**
      * @access  private
      * @static
      * @var     array
      */
-    private $plugins = array();
+    private $_plugins = array();
 
     /**
      * @access  private
      * @static
      * @var     array
      */
-    private $entries = array();
+    private $_entries = array();
 
     /**
      * @access  private
      * @static
      * @var     array
      */
-    private $hasGroup = array();
+    private $_hasGroup = array();
 
     /**
      * constructor
@@ -102,32 +102,32 @@ class PluginMenu extends Singleton implements IsSerializable
             if ($pluginManager->isActive($pluginName)) {
                 $pluginConfiguration = $pluginManager->getPluginConfiguration($pluginName);
                 if ($pluginConfiguration->getGroup()) {
-                    $this->hasGroup[$pluginName] = true;
+                    $this->_hasGroup[$pluginName] = true;
                 }
                 foreach ($pluginConfiguration->getMenuNames() as $entry)
                 {
-                    if (!isset($entry[PluginAnnotation::GROUP])) {
+                    if (!isset($entry[PluginAnnotationEnumeration::GROUP])) {
                         $message = "Error in plugin configuration '" . $pluginConfiguration->getTitle() . "'. " .
                             "Menu definition is missing setting 'group'.";
                         Log::report($message, E_USER_WARNING);
                         continue;
                     }
-                    if (isset($entry[PluginAnnotation::TITLE])) {
-                        $title = $entry[PluginAnnotation::TITLE];
+                    if (isset($entry[PluginAnnotationEnumeration::TITLE])) {
+                        $title = $entry[PluginAnnotationEnumeration::TITLE];
                     }
-                    $group = $entry[PluginAnnotation::GROUP];
+                    $group = $entry[PluginAnnotationEnumeration::GROUP];
                     if (empty($title)) {
                         $title = $pluginConfiguration->getTitle();
                     }
                     if (!empty($group)) {
-                        $this->names[$group] = $title;
-                        $this->plugins[$group] = $pluginName;
+                        $this->_names[$group] = $title;
+                        $this->_plugins[$group] = $pluginName;
                     }
-                } /* end foreach */
+                } // end foreach
             } else {
                 unset($pluginNames[$i]);
-            } /* end if */
-        } /* end foreach */
+            } // end if
+        } // end foreach
 
         /**
          * initialize entries
@@ -142,8 +142,8 @@ class PluginMenu extends Singleton implements IsSerializable
                         continue;
                     }
                     // check for @menu title: foo
-                    if (!empty($entry[PluginAnnotation::TITLE])) {
-                        $title = $entry[PluginAnnotation::TITLE];
+                    if (!empty($entry[PluginAnnotationEnumeration::TITLE])) {
+                        $title = $entry[PluginAnnotationEnumeration::TITLE];
                     // otherwise look for @title tag
                     } else {
                         $title = $pluginConfiguration->getMethod($action)->getName();
@@ -152,24 +152,24 @@ class PluginMenu extends Singleton implements IsSerializable
                     if (empty($title)) {
                         $title = $pluginConfiguration->getTitle();
                     }
-                    if (empty($entry[PluginAnnotation::IMAGE])) {
+                    if (empty($entry[PluginAnnotationEnumeration::IMAGE])) {
                         $image = $pluginConfiguration->getIcon();
                     } else {
-                        $image = $pluginConfiguration->getDirectory() . '/' . $entry[PluginAnnotation::IMAGE];
+                        $image = $pluginConfiguration->getDirectory() . '/' . $entry[PluginAnnotationEnumeration::IMAGE];
                     }
-                    if (empty($entry[PluginAnnotation::GROUP])) {
+                    if (empty($entry[PluginAnnotationEnumeration::GROUP])) {
                         $group = "";
                     } else {
-                        $group = $entry[PluginAnnotation::GROUP];
+                        $group = $entry[PluginAnnotationEnumeration::GROUP];
                     }
                     $safemode = $pluginConfiguration->getMethod($action)->getSafeMode();
-                    $entry = array(PluginAnnotation::IMAGE => $image, 
-                                   PluginAnnotation::TITLE => $title,
-                                   PluginAnnotation::SAFEMODE => $safemode);
-                    Hashtable::set($this->entries, "$group.$action", $entry);
-                } /* end foreach */
-            } /* end if */
-        } /* end foreach */
+                    $entry = array(PluginAnnotationEnumeration::IMAGE => $image, 
+                                   PluginAnnotationEnumeration::TITLE => $title,
+                                   PluginAnnotationEnumeration::SAFEMODE => $safemode);
+                    Hashtable::set($this->_entries, "$group.$action", $entry);
+                } // end foreach
+            } // end if
+        } // end foreach
     }
 
     /**
@@ -184,25 +184,25 @@ class PluginMenu extends Singleton implements IsSerializable
      */
     public static function &getInstance()
     {
-        if (!isset(self::$instance)) {
+        if (!isset(self::$_instance)) {
 
             $id = self::_getLocale();
             /*
              * load from cache
              */
             if (isset($_SESSION[__CLASS__][$id])) {
-                 self::$instance = unserialize($_SESSION[__CLASS__][$id]);
-                 assert('self::$instance instanceof PluginMenu;');
+                 self::$_instance = unserialize($_SESSION[__CLASS__][$id]);
+                 assert('self::$_instance instanceof PluginMenu;');
 
             /*
              * create cache
              */
             } else {
-                self::$instance = new PluginMenu();
-                $_SESSION[__CLASS__][$id] = serialize(self::$instance);
+                self::$_instance = new PluginMenu();
+                $_SESSION[__CLASS__][$id] = serialize(self::$_instance);
             }
         }
-        return self::$instance;
+        return self::$_instance;
     }
 
     /**
@@ -230,10 +230,10 @@ class PluginMenu extends Singleton implements IsSerializable
      */
     private static function _getLocale()
     {
-        if (!isset(self::$locale)) {
-            self::$locale = Language::getInstance()->getLocale();
+        if (!isset(self::$_locale)) {
+            self::$_locale = Language::getInstance()->getLocale();
         }
-        return self::$locale;
+        return self::$_locale;
     }
 
     /**
@@ -246,7 +246,7 @@ class PluginMenu extends Singleton implements IsSerializable
      */
     public function getMenus()
     {
-        return array_keys($this->entries);
+        return array_keys($this->_entries);
     }
 
     /**
@@ -268,11 +268,11 @@ class PluginMenu extends Singleton implements IsSerializable
         assert('is_string($menuName); // Wrong type for argument 3. String expected');
         assert('is_string($icon); // Wrong type for argument 4. String expected');
 
-        $this->entries[$menuName][$action] = array
+        $this->_entries[$menuName][$action] = array
             (
-                PluginAnnotation::TITLE => $title,
-                PluginAnnotation::IMAGE => $icon,
-                PluginAnnotation::GROUP => $menuName
+                PluginAnnotationEnumeration::TITLE => $title,
+                PluginAnnotationEnumeration::IMAGE => $icon,
+                PluginAnnotationEnumeration::GROUP => $menuName
             );
     }
 
@@ -290,8 +290,8 @@ class PluginMenu extends Singleton implements IsSerializable
     {
         assert('is_string($action); // Wrong type for argument 1. String expected');
         assert('is_string($menuName); // Wrong type for argument 2. String expected');
-        if (isset($this->entries[$menuName][$action])) {
-            unset($this->entries[$menuName][$action]);
+        if (isset($this->_entries[$menuName][$action])) {
+            unset($this->_entries[$menuName][$action]);
             return true;
         } else {
             return false;
@@ -311,7 +311,7 @@ class PluginMenu extends Singleton implements IsSerializable
     {
         assert('is_string($menuName); // Wrong type for argument 1. String expected');
         assert('is_string($name); // Wrong type for argument 2. String expected');
-        $this->names[$menu] = $name;
+        $this->_names[$menu] = $name;
     }
 
     /**
@@ -329,9 +329,9 @@ class PluginMenu extends Singleton implements IsSerializable
     {
         assert('is_null($menuName) || is_string($menuName); // Wrong type for argument 1. String expected');
         if (empty($menuName)) {
-            return $this->entries;
-        } elseif (isset($this->entries[$menuName])) {
-            return $this->entries[$menuName];
+            return $this->_entries;
+        } elseif (isset($this->_entries[$menuName])) {
+            return $this->_entries[$menuName];
         } else {
             return array();
         }
@@ -349,8 +349,8 @@ class PluginMenu extends Singleton implements IsSerializable
      */
     public function getMenuName($menuId)
     {
-        if (isset($this->names[$menuId])) {
-            return Language::getInstance()->replaceToken($this->names[$menuId]);
+        if (isset($this->_names[$menuId])) {
+            return Language::getInstance()->replaceToken($this->_names[$menuId]);
         } else {
             return $menuId;
         }
@@ -377,8 +377,8 @@ class PluginMenu extends Singleton implements IsSerializable
 
         foreach ($pluginMenu->getMenuEntries() as $menuId => $menuEntries)
         {
-            $pluginId = $pluginMenu->plugins[$menuId];
-            if (empty($pluginMenu->hasGroup[$pluginId]) || $pluginManager->isLoaded($pluginId)) {
+            $pluginId = $pluginMenu->_plugins[$menuId];
+            if (empty($pluginMenu->_hasGroup[$pluginId]) || $pluginManager->isLoaded($pluginId)) {
                 $pluginMenu->_getMenu($menu, $menuId, $menuEntries, $pluginManager, $isSafemode);
             }
         }
@@ -403,13 +403,13 @@ class PluginMenu extends Singleton implements IsSerializable
         foreach ($menuEntries as $action => $entry)
         {
             // is entry
-            if (isset($entry[PluginAnnotation::TITLE])) {
-                $safemode = $entry[PluginAnnotation::SAFEMODE];
+            if (isset($entry[PluginAnnotationEnumeration::TITLE])) {
+                $safemode = $entry[PluginAnnotationEnumeration::SAFEMODE];
                 if (!is_null($safemode) && $isSafemode !== $safemode) {
                     continue;
                 }
                 $url = SmartUtility::url("action=$action", true);
-                $label = Language::getInstance()->replaceToken($entry[PluginAnnotation::TITLE]);
+                $label = Language::getInstance()->replaceToken($entry[PluginAnnotationEnumeration::TITLE]);
                 if (!empty($name)) {
                     $menu[$name][$url] = $label;
                 } else {
@@ -424,39 +424,15 @@ class PluginMenu extends Singleton implements IsSerializable
             }
         }
     }
-
+    
     /**
-     * serialize this object to a string
-     *
-     * Returns the serialized object as a string.
+     * Reinitialize instance.
      *
      * @access  public
-     * @return  string
      */
-    public function serialize()
+    public function __wakeup()
     {
-        return serialize($this);
-    }
-
-    /**
-     * unserialize a string to a serializable object
-     *
-     * Returns the unserialized object.
-     *
-     * @access  public
-     * @static
-     * @param   string  $string  string to unserialize
-     * @return  IsSerializable
-     */
-    public static function unserialize($string)
-    {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        if (!isset(self::$instance)) {
-            self::$instance = unserialize($string);
-            return self::$instance;
-        } else {
-            return self::$instance;
-        }
+        self::$_instance = $this;
     }
 
 }

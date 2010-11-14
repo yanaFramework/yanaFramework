@@ -35,7 +35,7 @@
  * @package     yana
  * @subpackage  database
  */
-abstract class DDL extends Object implements IsSerializable
+abstract class DDL extends Object
 {
     /**
      * File extensions
@@ -141,34 +141,6 @@ abstract class DDL extends Object implements IsSerializable
         } catch (Exception $e) {
             return $e->getMessage(); // toString() must not throw an exception
         }
-    }
-
-    /**
-     * serialize this object to a string
-     *
-     * Returns the serialized object as a string.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function serialize()
-    {
-        return serialize($this);
-    }
-
-    /**
-     * unserialize a string to a serializable object
-     *
-     * Returns the unserialized object.
-     *
-     * @access  public
-     * @static
-     * @param   string  $string  string to unserialize
-     * @return  IsSerializable
-     */
-    public static function unserialize($string)
-    {
-        return unserialize($string);
     }
 
     /**

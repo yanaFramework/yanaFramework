@@ -37,11 +37,12 @@ require_once dirname(__FILE__) . '/include.php';
  */
 class DBCreatorTest extends PHPUnit_Framework_TestCase
 {
+
     /**
      * @var    DBCreator
      * @access protected
      */
-    protected $dbcreator;
+    protected $_object;
 
     /**
      * constructor
@@ -73,7 +74,7 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        unset($this->dbcreator, $obj, $dbcreator);
+        unset($this->_object, $obj, $dbcreator);
     }
 
     /**
@@ -90,7 +91,7 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
 
         // create a da tabase with tables (columns)
         $db = new DDLDatabase('foobar');
-        
+
         /* create table "foo_department" and columns */
         $table = $db->addTable('foo_department');
         $id = $table->addColumn('id', 'integer');
@@ -99,7 +100,7 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
         $id->setAutoIncrement(true);
         $id->setNullable(false);
         $table->setPrimaryKey('id');
-        
+
         $name = $table->addColumn('name', 'string');
         $name->setType('string');
         $name->setSize(100);
@@ -113,8 +114,8 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
         $openTime = $table->addColumn('open_time', 'time');
         $openTime->setNullable(true);
         $openTime->setAutoFill(true);
-        
-        
+
+
         /* create table and columns*/
 
         $table = $db->addTable('foo_employee');
@@ -193,12 +194,12 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
         $capacity->setLength(3, 2);
         $capacity->setDefault('1.987');
         $capacity->setFixed(true);
-        $producer_id = $table->addColumn('producer_id', 'integer');        
+        $producer_id = $table->addColumn('producer_id', 'integer');
         $producer_id->setSize(11);
         $producer_id->setNullable(false);
         $fk = $table->addForeignKey('foo_producer');
         $fk->setColumn('producer_id');
-        $fk->setOnDelete(DDLForeignKey::CASCADE);
+        $fk->setOnDelete(DDLKeyUpdateStrategyEnumeration::CASCADE);
 
         /* create table "foo_car" and columns */
         $table = $db->addTable('foo_car');
@@ -240,13 +241,13 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
         $payment->setDefault(50);
         $fk = $table->addForeignKey('foo_car_typ');
         $fk->setColumn('car_typ_id');
-        $fk->setOnDelete(DDLForeignKey::RESTRICT);
+        $fk->setOnDelete(DDLKeyUpdateStrategyEnumeration::RESTRICT);
         $newfk = $table->addForeignKey('foo_employee', 'test_foreign');
         $newfk->setColumn('employee_id');
-        $newfk->setOnUpdate(DDLForeignKey::CASCADE);
+        $newfk->setOnUpdate(DDLKeyUpdateStrategyEnumeration::CASCADE);
 
-        $this->dbcreator = new DbCreator($db);
-        $result = $this->dbcreator->createMySQL();
+        $this->_object = new DbCreator($db);
+        $result = $this->_object->createMySQL();
         //foreach($result as $t) print "$t\n";
         $this->assertType('array', $result, 'assert failed, the value should be of type array');
         $this->assertNotEquals(0, count($result), 'assert failed, the expected value must have some entries');
@@ -277,7 +278,7 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
         $foo_bar_id = $table->addColumn('foo_bar_id', 'integer');
         $fk = $table->addForeignKey('foo_bar');
         $fk->setColumn('foo_bar_id');
-        $fk->setOnUpdate(DDLForeignKey::RESTRICT);
+        $fk->setOnUpdate(DDLKeyUpdateStrategyEnumeration::RESTRICT);
 
         $table = $db->addTable('bar_test');
         $id = $table->addColumn('id', 'integer');
@@ -287,12 +288,12 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
         $fk->setSize(11);
         $add = $table->addForeignKey('foo_test');
         $add->setColumn('foo_id');
-        $add->setOnUpdate(DDLForeignKey::SETNULL);
+        $add->setOnUpdate(DDLKeyUpdateStrategyEnumeration::SETNULL);
         $table->setPrimaryKey('id');
         $foo_bar_id = $table->addColumn('foo_test_id', 'integer');
         $fk = $table->addForeignKey('foo_test');
         $fk->setColumn('foo_test_id');
-        $fk->setOnDelete(DDLForeignKey::SETNULL);
+        $fk->setOnDelete(DDLKeyUpdateStrategyEnumeration::SETNULL);
 
         $obj = new DbCreator($db);
         try {
@@ -340,5 +341,7 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
             $this->fail($e->getMessage());
         }
     }
+
 }
+
 ?>

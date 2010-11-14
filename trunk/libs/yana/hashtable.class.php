@@ -630,6 +630,92 @@ class Hashtable extends Utility
         }
         return $result;
     }
+
+    /**
+     * search for a value in a sorted list
+     *
+     * If the array contains $needle, the key of $needle is
+     * returned. Otherwise this functions returns bool(false).
+     *
+     * This function does something similar to PHP's in_array(),
+     * except, that it expects the input to be a numeric, unique,
+     * sorted array.
+     *
+     * If the input is sorted, searching for a value will be faster
+     * using this function than the original, especially for large arrays.
+     *
+     * To be more technical: qSearchArray() performs a search
+     * on a sorted array in O(log(n)) running time, which is the
+     * same as searching for a key in a red-black tree.
+     * While a "normal", linear scan of the array takes O(n) running
+     * time.
+     *
+     * Example:
+     * <code>
+     * // Search through a large, sorted, numeric array of strings.
+     * // E.g. a file where each line is representing a value.
+     * $list = file('large_file.txt');
+     * if (is_array($list)) {
+     *     $i = qSearchArray($list, 'foo');
+     *     if ($i === false) {
+     *         print "Value 'foo' not found!\n";
+     *     } else {
+     *         print "Found 'foo' in line $i.\n";
+     *     }
+     * }
+     * </code>
+     *
+     * @param   array   &$array     array
+     * @param   scalar  $needle     needle
+     * @return  int|bool(false)
+     * @name    function_qSearchArray()
+     */
+    public static function quickSearch(array &$array, $needle)
+    {
+        assert('is_scalar($needle); // Wrong type for argument 2. Scalar expected');
+
+        /* Input handling */
+        /* settype to STRING */
+        $needle = (string) $needle;
+        $max = count($array) -1;
+        $min = 0;
+        $n = floor($max / 2);
+        $previousN = array(-1, -1);
+
+        if ($max === $min) {
+            if ($array[$max] === $needle) {
+                return $max;
+            } else {
+                return false;
+            }
+        }
+
+        while ($max > $min)
+        {
+            $temp = strcmp(trim($array[$n]), $needle);
+            if ($temp > 0) {
+                $max = $n;
+            } elseif ($temp < 0) {
+                $min = $n;
+            } else {
+                return (int) $n;
+            }
+
+            array_shift($previousN);
+            $previousN[] = $n;
+
+            if ($min!=$n) {
+                $n = $min + floor(($max - $min) /2);
+            } else {
+                $n = $min + ceil(($max - $min) /2);
+            }
+
+            if ($previousN[0] == $n || $previousN[1] == $n) {
+                return false;
+            }
+        } /* end while */
+        return false;
+    }
 }
 
 ?>

@@ -63,7 +63,7 @@ class DbSelect extends DbSelectCount
      * @ignore
      */
 
-    /** @var int   */ protected $type = DbQuery::SELECT;
+    /** @var int   */ protected $type = DbQueryTypeEnumeration::SELECT;
 
     /** @var array */ protected $having = array();
     /** @var int   */ protected $offset = 0;
@@ -154,11 +154,11 @@ class DbSelect extends DbSelectCount
 
             $this->column = array();
             if ($this->row === '*') {
-                if ($this->expectedResult !== YANA_DB_ROW) {
-                    $this->expectedResult = YANA_DB_TABLE;
+                if ($this->expectedResult !== DbResultEnumeration::ROW) {
+                    $this->expectedResult = DbResultEnumeration::TABLE;
                 }
             } else {
-                $this->expectedResult = YANA_DB_ROW;
+                $this->expectedResult = DbResultEnumeration::ROW;
             }
             return;
         }
@@ -192,9 +192,9 @@ class DbSelect extends DbSelectCount
         $this->column = $result;
 
         if ($this->row === '*') {
-            $this->expectedResult = YANA_DB_TABLE;
+            $this->expectedResult = DbResultEnumeration::TABLE;
         } else {
-            $this->expectedResult = YANA_DB_ROW;
+            $this->expectedResult = DbResultEnumeration::ROW;
         }
     }
 
@@ -234,9 +234,9 @@ class DbSelect extends DbSelectCount
         }
 
         if ($this->row === '*') {
-            $this->expectedResult = YANA_DB_TABLE;
+            $this->expectedResult = DbResultEnumeration::TABLE;
         } else {
-            $this->expectedResult = YANA_DB_ROW;
+            $this->expectedResult = DbResultEnumeration::ROW;
         }
     }
 
@@ -579,7 +579,7 @@ class DbSelect extends DbSelectCount
         switch ($this->getExpectedResult())
         {
             // handle cells
-            case YANA_DB_CELL:
+            case DbResultEnumeration::CELL:
                 // create header
                 if ($hasHeader) {
                     $header = $this->getColumnTitles();
@@ -589,7 +589,7 @@ class DbSelect extends DbSelectCount
                 return $csv . $this->_valueToCSV($resultset) . "$rowSep";
             break;
             // handle rows
-            case YANA_DB_ROW:
+            case DbResultEnumeration::ROW:
                 // create header
                 if ($hasHeader) {
                     $header = $this->getColumnTitles();
@@ -605,8 +605,8 @@ class DbSelect extends DbSelectCount
                 return $csv . self::_rowToCsv($resultset, $colSep, $rowSep);
             break;
             // handle tables and columns
-            case YANA_DB_COLUMN:
-            case YANA_DB_TABLE:
+            case DbResultEnumeration::COLUMN:
+            case DbResultEnumeration::TABLE:
                 // create header
                 if ($hasHeader) {
                     $header = $this->getColumnTitles();
@@ -956,11 +956,11 @@ class DbSelect extends DbSelectCount
     {
         switch ($this->expectedResult)
         {
-            case YANA_DB_ROW:
-            case YANA_DB_CELL:
+            case DbResultEnumeration::ROW:
+            case DbResultEnumeration::CELL:
                 return (int) $this->doesExist();
             break;
-            case YANA_DB_TABLE:
+            case DbResultEnumeration::TABLE:
                 return count($this->getResults());
             break;
             default:
@@ -1014,7 +1014,7 @@ class DbSelect extends DbSelectCount
             }
             switch ($returnedType)
             {
-                case YANA_DB_TABLE:
+                case DbResultEnumeration::TABLE:
                     assert('!isset($rowId); // Cannot redeclare var $rowId');
                     if (isset($row[$id])) {
                         $rowId = mb_strtoupper($row[$id]);
@@ -1031,7 +1031,7 @@ class DbSelect extends DbSelectCount
                     }
                     unset($rowId);
                 break;
-                case $returnedType === YANA_DB_COLUMN:
+                case $returnedType === DbResultEnumeration::COLUMN:
                     if (isset($row[$id])) {
                         $rowId = $row[$id];
                         if (count($row) > 1) {
@@ -1055,8 +1055,8 @@ class DbSelect extends DbSelectCount
                     // check input
                     switch ($returnedType)
                     {
-                        case YANA_DB_TABLE:
-                        case YANA_DB_ROW:
+                        case DbResultEnumeration::TABLE:
+                        case DbResultEnumeration::ROW:
                             // get name of parent table (if any)
                             try {
                                 assert('!isset($currentTable); // Cannot redeclare var $currentTable');
@@ -1073,13 +1073,13 @@ class DbSelect extends DbSelectCount
                                 continue;
                             }
                         break;
-                        case YANA_DB_CELL:
+                        case DbResultEnumeration::CELL:
                             $arrayAddress = $this->getArrayAddress();
                             if (empty($arrayAddress)) {
                                 $arrayAddress = '';
                             }
                         // fall through
-                        case YANA_DB_COLUMN:
+                        case DbResultEnumeration::COLUMN:
                             $column = $table->getColumn($this->getColumn());
                         break;
                         default:
@@ -1095,16 +1095,16 @@ class DbSelect extends DbSelectCount
                 // handle results
                 switch ($returnedType)
                 {
-                    case YANA_DB_TABLE:
+                    case DbResultEnumeration::TABLE:
                         $refKey[mb_strtoupper($alias)] = $value;
                     break;
-                    case YANA_DB_ROW:
+                    case DbResultEnumeration::ROW:
                         $output[mb_strtoupper($alias)] = $value;
                     break;
-                    case YANA_DB_CELL:
+                    case DbResultEnumeration::CELL:
                         $output = $value;
                     break;
-                    case YANA_DB_COLUMN:
+                    case DbResultEnumeration::COLUMN:
                         $output[$rowId] = $value;
                     break;
                     default:

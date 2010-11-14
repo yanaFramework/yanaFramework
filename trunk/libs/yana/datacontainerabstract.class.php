@@ -46,7 +46,7 @@
  * @package     yana
  * @subpackage  core
  */
-abstract class AbstractDataContainer extends Object
+abstract class DataContainerAbstract extends Object
 {
     /**
      * instance id
@@ -62,7 +62,7 @@ abstract class AbstractDataContainer extends Object
      * @access  private
      * @var     bool
      */
-    private $isRead = false;
+    private $_isRead = false;
 
     /**
      * instance has been modified since loading
@@ -72,7 +72,7 @@ abstract class AbstractDataContainer extends Object
      * @access  private
      * @var     bool
      */
-    private $isModified = false;
+    private $_isModified = false;
 
     /**
      * instance has just been created
@@ -82,7 +82,7 @@ abstract class AbstractDataContainer extends Object
      * @access  private
      * @var     bool
      */
-    private $isNew = false;
+    private $_isNew = false;
 
     /**
      * instance has been dropped
@@ -90,12 +90,12 @@ abstract class AbstractDataContainer extends Object
      * @access  private
      * @var     bool
      */
-    private $isDropped = false;
+    private $_isDropped = false;
 
     /**
      * data adapter
      *
-     * The DataAdapter is an interface. We use it to inject a dependency into the AbstractDataContainer. 
+     * The DataAdapter is an interface. We use it to inject a dependency into the AbstractDataContainer.
      * The AbstractDataContainer uses the DataAdapter to read and write data from and to an arbitrary data source.
      *
      * @access  protected
@@ -103,7 +103,7 @@ abstract class AbstractDataContainer extends Object
      * @var     IsDataAdapter
      * @ignore
      */
-    protected static $dataAdapter = null;
+    protected static $_dataAdapter = null;
 
     /**
      * instances
@@ -116,7 +116,7 @@ abstract class AbstractDataContainer extends Object
      * @var     array
      * @ignore
      */
-    protected static $instances = array();
+    protected static $_instances = array();
 
     /**
      * hidden constructor
@@ -140,7 +140,7 @@ abstract class AbstractDataContainer extends Object
      */
     public function __get($name)
     {
-        $this->isRead = true;
+        $this->_isRead = true;
         return $this->$name;
     }
 
@@ -156,7 +156,7 @@ abstract class AbstractDataContainer extends Object
     public function __set($name,  $value)
     {
         $this->$name = $value;
-        $this->isModified = true;
+        $this->_isModified = true;
     }
 
     /**
@@ -169,10 +169,10 @@ abstract class AbstractDataContainer extends Object
      */
     protected static function getDataAdapter()
     {
-        if (!isset(self::$dataAdapter)) {
+        if (!isset(self::$_dataAdapter)) {
             throw new NotImplementedException("No data adapter registered.");
         }
-        return self::$dataAdapter;
+        return self::$_dataAdapter;
     }
 
     /**
@@ -189,7 +189,7 @@ abstract class AbstractDataContainer extends Object
      */
     public static function registerDataAdapter(IsDataAdapter $adapter)
     {
-        self::$dataAdapter = $adapter;
+        self::$_dataAdapter = $adapter;
     }
 
     /**
@@ -199,18 +199,18 @@ abstract class AbstractDataContainer extends Object
      *
      * @param   string  $id  instance id
      * @throws  AlreadyExistsException  if the instance already exists
-     * @return  AbstractDataContainer
+     * @return  DataContainerAbstract
      */
     public static function createInstance($id)
     {
         assert('is_string($name); // Invalid argument type argument 1. String expected.');
-        if (!isset(self::$instances[$id])) {
-            self::$instances[$id] = new self();
-            self::$instances[$id]->id = $id;
-            self::$instances[$id]->new = true;
-            self::$instances[$id]->modified = false;
+        if (!isset(self::$_instances[$id])) {
+            self::$_instances[$id] = new self();
+            self::$_instances[$id]->id = $id;
+            self::$_instances[$id]->new = true;
+            self::$_instances[$id]->modified = false;
         }
-        return self::$instances[$id];
+        return self::$_instances[$id];
     }
 
     /**
@@ -220,17 +220,17 @@ abstract class AbstractDataContainer extends Object
      *
      * @param   string  $id  instance id
      * @throws  NotFoundException  if the instance does not exist
-     * @return  AbstractDataContainer
+     * @return  DataContainerAbstract
      */
     public static function getInstance($id)
     {
         assert('is_string($name); // Invalid argument type argument 1. String expected.');
-        if (!isset(self::$instances[$id])) {
-            self::$instances[$id] = new self();
-            self::$instances[$id]->id = $id;
-            self::$instances[$id]->modified = false;
+        if (!isset(self::$_instances[$id])) {
+            self::$_instances[$id] = new self();
+            self::$_instances[$id]->id = $id;
+            self::$_instances[$id]->modified = false;
         }
-        return self::$instances[$id];
+        return self::$_instances[$id];
     }
 
     /**
@@ -245,7 +245,7 @@ abstract class AbstractDataContainer extends Object
      */
     public static function isValid($id)
     {
-        return isset(self::$instances[$id]) || self::getDataAdapter()->isValid($id);
+        return isset(self::$_instances[$id]) || self::getDataAdapter()->isValid($id);
     }
 
     /**
@@ -257,7 +257,7 @@ abstract class AbstractDataContainer extends Object
     public function __destruct()
     {
         try {
-            if ($this->isModified) {
+            if ($this->_isModified) {
                 self::getDataAdapter()->updateInstance($this);
             }
         } catch (Exception $e) {
@@ -273,7 +273,7 @@ abstract class AbstractDataContainer extends Object
      */
     public function dropInstance()
     {
-        $this->isDropped = true;
+        $this->_isDropped = true;
     }
 
     /**
@@ -284,7 +284,7 @@ abstract class AbstractDataContainer extends Object
      */
     public function isModified()
     {
-        return $this->isModified;
+        return $this->_isModified;
     }
 
     /**
@@ -295,7 +295,7 @@ abstract class AbstractDataContainer extends Object
      */
     public function isRead()
     {
-        return $this->isRead;
+        return $this->_isRead;
     }
 
     /**
@@ -306,7 +306,7 @@ abstract class AbstractDataContainer extends Object
      */
     public function isNew()
     {
-        return $this->isNew;
+        return $this->_isNew;
     }
 
     /**
@@ -317,7 +317,7 @@ abstract class AbstractDataContainer extends Object
      */
     public function isDropped()
     {
-        return $this->isDropped;
+        return $this->_isDropped;
     }
 
 }

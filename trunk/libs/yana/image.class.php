@@ -62,29 +62,29 @@ class Image extends Object
      * @ignore
      */
 
-    private $path = null;
-    private $exists = false;
-    private $image = null;
-    private $isBroken = false;
-    private $gamma = 1.0;
-    private $lineWidth = 1;
-    private $lineStyle = null;
-    private $interlace = false;
-    private $alpha = false;
-    private $brush = null;
+    private $_path = null;
+    private $_exists = false;
+    private $_image = null;
+    private $_isBroken = false;
+    private $_gamma = 1.0;
+    private $_lineWidth = 1;
+    private $_lineStyle = null;
+    private $_interlace = false;
+    private $_alpha = false;
+    private $_brush = null;
 
     /**
      * Is set to the initial transparency color of the image (if any).
      */
-    private $transparency = null;
+    private $_transparency = null;
 
     /**
      * current background color
      */
-    private $backgroundColor = null;
+    private $_backgroundColor = null;
 
     /** @final */
-    private $mapping  = array(
+    private $_mapping  = array(
     'png'  => array('image/png',          'imagepng',  'imagecreatefrompng' ),
     'jpg'  => array('image/jpeg',         'imagejpeg', 'imagecreatefromjpeg'),
     'jpeg' => array('image/jpeg',         'imagejpeg', 'imagecreatefromjpeg'),
@@ -187,7 +187,7 @@ class Image extends Object
 
         /* if no filename is provided, create an empty truecolor image */
         } elseif (is_null($filename)) {
-            
+
             $this->_createImage();
 
             /* end of process*/
@@ -200,8 +200,8 @@ class Image extends Object
                 if (!file_exists($filename)) {
                     Log::report("The image '{$filename}' does not exist.");
                 } else {
-                    $this->path = $filename;
-                    $this->exists   = true;
+                    $this->_path = $filename;
+                    $this->_exists   = true;
                 }
             } else {
                 /* wrong argument type */
@@ -216,7 +216,7 @@ class Image extends Object
             }
 
             /* 2 create image resource */
-            if (!$this->exists) {
+            if (!$this->_exists) {
                 $this->_createErrorImage();
             } else {
 
@@ -227,7 +227,7 @@ class Image extends Object
                     $pathInfo      = pathinfo($this->getPath());
                     $fileExtension = $pathInfo['extension'];
                     $fileExtension = mb_strtolower($fileExtension);
-                    if (isset($this->mapping[$fileExtension])) {
+                    if (isset($this->_mapping[$fileExtension])) {
                         $imageType = $fileExtension;
                     }
                     unset($pathInfo, $fileExtension);
@@ -252,23 +252,23 @@ class Image extends Object
                      * }}
                      */
                     if (function_exists('imagecreatefromgif')) {
-                        $this->image = @imagecreatefromgif($this->getPath());
+                        $this->_image = @imagecreatefromgif($this->getPath());
                     }
 
-                    if (!is_resource($this->image)) {
+                    if (!is_resource($this->_image)) {
                         $fileContent = file_get_contents($this->getPath());
                         if ($fileContent !== false) {
-                            $this->image = @imagecreatefromstring($fileContent);
+                            $this->_image = @imagecreatefromstring($fileContent);
                         } else {
-                            $this->image = false;
+                            $this->_image = false;
                         }
                     }
 
                 /* create image from file */
-                } elseif (isset($this->mapping[$imageType])) {
+                } elseif (isset($this->_mapping[$imageType])) {
 
-                    $functionName = $this->mapping[$imageType][2];
-                    $this->image  = @$functionName($this->getPath());
+                    $functionName = $this->_mapping[$imageType][2];
+                    $this->_image  = @$functionName($this->getPath());
 
                 /* error: image type unsupported */
                 } else {
@@ -279,7 +279,7 @@ class Image extends Object
                 } /* end if */
 
                 /* check if result is valid */
-                if ($this->image === false) {
+                if ($this->_image === false) {
                     $message = "The file '{$filename}' was not recognized as a valid ".
                         ((!empty($imageType))?$imageType." ":"")."image.";
                     Log::report($message);
@@ -288,11 +288,11 @@ class Image extends Object
                 /* make image truecolor */
                 } elseif (!$this->isTruecolor() && function_exists('imagecreatetruecolor')) {
 
-                    $oldImage = $this->image;
+                    $oldImage = $this->_image;
                     $width    = $this->getWidth();
                     $height   = $this->getHeight();
                     $this->_createImage($width, $height);
-                    imagecopy($this->image, $oldImage, 0, 0, 0, 0, $width, $height);
+                    imagecopy($this->_image, $oldImage, 0, 0, 0, 0, $width, $height);
                     imagedestroy($oldImage);
 
                 } else {
@@ -302,12 +302,12 @@ class Image extends Object
         } /* end if */
 
         /* 3 get initial transparency */
-        if (is_resource($this->image) && is_null($this->transparency)) {
-            $this->transparency = imagecolortransparent($this->image);
-            if ($this->transparency === -1) {
-                $this->transparency = null;
+        if (is_resource($this->_image) && is_null($this->_transparency)) {
+            $this->_transparency = imagecolortransparent($this->_image);
+            if ($this->_transparency === -1) {
+                $this->_transparency = null;
             } else {
-                $this->transparency = imagecolorsforindex($this->image, $this->transparency);
+                $this->_transparency = imagecolorsforindex($this->_image, $this->_transparency);
             }
         }
 
@@ -321,8 +321,8 @@ class Image extends Object
      */
     public function getPath()
     {
-        if ($this->exists) {
-            return $this->path;
+        if ($this->_exists) {
+            return $this->_path;
         } else {
             return false;
         }
@@ -336,8 +336,8 @@ class Image extends Object
      */
     public function exists()
     {
-        if (is_bool($this->exists)) {
-            return $this->exists;
+        if (is_bool($this->_exists)) {
+            return $this->_exists;
         } else {
             return false;
         }
@@ -354,12 +354,12 @@ class Image extends Object
      */
     public function isBroken()
     {
-        assert('is_bool($this->isBroken);');
-        if (!is_resource($this->image)) {
+        assert('is_bool($this->_isBroken);');
+        if (!is_resource($this->_image)) {
             return true;
 
         } else {
-            return $this->isBroken;
+            return $this->_isBroken;
         }
     }
 
@@ -388,7 +388,7 @@ class Image extends Object
             return false;
 
         } else {
-            return imageistruecolor($this->image);
+            return imageistruecolor($this->_image);
         }
     }
 
@@ -418,8 +418,8 @@ class Image extends Object
                 return false;
             }
 
-            imagecopy($copiedImage, $this->image, 0, 0, 0, 0, $width, $height);
-            $this->image = $copiedImage;
+            imagecopy($copiedImage, $this->_image, 0, 0, 0, 0, $width, $height);
+            $this->_image = $copiedImage;
         }
     }
 
@@ -438,7 +438,7 @@ class Image extends Object
     public function equals(object $anotherObject)
     {
         if ($anotherObject instanceof $this) {
-            return ( $this->image === $anotherObject->getResource() );
+            return ( $this->_image === $anotherObject->getResource() );
         }
     }
 
@@ -458,7 +458,7 @@ class Image extends Object
     public function equalsResoure($resource)
     {
         assert('is_resource($resource); // Wrong type for argument 1. Resource expected');
-        if (is_resource($resource) && $this->image === $resource) {
+        if (is_resource($resource) && $this->_image === $resource) {
             return true;
         } else {
             return false;
@@ -479,11 +479,11 @@ class Image extends Object
         /**
          * error - broken image
          */
-        if (!is_resource($this->image) || $this->isBroken()) {
+        if (!is_resource($this->_image) || $this->isBroken()) {
             return false;
 
         } else {
-            return $this->image;
+            return $this->_image;
         }
     }
 
@@ -503,54 +503,54 @@ class Image extends Object
         assert('$height > 0; // Height must be greater 0.');
 
         /* backup background color */
-        if (!is_null($this->backgroundColor)) {
-            $backgroundColor = $this->getColorValues($this->backgroundColor);
+        if (!is_null($this->_backgroundColor)) {
+            $backgroundColor = $this->getColorValues($this->_backgroundColor);
         } else {
             $backgroundColor = null;
         }
 
         /* backup transparency color */
-        if (is_resource($this->image) && is_null($this->transparency) && function_exists('imagecolortransparent')) {
-            $this->transparency = imagecolortransparent($this->image);
-            if ($this->transparency === -1) {
-                $this->transparency = null;
+        if (is_resource($this->_image) && is_null($this->_transparency) && function_exists('imagecolortransparent')) {
+            $this->_transparency = imagecolortransparent($this->_image);
+            if ($this->_transparency === -1) {
+                $this->_transparency = null;
             } else {
-                $this->transparency = imagecolorsforindex($this->image, $this->transparency);
+                $this->_transparency = imagecolorsforindex($this->_image, $this->_transparency);
             }
         }
 
         /* create new image */
         if (function_exists('imagecreatetruecolor')) {
-            $this->image = imagecreatetruecolor($width, $height);
+            $this->_image = imagecreatetruecolor($width, $height);
         } elseif (function_exists('imagecreate')) {
-            $this->image = imagecreate($width, $height);
+            $this->_image = imagecreate($width, $height);
         } else {
             return false;
         }
 
         /* copy line width */
-        if ($this->lineWidth > 1) {
-            $this->setLineWidth($this->lineWidth);
+        if ($this->_lineWidth > 1) {
+            $this->setLineWidth($this->_lineWidth);
         }
 
         /* copy line style */
-        if (is_array($this->lineStyle)) {
-            imagesetstyle($this->image, $this->lineStyle);
+        if (is_array($this->_lineStyle)) {
+            imagesetstyle($this->_image, $this->_lineStyle);
         }
 
         /* copy transparency */
-        if (is_array($this->transparency)) {
-            $this->setTransparency($this->transparency);
+        if (is_array($this->_transparency)) {
+            $this->setTransparency($this->_transparency);
         }
 
         /* copy interlacing */
-        if ($this->interlace === true) {
+        if ($this->_interlace === true) {
             $this->enableInterlace(true);
         }
 
         /* copy brush */
-        if (is_resource($this->brush)) {
-            $this->setBrush($this->brush);
+        if (is_resource($this->_brush)) {
+            $this->setBrush($this->_brush);
         }
 
         /* initialize reserved palette colors */
@@ -562,12 +562,12 @@ class Image extends Object
             $green = (int) $backgroundColor['green'];
             $blue  = (int) $backgroundColor['blue'];
             $alpha = (float) ($backgroundColor['alpha'] / 127);
-            $this->backgroundColor = $this->getColor($red, $green, $blue, $alpha);
+            $this->_backgroundColor = $this->getColor($red, $green, $blue, $alpha);
         } else {
             $this->setBackgroundColor();
         }
 
-        imagefill($this->image, 0, 0, $this->backgroundColor);
+        imagefill($this->_image, 0, 0, $this->_backgroundColor);
     }
 
     /**
@@ -598,7 +598,7 @@ class Image extends Object
         $this->yellow  = $this->getColor(255, 255, 0);
 
         /* initialize background color */
-        if (is_null($this->backgroundColor)) {
+        if (is_null($this->_backgroundColor)) {
             $this->setBackgroundColor();
         }
     }
@@ -615,10 +615,10 @@ class Image extends Object
     {
         if (!function_exists('imagedestroy')) {
             /* intentionally left blank */
-        } elseif (is_null($this->image)) {
+        } elseif (is_null($this->_image)) {
             $this->_createImage();
         } else {
-            $oldImage = $this->image;
+            $oldImage = $this->_image;
             $width    = $this->getWidth();
             $height   = $this->getHeight();
             $this->_createImage($width, $height);
@@ -633,7 +633,7 @@ class Image extends Object
      */
     private function _createErrorImage()
     {
-        $this->isBroken = true;
+        $this->_isBroken = true;
         /* check if the predefined error image is available */
         global $YANA;
         if (isset($YANA) && function_exists('imagecreatefromgif')) {
@@ -647,14 +647,14 @@ class Image extends Object
 
         /* if it is there, then simply load it */
         if (!is_null($errorImage) && is_readable($errorImage)) {
-            $this->image  = imagecreatefromgif($errorImage);
+            $this->_image  = imagecreatefromgif($errorImage);
 
         /* otherwise produce a simple text image as a fall back */
         } elseif (function_exists('imagefilledrectangle')) {
 
             $this->_createImage(100, 30);
-            imagefilledrectangle($this->image, 0, 0, 150, 30, $this->white);
-            imagestring($this->image, 1, 5, 5, "Error loading image", $this->black);
+            imagefilledrectangle($this->_image, 0, 0, 150, 30, $this->white);
+            imagestring($this->_image, 1, 5, 5, "Error loading image", $this->black);
 
         /* fall back to text */
         } else {
@@ -683,7 +683,7 @@ class Image extends Object
             return false;
 
         } else {
-            return imagesx($this->image);
+            return imagesx($this->_image);
         }
     }
 
@@ -707,7 +707,7 @@ class Image extends Object
             return false;
 
         } else {
-            return imagesy($this->image);
+            return imagesy($this->_image);
         }
     }
 
@@ -745,7 +745,7 @@ class Image extends Object
 
             if (!function_exists('imagesetpixel')) {
                 return false;
-            } elseif (imagesetpixel($this->image, $x, $y, $color)) {
+            } elseif (imagesetpixel($this->_image, $x, $y, $color)) {
                 return true;
             } else {
                 return false;
@@ -796,7 +796,7 @@ class Image extends Object
 
             if (!function_exists('imageline')) {
                 return false;
-            } elseif (imageline($this->image, $x1, $y1, $x2, $y2, $color)) {
+            } elseif (imageline($this->_image, $x1, $y1, $x2, $y2, $color)) {
                 return true;
             } else {
                 return false;
@@ -897,7 +897,7 @@ class Image extends Object
 
             if (!function_exists($functionName)) {
                 return false;
-            } elseif ($functionName($this->image, $font, $x, $y, $text, $color)) {
+            } elseif ($functionName($this->_image, $font, $x, $y, $text, $color)) {
                 return true;
             } else {
                 return false;
@@ -980,14 +980,14 @@ class Image extends Object
             if (is_null($fontfile)) {
                 $fontfile = 'tahoma';
             }
-            
+
             /* set path on Win32-systems */
             if (isset($_SERVER['windir']) && !is_file($fontfile)) {
                 $fontfile = $_SERVER['windir'] . DIRECTORY_SEPARATOR . 'Fonts' . DIRECTORY_SEPARATOR . $fontfile .
                     '.ttf';
             }
 
-            if (imagettftext($this->image, $fontsize, $angle, $x, $y, $color, $fontfile, $text) !== false) {
+            if (imagettftext($this->_image, $fontsize, $angle, $x, $y, $color, $fontfile, $text) !== false) {
                 return true;
             } else {
                 return false;
@@ -1079,14 +1079,14 @@ class Image extends Object
                 if (!function_exists('imagefilledellipse')) {
                     return false;
                 } elseif (!is_null($fillColor)) {
-                    imagefilledellipse($this->image, $x, $y, $width, $height, $fillColor);
+                    imagefilledellipse($this->_image, $x, $y, $width, $height, $fillColor);
                 }
 
                 /* contour */
                 if (!function_exists('imageellipse')) {
                     return false;
                 } elseif (!is_null($color)) {
-                    imageellipse($this->image, $x, $y, $width, $height, $color);
+                    imageellipse($this->_image, $x, $y, $width, $height, $color);
                 }
 
                 return true;
@@ -1098,14 +1098,14 @@ class Image extends Object
                 if (!function_exists('imagefilledarc')) {
                     return false;
                 } elseif (!is_null($fillColor)) {
-                    imagefilledarc($this->image, $x, $y, $width, $height, $start, $end, $fillColor, IMG_ARC_PIE);
+                    imagefilledarc($this->_image, $x, $y, $width, $height, $start, $end, $fillColor, IMG_ARC_PIE);
                 }
 
                 /* contour */
                 if (!function_exists('imagearc')) {
                     return false;
                 } elseif (!is_null($color)) {
-                    imagearc($this->image, $x, $y, $width, $height, $start, $end, $color);
+                    imagearc($this->_image, $x, $y, $width, $height, $start, $end, $color);
                 }
 
                 return true;
@@ -1185,14 +1185,14 @@ class Image extends Object
             if (!function_exists('imagefilledrectangle')) {
                 return false;
             } elseif (!is_null($fillColor)) {
-                imagefilledrectangle($this->image, $x, $y, $width, $height, $fillColor);
+                imagefilledrectangle($this->_image, $x, $y, $width, $height, $fillColor);
             }
 
             /* contour */
             if (!function_exists('imagerectangle')) {
                 return false;
             } elseif (!is_null($color)) {
-                imagerectangle($this->image, $x, $y, $width, $height, $color);
+                imagerectangle($this->_image, $x, $y, $width, $height, $color);
             }
 
             return true;
@@ -1287,14 +1287,14 @@ class Image extends Object
             if (!function_exists('imagefilledpolygon')) {
                 return false;
             } elseif (!is_null($fillColor)) {
-                imagefilledpolygon($this->image, $mergedPoints, $count, $fillColor);
+                imagefilledpolygon($this->_image, $mergedPoints, $count, $fillColor);
             }
 
             /* contour */
             if (!function_exists('imagepolygon')) {
                 return false;
             } elseif (!is_null($color)) {
-                imagepolygon($this->image, $mergedPoints, $count, $color);
+                imagepolygon($this->_image, $mergedPoints, $count, $color);
             }
 
             return true;
@@ -1349,13 +1349,13 @@ class Image extends Object
                 if (!function_exists('imagefill')) {
                     return false;
                 } else {
-                    return imagefill($this->image, $x, $y, $fillColor);
+                    return imagefill($this->_image, $x, $y, $fillColor);
                 }
             } else {
                 if (!function_exists('imagefilltoborder')) {
                     return false;
                 } else {
-                    return imagefilltoborder($this->image, $x, $y, $borderColor, $fillColor);
+                    return imagefilltoborder($this->_image, $x, $y, $borderColor, $fillColor);
                 }
             }
         }
@@ -1407,12 +1407,12 @@ class Image extends Object
             if ($isEnabled === true) {
 
                 /* Enable Alpha-blending */
-                if (imagealphablending($this->image, true)) {
+                if (imagealphablending($this->_image, true)) {
 
                     if (function_exists('imagesavealpha')) {
-                        imagesavealpha($this->image, $saveAlpha);
+                        imagesavealpha($this->_image, $saveAlpha);
                     }
-                    $this->alpha = true;
+                    $this->_alpha = true;
                     return true;
 
                 } else {
@@ -1422,12 +1422,12 @@ class Image extends Object
             } else {
 
                 /* Disable Alpha-blending */
-                if (imagealphablending($this->image, false)) {
+                if (imagealphablending($this->_image, false)) {
 
                     if (function_exists('imagesavealpha')) {
-                        imagesavealpha($this->image, $saveAlpha);
+                        imagesavealpha($this->_image, $saveAlpha);
                     }
-                    $this->alpha = false;
+                    $this->_alpha = false;
                     return true;
 
                 } else {
@@ -1467,9 +1467,9 @@ class Image extends Object
         } else {
 
             if ($isEnabled) {
-                return imageantialias($this->image, true);
+                return imageantialias($this->_image, true);
             } else {
-                return imageantialias($this->image, false);
+                return imageantialias($this->_image, false);
             }
         }
     }
@@ -1577,7 +1577,7 @@ class Image extends Object
         } elseif (!function_exists('imagecolorsforindex')) {
             return false;
         } else {
-            return imagecolorsforindex($this->image, $color);
+            return imagecolorsforindex($this->_image, $color);
         }
     }
 
@@ -1615,10 +1615,10 @@ class Image extends Object
             return false;
 
         } elseif (!$this->isTruecolor()) {
-            return imagecolorat($this->image, $x, $y);
+            return imagecolorat($this->_image, $x, $y);
 
         } else {
-            $rgb = imagecolorat($this->image, $x, $y);
+            $rgb = imagecolorat($this->_image, $x, $y);
             if (!is_int($rgb) || $rgb < 0) {
                 return false;
             } else {
@@ -1736,27 +1736,27 @@ class Image extends Object
                 $opacity = (int) floor($opacity * 127);
 
                 /* check if color already exists */
-                $color = imagecolorexactalpha($this->image, $r, $g, $b, $opacity);
+                $color = imagecolorexactalpha($this->_image, $r, $g, $b, $opacity);
 
                 /* if color is found, return it */
                 if ($color > -1) {
                     return $color;
                 /* otherwise allocate a new color */
                 } else {
-                    return imagecolorallocatealpha($this->image, $r, $g, $b, $opacity);
+                    return imagecolorallocatealpha($this->_image, $r, $g, $b, $opacity);
                 }
 
             } else {
 
                 /* check if color already exists */
-                $color = imagecolorexact($this->image, $r, $g, $b);
+                $color = imagecolorexact($this->_image, $r, $g, $b);
 
                 /* if color is found, return it */
                 if ($color > -1) {
                     return $color;
                 /* otherwise allocate a new color */
                 } else {
-                    return imagecolorallocate($this->image, $r, $g, $b);
+                    return imagecolorallocate($this->_image, $r, $g, $b);
                 }
 
             }
@@ -1781,8 +1781,8 @@ class Image extends Object
         if ($this->isBroken()) {
             return false;
 
-        } elseif (is_int($this->lineWidth)) {
-            return $this->lineWidth;
+        } elseif (is_int($this->_lineWidth)) {
+            return $this->_lineWidth;
 
         } else {
             return false;
@@ -1823,8 +1823,8 @@ class Image extends Object
                 return false;
             }
 
-            if (imagesetthickness($this->image, $width)) {
-                $this->lineWidth = $width;
+            if (imagesetthickness($this->_image, $width)) {
+                $this->_lineWidth = $width;
                 return true;
             } else {
                 return false;
@@ -1868,11 +1868,11 @@ class Image extends Object
 
             /* reset line style */
             if (func_num_args() === 0) {
-                imagesetstyle($this->image, array($this->black));
-                $this->lineStyle = null;
+                imagesetstyle($this->_image, array($this->black));
+                $this->_lineStyle = null;
                 return true;
             }
-            
+
             /* get line style */
             $style = array();
             for ($i = 0; $i < func_num_args(); $i++)
@@ -1883,8 +1883,8 @@ class Image extends Object
             }
 
             /* set line style */
-            if (imagesetstyle($this->image, $style)) {
-                $this->lineStyle = $style;
+            if (imagesetstyle($this->_image, $style)) {
+                $this->_lineStyle = $style;
                 return true;
             } else {
                 return false;
@@ -1941,7 +1941,7 @@ class Image extends Object
         /*
          *  argument 1 - index out of bounds
          */
-        } elseif ($replacedColor < 0 || $replacedColor > imagecolorstotal($this->image)) {
+        } elseif ($replacedColor < 0 || $replacedColor > imagecolorstotal($this->_image)) {
             throw new OutOfBoundsException("Replaced color is not in image palette.", E_USER_WARNING);
 
         } else {
@@ -1965,13 +1965,13 @@ class Image extends Object
                     // intentionally left blank
                 }
             } else {
-                $color = imagecolorsforindex($this->image, $newColor);
+                $color = imagecolorsforindex($this->_image, $newColor);
             }
 
             if (!is_array($color)) {
                 return false;
             } else {
-                imagecolorset($this->image, $replacedColor, $color['red'], $color['green'], $color['blue']);
+                imagecolorset($this->_image, $replacedColor, $color['red'], $color['green'], $color['blue']);
                 return true;
             }
         }
@@ -2018,8 +2018,8 @@ class Image extends Object
             /**
              * backup old values
              */
-            $oldBackgroundColor = $this->backgroundColor;
-            $oldImage = $this->image;
+            $oldBackgroundColor = $this->_backgroundColor;
+            $oldImage = $this->_image;
             $width = $this->getWidth();
             $height = $this->getHeight();
 
@@ -2027,15 +2027,15 @@ class Image extends Object
              * replace colors
              */
             imagecolortransparent($oldImage, $replacedColor);
-            $this->backgroundColor = $newColor;
+            $this->_backgroundColor = $newColor;
             $this->_createImage($width, $height);
-            imagecopyresized($this->image, $oldImage, 0, 0, 0, 0, $width, $height, $width, $height);
+            imagecopyresized($this->_image, $oldImage, 0, 0, 0, 0, $width, $height, $width, $height);
             imagedestroy($oldImage);
 
             /**
              * restore backup
              */
-            $this->backgroundColor = $oldBackgroundColor;
+            $this->_backgroundColor = $oldBackgroundColor;
 
             return true;
         }
@@ -2092,11 +2092,11 @@ class Image extends Object
         if (!is_resource($resource)) {
             return false;
         } else {
-            $test = imagesetbrush($this->image, $resource);
+            $test = imagesetbrush($this->_image, $resource);
         }
 
         if ($test) {
-            $this->brush = $resource;
+            $this->_brush = $resource;
             return true;
         } else {
             return false;
@@ -2138,19 +2138,19 @@ class Image extends Object
         } else {
 
             /* initialize background color */
-            if (is_null($backgroundColor) && is_null($this->backgroundColor)) {
+            if (is_null($backgroundColor) && is_null($this->_backgroundColor)) {
                 $color = $this->getTransparency();
 
                 if (is_int($color) && $color > -1) {
-                    $this->backgroundColor = $color;
+                    $this->_backgroundColor = $color;
                 } else {
-                    $this->backgroundColor = $this->getColor(254, 254, 254, 1.0);
+                    $this->_backgroundColor = $this->getColor(254, 254, 254, 1.0);
                 }
                 return true;
 
             /* set background color */
-            } elseif (is_null($this->backgroundColor)) {
-                $this->backgroundColor = $backgroundColor;
+            } elseif (is_null($this->_backgroundColor)) {
+                $this->_backgroundColor = $backgroundColor;
                 return true;
 
             /* get background color setting */
@@ -2160,15 +2160,15 @@ class Image extends Object
 
             /* replace background color */
             if ($replaceOldColor) {
-                $test = $this->replaceColor($this->backgroundColor, $backgroundColor);
+                $test = $this->replaceColor($this->_backgroundColor, $backgroundColor);
                 if ($test) {
-                    $this->backgroundColor = $backgroundColor;
+                    $this->_backgroundColor = $backgroundColor;
                     return true;
                 } else {
                     return false;
                 }
             } else {
-                $this->backgroundColor = $backgroundColor;
+                $this->_backgroundColor = $backgroundColor;
                 return true;
             }
 
@@ -2191,11 +2191,11 @@ class Image extends Object
         if ($this->isBroken()) {
             return false;
 
-        } elseif (!is_int($this->backgroundColor)) {
+        } elseif (!is_int($this->_backgroundColor)) {
             return false;
 
         } else {
-            return $this->backgroundColor;
+            return $this->_backgroundColor;
         }
     }
 
@@ -2216,8 +2216,8 @@ class Image extends Object
         if ($this->isBroken()) {
             return false;
 
-        } elseif (is_bool($this->interlace)) {
-            return $this->interlace;
+        } elseif (is_bool($this->_interlace)) {
+            return $this->_interlace;
 
         } else {
             return false;
@@ -2261,11 +2261,11 @@ class Image extends Object
                 $isInterlaced = 0;
             }
 
-            if (imageinterlace($this->image, $isInterlaced) === 1) {
-                $this->interlace = true;
+            if (imageinterlace($this->_image, $isInterlaced) === 1) {
+                $this->_interlace = true;
                 return true;
             } else {
-                $this->interlace = false;
+                $this->_interlace = false;
                 return false;
             }
         }
@@ -2292,8 +2292,8 @@ class Image extends Object
         if ($this->isBroken()) {
             return false;
 
-        } elseif (is_bool($this->alpha)) {
-            return $this->alpha;
+        } elseif (is_bool($this->_alpha)) {
+            return $this->_alpha;
 
         } else {
             return false;
@@ -2337,10 +2337,10 @@ class Image extends Object
                 return false;
             }
 
-            $test = imagegammacorrect($this->image, $this->gamma, $gamma);
+            $test = imagegammacorrect($this->_image, $this->_gamma, $gamma);
 
             if ($test == true) {
-                $this->gamma = $gamma;
+                $this->_gamma = $gamma;
                 return true;
             } else {
                 return false;
@@ -2376,7 +2376,7 @@ class Image extends Object
         } else {
 
             $bgColor = $this->getBackgroundColor();
-            $newImage = imagerotate($this->image, (float) $angle, $bgColor);
+            $newImage = imagerotate($this->_image, (float) $angle, $bgColor);
             $width = $this->getWidth();
             $height = $this->getHeight();
 
@@ -2387,7 +2387,7 @@ class Image extends Object
             }
             $this->drawRectangle(0, 0, $width, $height, null, $bgColor);
 
-            imagecopyresized($this->image, $newImage, 0, 0, 0, 0, $width, $height, $width, $height);
+            imagecopyresized($this->_image, $newImage, 0, 0, 0, 0, $width, $height, $width, $height);
             return true;
         }
     }
@@ -2586,7 +2586,7 @@ class Image extends Object
 
             } else {
 
-                $oldImage = $this->image;
+                $oldImage = $this->_image;
                 $this->_createImage($width, $height);
 
                 if (is_int($canvasColor)) {
@@ -2598,7 +2598,7 @@ class Image extends Object
                 }
 
                 if (function_exists('imagecopy')) {
-                    imagecopy($this->image, $oldImage, $dstLeft, $dstTop, $srcLeft, $srcTop, $srcWidth, $srcHeight);
+                    imagecopy($this->_image, $oldImage, $dstLeft, $dstTop, $srcLeft, $srcTop, $srcWidth, $srcHeight);
                 } else {
                     return false;
                 }
@@ -2698,14 +2698,14 @@ class Image extends Object
 
             } else {
 
-                $oldImage = $this->image;
+                $oldImage = $this->_image;
                 $this->_createImage($width, $height);
                 $w = $width;
                 $h = $height;
-                if (is_null($this->transparency) && function_exists('imagecopyresampled')) {
-                    imagecopyresampled($this->image, $oldImage, 0, 0, 0, 0, $w, $h, $currentWidth, $currentHeight);
+                if (is_null($this->_transparency) && function_exists('imagecopyresampled')) {
+                    imagecopyresampled($this->_image, $oldImage, 0, 0, 0, 0, $w, $h, $currentWidth, $currentHeight);
                 } elseif (function_exists('imagecopyresized')) {
-                    imagecopyresized($this->image, $oldImage, 0, 0, 0, 0, $w, $h, $currentWidth, $currentHeight);
+                    imagecopyresized($this->_image, $oldImage, 0, 0, 0, 0, $w, $h, $currentWidth, $currentHeight);
                 } else {
                     return false;
                 }
@@ -2736,7 +2736,7 @@ class Image extends Object
             return false;
 
         } else {
-            $transparency = imagecolortransparent($this->image);
+            $transparency = imagecolortransparent($this->_image);
             if ($transparency === -1) {
                 return false;
             } else {
@@ -2788,25 +2788,25 @@ class Image extends Object
 
             /* argument 1 */
             if (is_null($transparency)) {
-                $transparency = $this->backgroundColor;
+                $transparency = $this->_backgroundColor;
             }
             $red = $transparency['red'];
             $green = $transparency['green'];
             $blue =  $transparency['blue'];
-            
+
             if (is_int($transparency)) {
                 $color = $transparency;
-                $array = imagecolorsforindex($this->image, $transparency);
+                $array = imagecolorsforindex($this->_image, $transparency);
                 if (!is_array($array)) {
                     return false;
                 }
             } elseif (is_array($transparency) && isset($red) && isset($green) && isset($blue)) {
                 $color = -1;
                 if (function_exists('imagecolorexactalpha')) {
-                    $color = imagecolorexactalpha($this->image, $red, (int) $green, (int) $blue, 127);
+                    $color = imagecolorexactalpha($this->_image, $red, (int) $green, (int) $blue, 127);
                 }
                 if ($color == -1) {
-                    $color = imagecolorexact($this->image, $red, (int) $green, (int) $blue);
+                    $color = imagecolorexact($this->_image, $red, (int) $green, (int) $blue);
                 }
                 if ($color == -1) {
                     $color = $this->getColor((int) $red, (int) $green, (int) $blue);
@@ -2816,11 +2816,11 @@ class Image extends Object
                 return false;
             }
 
-            if (imagecolortransparent($this->image) === $color) {
-                $this->transparency = $array;
+            if (imagecolortransparent($this->_image) === $color) {
+                $this->_transparency = $array;
                 return true;
-            } elseif (imagecolortransparent($this->image, $color) != -1) {
-                $this->transparency = $array;
+            } elseif (imagecolortransparent($this->_image, $color) != -1) {
+                $this->_transparency = $array;
                 return true;
             } else {
                 return false;
@@ -2856,7 +2856,7 @@ class Image extends Object
 
         } else {
 
-            $count = imagecolorstotal($this->image);
+            $count = imagecolorstotal($this->_image);
 
             /* truecolor images should have 16 mio colors - but PHP returns 0 */
             if ($count < 1) {
@@ -2906,25 +2906,25 @@ class Image extends Object
             }
 
             /* backup background color */
-            if (!is_null($this->backgroundColor)) {
-                $backgroundColor = $this->getColorValues($this->backgroundColor);
+            if (!is_null($this->_backgroundColor)) {
+                $backgroundColor = $this->getColorValues($this->_backgroundColor);
             } else {
                 $backgroundColor = null;
             }
 
             /* convert palette */
-            $test = imagetruecolortopalette($this->image, $dither, $ammount);
+            $test = imagetruecolortopalette($this->_image, $dither, $ammount);
 
             /* restore backup */
             if ($test) {
-                if (!is_null($this->transparency)) {
-                    $red = $this->transparency['red'];
-                    $green = $this->transparency['green'];
-                    $blue = $this->transparency['blue'];
-                    $color = imagecolorresolve($this->image, $red, $green, $blue);
-                    $color = imagecolortransparent($this->image, $color);
+                if (!is_null($this->_transparency)) {
+                    $red = $this->_transparency['red'];
+                    $green = $this->_transparency['green'];
+                    $blue = $this->_transparency['blue'];
+                    $color = imagecolorresolve($this->_image, $red, $green, $blue);
+                    $color = imagecolortransparent($this->_image, $color);
                     if ($color != -1) {
-                        $this->transparency = $this->getColorValues($color);
+                        $this->_transparency = $this->getColorValues($color);
                     }
                     unset ($red, $green, $blue);
                 }
@@ -2934,7 +2934,7 @@ class Image extends Object
                     $green = (int) $backgroundColor['green'];
                     $blue  = (int) $backgroundColor['blue'];
                     $alpha = (int) $backgroundColor['alpha'];
-                    $this->backgroundColor = imagecolorresolvealpha($this->image, $red, $green, $blue, $alpha);
+                    $this->_backgroundColor = imagecolorresolvealpha($this->_image, $red, $green, $blue, $alpha);
                 }
                 $this->_initColors();
                 return true;
@@ -3012,13 +3012,13 @@ class Image extends Object
         assert('!isset($resource); // cannot redeclare variable $resource');
         if (is_string($sourceImage) && is_file($sourceImage)) {
             $sourceImage = new Image($sourceImage);
-            $resource = $sourceImage->image;
-        } elseif (is_object($sourceImage) && isset($sourceImage->image) && is_resource($sourceImage->image)) {
-            $resource = $sourceImage->image;
+            $resource = $sourceImage->_image;
+        } elseif (is_object($sourceImage) && isset($sourceImage->_image) && is_resource($sourceImage->_image)) {
+            $resource = $sourceImage->_image;
         } else {
             $resource = $sourceImage;
         }
-        
+
         /* argument 1 */
         if (!is_resource($resource)) {
             trigger_error("Argument 1 is invalid. The source is not a valid image resource.", E_USER_WARNING);
@@ -3066,11 +3066,11 @@ class Image extends Object
         }
 
         if (!is_null($opacity) && $this->isTruecolor() && function_exists('imagecopymerge')) {
-            return imagecopymerge($this->image, $resource, $destX, $destY,
+            return imagecopymerge($this->_image, $resource, $destX, $destY,
                                   $sourceX, $sourceY, $width, $height, $opacity);
 
         } elseif (function_exists('imagecopy')) {
-            return imagecopy($this->image, $resource, $destX, $destY, $sourceX, $sourceY, $width, $height);
+            return imagecopy($this->_image, $resource, $destX, $destY, $sourceX, $sourceY, $width, $height);
 
         } else {
             return false;
@@ -3096,18 +3096,18 @@ class Image extends Object
         }
 
         if (function_exists('imagefilter')) {
-            return imagefilter($this->image, IMG_FILTER_GRAYSCALE);
+            return imagefilter($this->_image, IMG_FILTER_GRAYSCALE);
         } elseif (!function_exists('imagecolorset')) {
             return false;
         } elseif ($this->isTruecolor()) {
             $this->reduceColorDepth(256, false);
         }
 
-        for ($i = 0; $i < imagecolorstotal($this->image); $i++)
+        for ($i = 0; $i < imagecolorstotal($this->_image); $i++)
         {
-            $color = imagecolorsforindex($this->image, $i);
+            $color = imagecolorsforindex($this->_image, $i);
             $gray  = round(0.299 * $color['red'] + 0.587 * $color['green'] + 0.114 * $color['blue']);
-            imagecolorset($this->image, $i, $gray, $gray, $gray);
+            imagecolorset($this->_image, $i, $gray, $gray, $gray);
         }
     }
 
@@ -3258,10 +3258,10 @@ class Image extends Object
          */
         for ($c = 0; $c < $this->getPaletteSize(); $c++)
         {
-            $col = imagecolorsforindex($this->image, $c);
+            $col = imagecolorsforindex($this->_image, $c);
             $lum_src = round(255 * ( $col['red']+$col['green']+$col['blue'] ) / 765);
             $col_out = $pal[$lum_src];
-            imagecolorset($this->image, $c, $col_out['r'], $col_out['g'], $col_out['b']);
+            imagecolorset($this->_image, $c, $col_out['r'], $col_out['g'], $col_out['b']);
         }
         return true;
     }
@@ -3347,7 +3347,7 @@ class Image extends Object
 
         if (function_exists('imagefilter')) {
             $ammount = (int) ( round(255 * $ammount) - 127 );
-            return imagefilter($this->image, IMG_FILTER_CONTRAST, $ammount);
+            return imagefilter($this->_image, IMG_FILTER_CONTRAST, $ammount);
         } elseif (!function_exists('imagecolorset')) {
             return false;
         } elseif ($this->isTruecolor()) {
@@ -3356,14 +3356,14 @@ class Image extends Object
 
         for ($i = 0; $i < $this->getPaletteSize(); $i++)
         {
-            $color = imagecolorsforindex($this->image, $i);
+            $color = imagecolorsforindex($this->_image, $i);
             $color['red']    = $color['red']   + floor(( 127 - $color['red']   ) * $ammount);
             $color['green']  = $color['green'] + floor(( 127 - $color['green'] ) * $ammount);
             $color['blue']   = $color['blue']  + floor(( 127 - $color['blue']  ) * $ammount);
             $color['red']    = (($color['red']   > 255) ? 255 : (($color['red']   < 0) ? 0 : $color['red']));
             $color['green']  = (($color['green'] > 255) ? 255 : (($color['green'] < 0) ? 0 : $color['green']));
             $color['blue']   = (($color['blue']  > 255) ? 255 : (($color['blue']  < 0) ? 0 : $color['blue']));
-            imagecolorset($this->image, $i, $color['red'], $color['green'], $color['blue']);
+            imagecolorset($this->_image, $i, $color['red'], $color['green'], $color['blue']);
         }
     }
 
@@ -3387,7 +3387,7 @@ class Image extends Object
         }
 
         if (function_exists('imagefilter')) {
-            return imagefilter($this->image, IMG_FILTER_NEGATE);
+            return imagefilter($this->_image, IMG_FILTER_NEGATE);
         } elseif (!function_exists('imagecolorset')) {
             return false;
         } elseif ($this->isTruecolor()) {
@@ -3396,11 +3396,11 @@ class Image extends Object
 
         for ($i = 0; $i < $this->getPaletteSize(); $i++)
         {
-            $color = imagecolorsforindex($this->image, $i);
+            $color = imagecolorsforindex($this->_image, $i);
             $color['red']    = - $color['red']   + 255;
             $color['green']  = - $color['green'] + 255;
             $color['blue']   = - $color['blue']  + 255;
-            imagecolorset($this->image, $i, $color['red'], $color['green'], $color['blue']);
+            imagecolorset($this->_image, $i, $color['red'], $color['green'], $color['blue']);
         }
     }
 
@@ -3462,29 +3462,29 @@ class Image extends Object
         switch (func_num_args())
         {
             case 1:
-                return imagefilter($this->image, $filter);
+                return imagefilter($this->_image, $filter);
             break;
             case 2:
                 $arg1 = func_get_arg(1);
-                return imagefilter($this->image, $filter, $arg1);
+                return imagefilter($this->_image, $filter, $arg1);
             break;
             case 3:
                 $arg1 = func_get_arg(1);
                 $arg2 = func_get_arg(2);
-                return imagefilter($this->image, $filter, $arg1, $arg2);
+                return imagefilter($this->_image, $filter, $arg1, $arg2);
             break;
             case 4:
                 $arg1 = func_get_arg(1);
                 $arg2 = func_get_arg(2);
                 $arg3 = func_get_arg(3);
-                return imagefilter($this->image, $filter, $arg1, $arg2, $arg3);
+                return imagefilter($this->_image, $filter, $arg1, $arg2, $arg3);
             break;
             case 5:
                 $arg1 = func_get_arg(1);
                 $arg2 = func_get_arg(2);
                 $arg3 = func_get_arg(3);
                 $arg4 = func_get_arg(4);
-                return imagefilter($this->image, $filter, $arg1, $arg2, $arg3, $arg4);
+                return imagefilter($this->_image, $filter, $arg1, $arg2, $arg3, $arg4);
             break;
             default:
                 return false;
@@ -3541,9 +3541,9 @@ class Image extends Object
 
         if (function_exists('imagefilter')) {
             if ($r == $g && $g == $b) {
-                return imagefilter($this->image, IMG_FILTER_BRIGHTNESS, $r);
+                return imagefilter($this->_image, IMG_FILTER_BRIGHTNESS, $r);
             } else {
-                return imagefilter($this->image, IMG_FILTER_COLORIZE, $r, $g, $b);
+                return imagefilter($this->_image, IMG_FILTER_COLORIZE, $r, $g, $b);
             }
         } elseif (!function_exists('imagecolorset')) {
             return false;
@@ -3553,14 +3553,14 @@ class Image extends Object
 
         for ($i = 0; $i < $this->getPaletteSize(); $i++)
         {
-            $color     = imagecolorsforindex($this->image, $i);
+            $color     = imagecolorsforindex($this->_image, $i);
             $color['red']   += $r;
             $color['green'] += $g;
             $color['blue']  += $b;
             $color['red']    = (($color['red']   > 255) ? 255 : (($color['red']   < 0) ? 0 : $color['red']));
             $color['green']  = (($color['green'] > 255) ? 255 : (($color['green'] < 0) ? 0 : $color['green']));
             $color['blue']   = (($color['blue']  > 255) ? 255 : (($color['blue']  < 0) ? 0 : $color['blue']));
-            imagecolorset($this->image, $i, $color['red'], $color['green'], $color['blue']);
+            imagecolorset($this->_image, $i, $color['red'], $color['green'], $color['blue']);
         }
     }
 
@@ -3641,14 +3641,14 @@ class Image extends Object
 
         for ($i = 0; $i < $this->getPaletteSize(); $i++)
         {
-            $color     = imagecolorsforindex($this->image, $i);
+            $color     = imagecolorsforindex($this->_image, $i);
             $color['red']   = (int) round(sqrt($color['red']   * $r));
             $color['green'] = (int) round(sqrt($color['green'] * $g));
             $color['blue']  = (int) round(sqrt($color['blue']  * $b));
             $color['red']   = (($color['red']   > 255) ? 255 : (($color['red']   < 0) ? 0 : $color['red']));
             $color['green'] = (($color['green'] > 255) ? 255 : (($color['green'] < 0) ? 0 : $color['green']));
             $color['blue']  = (($color['blue']  > 255) ? 255 : (($color['blue']  < 0) ? 0 : $color['blue']));
-            imagecolorset($this->image, $i, $color['red'], $color['green'], $color['blue']);
+            imagecolorset($this->_image, $i, $color['red'], $color['green'], $color['blue']);
         }
         return true;
     }
@@ -3687,7 +3687,7 @@ class Image extends Object
         if (function_exists('imagefilter')) {
 
             $pct = (int) floor(15 - ($ammount * 15));
-            imagefilter($this->image, IMG_FILTER_SMOOTH, $pct);
+            imagefilter($this->_image, IMG_FILTER_SMOOTH, $pct);
             return true;
 
         } elseif (function_exists('imagecopymerge')) {
@@ -3700,16 +3700,16 @@ class Image extends Object
             } else {
                 $tempImage = imagecreate($width, $height);
             }
-            imagecopy($tempImage, $this->image, 0, 0, 1, 1, $width - 1, $height - 1);
-            imagecopymerge($tempImage, $this->image, 1, 1, 0, 0, $width,     $height,        $ammount * 100);
-            imagecopymerge($tempImage, $this->image, 0, 1, 1, 0, $width - 1, $height,        $ammount * 66);
-            imagecopymerge($tempImage, $this->image, 1, 0, 0, 1, $width,     $height - 1,    $ammount * 50);
-            imagecopymerge($tempImage, $this->image, 0, 0, 1, 0, $width - 1, $height,        $ammount * 66);
-            imagecopymerge($tempImage, $this->image, 1, 0, 0, 0, $width,     $height,        $ammount * 50);
-            imagecopymerge($tempImage, $this->image, 0, 0, 0, 1, $width,     $height - 1,    $ammount * 40);
-            imagecopymerge($tempImage, $this->image, 0, 1, 0, 0, $width,     $height,        $ammount * 66);
-            imagecopymerge($tempImage, $this->image, 0, 0, 0, 0, $width,     $height, (1.0 - $ammount)* 100);
-            imagecopy($this->image, $tempImage, 0, 0, 0, 0, $width-1, $height-1);
+            imagecopy($tempImage, $this->_image, 0, 0, 1, 1, $width - 1, $height - 1);
+            imagecopymerge($tempImage, $this->_image, 1, 1, 0, 0, $width,     $height,        $ammount * 100);
+            imagecopymerge($tempImage, $this->_image, 0, 1, 1, 0, $width - 1, $height,        $ammount * 66);
+            imagecopymerge($tempImage, $this->_image, 1, 0, 0, 1, $width,     $height - 1,    $ammount * 50);
+            imagecopymerge($tempImage, $this->_image, 0, 0, 1, 0, $width - 1, $height,        $ammount * 66);
+            imagecopymerge($tempImage, $this->_image, 1, 0, 0, 0, $width,     $height,        $ammount * 50);
+            imagecopymerge($tempImage, $this->_image, 0, 0, 0, 1, $width,     $height - 1,    $ammount * 40);
+            imagecopymerge($tempImage, $this->_image, 0, 1, 0, 0, $width,     $height,        $ammount * 66);
+            imagecopymerge($tempImage, $this->_image, 0, 0, 0, 0, $width,     $height, (1.0 - $ammount)* 100);
+            imagecopy($this->_image, $tempImage, 0, 0, 0, 0, $width-1, $height-1);
             return true;
 
         } else {
@@ -3765,12 +3765,12 @@ class Image extends Object
             } else {
                 return false;
             }
-            imagecopy($tempImage, $this->image, 0, 0, 0, 0, $width, $height);
+            imagecopy($tempImage, $this->_image, 0, 0, 0, 0, $width, $height);
             imagefilter($tempImage, IMG_FILTER_EDGEDETECT);
             $pct = (int) ($ammount * 20);
             imagecolortransparent($tempImage, imagecolorat($tempImage, 0, 0));
-            imagecopymerge($this->image, $tempImage, 0, 0, 0, 0, $width, $height, $pct);
-            imagefilter($this->image, IMG_FILTER_CONTRAST, - (int) ($pct / 2));
+            imagecopymerge($this->_image, $tempImage, 0, 0, 0, 0, $width, $height, $pct);
+            imagefilter($this->_image, IMG_FILTER_CONTRAST, - (int) ($pct / 2));
             return true;
 
         } elseif (function_exists('imagecopymerge')) {
@@ -3779,16 +3779,16 @@ class Image extends Object
             $height  = $this->getHeight();
 
             $tempImage = imagecreate($width, $height);
-            imagecopy($tempImage, $this->image, 0, 0, 1, 1, $width - 1, $height - 1);
-            imagecopymerge($tempImage, $this->image, 1, 1, 0, 0, $width,     $height,     -15 * $ammount);
-            imagecopymerge($tempImage, $this->image, 0, 1, 1, 0, $width - 1, $height,     -15 * $ammount);
-            imagecopymerge($tempImage, $this->image, 1, 0, 0, 1, $width,     $height - 1, -15 * $ammount);
-            imagecopymerge($tempImage, $this->image, 0, 0, 1, 0, $width - 1, $height,     -15 * $ammount);
-            imagecopymerge($tempImage, $this->image, 1, 0, 0, 0, $width,     $height,     -15 * $ammount);
-            imagecopymerge($tempImage, $this->image, 0, 0, 0, 1, $width,     $height - 1, -15 * $ammount);
-            imagecopymerge($tempImage, $this->image, 0, 1, 0, 0, $width,     $height,     -15 * $ammount);
-            imagecopymerge($tempImage, $this->image, 0, 0, 0, 0, $width,     $height,     -15 * (1 - $ammount));
-            imagecopy($this->image, $tempImage, 0, 0, 0, 0, $width-1, $height-1);
+            imagecopy($tempImage, $this->_image, 0, 0, 1, 1, $width - 1, $height - 1);
+            imagecopymerge($tempImage, $this->_image, 1, 1, 0, 0, $width,     $height,     -15 * $ammount);
+            imagecopymerge($tempImage, $this->_image, 0, 1, 1, 0, $width - 1, $height,     -15 * $ammount);
+            imagecopymerge($tempImage, $this->_image, 1, 0, 0, 1, $width,     $height - 1, -15 * $ammount);
+            imagecopymerge($tempImage, $this->_image, 0, 0, 1, 0, $width - 1, $height,     -15 * $ammount);
+            imagecopymerge($tempImage, $this->_image, 1, 0, 0, 0, $width,     $height,     -15 * $ammount);
+            imagecopymerge($tempImage, $this->_image, 0, 0, 0, 1, $width,     $height - 1, -15 * $ammount);
+            imagecopymerge($tempImage, $this->_image, 0, 1, 0, 0, $width,     $height,     -15 * $ammount);
+            imagecopymerge($tempImage, $this->_image, 0, 0, 0, 0, $width,     $height,     -15 * (1 - $ammount));
+            imagecopy($this->_image, $tempImage, 0, 0, 0, 0, $width-1, $height-1);
             return true;
 
         } else {
@@ -3854,9 +3854,9 @@ class Image extends Object
              *  destination = source    (   x       y   x       y  width  height )
              */
             $right = $width -$left -1;
-            imagecopy($tempImage,   $this->image, 0,      0,  $left,  0, 1, $height);
-            imagecopy($this->image, $this->image, $left,  0,  $right, 0, 1, $height);
-            imagecopy($this->image, $tempImage,   $right, 0,       0, 0, 1, $height);
+            imagecopy($tempImage,   $this->_image, 0,      0,  $left,  0, 1, $height);
+            imagecopy($this->_image, $this->_image, $left,  0,  $right, 0, 1, $height);
+            imagecopy($this->_image, $tempImage,   $right, 0,       0, 0, 1, $height);
         }
         unset($left, $right);
         imagedestroy($tempImage);
@@ -3921,21 +3921,21 @@ class Image extends Object
              *
              *        destination = source    (   x   y        x  y        width  height )
              */
-            imagecopy($tempImage,   $this->image, 0,  0,       0, $top,    $width, 1);
+            imagecopy($tempImage,   $this->_image, 0,  0,       0, $top,    $width, 1);
             /* 2)
              * copy bottom line to top line
              * $top = $bottom;
              *
              *        destination = source    (   x   y        x  y        width  height )
              */
-            imagecopy($this->image, $this->image, 0, $top,     0, $bottom, $width, 1);
+            imagecopy($this->_image, $this->_image, 0, $top,     0, $bottom, $width, 1);
             /* 3)
              * copy top line to bottom line from temp image
              * $bottom = $temp;
              *
              *        destination = source    (   x   y       x   y        width  height )
              */
-            imagecopy($this->image, $tempImage,   0, $bottom,  0, 0,       $width, 1);
+            imagecopy($this->_image, $tempImage,   0, $bottom,  0, 0,       $width, 1);
         }
         unset($top, $bottom);
         imagedestroy($tempImage);
@@ -3967,9 +3967,9 @@ class Image extends Object
         /* argument 1 */
         if (is_string($sourceImage) && is_file($sourceImage)) {
             $sourceImage = new Image($sourceImage);
-            $sourceImage = $sourceImage->image;
-        } elseif (is_object($sourceImage) && isset($sourceImage->image) && is_resource($sourceImage->image)) {
-            $sourceImage = $sourceImage->image;
+            $sourceImage = $sourceImage->_image;
+        } elseif (is_object($sourceImage) && isset($sourceImage->_image) && is_resource($sourceImage->_image)) {
+            $sourceImage = $sourceImage->_image;
         }
 
         /* argument 1 */
@@ -3978,7 +3978,7 @@ class Image extends Object
             return false;
         }
 
-        imagepalettecopy($this->image, $sourceImage);
+        imagepalettecopy($this->_image, $sourceImage);
         return true;
     }
 
@@ -4021,7 +4021,7 @@ class Image extends Object
                 return false;
             }
         }
-        if (!is_resource($this->image)) {
+        if (!is_resource($this->_image)) {
             $this->_createErrorImage();
         }
         if (!is_null($imageType)) {
@@ -4030,22 +4030,22 @@ class Image extends Object
 
         /* prefered image type */
         if (!empty($imageType)) {
-            if (!isset($this->mapping[$imageType])) {
+            if (!isset($this->_mapping[$imageType])) {
                 trigger_error("The image type '{$imageType}' is not unsupported.", E_USER_WARNING);
                 return false;
             } else {
-                array_unshift($this->mapping, $this->mapping[$imageType]);
+                array_unshift($this->_mapping, $this->_mapping[$imageType]);
             }
         }
 
         /* fall back */
-        foreach ($this->mapping as $map)
+        foreach ($this->_mapping as $map)
         {
             $mimeType     = $map[0];
             $functionName = $map[1];
             if (function_exists($functionName)) {
                 header("Content-type: {$mimeType}");
-                $functionName($this->image);
+                $functionName($this->_image);
                 return true;
                 break;
             }
@@ -4086,7 +4086,7 @@ class Image extends Object
         assert('is_string($filename); // Wrong type for argument 1. String expected');
         assert('is_null($imageType) || is_string($imageType); // Wrong type for argument 2. String expected');
 
-        if (!is_resource($this->image)) {
+        if (!is_resource($this->_image)) {
             return false;
         }
         if (!is_null($imageType)) {
@@ -4095,17 +4095,17 @@ class Image extends Object
 
         /* prefered image type */
         if (!empty($imageType)) {
-            if (!isset($this->mapping[$imageType])) {
+            if (!isset($this->_mapping[$imageType])) {
                 trigger_error("The image type '{$imageType}' is not unsupported.", E_USER_WARNING);
                 return false;
             } else {
-                array_unshift($this->mapping, $this->mapping[$imageType]);
+                array_unshift($this->_mapping, $this->_mapping[$imageType]);
             }
         }
-        $listOfExtensions = implode('|', array_keys($this->mapping));
+        $listOfExtensions = implode('|', array_keys($this->_mapping));
 
         /* fall back */
-        foreach ($this->mapping as $index => $map)
+        foreach ($this->_mapping as $index => $map)
         {
             $functionName = $map[1];
             if (function_exists($functionName)) {
@@ -4116,7 +4116,7 @@ class Image extends Object
                         $filename .= '.'.$index;
                     }
                 }
-                $functionName($this->image, $filename);
+                $functionName($this->_image, $filename);
                 return $filename;
                 break;
             }
@@ -4274,7 +4274,7 @@ class Image extends Object
             return false;
         }
 
-        if (!is_resource($this->image)) {
+        if (!is_resource($this->_image)) {
             /* invalid image */
             trigger_error("Not a valid image.", E_USER_WARNING);
             return false;
@@ -4282,10 +4282,10 @@ class Image extends Object
             /* all fine - proceed */
             $thisImage = clone $this;
         }
-        
+
         /* result */
         $difference = 0.0;
-        
+
         /* cache */
         $colors = array();
 
@@ -4298,7 +4298,7 @@ class Image extends Object
 
         /* merge images */
         $thisImage->negate();
-        $otherImage->copyRegion($thisImage->image, null, null, null, null, null, null, 0.5);
+        $otherImage->copyRegion($thisImage->_image, null, null, null, null, null, null, 0.5);
 
         /* loop through pixel */
         for ($x = 0; $x < $w; $x++)
@@ -4306,9 +4306,9 @@ class Image extends Object
             $diff = 0.0;
             for ($y = 0; $y < $h; $y++)
             {
-                $color = imagecolorat($otherImage->image, $x, $y);
+                $color = imagecolorat($otherImage->_image, $x, $y);
                 if (!isset($colors[$color])) {
-                    $colors[$color] = imagecolorsforindex($otherImage->image, $color);
+                    $colors[$color] = imagecolorsforindex($otherImage->_image, $color);
                 }
                 $color = $colors[$color];
                 $a = (abs($color['red'] - 127) / 128);
@@ -4361,11 +4361,11 @@ class Image extends Object
     public function __destruct()
     {
         if (function_exists('imagedestroy')) {
-            if (is_resource($this->image)) {
-                imagedestroy($this->image);
+            if (is_resource($this->_image)) {
+                imagedestroy($this->_image);
             }
-            if (is_resource($this->brush)) {
-                imagedestroy($this->brush);
+            if (is_resource($this->_brush)) {
+                imagedestroy($this->_brush);
             }
         }
     }

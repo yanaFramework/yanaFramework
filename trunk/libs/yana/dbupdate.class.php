@@ -39,6 +39,7 @@
  */
 class DbUpdate extends DbInsert
 {
+
     /**
      * select type identifier
      *
@@ -46,7 +47,7 @@ class DbUpdate extends DbInsert
      * @var int
      * @ignore
      */
-    protected $type = DbQuery::UPDATE;
+    protected $type = DbQueryTypeEnumeration::UPDATE;
 
     /**
      * set source column
@@ -280,7 +281,7 @@ class DbUpdate extends DbInsert
         }
         switch ($this->getExpectedResult())
         {
-            case YANA_DB_ROW:
+            case DbResultEnumeration::ROW:
                 if (isset($value['profile_id']) && $value['profile_id'] != $profileId) {
                     Log::report("Security restriction. " .
                         "The profile id of an entry may not be changed.", E_USER_WARNING);
@@ -289,7 +290,7 @@ class DbUpdate extends DbInsert
                     return true;
                 }
             break;
-            case YANA_DB_CELL:
+            case DbResultEnumeration::CELL:
                 if (strcasecmp($this->getColumn(), 'profile_id') === 0) {
                     Log::report("Security restriction. " .
                         "The profile id of an entry may not be changed.", E_USER_WARNING);
@@ -354,7 +355,7 @@ class DbUpdate extends DbInsert
         if (strpos($stmt, '%SET%') !== false) {
             assert('!isset($set); // Cannot redeclare $set');
             $set = "";
-            if ($this->expectedResult === YANA_DB_ROW) {
+            if ($this->expectedResult === DbResultEnumeration::ROW) {
                 if (is_array($this->values)) {
                     assert('!isset($column); // Cannot redeclare $column');
                     assert('!isset($value);  // Cannot redeclare $value');
@@ -377,7 +378,7 @@ class DbUpdate extends DbInsert
                     trigger_error("Cannot build update statement. No valid values provided.", E_USER_WARNING);
                     return "";
                 }
-            } elseif ($this->expectedResult === YANA_DB_CELL) {
+            } elseif ($this->expectedResult === DbResultEnumeration::CELL) {
                 if (is_array($this->values)) {
                     $set = $this->getColumn() . ' = ' . $this->db->quote(json_encode($this->values));
                 } else {
@@ -449,12 +450,13 @@ class DbUpdate extends DbInsert
         $query->setValues($set);
 
         // check security constraint
-        if ($expectedResult !== YANA_DB_ROW && $expectedResult !== YANA_DB_CELL) {
+        if ($expectedResult !== DbResultEnumeration::ROW && $expectedResult !== DbResultEnumeration::CELL) {
             $message = "SQL security restriction. Cannot update a table (only rows and cells).";
             throw new InvalidArgumentException($message, E_USER_WARNING);
         }
         return $query;
     }
+
 }
 
 ?>

@@ -51,12 +51,12 @@ class DbStream extends Object implements Serializable
      * @access  private
      */
 
-    /** @var  array  */  private $queue = array();
-    /** @var  array  */  private $cache = array();
-    /** @var  array  */  private $joins = array();
-    /** @var  array  */  private $reservedSqlKeywords = null;
-    /** @var  array  */  private $lastModified = array();
-    /** @var  string */  private $lastModifiedPath = "";
+    /** @var  array  */  private $_queue = array();
+    /** @var  array  */  private $_cache = array();
+    /** @var  array  */  private $_joins = array();
+    /** @var  array  */  private $_reservedSqlKeywords = null;
+    /** @var  array  */  private $_lastModified = array();
+    /** @var  string */  private $_lastModifiedPath = "";
 
     /**#@-*/
 
@@ -260,7 +260,7 @@ class DbStream extends Object implements Serializable
         }
 
         /* Buffer empty */
-        if (count($this->queue) == 0) {
+        if (count($this->_queue) == 0) {
             return true;
         }
 
@@ -269,16 +269,16 @@ class DbStream extends Object implements Serializable
         $dbConnection->beginTransaction();
 
         assert('!isset($i); /* Cannot redeclare $i */');
-        for ($i = 0; $i < count($this->queue); $i++)
+        for ($i = 0; $i < count($this->_queue); $i++)
         {
             /*
              * 1) get query object
              */
             /* @var $dbQuery DbQuery */
-            if (is_array($this->queue[$i]) && isset($this->queue[$i][0])) {
-                $dbQuery =& $this->queue[$i][0];
+            if (is_array($this->_queue[$i]) && isset($this->_queue[$i][0])) {
+                $dbQuery =& $this->_queue[$i][0];
             } else {
-                $dbQuery =& $this->queue[$i];
+                $dbQuery =& $this->_queue[$i];
             }
 
             // skip empty queries
@@ -289,8 +289,8 @@ class DbStream extends Object implements Serializable
             /*
              * 2) get arguments for trigger
              */
-            if (is_array($this->queue[$i]) && isset($this->queue[$i][1]) && is_array($this->queue[$i][1])) {
-                $args = $this->queue[$i][1];
+            if (is_array($this->_queue[$i]) && isset($this->_queue[$i][1]) && is_array($this->_queue[$i][1])) {
+                $args = $this->_queue[$i][1];
             } else {
                 $args = null;
             }
@@ -308,21 +308,21 @@ class DbStream extends Object implements Serializable
                     /*
                      * 3.1) delete a row
                      */
-                    case YANA_DB_DELETE:
+                    case DbQueryTypeEnumeration::DELETE:
                         /* send request to database */
                         $result = $dbQuery->sendQuery();
                     break;
                     /*
                      * 3.2) update a row
                      */
-                    case YANA_DB_UPDATE:
+                    case DbQueryTypeEnumeration::UPDATE:
                         /* send request to database */
                         $result = $dbQuery->sendQuery();
                     break;
                     /*
                      * 3.3) insert a row
                      */
-                    case YANA_DB_INSERT:
+                    case DbQueryTypeEnumeration::INSERT:
                         if ($this->getDBMS() === 'mssql' && $dbQuery->getRow() !== '*') {
                             /**
                              * MSSQL compatibility
@@ -401,7 +401,7 @@ class DbStream extends Object implements Serializable
             /*
              * 4.2) query was successfull
              */
-            
+
 
             /*
              * 4.2.2) fire trigger(s)
@@ -436,10 +436,10 @@ class DbStream extends Object implements Serializable
         /*
          * 5.2) commit successful
          */
-        if (YANA_DB_STRICT && !empty($this->lastModified) && !empty($this->lastModifiedPath)) {
-            file_put_contents($this->lastModifiedPath, serialize($this->lastModified));
+        if (YANA_DB_STRICT && !empty($this->_lastModified) && !empty($this->_lastModifiedPath)) {
+            file_put_contents($this->_lastModifiedPath, serialize($this->_lastModified));
         }
-        $this->queue = array();
+        $this->_queue = array();
         return true;
     }
 
@@ -543,10 +543,10 @@ class DbStream extends Object implements Serializable
             /*
              * 2.1) resolve joined tables
              */
-            if (isset($this->joins[$tableName]) && is_array($this->joins[$tableName])) {
+            if (isset($this->_joins[$tableName]) && is_array($this->_joins[$tableName])) {
                 assert('!isset($table2);  // Cannot redeclare var $table2');
                 assert('!isset($columns); // Cannot redeclare var $columns');
-                foreach ($this->joins[$tableName] as $table2 => $columns)
+                foreach ($this->_joins[$tableName] as $table2 => $columns)
                 {
                     try {
                         $selectQuery->setInnerJoin($table2, $columns[0], $columns[1]);
@@ -673,15 +673,15 @@ class DbStream extends Object implements Serializable
          *
          * If true, get the previous array and merge both.
          */
-        if ($updateQuery->getExpectedResult() === YANA_DB_CELL) {
+        if ($updateQuery->getExpectedResult() === DbResultEnumeration::CELL) {
             assert('!isset($arrayAddress); // Cannot redeclare var $arrayAddress');
             $arrayAddress = $updateQuery->getArrayAddress();
             if (!empty($arrayAddress)) {
                 assert('!isset($_value); // Cannot redeclare var $_value');
                 assert('!isset($_col); // Cannot redeclare var $_col');
                 $_col = mb_strtoupper($column);
-                if (isset($this->cache[$tableName][$row][$_col])) {
-                    $_value = Hashtable::get($this->cache[$tableName][$row][$_col], $arrayAddress);
+                if (isset($this->_cache[$tableName][$row][$_col])) {
+                    $_value = Hashtable::get($this->_cache[$tableName][$row][$_col], $arrayAddress);
                 } else {
                     $_value = $this->select("$tableName.$row.$column");
                 }
@@ -704,7 +704,7 @@ class DbStream extends Object implements Serializable
          */
         assert('!isset($expectedResult); /* Cannot redeclare var $expectedResult */');
         $expectedResult = $updateQuery->getExpectedResult();
-        if ($expectedResult !== YANA_DB_ROW && $expectedResult !== YANA_DB_CELL) {
+        if ($expectedResult !== DbResultEnumeration::ROW && $expectedResult !== DbResultEnumeration::CELL) {
             throw new InvalidArgumentException("Query is invalid. " .
                 "Updating a table or column is illegal. Operation aborted.");
         }
@@ -726,7 +726,13 @@ class DbStream extends Object implements Serializable
 
         } else {
             DbStructureGenerics::onBeforeUpdate($table, $column, $value, $updateQuery->getRow());
-            $triggerArgs[] = array(YANA_DB_UPDATE, $table, $column, $value, $updateQuery->getRow());
+            $triggerArgs[] = array(
+                DbQueryTypeEnumeration::UPDATE,
+                $table,
+                $column,
+                $value,
+                $updateQuery->getRow()
+            );
 
         }
 
@@ -735,10 +741,10 @@ class DbStream extends Object implements Serializable
          */
         switch ($updateQuery->getExpectedResult())
         {
-            case YANA_DB_ROW:
+            case DbResultEnumeration::ROW:
                 $value = $table->sanitizeRow($value, $this->getDBMS(), false);
             break;
-            case YANA_DB_CELL:
+            case DbResultEnumeration::CELL:
                 if ($table->getColumn($column)->getType() !== 'array') {
                     assert('$table->isColumn($column);');
                     $value = $table->getColumn($column)->sanitizeValue($value, $this->getDBMS());
@@ -758,16 +764,16 @@ class DbStream extends Object implements Serializable
          * 5) move values to cache
          */
         if ($column === '*') {
-            $this->cache[$tableName][$row] = $value;
+            $this->_cache[$tableName][$row] = $value;
         } else {
-            $this->cache[$tableName][$row][$column] = $value;
+            $this->_cache[$tableName][$row][$column] = $value;
         }
         unset($arrayAddress);
 
         /*
          * 6) add SQL statement to queue
          */
-        $this->queue[] = array($updateQuery, $triggerArgs);
+        $this->_queue[] = array($updateQuery, $triggerArgs);
 
         return true;
     }
@@ -879,7 +885,7 @@ class DbStream extends Object implements Serializable
                 $row = $_key[1];
             }
             unset($_key);
-            if ($row !== '*' && (isset($this->cache[$table][$row]) || $this->exists("$table.$row"))) {
+            if ($row !== '*' && (isset($this->_cache[$table][$row]) || $this->exists("$table.$row"))) {
                 $dbQuery = new DbUpdate($this);
                 $isInsert = false;
 
@@ -990,7 +996,7 @@ class DbStream extends Object implements Serializable
         assert('!isset($triggerArgs); /* Cannot redeclare var $triggerArgs */');
         $triggerArgs = array();
         $expectedResult = $insertQuery->getExpectedResult();
-        if ($expectedResult !== YANA_DB_ROW) {
+        if ($expectedResult !== DbResultEnumeration::ROW) {
             throw new InvalidArgumentException("Query is invalid. " .
                 "Can only insert a row, not a table, cell or column.");
         }
@@ -1007,8 +1013,12 @@ class DbStream extends Object implements Serializable
          * 3.3) fire trigger
          */
         DbStructureGenerics::onBeforeInsert($table, $value, $insertQuery->getRow());
-        $triggerArgs[] = array(YANA_DB_INSERT, $table, $value, $insertQuery->getRow());
-
+        $triggerArgs[] = array(
+            DbQueryTypeEnumeration::INSERT,
+            $table,
+            $value,
+            $insertQuery->getRow()
+        );
 
         /*
          * 4) check input
@@ -1026,13 +1036,13 @@ class DbStream extends Object implements Serializable
         /*
          * 5) move values to cache
          */
-        $this->cache[$tableName][$row] = $value;
+        $this->_cache[$tableName][$row] = $value;
         unset($arrayAddress);
 
         /*
          * 6) add SQL statement to queue
          */
-        $this->queue[] = array($insertQuery, $triggerArgs);
+        $this->_queue[] = array($insertQuery, $triggerArgs);
 
         return true;
     }
@@ -1109,17 +1119,8 @@ class DbStream extends Object implements Serializable
          */
         } else {
 
-            /*
-             * 2.1) check input arguments
-             */
-            if (!is_string($key)) {
-                trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'String', gettype($key)), E_USER_WARNING);
-                return false;
-            }
-
-            /*
-             * 2.2) Build query
-             */
+            // Build query
+            assert('is_string($key); // Wrong argument type $key. String expected.');
             assert('!isset($deleteQuery); // Cannot redeclare var $deleteQuery');
             $deleteQuery = new DbDelete($this);
             $deleteQuery->setLimit($limit);
@@ -1130,7 +1131,7 @@ class DbStream extends Object implements Serializable
         } // end if
         /*  @var $deleteQuery DbDelete */
 
-        assert('!isset($table); /* Cannot redeclare var $table */');
+        assert('!isset($table); // Cannot redeclare var $table');
         $table = $this->schema->getTable($tableName);
 
         /*
@@ -1161,14 +1162,19 @@ class DbStream extends Object implements Serializable
             // fire trigger
             DbStructureGenerics::onBeforeDelete($table, $oldRow, $deleteQuery->getRow());
             // save trigger settings for onAfterDelete
-            $triggerArgs[] = array(YANA_DB_DELETE, $table, $oldRow, $deleteQuery->getRow());
+            $triggerArgs[] = array(
+                DbQueryTypeEnumeration::DELETE,
+                $table,
+                $oldRow,
+                $deleteQuery->getRow()
+            );
         }
         unset($oldRow);
 
         /*
          * 5) add query to queue
          */
-        $this->queue[] = array($deleteQuery, $triggerArgs);
+        $this->_queue[] = array($deleteQuery, $triggerArgs);
 
         /* return true to indicate the request was successfull */
         return true;
@@ -1230,8 +1236,8 @@ class DbStream extends Object implements Serializable
          */
         if (empty($table2)) {
             /* if second argument is omitted, release association */
-            if (isset($this->joins[$table1])) {
-                $this->joins[$table1] = array();
+            if (isset($this->_joins[$table1])) {
+                $this->_joins[$table1] = array();
             }
             return;
         }
@@ -1258,14 +1264,14 @@ class DbStream extends Object implements Serializable
         /*
          * 3) reset old association
          */
-        if (isset($this->joins[$table1][$table2])) {
-            unset($this->joins[$table1][$table2]);
+        if (isset($this->_joins[$table1][$table2])) {
+            unset($this->_joins[$table1][$table2]);
         }
 
         /*
          * 4) create new association
          */
-        $this->joins[$table1][$table2] = array($key1, $key2);
+        $this->_joins[$table1][$table2] = array($key1, $key2);
     }
 
     /**
@@ -1312,18 +1318,16 @@ class DbStream extends Object implements Serializable
      * @param   int             $offset   the row to start from
      * @param   int             $limit    the maximum numbers of rows in the resultset
      * @return  mixed
+     * @throws  InvalidArgumentException if the SQL statement is not valid
      */
     public function query($sqlStmt, $offset = 0, $limit = 0)
     {
+        assert('is_int($offset) && $offset >= 0; // Invalid argument $offset. Must be a positive integer.');
+        assert('is_int($limit) && $limit >= 0; // Invalid argument $limit. Must be a positive integer.');
         /*
          * 1) check sql statement
          */
-        if (is_object($sqlStmt)) {
-            if (! $sqlStmt instanceof DbQuery ) {
-                $message = sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'Instance of DbQuery', gettype($sqlStmt));
-                trigger_error($message, E_USER_WARNING);
-                return false;
-            }
+        if (is_object($sqlStmt) && $sqlStmt instanceof DbQuery) {
             $offset = $sqlStmt->getOffset();
             $limit = $sqlStmt->getLimit();
             $sqlStmt = $sqlStmt->toString();
@@ -1332,30 +1336,18 @@ class DbStream extends Object implements Serializable
              *
              * error_log($sqlStmt . " LIMIT $offset, $limit\n", 3, 'test.log');
              */
-        } elseif (is_string($sqlStmt)) {
-            $reg = "/;.*(?:select|insert|delete|update|create|alter|grant|revoke).*$/is";
-            if (is_int(mb_strpos($sqlStmt, ';')) && preg_match($reg, $sqlStmt)) {
-                trigger_error("A semicolon has been found in the current input '{$sqlStmt}', " .
-                    "indicating multiple queries.\n\t\t As this might be the result of a hacking attempt " .
-                    "it is prohibited for security reasons and the queries won't be executed.", E_USER_WARNING);
-                return false;
-            }
-        } else {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'String', gettype($sqlStmt)), E_USER_WARNING);
-            return false;
+        }
+        if (!is_string($sqlStmt)) {
+            throw new InvalidArgumentException('Argument $sqlStmt is expected to be a string.');
+        }
+        $reg = "/;.*(?:select|insert|delete|update|create|alter|grant|revoke).*$/is";
+        if (strpos($sqlStmt, ';') !== false && preg_match($reg, $sqlStmt)) {
+            $message = "A semicolon has been found in the current input '{$sqlStmt}', " .
+                "indicating multiple queries.\n\t\t As this might be the result of a hacking attempt " .
+                "it is prohibited for security reasons and the queries won't be executed.";
+            throw new InvalidArgumentException($message);
         }
 
-        /*
-         * 2) check other arguments
-         */
-        if (!is_int($offset) || $offset < 0) {
-            trigger_error("Invalid argument 2. Must be a positive integer.", E_USER_WARNING);
-            return false;
-        }
-        if (!is_int($limit) || $limit < 0) {
-            trigger_error("Invalid argument 3. Must be a positive integer.", E_USER_WARNING);
-            return false;
-        }
         $dbConnection = $this->getConnection();
         /*
          * 3) send query to database
@@ -1367,29 +1359,15 @@ class DbStream extends Object implements Serializable
     }
 
     /**
-     * alias of DbStream::length()
-     *
-     * @access  public
-     * @param   string|DbSelectCount  $table   name of a table
-     * @param   string|array          $search  optional where clause
-     * @return  int
-     */
-    public function count($table = "", $search = array())
-    {
-        return $this->length($table, $search);
-    }
-
-    /**
      * get the number of entries inside a table
      *
      * Counts and returns the rows of $table.
-     * If no table is provided, the least recently used
-     * table will be selected instead.
      *
      * You may also provide the parameter $table as an object of type DbSelectCount.
-     * This offers you more flexibility.
-     * In this case the second argument should not be provided.
-     * Instead you may add a where clause to your query object.
+     * In this case the second argument should be empty.
+     * Instead, add a where clause to your query object.
+     *
+     * Returns 0 if the table is empty or does not exist.
      *
      * @access  public
      * @param   string|DbSelectCount  $table  name of a table
@@ -1411,34 +1389,16 @@ class DbStream extends Object implements Serializable
          */
         } else {
 
-            /*
-             * 2.1) check input
-             */
-            if (!is_string($table)) {
-                trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'String', gettype($table)), E_USER_WARNING);
-                return false;
-            }
-            if (!is_array($where)) {
-                $message = sprintf(YANA_ERROR_WRONG_ARGUMENT, 2, 'Array', gettype($where));
-                trigger_error($message, E_USER_WARNING);
-                return false;
-            }
+            assert('is_string($table); // Wrong argument type $table. String expected.');
 
-            /*
-             * 2.2) check table parameter
-             */
-            if (!$this->schema->isTable($table)) {
+            // build query
+            try {
+                $countQuery = new DbSelectCount($this);
+                $countQuery->setTable($table); // throws NotFoundException
+                $countQuery->setWhere($where);
+            } catch (NotFoundException $e) {
                 return 0;
-            } else {
-                $table = mb_strtolower($table);
             }
-
-            /*
-             * 2.3) build query
-             */
-            $countQuery = new DbSelectCount($this);
-            $countQuery->setTable($table);
-            $countQuery->setWhere($where);
         }
 
         return $countQuery->countResults();
@@ -1456,12 +1416,8 @@ class DbStream extends Object implements Serializable
      */
     public function isEmpty($table)
     {
-        assert('is_string($table); // wrong argument type for argument 1, string expected');
-
-        $table = mb_strtolower("$table");
-
-        $length = (int) $this->length($table);
-        return ($length == 0);
+        assert('is_string($table); // Wrong argument type $table. String expected.');
+        return ($this->length($table) == 0);
     }
 
     /**
@@ -1573,7 +1529,7 @@ class DbStream extends Object implements Serializable
         if (empty($sqlFile)) {
             throw new InvalidArgumentException("Argument \$sqlFile is empty in " . __METHOD__ . "().", E_USER_NOTICE);
         }
-        if (!empty($this->queue)) {
+        if (!empty($this->_queue)) {
             $message = "Cannot import SQL statements in " . __METHOD__ . "().\n\t\tThere is a pending transaction" .
                 "that needs to be committed before proceeding.";
             throw new DbWarning($message, E_USER_NOTICE);
@@ -1588,7 +1544,7 @@ class DbStream extends Object implements Serializable
 
         // input is array
         if (is_array($sqlFile)) {
-            $this->queue = $sqlFile;
+            $this->_queue = $sqlFile;
             if ($this->write() !== false) {
                 Log::report("SQL import was successful.", E_USER_NOTICE, $sqlFile);
                 return true;
@@ -1613,7 +1569,7 @@ class DbStream extends Object implements Serializable
                 return false;
             }
             // add items
-            $this->queue = explode("[NEXT_COMMAND]", $raw_data);
+            $this->_queue = explode("[NEXT_COMMAND]", $raw_data);
             if ($this->write() !== false) {
                 Log::report("SQL import was successful.", E_USER_NOTICE, $raw_data);
                 return true;
@@ -1798,24 +1754,24 @@ class DbStream extends Object implements Serializable
     {
         assert('is_string($value); // Wrong argument type for argument 1. String expected.');
 
-        if (is_null($this->reservedSqlKeywords)) {
+        if (is_null($this->_reservedSqlKeywords)) {
             global $YANA;
             /* Load list of reserved SQL keywords (required for smart id quoting) */
             if (isset($YANA)) {
                 $file = $YANA->getResource('system:/config/reserved_sql_keywords.file');
-                $this->reservedSqlKeywords = file($file->getPath());
+                $this->_reservedSqlKeywords = file($file->getPath());
             } else {
-                $this->reservedSqlKeywords = array();
+                $this->_reservedSqlKeywords = array();
             }
-            if (!is_array($this->reservedSqlKeywords)) {
-                $this->reservedSqlKeywords = array();
+            if (!is_array($this->_reservedSqlKeywords)) {
+                $this->_reservedSqlKeywords = array();
             }
-        } elseif (empty($this->reservedSqlKeywords)) {
+        } elseif (empty($this->_reservedSqlKeywords)) {
             return false;
         }
 
         $name = mb_strtoupper($name);
-        if (qSearchArray($this->reservedSqlKeywords, $name) === false) {
+        if (Hashtable::quickSearch($this->_reservedSqlKeywords, $name) === false) {
             return false;
         } else {
             return true;
@@ -1856,26 +1812,26 @@ class DbStream extends Object implements Serializable
         /*
          * 1) load file
          */
-        if (empty($this->lastModifiedPath)) {
+        if (empty($this->_lastModifiedPath)) {
             // get filename
             if (isset($GLOBALS['YANA'])) {
-                $this->lastModifiedPath = $GLOBALS['YANA']->getVar('TEMPDIR');
+                $this->_lastModifiedPath = $GLOBALS['YANA']->getVar('TEMPDIR');
             } else {
-                $this->lastModifiedPath = 'cache';
+                $this->_lastModifiedPath = 'cache';
             }
-            $this->lastModifiedPath .= '/db_last_modified.tmp';
+            $this->_lastModifiedPath .= '/db_last_modified.tmp';
             // load file contents
-            if (file_exists($this->lastModifiedPath)) {
+            if (file_exists($this->_lastModifiedPath)) {
                 assert('!isset($lastModified); // Cannot redeclare var $lastModified');
-                $lastModified = unserialize(file_get_contents($this->lastModifiedPath));
+                $lastModified = unserialize(file_get_contents($this->_lastModifiedPath));
                 if (!is_array($lastModified)) {
                     $lastModified = array();
-                    trigger_error("File content is not valid '{$this->lastModifiedPath}'.", E_USER_NOTICE);
+                    trigger_error("File content is not valid '{$this->_lastModifiedPath}'.", E_USER_NOTICE);
                 }
-                $this->lastModified = $lastModified;
+                $this->_lastModified = $lastModified;
                 unset($lastModified);
             }
-            assert('is_array($this->lastModified);');
+            assert('is_array($this->_lastModified);');
         }
 
         /*
@@ -1892,9 +1848,9 @@ class DbStream extends Object implements Serializable
          */
         assert('!isset($lastModified); // Cannot redeclare var $lastModified');
         $lastModified = 0;
-        if (!empty($this->lastModified) && isset($this->lastModified[$table][$row])) {
+        if (!empty($this->_lastModified) && isset($this->_lastModified[$table][$row])) {
             assert('!isset($array); // Cannot redeclare var $array');
-            $array = $this->lastModified[$table][$row];
+            $array = $this->_lastModified[$table][$row];
             assert('is_array($array); // $array should be an array');
             assert('count($array) === 2; // $array should have 2 values: timestamp and user id');
             // check if row has been changed by a different user
@@ -1908,8 +1864,8 @@ class DbStream extends Object implements Serializable
         /*
          * 4) update time
          */
-        if (empty($this->lastModified) || $lastModified !== time()) {
-            $this->lastModified[$table][$row] = array(time(), $userId);
+        if (empty($this->_lastModified) || $lastModified !== time()) {
+            $this->_lastModified[$table][$row] = array(time(), $userId);
         }
 
         /*
@@ -1935,8 +1891,8 @@ class DbStream extends Object implements Serializable
      */
     public function reset()
     {
-        $this->queue = array();
-        $this->cache = array();
+        $this->_queue = array();
+        $this->_cache = array();
     }
 
     /**
@@ -2011,8 +1967,8 @@ class DbStream extends Object implements Serializable
         assert('!isset($foreign); /* Cannot redeclare var $fkey */');
         foreach ($table->getForeignKeys() as $foreign)
         {
-            $isPartialMatch = !is_null($columnName) || $foreign->getMatch() === DDLForeignKey::PARTIAL;
-            $isFullMatch = is_null($columnName) && $foreign->getMatch() === DDLForeignKey::FULL;
+            $isPartialMatch = !is_null($columnName) || $foreign->getMatch() === DDLKeyMatchStrategyEnumeration::PARTIAL;
+            $isFullMatch = is_null($columnName) && $foreign->getMatch() === DDLKeyMatchStrategyEnumeration::FULL;
             $targetTable = mb_strtolower($foreign->getTargetTable());
             $fTable = $this->schema->getTable($targetTable);
             foreach ($foreign->getColumns() as $sourceColumn => $targetColumn)
@@ -2030,12 +1986,12 @@ class DbStream extends Object implements Serializable
                 if (isset($value[$sourceColumn])) {
                     $isMatch = false;
                     // foreign key does match
-                    if ($isPrimaryKey && isset($this->cache[$targetTable][mb_strtolower($value[$sourceColumn])])) {
+                    if ($isPrimaryKey && isset($this->_cache[$targetTable][mb_strtolower($value[$sourceColumn])])) {
                         $isMatch = true;
                     } else {
                         // scan cache first
-                        if (isset($this->cache[$targetTable])) {
-                            foreach ($this->cache[$targetTable] as $id => $row)
+                        if (isset($this->_cache[$targetTable])) {
+                            foreach ($this->_cache[$targetTable] as $id => $row)
                             {
                                 if (!isset($row[$targetColumn])) {
                                     continue;
@@ -2091,16 +2047,16 @@ class DbStream extends Object implements Serializable
             assert('!empty($args); // List of arguments may not be empty');
             switch ($args[0])
             {
-                case YANA_DB_INSERT:
+                case DbQueryTypeEnumeration::INSERT:
                     assert('count($args) === 4;');
                     assert('is_array($args[2]);');
                     DbStructureGenerics::onAfterInsert($args[1], $args[2], $args[3]);
                 break;
-                case YANA_DB_UPDATE:
+                case DbQueryTypeEnumeration::UPDATE:
                     assert('count($args) === 5;');
                     DbStructureGenerics::onAfterUpdate($args[1], $args[2], $args[3], $args[4]);
                 break;
-                case YANA_DB_DELETE:
+                case DbQueryTypeEnumeration::DELETE:
                     assert('count($args) === 4;');
                     assert('is_array($args[2]);');
                     DbStructureGenerics::onAfterDelete($args[1], $args[2], $args[3]);

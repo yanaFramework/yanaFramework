@@ -35,7 +35,7 @@
  * @package     yana
  * @subpackage  core
  */
-class Language extends Singleton implements IsSerializable
+class Language extends Singleton implements Serializable
 {
     /**
      * This is a place-holder for the singleton's instance
@@ -44,7 +44,7 @@ class Language extends Singleton implements IsSerializable
      * @static
      * @var     object
      */
-    private static $instance = null;
+    private static $_instance = null;
 
     /**
      * a list of all languages installed
@@ -52,7 +52,7 @@ class Language extends Singleton implements IsSerializable
      * @access  private
      * @var     array
      */
-    private $languages = array();
+    private $_languages = array();
 
     /**
      * file extension for language definition files
@@ -61,43 +61,43 @@ class Language extends Singleton implements IsSerializable
      * @static
      * @var     string
      */
-    private static $fileExtension = ".language.xml";
+    private static $_fileExtension = ".language.xml";
 
     /**
      * @access  private
      * @var     array
      */
-    private $directories = array();
+    private $_directories = array();
 
     /**
      * @access  private
      * @var     string
      */
-    private $language = "";
+    private $_language = "";
 
     /**
      * @access  private
      * @var     string
      */
-    private $country = "";
+    private $_country = "";
 
     /**
      * @access  private
      * @var     array
      */
-    private $fileLoaded = array();
+    private $_fileLoaded = array();
 
     /**
      * @access  private
      * @var     array
      */
-    private $strings = array();
+    private $_strings = array();
 
     /**
      * @access  private
      * @var     array
      */
-    private $groups = array();
+    private $_groups = array();
 
     /**
      * language information cache
@@ -105,7 +105,7 @@ class Language extends Singleton implements IsSerializable
      * @access  private
      * @var     array
      */
-    private $info = array();
+    private $_info = array();
 
     /**
      * cache for valid language directories
@@ -113,7 +113,7 @@ class Language extends Singleton implements IsSerializable
      * @access  private
      * @var     array
      */
-    private $validDirsCache = array();
+    private $_validDirsCache = array();
 
     /**
      * get instance of this class
@@ -127,10 +127,10 @@ class Language extends Singleton implements IsSerializable
      */
     public static function &getInstance()
     {
-        if (!isset(self::$instance)) {
-            self::$instance = new Language();
+        if (!isset(self::$_instance)) {
+            self::$_instance = new Language();
         }
-        return self::$instance;
+        return self::$_instance;
     }
 
     /**
@@ -199,8 +199,8 @@ class Language extends Singleton implements IsSerializable
      */
     public function getLanguage()
     {
-        if (!empty($this->language)) {
-            return $this->language;
+        if (!empty($this->_language)) {
+            return $this->_language;
         } else {
             return false;
         }
@@ -230,8 +230,8 @@ class Language extends Singleton implements IsSerializable
      */
     public function getCountry()
     {
-        if (!empty($this->country)) {
-            return $this->country;
+        if (!empty($this->_country)) {
+            return $this->_country;
         } else {
             return false;
         }
@@ -257,14 +257,14 @@ class Language extends Singleton implements IsSerializable
      */
     public function getLocale()
     {
-        if (empty($this->language)) {
+        if (empty($this->_language)) {
             return false;
 
-        } elseif (!empty($this->country)) {
-            return $this->language . '-' . $this->country;
+        } elseif (!empty($this->_country)) {
+            return $this->_language . '-' . $this->_country;
 
         } else {
-            return $this->language;
+            return $this->_language;
         }
     }
 
@@ -291,7 +291,7 @@ class Language extends Singleton implements IsSerializable
          * If file is not yet loaded, read it now.
          * Value $this->fileLoaded should be set to true on success and remain false on error.
          */
-        if (empty($this->fileLoaded[$file])) {
+        if (empty($this->_fileLoaded[$file])) {
 
             // check syntax of filename
             if (!preg_match("/^[\w_-\d]+$/i", $file)) {
@@ -318,11 +318,11 @@ class Language extends Singleton implements IsSerializable
 
                         // LanguageInterchangeFile extends of SimpleXMLElement
                         $xml = new LanguageInterchangeFile($selectedFile, LIBXML_NOENT, true);
-                        $xml->toArray($this->strings);
-                        $xml->getGroups($this->groups);
-                        $this->fileLoaded[$file] = true;
-                        $this->strings = array_change_key_case($this->strings, CASE_LOWER);
-                        $this->groups = array_change_key_case($this->groups, CASE_LOWER);
+                        $xml->toArray($this->_strings);
+                        $xml->getGroups($this->_groups);
+                        $this->_fileLoaded[$file] = true;
+                        $this->_strings = array_change_key_case($this->_strings, CASE_LOWER);
+                        $this->_groups = array_change_key_case($this->_groups, CASE_LOWER);
 
                     } catch (Exception $e) {
                         assert('!isset($message); // Cannot redeclare var $message');
@@ -334,7 +334,7 @@ class Language extends Singleton implements IsSerializable
             }
             unset($directory, $selectedFile);
         }
-        if (!empty($this->fileLoaded[$file])) {
+        if (!empty($this->_fileLoaded[$file])) {
             return true;
         } else {
             Log::report("No language-file found for id '$file'.");
@@ -360,13 +360,13 @@ class Language extends Singleton implements IsSerializable
      */
     private function _getValidDirectories()
     {
-        assert('is_array($this->validDirsCache);');
-        if (empty($this->validDirsCache)) {
-            $this->validDirsCache = array();
-            $this->_validateDirectories($this->directories);
+        assert('is_array($this->_validDirsCache);');
+        if (empty($this->_validDirsCache)) {
+            $this->_validDirsCache = array();
+            $this->_validateDirectories($this->_directories);
         }
-        assert('is_array($this->validDirsCache);');
-        return $this->validDirsCache;
+        assert('is_array($this->_validDirsCache);');
+        return $this->_validDirsCache;
     }
 
     /**
@@ -391,10 +391,10 @@ class Language extends Singleton implements IsSerializable
      */
     private function _validateDirectory($directory)
     {
-        if (is_dir("$directory{$this->language}-{$this->country}")) {
-            $this->validDirsCache[] = "$directory{$this->language}-{$this->country}/";
-        } elseif (is_dir("$directory{$this->language}")) {
-            $this->validDirsCache[] = "$directory{$this->language}/";
+        if (is_dir("$directory{$this->_language}-{$this->_country}")) {
+            $this->_validDirsCache[] = "$directory{$this->_language}-{$this->_country}/";
+        } elseif (is_dir("$directory{$this->_language}")) {
+            $this->_validDirsCache[] = "$directory{$this->_language}/";
         }
     }
 
@@ -425,15 +425,15 @@ class Language extends Singleton implements IsSerializable
         /* settype to STRING */
         $key = mb_strtolower("$key");
         if ($key == '*') {
-            return $this->strings;
+            return $this->_strings;
         }
-        if (isset($this->strings[$key])) {
-            return $this->strings[$key];
+        if (isset($this->_strings[$key])) {
+            return $this->_strings[$key];
         }
-        if (isset($this->groups[$key])) {
+        if (isset($this->_groups[$key])) {
 
             $array = array();
-            foreach($this->groups[$key] as $globalId => $localId)
+            foreach($this->_groups[$key] as $globalId => $localId)
             {
                 $array[$localId] = $this->getVar($globalId);
             }
@@ -458,7 +458,7 @@ class Language extends Singleton implements IsSerializable
     {
         assert('is_string($key); /* Wrong argument type for argument 1. String expected. */');
         $key = mb_strtolower("$key");
-        return isset($this->strings[$key]) || isset($this->groups[$key]);
+        return isset($this->_strings[$key]) || isset($this->_groups[$key]);
     }
 
     /**
@@ -480,7 +480,7 @@ class Language extends Singleton implements IsSerializable
         assert('is_string($value); // Wrong argument type for argument 2. String expected.');
         $key = mb_strtolower("$key");
 
-        $this->strings[$key] = "$value";
+        $this->_strings[$key] = "$value";
     }
 
     /**
@@ -494,23 +494,23 @@ class Language extends Singleton implements IsSerializable
      */
     public function getLanguages()
     {
-        assert('is_array($this->languages);');
-        if (empty($this->languages)) {
-            $this->languages = array();
-            foreach (glob($this->getDefaultDirectory() . "*" . self::$fileExtension) as $file)
+        assert('is_array($this->_languages);');
+        if (empty($this->_languages)) {
+            $this->_languages = array();
+            foreach (glob($this->getDefaultDirectory() . "*" . self::$_fileExtension) as $file)
             {
-                $id = basename($file, self::$fileExtension);
+                $id = basename($file, self::$_fileExtension);
                 $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
                 if (!empty($xml)) {
                     $title = (string) $xml->title;
                 } else {
                     $title = $id;
                 }
-                $this->languages[$id] = $title;
+                $this->_languages[$id] = $title;
             }
         }
-        assert('is_array($this->languages);');
-        return $this->languages;
+        assert('is_array($this->_languages);');
+        return $this->_languages;
     }
 
     /**
@@ -530,8 +530,8 @@ class Language extends Singleton implements IsSerializable
         if (!is_dir($directory)) {
             throw new NotFoundException("Directory '$directory' does not exist.");
         }
-        if (!in_array($directory, $this->directories)) {
-            $this->directories[] = "$directory/";
+        if (!in_array($directory, $this->_directories)) {
+            $this->_directories[] = "$directory/";
             $this->_validateDirectory($directory);
         }
     }
@@ -572,12 +572,12 @@ class Language extends Singleton implements IsSerializable
         // set system locale
         setlocale(LC_ALL, $locale);
 
-        $this->language = $selectedLanguage;
-        $this->country = $selectedCountry;
+        $this->_language = $selectedLanguage;
+        $this->_country = $selectedCountry;
 
         // revalidate directories
-        $this->_validateDirectories($this->directories);
-        array_unique($this->validDirsCache);
+        $this->_validateDirectories($this->_directories);
+        array_unique($this->_validDirsCache);
     }
 
     /**
@@ -589,9 +589,9 @@ class Language extends Singleton implements IsSerializable
      */
     protected function getDefaultDirectory()
     {
-        assert('is_array($this->directories);');
-        if (isset($this->directories[0])) {
-            return $this->directories[0];
+        assert('is_array($this->_directories);');
+        if (isset($this->_directories[0])) {
+            return $this->_directories[0];
         } else {
             return "";
         }
@@ -606,8 +606,8 @@ class Language extends Singleton implements IsSerializable
      */
     public function getDirectories()
     {
-        assert('is_array($this->directories);');
-        return $this->directories;
+        assert('is_array($this->_directories);');
+        return $this->_directories;
     }
 
     /**
@@ -627,7 +627,7 @@ class Language extends Singleton implements IsSerializable
     {
         assert('is_string($languageName); // Wrong type for argument 1. String expected');
 
-        if (!isset($this->info[$languageName])) {
+        if (!isset($this->_info[$languageName])) {
             // get path to definition file
             $file = $this->getDefaultDirectory() . "$languageName.language.xml";
             if (!is_file($file)) {
@@ -637,7 +637,7 @@ class Language extends Singleton implements IsSerializable
             $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
             // get information
             if (!empty($xml)) {
-                $this->info[$languageName] = array(
+                $this->_info[$languageName] = array(
                     'LOGO' => $this->getDefaultDirectory() . "/$languageName/icon.png",
                     'LAST_CHANGE' => filemtime($file),
                     'NAME' => (string) $xml->title,
@@ -652,10 +652,10 @@ class Language extends Singleton implements IsSerializable
                 if (empty($description)) {
                     $description = $xml->xpath('//description[not(@lang)]');
                 }
-                $this->info[$languageName]['DESCRIPTION'] = (string) implode(', ', $description);
+                $this->_info[$languageName]['DESCRIPTION'] = (string) implode(', ', $description);
             }
         }
-        return $this->info[$languageName];
+        return $this->_info[$languageName];
     }
 
     /**
@@ -668,28 +668,25 @@ class Language extends Singleton implements IsSerializable
      */
     public function serialize()
     {
-        return serialize($this);
+        // returns a list of key => value pairs
+        $properties = get_object_vars($this);
+        // remove the database connection object
+        unset($properties['_validDirsCache']);
+        // return the names
+        return serialize($properties);
     }
 
     /**
-     * unserialize a string to a serializable object
-     *
-     * Returns the unserialized object.
+     * Reinitializes the object.
      *
      * @access  public
-     * @static
      * @param   string  $string  string to unserialize
-     * @return  IsSerializable
      */
-    public static function unserialize($string)
+    public function unserialize($string)
     {
-        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        if (!isset(self::$instance)) {
-            self::$instance = unserialize($string);
-            self::$instance->validDirsCache = array();
-            return self::$instance;
-        } else {
-            return unserialize($string);
+        foreach (unserialize($string) as $key => $value)
+        {
+            $this->$key = $value;
         }
     }
 
@@ -722,8 +719,8 @@ class Language extends Singleton implements IsSerializable
             foreach ($matches[1] as $i => $key)
             {
                 $key = mb_strtolower("$key");
-                if (isset($this->strings[$key])) {
-                    $value = $this->strings[$key];
+                if (isset($this->_strings[$key])) {
+                    $value = $this->_strings[$key];
 
                 } else {
                     $value = $key;

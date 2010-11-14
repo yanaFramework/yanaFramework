@@ -106,19 +106,6 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
 
     /** @var string  */ protected $_checkOption = null;
     /** @var string  */ protected $_sorting = null;
-    /** @var array   */ protected $_map = array(
-                            self::NONE => 'none',
-                            self::CASCADED => 'cascade',
-                            self::LOCAL => 'local'
-                        );
-    /**#@-*/
-
-    /**#@+
-     * Check-constraint settings
-     */
-    const NONE = 0;
-    const CASCADED = 1;
-    const LOCAL = 2;
     /**#@-*/
 
     /**
@@ -180,7 +167,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
             $this->title = "$title";
         }
     }
-    
+
     /**
      * get the user description
      *
@@ -339,13 +326,13 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     {
         assert('is_numeric($checkOption); // Wrong type for argument 1. Integer expected');
         switch($checkOption) {
-            case DDLView::NONE:
-            case DDLView::CASCADED:
-            case DDLView::LOCAL:
+            case DDLViewConstraintEnumeration::NONE:
+            case DDLViewConstraintEnumeration::CASCADED:
+            case DDLViewConstraintEnumeration::LOCAL:
                 $this->checkOption = $checkOption;
             break;
             default:
-                $this->checkOption = DDLView::NONE;
+                $this->checkOption = DDLViewConstraintEnumeration::NONE;
             break;
         }
     }
@@ -804,14 +791,14 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
         }
         switch ($this->checkOption)
         {
-            case self::LOCAL:
-                $this->_checkOption = $this->_map[self::LOCAL];
+            case DDLViewConstraintEnumeration::LOCAL:
+                $this->_checkOption = 'local';
             break;
-            case self::CASCADED:
-                $this->_checkOption = $this->_map[self::CASCADED];
+            case DDLViewConstraintEnumeration::CASCADED:
+                $this->_checkOption = 'cascaded';
             break;
             default:
-                $this->_checkOption = $this->_map[self::NONE];
+                $this->_checkOption = 'none';
             break;
         }
         return parent::serializeToXDDL($parentNode);
@@ -840,13 +827,13 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
         switch ($ddl->_checkOption)
         {
             case 'local':
-                $ddl->checkOption = self::LOCAL;
+                $ddl->checkOption = DDLViewConstraintEnumeration::LOCAL;
             break;
             case 'cascaded':
-                $ddl->checkOption = self::CASCADED;
+                $ddl->checkOption = DDLViewConstraintEnumeration::CASCADED;
             break;
             default:
-                $ddl->checkOption = self::NONE;
+                $ddl->checkOption = DDLViewConstraintEnumeration::NONE;
             break;
         }
         $ddl->_unserializeFromXDDL($node);

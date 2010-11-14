@@ -81,7 +81,7 @@ class ToolboxTest extends PHPUnit_Framework_TestCase
      *
      * @test
      */
-    function testDirList()
+    public function testDirList()
     {
         // read all txt entries
         $dirList = dirlist($this->dir, '*.txt');
@@ -100,7 +100,7 @@ class ToolboxTest extends PHPUnit_Framework_TestCase
         foreach (scandir($this->dir) as $path)
         {
             if (!is_dir($path)) {
-                $expected[] = basename($path);
+                $expected[] = $path;
             }
         }
         $this->assertType('array', $dirList, 'assert failed, value is not of type array');
@@ -189,15 +189,6 @@ class ToolboxTest extends PHPUnit_Framework_TestCase
      */
     function testqSearchArray()
     {
-        // read file and write to an array)
-        $file = file($this->dir.'/check.config');
-        $this->assertType('array', $file, 'assert failed, value is not of type array');
-        $this->assertGreaterThanOrEqual(1, count($file), 'assert failed, the value must be 1 or higher');
-
-        // search for "select" in $file - expected false
-        $result = qSearchArray($file, 'select');
-        $this->assertFalse($result, 'assert failed, value "select" not found in "file"');
-
         // try search for a word in a array with 1 entrie
         $array = array('test');
         $array1 = array('abcd', 'abc');
@@ -205,14 +196,14 @@ class ToolboxTest extends PHPUnit_Framework_TestCase
         $array3 = array('c', 'y');
 
         // expecting result is "test"
-        $result = qSearchArray($array, 'test');
+        $result = Hashtable::quickSearch($array, 'test');
         $this->assertEquals($result, 0, 'Testing array with 1 element. Needle expected to be found at index 0.');
 
         // expecting result is "test"
-        $result = qSearchArray($array, 'non existing key');
+        $result = Hashtable::quickSearch($array, 'non existing key');
         $this->assertFalse($result, 'Testing array with 1 element. Needle should not be found.');
 
-        $result = qSearchArray($array1, 'abcd');
+        $result = Hashtable::quickSearch($array1, 'abcd');
         $this->assertType('integer', $result, 'assert failed, value is not of type integer');
         //expected integer 0 - searching word is in the row[0]
         $this->assertEquals($result, 0, 'assert failed, the variables should be equal');
@@ -220,7 +211,7 @@ class ToolboxTest extends PHPUnit_Framework_TestCase
         // expected true
         $this->assertTrue($array1[$result] === 'abcd', 'asert failed, the result must be equal (true)');
 
-        $result = qSearchArray($array2, 'abcdabcd');
+        $result = Hashtable::quickSearch($array2, 'abcdabcd');
         $this->assertType('integer', $result, 'assert failed, values is not of type integer');
         // expected integer 0
         $this->assertEquals(0, $result, 'assert failed, the valus must be equal');
@@ -229,7 +220,7 @@ class ToolboxTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($array2[$result] === 'abcdabcd', 'asert failed, the result must be equal (true)');
 
 
-        $result = qSearchArray($array3, 'y');
+        $result = Hashtable::quickSearch($array3, 'y');
         $this->assertType('integer', $result, 'assert failed, value is not of type integer');
         //expected integer 1
         $this->assertEquals($result, 1, 'assert failed, the variables should be equal');

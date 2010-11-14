@@ -63,8 +63,8 @@ class DbExtractor extends DbCreator
      * @access  private
      */
 
-    /** @var DbStream */ private $db = null;
-    /** @var string   */ private $tpl = "INSERT INTO %TABLE% (%KEYS%) VALUES (%VALUES%);";
+    /** @var DbStream */ private $_db = null;
+    /** @var string   */ private $_tpl = "INSERT INTO %TABLE% (%KEYS%) VALUES (%VALUES%);";
 
     /**#@-*/
 
@@ -77,8 +77,8 @@ class DbExtractor extends DbCreator
      */
     public function __construct(DbStream $db)
     {
-        $this->db = $db;
-        parent::__construct($this->db->schema);
+        $this->_db = $db;
+        parent::__construct($this->_db->schema);
     }
 
     /**
@@ -110,7 +110,7 @@ class DbExtractor extends DbCreator
             @set_time_limit(500);
             foreach ($this->schema->getTableNames() as $table)
             {
-                foreach($this->db->select($table) as $row)
+                foreach($this->_db->select($table) as $row)
                 {
                     /* quote values */
                     foreach (array_keys($row) as $column)
@@ -119,7 +119,7 @@ class DbExtractor extends DbCreator
                     }
 
                     /* build statement */
-                    $stmt = $this->tpl;
+                    $stmt = $this->_tpl;
                     $stmt = str_replace('%TABLE%', "`" . YANA_DATABASE_PREFIX . $table .  "`", $stmt);
                     $stmt = str_replace('%KEYS%', "`" . mb_strtolower(implode("`, `", array_keys($row))) .  "`", $stmt);
                     $stmt = str_replace('%VALUES%', implode(", ", $row), $stmt);
@@ -159,7 +159,7 @@ class DbExtractor extends DbCreator
             @set_time_limit(500);
             foreach ($this->schema->getTableNames() as $table)
             {
-                foreach($this->db->select($table) as $row)
+                foreach($this->_db->select($table) as $row)
                 {
                     /* quote values */
                     foreach (array_keys($row) as $column)
@@ -168,7 +168,7 @@ class DbExtractor extends DbCreator
                     }
 
                     /* build statement */
-                    $stmt = $this->tpl;
+                    $stmt = $this->_tpl;
                     $stmt = str_replace('%TABLE%', '"' . YANA_DATABASE_PREFIX . $table .  '"', $stmt);
                     $stmt = str_replace('%KEYS%', '"' . mb_strtolower(implode('", "', array_keys($row))) .  '"', $stmt);
                     $stmt = str_replace('%VALUES%', implode(", ", $row), $stmt);
@@ -208,7 +208,7 @@ class DbExtractor extends DbCreator
             @set_time_limit(500);
             foreach ($this->schema->getTableNames() as $table)
             {
-                foreach($this->db->select($table) as $row)
+                foreach($this->_db->select($table) as $row)
                 {
                     /* quote values */
                     foreach (array_keys($row) as $column)
@@ -217,7 +217,7 @@ class DbExtractor extends DbCreator
                     }
 
                     /* build statement */
-                    $stmt = $this->tpl;
+                    $stmt = $this->_tpl;
                     $stmt = str_replace('%TABLE%', '[' . YANA_DATABASE_PREFIX . $table .  ']', $stmt);
                     $stmt = str_replace('%KEYS%', '[' . mb_strtolower(implode('], [', array_keys($row))) .  ']', $stmt);
                     $stmt = str_replace('%VALUES%', implode(", ", $row), $stmt);
@@ -289,7 +289,7 @@ class DbExtractor extends DbCreator
                 /* @var $table DDLTable */
                 /* quote table */
                 $tableName = YANA_DATABASE_PREFIX . $table->getName();
-                if (qSearchArray($sqlKeywords, $tableName) !== false) {
+                if (Hashtable::quickSearch($sqlKeywords, $tableName) !== false) {
                     $tableName = "\"{$tableName}\"";
                 }
                 /* quote columns */
@@ -297,13 +297,13 @@ class DbExtractor extends DbCreator
                 foreach ($table->getColumnNames() as $column)
                 {
                     $column = mb_strtolower($column);
-                    if (qSearchArray($sqlKeywords, mb_strtoupper($column)) !== false) {
+                    if (Hashtable::quickSearch($sqlKeywords, mb_strtoupper($column)) !== false) {
                         $columns[$column] = "\"{$column}\"";
                     } else {
                         $columns[$column] = $column;
                     }
                 }
-                foreach($this->db->select($table->getName()) as $row)
+                foreach($this->_db->select($table->getName()) as $row)
                 {
                     $keys = "";
                     /* quote values */
@@ -319,7 +319,7 @@ class DbExtractor extends DbCreator
                     }
 
                     /* build statement */
-                    $stmt = $this->tpl;
+                    $stmt = $this->_tpl;
                     $stmt = str_replace('%TABLE%', $tableName, $stmt);
                     $stmt = str_replace('%KEYS%', $keys, $stmt);
                     $stmt = str_replace('%VALUES%', implode(", ", $row), $stmt);
@@ -359,7 +359,7 @@ class DbExtractor extends DbCreator
             @set_time_limit(500);
             foreach ($this->schema->getTableNames() as $table)
             {
-                foreach($this->db->select($table) as $row)
+                foreach($this->_db->select($table) as $row)
                 {
                     /* quote values */
                     foreach (array_keys($row) as $column)
@@ -368,7 +368,7 @@ class DbExtractor extends DbCreator
                     }
 
                     /* build statement */
-                    $stmt = $this->tpl;
+                    $stmt = $this->_tpl;
                     $stmt = str_replace('%TABLE%', '"' . YANA_DATABASE_PREFIX . $table .  '"', $stmt);
                     $stmt = str_replace('%KEYS%', '"' . mb_strtolower(implode('", "', array_keys($row))) .  '"', $stmt);
                     $stmt = str_replace('%VALUES%', implode(", ", $row), $stmt);

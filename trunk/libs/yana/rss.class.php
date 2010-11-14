@@ -77,6 +77,7 @@
  */
 class RSS extends Object
 {
+
     /**
      * list of published RSS-feeds
      *
@@ -85,7 +86,7 @@ class RSS extends Object
      * @var     array
      * @ignore
      */
-    protected static $feeds = array();
+    protected static $_feeds = array();
 
     /**#@+
      * this field is mandatory
@@ -119,7 +120,7 @@ class RSS extends Object
     /**
      * mail of person responsible for editorial content
      * @var string */ public $managingEditor = "";
-    /** 
+    /**
      * mail of person responsible for technical issues
      * @var string */ public $webMaster = "";
     /**
@@ -150,16 +151,16 @@ class RSS extends Object
 
     /**
      * date when the channel was published (auto-generated)
-     * @var string */ private $pubDate = "";
+     * @var string */ private $_pubDate = "";
     /**
      * pubDate of most recent item (auto-generated)
-     * @var string */ private $lastBuildDate = "";
+     * @var string */ private $_lastBuildDate = "";
     /**
      * a string to identify the class / program that created the file
-     * @var string */ private $generator = "";
+     * @var string */ private $_generator = "";
 
     /**#@-*/
-    
+
     /**
      * constructor
      *
@@ -169,7 +170,7 @@ class RSS extends Object
     {
         $language = Language::getInstance();
         $this->title = $language->getVar('program_title');
-        $this->generator = "Yana Framework ".YANA_VERSION;
+        $this->_generator = "Yana Framework " . YANA_VERSION;
         $this->item = array();
         if (isset($_SESSION['language'])) {
             $this->language = $_SESSION['language'];
@@ -206,7 +207,7 @@ class RSS extends Object
         assert('is_string($this->css); // Unable to create RSS. Field "css" must be a string.');
         assert('is_string($this->xslt); // Unable to create RSS. Field "xslt" must be a string.');
         assert('is_array($this->item); // Unable to create RSS. Field "item" must be a array.');
-        
+
         /* check optional fields */
         if (empty($this->title) || empty($this->link) || empty($this->description)) {
             trigger_error("Unable to create RSS. Mandatory field missing.", E_USER_NOTICE);
@@ -234,7 +235,7 @@ class RSS extends Object
         }
 
         /* auto-fill fields, that can be generated */
-        $this->pubDate = date('r', time());
+        $this->_pubDate = date('r', time());
         if (is_array($this->item) && count($this->item) > 0) {
             $time = 0;
             foreach ($this->item as $item)
@@ -247,9 +248,9 @@ class RSS extends Object
                 }
             } /* end foreach */
             if ($time > 0) {
-                $this->lastBuildDate = date('r', $time);
+                $this->_lastBuildDate = date('r', $time);
             } else {
-                $this->lastBuildDate = "";
+                $this->_lastBuildDate = "";
             }
         }
 
@@ -307,8 +308,8 @@ class RSS extends Object
     {
         assert('is_string($action); // Wrong argument type argument 1. String expected');
 
-        self::$feeds[] = "$action";
-        array_unique(self::$feeds);
+        self::$_feeds[] = "$action";
+        array_unique(self::$_feeds);
     }
 
     /**
@@ -322,9 +323,10 @@ class RSS extends Object
      */
     public static function getFeeds()
     {
-        assert('is_array(self::$feeds); // Member "feeds" should be an array.');
-        return self::$feeds;
+        assert('is_array(self::$_feeds); // Member "feeds" should be an array.');
+        return self::$_feeds;
     }
+
 }
 
 ?>

@@ -52,38 +52,16 @@
  *     private static $instance = null;
  *     public static function &getInstance()
  *     {
- *         if (!isset(self::$instance)) {
- *             self::$instance = new Foo();
+ *         if (!isset(self::$_instance)) {
+ *             self::$_instance = new Foo();
  *         }
- *         return self::$instance;
+ *         return self::$_instance;
  *     }
  * }
  * </code>
  *
  * Note! If you wish to serialize a singleton, be aware that you MUST
- * set the self::$instance var when you unserialize the object.
- * To do so you should implement the interface IsSerializable like this.
- * <code>
- * class Foo extends Singleton implements IsSerializable
- * {
- *    public function serialize()
- *    {
- *        return serialize($this);
- *    }
- *    public static function unserialize($string)
- *    {
- *        if (!isset(self::$instance)) {
- *            self::$instance = unserialize($string);
- *            return self::$instance;
- *        } else {
- *            return self::$instance;
- *        }
- *    }
- * }
- * </code>
- *
- * Also remember that you MUST NOT unserialize a string using any other
- * function or you will breach the singleton pattern.
+ * set the self::$_instance var when you unserialize the object.
  * 
  * @abstract
  * @access      public
@@ -98,7 +76,7 @@ abstract class Singleton extends Object implements IsSingleton
      * @access  private
      * @static
      */
-    private static $instance = null;
+    private static $_instance = null;
 
     /**
      * constructor
@@ -134,11 +112,11 @@ abstract class Singleton extends Object implements IsSingleton
      */
     public static function &getInstance()
     {
-        if (!isset(self::$instance)) {
+        if (!isset(self::$_instance)) {
             $class = __CLASS__;
-            self::$instance = new $class();
+            self::$_instance = new $class();
         }
-        return self::$instance;
+        return self::$_instance;
     }
 
 }

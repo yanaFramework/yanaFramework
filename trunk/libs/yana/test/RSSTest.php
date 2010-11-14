@@ -41,7 +41,7 @@ class RSSTest extends PHPUnit_Framework_TestCase
     /**
      * @access protected
      */
-    protected $rss;
+    protected $_rss;
 
      /**
      * Constructor
@@ -60,14 +60,10 @@ class RSSTest extends PHPUnit_Framework_TestCase
      * @access protected
      */
     protected function setUp()
-    {       
-        chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
-        global $YANA;
-        if (!isset($YANA)) {
-            $YANA = Yana::getInstance();
-        }
-        $YANA->language->setVar('program_title', 'yana');
-        $this->rss = new RSS();
+    {
+        chdir(CWD . '/../../..');
+        Yana::getInstance();
+        $this->_rss = new RSS();
     }
 
     /**
@@ -78,7 +74,7 @@ class RSSTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        unset($this->rss);
+        unset($this->_rss);
         chdir(CWD);
     }
 
@@ -89,10 +85,10 @@ class RSSTest extends PHPUnit_Framework_TestCase
      */
     public function testToString()
     {
-        $this->rss->title = 'rssTitle';
-        $this->rss->link = 'http://www.rsslink.tld';
-        $this->rss->description = 'test';
-        $toString = $this->rss->toString();
+        $this->_rss->title = 'rssTitle';
+        $this->_rss->link = 'http://www.rsslink.tld';
+        $this->_rss->description = 'test';
+        $toString = $this->_rss->toString();
         $this->assertType('string', $toString, 'assert failed, the value is not from type string');
 
         // check if rss is valid
@@ -101,7 +97,7 @@ class RSSTest extends PHPUnit_Framework_TestCase
         $dtd = '<!DOCTYPE  rss SYSTEM "file:///' . $url . '">';
         $pattern = '/\<\?xml[^>]*?\>/';
         $replace = preg_replace($pattern, '$0' . $dtd, $toString);
-        
+
         $dom = new DOMDocument();
         $dom->loadXML($replace);
         $valid = $dom->validate();
@@ -120,14 +116,14 @@ class RSSTest extends PHPUnit_Framework_TestCase
         $newItem->title = 'asdas';
         $newItem->link = 'http://www.domain.tld';
         $newItem->description = 'asd';
-        $this->rss->addItem($newItem);
+        $this->_rss->addItem($newItem);
 
-        $this->assertObjectHasAttribute('item', $this->rss, 'assert failed, the object should be have the attribute "item"');
-        $this->assertEquals('http://www.domain.tld', $this->rss->item[0]['link'], 'assert failed, the values should be equal');
-        $this->assertTrue(count($this->rss->item) == 1, 'assert failed, the result should be true - only 1 item expected');
-        $this->rss->link = 'http://www.domain.tld';
-        $this->rss->description = 'test';
-        $toString = $this->rss->toString();
+        $this->assertObjectHasAttribute('item', $this->_rss, 'assert failed, the object should be have the attribute "item"');
+        $this->assertEquals('http://www.domain.tld', $this->_rss->item[0]['link'], 'assert failed, the values should be equal');
+        $this->assertTrue(count($this->_rss->item) == 1, 'assert failed, the result should be true - only 1 item expected');
+        $this->_rss->link = 'http://www.domain.tld';
+        $this->_rss->description = 'test';
+        $toString = $this->_rss->toString();
         $this->assertType('string', $toString, 'assert failed, value is not from type string');
 
         // check if rss is valid
@@ -136,7 +132,7 @@ class RSSTest extends PHPUnit_Framework_TestCase
         $dtd = '<!DOCTYPE  rss SYSTEM "file:///' . $url . '">';
         $pattern = '/\<\?xml[^>]*?\>/';
         $replace = preg_replace($pattern, '$0' . $dtd, $toString);
-        
+
         $dom = new DOMDocument();
         $dom->loadXML($replace);
         $valid = $dom->validate();
@@ -162,35 +158,35 @@ class RSSTest extends PHPUnit_Framework_TestCase
      * @test
      */
     public function test1()
-    {   
-        
-        $this->rss->title = 'test';
-        $this->rss->description = 'rss feed';
+    {
+
+        $this->_rss->title = 'test';
+        $this->_rss->description = 'rss feed';
 
         // create item
         $item = new RSSitem();
         $item->title = 'entry';
         $item->link = 'http://www.domain.tld';
         $item->description = 'ghjkl';
-        $this->rss->addItem($item);
+        $this->_rss->addItem($item);
 
         // create item
         $item = new RSSitem();
         $item->title = 'new entry';
         $item->link = 'http://www.domain.tld';
         $item->description = 'ytrewq';
-        $this->rss->addItem($item);
+        $this->_rss->addItem($item);
 
          // create item
         $item = new RSSitem();
         $item->title = 'old entry';
         $item->link = 'http://www.domain.tld';
         $item->description = 'qwerty';
-        $this->rss->addItem($item);
+        $this->_rss->addItem($item);
 
-        $toString = $this->rss->toString();
+        $toString = $this->_rss->toString();
         $this->assertType('string', $toString, 'assert failed, the value is not from type string');
-        
+
         // check if rss is valid
         $url = str_replace(' ', '%20', CWD.'resources/dtd/rss.dtd');
         $url = str_replace('\\', '/', $url);

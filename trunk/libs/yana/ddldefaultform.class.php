@@ -61,7 +61,7 @@
  * @package     yana
  * @subpackage  database
  */
-class DDLDefaultForm extends DDLAbstractForm implements IsSerializable
+class DDLDefaultForm extends DDLAbstractForm
 {
     /**
      * selected layout

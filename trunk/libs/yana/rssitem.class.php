@@ -38,6 +38,7 @@
  */
 class RSSitem extends Object
 {
+
     /**#@+
      * this field is optional
      *
@@ -75,7 +76,7 @@ class RSSitem extends Object
 
     /**
      * unique identity (always auto-generated)
-     * @var string */ private $guid = "";
+     * @var string */ private $_guid = "";
 
     /**#@-*/
 
@@ -89,7 +90,7 @@ class RSSitem extends Object
     {
         $this->pubDate = date('r', time());
     }
-    
+
     /**
      * return item as associative array
      *
@@ -110,7 +111,7 @@ class RSSitem extends Object
         assert('is_string($this->author); // Unable to create RSS item. Field "author" must be a string.');
         assert('is_array($this->category); // Unable to create RSS item. Field "category" must be a array.');
         assert('is_string($this->comments); // Unable to create RSS item. Field "comments" must be a string.');
-        assert('is_string($this->guid); // Unable to create RSS item. Field "guid" must be a string.');
+        assert('is_string($this->_guid); // Unable to create RSS item. Field "guid" must be a string.');
         assert('is_string($this->pubDate); // Unable to create RSS item. Field "pubDate" must be a string.');
 
         /* check optional fields */
@@ -135,11 +136,12 @@ class RSSitem extends Object
         }
 
         /* auto-fill fields, that can be generated */
-        $this->guid = md5($this->title.$this->description);
+        $this->_guid = md5($this->title.$this->description);
 
         /* return result */
         return get_object_vars($this);
     }
 
 }
+
 ?>

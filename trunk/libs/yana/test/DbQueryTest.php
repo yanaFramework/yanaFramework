@@ -244,7 +244,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $expected = array(array('ft', 'ftid'), array('ft', 'ftvalue'));
         $this->assertEquals($expected, $columns, "Unable to add column to select query.");
         $resultType = $this->query->getExpectedResult();
-        $this->assertEquals(YANA_DB_ROW, $resultType, "Auto-revalidation of result type failed.");
+        $this->assertEquals(DbResultEnumeration::ROW, $resultType, "Auto-revalidation of result type failed.");
     }
 
     /**

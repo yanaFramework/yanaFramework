@@ -35,7 +35,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class NotImplementedException extends Report
+class NotImplementedException extends ReportAbstract
 {
     /* intentionally left blank */
 }
