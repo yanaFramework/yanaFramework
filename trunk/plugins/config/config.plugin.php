@@ -191,8 +191,8 @@ class plugin_config extends StdClass implements IsPlugin
                         /* @var $title string */
                         assert('!isset($title); // Cannot redeclare var $title');
                         $title = $method->getName();
-                        if (!empty($setup[PluginAnnotation::TITLE])) {
-                            $title = $setup[PluginAnnotation::TITLE];
+                        if (!empty($setup[PluginAnnotationEnumeration::TITLE])) {
+                            $title = $setup[PluginAnnotationEnumeration::TITLE];
                         }
                         if (empty($title)) {
                             $title = $pluginTitle;

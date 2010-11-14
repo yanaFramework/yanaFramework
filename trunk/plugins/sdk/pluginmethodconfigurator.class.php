@@ -58,13 +58,13 @@ class PluginMethodConfigurator extends PluginConfigurationMethod
         } else {
             $this->configuration = array
             (
-                PluginAnnotation::TITLE => '',
-                PluginAnnotation::TEXT => '',
-                PluginAnnotation::PARAM => array(),
-                PluginAnnotation::RETURN_VALUE => 'bool',
-                PluginAnnotation::TYPE => 'default',
-                PluginAnnotation::TEMPLATE => 'null',
-                PluginAnnotation::USER => array()
+                PluginAnnotationEnumeration::TITLE => '',
+                PluginAnnotationEnumeration::TEXT => '',
+                PluginAnnotationEnumeration::PARAM => array(),
+                PluginAnnotationEnumeration::RETURN_VALUE => 'bool',
+                PluginAnnotationEnumeration::TYPE => 'default',
+                PluginAnnotationEnumeration::TEMPLATE => 'null',
+                PluginAnnotationEnumeration::USER => array()
             );
         }
     }
@@ -92,7 +92,7 @@ class PluginMethodConfigurator extends PluginConfigurationMethod
                 throw new $error;
             break;
             default:
-                $this->configuration[PluginAnnotation::TITLE] = $name;
+                $this->configuration[PluginAnnotationEnumeration::TITLE] = $name;
                 $this->methodName = preg_replace('/[^\d\w_]/', '_', mb_strtolower($name));
             break;
         }
@@ -117,7 +117,7 @@ class PluginMethodConfigurator extends PluginConfigurationMethod
             case 'read':
             case 'write':
             case 'security':
-                $this->configuration[PluginAnnotation::TYPE] = $type;
+                $this->configuration[PluginAnnotationEnumeration::TYPE] = $type;
             break;
             default:
                 $data = array(
@@ -146,7 +146,7 @@ class PluginMethodConfigurator extends PluginConfigurationMethod
         $text = strip_tags($text);
 
         if (!empty($text)) {
-            $this->configuration[PluginAnnotation::TEXT] = $text;
+            $this->configuration[PluginAnnotationEnumeration::TEXT] = $text;
         }
     }
 
@@ -164,7 +164,7 @@ class PluginMethodConfigurator extends PluginConfigurationMethod
         $template = strip_tags($template);
 
         if (!empty($template)) {
-            $this->configuration[PluginAnnotation::TEMPLATE] = $template;
+            $this->configuration[PluginAnnotationEnumeration::TEMPLATE] = $template;
         }
     }
 
@@ -216,16 +216,16 @@ class PluginMethodConfigurator extends PluginConfigurationMethod
             default:
                 $settings = array();
                 if (!empty($group)) {
-                    $settings[PluginAnnotation::GROUP] = $group;
+                    $settings[PluginAnnotationEnumeration::GROUP] = $group;
                 }
                 if (!empty($role)) {
-                    $settings[PluginAnnotation::ROLE] = $role;
+                    $settings[PluginAnnotationEnumeration::ROLE] = $role;
                 }
                 if (!empty($level)) {
-                    $settings[PluginAnnotation::LEVEL] = (int) $level;
+                    $settings[PluginAnnotationEnumeration::LEVEL] = (int) $level;
                 }
                 if (!empty($settings)) {
-                    $this->configuration[PluginAnnotation::USER][] = $settings;
+                    $this->configuration[PluginAnnotationEnumeration::USER][] = $settings;
                 }
             break;
         }
@@ -245,8 +245,8 @@ class PluginMethodConfigurator extends PluginConfigurationMethod
         $menu = trim($menu);
 
         if (!empty($menu)) {
-            $this->configuration[PluginAnnotation::MENU] = array(
-                PluginAnnotation::GROUP => $menu
+            $this->configuration[PluginAnnotationEnumeration::MENU] = array(
+                PluginAnnotationEnumeration::GROUP => $menu
             );
         }
     }
@@ -263,8 +263,8 @@ class PluginMethodConfigurator extends PluginConfigurationMethod
             throw new InvalidInputWarning();
         }
         if (!empty($action)) {
-            $this->configuration[PluginAnnotation::ONSUCCESS] = array(
-                PluginAnnotation::GO => $action
+            $this->configuration[PluginAnnotationEnumeration::ONSUCCESS] = array(
+                PluginAnnotationEnumeration::GO => $action
             );
         }
     }
@@ -281,8 +281,8 @@ class PluginMethodConfigurator extends PluginConfigurationMethod
             throw new InvalidInputWarning();
         }
         if (!empty($action)) {
-            $this->configuration[PluginAnnotation::ONERROR] = array(
-                PluginAnnotation::GO => $action
+            $this->configuration[PluginAnnotationEnumeration::ONERROR] = array(
+                PluginAnnotationEnumeration::GO => $action
             );
         }
     }

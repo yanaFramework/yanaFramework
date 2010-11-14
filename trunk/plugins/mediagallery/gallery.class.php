@@ -20,7 +20,7 @@ require_once 'galleryitem.class.php';
  * @package     yana
  * @subpackage  plugins
  */
-class Gallery extends AbstractDataContainer
+class Gallery extends DataContainerAbstract
 {
 
     /**

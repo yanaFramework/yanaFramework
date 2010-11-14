@@ -50,7 +50,6 @@ mb_language('uni');
  */
 
 require_once 'libs/yana/toolbox.php';
-require_once 'libs/yana/php4fallback.php';
 
 /**#@-*/
 
@@ -91,24 +90,6 @@ if (!defined('YANA_ESCAPE_ALL')) {
     /* Don't change the value of YANA_ESCAPE_ALL unless you got a real good reason.
      */
     define('YANA_ESCAPE_ALL',        PHP_INT_MAX -2);
-}
-
-/**#@-*/
-/**#@+
- * counter settings
- *
- * These constants are used by the class Counter to identify wether the visitor's
- * remote address (IP) should be remembered or not, to avoid counting twice when
- * the page reloads in the visitor's browser.
- *
- * @see  Counter
- */
-
-if (!defined('YANA_COUNTER_USE_IP')) {
-    define('YANA_COUNTER_USE_IP',    0);
-}
-if (!defined('YANA_COUNTER_IGNORE_IP')) {
-    define('YANA_COUNTER_IGNORE_IP', 1);
 }
 
 /**#@-*/
@@ -192,40 +173,18 @@ if (!defined('ENT_FULL')) {
      * ALL characters of the string to be encoded as html entities.
      *
      * See this example:
-     * <code>$string->encode('entities', ENT_FULL)</code>
+     * <code>$encoded = String::encode($string, 'entities', ENT_FULL)</code>
      *
      * {@internal
      * Note:
-     * There is no '1' for a good reason. In PHP as in some other
-     * languages int(1) is fairly equivalent to bool(true), while
-     * string(""), int(0) are equivalent to bool(false).
-     * So you might encounter unexpected results when using int(1)
-     * in other than an int-context. Not using int(1) is a way
-     * (or propably a soft kind of "hack") to evade this.
-     *
-     * Note:
-     * Just in case there may be any additional constants in future
-     * there is a good chance they will continue as 4, 5, ...
-     * So setting proprietary value ENT_FULL to 10 should'nt collide
-     * for now and the near future ;-)
+     * Just in case there may be any additional predefined PHP constants in
+     * the future there is a good chance they will continue as 4, 5, ...
+     * So setting the value ENT_FULL to 10 should avoid a collision.
      * }}
      *
      * @see  String::encode()
      */
     define('ENT_FULL', 10);
-}
-
-if (!defined('STRING_UNSUPPORTED_ENCRYPTION')) {
-    /**
-     * Constant UNSUPPORTED_ENCRYPTION
-     *
-     * This is returned by String::encrypt()
-     * when an invalid encryption method is
-     * encountered.
-     *
-     * @see  String
-     */
-    define('STRING_UNSUPPORTED_ENCRYPTION', 1);
 }
 
 /**#@-*/
@@ -333,47 +292,6 @@ if (!defined('YANA_DB_STRICT')) {
 }
 
 /**#@+
- * database constants
- *
- * @ignore
- */
-if (!defined('YANA_DB_UNKNOWN')) {
-    define('YANA_DB_UNKNOWN',            0);
-}
-if (!defined('YANA_DB_SELECT')) {
-    define('YANA_DB_SELECT',             8);
-}
-if (!defined('YANA_DB_UPDATE')) {
-    define('YANA_DB_UPDATE',             16);
-}
-if (!defined('YANA_DB_INSERT')) {
-    define('YANA_DB_INSERT',             32);
-}
-if (!defined('YANA_DB_DELETE')) {
-    define('YANA_DB_DELETE',             64);
-}
-if (!defined('YANA_DB_EXISTS')) {
-    define('YANA_DB_EXISTS',             128);
-}
-if (!defined('YANA_DB_LENGTH')) {
-    define('YANA_DB_LENGTH',             256);
-}
-if (!defined('YANA_DB_TABLE')) {
-    define('YANA_DB_TABLE',              1);
-}
-if (!defined('YANA_DB_ROW')) {
-    define('YANA_DB_ROW',                2);
-}
-if (!defined('YANA_DB_CELL')) {
-    define('YANA_DB_CELL',               3);
-}
-if (!defined('YANA_DB_COLUMN')) {
-    define('YANA_DB_COLUMN',             4);
-}
-
-/**#@-*/
-
-/**#@+
  * regular expressions and word filter constants
  *
  * @ignore
@@ -453,6 +371,9 @@ require_once 'config/dbconfig.php';
 /* [main class] */
 
 require_once 'libs/yana/utility.class.php';
-require_once 'libs/yana/index.class.php';
+require_once 'libs/yana/autoloader.class.php';
 /**#@-*/
+
+spl_autoload_register('AutoLoader::autoload');
+
 ?>

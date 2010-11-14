@@ -89,22 +89,22 @@ class plugin_check extends StdClass implements IsPlugin
                 $result = $query->toString(). "\n\n";
                 switch ($query->getType())
                 {
-                    case DbQuery::SELECT:
+                    case DbQueryTypeEnumeration::SELECT:
                         $result .= print_r($query->getResults(), true);
                     break;
-                    case DbQuery::COUNT:
+                    case DbQueryTypeEnumeration::COUNT:
                         $result .= print_r($query->doesExist(), true);
                     break;
-                    case DbQuery::EXISTS:
+                    case DbQueryTypeEnumeration::EXISTS:
                         $result .= print_r($query->countResults(), true);
                     break;
-                    case DbQuery::UPDATE:
+                    case DbQueryTypeEnumeration::UPDATE:
                         $result .= print_r($fileDb->update($query), true);
                     break;
-                    case DbQuery::INSERT:
+                    case DbQueryTypeEnumeration::INSERT:
                         $result .= print_r($fileDb->insert($query), true);
                     break;
-                    case DbQuery::DELETE:
+                    case DbQueryTypeEnumeration::DELETE:
                         $result .= print_r($fileDb->remove($query), true);
                     break;
                 }
@@ -133,7 +133,7 @@ class plugin_check extends StdClass implements IsPlugin
 
     /**
      * check_foo
-     * 
+     *
      * @type  primary
      * @user  group: default, level: 100
      */
@@ -221,7 +221,7 @@ class plugin_check extends StdClass implements IsPlugin
     public function check_barfoo()
     {
     }
-    
+
     /**
      * check_redirectfoo
      *
@@ -268,7 +268,7 @@ class plugin_check extends StdClass implements IsPlugin
 
     /**
      * check_baricons
-     * 
+     *
      * @type primary
      * @user  level: 60
      */

@@ -51,7 +51,7 @@ class plugin_sdk extends StdClass implements IsPlugin
      * @var     array
      * @ignore
      */
-    private static $listOfDBMS = array(
+    private static $_listOfDBMS = array(
         'mysql'  => 'MySQL',
         'db2'    => 'DB2',
         'mssql'  => 'MS-SQL',
@@ -105,7 +105,7 @@ class plugin_sdk extends StdClass implements IsPlugin
         $yana->setVar('GROUPS', SessionManager::getGroups());
         $yana->setVar('ROLES', SessionManager::getRoles());
 
-        $yana->setVar('LIST_OF_DBMS', self::$listOfDBMS);
+        $yana->setVar('LIST_OF_DBMS', self::$_listOfDBMS);
         return true;
     }
 
@@ -164,7 +164,7 @@ class plugin_sdk extends StdClass implements IsPlugin
 
         // SQL files
         assert('!isset($dbms); // Cannot redeclare $dbms');
-        foreach (array_keys(self::$listOfDBMS) as $dbms)
+        foreach (array_keys(self::$_listOfDBMS) as $dbms)
         {
             if (!empty($_FILES[$dbms]['tmp_name'])) {
                 if (!preg_match('/^\S+\.sql$/s', $_FILES[$dbms]['name'])) {

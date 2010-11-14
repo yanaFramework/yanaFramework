@@ -37,7 +37,7 @@ class plugin_rss extends StdClass implements IsPlugin
      * @access  private
      */
 
-    /** @var array  */ private $rss;
+    /** @var array  */ private $_rss;
 
     /** "file" should be a valid path to an existing XML-File
      * @var string  */ private $file;
@@ -64,14 +64,14 @@ class plugin_rss extends StdClass implements IsPlugin
             $this->max  = $YANA->getVar("PROFILE.RSS.MAX");
             settype($this->file, "string");
             settype($this->max, "integer");
-    
+
             if (!$this->max > 0) {
                 $this->max  = 5;
             }
             if (!$this->file > 0) {
                 $this->file = 'plugins/rss/test.rss';
             }
-        }    
+        }
     }
 
     /**
@@ -133,7 +133,7 @@ class plugin_rss extends StdClass implements IsPlugin
                 }
             }
             xml_parser_free($parser);
-            $YANA->setVar("RSS", array_slice($this->rss, 0, $this->max));
+            $YANA->setVar("RSS", array_slice($this->_rss, 0, $this->max));
             $YANA->setVar("FILE", $this->file);
 
             /* Microsummaries */
@@ -141,8 +141,8 @@ class plugin_rss extends StdClass implements IsPlugin
                 Microsummary::publishSummary(__CLASS__);
             }
 
-            if (class_exists('Microsummary') && count($this->rss) > 0) {
-                $latest = array_shift($this->rss);
+            if (class_exists('Microsummary') && count($this->_rss) > 0) {
+                $latest = array_shift($this->_rss);
                 Microsummary::setText(__CLASS__, 'RSS latest: '.$latest['TITLE'].
                     ' ('.$latest['PUBDATE'].')');
             }
@@ -204,8 +204,8 @@ class plugin_rss extends StdClass implements IsPlugin
             if ($this->currentTag != "LINK") {
                 $data = preg_replace("/'/u", "\\'", $data);
             }
-            settype($this->rss[$this->currentEntry][$this->currentTag], "string");
-            $this->rss[$this->currentEntry][$this->currentTag] .= $data;
+            settype($this->_rss[$this->currentEntry][$this->currentTag], "string");
+            $this->_rss[$this->currentEntry][$this->currentTag] .= $data;
         }
     }
 

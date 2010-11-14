@@ -62,24 +62,24 @@ class PluginConfigurator extends PluginConfiguration
             (
                 self::DEFAULT_TITLE => '',
                 self::DEFAULT_TEXT => '',
-                PluginAnnotation::TITLE => '',
-                PluginAnnotation::TEXT => '',
+                PluginAnnotationEnumeration::TITLE => '',
+                PluginAnnotationEnumeration::TEXT => '',
                 self::DIR => '',
-                PluginAnnotation::TYPE => 'default',
-                PluginAnnotation::AUTHOR => array(),
-                PluginAnnotation::PRIORITY => '',
-                PluginAnnotation::GROUP => '',
-                PluginAnnotation::PARENT => '',
-                PluginAnnotation::REQUIRES => array(),
-                PluginAnnotation::LICENSE => '',
-                PluginAnnotation::URL => '',
-                PluginAnnotation::VERSION => '',
-                PluginAnnotation::CATEGORY => '',
-                PluginAnnotation::PACKAGE => 'yana',
-                PluginAnnotation::SUBPACKAGE => 'plugins',
+                PluginAnnotationEnumeration::TYPE => 'default',
+                PluginAnnotationEnumeration::AUTHOR => array(),
+                PluginAnnotationEnumeration::PRIORITY => '',
+                PluginAnnotationEnumeration::GROUP => '',
+                PluginAnnotationEnumeration::PARENT => '',
+                PluginAnnotationEnumeration::REQUIRES => array(),
+                PluginAnnotationEnumeration::LICENSE => '',
+                PluginAnnotationEnumeration::URL => '',
+                PluginAnnotationEnumeration::VERSION => '',
+                PluginAnnotationEnumeration::CATEGORY => '',
+                PluginAnnotationEnumeration::PACKAGE => 'yana',
+                PluginAnnotationEnumeration::SUBPACKAGE => 'plugins',
                 self::MODIFIED => time(),
-                PluginAnnotation::MENU => array(),
-                PluginAnnotation::ACTIVE => '0'
+                PluginAnnotationEnumeration::MENU => array(),
+                PluginAnnotationEnumeration::ACTIVE => '0'
             );
         }
     }
@@ -149,7 +149,7 @@ class PluginConfigurator extends PluginConfiguration
             default:
                 $parent = strip_tags(nl2br($parent));
                 if (!empty($parent)) {
-                    $this->configuration[PluginAnnotation::PARENT] = $parent;
+                    $this->configuration[PluginAnnotationEnumeration::PARENT] = $parent;
                 }
             break;
         }
@@ -179,7 +179,7 @@ class PluginConfigurator extends PluginConfiguration
             default:
                 $group = strip_tags(nl2br($group));
                 if (!empty($group)) {
-                    $this->configuration[PluginAnnotation::GROUP] = $group;
+                    $this->configuration[PluginAnnotationEnumeration::GROUP] = $group;
                 }
             break;
         }
@@ -205,7 +205,7 @@ class PluginConfigurator extends PluginConfiguration
             case 'write':
             case 'security':
             case 'library':
-                $this->configuration[PluginAnnotation::TYPE] = $type;
+                $this->configuration[PluginAnnotationEnumeration::TYPE] = $type;
             break;
             default:
                 $data = array(
@@ -230,7 +230,7 @@ class PluginConfigurator extends PluginConfiguration
      */
     public function setPriority($priority)
     {
-        $this->configuration[PluginAnnotation::PRIORITY] = PluginPriority::getPriority($priority);
+        $this->configuration[PluginAnnotationEnumeration::PRIORITY] = PluginPriorityEnumeration::getPriority($priority);
     }
 
     /**
@@ -246,7 +246,7 @@ class PluginConfigurator extends PluginConfiguration
         }
         $author = strip_tags(nl2br($author));
         if (!empty($author)) {
-            $this->configuration[PluginAnnotation::AUTHOR][] = $author;
+            $this->configuration[PluginAnnotationEnumeration::AUTHOR][] = $author;
         }
     }
 
@@ -284,7 +284,7 @@ class PluginConfigurator extends PluginConfiguration
         }
         $url = str_replace("\n", '<br/>', strip_tags($url));
         if (!empty($url)) {
-            $this->configuration[PluginAnnotation::URL] = $url;
+            $this->configuration[PluginAnnotationEnumeration::URL] = $url;
         }
     }
 
@@ -322,9 +322,9 @@ class PluginConfigurator extends PluginConfiguration
         assert('is_string($group); // Wrong argument type argument 1. String expected');
         assert('is_string($title); // Wrong argument type argument 2. String expected');
         if (!empty($group)) {
-            $this->configuration[PluginAnnotation::MENU][] = array(
-                PluginAnnotation::GROUP => "$group",
-                PluginAnnotation::TITLE => "$title"
+            $this->configuration[PluginAnnotationEnumeration::MENU][] = array(
+                PluginAnnotationEnumeration::GROUP => "$group",
+                PluginAnnotationEnumeration::TITLE => "$title"
             );
         }
     }
@@ -373,12 +373,12 @@ class PluginConfigurator extends PluginConfiguration
         }
         foreach ($this->getMenuNames() as $menu)
         {
-            $string .= $tab . "@menu       group: " . $menu[PluginAnnotation::GROUP];
-            if (isset($menu[PluginAnnotation::TITLE])) {
-                $string .= ', title: ' . $menu[PluginAnnotation::TITLE];
+            $string .= $tab . "@menu       group: " . $menu[PluginAnnotationEnumeration::GROUP];
+            if (isset($menu[PluginAnnotationEnumeration::TITLE])) {
+                $string .= ', title: ' . $menu[PluginAnnotationEnumeration::TITLE];
             }
         }
-        if ($this->getActive() === PluginActivity::DEFAULT_ACTIVE) {
+        if ($this->getActive() === PluginActivityEnumeration::DEFAULT_ACTIVE) {
             $string .= $tab . "@active     always";
         }
         foreach ($this->getAuthors() as $author)

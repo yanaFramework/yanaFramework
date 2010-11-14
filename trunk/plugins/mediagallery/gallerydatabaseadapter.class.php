@@ -103,9 +103,9 @@ class GalleryDatabaseAdapter extends DatabaseAdapter
      * Takes an instance, checks it's state and updates the data respondingly.
      *
      * @access  public
-     * @param   AbstractDataContainer $container  instance that should be updated
+     * @param   DataContainerAbstract $container  instance that should be updated
      */
-    public function updateInstance(AbstractDataContainer $container)
+    public function updateInstance(DataContainerAbstract $container)
     {
         $data = array();
         $table = $this->db->schema->getTable($this->table);

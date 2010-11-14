@@ -5,22 +5,12 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-function yanaAddItem(id)
+function yanaAddItem(node)
 {
-    var reference = document.getElementById(id);
+    var reference = node.parentNode;
     var item      = reference.cloneNode(true);
-    item.id       = '';
-    item.className = '';
     reference.parentNode.appendChild(item);
-}
-function yanaAddItemAutonumber(id)
-{
-    var reference = document.getElementById(id);
-    var item      = reference.cloneNode(true);
-    item.id       = '';
-    item.className = '';
-    item.firstChild.value = reference.parentNode.childNodes.length - 1;
-    reference.parentNode.appendChild(item);
+    return item;
 }
 function yanaRemoveItem(node)
 {

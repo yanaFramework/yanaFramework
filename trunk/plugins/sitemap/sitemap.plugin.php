@@ -90,8 +90,8 @@ class plugin_sitemap extends StdClass implements IsPlugin
 
         foreach ($pluginMenu->getMenuEntries('start') as $action => $entry)
         {
-            $image = $entry[PluginAnnotation::IMAGE];
-            $title = $entry[PluginAnnotation::TITLE];
+            $image = $entry[PluginAnnotationEnumeration::IMAGE];
+            $title = $entry[PluginAnnotationEnumeration::TITLE];
 
             if (empty($image)) {
                 $result .= "\t<li>";
