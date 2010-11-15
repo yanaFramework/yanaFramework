@@ -1,0 +1,238 @@
+[assign | assign value to var ]
+ [%assign var="|" value=""%]
+
+[capture | capture output of a block ]
+ [%capture name="|" assign=""%]
+
+ [%/capture%]
+
+[config_load | load CONFIG file ]
+ [%config_load file="|" section="" scope=""%]
+
+[counter | output and increment counter value ]
+ [%counter start="|" skip="" direction="" print="" assign=""%]
+
+[cycle | cycle through values ]
+ [%cycle name="|" values="" print=""%]
+
+[eval | evaluate var as a template ]
+ [%eval var="" assign=""%]
+
+[fetch | fetch a template and assign result to var ]
+ [%fetch file="|" assign=""%]
+
+[foreach | loop through array ]
+ [%foreach name="" from=$| item="" key="" %]
+
+ [%foreachelse%]
+
+ [%/foreach%]
+
+[if | if condition ]
+ [%if |%]
+
+ [%elseif %]
+
+ [%else%]
+
+ [%/if%]
+
+[html_checkboxes | HTML: checkboxes ]
+ [%html_checkboxes name="|" values="" output="" options=""%]
+
+[html_image | HTML: images ]
+ [%html_image file="|" alt="" height="" width="" href=""%]
+
+[html_options | HTML: options ]
+ [%html_options name="|" selected="" values="" output="" options=""%]
+
+[html_radios | HTML: radio buttons ]
+ [%html_radios name="|" selected="" values="" output="" options=""%]
+
+[html_select_date | HTML: date selector ]
+ [%html_select_date time="|" prefix=""%]
+
+[html_select_time | HTML: time selector ]
+ [%html_select_date time="|" prefix=""%]
+
+[html_table | HTML: table ]
+ [%html_table loop="|" cols="" rows="" caption=""%]
+
+[include | include file ]
+ [%include file="|" assign=""%]
+
+[insert | insert file ]
+ [%insert file="|" assign=""%]
+
+[literal | literal (escape parsing) ]
+ [%literal%]
+|
+ [%/literal%]
+
+[math | mathematical functions ]
+ [%math equation="|" format="" var="" assign=""%]
+
+[popup | pop up window ]
+ [%popup_init src="|"%]
+ [%popup text=""%]
+
+[section | loop through section ]
+ [%section name="|" loop="" start="" step="" max="" show=""%]
+
+ [%sectionelse%]
+
+ [%/section%]
+
+[strip | strip ]
+ [%strip%]
+|
+ [%/strip%]
+
+[textformat | text format ]
+ [%textformat indent="|" indent_first="" wrap="" assign=""%]
+
+ [%/textformat%]
+
+[capitalize | capitalize ]
+||capitalize
+
+[cat | cat ]
+||cat:""
+
+[count_characters | count characters ]
+||count_characters
+
+[count_paragraphs | count paragraphs ]
+||count_paragraphs
+
+[count_sentences | count sentences ]
+||count_sentences
+
+[count_words | count words ]
+||count_words
+
+[date_format | format date ]
+||date_format:""
+
+[default | default value ]
+||default:""
+
+[escape | escape ]
+||escape:"":""
+
+[indent | indent ]
+||indent:""
+
+[lower | lowercase ]
+||lower
+
+[nl2br | new-line to break ]
+||nl2br
+
+[replace | replace string ]
+||replace:"":""
+
+[regex_replace | replace string using regular expressions ]
+||regex_replace:"":""
+
+[spacify | insert spaces ]
+||spacify:""
+
+[string_format | format string ]
+||string_format:""
+
+[strip | strip ]
+||strip
+
+[strip_tags | strip tags ]
+||strip_tags
+
+[truncate | truncate ]
+||truncate:""
+
+[upper | uppercase ]
+||upper
+
+[wordwrap | wordwrap ]
+||wordwrap:""
+
+[printArray | print array as HTML (YANA Framework)]
+ [%printArray value="|"%]
+
+[printUnorderedList | print array as ul (YANA Framework)]
+ [%printUnorderedList value="|" keys_as_href="false" layout="1" %]
+
+[import | import template (YANA Framework)]
+ [%import file="|<string>"%]
+
+[captcha | insert spam protection image (YANA Framework)]
+ [%captcha id="|" %]
+
+[create | GUI for db table (YANA Framework)]
+ [%create template="|<string>" file="<string>" table="<string>" [ where="<string>" ] [ desc="<boolean>" ] [ sort="<string>" ] [ page="<integer>" ] [ entries="<integer>" ] [ titles="<boolean>" ] [ on_new="<string>" ] [ on_edit="<string>" ] [ on_delete="<string>" ] [ on_search="<string>" ] %]
+
+[sizeOf | get size of array (YANA Framework)]
+ [%section value="|" assign=""%]
+
+[sml_load | load SML file (YANA Framework)]
+ [%sml_load file="|<string>" [ section="string" ] [ scope="string" ] %]
+
+[smlLoad | alias of sml_load]
+ [%smlLoad file="|<string>" [ section="string" ] [ scope="string" ] %]
+
+[embTagToolbar | format toolbar for textarea (YANA Framework)]
+ [%embeddedTags [ show="|<string>" ] [ hide="<string>" ] %]
+
+[smiliesToolbar | smiley toolbar for textarea (YANA Framework)]
+ [%smilies [ width="|<integer>" ] %]
+
+[smilies | convert text-smilies (YANA Framework)]
+ [%$||smilies%]
+
+[date | convert UTC to date (YANA Framework)]
+ [%$||date%]
+
+[embTag | (modifier) convert emb tags to HTML (YANA Framework)]
+ [%$||embeddedTags%]
+
+[css | create link to css file (YANA Framework)]
+ [%"|.css"|css%]
+
+[urlEncode | encode URL parameter (YANA Framework)]
+ [%$||urlEncode%]
+
+[rss | create link to rss file (YANA Framework)]
+ [%rss image="|"%]
+
+[href | create link (YANA Framework)]
+<a href=[%"|"|href%]></a>
+
+[url | create url (YANA Framework)]
+<meta http-equiv="Refresh" content="2; URL=[%"|"|url%]">
+
+[PHP_SELF | link to script (YANA Framework)]
+%PHP_SELF%
+
+[REMOTE_ADDR | visitor's IP (YANA Framework)]
+%REMOTE_ADDR%
+
+[SESSION | current session name / id (YANA Framework)]
+%SESSION_NAME%=%SESSION_ID%
+
+[MTIME | time of modification to tpl. (YANA Framework)]
+%MTIME%
+
+[ATIME | time of access to template (YANA Framework)]
+%ATIME%
+
+[CTIME | time temlate was created (YANA Framework)]
+%CTIME%
+
+[LANGUAGE | language reference (YANA Framework)]
+%LANGUAGE.|%
+
+[preview | preview of current entry (YANA Framework)]
+ [%preview [ width="|<integer>" ] [ height="<integer>" ]%]
+
+[varDump | provides a var dump (YANA Framework Debug only)]
+ [%varDump var=$|%]
