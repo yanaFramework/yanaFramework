@@ -1,0 +1,417 @@
+
+[SOL | start of life for variable]
+assert('!isset($|i); // Cannot redeclare var $i');
+
+[EOL | end of life for variable]
+unset($|i);
+
+[assert_string | check argument via assertion]
+assert('is_string($|); // Wrong argument type argument 1. String expected');
+
+[assert_bool | check argument via assertion]
+assert('is_bool($|); // Wrong argument type argument 1. Boolean expected');
+
+[assert_array | check argument via assertion]
+assert('is_array($|); // Wrong argument type argument 1. Array expected');
+
+[assert_int | check argument via assertion]
+assert('is_int($|); // Wrong argument type argument 1. Integer expected');
+
+[assert_float | check argument via assertion]
+assert('is_float($|); // Wrong argument type argument 1. Float expected');
+
+[chkstring | check argument and trigger error]
+        if (!is_string($|)) {
+            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'String', gettype($)), E_USER_WARNING);
+            return false;
+        }
+
+[chkbool | check bool argument ]
+        if (!is_bool($|)) {
+            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'Boolean', gettype($)), E_USER_WARNING);
+            return false;
+        }
+
+[chkarray | check array argument ]
+        if (!is_array($|)) {
+            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'Array', gettype($)), E_USER_WARNING);
+            return false;
+        }
+
+[chkint | check int argument ]
+        if (!is_int($|)) {
+            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'Integer', gettype($)), E_USER_WARNING);
+            return false;
+        }
+
+[chkfloat | check float argument ]
+        if (!is_float($|)) {
+            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'Float', gettype($)), E_USER_WARNING);
+            return false;
+        }
+
+[switchstmt | switch ]
+        switch ($|)
+        {
+            /**
+             * foo
+             */
+            case 1:
+
+            break;
+            /**
+             * default
+             */
+            default:
+
+            break;
+        } /* end switch */
+
+[php_doc | php tags with PhpDoc block]
+<?php
+/**
+ * |short description
+ *
+ * long description
+ *
+ * @package     package
+ * @subpackage  subpackage
+ * @copyright   (c) 2008 name, license
+ * @link        http://...
+ * @author      Name <mail@adress.tld>
+ *
+ * @ignore
+ */
+
+?>
+
+[class_doc | insert class with PhpDoc block]
+/**
+ * «stereotype» short description
+ *
+ * long description
+ *
+ * @access      public
+ * @package     package
+ * @subpackage  subpackage
+ */
+class |ClassName
+{
+	/**@#+
+	 * @access private
+	 */
+
+	/* add private class vars here */
+
+	/**@#-*/
+
+    /**
+     * create new instance
+     *
+     * @param  type   $argument  description
+     */
+    function ClassName ($argumentList)
+    {
+        /* do something */
+    }
+}
+
+[const_doc | define constant with PhpDoc block]
+if (!defined('|CONST')) {
+    /**
+     * @name  CONST
+     * @ignore
+     */
+    define('CONST', 1);
+}
+
+[var_doc | define variable with PhpDoc block]
+if (!isset(|$var)) {
+    /**
+     * @name var
+     * @var  type
+     */
+    $var = null;
+} else {
+    trigger_error("Can't redeclare variable \$var.", E_USER_NOTICE);
+}
+
+[method_doc | class method with PhpDoc block]
+    /**
+     * «stereotype» short description
+     *
+     * long description
+     *
+     * input:
+     * <ul>
+     * <li> text  </li>
+     * </ul>
+     *
+     * purpose:
+     * <ul>
+     * <li> text  </li>
+     * </ul>
+     *
+     * expected results:
+     * <ul>
+     * <li> text  </li>
+     * </ul>
+     *
+     * @access  public
+     * @param   type   $argumentName  description
+     * @return  bool
+     */
+    function |methodName($in_args)
+    {
+        /* always check input first - at least for correct data type */
+        if (!is_array($in_args)) {
+            trigger_error("Wrong data type for argument 1. Array expected, found '".gettype($in_args)."' instead.",E_USER_WARNING);
+            return false;
+        } else {
+            $args = $in_args;
+            assert('is_array($args);');
+            /* do something */
+            return true;
+        }
+    }
+
+[foreachassert | for-each loop with assert]
+    assert('!isset($key); // Cannot redeclare var $key');
+    assert('!isset($element); // Cannot redeclare var $element');
+    foreach ($| as $key => $element)
+    {
+
+    } /* end foreach */
+    unset($key, $element); /* clean up garbage */
+
+[foreachloop | for-each loop]
+    assert('!isset($element); // Cannot redeclare var $element');
+    foreach ($| as $element)
+    {
+
+    } /* end foreach */
+    unset($element); /* clean up garbage */
+
+[forloop | for loop]
+    assert('!isset($i); // Cannot redeclare var $i');
+    for ($i = 0; $i < count($|); $i++)
+    {
+
+    } /* end for */
+    unset($i); /* clean up garbage */
+
+[forassert | for loop with assert]
+    assert('!isset($i); // Cannot redeclare var $i');
+    for ($i = 0; $i < count($|array); $i++)
+    {
+        if (!isset($array[$i])) {
+            trigger_error("Array index out of bounds. There is no element '${i}' in \$array.", E_USER_NOTICE);
+            continue;
+        } else {
+            /* do something */
+        }
+        assert('is_int($i); // Unexpected result. $i is supposed to be an integer');
+        assert('isset($array[$i]); // Array index out of bounds.');
+    } /* end for */
+    unset($i); /* clean up garbage */
+
+[whilelist | while loop with list]
+    reset($|);
+    assert('!isset($key); // Cannot redeclare var $key');
+    assert('!isset($value); // Cannot redeclare var $value');
+    while (list($key, $value) = each($))
+    {
+
+    } /* end foreach */
+    unset($key, $value); /* clean up garbage */
+    reset($);
+
+[doloop | do ... while loop]
+    do
+    {
+
+    } while (|); /* end do */
+
+[whileloop | while loop]
+    while (|)
+    {
+
+    } /* end while */
+
+[forcurrent | for loop with current]
+    reset($|);
+    assert('!isset($i); // Overwriting variable $i');
+    for ($i = 0; $i < count($); $i++)
+    {
+        /* do something */
+        next($);
+    } /* end foreach */
+    unset($i); /* clean up garbage */
+    reset($);
+
+[PHPDoc | list of all phpDoc Tags]
+    /**
+     * The short description
+     *
+     * As many lines of extendend description as you want {@link element}
+     * links to an element
+     * {@link http://www.example.com Example hyperlink inline link} links to
+     * a website. The inline
+     * source tag displays function source code in the description:
+     * {@source }
+     *
+     * In addition, in version 1.2+ one can link to extended documentation like this
+     * documentation using {@tutorial phpDocumentor/phpDocumentor.howto.pkg}
+     * In a method/class var, {@inheritdoc may be used to copy documentation from}
+     * the parent method
+     * {@internal
+     * This paragraph explains very detailed information that will only
+     * be of use to advanced developers, and can contain
+     * {@link http://www.example.com Other inline links!} as well as text}}}
+     *
+     * Here are the tags:
+     *
+     * @abstract
+     * @access       public or private
+     * @author       author name <author@email>
+     * @copyright    name date
+     * @deprecated   description
+     * @deprec       alias for deprecated
+     * @example      /path/to/example
+     * @exception    Javadoc-compatible, use as needed
+     * @global       type $globalvarname
+       or
+     * @global       type description of global variable usage in a function
+     * @ignore
+     * @internal     private information for advanced developers only
+     * @param        type [$varname] description
+     * @return       type description
+     * @link         URL
+     * @name         procpagealias
+       or
+     * @name         $globalvaralias
+     * @magic        phpdoc.de compatibility
+     * @package      package name
+     * @see          name of another element that can be documented,
+     *               produces a link to it in the documentation
+     * @since        a version or a date
+     * @static
+     * @staticvar    type description of static variable usage in a function
+     * @subpackage   sub package name, groupings inside of a project
+     * @throws       Javadoc-compatible, use as needed
+     * @todo         phpdoc.de compatibility
+     * @var          type    a data type for a class variable
+     * @version      version
+     */
+|
+
+[PHPDoc_method | insert PHP-Doc comment for a method]
+    /**
+     * «stereotype»  short description
+     *
+     * long description
+     *
+     * @abstract
+     * @static
+     *
+     * @access  public
+     * @name    class::method()
+     * @param   string  $name  description
+     * @return  bool
+     *
+     * @ignore
+     */
+|
+[is_infinite | is_infinite() for PHP < 4.2.0]
+bool is_infinite(|float float)
+
+[is_nan | is_nan() for PHP < 4.2.0]
+bool is_nan(|float float)
+
+[is_finite | is_finite() for PHP < 4.2.0]
+bool is_finite(|float float)
+
+[md5_file | md5_file() for PHP < 4.2]
+string md5_file(|string filename, [bool rawOutput])
+
+[array_change_key_case | array_change_key_case() for PHP < 4.2]
+array array_change_key_case(|array array, [int mode])
+
+[floatval | floatval() for PHP < 4.2.0]
+float floatval(|mixed var)
+
+[file_get_contents | file_get_contents() for PHP < 4.3.0]
+string file_get_contents(|string filename, [bool useIncludePath])
+
+[file_put_contents | file_put_contents() for PHP < 5.0]
+int file_put_contents(|string filename, mixed data, [int flags], [resource context])
+
+[stripos | stripos() for PHP < 5.0]
+int stripos(|string haystack, string needle, [int offset])
+
+[strripos | strripos() for PHP < 5.0]
+int strripos(|string haystack, string needle, [int offset])
+
+[substr_compare | substr_compare() for PHP < 5.0]
+int substr_compare(|string mainString, string string, int offset, [int length], [bool caseInsensitivity])
+
+[str_ireplace | str_ireplace() for PHP < 5.0]
+mixed str_ireplace(|mixed search, mixed replace, mixed subject)
+
+[strpbrk | strpbrk() for PHP < 5.0]
+string strpbrk(|string haystack, string charList)
+
+[scandir | scandir() for PHP < 5]
+array scandir(|string directory, [int sorting_order], [resource context])
+
+[array_combine | array_combine() for PHP < 5]
+array array_combine(|array keys, array values)
+
+[json_encode | json_encode() for PHP < 5.0]
+string json_encode(|mixed var, [bool obj])
+
+[json_decode | json_decode() for PHP < 5.0]
+mixed json_decode(|string json, [bool assoc], [mixed n], [mixed state], [mixed waitfor])
+
+[fprintf | fprintf() for PHP < 5.0]
+int fprintf(|resource stream, string format, mixed args)
+
+[vfprintf | vfprintf() for PHP < 5.0]
+int vfprintf(|resource stream, string format, [array args])
+
+[str_split | str_split() for PHP < 5.0]
+array str_split(|string string, [int split_length])
+
+[array_product | array_product() for PHP < 5.1]
+number array_product(|array array)
+
+[property_exists | array_product() for PHP < 5.1.0RC1]
+bool property_exists(|mixed class, string property)
+
+[http_build_query | http_build_query() for PHP < 5.0]
+string http_build_query(|array formdata, [string numeric_prefix], [string arg_separator])
+
+[htmlspecialchars_decode | htmlspecialchars_decode() for PHP < 5.1]
+string htmlspecialchars_decode(|string string, [int quote_style])
+
+[sys_get_temp_dir | This function is new to PHP 5.]
+string sys_get_temp_dir(|mixed var)
+
+[dirlist | list contents of a directory]
+array dirlist(|string dir, [string filter], [int switch])
+
+[qSearchArray | search for a value in a sorted list]
+int qSearchArray(|array &array, scalar needle)
+
+[untaintInput | Untaint user input taken from a web form]
+mixed untaintInput(|mixed value, [string type], [int length], [int escape], [bool doubleEncode], [int precision])
+
+[cloneArray | recursive deep-copy on arrays]
+array cloneArray(|array array)
+
+[checkArgumentList | check the list of arguments for correct data types]
+bool checkArgumentList(|array arguments, array types, [string name])
+
+[XMLencode | Create a XML string from a scalar variable, an object, or an array of data.]
+void XMLencode(|scalar/array/object data, [string name], [int caseSensitive], [int indent], [string inputEncoding], [string outputEncoding])
+
