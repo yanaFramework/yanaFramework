@@ -719,7 +719,7 @@ abstract class DbQuery extends Object implements Serializable
 
         // We expect the result to be a table.
         if ($this->expectedResult === DbResultEnumeration::UNKNOWN) {
-            $this->expectedResult = DbResultEnumeration::FTABLE;
+            $this->expectedResult = DbResultEnumeration::TABLE;
         }
 
         // assign table name and definition
