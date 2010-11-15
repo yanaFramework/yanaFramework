@@ -1,0 +1,689 @@
+body
+{
+    background-color: #ffffff;
+    color: #000000;
+    padding: 10px; 
+    margin: 0;
+    overflow: auto;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+}
+a
+{
+    color: #335588;
+    text-decoration: none;
+    white-space: nowrap;
+}
+a:hover
+{
+    color: steelblue; 
+    text-decoration: underline;
+}
+
+hr 
+{
+    background-color: cornflowerblue; 
+    color: cornflowerblue; 
+    height: 2pt; 
+    width: 98%;
+}
+.header
+{
+    font-size: 18pt; 
+    font-family: 'Times New Roman', 'Times', serif; 
+    font-weight: bold;
+    color: #eeeeee; 
+    background-color: steelblue;
+}
+.text 
+{
+    font-size: 9pt; 
+    font-family: 'Arial', 'Helvetica', sans-serif;
+}
+.nachricht 
+{
+    font-size: 11pt; 
+    font-family: 'Arial', 'Helvetica', sans-serif; 
+    color: #000000;
+}
+.beschriftung 
+{
+    font-size: 9pt;
+    font-family: 'Arial', 'Helvetica', sans-serif; 
+    font-weight: bold;
+}
+.beschreibung 
+{
+    font-size: 10pt; 
+    font-family: 'Arial', 'Helvetica', sans-serif; 
+    font-weight: normal;
+}
+.kommentar
+{
+    olor: #888888;
+    font-size: 13px;
+    font-family: 'Tahoma', 'Helvetica', 'Arial', sans-serif;
+    font-weight: normal;
+}
+.emphasize 
+{
+    font-size: 14pt; 
+    color: #000088;
+    font-weight: bold; 
+    font-family: 'Times New Roman', serif;
+}
+.highlight 
+{
+    font-size: 13pt; 
+    font-family: 'Tahoma', 'Helvetica', 'Arial', sans-serif; 
+    font-weight: bold; 
+    color: steelblue;
+}
+.highlight:first-letter 
+{
+    font-weight: bold; 
+    font-size: 16pt; 
+    color: orange;
+}
+.codeexample
+{
+    border: 1px solid #000033;
+    background: #f8f8f8;
+    padding: 10px;
+    margin: 10px;
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 13px;
+}
+p, table, div
+{
+    font-size: 15px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+table caption
+{
+    text-align: left;
+    margin: 10px 0px;
+    font-weight: bold;
+}
+.bgwhite
+{
+    background: #ffffff;
+}
+.bglightgray
+{ 
+    background: #eeeef0; 
+}
+.bglightsilver
+{
+    background: #f0f0fa; 
+}
+.bggray
+{
+    background: #888888; 
+}
+.bgblue 
+{ 
+    background: cornflowerblue;
+}
+.bgwhite 
+{ 
+    background: #f8f8fa; 
+}
+.bglightblue 
+{ 
+    background: #edeef8; 
+}
+.bglightbrown 
+{ 
+    background: #f0dfcf; 
+}
+table.version_info th, table.version_info td
+{
+    color: #888888; 
+    font-size: 10pt; 
+    font-family: 'Tahoma', 'Helvetica', 'Arial', sans-serif; 
+    background-color: #ffffff;
+}
+table h1 
+{
+     font-family: 'Times New Roman', serif; 
+     font-weight: bold; 
+     font-size: 24pt; 
+     color: #000000; 
+     text-align: center;
+}
+table h2
+{
+     font-family: 'Times New Roman', serif;  
+     font-weight: bold; 
+     font-size: 18pt; 
+     color: #f0f0f0;
+     background-color: cornflowerblue; 
+     text-align: center;
+}
+table h3
+{
+    font-family: 'Arial', 'Helvetica', sans-serif; 
+    font-weight: bold; 
+    font-size: 16pt; 
+    color: midnightblue; 
+    background-color: transparent;
+}
+h1, h2, h3, h4, h5, h6, caption, .header
+{
+    border-top: 1px solid #b7ab9d;
+    border-bottom: 1px solid #817a72;
+    border-left: 1px solid #cba;
+    border-right: 1px solid #765;
+}
+h1
+{
+    background: #618497 url('h1.gif') repeat-x;
+    padding: 5px;
+    text-indent: 5px;
+    text-align: left;
+}
+h1, h1 a
+{
+    font-family: 'Arial', 'Helvetica', sans-serif; 
+    color: #fff;
+    font-weight: bold;
+    font-size: 30px; 
+}
+h2
+{
+    background: #9eaab0 url('h2.gif') repeat-x;
+    text-align: left;
+    padding: 5px;
+    text-indent: 10px;
+}
+h2, h2 a
+{
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-weight: bold;
+    font-size: 25px;
+    color: #001030;
+}
+h3
+{
+    background: #fff url('h3.gif') repeat-x;
+    padding: 5px;
+    text-indent: 15px;
+}
+h3, h3 a
+{
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-weight: bold; 
+    font-size: 22px;
+    color: #001030;
+}
+h4, caption, .header
+{
+    background: #fff url('h4.gif') repeat-x;
+    padding: 5px;
+    text-indent: 30px;
+}
+h4, h4 a, caption, .header
+{
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-weight: bold; 
+    font-size: 18px;
+    color: #000000;
+}
+h5
+{
+    background: #fff url('h5.gif') repeat-x;
+    padding: 5px;
+    text-indent: 40px;
+}
+h5, h5 a
+{
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-weight: bold; 
+    font-size: 16px;
+    color: #333333;
+}
+h6
+{
+    background: #fff url('h6.gif') repeat-x;
+    padding: 5px;
+    text-indent: 10px;
+}
+h6, h6 a
+{
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-weight: bold; 
+    font-size: 14px;
+    color: #555555;
+}
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover
+{
+    color: #eef0ff;
+}
+.footline, .headline
+{
+    display: block;
+    font-size: 18px;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    color: #ffffff;
+    background: #fff url('index_title_bgd.gif') repeat-x;
+    height: 50px;
+    vertical-align: middle;
+    overflow: hidden;
+    padding: 5px; 
+    padding-top: 28px;
+    text-indent: 5px;
+    margin-left: 0; 
+    margin-right: 0;
+}
+*html .footline, *html .headline
+{
+    height: 75px;
+}
+.headline
+{
+    margin-bottom: 20px;
+    margin-top: 5px;
+}
+.footline
+{
+    margin-top: 20px; 
+    margin-bottom: 5px;
+}
+.footline a, .headline a
+{
+    font-weight: bold; 
+    color: #f0ffff;
+}
+.footline img, .headline img
+{
+    margin-left: 15px; 
+    margin-right: 5px;  
+    border: 0;
+}
+.navline
+{
+    text-align: center;
+    margin: 10px 50px 10px 50px;
+    padding: 5px;
+    height: 18px;
+    color: #558;
+    background: #eee;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-size: 14px;
+    text-indent: 5px;
+    border: 2px solid #aaa;
+    white-space: nowrap;
+}
+.navline img
+{
+    margin: 0 5px 0 5px;
+    border: 0 none;
+}
+.navline a
+{
+    color: #558;
+}
+.author
+{
+    list-style: disc;
+}
+dl
+{
+    padding-left: 30px;
+}
+dl dt
+{
+    font-weight: bold;
+}
+dl dd
+{
+    margin-left: 20px;
+    margin-bottom: 0.5em;
+}
+ol h1, ol h2, ol h3
+{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+ol
+{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 40px;
+}
+/* Level 1 */
+ol li
+{
+    list-style: decimal;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-size: 14px;
+}
+ol.roman li
+{
+    list-style: upper-roman;
+}
+ol.alpha li
+{
+    list-style: upper-alpha;
+}
+/* Level 2 */
+ol ol li
+{
+    list-style: decimal;
+}
+/* Level 3 */
+ol ol ol ol li
+{
+    list-style: lower-alpha;
+}
+/* Level 4 */
+ol ol ol ol ol li
+{
+    list-style: disc;
+}
+ol.toc li
+{
+    padding-left: 5px;    
+}
+ol.toc
+{
+    font-weight: bold;
+    background: #f0f0f0;
+    border-top: 1px solid #e4e4e4;
+    border-left: 20px solid #e4e4e4;
+    border-bottom: 1px solid #e4e4e4;
+}
+ol.toc ol
+{
+    background: #f0f0ff;
+    border-top: 1px solid #ddddee;
+    border-left: 15px solid #ddddee;
+    border-bottom: 1px solid #ddddee;
+}
+ol.toc ol ol
+{
+    background: #fff8f0;
+    border-top: 1px solid #e8e4e0;
+    border-left: 10px solid #e8e4e0;
+    border-bottom: 1px solid #e8e4e0;
+}
+ol.toc ol ol ol
+{
+    border-top: 0px none;
+    border-left: 0px none;
+    border-bottom: 0px none;
+}
+.box
+{
+    border: 2px solid #aaa;
+    text-align: justify;
+    margin: 15px 50px 15px 50px;
+    background: #eeeeee;
+    color: #000000;
+    padding: 10px;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+}
+.downloadbox
+{
+    border: 2px solid #aaa;
+    text-align: justify;
+    margin: 15px 50px 15px 50px;
+    background: #eeeeee;
+    color: #000000;
+    padding: 10px;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+}
+th
+{
+    background: #f0f0f0;
+    color: #000000;
+    font-weight: bold;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    text-align: left;
+}
+.verweis, .verweis a
+{
+    font-size: 13px;
+    font-style: italic;
+    color: steelblue;
+}
+table.syntax, table.syntax td, table.syntax th
+{
+    text-align: center;
+    border: 2px solid #aaaaaa;
+    margin: 0;
+    padding: 5px;
+    border-collapse: collapse;
+}
+table.syntax th
+{
+    background: #dddddd;
+}
+table.syntax td
+{
+    background: #ffffff;
+}
+
+#search
+{
+    position: absolute;
+    right: 20px;
+    font-weight: bold;
+    line-height: 23px;
+    vertical-align: bottom;
+    font-size: 20px;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+}
+#search img
+{
+    vertical-align: -5px;
+    margin-right: 5px;
+}
+#search a
+{
+    color: #fff;
+    text-decoration: none;
+}
+#search a:hover
+{
+    text-decoration: underline;
+}
+.abb_descr
+{
+    font-size: 10pt;
+    font-style: italic;
+}
+#license_summary,
+#license_summary li
+{
+    list-style-type: none;
+    list-style-image: none;
+}
+
+#license_summary li
+{
+    display: block;
+    height: 75px;
+    padding-left: 100px;
+    margin: 20px 0px;
+}
+
+#license_summary li:first-line
+{
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#license_summary img
+{
+    border: 0px none;
+    float: left;
+}
+
+#license_summary #author
+{
+    background: url('copy_author.png') no-repeat;
+}
+
+#license_summary #share
+{
+    background: url('copy_share.png') no-repeat;
+}
+
+#license_summary #edit
+{
+    background: url('copy_edit.png') no-repeat;
+}
+
+#license_summary #sell
+{
+    background: url('copy_sell.png') no-repeat;
+}
+
+/* Context highlighter */
+.html1-comment, .xml1-comment, .mygeneral1-comment { color: #808080; font-style: italic; }
+.html1-currentline { color: #000000; }
+.html1-escapeampersand { color: #800080; font-weight: bold; }
+.html1-identifier { color: #000080; font-weight: bold; }
+.html1-matchedbraces { color: #FF0000; }
+.html1-reservedword { color: #0000FF; font-weight: bold; }
+.html1-rightedge { color: #C0C0C0; }
+.html1-selection { color: #FFFFFF; }
+.html1-space { color: #000000; }
+.html1-symbol { color: #808080; font-weight: bold; }
+.html1-text { color: #000000; }
+.html1-unknownword { color: #FF0000; font-weight: bold; }
+.html1-value { color: #800000; }
+.mygeneral1-currentline { color: #000000; }
+.mygeneral1-identifier { color: #707070; }
+.mygeneral1-keywords1 { color: #0A269A; }
+.mygeneral1-keywords2 { color: #000080; }
+.mygeneral1-keywords3 { color: #800080; }
+.mygeneral1-keywords4 { color: #707070; }
+.mygeneral1-keywords5 { color: #FF8080; }
+.mygeneral1-matchedbraces { color: #FF4040; }
+.mygeneral1-number { color: #0000FF; }
+.mygeneral1-preprocessor { color: #000000; }
+.mygeneral1-rightedge { color: #C0C0C0; }
+.mygeneral1-selection { color: #FFFFFF; }
+.mygeneral1-space { color: #000000; }
+.mygeneral1-string { color: #800000; }
+.mygeneral1-symbol { color: #000000; }
+.xml1-attributename { color: #800000; }
+.xml1-attributevalue { color: #FF0000; }
+.xml1-cdatasection { color: #808000; }
+.xml1-doctypesection { color: #008080; }
+.xml1-elementname { color: #000080; }
+.xml1-entityreference { color: #0000FF; }
+.xml1-matchedbraces { color: #FF0000; }
+.xml1-namespaceattributename { color: #008000; }
+.xml1-namespaceattributevalue { color: #0000FF; }
+.xml1-processinginstruction { color: #000080; }
+.xml1-rightedge { color: #C0C0C0; }
+.xml1-selection { color: #FFFFFF; }
+.xml1-symbol { color: #808080; }
+.xml1-text { color: #000000; }
+.xml1-whitespace { color: #FFFFFF; }
+.multicol3, .multicol2{display: block;width: auto;padding-top: 0;}
+.col_foot, .col_head{clear: both;}
+.multicol3 .col_left, .multicol3 .col_center, .multicol3 .col_right{padding-top: 1px;}
+.multicol3 .col_left, .multicol3 .col_center, .multicol3 .col_right{float: left;display: block;width: 32%;}
+.multicol3 .col_center{margin-left: 2%;margin-right: 2%;}
+.multicol3 .col_right{float: right;}
+.multicol2 .col_left{float: left;display: block;width: 49%;margin-right: 1%;}
+.multicol2 .col_right{float: right;display: block;width: 49%;margin-left: 1%;}
+.general1-comment { color: #808080; font-style: italic; }
+.general1-identifier { color: #000000; }
+.general1-key { color: #004080; font-weight: bold; }
+.general1-keywords2 { color: #800080; font-weight: bold; }
+.general1-keywords3 { color: #0000FF; font-weight: bold; }
+.general1-label { color: #FF0000; }
+.general1-number { color: #000080; }
+.general1-preprocessor { color: #008080; font-style: italic; }
+.general1-reservedword { color: #800000; font-weight: bold; }
+.general1-space { color: #008080; }
+.general1-string { color: #008000; }
+.jscript1-comment { color: #808080; font-style: italic; }
+.jscript1-currentline { color: #000000; }
+.jscript1-event { }
+.jscript1-identifier { color: #000080; }
+.jscript1-matchedbraces { color: #FF0000; }
+.jscript1-non-reservedkeyword { }
+.jscript1-number { color: #FF0000; }
+.jscript1-reservedword { color: #000080; font-weight: bold; }
+.jscript1-rightedge { color: #C0C0C0; }
+.jscript1-selection { color: #FFFFFF; }
+.jscript1-space { color: #000000; }
+.jscript1-string { color: #800000; }
+.jscript1-symbol { color: #808080; }
+
+.multicol3 div, .multicol3 p, .multicol2 div,
+.multicol2 p, .multicol3, .multicol2
+{
+    font-family: 'Times New Roman', 'Times', serif;
+    font-weight: 400;
+    font-size: 14px;
+    text-align: justify;
+    margin-left: 0;
+    margin-right: 0;
+}
+.multicol3 .h2, .multicol2 .h2 {
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    padding: 10px;
+    padding-left: 0;
+}
+
+.struct_value { color: #808; }
+.struct_element { color: #00a; }
+.struct_definition { color: #358; font-weight: bold; }
+.struct_comment { color: #080; }
+
+@media print
+{
+    body
+    {
+        overflow: visible;
+    }
+    h1, h2, h3, h4, h5, h6
+    {
+        border-style: none;
+        border-width: 0px;
+        background-image: none;
+        background-color: #ffffff;
+        color: #000000;
+        page-break-after: avoid;
+        page-break-inside: avoid;
+        margin-left: 0;
+        text-indent: 0;
+    }
+    .headline, .navline, .footline
+    {
+        display: none;
+    }
+    .box, table, .box table, .codeexample, .box .codeexample
+    {
+        border-width: 1px;
+        background-color: #ffffff;
+        page-break-inside: avoid;
+    }
+    .box
+    {
+        border-style: none;
+        border-width: 0px;
+        padding: 0px;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+    table th
+    {
+        background-color: #aaaaaa;
+    }
+    .downloadbox
+    {
+        display: none;
+    }
+}
