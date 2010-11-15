@@ -1,0 +1,43 @@
+Project Statistics
+
+Total:
+	Segments	10344
+	Words	79345
+	Characters (without spaces)	574530
+	Characters (including spaces)	644822
+Remaining:
+	Segments	2179
+	Words	3545
+	Characters (without spaces)	30233
+	Characters (including spaces)	33239
+Unique:
+	Segments	6845
+	Words	69245
+	Characters (without spaces)	504984
+	Characters (including spaces)	566901
+Unique Remaining:
+	Segments	567
+	Words	2053
+	Characters (without spaces)	18662
+	Characters (including spaces)	20182
+
+Individual File Statistics:
+
+File Name	Total Words	Remaining Words	Total Characters (without spaces)	Remaining Characters (without spaces)	Total Characters (including spaces)	Remaining Characters (including spaces)
+api_documentation\index.html	7	0	46	0	50	0
+engine\blank.html	27	0	155	0	177	0
+engine\de\about.html	91	0	611	0	684	0
+engine\de\related.html	97	0	663	0	744	0
+engine\en\about.html	105	0	557	0	645	0
+engine\en\related.html	97	0	539	0	623	0
+engine\form.html	3	0	23	0	23	0
+engine\index.html	1	0	9	0	9	0
+engine\netscape4.html	3	0	23	0	23	0
+gpl.txt	5220	4	26846	23	31492	26
+index.html	149	8	1154	49	1270	50
+lgpl.txt	4049	0	20118	0	23723	0
+mit.txt	163	163	872	872	1018	1018
+pages.html	69287	3360	522689	29279	584110	32135
+pspad\Yana Framework Templates.ini	15	6	56	6	58	6
+pspad\Yana Framework.ini	11	4	46	4	47	4
+server2go\FirefoxPortable.ini	20	0	123	0	126	0

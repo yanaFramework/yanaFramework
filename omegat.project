@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<omegat>
+  <project version="1.0">
+    <source_dir>../yana_builder/input/manual/</source_dir>
+    <target_dir>../yana_builder/input/manual_en/</target_dir>
+    <tm_dir>__DEFAULT__</tm_dir>
+    <glossary_dir>__DEFAULT__</glossary_dir>
+    <source_lang>de-DE</source_lang>
+    <target_lang>en-US</target_lang>
+    <sentence_seg>true</sentence_seg>
+  </project>
+</omegat>
