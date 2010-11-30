@@ -34,14 +34,14 @@
                         {if $iterator->hasRows() && $form->getEntriesPerPage() > 1 && $field->refersToTable()}
                             {assign var="url" value="action=$ACTION&$formName"|cat:"[orderby]=$field&$formName"|cat:"[desc]"}
                             <a href={"$url=0"|href} class="gui_generator_sort" title='{lang id="ORDER.ASCENDING"}'>
-                                {if $field->getName() == $form->getOrderByField() && !$form->isDescending() }
+                                {if $field->getName() == $form->getOrderByField() && !$form->isDescending()}
                                     <span class="icon_arrowup_hover">&nbsp;</span>
                                 {else}
                                     <span class="icon_arrowup">&nbsp;</span>
                                 {/if}
                             </a>
                             <a href={"$url=1"|href}  class="gui_generator_sort" title='{lang id="ORDER.DESCENDING"}'>
-                                {if $field->getName() == $form->getOrderByField() && $form->isDescending() }
+                                {if $field->getName() == $form->getOrderByField() && $form->isDescending()}
                                     <span class="icon_arrowdown_hover">&nbsp;</span>
                                 {else}
                                     <span class="icon_arrowdown">&nbsp;</span>

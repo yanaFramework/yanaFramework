@@ -34,7 +34,7 @@
               <span class="label">{lang id="DB_TOOLS.FIELD1"}:</span>
               <select name="dbms">
 {foreach from=$LIST_OF_EXPORTABLE_DBMS key=value item=name}
-                <option value="{$value}" {if $SELECTED_DBMS == $value }selected="selected"{/if}>{$name}</option>
+                <option value="{$value}" {if $SELECTED_DBMS == $value}selected="selected"{/if}>{$name}</option>
 {/foreach}
               </select>
             </label>

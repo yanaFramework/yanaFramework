@@ -27,7 +27,7 @@
               <img alt="" src="data/mail.gif" style="margin-right: 5px;"/>
               <span class="label">{lang id="3"}:</span>
               <span class="guestbook_value">
-              {mailto address=$CURRENT.GUESTBOOK_MAIL text=$CURRENT.GUESTBOOK_MAIL encode="javascript_charcode" extra='language="JavaScript"' }
+              {mailto address=$CURRENT.GUESTBOOK_MAIL text=$CURRENT.GUESTBOOK_MAIL encode="javascript_charcode" extra='language="JavaScript"'}
               </span>
             </div>
             <!-- {/if} -->
@@ -58,7 +58,7 @@
             <!-- {/if} -->
           </div>
         </div>
-      
+
       <!-- {/if} -->
 
       <div class="comment" style="float: right;">
@@ -83,7 +83,7 @@
         {$CURRENT.GUESTBOOK_NAME}
       <!-- {/if} -->
       </div>
-    
+
     </div>
 
     <div class="guestbook_message" align="left">
@@ -98,12 +98,12 @@
                 <div style="font-weight: bold">{lang id="5"}:</div>
                 {$CURRENT.GUESTBOOK_COMMENT|embeddedTags|smilies}
             </div>
-            <!-- {if $PERMISSION > 29 } -->
+            <!-- {if $PERMISSION > 29} -->
               <div class="label">
                   <a onclick="YanaGuestbook.prototype.guestbookRequest('{$ACTION_COMMENT}','comment{$CURRENT.GUESTBOOK_ID}','target={$CURRENT.GUESTBOOK_ID}'); return false" title="{lang id="TITLE_UPDATE_COMMENT"}" target="_self" href={"action=$ACTION_COMMENT&target="|cat:$CURRENT.GUESTBOOK_ID|href}>{lang id="TITLE_UPDATE_COMMENT"}</a>
               </div>
             <!-- {/if} -->
-        <!-- {elseif $PERMISSION > 29 } -->
+        <!-- {elseif $PERMISSION > 29} -->
             <div class="label">
                 <a onclick="YanaGuestbook.prototype.guestbookRequest('{$ACTION_COMMENT}','comment{$CURRENT.GUESTBOOK_ID}','target={$CURRENT.GUESTBOOK_ID}'); return false" title="{lang id="TITLE_COMMENT"}" target="_self" href={"action=$ACTION_COMMENT&target="|cat:$CURRENT.GUESTBOOK_ID|href}>{lang id="DESCR_COMMENT"}</a>
             </div>

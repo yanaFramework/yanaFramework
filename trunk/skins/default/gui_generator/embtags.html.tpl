@@ -1,17 +1,17 @@
 <div class="embtags__list">
 {foreach from=$TAGS item=tag}
-    <!-- {if $USER_DEFINED.$tag }
+    <!-- {if $USER_DEFINED.$tag}
          {assign var="id" value=$tag|upper} -->
         <span class="embtag embtag_{$tag}">
             <a title="{$USER_DEFINED.$tag.TITLE}" href="javascript://[{$tag}]">
                 <img alt="[{$tag}]" onmousedown="yanaAddEmbTag('[{$tag}\]{$USER_DEFINED.$tag.TEXT}[/{$tag}]', event)" src="{$USER_DEFINED.$tag.IMAGE}"/>
             </a>
         </span>
-    <!-- {elseif $tag == "|" } -->
+    <!-- {elseif $tag == "|"} -->
         <img class="embtag_space" alt="[|]" src="{$DATADIR}blank.gif"/>
-    <!-- {elseif $tag == "-" } -->
+    <!-- {elseif $tag == "-"} -->
         <br />
-    <!-- {elseif $tag == "smilies" } -->
+    <!-- {elseif $tag == "smilies"} -->
         <div class="embtag">
             <span class="embtag_smilies">
                 <a title="{lang id="TAGS.TITLE.SMILIES"}" href="javascript://[smilies]">
@@ -20,7 +20,7 @@
             </span>
             <div class="embtag_smilies_list">{smilies width="5"}</div>
         </div>
-    <!-- {elseif $tag == "mark" } -->
+    <!-- {elseif $tag == "mark"} -->
         <span class="embtag embtag_mark">
             <span class="embtag_nobreak">
                 <a title="{lang id="TAGS.TITLE.MARK"}" href="javascript://[mark]">
@@ -39,7 +39,7 @@
                 //--></script>
             </span>
         </span>
-    <!-- {elseif $tag == "color" } -->
+    <!-- {elseif $tag == "color"} -->
         <span class="embtag embtag_color">
             <span class="embtag_nobreak">
                 <a title="{lang id="TAGS.TITLE.COLOR"}" href="javascript://[color]">
@@ -61,7 +61,7 @@
                 //--></script>
             </span>
         </span>
-    <!-- {elseif $tag == "br" || $tag == "wbr" }
+    <!-- {elseif $tag == "br" || $tag == "wbr"}
          {assign var="id" value=$tag|upper} -->
         <span class="embtag embtag_{$tag}">
             <a title="{$LANGUAGE.TAGS.TITLE.$id}" href="javascript://[{$tag}]">

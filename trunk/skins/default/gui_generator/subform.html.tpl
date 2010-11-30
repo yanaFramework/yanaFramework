@@ -54,7 +54,7 @@
                             </select>
                         </label>
                         <!-- BEGIN remove filter -->
-                        {if $form->hasFilter() }
+                        {if $form->hasFilter()}
                             <input type="submit" title='{lang id="WHERE.DELETE"}' name="{$form->getName()}[dropfilter]" value='{lang id="WHERE.DELETE"}'/>
                         {/if}
                     </div>

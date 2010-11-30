@@ -80,7 +80,7 @@ class plugin_config extends StdClass implements IsPlugin
 
         // create options for select-boxes
         $YANA->setVar('LANGUAGEFILES', $YANA->language->getLanguages());
-        $YANA->setVar('SKINFILES', $YANA->skin->getSkins());
+        $YANA->setVar('SKINFILES', Skin::getSkins());
         // create a list of profiles
         assert('!isset($profiles); // Cannot redeclare var $profiles');
         $profiles = array();
@@ -96,7 +96,7 @@ class plugin_config extends StdClass implements IsPlugin
         $this->index_plugins();
 
         $YANA->setVar('USER_IS_EXPERT', $this->_getIsExpert());
-        $YANA->view->setFunction(YANA_TPL_FUNCTION, 'updateCheck', array($this, '_updateCheck'));
+        $YANA->view->setFunction('updateCheck', array($this, '_updateCheck'));
 
         return true;
     }
@@ -544,12 +544,11 @@ class plugin_config extends StdClass implements IsPlugin
      * @static
      * @access  public
      * @param   array   $params
-     * @param   Smarty  &$smarty
      * @return  int
      * @since   2.9.11
      * @ignore
      */
-    public static function _updateCheck(array $params, Smarty &$smarty)
+    public static function _updateCheck(array $params)
     {
         assert('isset($GLOBALS["YANA"]); // Global var $YANA not set');
         global $YANA;

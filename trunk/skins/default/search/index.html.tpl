@@ -34,17 +34,17 @@
    <!-- {assign var="i" value=0} -->
    <!-- {assign var="last_count" value=0} -->
    {foreach item=CURRENT from=$STATS}
-   <!-- {assign var="i" value=$i+1 } -->
-     <!-- {if $i % 2 == 1 } -->
+   <!-- {assign var="i" value=$i+1} -->
+     <!-- {if $i % 2 == 1} -->
      <tr class="search_stat1">
      <!-- {else} -->
      <tr class="search_stat2">
      <!-- {/if} -->
-       <th align="left"  class="search_label"><!-- {if $CURRENT.COUNT != $last_count } -->{$i}<!-- {/if} --></th>
+       <th align="left"  class="search_label"><!-- {if $CURRENT.COUNT != $last_count} -->{$i}<!-- {/if} --></th>
        <td align="right" class="description">{$CURRENT.INFO}</td>
-       <td align="right" class="comment">{$CURRENT.COUNT}&nbsp;<!-- {if $CURRENT.COUNT > 1 } -->{lang id="STATS_HITS"}<!-- {else} -->{lang id="STATS_HIT"}<!-- {/if} --></td>
+       <td align="right" class="comment">{$CURRENT.COUNT}&nbsp;<!-- {if $CURRENT.COUNT > 1} -->{lang id="STATS_HITS"}<!-- {else} -->{lang id="STATS_HIT"}<!-- {/if} --></td>
      </tr>
-   <!-- {assign var="last_count" value=$CURRENT.COUNT } -->
+   <!-- {assign var="last_count" value=$CURRENT.COUNT} -->
    {foreachelse}
    <tr>
      <td>
@@ -61,9 +61,9 @@
   <h2>{lang id="JS_RESULTS"}</h2>
 
   <div id="resultset">
-{foreach name="result" from=$RESULTS item="CURRENT" }
+{foreach name="result" from=$RESULTS item="CURRENT"}
  <!-- {assign var="nr" value=$smarty.foreach.result.index} -->
-  <!-- {if ($nr % $ENTRIES_PER_PAGE === 0) } -->
+  <!-- {if ($nr % $ENTRIES_PER_PAGE === 0)} -->
     <div id="page{$nr/$ENTRIES_PER_PAGE}" class="search_default_visible">
 
       <div class="search_toolbar">
@@ -72,7 +72,7 @@
       </div>
 
       <div class="search_result_head">
-      <!-- {if ($nr / $ENTRIES_PER_PAGE) gt 0 } -->
+      <!-- {if ($nr / $ENTRIES_PER_PAGE) gt 0} -->
         <a href="javascript:show({$nr/$ENTRIES_PER_PAGE}-1)" target="_self">
           {lang id="BUTTON_PREVIOUS"}
         </a>
@@ -81,7 +81,7 @@
           &nbsp;
         </a>
       <!-- {/if} -->
-      <!-- {if $nr lt $smarty.foreach.result.total - $ENTRIES_PER_PAGE } -->
+      <!-- {if $nr lt $smarty.foreach.result.total - $ENTRIES_PER_PAGE} -->
         <a href="javascript:show({$nr/$ENTRIES_PER_PAGE}+1)" target="_self">
           {lang id="BUTTON_NEXT"}
         </a>
@@ -104,7 +104,7 @@
        {assign var="nr" value=$nr-$ENTRIES_PER_PAGE+1}-->
 
       <div class="search_result_foot">
-      <!-- {if ($nr / $ENTRIES_PER_PAGE) gt 0 } -->
+      <!-- {if ($nr / $ENTRIES_PER_PAGE) gt 0} -->
         <a href="javascript:show({$nr/$ENTRIES_PER_PAGE}-1)" target="_self">
           {lang id="BUTTON_PREVIOUS"}
         </a>
@@ -113,7 +113,7 @@
           &nbsp;
         </a>
       <!-- {/if} -->
-      <!-- {if $nr lt $smarty.foreach.result.total - $ENTRIES_PER_PAGE } -->
+      <!-- {if $nr lt $smarty.foreach.result.total - $ENTRIES_PER_PAGE} -->
         <a href="javascript:show({$nr/$ENTRIES_PER_PAGE}+1)" target="_self">
           {lang id="BUTTON_NEXT"}
         </a>

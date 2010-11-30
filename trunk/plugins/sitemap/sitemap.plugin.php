@@ -65,7 +65,7 @@ class plugin_sitemap extends StdClass implements IsPlugin
     {
         /* this function expects no arguments */
         global $YANA;
-        $YANA->view->setFunction(YANA_TPL_FUNCTION, 'sitemap', array(__CLASS__, 'createSitemap'));
+        $YANA->view->setFunction('sitemap', array(__CLASS__, 'createSitemap'));
         return true;
     }
 
@@ -74,13 +74,11 @@ class plugin_sitemap extends StdClass implements IsPlugin
      *
      * @access  public
      * @static
-     * @param   array   $params   parameters
-     * @param   Smarty  &$smarty  smarty
      * @return  string
      *
      * @ignore
      */
-    public static function createSitemap($params, &$smarty)
+    public static function createSitemap()
     {
         global $YANA;
 

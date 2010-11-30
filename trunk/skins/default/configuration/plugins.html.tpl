@@ -9,7 +9,7 @@
 {foreach item=PLUGIN from=$PLUGINS}
        {sizeOf value=$PLUGIN.SETUP assign="setupCount"}
        {if ($PLUGIN.ACTIVE == 0 || $setupCount == 0)}{assign var="pluginClass" value="config_is_expert"}{else}{assign var="pluginClass" value=""}{/if}
-        <li {if $pluginClass}style="{$isExpertStyle}"{/if}{if $PLUGIN.ACTIVE == 1 }title="{lang id="ADMIN.23"}" class="selected_option {$pluginClass}"{elseif $PLUGIN.ACTIVE == 2 }title="{lang id="ADMIN.41"}" class="default_selected_option {$pluginClass}"{else}title="{lang id="ADMIN.26"}" class="unselected_option {$pluginClass}"{/if}>
+        <li {if $pluginClass}style="{$isExpertStyle}"{/if}{if $PLUGIN.ACTIVE == 1}title="{lang id="ADMIN.23"}" class="selected_option {$pluginClass}"{elseif $PLUGIN.ACTIVE == 2}title="{lang id="ADMIN.41"}" class="default_selected_option {$pluginClass}"{else}title="{lang id="ADMIN.26"}" class="unselected_option {$pluginClass}"{/if}>
           {if $PLUGIN.ACTIVE > 0}
             <a href={"action=about&type=plugin&target="|cat:$PLUGIN.ID|href}>
               <img class="config_plugin_image" alt="" border="0" src="{$PLUGIN.IMAGE}"/>
@@ -21,7 +21,7 @@
           {/if}
           <span class="title">
             <span class="config_is_expert" style="{$isExpertStyle}">
-              {if $PERMISSION == 100 && (($PLUGIN.ACTIVE > -1 && $PLUGIN.ACTIVE < 2) || !$PLUGIN.ACTIVE) }
+              {if $PERMISSION == 100 && (($PLUGIN.ACTIVE > -1 && $PLUGIN.ACTIVE < 2) || !$PLUGIN.ACTIVE)}
                   <input type="hidden" value="{$PLUGIN.ID}" name="pluginlist[]"/>
                   <input type="checkbox" value="{$PLUGIN.ID}" {if $PLUGIN.ACTIVE} checked="checked" {/if} name="plugins[]" title="{lang id="ADMIN.22"}"/>
                   &nbsp;

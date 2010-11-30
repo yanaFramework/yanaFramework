@@ -108,7 +108,7 @@ language[1] = '{lang id="SDK.JS_1"}';
             <div class="page" id="page_1_1_1" title="1 {lang id="SDK.STEP1"} &ndash; {lang id="SDK.STEP1_1"}">
 
                 <img id="image1" {if $PLUGIN.image} src="{$IMG_SRC}{$PLUGIN.image}" {else}src="{$IMG_SRC}config.png"{/if} class="additional" title="{lang id="PREVIEW"}" alt="{lang id="PREVIEW"}"/>
-    
+
                 <table summary='{lang id="SDK.STEP1_1"}'>
                   <tr title="{lang id="SDK.DESC_ID"}: a-z, 0-9, '-', '_', ä, ö, ü, ß, ' '">
                     <th>{lang id="SDK.FIELD2"}</th>
@@ -123,19 +123,19 @@ language[1] = '{lang id="SDK.JS_1"}';
                     <td>
                       <select name="image" class="optional" onchange="document.getElementById('image1').src='{$IMG_SRC}'+this.value" onkeyup="document.getElementById('image1').src='{$IMG_SRC}'+this.value">
                         {foreach item=FILE from=$FILES}
-                        {if $FILE != "blank.png" }
-                        <option value="{$FILE}" {if $PLUGIN.image == $FILE || ( !$PLUGIN.image && $FILE == 'config.png' ) } selected="selected" {/if}>{$FILE}</option>
+                        {if $FILE != "blank.png"}
+                        <option value="{$FILE}" {if $PLUGIN.image == $FILE || ( !$PLUGIN.image && $FILE == 'config.png' )} selected="selected" {/if}>{$FILE}</option>
                         {/if}
                         {/foreach}
                       </select>
                     </td>
                   </tr>
                 </table>
-    
+
             </div>
-                
+
             <div class="page" id="page_1_1_2" title="1 {lang id="SDK.STEP1"} &ndash; {lang id="SDK.STEP1_2"}">
-    
+
                 <table summary='{lang id="SDK.STEP1_2"}'>
                   <tr>
                     <th>{lang id="SDK.FIELD3"}</th>
@@ -146,33 +146,33 @@ language[1] = '{lang id="SDK.JS_1"}';
                     <td><input type="text" name="url" value="{$PLUGIN.url|default:'http://www.domain.tld'}" class="optional"/></td>
                   </tr>
                 </table>
-    
+
             </div>
-    
+
             <div class="page" id="page_1_1_3" title="1 {lang id="SDK.STEP1"} &ndash; {lang id="SDK.STEP1_3"}">
-    
+
                 <table summary="{lang id="SDK.STEP1_3"}">
                   <tr>
                     <th>{lang id="SDK.FIELD6"}</th>
                     <td><select name="priority" class="mandatory">
-                          <option {if $PLUGIN.priority == 'lowest' } selected="selected" {/if} value="lowest">{lang id="SDK.PRIORITY.LOWEST"}</option>
-                          <option {if $PLUGIN.priority == 'low' } selected="selected" {/if} value="low">{lang id="SDK.PRIORITY.LOW"}</option>
-                          <option {if $PLUGIN.priority == 'normal' || ! $PLUGIN.priority } selected="selected" {/if} value="normal">{lang id="SDK.PRIORITY.NORMAL"}</option>
-                          <option {if $PLUGIN.priority == 'high'  } selected="selected" {/if} value="high">{lang id="SDK.PRIORITY.HIGH"}</option>
-                          <option {if $PLUGIN.priority == 'highest'  } selected="selected" {/if} value="highest">{lang id="SDK.PRIORITY.HIGHEST"}</option>
+                          <option {if $PLUGIN.priority == 'lowest'} selected="selected" {/if} value="lowest">{lang id="SDK.PRIORITY.LOWEST"}</option>
+                          <option {if $PLUGIN.priority == 'low'} selected="selected" {/if} value="low">{lang id="SDK.PRIORITY.LOW"}</option>
+                          <option {if $PLUGIN.priority == 'normal' || ! $PLUGIN.priority} selected="selected" {/if} value="normal">{lang id="SDK.PRIORITY.NORMAL"}</option>
+                          <option {if $PLUGIN.priority == 'high'} selected="selected" {/if} value="high">{lang id="SDK.PRIORITY.HIGH"}</option>
+                          <option {if $PLUGIN.priority == 'highest'} selected="selected" {/if} value="highest">{lang id="SDK.PRIORITY.HIGHEST"}</option>
                         </select>
                     </td>
                   </tr>
                   <tr>
                     <th>{lang id="SDK.FIELD7"}</th>
                     <td><select name="type" class="mandatory">
-                          <option {if $PLUGIN.type == 'default'  } selected="selected" {/if} value="default">default</option>
-                          <option {if $PLUGIN.type == 'primary'  } selected="selected" {/if} value="primary">primary</option>
-                          <option {if $PLUGIN.type == 'config'   } selected="selected" {/if} value="config">config</option>
-                          <option {if $PLUGIN.type == 'read'     } selected="selected" {/if} value="read">read</option>
-                          <option {if $PLUGIN.type == 'write'    } selected="selected" {/if} value="write">write</option>
-                          <option {if $PLUGIN.type == 'security' } selected="selected" {/if} value="security">security</option>
-                          <option {if $PLUGIN.type == 'library'  } selected="selected" {/if} value="library">library</option>
+                          <option {if $PLUGIN.type == 'default'} selected="selected" {/if} value="default">default</option>
+                          <option {if $PLUGIN.type == 'primary'} selected="selected" {/if} value="primary">primary</option>
+                          <option {if $PLUGIN.type == 'config'} selected="selected" {/if} value="config">config</option>
+                          <option {if $PLUGIN.type == 'read'} selected="selected" {/if} value="read">read</option>
+                          <option {if $PLUGIN.type == 'write'} selected="selected" {/if} value="write">write</option>
+                          <option {if $PLUGIN.type == 'security'} selected="selected" {/if} value="security">security</option>
+                          <option {if $PLUGIN.type == 'library'} selected="selected" {/if} value="library">library</option>
                         </select>
                     </td>
                   </tr>
@@ -197,15 +197,15 @@ language[1] = '{lang id="SDK.JS_1"}';
                     <td title="{lang id="SDK.DESC9"}"><input type="text" class="optional" name="package" value="{$PLUGIN.package}"/></td>
                   </tr>
                 </table>
-    
+
             </div>
-    
+
             <div class="page" id="page_1_2_1" title="2 {lang id="SDK.STEP2"} &ndash; {lang id="SDK.STEP2_2"}">
-    
+
                 <p class="help">
                     {lang id="HELP.3"}
                 </p>
-    
+
                 <table summary="Interface">
                   <tr title="{lang id="SDK.DESC_ID"}: a-z, 0-9, '-', '_'">
                     <th>{lang id="SDK.INTERFACE.0"}</th>
@@ -271,7 +271,7 @@ language[1] = '{lang id="SDK.JS_1"}';
                     </td>
                   </tr>
                 </table>
-    
+
                 <button type="button" class="optional" onclick="addInterface()">{lang id="SDK.FIELD11.6"}</button>
 
                 <fieldset style="visibility: hidden;">
@@ -304,9 +304,9 @@ language[1] = '{lang id="SDK.JS_1"}';
 
                 </fieldset>
             </div>
-    
+
             <div class="page" id="page_1_2_2" title="2 {lang id="SDK.STEP2"} &ndash; {lang id="SDK.STEP2_4"}">
-    
+
                 <p class="help">
                     <b>{lang id="HELP.4"}:</b>
                     {lang id="SDK.INTERFACE.0"},
@@ -323,22 +323,22 @@ language[1] = '{lang id="SDK.JS_1"}';
             </div>
 
             <div class="page" id="page_1_3_1" title="3 {lang id="SDK.STEP3"} &ndash; {lang id="SDK.STEP3_2"}">
-    
+
                 <p class="help">
                     {lang id="HELP.0"}{lang id="HELP.6"}
                 </p>
 
                 <label class="mandatory" style="padding: 5px;">{lang id="SDK.SOURCE"} <input name="sourcefile" type="file" class="mandatory" onchange="if (!this.value.match(/\S+\.xml/i)) {ldelim} alert('{lang id="HELP.7"}'); this.value = ''; this.className = 'invalid'; {rdelim} else {ldelim} this.className = 'mandatory'; {rdelim}" value="{$PLUGIN.sourcefile}"/></label>
-    
+
             </div>
 
             <div class="page" id="page_1_4_1" title="4 {lang id="SDK.STEP4"} &ndash; {lang id="SDK.STEP4_1"}">
-    
+
                 <p class="help">
                     {lang id="HELP.2"}
                 </p>
                 <ol>
-{foreach from=$LIST_OF_DBMS item=label key=dbms }
+{foreach from=$LIST_OF_DBMS item=label key=dbms}
                     <li style="padding: 5px; margin: 5px;" class="optional">
                         <label>
                             <input name="{$dbms}" type="file" class="optional" onchange="if (!this.value.match(/\S+\.sql$/i)) {ldelim} alert('{lang id="HELP.8"}'); this.value = ''; this.className = 'invalid'; {rdelim} else {ldelim} this.className = 'optional'; {rdelim}" value="{$PLUGIN.sqlfile}"/>

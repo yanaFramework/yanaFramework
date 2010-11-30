@@ -1,6 +1,6 @@
 <!--  SITEMAP
 {* Set default value *}
-{if $ID == "" }{assign var="ID" value="default"}{/if}
+{if $ID == ""}{assign var="ID" value="default"}{/if}
 -->
 
 <div id="sitemap">

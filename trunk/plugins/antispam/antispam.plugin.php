@@ -77,7 +77,7 @@ class plugin_antispam extends StdClass implements IsPlugin
              * behaviour for both versions.
              */
             $smarty =& $YANA->view->getSmarty();
-            $smarty->register_outputfilter(array(__CLASS__, '_outputFilter'));
+            $smarty->registerFilter(Smarty::FILTER_OUTPUT, array(__CLASS__, '_outputFilter'));
         }
 
         /**
