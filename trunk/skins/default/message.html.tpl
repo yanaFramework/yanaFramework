@@ -8,7 +8,7 @@
         <style type="text/css">
 {import file="default.css"}
         </style>
-<!-- {if $ACTION !== 'null' }    -->     
+<!-- {if $ACTION !== 'null'}    -->
 <!-- {if $STDOUT.LEVEL=='error'} -->
         <meta http-equiv="Refresh" content="9; URL={"action=$ACTION&target=$TARGET"|url}"/>
 <!-- {elseif $STDOUT.LEVEL=='alert' || $STDOUT.LEVEL=='warning'} -->
@@ -41,7 +41,7 @@
             <h1>{$message.header}</h1>
             <p>{$message.text}</p>
 {/foreach}
-<!-- {if $ACTION !== 'null' } -->
+<!-- {if $ACTION !== 'null'} -->
                  <p id="message_pane_redirect"><a class="comment" href={"action=$ACTION&target=$TARGET"|href}>{lang id="REDIRECT"}</a></p>
 <!-- {/if} -->
             </div>

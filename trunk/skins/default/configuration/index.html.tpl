@@ -96,7 +96,7 @@
   <div class="config_title">
     {lang id="USER.10"}
   </div>
-  
+
  {import id="password_template"}
 
   <div class="config_title">

@@ -61,7 +61,7 @@
                             </thead>
                             <tbody>
                               {foreach from=$RULES[$profile] key="ruleId" item="grant" name="row"}
-                                  <tr class="gui_generator_{if ($smarty.foreach.row.iteration % 2) == 0 }even{else}odd{/if}_row">
+                                  <tr class="gui_generator_{if ($smarty.foreach.row.iteration % 2) == 0}even{else}odd{/if}_row">
                                       <td><input id="rule_{$ruleId}" type="checkbox" name="rules[]" value="{$ruleId}" /></td>
                                       <td><label for="rule_{$ruleId}">{$grant.GROUP_ID}</label></td>
                                       <td><label for="rule_{$ruleId}">{$grant.ROLE_ID}</label></td>
@@ -184,7 +184,7 @@
                                         </thead>
                                         <tbody>
                                           {foreach from=$GRANTED_RULES[$profile][$user] key="ruleId" item="grant" name="row2"}
-                                              <tr class="gui_generator_{if ($smarty.foreach.row2.iteration % 2) == 0 }even{else}odd{/if}_row">
+                                              <tr class="gui_generator_{if ($smarty.foreach.row2.iteration % 2) == 0}even{else}odd{/if}_row">
                                                   <td><input id="granted_rule_{$ruleId}" type="checkbox" name="rules[]" value="{$ruleId}" /></td>
                                                   <td><label for="granted_rule_{$ruleId}">{$grant.GROUP_ID}</label></td>
                                                   <td><label for="granted_rule_{$ruleId}">{$grant.ROLE_ID}</label></td>

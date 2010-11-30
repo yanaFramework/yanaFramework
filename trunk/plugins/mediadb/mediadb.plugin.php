@@ -12,7 +12,7 @@
  *        Erlaubt es Nutzern Mediendateien in die Datenbank einzustellen und
  *        in öffentlichen oder privaten Ordnern oder Galerien zu gruppieren.
  * }
- * 
+ *
  * @type       primary
  * @group      media
  * @priority   2
@@ -277,19 +277,18 @@ class plugin_mediadb extends StdClass implements IsPlugin
      */
     public function mediadb()
     {
-        Yana::getInstance()->view->setFunction(YANA_TPL_FUNCTION, 'folderList', 'plugin_mediadb::smartyFolderList');
+        Yana::getInstance()->view->setFunction('folderList', 'plugin_mediadb::smartyFolderList');
         return true;
     }
 
     /**
-     * smarty function to create a folder list from a data table
+     * <<smarty function>> Create a folder list from a data table.
      *
      * @access    public
      * @static
-     * @param   array  $args  function arguments
      * @return  string
      */
-    public static function smartyFolderList(array $args)
+    public static function smartyFolderList()
     {
         $form = self::getMediafolderForm();
         return $form->toString();

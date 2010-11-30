@@ -13,7 +13,7 @@
     </head>
 
 <body>
-  <li {if $PLUGIN.ACTIVE == 1 }title="{lang id="ADMIN.23"}" class="plugin_setup selected_option"{elseif $PLUGIN.ACTIVE == 2 }title="{lang id="ADMIN.41"}" class="plugin_setup default_selected_option"{else}title="{lang id="ADMIN.26"}" class="plugin_setup unselected_option"{/if}>
+  <li {if $PLUGIN.ACTIVE == 1}title="{lang id="ADMIN.23"}" class="plugin_setup selected_option"{elseif $PLUGIN.ACTIVE == 2}title="{lang id="ADMIN.41"}" class="plugin_setup default_selected_option"{else}title="{lang id="ADMIN.26"}" class="plugin_setup unselected_option"{/if}>
   <!-- BEGIN OPTION -->
 {if $PLUGIN.ACTIVE}
   <div onmouseover="this.className='plugin_hover'" onmouseout="this.className=''">

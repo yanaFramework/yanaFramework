@@ -62,7 +62,7 @@ class plugin_counter extends StdClass implements IsPlugin
         self::$counter = new Counter(self::$id);
         self::$counter->getNextValue();
         if (isset($GLOBALS['YANA'])) {
-            $GLOBALS['YANA']->view->setFunction(YANA_TPL_FUNCTION, 'visitorCount', array(__CLASS__, 'visitorCount'));
+            $GLOBALS['YANA']->view->setFunction('visitorCount', array(__CLASS__, 'visitorCount'));
         }
         return true;
     }
@@ -75,10 +75,9 @@ class plugin_counter extends StdClass implements IsPlugin
      * @static
      * @access  public
      * @param   array   $params   params
-     * @param   Smarty  &$smarty  smarty object
      * @return  string
      */
-    public static function visitorCount(array $params, Smarty &$smarty)
+    public static function visitorCount(array $params)
     {
         $count = self::$counter->getCurrentValue();
         $text = Language::getInstance()->getVar("VISITOR_COUNT");
