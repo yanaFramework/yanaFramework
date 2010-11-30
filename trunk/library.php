@@ -330,15 +330,6 @@ if (!defined('YANA_TPL_CACHE')) {
 if (!defined('YANA_TPL_CACHE_DIR')) {
     define('YANA_TPL_CACHE_DIR',         true);
 }
-if (!defined('YANA_TPL_FUNCTION')) {
-    define('YANA_TPL_FUNCTION',          0);
-}
-if (!defined('YANA_TPL_MODIFIER')) {
-    define('YANA_TPL_MODIFIER',          1);
-}
-if (!defined('YANA_TPL_BLOCK')) {
-    define('YANA_TPL_BLOCK',             2);
-}
 
 /**#@-*/
 /**#@+
