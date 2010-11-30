@@ -1,0 +1,39 @@
+How to update Smarty:
+
+To update Smarty to a later version,
+- go to http://smarty.net
+- download the latest version
+- unpack the archive to this directory
+
+Note that you may remove the demos, as you don't need them to run the engine.
+
+If you are a developer and use an editor with syntax-checking, you may also
+want to remove some documentation files, which you don't need.
+I usually do so, as some of the contents, esp. PHP-tags in the change-log,
+may cause editors - NetBeans in my case - to report syntax-errors inside the
+documentation files. These are false-positives, of course.
+
+
+Note: if you are a developer, you may also want to take a look at the latest
+unstable version of Smarty in the SVN repository and join the discussion on
+their online-forum.
+
+
+Personal note:
+I would like to express my personal respect for the Smarty development team,
+which has done a great job of providing people with (as I believe) the most
+popular template engine ever for PHP. Keep up the good work!
+
+Thomas Meyer (Developer Yana Framework)
+
+
+Legal Note: The Yana Framework USES the Smarty Template-Engine.
+It is NOT related to that project in any way.
+
+For questions regarding Smarty:
+- see the manual at http://smarty.net/docs.php or
+- use the Smarty forum at http://www.phpinsider.com/smarty-forum/
+
+For questions about the Yana Framework:
+- see the manual at http://yanaframework.net/docs_en or
+- use the forum at http://yanaframework.net/forum
