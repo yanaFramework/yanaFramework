@@ -159,11 +159,11 @@ class SmartUtility extends Utility
      * @access  public
      * @static
      * @param   string  $source     source
-     * @param   Smarty  &$smarty    smarty object reference
+     * @param   Smarty  $smarty    smarty object reference
      * @return  string
      * @ignore
      */
-    public static function htmlPostProcessor($source, Smarty &$smarty)
+    public static function htmlPostProcessor($source, Smarty $smarty)
     {
         assert('is_string($source); // Wrong type for argument 1. String expected');
 
@@ -181,11 +181,11 @@ class SmartUtility extends Utility
      * @access  public
      * @static
      * @param   string  $source           source
-     * @param   Smarty  &$templateClass   template class
+     * @param   Smarty  $templateClass   template class
      * @return  string
      * @ignore
      */
-    public static function htmlPreProcessor($source, Smarty &$templateClass)
+    public static function htmlPreProcessor($source, Smarty $templateClass)
     {
         assert('is_string($source); // Wrong type for argument 1. String expected');
         global $YANA;
@@ -200,14 +200,14 @@ class SmartUtility extends Utility
          $pattern = "/" . YANA_LEFT_DELIMITER_REGEXP . "(?:include(?:_php)?|php)? .*" .
             YANA_RIGHT_DELIMITER_REGEXP ."/Usi";
         if (preg_match($pattern, $source, $tag)) {
-            $templateClass->trigger_error("Illegal function name: {$tag[0]}", E_USER_ERROR);
+            trigger_error("Illegal function name: {$tag[0]}", E_USER_ERROR);
             exit(1);
         }
         unset ($pattern);
         /**
          * if file is included, display body content only
          */
-        if ($templateClass->get_template_vars('FILE_IS_INCLUDE')) {
+        if ($templateClass->getTemplateVars('FILE_IS_INCLUDE')) {
             $source = preg_replace("/^.*<body(.*)>(.*)<\/body>.*$/Usi", "<div\\1>\\2</div>", $source);
         }
 
@@ -234,7 +234,7 @@ class SmartUtility extends Utility
         /**
          * resolve relative path names
          */
-        $basedir = (string) $templateClass->get_template_vars('BASEDIR');
+        $basedir = (string) $templateClass->getTemplateVars('BASEDIR');
         if (!empty($basedir)) {
             $pattern = '/('. YANA_LEFT_DELIMITER_REGEXP . ')import\s+(?:preparser(?:="true")?\s+|)file="(\S*)(".*' .
                 YANA_RIGHT_DELIMITER_REGEXP . ')/Ui';
@@ -297,12 +297,12 @@ class SmartUtility extends Utility
      *
      * @access  public
      * @static
-     * @param   string  $source             source
-     * @param   Smarty  &$templateClass     template class
+     * @param   string  $source         source
+     * @param   Smarty  $templateClass  template class
      * @return  string
      * @ignore
      */
-    public static function outputFilter($source, Smarty &$templateClass)
+    public static function outputFilter($source, Smarty $templateClass)
     {
         assert('is_string($source); // Wrong type for argument 1. String expected');
 
@@ -441,7 +441,9 @@ class SmartUtility extends Utility
         if (empty($array)) {
 
             if (isset($GLOBALS['YANA'])) {
-                $array = $GLOBALS['YANA']->view->getSmarty()->get_template_vars();
+                /* @var $view SmartView */
+                $view = $GLOBALS['YANA']->view;
+                $array = $view->getVar();
                 self::_replace($string, $array);
                 return $string;
 
@@ -1525,12 +1527,10 @@ class SmartUtility extends Utility
      *
      * @static
      * @access  public
-     * @param   array   $params     parameters
-     * @param   Smarty  &$smarty    smarty object reference
      * @return  int
      * @since   3.1.0
      */
-    public static function toolbar(array $params, Smarty &$smarty)
+    public static function toolbar()
     {
         $menu = PluginMenu::getTextMenu();
         return self::printUL3($menu, true);
@@ -1546,11 +1546,9 @@ class SmartUtility extends Utility
      *
      * @static
      * @access  public
-     * @param   array   $params     parameters
-     * @param   Smarty  &$smarty    smarty object reference
      * @return  string
      */
-    public static function visitorCount(array $params, Smarty &$smarty)
+    public static function visitorCount()
     {
         return '';
     }
@@ -1562,19 +1560,18 @@ class SmartUtility extends Utility
      *
      * @static
      * @access  public
-     * @param   array   $params     parameters
-     * @param   Smarty  &$smarty    smarty object reference
+     * @param   array $params  parameters
      * @return  string
      * @since   3.1.0
      */
-    public static function lang(array $params, Smarty &$smarty)
+    public static function lang(array $params)
     {
         global $YANA;
         if (isset($params['id'])) {
             $id = (string) $params['id'];
             return (string) Language::getInstance()->getVar($id);
         } else {
-            $smarty->trigger_error("Missing argument 'id' in function " . __FUNCTION__ . "()", E_USER_WARNING);
+            trigger_error("Missing argument 'id' in function " . __FUNCTION__ . "()", E_USER_WARNING);
             return "";
         }
     }
@@ -1596,12 +1593,12 @@ class SmartUtility extends Utility
      *
      * @static
      * @access  public
-     * @param   array   $params     parameters
-     * @param   Smarty  &$smarty    smarty object reference
+     * @param   array                     $params  parameters
+     * @param   Smarty_Internal_Template  $smarty  smarty object reference
      * @return  int
      * @since   2.9.7
      */
-    public static function sizeOf(array $params, Smarty &$smarty)
+    public static function sizeOf(array $params, Smarty_Internal_Template $smarty)
     {
         if (isset($params['value'])) {
             $value = $params['value'];
@@ -1623,7 +1620,7 @@ class SmartUtility extends Utility
             } else {
                 $message = sprintf(YANA_ERROR_WRONG_ARGUMENT, 'assign', 'String in function '.__FUNCTION__.
                     '()', gettype($params['value']));
-                $smarty->trigger_error($message, E_USER_WARNING);
+                trigger_error($message, E_USER_WARNING);
             }
         } else {
             return $result;
@@ -1645,16 +1642,15 @@ class SmartUtility extends Utility
      *
      * @static
      * @access  public
-     * @param   array   $params     parameters
-     * @param   Smarty  &$smarty    smarty object reference
+     * @param   array   $params  parameters
      * @return  string
      */
-    public static function portlet(array $params, Smarty &$smarty)
+    public static function portlet(array $params)
     {
         if (isset($params['action'])) {
             $url = self::url("action={$params['action']}");
         } else {
-            $smarty->trigger_error("Missing argument 'action' in function " . __FUNCTION__ . "()", E_USER_WARNING);
+            trigger_error("Missing argument 'action' in function " . __FUNCTION__ . "()", E_USER_WARNING);
             return "";
         }
         if (isset($params['title'])) {
@@ -1681,13 +1677,11 @@ class SmartUtility extends Utility
      *
      * @access  public
      * @static
-     * @param   array   $params     parameters
-     * @param   Smarty  &$smarty    smarty object reference
      * @return  string
      *
      * @ignore
      */
-    public static function applicationBar($params, &$smarty)
+    public static function applicationBar()
     {
         global $YANA;
 
@@ -1802,11 +1796,11 @@ class SmartUtility extends Utility
      *
      * @static
      * @access  public
-     * @param   array   $params     parameters
-     * @param   Smarty  &$smarty    smarty object reference
+     * @param   array                     $params  parameters
+     * @param   Smarty_Internal_Template  $smarty  smarty object reference
      * @return  string
      */
-    public static function varDump(array $params, Smarty &$smarty)
+    public static function varDump(array $params, Smarty_Internal_Template $smarty)
     {
         if (isset($params['var'])) {
             if (is_scalar($params['var'])) {
@@ -1818,7 +1812,7 @@ class SmartUtility extends Utility
             }
         } else {
             return '<pre style="text-align: left">' .
-                htmlspecialchars(var_export($smarty->get_template_vars(), true), ENT_COMPAT, 'UTF-8') . '</pre>';
+                htmlspecialchars(var_export($smarty->getTemplateVars(), true), ENT_COMPAT, 'UTF-8') . '</pre>';
         }
     }
 
@@ -1827,11 +1821,10 @@ class SmartUtility extends Utility
      *
      * @access  public
      * @static
-     * @param   array   $params     parameters
-     * @param   Smarty  &$smarty    smarty object reference
+     * @param   array  $params  parameters
      * @return  string
      */
-    public static function rss(array $params, Smarty &$smarty)
+    public static function rss(array $params)
     {
         assert('isset($GLOBALS["YANA"]); // Global var $YANA not set');
         if (isset($params['image'])) {
@@ -1856,10 +1849,10 @@ class SmartUtility extends Utility
      * @access  public
      * @static
      * @param   array   $params     parameters
-     * @param   Smarty  &$smarty    smarty object reference
+     * @param   Smarty  $smarty    smarty object reference
      * @return  string
      */
-    public static function printArray(array $params, &$smarty)
+    public static function printArray(array $params, $smarty)
     {
         if (!isset($params['value'])) {
             return "";
@@ -1921,11 +1914,10 @@ class SmartUtility extends Utility
      *
      * @access  public
      * @static
-     * @param   array   $params     parameters
-     * @param   Smarty  &$smarty    smarty object reference
+     * @param   array  $params  parameters
      * @return  string
      */
-    public static function printUnorderedList(array $params, Smarty &$smarty)
+    public static function printUnorderedList(array $params)
     {
         /* argument $value */
         if (!isset($params['value'])) {
@@ -2320,14 +2312,14 @@ class SmartUtility extends Utility
      *
      * @access  public
      * @static
-     * @param   array   $params     parameters
-     * @param   string  $template   template
-     * @param   Smarty  &$smarty    smarty object reference
-     * @param   mixed   &$repeat    repeat
+     * @param   array                     $params    parameters
+     * @param   string                    $template  template
+     * @param   Smarty_Internal_Template  $smarty    smarty object reference
+     * @param   mixed                     &$repeat   repeat
      * @return  string
      * @ignore
      */
-    public static function loopArray(array $params, $template, Smarty &$smarty, &$repeat)
+    public static function loopArray(array $params, $template, $smarty, &$repeat)
     {
         if (!is_array($params['from'])) {
             return "";
@@ -2426,11 +2418,10 @@ class SmartUtility extends Utility
      * @static
      * @access  public
      * @name    SmartUtility::guiEmbeddedTags()
-     * @param   array   $params     parameters
-     * @param   Smarty  &$smarty    smarty object reference
+     * @param   array   $params  parameters
      * @return  string
      */
-    public static function guiEmbeddedTags(array $params, Smarty &$smarty)
+    public static function guiEmbeddedTags(array $params)
     {
         global $YANA;
 
@@ -2441,12 +2432,12 @@ class SmartUtility extends Utility
         if (isset($params['show']) && !is_string($params['show'])) {
             $message = sprintf(YANA_ERROR_WRONG_ARGUMENT, 'show in '.__FUNCTION__.
                 '()', 'String', gettype($params['show']));
-            $smarty->trigger_error($message, E_USER_WARNING);
+            trigger_error($message, E_USER_WARNING);
             return "";
 
         } elseif (isset($params['show']) && !preg_match('/^(\w+|\||-)(,(\w+|\||-))*$/is', $params['show'])) {
             $message = "Argument 'show' contains illegal characters in function ".__FUNCTION__."().";
-            $smarty->trigger_error($message, E_USER_WARNING);
+            trigger_error($message, E_USER_WARNING);
             return "";
 
         } elseif (!isset($params['show'])) {
@@ -2461,12 +2452,12 @@ class SmartUtility extends Utility
         if (!empty($params['hide']) && !is_string($params['hide'])) {
             $message = sprintf(YANA_ERROR_WRONG_ARGUMENT, 'hide in '.__FUNCTION__.
                 '()', 'String', gettype($params['hide']));
-            $smarty->trigger_error($message, E_USER_WARNING);
+            trigger_error($message, E_USER_WARNING);
             return "";
 
         } elseif (!empty($params['hide']) && !preg_match('/^[\w,]+$/is', $params['hide'])) {
             $message = "Argument 'hide' contains illegal characters for function ".__FUNCTION__."().";
-            $smarty->trigger_error($message, E_USER_WARNING);
+            trigger_error($message, E_USER_WARNING);
             return "";
 
         } elseif (empty($params['hide'])) {
@@ -2509,26 +2500,26 @@ class SmartUtility extends Utility
      * @static
      * @access  public
      * @name    SmartUtility::smlLoad()
-     * @param   array   $params     parameters
-     * @param   Smarty  &$smarty    smarty object reference
+     * @param   array                     $params  parameters
+     * @param   Smarty_Internal_Template  $smarty  smarty object reference
      * @return  string
      */
-    public static function smlLoad(array $params, Smarty &$smarty)
+    public static function smlLoad(array $params, Smarty_Internal_Template $smarty)
     {
         /* input checking */
         if (empty($params['file'])) {
-            $smarty->trigger_error("Missing argument 'file' in function sml_load()", E_USER_WARNING);
+            trigger_error("Missing argument 'file' in function sml_load()", E_USER_WARNING);
             return "";
         } elseif (!is_string($params['file'])) {
             $message = sprintf(YANA_ERROR_WRONG_ARGUMENT, 'file in sml_load()', 'String', gettype($params['file']));
-            $smarty->trigger_error($message, E_USER_WARNING);
+            trigger_error($message, E_USER_WARNING);
             return "";
         } elseif (!preg_match('/^[\w\d-_]+\.(?:sml|config)$/i', $params['file'])) {
             $message = "Argument 'file' contains illegal characters for function sml_load().";
-            $smarty->trigger_error($message, E_USER_WARNING);
+            trigger_error($message, E_USER_WARNING);
             return "";
         } elseif (!is_file($smarty->config_dir.$params['file'])) {
-            $smarty->trigger_error("Argument 'file' is not a valid file path in function sml_load().", E_USER_WARNING);
+            trigger_error("Argument 'file' is not a valid file path in function sml_load().", E_USER_WARNING);
             return "";
         } else {
             $in_file = $smarty->config_dir.$params['file'];
@@ -2539,11 +2530,11 @@ class SmartUtility extends Utility
         } elseif (!is_string($params['section'])) {
             $format = YANA_ERROR_WRONG_ARGUMENT;
             $message = sprintf($format, 'section in sml_load()', 'String', gettype($params['section']));
-            $smarty->trigger_error($message, E_USER_WARNING);
+            trigger_error($message, E_USER_WARNING);
             return "";
         } elseif (!preg_match('/^([\w\d-_\.]+)$/i', $params['section'])) {
             $message = "Argument 'section' contains illegal characters for function sml_load().";
-            $smarty->trigger_error($message, E_USER_WARNING);
+            trigger_error($message, E_USER_WARNING);
             return "";
         } else {
             $in_section = $params['section'];
@@ -2556,12 +2547,12 @@ class SmartUtility extends Utility
                 if (!is_boolean($params['global'])) {
                     $format = YANA_ERROR_WRONG_ARGUMENT;
                     $message = sprintf($format, 'global in sml_load()', 'Boolean', gettype($params['global']));
-                    $smarty->trigger_error($message, E_USER_WARNING);
+                    trigger_error($message, E_USER_WARNING);
                     return "";
                 } else {
                     $message = "Argument 'global' is deprecated in function sml_load(). You should consider ".
                         "using scope='parent' (equals global=true) or scope='local' (equals global=false) instead.";
-                    $smarty->trigger_error($message, E_USER_NOTICE);
+                    trigger_error($message, E_USER_NOTICE);
                     if ($params['global'] === true) {
                         $in_scope = 'parent';
                     } elseif ($params['global'] === false) {
@@ -2573,7 +2564,7 @@ class SmartUtility extends Utility
             } // end if
         } elseif (!is_string($params['scope'])) {
             $message = sprintf(YANA_ERROR_WRONG_ARGUMENT, 'scope in sml_load()', 'String', gettype($params['scope']));
-            $smarty->trigger_error($message, E_USER_WARNING);
+            trigger_error($message, E_USER_WARNING);
             return "";
 
         } else {
@@ -2599,7 +2590,7 @@ class SmartUtility extends Utility
                     $message = "Argument 'scope' has an illegal value for " .
                         "function sml_load(). Accepted values are: " .
                         "'template_vars', 'global', 'local', 'parent'.";
-                    $smarty->trigger_error($message, E_USER_WARNING);
+                    trigger_error($message, E_USER_WARNING);
                     return "";
                 break;
             } // end switch
@@ -2650,7 +2641,7 @@ class SmartUtility extends Utility
             $keys = array_keys($array);
             for ($i = 0; $i < count($keys); $i++)
             {
-                $smarty->assign_by_ref($keys[$i], $array[$keys[$i]], true);
+                $smarty->assignByRef($keys[$i], $array[$keys[$i]], true);
             }
         } else {
             for ($i = 0; $i <= $i_max; $i++)
@@ -2799,7 +2790,7 @@ class SmartUtility extends Utility
         } elseif (isset($params['id'])) {
 
             assert('is_string($params["id"]); // Wrong argument type argument 1. String expected');
-            $filename = $params['id'];
+            $filename = 'id:' . $params['id'];
 
         } else {
 

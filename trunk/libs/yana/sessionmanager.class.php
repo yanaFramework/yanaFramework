@@ -98,14 +98,12 @@ class SessionManager extends Singleton implements Serializable
     public static function &getInstance()
     {
         if (!isset(self::$_instance)) {
-            self::getDatasource();
             self::$_instance = new self();
             $defaultProfileId = Yana::getDefault('profile');
             if (is_string($defaultProfileId)) {
                 self::$_defaultProfileId = mb_strtoupper($defaultProfileId);
             }
         }
-        assert('isset(self::$_database);');
         return self::$_instance;
     }
 
@@ -279,13 +277,14 @@ class SessionManager extends Singleton implements Serializable
     {
         // remove old predefined security settings
         $where = array('actionrule_predefined', '=', true);
-        if (!self::$_database->remove('securityactionrules', $where, 0)) {
-            self::$_database->rollback();
+        $database = self::getDatasource();
+        if (!$database->remove('securityactionrules', $where, 0)) {
+            $database->rollback();
             throw new DbAlert("Unable to delete old entries.");
         }
         // remove old actions
-        if (!self::$_database->remove('securityaction', array(), 0)) {
-            self::$_database->rollback();
+        if (!$database->remove('securityaction', array(), 0)) {
+            $database->rollback();
             throw new DbAlert("Unable to delete old entries.");
         }
         $rows = array();
@@ -339,8 +338,8 @@ class SessionManager extends Singleton implements Serializable
         assert('!isset($row); // Cannot redeclare var $row');
         foreach ($actions as $row)
         {
-            if (!self::$_database->insert('securityaction', $row)) {
-                self::$_database->rollback();
+            if (!$database->insert('securityaction', $row)) {
+                $database->rollback();
                 throw new DbAlert("Unable to insert new action.");
             }
         }
@@ -350,12 +349,12 @@ class SessionManager extends Singleton implements Serializable
         assert('!isset($group); // Cannot redeclare var $group');
         foreach (array_unique($groups) as $groupId)
         {
-            if (self::$_database->exists("securitygroup.$groupId")) {
+            if ($database->exists("securitygroup.$groupId")) {
                 continue;
             }
             $group = array('group_id' => $groupId, 'group_name' => $groupId);
-            if (!self::$_database->insert("securitygroup.$groupId", $group)) {
-                self::$_database->rollback();
+            if (!$database->insert("securitygroup.$groupId", $group)) {
+                $database->rollback();
                 throw new DbAlert("Unable to insert new group.");
             }
         }
@@ -365,12 +364,12 @@ class SessionManager extends Singleton implements Serializable
         assert('!isset($role); // Cannot redeclare var $role');
         foreach (array_unique($roles) as $roleId)
         {
-            if (self::$_database->exists("securityrole.$roleId")) {
+            if ($database->exists("securityrole.$roleId")) {
                 continue;
             }
             $role = array('role_id' => $roleId, 'role_name' => $roleId);
-            if (!self::$_database->insert("securityrole.$roleId", $role)) {
-                self::$_database->rollback();
+            if (!$database->insert("securityrole.$roleId", $role)) {
+                $database->rollback();
                 throw new DbAlert("Unable to insert new role.");
             }
         }
@@ -379,13 +378,13 @@ class SessionManager extends Singleton implements Serializable
         assert('!isset($row); // Cannot redeclare var $row');
         foreach ($rows as $row)
         {
-            if (!self::$_database->insert('securityactionrules', $row)) {
-                self::$_database->rollback();
+            if (!$database->insert('securityactionrules', $row)) {
+                $database->rollback();
                 throw new DbAlert("Unable to insert new security setting.");
             }
         }
         unset($row);
-        if (!self::$_database->commit()) {
+        if (!$database->commit()) {
             throw new DbAlert("Unable to commit changes.");
         }
     }
@@ -463,16 +462,16 @@ class SessionManager extends Singleton implements Serializable
                 'unexpected result in cached value */');
             return $this->cache["$profileId\\$userName\\$action"];
         }
-
+        $database = self::getDatasource();
         // if security settings are missing, auto-refresh them and issue a warning
-        if (self::$_database->isEmpty("securityactionrules")) {
+        if ($database->isEmpty("securityactionrules")) {
             self::refreshPluginSecuritySettings();
             Log::report("No security settings found. Trying to auto-refresh table 'securityactionrules'.");
             return false;
         }
         // find out what the required permission level is to perform the current action
         assert('!isset($requiredLevels); // Cannot redeclare var $requiredLevels');
-        $requiredLevels = self::$_database->select("securityactionrules", array('action_id', '=', $action));
+        $requiredLevels = $database->select("securityactionrules", array('action_id', '=', $action));
         // if not defined, load defaults
         if (empty($requiredLevels)) {
             $requiredLevels = Yana::getDefault('event.user');
@@ -528,11 +527,12 @@ class SessionManager extends Singleton implements Serializable
         }
         $result = false;
         $required = array_change_key_case($required, CASE_LOWER);
+        $database = self::getDatasource();
         // loop through rules
         assert('!isset($function); // cannot redeclare $function');
         foreach (self::$rules as $function)
         {
-            $allowed = call_user_func($function, self::$_database, $required, $profileId, $action, $userName);
+            $allowed = call_user_func($function, $database, $required, $profileId, $action, $userName);
             if ($allowed === false) {
                 $result = false;
                 break;
@@ -599,7 +599,8 @@ class SessionManager extends Singleton implements Serializable
             throw new NotFoundException("No such user '$userName'.", E_USER_WARNING);
         }
 
-        $remove = self::$_database->remove("securitylevel", array(
+        $database = self::getDatasource();
+        $remove = $database->remove("securitylevel", array(
                 array("user_id", '=', $userName),
                 'and',
                 array(
@@ -609,16 +610,16 @@ class SessionManager extends Singleton implements Serializable
                 )
             ), 1);
         if ($remove) {
-            self::$_database->commit();
+            $database->commit();
         }
-        $result = self::$_database->insert("securitylevel", array(
+        $result = $database->insert("securitylevel", array(
                 "user_id" => $userName,
                 "profile" => $profileId,
                 "security_level" => $level,
                 "user_created" => $currentUser,
                 "user_proxy_active" => true
             ));
-        if (!$result || !self::$_database->commit()) {
+        if (!$result || !$database->commit()) {
             throw new Error("Unable to commit changed security level for user '$userName'.", E_USER_WARNING);
         }
     }
@@ -658,8 +659,9 @@ class SessionManager extends Singleton implements Serializable
         $level = 0;
 
         if (!empty($userName)) {
+            $database = self::getDatasource();
             // 1) get security level for current profile
-            $query = new DbSelect(self::$_database);
+            $query = new DbSelect($database);
             $query->setKey('securitylevel.*.security_level');
             $query->setWhere(array(
                 array('user_id', '=', $userName),
@@ -668,7 +670,7 @@ class SessionManager extends Singleton implements Serializable
             ));
             $query->setOrderBy(array('security_level'), array(true));
             $query->setLimit(1);
-            $level = self::$_database->select($query);
+            $level = $database->select($query);
 
             // 2) fall-back to security level for default profile
             if (empty($level) || !is_array($level)) {
@@ -678,7 +680,7 @@ class SessionManager extends Singleton implements Serializable
                         'and',
                         array('profile', '=', self::$_defaultProfileId)
                     ));
-                    $level = self::$_database->select($query);
+                    $level = $database->select($query);
                 }
             }
 

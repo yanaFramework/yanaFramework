@@ -28,7 +28,7 @@
  */
 
 /**
- * <<utility>> Smarty abstract resource
+ * <<utility>> Smarty abstract resource.
  *
  * This is a resource wrapper class for use with the smarty template engine.
  *

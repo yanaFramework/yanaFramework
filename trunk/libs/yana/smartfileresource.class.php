@@ -28,7 +28,7 @@
  */
 
 /**
- * <<utility>> Smarty id-resource
+ * <<utility>> Smarty id-resource.
  *
  * This is a resource wrapper class for use with the smarty template engine.
  *
@@ -61,6 +61,7 @@
  */
 class SmartFileResource extends SmartAbstractResource
 {
+
     /**
      * Retrieve the resource
      *
@@ -115,6 +116,7 @@ class SmartFileResource extends SmartAbstractResource
             return false;
         }
     }
+
 }
 
 ?>

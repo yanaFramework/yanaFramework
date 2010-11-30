@@ -28,7 +28,7 @@
  */
 
 /**
- * <<utility>> Smarty string-resource
+ * <<utility>> Smarty string-resource.
  *
  * This is a resource wrapper class for use with the smarty template engine.
  *
@@ -62,6 +62,7 @@
  */
 class SmartStringResource extends SmartAbstractResource
 {
+
     /**
      * Retrieve the resource
      *
@@ -103,6 +104,7 @@ class SmartStringResource extends SmartAbstractResource
         $output = time();
         return true;
     }
+
 }
 
 ?>
