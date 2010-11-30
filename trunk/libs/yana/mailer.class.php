@@ -88,7 +88,7 @@ class Mailer extends SmartTemplate
      * @since   2.8
      */
     public function send($recipient)
-    {       
+    {
         assert('is_string($this->subject); // Invalid property "subject". String expected');
         assert('is_string($this->sender); // Invalid property "sender". String expected');
         assert('is_string($recipient); // Wrong type for argument 1. String expected');
@@ -101,7 +101,7 @@ class Mailer extends SmartTemplate
          */
         $smarty = $this->getSmarty();
         $smarty->default_modifiers = array('replaceToken');
-        
+
         /* prepare header */
         if (!empty($this->sender)) {
             $header = array();
@@ -520,7 +520,7 @@ class Mailer extends SmartTemplate
         if (isset($YANA)) {
             /* import only non-existing vars */
             $vars = $YANA->getVar('*');
-            $vars = Hashtable::merge($vars, $this->localSmarty->get_template_vars());
+            $vars = Hashtable::merge($vars, $this->localSmarty->getTemplateVars());
             $this->localSmarty->assign($vars);
         }
         return parent::toString();

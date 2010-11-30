@@ -209,12 +209,7 @@ class PluginManager extends Singleton implements IsReportable
      */
     private function __construct()
     {
-        if (!file_exists(self::$_path)) {
-            touch(self::$_path);
-            clearstatcache();
-            $this->refreshPluginFile();
-        }
-        $this->_config = unserialize(file_get_contents(self::$_path));
+        // intentionally left blank
     }
 
     /**
@@ -265,6 +260,72 @@ class PluginManager extends Singleton implements IsReportable
     public static function getConfigFilePath()
     {
         return self::$_path;
+    }
+
+    /**
+     * Get configuration array.
+     *
+     * @access  private
+     * @return  array
+     */
+    private function _getConfig()
+    {
+        if (empty($this->_config)) {
+            if (!file_exists(self::$_path)) {
+                touch(self::$_path);
+                clearstatcache();
+                $this->refreshPluginFile();
+            }
+            $this->_config = unserialize(file_get_contents(self::$_path));
+        }
+        return $this->_config;
+    }
+
+    /**
+     * Get methods configuration array.
+     *
+     * @access  private
+     * @return  array
+     */
+    private function _getPluginsConfig()
+    {
+        $config = $this->_getConfig();
+        return $config[self::PLUGINS];
+    }
+
+    /**
+     * Get implementations configuration array.
+     *
+     * If the event is not registered, the function returns NULL.
+     *
+     * @access  private
+     * @return  array
+     */
+    private function _getImplementationConfig($event)
+    {
+        $config = $this->_getConfig();
+        return (isset($config[self::IMPLEMENTATIONS][$event])) ? $config[self::IMPLEMENTATIONS][$event] : null;
+    }
+
+    /**
+     * Get activity state configuration.
+     *
+     * Returns an item of PluginActivityEnumeration.
+     * If the plugin does not exist, the function always returns
+     * PluginActivityEnumeration::INACTIVE.
+     *
+     * @access  private
+     * @param   $pluginName
+     * @return  int
+     */
+    private function _getActivityState($pluginName)
+    {
+        $config = $this->_getConfig();
+        if (isset($config[self::ACTIVE][$pluginName])) {
+            return $config[self::ACTIVE][$pluginName];
+        } else {
+            return PluginActivityEnumeration::INACTIVE;
+        }
     }
 
     /**
@@ -382,10 +443,9 @@ class PluginManager extends Singleton implements IsReportable
      * If there has been no previous event, the function will return an empty string.
      *
      * @access  public
-     * @static
      * @return  string
      */
-    public static function getFirstEvent()
+    public function getFirstEvent()
     {
         return self::$_firstEvent;
     }
@@ -406,19 +466,18 @@ class PluginManager extends Singleton implements IsReportable
      * If there is no action, the function will return an empty array.
      *
      * @access  public
-     * @static
      * @return  array
      */
-    public static function getNextEvent()
+    public function getNextEvent()
     {
         if (!isset(self::$_nextEvent)) {
-            $event = self::getFirstEvent();
+            $event = $this->getFirstEvent();
             $result = self::getLastResult();
-            $plugin = self::getInstance();
+            $methods = $this->getEventConfigurations();
             if ($result !== false) {
-                self::$_nextEvent = $plugin->_config[self::METHODS][$event]->getOnSuccess();
+                self::$_nextEvent = $methods[$event]->getOnSuccess();
             } else {
-                self::$_nextEvent = $plugin->_config[self::METHODS][$event]->getOnError();
+                self::$_nextEvent = $methods[$event]->getOnError();
             }
             if (empty(self::$_nextEvent)) {
                 self::$_nextEvent = array();
@@ -462,10 +521,14 @@ class PluginManager extends Singleton implements IsReportable
             self::ACTIVE => array()
         );
 
+        /* @var $config array */
+        assert('!isset($config); // Cannot redeclare var $config');
+        $config = $this->_getConfig();
         // copy settings from old plugin repository
-        if (isset($this->_config[self::ACTIVE])) {
-            $newPluginFile[self::ACTIVE] = $this->_config[self::ACTIVE];
+        if (isset($config[self::ACTIVE])) {
+            $newPluginFile[self::ACTIVE] = $config[self::ACTIVE];
         }
+        unset($config);
 
         // initialize list for later use (see step 3)
         $pluginsWithDefaultMethods = array();
@@ -680,13 +743,8 @@ class PluginManager extends Singleton implements IsReportable
     public function isActive($pluginName)
     {
         assert('is_string($pluginName); // Wrong type for argument 1. String expected');
-
-        $active = @$this->_config[self::ACTIVE][$pluginName];
-        if ($active === PluginActivityEnumeration::ACTIVE || $active === PluginActivityEnumeration::DEFAULT_ACTIVE) {
-            return true;
-        } else {
-            return false;
-        }
+        $active = $this->_getActivityState($pluginName);
+        return $active === PluginActivityEnumeration::ACTIVE || $active === PluginActivityEnumeration::DEFAULT_ACTIVE;
     }
 
     /**
@@ -705,13 +763,8 @@ class PluginManager extends Singleton implements IsReportable
     public function isDefaultActive($pluginName)
     {
         assert('is_string($pluginName); // Wrong type for argument 1. String expected');
-
-        $active = @$this->_config[self::ACTIVE][$pluginName];
-        if ($active === PluginActivityEnumeration::DEFAULT_ACTIVE) {
-            return true;
-        } else {
-            return false;
-        }
+        $active = $this->_getActivityState($pluginName);
+        return $active === PluginActivityEnumeration::DEFAULT_ACTIVE;
     }
 
     /**
@@ -734,9 +787,11 @@ class PluginManager extends Singleton implements IsReportable
         assert('is_string($pluginName); // Wrong type for argument 1. String expected');
         assert('is_int($state); // Wrong type for argument 2. Integer expected');
 
-        if (isset($this->_config[self::PLUGINS][$pluginName])) {
-            if ($this->_config[self::ACTIVE][$pluginName] != PluginActivityEnumeration::DEFAULT_ACTIVE) {
-                $this->_config[self::ACTIVE][$pluginName] = $state;
+        $pluginConfig = $this->_getPluginsConfig();
+        $config = $this->_getConfig();
+        if (isset($pluginConfig[$pluginName])) {
+            if ($config[self::ACTIVE][$pluginName] != PluginActivityEnumeration::DEFAULT_ACTIVE) {
+                $config[self::ACTIVE][$pluginName] = $state;
                 return true;
             } else {
                 return false;
@@ -833,9 +888,10 @@ class PluginManager extends Singleton implements IsReportable
      */
     public function toString()
     {
-        if ($this->_config) {
+        $pluginConfig = $this->_getPluginsConfig();
+        if (!empty($pluginConfig)) {
             $txt = "";
-            foreach ($this->_config[self::PLUGINS] as $pluginName => $pluginConfig)
+            foreach ($pluginConfig as $pluginName => $pluginConfig)
             {
                 $txt .= "Plugin \"$pluginName\":\n" .
                 "\t- active = " . (($this->isActive($pluginName)) ? "yes" : "no") . "\n" .
@@ -882,8 +938,9 @@ class PluginManager extends Singleton implements IsReportable
         assert('is_string($pluginName); // Wrong type for argument 1. String expected');
 
         $this->_loadPlugin(self::$_pluginDir, $pluginName);
-        if (isset($this->_config[self::PLUGINS][$pluginName])) {
-            return $this->_config[self::PLUGINS][$pluginName];
+        $pluginConfig = $this->_getPluginsConfig();
+        if (isset($pluginConfig[$pluginName])) {
+            return $pluginConfig[$pluginName];
         } else {
             return new PluginConfiguration(self::PREFIX . $pluginName);
         }
@@ -901,7 +958,8 @@ class PluginManager extends Singleton implements IsReportable
      */
     public function getPluginNames()
     {
-        return array_keys($this->_config[self::PLUGINS]);
+        $pluginConfig = $this->_getPluginsConfig();
+        return array_keys($pluginConfig);
     }
 
     /**
@@ -926,8 +984,9 @@ class PluginManager extends Singleton implements IsReportable
         }
         assert('is_string($eventName); // Wrong type for argument 1. String expected');
 
-        if (isset($this->_config[self::METHODS][$eventName])) {
-            /* String */ $type = $this->_config[self::METHODS][$eventName]->getType();
+        $methodsConfig = $this->getEventConfigurations();
+        if (isset($methodsConfig[$eventName])) {
+            /* String */ $type = $methodsConfig[$eventName]->getType();
         } else {
             assert('!isset($defaultEvent); // Cannot redeclare var $defaultEvent');
             /* array */ $defaultEvent = Yana::getDefault("EVENT");
@@ -955,8 +1014,9 @@ class PluginManager extends Singleton implements IsReportable
     {
         assert('is_string($eventName); // Wrong argument type for argument 1. String expected.');
         $eventName = mb_strtolower("$eventName");
-        if (isset($this->_config[self::METHODS][$eventName])) {
-            return $this->_config[self::METHODS][$eventName];
+        $config = $this->getEventConfigurations();
+        if (isset($config[$eventName])) {
+            return $config[$eventName];
         } else {
             return null;
         }
@@ -971,8 +1031,10 @@ class PluginManager extends Singleton implements IsReportable
      */
     public function getEventConfigurations()
     {
-        assert('is_array($this->_config[self::METHODS]); // List of methods not available');
-        return $this->_config[self::METHODS];
+        $config = $this->_getConfig();
+        $methods = $config[self::METHODS];
+        assert('is_array($methods); // List of methods not available');
+        return $methods;
     }
 
     /**
@@ -988,11 +1050,9 @@ class PluginManager extends Singleton implements IsReportable
     public function isEvent($eventName)
     {
         assert('is_string($eventName); // Wrong argument type for argument 1. String expected.');
-        if (isset($this->_config[self::METHODS][mb_strtolower("$eventName")])) {
-            return true;
-        } else {
-            return false;
-        }
+        $eventName = mb_strtolower("$eventName");
+        $eventConfig = $this->getEventConfiguration($eventName);
+        return !is_null($eventConfig);
     }
 
     /**
@@ -1028,9 +1088,10 @@ class PluginManager extends Singleton implements IsReportable
         $this->_loadedPlugins = array();
 
         $result = array();
+        $config = $this->_getImplementationConfig($event);
 
-        if (isset($this->_config[self::IMPLEMENTATIONS][$event])) {
-            foreach ($this->_config[self::IMPLEMENTATIONS][$event] as $pluginName => $priority)
+        if (!empty($config)) {
+            foreach ($config as $pluginName => $priority)
             {
                 if ($this->isActive($pluginName)) {
                     $this->_loadedPlugins[$pluginName] = true;
@@ -1056,7 +1117,7 @@ class PluginManager extends Singleton implements IsReportable
     private function _loadPlugins(array $plugins = null)
     {
         if (is_null($plugins)) {
-            $plugins = array_keys($this->_config[self::PLUGINS]);
+            $plugins = $this->getPluginNames();
         }
         assert('is_array($plugins); // Wrong type for argument 1. Array expected');
 
@@ -1155,8 +1216,9 @@ class PluginManager extends Singleton implements IsReportable
             $report = ReportXML::createReport(__CLASS__);
         }
         $report->addText("Plugin directory: " . PluginManager::$_pluginDir);
+        $methodsConfig = $this->getEventConfigurations();
 
-        if (empty($this->_config[self::METHODS])) {
+        if (empty($methodsConfig)) {
             $report->addWarning("Cannot perform check! No interface definitions found.");
 
         } else {
@@ -1165,7 +1227,7 @@ class PluginManager extends Singleton implements IsReportable
             /**
              * loop through interface definitions
              */
-            foreach ($this->_config[self::METHODS] as $key => $element)
+            foreach ($methodsConfig as $key => $element)
             {
                 // @todo  check if $element is really an array (and not a PluginConfigurationMethod)
                 if (!is_array($element)) {

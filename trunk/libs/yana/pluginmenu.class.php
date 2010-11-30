@@ -163,7 +163,7 @@ class PluginMenu extends Singleton
                         $group = $entry[PluginAnnotationEnumeration::GROUP];
                     }
                     $safemode = $pluginConfiguration->getMethod($action)->getSafeMode();
-                    $entry = array(PluginAnnotationEnumeration::IMAGE => $image, 
+                    $entry = array(PluginAnnotationEnumeration::IMAGE => $image,
                                    PluginAnnotationEnumeration::TITLE => $title,
                                    PluginAnnotationEnumeration::SAFEMODE => $safemode);
                     Hashtable::set($this->_entries, "$group.$action", $entry);
@@ -272,7 +272,8 @@ class PluginMenu extends Singleton
             (
                 PluginAnnotationEnumeration::TITLE => $title,
                 PluginAnnotationEnumeration::IMAGE => $icon,
-                PluginAnnotationEnumeration::GROUP => $menuName
+                PluginAnnotationEnumeration::GROUP => $menuName,
+                PluginAnnotationEnumeration::SAFEMODE => null
             );
     }
 
@@ -377,10 +378,13 @@ class PluginMenu extends Singleton
 
         foreach ($pluginMenu->getMenuEntries() as $menuId => $menuEntries)
         {
-            $pluginId = $pluginMenu->_plugins[$menuId];
-            if (empty($pluginMenu->_hasGroup[$pluginId]) || $pluginManager->isLoaded($pluginId)) {
-                $pluginMenu->_getMenu($menu, $menuId, $menuEntries, $pluginManager, $isSafemode);
+            if (isset($pluginMenu->_plugins[$menuId])) {
+                $pluginId = $pluginMenu->_plugins[$menuId];
+                if (!empty($pluginMenu->_hasGroup[$pluginId]) && !$pluginManager->isLoaded($pluginId)) {
+                    continue;
+                }
             }
+            $pluginMenu->_getMenu($menu, $menuId, $menuEntries, $pluginManager, $isSafemode);
         }
 
         return $menu;
@@ -424,7 +428,7 @@ class PluginMenu extends Singleton
             }
         }
     }
-    
+
     /**
      * Reinitialize instance.
      *

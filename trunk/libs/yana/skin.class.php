@@ -38,6 +38,7 @@
  */
 class Skin implements IsReportable
 {
+
     /**
      * Name of currently selected main skin
      *
@@ -701,7 +702,7 @@ class Skin implements IsReportable
                 $id = basename($file, self::$_fileExtension);
                 $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
                 if (!empty($xml)) {
-                    $title = (string) $xml->head->_title;
+                    $title = (string) $xml->head->title;
                 } else {
                     $title = $id;
                 }
@@ -931,7 +932,7 @@ class Skin implements IsReportable
             {
                 $subReport = $report->addReport("$key");
                 $hasError = false;
-                
+
                 /*
                  * check if template file exists
                  */
@@ -948,7 +949,7 @@ class Skin implements IsReportable
                 } catch (NotFoundException $e) {
                     $subReport->addWarning($e->getMessage());
                 }
-                
+
                 /*
                  * check language references
                  */
@@ -966,7 +967,7 @@ class Skin implements IsReportable
                     }
                     unset($value);
                 }
-                
+
                 /*
                  * check stylesheet references
                  */
@@ -982,7 +983,7 @@ class Skin implements IsReportable
                     }
                     unset($value);
                 }
-                
+
                 /*
                  * check script references
                  */
@@ -998,7 +999,7 @@ class Skin implements IsReportable
                     }
                     unset($value);
                 }
-                
+
                 if ($hasError !== true) {
                     $subReport->addText("No problems found.");
                 }

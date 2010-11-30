@@ -28,7 +28,7 @@
  */
 
 /**
- * <<utility>> Smarty id-resource
+ * <<utility>> Smarty id-resource.
  *
  * This is a resource wrapper class for use with the smarty template engine.
  *
@@ -61,6 +61,7 @@
  */
 class SmartIdResource extends SmartFileResource
 {
+
     /**
      * Retrieve the resource
      *
@@ -107,6 +108,7 @@ class SmartIdResource extends SmartFileResource
         $filename = Skin::getInstance()->getFile($id);
         return parent::getTimestamp($filename, &$output, $smarty);
     }
+
 }
 
 ?>

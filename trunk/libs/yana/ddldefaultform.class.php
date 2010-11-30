@@ -406,7 +406,9 @@ class DDLDefaultForm extends DDLAbstractForm
             assert('$entriesPerPage > 0; // invalid number of entries to view per page');
             $currentPage = $this->getPage();
             $this->listOfEntries = "";
-            $action = PluginManager::getFirstEvent();
+            assert('!isset($pluginManager); // Cannot redeclare var $pluginManager');
+            $pluginManager = PluginManager::getInstance();
+            $action = $pluginManager->getFirstEvent();
             $lang = Language::getInstance();
             $linkTemplate = '<a class="gui_generator_%s" href=' .
                 SmartUtility::href("action=$action&" . $this->getName() . "[page]=%s") .

@@ -62,15 +62,6 @@ class SmartTemplate extends Object
     /**#@-*/
 
     /**
-     * template path
-     *
-     * @access  protected
-     * @var     string
-     * @ignore
-     */
-    protected $path = "";
-
-    /**
      * local Smarty instance
      *
      * @access  protected
@@ -99,12 +90,9 @@ class SmartTemplate extends Object
     public function __construct($filename = "")
     {
         // initialize smarty instance
-        $this->localSmarty = clone self::getGlobalSmarty();
-
-        // set selected template (if any)
-        if ($filename) {
-            $this->setPath("$filename");
-        }
+        $smarty = self::getGlobalSmarty();
+        $this->localSmarty = $smarty->createTemplate($filename);
+        //$this->localSmarty->append($smarty->getTemplateVars());
     }
 
     /**
@@ -122,41 +110,12 @@ class SmartTemplate extends Object
      */
     public function toString()
     {
-        // set functions, modifiers and block functions
-        if (is_array(self::$functions)) {
-            assert('!isset($name); // Cannot redeclare var $name');
-            assert('!isset($code); // Cannot redeclare var $code');
-            foreach (self::$functions as $name => $code)
-            {
-                $this->localSmarty->register_function($name, $code);
-            }
-            unset($name, $code);
-        }
-        if (is_array(self::$modifiers)) {
-            assert('!isset($name); // Cannot redeclare var $name');
-            assert('!isset($code); // Cannot redeclare var $code');
-            foreach (self::$modifiers as $name => $code)
-            {
-                $this->localSmarty->register_modifier($name, $code);
-            }
-            unset($name, $code);
-        }
-        if (is_array(self::$blocks)) {
-            assert('!isset($name); // Cannot redeclare var $name');
-            assert('!isset($code); // Cannot redeclare var $code');
-            foreach (self::$blocks as $name => $code)
-            {
-                $this->localSmarty->register_block($name, $code);
-            }
-            unset($name, $code);
-        }
-
         // fetch and return template
         $cacheId = self::_getCacheId();
         if (self::$globalSmarty->caching > 0) {
-            return $this->localSmarty->fetch($this->getPath(), $cacheId, $cacheId);
+            return $this->localSmarty->fetch(null, $cacheId, $cacheId);
         } else {
-            return $this->localSmarty->fetch($this->getPath(), null, $cacheId);
+            return $this->localSmarty->fetch(null, null, $cacheId);
         }
     }
 
@@ -181,11 +140,11 @@ class SmartTemplate extends Object
         assert('is_string($key); // Wrong argument type for argument 1. String expected.');
         /* 1) get all template vars */
         if (empty($key) || $key === '*') {
-            return $this->localSmarty->get_template_vars();
+            return $this->localSmarty->getTemplateVars();
         }
 
         /* 2) get one template var, identified by $key */
-        $resource = $this->localSmarty->get_template_vars();
+        $resource = $this->localSmarty->getTemplateVars();
         assert('is_array($resource); /* unexpected result: $resource should be an array */');
         return Hashtable::get($resource, "$key");
     }
@@ -241,7 +200,7 @@ class SmartTemplate extends Object
             /**
              * 1.3) security settings
              */
-            self::$globalSmarty->php_handling = SMARTY_PHP_REMOVE;
+            self::$globalSmarty->php_handling = Smarty::PHP_REMOVE;
             self::$globalSmarty->security = true;
             /**
              * PHP-handling
@@ -304,78 +263,94 @@ class SmartTemplate extends Object
                     self::$globalSmarty->compile_check = false;
                 }
                 if (YANA_ERROR_REPORTING === YANA_ERROR_ON) {
-                    self::$globalSmarty->register_function('varDump',     array('SmartUtility', 'varDump'));
+                    self::$globalSmarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['varDump']  = array(
+                        'SmartUtility::varDump', true
+                    );
                 }
             }
 
             /**
              * 1.5) extensions
              */
-            self::$globalSmarty->register_modifier('embeddedTags',        array('SmartUtility', 'embeddedTags'));
-            self::$globalSmarty->register_modifier('replaceToken',        array('SmartUtility', 'replaceToken'), false);
-            self::$globalSmarty->register_modifier('css',                 array('SmartUtility', 'css'));
-            self::$globalSmarty->register_modifier('date',                array('SmartUtility', 'date'));
-            self::$globalSmarty->register_modifier('entities',            array('SmartUtility', 'entities'));
-            self::$globalSmarty->register_modifier('href',                array('SmartUtility', 'href'), false);
-            self::$globalSmarty->register_modifier('scanForAt',           array('SmartUtility', 'scanForAt'));
-            self::$globalSmarty->register_modifier('smilies',             array('SmartUtility', 'smilies'));
-            self::$globalSmarty->register_modifier('url',                 array('SmartUtility', 'url'), false);
-            self::$globalSmarty->register_modifier('urlEncode',           array('SmartUtility', 'urlEncode'));
-            self::$globalSmarty->register_function('printArray',          array('SmartUtility', 'printArray'));
-            self::$globalSmarty->register_function('printUnorderedList',  array('SmartUtility', 'printUnorderedList'));
-            self::$globalSmarty->register_function('rss',                 array('SmartUtility', 'rss'));
-            self::$globalSmarty->register_function('import',              array('SmartUtility', 'import'), false);
-            self::$globalSmarty->register_function('smilies',             array('SmartUtility', 'guiSmilies'));
-            self::$globalSmarty->register_function('embeddedTags',        array('SmartUtility', 'guiEmbeddedTags'));
-            self::$globalSmarty->register_function('create',              array('SmartUtility', 'create'), false);
-            self::$globalSmarty->register_function('captcha',             array('SmartUtility', 'captcha'));
-            self::$globalSmarty->register_function('slider',              array('SmartUtility', 'slider'));
-            self::$globalSmarty->register_function('sizeOf',              array('SmartUtility', 'sizeOf'));
-            self::$globalSmarty->register_function('toolbar',             array('SmartUtility', 'toolbar'), false);
-            self::$globalSmarty->register_function('preview',             array('SmartUtility', 'preview'));
-            self::$globalSmarty->register_function('colorpicker',         array('SmartUtility', 'colorpicker'));
-            self::$globalSmarty->register_function('sml_load',            array('SmartUtility', 'smlLoad'));
-            self::$globalSmarty->register_function('smlLoad',             array('SmartUtility', 'smlLoad'));
-            self::$globalSmarty->register_function('lang',                array('SmartUtility', 'lang'));
-            self::$globalSmarty->register_function('visitorCount',        array('SmartUtility', 'visitorCount'));
-            self::$globalSmarty->register_function('portlet',             array('SmartUtility', 'portlet'));
-            self::$globalSmarty->register_function('applicationBar',      array('SmartUtility', 'applicationBar'));
-            self::$globalSmarty->register_function('selectDate',          array('SmartUtility', 'selectDate'));
-            self::$globalSmarty->register_function('selectTime',          array('SmartUtility', 'selectTime'));
-            self::$globalSmarty->register_block('loop',                   array('SmartUtility', 'loopArray'), false);
-            self::$globalSmarty->register_prefilter(array('SmartUtility', 'htmlPreProcessor'));
-            self::$globalSmarty->register_postfilter(array('SmartUtility', 'htmlPostProcessor'));
-            self::$globalSmarty->register_outputfilter(array('SmartUtility', 'outputFilter'));
+            $modifiers = array(
+                'embeddedTags' => array('SmartUtility::embeddedTags', true),
+                'replaceToken' => array('SmartUtility::replaceToken', false),
+                'css' =>          array('SmartUtility::css', true),
+                'date' =>         array('SmartUtility::date', true),
+                'entities' =>     array('SmartUtility::entities', true),
+                'href' =>         array('SmartUtility::href', false),
+                'scanForAt' =>    array('SmartUtility::scanForAt', true),
+                'smilies' =>      array('SmartUtility::smilies', true),
+                'url' =>          array('SmartUtility::url', false),
+                'urlEncode' =>    array('SmartUtility::urlEncode', true)
+            );
+            if (!empty(self::$globalSmarty->registered_plugins[Smarty::PLUGIN_MODIFIER])) {
+                $modifiers = array_merge(self::$globalSmarty->registered_plugins[Smarty::PLUGIN_MODIFIER], $modifiers);
+            }
+            self::$globalSmarty->registered_plugins[Smarty::PLUGIN_MODIFIER] = $modifiers;
+            $functions = array(
+                'printArray' => array('SmartUtility::printArray', true),
+                'printUnorderedList' =>  array('SmartUtility::printUnorderedList', true),
+                'rss' =>                 array('SmartUtility::rss', true),
+                'import' =>              array('SmartUtility::import', false),
+                'smilies' =>             array('SmartUtility::guiSmilies', true),
+                'embeddedTags' =>        array('SmartUtility::guiEmbeddedTags', true),
+                'create' =>              array('SmartUtility::create', false),
+                'captcha' =>             array('SmartUtility::captcha', true),
+                'slider' =>              array('SmartUtility::slider', true),
+                'sizeOf' =>              array('SmartUtility::sizeOf', true),
+                'toolbar' =>             array('SmartUtility::toolbar', false),
+                'preview' =>             array('SmartUtility::preview', true),
+                'colorpicker' =>         array('SmartUtility::colorpicker', true),
+                'sml_load' =>            array('SmartUtility::smlLoad', true),
+                'smlLoad' =>             array('SmartUtility::smlLoad', true),
+                'lang' =>                array('SmartUtility::lang', true),
+                'visitorCount' =>        array('SmartUtility::visitorCount', true),
+                'portlet' =>             array('SmartUtility::portlet', true),
+                'applicationBar' =>      array('SmartUtility::applicationBar', true),
+                'selectDate' =>          array('SmartUtility::selectDate', true),
+                'selectTime' =>          array('SmartUtility::selectTime', true)
+            );
+            if (!empty(self::$globalSmarty->registered_plugins[Smarty::PLUGIN_FUNCTION])) {
+                $functions = array_merge(self::$globalSmarty->registered_plugins[Smarty::PLUGIN_FUNCTION], $functions);
+            }
+            self::$globalSmarty->registered_plugins[Smarty::PLUGIN_FUNCTION] = $functions;
+            self::$globalSmarty->registered_plugins[Smarty::PLUGIN_BLOCK]['loop'] = array(
+                'SmartUtility::loopArray', false
+            );
+            self::$globalSmarty->registered_filters[Smarty::FILTER_PRE][] = array('SmartUtility', 'htmlPreProcessor');
+            self::$globalSmarty->registered_filters[Smarty::FILTER_POST][] = array('SmartUtility', 'htmlPostProcessor');
+            self::$globalSmarty->registered_filters[Smarty::FILTER_OUTPUT][] = array('SmartUtility', 'outputFilter');
             self::$globalSmarty->default_modifiers = array('replaceToken');
 
-            self::$globalSmarty->register_resource(
-                "template",
+            self::$globalSmarty->registered_resources["template"] = array(
                 array(
                     "SmartFileResource::getTemplate",
                     "SmartFileResource::getTimestamp",
                     "SmartFileResource::isSecure",
                     "SmartFileResource::isTrusted"
-                )
+                ),
+                false
             );
 
-            self::$globalSmarty->register_resource(
-                "string",
+            self::$globalSmarty->registered_resources["string"] = array(
                 array(
                     "SmartStringResource::getTemplate",
                     "SmartStringResource::getTimestamp",
                     "SmartStringResource::isSecure",
                     "SmartStringResource::isTrusted"
-                )
+                ),
+                false
             );
 
-            self::$globalSmarty->register_resource(
-                "id",
+            self::$globalSmarty->registered_resources["id"] = array(
                 array(
                     "SmartIdResource::getTemplate",
                     "SmartIdResource::getTimestamp",
                     "SmartIdResource::isSecure",
                     "SmartIdResource::isTrusted"
-                )
+                ),
+                false
             );
             self::$globalSmarty->default_resource_type = 'template';
         } // end if
@@ -396,8 +371,8 @@ class SmartTemplate extends Object
      */
     public function &getSmarty()
     {
-        if (!empty($this->localSmarty)) {
-            return $this->localSmarty;
+        if (!empty($this->localSmarty->smarty)) {
+            return $this->localSmarty->smarty;
         } else {
             return self::getGlobalSmarty();
         }
@@ -442,19 +417,12 @@ class SmartTemplate extends Object
                 return false;
             }
             $this->localSmarty->assign($var);
-            return true;
 
-        /* 2) assigned var is an object */
-        } elseif (is_object($var)) {
-
-            $this->localSmarty->assign_by_ref($varName, $var);
-            return true;
-
-        /* 3) assign to var identified by $varName */
+        /* 2) assign to var identified by $varName */
         } else {
             $this->localSmarty->assign($varName, $var);
-            return true;
         }
+        return true;
 
     }
 
@@ -503,14 +471,14 @@ class SmartTemplate extends Object
             assert('!isset($key); /* cannot redeclare variable $key */');
             foreach (array_keys($var) as $key)
             {
-                $this->localSmarty->assign_by_ref($key, $var[$key]);
+                $this->localSmarty->assignByRef($key, $var[$key]);
             }
             unset($key);
             return true;
 
         /* 2) assign to var identified by $varName */
         } else {
-            $this->localSmarty->assign_by_ref($varName, $var);
+            $this->localSmarty->assignByRef($varName, $var);
             return true;
         }
 
@@ -580,19 +548,16 @@ class SmartTemplate extends Object
      *
      * @access  public
      * @param   string  $filename  name of the template file
-     * @return  bool
+     * @throws  InvalidArgumentException when the filename is invalid
      */
     public function setPath($filename)
     {
         assert('is_string($filename); // Wrong argument type for argument 1. String expected.');
 
         if (preg_match("/.*\.(register|config|cfg|lock|dat|htaccess|php|inc|conf)/Ui", $filename)) {
-            self::$globalSmarty->trigger_error("ERROR 403: Access denied for file '$filename'.");
-            return false;
-        } else {
-            $this->path = "$filename";
-            return true;
+            throw new InvalidArgumentException("Access denied for file '$filename'.");
         }
+        $this->localSmarty->template_resource = "$filename";
     }
 
     /**
@@ -619,7 +584,7 @@ class SmartTemplate extends Object
         }
         /* 2) clear Smarty cache */
         $smarty = self::getGlobalSmarty();
-        $smarty->clear_all_cache();
+        $smarty->clearAllCache();
 
         /* 3) clear Yana cache */
         $files = dirlist($dir, '.php|.cache|.tmp');
@@ -641,26 +606,12 @@ class SmartTemplate extends Object
     }
 
     /**
-     * Register function
+     * Register function.
      *
      * This function registers the function at $code as a template
      * function under the name $name in the template engine.
      *
-     * Argument $as can be one of the followin constants:
-     * <ul>
-     *  <li>  YANA_TPL_FUNCTION
-     *        - registers the resource as a template function,
-     *          called as {foo }
-     *  </li>
-     *  <li>  YANA_TPL_MODIFIER
-     *        - registers the resource as a template modifier,
-     *          called as {$bar|foo}
-     *  </li>
-     *  <li>  YANA_TPL_BLOCK
-     *        - registers the resource as a template block function,
-     *          called as {foo }...{/foo}
-     *  </li>
-     * </ul>
+     * The template function is called as {foo }.
      *
      * Argument $name:
      * <ul>
@@ -689,36 +640,66 @@ class SmartTemplate extends Object
      * "modifiers" and "block functions".
      *
      * @access  public
-     * @param   int     $as    one of: YANA_TPL_FUNCTION, YANA_TPL_MODIFIER, YANA_TPL_BLOCK
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
      */
-    public function setFunction($as, $name, $code)
+    public function setFunction($name, $code)
     {
-        assert('is_int($as); // Wrong argument type for argument 1. Integer expected.');
-        assert('is_string($name); // Wrong argument type for argument 2. String expected.');
-        assert('is_callable($code); // Wrong argument type for argument 3. Not a callable resource.');
+        assert('is_string($name); // Wrong type for argument $name. String expected.');
+        assert('is_callable($code); // Wrong type for argument $code. Not a callable resource.');
 
-        switch ($as)
-        {
-            case YANA_TPL_FUNCTION:
-                self::$functions["$name"] = $code;
-            break;
-            case YANA_TPL_MODIFIER:
-                self::$modifiers["$name"] = $code;
-            break;
-            case YANA_TPL_BLOCK:
-                self::$blocks["$name"] = $code;
-            break;
-            default:
-                $message = "Invalid argument 1 in function ".__METHOD__.".";
-                throw new InvalidArgumentException($message, E_USER_WARNING);
-            break;
-        }
+        $smarty = self::getGlobalSmarty();
+        $smarty->registered_plugins[Smarty::PLUGIN_FUNCTION][$name] = array($code, true);
     }
 
     /**
-     * Unregister function
+     * Register modifier.
+     *
+     * This function registers a template modifier, called as {$bar|foo}.
+     *
+     * Note: For details on how the called function should look like,
+     * see the smarty documentation at http://smarty.php.net/docs.php,
+     * chapter 16) "Extending smarty", sections: "template functions",
+     * "modifiers" and "block functions".
+     *
+     * @access  public
+     * @param   string  $name  name of the function
+     * @param   mixed   $code  a callable resource
+     */
+    public function setModifier($name, $code)
+    {
+        assert('is_string($name); // Wrong type for argument $name. String expected.');
+        assert('is_callable($code); // Wrong type for argument $code. Not a callable resource.');
+
+        $smarty = self::getGlobalSmarty();
+        $smarty->registered_plugins[Smarty::PLUGIN_MODIFIER][$name] = array($code, true);
+    }
+
+    /**
+     * Register block function.
+     *
+     * This function registers a template block function, called as {foo }...{/foo}.
+     *
+     * Note: For details on how the called function should look like,
+     * see the smarty documentation at http://smarty.php.net/docs.php,
+     * chapter 16) "Extending smarty", sections: "template functions",
+     * "modifiers" and "block functions".
+     *
+     * @access  public
+     * @param   string  $name  name of the function
+     * @param   mixed   $code  a callable resource
+     */
+    public function setBlockFunction($name, $code)
+    {
+        assert('is_string($name); // Wrong type for argument $name. String expected.');
+        assert('is_callable($code); // Wrong type for argument $code. Not a callable resource.');
+
+        $smarty = self::getGlobalSmarty();
+        $smarty->registered_plugins[Smarty::PLUGIN_BLOCK][$name] = array($code, true);
+    }
+
+    /**
+     * Unregister function.
      *
      * By using this, the function named $name will no longer be
      * available in template. Be cautious: If the unregistered funciton is
@@ -726,43 +707,58 @@ class SmartTemplate extends Object
      * and possibly cause your application to exit.
      *
      * @access  public
-     * @param   int     $as    one of: YANA_TPL_FUNCTION, YANA_TPL_MODIFIER, YANA_TPL_BLOCK
      * @param   string  $name  name of the function
      * @return  bool
      */
-    public function unsetFunction($as, $name)
+    public function unsetFunction($name)
     {
-        assert('is_int($as); // Wrong argument type for argument 1. Integer expected.');
         assert('is_string($name); // Wrong argument type for argument 2. String expected.');
         assert('!empty($name); // Argument 2 cannot be empty.');
-        switch ($as)
-        {
-            case YANA_TPL_FUNCTION:
-                self::$globalSmarty->unregister_function($name);
-                $this->localSmarty->unregister_function($name);
-                if (isset(self::$functions[$name])) {
-                    unset(self::$functions[$name]);
-                }
-            break;
-            case YANA_TPL_MODIFIER:
-                self::$globalSmarty->unregister_modifier($name);
-                $this->localSmarty->unregister_modifier($name);
-                if (isset(self::$modifiers[$name])) {
-                    unset(self::$modifiers[$name]);
-                }
-            break;
-            case YANA_TPL_BLOCK:
-                self::$globalSmarty->unregister_block($name);
-                $this->localSmarty->unregister_block($name);
-                if (isset(self::$blocks[$name])) {
-                    unset(self::$blocks[$name]);
-                }
-            break;
-            default:
-                $message = "Invalid argument 1 in function ".__METHOD__.".";
-                throw new InvalidArgumentException($message, E_USER_WARNING);
-            break;
-        }
+
+        $smarty = self::getGlobalSmarty();
+        unset($smarty->registered_plugins[Smarty::PLUGIN_FUNCTION][$name]);
+    }
+
+    /**
+     * Unregister modifier.
+     *
+     * By using this, the function named $name will no longer be
+     * available in template. Be cautious: If the unregistered funciton is
+     * still used inside the template, this will issue a template error
+     * and possibly cause your application to exit.
+     *
+     * @access  public
+     * @param   string  $name  name of the function
+     * @return  bool
+     */
+    public function unsetModifier($name)
+    {
+        assert('is_string($name); // Wrong argument type for argument 2. String expected.');
+        assert('!empty($name); // Argument 2 cannot be empty.');
+
+        $smarty = self::getGlobalSmarty();
+        unset($smarty->registered_plugins[Smarty::PLUGIN_MODIFIER][$name]);
+    }
+
+    /**
+     * Unregister block function.
+     *
+     * By using this, the function named $name will no longer be
+     * available in template. Be cautious: If the unregistered funciton is
+     * still used inside the template, this will issue a template error
+     * and possibly cause your application to exit.
+     *
+     * @access  public
+     * @param   string  $name  name of the function
+     * @return  bool
+     */
+    public function unsetBlockFunction($name)
+    {
+        assert('is_string($name); // Wrong argument type for argument 2. String expected.');
+        assert('!empty($name); // Argument 2 cannot be empty.');
+
+        $smarty = self::getGlobalSmarty();
+        unset($smarty->registered_plugins[Smarty::PLUGIN_BLOCK][$name]);
     }
 
     /**
@@ -775,8 +771,8 @@ class SmartTemplate extends Object
      */
     public function getPath()
     {
-        assert('is_string($this->path); // Unexpected result: $this->path is not a string');
-        return $this->path;
+        assert('is_string($this->localSmarty->template_resource); // Unexpected result: Template path is not a string');
+        return $this->localSmarty->template_resource;
     }
 
     /**

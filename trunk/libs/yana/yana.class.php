@@ -364,27 +364,50 @@ final class Yana extends Singleton implements IsReportable
             return false;
         }
 
-        assert('!isset($language); // Cannot redeclare var $language');
-        $language = $this->_getLanguage();
-        // mount language directory, if it exists
-        assert('!isset($langDir); // Cannot redeclare var $langDir');
-        foreach ($eventConfiguration->getPaths() as $langDir)
-        {
-            $langDir = $langDir . "/languages/";
-            if (is_dir($langDir)) {
-                $language->addDirectory($langDir);
+        assert('!isset($paths); // Cannot redeclare var $paths');
+        $paths = $eventConfiguration->getPaths();
+        if ($paths) {
+            assert('!isset($language); // Cannot redeclare var $language');
+            $language = $this->_getLanguage();
+            // mount language directory, if it exists
+            assert('!isset($langDir); // Cannot redeclare var $langDir');
+            foreach ($eventConfiguration->getPaths() as $langDir)
+            {
+                $langDir = $langDir . "/languages/";
+                if (is_dir($langDir)) {
+                    $language->addDirectory($langDir);
+                }
             }
+            unset($langDir, $language);
         }
-        unset($langDir);
+        unset($paths);
         // load language files
-        assert('!isset($languageId); // Cannot redeclare var $languageId');
-        foreach ($eventConfiguration->getLanguages() as $languageId)
-        {
-            $language->readFile($languageId);
+        assert('!isset($languages); // Cannot redeclare var $languages');
+        $languages = $eventConfiguration->getLanguages();
+        if ($languages) {
+            assert('!isset($language); // Cannot redeclare var $language');
+            $language = $this->_getLanguage();
+            assert('!isset($languageId); // Cannot redeclare var $languageId');
+            foreach ($languages as $languageId)
+            {
+                $language->readFile($languageId);
+            }
+            unset($language, $languageId);
         }
-        unset($languageId);
-        SmartView::addStyles($eventConfiguration->getStyles());
-        SmartView::addScripts($eventConfiguration->getScripts());
+        unset($languages);
+        assert('!isset($styles); // Cannot redeclare var $styles');
+        $styles = $eventConfiguration->getStyles();
+        if ($styles) {
+            SmartView::addStyles($styles);
+        }
+        unset($styles);
+        assert('!isset($scripts); // Cannot redeclare var $scripts');
+        $scripts = $eventConfiguration->getScripts();
+        if ($scripts) {
+            SmartView::addScripts($scripts);
+        }
+        unset($scripts);
+
         assert('!isset($template); // Cannot redeclare var $template');
         $template = $eventConfiguration->getTemplate();
         if (is_file($template)) {
@@ -988,9 +1011,10 @@ final class Yana extends Singleton implements IsReportable
     public function outputResults()
     {
         /* 0 initialize vars */
-        $event = PluginManager::getFirstEvent();
-        $result = PluginManager::getLastResult();
-        $eventConfiguration = $this->_getPlugins()->getEventConfiguration($event);
+        $pluginManager = $this->_getPlugins();
+        $event = $pluginManager->getFirstEvent();
+        $result = $pluginManager->getLastResult();
+        $eventConfiguration = $pluginManager->getEventConfiguration($event);
         if ($eventConfiguration instanceof PluginConfigurationMethod) {
             $template = $eventConfiguration->getTemplate();
 
@@ -1043,7 +1067,9 @@ final class Yana extends Singleton implements IsReportable
         if (strcasecmp($template, 'MESSAGE') === 0 || ($result === false && ReportAbstract::countMessages() === 0)) {
 
             // get vars
-            $route = PluginManager::getNextEvent();
+            assert('!isset($pluginManager); // Cannot redeclare var $pluginManager');
+            $pluginManager = $this->_getPlugins();
+            $route = $pluginManager->getNextEvent();
             if (!is_array($route)) {
                 $route = array();
             }
