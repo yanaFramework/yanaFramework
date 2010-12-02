@@ -91,7 +91,7 @@ class plugin_user_admin extends StdClass implements IsPlugin
     {
         if (!isset(self::$accessForm)) {
             $database = self::getDatabase();
-            self::$accessForm = $database->schema->getForm("securityrules");
+            self::$accessForm = $database->getSchema()->getForm("securityrules");
         }
         return self::$accessForm;
     }
@@ -107,7 +107,7 @@ class plugin_user_admin extends StdClass implements IsPlugin
     {
         if (!isset(self::$userForm)) {
             $database = self::getDatabase();
-            self::$userForm = $database->schema->getForm("user");
+            self::$userForm = $database->getSchema()->getForm("user");
         }
         return self::$userForm;
     }
@@ -170,7 +170,7 @@ class plugin_user_admin extends StdClass implements IsPlugin
      * @param       array  $target  array of params passed to the function
      */
     public function set_user_pwd(array $target)
-    { 
+    {
         if (!isset($target['user_id'])) {
             return false;
         }

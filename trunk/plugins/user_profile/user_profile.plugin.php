@@ -84,7 +84,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
     {
         if (!isset(self::$profileForm)) {
             $database = self::getDatabase();
-            self::$profileForm = $database->schema->getForm("userprofile");
+            self::$profileForm = $database->getSchema()->getForm("userprofile");
         }
         return self::$profileForm;
     }
@@ -100,7 +100,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
     {
         if (!isset(self::$detailForm)) {
             $database = self::getDatabase();
-            self::$detailForm = $database->schema->getForm("userdetails");
+            self::$detailForm = $database->getSchema()->getForm("userdetails");
         }
         return self::$detailForm;
     }

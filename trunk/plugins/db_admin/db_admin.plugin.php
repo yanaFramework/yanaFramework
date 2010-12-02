@@ -187,7 +187,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
 
         /* get the list of available installation files */
         $installDirectory = $installDirectory->getPath();
-        
+
         assert('!isset($initialization); // Cannot redeclare var $initialization');
         $initialization = array();
 
@@ -212,7 +212,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
              * instead.
              */
             if (!is_readable($installFile)) {
-                $dbCreator = new DbCreator($database->schema);
+                $dbCreator = new DbCreator($database->getSchema());
 
                 /* If the DbCreator class does not support the desired function.
                  */
@@ -315,7 +315,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
         if (!class_exists("MDB2")) {
             if (!$silent) {
                 throw new PearDbError();
-            }    
+            }
             return false;
         }
         if (empty($dbms) || empty($list)) {

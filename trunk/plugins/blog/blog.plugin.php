@@ -84,7 +84,7 @@ class plugin_blog extends StdClass implements IsPlugin
     {
         if (!isset(self::$blogForm)) {
             $database = self::getDatabase();
-            self::$blogForm = $database->schema->getForm("blog");
+            self::$blogForm = $database->getSchema()->getForm("blog");
         }
         return self::$blogForm;
     }

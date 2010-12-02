@@ -126,7 +126,7 @@ abstract class DbQuery extends Object implements Serializable
     public function __get($name)
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
-        return $this->db->schema->{$name};
+        return $this->db->getSchema()->{$name};
     }
 
     /**
@@ -142,7 +142,7 @@ abstract class DbQuery extends Object implements Serializable
     public function __call($name, array $arguments)
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
-        return call_user_func_array(array($this->db->schema, $name), $arguments);
+        return call_user_func_array(array($this->db->getSchema(), $name), $arguments);
     }
 
     /**
@@ -432,11 +432,12 @@ abstract class DbQuery extends Object implements Serializable
     {
         assert('is_string($columnName); // Wrong type for argument 1. String expected');
         $columnName = $this->getColumnByAlias($columnName);
+        $dbSchema = $this->db->getSchema();
 
         $table = null;
         // lazy loading: resolve source tables for requested column
         if (isset($this->tableByColumn[$columnName])) {
-            $table = $this->db->schema->getTable($this->tableByColumn[$columnName]);
+            $table = $dbSchema->getTable($this->tableByColumn[$columnName]);
         } elseif ($this->currentTable()->isColumn($columnName)) {
             $table = $this->currentTable();
         } elseif (!empty($this->joins)) {
@@ -444,7 +445,7 @@ abstract class DbQuery extends Object implements Serializable
             assert('!isset($joinedTable); // Cannot redeclare var $joinedTable');
             foreach (array_keys($this->joins) as $tableName)
             {
-                $joinedTable = $this->db->schema->getTable($tableName);
+                $joinedTable = $dbSchema->getTable($tableName);
                 if ($joinedTable->isColumn($columnName)) {
                     $table = $joinedTable;
                     break;
@@ -506,6 +507,7 @@ abstract class DbQuery extends Object implements Serializable
     {
         $tableName = $table->getName();
         $parents = array($tableName); /* to detect circular refrences */
+        $dbSchema = $this->db->getSchema();
         /**
          * recursively detect parents
          *
@@ -520,7 +522,7 @@ abstract class DbQuery extends Object implements Serializable
             $fTableKey = mb_strtoupper($table->getTableByForeignKey($primaryKey));
             // detect circular reference (when table is already in parent list)
             if (!in_array($fTableKey, $parents)) {
-                $foreignTable = $this->db->schema->getTable($fTableKey);
+                $foreignTable = $dbSchema->getTable($fTableKey);
                 assert('$foreignTable instanceof DDLTable; // Misspelled foreign key in table: ' . $tableName);
                 $foreignKey = mb_strtoupper($foreignTable->getPrimaryKey());
                 $this->setJoin($fTableKey, $primaryKey, $foreignKey);
@@ -567,7 +569,7 @@ abstract class DbQuery extends Object implements Serializable
 
         $this->id = null;
         $tableName = mb_strtolower($tableName);
-        $table = $this->db->schema->getTable($tableName);
+        $table = $this->db->getSchema()->getTable($tableName);
         $sourceTable = $this->currentTable();
 
         if (! $table instanceof DDLTable) {
@@ -704,7 +706,7 @@ abstract class DbQuery extends Object implements Serializable
         $this->id = null;
 
         $tableName = mb_strtolower($table);
-        $table = $this->db->schema->getTable($tableName);
+        $table = $this->db->getSchema()->getTable($tableName);
 
         if (!($table instanceof DDLTable)) {
             throw new NotFoundException("The table '$tableName' is unknown.", E_USER_WARNING);
@@ -766,7 +768,7 @@ abstract class DbQuery extends Object implements Serializable
     protected function currentTable()
     {
         if (!isset($this->table)) {
-            $this->table = $this->db->schema->getTable($this->getTable());
+            $this->table = $this->db->getSchema()->getTable($this->getTable());
         }
         return $this->table;
     }
@@ -1127,12 +1129,13 @@ abstract class DbQuery extends Object implements Serializable
         $key = preg_replace("/\.(\*)?$/", '', $key);
         $array = explode(".", $key);
         assert('!empty($array); // Invalid argument $key');
+        $dbSchema = $this->db->getSchema();
 
         // get table definition
         assert('!isset($table); /* cannot redeclare variable $table */');
-        $table = $this->db->schema->getTable($array[0]);
+        $table = $dbSchema->getTable($array[0]);
         if (! $table instanceof DDLTable) {
-            $message = "Table not found '{$array[0]}' in schema '{$this->db->schema->getName()}'.";
+            $message = "Table not found '{$array[0]}' in schema '{$dbSchema->getName()}'.";
             throw new DbErrorLog($message, E_USER_WARNING);
         }
 
@@ -1167,7 +1170,7 @@ abstract class DbQuery extends Object implements Serializable
                 @array_shift($array);
                 array_unshift($array, $a);
                 array_unshift($array, $foreignTable);
-                $table = $this->db->schema->getTable($array[0]);
+                $table = $dbSchema->getTable($array[0]);
                 assert('$table instanceof DDLTable; // Table not found');
                 $column = $table->getColumn($array[2]);
                 assert('$column instanceof DDLColumn; // Column not found');
@@ -1242,7 +1245,7 @@ abstract class DbQuery extends Object implements Serializable
         } else {
             $tableName = $this->tableName;
         }
-        $table = $this->db->schema->getTable($tableName);
+        $table = $this->db->getSchema()->getTable($tableName);
         if (!($table instanceof DDLTable)) {
             throw new NotFoundException("No such table '" . $tableName . "'.", E_USER_WARNING);
         }
@@ -1462,7 +1465,7 @@ abstract class DbQuery extends Object implements Serializable
          * check if table - column pair is valid
          */
         if (YANA_DB_STRICT) {
-            $table = $this->db->schema->getTable($tableName);
+            $table = $this->db->getSchema()->getTable($tableName);
             assert('is_string($column); // Unexpected result: $column. String expected.');
 
             if (! $table instanceof DDLTable) {
@@ -1522,7 +1525,7 @@ abstract class DbQuery extends Object implements Serializable
                  * check if table - column pair is valid
                  */
                 if (YANA_DB_STRICT) {
-                    $table = $this->db->schema->getTable($tableName);
+                    $table = $this->db->getSchema()->getTable($tableName);
                     if (! $table instanceof DDLTable) {
                         throw new NotFoundException("Invalid where clause. " .
                             "The name '{$tableName}' is not a table.", E_USER_WARNING);

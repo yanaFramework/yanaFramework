@@ -192,7 +192,7 @@ class DbSelectExist extends DbQuery
         assert('is_string($table); // Wrong type for argument 1. String expected');
         $table = mb_strtolower($table);
 
-        if (YANA_DB_STRICT && !$this->db->schema->isTable($table)) {
+        if (YANA_DB_STRICT && !$this->db->getSchema()->isTable($table)) {
             throw new NotFoundException("The table '$table' is unknown.", E_USER_WARNING);
         }
 
@@ -221,7 +221,7 @@ class DbSelectExist extends DbQuery
         assert('is_string($table); // Wrong type for argument 1. String expected');
         $table = mb_strtolower($table);
 
-        if (YANA_DB_STRICT && !$this->db->schema->isTable($table)) {
+        if (YANA_DB_STRICT && !$this->db->getSchema()->isTable($table)) {
             throw new NotFoundException("The table '$table' is unknown.", E_USER_WARNING);
         }
 

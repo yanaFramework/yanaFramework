@@ -428,7 +428,7 @@ final class Yana extends Singleton implements IsReportable
         } catch (Exception $e) {
             $message = get_class($e) . ': ' . $e->getMessage() . ' Thrown in ' . $e->getFile() .
                 ' on line ' . $e->getLine();
-            trigger_error($message, $e->getCode());
+            trigger_error($message, E_USER_WARNING);
             return false;
         }
         if ($result !== false) {
@@ -1203,24 +1203,17 @@ final class Yana extends Singleton implements IsReportable
      *
      * @access  public
      * @static
-     * @param   string|DDLDatabase  $source  name of the database schema file (see config/db/*.xml),
+     * @param   string|DDLDatabase  $schema  name of the database schema file (see config/db/*.xml),
      *                                       or instance of DDLDatabase
      * @return  DbStream
      */
-    public static function connect($source)
+    public static function connect($schema)
     {
-        if ($source instanceof DDLDatabase) {
-            $schema = $source;
-        } else {
-            assert('is_string($source); // Wrong argument type for argument 1. String expected.');
-            $schema = XDDL::getDatabase($source);
-        }
         if (YANA_DATABASE_ACTIVE) {
-            $db = new DbStream($schema);
+            return new DbStream($schema);
         } else {
-            $db = new FileDb($schema);
+            return new FileDb($schema);
         }
-        return $db;
     }
 
     /**

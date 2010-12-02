@@ -85,7 +85,7 @@ class plugin_project extends StdClass implements IsPlugin
     {
         if (!isset(self::$projectForm)) {
             $db = self::getDatabase();
-            self::$projectForm = $db->schema->getForm("project");
+            self::$projectForm = $db->getSchema()->getForm("project");
         }
         return self::$projectForm;
     }

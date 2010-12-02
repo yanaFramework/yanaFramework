@@ -78,7 +78,7 @@ class DbExtractor extends DbCreator
     public function __construct(DbStream $db)
     {
         $this->_db = $db;
-        parent::__construct($this->_db->schema);
+        parent::__construct($this->_db->getSchema());
     }
 
     /**
@@ -489,18 +489,20 @@ class DbExtractor extends DbCreator
          * loop through files
          */
         assert('!isset($structure); // Cannot redeclare var $structure');
+        /* @var $ddlFile string */
         foreach ($ddlFiles as $ddlFile)
         {
             $db = Yana::connect($ddlFile);
+            $dbSchema = $db->getSchema();
             $nodes = array();
 
             switch (true)
             {
                 case empty($table): // get all tables (default)
-                    $tables = $db->schema->getTableNames();
+                    $tables = $dbSchema->getTableNames();
                 break;
                 case is_string($table): // get only 1 table
-                    if (!$db->schema->isTable($table)) {
+                    if (!$dbSchema->isTable($table)) {
                         continue; // table is not here, try next file
                     }
                     $data[$table] = $db->select($table);
@@ -509,7 +511,7 @@ class DbExtractor extends DbCreator
                     $tables = array_values($table);
                 break;
                 default: // get all tables (default)
-                    $tables = $db->schema->getTableNames();
+                    $tables = $dbSchema->getTableNames();
                 break;
             }
             unset($table);
@@ -521,7 +523,7 @@ class DbExtractor extends DbCreator
                  */
                 foreach ($tables as $table)
                 {
-                    if (!$db->schema->isTable($table)) {
+                    if (!$dbSchema->isTable($table)) {
                         continue;
                     }
                     /*
@@ -569,7 +571,7 @@ class DbExtractor extends DbCreator
                     foreach (array_keys($nodes) as $tableName)
                     {
                         $_attr = "@$tableName";
-                        $table = $db->schema->getTable($tableName);
+                        $table = $dbSchema->getTable($tableName);
                         $_fKey = null;
                         $_fTable = null;
                         $_row = null;
