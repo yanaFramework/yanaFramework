@@ -289,7 +289,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
 
         $this->setTable($tableName);
         // get table definition
-        $table = $selectQuery->getDatabase()->schema->getTable($tableName);
+        $table = $selectQuery->getDatabase()->getSchema()->getTable($tableName);
         assert('$table instanceof DDLTable; // Table not found');
         assert('!isset($title); // Cannot redeclare var $title');
         $title = $table->getTitle();

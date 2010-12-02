@@ -1361,6 +1361,7 @@ class SmartUtility extends Utility
 
         // create database query
         $database = Yana::connect($params['file']);
+        $dbSchema = $database->getSchema();
 
         switch (true)
         {
@@ -1382,21 +1383,21 @@ class SmartUtility extends Utility
              */
             case isset($params['table']):
 
-                $genericName = $database->schema->getName() . '-' . $params['table'];
+                $genericName = $dbSchema->getName() . '-' . $params['table'];
 
-                if ($database->schema->isForm($genericName)) { // form already exists
-                    $form = $database->schema->getForm($genericName);
+                if ($dbSchema->isForm($genericName)) { // form already exists
+                    $form = $dbSchema->getForm($genericName);
                     assert('$form instanceof DDLAbstractForm; // form not found');
                     break;
                 }
 
-                $table = $database->schema->getTable($params['table']);
+                $table = $dbSchema->getTable($params['table']);
                 if (! $table instanceof DDLTable) {
                     return ""; // error - table not found
                 }
 
                 // create new form object
-                $form = $database->schema->addForm($genericName, 'DDLDefaultForm');
+                $form = $dbSchema->addForm($genericName, 'DDLDefaultForm');
                 unset($genericName);
 
                 /**

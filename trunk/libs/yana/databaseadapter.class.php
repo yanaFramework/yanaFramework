@@ -62,7 +62,7 @@ class DatabaseAdapter extends Object implements IsDataAdapter
     public function __construct(DbStream $db, $table)
     {
         assert('is_string($table); // Wrong argument type argument 1. String expected');
-        if (!$db->schema->isTable($table)) {
+        if (!$db->getSchema()->isTable($table)) {
             $message = "Table not found: '$table' in database '{$db->schema->getName()}'.";
             throw new NotFoundException($message);
         }
@@ -114,7 +114,7 @@ class DatabaseAdapter extends Object implements IsDataAdapter
      */
     public function getIds()
     {
-        $column = $this->db->schema->getTable($this->table)->getPrimaryKey();
+        $column = $this->db->getSchema()->getTable($this->table)->getPrimaryKey();
         return $this->db->select($this->table . ".*." . $column);
     }
 

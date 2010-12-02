@@ -271,12 +271,13 @@ class DbSelect extends DbSelectCount
 
         // check if column definition is valid
         if (YANA_DB_STRICT) {
-            if (!$this->db->schema->isTable($tableName)) {
+            $dbSchema = $this->db->getSchema();
+            if (!$dbSchema->isTable($tableName)) {
                 throw new NotFoundException("Table not found '" . $tableName . "'.",
                     E_USER_WARNING);
 
             }
-            if (!$this->db->schema->getTable($tableName)->isColumn($column)) {
+            if (!$dbSchema->getTable($tableName)->isColumn($column)) {
                 throw new NotFoundException("Column '$column' not found in table " .
                     "'$tableName'.", E_USER_WARNING);
             }
@@ -693,10 +694,11 @@ class DbSelect extends DbSelectCount
      */
     public function getColumnTitles()
     {
+        $dbSchema = $this->db->getSchema();
         $titles = array(); // array of column titles
         foreach ($this->getColumns() as $column)
         {
-            $column = $this->db->schema->getTable($column[0])->getColumn($column[1]);
+            $column = $dbSchema->getTable($column[0])->getColumn($column[1]);
             $title = $column->getTitle();
             if (empty($title)) {
                 $title = $column->getName();
@@ -780,6 +782,7 @@ class DbSelect extends DbSelectCount
         if (!empty($sqlStmt['table_join'])) {
             assert('!isset($i); // Cannot redeclare variable $i');
             assert('!isset($join); // Cannot redeclare variable $join');
+            $dbSchema = $database->getSchema();
             $i = 0;
             foreach ($sqlStmt['table_join'] as $join)
             {
@@ -790,8 +793,8 @@ class DbSelect extends DbSelectCount
                 switch ($join)
                 {
                     case 'natural join':
-                        $tableA = $database->schema->getTable($tableNameA);
-                        $tableB = $database->schema->getTable($tableNameB);
+                        $tableA = $dbSchema->getTable($tableNameA);
+                        $tableB = $dbSchema->getTable($tableNameB);
                         // error: table not found
                         if (! $tableA instanceof DDLTable) {
                             throw new NotFoundException("Table '{$tableNameA}' not found.");
@@ -988,7 +991,7 @@ class DbSelect extends DbSelectCount
             return null;
         }
         $returnedType = $this->getExpectedResult();
-        $table = $this->db->schema->getTable($this->getTable());
+        $table = $this->db->getSchema()->getTable($this->getTable());
         assert('$table instanceof DDLTable;');
 
         assert('!isset($output); // Cannot redeclare var $output');

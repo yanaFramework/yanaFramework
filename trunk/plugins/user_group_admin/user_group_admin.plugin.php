@@ -93,7 +93,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
     {
         if (!isset(self::$actionForm)) {
             $database = self::getDatabase();
-            self::$actionForm = $database->schema->getForm("securityactionrules");
+            self::$actionForm = $database->getSchema()->getForm("securityactionrules");
         }
         return self::$actionForm;
     }
@@ -109,7 +109,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
     {
         if (!isset(self::$groupForm)) {
             $database = self::getDatabase();
-            self::$groupForm = $database->schema->getForm("securitygroup");
+            self::$groupForm = $database->getSchema()->getForm("securitygroup");
         }
         return self::$groupForm;
     }
@@ -125,7 +125,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
     {
         if (!isset(self::$roleForm)) {
             $database = self::getDatabase();
-            self::$roleForm = $database->schema->getForm("securityrole");
+            self::$roleForm = $database->getSchema()->getForm("securityrole");
         }
         return self::$roleForm;
     }
@@ -199,7 +199,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
     public function set_user_action_settings_edit ()
     {
         $updatedEntries = self::getActionForm()->getUpdateValues();
-       
+
         /* no data has been provided */
         if (empty($updatedEntries)) {
             throw new InvalidInputWarning();

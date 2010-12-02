@@ -80,14 +80,14 @@ class DbStream extends Object implements Serializable
      * Each database connection depends on a schema file describing the database.
      * These files are to be found in config/db/*.db.xml
      *
-     * @param   DDLDatabase  $schema  database definition language
-     * @param   DbServer     $server  Connection to a database server
+     * @param   string|DDLDatabase  $schema  schema name or schema in database definition language
+     * @param   DbServer            $server  Connection to a database server
      * @throws  DbConnectionError     when connection to database failed
      * @throws  NotFound              when structure file is not found
      * @throws  NotReadableException  when trying to reverse-engineer database structure,
      *                                but the database's schema is unknown or not readable
      */
-    public function __construct(DDLDatabase $schema = null, DbServer $server = null)
+    public function __construct($schema = null, DbServer $server = null)
     {
         // fall back to default connection
         if (is_null($server)) {
@@ -103,14 +103,41 @@ class DbStream extends Object implements Serializable
             throw new DbConnectionError();
         }
 
-        /*
-         * If no schema file is available, this framework has the ability to
-         * reverse engineer the database at runtime.
-         */
-        if (is_null($schema)) {
-            $schema = DDLDatabaseFactory::createDatabase($this->database); // may throw DBError
+        if ($schema instanceof DDLDatabase) {
+            $this->schema = $schema;
+        } else {
+            assert('is_string($schema); // Wrong argument type $schema. String expected');
+            $this->name = (string) $schema;
         }
-        $this->schema = $schema;
+    }
+
+    /**
+     * Get database schema.
+     *
+     * Returns the schema of the database, containing info about tables, columns, forms aso.
+     *
+     * If no schema file is available, this framework has the ability to
+     * reverse engineer the database at runtime.
+     *
+     * @access public
+     * @return DDLDatabase
+     * @throws DBError when reverse-engineering failed
+     */
+    public function getSchema()
+    {
+        if (!isset($this->schema)) {
+            if ($this->name) {
+                $source = $this->name;
+                assert('is_string($source); // Invalid member type. Name is supposed to be a string.');
+                // load file
+                $schema = XDDL::getDatabase($source);
+            } else {
+                // auto-discover / reverse engineering
+                $schema = DDLDatabaseFactory::createDatabase($this->database); // may throw DBError
+            }
+            $this->schema = $schema;
+        }
+        return $this->schema;
     }
 
     /**
@@ -129,7 +156,7 @@ class DbStream extends Object implements Serializable
     public function __get($name)
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
-        return $this->schema->{$name};
+        return $this->getSchema()->{$name};
     }
 
     /**
@@ -145,7 +172,7 @@ class DbStream extends Object implements Serializable
     public function __call($name, array $arguments)
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
-        return call_user_func_array(array($this->schema, $name), $arguments);
+        return call_user_func_array(array($this->getSchema(), $name), $arguments);
     }
 
     /**
@@ -267,6 +294,7 @@ class DbStream extends Object implements Serializable
         // start transaction
         $dbConnection = $this->getConnection();
         $dbConnection->beginTransaction();
+        $dbSchema = $this->getSchema();
 
         assert('!isset($i); /* Cannot redeclare $i */');
         for ($i = 0; $i < count($this->_queue); $i++)
@@ -338,7 +366,7 @@ class DbStream extends Object implements Serializable
                             assert('!isset($tableName); // Cannot redeclare var $tableName');
                             $tableName = $dbQuery->getTable();
                             assert('!isset($table); // Cannot redeclare var $table');
-                            $table = $this->schema->getTable($tableName);
+                            $table = $dbSchema->getTable($tableName);
                             assert('$table instanceof DDLTable; // No such table');
                             assert('!isset($column); // Cannot redeclare var $column');
                             $column = $table->getColumn($table->getPrimaryKey());
@@ -652,7 +680,7 @@ class DbStream extends Object implements Serializable
         $value = $updateQuery->getValues(); // get values by reference
 
         assert('!isset($table); /* Cannot redeclare var $table */');
-        $table = $this->schema->getTable($tableName);
+        $table = $this->getSchema()->getTable($tableName);
 
         /*
          * 2) check whether the row has been modified since last access
@@ -988,7 +1016,7 @@ class DbStream extends Object implements Serializable
         $value = $insertQuery->getValues(); // get values by reference
 
         assert('!isset($table); /* Cannot redeclare var $table */');
-        $table = $this->schema->getTable($tableName);
+        $table = $this->getSchema()->getTable($tableName);
 
         /*
          * 3.1) error - inserting updating table / column is illegal
@@ -1132,7 +1160,7 @@ class DbStream extends Object implements Serializable
         /*  @var $deleteQuery DbDelete */
 
         assert('!isset($table); // Cannot redeclare var $table');
-        $table = $this->schema->getTable($tableName);
+        $table = $this->getSchema()->getTable($tableName);
 
         /*
          * get old row for logging an generic triggers
@@ -1454,7 +1482,7 @@ class DbStream extends Object implements Serializable
 
         // check table
         if (mb_strpos($key, '.') === false) {
-            return $this->schema->isTable($key);
+            return $this->getSchema()->isTable($key);
         }
         // build query to check key
         $existQuery = new DbSelectExist($this);
@@ -1482,7 +1510,7 @@ class DbStream extends Object implements Serializable
      */
     public function isWriteable()
     {
-        return !$this->schema->isReadonly();
+        return !$this->getSchema()->isReadonly();
     }
 
     /**
@@ -1538,7 +1566,7 @@ class DbStream extends Object implements Serializable
             $message = "Database connection is not available. Check your connection settings.";
             throw new NotWriteableException($message, E_USER_NOTICE);
         }
-        if ($this->schema->isReadonly()) {
+        if ($this->getSchema()->isReadonly()) {
             throw new NotWriteableException("Database is readonly. SQL import aborted.", E_USER_NOTICE);
         }
 
@@ -1591,7 +1619,7 @@ class DbStream extends Object implements Serializable
      */
     public function toString()
     {
-        return $this->schema->getName();
+        return $this->getSchema()->getName();
     }
 
     /**
@@ -1604,7 +1632,7 @@ class DbStream extends Object implements Serializable
     protected function getName()
     {
         if (!isset($this->name)) {
-            $this->name = $this->schema->getName();
+            $this->name = $this->getSchema()->getName();
         }
         return $this->name;
     }
@@ -1923,7 +1951,7 @@ class DbStream extends Object implements Serializable
     public function equals(object $anotherObject)
     {
         if ($anotherObject instanceof $this) {
-            if ($this->schema->equals($anotherObject->schema) && $this->database == $anotherObject->database) {
+            if ($this->getName()->equals($anotherObject->getName()) && $this->database == $anotherObject->database) {
                 return true;
             } else {
                 return false;
@@ -1963,6 +1991,7 @@ class DbStream extends Object implements Serializable
         if (!is_null($columnName)) {
             $value = array($columnName => $value);
         }
+        $dbSchema = $this->getSchema();
         /* @var $foreign DDLForeignKey */
         assert('!isset($foreign); /* Cannot redeclare var $fkey */');
         foreach ($table->getForeignKeys() as $foreign)
@@ -1970,7 +1999,7 @@ class DbStream extends Object implements Serializable
             $isPartialMatch = !is_null($columnName) || $foreign->getMatch() === DDLKeyMatchStrategyEnumeration::PARTIAL;
             $isFullMatch = is_null($columnName) && $foreign->getMatch() === DDLKeyMatchStrategyEnumeration::FULL;
             $targetTable = mb_strtolower($foreign->getTargetTable());
-            $fTable = $this->schema->getTable($targetTable);
+            $fTable = $dbSchema->getTable($targetTable);
             foreach ($foreign->getColumns() as $sourceColumn => $targetColumn)
             {
                 if (empty($targetColumn)) {

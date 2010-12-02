@@ -172,7 +172,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
     public function guestbook_write_edit($target, $name, $message, $msgtyp, $messenger = "", $mail = "", $hometown = "", $homepage = "", $opinion = "")
     {
         global $YANA;
-        
+
         $permission = $YANA->getVar("PERMISSION");
         /* avoid spamming */
         if (!is_int($permission) || $permission < 1) {
@@ -484,7 +484,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
             assert('is_array($row); /* unexpected result: $row */');
             $YANA->setVar('CURRENT', $row);
             return true;
-        }        
+        }
     }
 
     /**
@@ -510,10 +510,10 @@ class plugin_guestbook extends StdClass implements IsPlugin
         if (self::_securityCheck() === false) {
             return false;
         }
-    
+
         Microsummary::publishSummary(__CLASS__);
         RSS::publishFeed('guestbook_read_rss');
-    
+
         /* get entries */
         $rows = $this->_getTable($page, $entries);
         assert('is_array($rows); /* unexpected result: $rows */');
@@ -526,7 +526,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         }
         $YANA->setVar('ROWS', $rows);
         $YANA->setVar("DESCRIPTION", $YANA->language->getVar('descr_show'));
-        return true;        
+        return true;
     }
 
     /**
@@ -603,7 +603,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
 
         $database = self::getDatabase();
         /* check if $table really is a table */
-        $table = $database->schema->getTable("guestbook");
+        $table = $database->getSchema()->getTable("guestbook");
         assert('$table instanceof DDLTable;');
 
         /* get the name of the primary key */

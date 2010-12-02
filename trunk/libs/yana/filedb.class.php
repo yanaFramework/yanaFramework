@@ -70,24 +70,17 @@ class FileDb extends DbStream
      *
      * Create a new instance of this class.
      *
-     * @param  DDLDatabase  $schema  database definition language
+     * @param  string|DDLDatabase  $schema  schema name or schema in database definition language
      */
-    public function __construct(DDLDatabase $schema = null)
+    public function __construct($schema = null)
     {
-        if (is_null($schema)) {
-            /*
-             * If no structure file is available,
-             * this framework has the ability to estimate the structure
-             * of the database "on the fly" at runtime, via the
-             * "DbStream::buildStructure()" method.
-             */
-            $this->buildStructure();
-            $this->dsn['DATABASE'] = "";
-        } else {
-            $this->dsn['DATABASE'] = $schema->getName();
+        if ($schema instanceof DDLDatabase) {
             $this->schema = $schema;
-            assert('$this->schema instanceof DDLDatabase;');
+        } else {
+            assert('is_string($schema); // Wrong argument type $schema. String expected');
+            $this->name = (string) $schema;
         }
+        $this->dsn['DATABASE'] = $this->getName();
     }
 
     /**
@@ -137,24 +130,41 @@ class FileDb extends DbStream
     }
 
     /**
-     * build structure
+     * Get database schema.
      *
-     * @access  protected
-     * @throws  NotFoundException     if database definition is not found
-     * @throws  NotReadableException  if database definition is not readable
+     * Returns the schema of the database, containing info about tables, columns, forms aso.
+     *
+     * If no schema file is available, this framework has the ability to
+     * reverse engineer the database at runtime.
+     *
+     * @access public
+     * @return DDLDatabase
+     * @throws NotFoundException     if database definition is not found
+     * @throws NotReadableException  if database definition is not readable
      */
-    protected function buildStructure()
+    public function getSchema()
     {
-        foreach (DDL::getListOfFiles() as $db)
-        {
-            if (empty($this->schema)) {
-                $this->schema = XDDL::getDatabase($db);
-                $this->path = $db;
+        if (!isset($this->schema)) {
+            if ($this->name) {
+                $source = $this->name;
+                assert('is_string($source); // Invalid member type. Name is supposed to be a string.');
+                // load file
+                $this->schema = XDDL::getDatabase($source);
             } else {
-                $this->schema->addInclude($db);
+                // auto-load all schema files to mock auto-discover function
+                foreach (DDL::getListOfFiles() as $db)
+                {
+                    if (empty($this->schema)) {
+                        $this->schema = XDDL::getDatabase($db);
+                        $this->path = $db;
+                    } else {
+                        $this->schema->addInclude($db);
+                    }
+                }
+                $this->schema->loadIncludes();
             }
         }
-        $this->schema->loadIncludes();
+        return $this->schema;
     }
 
     /**

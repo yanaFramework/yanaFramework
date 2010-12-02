@@ -108,7 +108,7 @@ class GalleryDatabaseAdapter extends DatabaseAdapter
     public function updateInstance(DataContainerAbstract $container)
     {
         $data = array();
-        $table = $this->db->schema->getTable($this->table);
+        $table = $this->db->getSchema()->getTable($this->table);
         foreach ($table->getColumnNames() as $name)
         {
             $name = mb_strtolower($name);

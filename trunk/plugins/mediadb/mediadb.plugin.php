@@ -119,7 +119,7 @@ class plugin_mediadb extends StdClass implements IsPlugin
     {
         if (!isset(self::$mediafolderForm)) {
             $database = self::getDatabase();
-            self::$mediafolderForm = $database->schema->getForm("mediafolder");
+            self::$mediafolderForm = $database->getSchema()->getForm("mediafolder");
             $query = self::$mediafolderForm->getQuery();
             $query->setWhere(self::_getWhere());
         }
