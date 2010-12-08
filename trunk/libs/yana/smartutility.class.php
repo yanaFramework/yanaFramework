@@ -442,7 +442,7 @@ class SmartUtility extends Utility
 
             if (isset($GLOBALS['YANA'])) {
                 /* @var $view SmartView */
-                $view = $GLOBALS['YANA']->view;
+                $view = $GLOBALS['YANA']->getView();
                 $array = $view->getVar();
                 self::_replace($string, $array);
                 return $string;
@@ -1684,10 +1684,10 @@ class SmartUtility extends Utility
      */
     public static function applicationBar()
     {
-        global $YANA;
+        $yana = Yana::getInstance();
 
         $result = "";
-        $dir = $YANA->plugins->getPluginDir();
+        $dir = $yana->getPlugins()->getPluginDir();
         $pluginMenu = PluginMenu::getInstance();
 
         $template = '<a class="applicationBar" href="' . self::url("action=", false, false) . '%s">' .
@@ -1708,7 +1708,7 @@ class SmartUtility extends Utility
             $result .= sprintf($template, $action, $image, $title, $title);
         } // end foreach
 
-        return $YANA->language->replaceToken($result);
+        return $yana->getLanguage()->replaceToken($result);
     }
 
     /**
@@ -1827,14 +1827,14 @@ class SmartUtility extends Utility
      */
     public static function rss(array $params)
     {
-        assert('isset($GLOBALS["YANA"]); // Global var $YANA not set');
+        $yana = Yana::getInstance();
         if (isset($params['image'])) {
             $image = (string) $params['image'];
         } else {
-            $image = $GLOBALS['YANA']->getVar('DATADIR') .'rss.gif';
+            $image = $yana->getVar('DATADIR') .'rss.gif';
         }
-        $title = $GLOBALS['YANA']->language->getVar('RSS_TITLE');
-        $name = $GLOBALS['YANA']->language->getVar('PROGRAM_TITLE');
+        $title = $yana->getLanguage()->getVar('RSS_TITLE');
+        $name = $yana->getLanguage()->getVar('PROGRAM_TITLE');
         $result = "";
         foreach (RSS::getFeeds() as $action)
         {
@@ -2424,7 +2424,7 @@ class SmartUtility extends Utility
      */
     public static function guiEmbeddedTags(array $params)
     {
-        global $YANA;
+        $yana = Yana::getInstance();
 
         $listOfTags = array('b','i','u','h','emp','c','small','big','hide',
                             'code','img','url','mail','color','mark','smilies');
@@ -2477,8 +2477,8 @@ class SmartUtility extends Utility
         /* create document */
         $document = new SmartView("gui_embedded_tags");
         $document->setVar('TAGS', $tags);
-        $document->setVar('USER_DEFINED', $YANA->getVar('PROFILE.EMBTAG'));
-        $document->setVar('LANGUAGE', $YANA->language->getVar());
+        $document->setVar('USER_DEFINED', $yana->getVar('PROFILE.EMBTAG'));
+        $document->setVar('LANGUAGE', $yana->getLanguage()->getVar());
 
         return $document->toString();
     }
@@ -2679,7 +2679,7 @@ class SmartUtility extends Utility
         global $YANA;
         $table   = '<table summary="smilies" class="gui_generator_smilies"><tr>';
         if (isset($YANA)) {
-            $title = $YANA->language->getVar("TITLE_SMILIES");
+            $title = $YANA->getLanguage()->getVar("TITLE_SMILIES");
             $smilies_dir = $YANA->getVar("PROFILE.SMILEYDIR");
             $smilies = $YANA->getVar("SMILIES");
         } else {
@@ -2833,7 +2833,7 @@ class SmartUtility extends Utility
 
         global $YANA;
         if (isset($YANA)) {
-            $title = $YANA->language->getVar('SECURITY_IMAGE.DESCRIPTION');
+            $title = $YANA->getLanguage()->getVar('SECURITY_IMAGE.DESCRIPTION');
         } else {
             $title = "";
         }

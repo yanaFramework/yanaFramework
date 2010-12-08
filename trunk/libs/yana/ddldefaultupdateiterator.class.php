@@ -507,7 +507,7 @@ class DDLDefaultUpdateIterator extends DDLDefaultInsertIterator
             break;
             case 'file':
                 global $YANA;
-                if (!$YANA->session->checkPermission(null, $this->form->getDownloadAction())) {
+                if (!$YANA->getSession()->checkPermission(null, $this->form->getDownloadAction())) {
                     return "&nbsp;";
                 }
                 $value = DbBlob::storeFilenameInSession($value);
@@ -529,7 +529,7 @@ class DDLDefaultUpdateIterator extends DDLDefaultInsertIterator
             break;
             case 'image':
                 global $YANA;
-                if (!$YANA->session->checkPermission(null, $this->form->getDownloadAction())) {
+                if (!$YANA->getSession()->checkPermission(null, $this->form->getDownloadAction())) {
                     return "&nbsp;";
                 }
                 $value = DbBlob::storeFilenameInSession($value);

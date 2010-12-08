@@ -80,7 +80,7 @@ class SmartView extends SmartTemplate
      *
      * Example of usage:
      * <code>
-     * $GLOBALS['YANA']->view->setTemplate('index');
+     * Yana::getInstance()->getView()->setTemplate('index');
      * </code>
      *
      * @access  public
@@ -132,7 +132,7 @@ class SmartView extends SmartTemplate
     {
         if (!is_file($id)) {
             try {
-                $id = Skin::getInstance()->getFile($id);
+                $id = Yana::getInstance()->getSkin()->getFile($id);
             } catch (Exception $e) {
                 Log::report("Template error: " . $e->getMessage());
             }

@@ -3726,7 +3726,7 @@ class DbStructure extends SML
             assert('!isset($message); // Cannot redeclare var $message');
             $message = "Table '$table' not found.";
             Log::report($message, E_USER_WARNING);
-            if (isset($GLOBALS['YANA']) && $GLOBALS['YANA']->plugins->getEventType() === 'write') {
+            if (isset($GLOBALS['YANA']) && $GLOBALS['YANA']->getPlugins()->getEventType() === 'write') {
                 throw new Error();
             }
             return false;
@@ -3742,7 +3742,7 @@ class DbStructure extends SML
                 assert('!isset($message); // Cannot redeclare var $message');
                 $message = "Database is readonly. Update operation on table '$table' aborted.";
                 Log::report($message, E_USER_WARNING);
-                if (isset($GLOBALS['YANA'])&& $GLOBALS['YANA']->plugins->getEventType() === 'write') {
+                if (isset($GLOBALS['YANA'])&& $GLOBALS['YANA']->getPlugins()->getEventType() === 'write') {
                     throw new Error();
                 }
                 return false;
@@ -3799,7 +3799,7 @@ class DbStructure extends SML
                     $message = "Invalid default value for column '{$column}'. The structure file is not valid.";
 
                     Log::report($message, E_USER_WARNING, array('FILE'=>$this->getPath()));
-                    if (isset($GLOBALS['YANA']) && $GLOBALS['YANA']->plugins->getEventType() === 'write') {
+                    if (isset($GLOBALS['YANA']) && $GLOBALS['YANA']->getPlugins()->getEventType() === 'write') {
                         throw new Error();
                     }
                     trigger_error("SYNTAX ERROR: $message.", E_USER_ERROR);
@@ -3807,7 +3807,7 @@ class DbStructure extends SML
                 }
                 if ($this->isNumber($table, $column)) {
                     if ($this->isUnsigned($table, $column) && $row[$column] < 0) {
-                        if (isset($GLOBALS['YANA']) && $GLOBALS['YANA']->plugins->getEventType() === 'write') {
+                        if (isset($GLOBALS['YANA']) && $GLOBALS['YANA']->getPlugins()->getEventType() === 'write') {
                             $code = $this->getDescription($table, $column);
                             throw new InvalidValueWarning($code);
                         }
@@ -3824,7 +3824,7 @@ class DbStructure extends SML
              * 3.3) error - value is missing
              */
             } else {
-                if (isset($GLOBALS['YANA']) && $GLOBALS['YANA']->plugins->getEventType() === 'write') {
+                if (isset($GLOBALS['YANA']) && $GLOBALS['YANA']->getPlugins()->getEventType() === 'write') {
                     throw new MissingFieldWarning($this->getDescription($table, $column));
                 }
                 $message = "SQL ERROR: A required attribute '{$column}' has not been provided." .
