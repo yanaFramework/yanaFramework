@@ -79,7 +79,7 @@ class plugin_config extends StdClass implements IsPlugin
         global $YANA;
 
         // create options for select-boxes
-        $YANA->setVar('LANGUAGEFILES', $YANA->language->getLanguages());
+        $YANA->setVar('LANGUAGEFILES', $YANA->getLanguage()->getLanguages());
         $YANA->setVar('SKINFILES', Skin::getSkins());
         // create a list of profiles
         assert('!isset($profiles); // Cannot redeclare var $profiles');
@@ -96,7 +96,7 @@ class plugin_config extends StdClass implements IsPlugin
         $this->index_plugins();
 
         $YANA->setVar('USER_IS_EXPERT', $this->_getIsExpert());
-        $YANA->view->setFunction('updateCheck', array($this, '_updateCheck'));
+        $YANA->getView()->setFunction('updateCheck', array($this, '_updateCheck'));
 
         return true;
     }
@@ -119,6 +119,7 @@ class plugin_config extends StdClass implements IsPlugin
 
         /* current state vars */
         $isDefault = Yana::getId() === Yana::getDefault('profile');
+        $pluginManager = $YANA->getPlugins();
 
         /**
          * The "options" menu imports a html-file for each plugin.
@@ -126,8 +127,8 @@ class plugin_config extends StdClass implements IsPlugin
          */
 
         /* get list of all installed plugins */
-        $pluginNames = $YANA->plugins->getPluginNames();
-        $pluginDir = $YANA->plugins->getPluginDir();
+        $pluginNames = $pluginManager->getPluginNames();
+        $pluginDir = $pluginManager->getPluginDir();
 
         /* output vars */
         $plugins = array();
@@ -144,12 +145,12 @@ class plugin_config extends StdClass implements IsPlugin
 
             /* get configuration */
             /* @var $pluginConfiguration PluginConfiguration */
-            $pluginConfiguration = $YANA->plugins->getPluginConfiguration($item);
+            $pluginConfiguration = $pluginManager->getPluginConfiguration($item);
 
             /* check if plugin is active */
-            if ($YANA->plugins->isDefaultActive($item)) {
+            if ($pluginManager->isDefaultActive($item)) {
                 $active = 2;
-            } elseif ($YANA->plugins->isActive($item)) {
+            } elseif ($pluginManager->isActive($item)) {
                 $active = 1;
             } else {
                 $active = 0;
@@ -316,15 +317,16 @@ class plugin_config extends StdClass implements IsPlugin
     {
         /* @var $YANA Yana */
         global $YANA;
+        $pluginManager = $YANA->getPlugins();
         foreach($pluginlist as $plugin)
         {
             /* We don't mind, wether $plugin is a plugin or not, since
              * the PluginManager does this checking for us.
              */
             if (in_array($plugin, $plugins)) {
-                $test = $YANA->plugins->setActive($plugin, 1);
+                $test = $pluginManager->setActive($plugin, 1);
             } else {
-                $test = $YANA->plugins->setActive($plugin, 0);
+                $test = $pluginManager->setActive($plugin, 0);
             }
             if ($test === false) {
                 throw new InvalidInputWarning();
@@ -491,7 +493,7 @@ class plugin_config extends StdClass implements IsPlugin
         switch ($type)
         {
             case "plugin":
-                $pluginConfiguration = $YANA->plugins->getPluginConfiguration($target);
+                $pluginConfiguration = $YANA->getPlugins()->getPluginConfiguration($target);
                 $info = array
                 (
                     'NAME' => $pluginConfiguration->getTitle(),
@@ -516,7 +518,7 @@ class plugin_config extends StdClass implements IsPlugin
                 );
             break;
             case "language":
-                $info = $YANA->language->getInfo($target);
+                $info = $YANA->getLanguage()->getInfo($target);
             break;
             default:
                 return false;
@@ -568,7 +570,7 @@ class plugin_config extends StdClass implements IsPlugin
         $href = str_replace(YANA_LEFT_DELIMITER . '$AS_NUMBER' . YANA_RIGHT_DELIMITER, '', $url);
         $url = str_replace(YANA_LEFT_DELIMITER . '$AS_NUMBER' . YANA_RIGHT_DELIMITER, 'true', $url);
         $url = html_entity_decode($url);
-        $link = '<a href="' . $href .  '" target="_blank">' . $YANA->language->getVar('INDEX_13') . '</a>';
+        $link = '<a href="' . $href .  '" target="_blank">' . $YANA->getLanguage()->getVar('INDEX_13') . '</a>';
 
         assert('!isset($urlInfo); // Cannot redeclare var $urlInfo');
         assert('!isset($errno); // Cannot redeclare var $errno');
@@ -647,12 +649,14 @@ class plugin_config extends StdClass implements IsPlugin
          * Compare versions and return result;
          */
         if (version_compare(YANA_VERSION, $latestVersion) < 0) {
-            $link = $YANA->language->getVar('INDEX_15') . ': ' . htmlspecialchars($latestVersion, ENT_COMPAT, 'UTF-8') . ' <a href="' . $href .  '" target="_blank">' . $YANA->language->getVar('INDEX_16') . '</a>';
+            $link = $YANA->getLanguage()->getVar('INDEX_15') . ': ' .
+                    htmlspecialchars($latestVersion, ENT_COMPAT, 'UTF-8') .
+                    ' <a href="' . $href .  '" target="_blank">' . $YANA->getLanguage()->getVar('INDEX_16') . '</a>';
             file_put_contents($tempFile, $link);
             return $link;
 
         } else {
-            $link = $YANA->language->getVar('INDEX_14') . ': ' . YANA_VERSION;
+            $link = $YANA->getLanguage()->getVar('INDEX_14') . ': ' . YANA_VERSION;
             file_put_contents($tempFile, $link);
             return $link;
         }

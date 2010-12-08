@@ -195,10 +195,10 @@ class plugin_user_admin extends StdClass implements IsPlugin
             $sender = $YANA->getVar("PROFILE.MAIL");
             if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
                 $now = getdate();
-                $mail = new Mailer($YANA->skin->getFile("USER_PASSWORD_MAIL"));
+                $mail = new Mailer($YANA->getSkin()->getFile("USER_PASSWORD_MAIL"));
                 $mail->sender = $sender;
                 $mail->setVar('DATE', date('d-m-Y'));
-                $mail->subject = $YANA->language->getVar("user.mail_subject");
+                $mail->subject = $YANA->getLanguage()->getVar("user.mail_subject");
                 $mail->send($user->getMail());
             }
             unset($sender);
@@ -221,7 +221,7 @@ class plugin_user_admin extends StdClass implements IsPlugin
     public function get_user_list()
     {
         global $YANA;
-        $YANA->setVar("DESCRIPTION", $YANA->language->getVar("DESCR_USER_CONFIGURATION"));
+        $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_USER_CONFIGURATION"));
         $YANA->setVar("VISIBLE_COLUMNS", $this->visibleColumns);
         return true;
     }

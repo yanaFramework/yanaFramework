@@ -313,7 +313,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
 
         /* create RSS feed */
         $rss = new RSS();
-        $rss->description = $YANA->language->getVar('RSS_DESCRIPTION');
+        $rss->description = $YANA->getLanguage()->getVar('RSS_DESCRIPTION');
         if (empty($rss->description)) {
             $rss->description = 'the 10 most recent guestbook entries';
         }
@@ -414,7 +414,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
          *
          * return error if entry with same content already exists
          */
-        $myFlood = $YANA->plugins->{"guestbook:/my.floodfile"};
+        $myFlood = $YANA->getPlugins()->{"guestbook:/my.floodfile"};
         $myFlood->setMax((int)$YANA->getVar("PROFILE.GUESTBOOK.FLOODING"));
         if ($myFlood->isBlocked()) {
             Log::report('Possibly flooding attempt detected. User request rejected.');
@@ -442,7 +442,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         }
         /* send Mail */
         if ($YANA->getVar("PROFILE.GUESTBOOK.MAIL") && $YANA->getVar("PROFILE.GUESTBOOK.NOTIFICATION")) {
-            $mailer = $YANA->plugins->{"guestbook:/notification.mailer"};
+            $mailer = $YANA->getPlugins()->{"guestbook:/notification.mailer"};
             self::_sendMail($mailer, $ARGS);
         }
         Microsummary::setText(__CLASS__, 'Guestbook, update ' . date('d M y G:s', time()));
@@ -470,7 +470,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         }
 
         // create link to user profile (if profile viewer is installed)
-        if ($YANA->plugins->isActive('user_admin')) {
+        if ($YANA->getPlugins()->isActive('user_admin')) {
             $YANA->setVar('GUESTBOOK_USER_LINK', SmartUtility::url("action=view_profile&target[user_id]="));
         } else {
             $YANA->setVar('GUESTBOOK_USER_LINK', false);
@@ -519,13 +519,13 @@ class plugin_guestbook extends StdClass implements IsPlugin
         assert('is_array($rows); /* unexpected result: $rows */');
 
         // create link to user profile (if profile viewer is installed)
-        if ($YANA->plugins->isActive('user_admin')) {
+        if ($YANA->getPlugins()->isActive('user_admin')) {
             $YANA->setVar('GUESTBOOK_USER_LINK', SmartUtility::url("action=view_profile&target[user_id]="));
         } else {
             $YANA->setVar('GUESTBOOK_USER_LINK', false);
         }
         $YANA->setVar('ROWS', $rows);
-        $YANA->setVar("DESCRIPTION", $YANA->language->getVar('descr_show'));
+        $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar('descr_show'));
         return true;
     }
 
@@ -731,7 +731,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         if (filter_var($recipient, FILTER_VALIDATE_EMAIL) && filter_var($sender, FILTER_VALIDATE_EMAIL)) {
             $INPUT = Hashtable::changeCase($INPUT, CASE_UPPER);
             $now = getdate();
-            $mail->subject = $YANA->language->getVar("MAIL_SUBJECT");
+            $mail->subject = $YANA->getLanguage()->getVar("MAIL_SUBJECT");
             $mail->sender = $sender;
             $mail->setVar('*', $INPUT);
             $mail->setVar('DATE', $now['mday'] . '.' . $now['mon'] . '.' . $now['year']);

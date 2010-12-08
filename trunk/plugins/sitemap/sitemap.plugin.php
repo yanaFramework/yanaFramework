@@ -59,13 +59,12 @@ class plugin_sitemap extends StdClass implements IsPlugin
      * @menu        group: start
      *
      * @access      public
-     * @return      bool
      */
-    public function sitemap ()
+    public function sitemap()
     {
         /* this function expects no arguments */
         global $YANA;
-        $YANA->view->setFunction('sitemap', array(__CLASS__, 'createSitemap'));
+        $YANA->getView()->setFunction('sitemap', array(__CLASS__, 'createSitemap'));
         return true;
     }
 
@@ -83,7 +82,7 @@ class plugin_sitemap extends StdClass implements IsPlugin
         global $YANA;
 
         $result = "<ul>\n";
-        $dir = $YANA->plugins->getPluginDir();
+        $dir = $YANA->getPlugins()->getPluginDir();
         $pluginMenu = PluginMenu::getInstance();
 
         foreach ($pluginMenu->getMenuEntries('start') as $action => $entry)
@@ -105,7 +104,7 @@ class plugin_sitemap extends StdClass implements IsPlugin
         } // end foreach
 
         $result .= "</ul>\n";
-        $result = $YANA->language->replaceToken($result);
+        $result = $YANA->getLanguage()->replaceToken($result);
         return $result;
     }
 

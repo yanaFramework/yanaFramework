@@ -400,7 +400,7 @@ class Calendar extends FileSystemResource
         if (!isset($this->eventList)) {
             $this->eventList = array();
             foreach ($this->getEvents() as $event)
-            { 
+            {
                 $this->_addToEventList($event);
             }
         }
@@ -525,7 +525,7 @@ class Calendar extends FileSystemResource
 
         $e['categories'] = $eventCategory;
         unset ($eventCategory, $className, $calendarClassName);
-        
+
         // END : set class name for event by selected category
         $e['description'] = $event['description'];
         /* -------------------------------------- */
@@ -544,7 +544,7 @@ class Calendar extends FileSystemResource
             }
         }
         /* -------------------------------------- */
-        
+
         if (is_object($event['rrule'])) {
             $e['frequency'] = $event['rrule']->getFreq();
             $e['interval'] = $event['rrule']->getInterval();
@@ -573,8 +573,8 @@ class Calendar extends FileSystemResource
                     $nr = $weekNr[0];
                 }
                 if (isset($nr)) {
-                    global $YANA;
-                    $repeatMonthOptions = $YANA->plugins->calendar->getVar('repeat_month_options');
+                    $yana = Yana::getInstance();
+                    $repeatMonthOptions = $yana->getPlugins()->calendar->getVar('repeat_month_options');
                     foreach ($repeatMonthOptions['option'] as $key => $data)
                     {
                         if ($data['default'] == $nr) {
@@ -646,7 +646,7 @@ class Calendar extends FileSystemResource
             $e['FR'] = null;
             $e['SA'] = null;
         }
-        
+
         /* -------------------------------------- */
         if (!empty($event['rrule'])) {
             $rrule = $event['rrule'];
@@ -665,9 +665,9 @@ class Calendar extends FileSystemResource
                     $e['start'] = $data['start'];
                     $e['end'] = $data['end'] - $subTime;
                     $e['allDay'] = $allDay;
-                    $this->eventList[] = $e;                    
+                    $this->eventList[] = $e;
                 }
-            }            
+            }
         } else {
             if (preg_match('/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(\w*)/', $event['start'], $sTime)) {
                 $date = mktime($sTime[4], $sTime[5], $sTime[6], $sTime[2], $sTime[3], $sTime[1]);
@@ -884,8 +884,8 @@ class Calendar extends FileSystemResource
      */
     protected function calculateDataEntry($event)
     {
-        /* @var $YANA Yana */
-        global $YANA;
+        $yana = Yana::getInstance();
+        $plugins = $yana->getPlugins();
 
         // prapair the event for save or update
         $dataset = array();
@@ -928,9 +928,9 @@ class Calendar extends FileSystemResource
                         }
                         $repeat = 'UNTIL='.$until.';';
                     }
-                    $days = $YANA->plugins->calendar->getVar('days');
+                    $days = $plugins->calendar->getVar('days');
                     $days = $days['day'];
-                    $repeatMonthOptions = $YANA->plugins->calendar->getVar('repeat_month_options');
+                    $repeatMonthOptions = $plugins->calendar->getVar('repeat_month_options');
                     $repeatMonthOptions = $repeatMonthOptions['option'];
 
                     if ($value == 'DAILY') {
@@ -952,7 +952,7 @@ class Calendar extends FileSystemResource
                             $rrule .= $repeat;
                         }
 
-                        $monthOption = '';                        
+                        $monthOption = '';
                         if (isset($event['monthly_options']) && $event['monthly_options'] == 'bymonthday') {
                             $monthOption .= 'BYMONTHDAY=';
                             foreach ($event['day'] as $key => $monthDay)
@@ -1025,18 +1025,18 @@ class Calendar extends FileSystemResource
                     }
                 break;
                 default:
-                    
+
                 // this step is for additional event informations if this are defined
                     $additionalEventKeys = self::$additionalEventKeys;
                     if (!empty($additionalEventKeys)) {
                         if (in_array($key, $additionalEventKeys)) {
                             $dataset['extends'][$key] = $value;
                         }
-                    }      
+                    }
                 break;
             } // end switch
         } // end foreach
-       
+
         // check if rrule exists
         if (!isset($rrule)) {
             $dataset['rrule'] = '';
@@ -1098,7 +1098,7 @@ class Calendar extends FileSystemResource
             $id = $event['eventid'];
         } else {
             $id = '';
-        }        
+        }
         // prepare dataset
         $resultArray = $this->calculateDataEntry($event);
         // update or insert event

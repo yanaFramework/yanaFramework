@@ -662,7 +662,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
         if (!defined('YANA_DATABASE_NAME'))     define('YANA_DATABASE_NAME', \"$name\");\n?>";
         assert('!isset($file); // Cannot redeclare var $file');
         /* @var $file TextFile */
-        $file = $GLOBALS['YANA']->plugins->{"db_admin:/dbconfig.textfile"};
+        $file = $GLOBALS['YANA']->getPlugins()->{"db_admin:/dbconfig.textfile"};
         if (!$file->exists()) {
             $file->create();
         }

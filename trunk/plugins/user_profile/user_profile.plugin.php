@@ -138,7 +138,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
     public function get_profile_edit()
     {
         global $YANA;
-        $YANA->setVar("DESCRIPTION", $YANA->language->getVar("DESCR_USER_EDIT"));
+        $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_USER_EDIT"));
         $form = self::getDetailForm();
         $query = $form->getQuery();
         $query->setRow(YanaUser::getUserName());

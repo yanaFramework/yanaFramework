@@ -273,12 +273,10 @@ class plugin_mediadb extends StdClass implements IsPlugin
      * @template  templates/mediafolder.html.tpl
      * @language  mediadb
      * @access    public
-     * @return    bool
      */
     public function mediadb()
     {
-        Yana::getInstance()->view->setFunction('folderList', 'plugin_mediadb::smartyFolderList');
-        return true;
+        Yana::getInstance()->getView()->setFunction('folderList', 'plugin_mediadb::smartyFolderList');
     }
 
     /**

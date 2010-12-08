@@ -93,7 +93,7 @@ class plugin_diagnostics extends StdClass implements IsPlugin
             $doc = new DOMDocument();
             assert('!isset($xsl); // Cannot redeclare var $xsl');
             $xsl = new XSLTProcessor();
-            $xslFile = $YANA->plugins->{'diagnostics:/report.file'};
+            $xslFile = $YANA->getPlugins()->{'diagnostics:/report.file'};
 
             /* load stylesheet */
             $doc->load($xslFile->getPath());
