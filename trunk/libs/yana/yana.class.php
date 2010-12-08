@@ -106,37 +106,37 @@ final class Yana extends Singleton implements IsReportable
      * to communicate with plugins
      * @var PluginManager
      */
-    public $plugins = null;
+    private $_plugins = null;
 
     /**
      * to load language strings
      * @var Language
      */
-    public $language = null;
+    private $_language = null;
 
     /**
      * to load skins and templates
      * @var Skin
      */
-    public $skin = null;
+    private $_skin = null;
 
     /**
      * to read and write data to the global registry
      * @var Registry
      */
-    public $registry = null;
+    private $_registry = null;
 
     /**
      * to read and write user data and permissions
      * @var SessionManager
      */
-    public $session = null;
+    private $_session = null;
 
     /**
      * the currently selected template
      * @var SmartView
      */
-    public $view = null;
+    private $_view = null;
 
     /**#@-*/
 
@@ -179,27 +179,11 @@ final class Yana extends Singleton implements IsReportable
      * This function creates a new instance of the framework.
      * Note that you may only operate one instance at a time.
      *
-     * @uses    new Yana()
      * @access  private
-     * @throws  NotReadableException    when Registry file is not readable
-     * @throws  InvalidSyntaxException  when Registry file could not be read or contains invalid syntax
      */
     private function __construct()
     {
-        // The pluginManager holds repositories for interfaces and implementations of plugins.
-        $this->_getPlugins();
-
-        // Build configuration. These settings may be read later by using Yana::getVar().
-        $this->_getRegistry(); // may throw NotReadableException, InvalidSyntaxException
-
-        // Prepare template. This is an auxiliary class that provides access to output-specific functions.
-        $this->_getView();
-
-        // Create  translation-repository. This setting can be accessed via Yana::$language.
-        $this->_getLanguage();
-
-        // Create skin-repository. This setting can be accessed via Yana::$skin.
-        $this->_getSkin();
+        // intentionally left blank
     }
 
     /**
@@ -212,7 +196,7 @@ final class Yana extends Singleton implements IsReportable
     protected function isSafemode()
     {
         if (!isset($this->isSafemode)) {
-            $eventConfiguration = $this->_getPlugins()->getEventConfiguration($this->getAction());
+            $eventConfiguration = $this->getPlugins()->getEventConfiguration($this->getAction());
             if ($eventConfiguration instanceof PluginConfigurationMethod) {
                 $this->_isSafeMode = ($eventConfiguration->getSafemode() === true);
             } else {
@@ -342,21 +326,11 @@ final class Yana extends Singleton implements IsReportable
         }
 
         /**
-         * 2) create session manager instance
-         *
-         * The SessionManager class is used to manage user information
-         * and resolve permissions.
-         */
-        if (!isset($this->session)) {
-            $this->session = SessionManager::getInstance();
-        }
-
-        /**
-         * 3) load language strings
+         * 2) load language strings
          */
         assert('!isset($eventConfiguration); // Cannot redeclare var $eventConfiguration');
         assert('!isset($plugins); // Cannot redeclare var $plugins');
-        $plugins = $this->_getPlugins();
+        $plugins = $this->getPlugins();
         $eventConfiguration = $plugins->getEventConfiguration($action);
         if (!($eventConfiguration instanceof PluginConfigurationMethod)) {
             $error = new InvalidActionError();
@@ -368,7 +342,7 @@ final class Yana extends Singleton implements IsReportable
         $paths = $eventConfiguration->getPaths();
         if ($paths) {
             assert('!isset($language); // Cannot redeclare var $language');
-            $language = $this->_getLanguage();
+            $language = $this->getLanguage();
             // mount language directory, if it exists
             assert('!isset($langDir); // Cannot redeclare var $langDir');
             foreach ($eventConfiguration->getPaths() as $langDir)
@@ -386,7 +360,7 @@ final class Yana extends Singleton implements IsReportable
         $languages = $eventConfiguration->getLanguages();
         if ($languages) {
             assert('!isset($language); // Cannot redeclare var $language');
-            $language = $this->_getLanguage();
+            $language = $this->getLanguage();
             assert('!isset($languageId); // Cannot redeclare var $languageId');
             foreach ($languages as $languageId)
             {
@@ -411,13 +385,13 @@ final class Yana extends Singleton implements IsReportable
         assert('!isset($template); // Cannot redeclare var $template');
         $template = $eventConfiguration->getTemplate();
         if (is_file($template)) {
-            $this->skin->setFile($action, $template);
-            $this->view->setTemplate($action);
+            $this->getSkin()->setFile($action, $template);
+            $this->getView()->setTemplate($action);
         }
         unset($template, $eventConfiguration);
 
         /**
-         * 4) handle event
+         * 3) handle event
          *
          * Returns bool(true) on success and bool(false) otherwise.
          */
@@ -482,7 +456,7 @@ final class Yana extends Singleton implements IsReportable
             switch (true)
             {
                 case isset($action) && !is_string($action):
-                case isset($action) && !$this->_getPlugins()->isEvent($action):
+                case isset($action) && !$this->getPlugins()->isEvent($action):
                     $error = new InvalidActionError();
                     $error->setData(array('ACTION' => $action));
                 // fall through
@@ -500,18 +474,33 @@ final class Yana extends Singleton implements IsReportable
     }
 
     /**
-     * get registry
+     * Get session manager instance.
+     *
+     * The SessionManager class is used to manage user information
+     * and resolve permissions.
+     */
+    public function getSession()
+    {
+        if (!isset($this->_session)) {
+            $this->_session = SessionManager::getInstance();
+        }
+        return $this->_session;
+    }
+
+    /**
+     * Get registry.
      *
      * This returns the registry. If none exists, a new instance is created.
+     * These settings may be read later by using Yana::getVar().
      *
-     * @access  private
+     * @access  public
      * @return  Registry
      * @throws  NotReadableException    when Registry file is not readable
      * @throws  InvalidSyntaxException  when Registry file could not be read or contains invalid syntax
      */
-    private function _getRegistry()
+    public function getRegistry()
     {
-        if (!isset($this->registry)) {
+        if (!isset($this->_registry)) {
             // path to cache file
             $cacheFile = self::$_config['TEMPDIR'] . 'registry_' . self::getId() . '.tmp';
 
@@ -519,119 +508,121 @@ final class Yana extends Singleton implements IsReportable
             Registry::useDefaults($this->isSafemode());
 
             if (YANA_CACHE_ACTIVE === true && file_exists($cacheFile)) {
-                $this->registry = unserialize(file_get_contents($cacheFile));
-                assert('$this->registry instanceof Registry;');
+                $this->_registry = unserialize(file_get_contents($cacheFile));
+                assert('$this->_registry instanceof Registry;');
             } else {
-                $this->registry = new Registry(self::$_config['CONFIGDRIVE'], "");
-                $this->registry->setVar("ID", self::getId());
-                $this->registry->mergeVars('*', self::$_config);
+                $this->_registry = new Registry(self::$_config['CONFIGDRIVE'], "");
+                $this->_registry->setVar("ID", self::getId());
+                $this->_registry->mergeVars('*', self::$_config);
             }
             $request = Request::getVars();
-            $this->registry->mergeVars('*', $request);
-            $this->registry->setAsGlobal();
+            $this->_registry->mergeVars('*', $request);
+            $this->_registry->setAsGlobal();
 
             // set user name
             if (!empty($_SESSION['user_name'])) {
-                $this->registry->setVar("SESSION_USER_ID", $_SESSION['user_name']);
+                $this->_registry->setVar("SESSION_USER_ID", $_SESSION['user_name']);
             }
 
             // set CD-ROM temp-dir
             if (YANA_CDROM === true) {
-                $this->registry->setVar('YANA_CDROM_DIR', YANA_CDROM_DIR);
+                $this->_registry->setVar('YANA_CDROM_DIR', YANA_CDROM_DIR);
             }
 
-            $this->registry->read();
+            $this->_registry->read();
 
             // create cache file
             if (YANA_CACHE_ACTIVE === true && !file_exists($cacheFile)) {
-                file_put_contents($cacheFile, serialize($this->registry));
+                file_put_contents($cacheFile, serialize($this->_registry));
             }
 
             if (!empty($request['page'])) {
-                $this->registry->setVar('PAGE', (int) $request['page']);
+                $this->_registry->setVar('PAGE', (int) $request['page']);
             }
             if (!empty($request['target'])) {
-                $this->registry->setVar('TARGET', (string) $request['target']);
+                $this->_registry->setVar('TARGET', (string) $request['target']);
             }
             if (!empty($_SERVER['REMOTE_ADDR'])) {
-                $this->registry->setVar('REMOTE_ADDR', $_SERVER['REMOTE_ADDR']);
+                $this->_registry->setVar('REMOTE_ADDR', $_SERVER['REMOTE_ADDR']);
             } else {
-                $this->registry->setVar('REMOTE_ADDR', '0.0.0.0');
+                $this->_registry->setVar('REMOTE_ADDR', '0.0.0.0');
             }
             if (!empty($_SERVER['HTTP_REFERER'])) {
                 $referer = preg_replace("/(.*\/).*(\?.*)?/", "\\1", $_SERVER['HTTP_REFERER']);
-                $this->registry->setVar("REFERER", $referer);
+                $this->_registry->setVar("REFERER", $referer);
             }
         }
-        return $this->registry;
+        return $this->_registry;
     }
 
     /**
-     * get plugin-manager
+     * Get plugin-manager.
      *
      * This returns the plugin manager. If none exists, a new instance is created.
+     * The pluginManager holds repositories for interfaces and implementations of plugins.
      *
-     * @access  private
+     * @access  public
      * @return  PluginManager
      */
-    private function _getPlugins()
+    public function getPlugins()
     {
-        if (!isset($this->plugins)) {
+        if (!isset($this->_plugins)) {
             $cacheFile = self::$_config['PLUGINCACHE'];
             PluginManager::setPath(self::$_config['PLUGINFILE'], self::$_config['PLUGINDIR']);
 
             if (YANA_CACHE_ACTIVE === true && file_exists($cacheFile)) {
-                $this->plugins = unserialize(file_get_contents($cacheFile));
-                assert('$this->plugins instanceof PluginManager;');
+                $this->_plugins = unserialize(file_get_contents($cacheFile));
+                assert('$this->_plugins instanceof PluginManager;');
 
             } else {
-                $this->plugins = PluginManager::getInstance();
-                file_put_contents($cacheFile, serialize($this->plugins));
+                $this->_plugins = PluginManager::getInstance();
+                file_put_contents($cacheFile, serialize($this->_plugins));
             }
         }
-        return $this->plugins;
+        return $this->_plugins;
     }
 
     /**
-     * get view
+     * Get view.
      *
      * This returns the view component. If none exists, a new instance is created.
+     * This is an auxiliary class that provides access to output-specific functions.
      *
-     * @access  private
+     * @access  public
      * @return  SmartView
      */
-    private function _getView()
+    public function getView()
     {
-        if (!isset($this->view)) {
-            $this->view = new SmartView();
+        if (!isset($this->_view)) {
+            $this->_view = new SmartView();
             $this->setVar("ACTION", $this->getAction());
         }
-        return $this->view;
+        return $this->_view;
     }
 
     /**
-     * get language
+     * Get language translation-repository.
      *
      * This returns the language component. If none exists, a new instance is created.
      *
-     * @access  private
+     * @access  public
      * @return  Language
      */
-    private function _getLanguage()
+    public function getLanguage()
     {
-        if (!isset($this->language)) {
+        if (!isset($this->_language)) {
             $languageDir = $this->getVar('LANGUAGEDIR');
-            $this->language = Language::getInstance();
-            $this->language->addDirectory($languageDir);
-            $this->language->setLocale(self::$_config['DEFAULT']['LANGUAGE']);
+            $this->_language = Language::getInstance();
+            $this->_language->addDirectory($languageDir);
+            $this->_language->setLocale(self::$_config['DEFAULT']['LANGUAGE']);
             if (isset($_SESSION['language'])) {
                 try {
-                    $this->language->setLocale($_SESSION['language']);
+                    $this->_language->setLocale($_SESSION['language']);
                 } catch (InvalidArgumentException $e){
                     unset($_SESSION['language']);
                 }
             }
-            $this->language->readFile('default');
+            $this->_language->readFile('default');
             $array = array();
             foreach (glob("$languageDir*", GLOB_ONLYDIR) as $dir)
             {
@@ -642,7 +633,7 @@ final class Yana extends Singleton implements IsReportable
                 $this->setVar('SELECTED_LANGUAGE', $_SESSION['language']);
             }
         }
-        return $this->language;
+        return $this->_language;
     }
 
     /**
@@ -650,13 +641,13 @@ final class Yana extends Singleton implements IsReportable
      *
      * This returns the skin component. If none exists, a new instance is created.
      *
-     * @access  private
+     * @access  public
      * @return  Skin
      */
-    private function _getSkin()
+    public function getSkin()
     {
-        if (!isset($this->skin)) {
-            $registry = $this->_getRegistry();
+        if (!isset($this->_skin)) {
+            $registry = $this->getRegistry();
             $registry->mount('system:/skincache.textfile');
             $cacheFile = $registry->getResource('system:/skincache.textfile');
 
@@ -664,21 +655,21 @@ final class Yana extends Singleton implements IsReportable
 
             if (YANA_CACHE_ACTIVE === true && $cacheFile->exists()) {
                 assert('!isset($skin); // Cannot redeclare var $skin');
-                $this->skin = unserialize(file_get_contents($cacheFile->getPath()));
-                assert('$this->skin instanceof Skin;');
+                $this->_skin = unserialize(file_get_contents($cacheFile->getPath()));
+                assert('$this->_skin instanceof Skin;');
 
             } else {
-                $this->skin = Skin::getInstance($this->getVar('PROFILE.SKIN'));
-                $this->skin->selectMainSkin();
+                $this->_skin = Skin::getInstance($this->getVar('PROFILE.SKIN'));
+                $this->_skin->selectMainSkin();
 
                 if (YANA_CACHE_ACTIVE === true) {
                     $cacheFile->create();
-                    $cacheFile->setContent(serialize($this->skin));
+                    $cacheFile->setContent(serialize($this->_skin));
                     $cacheFile->write();
                 }
             }
         }
-        return $this->skin;
+        return $this->_skin;
     }
 
     /**
@@ -751,7 +742,7 @@ final class Yana extends Singleton implements IsReportable
     public function getVar($key = '*')
     {
         assert('is_scalar($key); /* Wrong argument type for argument 1. String expected. */');
-        $registry = $this->_getRegistry();
+        $registry = $this->getRegistry();
         return $registry->getVar("$key");
     }
 
@@ -783,7 +774,7 @@ final class Yana extends Singleton implements IsReportable
         assert('is_scalar($key); /* Wrong argument type for argument 1. String expected. */');
         /* settype to STRING */
         $key = (string) $key;
-        $registry = $this->_getRegistry();
+        $registry = $this->getRegistry();
         return $registry->setVarByReference($key, $value);
     }
 
@@ -829,7 +820,7 @@ final class Yana extends Singleton implements IsReportable
         /* settype to STRING */
         $key  = (string) $key;
         $type = (string) $type;
-        $registry = $this->_getRegistry();
+        $registry = $this->getRegistry();
         return $registry->setType($key, $type);
     }
 
@@ -859,7 +850,7 @@ final class Yana extends Singleton implements IsReportable
         assert('is_scalar($key); /* Wrong argument type for argument 1. String expected. */');
         /* settype to STRING */
         $key = (string) $key;
-        $registry = $this->_getRegistry();
+        $registry = $this->getRegistry();
         return $registry->unsetVar($key);
     }
 
@@ -886,7 +877,7 @@ final class Yana extends Singleton implements IsReportable
     public function mergeVars($key, array $array)
     {
         assert('is_scalar($key);  /* Wrong argument type for argument 1. String expected. */');
-        $registry = $this->_getRegistry();
+        $registry = $this->getRegistry();
         return $registry->mergeVars("$key", $array);
     }
 
@@ -906,7 +897,7 @@ final class Yana extends Singleton implements IsReportable
      */
     public function getResource($path)
     {
-        return $this->_getRegistry()->getResource($path);
+        return $this->getRegistry()->getResource($path);
     }
 
     /**
@@ -967,7 +958,7 @@ final class Yana extends Singleton implements IsReportable
          */
         $this->_writeLog();
         $level = $this->_prepareMessages();
-        $view = $this->_getView();
+        $view = $this->getView();
 
         /*
          * is an AJAX request
@@ -1011,7 +1002,7 @@ final class Yana extends Singleton implements IsReportable
     public function outputResults()
     {
         /* 0 initialize vars */
-        $pluginManager = $this->_getPlugins();
+        $pluginManager = $this->getPlugins();
         $event = $pluginManager->getFirstEvent();
         $result = $pluginManager->getLastResult();
         $eventConfiguration = $pluginManager->getEventConfiguration($event);
@@ -1068,7 +1059,7 @@ final class Yana extends Singleton implements IsReportable
 
             // get vars
             assert('!isset($pluginManager); // Cannot redeclare var $pluginManager');
-            $pluginManager = $this->_getPlugins();
+            $pluginManager = $this->getPlugins();
             $route = $pluginManager->getNextEvent();
             if (!is_array($route)) {
                 $route = array();
@@ -1102,7 +1093,7 @@ final class Yana extends Singleton implements IsReportable
          */
         } else {
 
-            $view = $this->_getView();
+            $view = $this->getView();
             if (!empty(self::$_config['DEFAULT']['EVENT'][mb_strtoupper(PluginAnnotationEnumeration::TEMPLATE)])) {
                 $baseTemplate = self::$_config['DEFAULT']['EVENT'][mb_strtoupper(PluginAnnotationEnumeration::TEMPLATE)];
                 $view->setPath($baseTemplate);
@@ -1361,7 +1352,7 @@ final class Yana extends Singleton implements IsReportable
         SmartUtility::loadSmilies();
         $smilies = $this->getVar('SMILIES');
         assert('!isset($dir); // Cannot redeclare var $dir');
-        $registry = $this->_getRegistry();
+        $registry = $this->getRegistry();
         $dir = $registry->getResource('system:/smile');
         if (count($smilies)==0) {
             $message = "No Icons found. Please check if the given directory is correct: '" .

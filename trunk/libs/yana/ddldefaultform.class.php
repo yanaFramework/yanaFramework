@@ -627,7 +627,7 @@ class DDLDefaultForm extends DDLAbstractForm
     public function toString()
     {
         // setting up template
-        $file = Skin::getInstance()->getFile('gui_form');
+        $file = Yana::getInstance()->getSkin()->getFile('gui_form');
         assert('is_file($file); // Template file not found');
         $template = new SmartView($file);
         unset($file);

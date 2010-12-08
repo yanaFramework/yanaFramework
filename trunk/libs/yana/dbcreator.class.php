@@ -84,6 +84,45 @@ class DbCreator extends Object
     }
 
     /**
+     * Transform XML source to SQL statements via XSLT.
+     *
+     * This function uses the DOM-extension and the XSLT processor to
+     * transform a XDDL soure string to a list of SQL commands by using
+     * a XSL template.
+     *
+     * Note: due to restrictions of this XSLT processor, you are limited
+     * to XSL version 1.0. Using XSL 2.0 will cause an error to be thrown.
+     *
+     * @param  string $xmlString   XML source to transform
+     * @param  string $xslFilename path to XSL template that will do the transformation
+     * @return array list of SQL commands
+     */
+    private static function _transformToSql($xmlString, $xslFilename)
+    {
+        assert('is_string($xmlString); // Wrong argument type argument 1. String expected');
+        assert('is_string($xslFilename); // Wrong argument type argument 2. String expected');
+        assert('is_file($xslFilename); // File not found $xslFilename');
+
+        // Stylesheet
+        $xsl = new DOMDocument();
+        $xsl->load($xslFilename);
+
+        // Source file
+        $xml = new DOMDocument();
+        $xml->loadXML($xmlString);
+
+        // XSLT processor
+        $xsltProcessor = new XSLTProcessor();
+        $xsltProcessor->importStyleSheet($xsl); // attach the xsl rules
+
+        // Transform to SQL
+        $sql = trim($xsltProcessor->transformToXml($xml));
+        $array = preg_split('/(?<=;)$/m', $sql);
+        assert('is_array($array);');
+        return $array;
+    }
+
+    /**
      * create SQL for MySQL
      *
      * Returns a numeric array of SQL statements.
@@ -96,22 +135,9 @@ class DbCreator extends Object
      */
     public function createMySQL()
     {
-        // Stylesheet
-        $xslFilename = DDL::getDirectory() . '/.xsl/dbcreator_mysql.xsl';
-        $xsl = new DOMDocument();
-        $xsl->load($xslFilename);
-
-        // Source file
-        $xddl = new DOMDocument();
-        $xddl->loadXML($this->schema->toString());
-
-        // XSLT processor
-        $xsltProcessor = new XSLTProcessor();
-        $xsltProcessor->importStyleSheet($xsl); // attach the xsl rules
-
-        // Transform to SQL
-        $sql = trim($xsltProcessor->transformToXml($xddl));
-        return preg_split('/(?<=;)$/m', $sql);
+        $xslFilename = DDL::getDirectory() . '/.xsl/dbcreator_mysql.xsl'; // Stylesheet
+        $xmlString = $this->schema->toString(); // Source file
+        return self::_transformToSql($xmlString, $xslFilename);
     }
 
     /**
@@ -127,7 +153,10 @@ class DbCreator extends Object
      */
     public function createPostgreSQL()
     {
-        throw new NotImplementedException();
+        $xslFilename = DDL::getDirectory() . '/.xsl/dbcreator_postgresql.xsl'; // Stylesheet
+        $xmlString = $this->schema->toString(); // Source file
+        return self::_transformToSql($xmlString, $xslFilename);
+
         /* this is the result var that will be returned when finished */
         $SQL = array();
 

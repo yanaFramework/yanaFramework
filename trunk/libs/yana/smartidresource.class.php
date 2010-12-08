@@ -79,7 +79,7 @@ class SmartIdResource extends SmartFileResource
     public static function getTemplate($id, &$output, Smarty $smarty)
     {
         assert('is_string($id); // Wrong argument type argument 1. String expected');
-        $filename = Skin::getInstance()->getFile($id);
+        $filename = Yana::getInstance()->getSkin()->getFile($id);
         if (parent::getTemplate($filename, &$output, $smarty)) {
             return true;
         } else {
@@ -105,7 +105,7 @@ class SmartIdResource extends SmartFileResource
     public static function getTimestamp($id, &$output, Smarty $smarty)
     {
         assert('is_string($id); // Wrong argument type argument 1. String expected');
-        $filename = Skin::getInstance()->getFile($id);
+        $filename = Yana::getInstance()->getSkin()->getFile($id);
         return parent::getTimestamp($filename, &$output, $smarty);
     }
 

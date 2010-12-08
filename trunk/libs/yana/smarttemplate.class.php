@@ -803,7 +803,7 @@ class SmartTemplate extends Object
             if (!empty($queryString)) {
                 // get language
                 if (isset($GLOBALS['YANA'])) {
-                    $language = $GLOBALS['YANA']->language->getLocale();
+                    $language = $GLOBALS['YANA']->getLanguage()->getLocale();
                 } else {
                     $language = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
                 }

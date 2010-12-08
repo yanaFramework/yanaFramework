@@ -275,7 +275,7 @@ class DDLDefaultInsertIterator extends DDLAbstractFieldIterator
                 global $YANA;
                 $result = '<div class="gui_generator_file_download">';
                 $download = $this->form->getDownloadAction();
-                if (!empty($value) && $YANA->session->checkPermission(null, $download)) {
+                if (!empty($value) && $YANA->getSession()->checkPermission(null, $download)) {
                     $value = DbBlob::storeFilenameInSession($value);
                     $result .= '<a class="buttonize" title="' . $lang->getVar('title_download') . '" href=' .
                         SmartUtility::href("action={$download}&target={$value}") .
@@ -294,7 +294,7 @@ class DDLDefaultInsertIterator extends DDLAbstractFieldIterator
                 if (!isset($result)) {
                     $result = '<div class="gui_generator_image">';
                     $download = $this->form->getDownloadAction();
-                    if (!empty($value) && $YANA->session->checkPermission(null, $download)) {
+                    if (!empty($value) && $YANA->getSession()->checkPermission(null, $download)) {
                         $value = DbBlob::storeFilenameInSession($value);
                         $result .= '<a href=' .
                             SmartUtility::href("action={$download}&target={$value}&fullsize=true") .

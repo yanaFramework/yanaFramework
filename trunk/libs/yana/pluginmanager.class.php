@@ -1222,7 +1222,7 @@ class PluginManager extends Singleton implements IsReportable
             $report->addWarning("Cannot perform check! No interface definitions found.");
 
         } else {
-            $skin = Skin::getInstance();
+            $skin = Yana::getInstance()->getSkin();
 
             /**
              * loop through interface definitions
