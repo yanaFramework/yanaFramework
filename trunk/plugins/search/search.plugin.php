@@ -244,9 +244,9 @@ class plugin_search extends StdClass implements IsPlugin
          */
         $resultKeywords = array();
         $currentDocument = 0;
-        $fKeywords = $YANA->plugins->{"search:/keywords.file"};
+        $fKeywords = $YANA->getPlugins()->{"search:/keywords.file"};
         $fKeywords = $fKeywords->getPath();
-        $fDocuments = $YANA->plugins->{"search:/documents.file"};
+        $fDocuments = $YANA->getPlugins()->{"search:/documents.file"};
         $fDocuments = $fDocuments->getPath();
         $hDocuments = fopen($fDocuments, "w+");
         if ($hDocuments === false) {
@@ -379,7 +379,7 @@ class plugin_search extends StdClass implements IsPlugin
             }
 
             unset($keywords, $headContent, $docTitle, $docDesc);
-            
+
             ++$currentDocument;
         } /* end foreach */
         unset($i, $file); /* clean up garbage */
@@ -494,14 +494,14 @@ class plugin_search extends StdClass implements IsPlugin
         /*
          * 1) get path of target files
          */
-        $documents_dat = $YANA->plugins->{'search:/documents.file'};
+        $documents_dat = $YANA->getPlugins()->{'search:/documents.file'};
         if (!is_object($documents_dat)) {
             return false;
         } else {
             $documents_dat = $documents_dat->getPath();
         }
 
-        $keywords_dat = $YANA->plugins->{'search:/keywords.file'};
+        $keywords_dat = $YANA->getPlugins()->{'search:/keywords.file'};
         if (!is_object($keywords_dat)) {
             return false;
         } else {
@@ -558,13 +558,15 @@ class plugin_search extends StdClass implements IsPlugin
     {
         assert('is_string($subject); // Wrong type for argument 1. String expected');
 
-        global $YANA;
+        $yana = Yana::getInstance();
+        $plugins = $yana->getPlugins();
+        $language = $yana->getLanguage();
         $found = false;
         $hits = array();
         $hitlist = array();
         $request = explode(" ", $subject);
-        $keywords = $YANA->plugins->{'search:/keywords.file'};
-        $documents = $YANA->plugins->{'search:/documents.file'};
+        $keywords = $plugins->{'search:/keywords.file'};
+        $documents = $plugins->{'search:/documents.file'};
         $documentList = array();
 
         if (!$keywords->exists() || !$documents->exists()) {
@@ -603,7 +605,7 @@ class plugin_search extends StdClass implements IsPlugin
                     if ($hits[$request[$i]][0] != "" && $request[$i] != $whatsRelated) {
                         $this->searchString .= '<span class="search_related">' .
                             '<a class="search_related" href="javascript:whatsRelated()" target="_self">' .
-                            $YANA->language->getVar('related') . '&nbsp;&quot;' .
+                            $language->getVar('related') . '&nbsp;&quot;' .
                             $request[$i]. '&quot;:</a> ' . $whatsRelated . '</span>';
                     }
                     $found = true;
@@ -819,7 +821,7 @@ class plugin_search extends StdClass implements IsPlugin
 
         /* @var $YANA Yana */
         global $YANA;
-        $grammar = $YANA->plugins->search->getVar('GRAMMAR');
+        $grammar = $YANA->getPlugins()->search->getVar('GRAMMAR');
         assert('is_array($grammar);');
 
         if (in_array($inputString, $grammar['STOPWORDS'])) {

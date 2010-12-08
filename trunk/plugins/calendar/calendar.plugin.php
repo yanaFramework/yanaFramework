@@ -135,8 +135,8 @@ class plugin_calendar extends StdClass implements IsPlugin
      */
     protected static function getCategories()
     {
-        global $YANA;
-        $categories = $YANA->plugins->calendar->getVar('categories');
+        $yana = Yana::getInstance();
+        $categories = $yana->getPlugins()->calendar->getVar('categories');
         $result = array();
         if (!empty($categories['category'])) {
             $category = $categories['category'];
@@ -199,47 +199,47 @@ class plugin_calendar extends StdClass implements IsPlugin
      */
     public function get_calendar_input()
     {
-        global $YANA;
+        $yana = Yana::getInstance();
         // set default frequency
-        $frequency = $YANA->plugins->calendar->getVar('frequency');
+        $frequency = $yana->getPlugins()->calendar->getVar('frequency');
         if (!empty($frequency)) {
             $frequency = $frequency['freq'];
         } else {
             $frequency = array();
         }
-        $YANA->setVar('frequencyOptions', $frequency);
+        $yana->setVar('frequencyOptions', $frequency);
 
         // set default days
-        $days = $YANA->plugins->calendar->getVar('days');
+        $days = $yana->getPlugins()->calendar->getVar('days');
         if (!empty($days)) {
             $days = $days['day'];
         } else {
             $days = array();
         }
-        $YANA->setVar('dayOptions', $days);
+        $yana->setVar('dayOptions', $days);
 
         // set default months [diference betwen the other default : array start with 0]
-        $month = $YANA->plugins->calendar->getVar('months');
+        $month = $yana->getPlugins()->calendar->getVar('months');
         if (!empty($month)) {
             $month = $month['month'];
         } else {
             $month = array();
         }
-        $YANA->setVar('monthOptions', $month);
+        $yana->setVar('monthOptions', $month);
 
         // set default categories
-        $categories = $YANA->plugins->calendar->getVar('categories');
+        $categories = $yana->getPlugins()->calendar->getVar('categories');
         if (!empty($categories)) {
             $categories = $categories['category'];
         } else {
             $categories = array();
         }
-        $YANA->setVar('categories', $categories);
+        $yana->setVar('categories', $categories);
 
         // set default month repeat options
 
-        $monthRepeatOpt = $YANA->plugins->calendar->getVar('repeat_month_options');
-        $YANA->setVar('monthRepeatOpt', $monthRepeatOpt['option']);
+        $monthRepeatOpt = $yana->getPlugins()->calendar->getVar('repeat_month_options');
+        $yana->setVar('monthRepeatOpt', $monthRepeatOpt['option']);
 
         $numbers = array();
         for ($i = 1; $i <= 31; $i++)
@@ -247,7 +247,7 @@ class plugin_calendar extends StdClass implements IsPlugin
             $numbers[$i] = $i;
         }
 
-        $YANA->setVar('monthNumbers', $numbers);
+        $yana->setVar('monthNumbers', $numbers);
 
         // get calendar list
         $userCalendarList = self::getCalendarList();
@@ -257,16 +257,16 @@ class plugin_calendar extends StdClass implements IsPlugin
             if ($createCalendar) {
                 $userCalendarList = self::getCalendarList();
             }
-            $YANA->setVar('calendarList', $userCalendarList);
+            $yana->setVar('calendarList', $userCalendarList);
         } else {
-            $YANA->setVar('calendarList', $userCalendarList);
+            $yana->setVar('calendarList', $userCalendarList);
         }
 
         $defaultCalendar = self::_getCalendar();
         if (!empty($defaultCalendar)) {
-            $YANA->setVar('defaultCalendarID', $defaultCalendar->getId());
+            $yana->setVar('defaultCalendarID', $defaultCalendar->getId());
             $calendarName = basename($defaultCalendar->getPath(), '.xml');
-            $YANA->setVar('calendarName', $calendarName);
+            $yana->setVar('calendarName', $calendarName);
         }
         return true;
     }
@@ -382,7 +382,7 @@ class plugin_calendar extends StdClass implements IsPlugin
         }
         global $YANA;
         /* @var $dir Dir */
-        $dir = $YANA->plugins->{'calendar:/xcal'};
+        $dir = $YANA->getPlugins()->{'calendar:/xcal'};
 
         // this is the model path of the calendar which contains the body of the calendar
         $path = $dir->getPath() . 'model.xml';
@@ -437,7 +437,7 @@ class plugin_calendar extends StdClass implements IsPlugin
             return null;
         }
 
-        $dir = $GLOBALS['YANA']->plugins->{'calendar:/xcal'};
+        $dir = $GLOBALS['YANA']->getPlugins()->{'calendar:/xcal'};
         return $dir->getPath() . $id . '.xml';
     }
 
@@ -498,7 +498,7 @@ class plugin_calendar extends StdClass implements IsPlugin
             $calendar->insertOrUpdateEvent($eventData);
             return $calendar->getMergedEvents();
         }
-        
+
         $result = false;
         if (!empty($eventID) && $insertForDefaultUser == 'true' && !empty($eventData)) {
             $calendar = self::_getCalendar();
@@ -917,7 +917,7 @@ class plugin_calendar extends StdClass implements IsPlugin
         /* @var $YANA Yana */
         global $YANA;
         /* @var $dir Dir */
-        $dir = $YANA->plugins->{'calendar:/xcal'};
+        $dir = $YANA->getPlugins()->{'calendar:/xcal'};
         $path = $dir->getPath() . $fileName.'.xml';
         $file = new TextFile($path);
         if (!$file->exists()) {
@@ -1291,7 +1291,7 @@ class plugin_calendar extends StdClass implements IsPlugin
                 $calendarID = $row['CALENDAR_ID'];
                 $calendarName = $row['CALENDAR_NAME'];
                 /* @var $dir Dir */
-                $dir = $YANA->plugins->{'calendar:/xcal'};
+                $dir = $YANA->getPlugins()->{'calendar:/xcal'};
                 $path = $dir->getPath() . $fileName.'.xml';
             } else {
                 return false;
@@ -1497,7 +1497,7 @@ class plugin_calendar extends StdClass implements IsPlugin
         /* @var $YANA Yana */
         global $YANA;
         /* @var $dir Dir */
-        $dir = $YANA->plugins->{'calendar:/xcal'};
+        $dir = $YANA->getPlugins()->{'calendar:/xcal'};
 
         $path = $dir->getPath() . $fileName.'.xml';
         $deleteUserFile = new TextFile($path);

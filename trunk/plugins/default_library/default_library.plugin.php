@@ -134,22 +134,23 @@ class plugin_default_library extends StdClass implements IsPlugin
      */
     public function chkembtags (array $text)
     {
-        global $YANA;
+        $yana = Yana::getInstance();
+        $language = $yana->getLanguage();
         $tags = 'b|i|u|emp|h|c|small|big|code|hide|php|mark|color|mail|img|url';
-        $userTags = $YANA->getVar('PROFILE.EMBTAG');
+        $userTags = $yana->getVar('PROFILE.EMBTAG');
         if (is_array($userTags) && !empty($userTags)) {
             $tags .= '|' . mb_strtolower(implode('|', array_keys($userTags)));
         }
         /* get strings */
-        $langError      = ($YANA->language->getVar('TAGS.JS.ERR'));
-        $langChar       = ($YANA->language->getVar('TAGS.JS.CHAR'));
-        $langEndTag     = ($YANA->language->getVar('TAGS.JS.END'));
-        $langUnknownTag = ($YANA->language->getVar('TAGS.JS.UNKNOWN'));
-        $langUnexpTag   = ($YANA->language->getVar('TAGS.JS.UNEXP'));
-        $langExpTag     = ($YANA->language->getVar('TAGS.JS.EXP'));
-        $langUnclTag    = ($YANA->language->getVar('TAGS.JS.UNCL'));
-        $langBr         = ($YANA->language->getVar('TAGS.JS.BR'));
-        $langProceed    = ($YANA->language->getVar('TAGS.JS.PROCEED'));
+        $langError      = ($language->getVar('TAGS.JS.ERR'));
+        $langChar       = ($language->getVar('TAGS.JS.CHAR'));
+        $langEndTag     = ($language->getVar('TAGS.JS.END'));
+        $langUnknownTag = ($language->getVar('TAGS.JS.UNKNOWN'));
+        $langUnexpTag   = ($language->getVar('TAGS.JS.UNEXP'));
+        $langExpTag     = ($language->getVar('TAGS.JS.EXP'));
+        $langUnclTag    = ($language->getVar('TAGS.JS.UNCL'));
+        $langBr         = ($language->getVar('TAGS.JS.BR'));
+        $langProceed    = ($language->getVar('TAGS.JS.PROCEED'));
 
         /* check request */
         foreach ($text as $index => $val)
@@ -284,7 +285,7 @@ class plugin_default_library extends StdClass implements IsPlugin
     {
         global $YANA;
         $imagesrc = $YANA->getVar("CONFIGDIR") . "security_image/security_image" . rand(0, 9) . ".png";
-        $file = $YANA->plugins->default_library->getResource('lib:/security.datfile');
+        $file = $YANA->getPlugins()->default_library->getResource('lib:/security.datfile');
 
         if (!$file->exists()) {
             $file->create();
@@ -381,7 +382,7 @@ class plugin_default_library extends StdClass implements IsPlugin
             return true;
         }
 
-        $file = $YANA->plugins->default_library->getResource('lib:/security.datfile');
+        $file = $YANA->getPlugins()->default_library->getResource('lib:/security.datfile');
         $file->read();
         if (!$file->isEmpty()) {
             $contents = $file->getLine(0);

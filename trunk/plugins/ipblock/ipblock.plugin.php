@@ -49,9 +49,10 @@ class plugin_ipblock extends StdClass implements IsPlugin
     public function catchAll($event, array $ARGS)
     {
         global $YANA;
-        $whitelist = $YANA->plugins->{"ipblock:/dir/whitelist.blockfile"};
-        $blacklist = $YANA->plugins->{"ipblock:/dir/blacklist.blockfile"};
-        $dir = $YANA->plugins->{"ipblock:/dir"};
+        $plugins = $YANA->getPlugins();
+        $whitelist = $plugins->{"ipblock:/dir/whitelist.blockfile"};
+        $blacklist = $plugins->{"ipblock:/dir/blacklist.blockfile"};
+        $dir = $plugins->{"ipblock:/dir"};
 
         if (!$dir->exists()) {
             $dir->create(0777);

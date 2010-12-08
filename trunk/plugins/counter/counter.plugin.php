@@ -62,7 +62,7 @@ class plugin_counter extends StdClass implements IsPlugin
         self::$counter = new Counter(self::$id);
         self::$counter->getNextValue();
         if (isset($GLOBALS['YANA'])) {
-            $GLOBALS['YANA']->view->setFunction('visitorCount', array(__CLASS__, 'visitorCount'));
+            $GLOBALS['YANA']->getView()->setFunction('visitorCount', array(__CLASS__, 'visitorCount'));
         }
         return true;
     }
@@ -105,10 +105,11 @@ class plugin_counter extends StdClass implements IsPlugin
     public function graphic_counter ()
     {
         global $YANA;
+        $pluginManager = $YANA->getPlugins();
         if (isset($YANA)) {
-            $background = $YANA->plugins->{'counter:/images/background.file'};
-            $blank = $YANA->plugins->{'counter:/images/blank.file'};
-            $dir = $YANA->plugins->{'counter:/images'};
+            $background = $pluginManager->{'counter:/images/background.file'};
+            $blank = $pluginManager->{'counter:/images/blank.file'};
+            $dir = $pluginManager->{'counter:/images'};
             $imageDir = $dir->getPath();
             $imageExt = $dir->getFilter();
 

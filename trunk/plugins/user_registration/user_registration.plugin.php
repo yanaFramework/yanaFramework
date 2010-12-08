@@ -137,7 +137,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
         $YANA->setVar('WEBSITE_URL', $YANA->getVar("REFERER"));
         $YANA->setVar('KEY', $key);
         $YANA->setVar('MAIL', $mail);
-        self::_sendMail($mail, $YANA->skin->getFile("USER_CONFIRM_MAIL"));
+        self::_sendMail($mail, $YANA->getSkin()->getFile("USER_CONFIRM_MAIL"));
 
         return true;
     }
@@ -216,10 +216,10 @@ class plugin_user_registration extends StdClass implements IsPlugin
             global $YANA;
             $YANA->setVar('PASSWORT', $password);
             $YANA->setVar('NAME', $user->getName());
-            $mail = new Mailer($YANA->skin->getFile("USER_PASSWORD_MAIL"));
+            $mail = new Mailer($YANA->getSkin()->getFile("USER_PASSWORD_MAIL"));
             $mail->sender = $YANA->getVar("PROFILE.MAIL");
             $mail->setVar('DATE', date('d-m-Y'));
-            $mail->subject = $YANA->language->getVar("user.mail_subject");
+            $mail->subject = $YANA->getLanguage()->getVar("user.mail_subject");
             $mail->send($user->getMail());
 
             return true;
@@ -250,7 +250,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
         global $YANA;
         $now = getdate();
         $mail = new Mailer($template);
-        $mail->subject = $YANA->language->getVar("USER.MAIL_SUBJECT")."\n";
+        $mail->subject = $YANA->getLanguage()->getVar("USER.MAIL_SUBJECT")."\n";
         $mail->setVar('DATE', $now['mday'] . '.' . $now['mon'] . '.' . $now['year']);
         $mail->send($mail);
     }

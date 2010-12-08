@@ -440,7 +440,7 @@ class plugin_blog extends StdClass implements IsPlugin
          * create RSS feed
          */
         $rss = new RSS();
-        $rss->description = $YANA->language->getVar('RSS_DESCRIPTION');
+        $rss->description = $YANA->getLanguage()->getVar('RSS_DESCRIPTION');
         /*
          * add items to feed
          */

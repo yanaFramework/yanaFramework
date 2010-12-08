@@ -171,8 +171,9 @@ class PluginWorker extends Object
             default:
 
                 $yana = Yana::getInstance();
-                $logoDir = $yana->plugins->{'sdk:/images/logos'};
-                $iconDir = $yana->plugins->{'sdk:/images/icons'};
+                $pluginManager = $yana->getPlugins();
+                $logoDir = $pluginManager->{'sdk:/images/logos'};
+                $iconDir = $pluginManager->{'sdk:/images/icons'};
 
                 // copy preview image
                 $this->filesToCopy[] = array(
@@ -256,7 +257,7 @@ class PluginWorker extends Object
 
         // create HTML page
         /* @var $html SmartTemplate */;
-        $html = $yana->plugins->{'sdk:/templates/html.smarttemplate'};
+        $html = $yana->getPlugins()->{'sdk:/templates/html.smarttemplate'};
         $html->setVar('form', $form);
         $html->setVar('database', $form->getDatabase());
         $this->templates["$name.html.tpl"] = $html->toString();
@@ -412,7 +413,7 @@ class PluginWorker extends Object
 
         $yana = Yana::getInstance();
         /* @var $xliffTemplate SmartTemplate */
-        $xliffTemplate = $yana->plugins->{'sdk:/templates/language.smarttemplate'};
+        $xliffTemplate = $yana->getPlugins()->{'sdk:/templates/language.smarttemplate'};
         $xliffTemplate->setVar('source', $source);
         $xliffTemplate->setVar('target', $target);
         $xliffTemplate->setVar('translations', $this->translations);
@@ -653,7 +654,7 @@ class PluginWorker extends Object
         $yana = Yana::getInstance();
         $plugin = $this->getPlugin();
         /* @var $apiTemplate SmartTemplate */
-        $apiTemplate = $yana->plugins->{'sdk:/templates/jsapi.smarttemplate'};
+        $apiTemplate = $yana->getPlugins()->{'sdk:/templates/jsapi.smarttemplate'};
         $apiTemplate->setVar('plugin', $plugin);
         $apiTemplate->setVar('class', 'Api' .
                 str_replace(' ', '', ucwords(preg_replace('/_/', ' ', $plugin->getId()))));
@@ -671,7 +672,7 @@ class PluginWorker extends Object
     {
         $yana = Yana::getInstance();
         /* @var $phpTemplate SmartTemplate */
-        $phpTemplate = $yana->plugins->{'sdk:/templates/class.smarttemplate'};
+        $phpTemplate = $yana->getPlugins()->{'sdk:/templates/class.smarttemplate'};
         $phpTemplate->setVar('plugin', $this->getPlugin());
         if (isset($this->schema)) {
             $phpTemplate->setVar('schema', $this->schema);

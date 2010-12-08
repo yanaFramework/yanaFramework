@@ -86,7 +86,7 @@ class plugin_user extends StdClass implements IsPlugin
         if (isset($YANA)) {
             self::$userName = YanaUser::getUserName();
             if (!empty(self::$userName)) {
-                self::$securityLevel = $YANA->session->getSecurityLevel(self::$userName);
+                self::$securityLevel = $YANA->getSession()->getSecurityLevel(self::$userName);
                 self::$profileId = Yana::getId();
                 $YANA->setVar("SESSION_USER_ID", self::$userName);
                 $YANA->setVar("PERMISSION", self::$securityLevel);
@@ -113,14 +113,14 @@ class plugin_user extends StdClass implements IsPlugin
 
         /* @var $YANA Yana */
         global $YANA;
-        $YANA->language->readFile("user");
+        $YANA->getLanguage()->readFile("user");
 
-        if ($YANA->session->checkPermission(null, $event)) {
+        if ($YANA->getSession()->checkPermission(null, $event)) {
             /* access granted */
             if (YanaUser::isLoggedIn()) {
-                PluginMenu::getInstance()->setMenuEntry("logout", $YANA->language->getVar("logout"));
+                PluginMenu::getInstance()->setMenuEntry("logout", $YANA->getLanguage()->getVar("logout"));
             } else {
-                PluginMenu::getInstance()->setMenuEntry("login", $YANA->language->getVar("login"));
+                PluginMenu::getInstance()->setMenuEntry("login", $YANA->getLanguage()->getVar("login"));
             }
             return true;
         } else {
@@ -271,12 +271,12 @@ class plugin_user extends StdClass implements IsPlugin
 
         assert('isset($userName); // variable $userName is not set');
 
-        $subject = $YANA->language->getVar('user.6');
+        $subject = $YANA->getLanguage()->getVar('user.6');
         $sender = $YANA->getVar('PROFILE.MAIL');
         assert('filter_var($sender, FILTER_VALIDATE_EMAIL); // $sender not a valid e-mail');
 
         // get the mail template
-        $skinManager = Skin::getInstance();
+        $skinManager = Yana::getInstance()->getSkin();
         $fileName = $skinManager->getFile('USER_LOST_PWD');
         $website = 'http://' . $_SERVER['SERVER_ADDR'] . $_SERVER['PHP_SELF'] .
             '?action=set_reset_pwd&key=' . $uniqueKey;

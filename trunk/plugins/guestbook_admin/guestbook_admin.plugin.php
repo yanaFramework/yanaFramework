@@ -77,7 +77,7 @@ class plugin_guestbook_admin extends StdClass implements IsPlugin
         /* this function expects no arguments */
 
         global $YANA;
-        $YANA->setVar("DESCRIPTION", $YANA->language->getVar("DESCR_ADMIN"));
+        $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_ADMIN"));
         $configFile = $YANA->getResource('system:/config');
         $YANA->setVar("WRITEABLE", $configFile->isWriteable());
         return true;
@@ -107,7 +107,7 @@ class plugin_guestbook_admin extends StdClass implements IsPlugin
         /* this function expects no arguments */
 
         global $YANA;
-        $YANA->setVar("DESCRIPTION", $YANA->language->getVar("DESCR_MOD"));
+        $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_MOD"));
         $configFile = $YANA->getResource('system:/config');
         $YANA->setVar("WRITEABLE", $configFile->isWriteable());
         return true;

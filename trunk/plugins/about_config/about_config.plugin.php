@@ -74,7 +74,7 @@ class plugin_about_config extends StdClass implements IsPlugin
         global $YANA;
 
         /* set a description text */
-        $YANA->setVar("DESCRIPTION", $YANA->language->getVar("DESCR_ADMIN"));
+        $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_ADMIN"));
 
         /* check, if the output file is writeable */
         $configFile = $YANA->getResource('system:/config/profiledir/default_config.sml');
@@ -106,7 +106,7 @@ class plugin_about_config extends StdClass implements IsPlugin
         global $YANA;
 
         /* set a description text */
-        $YANA->setVar("DESCRIPTION", $YANA->language->getVar("DESCR_ADMIN"));
+        $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_ADMIN"));
 
         /* check, if the output file is writeable */
         $configFile = $YANA->getResource('system:/config/profiledir/default_config.sml');
@@ -141,7 +141,7 @@ class plugin_about_config extends StdClass implements IsPlugin
         global $YANA;
 
         /* set a description text */
-        $YANA->setVar("DESCRIPTION", $YANA->language->getVar("DESCR_MOD"));
+        $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_MOD"));
 
         /* check, if the output file is writeable */
         $configFile = $YANA->getResource('system:/config/profiledir/config.sml');
@@ -176,7 +176,7 @@ class plugin_about_config extends StdClass implements IsPlugin
         global $YANA;
 
         /* set a description text */
-        $YANA->setVar("DESCRIPTION", $YANA->language->getVar("DESCR_MOD"));
+        $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_MOD"));
 
         /* check, if the output file is writeable */
         $configFile = $YANA->getResource('system:/config/profiledir/config.sml');

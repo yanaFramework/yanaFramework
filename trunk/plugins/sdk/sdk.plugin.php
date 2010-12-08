@@ -95,7 +95,7 @@ class plugin_sdk extends StdClass implements IsPlugin
     public function sdk()
     {
         $yana = Yana::getInstance();
-        $dir = $yana->plugins->{'sdk:/images/logos'};
+        $dir = $yana->getPlugins()->{'sdk:/images/logos'};
         $dir->read();
         $yana->setVar('FILES', $dir->getContent());
         $yana->setVar('IMG_SRC', $dir->getPath());

@@ -51,17 +51,15 @@ class plugin_antispam extends StdClass implements IsPlugin
     {
         assert('is_string($event); // Wrong type for argument 1. String expected');
 
-        /* global variables */
-        global $YANA;
-
-        $eventType = mb_strtolower($YANA->plugins->getEventType("$event"));
+        $yana = Yana::getInstance();
+        $eventType = mb_strtolower($yana->getPlugins()->getEventType("$event"));
         unset($event);
 
         /**
          * 0) prepare settings
          */
-        $settings = $YANA->getVar('PROFILE.SPAM');
-        $permission = $YANA->getVar('PERMISSION');
+        $settings = $yana->getVar('PROFILE.SPAM');
+        $permission = $yana->getVar('PERMISSION');
 
         /**
          * Register ouput filter if option has been activated
@@ -76,7 +74,7 @@ class plugin_antispam extends StdClass implements IsPlugin
              * It is important to use '=&' to get the same
              * behaviour for both versions.
              */
-            $smarty =& $YANA->view->getSmarty();
+            $smarty = $yana->getView()->getSmarty();
             $smarty->registerFilter(Smarty::FILTER_OUTPUT, array(__CLASS__, '_outputFilter'));
         }
 
@@ -196,7 +194,7 @@ class plugin_antispam extends StdClass implements IsPlugin
             /**
              * 4.1) check if input has a valid form id
              */
-            if ($YANA->getVar('DISABLE_FORM_ID') !== true) {
+            if ($yana->getVar('DISABLE_FORM_ID') !== true) {
                 switch (true)
                 {
                     case empty($ARGS['yana_form_id']):
