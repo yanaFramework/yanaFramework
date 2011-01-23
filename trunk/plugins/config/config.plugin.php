@@ -576,6 +576,7 @@ class plugin_config extends StdClass implements IsPlugin
         assert('!isset($errno); // Cannot redeclare var $errno');
         assert('!isset($errstr); // Cannot redeclare var $errstr');
         assert('!isset($latestVersion); // Cannot redeclare var $latestVersion');
+        $latestVersion = "";
 
         /*
          * 1) try using url_fopen
