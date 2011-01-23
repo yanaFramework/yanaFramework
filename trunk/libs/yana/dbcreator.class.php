@@ -158,22 +158,22 @@ class DbCreator extends Object
         return self::_transformToSql($xmlString, $xslFilename);
 
         /* this is the result var that will be returned when finished */
-        $SQL = array();
+//        $SQL = array();
 
         /* this is for statements, which have to come last */
-        $lastSQL = array();
+//        $lastSQL = array();
 
         /*
          *  Create Table
          */
-        assert('!isset($table); // Cannot redeclare variable $table');
-        assert('!isset($tableName); // Cannot redeclare variable $tableName');
+//        assert('!isset($table); // Cannot redeclare variable $table');
+//        assert('!isset($tableName); // Cannot redeclare variable $tableName');
         foreach ($this->schema->getTables() as $table)
         {
             /* @var $table DDLTable */
-            $tableName = YANA_DATABASE_PREFIX . $table->getName();
-            assert('is_string($tableName) && !empty($tableName);');
-            $stmt = "CREATE TABLE \"$tableName\" (\n";
+//            $tableName = YANA_DATABASE_PREFIX . $table->getName();
+//            assert('is_string($tableName) && !empty($tableName);');
+//            $stmt = "CREATE TABLE \"$tableName\" (\n";
 
             $listOfColumns = $table->getColumns();
             $listOfIndexes = $table->getIndexes();
@@ -198,100 +198,27 @@ class DbCreator extends Object
                 /*
                  *  Add Type
                  */
-                if ($column->isForeignKey()) {
-                    $foreignTable = $column->getTableByForeignKey();
-                    $foreignPrimaryKey = $this->structure->getPrimaryKey($foreignTable);
-                    $type = $this->structure->getType($foreignTable, $foreignPrimaryKey);
-                    $length = $this->structure->getLength($foreignTable, $foreignPrimaryKey);
-                    $precision = $this->structure->getPrecision($foreignTable, $foreignPrimaryKey);
-                }
-                switch (mb_strtolower($type))
-                {
-                    case "time":
-                        $type   = "integer";
-                        $length = 0;
-                    break;
-
-                    case "reference":
-                        $type   = "varchar";
-                        if (empty($length)) {
-                            $length = 255;
-                        }
-                    break;
-
-                    case "image": case "file":
-                        $type   = "varchar";
-                        $length = 128;
-                    break;
-
-                    case "ip":
-                        $type   = "varchar";
-                        $length = 15;
-                    break;
-
-                    case "profile":
-                        $type   = "varchar";
-                        $length = 128;
-                    break;
-
-                    case "mail": case "url": case "uri": case "string":
-                        if (empty($length)) {
-                            $type = 'text';
-                        } else {
-                            $type = 'varchar';
-                        }
-                    break;
-
-                    case "select": case "array": case "text":
-                        $type  = 'text';
-                        $length = 0;
-                    break;
-
-                    case "int": case "integer":
-                        $type = "integer";
-                        $length = 0;
-                    break;
-
-                    case "float": case "double":
-                        $type = "double precision";
-                        $length = 0;
-                    break;
-
-                    case "boolean": case "bool":
-                        $type = "boolean";
-                    break;
-
-                    default:
-                        if ($length == 0) {
-                            $type = 'text';
-                        } else {
-                            $type = 'varchar';
-                        }
-                    break;
-
-                } /* end switch */
-                $stmt .= "$type";
-
-                /*  PostgreSQL:
-                 *  Add Length
-                 */
-                if (is_int($length) && $length > 0 && $type !== 'text') {
-                    $stmt .= "({$length})";
-                }
+//                if ($column->isForeignKey()) {
+//                    $foreignTable = $column->getTableByForeignKey();
+//                    $foreignPrimaryKey = $this->structure->getPrimaryKey($foreignTable);
+//                    $type = $this->structure->getType($foreignTable, $foreignPrimaryKey);
+//                    $length = $this->structure->getLength($foreignTable, $foreignPrimaryKey);
+//                    $precision = $this->structure->getPrecision($foreignTable, $foreignPrimaryKey);
+//                }
 
                 /*  PostgreSQL:
                  *  Decide wether this column is nullable
                  */
-                if ($this->structure->isNullable($table, $column) === false) {
-                    $stmt .= " NOT NULL";
-                }
+//                if ($this->structure->isNullable($table, $column) === false) {
+//                    $stmt .= " NOT NULL";
+//                }
 
                 /*  PostgreSQL:
                  *  Add Autonumber
                  */
                 if ($this->structure->isAutonumber($table, $column) === true) {
                     array_unshift($SQL, "CREATE SEQUENCE {$table}_{$column}_sq INCREMENT 1;");
-                    $stmt .= " DEFAULT nextval('{$table}_{$column}_sq')";
+//                    $stmt .= " DEFAULT nextval('{$table}_{$column}_sq')";
                 /*  PostgreSQL:
                  *  Add Default-Value
                  */
