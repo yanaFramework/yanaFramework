@@ -506,7 +506,7 @@ class PluginManager extends Singleton implements IsReportable
         foreach ($plugins as $key => $plugin)
         {
             if ($plugin[0] === '.' || !is_dir($plugin)) {
-                unset($plugin[$key]);
+                unset($plugins[$key]);
             }
         }
         $this->_loadPlugins($plugins);
