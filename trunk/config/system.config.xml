@@ -4,7 +4,7 @@
     <!--
         Diese Datei enthält Pfadangaben zu Konfigurationsdateien!
         Die enthaltenen Einträge dürfen auf keinen Fall geändert werden.
-        
+
         This file contains information about paths to configuration files!
         The contained entries may not be changed at any case.
     -->
@@ -13,6 +13,7 @@
     <tempdir>cache/</tempdir>
     <plugincache>cache/pluginmanager.tmp</plugincache>
     <plugindir>plugins/</plugindir>
+    <skindir>skins/</skindir>
     <pluginfile>config/plugins.cfg</pluginfile>
     <php_self>index.php</php_self>
     <default>

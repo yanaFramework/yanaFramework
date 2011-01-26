@@ -283,6 +283,9 @@ final class Yana extends Singleton implements IsReportable
         } else {
             self::_setRealPaths(getcwd());
         }
+        // initialize directories
+        Skin::setBaseDirectory(self::$_config['SKINDIR']);
+        PluginManager::setPath(self::$_config['PLUGINFILE'], self::$_config['PLUGINDIR']);
     }
 
     /**
@@ -568,7 +571,6 @@ final class Yana extends Singleton implements IsReportable
     {
         if (!isset($this->_plugins)) {
             $cacheFile = self::$_config['PLUGINCACHE'];
-            PluginManager::setPath(self::$_config['PLUGINFILE'], self::$_config['PLUGINDIR']);
 
             if (YANA_CACHE_ACTIVE === true && file_exists($cacheFile)) {
                 $this->_plugins = unserialize(file_get_contents($cacheFile));
@@ -650,8 +652,6 @@ final class Yana extends Singleton implements IsReportable
             $registry = $this->getRegistry();
             $registry->mount('system:/skincache.textfile');
             $cacheFile = $registry->getResource('system:/skincache.textfile');
-
-            Skin::setBaseDirectory($registry->getResource('system:/skin'));
 
             if (YANA_CACHE_ACTIVE === true && $cacheFile->exists()) {
                 assert('!isset($skin); // Cannot redeclare var $skin');
@@ -1057,8 +1057,6 @@ final class Yana extends Singleton implements IsReportable
          */
         if (strcasecmp($template, 'MESSAGE') === 0 || ($result === false && ReportAbstract::countMessages() === 0)) {
 
-            // get vars
-            assert('!isset($pluginManager); // Cannot redeclare var $pluginManager');
             $pluginManager = $this->getPlugins();
             $route = $pluginManager->getNextEvent();
             if (!is_array($route)) {

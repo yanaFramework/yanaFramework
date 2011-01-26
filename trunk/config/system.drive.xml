@@ -32,8 +32,8 @@
 	<var name="DATADIR" value="common_files/"/>
 	<var name="BRUSHDIR" value="{$CONFIGDIR}brush/"/>
 	<var name="LANGUAGEDIR" value="languages/"/>
-	<var name="SKINDIR" value="skins/"/>
-	<var name="SKINCONFIGDIR" value="skins/.config"/>
+	<var name="SKINDIR" value="{$SKINDIR}/"/>
+	<var name="SKINCONFIGDIR" value="{$SKINDIR}/.config"/>
 	<var name="TEMPDIR" value="{$YANA_CDROM_DIR}cache/"/>
 
 	<dir name="config" filter=".cfg">
