@@ -115,11 +115,11 @@ class plugin_config extends StdClass implements IsPlugin
      */
     public function index_plugins ()
     {
-        global $YANA;
+        $yana = Yana::getInstance();
 
         /* current state vars */
         $isDefault = Yana::getId() === Yana::getDefault('profile');
-        $pluginManager = $YANA->getPlugins();
+        $pluginManager = $yana->getPlugins();
 
         /**
          * The "options" menu imports a html-file for each plugin.
@@ -134,7 +134,7 @@ class plugin_config extends StdClass implements IsPlugin
         $plugins = array();
 
         /* get current security level */
-        $permission = $YANA->getVar('PERMISSION');
+        $permission = $yana->getVar('PERMISSION');
 
         assert('!isset($j); // Cannot redeclare var $j');
         assert('!isset($item); // Cannot redeclare var $item');
@@ -219,8 +219,8 @@ class plugin_config extends StdClass implements IsPlugin
         unset($item);
         uasort($plugins, array($this, '_sort'));
 
-        $YANA->setVar('USER_IS_EXPERT', $this->_getIsExpert());
-        $YANA->setVar('PLUGINS', $plugins);
+        $yana->setVar('USER_IS_EXPERT', $this->_getIsExpert());
+        $yana->setVar('PLUGINS', $plugins);
         return true;
     }
 

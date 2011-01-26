@@ -277,20 +277,6 @@ abstract class ReportAbstract extends Exception
         return $this->text;
     }
 
-    /**
-     * Report a new message
-     *
-     * This is an alias for calling the constructor and just report (but not use) the instance.
-     *
-     * @access  public
-     * @abstract
-     * @static
-     * @param   string  $message    the message that should be reported
-     * @param   scalar  $code       optional error number or class name
-     * @param   mixed   $data       any kind of data that might help to understand context
-     *                              in which the message was created
-     */
-    abstract public static function report($message, $code = E_USER_NOTICE, $data = null);
 
 }
 

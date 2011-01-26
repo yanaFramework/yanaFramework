@@ -505,10 +505,11 @@ class PluginManager extends Singleton implements IsReportable
         $plugins = scandir(self::$_pluginDir);
         foreach ($plugins as $key => $plugin)
         {
-            if ($plugin[0] === '.' || !is_dir($plugin)) {
+            if ($plugin[0] === '.' || !is_dir(self::$_pluginDir . '/' . $plugin)) {
                 unset($plugins[$key]);
             }
         }
+        unset($plugin);
         $this->_loadPlugins($plugins);
 
         // output var

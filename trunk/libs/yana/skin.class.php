@@ -196,13 +196,15 @@ class Skin implements IsReportable
      *
      * @access  public
      * @static
-     * @param   Dir     $baseDirectory     base directory
+     * @param   string $baseDirectory  base directory
      *
      * @ignore
      */
-    public static function setBaseDirectory(Dir $baseDirectory)
+    public static function setBaseDirectory($baseDirectory)
     {
-        self::$_baseDirectory = $baseDirectory->getPath();
+        assert('is_string($baseDirectory); // Wrong argument type argument 1. String expected');
+        assert('is_dir($baseDirectory);');
+        self::$_baseDirectory = $baseDirectory;
     }
 
     /**
