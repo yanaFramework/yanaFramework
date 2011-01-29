@@ -106,7 +106,6 @@ class DDLDatabase extends DDLObject
     /** @var bool              */ protected $modified = false;
 
     /** @var string            */ protected $path = null;
-    /** @var string            */ protected $directory = "config/db/";
     /** @var int               */ protected $lastModified = 0;
 
     /**#@-*/
@@ -143,9 +142,6 @@ class DDLDatabase extends DDLObject
         // save path information
         if (!empty($path)) {
             $this->path = $path;
-            $this->directory = dirname($path) . DIRECTORY_SEPARATOR;
-        } else {
-            $this->directory = DDL::getDirectory();
         }
         // move new instance to cache
         if (!empty($name)) {
@@ -155,6 +151,20 @@ class DDLDatabase extends DDLObject
         }
         if (!empty($path)) {
             self::$instances[$path] = $this;
+        }
+    }
+
+    /**
+     * Get the path to the directory, where all XDDL database files should be stored.
+     *
+     * @return string
+     */
+    private function _getDirectory()
+    {
+        if (!empty($this->path)) {
+            return dirname($path) . DIRECTORY_SEPARATOR;
+        } else {
+            return DDL::getDirectory();
         }
     }
 
@@ -333,10 +343,11 @@ class DDLDatabase extends DDLObject
      */
     public function loadIncludes()
     {
+        $baseDirectory = $this->_getDirectory();
         // load each file
         foreach ($this->includes as $databaseName)
         {
-            $path = $this->directory . $databaseName . DDL::$extension;
+            $path = $baseDirectory . $databaseName . DDL::$extension;
 
             // check if file is already include (include just once)
             if ($path === $this->path) {
