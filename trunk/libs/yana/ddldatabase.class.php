@@ -155,17 +155,19 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * Get the path to the directory, where all XDDL database files should be stored.
+     * Get the path to the directory, where the database's source file is stored.
      *
      * @return string
+     * @throws NotFoundException if the source file is not defined (e.g. the file is unsaved)
      */
     private function _getDirectory()
     {
-        if (!empty($this->path)) {
-            return dirname($path) . DIRECTORY_SEPARATOR;
-        } else {
-            return DDL::getDirectory();
+        if (empty($this->path)) {
+            throw new NotFoundException('No directory defined for this database');
         }
+        $directory = dirname($path) . '/';
+        assert('is_dir($directory); // Database base-directory not found');
+        return $directory;
     }
 
     /**
@@ -343,7 +345,11 @@ class DDLDatabase extends DDLObject
      */
     public function loadIncludes()
     {
-        $baseDirectory = $this->_getDirectory();
+        try {
+            $baseDirectory = $this->_getDirectory();
+        } catch (NotFoundException $e) {
+            return; // if the base-directory is not defined, we just skip the loading process
+        }
         // load each file
         foreach ($this->includes as $databaseName)
         {
