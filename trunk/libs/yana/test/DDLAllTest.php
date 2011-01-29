@@ -80,10 +80,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
-        global $YANA;
-        if (!isset($YANA)) {
-            $YANA = Yana::getInstance();
-        }
 
         $this->ddldatabase = new DDLDatabase();
         $this->ddltable = new DDLTable('table');
@@ -2177,12 +2173,12 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testGetListOfFiles()
     {
-        $get = DDLDatabase::getListOfFiles();
+        $get = DDL::getListOfFiles();
         $this->assertFalse(in_array('config/db//user.db.xml', $get), 'assert failed, the value can not be exist in array');
         $this->assertTrue(in_array('user', $get), 'assert failed, the value must be exist in array');
         $this->assertType('array', $get, 'assert failed, the value should be from type array');
 
-        $get = DDLDatabase::getListOfFiles(true);
+        $get = DDL::getListOfFiles(true);
         $this->assertTrue(in_array('config/db//user.db.xml', $get), 'assert failed, the value must be exist in array');
         $this->assertFalse(in_array('user', $get), 'assert failed, the value can not be exist in array');
         $this->assertType('array', $get, 'assert failed, the value should be from type array');
