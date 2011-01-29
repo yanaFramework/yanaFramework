@@ -268,7 +268,7 @@ class PluginManager extends Singleton implements IsReportable
      * @access  private
      * @return  array
      */
-    private function _getConfig()
+    private function &_getConfig()
     {
         if (empty($this->_config)) {
             if (!file_exists(self::$_path)) {
@@ -789,7 +789,7 @@ class PluginManager extends Singleton implements IsReportable
         assert('is_int($state); // Wrong type for argument 2. Integer expected');
 
         $pluginConfig = $this->_getPluginsConfig();
-        $config = $this->_getConfig();
+        $config =& $this->_getConfig();
         if (isset($pluginConfig[$pluginName])) {
             if ($config[self::ACTIVE][$pluginName] != PluginActivityEnumeration::DEFAULT_ACTIVE) {
                 $config[self::ACTIVE][$pluginName] = $state;
