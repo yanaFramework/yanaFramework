@@ -315,18 +315,16 @@ class plugin_config extends StdClass implements IsPlugin
      */
     public function save_pluginlist (array $pluginlist, array $plugins)
     {
-        /* @var $YANA Yana */
-        global $YANA;
-        $pluginManager = $YANA->getPlugins();
+        $pluginManager = PluginManager::getInstance();
         foreach($pluginlist as $plugin)
         {
             /* We don't mind, wether $plugin is a plugin or not, since
              * the PluginManager does this checking for us.
              */
             if (in_array($plugin, $plugins)) {
-                $test = $pluginManager->setActive($plugin, 1);
+                $test = $pluginManager->setActive($plugin, PluginActivityEnumeration::ACTIVE);
             } else {
-                $test = $pluginManager->setActive($plugin, 0);
+                $test = $pluginManager->setActive($plugin, PluginActivityEnumeration::INACTIVE);
             }
             if ($test === false) {
                 throw new InvalidInputWarning();
