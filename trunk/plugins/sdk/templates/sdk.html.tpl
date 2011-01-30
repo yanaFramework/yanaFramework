@@ -241,7 +241,7 @@ language[1] = '{lang id="SDK.JS_1"}';
                       <label>{lang id="SDK.FIELD11.5.0"}:
                           <select id="interface_group" class="optional">
                               <option value="">{lang id="SDK.FIELD11.4"}</option>
-                              {foreach from=$GROUPS key="value" item="text}
+                              {foreach from=$GROUPS key="value" item="text"}
                               <option value="{$value}">{$text}</option>
                               {/foreach}
                           </select>
@@ -249,7 +249,7 @@ language[1] = '{lang id="SDK.JS_1"}';
                       <label>{lang id="SDK.FIELD11.5.1"}:
                           <select id="interface_role" class="optional">
                               <option value="">{lang id="SDK.FIELD11.4"}</option>
-                              {foreach from=$ROLES key="value" item="text}
+                              {foreach from=$ROLES key="value" item="text"}
                               <option value="{$value}">{$text}</option>
                               {/foreach}
                           </select>
