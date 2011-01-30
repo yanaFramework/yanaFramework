@@ -133,7 +133,7 @@ class FileDbIndex extends Object
          */
         if (!$this->_table->isColumn($column)) {
             Log::report("SQL syntax error. ".
-                "No such column '$column' in table '{$this->table->getName()}'.", E_USER_WARNING);
+                "No such column '$column' in table '" . $this->_table->getName() . "'.", E_USER_WARNING);
             return false;
         }
         $primaryKey = $this->_table->getPrimaryKey();
@@ -220,7 +220,7 @@ class FileDbIndex extends Object
         $emptyIndex = array();
         if (!$this->_table->isColumn($column)) {
             throw new NotFoundException("SQL syntax error. ".
-                "No such column '{$column}' in table '{$this->table->getName()}'.", E_USER_WARNING);
+                "No such column '{$column}' in table '" . $this->_table->getName() . "'.", E_USER_WARNING);
         }
 
         if (strcasecmp($this->_table->getPrimaryKey(), $column) === 0) {
@@ -233,7 +233,7 @@ class FileDbIndex extends Object
                 return $this->_indexes[$column];
             } else {
                 throw new NotFoundException("SQL syntax error. ".
-                    "No such index '$column' in table '{$this->table->getName()}'.", E_USER_WARNING);
+                    "No such index '$column' in table '" . $this->_table->getName() . "'.", E_USER_WARNING);
             }
         } else {
             $value = mb_strtoupper("$value");
@@ -241,7 +241,7 @@ class FileDbIndex extends Object
                 return $this->_indexes[$column][$value];
             } else {
                 throw new NotFoundException("SQL syntax error. ".
-                    "No such index '$column' in table '{$this->table->getName()}'.", E_USER_WARNING);
+                    "No such index '$column' in table '" . $this->_table->getName() . "'.", E_USER_WARNING);
             }
         }
     }
