@@ -41,19 +41,19 @@ class DDLTest extends PHPUnit_Framework_TestCase
      * @var    XDDL
      * @access protected
      */
-    protected $file;
+    private $_file;
 
     /**
      * @var    DDLDatabase
      * @access protected
      */
-    protected $object;
+    private $_object;
 
     /**
      * @var    string
      * @access protected
      */
-    protected $path = 'resources/test.db.xml';
+    private $_path = 'resources/test.db.xml';
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -63,10 +63,15 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->file = new XDDL(CWD . $this->path);
-        $this->file->read();
-        $this->object = $this->file->toDatabase();
-        $this->object->setModified();
+        try {
+            $this->_file = new XDDL(CWD . $this->_path);
+            $this->_file->read();
+            $this->_object = $this->_file->toDatabase();
+            $this->_object->setModified();
+        } catch (Exception $e) {
+            $message = "Error loading file '" . CWD . $this->_path . "'. Message: " . $e->getMessage();
+            $this->fail($message);
+        }
     }
 
     /**
@@ -77,8 +82,10 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        $this->object->__destruct();
-        unset($this->object);
+        if (!empty($this->_object)) {
+            $this->_object->__destruct();
+            unset($this->_object);
+        }
     }
 
     /**
@@ -90,13 +97,13 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testEncode()
     {
         // set to modified (otherwise function would return result from cache)
-        $this->object->setModified();
+        $this->_object->setModified();
         // get result
-        $xddl = $this->file->toSimpleXML();
+        $xddl = $this->_file->toSimpleXML();
         $xml = $xddl->asXML();
 
         // get same result from cache (must be equal)
-        $cachedXML = $this->file->toXML();
+        $cachedXML = $this->_file->toXML();
         $this->assertEquals($cachedXML, $xml);
 
         // add header in xml
@@ -156,19 +163,19 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testIncludes()
     {
         $includes = array('check', 'blog');
-        $this->object->setIncludes($includes);
+        $this->_object->setIncludes($includes);
 
-        $getIncludes = $this->object->getIncludes($includes);
+        $getIncludes = $this->_object->getIncludes($includes);
         $message = "Expecting getIncludes() to return same value as has been set by setIncludes()";
         $this->assertEquals($includes, $getIncludes, $message);
-        $xml = (string) $this->object;
+        $xml = (string) $this->_object;
         $message = "Expecting XML-output to contain added includes.";
         $this->assertRegExp('/<include>check<\/include>/', $xml, $message);
 
-        $this->assertTrue($this->object->isTable("Foo"), "Included XDDL file has not been loaded.");
+        $this->assertTrue($this->_object->isTable("Foo"), "Included XDDL file has not been loaded.");
 
-        $this->object->setIncludes();
-        $getIncludes = $this->object->getIncludes();
+        $this->_object->setIncludes();
+        $getIncludes = $this->_object->getIncludes();
         $message = "Expecting getIncludes() to return empty array after entries have been removed.";
         $this->assertEquals(array(), $getIncludes, $message);
     }
@@ -181,12 +188,12 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testGetName()
     {
         // expect name of database to be set to "testDB" in source-file
-        $name = $this->object->getName();
+        $name = $this->_object->getName();
         $this->assertEquals('testdb', $name, 'Database-name should match name-attribute in source file.');
 
         // test default value
-        $this->object->setName();
-        $name = $this->object->getName();
+        $this->_object->setName();
+        $name = $this->_object->getName();
         $this->assertEquals(null, $name, 'Database-name should be empty after reset.');
     }
 
@@ -197,8 +204,8 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testSetName()
     {
-        $this->object->setName("foo");
-        $name = $this->object->getName();
+        $this->_object->setName("foo");
+        $name = $this->_object->getName();
         $this->assertEquals($name, 'foo', 'Database-name should be set to given value.');
     }
 
@@ -209,8 +216,8 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDescription()
     {
-        $this->object->setDescription();
-        $description = $this->object->getDescription();
+        $this->_object->setDescription();
+        $description = $this->_object->getDescription();
         $this->assertEquals($description, null, 'Description should default to null.');
     }
 
@@ -221,8 +228,8 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testSetDescription()
     {
-        $this->object->setDescription('test');
-        $description = $this->object->getDescription();
+        $this->_object->setDescription('test');
+        $description = $this->_object->getDescription();
         $this->assertEquals($description, 'test', 'getDescription() should return the value previously set by setDescription().');
     }
 
@@ -234,12 +241,12 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testGetCharset()
     {
         // expect charset of database to be set to "utf8" in source-file
-        $charset = $this->object->getCharset();
+        $charset = $this->_object->getCharset();
         $this->assertEquals('utf8', $charset, 'Charset should match charset-attribute in source file.');
 
         // test default value
-        $this->object->setCharset();
-        $charset = $this->object->getCharset();
+        $this->_object->setCharset();
+        $charset = $this->_object->getCharset();
         $this->assertEquals(null, $charset, 'Charset should default to NULL.');
     }
 
@@ -251,8 +258,8 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testSetCharset()
     {
         // test default value
-        $this->object->setCharset('latin1');
-        $charset = $this->object->getCharset();
+        $this->_object->setCharset('latin1');
+        $charset = $this->_object->getCharset();
         $this->assertEquals('latin1', $charset, 'getCharset() should return the value previously set by setCharset().');
     }
 
@@ -264,7 +271,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testGetDataSource()
     {
         // expect charset of database to be set to "utf8" in source-file
-        $datasource = $this->object->getDataSource();
+        $datasource = $this->_object->getDataSource();
         $this->assertEquals('test', $datasource, 'Datasource should match datasource-attribute in source file.');
     }
 
@@ -276,13 +283,13 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testSetDataSource()
     {
         // test default value
-        $this->object->setDataSource();
-        $datasource = $this->object->getDataSource();
+        $this->_object->setDataSource();
+        $datasource = $this->_object->getDataSource();
         $this->assertEquals(null, $datasource, 'Datasource should default to NULL.');
 
         // test set value
-        $this->object->setDataSource('foo');
-        $datasource = $this->object->getDataSource();
+        $this->_object->setDataSource('foo');
+        $datasource = $this->_object->getDataSource();
         $this->assertEquals('foo', $datasource, 'getDataSource() should return the value previously set by setDataSource().');
     }
 
@@ -294,7 +301,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testIsReadonly()
     {
         // expect read-only property of database to be set to "no" in source-file
-        $isReadonly = $this->object->isReadonly();
+        $isReadonly = $this->_object->isReadonly();
         $this->assertFalse($isReadonly, 'Readonly should match readonly-attribute in source file.');
     }
 
@@ -306,13 +313,13 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testSetReadonly()
     {
         // test default value
-        $this->object->setReadonly();
-        $isReadonly = $this->object->isReadonly();
+        $this->_object->setReadonly();
+        $isReadonly = $this->_object->isReadonly();
         $this->assertFalse($isReadonly, 'Readonly should default to "no".');
 
         // test set value
-        $this->object->setReadonly(true);
-        $isReadonly = $this->object->isReadonly();
+        $this->_object->setReadonly(true);
+        $isReadonly = $this->_object->isReadonly();
         $this->assertTrue($isReadonly, 'isReadonly() should return the value previously set by setReadonly().');
     }
 
@@ -323,7 +330,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTable()
     {
-        $table = $this->object->getTable('tesT');
+        $table = $this->_object->getTable('tesT');
         $this->assertTrue($table instanceof DDLTable, "Unable to deserialize table.");
         $name = $table->getName();
         $this->assertEquals('test', $name, "Expecting returned table to have same name as requested.");
@@ -337,7 +344,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testAddTable()
     {
         $name = "new_table";
-        $table = $this->object->addTable($name);
+        $table = $this->_object->addTable($name);
         $this->assertType('DDLTable', $table, "Expected addTable() to return an instance of DDLTable.");
         $this->assertEquals($name, $table->getName(), "Expected returned table to have given name.");
     }
@@ -349,7 +356,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTables()
     {
-        $array = $this->object->getTables();
+        $array = $this->_object->getTables();
         $this->assertFalse(empty($array), "Returned list of tables should not be empty");
         foreach ($array as $item)
         {
@@ -364,11 +371,11 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTableNames()
     {
-        $array = $this->object->getTableNames();
+        $array = $this->_object->getTableNames();
         $this->assertFalse(empty($array), "Returned list of tables should not be empty");
         foreach ($array as $item)
         {
-            $exists = $this->object->isTable($item);
+            $exists = $this->_object->isTable($item);
             $this->assertTrue($exists, "Every element of returned list is expected to be the name of an existing table.");
         }
     }
@@ -381,7 +388,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testGetView()
     {
         $name = "test_view";
-        $view = $this->object->getView($name);
+        $view = $this->_object->getView($name);
         $this->assertType('DDLView', $view, "Expected getView() to return an instance of DDLView.");
         $this->assertEquals($name, $view->getName(), "Expected returned view to have given name.");
     }
@@ -394,7 +401,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testAddView()
     {
         $name = "new_view";
-        $view = $this->object->addView($name);
+        $view = $this->_object->addView($name);
         $this->assertType('DDLView', $view, "Expected addView() to return an instance of DDLView.");
         $this->assertEquals($name, $view->getName(), "Expected returned view to have given name.");
     }
@@ -406,7 +413,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testGetViews()
     {
-        $array = $this->object->getViews();
+        $array = $this->_object->getViews();
         $this->assertFalse(empty($array), "Returned list of views should not be empty");
         foreach ($array as $item)
         {
@@ -421,11 +428,11 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testGetViewNames()
     {
-        $array = $this->object->getViewNames();
+        $array = $this->_object->getViewNames();
         $this->assertFalse(empty($array), "Returned list of views should not be empty");
         foreach ($array as $item)
         {
-            $exists = $this->object->isView($item);
+            $exists = $this->_object->isView($item);
             $this->assertTrue($exists, "Every element of returned list is expected to be the name of an existing view.");
         }
     }
@@ -438,7 +445,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testGetFunction()
     {
         $name = "test_function";
-        $function = $this->object->getFunction($name);
+        $function = $this->_object->getFunction($name);
         $this->assertType('DDLFunction', $function, "Expected getFunction() to return an instance of DDLFunction.");
         $this->assertEquals($name, $function->getName(), "Expected returned function to have given name.");
     }
@@ -451,7 +458,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testAddFunction()
     {
         $name = "new_function";
-        $function = $this->object->addFunction($name);
+        $function = $this->_object->addFunction($name);
         $this->assertType('DDLFunction', $function, "Expected addFunction() to return an instance of DDLFunction.");
         $this->assertEquals($name, $function->getName(), "Expected returned function to have given name.");
     }
@@ -463,7 +470,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testGetFunctions()
     {
-        $array = $this->object->getFunctions();
+        $array = $this->_object->getFunctions();
         $this->assertFalse(empty($array), "Returned list of functions should not be empty");
         foreach ($array as $item)
         {
@@ -478,11 +485,11 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testGetFunctionNames()
     {
-        $array = $this->object->getFunctionNames();
+        $array = $this->_object->getFunctionNames();
         $this->assertFalse(empty($array), "Returned list of functions should not be empty");
         foreach ($array as $item)
         {
-            $exists = $this->object->isFunction($item);
+            $exists = $this->_object->isFunction($item);
             $this->assertTrue($exists, "Every element of returned list is expected to be the name of an existing function.");
         }
     }
@@ -495,7 +502,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testGetSequence()
     {
         $name = "test_sequence";
-        $view = $this->object->getSequence($name);
+        $view = $this->_object->getSequence($name);
         $this->assertType('DDLSequence', $view, "Expected getSequence() to return an instance of DDLSequence.");
         $this->assertEquals($name, $view->getName(), "Expected returned sequence to have given name.");
     }
@@ -508,7 +515,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testAddSequence()
     {
         $name = "new_sequence";
-        $sequence = $this->object->addSequence($name);
+        $sequence = $this->_object->addSequence($name);
         $this->assertType('DDLSequence', $sequence, "Expected addSequence() to return an instance of DDLSequence.");
         $this->assertEquals($name, $sequence->getName(), "Expected returned sequence to have given name.");
     }
@@ -520,7 +527,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testGetSequences()
     {
-        $array = $this->object->getSequences();
+        $array = $this->_object->getSequences();
         $this->assertFalse(empty($array), "Returned list of sequences should not be empty");
         foreach ($array as $item)
         {
@@ -535,11 +542,11 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testGetSequenceNames()
     {
-        $array = $this->object->getSequenceNames();
+        $array = $this->_object->getSequenceNames();
         $this->assertFalse(empty($array), "Returned list of sequences should not be empty");
         foreach ($array as $item)
         {
-            $exists = $this->object->isSequence($item);
+            $exists = $this->_object->isSequence($item);
             $this->assertTrue($exists, "Every element of returned list is expected to be the name of an existing sequence.");
         }
     }
@@ -552,14 +559,14 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testGetInit()
     {
         $test = array(1, 4);
-        $init = $this->object->getInit();
+        $init = $this->_object->getInit();
         $this->assertEquals($test, $init, "Expecting matching initialization tags for empty parameter to be 1st and 4th.");
 
-        $init = $this->object->getInit("generic");
+        $init = $this->_object->getInit("generic");
         $this->assertEquals($test, $init, "Expecting matching initialization tags for 'gemeric' parameter to be 1st and 4th.");
 
         $test = array(1, 2, 4);
-        $init = $this->object->getInit("mysql");
+        $init = $this->_object->getInit("mysql");
         $this->assertEquals($test, $init, "Expecting matching initialization tags for 'mysql' parameter to be 1st, 2nd and 4th.");
     }
 
@@ -570,8 +577,8 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testdropInit()
     {
-        $this->object->dropInit();
-        $init = $this->object->getInit();
+        $this->_object->dropInit();
+        $init = $this->_object->getInit();
         $this->assertEquals(array(), $init, "Expect list of initialization statements to be empty after calling dropInit().");
     }
 
@@ -582,11 +589,11 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testAddInit()
     {
-        $expected = $this->object->getInit();
+        $expected = $this->_object->getInit();
         $newInit = '1';
         $expected[] = $newInit;
-        $this->object->addInit($newInit);
-        $modified = $this->object->getInit();
+        $this->_object->addInit($newInit);
+        $modified = $this->_object->getInit();
 
         $this->assertEquals($expected, $modified, "Expect list of initialization statements to be to contain the added statement.");
     }
@@ -598,11 +605,11 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testAddInclude()
     {
-        $expected = $this->object->getIncludes();
+        $expected = $this->_object->getIncludes();
         $newInclude = 'file';
         $expected[] = $newInclude;
-        $this->object->addInclude($newInclude);
-        $modified = $this->object->getIncludes();
+        $this->_object->addInclude($newInclude);
+        $modified = $this->_object->getIncludes();
 
         $this->assertEquals($expected, $modified, "Expect list of included files to contain the added file.");
     }
@@ -614,9 +621,9 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testIsTable()
     {
-        $isTable = $this->object->isTable('tesT');
+        $isTable = $this->_object->isTable('tesT');
         $this->assertTrue($isTable, "Expect 'test' to be identified as a table, as defined in the source file.");
-        $isTable = $this->object->isTable('no_table');
+        $isTable = $this->_object->isTable('no_table');
         $this->assertFalse($isTable, "Expect 'no_table' to be identified as not being a table.");
     }
 
@@ -627,10 +634,10 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testIsView()
     {
-        $isView = $this->object->isView("Test_View");
+        $isView = $this->_object->isView("Test_View");
         $this->assertTrue($isView, "Expect 'test_view' to be identified as a view, as defined in the source file.");
 
-        $isView = $this->object->isView("no_view");
+        $isView = $this->_object->isView("no_view");
         $this->assertFalse($isView, "Expect 'no_view' to be identified as not being a view.");
     }
 
@@ -641,10 +648,10 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testIsFunction()
     {
-        $isFunction = $this->object->isFunction("Test_Function");
+        $isFunction = $this->_object->isFunction("Test_Function");
         $this->assertTrue($isFunction, "Expect 'test_function' to be identified as a function, as defined in the source file.");
 
-        $isFunction = $this->object->isFunction("no_function");
+        $isFunction = $this->_object->isFunction("no_function");
         $this->assertFalse($isFunction, "Expect 'no_function' to be identified as not being a view.");
     }
 
@@ -655,10 +662,10 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testIsForm()
     {
-        $isForm = $this->object->isForm("Test_New");
+        $isForm = $this->_object->isForm("Test_New");
         $this->assertTrue($isForm, "Expect 'test_new' to be identified as a form, as defined in the source file.");
 
-        $isForm = $this->object->isForm("no_form");
+        $isForm = $this->_object->isForm("no_form");
         $this->assertFalse($isForm, "Expect 'no_form' to be identified as not being a form.");
     }
 
@@ -669,10 +676,10 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testIsSequence()
     {
-        $isSequence = $this->object->isSequence("Test_Sequence");
+        $isSequence = $this->_object->isSequence("Test_Sequence");
         $this->assertTrue($isSequence, "Expect 'test_sequence' to be identified as a sequence, as defined in the source file.");
 
-        $isSequence = $this->object->isSequence("no_sequence");
+        $isSequence = $this->_object->isSequence("no_sequence");
         $this->assertFalse($isSequence, "Expect 'no_sequence' to be identified as not being a sequence.");
     }
 
@@ -684,7 +691,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testGetForm()
     {
         $name = "test_new";
-        $form = $this->object->getForm($name);
+        $form = $this->_object->getForm($name);
         $this->assertType('DDLForm', $form, "Expected getForm() to return an instance of DDLForm.");
         $this->assertEquals($name, $form->getName(), "Expected returned form to have given name.");
     }
@@ -696,7 +703,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testGetForms()
     {
-        $array = $this->object->getForms();
+        $array = $this->_object->getForms();
         $this->assertFalse(empty($array), "Returned list of forms should not be empty");
         foreach ($array as $item)
         {
@@ -711,11 +718,11 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testGetFormNames()
     {
-        $array = $this->object->getFormNames();
+        $array = $this->_object->getFormNames();
         $this->assertFalse(empty($array), "Returned list of forms should not be empty");
         foreach ($array as $item)
         {
-            $exists = $this->object->isForm($item);
+            $exists = $this->_object->isForm($item);
             $this->assertTrue($exists, "Every element of returned list is expected to be the name of an existing form.");
         }
     }
@@ -728,7 +735,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testAddForm()
     {
         $name = "new_form";
-        $form = $this->object->addForm($name);
+        $form = $this->_object->addForm($name);
         $this->assertType('DDLForm', $form, "Expected addForm() to return an instance of DDLForm.");
         $this->assertEquals($name, $form->getName(), "Expected returned form to have given name.");
     }
@@ -741,8 +748,8 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testDropTable()
     {
         $name = "Test";
-        $this->object->dropTable($name);
-        $isTable = $this->object->isTable($name);
+        $this->_object->dropTable($name);
+        $isTable = $this->_object->isTable($name);
         $this->assertFalse($isTable, "The table '$name' should have been deleted.");
     }
 
@@ -754,8 +761,8 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testDropView()
     {
         $name = "Test_View";
-        $this->object->dropView($name);
-        $isView = $this->object->isView($name);
+        $this->_object->dropView($name);
+        $isView = $this->_object->isView($name);
         $this->assertFalse($isView, "The view '$name' should have been deleted.");
     }
 
@@ -767,8 +774,8 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testDropForm()
     {
         $name = "Test_New";
-        $this->object->dropForm($name);
-        $isForm = $this->object->isForm($name);
+        $this->_object->dropForm($name);
+        $isForm = $this->_object->isForm($name);
         $this->assertFalse($isForm, "The form '$name' should have been deleted.");
     }
 
@@ -780,8 +787,8 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testDropFunction()
     {
         $name = "Test_Function";
-        $this->object->dropFunction($name);
-        $isFunction = $this->object->isFunction($name);
+        $this->_object->dropFunction($name);
+        $isFunction = $this->_object->isFunction($name);
         $this->assertFalse($isFunction, "The function '$name' should have been deleted.");
     }
 
@@ -793,8 +800,8 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testDropSequence()
     {
         $name = "Test_Sequence";
-        $this->object->dropSequence($name);
-        $isSequence = $this->object->isSequence($name);
+        $this->_object->dropSequence($name);
+        $isSequence = $this->_object->isSequence($name);
         $this->assertFalse($isSequence, "The sequence '$name' should have been deleted.");
     }
 
@@ -810,7 +817,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
         $nameAlias = "bar";
         $nameTable = "test";
         $viewQueryMysqlGoal = "Select Test_title as bar, Test_id as id from Test where Test_id > 5";
-        $view = $this->object->getView($name);
+        $view = $this->_object->getView($name);
         $this->assertTrue($view instanceof DDLView, "Unable to deserialize view.");
         $viewQueryMysql = $view->getQuery("mysql");
         $viewField = $view->getField($nameColumn);
@@ -834,7 +841,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
      */
     public function testGetFormElements()
     {
-        $form = $this->object->getForm("test_edit");
+        $form = $this->_object->getForm("test_edit");
         $this->assertTrue($form instanceof DDLForm, "Expected returned className does not match.");
 
         $formName = $form->getName();
@@ -853,7 +860,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
         // Second Table
         $name = "testcmt";
         $nameEvent = "onedit";
-        $table = $this->object->getTable($name);
+        $table = $this->_object->getTable($name);
         $this->assertTrue($table instanceof DDLTable, "Unable to deserialize table '$name'.");
 
         $tableColumn1 = $table->getColumn("test_author");
@@ -886,7 +893,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
 
         // First Table
         $name = "test";
-        $table = $this->object->getTable($name);
+        $table = $this->_object->getTable($name);
         $columnNames = array("test_id", "test_title", "test_text", "test_created", "test_author");
 
         // these grants will be tested
