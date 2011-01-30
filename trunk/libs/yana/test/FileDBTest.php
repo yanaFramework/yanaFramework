@@ -105,7 +105,7 @@ class FileDbTest extends PHPUnit_Framework_TestCase
         try {
             $this->dbsobj->insert( 't.foo1', array ('tvalue' => 1 ) );
             $this->fail('init t.foo1 failed');
-        } catch (InvalidValueException $e) {
+        } catch (MissingFieldWarning $e) {
             // success
         }
 
