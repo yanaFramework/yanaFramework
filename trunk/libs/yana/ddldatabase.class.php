@@ -165,7 +165,7 @@ class DDLDatabase extends DDLObject
         if (empty($this->path)) {
             throw new NotFoundException('No directory defined for this database');
         }
-        $directory = dirname($path) . '/';
+        $directory = dirname($this->path) . '/';
         assert('is_dir($directory); // Database base-directory not found');
         return $directory;
     }
