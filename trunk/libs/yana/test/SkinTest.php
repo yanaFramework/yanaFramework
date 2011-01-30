@@ -66,7 +66,7 @@ class SkinTest extends PHPUnit_Framework_TestCase
         $this->_defaultDir->setFilter('*.skin.xml');
         $this->_testDir = new Dir(CWD . '/resources/skin/test');
         $this->_testDir->setFilter('*.skin.xml');
-        Skin::setBaseDirectory(new Dir(CWD . '/resources/skin/'));
+        Skin::setBaseDirectory(CWD . '/resources/skin/');
         $this->_object = Skin::getInstance('test');
     }
 
