@@ -266,7 +266,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
      *
      * This is supposed to fail (due to missing foreign key).
      *
-     * @expectedException InvalidValueException
+     * @expectedException MissingFieldWarning
      * @test
      */
     public function testSelectMissingForeignKeyInvalidException()
