@@ -292,11 +292,7 @@ class FileDbIndex extends Object
      */
     public function commit()
     {
-        if (file_put_contents($this->_filename, serialize($this->_indexes)) !== false) {
-            return true;
-        } else {
-            return false;
-        }
+        return file_put_contents($this->_filename, serialize($this->_indexes)) !== false;
     }
 
     /**
@@ -317,7 +313,6 @@ class FileDbIndex extends Object
      * returns bool(false) on error.
      *
      * @access  public
-     * @return  bool
      * @throws  InvalidArgumentException  when file is not valid
      */
     public function rollback()
