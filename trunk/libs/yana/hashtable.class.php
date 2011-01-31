@@ -52,13 +52,6 @@
  */
 class Hashtable extends Utility
 {
-    /**
-     * @access  private
-     * @static
-     * @var     string
-     * @ignore
-     */
-    private static $inputEncoding = null;
 
     /**
      * @access  private
@@ -66,14 +59,16 @@ class Hashtable extends Utility
      * @var     string
      * @ignore
      */
-    private static $outputEncoding = null;
+    private static $_inputEncoding = null;
 
     /**
      * @access  private
      * @static
-     * @var string
+     * @var     string
      * @ignore
      */
+    private static $_outputEncoding = null;
+
     /**
      * retrieve a value
      *
@@ -134,18 +129,12 @@ class Hashtable extends Utility
      * If the value does not exist it gets inserted.
      * If a previous value existed the value gets updated.
      *
-     * This function returns bool(false) if $key = '*'
-     * and $value is not an array - which is: trying
-     * overwrite the complete hashtable with a non-array value.
-     * It returns bool(true) otherwise.
-     *
      * @access  public
      * @static
      * @name    Hashtable::setByReference()
      * @param   array   &$hash   associative array
      * @param   string  $key     address
      * @param   mixed   &$value  some new value
-     * @return  bool
      * @see     Hashtable::set()
      * @since   2.8.5
      */
@@ -153,19 +142,11 @@ class Hashtable extends Utility
     {
         assert('is_string($key); // wrong argument type for argument 2, string expected');
         if ($key === '' || $key === '*') {
-            if (is_array($value)) {
-                assert('!isset($id); // Cannot redeclare var $id');
-                assert('!isset($var); // Cannot redeclare var $var');
-                foreach ($value as $id => &$var)
-                {
-                    $hash[$id] =& $var;
-                }
-                return true;
-            } else {
-                $message = "Wrong argument type: only values of type array may be assigned to a Hashtable. Found '".
-                    gettype($value)."' instead.";
-                trigger_error($message, E_USER_WARNING);
-                return false;
+            assert('is_array($value); // Only values of type array may be assigned to a Hashtable.');
+            $value = (array) $value;
+            foreach ($value as $id => &$var)
+            {
+                $hash[$id] =& $var;
             }
         } else {
             $list_of_keys = explode(".", $key);
@@ -179,7 +160,6 @@ class Hashtable extends Utility
                 $result = &$result[$list_of_keys[$i]];
             }
             $result[$list_of_keys[count($list_of_keys)-1]] = &$value;
-            return true;
         }
     }
 
@@ -190,24 +170,18 @@ class Hashtable extends Utility
      * If the value does not exist it gets inserted.
      * If a previous value existed the value gets updated.
      *
-     * This function returns bool(false) if $key = '*'
-     * and $value is not an array - which is: trying
-     * overwrite the complete hashtable with a non-array value.
-     * It returns bool(true) otherwise.
-     *
      * @access  public
      * @static
      * @name    Hashtable::set()
      * @param   array   &$hash  associative array
      * @param   string  $key    address
      * @param   mixed   $value  some new value
-     * @return  bool
      * @see     Hashtable::setByReference()
      */
     public static function set(array &$hash, $key, $value)
     {
         assert('is_string($key); // wrong argument type for argument 2, string expected');
-        return self::setByReference($hash, $key, $value);
+        self::setByReference($hash, $key, $value);
     }
 
     /**
@@ -483,18 +457,18 @@ class Hashtable extends Utility
         /*
          * detect encoding
          */
-        if (empty(self::$inputEncoding)) {
+        if (empty(self::$_inputEncoding)) {
             if (function_exists('iconv_get_encoding')) {
-                self::$inputEncoding = iconv_get_encoding("internal_encoding");
+                self::$_inputEncoding = iconv_get_encoding("internal_encoding");
             } else {
-                self::$inputEncoding = "UTF-8";
+                self::$_inputEncoding = "UTF-8";
             }
         }
-        if (empty(self::$outputEncoding)) {
+        if (empty(self::$_outputEncoding)) {
             if (function_exists('iconv_get_encoding')) {
-                self::$outputEncoding = iconv_get_encoding("output_encoding");
+                self::$_outputEncoding = iconv_get_encoding("output_encoding");
             } else {
-                self::$outputEncoding = "UTF-8";
+                self::$_outputEncoding = "UTF-8";
             }
         }
 
@@ -502,7 +476,7 @@ class Hashtable extends Utility
          * create xml header
          */
         if ($indent === 0) {
-            $head = '<?xml version="1.0" encoding="' . self::$outputEncoding . '"?>' . "\n";
+            $head = '<?xml version="1.0" encoding="' . self::$_outputEncoding . '"?>' . "\n";
 
         /*
          * indent tag
@@ -568,12 +542,12 @@ class Hashtable extends Utility
             break;
             default:
                 $xml = $tab . ('<' . $tagName . ' ' . $attId . '="' . $name . '">' .
-                    htmlspecialchars($data, ENT_NOQUOTES, self::$inputEncoding) . '</' . $tagName . ">\n");
+                    htmlspecialchars($data, ENT_NOQUOTES, self::$_inputEncoding) . '</' . $tagName . ">\n");
             break;
         } /* end switch */
 
-        if (self::$inputEncoding !== self::$outputEncoding && function_exists('iconv')) {
-            return iconv(self::$inputEncoding, self::$outputEncoding, $head . $xml);
+        if (self::$_inputEncoding !== self::$_outputEncoding && function_exists('iconv')) {
+            return iconv(self::$_inputEncoding, self::$_outputEncoding, $head . $xml);
         } else {
             return $head . $xml;
         }

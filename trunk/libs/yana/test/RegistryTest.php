@@ -95,16 +95,13 @@ class RegistryTest extends PHPUnit_Framework_TestCase
     /**
      * sets var on registry
      *
-     * @covers Registry::setVarByReference()
-     * @covers Registry::setVar()
-     *
      * @test
      */
     public function testSetVar()
     {
         // check only if the element is set
-        $set = $this->registry->setVar('RULES', 'skin/rules/');
-        $this->assertTrue($set, 'assert failed, the variable should be set');
+        $this->registry->setVar('RULES', 'skin/rules/');
+        $this->assertEquals('skin/rules/', $this->registry->getVar('RULES'));
     }
 
     /**
@@ -115,9 +112,11 @@ class RegistryTest extends PHPUnit_Framework_TestCase
     public function testMerge()
     {
         $key = 'RULES';
-        $array = array('plugin');
-        $merge = $this->registry->mergeVars($key, $array);
-        $this->assertTrue($merge, 'assert failed, the variable has been not updated');
+        $array1 = array(0 => 'a', 1 => 'a');
+        $this->registry->setVar($key, $array1);
+        $array2 = array(1 => 'b', 2 => 'c');
+        $this->registry->mergeVars($key, $array2);
+        $this->assertEquals(array('a', 'b', 'c'), $this->registry->getVar('RULES'));
     }
 
     /**
@@ -138,15 +137,14 @@ class RegistryTest extends PHPUnit_Framework_TestCase
 
         // set a new value
         $key = 'NEW_YANA';
-        $set = $this->registry->setVar($key, array('foo/.bar'));
-        $this->assertTrue($set, 'assert failed, the new value "NEW_YANA" is not set');
+        $this->registry->setVar($key, array('foo/.bar'));
         $getVar = $this->registry->getVar($key);
         $this->assertEquals('foo/.bar', $getVar[0], 'the given value is different too the expected - proppably setVar has failed');
 
         // try to manipulate the new value
         $array = array('foo/', 'bar/');
-        $merge = $this->registry->mergeVars($key, $array);
-        $this->assertTrue($merge, 'assert failed, the update to the "NEW_YANA" var has failed');
+        $this->registry->mergeVars($key, $array);
+        $this->assertEquals($array, $this->registry->getVar($key));
 
         // check for modifications
         $getVar = $this->registry->getVar($key);
@@ -155,16 +153,14 @@ class RegistryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('bar/', $getVar[1], 'assert failed, the expected value must be "bar/"');
 
         // try too add foobar into new_yana
-        $merge = $this->registry->mergeVars($key, array('foobar'), false);
-        $this->assertTrue($merge, 'assert failed, the value "foobar" is not merge with "NEW_YANA"');
+        $this->registry->mergeVars($key, array('foo'), false);
         $getVar = $this->registry->getVar($key);
 
         // expected false because overwrite is set to false
-        $this->assertFalse(in_array('foobar', $getVar), 'assert failed, the value is not in array');
+        $this->assertFalse(in_array('foo', $getVar), 'assert failed, the value is not in array');
 
-        // merge the NEW_YANA value with new entry "foobar" expected to overwride the first argument
-        $merge = $this->registry->mergeVars($key, array('foobar'), true);
-        $this->assertTrue($merge, 'assert failed, the value "foobar" is not merge with "NEW_YANA"');
+        // merge the NEW_YANA value with new entry "foobar" expected to overwrite the first argument
+        $this->registry->mergeVars($key, array('foobar'), true);
         $getVar = $this->registry->getVar($key);
 
         // expected true because overwrite is set to true | the first arrgument in array will be overwrite
@@ -173,8 +169,7 @@ class RegistryTest extends PHPUnit_Framework_TestCase
 
         // set foo/ bar/ and foobar into NEW_YANA
         $array = array('foo/', 'bar/', 'foobar');
-        $merge = $this->registry->mergeVars($key, $array);
-        $this->assertTrue($merge, 'assert failed, the values are not merge with "NEW_YANA"');
+        $this->registry->mergeVars($key, $array);
         $getVar = $this->registry->getVar($key);
 
         // expected true because overwrite is set to true | the first arrgument in array will be overwrite
@@ -200,8 +195,7 @@ class RegistryTest extends PHPUnit_Framework_TestCase
     public function test2()
     {
         // set a new key and value of type integer
-        $setVar = $this->registry->setVar('bar', 150);
-        $this->assertTrue($setVar, 'assert failed, the value is not set');
+        $this->registry->setVar('bar', '150');
         $setType = $this->registry->setType('bar', 'integer');
         $this->assertTrue($setType, 'assert failed, the variable type is not set');
         $getVarRef = $this->registry->getVarByReference('bar');
@@ -222,8 +216,8 @@ class RegistryTest extends PHPUnit_Framework_TestCase
 
         // set a new key
         $array = array('ID1'=>array('ID2'=>'foo'), 'ID3');
-        $set = $this->registry->setVar('BAR', $array);
-        $this->assertTrue($set, 'assert failed, the new value is not set');
+        $this->registry->setVar('BAR', $array);
+        $this->assertEquals($array, $this->registry->getVar('BAR'));
 
         // get the value of the the key
         $getValue = $this->registry->getVarByReference('BAR.ID1.ID2');

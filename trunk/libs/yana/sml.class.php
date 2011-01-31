@@ -247,29 +247,25 @@ class SML extends File
     }
 
     /**
-     * insert an array into the file
+     * Insert an array into the file.
      *
      * This function sets a new value at the address provided in $key to $value.
      * If the key already exists, it's value gets updated.
      *
-     * Returns bool(true) on success and bool(false) on error.
-     *
      * @access  public
      * @param   string  $key    adress of old data
      * @param   mixed   $value  new data
-     * @return  bool
      * @name    SML::setVar()
-     * @since   2.9 RC3
      */
     public function setVar($key, $value)
     {
-        assert('is_scalar($key); /* Wrong argument type for argument 1. String expected. */');
+        assert('is_scalar($key); // Wrong argument type for argument 1. String expected.');
         $key = $this->_convertKey($key);
         $this->_isReady = true;
         if (is_array($value)) {
             $this->_setKeyCase($value);
         }
-        return Hashtable::set($this->content, $key, $value);
+        Hashtable::set($this->content, $key, $value);
     }
 
     /**
@@ -293,14 +289,12 @@ class SML extends File
             $this->_setKeyCase($value);
         }
 
-        // shortcut to improve performance
         if (isset($this->content[$key])) {
-            $this->content[$key] =& $value;
-            return true;
-
+            $this->content[$key] =& $value; // shortcut to improve performance
         } else {
-            return Hashtable::setByReference($this->content, $key, $value);
+            Hashtable::setByReference($this->content, $key, $value);
         }
+        return true;
     }
 
     /**

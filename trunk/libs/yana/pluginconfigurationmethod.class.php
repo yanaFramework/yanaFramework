@@ -89,17 +89,20 @@ class PluginConfigurationMethod extends Object
             PluginAnnotationEnumeration::TEXT => "",
             PluginAnnotationEnumeration::PARAM => array(),
             PluginAnnotationEnumeration::RETURN_VALUE => $method->getTags(PluginAnnotationEnumeration::RETURN_VALUE),
-            PluginAnnotationEnumeration::TYPE => mb_strtolower($method->getTag(PluginAnnotationEnumeration::TYPE, $typeClassTag)),
-            PluginAnnotationEnumeration::TEMPLATE => mb_strtolower($method->getTag(PluginAnnotationEnumeration::TEMPLATE, 'null')),
+            PluginAnnotationEnumeration::TYPE =>
+                mb_strtolower($method->getTag(PluginAnnotationEnumeration::TYPE, $typeClassTag)),
+            PluginAnnotationEnumeration::TEMPLATE =>
+                mb_strtolower($method->getTag(PluginAnnotationEnumeration::TEMPLATE, 'null')),
             PluginAnnotationEnumeration::USER => $method->getTags(PluginAnnotationEnumeration::USER),
             PluginAnnotationEnumeration::SAFEMODE => $method->getTag(PluginAnnotationEnumeration::SAFEMODE),
             PluginAnnotationEnumeration::MENU => $method->getTag(PluginAnnotationEnumeration::MENU),
             PluginAnnotationEnumeration::ONERROR => $method->getTag(PluginAnnotationEnumeration::ONERROR),
             PluginAnnotationEnumeration::ONSUCCESS => $method->getTag(PluginAnnotationEnumeration::ONSUCCESS),
-            PluginAnnotationEnumeration::GROUP => mb_strtolower((!is_null($class)) ? $class->getTag(PluginAnnotationEnumeration::GROUP) : ''),
+            PluginAnnotationEnumeration::GROUP =>
+                mb_strtolower((!is_null($class)) ? $class->getTag(PluginAnnotationEnumeration::GROUP) : ''),
             PluginAnnotationEnumeration::OVERWRITE => $method->getTag(PluginAnnotationEnumeration::OVERWRITE, '0'),
             PluginAnnotationEnumeration::SUBSCRIBE => $method->getTag(PluginAnnotationEnumeration::SUBSCRIBE, '0'),
-            PluginAnnotationEnumeration::LANGUAGE => $method->getTags(PluginAnnotationEnumeration::LANGUAGE, array()),
+            PluginAnnotationEnumeration::LANGUAGE => $method->getTags(PluginAnnotationEnumeration::LANGUAGE),
             PluginAnnotationEnumeration::SCRIPT => array(),
             PluginAnnotationEnumeration::STYLE => array()
         );
@@ -234,6 +237,7 @@ class PluginConfigurationMethod extends Object
         if (!isset($this->configuration[PluginAnnotationEnumeration::SCRIPT])) {
             $this->configuration[PluginAnnotationEnumeration::SCRIPT] = array();
         }
+        assert('is_array($this->configuration[PluginAnnotationEnumeration::SCRIPT]);');
         return $this->configuration[PluginAnnotationEnumeration::SCRIPT];
     }
 
@@ -251,6 +255,7 @@ class PluginConfigurationMethod extends Object
         if (!isset($this->configuration[PluginAnnotationEnumeration::STYLE])) {
             $this->configuration[PluginAnnotationEnumeration::STYLE] = array();
         }
+        assert('is_array($this->configuration[PluginAnnotationEnumeration::STYLE]);');
         return $this->configuration[PluginAnnotationEnumeration::STYLE];
     }
 
@@ -268,6 +273,7 @@ class PluginConfigurationMethod extends Object
         if (!isset($this->configuration[PluginAnnotationEnumeration::LANGUAGE])) {
             $this->configuration[PluginAnnotationEnumeration::LANGUAGE] = array();
         }
+        assert('is_array($this->configuration[PluginAnnotationEnumeration::LANGUAGE]);');
         return $this->configuration[PluginAnnotationEnumeration::LANGUAGE];
     }
 
@@ -290,6 +296,7 @@ class PluginConfigurationMethod extends Object
      */
     public function getParams()
     {
+        assert('is_array($this->configuration[PluginAnnotationEnumeration::PARAM]);');
         return $this->configuration[PluginAnnotationEnumeration::PARAM];
     }
 
@@ -336,6 +343,10 @@ class PluginConfigurationMethod extends Object
      */
     public function getMenu()
     {
+        if (empty($this->configuration[PluginAnnotationEnumeration::MENU])) {
+            $this->configuration[PluginAnnotationEnumeration::MENU] = array();
+        }
+        assert('is_array($this->configuration[PluginAnnotationEnumeration::MENU]);');
         return $this->configuration[PluginAnnotationEnumeration::MENU];
     }
 
@@ -347,8 +358,10 @@ class PluginConfigurationMethod extends Object
      */
     public function getOnSuccess()
     {
-        assert('empty($this->configuration[PluginAnnotationEnumeration::ONSUCCESS]) || ' .
-               'is_array($this->configuration[PluginAnnotationEnumeration::ONSUCCESS]);');
+        if (empty($this->configuration[PluginAnnotationEnumeration::ONSUCCESS])) {
+            $this->configuration[PluginAnnotationEnumeration::ONSUCCESS] = array();
+        }
+        assert('is_array($this->configuration[PluginAnnotationEnumeration::ONSUCCESS]);');
         return $this->configuration[PluginAnnotationEnumeration::ONSUCCESS];
     }
 
@@ -360,8 +373,10 @@ class PluginConfigurationMethod extends Object
      */
     public function getOnError()
     {
-        assert('empty($this->configuration[PluginAnnotationEnumeration::ONERROR]) || ' .
-               'is_array($this->configuration[PluginAnnotationEnumeration::ONERROR]);');
+        if (empty($this->configuration[PluginAnnotationEnumeration::ONERROR])) {
+            $this->configuration[PluginAnnotationEnumeration::ONERROR] = array();
+        }
+        assert('is_array($this->configuration[PluginAnnotationEnumeration::ONERROR]);');
         return $this->configuration[PluginAnnotationEnumeration::ONERROR];
     }
 
@@ -376,6 +391,7 @@ class PluginConfigurationMethod extends Object
     public function getName()
     {
         if (isset($this->configuration[PluginAnnotationEnumeration::TITLE])) {
+            assert('is_string($this->configuration[PluginAnnotationEnumeration::TITLE]);');
             return $this->configuration[PluginAnnotationEnumeration::TITLE];
         } else {
             return null;
@@ -391,6 +407,7 @@ class PluginConfigurationMethod extends Object
     public function getText()
     {
         if (isset($this->configuration[PluginAnnotationEnumeration::TEXT])) {
+            assert('is_string($this->configuration[PluginAnnotationEnumeration::TEXT]);');
             return $this->configuration[PluginAnnotationEnumeration::TEXT];
         } else {
             return null;
@@ -447,11 +464,7 @@ class PluginConfigurationMethod extends Object
      */
     public function getTemplate()
     {
-        if (isset($this->configuration[PluginAnnotationEnumeration::TEMPLATE])) {
-            return $this->configuration[PluginAnnotationEnumeration::TEMPLATE];
-        } else {
-            return null;
-        }
+        return $this->configuration[PluginAnnotationEnumeration::TEMPLATE];
     }
 
     /**
@@ -497,12 +510,7 @@ class PluginConfigurationMethod extends Object
      */
     public function getOverwrite()
     {
-        if (!empty($this->configuration[PluginAnnotationEnumeration::OVERWRITE])) {
-            return true;
-
-        } else {
-            return false;
-        }
+        return !empty($this->configuration[PluginAnnotationEnumeration::OVERWRITE]);
     }
 
     /**
@@ -522,12 +530,7 @@ class PluginConfigurationMethod extends Object
      */
     public function getSubscribe()
     {
-        if (!empty($this->configuration[PluginAnnotationEnumeration::SUBSCRIBE])) {
-            return true;
-
-        } else {
-            return false;
-        }
+        return !empty($this->configuration[PluginAnnotationEnumeration::SUBSCRIBE]);
     }
 
     /**

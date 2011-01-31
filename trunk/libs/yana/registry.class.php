@@ -169,7 +169,7 @@ class Registry extends VDrive
             } else {
                 return $this->cache[$key];
             }
-        } /* end if */
+        } // end if
 
     } /* end getVar */
 
@@ -244,13 +244,8 @@ class Registry extends VDrive
             return true;
         }
 
-        if (Hashtable::setByReference($this->vars, $key, $value)) {
-            $this->cache[$key] =& $value;
-            return true;
-        } else {
-            return false;
-        }
-
+        Hashtable::setByReference($this->vars, $key, $value);
+        $this->cache[$key] =& $value;
     }
 
     /**
@@ -277,11 +272,7 @@ class Registry extends VDrive
     }
 
     /**
-     * merges the value at adresse $key with the provided array data
-     *
-     * Merges the element identified by $key with the array $value.
-     *
-     * Returns bool(false) on error.
+     * Merges the value at adress $key with the provided array data.
      *
      * If $overwrite is set to false, then the values of keys that already exist are ignored.
      * Otherwise these values get updated to the new ones.
@@ -290,7 +281,6 @@ class Registry extends VDrive
      * @param   string  $key        key of updated element
      * @param   array   $array      new value
      * @param   bool    $overwrite  true = update, false = ignore
-     * @return  bool
      */
     public function mergeVars($key, array $array, $overwrite = true)
     {
@@ -300,28 +290,25 @@ class Registry extends VDrive
         if ($key == "" || $key == "*") {
             $this->vars = Hashtable::merge($this->vars, $array);
             $this->cache[$key] = array();
-            return true;
 
         } elseif ($overwrite) {
             $vars =& Hashtable::get($this->vars, $key);
             if (is_null($vars)) {
-                return Hashtable::set($this->vars, $key, $array);
+                Hashtable::set($this->vars, $key, $array);
             } else {
                 $vars = Hashtable::merge($vars, $array);
-                return true;
             }
 
         } else {
             $vars =& Hashtable::get($this->vars, $key);
             if (is_null($vars)) {
-                return Hashtable::set($this->vars, $key, $array);
+                Hashtable::set($this->vars, $key, $array);
             } else {
                 $array = array_diff_key($array, $vars);
                 $vars = Hashtable::merge($vars, $array);
-                return true;
             }
 
-        } /* end if */
+        } // end if
     }
 
     /**

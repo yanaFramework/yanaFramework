@@ -1,0 +1,5 @@
+<FTID>
+	<1>
+		<FTVALUE>1</FTVALUE>
+	</1>
+</FTID>
