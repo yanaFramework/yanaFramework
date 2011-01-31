@@ -78,13 +78,6 @@ class PluginConfigurationMethod extends Object
         $this->_paths[] = $class->getDirectory();
         $this->configuration = array
         (
-            /* reserved for future use
-
-                PluginAnnotationEnumeration::TITLE => $method->getTitle(),
-                PluginAnnotationEnumeration::TEXT => $method->getText(),
-
-            */
-
             PluginAnnotationEnumeration::TITLE => $method->getTag(PluginAnnotationEnumeration::TITLE),
             PluginAnnotationEnumeration::TEXT => "",
             PluginAnnotationEnumeration::PARAM => array(),
@@ -435,24 +428,21 @@ class PluginConfigurationMethod extends Object
      */
     public function getSafeMode()
     {
-        if (is_bool($this->configuration[PluginAnnotationEnumeration::SAFEMODE])) {
-            return $this->configuration[PluginAnnotationEnumeration::SAFEMODE];
-
-        } else {
-            switch ($this->configuration[PluginAnnotationEnumeration::SAFEMODE])
-            {
-                case 'false':
-                case 'no':
-                    return false;
-                break;
-                case 'true':
-                case 'yes':
-                    return true;
-                break;
-                default:
-                    return null;
-                break;
-            }
+        if (!isset($this->configuration[PluginAnnotationEnumeration::SAFEMODE])) {
+            return null;
+        }
+        switch ($this->configuration[PluginAnnotationEnumeration::SAFEMODE])
+        {
+            case false:
+            case 'false':
+            case 'no':
+                return false;
+            case true:
+            case 'true':
+            case 'yes':
+                return true;
+            default:
+                return null;
         }
     }
 
