@@ -342,7 +342,7 @@ class Hashtable extends Utility
             if (is_array($e)) {
                 $input[$k] = Hashtable::changeCase($e, $case);
             }
-        } /* end foreach */
+        } // end foreach
         assert('is_array($input); // Unexpected result: $input. Array expected.');
         return $input;
     }
@@ -405,40 +405,24 @@ class Hashtable extends Utility
      *
      * @access  public
      * @static
-     * @param   array  $A  base array
-     * @param   array  $B  merge with this array
+     * @param   array  $a  base array
+     * @param   array  $b  merge with this array
      * @return  array
      */
-    public static function merge(array $A, array $B)
+    public static function merge(array $a, array $b)
     {
-        /* for better performance check trivial cases first */
-        if (count($B) == 0) {
-            return $A;
-
-        } elseif (count($A) == 0) {
-            return $B;
-
-        /* only if none of this applies, do the real thing */
-        } else {
-            foreach ($B as $k => &$e)
-            {
-                /* inserting an array */
-                if (is_array($e)) {
-                    if (isset($A[$k]) && is_array($A[$k])) {
-                        /* recursion */
-                        $A[$k] = Hashtable::merge($A[$k], $e);
-                    } else {
-                        $A[$k] = $e;
-                    }
-
-                /* inserting a scalar value */
-                } else {
-                    $A[$k] = $e;
-                }
-            } /* end foreach */
-            assert('is_array($A); /* Unexpected result: $A. */');
-            return $A;
-        }
+        $a += $b; // Add non-existing keys
+        // Overwrite existing keys
+        foreach (array_intersect_key($b, $a) as $k => $e)
+        {
+            if (is_array($e) && is_array($a[$k])) {
+                $a[$k] = Hashtable::merge($a[$k], $e); // merge recursive
+            } else {
+                $a[$k] = $e; // overwrite
+            }
+        } // end foreach
+        assert('is_array($a);');
+        return $a;
     }
 
     /**
@@ -570,7 +554,7 @@ class Hashtable extends Utility
                     } else {
                         /* ignore recursion */
                     }
-                } /* end foreach */
+                } // end foreach
                 $xml .= $tab . '</' . $tagName . ">\n";
             break;
             case is_object($data):
