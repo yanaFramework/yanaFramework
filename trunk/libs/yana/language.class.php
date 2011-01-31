@@ -167,13 +167,12 @@ class Language extends Singleton implements Serializable
      * @access  public
      * @param   string  $id     id
      * @param   string  $value  value
-     * @return  mixed
      * @see     Language::setVar()
      */
     public function __set($id, $value)
     {
         assert('is_string($id); // Wrong type for argument 1. String expected');
-        return $this->setVar($id, $value);
+        $this->setVar($id, $value);
     }
 
     /**

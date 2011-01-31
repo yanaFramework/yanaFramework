@@ -731,7 +731,6 @@ final class Yana extends Singleton implements IsReportable
      * print $YANA->getVar('foo.bar');
      * </code>
      *
-     * @uses    $YANA->getVar('CONTAINER1.CONTAINER2.DATA')
      * @access  public
      * @param   string  $key  adress of data in memory (case insensitive)
      * @return  mixed
@@ -760,7 +759,6 @@ final class Yana extends Singleton implements IsReportable
      * print $YANA->getVar('foo.bar');
      * </code>
      *
-     * @uses    $YANA->setVar('CONTAINER1.CONTAINER2.DATA', $value)
      * @access  public
      * @param   string  $key     adress of data in memory (case insensitive)
      * @param   mixed   &$value  new value (may be scalar value or array)
@@ -790,7 +788,6 @@ final class Yana extends Singleton implements IsReportable
      * print $YANA->getVar('foo.bar');
      * </code>
      *
-     * @uses    $YANA->setVar('CONTAINER1.CONTAINER2.DATA', $value)
      * @access  public
      * @param   string  $key    adress of data in memory (case insensitive)
      * @param   mixed   $value  new value (may be scalar value or array)
@@ -807,7 +804,6 @@ final class Yana extends Singleton implements IsReportable
     /**
      * sets the type of a var on registry (memory shared by all plugins)
      *
-     * @uses    $YANA->setType('CONTAINER1.CONTAINER2.DATA', 'string')
      * @access  public
      * @param   string  $key   adress of data in memory (case insensitive)
      * @param   string  $type  new type of variable
@@ -815,13 +811,9 @@ final class Yana extends Singleton implements IsReportable
      */
     public function setType($key, $type)
     {
-        assert('is_scalar($key);  /* Wrong argument type for argument 1. String expected. */');
-        assert('is_string($type); /* Wrong argument type for argument 2. String expected. */');
-        /* settype to STRING */
-        $key  = (string) $key;
-        $type = (string) $type;
-        $registry = $this->getRegistry();
-        return $registry->setType($key, $type);
+        assert('is_scalar($key);  // Wrong argument type for argument 1. String expected.');
+        assert('is_string($type); // Wrong argument type for argument 2. String expected.');
+        return $this->getRegistry()->setType((string) $key, (string) $type);
     }
 
     /**
@@ -840,18 +832,14 @@ final class Yana extends Singleton implements IsReportable
      * var_dump($YANA->getVar('foo.bar'));
      * </code>
      *
-     * @uses    $YANA->unsetVar('CONTAINER1.CONTAINER2.DATA')
      * @access  public
      * @param   string  $key  adress of data in memory (case insensitive)
      * @return  bool
      */
     public function unsetVar($key)
     {
-        assert('is_scalar($key); /* Wrong argument type for argument 1. String expected. */');
-        /* settype to STRING */
-        $key = (string) $key;
-        $registry = $this->getRegistry();
-        return $registry->unsetVar($key);
+        assert('is_scalar($key); // Wrong argument type for argument 1. String expected.');
+        return $this->getRegistry()->unsetVar((string) $key);
     }
 
     /**
@@ -868,7 +856,6 @@ final class Yana extends Singleton implements IsReportable
      * print $YANA->getVar('FOO.FOO');
      * </code>
      *
-     * @uses    $YANA->mergeVars('CONTAINER1.CONTAINER2.DATA', $array)
      * @access  public
      * @param   string  $key    adress of data in memory (case insensitive)
      * @param   array   $array  associative array to merge
@@ -876,9 +863,8 @@ final class Yana extends Singleton implements IsReportable
      */
     public function mergeVars($key, array $array)
     {
-        assert('is_scalar($key);  /* Wrong argument type for argument 1. String expected. */');
-        $registry = $this->getRegistry();
-        return $registry->mergeVars("$key", $array);
+        assert('is_scalar($key);  // Wrong argument type for argument 1. String expected.');
+        return $this->getRegistry()->mergeVars((string) $key, $array);
     }
 
     /**
@@ -897,6 +883,7 @@ final class Yana extends Singleton implements IsReportable
      */
     public function getResource($path)
     {
+        assert('is_string($path); // Wrong argument type for argument 1. String expected.');
         return $this->getRegistry()->getResource($path);
     }
 

@@ -768,11 +768,8 @@ class FileDbConnection extends Object
                         "{$primaryValue}. Another entry with this key already exists.";
                     return new FileDbResult(null, $message);
                 } else {
-                    if ($smlfile->setVar("$primaryKey.$primaryValue", $set)) {
-                        return $this->_write();
-                    } else {
-                        return new FileDbResult(null, "unable to save changes");
-                    } // end if
+                    $smlfile->setVar("$primaryKey.$primaryValue", $set);
+                    return $this->_write();
                 } // end if
             break;
             /*

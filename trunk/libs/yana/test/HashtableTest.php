@@ -106,8 +106,7 @@ class HashtableTest extends PHPUnit_Framework_TestCase
     public function testSetByReference()
     {
         $array = array(1, 2, 3);
-        $setByReference = Hashtable::setByReference($this->array, 'ID2', $array);
-        $this->assertTrue($setByReference, 'assert failed, set new key value has failed');
+        Hashtable::setByReference($this->array, 'ID2', $array);
 
         $validate = Hashtable::get($this->array, 'ID2');
         $getAll = Hashtable::get($this->array, '*');
@@ -120,7 +119,7 @@ class HashtableTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($validate, 2, 'assert failed, value is not a reference');
 
         $array = array('a' => 3);
-        $setByReference = Hashtable::setByReference($this->array, '*', $array);
+        Hashtable::setByReference($this->array, '*', $array);
         $array['a'] = 4;
         $validate = Hashtable::get($this->array, 'a');
         $this->assertEquals($validate, 4, 'unable to set a value by reference using wildcard "*"');
@@ -137,7 +136,7 @@ class HashtableTest extends PHPUnit_Framework_TestCase
     public function testSetByReferenceInvalidArgument()
     {
         $value = 'entry';
-        $setByReference = Hashtable::setByReference($this->array, '*', $value);
+        Hashtable::setByReference($this->array, '*', $value);
     }
 
     /**
@@ -148,20 +147,16 @@ class HashtableTest extends PHPUnit_Framework_TestCase
     public function testSet()
     {
         $copyOfArray = $this->array;
-        $set = Hashtable::set($this->array, 'ID1', 'work');
-        $this->assertTrue($set, 'assert failed, set new value has failed');        
+        Hashtable::set($this->array, 'ID1', 'work');    
         $validate = Hashtable::get($this->array, '*');
         $this->assertArrayHasKey('ID1', $validate, 'assert failed, key doesnt exist on array');
         $this->assertEquals('work', $validate['ID1'], 'assert failed, "setByReferences" has failed, expected value doesn exist in key "ID5"');
 
         $array = array(1, 2, 3);
-        $set = Hashtable::setByReference($copyOfArray, 'ID5', $array);
-        //$array[] = 4;
-        $this->assertTrue($set, 'assert failed, set new value has failed ');
+        Hashtable::setByReference($copyOfArray, 'ID5', $array);
         $get = Hashtable::get($copyOfArray, '*');
         $this->assertArrayHasKey('ID5', $get, 'assert failed, key doesnt exist on array');
         $this->assertEquals($array, $get['ID5'], 'assert failed, "setByReferences" has failed, expected value doesn exist in key "ID5"');
-        //$this->assertEquals($copyOfArray, $array);
     }
 
     /**
@@ -324,8 +319,7 @@ class HashtableTest extends PHPUnit_Framework_TestCase
         $this->assertNotEquals($caseUpper, $array2, 'assert failed, the values cant be equal');
 
         $value = 'blue';
-        $set = Hashtable::set($caseUpper, 'LKJH', $value);
-        $this->assertTrue($set, 'assert failed , value is not set for giving key');
+        Hashtable::set($caseUpper, 'LKJH', $value);
 
         $caseLower = Hashtable::changeCase($caseUpper, 0);
         $this->assertType('array', $caseLower, 'assert failed, value is not from type array');
@@ -345,8 +339,7 @@ class HashtableTest extends PHPUnit_Framework_TestCase
         $this->assertType('integer', $caseLower['id1'], 'assert failed, the value is not from type integer');
         
         $value = 'description';
-        $set = Hashtable::set($caseLower, 'id1', $value);
-        $this->assertTrue($set, 'assert failed, set new value for giving key has failed');
+        Hashtable::set($caseLower, 'id1', $value);
         $this->assertEquals($value, $caseLower['id1'], 'assert failed, the variables should be equal');
 
         // verifi with orginal array
@@ -371,10 +364,10 @@ class HashtableTest extends PHPUnit_Framework_TestCase
         $this->assertType('array', $caseLower, 'assert failed, value is not from type array');        
         $this->assertEquals(count($caseLower), 0, 'assert failed, remove all entries from the array has failed');
 
-        $marge = Hashtable::merge($array1, $caseLower);
-        $this->assertEquals($array1, $marge, 'assert failed, the variables should be equal');
-        $upperKeys = Hashtable::changeCase($marge, CASE_UPPER);
-        $this->assertNotEquals($upperKeys, $marge, 'assert failed, the values are not equal');
+        $merge = Hashtable::merge($array1, $caseLower);
+        $this->assertEquals($array1, $merge, 'assert failed, the variables should be equal');
+        $upperKeys = Hashtable::changeCase($merge, CASE_UPPER);
+        $this->assertNotEquals($upperKeys, $merge, 'assert failed, the values are not equal');
     }
 }
 ?>
