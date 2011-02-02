@@ -224,7 +224,7 @@ class DbBlob extends FileReadonly
         if (!is_file($file)) {
             throw new FileNotFoundError();
         }
-        if (!is_array($_SESSION[__CLASS__])) {
+        if (!isset($_SESSION[__CLASS__]) || !is_array($_SESSION[__CLASS__])) {
             $_SESSION[__CLASS__] = array();
             $id = false;
         } else {
