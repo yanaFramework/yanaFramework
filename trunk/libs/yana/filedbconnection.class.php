@@ -701,10 +701,10 @@ class FileDbConnection extends Object
 
                 /* get reference to SML file */
                 assert('!isset($smlfile); // Cannot redeclare var $smlfile');
-                $smlfile =& $this->_getSmlFile();
+                $smlfile = $this->_getSmlFile();
                 /* get reference to Index file */
                 assert('!isset($idxfile); // Cannot redeclare var $idxfile');
-                $idxfile =& $this->_getIndexFile();
+                $idxfile = $this->_getIndexFile();
 
                 /* create column */
                 assert('!isset($column); // Cannot redeclare var $column');
@@ -788,8 +788,8 @@ class FileDbConnection extends Object
                 $this->_desc = $this->_query->getDescending();
                 $limit = $this->_query->getLimit();
 
-                $smlfile =& $this->_getSmlFile();
-                $idxfile =& $this->_getIndexFile();
+                $smlfile = $this->_getSmlFile();
+                $idxfile = $this->_getIndexFile();
 
                 assert('!isset($rows); // Cannot redeclare var $rows');
                 $rows = $this->_get(array($this->_table->getPrimaryKey()), $where, array(), 0, $limit);
@@ -829,7 +829,7 @@ class FileDbConnection extends Object
             break;
         }
 
-    } /* end of function */
+    }
 
     /**
      * execute a single query
