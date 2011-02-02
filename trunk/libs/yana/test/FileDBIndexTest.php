@@ -38,22 +38,46 @@ require_once dirname(__FILE__) . '/include.php';
 class FileDbIndexTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var    FileDbIndex
-     * @access protected
+     * @var FileDbIndex
      */
-    protected $object;
+    private $_object;
 
     /**
-     * @var    savePath
-     * @access protected
+     * @var string
      */
-    protected $savePath = 'resources/filedb.idx';
+    private $_indexFilePath;
 
     /**
-     * @var    dataset
-     * @access protected
+     * @var string
      */
-    protected $dataset = 'resources/filedb.sml';
+    private $_indexFileConents = 'a:1:{s:6:"FVALUE";a:3:{i:12;i:3;i:28;i:1;i:44;i:2;}}';
+
+    /**
+     * @var string
+     */
+    private $_smlFilePath;
+
+    /**
+     * @var string
+     */
+    private $_smlFileContents = '
+        <FOOID>
+            <1>
+                    <FOOID>1</FOOID>
+                    <FVALUE>28</FVALUE>
+                    <FNUMBER>1</FNUMBER>
+            </1>
+            <2>
+                    <FOOID>2</FOOID>
+                    <FVALUE>44</FVALUE>
+                    <FNUMBER>3</FNUMBER>
+            </2>
+            <3>
+                    <FOOID>3</FOOID>
+                    <FVALUE>12</FVALUE>
+                    <FNUMBER>6</FNUMBER>
+            </3>
+        </FOOID>';
 
 
     /**
@@ -74,7 +98,19 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        // intentionally left blank
+        $this->_smlFilePath = tempnam(sys_get_temp_dir(), __CLASS__);
+        file_put_contents($this->_smlFilePath, $this->_smlFileContents);
+        $this->_indexFilePath = tempnam(sys_get_temp_dir(), __CLASS__);
+        file_put_contents($this->_indexFilePath, $this->_indexFileConents);
+
+        $data = new SML($this->_smlFilePath, CASE_UPPER);
+        $table = new DDLTable('FOO');
+        $table->addColumn('FOOID', 'integer');
+        $table->addColumn('FVALUE', 'string');
+        $table->addColumn('FNUMBER', 'integer');
+        $table->setPrimaryKey('FOOID');
+        $table->addIndex('FVALUE');
+        $this->_object = new FileDbIndex($table, $data, $this->_indexFilePath);
     }
 
     /**
@@ -85,40 +121,72 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        unset($this->object);
+        unset($this->_object);
+        unlink($this->_smlFilePath);
+        unlink($this->_indexFilePath);
     }
 
     /**
      * Create
      *
      * @test
-     * @ignore
      */
     public function testCreate()
     {
-        // intentionally left blank
+        $create = $this->_object->create('FVALUE', array('FOO', 'FVALUE'));
+        $this->assertTrue($create, 'file db index is not created');
+        $this->assertTrue($this->_object->commit(), 'no changes are written in the target file');
+        $this->_object->rollback();
+
+        $get = $this->_object->get('FVALUE');
+        $this->assertType('array', $get, 'the value is not of type array');
+        $this->assertArrayHasKey('FVALUE', $get, 'index is missing key after create');
+        $this->assertEquals('FOO', $get['FVALUE'], 'index is missing value after create');
     }
 
     /**
-     * getByReference
+     * Create
      *
      * @test
-     * @ignore
      */
-    public function testGetByReference()
+    public function testCreateForNonExistingColumn()
     {
-        // intentionally left blank
+        $this->assertFalse($this->_object->create('non-existing-column'));
+    }
+
+    /**
+     * Create
+     *
+     * @test
+     */
+    public function testCreateForColumnWithoutIndex()
+    {
+        $this->assertTrue($this->_object->create('FNUMBER'));
+        $this->assertEquals(array(1 => 1, 3 => 2, 6 => 3), $this->_object->get('FNUMBER'));
+        $this->assertEquals(2, $this->_object->get('FNUMBER', 3));
     }
 
     /**
      * get
      *
      * @test
-     * @ignore
+     * @expectedException NotFoundException
      */
-    public function testGet()
+    public function testGetNotFoundException()
     {
-        // intentionally left blank
+        $this->_object->get('non-existing-column');
+    }
+
+    /**
+     * get
+     *
+     * @test
+     * @expectedException NotFoundException
+     */
+    public function testGetForNonExistingValue()
+    {
+        $this->assertEquals(array(12 => 3, 28 => 1, 44 => 2), $this->_object->get('FVALUE'));
+        $this->_object->get('FVALUE', -1);
     }
 
     /**
@@ -148,60 +216,41 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
      *
      * @test
      */
-    public function test1()
+    public function testLegacy()
     {
-        $data = new SML(CWD . $this->dataset, CASE_UPPER);
-        $table = new DDLTable('FOO');
-        $table->addColumn('FOOID', 'integer');
-        $table->addColumn('FVALUE', 'string');
-        $table->addColumn('FNUMBER', 'integer');
-        $table->setPrimaryKey('FOOID');
-        $table->addIndex('FVALUE', 'IDX_VALUE');
-        $file = $this->object = new FileDbIndex($table, $data, CWD . $this->savePath);
+        $this->_object;
+        $create = $this->_object->create();
+        $this->assertTrue($create, 'file db index is not created');
+        $commit = $this->_object->commit();
+        $this->assertTrue($commit, 'no changes are written in the target file');
 
-        $create = $this->object->create();
-        $this->assertTrue($create, 'assert failed, file db index is not created');
-        $commit = $this->object->commit();
-        $this->assertTrue($commit, 'assert failed, no changes are written in the target file');
-
-        
-        $create = $this->object->create('FVALUE', array('FOO', 'FVALUE'));
-        $this->assertTrue($create, 'assert failed, file db index is not created');
-        $commit = $this->object->commit();
-        $this->assertTrue($commit, 'assert failed, no changes are written in the target file');
-
-        $get = $this->object->get('FVALUE');
-        $this->assertType('array', $get, 'assert failed, the value is not of type array');
-        $this->assertArrayHasKey('FVALUE', $get, 'assert failed, the value "FVALUE" should be match the key in givin array');
-
-        $getbyref = $this->object->getByReference('FVALUE');
-        $this->assertType('array', $getbyref, 'assert failed, the value is not of type array');
-        $this->assertArrayHasKey('FVALUE', $getbyref, 'assert failed, the value "FVALUE" should be match the key in givin array');
-
-        $get = $this->object->get('FVALUE', 44);
+        $get = $this->_object->get('FVALUE', 44);
         // expected value 2 for primary key where the expected FVALUE has the entry 44
-        $this->assertEquals(2, (int)$get, 'assert failed, the values should be equal - expected primary key 2 for the searching row');
+        $this->assertEquals(2, (int)$get, 'the values should be equal - expected primary key 2 for the searching row');
 
         try {
-            $get = $this->object->get('FNUMBER');
+            $get = $this->_object->get('FNUMBER');
         } catch(NotFoundException $e) {
             $expected = "SQL syntax error. No such index 'FNUMBER' in table 'foo'.";
-            $this->assertEquals($expected, $e->getMessage(), 'assert failed, there is no index fnumber');
+            $this->assertEquals($expected, $e->getMessage(), 'there is no index fnumber');
         }
+    }
 
-        try {
-            $get = $this->object->get('FVALUE', 325);
-        } catch (NotFoundException $e) {
-            $expected = "SQL syntax error. No such index 'FVALUE' in table 'foo'.";
-            $this->assertEquals($expected, $e->getMessage(), 'assert failed, there is no index fvalue with value 325');
-        }
-
-        try {
-            $get = $this->object->get('FVALUES', 325);
-        } catch (NotFoundException $e) {
-            $expected = "SQL syntax error. No such column 'FVALUES' in table 'foo'.";
-            $this->assertEquals($expected, $e->getMessage(), 'assert failed, the such column does not exist');
-        }
+    /**
+     * @test
+     * @expectedException NotFoundException
+     */
+    public function testGetValueNotFoundException()
+    {
+        $get = $this->_object->get('FVALUE', 325);
+    }
+    /**
+     * @test
+     * @expectedException NotFoundException
+     */
+    public function testGetIndexNotFoundException()
+    {
+        $get = $this->_object->get('FVALUES', 325);
     }
 }
 ?>
