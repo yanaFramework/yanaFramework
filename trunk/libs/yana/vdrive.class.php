@@ -235,29 +235,26 @@ class VDrive extends FileSystemResource implements IsReportable, Serializable
     {
         assert('is_string($name); // Wrong argument type for argument 1. String expected.');
 
-        if (isset($this->drive["$name"])) {
-            /* mounting the point */
-            if ($this->drive["$name"]->mount()) {
-                $this->files["$name"] =& $this->drive["$name"]->getMountpoint();
-
-                /* if it is a SML file, load the configuration */
-                if ($this->files["$name"] instanceOf SML && $this->files["$name"]->exists()) {
-                    assert('!isset($array); // Cannot redeclare var $array');
-                    $array =& $this->files["$name"]->getByReference();
-                    assert('is_null($array) || is_array($array); /* unexpected result: $array */');
-                    if (is_array($array)) {
-                        $this->vars = Hashtable::merge($this->vars, $array);
-                    }
-                    unset($array);
-                }
-
-                return true;
-            } else {
-                return false;
-            }
-        } else {
+        /* try to mounting the file */
+        if (!isset($this->drive["$name"]) || !$this->drive["$name"]->mount()) {
             return false;
         }
+        assert('!isset($file); // Cannot redeclare var $file');
+        $file = $this->files["$name"] =& $this->drive["$name"]->getMountpoint();
+
+        /* if it is a SML file, load the configuration */
+        if ($file instanceOf SML && $file->exists()) {
+            /* @var $file SML */
+            assert('!isset($array); // Cannot redeclare var $array');
+            $array =& $file->getByReference();
+            assert('is_null($array) || is_array($array); /* unexpected result: $array */');
+            if (is_array($array)) {
+                $this->vars = Hashtable::merge($this->vars, $array);
+            }
+            unset($array);
+        }
+
+        return true;
     }
 
     /**
@@ -334,19 +331,19 @@ class VDrive extends FileSystemResource implements IsReportable, Serializable
                 }
             }
             unset($name, $value, $node);
-    
+
             /* 2) handle includes */
             assert('!isset($node); // Cannot redeclare var $node');
             foreach ($content->getNodeIncludes() as $node)
             {
                 $file = (string) $node->attributes()->path;
-    
+
                 if (!preg_match('/^[\w\/]*[\w\.]+\.php$/s', $file)) {
                     trigger_error("Invalid filename to include: '{$this->baseDir}{$file}'.", E_USER_WARNING);
-    
+
                 } elseif (!is_file("{$this->baseDir}{$file}")) {
                     trigger_error("No such file to include: '{$this->baseDir}{$file}'.", E_USER_WARNING);
-    
+
                 } else {
                     include_once "{$this->baseDir}{$file}";
                 }
@@ -379,7 +376,7 @@ class VDrive extends FileSystemResource implements IsReportable, Serializable
 
                     // recurse into directory
                     $this->_readXML($node, $name . '/');
-    
+
                 } elseif ($node->isFile()) {
 
                     // get class name
@@ -388,7 +385,7 @@ class VDrive extends FileSystemResource implements IsReportable, Serializable
                     } else {
                         $type = 'FileReadonly';
                     }
-    
+
                     // create a new mount-point
                     $this->drive[$name] = new VDriveFile($source, $type);
 
@@ -400,7 +397,7 @@ class VDrive extends FileSystemResource implements IsReportable, Serializable
                 }
 
                 // set requirements
-                $this->drive[$name]->setRequirements($node->nodeRequiresReadable(), 
+                $this->drive[$name]->setRequirements($node->nodeRequiresReadable(),
                                                      $node->nodeRequiresWriteable(),
                                                      $node->nodeRequiresExecutable());
 
