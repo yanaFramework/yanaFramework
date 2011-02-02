@@ -158,29 +158,12 @@ class FileDbIndex extends Object
             // remove duplicate entries
             foreach ($indexes as $columnName)
             {
-                // create indexes
-                try {
-
-                    $this->create($columnName);
-
-                } catch (Exception $e) {
-                    /* Indexes are for performance and not that important after all.
-                     * If we can't create it - just ignore it.
-                     */
-                    return false;
-                }
+                $this->create($columnName);
             }
             return true;
         }
 
-        /**
-         * continue without scan
-         */
-        if (!$this->_table->isColumn($column)) {
-            Log::report("SQL syntax error. ".
-                "No such column '$column' in table '" . $this->_table->getName() . "'.", E_USER_WARNING);
-            return false;
-        }
+        assert('$this->_table->isColumn($column); // No such column: ' . $column);
         $primaryKey = $this->_table->getPrimaryKey();
 
         /* no need to index primary key, it is an index by itself */
