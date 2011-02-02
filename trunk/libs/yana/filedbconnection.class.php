@@ -573,7 +573,7 @@ class FileDbConnection extends Object
 
                 /* get reference to Index file */
                 assert('!isset($idxfile); // Cannot redeclare var $idxfile');
-                $idxfile =& $this->_getIndexFile();
+                $idxfile = $this->_getIndexFile();
 
                 assert('!isset($columnName); // Cannot redeclare var $columnName');
                 assert('!isset($column); // Cannot redeclare var $column');
@@ -743,7 +743,7 @@ class FileDbConnection extends Object
                              */
                             if (!empty($tmp)) {
                                 $message = "SQL ERROR: Cannot insert entry with column {$column} " .
-                                    "= ".$set[$column].". The column has an unique constraint " .
+                                    "= " . $set[$column] . ". The column has an unique constraint " .
                                     "and another entry with the same value already exists.";
                                 return new FileDbResult(null, $message);
                             }
