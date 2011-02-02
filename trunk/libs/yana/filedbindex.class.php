@@ -50,7 +50,7 @@ class FileDbIndex extends Object
     /** @var DDLTable */ private $_table = "";
     /** @var SML      */ private $_data = null;
     /** @var string   */ private $_filename = "";
-    /** @var array    */ private $_indexes = array();
+    /** @var array    */ private $_indexes = null;
 
     /**#@-*/
 
@@ -68,8 +68,66 @@ class FileDbIndex extends Object
         $this->_table = $table;
         $this->_data = $data;
         $this->_filename = "$filename";
-        // initialize contents
-        $this->rollback();
+    }
+
+    /**
+     * Get cached indexes for 1 column.
+     *
+     * Returns NULL if the column is not stored.
+     *
+     * @access  protected
+     * @param   string $column name
+     * @return  array
+     */
+    protected function getColumnValues($column)
+    {
+        assert('is_string($column); // Wrong argument type argument 1. String expected');
+        $indexes = $this->getValues();
+        if (isset($indexes[$column])) {
+            return $indexes[$column];
+        } else {
+            $index = null;
+            return $index;
+        }
+    }
+
+    /**
+     * Get all cached indexes.
+     *
+     * @access  protected
+     * @return  array
+     */
+    protected function getValues()
+    {
+        if (!isset($this->_indexes)) {
+            $this->rollback();
+        }
+        assert('is_array($this->_indexes);');
+        return $this->_indexes;
+    }
+
+    /**
+     * Set index entry.
+     *
+     * @access  protected
+     * @param   string $column name
+     * @param   scalar $values indexed values
+     */
+    protected function setColumnIndex($column, array $values)
+    {
+        ksort($values);
+        $this->_indexes[$column] = $values;
+    }
+
+    /**
+     * Remove index entry.
+     *
+     * @access  protected
+     * @param   string $column name
+     */
+    protected function unsetColumnIndex($column)
+    {
+        unset($this->_indexes[$column]);
     }
 
     /**
@@ -95,23 +153,10 @@ class FileDbIndex extends Object
 
         /* autoscan */
         if (is_null($column)) {
-            $indexes = array();
             assert('empty($update); // No column name provided. Unable to build index');
-            // get indexed columns
-            foreach ($this->_table->getIndexes() as $index)
-            {
-                foreach($index->getColumns() as $indexColumn)
-                {
-                    $indexes[] = $indexColumn->getName();
-                }
-            }
-            // auto-create indexes for unique constraints
-            foreach ($this->_table->getUniqueConstraints() as $indexColumn)
-            {
-                $indexes[] = $indexColumn->getName();
-            } // end foreach
+            $indexes = $this->_findIndexes($this->_table);
             // remove duplicate entries
-            foreach (array_unique($indexes) as $columnName)
+            foreach ($indexes as $columnName)
             {
                 // create indexes
                 try {
@@ -144,9 +189,10 @@ class FileDbIndex extends Object
         }
 
         $column = mb_strtoupper("$column");
+        $index = $this->getColumnValues($column);
 
         /* create / recreate index */
-        if (empty($update) || !isset($this->_indexes[$column])) {
+        if (empty($update) || is_null($index)) {
 
             $dataset = $this->_data->getVar($primaryKey);
             // table is empty
@@ -167,7 +213,7 @@ class FileDbIndex extends Object
         } else {
 
             $dataset = array(mb_strtoupper($update[0]) => array($column => $update[1]));
-            $data = $this->_indexes[$column];
+            $data = $index;
             if (!is_array($data)) {
                 $data = array();
             }
@@ -190,60 +236,38 @@ class FileDbIndex extends Object
                     $data[$key] = $value;
                 }
             }
-        } /* end foreach */
-        ksort($data);
-        unset($this->_indexes[$column]);
+        } // end foreach
+        $this->unsetColumnIndex($column);
 
-        $this->_indexes[$column] = $data;
+        $this->setColumnIndex($column, $data);
         return true;
     }
 
     /**
-     * get index for some column
+     * Find all indexed columns in a given table.
      *
-     * Same as FileDbIndex::get(), but retuns
-     * result by reference;
-     *
-     * @access  public
-     * @param   string  $column     column name
-     * @param   scalar  $value      value
-     * @return  array()
-     * @see     FileDbIndex::get()
-     * @throws  NotFoundException  when requested column does not exist
+     * @access  private
+     * @param   DDLTable $table database table to search for indexes in
+     * @return  array
      */
-    public function &getByReference($column, $value = null)
+    private function _findIndexes(DDLTable $table)
     {
-        assert('is_string($column); // Wrong argument type for argument 1. String expected.');
-        assert('is_null($value) || is_scalar($value); // Wrong argument type for argument 2. Scalar expected.');
-
-        $isError = false;
-        $emptyIndex = array();
-        if (!$this->_table->isColumn($column)) {
-            throw new NotFoundException("SQL syntax error. ".
-                "No such column '{$column}' in table '" . $this->_table->getName() . "'.", E_USER_WARNING);
-        }
-
-        if (strcasecmp($this->_table->getPrimaryKey(), $column) === 0) {
-            return $emptyIndex;
-        }
-
-        $column = mb_strtoupper("$column");
-        if (is_null($value)) {
-            if (isset($this->_indexes[$column]) && is_array($this->_indexes[$column])) {
-                return $this->_indexes[$column];
-            } else {
-                throw new NotFoundException("SQL syntax error. ".
-                    "No such index '$column' in table '" . $this->_table->getName() . "'.", E_USER_WARNING);
-            }
-        } else {
-            $value = mb_strtoupper("$value");
-            if (isset($this->_indexes[$column][$value])) {
-                return $this->_indexes[$column][$value];
-            } else {
-                throw new NotFoundException("SQL syntax error. ".
-                    "No such index '$column' in table '" . $this->_table->getName() . "'.", E_USER_WARNING);
+        $indexes = array();
+        // get indexed columns
+        foreach ($table->getIndexes() as $index)
+        {
+            foreach($index->getColumns() as $indexColumn)
+            {
+                $indexes[] = $indexColumn->getName();
             }
         }
+        unset($index);
+        // auto-create indexes for unique constraints
+        foreach ($table->getUniqueConstraints() as $indexColumn)
+        {
+            $indexes[] = $indexColumn->getName();
+        }
+        return array_unique($indexes);
     }
 
     /**
@@ -273,12 +297,31 @@ class FileDbIndex extends Object
      * @param   string  $column column name
      * @param   scalar  $value  value
      * @return  array
+     * @throws  NotFoundException  when the requested column or value does not exist
      */
     public function get($column, $value = null)
     {
         assert('is_string($column); // Wrong argument type for argument 1. String expected.');
         assert('is_null($value) || is_scalar($value); // Wrong argument type for argument 2. Scalar expected.');
-        return $this->getByReference($column, $value);
+
+        $column = mb_strtoupper("$column");
+        assert('!isset($index); // Cannot redeclare var $index');
+        $index = $this->getColumnValues($column);
+        if (!is_array($index)) {
+            throw new NotFoundException("SQL syntax error. ".
+                "No such index '$column' in table '" . $this->_table->getName() . "'.", E_USER_WARNING);
+        }
+        if (is_null($value)) {
+            return $index;
+        } else {
+            $value = mb_strtoupper("$value");
+            if (isset($index[$value])) {
+                return $index[$value];
+            } else {
+                throw new NotFoundException("SQL syntax error. ".
+                    "No such index '$column' in table '" . $this->_table->getName() . "'.", E_USER_WARNING);
+            }
+        }
     }
 
     /**
@@ -292,7 +335,7 @@ class FileDbIndex extends Object
      */
     public function commit()
     {
-        return file_put_contents($this->_filename, serialize($this->_indexes)) !== false;
+        return file_put_contents($this->_filename, serialize($this->getValues())) !== false;
     }
 
     /**
@@ -308,9 +351,6 @@ class FileDbIndex extends Object
      * data and possibly cause inconsistent data to be written
      * to the database.
      * }}
-     *
-     * Returns bool(true) on success,
-     * returns bool(false) on error.
      *
      * @access  public
      * @throws  InvalidArgumentException  when file is not valid
