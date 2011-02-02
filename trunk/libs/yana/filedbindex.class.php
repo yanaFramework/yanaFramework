@@ -322,6 +322,16 @@ class FileDbIndex extends Object
     }
 
     /**
+     * Autosave file on destruct.
+     *
+     * @access  public
+     */
+    public function  __destruct()
+    {
+        $this->commit();
+    }
+
+    /**
      * reset index contents
      *
      * Creates the index file, if it does not exist.
@@ -336,22 +346,17 @@ class FileDbIndex extends Object
      * }}
      *
      * @access  public
-     * @throws  InvalidArgumentException  when file is not valid
      */
     public function rollback()
     {
-        if (file_exists($this->_filename) === false) {
-            if (!touch($this->_filename)) {
-                throw new InvalidArgumentException("Not a valid filename '{$this->_filename}'.");
-            }
-            $this->create();
-        } else {
+        $indexes = null;
+        if (file_exists($this->_filename)) {
             $indexes = unserialize(file_get_contents($this->_filename));
-            if (is_array($indexes)) {
-                $this->_indexes = $indexes;
-            } else {
-                $this->create();
-            }
+        }
+        if (is_array($indexes)) {
+            $this->_indexes = $indexes;
+        } else {
+            $this->create();
         }
     }
 
