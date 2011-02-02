@@ -149,9 +149,11 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
      *
      * @test
      */
-    public function testCreateForNonExistingColumn()
+    public function testCreateForColumnWithoutIndex()
     {
-        $this->assertFalse($this->_object->create('non-existing-column'));
+        $this->assertTrue($this->_object->create('FNUMBER'));
+        $this->assertEquals(array(1 => 1, 3 => 2, 6 => 3), $this->_object->get('FNUMBER'));
+        $this->assertEquals(2, $this->_object->get('FNUMBER', 3));
     }
 
     /**
@@ -159,11 +161,9 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
      *
      * @test
      */
-    public function testCreateForColumnWithoutIndex()
+    public function testCreateForPrimaryKey()
     {
-        $this->assertTrue($this->_object->create('FNUMBER'));
-        $this->assertEquals(array(1 => 1, 3 => 2, 6 => 3), $this->_object->get('FNUMBER'));
-        $this->assertEquals(2, $this->_object->get('FNUMBER', 3));
+        $this->assertFalse($this->_object->create('FooId'));
     }
 
     /**
@@ -181,6 +181,17 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
      * get
      *
      * @test
+     */
+    public function testGet()
+    {
+        $get = $this->_object->get('FVALUE', 44);
+        $this->assertEquals(2, (int) $get, 'expected primary key 2 where the expected FVALUE has the entry 44');
+    }
+
+    /**
+     * get
+     *
+     * @test
      * @expectedException NotFoundException
      */
     public function testGetForNonExistingValue()
@@ -190,50 +201,14 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * commit
+     * get
      *
      * @test
-     * @ignore
+     * @expectedException NotFoundException
      */
-    public function testCommit()
+    public function testGetForNonExistingIndex()
     {
-        // intentionally left blank
-    }
-
-    /**
-     * rollback
-     *
-     * @test
-     * @ignore
-     */
-    public function testRollback()
-    {
-        // intentionally left blank
-    }
-
-    /**
-     * test1
-     *
-     * @test
-     */
-    public function testLegacy()
-    {
-        $this->_object;
-        $create = $this->_object->create();
-        $this->assertTrue($create, 'file db index is not created');
-        $commit = $this->_object->commit();
-        $this->assertTrue($commit, 'no changes are written in the target file');
-
-        $get = $this->_object->get('FVALUE', 44);
-        // expected value 2 for primary key where the expected FVALUE has the entry 44
-        $this->assertEquals(2, (int)$get, 'the values should be equal - expected primary key 2 for the searching row');
-
-        try {
-            $get = $this->_object->get('FNUMBER');
-        } catch(NotFoundException $e) {
-            $expected = "SQL syntax error. No such index 'FNUMBER' in table 'foo'.";
-            $this->assertEquals($expected, $e->getMessage(), 'there is no index fnumber');
-        }
+        $this->_object->get('FNUMBER');
     }
 
     /**
@@ -244,6 +219,7 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
     {
         $get = $this->_object->get('FVALUE', 325);
     }
+
     /**
      * @test
      * @expectedException NotFoundException
@@ -252,5 +228,6 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
     {
         $get = $this->_object->get('FVALUES', 325);
     }
+
 }
 ?>
