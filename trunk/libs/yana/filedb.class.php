@@ -195,7 +195,7 @@ class FileDb extends DbStream
     protected function getConnection()
     {
         if (!isset($this->database)) {
-            $this->database = new FileDbConnection($this->schema);
+            $this->database = new FileDbConnection($this->getSchema());
             $this->database->autoCommit(false);
         }
         return $this->database;
