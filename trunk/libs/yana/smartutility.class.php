@@ -1371,8 +1371,8 @@ class SmartUtility extends Utility
              * This parameter is mandatory, if the parameter 'table' is not present.
              */
             case isset($params['id']):
-                if (!$database->isForm($params['id'])) {
-                    return ""; // error - form not found
+                if (!$dbSchema->isForm($params['id'])) {
+                    return "The form with name '" . $params['id'] . "' was not found.";
                 }
                 $form = $database->getForm($params['id']);
             break;

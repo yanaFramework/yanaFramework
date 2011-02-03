@@ -69,10 +69,10 @@ class DbStream extends Object implements Serializable
      * you REALLY know what you are doing.
      *
      * @var     DDLDatabase
-     * @access  public
+     * @access  protected
      * @ignore
      */
-    public $schema  = null;
+    protected $schema  = null;
 
     /**
      * create a new instance

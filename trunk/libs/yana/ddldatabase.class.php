@@ -1491,8 +1491,8 @@ class DDLDatabase extends DDLObject
         // if (instance not already exists) { create new object and cache it }
         if (!isset(self::$instances[$path])) {
             // if (object is already in session cache) { unserialize object }
-            if (isset($_SESSION[__CLASS__ . "/$name"])) {
-                self::$instances[$path] = unserialize($_SESSION[__CLASS__ . "/$name"]);
+            if (isset($_SESSION[__CLASS__ . "/" . $name])) {
+                self::$instances[$path] = unserialize($_SESSION[__CLASS__ . "/" . $name]);
                 assert('self::$instances[$path] instanceof self;');
                 // check if file has changed
                 if (!is_file($path) || filemtime($path) > self::$instances[$path]->lastModified) {

@@ -115,6 +115,8 @@ class FileDbIndex extends Object
      */
     protected function setColumnIndex($column, array $values)
     {
+        assert('is_string($column); // Wrong argument type argument 1. String expected');
+        assert('is_array($this->_indexes);');
         ksort($values);
         $this->_indexes[$column] = $values;
     }
@@ -127,6 +129,8 @@ class FileDbIndex extends Object
      */
     protected function unsetColumnIndex($column)
     {
+        assert('is_string($column); // Wrong argument type argument 1. String expected');
+        assert('is_array($this->_indexes);');
         unset($this->_indexes[$column]);
     }
 
@@ -356,6 +360,7 @@ class FileDbIndex extends Object
         if (is_array($indexes)) {
             $this->_indexes = $indexes;
         } else {
+            $this->_indexes = array();
             $this->create();
         }
     }
