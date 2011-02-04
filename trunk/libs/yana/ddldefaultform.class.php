@@ -573,50 +573,6 @@ class DDLDefaultForm extends DDLAbstractForm
     }
 
     /**
-     * has insertable sub-form
-     *
-     * Returns bool(true) if the form has embedded sub-forms and at least one
-     * of them is insertable and has an insert action.
-     * Returns bool(false) otherwise.
-     *
-     * @access  public
-     * @return  bool
-     */
-    public function hasInsertableChildren()
-    {
-        /* @var $form DDLDefaultForm */
-        foreach ($this->forms as $form)
-        {
-            if ($form->getInsertAction()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * has searchable sub-form
-     *
-     * Returns bool(true) if the form has embedded sub-forms and at least one
-     * of them has a search action.
-     * Returns bool(false) otherwise.
-     *
-     * @access  public
-     * @return  bool
-     */
-    public function hasSearchableChildren()
-    {
-        /* @var $form DDLDefaultForm */
-        foreach ($this->forms as $form)
-        {
-            if ($form->getSearchAction()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * create a form from the current instance and return it
      *
      * Returns the HTML-code for this form.
