@@ -171,23 +171,6 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * persistent destructor
-     *
-     * Adds instance to session cache.
-     *
-     * @access  public
-     * @ignore
-     */
-    public function __destruct()
-    {
-        // make sure the object is unchanged
-        if (!$this->isModified()) {
-            // store database object
-            //$_SESSION[__CLASS__ . "/" . $this->name] = serialize($this);
-        }
-    }
-
-    /**
      * check if database structure has been modified
      *
      * Returns bool(true) if the database has been marked as modified and bool(false) otherwise.
@@ -1517,6 +1500,7 @@ class DDLDatabase extends DDLObject
                 }
                 self::$instances[$path]->_unserializeFromXDDL($node);
                 self::$instances[$path]->lastModified = time();
+                $_SESSION[__CLASS__ . "/" . $name] = self::$instances[$path];
             }
         }
         // return cached object
