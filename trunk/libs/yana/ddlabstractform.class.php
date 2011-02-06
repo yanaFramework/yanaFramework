@@ -1241,7 +1241,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      * @access  public
      * @ignore
      */
-    public function  __wakeup()
+    public function __wakeup()
     {
         $this->values = array();
         $values = $this->getValues();
