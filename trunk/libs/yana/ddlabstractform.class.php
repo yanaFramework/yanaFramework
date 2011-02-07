@@ -48,15 +48,6 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
     );
 
     /**
-     * foreign key cache
-     *
-     * @access  private
-     * @var array
-     * @ignore
-     */
-    private $foreignKeys = array();
-
-    /**
      * database (select-) query
      *
      * @access  protected
@@ -778,81 +769,6 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      * @return  bool
      */
     abstract public function isLastPage();
-
-    /**
-     * resolve foreign keys
-     *
-     * Saves list of values in array $this->foreignKeys.
-     *
-     * @access  protected
-     * @throws  DbWarningLog  when duplicate values are found in unique key column
-     * @todo    this is legacy code and doesn't work anymore - port it to the new DDL implementation
-     */
-    protected function getForeignKeys()
-    {
-        assert('!isset($this->table); // Pre-condition');
-        /* @var $column DDLColumn */
-
-        if (!isset($this->foreignKeys[$this->table])) {
-            /* loop through foreign keys */
-            foreach ($this->table->getColumns() as $columns)
-            {
-                /* ignore if column is not a foreign key reference */
-                if ($columns->getType() !== 'reference') {
-                    continue;
-                }
-
-                /* get default values */
-                $foreignKey = $columns->getReferenceColumn();
-                $foreignKeyName = $foreignKey->getName();
-                assert('!isset($settings); // Cannot redeclare var $settings');
-                $settings = $columns->getReferenceSettings();
-                if (!empty($settings['label'])) {
-                    $labelName = $settings['label'];
-                } else {
-                    $labelName = null;
-                }
-                unset($settings);
-                assert('$foreignKey->getParent() instanceof DDLTable;');
-                $foreignTableName = $foreignKey->getParent()->getName();
-
-                // get values
-                assert('!isset($values); // Cannot redeclare var $values');
-                $values = array();
-                $values = $this->db->select("{$foreignTableName}.*.{$foreignKeyName}");
-                // skip if no values are found
-                if (empty($values)) {
-                    continue;
-                }
-                // get labels
-                assert('!isset($labels); // Cannot redeclare var $labels');
-                $labels = array();
-                if (is_string($labelName)) {
-                    $labels = $this->db->select("{$foreignTableName}.*.{$labelName}");
-                }
-                // fall back to values if no labels are found
-                if (empty($labels)) {
-                    $labels = $values;
-                }
-
-                /* check unique constraint */
-                if (YANA_DB_STRICT && count($values) !== count(array_unique($values))) {
-                    throw new DbWarningLog("The column '{$foreignKeyName}' in table " .
-                        "'{$foreignTableName}' " .
-                        "referenced as foreign key from table '{$this->table->getName()}' " .
-                        "contains ambigious values. Possible reasons are that your data is " .
-                        "inconsistent or your database scheme contains errors.", E_USER_WARNING);
-                }
-                assert('is_array($labels) && is_array($values) && count($labels) === count($values);');
-
-                $settings = array_combine($values, $labels);
-                assert('is_array($settings); // Unexpected result: $settings is not an array');
-                $this->foreignKeys[$this->tableName][$columns->getName()] = $settings;
-                unset($settings, $labels, $values);
-            } // end foreach
-            unset($values, $foreignKey, $foreignKeyName, $foreignTableName);
-        }
-    }
 
     /**
      * get form value
