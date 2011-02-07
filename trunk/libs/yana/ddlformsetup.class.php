@@ -304,6 +304,7 @@ class DDLFormSetup extends Object
      * Set filter value for the selected column.
      *
      * Leave the second argument empty to reset the value.
+     * You may use the chars '?', '_' as wild-cards for 1 char and '*', '%' as wild-cards for multiple chars.
      *
      * @access  public
      * @param   string  $columnName  where to apply the filter on
@@ -312,7 +313,10 @@ class DDLFormSetup extends Object
     public function setFilter($columnName, $value = "")
     {
         assert('is_string($columnName); // Wrong argument type argument 1. String expected');
+        assert('is_string($value); // Wrong argument type argument 2. String expected');
         if (!empty($value)) {
+            $value = strtr($value, '*?', '%_'); // translate wildcards
+            $value = String::htmlSpecialChars($value);
             $this->_filters[$columnName] = $value;
         } else {
             unset($this->_filters[$columnName]);
@@ -329,7 +333,11 @@ class DDLFormSetup extends Object
      */
     public function setFilters(array $filters = array())
     {
-        $this->_filters = $filters;
+        $this->_filters = array();
+        foreach ($filters as $columnName => $filter)
+        {
+            $this->setFilter($columnName, $filter);
+        }
     }
 
     /**
