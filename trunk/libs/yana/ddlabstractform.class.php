@@ -232,6 +232,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @param   DbSelect  $query  select query
+     * @deprecated
      */
     public function setQuery(DbSelect $query)
     {
@@ -251,6 +252,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  DbSelect
+     * @deprecated
      */
     public function getQuery()
     {
@@ -273,6 +275,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  protected
      * @param   DbSelect  $selectQuery databese quey object
+     * @deprecated
      */
     protected function createFromQuery(DbSelect $selectQuery)
     {
@@ -322,6 +325,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      * @access  private
      * @param   DDLColumn  $columns  column definition
      * @param   string     $alias    column name alias
+     * @deprecated
      */
     private function _addFieldByColumn(DDLColumn $columns, $alias = "")
     {
@@ -362,6 +366,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @param   string  $action action name
+     * @deprecated
      */
     public function setDownloadAction($action)
     {
@@ -378,6 +383,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  string
+     * @deprecated
      */
     public function getDownloadAction()
     {
@@ -404,6 +410,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @param   string  $action  action name
+     * @deprecated
      */
     public function setSearchAction($action)
     {
@@ -419,6 +426,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  string
+     * @deprecated
      */
     public function getSearchAction()
     {
@@ -443,6 +451,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @param   string  $action  action name
+     * @deprecated
      */
     public function setInsertAction($action)
     {
@@ -458,6 +467,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  string
+     * @deprecated
      */
     public function getInsertAction()
     {
@@ -482,6 +492,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @param   string  $action  action name
+     * @deprecated
      */
     public function setUpdateAction($action)
     {
@@ -498,6 +509,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  string
+     * @deprecated
      */
     public function getUpdateAction()
     {
@@ -522,6 +534,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @param   string  $action action name
+     * @deprecated
      */
     public function setDeleteAction($action)
     {
@@ -538,6 +551,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  string
+     * @deprecated
      */
     public function getDeleteAction()
     {
@@ -562,6 +576,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @param   string  $action action name
+     * @deprecated
      */
     public function setExportAction($action)
     {
@@ -578,6 +593,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  string
+     * @deprecated
      */
     public function getExportAction()
     {
@@ -628,6 +644,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      * @access  public
      * @return  DDLTable
      * @throws  NotFoundException  when the database, or table was not found
+     * @deprecated
      */
     public function getTableDefinition()
     {
@@ -677,6 +694,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @param   int  $page  number of start page
+     * @deprecated
      */
     public function setPage($page = 0)
     {
@@ -701,6 +719,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @param   int  $entries  number of entries per page
+     * @deprecated
      */
     public function setEntriesPerPage($entries = 5)
     {
@@ -726,6 +745,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  int
+     * @deprecated
      */
     public function getPage()
     {
@@ -742,6 +762,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  int
+     * @deprecated
      */
     public function getLastPage()
     {
@@ -767,6 +788,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      * @access  public
      * @abstract
      * @return  bool
+     * @deprecated
      */
     abstract public function isLastPage();
 
@@ -776,6 +798,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      * @access  public
      * @param   string  $key  id of value to retrieve
      * @return  mixed
+     * @deprecated
      */
     public function getValue($key)
     {
@@ -804,6 +827,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  array
+     * @deprecated
      */
     public function getValues()
     {
@@ -827,6 +851,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      * @access  public
      * @param   string  $key    id of value to set
      * @param   mixed   $value  new value
+     * @deprecated
      */
     public function setValue($key, $value)
     {
@@ -844,6 +869,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  DDLDefaultUpdateIterator
+     * @deprecated
      */
     public function getIterator()
     {
@@ -860,6 +886,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  array
+     * @deprecated
      */
     public function getUpdateValues()
     {
@@ -874,6 +901,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  DDLDefaultSearchIterator
+     * @deprecated
      */
     public function getSearchIterator()
     {
@@ -890,6 +918,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  array
+     * @deprecated
      */
     public function getSearchValues()
     {
@@ -914,6 +943,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  array
+     * @deprecated
      */
     public function getSearchValuesAsWhereClause()
     {
@@ -947,6 +977,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  DDLDefaultReportIterator
+     * @deprecated
      */
     public function getReportIterator()
     {
@@ -963,6 +994,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  array
+     * @deprecated
      */
     public function getReportValues()
     {
@@ -977,6 +1009,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  DDLDefaultInsertIterator
+     * @deprecated
      */
     public function getInsertIterator()
     {
@@ -993,6 +1026,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  array
+     * @deprecated
      */
     public function getInsertValues()
     {
@@ -1019,6 +1053,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @return  DDLDefaultReadIterator
+     * @deprecated
      */
     public function getReadIterator()
     {
@@ -1033,6 +1068,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      *
      * @access  public
      * @param   array  $values  new values
+     * @deprecated
      */
     public function setValues(array $values)
     {
@@ -1050,6 +1086,7 @@ abstract class DDLAbstractForm extends DDLForm implements IteratorAggregate
      * @throws  DBWarning  when no foreign key is found
      * @return  array
      * @ignore
+     * @deprecated
      */
     public function getForeignKey()
     {

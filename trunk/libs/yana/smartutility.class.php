@@ -1454,6 +1454,7 @@ class SmartUtility extends Utility
         }
 
         if (!$form->isCached()) {
+            $formSetup = new DDLFormSetup();
             /**
              * parameters 'sort', 'desc'
              *
@@ -1487,9 +1488,6 @@ class SmartUtility extends Utility
             if (isset($params['on_delete'])) {
                 $form->setDeleteAction($params['on_delete']);
             }
-            if (isset($params['layout'])) {
-                $form->setLayout((int) $params['layout']);
-            }
             if (isset($params['on_search'])) {
                 $form->setSearchAction($params['on_search']);
             }
@@ -1502,23 +1500,30 @@ class SmartUtility extends Utility
                 // initialize download action
                 $form->setDownloadAction('download_file');
             }
+            if (isset($params['layout'])) {
+                $formSetup->setLayout((int) $params['layout']);
+                $form->setLayout((int) $params['layout']); // @deprecated
+            }
 
             /**
              * parameter 'page'
              */
             if (isset($params['page'])) {
-                $form->setPage((int) $params['page']);
+                $formSetup->setPage((int) $params['page']);
+                $form->setPage((int) $params['page']); // @deprecated
             }
             /**
              * parameter 'entries'
              */
             if (isset($params['entries'])) {
-                $form->setEntriesPerPage((int) $params['entries']);
+                $formSetup->setEntriesPerPage((int) $params['entries']);
+                $form->setEntriesPerPage((int) $params['entries']); // @deprecated
             }
-            $form->__wakeup();
+            $form->__wakeup(); // @deprecated
         }
+        $formSetup->updateSetup(Request::getVars());
 
-        return $form->toString();
+        return $form->toString(); // @deprecated
     }
 
     /**

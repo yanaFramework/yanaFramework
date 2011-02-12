@@ -60,6 +60,7 @@
  * @access      public
  * @package     yana
  * @subpackage  database
+ * @deprecated
  */
 class DDLDefaultForm extends DDLAbstractForm
 {
@@ -141,6 +142,7 @@ class DDLDefaultForm extends DDLAbstractForm
      *
      * @access  public
      * @param   DbSelect  $query  select query
+     * @deprecated
      */
     public function setQuery(DbSelect $query)
     {
@@ -159,6 +161,7 @@ class DDLDefaultForm extends DDLAbstractForm
      *
      * @access  public
      * @return  bool
+     * @deprecated
      */
     public function hasFilter()
     {
@@ -178,6 +181,7 @@ class DDLDefaultForm extends DDLAbstractForm
      * Unsets all filters for this form.
      *
      * @access  public
+     * @deprecated
      */
     public function dropFilters()
     {
@@ -198,6 +202,7 @@ class DDLDefaultForm extends DDLAbstractForm
      *
      * @access  public
      * @param   int  $layout  template settings (int 0...n)
+     * @deprecated
      */
     public function setLayout($layout = 0)
     {
@@ -215,6 +220,7 @@ class DDLDefaultForm extends DDLAbstractForm
      *
      * @access  public
      * @return  int
+     * @deprecated
      */
     public function getLayout()
     {
@@ -229,6 +235,7 @@ class DDLDefaultForm extends DDLAbstractForm
      *
      * @access  public
      * @param   int  $entries  number of entries per page
+     * @deprecated
      */
     public function setEntriesPerPage($entries = 5)
     {
@@ -254,6 +261,7 @@ class DDLDefaultForm extends DDLAbstractForm
      *
      * @access  public
      * @return  int
+     * @deprecated
      */
     public function getEntriesPerPage()
     {
@@ -276,6 +284,7 @@ class DDLDefaultForm extends DDLAbstractForm
      *
      * @access  public
      * @return  bool
+     * @deprecated
      */
     public function isLastPage()
     {
@@ -289,6 +298,7 @@ class DDLDefaultForm extends DDLAbstractForm
      *
      * @access  public
      * @return  string
+     * @deprecated
      */
     public function getOrderByField()
     {
@@ -305,6 +315,7 @@ class DDLDefaultForm extends DDLAbstractForm
      * @param   string  $fieldName  name of field to order by
      * @param   bool    $desc       descending order (true=yes, false=no)
      * @throws  NotFoundException when field does not exist.
+     * @deprecated
      */
     public function setOrderByField($fieldName, $desc = false)
     {
@@ -331,6 +342,7 @@ class DDLDefaultForm extends DDLAbstractForm
      *
      * @access  public
      * @return  bool
+     * @deprecated
      */
     public function isDescending()
     {
@@ -348,6 +360,7 @@ class DDLDefaultForm extends DDLAbstractForm
      *
      * @access  public
      * @return  string
+     * @todo    copy to FormBuilder::buildForm()
      */
     public function getKey()
     {
@@ -380,6 +393,7 @@ class DDLDefaultForm extends DDLAbstractForm
      *
      * @access  public
      * @param   int  $page  number of start page
+     * @deprecated
      */
     public function setPage($page = 0)
     {
@@ -397,6 +411,7 @@ class DDLDefaultForm extends DDLAbstractForm
      * @access  public
      * @return  string
      * @ignore
+     * @deprecated
      */
     public function getListOfEntries()
     {
@@ -495,6 +510,7 @@ class DDLDefaultForm extends DDLAbstractForm
      * @access  protected
      * @param   string  $searchTerm  term entered in global search box
      * @ignore
+     * @deprecated
      */
     protected function setSearchTerm($searchTerm)
     {

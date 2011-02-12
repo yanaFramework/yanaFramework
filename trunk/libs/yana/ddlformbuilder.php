@@ -177,6 +177,15 @@ class DDLFormBuilder extends DDLForm implements IteratorAggregate
      */
     private $_setup = null;
 
+
+    /**
+     * cache list of entries
+     *
+     * @access  private
+     * @var     string
+     */
+    private $_listOfEntries = null;
+
     /**
      * Initialize instance
      *
@@ -915,6 +924,102 @@ class DDLFormBuilder extends DDLForm implements IteratorAggregate
             throw new DbWarning($message, E_USER_WARNING);
         }
         return array($keyName, $columnName);
+    }
+
+    /**
+     * create links to other pages
+     *
+     * @access  public
+     * @return  string
+     */
+    public function buildListOfEntries()
+    {
+        if (!isset($this->_listOfEntries)) {
+            $setup = $this->getSetup();
+            $form = $this->getForm();
+            $lastPage = $this->getLastPage();
+            $entriesPerPage = $setup->getEntriesPerPage();
+            assert('$entriesPerPage > 0; // invalid number of entries to view per page');
+            $currentPage = $setup->getPage();
+            $this->_listOfEntries = "";
+            assert('!isset($pluginManager); // Cannot redeclare var $pluginManager');
+            $pluginManager = PluginManager::getInstance();
+            $action = $pluginManager->getFirstEvent();
+            $lang = Language::getInstance();
+            $linkTemplate = '<a class="gui_generator_%s" href=' .
+                SmartUtility::href("action=$action&" . $form->getName() . "[page]=%s") .
+                ' title="%s">%s</a>';
+            // previous page
+            if ($currentPage > 0) { // is not first page
+                $page = $currentPage - $entriesPerPage;
+                if ($page < 0) {
+                    $page = 0;
+                }
+                $this->_listOfEntries .= sprintf($linkTemplate, 'previous', $page,
+                    $lang->getVar("TITLE_PREVIOUS"), $lang->getVar("BUTTON_PREVIOUS"));
+            }
+            // more pages
+            if ($lastPage > ($entriesPerPage * 2)) { // has more than 2 pages
+
+                $dots = false;
+
+                $title = $lang->getVar("TITLE_LIST");
+                $isTooLong = $lastPage > (10 * $entriesPerPage); // has more than 10 pages
+
+                for ($page = 0; $page < ceil($lastPage / $entriesPerPage); $page++)
+                {
+                    /**
+                     * if more than 10 pages exist and current page is not first page or last page
+                     * and is not current page or previous or next 3 pages
+                     */
+                    $isNearCurrent = (floor($currentPage / $entriesPerPage) - 3) < $page && // previous 3 pages, or
+                        $page < (floor($currentPage / $entriesPerPage) + 3);                // next 3 pages
+
+                    $isFirstOrLast = $page <= 1 ||                         // is first page, or
+                        $page >= (ceil($lastPage / $entriesPerPage) - 2 ); // is last page
+
+                    if ($isTooLong && !$isFirstOrLast && !$isNearCurrent) {
+                        /* this marks an elipsis */
+                        if ($dots === false) {
+                            $this->_listOfEntries .= "...";
+                            $dots = true;
+                        } else {
+                            /* ignore this page */
+                            continue;
+                        }
+                    } else {
+                        $first = ($page * $entriesPerPage);
+                        if (($page + 1) * $entriesPerPage < $lastPage) {
+                            $last = ($page + 1) * $entriesPerPage;
+                        } else {
+                            $last = $lastPage;
+                        }
+                        // link text
+                        if ($first + 1 != $last) {
+                            $text = '[' . ($first + 1) . '-' . $last . ']';
+                        } else {
+                            $text = '[' . $last . ']';
+                        }
+                        if ($currentPage < $first || $currentPage > $last - 1) { // is not current page
+                            $this->_listOfEntries .= sprintf($linkTemplate, 'page', $first,
+                                $title, $text);
+                        } else {
+                            $this->_listOfEntries .= $text;
+                        }
+                        if ($isNearCurrent) {
+                            $dots = false;
+                        }
+                    }
+                } // end for
+            }
+            // next page
+            if (!$this->isLastPage()) { // is not last page
+                $page = $currentPage + $entriesPerPage;
+                $this->_listOfEntries .= sprintf($linkTemplate, 'next', $page,
+                    $lang->getVar("TITLE_NEXT"), $lang->getVar("BUTTON_NEXT"));
+            }
+        }
+        return $this->_listOfEntries;
     }
 
 }
