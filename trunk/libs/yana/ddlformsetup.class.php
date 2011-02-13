@@ -107,6 +107,60 @@ class DDLFormSetup extends Object
     private $_searchTerm = "";
 
     /**
+     * cached action
+     *
+     * @access  private
+     * @var     string
+     * @ignore
+     */
+    private $_searchAction = "";
+
+    /**
+     * cached action
+     *
+     * @access  private
+     * @var     string
+     * @ignore
+     */
+    private $_downloadAction = "";
+
+    /**
+     * cached action
+     *
+     * @access  private
+     * @var     string
+     * @ignore
+     */
+    private $_insertAction = "";
+
+    /**
+     * cached action
+     *
+     * @access  private
+     * @var     string
+     * @ignore
+     */
+    private $_updateAction = "";
+
+    /**
+     * cached action
+     *
+     * @access  private
+     * @var     string
+     * @ignore
+     */
+    private $_deleteAction = "";
+
+    /**
+     * export action
+     *
+     * @access  private
+     * @var     string
+     * @ignore
+     */
+    private $_exportAction = "";
+
+    /**
      * Update setup with request array.
      *
      * @access  public
@@ -454,6 +508,148 @@ class DDLFormSetup extends Object
     public function getSearchTerm()
     {
         return $this->_searchTerm;
+    }
+
+    /**
+     * set download action
+     *
+     * @access  public
+     * @param   string  $action action name
+     */
+    public function setDownloadAction($action)
+    {
+        assert('is_string($action); // Wrong type for argument 1. String expected');
+        $this->_downloadAction = $action;
+    }
+
+    /**
+     * get download action
+     *
+     * Returns the lower-cased name of the currently selected action.
+     *
+     * The default is 'download_file'.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getDownloadAction()
+    {
+        return $this->_downloadAction;
+    }
+
+    /**
+     * set search action
+     *
+     * @access  public
+     * @param   string  $action  action name
+     */
+    public function setSearchAction($action)
+    {
+        assert('is_string($action); // Wrong type for argument 1. String expected');
+        $this->_searchAction = $action;
+    }
+
+    /**
+     * get search action
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getSearchAction()
+    {
+        return $this->_searchAction;
+    }
+
+    /**
+     * set insert action
+     *
+     * @access  public
+     * @param   string  $action  action name
+     */
+    public function setInsertAction($action)
+    {
+        assert('is_string($action); // Wrong type for argument 1. String expected');
+        $this->_insertAction = $action;
+    }
+
+    /**
+     * get insert action
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getInsertAction()
+    {
+        return $this->_insertAction;
+    }
+
+    /**
+     * set update action
+     *
+     * @access  public
+     * @param   string  $action  action name
+     */
+    public function setUpdateAction($action)
+    {
+        assert('is_string($action); // Wrong type for argument 1. String expected');
+        $this->_updateAction = $action;
+    }
+
+    /**
+     * get update action
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getUpdateAction()
+    {
+        return $this->_updateAction;
+    }
+
+    /**
+     * set delete action
+     *
+     * @access  public
+     * @param   string  $action action name
+     */
+    public function setDeleteAction($action)
+    {
+        assert('is_string($action); // Wrong type for argument 1. String expected');
+        $this->_deleteAction = $action;
+    }
+
+    /**
+     * Get delete action.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getDeleteAction()
+    {
+        return $this->_deleteAction;
+    }
+
+    /**
+     * set export action
+     *
+     * @access  public
+     * @param   string  $action action name
+     */
+    public function setExportAction($action)
+    {
+        assert('is_string($action); // Wrong type for argument 1. String expected');
+        $this->_exportAction = $action;
+    }
+
+    /**
+     * get export action
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getExportAction()
+    {
+        return $this->_exportAction;
     }
 
 }
