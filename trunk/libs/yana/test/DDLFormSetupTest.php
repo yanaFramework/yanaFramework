@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../../../ddlformsetup.class.php';
+require_once dirname(__FILE__) . '/../ddlformsetup.class.php';
 
 /**
  * Test class for DDLFormSetup.
@@ -246,6 +246,60 @@ class DDLFormSetupTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array('colum' => 'filter'), $this->_object->getFilters());
         $this->assertEquals("column", $this->_object->getOrderByField());
         $this->assertEquals(true, $this->_object->isDescending());
+    }
+
+    /**
+     * @test
+     */
+    public function testDeleteAction()
+    {
+        $this->_object->setDeleteAction(__FUNCTION__);
+        $this->assertEquals(__FUNCTION__, $this->_object->getDeleteAction());
+    }
+
+    /**
+     * @test
+     */
+    public function testDownloadAction()
+    {
+        $this->_object->setDownloadAction(__FUNCTION__);
+        $this->assertEquals(__FUNCTION__, $this->_object->getDownloadAction());
+    }
+
+    /**
+     * @test
+     */
+    public function testInsertAction()
+    {
+        $this->_object->setInsertAction(__FUNCTION__);
+        $this->assertEquals(__FUNCTION__, $this->_object->getInsertAction());
+    }
+
+    /**
+     * @test
+     */
+    public function testUpdateAction()
+    {
+        $this->_object->setUpdateAction(__FUNCTION__);
+        $this->assertEquals(__FUNCTION__, $this->_object->getUpdateAction());
+    }
+
+    /**
+     * @test
+     */
+    public function testSearchAction()
+    {
+        $this->_object->setSearchAction(__FUNCTION__);
+        $this->assertEquals(__FUNCTION__, $this->_object->getSearchAction());
+    }
+
+    /**
+     * @test
+     */
+    public function testExportAction()
+    {
+        $this->_object->setExportAction(__FUNCTION__);
+        $this->assertEquals(__FUNCTION__, $this->_object->getExportAction());
     }
 
 }
