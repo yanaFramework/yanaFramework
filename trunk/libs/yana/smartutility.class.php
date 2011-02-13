@@ -158,12 +158,11 @@ class SmartUtility extends Utility
      *
      * @access  public
      * @static
-     * @param   string  $source     source
-     * @param   Smarty  $smarty    smarty object reference
+     * @param   string  $source  HTML with PHP source code
      * @return  string
      * @ignore
      */
-    public static function htmlPostProcessor($source, Smarty $smarty)
+    public static function htmlPostProcessor($source)
     {
         assert('is_string($source); // Wrong type for argument 1. String expected');
 
@@ -180,12 +179,12 @@ class SmartUtility extends Utility
      *
      * @access  public
      * @static
-     * @param   string  $source           source
-     * @param   Smarty  $templateClass   template class
+     * @param   string  $source         HTML source
+     * @param   Smarty  $templateClass  template class
      * @return  string
      * @ignore
      */
-    public static function htmlPreProcessor($source, Smarty $templateClass)
+    public static function htmlPreProcessor($source, $templateClass)
     {
         assert('is_string($source); // Wrong type for argument 1. String expected');
         global $YANA;
@@ -297,12 +296,11 @@ class SmartUtility extends Utility
      *
      * @access  public
      * @static
-     * @param   string  $source         source
-     * @param   Smarty  $templateClass  template class
+     * @param   string  $source  HTML code with PHP tags
      * @return  string
      * @ignore
      */
-    public static function outputFilter($source, Smarty $templateClass)
+    public static function outputFilter($source)
     {
         assert('is_string($source); // Wrong type for argument 1. String expected');
 
@@ -1604,7 +1602,7 @@ class SmartUtility extends Utility
      * @return  int
      * @since   2.9.7
      */
-    public static function sizeOf(array $params, Smarty_Internal_Template $smarty)
+    public static function sizeOf(array $params, $smarty)
     {
         if (isset($params['value'])) {
             $value = $params['value'];
@@ -1806,7 +1804,7 @@ class SmartUtility extends Utility
      * @param   Smarty_Internal_Template  $smarty  smarty object reference
      * @return  string
      */
-    public static function varDump(array $params, Smarty_Internal_Template $smarty)
+    public static function varDump(array $params, $smarty)
     {
         if (isset($params['var'])) {
             if (is_scalar($params['var'])) {
@@ -2510,7 +2508,7 @@ class SmartUtility extends Utility
      * @param   Smarty_Internal_Template  $smarty  smarty object reference
      * @return  string
      */
-    public static function smlLoad(array $params, Smarty_Internal_Template $smarty)
+    public static function smlLoad(array $params, $smarty)
     {
         /* input checking */
         if (empty($params['file'])) {
