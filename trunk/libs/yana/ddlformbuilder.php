@@ -370,247 +370,80 @@ class DDLFormBuilder extends DDLForm implements IteratorAggregate
     }
 
     /**
-     * set download action
+     * Scans the actions and removes those to whom the current user has no access.
      *
-     * @access  public
-     * @param   string  $action action name
+     * @access  protected
      */
-    public function setDownloadAction($action)
+    protected function initActions()
     {
-        assert('is_string($action); // Wrong type for argument 1. String expected');
-        $this->_downloadAction = $action;
-    }
+        $form = $this->getForm();
+        $setup = $this->getSetup();
+        $session = SessionManager::getInstance();
 
-    /**
-     * get download action
-     *
-     * Returns the lower-cased name of the currently selected action.
-     *
-     * The default is 'download_file'.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getDownloadAction()
-    {
-        if (!isset($this->_downloadAction)) {
-            $this->_downloadAction = "";
-            $form = $this->getForm();
-            if ($form->isSelectable()) {
-                $event = $form->getEvent('download');
-                if ($event instanceof DDLEvent) {
-                    $session = SessionManager::getInstance();
-                    $action = $event->getAction();
-                    if ($session->checkPermission(null, $action)) {
-                        $this->_downloadAction = $action;
-                    }
-                } else {
-                    $this->_downloadAction = "download_file";
-                }
-            }
+        $action = $setup->getDownloadAction()
+            || ($event = $form->getEvent('download') && $action = $event->getAction())
+            || $action = "download_file";
+        unset($event);
+
+        if (!$form->isSelectable() || !$session->checkPermission(null, $action)) {
+            $action = "";
         }
-        return $this->_downloadAction;
-    }
+        $setup->setDownloadAction($action);
 
-    /**
-     * set search action
-     *
-     * @access  public
-     * @param   string  $action  action name
-     */
-    public function setSearchAction($action)
-    {
-        assert('is_string($action); // Wrong type for argument 1. String expected');
-        $this->_searchAction = $action;
-    }
+        $action = $setup->getSearchAction()
+            || ($event = $form->getEvent('search') && $action = $event->getAction());
+        unset($event);
 
-    /**
-     * get search action
-     *
-     * Returns the lower-cased name of the currently selected action, or NULL if none has been
-     * selected yet.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getSearchAction()
-    {
-        if (!isset($this->_searchAction)) {
-            $this->_searchAction = "";
-            $form = $this->getForm();
-            if ($form->isSelectable()) {
-                $event = $form->getEvent('search');
-                if ($event instanceof DDLEvent) {
-                    $session = SessionManager::getInstance();
-                    $action = $event->getAction();
-                    if ($session->checkPermission(null, $action)) {
-                        $this->_searchAction = $action;
-                    }
-                }
+        if ($action) {
+            if (!$form->isSelectable() || !$session->checkPermission(null, $action)) {
+                $action = "";
             }
+            $setup->setSearchAction($action);
         }
-        return $this->_searchAction;
-    }
 
-    /**
-     * set insert action
-     *
-     * @access  public
-     * @param   string  $action  action name
-     */
-    public function setInsertAction($action)
-    {
-        assert('is_string($action); // Wrong type for argument 1. String expected');
-        $this->_insertAction = $action;
-    }
+        $action = $setup->getInsertAction()
+            || ($event = $form->getEvent('insert') && $action = $event->getAction());
+        unset($event);
 
-    /**
-     * get insert action
-     *
-     * Returns the lower-cased name of the currently selected action, or NULL if none has been
-     * selected yet.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getInsertAction()
-    {
-        if (!isset($this->_insertAction)) {
-            $this->_insertAction = "";
-            $form = $this->getForm();
-            if ($form->isInsertable()) {
-                $event = $form->getEvent('insert');
-                if ($event instanceof DDLEvent) {
-                    $session = SessionManager::getInstance();
-                    $action = $event->getAction();
-                    if ($session->checkPermission(null, $action)) {
-                        $this->_insertAction = $action;
-                    }
-                }
+        if ($action) {
+            if (!$form->isInsertable() || !$session->checkPermission(null, $action)) {
+                $action = "";
             }
+            $setup->setInsertAction($action);
         }
-        return $this->_insertAction;
-    }
 
-    /**
-     * set update action
-     *
-     * @access  public
-     * @param   string  $action  action name
-     */
-    public function setUpdateAction($action)
-    {
-        assert('is_string($action); // Wrong type for argument 1. String expected');
-        $this->_updateAction = $action;
-    }
+        $action = $setup->getUpdateAction()
+            || ($event = $form->getEvent('update') && $action = $event->getAction());
+        unset($event);
 
-    /**
-     * get update action
-     *
-     * Returns the lower-cased name of the currently
-     * selected action, or bool(false) if none has been
-     * selected yet.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getUpdateAction()
-    {
-        if (!isset($this->_updateAction)) {
-            $this->_updateAction = "";
-            $form = $this->getForm();
-            if ($form->isUpdatable()) {
-                $event = $form->getEvent('update');
-                if ($event instanceof DDLEvent) {
-                    $session = SessionManager::getInstance();
-                    $action = $event->getAction();
-                    if ($session->checkPermission(null, $action)) {
-                        $this->_updateAction = $action;
-                    }
-                }
+        if ($action) {
+            if (!$form->isUpdatable() || !$session->checkPermission(null, $action)) {
+                $action = "";
             }
+            $setup->setUpdateAction($action);
         }
-        return $this->_updateAction;
-    }
 
-    /**
-     * set delete action
-     *
-     * @access  public
-     * @param   string  $action action name
-     */
-    public function setDeleteAction($action)
-    {
-        assert('is_string($action); // Wrong type for argument 1. String expected');
-        $this->_deleteAction = $action;
-    }
+        $action = $setup->getDeleteAction()
+            || ($event = $form->getEvent('delete') && $action = $event->getAction());
+        unset($event);
 
-    /**
-     * Get delete action.
-     *
-     * Returns the lower-cased name of the currently selected action, or bool(false) if none has been selected yet.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getDeleteAction()
-    {
-        if (!isset($this->_deleteAction)) {
-            $this->_deleteAction = "";
-            $form = $this->getForm();
-            if ($form->isDeletable()) {
-                $event = $form->getEvent('delete');
-                if ($event instanceof DDLEvent) {
-                    $session = SessionManager::getInstance();
-                    $action = $event->getAction();
-                    if ($session->checkPermission(null, $action)) {
-                        $this->_deleteAction = $action;
-                    }
-                }
+        if ($action) {
+            if (!$form->isDeletable() || !$session->checkPermission(null, $action)) {
+                $action = "";
             }
+            $setup->setDeleteAction($action);
         }
-        return $this->_deleteAction;
-    }
 
-    /**
-     * set export action
-     *
-     * @access  public
-     * @param   string  $action action name
-     */
-    public function setExportAction($action)
-    {
-        assert('is_string($action); // Wrong type for argument 1. String expected');
-        $this->_exportAction = $action;
-    }
+        $action = $setup->getExportAction()
+            || ($event = $form->getEvent('export') && $action = $event->getAction());
+        unset($event);
 
-    /**
-     * get export action
-     *
-     * Returns the lower-cased name of the currently
-     * selected action, or bool(false) if none has been
-     * selected yet.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getExportAction()
-    {
-        if (!isset($this->_exportAction)) {
-            $this->_exportAction = "";
-            $form = $this->getForm();
-            if ($form->isSelectable()) {
-                $event = $form->getEvent('export');
-                if ($event instanceof DDLEvent) {
-                    $session = SessionManager::getInstance();
-                    $action = $event->getAction();
-                    if ($session->checkPermission(null, $action)) {
-                        $this->_exportAction = $action;
-                    }
-                }
+        if ($action) {
+            if (!$form->isSelectable() || !$session->checkPermission(null, $action)) {
+                $action = "";
             }
+            $setup->setExportAction($action);
         }
-        return $this->_exportAction;
     }
 
     /**
