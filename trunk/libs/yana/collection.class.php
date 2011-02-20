@@ -45,13 +45,14 @@ class Collection extends Object implements Iterator, Countable, ArrayAccess
     private $_items = array();
 
     /**
-     * create new instance
+     * Set a list of items
      *
      * @access  public
      * @param   array $items  list of items to work on
      */
-    public function __construct(array $items = array())
+    public function setItems(array $items = array())
     {
+        $this->_items = array();
         foreach ($items as $key => $value) {
             $this[$key] = $value;
         }

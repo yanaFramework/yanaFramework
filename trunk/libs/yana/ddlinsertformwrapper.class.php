@@ -33,7 +33,7 @@
  * @subpackage  database
  * @ignore
  */
-class DDLInsertFormWrapper extends DDLAbstractFormWrapper
+class DDLInsertFormWrapper extends DDLFormWrapper
 {
     /**
      * list of foreign key references

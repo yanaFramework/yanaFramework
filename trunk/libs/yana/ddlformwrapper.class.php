@@ -26,7 +26,7 @@
  */
 
 /**
- * default iterator class
+ * Form wrapper base class.
  *
  * @access      public
  * @abstract
@@ -34,15 +34,8 @@
  * @subpackage  database
  * @ignore
  */
-abstract class DDLAbstractFormWrapper extends Object implements Iterator, Countable
+abstract class DDLFormWrapper extends Collection
 {
-    /**
-     * current position
-     *
-     * @access  private
-     * @var     int
-     */
-    private $index = 0;
 
     /**
      * form
@@ -52,15 +45,6 @@ abstract class DDLAbstractFormWrapper extends Object implements Iterator, Counta
      * @ignore
      */
     protected $form = null;
-
-    /**
-     * list of fields
-     *
-     * @access  protected
-     * @var     DDLDefaultField[]
-     * @ignore
-     */
-    protected $fields = array();
 
     /**
      * states if the given value is valid
@@ -89,123 +73,42 @@ abstract class DDLAbstractFormWrapper extends Object implements Iterator, Counta
     public function __construct(DDLAbstractForm $form)
     {
         $this->form = $form;
-        $this->fields = $form->getFields();
+        $this->setItems($form->getFields());
     }
 
     /**
-     * get current field
+     * Insert or replace item.
      *
-     * Returns the current Field definition.
-     * Throws an exception if the current index is not valid.
+     * Example:
+     * <code>
+     * $collection[$offset] = $item;
+     * $collection->offsetSet($offset, $item);
+     * </code>
      *
      * @access  public
-     * @return  DDLDefaultField
-     * @throws  OutOfBoundsException  if the iterator is out of bounds
+     * @param   scalar    $offset  name of field (filled automatically when not present)
+     * @param   DDLField  $value   new value of item
      */
-    public function current()
+    public function offsetSet($offset, $value)
     {
-        if ($this->valid()) {
-            assert('$this->fields[$this->index] instanceof DDLDefaultField;');
-            return $this->fields[$this->index];
-        } else {
-            throw new OutOfBoundsException("Iterator index out of bounds");
+        assert('$value instanceof DDLField;');
+        if (!is_string($offset)) {
+            $offset = $value->getName();
         }
+        parent::offsetSet($offset, $value);
     }
 
     /**
-     * magic function call
-     *
-     * Calls a function on the current field and returns the result.
+     * Relay function call to wrapped object.
      *
      * @access  public
-     * @param   string  $name       name
-     * @param   array   $arguments  arguments
+     * @param   string  $name       method name
+     * @param   array   $arguments  list of arguments to pass to function
      * @return  mixed
      */
-    public function __call($name, array $arguments)
+    public static function __call($name, $arguments)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
-        return call_user_func_array(array($this->current(), $name), $arguments);
-    }
-
-    /**
-     * has next field
-     *
-     * Returns bool(true) if the iterator has more fields.
-     * Returns bool(false) if it has reached the last value.
-     *
-     * @access  public
-     * @return  bool
-     */
-    public function hasNext()
-    {
-        return isset($this->fields[$this->index + 1]);
-    }
-
-    /**
-     * next field
-     *
-     * Increment iterator to next field.
-     * Note that this function does not check if the next iterator value is valid.
-     * Use {@see DDLDefaultSearchIterator::valid()} or {@see DDLDefaultSearchIterator::hasNext()}
-     * to check this.
-     *
-     * @access  public
-     */
-    public function next()
-    {
-        $this->index++;
-    }
-
-    /**
-     * get field key
-     *
-     * @access  public
-     * @return  string
-     */
-    public function key()
-    {
-        if ($this->valid()) {
-            $field = $this->current();
-            return $field->getName();
-        } else {
-            return "";
-        }
-    }
-
-    /**
-     * check if field is valid
-     *
-     * @access  public
-     * @return  bool
-     */
-    public function valid()
-    {
-        return isset($this->fields[$this->index]);
-    }
-
-    /**
-     * rewind iterator
-     *
-     * @access  public
-     */
-    public function rewind()
-    {
-        $this->index = 0;
-    }
-
-    /**
-     * get field count
-     *
-     * This function returns the number of fields in the collection.
-     * If there is no field available, it returns 0.
-     *
-     * @access  public
-     * @return  int
-     */
-    public function count()
-    {
-        return count($this->fields);
+        return call_user_func_array(array($this->form, $name), $arguments);
     }
 
     /**
@@ -553,6 +456,7 @@ abstract class DDLAbstractFormWrapper extends Object implements Iterator, Counta
 
         return $result;
     }
+
 }
 
 ?>

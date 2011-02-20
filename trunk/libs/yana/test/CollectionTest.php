@@ -22,7 +22,8 @@ class CollectionTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_object = new Collection(array(0, 1, 2, 3));
+        $this->_object = new Collection();
+        $this->_object->setItems(array(0, 1, 2, 3));
     }
 
     /**
