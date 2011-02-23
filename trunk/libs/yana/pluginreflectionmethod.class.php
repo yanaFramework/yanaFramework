@@ -46,10 +46,10 @@ class PluginReflectionMethod extends ReflectionMethod
      * @access  private
      */
 
-    /** @var string */ private $className = "";
-    /** @var string */ private $title = "";
-    /** @var string */ private $text = "";
-    /** @var string */ private $docComment = "";
+    /** @var string */ private $_className = "";
+    /** @var string */ private $_title = null;
+    /** @var string */ private $_text = null;
+    /** @var string */ private $_docComment = null;
 
     /**#@-*/
 
@@ -63,51 +63,7 @@ class PluginReflectionMethod extends ReflectionMethod
     public function __construct($className, $methodName)
     {
         parent::__construct($className, $methodName);
-        $this->className = $className;
-
-        $file = file($this->getFileName());
-
-        if (parent::getDocComment() === false) {
-
-            $this->docComment = "";
-
-            for ($i = $this->getStartLine(); $i > 0; $i--)
-            {
-                $this->docComment = $file[$i] . $this->docComment;
-
-                if (preg_match('/^\s*\/\*\*/', $file[$i])) {
-                    break;
-                }
-            }
-            $this->docComment = preg_replace('/^\s*(.*?\*\/).*/s', '$1', $this->docComment);
-        } else {
-            $this->docComment = parent::getDocComment();
-        }
-        $this->_parse();
-    }
-
-    /**
-     * parse doc-block
-     *
-     * @access  private
-     */
-    private function _parse()
-    {
-        /**
-         * Title
-         */
-        $match = array();
-        if (preg_match('/\/\*\*[\s\*\r\f\n]*(\S.*?)[\r\f\n]/', $this->docComment, $match)) {
-            $this->title = trim($match[1]);
-
-            /**
-             * Text
-             */
-            $match2 = array();
-            if (preg_match('/[\s\*\r\f\n]([^@\{]+)/si', $this->docComment, $match2, 0, mb_strlen($match[0]))) {
-                $this->text = trim(preg_replace('/^\s*\*\s*/Um', '', $match2[1]));
-            }
-        }
+        $this->_className = $className;
     }
 
     /**
@@ -124,7 +80,7 @@ class PluginReflectionMethod extends ReflectionMethod
      */
     public function getTags($tagName)
     {
-        return PluginReflectionClass::getTagsFromComment($this->docComment, $tagName);
+        return PluginReflectionClass::getTagsFromComment($this->getDocComment(), $tagName);
     }
 
     /**
@@ -142,7 +98,7 @@ class PluginReflectionMethod extends ReflectionMethod
      */
     public function getTag($tagName, $default = "")
     {
-        return PluginReflectionClass::getTagFromComment($this->docComment, $tagName, $default);
+        return PluginReflectionClass::getTagFromComment($this->getDocComment(), $tagName, $default);
     }
 
     /**
@@ -153,7 +109,14 @@ class PluginReflectionMethod extends ReflectionMethod
      */
     public function getTitle()
     {
-        return $this->title;
+        if (!isset($this->_title)) {
+            $this->_title = "";
+            $match = array();
+            if (preg_match('/\/\*\*[\s\*\r\f\n]*(\S.*?)[\r\f\n]/', $this->getDocComment(), $match)) {
+                $this->_title = trim($match[1]);
+            }
+        }
+        return $this->_title;
     }
 
     /**
@@ -164,7 +127,17 @@ class PluginReflectionMethod extends ReflectionMethod
      */
     public function getText()
     {
-        return $this->text;
+        if (!isset($this->_text)) {
+            $this->_text = "";
+            $pageDoc = $this->getPageComment();
+            $match = $match2 = array();
+            if (preg_match('/\/\*\*[\s\*\r\f\n]*(\S.*?)[\r\f\n]/', $this->_docComment, $match)) {
+                if (preg_match('/[\s\*\r\f\n]([^@\{]+)/si', $pageDoc, $match2, 0, mb_strlen($match[0]))) {
+                    $this->_text = trim(preg_replace('/^\s*\*\s*/Um', '', $match2[1]));
+                }
+            }
+        }
+        return $this->_text;
     }
 
     /**
@@ -175,7 +148,7 @@ class PluginReflectionMethod extends ReflectionMethod
      */
     public function getClassName()
     {
-        return $this->className;
+        return $this->_className;
     }
 
     /**
@@ -186,8 +159,29 @@ class PluginReflectionMethod extends ReflectionMethod
      */
     public function getDocComment()
     {
-        return $this->docComment;
+        if (!isset($this->_docComment)) {
+
+            $this->_docComment = parent::getDocComment();
+            if ($this->_docComment === false) {
+
+                $this->_docComment = "";
+
+                $file = file($this->getFileName());
+
+                for ($i = $this->getStartLine(); $i > 0; $i--)
+                {
+                    $this->_docComment = $file[$i] . $this->_docComment;
+
+                    if (preg_match('/^\s*\/\*\*/', $file[$i])) {
+                        break;
+                    }
+                }
+                $this->_docComment = preg_replace('/^\s*(.*?\*\/).*/s', '$1', $this->_docComment);
+            }
+        }
+        return $this->_docComment;
     }
+
 }
 
 ?>
