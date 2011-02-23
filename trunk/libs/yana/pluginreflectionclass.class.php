@@ -44,13 +44,12 @@ class PluginReflectionClass extends ReflectionClass
      * @access  private
      */
 
-    /** @var string */ private $className = "";
-    /** @var string */ private $classDoc = "";
-    /** @var string */ private $pageDoc = "";
-    /** @var string */ private $title = "";
-    /** @var string */ private $text = "";
-
-    /** @var array  */ private $methods = array();
+    /** @var string */ private $_className = "";
+    /** @var string */ private $_classDoc = null;
+    /** @var string */ private $_pageDoc = null;
+    /** @var string */ private $_title = null;
+    /** @var string */ private $_text = null;
+    /** @var array  */ private $_methods = array();
 
     /**#@-*/
 
@@ -63,67 +62,7 @@ class PluginReflectionClass extends ReflectionClass
     public function __construct($className)
     {
         parent::__construct($className);
-        $this->className = $className;
-
-        $file = file($this->getFileName());
-
-        if (parent::getDocComment() === false) {
-
-            $this->classDoc = "";
-
-            for ($i = $this->getStartLine(); $i > 0; $i--)
-            {
-                $this->classDoc = $file[$i] . $this->classDoc;
-
-                if (preg_match('/^\s*\/\*\*/', $file[$i])) {
-                    break;
-                }
-            }
-            $this->classDoc = preg_replace('/^\s*(.*?\*\/).*/s', '$1', $this->classDoc);
-        } else {
-            $this->classDoc = parent::getDocComment();
-        }
-
-        $this->pageDoc = "";
-
-        for ($i = 0; $i < $this->getStartLine(); $i++)
-        {
-            $this->pageDoc .= $file[$i];
-
-            if (strpos($file[$i], '*/') !== false) {
-                break;
-            }
-        }
-        $this->pageDoc = preg_replace('/^.*?(\/\*\*.*?\*\/).*$/s', '$1', $this->pageDoc);
-        self::parseDocBlock($this->pageDoc, $this->title, $this->text);
-    }
-
-    /**
-     * parse doc-block
-     *
-     * @static
-     * @access  public
-     * @param   string  $docBlock   doc block to be parsed
-     * @param   string  &$title     output title var
-     * @param   string  &$text      output text var
-     */
-    public static function parseDocBlock($docBlock, &$title, &$text)
-    {
-        /**
-         * Title
-         */
-        $match = array();
-        if (preg_match('/(?:\/\*\*|^)[\s\*\r\f\n]*(\S.*?)[\r\f\n]/', $docBlock, $match)) {
-            $title = trim($match[1]);
-
-            /**
-             * Text
-             */
-            $match2 = array();
-            if (preg_match('/[\s\*\r\f\n]([^@\{]+)/si', $docBlock, $match2, 0, mb_strlen($match[0]))) {
-                $text = trim(preg_replace('/^\s*\*\s*/Um', '', $match2[1]));
-            }
-        }
+        $this->_className = $className;
     }
 
     /**
@@ -172,7 +111,7 @@ class PluginReflectionClass extends ReflectionClass
      *
      * If the same key is mentionend multiple times,
      * the value of the last occurence overwrites the previous.
-     *     
+     *
      * @access  public
      * @static
      * @param   string  $comment  doc-block of parsed file
@@ -184,13 +123,13 @@ class PluginReflectionClass extends ReflectionClass
         assert('is_string($comment); // Wrong type for argument 1. String expected');
         assert('is_string($tagName); // Wrong type for argument 2. String expected');
         $tagName = preg_quote($tagName, '/');
-        
+
         $result = array();
         $match = array();
         /**
          * 1) get tags
          */
-         
+
         /**
          * 1.1) simple tags: @foo
          */
@@ -320,7 +259,7 @@ class PluginReflectionClass extends ReflectionClass
      */
     public function getTags($tagName)
     {
-        return PluginReflectionClass::getTagsFromComment($this->pageDoc, $tagName);
+        return PluginReflectionClass::getTagsFromComment($this->getPageComment(), $tagName);
     }
 
     /**
@@ -338,7 +277,7 @@ class PluginReflectionClass extends ReflectionClass
      */
     public function getTag($tagName, $default = "")
     {
-        return PluginReflectionClass::getTagFromComment($this->pageDoc, $tagName, $default);
+        return PluginReflectionClass::getTagFromComment($this->getPageComment(), $tagName, $default);
     }
 
     /**
@@ -349,7 +288,7 @@ class PluginReflectionClass extends ReflectionClass
      */
     public function getClassName()
     {
-        return $this->className;
+        return $this->_className;
     }
 
     /**
@@ -361,26 +300,26 @@ class PluginReflectionClass extends ReflectionClass
      */
     public function getMethod($methodName)
     {
-        return new PluginReflectionMethod($this->className, $methodName);
+        return new PluginReflectionMethod($this->_className, $methodName);
     }
 
     /**
      * get methods
      *
      * @access  public
-     * @param   int  $filter    filter 
+     * @param   int  $filter    filter
      * @return  PluginReflectionMethod[]
      */
     public function getMethods($filter = ReflectionProperty::IS_PUBLIC)
     {
-        if (empty($this->methods[$filter])) {
-            $this->methods[$filter] = array();
+        if (empty($this->_methods[$filter])) {
+            $this->_methods[$filter] = array();
             foreach(parent::getMethods($filter) as $method)
             {
-                $this->methods[$filter][] = $this->getMethod($method->getName());
+                $this->_methods[$filter][] = $this->getMethod($method->getName());
             }
         }
-        return $this->methods[$filter];
+        return $this->_methods[$filter];
     }
 
     /**
@@ -391,7 +330,13 @@ class PluginReflectionClass extends ReflectionClass
      */
     public function getTitle()
     {
-        return $this->title;
+        if (!isset($this->_title)) {
+            $this->_title = "";
+            if (preg_match('/(?:\/\*\*|^)[\s\*\r\f\n]*(\S.*?)[\r\f\n]/', $this->getPageComment(), $match)) {
+                $this->_title = trim($match[1]);
+            }
+        }
+        return $this->_title;
     }
 
     /**
@@ -404,31 +349,17 @@ class PluginReflectionClass extends ReflectionClass
      */
     public function getText()
     {
-        return $this->text;
-    }
-
-    /**
-     * get title
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getTitleTranslation()
-    {
-        return $this->titleTranslation;
-    }
-
-    /**
-     * get description text
-     *
-     * Returns bool(false) on error.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getTextTranslation()
-    {
-        return $this->textTranslation;
+        if (!isset($this->_text)) {
+            $this->_text = "";
+            $pageDoc = $this->getPageComment();
+            $match = $match2 = array();
+            if (preg_match('/(?:\/\*\*|^)[\s\*\r\f\n]*\S.*?[\r\f\n]/', $pageDoc, $match)) {
+                if (preg_match('/[\s\*\r\f\n]([^@\{]+)/si', $pageDoc, $match2, 0, mb_strlen($match[0]))) {
+                    $this->_text = trim(preg_replace('/^\s*\*\s*/Um', '', $match2[1]));
+                }
+            }
+        }
+        return $this->_text;
     }
 
     /**
@@ -439,7 +370,20 @@ class PluginReflectionClass extends ReflectionClass
      */
     public function getPageComment()
     {
-        return $this->pageDoc;
+        if (!isset($this->_pageDoc)) {
+            $this->_pageDoc = "";
+            $file = file($this->getFileName());
+            for ($i = 0; $i < $this->getStartLine(); $i++)
+            {
+                $this->_pageDoc .= $file[$i];
+
+                if (strpos($file[$i], '*/') !== false) {
+                    break;
+                }
+            }
+            $this->_pageDoc = preg_replace('/^.*?(\/\*\*.*?\*\/).*$/s', '$1', $this->_pageDoc);
+        }
+        return $this->_pageDoc;
     }
 
     /**
@@ -450,7 +394,26 @@ class PluginReflectionClass extends ReflectionClass
      */
     public function getDocComment()
     {
-        return $this->classDoc;
+        if (!isset($this->_classDoc)) {
+
+            $this->_classDoc = parent::getDocComment();
+            if ($this->_classDoc === false) {
+
+                $this->_classDoc = "";
+                $file = file($this->getFileName());
+
+                for ($i = $this->getStartLine(); $i > 0; $i--)
+                {
+                    $this->_classDoc = $file[$i] . $this->_classDoc;
+
+                    if (preg_match('/^\s*\/\*\*/', $file[$i])) {
+                        break;
+                    }
+                }
+                $this->_classDoc = preg_replace('/^\s*(.*?\*\/).*/s', '$1', $this->_classDoc);
+            }
+        }
+        return $this->_classDoc;
     }
 
     /**
