@@ -403,26 +403,6 @@ class DDLDefaultUpdateIterator extends DDLDefaultInsertIterator
     }
 
     /**
-     * get reference values
-     *
-     * This function returns an array, where the keys are the values of the primary keys in the
-     *
-     * @access  protected
-     * @param   string  $fieldName  name of field to look up
-     * @return  array
-     * @ignore
-     */
-    protected function getReferenceValue($fieldName, $value)
-    {
-        $referenceValues = $this->getReferenceValues($fieldName);
-        if (isset($referenceValues[$value])) {
-            return $referenceValues[$value];
-        } else {
-            return $value;
-        }
-    }
-
-    /**
      * create HTML for current field
      *
      * Returns the HTML-code representing an input element for the current field.

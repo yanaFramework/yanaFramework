@@ -47,32 +47,52 @@ abstract class DDLFormWrapper extends Collection
     protected $form = null;
 
     /**
+     * form
+     *
+     * @access  protected
+     * @var     DDLFormSetup
+     * @ignore
+     */
+    protected $setup = null;
+
+    /**
      * states if the given value is valid
      *
      * @access  private
      * @var     array
      * @ignore
      */
-    private $isValid = array();
+    private $_isValid = array();
 
     /**
-     * current values taken from the form
+     * list of foreign key references
      *
      * @access  protected
      * @var     array
      * @ignore
      */
-    protected $values = null;
+    protected $references = null;
+
+    /**
+     * list of foreign key values
+     *
+     * @access  private
+     * @var     array
+     * @ignore
+     */
+    private $_referenceValues = null;
 
     /**
      * create new instance
      *
      * @access  public
-     * @param   DDLAbstractForm  $form  iterate over this form
+     * @param   DDLForm       $form   iterate over this form
+     * @param   DDLFormSetup  $setup  current form configuration and values
      */
-    public function __construct(DDLAbstractForm $form)
+    public function __construct(DDLForm $form, DDLFormSetup $setup)
     {
         $this->form = $form;
+        $this->setup = $setup;
         $this->setItems($form->getFields());
     }
 
@@ -186,26 +206,29 @@ abstract class DDLFormWrapper extends Collection
      * bool(false) otherwise.
      *
      * @access  public
+     * @param   string  $key  field name
      * @return  bool
      * @throws  NotFoundException  when column definition was not found (unable to validate)
      */
-    public function isValid()
+    public function isValid($key)
     {
-        $key = $this->key();
-        if (!isset($this->isValid[$key])) {
+        if (empty($key)) {
+            $key = $this->key();
+        }
+        if (!isset($this->_isValid[$key])) {
             $column = $this->current()->getColumnDefinition();
             try {
 
                 $column->sanitizeValue($this->getValue());
-                $this->isValid[$key] = true;
+                $this->_isValid[$key] = true;
 
             } catch (Exception $e) {
                 // an error occured - Field is not valid
-                $this->isValid[$key] = false;
+                $this->_isValid[$key] = false;
             }
         }
-        assert('is_bool($this->isValid[$key]);');
-        return $this->isValid[$key] === true;
+        assert('is_bool($this->_isValid[$key]);');
+        return $this->_isValid[$key] === true;
     }
 
     /**
@@ -215,10 +238,14 @@ abstract class DDLFormWrapper extends Collection
      * Note that this overwrites the basic function checks.
      *
      * @access  public
+     * @param   string  $key  field name
      */
-    public function setInvalid()
+    public function setInvalid($key = null)
     {
-        $this->isValid[$this->key()] = false;
+        if (empty($key)) {
+            $key = $this->key();
+        }
+        $this->_isValid[$key] = false;
     }
 
     /**
@@ -229,11 +256,7 @@ abstract class DDLFormWrapper extends Collection
      */
     public function getValues()
     {
-        if (!isset($this->values)) {
-            $key = strtolower($this->getClass());
-            $this->values = $this->form->getValue($key);
-        }
-        return $this->values;
+        return $this->setup->getValue(strtolower($this->getClass()));
     }
 
     /**
@@ -322,6 +345,88 @@ abstract class DDLFormWrapper extends Collection
         } else {
             return $cssClass;
         }
+    }
+
+    /**
+     * get list of foreign-key reference settings
+     *
+     * This returns an array of the following contents:
+     * <code>
+     * array(
+     *   'primaryKey1' => array(
+     *     'table' => 'name of target table'
+     *     'column' => 'name of target column'
+     *     'label' => 'name of a column in target table that should be used as a label'
+     * }
+     * </code>
+     *
+     * @access  protected
+     * @return  array
+     * @ignore
+     */
+    protected function getReferences()
+    {
+        if (!isset($this->references)) {
+            $this->references = array();
+            assert('!isset($field);');
+            /* @var $field DDLDefaultField */
+            foreach ($this->toArray() as $field)
+            {
+                if ($field->getType() !== 'reference') {
+                    continue;
+                }
+                assert('!isset($column);');
+                $column = $field->getColumnDefinition();
+                $reference = $column->getReferenceSettings();
+                if (!isset($reference['column'])) {
+                    $reference['column'] = $column->getReferenceColumn()->getName();
+                }
+                if (!isset($reference['label'])) {
+                    $reference['label'] = $reference['column'];
+                }
+                if (!isset($reference['table'])) {
+                    $reference['table'] = $column->getReferenceColumn()->getParent()->getName();
+                }
+                $this->references[$field->getName()] = $reference;
+                unset($column);
+            } // end foreach
+            unset($field);
+        }
+        return $this->references;
+    }
+
+    /**
+     * get reference values
+     *
+     * This function returns an array, where the keys are the values of the primary keys in the
+     *
+     * @access  protected
+     * @param   string  $fieldName  name of field to look up
+     * @return  array
+     * @ignore
+     * @todo    move to builder class
+     */
+    protected function getReferenceValues($fieldName)
+    {
+        if (!isset($this->_referenceValues[$fieldName])) {
+            $this->_referenceValues[$fieldName] = array();
+            $references = $this->getReferences();
+            if (isset($references[$fieldName])) {
+                $reference = $references[$fieldName];
+                $db = $this->form->getQuery()->getDatabase();
+                $select = new DbSelect($db);
+                $select->setTable($reference['table']);
+                $columns = array('LABEL' => $reference['label'], 'VALUE' => $reference['column']);
+                $select->setColumns($columns);
+                $values = array();
+                foreach ($select->getResults() as $row)
+                {
+                    $values[$row['VALUE']] = $row['LABEL'];
+                }
+                $this->_referenceValues[$fieldName] = $values;
+            }
+        }
+        return $this->_referenceValues[$fieldName];
     }
 
     /**

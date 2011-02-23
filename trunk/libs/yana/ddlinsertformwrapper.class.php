@@ -35,48 +35,20 @@
  */
 class DDLInsertFormWrapper extends DDLFormWrapper
 {
-    /**
-     * list of foreign key references
-     *
-     * @access  protected
-     * @var     array
-     * @ignore
-     */
-    protected $references = null;
-
-    /**
-     * list of foreign key values
-     *
-     * @access  private
-     * @var     array
-     * @ignore
-     */
-    private $_referenceValues = null;
-
-    /**
-     * initialize instance
-     *
-     * @access  public
-     * @ignore
-     */
-    public function __wakeup()
-    {
-        $this->_referenceValues = null;
-        $this->references = null;
-    }
 
     /**
      * create new instance
      *
      * @access  public
-     * @param   DDLAbstractForm  $form  iterate over this form
+     * @param   DDLForm       $form  iterate over this form
+     * @param   DDLFormSetup  $setup  current form configuration and values
      */
-    public function __construct(DDLForm $form)
+    public function __construct(DDLForm $form, DDLFormSetup $setup)
     {
-        parent::__construct($form);
+        parent::__construct($form, $setup);
         $fields = array();
         /* @var $field DDLDefaultField */
-        foreach ($this->fields as $field)
+        foreach ($this->toArray() as $field)
         {
             // skip field which are not selectable
             if (!$field->isVisible() || !$field->isInsertable()) {
@@ -84,88 +56,7 @@ class DDLInsertFormWrapper extends DDLFormWrapper
             }
             $fields[] = $field;
         } // end foreach
-        $this->fields = $fields;
-    }
-
-    /**
-     * get list of foreign-key reference settings
-     *
-     * This returns an array of the following contents:
-     * <code>
-     * array(
-     *   'primaryKey1' => array(
-     *     'table' => 'name of target table'
-     *     'column' => 'name of target column'
-     *     'label' => 'name of a column in target table that should be used as a label'
-     * }
-     * </code>
-     *
-     * @access  protected
-     * @return  array
-     * @ignore
-     */
-    protected function getReferences()
-    {
-        if (!isset($this->references)) {
-            $this->references = array();
-            assert('!isset($field);');
-            /* @var $field DDLDefaultField */
-            foreach ($this->fields as $field)
-            {
-                if ($field->getType() !== 'reference') {
-                    continue;
-                }
-                assert('!isset($column);');
-                $column = $field->getColumnDefinition();
-                $reference = $column->getReferenceSettings();
-                if (!isset($reference['column'])) {
-                    $reference['column'] = $column->getReferenceColumn()->getName();
-                }
-                if (!isset($reference['label'])) {
-                    $reference['label'] = $reference['column'];
-                }
-                if (!isset($reference['table'])) {
-                    $reference['table'] = $column->getReferenceColumn()->getParent()->getName();
-                }
-                $this->references[$field->getName()] = $reference;
-                unset($column);
-            } // end foreach
-            unset($field);
-        }
-        return $this->references;
-    }
-
-    /**
-     * get reference values
-     *
-     * This function returns an array, where the keys are the values of the primary keys in the
-     *
-     * @access  protected
-     * @param   string  $fieldName  name of field to look up
-     * @return  array
-     * @ignore
-     */
-    protected function getReferenceValues($fieldName)
-    {
-        if (!isset($this->_referenceValues[$fieldName])) {
-            $this->_referenceValues[$fieldName] = array();
-            $references = $this->getReferences();
-            if (isset($references[$fieldName])) {
-                $reference = $references[$fieldName];
-                $db = $this->form->getQuery()->getDatabase();
-                $select = new DbSelect($db);
-                $select->setTable($reference['table']);
-                $columns = array('LABEL' => $reference['label'], 'VALUE' => $reference['column']);
-                $select->setColumns($columns);
-                $values = array();
-                foreach ($select->getResults() as $row)
-                {
-                    $values[$row['VALUE']] = $row['LABEL'];
-                }
-                $this->_referenceValues[$fieldName] = $values;
-            }
-        }
-        return $this->_referenceValues[$fieldName];
+        $this->setItems($fields);
     }
 
     /**

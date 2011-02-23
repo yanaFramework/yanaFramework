@@ -239,6 +239,40 @@ class DDLFormBuilder extends DDLForm implements IteratorAggregate
     }
 
     /**
+     * get reference values
+     *
+     * This function returns an array, where the keys are the values of the primary keys in the
+     *
+     * @access  protected
+     * @param   string  $fieldName  name of field to look up
+     * @return  array
+     * @ignore
+     * @todo    move to builder class
+     */
+    protected function getReferenceValues($fieldName)
+    {
+        if (!isset($this->_referenceValues[$fieldName])) {
+            $this->_referenceValues[$fieldName] = array();
+            $references = $this->getReferences();
+            if (isset($references[$fieldName])) {
+                $reference = $references[$fieldName];
+                $db = $this->getForm()->getDatabase()->getName();
+                $select = new DbSelect(Yana::connect($db));
+                $select->setTable($reference['table']);
+                $columns = array('LABEL' => $reference['label'], 'VALUE' => $reference['column']);
+                $select->setColumns($columns);
+                $values = array();
+                foreach ($select->getResults() as $row)
+                {
+                    $values[$row['VALUE']] = $row['LABEL'];
+                }
+                $this->_referenceValues[$fieldName] = $values;
+            }
+        }
+        return $this->_referenceValues[$fieldName];
+    }
+
+    /**
      * get query
      *
      * This returns the query object which is bound to the form.
