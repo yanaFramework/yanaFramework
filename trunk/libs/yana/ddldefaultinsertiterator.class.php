@@ -32,6 +32,7 @@
  * @package     yana
  * @subpackage  database
  * @ignore
+ * @deprecated
  */
 class DDLDefaultInsertIterator extends DDLAbstractFieldIterator
 {
