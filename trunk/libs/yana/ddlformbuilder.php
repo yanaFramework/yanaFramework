@@ -239,37 +239,102 @@ class DDLFormBuilder extends DDLForm implements IteratorAggregate
     }
 
     /**
-     * get reference values
+     * get list of foreign-key reference settings
      *
-     * This function returns an array, where the keys are the values of the primary keys in the
+     * This returns an array of the following contents:
+     * <code>
+     * array(
+     *   'primaryKey1' => array(
+     *     'table' => 'name of target table'
+     *     'column' => 'name of target column'
+     *     'label' => 'name of a column in target table that should be used as a label'
+     * }
+     * </code>
      *
      * @access  protected
-     * @param   string  $fieldName  name of field to look up
      * @return  array
      * @ignore
-     * @todo    move to builder class
      */
-    protected function getReferenceValues($fieldName)
+    protected function getReferences()
     {
-        if (!isset($this->_referenceValues[$fieldName])) {
-            $this->_referenceValues[$fieldName] = array();
-            $references = $this->getReferences();
-            if (isset($references[$fieldName])) {
-                $reference = $references[$fieldName];
-                $db = $this->getForm()->getDatabase()->getName();
-                $select = new DbSelect(Yana::connect($db));
-                $select->setTable($reference['table']);
-                $columns = array('LABEL' => $reference['label'], 'VALUE' => $reference['column']);
-                $select->setColumns($columns);
-                $values = array();
-                foreach ($select->getResults() as $row)
-                {
-                    $values[$row['VALUE']] = $row['LABEL'];
-                }
-                $this->_referenceValues[$fieldName] = $values;
+        $references = array();
+        assert('!isset($field);');
+        /* @var $field DDLDefaultField */
+        foreach ($this->getForm()->getFields() as $field)
+        {
+            if ($field->getType() !== 'reference') {
+                continue;
             }
+            assert('!isset($column);');
+            $column = $field->getColumnDefinition();
+            $reference = $column->getReferenceSettings();
+            if (!isset($reference['column'])) {
+                $reference['column'] = $column->getReferenceColumn()->getName();
+            }
+            if (!isset($reference['label'])) {
+                $reference['label'] = $reference['column'];
+            }
+            if (!isset($reference['table'])) {
+                $reference['table'] = $column->getReferenceColumn()->getParent()->getName();
+            }
+            $references[$field->getName()] = $reference;
+            unset($column);
+        } // end foreach
+        unset($field);
+        return $references;
+    }
+
+    /**
+     * Get reference values.
+     *
+     * This function returns an array, where the keys are the values of a unique key in the
+     * target table and the values are the labels for those keys.
+     *
+     * Use this function for AJAX auto-completion in reference column.
+     *
+     * The list can be limited to a maximum length by setting the $limit argument. Default is 50 rows.
+     * The search term allows to find all rows whose labels start with a given text.
+     * You may use the wildcards '%' and '_'.
+     *
+     * Note: you may want to introduce an index on the label-column of your database.
+     *
+     * If the field is no reference in the current form, then an empty array will be returned.
+     *
+     * @access  protected
+     * @param   string  $fieldName   name of field to look up
+     * @param   string  $searchTerm  find all entries that start with ...
+     * @param   int     $limit       maximum number of hits, set to 0 to get all
+     * @return  array
+     * @ignore
+     */
+    public function getReferenceValues($fieldName, $searchTerm = "", $limit = 50)
+    {
+        assert('is_string($fieldName); // Invalid argument $fieldName: string expected');
+        assert('is_string($searchTerm); // Invalid argument $searchTerm: string expected');
+        $referenceValues = array();
+        $references = $this->getReferences();
+        if (isset($references[$fieldName])) {
+            $reference = $references[$fieldName];
+            $db = $this->getForm()->getDatabase()->getName();
+            $select = new DbSelect(Yana::connect($db));
+            $select->setTable($reference['table']);
+            $columns = array('LABEL' => $reference['label'], 'VALUE' => $reference['column']);
+            $select->setColumns($columns);
+            if ($limit > 0) {
+                $select->setLimit($limit);
+            }
+            $select->setOrderBy($reference['label']);
+            if (!empty($searchTerm)) {
+                $select->setWhere(array($reference['label'], 'like', $searchTerm . '%'));
+            }
+            $values = array();
+            foreach ($select->getResults() as $row)
+            {
+                $values[$row['VALUE']] = $row['LABEL'];
+            }
+            $referenceValues = $values;
         }
-        return $this->_referenceValues[$fieldName];
+        return $referenceValues;
     }
 
     /**
