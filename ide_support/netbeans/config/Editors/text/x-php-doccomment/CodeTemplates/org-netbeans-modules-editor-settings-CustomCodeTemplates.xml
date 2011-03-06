@@ -45,71 +45,6 @@ Example:
  * @filesource
  */]]></description>
     </codetemplate>
-    <codetemplate abbreviation="param" xml:space="preserve">
-        <code><![CDATA[@param ${datatype} ${paramname} ${description} ]]></code>
-        <description><![CDATA[Document a function parameter.
-
-Example:
-/**
- *
- * @param bool $baz description
- */]]></description>
-    </codetemplate>
-    <codetemplate abbreviation="var" xml:space="preserve">
-        <code><![CDATA[@var ${datatype} ${description}]]></code>
-        <description><![CDATA[Document the data type of a class variable.
-
-Example:
-/**
- *
- *  @var string contains class1 information
- */]]></description>
-    </codetemplate>
-    <codetemplate abbreviation="todo" xml:space="preserve">
-        <code><![CDATA[@todo  ${description}]]></code>
-        <description><![CDATA[Document changes that will be made in the future.
-
-Example:
-/**
- *
- * @todo make it do something
- */]]></description>
-    </codetemplate>
-    <codetemplate abbreviation="link" xml:space="preserve">
-        <code><![CDATA[@link  ${URL} ${link} ${text}
-
-Example:
-/**
- *
- * @link http://www.example.com
- */
- ]]></code>
-        <description><![CDATA[Display a hyperlink to a URL in the documentation.
-@link  URL  link text
-@link URL, URL, URL...
-
-Example:
-/**
- *
- * @link http://www.example.com
- */
- 
-
-/**
- *
- * @link MyClass
- */ ]]></description>
-    </codetemplate>
-    <codetemplate abbreviation="ver" xml:space="preserve">
-        <code><![CDATA[@version ${versionstring}]]></code>
-        <description><![CDATA[Version of current element.
-
-Example:
-/**
- *
- *  @version customversionstring1.0
- */]]></description>
-    </codetemplate>
     <codetemplate abbreviation="since" xml:space="preserve">
         <code><![CDATA[@since  ${version} ${info_string}]]></code>
         <description><![CDATA[Document when (at which version) an element was first added to a package.
@@ -162,27 +97,6 @@ Example:
  * @author Gregory Beaver <cellog@php.net>
  */]]></description>
     </codetemplate>
-    <codetemplate abbreviation="title" xml:space="preserve">
-        <code><![CDATA[@title  ${title}]]></code>
-        <description><![CDATA[Set the title.
-Example:
-/**
- *
- *  @title  title
- */
-]]></description>
-    </codetemplate>
-    <codetemplate abbreviation="igr" xml:space="preserve">
-        <code><![CDATA[@ignore]]></code>
-        <description><![CDATA[Prevent documentation of an element.
-
-Exemple:
-
-/**
- *
- * @ignore
- */]]></description>
-    </codetemplate>
     <codetemplate abbreviation="abs" xml:space="preserve">
         <code><![CDATA[@abstract]]></code>
         <description><![CDATA[@abstract tag to declare a method, class variable, or class.
@@ -205,47 +119,17 @@ Example:
  * @subpackage data
  */]]></description>
     </codetemplate>
-    <codetemplate abbreviation="name" xml:space="preserve">
-        <code><![CDATA[@name  ${globalvariablename}]]></code>
-        <description><![CDATA[Specify an alias to use for a procedural page or global variable in displayed documentation and linking.
-
-Example:
-/**
- *
- * @name $baz
- */]]></description>
+    <codetemplate abbreviation="expcode" xml:space="preserve">
+        <code><![CDATA[@expectedExceptionCode ${code}]]></code>
+        <description><![CDATA[PHPUnit: test for error-code]]></description>
     </codetemplate>
-    <codetemplate abbreviation="subs" xml:space="preserve">
-        <code><![CDATA[@subscribe]]></code>
-        <description><![CDATA[get subscribe setting of method.
-Note: you may NOT use the annotations "overwrite" and "subscribe" at
-the same time.
-Example:
-/**
- *
- * @subscribe
- */]]></description>
+    <codetemplate abbreviation="depends" xml:space="preserve">
+        <code><![CDATA[@depends ${test}]]></code>
+        <description><![CDATA[PHPUnit: test depends on another]]></description>
     </codetemplate>
-    <codetemplate abbreviation="usr" xml:space="preserve">
-        <code><![CDATA[@user group: ${groupName}, role: ${roleName}, level: ${level}]]></code>
-        <description><![CDATA[User security check for use a function.
-Example:
-/**
- *
- *  @user group: project, role: moderator
- */
-]]></description>
-    </codetemplate>
-    <codetemplate abbreviation="catg" xml:space="preserve">
-        <code><![CDATA[@category ${mycategory}]]></code>
-        <description><![CDATA[Specify a category to organize the documented element's package into
-
-Example:
-
-/**
- * 
- * @category mycategory
- */]]></description>
+    <codetemplate abbreviation="runtestproc" xml:space="preserve">
+        <code><![CDATA[@runTestsInSeparateProcesses]]></code>
+        <description><![CDATA[PHPUnit: not documented]]></description>
     </codetemplate>
     <codetemplate abbreviation="final" xml:space="preserve">
         <code><![CDATA[@final]]></code>
@@ -278,16 +162,6 @@ Example:
  * @static
  */]]></description>
     </codetemplate>
-    <codetemplate abbreviation="rtn" xml:space="preserve">
-        <code><![CDATA[@return ${datatype} ${description}]]></code>
-        <description><![CDATA[Specify the return type of a function or method.
-
-Example:
-/**
- *
- * @return mixed decscription
- */]]></description>
-    </codetemplate>
     <codetemplate abbreviation="glb" xml:space="preserve">
         <code><![CDATA[@global ${datatype} ${globalvariablename}]]></code>
         <description><![CDATA[Document a global variable, or its use in a function/method
@@ -318,14 +192,14 @@ Example:
  * @copyright Copyright (c) 2002, Gregory Beaver
  */]]></description>
     </codetemplate>
-    <codetemplate abbreviation="throws" xml:space="preserve">
-        <code><![CDATA[@throws  ${Exception}  ${cursor}]]></code>
-        <description><![CDATA[Declares the name of an Exception that may be thrown by the function.
+    <codetemplate abbreviation="rtn" xml:space="preserve">
+        <code><![CDATA[@return ${datatype} ${description}]]></code>
+        <description><![CDATA[Specify the return type of a function or method.
 
 Example:
-
 /**
- * @throws  NotReadableException  when file is not readable
+ *
+ * @return mixed decscription
  */]]></description>
     </codetemplate>
     <codetemplate abbreviation="menu" xml:space="preserve">
@@ -338,37 +212,14 @@ Example:
  *  @menu  group: start, title: sitemap_title, image: image.jpg
  */]]></description>
     </codetemplate>
-    <codetemplate abbreviation="prop" xml:space="preserve">
-        <code><![CDATA[@property ${datatype} ${description}]]></code>
-        <description><![CDATA["Magic" Property of a class.
-
-Example:
-/**
- *
- * @property mixed $regular regular read/write property
- */]]></description>
-    </codetemplate>
-    <codetemplate abbreviation="depre" xml:space="preserve">
-        <code><![CDATA[@deprecated ${version}]]></code>
-        <description><![CDATA[Document elements that have been deprecated and should not be used as they may be removed at any time from a future version
+    <codetemplate abbreviation="throws" xml:space="preserve">
+        <code><![CDATA[@throws  ${Exception}  ${cursor}]]></code>
+        <description><![CDATA[Declares the name of an Exception that may be thrown by the function.
 
 Example:
 
 /**
- * 
- * @deprecated deprecated since version 2.0
- */]]></description>
-    </codetemplate>
-    <codetemplate abbreviation="lic" xml:space="preserve">
-        <code><![CDATA[@license ${URL} ${nameOfLicense}
-
-]]></code>
-        <description><![CDATA[Display a hyperlink to a URL for a license.
-
-Example:
-/**
- * 
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @throws  NotReadableException  when file is not readable
  */]]></description>
     </codetemplate>
     <codetemplate abbreviation="mtd" xml:space="preserve">
@@ -406,26 +257,13 @@ Example:
  * @staticvar array $bar is used to make me happy.
  */]]></description>
     </codetemplate>
-    <codetemplate abbreviation="see" xml:space="preserve">
-        <code><![CDATA[@see ${subclass}::${method}()]]></code>
-        <description><![CDATA[Display a link to the documentation for an element.
-
-Example:
-/**
- *
- * @see subclass::method()
- */]]></description>
+    <codetemplate abbreviation="covers" xml:space="preserve">
+        <code><![CDATA[@covers ${class}::${method}]]></code>
+        <description><![CDATA[PHPUnit: limit code-coverage to class or method]]></description>
     </codetemplate>
-    <codetemplate abbreviation="tpl" xml:space="preserve">
-        <code><![CDATA[@template ${templateName}]]></code>
-        <description><![CDATA[set template for the current method.
-
-Example:
-/**
- *
- *  @template PROJECT_LIST
- */
-]]></description>
+    <codetemplate abbreviation="expexc" xml:space="preserve">
+        <code><![CDATA[@expectedException ${Exception}]]></code>
+        <description><![CDATA[PHPUnit: test for exception]]></description>
     </codetemplate>
     <codetemplate abbreviation="active" xml:space="preserve">
         <code><![CDATA[@active ${status}]]></code>
@@ -439,8 +277,266 @@ Allowed Entries:
 Example:
 /**
  *
- *  @active  always
+ * @active  always
  */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="buff" xml:space="preserve">
+        <code><![CDATA[@outputBuffering enabled]]></code>
+        <description><![CDATA[PHPUnit: enable output-buffering]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="inal" xml:space="preserve">
+        <code><![CDATA[@internal  ${anyInformations}]]></code>
+        <description><![CDATA[Mark documentation as private, internal to the software project.
+@internal  any information that should not be displayed in public documentation [unspecified format]
+Example:
+
+/**
+ * @internal the class uses the private methods {@link _foo()} and {@link _bar()} to do some wacky stuff
+ * 
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="prio" xml:space="preserve">
+        <code><![CDATA[@priority ${level}]]></code>
+        <description><![CDATA[Set the priority level.
+Allowed Entries:
+    lowest:  0 or lowest
+    low:     1 or low
+    normal:  2 or normal
+    high:    3 or high    
+    highest: 4 or highest
+
+Example:
+/**
+ *
+ *  @priority  high
+ */
+]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="savem" xml:space="preserve">
+        <code><![CDATA[@safemode]]></code>
+        <description><![CDATA[get safemode setting of method
+    bool(true) for "safemode must be active",
+    bool(false) for "safemode must NOT be active",
+    or NULL for "don't care".
+Example:
+/**
+ *
+ *  @safemode
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="param" xml:space="preserve">
+        <code><![CDATA[@param ${datatype} ${paramname} ${description} ]]></code>
+        <description><![CDATA[Document a function parameter.
+
+Example:
+/**
+ *
+ * @param bool $baz description
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="var" xml:space="preserve">
+        <code><![CDATA[@var ${datatype} ${description}]]></code>
+        <description><![CDATA[Document the data type of a class variable.
+
+Example:
+/**
+ *
+ *  @var string contains class1 information
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="link" xml:space="preserve">
+        <code><![CDATA[@link  ${URL} ${link} ${text}
+
+Example:
+/**
+ *
+ * @link http://www.example.com
+ */
+ ]]></code>
+        <description><![CDATA[Display a hyperlink to a URL in the documentation.
+@link  URL  link text
+@link URL, URL, URL...
+
+Example:
+/**
+ *
+ * @link http://www.example.com
+ */
+ 
+
+/**
+ *
+ * @link MyClass
+ */ ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="todo" xml:space="preserve">
+        <code><![CDATA[@todo  ${description}]]></code>
+        <description><![CDATA[Document changes that will be made in the future.
+
+Example:
+/**
+ *
+ * @todo make it do something
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="ver" xml:space="preserve">
+        <code><![CDATA[@version ${versionstring}]]></code>
+        <description><![CDATA[Version of current element.
+
+Example:
+/**
+ *
+ *  @version customversionstring1.0
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="runproc" xml:space="preserve">
+        <code><![CDATA[@runInSeparateProcess]]></code>
+        <description><![CDATA[PHPUnit: not documented]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="backupg" xml:space="preserve">
+        <code><![CDATA[@backupGlobals disabled]]></code>
+        <description><![CDATA[PHPUnit: disable backup and restore operations for global variables]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="title" xml:space="preserve">
+        <code><![CDATA[@title  ${title}]]></code>
+        <description><![CDATA[Set the title.
+Example:
+/**
+ *
+ *  @title  title
+ */
+]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="expmsg" xml:space="preserve">
+        <code><![CDATA[@expectedExceptionMessage ${Some_Message}]]></code>
+        <description><![CDATA[PHPUnit: test for specified exception message]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="igr" xml:space="preserve">
+        <code><![CDATA[@ignore]]></code>
+        <description><![CDATA[Prevent documentation of an element.
+
+Exemple:
+
+/**
+ *
+ * @ignore
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="subs" xml:space="preserve">
+        <code><![CDATA[@subscribe]]></code>
+        <description><![CDATA[get subscribe setting of method.
+Note: you may NOT use the annotations "overwrite" and "subscribe" at
+the same time.
+Example:
+/**
+ *
+ * @subscribe
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="name" xml:space="preserve">
+        <code><![CDATA[@name  ${globalvariablename}]]></code>
+        <description><![CDATA[Specify an alias to use for a procedural page or global variable in displayed documentation and linking.
+
+Example:
+/**
+ *
+ * @name $baz
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="backups" xml:space="preserve">
+        <code><![CDATA[@backupStaticAttributes disabled]]></code>
+        <description><![CDATA[PHPUnit: disable backup and restore operations for static attributes]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="usr" xml:space="preserve">
+        <code><![CDATA[@user group: ${groupName}, role: ${roleName}, level: ${level}]]></code>
+        <description><![CDATA[User security check for use a function.
+Example:
+/**
+ *
+ *  @user group: project, role: moderator
+ */
+]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="catg" xml:space="preserve">
+        <code><![CDATA[@category ${mycategory}]]></code>
+        <description><![CDATA[Specify a category to organize the documented element's package into
+
+Example:
+
+/**
+ * 
+ * @category mycategory
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="datap" xml:space="preserve">
+        <code><![CDATA[@dataProvider ${method}]]></code>
+        <description><![CDATA[PHPUnit: define method to provide test-arguments]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="prop" xml:space="preserve">
+        <code><![CDATA[@property ${datatype} ${description}]]></code>
+        <description><![CDATA["Magic" Property of a class.
+
+Example:
+/**
+ *
+ * @property mixed $regular regular read/write property
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="depre" xml:space="preserve">
+        <code><![CDATA[@deprecated ${version}]]></code>
+        <description><![CDATA[Document elements that have been deprecated and should not be used as they may be removed at any time from a future version
+
+Example:
+
+/**
+ * 
+ * @deprecated deprecated since version 2.0
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="lic" xml:space="preserve">
+        <code><![CDATA[@license ${URL} ${nameOfLicense}
+
+]]></code>
+        <description><![CDATA[Display a hyperlink to a URL for a license.
+
+Example:
+/**
+ * 
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="t" xml:space="preserve">
+        <code><![CDATA[@test]]></code>
+        <description><![CDATA[PHPUnit: mark as test]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="see" xml:space="preserve">
+        <code><![CDATA[@see ${subclass}::${method}()]]></code>
+        <description><![CDATA[Display a link to the documentation for an element.
+
+Example:
+/**
+ *
+ * @see subclass::method()
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="tt" xml:space="preserve">
+        <code><![CDATA[@ticket ${number}]]></code>
+        <description><![CDATA[PHPUnit: associate test with bug-ticket]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="tpl" xml:space="preserve">
+        <code><![CDATA[@template ${templateName}]]></code>
+        <description><![CDATA[set template for the current method.
+
+Example:
+/**
+ *
+ *  @template PROJECT_LIST
+ */
+]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="assert" xml:space="preserve">
+        <code><![CDATA[@assert (${param1}, ${param2}) == ${result}]]></code>
+        <description><![CDATA[PHPUnit: add auto-generated test-case]]></description>
     </codetemplate>
     <codetemplate abbreviation="onsuc" xml:space="preserve">
         <code><![CDATA[@onsuccess   goto: ${function}, text: ${message}]]></code>
@@ -462,16 +558,9 @@ Example:
  * @uses subclass::$foo this is compared to TEST_CONST
  */]]></description>
     </codetemplate>
-    <codetemplate abbreviation="inal" xml:space="preserve">
-        <code><![CDATA[@internal  ${anyInformations}]]></code>
-        <description><![CDATA[Mark documentation as private, internal to the software project.
-@internal  any information that should not be displayed in public documentation [unspecified format]
-Example:
-
-/**
- * @internal the class uses the private methods {@link _foo()} and {@link _bar()} to do some wacky stuff
- * 
- */]]></description>
+    <codetemplate abbreviation="group" xml:space="preserve">
+        <code><![CDATA[@group ${groupName}]]></code>
+        <description><![CDATA[PHPUnit+Yana: group settings (defined the group which the method belongs too.)]]></description>
     </codetemplate>
     <codetemplate abbreviation="requ" xml:space="preserve">
         <code><![CDATA[@requires]]></code>
@@ -481,32 +570,6 @@ Example:
  * @requires
  */]]></description>
     </codetemplate>
-    <codetemplate abbreviation="prio" xml:space="preserve">
-        <code><![CDATA[@priority ${level}]]></code>
-        <description><![CDATA[Set the priority level.
-Allowed Entries:
-    lowest:  0 or lowest
-    low:     1 or low
-    normal:  2 or normal
-    high:    3 or high    
-    highest: 4 or highest
-
-Example:
-/**
- *
- *  @priority  high
- */
-]]></description>
-    </codetemplate>
-    <codetemplate abbreviation="group" xml:space="preserve">
-        <code><![CDATA[@group ${groupName}]]></code>
-        <description><![CDATA[group setteings (defined the group which the method belongs too.)
-Example:
-/**
- *
- *  @group db_tools
- */]]></description>
-    </codetemplate>
     <codetemplate abbreviation="onerr" xml:space="preserve">
         <code><![CDATA[@onerror  goto: ${function}, text: ${message}]]></code>
         <description><![CDATA[settings on how to react on error.
@@ -514,18 +577,6 @@ Example:
 /**
  *
  *  @onerror  goto: GUESTBOOK_READ, text: INPUT_INVALID
- */]]></description>
-    </codetemplate>
-    <codetemplate abbreviation="savem" xml:space="preserve">
-        <code><![CDATA[@safemode]]></code>
-        <description><![CDATA[get safemode setting of method
-    bool(true) for "safemode must be active",
-    bool(false) for "safemode must NOT be active",
-    or NULL for "don't care".
-Example:
-/**
- *
- *  @safemode
  */]]></description>
     </codetemplate>
     <codetemplate abbreviation="acs" xml:space="preserve">
