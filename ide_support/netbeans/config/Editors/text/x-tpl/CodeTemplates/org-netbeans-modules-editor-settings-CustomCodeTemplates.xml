@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE codetemplates PUBLIC "-//NetBeans//DTD Editor Code Templates settings 1.0//EN" "http://www.netbeans.org/dtds/EditorCodeTemplates-1_0.dtd">
+<codetemplates>
+    <codetemplate abbreviation="smlLoad" xml:space="preserve">
+        <code><![CDATA[{smlLoad file="${file_string}" [ section="${section_string}" ] [ scope="${scope_string}" ] }
+${cursor}]]></code>
+        <description><![CDATA[alias of sml_load]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="embTagToolbar" xml:space="preserve">
+        <code><![CDATA[{embeddedTags [ show="${show_string}" ] [ hide="${hide_string}" ] }
+${cursor}]]></code>
+        <description><![CDATA[format toolbar for textarea (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="assign" xml:space="preserve">
+        <code><![CDATA[{assign var="${var}" value="${value}"}
+${cursor}]]></code>
+        <description><![CDATA[assign value to var]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="lower" xml:space="preserve">
+        <code><![CDATA[${var}|lower
+${cursor}]]></code>
+        <description><![CDATA[lowercase]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="MTIME" xml:space="preserve">
+        <code><![CDATA[{$MTIME}${cursor}]]></code>
+        <description><![CDATA[MTIME]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="html_select_time" xml:space="preserve">
+        <code><![CDATA[{html_select_date time="${time}" prefix="${prefix}"}
+${cursor}]]></code>
+        <description><![CDATA[HTML: time selector]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="sml_load" xml:space="preserve">
+        <code><![CDATA[{sml_load file="${file_string}" [ section="${section_string}" ] [ scope="${scope_string}" ] }
+${cursor}]]></code>
+        <description><![CDATA[load SML file (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="strip_tags" xml:space="preserve">
+        <code><![CDATA[${var}|strip_tags ${cursor}]]></code>
+        <description><![CDATA[strip_tags]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="html_select_date" xml:space="preserve">
+        <code><![CDATA[{html_select_date time="${time}" prefix="${prefix}"}
+${cursor}]]></code>
+        <description><![CDATA[HTML: date selector]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="import" xml:space="preserve">
+        <code><![CDATA[{import file="${file_string}"}
+${cursor}]]></code>
+        <description><![CDATA[import template (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="h1" xml:space="preserve">
+        <code><![CDATA[<h1>${cursor}</h1>]]></code>
+        <description><![CDATA[h1 tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="href" xml:space="preserve">
+        <code><![CDATA[<a href={"${url}"|href}></a>
+${cursor}]]></code>
+        <description><![CDATA[href tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="smiliesToolbar" xml:space="preserve">
+        <code><![CDATA[{smilies [ width="${width_integer}" ] } ${cursor}]]></code>
+        <description><![CDATA[smiley toolbar for textarea (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="option" xml:space="preserve">
+        <code><![CDATA[<label for="${select}">${description}</label><br />
+<select name="${name}" id="${select}" size="4">
+  <option value="1">${option1}</option>
+  <option value="2">${option2}</option>
+  <option value="3">${option3}</option>
+  <option value="4">${option4}</option>
+</select>
+${cursor}]]></code>
+        <description><![CDATA[option tag ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="h3" xml:space="preserve">
+        <code><![CDATA[<h3>${cursor}</h3>]]></code>
+        <description><![CDATA[h3 tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="h2" xml:space="preserve">
+        <code><![CDATA[<h2>${cursor}</h2>]]></code>
+        <description><![CDATA[h2 tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="tbl" xml:space="preserve">
+        <code><![CDATA[<table class="${class}" cellspacing="0" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tfoot>
+    <tbody>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+${cursor}]]></code>
+        <description><![CDATA[table tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="fetch" xml:space="preserve">
+        <code><![CDATA[{fetch file="${file}" assign="${assign}"}${cursor}]]></code>
+        <description><![CDATA[fetch a template and assign result to var]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="form" xml:space="preserve">
+        <code><![CDATA[<form method="${method}" action="${action}">
+    ${cursor}
+</form>]]></code>
+        <description><![CDATA[form tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="eval" xml:space="preserve">
+        <code><![CDATA[{eval var="${var}" assign="${assign}"}
+${cursor}]]></code>
+        <description><![CDATA[evaluate var as a template]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="html_image" xml:space="preserve">
+        <code><![CDATA[{html_image file="${file}" alt="${alt}" height="${height}" width="${width}" href="${href}"}
+${cursor}]]></code>
+        <description><![CDATA[HTML: images]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="html_table" xml:space="preserve">
+        <code><![CDATA[{html_table loop="${loop}" cols="${cols}" rows="${rows}" caption="${caption}"}
+${cursor}]]></code>
+        <description><![CDATA[HTML: table]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="capitalize" xml:space="preserve">
+        <code><![CDATA[${var}|capitalize${cursor}]]></code>
+        <description><![CDATA[capitalize]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="create" xml:space="preserve">
+        <code><![CDATA[{create template="${template_string}" file="${file_string}" table="${table_string}" [ where="${where_string}" ] [ desc="${desc_bool}" ] [ sort="${sort_string}" ] [ page="${page_integer}" ] [ entries="<integer>" ] [ titles="<boolean>" ] [ on_new="<string>" ] [ on_edit="<string>" ] [ on_delete="<string>" ] [ on_search="<string>" ] }
+${cursor}]]></code>
+        <description><![CDATA[GUI for db table (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="include" xml:space="preserve">
+        <code><![CDATA[{include file="${file}" assign="${assign}"}
+${cursor}]]></code>
+        <description><![CDATA[include file]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="urlEncode" xml:space="preserve">
+        <code><![CDATA[{$$${var}|urlEncode} ${cursor}]]></code>
+        <description><![CDATA[encode URL parameter (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="preview" xml:space="preserve">
+        <code><![CDATA[{preview [ width="${width_integer}" ] [ height="height_integer" ]}
+${cursor}]]></code>
+        <description><![CDATA[preview of current entry (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="truncate" xml:space="preserve">
+        <code><![CDATA[${var}|truncate:"" ${cursor}]]></code>
+        <description><![CDATA[truncate]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="PHP_SELF" xml:space="preserve">
+        <code><![CDATA[{$PHP_SELF}${cursor}]]></code>
+        <description><![CDATA[PHP_SELF]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="html_radios" xml:space="preserve">
+        <code><![CDATA[{html_radios name="${name}" selected="${selected}" values="${values}" output="${output}" options="${options}"}
+${cursor}]]></code>
+        <description><![CDATA[HTML: radio buttons]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="count_paragraphs" xml:space="preserve">
+        <code><![CDATA[${var}|count_paragraphs
+${cursor}]]></code>
+        <description><![CDATA[count_paragraphs]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="css" xml:space="preserve">
+        <code><![CDATA[{"${var}.css"|css}
+${cursor}]]></code>
+        <description><![CDATA[create link to css file (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="date" xml:space="preserve">
+        <code><![CDATA[{$$${var}|date}${cursor}]]></code>
+        <description><![CDATA[convert UTC to date (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="escape" xml:space="preserve">
+        <code><![CDATA[${var}|escape:"":""
+${cursor}]]></code>
+        <description><![CDATA[escape]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="meta" xml:space="preserve">
+        <code><![CDATA[<meta name="${name}" content="${content}" />
+${cursor}]]></code>
+        <description><![CDATA[meta tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="regex_replace" xml:space="preserve">
+        <code><![CDATA[${var}|regex_replace:"":"" ${cursor}]]></code>
+        <description><![CDATA[replace string using regular expressions]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="deflist" xml:space="preserve">
+        <code><![CDATA[<dl>
+    <dt>${dt1}</dt>
+    <dd>${dd1}</dd>
+    <dt>${dt2}</dt>
+    <dd>${dd2}</dd>
+    <dt>${dt3}</dt>
+    <dd>${dd3}</dd>
+</dl>
+${cursor}]]></code>
+        <description><![CDATA[definition list]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="popup" xml:space="preserve">
+        <code><![CDATA[{popup_init src="${src}"}
+{popup text="${text}"}
+${cursor}]]></code>
+        <description><![CDATA[pop up window]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="map" xml:space="preserve">
+        <code><![CDATA[<img src="${imagePath}" usemap="#${mapName}" alt="${title}" />
+<map id="${mapName}">
+    <area href="${target1}" alt="${title1}" shape="rect" coords="${coords1}" />
+    <area href="${target2}" alt="${title2}" shape="rect" coords="${coords2}" />
+    <area href="${target3}" alt="${title3}" shape="circle" coords="${coords3}" />
+</map>
+${cursor}]]></code>
+        <description><![CDATA[map tag (for display a image map)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="numlist" xml:space="preserve">
+        <code><![CDATA[<ol>
+    <li>${desc1}</li>
+    <li>${desc2}</li>
+    <li>${desc3}</li>
+</ol>
+${cursor}]]></code>
+        <description><![CDATA[number list]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="ATIME" xml:space="preserve">
+        <code><![CDATA[{$ATIME}${cursor}]]></code>
+        <description><![CDATA[time of access to template (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="LANGUAGE" xml:space="preserve">
+        <code><![CDATA[{lang id="${id}"}${cursor}]]></code>
+        <description><![CDATA[language reference (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="a" xml:space="preserve">
+        <code><![CDATA[<a href="${target}">${description}</a>
+${cursor}]]></code>
+        <description><![CDATA[a tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="sizeOf" xml:space="preserve">
+        <code><![CDATA[{section value="${value}" assign="${assign}"}
+${cursor}]]></code>
+        <description><![CDATA[get size of array (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="string_format" xml:space="preserve">
+        <code><![CDATA[${var}|string_format:"" ${cursor}]]></code>
+        <description><![CDATA[format string]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="math" xml:space="preserve">
+        <code><![CDATA[{math equation="${equation}" format="${format}" var="${var}" assign="${assign}"}
+${cursor}]]></code>
+        <description><![CDATA[mathematical functions]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="replace" xml:space="preserve">
+        <code><![CDATA[${var}|replace:"":"" ${cursor}]]></code>
+        <description><![CDATA[replace string]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="p" xml:space="preserve">
+        <code><![CDATA[<p>${cursor}</p>]]></code>
+        <description><![CDATA[p tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="doc" xml:space="preserve">
+        <code><![CDATA[{* ${cursor} *}]]></code>
+        <description><![CDATA[doc block ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="captcha" xml:space="preserve">
+        <code><![CDATA[{captcha id="${id}" }${cursor}]]></code>
+        <description><![CDATA[insert spam protection image (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="insert" xml:space="preserve">
+        <code><![CDATA[{insert file="${file}" assign="${assign}"}
+${cursor}]]></code>
+        <description><![CDATA[insert file]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="body" xml:space="preserve">
+        <code><![CDATA[<body id="${id}">
+    ${cursor}
+</body>]]></code>
+        <description><![CDATA[body tag ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="wordwrap" xml:space="preserve">
+        <code><![CDATA[${var}|wordwrap:"" ${cursor}]]></code>
+        <description><![CDATA[wordwrap]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="count_words" xml:space="preserve">
+        <code><![CDATA[${var}|count_words
+${cursor}]]></code>
+        <description><![CDATA[count_words]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="img" xml:space="preserve">
+        <code><![CDATA[<img src="${path}" width="${width}" height="${height}" alt="${optionalDescription}" />
+${cursor}]]></code>
+        <description><![CDATA[image tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="nl2br" xml:space="preserve">
+        <code><![CDATA[${var}|nl2br ${cursor}]]></code>
+        <description><![CDATA[new line too breake]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="br" xml:space="preserve">
+        <code><![CDATA[<br />${cursor}]]></code>
+        <description><![CDATA[break]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="CTIME" xml:space="preserve">
+        <code><![CDATA[{$CTIME}${cursor}]]></code>
+        <description><![CDATA[time temlate was created (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="textformat" xml:space="preserve">
+        <code><![CDATA[{textformat indent="${ident}" indent_first="${ident_first}" wrap="${wrap}" assign="${assign}"}{/textformat} ${cursor}]]></code>
+        <description><![CDATA[text format]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="capture" xml:space="preserve">
+        <code><![CDATA[{capture name="${name}" assign="${assign}"}{/capture}
+${cursor}]]></code>
+        <description><![CDATA[capture output of a block]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="rss" xml:space="preserve">
+        <code><![CDATA[{rss image="${image}"} ${cursor}]]></code>
+        <description><![CDATA[create link to rss file (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="head" xml:space="preserve">
+        <code><![CDATA[<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>${title}</title>
+    <link rel="stylesheet" type="text/css" href="styles/${style}.css"/>
+</head>
+${cursor}]]></code>
+        <description><![CDATA[head tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="cycle" xml:space="preserve">
+        <code><![CDATA[{cycle name="${name}" values="${values}" print="${print}"}
+${cursor}]]></code>
+        <description><![CDATA[cycle through values]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="indent" xml:space="preserve">
+        <code><![CDATA[${var}|indent:"" ${cursor}]]></code>
+        <description><![CDATA[indent]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="printArray" xml:space="preserve">
+        <code><![CDATA[{printArray value="${value}"}${cursor}]]></code>
+        <description><![CDATA[print array as HTML (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="spacify" xml:space="preserve">
+        <code><![CDATA[${var}|spacify:"" ${cursor}]]></code>
+        <description><![CDATA[insert spaces ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="label" xml:space="preserve">
+        <code><![CDATA[<label for="${referenceToInput}">${cursor}</label>]]></code>
+        <description><![CDATA[label tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="strip" xml:space="preserve">
+        <code><![CDATA[${var}|strip ${cursor}]]></code>
+        <description><![CDATA[strip]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="script" xml:space="preserve">
+        <code><![CDATA[<script type="text/javascript">
+    ${cursor}
+</script>]]></code>
+        <description><![CDATA[script tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="url" xml:space="preserve">
+        <code><![CDATA[<meta http-equiv="Refresh" content="2; URL={"${url}"|url}">
+${cursor}]]></code>
+        <description><![CDATA[create url (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="input" xml:space="preserve">
+        <code><![CDATA[<input type="${type}" name="${name}" id="${id}" />
+${cursor}]]></code>
+        <description><![CDATA[input tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="default" xml:space="preserve">
+        <code><![CDATA[${var}|default:""${cursor}]]></code>
+        <description><![CDATA[default value]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="doctype" xml:space="preserve">
+        <code><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+${cursor}]]></code>
+        <description><![CDATA[DOCTYPE]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="foreach" xml:space="preserve">
+        <code><![CDATA[{foreach name="${name}" from=$$${var} item="${item}" key="${key}"}
+    ${cursor}
+{foreachelse}
+
+{/foreach}
+]]></code>
+        <description><![CDATA[loop through array]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="hr" xml:space="preserve">
+        <code><![CDATA[<hr />
+${cursor}]]></code>
+        <description><![CDATA[hr tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="cat" xml:space="preserve">
+        <code><![CDATA[${var}|cat:""
+${cursor}]]></code>
+        <description><![CDATA[cat]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="html_checkboxes" xml:space="preserve">
+        <code><![CDATA[{html_checkboxes name="${name}" values="${values}" output="${output}" options="${options}"}
+${cursor}]]></code>
+        <description><![CDATA[HTML: checkboxes]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="div" xml:space="preserve">
+        <code><![CDATA[<div id="${id}" class="${class}"></div>
+${cursor}]]></code>
+        <description><![CDATA[div tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="count_characters" xml:space="preserve">
+        <code><![CDATA[${var}|count_characters
+${cursor}]]></code>
+        <description><![CDATA[count_characters]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="upper" xml:space="preserve">
+        <code><![CDATA[${var}|upper ${cursor}]]></code>
+        <description><![CDATA[uppercase]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="printUnorderedList" xml:space="preserve">
+        <code><![CDATA[{printUnorderedList value="${value}" keys_as_href="false" layout="1" }
+${cursor}]]></code>
+        <description><![CDATA[print array as ul (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="config_load" xml:space="preserve">
+        <code><![CDATA[{config_load file="${file}" section="${section}" scope="${scope}"}
+${cursor}]]></code>
+        <description><![CDATA[load CONFIG file]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="if" xml:space="preserve">
+        <code><![CDATA[{if ${var}}
+    ${cursor}
+{elseif ${var}}
+
+{else}
+
+{/if}
+            ]]></code>
+        <description><![CDATA[if condition]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="SESSION" xml:space="preserve">
+        <code><![CDATA[{$SESSION_NAME}={$SESSION_ID}${cursor}]]></code>
+        <description><![CDATA[current session name / id (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="date_format" xml:space="preserve">
+        <code><![CDATA[${var}|date_format:""${cursor}]]></code>
+        <description><![CDATA[format date]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="varDump" xml:space="preserve">
+        <code><![CDATA[{varDump var=$$${var}} ${cursor}]]></code>
+        <description><![CDATA[provides a var dump (YANA Framework Debug only)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="counter" xml:space="preserve">
+        <code><![CDATA[{counter start="${start}" skip="${skip}" direction="${direction}" print="${print}" assign="${assign}"}
+${cursor}]]></code>
+        <description><![CDATA[output and increment counter value ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="REMOTE_ADDR" xml:space="preserve">
+        <code><![CDATA[{$REMOTE_ADDR}${cursor}]]></code>
+        <description><![CDATA[visitor's IP (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="list" xml:space="preserve">
+        <code><![CDATA[<ul>
+    <li>${list1}</li>
+    <li>${list2}</li>
+    <li>${list3}</li>
+</ul>
+${cursor}]]></code>
+        <description><![CDATA[list tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="section" xml:space="preserve">
+        <code><![CDATA[{section name="${name}" loop="${loop}" start="${start}" step="${step}" max="${max}" show="${show}"}
+    ${cursor}
+{sectionelse}
+
+{/section}
+            ]]></code>
+        <description><![CDATA[loop through section]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="print" xml:space="preserve">
+        <code><![CDATA[<link rel="stylesheet" href="${path}" media="print" type="text/css" />
+${cursor}]]></code>
+        <description><![CDATA[meta tag link print]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="mailto" xml:space="preserve">
+        <code><![CDATA[<a href="mailto:${email}">${description}</a>
+${cursor}
+
+]]></code>
+        <description><![CDATA[mailto href tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="count_sentences" xml:space="preserve">
+        <code><![CDATA[${var}|count_sentences
+${cursor}]]></code>
+        <description><![CDATA[count_sentences]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="smilies" xml:space="preserve">
+        <code><![CDATA[{$$${var}|smilies} ${cursor}]]></code>
+        <description><![CDATA[convert text-smilies (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="html" xml:space="preserve">
+        <code><![CDATA[<html xmlns="http://www.w3.org/1999/xhtml">
+    ${cursor}
+</html>]]></code>
+        <description><![CDATA[html tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="html_options" xml:space="preserve">
+        <code><![CDATA[{html_options name="${name}" selected="${selected}" values="${values}" output="${output}" options="${options}"}
+${cursor}]]></code>
+        <description><![CDATA[HTML: options]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="embTag" xml:space="preserve">
+        <code><![CDATA[{$$${var}|embeddedTags}${cursor}]]></code>
+        <description><![CDATA[(modifier) convert emb tags to HTML (YANA Framework)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="literal" xml:space="preserve">
+        <code><![CDATA[{literal}
+    ${cursor}
+{/literal}]]></code>
+        <description><![CDATA[literal (escape parsing)]]></description>
+    </codetemplate>
+</codetemplates>
