@@ -12,6 +12,11 @@ $$${VARIABLE variableFromNextAssignmentName default="variable"} = ${cursor};]]><
 ${cursor}]]></code>
         <description><![CDATA[parent constructor]]></description>
     </codetemplate>
+    <codetemplate abbreviation="param" xml:space="preserve">
+        <code><![CDATA[assert('is_${string}(${variable variableFromPreviousAssignment}); // Invalid argument ${variable}: ${string} expected');
+${cursor}]]></code>
+        <description><![CDATA[parameter type check]]></description>
+    </codetemplate>
     <codetemplate abbreviation="whilelist" xml:space="preserve">
         <code><![CDATA[reset($$${variable});
 assert('!isset($$${key}); // Cannot redeclare var $$${key}');
@@ -46,7 +51,7 @@ ${cursor}]]></code>
         <description><![CDATA[doc block for variable]]></description>
     </codetemplate>
     <codetemplate abbreviation="astr" xml:space="preserve">
-        <code><![CDATA[assert('is_string($$${variable}); // Wrong argument type argument 1. String expected');
+        <code><![CDATA[assert('is_${string}(${variable variableFromPreviousAssignment}); // Invalid argument ${variable}: ${string} expected');
 ${cursor}]]></code>
         <description><![CDATA[assert string]]></description>
     </codetemplate>
@@ -73,7 +78,7 @@ ${cursor}]]></code>
         <description><![CDATA[switch statement]]></description>
     </codetemplate>
     <codetemplate abbreviation="afloat" xml:space="preserve">
-        <code><![CDATA[assert('is_float($$${variable}); // Wrong argument type argument 1. Float expected');
+        <code><![CDATA[assert('is_${float}(${variable variableFromPreviousAssignment}); // Invalid argument ${variable}: ${float} expected');
 ${cursor}]]></code>
         <description><![CDATA[assert float]]></description>
     </codetemplate>
@@ -130,7 +135,7 @@ if ($$${variable}) {
         <description><![CDATA[if statment]]></description>
     </codetemplate>
     <codetemplate abbreviation="abool" xml:space="preserve">
-        <code><![CDATA[assert('is_bool($$${variable}); // Wrong argument type argument 1. Boolean expected');
+        <code><![CDATA[assert('is_${bool}(${variable variableFromPreviousAssignment}); // Invalid argument ${variable}: ${bool} expected');
 ${cursor}]]></code>
         <description><![CDATA[assert bool]]></description>
     </codetemplate>
@@ -241,7 +246,7 @@ class ${ClassName}
         <description><![CDATA[Output a string]]></description>
     </codetemplate>
     <codetemplate abbreviation="aarray" xml:space="preserve">
-        <code><![CDATA[assert('is_array($$${variable}); // Wrong argument type argument 1. Array expected');
+        <code><![CDATA[assert('is_${array}(${variable variableFromPreviousAssignment}); // Invalid argument ${variable}: ${array} expected');
 ${cursor}]]></code>
         <description><![CDATA[assert array]]></description>
     </codetemplate>
@@ -297,7 +302,7 @@ ob_end_clean();]]></code>
 ]]></description>
     </codetemplate>
     <codetemplate abbreviation="aint" xml:space="preserve">
-        <code><![CDATA[assert('is_int($$${variable}); // Wrong argument type argument 1. Integer expected');
+        <code><![CDATA[assert('is_${int}(${variable variableFromPreviousAssignment}); // Invalid argument ${variable}: ${int} expected');
 ${cursor}]]></code>
         <description><![CDATA[assert integer]]></description>
     </codetemplate>
