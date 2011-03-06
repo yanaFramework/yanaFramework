@@ -53,6 +53,15 @@ class PluginUserLevelTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException InvalidArgumentException
+     */
+    public function testSetRoleInvalidArgumentException()
+    {
+        $this->object->setRole(' ');
+    }
+
+    /**
+     * @test
      */
     public function testGetGroup()
     {
@@ -66,6 +75,15 @@ class PluginUserLevelTest extends PHPUnit_Framework_TestCase
     {
         $this->object->setGroup('test');
         $this->assertEquals('test', $this->object->getGroup());
+    }
+
+    /**
+     * @test
+     * @expectedException InvalidArgumentException
+     */
+    public function testSetGroupInvalidArgumentException()
+    {
+        $this->object->setGroup(' ');
     }
 
     /**
