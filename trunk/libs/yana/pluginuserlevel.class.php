@@ -42,7 +42,7 @@
  * @subpackage  core
  * @ignore
  */
-class PluginGrant extends Object
+class PluginUserLevel extends Object
 {
 
     /**
