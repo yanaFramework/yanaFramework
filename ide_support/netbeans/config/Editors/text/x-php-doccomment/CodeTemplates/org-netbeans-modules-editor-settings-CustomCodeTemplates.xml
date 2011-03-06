@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE codetemplates PUBLIC "-//NetBeans//DTD Editor Code Templates settings 1.0//EN" "http://www.netbeans.org/dtds/EditorCodeTemplates-1_0.dtd">
+<codetemplates>
+    <codetemplate abbreviation="deprec" xml:space="preserve">
+        <code><![CDATA[@deprec  since ${cursor}]]></code>
+        <description><![CDATA[Document elements that have been deprecated and should not be used as they may be removed at any time from a future version.
+
+Example:
+
+/**
+ * @deprec since 2.0
+ */
+
+also legal:
+
+/**
+ * @deprecated since 2.0
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="exap" xml:space="preserve">
+        <code><![CDATA[example ${path_to_example} ${description}]]></code>
+        <description><![CDATA[Include an external example file with syntax highlighting
+
+Example:
+/**
+ * My function
+ *
+ * Here is an inline example:
+ * <code>
+ * <?php
+ * echo strlen('6');
+ * ?>
+ * </code>
+ * @example /path/to/example.php How to use this function
+ * @example anotherexample.inc This example is in the "examples" subdirectory
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="filesrc" xml:space="preserve">
+        <code><![CDATA[@filesource]]></code>
+        <description><![CDATA[create a syntax-highlighted cross-referenced file containing source code of the current file and link to it.
+
+Example:
+/**
+ *
+ * @filesource
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="param" xml:space="preserve">
+        <code><![CDATA[@param ${datatype} ${paramname} ${description} ]]></code>
+        <description><![CDATA[Document a function parameter.
+
+Example:
+/**
+ *
+ * @param bool $baz description
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="var" xml:space="preserve">
+        <code><![CDATA[@var ${datatype} ${description}]]></code>
+        <description><![CDATA[Document the data type of a class variable.
+
+Example:
+/**
+ *
+ *  @var string contains class1 information
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="todo" xml:space="preserve">
+        <code><![CDATA[@todo  ${description}]]></code>
+        <description><![CDATA[Document changes that will be made in the future.
+
+Example:
+/**
+ *
+ * @todo make it do something
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="link" xml:space="preserve">
+        <code><![CDATA[@link  ${URL} ${link} ${text}
+
+Example:
+/**
+ *
+ * @link http://www.example.com
+ */
+ ]]></code>
+        <description><![CDATA[Display a hyperlink to a URL in the documentation.
+@link  URL  link text
+@link URL, URL, URL...
+
+Example:
+/**
+ *
+ * @link http://www.example.com
+ */
+ 
+
+/**
+ *
+ * @link MyClass
+ */ ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="ver" xml:space="preserve">
+        <code><![CDATA[@version ${versionstring}]]></code>
+        <description><![CDATA[Version of current element.
+
+Example:
+/**
+ *
+ *  @version customversionstring1.0
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="since" xml:space="preserve">
+        <code><![CDATA[@since  ${version} ${info_string}]]></code>
+        <description><![CDATA[Document when (at which version) an element was first added to a package.
+
+Example:
+/**
+ *
+ * @since Version 21.1
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="overr" xml:space="preserve">
+        <code><![CDATA[@overwrite]]></code>
+        <description><![CDATA[overwrite an existing method.
+Note: you may NOT use the annotations "overwrite" and "subscribe" at
+the same time.
+Example:
+/**
+ *
+ * @overwrite
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="type" xml:space="preserve">
+        <code><![CDATA[@type  ${access}]]></code>
+        <description><![CDATA[Type of the method.
+Example:
+/**
+ *
+ *  @type read
+ */
+]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="ext" xml:space="preserve">
+        <code><![CDATA[@extends    ${className}]]></code>
+        <description><![CDATA[extends the class with the current class.
+Example:
+/**
+ *
+ *  @extends rss
+ */
+]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="aut" xml:space="preserve">
+        <code><![CDATA[@author ${name}]]></code>
+        <description><![CDATA[Author of current element
+
+Example:
+
+/**
+ * 
+ * @author Gregory Beaver <cellog@php.net>
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="title" xml:space="preserve">
+        <code><![CDATA[@title  ${title}]]></code>
+        <description><![CDATA[Set the title.
+Example:
+/**
+ *
+ *  @title  title
+ */
+]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="igr" xml:space="preserve">
+        <code><![CDATA[@ignore]]></code>
+        <description><![CDATA[Prevent documentation of an element.
+
+Exemple:
+
+/**
+ *
+ * @ignore
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="abs" xml:space="preserve">
+        <code><![CDATA[@abstract]]></code>
+        <description><![CDATA[@abstract tag to declare a method, class variable, or class.
+
+Example:
+
+/**
+ * 
+ * @abstract
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="subpcg" xml:space="preserve">
+        <code><![CDATA[@subpackage ${subpackagename}]]></code>
+        <description><![CDATA[Specify sub-package to group classes or functions and defines into. Requires @package tag
+
+Example:
+/**
+ *
+ * @package pagelevel_package
+ * @subpackage data
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="name" xml:space="preserve">
+        <code><![CDATA[@name  ${globalvariablename}]]></code>
+        <description><![CDATA[Specify an alias to use for a procedural page or global variable in displayed documentation and linking.
+
+Example:
+/**
+ *
+ * @name $baz
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="subs" xml:space="preserve">
+        <code><![CDATA[@subscribe]]></code>
+        <description><![CDATA[get subscribe setting of method.
+Note: you may NOT use the annotations "overwrite" and "subscribe" at
+the same time.
+Example:
+/**
+ *
+ * @subscribe
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="usr" xml:space="preserve">
+        <code><![CDATA[@user group: ${groupName}, role: ${roleName}, level: ${level}]]></code>
+        <description><![CDATA[User security check for use a function.
+Example:
+/**
+ *
+ *  @user group: project, role: moderator
+ */
+]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="catg" xml:space="preserve">
+        <code><![CDATA[@category ${mycategory}]]></code>
+        <description><![CDATA[Specify a category to organize the documented element's package into
+
+Example:
+
+/**
+ * 
+ * @category mycategory
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="final" xml:space="preserve">
+        <code><![CDATA[@final]]></code>
+        <description><![CDATA[Document a class method that should never be overridden in a child class
+
+Example:
+/**
+ *
+ * @final
+ */
+]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="pcg" xml:space="preserve">
+        <code><![CDATA[@package  ${packagename}]]></code>
+        <description><![CDATA[Specify package to group classes or functions and defines into.
+
+Example:
+/**
+ *
+ * @package pagelevel_package
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="static" xml:space="preserve">
+        <code><![CDATA[@static]]></code>
+        <description><![CDATA[Document a static property or method.
+
+Example:
+/**
+ *
+ * @static
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="rtn" xml:space="preserve">
+        <code><![CDATA[@return ${datatype} ${description}]]></code>
+        <description><![CDATA[Specify the return type of a function or method.
+
+Example:
+/**
+ *
+ * @return mixed decscription
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="glb" xml:space="preserve">
+        <code><![CDATA[@global ${datatype} ${globalvariablename}]]></code>
+        <description><![CDATA[Document a global variable, or its use in a function/method
+
+Example:
+
+@global  datatype  $globalvariablename
+/**
+ * 
+ * @global bool $GLOBALS['baz'] 
+ */
+ 
+ or 
+ 
+@global datatype description 
+/** 
+ * @global parserElement $_Element 
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="copyr" xml:space="preserve">
+        <code><![CDATA[@copyright Copyright (c) ${year}, ${authorName}]]></code>
+        <description><![CDATA[Document Copyright information
+
+Example:
+
+/**
+ * 
+ * @copyright Copyright (c) 2002, Gregory Beaver
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="throws" xml:space="preserve">
+        <code><![CDATA[@throws  ${Exception}  ${cursor}]]></code>
+        <description><![CDATA[Declares the name of an Exception that may be thrown by the function.
+
+Example:
+
+/**
+ * @throws  NotReadableException  when file is not readable
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="menu" xml:space="preserve">
+        <code><![CDATA[@menu group: ${groupName}, title: {lang id="${titleId}"}]]></code>
+        <description><![CDATA[menu entry with the attributes which are displayed on the user interface
+
+Example:
+/**
+ *
+ *  @menu  group: start, title: sitemap_title, image: image.jpg
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="prop" xml:space="preserve">
+        <code><![CDATA[@property ${datatype} ${description}]]></code>
+        <description><![CDATA["Magic" Property of a class.
+
+Example:
+/**
+ *
+ * @property mixed $regular regular read/write property
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="depre" xml:space="preserve">
+        <code><![CDATA[@deprecated ${version}]]></code>
+        <description><![CDATA[Document elements that have been deprecated and should not be used as they may be removed at any time from a future version
+
+Example:
+
+/**
+ * 
+ * @deprecated deprecated since version 2.0
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="lic" xml:space="preserve">
+        <code><![CDATA[@license ${URL} ${nameOfLicense}
+
+]]></code>
+        <description><![CDATA[Display a hyperlink to a URL for a license.
+
+Example:
+/**
+ * 
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="mtd" xml:space="preserve">
+        <code><![CDATA[@method ${returntype} ${description}]]></code>
+        <description><![CDATA["Magic" Method of a class.
+
+Example:
+/**
+ *
+ * @method int borp() borp(int $int1, int $int2) multiply two integers
+ */
+ ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="transl" xml:space="preserve">
+        <code><![CDATA[@translation de: ${title} ${description}
+]]></code>
+        <description><![CDATA[teanslation for the current class.
+Example:
+/**
+ * {@translation
+ *   de: Yana Framework
+ *
+ *       description
+ * }
+ */
+]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="staticv" xml:space="preserve">
+        <code><![CDATA[@staticvar ${datatype} ${description}]]></code>
+        <description><![CDATA[Document a static variable's use in a function/method.
+
+Example:
+/**
+ *
+ * @staticvar array $bar is used to make me happy.
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="see" xml:space="preserve">
+        <code><![CDATA[@see ${subclass}::${method}()]]></code>
+        <description><![CDATA[Display a link to the documentation for an element.
+
+Example:
+/**
+ *
+ * @see subclass::method()
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="tpl" xml:space="preserve">
+        <code><![CDATA[@template ${templateName}]]></code>
+        <description><![CDATA[set template for the current method.
+
+Example:
+/**
+ *
+ *  @template PROJECT_LIST
+ */
+]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="active" xml:space="preserve">
+        <code><![CDATA[@active ${status}]]></code>
+        <description><![CDATA[set the active settings of a plugin.
+Allowed Entries:
+    active :    1 or active
+    inactive :  0 or inactive
+    always, always_active, always active, default_active, default active or 2 (default_active)
+    default is inactive
+
+Example:
+/**
+ *
+ *  @active  always
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="onsuc" xml:space="preserve">
+        <code><![CDATA[@onsuccess   goto: ${function}, text: ${message}]]></code>
+        <description><![CDATA[settings on how to react on success.
+Example:
+/**
+ *
+ *  @onsuccess   goto: DB_TOOLS_CONFIG_EXPORT, text: success
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="uses" xml:space="preserve">
+        <code><![CDATA[@uses  ${element} ${description}]]></code>
+        <description><![CDATA[Display a link to the documentation for an element, and create a backlink in the other element's documentation to this.
+The @uses tag may be used to document any element (global variable, include, page, class, function, define, method, variable)
+Example:
+/**
+ *
+ * @uses subclass sets a temporary variable
+ * @uses subclass::$foo this is compared to TEST_CONST
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="inal" xml:space="preserve">
+        <code><![CDATA[@internal  ${anyInformations}]]></code>
+        <description><![CDATA[Mark documentation as private, internal to the software project.
+@internal  any information that should not be displayed in public documentation [unspecified format]
+Example:
+
+/**
+ * @internal the class uses the private methods {@link _foo()} and {@link _bar()} to do some wacky stuff
+ * 
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="requ" xml:space="preserve">
+        <code><![CDATA[@requires]]></code>
+        <description><![CDATA[
+/**
+ *
+ * @requires
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="prio" xml:space="preserve">
+        <code><![CDATA[@priority ${level}]]></code>
+        <description><![CDATA[Set the priority level.
+Allowed Entries:
+    lowest:  0 or lowest
+    low:     1 or low
+    normal:  2 or normal
+    high:    3 or high    
+    highest: 4 or highest
+
+Example:
+/**
+ *
+ *  @priority  high
+ */
+]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="group" xml:space="preserve">
+        <code><![CDATA[@group ${groupName}]]></code>
+        <description><![CDATA[group setteings (defined the group which the method belongs too.)
+Example:
+/**
+ *
+ *  @group db_tools
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="onerr" xml:space="preserve">
+        <code><![CDATA[@onerror  goto: ${function}, text: ${message}]]></code>
+        <description><![CDATA[settings on how to react on error.
+Example:
+/**
+ *
+ *  @onerror  goto: GUESTBOOK_READ, text: INPUT_INVALID
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="savem" xml:space="preserve">
+        <code><![CDATA[@safemode]]></code>
+        <description><![CDATA[get safemode setting of method
+    bool(true) for "safemode must be active",
+    bool(false) for "safemode must NOT be active",
+    or NULL for "don't care".
+Example:
+/**
+ *
+ *  @safemode
+ */]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="acs" xml:space="preserve">
+        <code><![CDATA[@access ${visibility}]]></code>
+        <description><![CDATA[Access control for an element. @access private prevents documentation of the following element (if enabled).
+
+Example:
+
+/**
+ * 
+ * @access private
+ */]]></description>
+    </codetemplate>
+</codetemplates>
