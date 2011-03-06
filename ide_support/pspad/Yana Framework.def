@@ -1,0 +1,390 @@
+[inc | database include structure-file]
+<INCLUDE>
+	<0>|</0>
+</INCLUDE>
+
+[plg | Plugin definition]
+<INFO>
+	<ID>|</ID>
+	<NAME></NAME>
+	<LOGO>%PLUGINDIR%/name/preview.jpg</LOGO>
+	<IMAGE>%PLUGINDIR%/name/icon.png</IMAGE>
+	<AUTHOR></AUTHOR>
+	<CONTACT>mail@domain.tld</CONTACT>
+	<DESCRIPTION></DESCRIPTION>
+	<UPDATE>http://</UPDATE>
+	<PACKAGE></PACKAGE>
+	<TYPE>primary</TYPE>
+	<PRIORITY>0</PRIORITY>
+	<START></START>
+</INFO>
+
+[start | Startmenu definition]
+	<START>
+		<0>
+			<ACTION>|</ACTION>
+			<TITLE></TITLE>
+			<IMAGE>name/icon.png</IMAGE>
+		</0>
+	</START>
+
+[setup | Setup definition]
+	<SETUP>
+		<0>
+			<DEFAULT_ONLY>true</DEFAULT_ONLY>
+			<ACTION>|</ACTION>
+			<TITLE></TITLE>
+			<IMAGE></IMAGE>
+		</0>
+	</SETUP>
+
+[skin | Skin definition]
+
+<SKIN_INFO>
+	<NAME>|</NAME>
+	<AUTHOR</AUTHOR>
+	<CONTACT>mail@domain.tld</CONTACT>
+	<DESCRIPTION></DESCRIPTION>
+	<LOGO>%SKINDIR%</LOGO>
+	<DIRECTORY></DIRECTORY>
+</SKIN_INFO>
+
+[lang | Language definition]
+
+<LANGUAGE_INFO>
+	<NAME>| ()</NAME>
+	<AUTHOR></AUTHOR>
+	<CONTACT>mail@domain.tld</CONTACT>
+	<DESCRIPTION></DESCRIPTION>
+</LANGUAGE_INFO>
+
+[tpl | Template definition]
+
+<|>
+	<FILE>.html</FILE>
+	<STYLE>
+		<0>styles/default.css</0>
+	</STYLE>
+	<SCRIPT>
+		<0>scripts/default.js</0>
+	</SCRIPT>
+	<LANGUAGE>
+		<0>default</0>
+	</LANGUAGE>
+</>
+
+[itf | Plugin: interface body]
+
+<INTERFACE>
+|
+</INTERFACE>
+
+[act | Plugin: action definition]
+	<|>
+		<TYPE>default</TYPE>
+		<MODE>0</MODE>
+		<PERMISSION>0</PERMISSION>
+		<TEMPLATE>INDEX</TEMPLATE>
+		<INSERT></INSERT>
+		<ONSUCCESS>
+			<TEXT>200</TEXT>
+			<GOTO></GOTO>
+		</ONSUCCESS>
+		<ONERROR>
+			<TEMPLATE>ALERT</TEMPLATE>
+			<TEXT>500</TEXT>
+			<GOTO></GOTO>
+		</ONERROR>
+	</>
+
+[file | virtual drive: file definition]
+<|>
+	<SRC>
+		<0></0>
+		<1></1>
+	</SRC>
+	<TYPE>file</TYPE>
+	<REQUIRED>readable</REQUIRED>
+	<AUTOMOUNT>no</AUTOMOUNT>
+	<PRIORITY>0</PRIORITY>
+</>
+
+[dir | virtual drive: directory definition]
+<|>
+	<TYPE>dir</TYPE>
+	<SRC></SRC>
+	<REQUIRED>readable</REQUIRED>
+	<AUTOMOUNT>no</AUTOMOUNT>
+	<FILTER>.config</FILTER>
+	<CONTENT>
+
+	</CONTENT>
+</>
+
+[db | database definition]
+<USE_STRICT>true</USE_STRICT>
+<READONLY>false</READONLY>
+<TABLES>
+|
+</TABLES>
+
+[tbl | table definition]
+	<|>
+		<PRIMARY_KEY>id</PRIMARY_KEY>
+		<DESCRIPTION></DESCRIPTION>
+		<CONTENT>
+
+		</CONTENT>
+	</>
+
+[fkeys | foreign key constraint]
+		<FOREIGN_KEYS>
+			<|_id></_id>
+		</FOREIGN_KEYS>
+
+[id | primary key column]
+			<|id>
+				<TYPE>integer</TYPE>
+				<LENGTH>8</LENGTH>
+				<REQUIRED>AUTO</REQUIRED>
+				<DISPLAY>
+					<HIDDEN>true</HIDDEN>
+				</DISPLAY>
+			</id>
+
+[fkey | foreign key column]
+			<|_id>
+				<TYPE>select</TYPE>
+				<DESCRIPTION></DESCRIPTION>
+				<REQUIRED>true</REQUIRED>
+				<DEFAULT>
+					<id>name</id>
+				</DEFAULT>
+			</_id>
+
+[string | column of type string]
+			<|>
+				<TYPE>string</TYPE>
+				<LENGTH>255</LENGTH>
+				<DESCRIPTION></DESCRIPTION>
+			</>
+
+[int | column of type integer]
+			<|>
+				<TYPE>int</TYPE>
+				<LENGTH>10</LENGTH>
+				<DESCRIPTION></DESCRIPTION>
+			</>
+
+[float | column of type float]
+			<|>
+				<TYPE>float</TYPE>
+				<LENGTH>10</LENGTH>
+				<PRECISION>2</PRECISION>
+				<DESCRIPTION></DESCRIPTION>
+			</>
+
+[time | column of type time]
+			<|>
+				<TYPE>time</TYPE>
+				<REQUIRED>AUTO</REQUIRED>
+				<DESCRIPTION></DESCRIPTION>
+			</>
+
+[text | column of type text]
+			<|>
+				<TYPE>text</TYPE>
+				<LENGTH>3000</LENGTH>
+				<REQUIRED>true</REQUIRED>
+				<DESCRIPTION></DESCRIPTION>
+			</>
+
+[mail | column of type mail]
+			<|mail>
+				<TYPE>mail</TYPE>
+				<LENGTH>255</LENGTH>
+				<DESCRIPTION>E-Mail</DESCRIPTION>
+			</mail>
+
+[ip | column of type ip]
+			<|ip>
+				<TYPE>ip</TYPE>
+				<LENGTH>15</LENGTH>
+				<REQUIRED>AUTO</REQUIRED>
+				<DISPLAY>
+					<HIDDEN>true</HIDDEN>
+				</DISPLAY>
+			</ip>
+
+[array | column of type array]
+			<|>
+				<TYPE>array</TYPE>
+				<DESCRIPTION></DESCRIPTION>
+			</>
+
+[list | column of type list]
+			<|>
+				<TYPE>array</TYPE>
+				<DESCRIPTION></DESCRIPTION>
+				<DISPLAY>
+					<NUMERIC>true</NUMERIC>
+				</DISPLAY>				
+			</>
+
+[url | column of type url]
+			<|url>
+				<TYPE>url</TYPE>
+				<LENGTH>512</LENGTH>
+				<DESCRIPTION>URL</DESCRIPTION>
+			</url>
+
+[bool | column of type boolean]
+			<|>
+				<TYPE>bool</TYPE>
+				<DEFAULT>0</DEFAULT>
+				<DESCRIPTION></DESCRIPTION>
+			</>
+
+[img | column of type image]
+			<|>
+				<TYPE>image</TYPE>
+				<LENGTH>1500000</LENGTH>
+				<WIDTH>150</WIDTH>
+				<HEIGHT>200</HEIGHT>
+				<RATIO>true</RATIO>
+				<BACKGROUND>
+					<0>200</0>
+					<1>210</1>
+					<2>220</2>
+				</BACKGROUND>
+				<DESCRIPTION></DESCRIPTION>
+			</>
+
+[blob | column of type file (db blob)]
+			<|>
+				<TYPE>file</TYPE>
+				<LENGTH>1500000</LENGTH>
+				<DESCRIPTION></DESCRIPTION>
+			</>
+
+[select | column of type select]
+			<|>
+				<TYPE>select</TYPE>
+				<DEFAULT>
+					<0></0>
+					<1></1>
+				</DEFAULT>
+				<DESCRIPTION></DESCRIPTION>
+			</>
+
+[disp | display definition]
+				<DISPLAY>
+					<HIDDEN>|
+						<NEW>true</NEW>
+						<EDIT>true</EDIT>
+						<SELECT>true</SELECT>
+					</HIDDEN>
+					<READONLY>
+						<EDIT>true</EDIT>
+					</READONLY>
+				</DISPLAY>
+
+[req | column nullable]
+				<REQUIRED>|true</REQUIRED>
+
+[con | constraint definition]
+List of Arguments (upper-case!)
+$value      = changed value
+$permission = user's access level
+$operation  = insert, update ...
+$table      = target table
+$field      = target column (if any)
+$id         = current profile id
+
+				<CONSTRAINT>|
+					<SELECT>false</SELECT>
+					<INSERT>false</INSERT>
+					<UPDATE>false</UPDATE>
+					<DELETE>false</DELETE>
+				</CONSTRAINT>
+
+[trg | trigger definition]
+List of Arguments (upper-case!)
+$value      = changed value
+$permission = user's access level
+$operation  = before_insert, after_update, ...
+$table      = target table
+$field      = target column (if any)
+$id         = current profile id
+
+		<TRIGGER>|
+			<BEFORE_INSERT></BEFORE_INSERT>
+			<BEFORE_UPDATE></BEFORE_UPDATE>
+			<BEFORE_DELETE></BEFORE_DELETE>
+			<AFTER_INSERT></AFTER_INSERT>
+			<AFTER_UPDATE></AFTER_UPDATE>
+			<AFTER_DELETE></AFTER_DELETE>
+		</TRIGGER>
+		
+[uq | unique constraint]
+				<UNIQUE>|true</UNIQUE>
+
+[uns | unsigned constraint]
+				<UNSIGNED>|true</UNSIGNED>
+
+[zero | zerofill property]
+				<ZEROFILL>|true</ZEROFILL>
+
+[rdonly | readonly constraint]
+				<READONLY>|true</READONLY>
+
+[prf | profile constraint]
+		<PROFILE_KEY>|profile_id</PROFILE_KEY>
+
+[pid | profile id column]
+			<|profile_id>
+				<TYPE>profile</TYPE>
+				<LENGTH>128</LENGTH>
+				<REQUIRED>AUTO</REQUIRED>
+				<DISPLAY>
+					<HIDDEN>true</HIDDEN>
+				</DISPLAY>
+			</profile_id>
+
+[action | database: action definition]
+				<ACTION>
+					<DEFAULT>
+						<ACTION>|</ACTION>
+						<TITLE></TITLE>
+						<TEXT></TEXT>
+					</DEFAULT>
+					<SELECT>
+						<ACTION></ACTION>
+						<TITLE></TITLE>
+						<TEXT></TEXT>
+					</SELECT>
+					<EDIT>
+						<ACTION></ACTION>
+						<TITLE></TITLE>
+						<TEXT></TEXT>
+					</EDIT>
+				</ACTION>
+
+[init | table initialization]
+		<INITIALIZATION>
+			<0>insert into | () values()</0>
+		</INITIALIZATION>
+
+[default | database default value]
+				<DEFAULT>|</DEFAULT>
+
+[numeric | display as numeric list]
+				<DISPLAY>
+					<NUMERIC>true</NUMERIC>
+				</DISPLAY>
+
+[length | max length of column]
+				<LENGTH>|</LENGTH>
+
+[precision | max dec. fraction of float column]
+				<PRECISION>|</PRECISION>
