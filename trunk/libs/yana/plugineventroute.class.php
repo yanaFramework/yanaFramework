@@ -105,11 +105,13 @@ class PluginEventRoute
      *
      * @access  public
      * @param   int  $code  unsigned small int, defaults: PluginEventRoute::CODE_SUCCESS, PluginEventRoute::CODE_ERROR
+     * @return  PluginEventRoute
      */
     public function setCode($code)
     {
         assert('is_int($code); // Invalid argument $code: int expected');
         $this->_code = (int) $code;
+        return $this;
     }
 
     /**
@@ -128,11 +130,13 @@ class PluginEventRoute
      *
      * @access  public
      * @param   string  $target  PHP method name
+     * @return  PluginEventRoute
      */
     public function setTarget($target)
     {
         assert('is_string($target); // Invalid argument $target: string expected');
         $this->_target = (string) $target;
+        return $this;
     }
 
     /**
@@ -155,11 +159,13 @@ class PluginEventRoute
      *
      * @access  public
      * @param   string  $message  default messages: PluginEventRoute::MSG_SUCCESS and PluginEventRoute::MSG_ERROR
+     * @return  PluginEventRoute
      */
     public function setMessage($message)
     {
         assert('is_string($message); // Invalid argument $message: string expected');
         $this->_message = (string) $message;
+        return $this;
     }
 
 }
