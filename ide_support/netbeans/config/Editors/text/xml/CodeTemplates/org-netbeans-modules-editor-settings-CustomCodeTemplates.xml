@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE codetemplates PUBLIC "-//NetBeans//DTD Editor Code Templates settings 1.0//EN" "http://www.netbeans.org/dtds/EditorCodeTemplates-1_0.dtd">
+<codetemplates>
+    <codetemplate abbreviation="con" xml:space="preserve">
+        <code><![CDATA[<constraint
+    name="${name}"
+    dbms="${dbms}">
+</constraint>
+${cursor}]]></code>
+        <description><![CDATA[constraint definition]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="grant" xml:space="preserve">
+        <code><![CDATA[<grant 
+     role="${role}"
+     user="${user}"
+     level="${level}">
+</grant>
+${cursor}]]></code>
+        <description><![CDATA[column of type grant]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="change" xml:space="preserve">
+        <code><![CDATA[<change
+    version="${version}"
+    ignoreError="no"
+    type="default"
+    dbms="${dbms}">
+</change>
+${cursor}]]></code>
+        <description><![CDATA[changelog: change]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="drop" xml:space="preserve">
+        <code><![CDATA[<drop
+    version="${version}"
+    ignoreError="no"
+    table="${table}"
+    name="${name}">
+</drop>
+${cursor}]]></code>
+        <description><![CDATA[changelog: drop]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="rename" xml:space="preserve">
+        <code><![CDATA[<rename
+    version="${version}"
+    ignoreError="no"
+    table="${table}"
+    name="${name}"
+    oldname="${oldname}">
+</rename>
+${cursor}]]></code>
+        <description><![CDATA[changelog: rename]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="img" xml:space="preserve">
+        <code><![CDATA[<image
+    name="${name}"
+    maxsize="500000"
+    width="150"
+    height="200"
+    ratio="yes"
+    background="#CCCCCC"
+    readonly="no"
+    notnull="no"
+    title="${title}">
+</image>
+${cursor}]]></code>
+        <description><![CDATA[column of type image]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="tistamp" xml:space="preserve">
+        <code><![CDATA[<timestamp
+    name="${name}"
+    notnull="yes"
+    readonly="no"
+    title="${title}">
+    <default>CURRENT_TIMESTAMP</default>
+</timestamp>
+${cursor}]]></code>
+        <description><![CDATA[column of type date]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="fixed" xml:space="preserve">
+        <code><![CDATA[fixed="${cursor} yes"]]></code>
+        <description><![CDATA[fixed property]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="float" xml:space="preserve">
+        <code><![CDATA[<float
+    name="${name}"
+    notnull="no"
+    readonly="no"
+    length="10"
+    precision="${precision}"
+    title="${title}">
+</float>
+${cursor}]]></code>
+        <description><![CDATA[column of type float]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="!at" xml:space="preserve">
+        <code><![CDATA[<!ATTLIST ${cursor}>]]></code>
+        <description><![CDATA[attribute list tag ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="time" xml:space="preserve">
+        <code><![CDATA[<time
+    name="${name}"
+    notnull="yes"
+    readonly="no"
+    title="${title}">
+    <default>CURRENT_TIMESTAMP</default>
+</time>
+${cursor}]]></code>
+        <description><![CDATA[column of type time]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="inc" xml:space="preserve">
+        <code><![CDATA[<include>${cursor}</include>]]></code>
+        <description><![CDATA[database include structure-file]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="file" xml:space="preserve">
+        <code><![CDATA[<file
+    name="${name}"
+    maxsize="500000"
+    notnull="no"
+    readonly="no"
+    title="${title}">
+</file>
+${cursor}]]></code>
+        <description><![CDATA[column of type file]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="event" xml:space="preserve">
+        <code><![CDATA[<event
+    name="${name}"
+    title="${title}"
+    label="${label}">
+</event>
+${cursor}]]></code>
+        <description><![CDATA[database event definition]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="action" xml:space="preserve">
+        <code><![CDATA[<action
+    name="${name}"
+    language="${language}"
+    title="${title}"
+    label="${label}"
+    icon="${icon}">
+</action>
+${cursor}]]></code>
+        <description><![CDATA[column of type action]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="rss" xml:space="preserve">
+        <code><![CDATA[<rss
+    version="${version}">
+    <channel>
+        <title></title>
+        <link></link>
+        <description></description>
+        <language></language>
+        <copyright></copyright>
+        <pubDate></pubDate>
+        <lastBuildDate></lastBuildDate>
+        <category
+            domain="${domain}">
+        </category>
+        <docs></docs>
+        <generator></generator>
+        <cloud
+            domain="${domain}"
+            port="${port}"
+            path="path"
+            registerProcedure="${registerProcedure}"
+            protocol="${protocol}">
+        </cloud>
+        <ttl></ttl>
+        <managingEditor></managingEditor>
+        <webMaster></webMaster>
+        <image>
+            <url></url>
+            <title></title>
+            <link></link>
+            <width></width>
+            <height></height>
+            <description></description>
+        </image>
+        <rating></rating>
+        <textInput>
+            <title></title>
+            <description></description>
+            <name></name>
+            <link></link>
+        </textInput>
+        <skipHours>
+            <hour></hour>
+        </skipHours>
+        <skipDays>
+            <day></day>
+        </skipDays>
+        <item>
+             <title></title>
+             <link></link>
+             <description></description>
+             <author></author>
+             <category
+                domain="${domain}">
+             </category>
+             <comments></comments>
+             <enclosure
+                 url="${url}"
+                 length="${length}"
+                 type="${type}">
+             </enclosure>
+             <pubDate></pubDate>
+             <guid
+                 isPermaLink="false">
+             </guid>
+             <source
+                 url="${url}">
+             </source>
+        </item>
+    </channel>
+</rss>
+${cursor}]]></code>
+        <description><![CDATA[rss declaration]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="!el" xml:space="preserve">
+        <code><![CDATA[<!ELEMENT ${cursor}>]]></code>
+        <description><![CDATA[element tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="func" xml:space="preserve">
+        <code><![CDATA[<function
+    name="${name}"
+    title="${title}">
+    <implementation
+        dbms="${dbms}"
+        language="${language}">
+            <return>${return}</return>
+            <code>${selection}${cursor}</code>
+    </implementation>
+</function>]]></code>
+        <description><![CDATA[function definition]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="!en" xml:space="preserve">
+        <code><![CDATA[<!ENTITY ${cursor}>]]></code>
+        <description><![CDATA[entity tag ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="opt" xml:space="preserve">
+        <code><![CDATA[<option value="${value}">${cursor}</option>]]></code>
+        <description><![CDATA[option element ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="tbl" xml:space="preserve">
+        <code><![CDATA[<table
+    name="${name}"
+    readonly="no"
+    title="${title}">
+    <primarykey>${name}_id</primarykey>
+    <declaration>
+        <integer
+        name="${name}_id"
+        notnull="yes"
+        autoincrement="yes"
+        title="${Id}"/>
+        ${selection}${cursor}
+    </declaration>
+</table>]]></code>
+        <description><![CDATA[table definition]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="db" xml:space="preserve">
+        <code><![CDATA[<?xml version="1.0" ?>
+<database>
+    ${selection}${cursor}
+</database>]]></code>
+        <description><![CDATA[database definition]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="uns" xml:space="preserve">
+        <code><![CDATA[unsigned="${cursor}yes"]]></code>
+        <description><![CDATA[unsigned constraint]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="text" xml:space="preserve">
+        <code><![CDATA[<text
+    name="${name}"
+    length="3000"
+    notnull="no"
+    readonly="no"
+    title="${title}">
+</text>
+${cursor}]]></code>
+        <description><![CDATA[column of type text]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="form" xml:space="preserve">
+        <code><![CDATA[<form
+    name="${name}"
+    table="${table}"
+    template="${template}"
+    title="${title}">
+    <event name="${eventName}"></event>
+    ${selection}${cursor}
+</form>]]></code>
+        <description><![CDATA[form definition]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="int" xml:space="preserve">
+        <code><![CDATA[<integer
+    name="${name}"
+    length="10"
+    title="${title}">
+    <default></default>
+</integer>
+${cursor}]]></code>
+        <description><![CDATA[column of type integer]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="init" xml:space="preserve">
+        <code><![CDATA[<initialization>insert into ${cursor} () values()</initialization>]]></code>
+        <description><![CDATA[table initialization]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="enum" xml:space="preserve">
+        <code><![CDATA[<enum
+    name="${name}"
+    notnull="no"
+    readonly="no"
+    title="${title}">
+    <option value="0">${option1}</option>
+    <option value="1">${option2}</option>
+</enum>
+${cursor}]]></code>
+        <description><![CDATA[column of type enumeration]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="code" xml:space="preserve">
+        <code><![CDATA[<code>${cursor}</code>]]></code>
+        <description><![CDATA[code declaration]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="create" xml:space="preserve">
+        <code><![CDATA[<create
+    version="${version}"
+    ignoreError="no"
+    table="${table}"
+    name="${name}">
+</create>
+${cursor}]]></code>
+        <description><![CDATA[changelog: create]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="trg" xml:space="preserve">
+        <code><![CDATA[<trigger
+    name="${name}"
+    dbms="${dbms}"
+    on="before"
+    insert="no"
+    update="no"
+    delete="no">
+    ${selection}${cursor}
+</trigger>]]></code>
+        <description><![CDATA[trigger definition]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="rdonly" xml:space="preserve">
+        <code><![CDATA[readonly="${cursor}yes"]]></code>
+        <description><![CDATA[readonly constraint]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="url" xml:space="preserve">
+        <code><![CDATA[<url
+    name="${name}"
+    length="512"
+    notnull="no"
+    readonly="no"
+    title="${title}">
+</url>
+${cursor}]]></code>
+        <description><![CDATA[column of type url]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="default" xml:space="preserve">
+        <code><![CDATA[<default>${cursor}</default>]]></code>
+        <description><![CDATA[column default]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="inet" xml:space="preserve">
+        <code><![CDATA[<inet
+    name="${name} ip"
+    notnull="no"
+    readonly="no"
+    title="${title}">
+    <default>REMOTE_ADDR</default>
+</inet>
+${cursor}]]></code>
+        <description><![CDATA[column of type inet]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="?xm" xml:space="preserve">
+        <code><![CDATA[<?xml version="1.0" encoding="UTF-8"?>]]></code>
+        <description><![CDATA[xml header]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="view" xml:space="preserve">
+        <code><![CDATA[<view
+    name="${name}"
+    readonly="no"
+    tables="${tables}"
+    where="${where}"
+    orderby="${orderby}"
+    sorting="ascending"
+    checkoption="none"
+    title="${title}">
+    <field
+        table="${table}"
+        column="${column}"
+        alias="${alias}">
+    </field>
+    <select dbms="${dbms}">${sql}</select>
+    ${selection}${cursor}
+</view>]]></code>
+        <description><![CDATA[database view]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="array" xml:space="preserve">
+        <code><![CDATA[<array
+    name="${name}"
+    notnull="no"
+    readonly="no"
+    title="${title}">
+</array>
+${cursor}]]></code>
+        <description><![CDATA[column of type array]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="update" xml:space="preserve">
+        <code><![CDATA[<update
+    version="${version}"
+    ignoreError="no"
+    table="${table}"
+    column="${column}"
+    property="${property}"
+    value="${value}"
+    oldvalue="${oldvalue}">
+</update>
+${cursor}]]></code>
+        <description><![CDATA[changelog: update]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="range" xml:space="preserve">
+        <code><![CDATA[<range
+    name="${name}"
+    notnull="no"
+    readonly="no"
+    min="${min}"
+    max="${max}"
+    step="1"
+    title="${title}">
+</range>
+${cursor}]]></code>
+        <description><![CDATA[column of type range]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="param" xml:space="preserve">
+        <code><![CDATA[<param
+    name="${name}"
+    type="${type}"
+    mode="in">
+</param>
+${cursor}]]></code>
+        <description><![CDATA[param Element of implementation ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="set" xml:space="preserve">
+        <code><![CDATA[<set
+    name="${name}"
+    notnull="no"
+    readonly="no"
+    title="${title}">
+        <option value="1">${option1}</option>
+        <option value="2">${option2}</option>
+</set>
+${cursor}]]></code>
+        <description><![CDATA[column of type set]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="sys" xml:space="preserve">
+        <code><![CDATA[SYSTEM "${cursor}"]]></code>
+        <description><![CDATA[system]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="date" xml:space="preserve">
+        <code><![CDATA[<date
+    name="${name}"
+    notnull="yes"
+    readonly="no"
+    title="${title}">
+    <default>CURRENT_TIMESTAMP</default>
+</date>
+${cursor}]]></code>
+        <description><![CDATA[column of type date]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="id" xml:space="preserve">
+        <code><![CDATA[<integer
+    name="${name}_id"
+    notnull="yes"
+    autoincrement="yes"
+    title="${title}"/>
+${cursor}]]></code>
+        <description><![CDATA[column of type id (integer)]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="fkey" xml:space="preserve">
+        <code><![CDATA[<foreign
+    table="${tableName}"
+    match="simple"
+    ondelete="no-action"
+    onupdate="no-action">
+    <key name="${key}_id"/>
+</foreign>
+${cursor}]]></code>
+        <description><![CDATA[foreign key constraint]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="notnull" xml:space="preserve">
+        <code><![CDATA[notnull="${cursor}yes"]]></code>
+        <description><![CDATA[column nullable]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="xmlh" xml:space="preserve">
+        <code><![CDATA[<?xml version="1.0" ?>
+<!DOCTYPE database SYSTEM "../dtd/${cursor}">]]></code>
+        <description><![CDATA[xml header with dtd tag]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="fieldset" xml:space="preserve">
+        <code><![CDATA[<fieldset
+        name="${name}"
+        title="${title}">
+        <input
+            name="${inputName}"
+            label="${label}"
+            hidden="no"
+            readonly="no"
+            cssclass="${cssclass}"
+            tabindex="${tabindex}">
+        </input>
+        ${selection}${cursor}
+</fieldset>]]></code>
+        <description><![CDATA[fieldset definition]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="autoinc" xml:space="preserve">
+        <code><![CDATA[autoincrement="${cursor} yes"]]></code>
+        <description><![CDATA[int autoincrement]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="logparam" xml:space="preserve">
+        <code><![CDATA[<logparam
+    name="${name}">
+</logparam>
+${cursor}]]></code>
+        <description><![CDATA[changelog: logparam]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="!cd" xml:space="preserve">
+        <code><![CDATA[<![CDATA[${cursor}]]]]><![CDATA[>]]></code>
+        <description><![CDATA[CDATA tag ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="mail" xml:space="preserve">
+        <code><![CDATA[<mail
+    name="${name}"
+    length="255"
+    notnull="no"
+    readonly="no"
+    title="${title}">
+</mail>
+${cursor}]]></code>
+        <description><![CDATA[column of type mail]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="idx" xml:space="preserve">
+        <code><![CDATA[<index
+    name="${name}"
+    unique="no"
+    title="${title}">
+    <column
+        name="${columnName}"
+        sorting="ascending"
+        length="${length}"/>
+</index>
+${cursor}]]></code>
+        <description><![CDATA[index declaration]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="precision" xml:space="preserve">
+        <code><![CDATA[precision="${cursor}"]]></code>
+        <description><![CDATA[float column precision]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="uq" xml:space="preserve">
+        <code><![CDATA[unique="${cursor}yes"]]></code>
+        <description><![CDATA[unique constraint]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="changelog" xml:space="preserve">
+        <code><![CDATA[<changelog>
+    ${selection}${cursor}
+</changelog>]]></code>
+        <description><![CDATA[database changelog]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="list" xml:space="preserve">
+        <code><![CDATA[<list
+    name="${name}"
+    notnull="no"
+    readonly="no"
+    title="${title}">
+</list>
+${cursor}]]></code>
+        <description><![CDATA[column of type list]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="pid" xml:space="preserve">
+        <code><![CDATA[{$profile}]]></code>
+        <description><![CDATA[profile id column]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="field" xml:space="preserve">
+        <code><![CDATA[<field
+    column="${column}"
+    hidden="yes">
+</field>
+${cursor}]]></code>
+        <description><![CDATA[view field definition]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="ref" xml:space="preserve">
+        <code><![CDATA[<reference
+    name="${name}_id"
+    notnull="yes"
+    table="${name}"
+    column="${name}_id"
+    label="${label}"
+    readonly="no"
+    title="${title}">
+</reference>
+${cursor}]]></code>
+        <description><![CDATA[foreign key reference]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="pwd" xml:space="preserve">
+        <code><![CDATA[<password
+    name="${name}"
+    notnull="yes"
+    readonly="no"
+    title="${title}">
+</password>
+${cursor}]]></code>
+        <description><![CDATA[column of type password]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="!do" xml:space="preserve">
+        <code><![CDATA[<!DOCTYPE ]]></code>
+        <description><![CDATA[doctype tag ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="sql" xml:space="preserve">
+        <code><![CDATA[<sql
+    version="${version}"
+    ignoreError="no"
+    dbms="${dbms}">
+</sql>
+${cursor}]]></code>
+        <description><![CDATA[changelog: sql]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="color" xml:space="preserve">
+        <code><![CDATA[<color
+    name="${name}"
+    notnull="no"
+    unique="no"
+    readonly="no"
+    title="${title}">
+    <default></default>
+</color>
+${cursor}]]></code>
+        <description><![CDATA[column of type color]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="sequence" xml:space="preserve">
+        <code><![CDATA[<sequence
+    name="${name}"
+    start="${start}"
+    increment="${increment}"
+    min="${min}"
+    max="${max}"
+    cycle="${cycle}">
+</sequence>
+${cursor}]]></code>
+        <description><![CDATA[sequence declaration]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="string" xml:space="preserve">
+        <code><![CDATA[<string
+    name="${name}"
+    length="255"
+    notnull="no"
+    readonly="no"
+    title="${title}">
+</string>
+${cursor}]]></code>
+        <description><![CDATA[column of type string]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="pu" xml:space="preserve">
+        <code><![CDATA[PUBLIC "${cursor}"]]></code>
+        <description><![CDATA[public ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="html" xml:space="preserve">
+        <code><![CDATA[<html
+    name="${name}"
+    length="2000"
+    notnull="no"
+    readonly="no"
+    title="${title}">
+</html>
+${cursor}]]></code>
+        <description><![CDATA[column of type html]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="bool" xml:space="preserve">
+        <code><![CDATA[<bool
+    name="${name}"
+    notnull="yes"
+    readonly="no"
+    title="${title}">
+    <default>0</default>
+</bool>
+${cursor}]]></code>
+        <description><![CDATA[column of type boolean]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="sy" remove="true"/>
+</codetemplates>
