@@ -86,12 +86,18 @@ class PluginUserLevel extends Object
      * Note that it is not checked wether the role is in use ore not.
      *
      * @access  public
-     * @param   string  $role  new value of this property
+     * @param   string  $role  new value of this property, allowed characters: 0-9, a-z, -, _
+     * @throws  InvalidArgumentException  when parameter is not alpha-numeric
+     * @return  PluginUserLevel
      */
     public function setRole($role)
     {
         assert('is_string($role); // Wrong type for argument 1. String expected');
+        if (!preg_match('/^[\d\w-_]*$/si', $role)) {
+            throw new InvalidArgumentException("Invalid characters in role '$role'.", E_USER_WARNING);
+        }
         $this->_role = (string) $role;
+        return $this;
     }
 
     /**
@@ -121,12 +127,18 @@ class PluginUserLevel extends Object
      * Note that it is not checked wether the group is in use ore not.
      *
      * @access  public
-     * @param   string  $group  new value of this property
+     * @param   string  $group  new value of this property, allowed characters: 0-9, a-z, -, _
+     * @throws  InvalidArgumentException  when parameter is not alpha-numeric
+     * @return  PluginUserLevel
      */
     public function setGroup($group)
     {
         assert('is_string($group); // Invalid argument $group: string expected');
+        if (!preg_match('/^[\d\w-_]*$/si', $group)) {
+            throw new InvalidArgumentException("Invalid characters in group '$group'.", E_USER_WARNING);
+        }
         $this->_group = (string) $group;
+        return $this;
     }
 
     /**
@@ -155,6 +167,7 @@ class PluginUserLevel extends Object
      *
      * @access  public
      * @param   string  $level  new value of this property
+     * @return  PluginUserLevel
      * @throws  InvalidArgumentException  when parameter $level is outside range [0,100]
      */
     public function setLevel($level)
@@ -164,6 +177,7 @@ class PluginUserLevel extends Object
             throw new InvalidArgumentException("Security level '$level' outside range [0,100].", E_USER_WARNING);
         }
         $this->_level = (int) $level;
+        return $this;
     }
 
 }
