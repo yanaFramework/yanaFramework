@@ -37,7 +37,7 @@ require_once 'pluginmethodconfigurator.class.php';
  * @package    yana
  * @subpackage plugins
  */
-class PluginConfigurator extends PluginConfiguration
+class PluginConfigurator extends PluginConfigurationClass
 {
     /**
      * the plugin's identifier
@@ -46,43 +46,6 @@ class PluginConfigurator extends PluginConfiguration
      * @var     string
      */
     private $_id = null;
-
-    /**
-     * Constructor
-     *
-     * @access  public
-     * @param   PluginReflectionClass  $pluginClass plugin configuration class
-     */
-    public function __construct(PluginReflectionClass $pluginClass = NULL)
-    {
-        if (!is_null($pluginClass)) {
-            parent::__construct($pluginClass);
-        } else {
-            $this->configuration = array
-            (
-                self::DEFAULT_TITLE => '',
-                self::DEFAULT_TEXT => '',
-                PluginAnnotationEnumeration::TITLE => '',
-                PluginAnnotationEnumeration::TEXT => '',
-                self::DIR => '',
-                PluginAnnotationEnumeration::TYPE => 'default',
-                PluginAnnotationEnumeration::AUTHOR => array(),
-                PluginAnnotationEnumeration::PRIORITY => '',
-                PluginAnnotationEnumeration::GROUP => '',
-                PluginAnnotationEnumeration::PARENT => '',
-                PluginAnnotationEnumeration::REQUIRES => array(),
-                PluginAnnotationEnumeration::LICENSE => '',
-                PluginAnnotationEnumeration::URL => '',
-                PluginAnnotationEnumeration::VERSION => '',
-                PluginAnnotationEnumeration::CATEGORY => '',
-                PluginAnnotationEnumeration::PACKAGE => 'yana',
-                PluginAnnotationEnumeration::SUBPACKAGE => 'plugins',
-                self::MODIFIED => time(),
-                PluginAnnotationEnumeration::MENU => array(),
-                PluginAnnotationEnumeration::ACTIVE => '0'
-            );
-        }
-    }
 
     /**
      * set name
@@ -230,7 +193,7 @@ class PluginConfigurator extends PluginConfiguration
      */
     public function setPriority($priority)
     {
-        $this->configuration[PluginAnnotationEnumeration::PRIORITY] = PluginPriorityEnumeration::getPriority($priority);
+        $this->configuration[PluginAnnotationEnumeration::PRIORITY] = PluginPriorityEnumeration::fromString($priority);
     }
 
     /**
@@ -356,53 +319,48 @@ class PluginConfigurator extends PluginConfiguration
         }
         // annotations
         if ($this->getType()) {
-            $string .= $tab . "@type       " . $this->getType();
+            $string .= $tab . "@" . PluginAnnotationEnumeration::TYPE . "       " . $this->getType();
         }
         if ($this->getGroup()) {
-            $string .= $tab . "@group      " . $this->getGroup();
+            $string .= $tab . "@" . PluginAnnotationEnumeration::GROUP . "      " . $this->getGroup();
         }
         if ($this->getParent()) {
-            $string .= $tab . "@extends    " . $this->getParent();
+            $string .= $tab . "@" . PluginAnnotationEnumeration::PARENT . "    " . $this->getParent();
         }
         foreach ($this->getDependencies() as $dependency)
         {
-            $string .= $tab . "@requires   " . $dependency;
+            $string .= $tab . "@" . PluginAnnotationEnumeration::REQUIRES . "   " . $dependency;
         }
         if ($this->getPriority()) {
-            $string .= $tab . "@priority   " . $this->getPriority();
+            $string .= $tab . "@" . PluginAnnotationEnumeration::PRIORITY . "   " . $this->getPriority();
         }
         foreach ($this->getMenuNames() as $menu)
         {
-            $string .= $tab . "@menu       group: " . $menu[PluginAnnotationEnumeration::GROUP];
-            if (isset($menu[PluginAnnotationEnumeration::TITLE])) {
-                $string .= ', title: ' . $menu[PluginAnnotationEnumeration::TITLE];
+            $string .= $tab . "@" . PluginAnnotationEnumeration::MENU . "       " .
+                PluginAnnotationEnumeration::GROUP . ": " . $menu->getGroup();
+            if ($menu->getTitle()) {
+                $string .= ', ' . PluginAnnotationEnumeration::TITLE . ': ' . $menu->getTitle();
             }
         }
         if ($this->getActive() === PluginActivityEnumeration::DEFAULT_ACTIVE) {
-            $string .= $tab . "@active     always";
+            $string .= $tab . "@" . PluginAnnotationEnumeration::ACTIVE . "     always";
         }
         foreach ($this->getAuthors() as $author)
         {
-            $string .= $tab . "@author     " . $author;
+            $string .= $tab . "@" . PluginAnnotationEnumeration::AUTHOR . "     " . $author;
         }
         if ($this->getLicense()) {
-            $string .= $tab . "@licence    " . $this->getLicense();
+            $string .= $tab . "@" . PluginAnnotationEnumeration::LICENSE . "    " . $this->getLicense();
         }
         if ($this->getVersion()) {
-            $string .= $tab . "@version    " . $this->getVersion();
+            $string .= $tab . "@" . PluginAnnotationEnumeration::VERSION . "    " . $this->getVersion();
         }
         if ($this->getUrl()) {
-            $string .= $tab . "@url        " . $this->getUrl();
+            $string .= $tab . "@" . PluginAnnotationEnumeration::URL . "        " . $this->getUrl();
         }
-        if ($this->getCategory()) {
-            $string .= $tab . "@category   " . $this->getCategory();
-        }
-        if ($this->getPackage()) {
-            $string .= $tab . "@package    " . $this->getPackage();
-        }
-        if ($this->getSubPackage()) {
-            $string .= $tab . "@subpackage " . $this->getSubPackage();
-        }
+        $string .= $tab . "@" . PluginAnnotationEnumeration::PACKAGE . "    yana";
+        $string .= $tab . "@" . PluginAnnotationEnumeration::SUBPACKAGE . " plugins";
+        
         $string .= "\n */";
         return $string;
     }

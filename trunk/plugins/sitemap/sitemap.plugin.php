@@ -85,10 +85,11 @@ class plugin_sitemap extends StdClass implements IsPlugin
         $dir = $YANA->getPlugins()->getPluginDir();
         $pluginMenu = PluginMenu::getInstance();
 
+        /* @var $entry PluginMenuEntry */
         foreach ($pluginMenu->getMenuEntries('start') as $action => $entry)
         {
-            $image = $entry[PluginAnnotationEnumeration::IMAGE];
-            $title = $entry[PluginAnnotationEnumeration::TITLE];
+            $image = $entry->getIcon();
+            $title = $entry->getTitle();
 
             if (empty($image)) {
                 $result .= "\t<li>";

@@ -198,8 +198,35 @@ class plugin_sdk extends StdClass implements IsPlugin
                 $method = $plugin->addMethod($methodName);
                 $method->setType(array_shift($action));
                 $method->setTemplate(array_shift($action));
-                $method->setUserLevels(array_shift($action), array_shift($action), array_shift($action));
-                $method->setMenu(array_shift($action));
+                $user = new PluginUserLevel();
+                try {
+                    $user->setGroup(array_shift($action));
+                } catch (InvalidArgumentException $e) {
+                    $error = new InvalidCharacterWarning();
+                    $error->setField('GROUP')->setValid('a-z, 0-9, -, _')->setValue($group);
+                    throw $error;
+                }
+                try {
+                    $user->setRole(array_shift($action));
+                } catch (InvalidArgumentException $e) {
+                    $error = new InvalidCharacterWarning();
+                    $error->setField('ROLE')->setValid('a-z, 0-9, -, _')->setValue($role);
+                    throw $error;
+                }
+                try {
+                    $user->setLevel((int) array_shift($action));
+                } catch (InvalidArgumentException $e) {
+                    $error = new InvalidCharacterWarning();
+                    $error->setField('LEVEL')->setValid('0-100')->setValue($level);
+                    throw $error;
+                }
+                $method->addUserLevel($user);
+                $group = array_shift($action);
+                if (!empty($group)) {
+                    $menu = new PluginMenuEntry();
+                    $menu->setGroup($group);
+                    $method->setMenu($menu);
+                }
             }
             unset($action, $methodName, $method);
         }
