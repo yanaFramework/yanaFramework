@@ -144,7 +144,7 @@ class plugin_config extends StdClass implements IsPlugin
             /* $item is the name of the plugin */
 
             /* get configuration */
-            /* @var $pluginConfiguration PluginConfiguration */
+            /* @var $pluginConfiguration PluginConfigurationClass */
             $pluginConfiguration = $pluginManager->getPluginConfiguration($item);
 
             /* check if plugin is active */
@@ -191,7 +191,7 @@ class plugin_config extends StdClass implements IsPlugin
                         }
                         /* @var $title string */
                         assert('!isset($title); // Cannot redeclare var $title');
-                        $title = $method->getName();
+                        $title = $method->getTitle();
                         if (!empty($setup[PluginAnnotationEnumeration::TITLE])) {
                             $title = $setup[PluginAnnotationEnumeration::TITLE];
                         }

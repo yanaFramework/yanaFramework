@@ -117,11 +117,15 @@ class plugin_user extends StdClass implements IsPlugin
 
         if ($YANA->getSession()->checkPermission(null, $event)) {
             /* access granted */
+            $menu = PluginMenu::getInstance();
             if (YanaUser::isLoggedIn()) {
-                PluginMenu::getInstance()->setMenuEntry("logout", $YANA->getLanguage()->getVar("logout"));
+                $action = "logout";
             } else {
-                PluginMenu::getInstance()->setMenuEntry("login", $YANA->getLanguage()->getVar("login"));
+                $action = "login";
             }
+            $menuEntry = new PluginMenuEntry();
+            $menuEntry->setTitle($YANA->getLanguage()->getVar($action));
+            PluginMenu::getInstance()->setMenuEntry($action, $menuEntry);
             return true;
         } else {
             if (!YanaUser::isLoggedIn()) {
