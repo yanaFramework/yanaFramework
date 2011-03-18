@@ -86,9 +86,9 @@ class Hashtable extends Utility
         if ($key == '*') {
             return $hash;
         } else {
-            $list_of_keys = explode(".", $key);
-            assert('is_array($list_of_keys) && count($list_of_keys) > 0;');
-            $a =& Hashtable::_get($hash, $list_of_keys);
+            $listOfKeys = explode(".", $key);
+            assert('is_array($listOfKeys) && count($listOfKeys) > 0;');
+            $a =& Hashtable::_get($hash, $listOfKeys);
             return $a;
         }
     }
@@ -100,20 +100,20 @@ class Hashtable extends Utility
      *
      * @access  private
      * @static
-     * @param   array  &$hash          associative array
-     * @param   array  &$list_of_keys  list of array keys
+     * @param   array  &$hash        associative array
+     * @param   array  &$listOfKeys  list of array keys
      * @return  mixed
      * @ignore
      */
-    private static function &_get(&$hash, array &$list_of_keys)
+    private static function &_get(&$hash, array &$listOfKeys)
     {
-        $key_name = array_shift($list_of_keys);
+        $key_name = array_shift($listOfKeys);
         if (is_array($hash) && isset($hash[$key_name]) && !is_null($hash[$key_name])) {
             $result = &$hash[$key_name];
-            if (count($list_of_keys) == 0) {
+            if (count($listOfKeys) == 0) {
                 return $result;
             } else {
-                $a =& Hashtable::_get($result, $list_of_keys);
+                $a =& Hashtable::_get($result, $listOfKeys);
                 return $a;
             }
         } else {

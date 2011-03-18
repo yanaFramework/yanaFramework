@@ -40,153 +40,202 @@
  */
 class PluginConfigurationMethod extends Object
 {
-    /**#@+
-     * @ignore
-     * @access  protected
-     */
-
-    /** @var string */ protected $className = "";
-    /** @var string */ protected $methodName = "";
-    /** @var array  */ protected $configuration = array();
-
-    /**#@-*/
-
-    /**#@+
-     * @ignore
+    /**
      * @access  private
+     * @var     string
      */
-    /** @var array  */ private $_args = array();
-    /** @var array  */ private $_defaults = array();
-    /** @var bool   */ private $_hasGenericParams = false;
-    /** @var array  */ private $_paths = array();
-
-    /**#@-*/
+    private $_className = "";
 
     /**
-     * Constructor
+     * @access  private
+     * @var     string
+     */
+    private $_methodName = "";
+
+    /**
+     * @access  private
+     * @var     array
+     */
+    private $_args = array();
+
+    /**
+     * @access  private
+     * @var     array
+     */
+    private $_params = array();
+
+    /**
+     * @access  private
+     * @var     string
+     */
+    private $_return = "";
+
+    /**
+     * @access  private
+     * @var     array
+     */
+    private $_defaults = array();
+
+    /**
+     * @access  private
+     * @var     bool
+     */
+    private $_hasGenericParams = false;
+
+    /**
+     * @access  private
+     * @var     array
+     */
+    private $_paths = array();
+
+    /**
+     * Method title.
      *
-     * @access  public
-     * @param   PluginReflectionMethod  $method  method reflection
-     * @param   PluginReflectionClass   $class   class reflection
+     * @access  private
+     * @var     string
      */
-    public function __construct(PluginReflectionMethod $method, PluginReflectionClass $class)
-    {
-        $this->className = $method->getClassName();
-        $this->methodName = $method->getName();
-
-        $typeClassTag = $class->getTag(PluginAnnotationEnumeration::TYPE, 'default');
-        $this->_paths[] = $class->getDirectory();
-        $this->configuration = array
-        (
-            PluginAnnotationEnumeration::TITLE => $method->getTag(PluginAnnotationEnumeration::TITLE),
-            PluginAnnotationEnumeration::TEXT => "",
-            PluginAnnotationEnumeration::PARAM => array(),
-            PluginAnnotationEnumeration::RETURN_VALUE => $method->getTags(PluginAnnotationEnumeration::RETURN_VALUE),
-            PluginAnnotationEnumeration::TYPE =>
-                mb_strtolower($method->getTag(PluginAnnotationEnumeration::TYPE, $typeClassTag)),
-            PluginAnnotationEnumeration::TEMPLATE =>
-                mb_strtolower($method->getTag(PluginAnnotationEnumeration::TEMPLATE, 'null')),
-            PluginAnnotationEnumeration::USER => $method->getTags(PluginAnnotationEnumeration::USER),
-            PluginAnnotationEnumeration::SAFEMODE => $method->getTag(PluginAnnotationEnumeration::SAFEMODE),
-            PluginAnnotationEnumeration::MENU => $method->getTag(PluginAnnotationEnumeration::MENU),
-            PluginAnnotationEnumeration::ONERROR => $method->getTag(PluginAnnotationEnumeration::ONERROR),
-            PluginAnnotationEnumeration::ONSUCCESS => $method->getTag(PluginAnnotationEnumeration::ONSUCCESS),
-            PluginAnnotationEnumeration::GROUP =>
-                mb_strtolower((!is_null($class)) ? $class->getTag(PluginAnnotationEnumeration::GROUP) : ''),
-            PluginAnnotationEnumeration::OVERWRITE => $method->getTag(PluginAnnotationEnumeration::OVERWRITE, '0'),
-            PluginAnnotationEnumeration::SUBSCRIBE => $method->getTag(PluginAnnotationEnumeration::SUBSCRIBE, '0'),
-            PluginAnnotationEnumeration::LANGUAGE => $method->getTags(PluginAnnotationEnumeration::LANGUAGE),
-            PluginAnnotationEnumeration::SCRIPT => array(),
-            PluginAnnotationEnumeration::STYLE => array()
-        );
-        // process and add scripts
-        assert('!isset($script); // Cannot redeclare var $script');
-        foreach ($method->getTags(PluginAnnotationEnumeration::SCRIPT, array()) as $script)
-        {
-            if (!is_string($script)) {
-                $message = 'Syntax error in @script: ' .$this->className . '::' . $this->methodName . '()';
-                Log::report($message, E_USER_ERROR, $param);
-                continue;
-            }
-            $script = $this->_paths[0] . "/$script";
-            $this->configuration[PluginAnnotationEnumeration::SCRIPT][] = $script;
-        }
-        unset($script);
-        // process and add styles
-        assert('!isset($style); // Cannot redeclare var $style');
-        foreach ($method->getTags(PluginAnnotationEnumeration::STYLE, array()) as $style)
-        {
-            if (!is_string($style)) {
-                $message = 'Syntax error in @style: ' .$this->className . '::' . $this->methodName . '()';
-                Log::report($message, E_USER_ERROR, $param);
-                continue;
-            }
-            $style = $this->_paths[0] . "/$style";
-            $this->configuration[PluginAnnotationEnumeration::STYLE][] = $style;
-        }
-        unset($style);
-        // process template
-        assert('!isset($template); // Cannot redeclare var $template');
-        $template = $this->_paths[0] . "/" . $this->configuration[PluginAnnotationEnumeration::TEMPLATE];
-        if (is_file($template)) {
-            $this->configuration[PluginAnnotationEnumeration::TEMPLATE] = $template;
-        }
-        unset($template);
-        // process params
-        assert('!isset($param); // Cannot redeclare var $param');
-        assert('!isset($match); // Cannot redeclare var $match');
-        assert('!isset($name); // Cannot redeclare var $name');
-        assert('!isset($type); // Cannot redeclare var $type');
-        foreach ($method->getTags(PluginAnnotationEnumeration::PARAM, array()) as $param)
-        {
-            if (!is_string($param)) {
-                $message = 'Syntax error in @param: ' .$this->className . '::' . $this->methodName . '()';
-                Log::report($message, E_USER_ERROR, $param);
-                continue;
-            }
-            if (preg_match('/^(\w+)\s+\$(\w+)/', $param, $match)) {
-                $name = $match[2];
-                $type = $match[1];
-                $this->configuration[PluginAnnotationEnumeration::PARAM][$name] = $type;
-            }
-        }
-        unset($match, $name, $type, $param);
-        $this->_hasGenericParams = isset($this->configuration[PluginAnnotationEnumeration::PARAM]['ARGS']);
-        /* @var $param ReflectionParameter */
-        assert('!isset($param); // Cannot redeclare var $param');
-        foreach($method->getParameters() as $i => $param)
-        {
-            if ($param->isDefaultValueAvailable()) {
-                $this->_defaults[$i] = $param->getDefaultValue();
-            }
-        }
-        unset($param);
-    }
+    private $_title = "";
 
     /**
-     * get type
+     * Plugin method type.
+     *
+     * @access  private
+     * @var     string
+     */
+    private $_type = PluginTypeEnumeration::DEFAULT_SETTING;
+
+    /**
+     * Template identifier.
+     *
+     * @access  private
+     * @var     string
+     */
+    private $_template = "";
+
+    /**
+     * User settings.
+     *
+     * @access  private
+     * @var     string
+     */
+    private $_users = array();
+
+    /**
+     * @access  private
+     * @var     bool
+     */
+    private $_safeMode = null;
+
+    /**
+     * @access  private
+     * @var     PluginMenuEntry
+     */
+    private $_menu = null;
+
+    /**
+     * @access  private
+     * @var     PluginEventRoute
+     */
+    private $_onError = null;
+
+    /**
+     * @access  private
+     * @var     PluginEventRoute
+     */
+    private $_onSuccess = null;
+
+    /**
+     * @access  private
+     * @var     string
+     */
+    private $_group = "";
+
+    /**
+     * @access  private
+     * @var     bool
+     */
+    private $_overwrite = false;
+
+    /**
+     * @access  private
+     * @var     bool
+     */
+    private $_subscribe = false;
+
+    /**
+     * @access  private
+     * @var     array
+     */
+    private $_languages = array();
+
+    /**
+     * @access  private
+     * @var     array
+     */
+    private $_scripts = array();
+
+    /**
+     * @access  private
+     * @var     array
+     */
+    private $_styles = array();
+
+    /**
+     * Get method type.
      *
      * @access  public
      * @return  string
      */
     public function getType()
     {
-        return $this->configuration[PluginAnnotationEnumeration::TYPE];
+        return $this->_type;
     }
 
     /**
-     * get directory
+     * Set method type.
+     *
+     * Valid types are: default, config, read, write, security, library.
+     *
+     * @access  public
+     * @param   string  $type  valid method type
+     * @return  PluginConfigurationMethod
+     */
+    public function setType($type)
+    {
+        assert('is_string($type); // Invalid argument $type: string expected');
+        $this->_type = PluginTypeEnumeration::fromString($type);
+        return $this;
+    }
+
+    /**
+     * Add directory.
+     *
+     * @access  public
+     * @param   string  $path  absolute path to plugin class file
+     */
+    public function addPath($path)
+    {
+        assert('is_string($path); // Invalid argument $path: string expected');
+        $this->_paths[] = $path;
+    }
+
+    /**
+     * Get directory.
      *
      * @access  public
      * @return  string
      */
     public function getPath()
     {
-        return $this->_paths[0];
+        if (!empty($this->_paths)) {
+            return $this->_paths[0];
+        } else {
+            return '';
+        }
     }
 
     /**
-     * get directory names of subscribing plugins
+     * Fet directory names of subscribing plugins.
      *
      * This includes the path of the implementing method, as it always subscribes to itself.
      *
@@ -203,21 +252,20 @@ class PluginConfigurationMethod extends Object
      *
      * @access  public
      * @param   PluginConfigurationMethod $subscriberConfig  configuration of subscribing method
+     * @return  PluginConfigurationMethod
      * @ignore
      */
     public function addSubscription(PluginConfigurationMethod $subscriberConfig)
     {
-        $this->_paths[] = $subscriberConfig->getPath();
-        $scripts = $this->configuration[PluginAnnotationEnumeration::SCRIPT];
-        $this->configuration[PluginAnnotationEnumeration::SCRIPT] = array_merge($scripts, $subscriberConfig->getScripts());
-        $lang = $this->configuration[PluginAnnotationEnumeration::LANGUAGE];
-        $this->configuration[PluginAnnotationEnumeration::LANGUAGE] = array_merge($lang, $subscriberConfig->getLanguages());
-        $styles = $this->configuration[PluginAnnotationEnumeration::STYLE];
-        $this->configuration[PluginAnnotationEnumeration::STYLE] = array_merge($styles, $subscriberConfig->getStyles());
+        $this->addPath($subscriberConfig->getPath());
+        $this->setScripts(array_merge($this->getScripts(), $subscriberConfig->getScripts()));
+        $this->setLanguages(array_merge($this->getLanguages(), $subscriberConfig->getLanguages()));
+        $this->setStyles(array_merge($this->getStyles(), $subscriberConfig->getStyles()));
+        return $this;
     }
 
     /**
-     * get javascripts
+     * Get Javascript files.
      *
      * Returns a list of all associated javascript files.
      * These are loaded together with the template.
@@ -227,15 +275,24 @@ class PluginConfigurationMethod extends Object
      */
     public function getScripts()
     {
-        if (!isset($this->configuration[PluginAnnotationEnumeration::SCRIPT])) {
-            $this->configuration[PluginAnnotationEnumeration::SCRIPT] = array();
-        }
-        assert('is_array($this->configuration[PluginAnnotationEnumeration::SCRIPT]);');
-        return $this->configuration[PluginAnnotationEnumeration::SCRIPT];
+        return $this->_scripts;
     }
 
     /**
-     * get CSS-styles
+     * Set Javascript files.
+     *
+     * @access  public
+     * @param   array  $scripts  list of paths to javascript files.
+     * @return  PluginConfigurationMethod
+     */
+    public function setScripts(array $scripts)
+    {
+        $this->_scripts = $scripts;
+        return $this;
+    }
+
+    /**
+     * Get CSS-styles.
      *
      * Returns a list of all associated CSS files.
      * These are loaded together with the template.
@@ -245,15 +302,24 @@ class PluginConfigurationMethod extends Object
      */
     public function getStyles()
     {
-        if (!isset($this->configuration[PluginAnnotationEnumeration::STYLE])) {
-            $this->configuration[PluginAnnotationEnumeration::STYLE] = array();
-        }
-        assert('is_array($this->configuration[PluginAnnotationEnumeration::STYLE]);');
-        return $this->configuration[PluginAnnotationEnumeration::STYLE];
+        return $this->_styles;
     }
 
     /**
-     * get language files
+     * Set CSS styles.
+     *
+     * @access  public
+     * @param   array  $styles  list of paths to CSS files.
+     * @return  PluginConfigurationMethod
+     */
+    public function setStyles(array $styles)
+    {
+        $this->_styles = $styles;
+        return $this;
+    }
+
+    /**
+     * Get language files.
      *
      * Returns a list of all associated XLIFF files.
      * These are loaded together with the template.
@@ -263,15 +329,24 @@ class PluginConfigurationMethod extends Object
      */
     public function getLanguages()
     {
-        if (!isset($this->configuration[PluginAnnotationEnumeration::LANGUAGE])) {
-            $this->configuration[PluginAnnotationEnumeration::LANGUAGE] = array();
-        }
-        assert('is_array($this->configuration[PluginAnnotationEnumeration::LANGUAGE]);');
-        return $this->configuration[PluginAnnotationEnumeration::LANGUAGE];
+        return $this->_languages;
     }
 
     /**
-     * get parameters
+     * Set language files.
+     *
+     * @access  public
+     * @param   array  $languages  list of names of XLIFF files.
+     * @return  PluginConfigurationMethod
+     */
+    public function setLanguages(array $languages)
+    {
+        $this->_languages = $languages;
+        return $this;
+    }
+
+    /**
+     * Get parameters.
      *
      * Returns a list of all parameters as an array,
      * where the keys are the param-names and the values are the param-types.
@@ -289,12 +364,32 @@ class PluginConfigurationMethod extends Object
      */
     public function getParams()
     {
-        assert('is_array($this->configuration[PluginAnnotationEnumeration::PARAM]);');
-        return $this->configuration[PluginAnnotationEnumeration::PARAM];
+        return $this->_params;
     }
 
     /**
-     * get return value
+     * Set parameters.
+     *
+     * Example:
+     * <code>
+     * array(
+     *     'id' => 'int',
+     *     'title' => 'string'
+     * );
+     * </code>
+     *
+     * @access  public
+     * @param   array  $params  keys are the param-names and the values are the param-types
+     * @return  PluginConfigurationMethod
+     */
+    public function setParams(array $params)
+    {
+        $this->_params = $params;
+        return $this;
+    }
+
+    /**
+     * Get return value.
      *
      * Returns the methods return value.
      *
@@ -303,11 +398,25 @@ class PluginConfigurationMethod extends Object
      */
     public function getReturn()
     {
-        return $this->configuration[PluginAnnotationEnumeration::RETURN_VALUE];
+        return $this->_return;
     }
 
     /**
-     * get group
+     * Set return value.
+     *
+     * @access  public
+     * @param   string  $return  valid PHP type - or empty string, if the function doesn't return a value
+     * @return  PluginConfigurationMethod
+     */
+    public function setReturn($return)
+    {
+        assert('is_string($return); // Invalid argument $return: string expected');
+        $this->_return = (string) $return;
+        return $this;
+    }
+
+    /**
+     * Get group.
      *
      * Returns the method's group (if any).
      * This is similar to a "package" in OO-style programming languages.
@@ -319,11 +428,27 @@ class PluginConfigurationMethod extends Object
      */
     public function getGroup()
     {
-        return $this->configuration[PluginAnnotationEnumeration::GROUP];
+        return $this->_group;
     }
 
     /**
-     * get menu entry
+     * Set group.
+     *
+     * A group may have multiple plugins, but a plugin may only be a member of one group.
+     *
+     * @access  public
+     * @param   string  $group  unique name
+     * @return  PluginConfigurationMethod
+     */
+    public function setGroup($group)
+    {
+        assert('is_string($group); // Invalid argument $group: string expected');
+        $this->_group = (string) $group;
+        return $this;
+    }
+
+    /**
+     * Get menu entry.
      *
      * Each plugin may define it's own menues and add entries to them. The names
      * are defined in the file's doc-block, while the menu entries are defined
@@ -332,79 +457,101 @@ class PluginConfigurationMethod extends Object
      * Use this function to get the menu entry defined by the method (if any).
      *
      * @access  public
-     * @return  array
+     * @return  PluginMenuEntry
      */
     public function getMenu()
     {
-        if (empty($this->configuration[PluginAnnotationEnumeration::MENU])) {
-            $this->configuration[PluginAnnotationEnumeration::MENU] = array();
-        }
-        assert('is_array($this->configuration[PluginAnnotationEnumeration::MENU]);');
-        return $this->configuration[PluginAnnotationEnumeration::MENU];
+        return $this->_menu;
     }
 
     /**
-     * get settings on how to react on success
+     * Set menu entry.
      *
      * @access  public
-     * @return  array
+     * @param   PluginMenuEntry  $menu  menu configuration
+     * @return  PluginConfigurationMethod
+     */
+    public function setMenu(PluginMenuEntry $menu)
+    {
+        $this->_menu = $menu;
+        return $this;
+    }
+
+    /**
+     * Get settings on how to react on success.
+     *
+     * @access  public
+     * @return  PluginEventRoute
      */
     public function getOnSuccess()
     {
-        if (empty($this->configuration[PluginAnnotationEnumeration::ONSUCCESS])) {
-            $this->configuration[PluginAnnotationEnumeration::ONSUCCESS] = array();
-        }
-        assert('is_array($this->configuration[PluginAnnotationEnumeration::ONSUCCESS]);');
-        return $this->configuration[PluginAnnotationEnumeration::ONSUCCESS];
+        return $this->_onSuccess;
     }
 
     /**
-     * get settings on how to react on error
+     * Set settings on how to react on success.
      *
      * @access  public
-     * @return  array
+     * @param   PluginEventRoute  $onSuccess  event configuration
+     * @return  PluginConfigurationMethod
+     */
+    public function setOnSuccess(PluginEventRoute $onSuccess)
+    {
+        $onSuccess->setCode(PluginEventRoute::CODE_SUCCESS);
+        $this->_onSuccess = $onSuccess;
+        return $this;
+    }
+
+    /**
+     * Get settings on how to react on error.
+     *
+     * @access  public
+     * @return  PluginEventRoute
      */
     public function getOnError()
     {
-        if (empty($this->configuration[PluginAnnotationEnumeration::ONERROR])) {
-            $this->configuration[PluginAnnotationEnumeration::ONERROR] = array();
-        }
-        assert('is_array($this->configuration[PluginAnnotationEnumeration::ONERROR]);');
-        return $this->configuration[PluginAnnotationEnumeration::ONERROR];
+        return $this->_onError;
     }
 
     /**
-     * get human readable name
+     * Set settings on how to react on error.
+     *
+     * @access  public
+     * @param   PluginEventRoute  $onError  event configuration
+     * @return  PluginConfigurationMethod
+     */
+    public function setOnError(PluginEventRoute $onError)
+    {
+        $onError->setCode(PluginEventRoute::CODE_ERROR);
+        $this->_onError = $onError;
+        return $this;
+    }
+
+    /**
+     * Get human readable name.
      *
      * Returns the name (title) as defined in the method's doc block.
      *
      * @access  public
      * @return  string
      */
-    public function getName()
+    public function getTitle()
     {
-        if (isset($this->configuration[PluginAnnotationEnumeration::TITLE])) {
-            assert('is_string($this->configuration[PluginAnnotationEnumeration::TITLE]);');
-            return $this->configuration[PluginAnnotationEnumeration::TITLE];
-        } else {
-            return null;
-        }
+        return $this->_title;
     }
 
     /**
-     * get text of method
+     * Set title.
      *
      * @access  public
-     * @return  string
+     * @param   string  $title  human readable name
+     * @return  PluginConfigurationMethod
      */
-    public function getText()
+    public function setTitle($title)
     {
-        if (isset($this->configuration[PluginAnnotationEnumeration::TEXT])) {
-            assert('is_string($this->configuration[PluginAnnotationEnumeration::TEXT]);');
-            return $this->configuration[PluginAnnotationEnumeration::TEXT];
-        } else {
-            return null;
-        }
+        assert('is_string($title); // Invalid argument $title: string expected');
+        $this->_title = $title;
+        return $this;
     }
 
     /**
@@ -417,71 +564,118 @@ class PluginConfigurationMethod extends Object
      *  bool(false) for "safemode must NOT be active",
      *  or NULL for "don't care".
      *
-     * Allowed values are:
-     *  Boolean true or false,
-     *  Strings "true", "false", "yes", "no"
-     *
-     * Any other value will return NULL.
-     *
      * @access  public
      * @return  bool
      */
     public function getSafeMode()
     {
-        if (!isset($this->configuration[PluginAnnotationEnumeration::SAFEMODE])) {
-            return null;
-        }
-        switch ($this->configuration[PluginAnnotationEnumeration::SAFEMODE])
-        {
-            case false:
-            case 'false':
-            case 'no':
-                return false;
-            case true:
-            case 'true':
-            case 'yes':
-                return true;
-            default:
-                return null;
-        }
+        return $this->_safeMode;
     }
 
     /**
-     * get template
+     * Set safemode setting of method.
+     *
+     * Allowed values are:
+     *  Boolean true or false,
+     *  Strings "true", "false", "yes", "no"
+     *
+     * Any other value will reset the setting to NULL.
+     *
+     * @access  public
+     * @param   bool  $safeMode  true = requires safe-mode, false = disallows safe-mode, null = don't care
+     * @return  PluginConfigurationMethod
+     */
+    public function setSafeMode($safeMode = null)
+    {
+        if (is_string($safeMode)) {
+            switch ($safeMode)
+            {
+                case 'false':
+                case 'no':
+                    $safeMode = false;
+                    break;
+                case 'true':
+                case 'yes':
+                    $safeMode = true;
+                    break;
+                default:
+                    $safeMode = null;
+                    break;
+            }
+        }
+        assert('is_null($safeMode) || is_bool($safeMode); // Invalid argument $safeMode: bool expected');
+        $this->_safeMode = $safeMode;
+        return $this;
+    }
+
+    /**
+     * Get template path.
      *
      * @access  public
      * @return  string
      */
     public function getTemplate()
     {
-        return $this->configuration[PluginAnnotationEnumeration::TEMPLATE];
+        return $this->_template;
     }
 
     /**
-     * get user security levels
-     *
-     * Returns an associative array of items like:
-     * <code>
-     * array(
-     *     0 => array(
-     *         PluginAnnotationEnumeration::ROLE => "string",
-     *         PluginAnnotationEnumeration::GROUP => "string",
-     *         PluginAnnotationEnumeration::LEVEL => int(0:100)
-     *     ),
-     *     1 => ...
-     * );
-     * </code>
+     * Set template path.
      *
      * @access  public
-     * @return  array
+     * @param   string  $template  relative path to template file
+     * @return  PluginConfigurationMethod
+     */
+    public function setTemplate($template)
+    {
+        assert('is_string($template); // Invalid argument $template: string expected');
+        $this->_template = strip_tags($template);
+        return $this;
+    }
+
+    /**
+     * Get user security levels.
+     *
+     * Returns a list of instances of PluginUserLevel.
+     *
+     * @access  public
+     * @return  PluginUserLevel[]
      */
     public function getUserLevels()
     {
-        if (isset($this->configuration[PluginAnnotationEnumeration::USER])) {
-            return $this->configuration[PluginAnnotationEnumeration::USER];
-        } else {
-            return null;
+        return $this->_users;
+    }
+
+    /**
+     * Set user security levels.
+     *
+     * All elements must be instances of PluginUserLevel.
+     *
+     * @access  public
+     * @param   PluginUserLevel[]  $users  list of user level definitions
+     * @return  PluginConfigurationMethod
+     */
+    public function setUserLevels(array $users)
+    {
+        $this->_users = array();
+        foreach ($users as $user)
+        {
+            $this->addUserLevel($user);
         }
+        return $this;
+    }
+
+    /**
+     * Add user user level rule.
+     *
+     * @access  public
+     * @param   PluginUserLevel  $user  user level definition
+     * @return  PluginConfigurationMethod
+     */
+    public function addUserLevel(PluginUserLevel $user)
+    {
+        $this->_users[] = $user;
+        return $this;
     }
 
     /**
@@ -500,15 +694,29 @@ class PluginConfigurationMethod extends Object
      */
     public function getOverwrite()
     {
-        return !empty($this->configuration[PluginAnnotationEnumeration::OVERWRITE]);
+        return $this->_overwrite;
     }
 
     /**
-     * get subscribe setting of method
+     * Set overwrite setting of method.
+     *
+     * @access  public
+     * @param   bool  $overwrite  true = overwrite parent declaration, false = default
+     * @return  PluginConfigurationMethod
+     */
+    public function setOverwrite($overwrite)
+    {
+        assert('is_bool($overwrite); // Invalid argument $overwrite: bool expected');
+        $this->_overwrite = (bool) $overwrite;
+        return $this;
+    }
+
+    /**
+     * Get subscribe setting of method.
      *
      * Returns value of subscribe setting.
      *
-     * A method my subscribe to an event that it doesn't define itself.
+     * A method may subscribe to an event that it doesn't define itself.
      * If so, it uses the annotation "subscribe" and must NOT use other
      * annotations to change the type of event et cetera.
      *
@@ -520,45 +728,88 @@ class PluginConfigurationMethod extends Object
      */
     public function getSubscribe()
     {
-        return !empty($this->configuration[PluginAnnotationEnumeration::SUBSCRIBE]);
+        return $this->_subscribe;
     }
 
     /**
-     * get class name
+     * Set subscribe setting of method.
+     *
+     * @access  public
+     * @param   bool  $subscribe  true = extend parent, false = implement yourself
+     * @return  PluginConfigurationMethod
+     */
+    public function setSubscribe($subscribe)
+    {
+        assert('is_bool($subscribe); // Invalid argument $subscribe: bool expected');
+        $this->_subscribe = (bool) $subscribe;
+        return $this;
+    }
+
+    /**
+     * Get class name.
      *
      * @access  public
      * @return  string
      */
     public function getClassName()
     {
-        return $this->className;
+        return $this->_className;
     }
 
     /**
-     * get method name
+     * Set class name
+     *
+     * @access  public
+     * @param   string  $className  case-sensitive identifier
+     * @return  PluginConfigurationMethod
+     */
+    public function setClassName($className)
+    {
+        assert('is_string($className); // Invalid argument $className: string expected');
+        $this->_className = $className;
+        return $this;
+    }
+
+    /**
+     * Get method name.
      *
      * @access  public
      * @return  string
      */
     public function getMethodName()
     {
-        return $this->methodName;
+        return $this->_methodName;
     }
 
     /**
-     * set event arguments
+     * Set method name.
+     *
+     * @access  public
+     * @param   string  $methodName  case-sensitive text
+     * @return  PluginConfigurationMethod
+     */
+    public function setMethodName($methodName)
+    {
+        assert('is_string($methodName); // Invalid argument $methodName: string expected');
+        $this->_methodName = $methodName;
+        return $this;
+    }
+
+    /**
+     * Set event arguments.
      *
      * @access  public
      * @param   array  $args  list of arguments
+     * @return  PluginConfigurationMethod
      * @throws  Warning       when a provided argument is missing or not valid
      */
     public function setEventArguments(array $args)
     {
         $this->_args = array();
 
-        if ($this->_hasGenericParams) {
+        if ($this->hasGenericParams()) {
             $this->_args = $args;
-            return;
+            return $this;
         }
 
         $i = 0;
@@ -612,6 +863,56 @@ class PluginConfigurationMethod extends Object
             }
             $i++;
         } // end foreach
+        return $this;
+    }
+
+    /**
+     * Set default values for method params.
+     *
+     * @access  public
+     * @param   array  $defaults  list of default arguments
+     * @return  PluginConfigurationMethod
+     */
+    public function setDefaults(array $defaults)
+    {
+        $this->_defaults = $defaults;
+        return $this;
+    }
+
+    /**
+     * Get default values for method params.
+     *
+     * @access  public
+     * @return  array
+     */
+    public function getDefaults()
+    {
+        return $this->_defaults;
+    }
+
+    /**
+     * Set if the function uses a generic, unchecked parameter list.
+     *
+     * @access  public
+     * @param   bool  $hasGenericParams  true = parameter list is generic, false = parameter list explicitely given
+     * @return  PluginConfigurationMethod
+     */
+    public function setHasGenericParams($hasGenericParams)
+    {
+        assert('is_bool($hasGenericParams); // Invalid argument $hasGenericParams: bool expected');
+        $this->_hasGenericParams = (bool) $hasGenericParams;
+        return $this;
+    }
+
+    /**
+     * Check if the function uses a generic, unchecked parameter list.
+     *
+     * @access  public
+     * @return  bool
+     */
+    public function hasGenericParams()
+    {
+        return $this->_hasGenericParams;
     }
 
     /**
@@ -626,13 +927,13 @@ class PluginConfigurationMethod extends Object
     public function sendEvent(IsPlugin $instance)
     {
         if ($this->hasMethod($instance)) {
-            if ($this->_hasGenericParams) {
+            if ($this->hasGenericParams()) {
                 return $instance->{$this->methodName}($this->_args);
             } else {
-                return call_user_func_array(array($instance, $this->methodName), $this->_args);
+                return call_user_func_array(array($instance, $this->_methodName), $this->_args);
             }
         } else {
-            return $instance->catchAll($this->methodName, $this->_args);
+            return $instance->catchAll($this->_methodName, $this->_args);
         }
     }
 
@@ -647,7 +948,7 @@ class PluginConfigurationMethod extends Object
      */
     public function hasMethod(IsPlugin $instance)
     {
-        return method_exists($instance, $this->methodName);
+        return method_exists($instance, $this->_methodName);
     }
 
     /**

@@ -292,11 +292,11 @@ class SessionManager extends Singleton implements Serializable
         $roles = array();
         $actions = array();
         $pluginManager = PluginManager::getInstance();
-        /** @var $configuration PluginConfigurationMethod */
+        /* @var $configuration PluginConfigurationMethod */
         foreach ($pluginManager->getEventConfigurations() as $configuration)
         {
             $name = $configuration->getMethodName();
-            $title = $configuration->getName();
+            $title = $configuration->getTitle();
             /**
              * @todo reactivate this when form creator is done
              * if (!isset($actions[$name]) && !empty($title)) {

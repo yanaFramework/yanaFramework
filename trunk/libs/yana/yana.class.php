@@ -284,8 +284,12 @@ final class Yana extends Singleton implements IsReportable
             self::_setRealPaths(getcwd());
         }
         // initialize directories
-        Skin::setBaseDirectory(self::$_config['SKINDIR']);
-        PluginManager::setPath(self::$_config['PLUGINFILE'], self::$_config['PLUGINDIR']);
+        if (isset(self::$_config['SKINDIR'])) {
+            Skin::setBaseDirectory(self::$_config['SKINDIR']);
+        }
+        if (isset(self::$_config['PLUGINFILE'])) {
+            PluginManager::setPath(self::$_config['PLUGINFILE'], self::$_config['PLUGINDIR']);
+        }
     }
 
     /**
@@ -316,7 +320,7 @@ final class Yana extends Singleton implements IsReportable
      */
     public function callAction($action = "", array $args = null)
     {
-        assert('is_string($action); // Wrong argument type argument 1. String expected');
+        assert('is_string($action); // Invalid argument $action: string expected');
 
         /**
          * 1) check for default arguments
@@ -578,6 +582,9 @@ final class Yana extends Singleton implements IsReportable
 
             } else {
                 $this->_plugins = PluginManager::getInstance();
+                if (!is_file(PluginManager::getConfigFilePath())) {
+                    $this->_plugins->refreshPluginFile();
+                }
                 file_put_contents($cacheFile, serialize($this->_plugins));
             }
         }
@@ -740,7 +747,7 @@ final class Yana extends Singleton implements IsReportable
      */
     public function getVar($key = '*')
     {
-        assert('is_scalar($key); /* Wrong argument type for argument 1. String expected. */');
+        assert('is_scalar($key); // Invalid argument $key: scalar expected');
         $registry = $this->getRegistry();
         return $registry->getVar("$key");
     }
@@ -769,11 +776,8 @@ final class Yana extends Singleton implements IsReportable
      */
     public function setVarByReference($key, &$value)
     {
-        assert('is_scalar($key); /* Wrong argument type for argument 1. String expected. */');
-        /* settype to STRING */
-        $key = (string) $key;
-        $registry = $this->getRegistry();
-        return $registry->setVarByReference($key, $value);
+        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+        return $this->getRegistry()->setVarByReference((string) $key, $value);
     }
 
     /**
@@ -811,8 +815,8 @@ final class Yana extends Singleton implements IsReportable
      */
     public function setType($key, $type)
     {
-        assert('is_scalar($key);  // Wrong argument type for argument 1. String expected.');
-        assert('is_string($type); // Wrong argument type for argument 2. String expected.');
+        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+        assert('is_string($type); // Invalid argument $type: string expected');
         return $this->getRegistry()->setType((string) $key, (string) $type);
     }
 
@@ -838,7 +842,7 @@ final class Yana extends Singleton implements IsReportable
      */
     public function unsetVar($key)
     {
-        assert('is_scalar($key); // Wrong argument type for argument 1. String expected.');
+        assert('is_scalar($key); // Invalid argument $key: scalar expected');
         return $this->getRegistry()->unsetVar((string) $key);
     }
 
@@ -863,7 +867,7 @@ final class Yana extends Singleton implements IsReportable
      */
     public function mergeVars($key, array $array)
     {
-        assert('is_scalar($key);  // Wrong argument type for argument 1. String expected.');
+        assert('is_scalar($key); // Invalid argument $key: scalar expected');
         return $this->getRegistry()->mergeVars((string) $key, $array);
     }
 
@@ -883,7 +887,7 @@ final class Yana extends Singleton implements IsReportable
      */
     public function getResource($path)
     {
-        assert('is_string($path); // Wrong argument type for argument 1. String expected.');
+        assert('is_string($path); // Invalid argument $path: string expected');
         return $this->getRegistry()->getResource($path);
     }
 
@@ -935,7 +939,7 @@ final class Yana extends Singleton implements IsReportable
      */
     public function exitTo($event = 'null')
     {
-        assert('is_string($event); // Wrong argument type argument 1. String expected');
+        assert('is_string($event); // Invalid argument $event: string expected');
         $event = mb_strtolower("$event");
 
         /*
@@ -982,7 +986,7 @@ final class Yana extends Singleton implements IsReportable
     }
 
     /**
-     * provides GUI from current data
+     * Provides GUI from current data.
      *
      * @access  public
      */
@@ -1002,63 +1006,97 @@ final class Yana extends Singleton implements IsReportable
         }
         unset($eventConfiguration);
 
-        /**
-         * resolve selected templates
-         */
-
-        /* 1) the reserved template 'NULL' is an alias
-         * for 'no template' and will surpress any output.
-         *
-         * This may mean the plugin will create some output
-         * itself using print(), or it is a triggered
-         * cron-job that is not meant to produce any output
-         * at all.
-         */
-        if (strcasecmp($template, 'NULL') === 0) {
-
-            if (Request::getVars('is_ajax_request') && !is_bool($result)) {
-                if (!headers_sent()) {
-                    header('Content-Type: text/plain');
-                    header('Content-Encoding: UTF-8');
-                    header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-                    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-                    header("Cache-Control: no-store, no-cache, must-revalidate");
-                    header("Cache-Control: post-check=0, pre-check=0", false);
-                    header("Pragma: no-cache");
+        switch (strtolower($template))
+        {
+            /**
+             * 1) the reserved template 'NULL' is an alias for 'no template' and will prevent the use of HTML template files.
+             *
+             * This may mean the plugin has created some output itself using print(),
+             * or it is a triggered cron-job that is not meant to produce any output at all,
+             * or it has returned a value, that will be sent as a JSON encoded string.
+             */
+            case 'null':
+                $this->_outputAsJson($result);
+                break;
+            /**
+             * 2) the reserved template 'MESSAGE' is a special template that produces a text message.
+             *
+             * The text usually is an ID of some text.
+             * The actual message is stored in the language files and the translated message will be read from there
+             * depending on the user's prefered language setting.
+             */
+            case 'message':
+                $this->_outputAsMessage($result);
+                break;
+            /**
+             * 3) all other template settings go here
+             */
+            default:
+                if ($result === false && ReportAbstract::countMessages() === 0) {
+                    $this->_outputAsMessage($result);
+                    return;
                 }
-                if (!is_null($result)) {
-                    print json_encode($result); // print results
-                }
-            }
-            // don't produce any output;
-            return;
+                $this->_outputAsTemplate($template);
+                /**
+                 * save log-files (if any)
+                 *
+                 * By default this will output any messages
+                 * to a table of the database named 'log'.
+                 */
+                $this->_writeLog();
+                break;
         }
 
-        /* 2) the reserved template 'MESSAGE' is a special
-         * template that produces a text message.
-         *
-         * The text usually is an ID of some text.
-         * The actual message is stored in the language files
-         * and the translated message will be read from there
-         * depending on the user's prefered language setting.
-         */
-        if (strcasecmp($template, 'MESSAGE') === 0 || ($result === false && ReportAbstract::countMessages() === 0)) {
+    }
 
-            $pluginManager = $this->getPlugins();
-            $route = $pluginManager->getNextEvent();
-            if (!is_array($route)) {
-                $route = array();
-            }
+    /**
+     * Output results as JSON.
+     *
+     * If the function returned a result, it will be printed as a JSON string.
+     *
+     * @access  private
+     * @param   mixed  $result  whatever the last called action returned
+     */
+    private function _outputAsJson($result)
+    {
+        $json = "";
+        if (!headers_sent()) {
+            header('Content-Type: text/plain');
+            header('Content-Encoding: UTF-8');
+            header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+        }
+        if (!is_null($result)) {
+            $json = json_encode($result);
+        }
+        print $json;
+    }
 
+    /**
+     * Output a text message and relocate to next event.
+     *
+     * @access  private
+     * @param   mixed  $result  whatever the last called action returned
+     */
+    private function _outputAsMessage($result)
+    {
+        $pluginManager = $this->getPlugins();
+        $route = $pluginManager->getNextEvent();
+        $target = "";
+
+        if ($route instanceof PluginEventRoute) {
             // create default message if there is none
             if (Message::countMessages() === 0) {
-                if (!empty($route[PluginAnnotationEnumeration::TEXT])) {
-                    $messageClass = $route[PluginAnnotationEnumeration::TEXT];
+                if ($route->getMessage()) {
+                    $messageClass = $route->getMessage();
                 } else {
-                    if ($result !== false) {
-                        $messageClass = 'SuccessMessage';
+                    if ($route->getCode() === PluginEventRoute::CODE_SUCCESS) {
+                        $messageClass = PluginEventRoute::MSG_SUCCESS;
                     } else {
-                        $messageClass = 'Error';
+                        $messageClass = PluginEventRoute::MSG_ERROR;
                     }
                 }
 
@@ -1067,45 +1105,43 @@ final class Yana extends Singleton implements IsReportable
                 }
             }
 
-            // if not other destination is defined, route back to default homepage
-            if (!isset($route[PluginAnnotationEnumeration::GO])) {
-                $route[PluginAnnotationEnumeration::GO] = self::getDefault("homepage");
-            }
-
-            $this->exitTo($route[PluginAnnotationEnumeration::GO]);
-
-        /* 3) all other template settings go here
-         */
-        } else {
-
-            $view = $this->getView();
-            if (!empty(self::$_config['DEFAULT']['EVENT'][mb_strtoupper(PluginAnnotationEnumeration::TEMPLATE)])) {
-                $baseTemplate = self::$_config['DEFAULT']['EVENT'][mb_strtoupper(PluginAnnotationEnumeration::TEMPLATE)];
-                $view->setPath($baseTemplate);
-            }
-            /* register templates with view sub-system */
-            $view->setTemplate($template);
-            /* there is a special var called 'STDOUT' that is used to output messages */
-            if (!empty($_SESSION['STDOUT']['MESSAGES']) && is_array($_SESSION['STDOUT']['MESSAGES'])) {
-                $this->setVar('STDOUT', $_SESSION['STDOUT']);
-                unset($_SESSION['STDOUT']);
-            }
-
-            /* print message queue to client */
-            $this->_prepareMessages();
-
-            /* print the page to the client */
-            echo $view->toString();
-
-            /**
-             * save log-files (if any)
-             *
-             * By default this will output any messages
-             * to a table of the database named 'log'.
-             */
-            $this->_writeLog();
+            $target = $route->getTarget();
+        }
+        if (empty($target)) {
+            // if no other destination is defined, route back to default homepage
+            $target = self::getDefault("homepage");
         }
 
+        $this->exitTo($target);
+    }
+
+    /**
+     * Select the given template as output target and print the result page.
+     *
+     * @access  private
+     * @param   string  $template  a valid template identifier
+     */
+    private function _outputAsTemplate($template)
+    {
+        assert('is_string($template); // Invalid argument $template: string expected');
+        $view = $this->getView();
+        if (!empty(self::$_config['DEFAULT']['EVENT'][mb_strtoupper(PluginAnnotationEnumeration::TEMPLATE)])) {
+            $baseTemplate = self::$_config['DEFAULT']['EVENT'][mb_strtoupper(PluginAnnotationEnumeration::TEMPLATE)];
+            $view->setPath($baseTemplate);
+        }
+        /* register templates with view sub-system */
+        $view->setTemplate($template);
+        /* there is a special var called 'STDOUT' that is used to output messages */
+        if (!empty($_SESSION['STDOUT']['MESSAGES']) && is_array($_SESSION['STDOUT']['MESSAGES'])) {
+            $this->setVar('STDOUT', $_SESSION['STDOUT']);
+            unset($_SESSION['STDOUT']);
+        }
+
+        /* print message queue to client */
+        $this->_prepareMessages();
+
+        /* print the page to the client */
+        print $view->toString();
     }
 
     /**
@@ -1136,7 +1172,7 @@ final class Yana extends Singleton implements IsReportable
      */
     public static function getDefault($key)
     {
-        assert('is_scalar($key); /* Wrong argument type for argument 1. String expected. */');
+        assert('is_scalar($key); // Invalid argument $key: scalar expected');
         if (!isset(self::$_config['DEFAULT'])) {
             return null;
         }

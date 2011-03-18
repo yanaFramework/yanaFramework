@@ -1,4 +1,5 @@
 <?php
+
 /**
  * YANA library
  *
@@ -37,6 +38,7 @@
  */
 class PluginMenu extends Singleton
 {
+
     /**
      * This is a place-holder for the singleton's instance
      *
@@ -45,35 +47,30 @@ class PluginMenu extends Singleton
      * @var     PluginMenu
      */
     private static $_instance = null;
-
     /**
      * @access  private
      * @static
      * @var     string
      */
     private static $_locale = null;
-
     /**
      * @access  private
      * @static
      * @var     array
      */
     private $_names = array();
-
     /**
      * @access  private
      * @static
      * @var     array
      */
     private $_plugins = array();
-
     /**
      * @access  private
      * @static
      * @var     array
      */
     private $_entries = array();
-
     /**
      * @access  private
      * @static
@@ -94,81 +91,75 @@ class PluginMenu extends Singleton
          * initialize names
          */
         $pluginManager = PluginManager::getInstance();
-        $pluginNames = $pluginManager->getPluginNames();
-        $sessionManager = SessionManager::getInstance();
+        $plugins = $pluginManager->getPluginConfigurations();
 
-        foreach ($pluginNames as $i => $pluginName)
+        /* @var $pluginConfiguration PluginConfigurationClass */
+        foreach ($plugins as $pluginName => $pluginConfiguration)
         {
             if ($pluginManager->isActive($pluginName)) {
-                $pluginConfiguration = $pluginManager->getPluginConfiguration($pluginName);
                 if ($pluginConfiguration->getGroup()) {
                     $this->_hasGroup[$pluginName] = true;
                 }
-                foreach ($pluginConfiguration->getMenuNames() as $entry)
+                foreach ($pluginConfiguration->getMenuNames() as $menuEntry)
                 {
-                    if (!isset($entry[PluginAnnotationEnumeration::GROUP])) {
+                    if (!$menuEntry->getGroup()) {
                         $message = "Error in plugin configuration '" . $pluginConfiguration->getTitle() . "'. " .
                             "Menu definition is missing setting 'group'.";
                         Log::report($message, E_USER_WARNING);
                         continue;
                     }
-                    if (isset($entry[PluginAnnotationEnumeration::TITLE])) {
-                        $title = $entry[PluginAnnotationEnumeration::TITLE];
-                    }
-                    $group = $entry[PluginAnnotationEnumeration::GROUP];
+                    $title = $menuEntry->getTitle();
+                    $group = $menuEntry->getGroup();
                     if (empty($title)) {
                         $title = $pluginConfiguration->getTitle();
                     }
-                    if (!empty($group)) {
-                        $this->_names[$group] = $title;
-                        $this->_plugins[$group] = $pluginName;
-                    }
+                    $this->setMenuName($group, $title);
+                    $this->_plugins[$group] = $pluginName;
                 } // end foreach
             } else {
-                unset($pluginNames[$i]);
+                unset($plugins[$pluginName]);
             } // end if
         } // end foreach
 
+        $sessionManager = SessionManager::getInstance();
         /**
          * initialize entries
          */
-        foreach ($pluginNames as $pluginName)
+        foreach ($plugins as $pluginName => $pluginConfiguration)
         {
-            if ($pluginManager->isActive($pluginName)) {
-                $pluginConfiguration = $pluginManager->getPluginConfiguration($pluginName);
-                foreach ($pluginConfiguration->getMenuEntries() as $action => $entry)
-                {
-                    if (!$sessionManager->checkPermission(null, $action)) {
-                        continue;
-                    }
-                    // check for @menu title: foo
-                    if (!empty($entry[PluginAnnotationEnumeration::TITLE])) {
-                        $title = $entry[PluginAnnotationEnumeration::TITLE];
-                    // otherwise look for @title tag
-                    } else {
-                        $title = $pluginConfiguration->getMethod($action)->getName();
-                    }
-                    // if everything else fails, fall back to plugin title
+            /* @var $menuEntry PluginMenuEntry */
+            foreach ($pluginConfiguration->getMenuEntries() as $action => $menuEntry)
+            {
+                if (!$sessionManager->checkPermission(null, $action)) {
+                    continue;
+                }
+                // check if title is set
+                if (!$menuEntry->getTitle()) {
+                    // otherwise check if method has a title
+                    $title = $pluginConfiguration->getMethod($action)->getTitle();
+                    // if not, take the plugin title
                     if (empty($title)) {
                         $title = $pluginConfiguration->getTitle();
                     }
-                    if (empty($entry[PluginAnnotationEnumeration::IMAGE])) {
-                        $image = $pluginConfiguration->getIcon();
-                    } else {
-                        $image = $pluginConfiguration->getDirectory() . '/' . $entry[PluginAnnotationEnumeration::IMAGE];
+                    $menuEntry->setTitle($title);
+                }
+                // check if icon is set
+                $directory = $pluginConfiguration->getDirectory() . '/';
+                if ($menuEntry->getIcon()) {
+                    // try to find icon in plugin directory
+                    if (is_file($directory . $menuEntry->getIcon())) {
+                        $menuEntry->setIcon($directory . $menuEntry->getIcon());
                     }
-                    if (empty($entry[PluginAnnotationEnumeration::GROUP])) {
-                        $group = "";
-                    } else {
-                        $group = $entry[PluginAnnotationEnumeration::GROUP];
+                } else {
+                    // or take the plugin's icon
+                    if (is_file($pluginConfiguration->getIcon())) {
+                        $menuEntry->setIcon($pluginConfiguration->getIcon());
                     }
-                    $safemode = $pluginConfiguration->getMethod($action)->getSafeMode();
-                    $entry = array(PluginAnnotationEnumeration::IMAGE => $image,
-                                   PluginAnnotationEnumeration::TITLE => $title,
-                                   PluginAnnotationEnumeration::SAFEMODE => $safemode);
-                    Hashtable::set($this->_entries, "$group.$action", $entry);
-                } // end foreach
-            } // end if
+                }
+                // copy safemode setting
+                $menuEntry->setSafeMode($pluginConfiguration->getMethod($action)->getSafeMode());
+                $this->setMenuEntry($action, $menuEntry);
+            } // end foreach
         } // end foreach
     }
 
@@ -191,12 +182,12 @@ class PluginMenu extends Singleton
              * load from cache
              */
             if (isset($_SESSION[__CLASS__][$id])) {
-                 self::$_instance = unserialize($_SESSION[__CLASS__][$id]);
-                 assert('self::$_instance instanceof PluginMenu;');
+                self::$_instance = unserialize($_SESSION[__CLASS__][$id]);
+                assert('self::$_instance instanceof PluginMenu;');
 
-            /*
-             * create cache
-             */
+                /*
+                 * create cache
+                 */
             } else {
                 self::$_instance = new PluginMenu();
                 $_SESSION[__CLASS__][$id] = serialize(self::$_instance);
@@ -237,44 +228,18 @@ class PluginMenu extends Singleton
     }
 
     /**
-     * get list of menus
-     *
-     * Returns a list of all menus as a numeric array.
-     *
-     * @access  public
-     * @return  array
-     */
-    public function getMenus()
-    {
-        return array_keys($this->_entries);
-    }
-
-    /**
-     * add menu entry
-     *
      * Adds an entry to a menu of your choice.
-     * If no menu is specified, the entry is added to the root-level.
+     *
+     * If no menu-group is specified, the entry is added to the root-level.
      *
      * @access  public
-     * @param   string  $action    name of action
-     * @param   string  $title     title of your choice
-     * @param   string  $menuName  menu where entry should be added, blank means root-level
-     * @param   string  $icon      URL to an icon of your choice
+     * @param   string           $action    name of action
+     * @param   PluginMenuEntry  $title     
      */
-    public function setMenuEntry($action, $title, $menuName = "", $icon = "")
+    public function setMenuEntry($action, PluginMenuEntry $menuEntry)
     {
-        assert('is_string($action); // Wrong type for argument 1. String expected');
-        assert('is_string($title); // Wrong type for argument 2. String expected');
-        assert('is_string($menuName); // Wrong type for argument 3. String expected');
-        assert('is_string($icon); // Wrong type for argument 4. String expected');
-
-        $this->_entries[$menuName][$action] = array
-            (
-                PluginAnnotationEnumeration::TITLE => $title,
-                PluginAnnotationEnumeration::IMAGE => $icon,
-                PluginAnnotationEnumeration::GROUP => $menuName,
-                PluginAnnotationEnumeration::SAFEMODE => null
-            );
+        assert('is_string($action); // Invalid argument $action: string expected');
+        Hashtable::set($this->_entries, $menuEntry->getGroup() . ".$action", $menuEntry);
     }
 
     /**
@@ -289,14 +254,9 @@ class PluginMenu extends Singleton
      */
     public function unsetMenuEntry($action, $menuName = "")
     {
-        assert('is_string($action); // Wrong type for argument 1. String expected');
-        assert('is_string($menuName); // Wrong type for argument 2. String expected');
-        if (isset($this->_entries[$menuName][$action])) {
-            unset($this->_entries[$menuName][$action]);
-            return true;
-        } else {
-            return false;
-        }
+        assert('is_string($action); // Invalid argument $action: string expected');
+        assert('is_string($menuName); // Invalid argument $menuName: string expected');
+        return Hashtable::remove($this->_entries, $menuName . "." . $action);
     }
 
     /**
@@ -310,8 +270,8 @@ class PluginMenu extends Singleton
      */
     public function setMenuName($menu, $name = "")
     {
-        assert('is_string($menuName); // Wrong type for argument 1. String expected');
-        assert('is_string($name); // Wrong type for argument 2. String expected');
+        assert('is_string($menu); // Invalid argument $menu: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $this->_names[$menu] = $name;
     }
 
@@ -331,10 +291,13 @@ class PluginMenu extends Singleton
         assert('is_null($menuName) || is_string($menuName); // Wrong type for argument 1. String expected');
         if (empty($menuName)) {
             return $this->_entries;
-        } elseif (isset($this->_entries[$menuName])) {
-            return $this->_entries[$menuName];
         } else {
-            return array();
+            $result = Hashtable::get($this->_entries, $menuName);
+            if (is_array($result)) {
+                return $result;
+            } else {
+                return array();
+            }
         }
     }
 
@@ -365,26 +328,24 @@ class PluginMenu extends Singleton
      * Value Keys are URLs, values are text labels.
      *
      * @access  public
-     * @static
      * @return  array
      */
-    public static function getTextMenu()
+    public function getTextMenu()
     {
-        $pluginMenu = PluginMenu::getInstance();
         $pluginManager = PluginManager::getInstance();
         $sessionManager = SessionManager::getInstance();
         $isSafemode = Yana::getId() === Yana::getDefault('profile');
         $menu = array();
 
-        foreach ($pluginMenu->getMenuEntries() as $menuId => $menuEntries)
+        foreach ($this->getMenuEntries() as $menuId => $menuEntries)
         {
-            if (isset($pluginMenu->_plugins[$menuId])) {
-                $pluginId = $pluginMenu->_plugins[$menuId];
-                if (!empty($pluginMenu->_hasGroup[$pluginId]) && !$pluginManager->isLoaded($pluginId)) {
+            if (isset($this->_plugins[$menuId])) {
+                $pluginId = $this->_plugins[$menuId];
+                if (!empty($this->_hasGroup[$pluginId]) && !$pluginManager->isLoaded($pluginId)) {
                     continue;
                 }
             }
-            $pluginMenu->_getMenu($menu, $menuId, $menuEntries, $pluginManager, $isSafemode);
+            $this->_getMenu($menu, $menuId, $menuEntries, $pluginManager, $isSafemode);
         }
 
         return $menu;
@@ -394,9 +355,9 @@ class PluginMenu extends Singleton
      * get menu entries
      *
      * @access  private
-     * @param   array           &$menu          menu
-     * @param   string          $menuId         menuID
-     * @param   array           $menuEntries    menu entries
+     * @param   array           &$menu          output
+     * @param   string          $menuId         index of menu
+     * @param   array           $menuEntries    list of instances of PluginMenuEntry or sub-menus
      * @param   PluginManager   $pluginManager  plugin manager
      * @param   bool            $isSafemode     for safemode set true , false otherweise
      */
@@ -406,25 +367,29 @@ class PluginMenu extends Singleton
 
         foreach ($menuEntries as $action => $entry)
         {
-            // is entry
-            if (isset($entry[PluginAnnotationEnumeration::TITLE])) {
-                $safemode = $entry[PluginAnnotationEnumeration::SAFEMODE];
+            if ($entry instanceof PluginMenuEntry) {
+
+                // is entry
+                $safemode = $entry->getSafeMode();
                 if (!is_null($safemode) && $isSafemode !== $safemode) {
                     continue;
                 }
                 $url = SmartUtility::url("action=$action", true);
-                $label = Language::getInstance()->replaceToken($entry[PluginAnnotationEnumeration::TITLE]);
+                $label = Language::getInstance()->replaceToken($entry->getTitle());
                 if (!empty($name)) {
                     $menu[$name][$url] = $label;
                 } else {
                     $menu[$url] = $label;
                 }
-            // is menu
-            } else {
+
+            } elseif (is_array($entry)) {
+
+                // is menu
                 if (!isset($menu[$name])) {
                     $menu[$name] = array();
                 }
                 $this->_getMenu($menu[$name], "$menuId.$action", $entry, $pluginManager, $isSafemode);
+
             }
         }
     }
@@ -440,4 +405,5 @@ class PluginMenu extends Singleton
     }
 
 }
+
 ?>

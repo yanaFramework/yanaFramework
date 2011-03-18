@@ -456,17 +456,17 @@ class ErrorUtility extends Utility
         $base_style = 'font-size: 13px; font-weight: normal; padding: 5px; border: 1px solid #888; text-align: left;';
         $show_details = true;
         /* for readability do not report errors twice */
-        global $YANA;
-        if (isset($YANA)) {
-            $laseErrNr = $YANA->getVar('lasterror.nr');
-            $laseErrFile = $YANA->getVar('lasterror.file');
-            $laseErrLine = $YANA->getVar('lasterror.line');
+        $registry = Registry::getGlobalInstance();
+        if ($registry instanceof Registry) {
+            $laseErrNr = $registry->getVar('lasterror.nr');
+            $laseErrFile = $registry->getVar('lasterror.file');
+            $laseErrLine = $registry->getVar('lasterror.line');
             if ($laseErrNr === $error_nr && $laseErrFile === $file && $laseErrLine === $line_nr) {
-                if ($YANA->getVar('lasterror.description') === $description) {
-                    if ($YANA->getVar('lasterror.hasmore') === true) {
+                if ($registry->getVar('lasterror.description') === $description) {
+                    if ($registry->getVar('lasterror.hasmore') === true) {
                         $error_message = '';
                     } else {
-                        $YANA->setVar('lasterror.hasmore', true);
+                        $registry->setVar('lasterror.hasmore', true);
                         if ($as_html === true) {
                             $error_message = '<div style="'.$base_style.'"><pre>'."\t".'... the previous'.
                                 ' error was reported multiple times.</pre></div>';
@@ -479,11 +479,11 @@ class ErrorUtility extends Utility
                     $show_details = false;
                 }
             } else {
-                $YANA->setVar('lasterror.hasmore',     false);
-                $YANA->setVar('lasterror.nr',          $error_nr);
-                $YANA->setVar('lasterror.description', $description);
-                $YANA->setVar('lasterror.file',        $file);
-                $YANA->setVar('lasterror.line',        $line_nr);
+                $registry->setVar('lasterror.hasmore',     false);
+                $registry->setVar('lasterror.nr',          $error_nr);
+                $registry->setVar('lasterror.description', $description);
+                $registry->setVar('lasterror.file',        $file);
+                $registry->setVar('lasterror.line',        $line_nr);
             }
         }
 
