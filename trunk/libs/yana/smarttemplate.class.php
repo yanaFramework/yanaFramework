@@ -168,8 +168,7 @@ class SmartTemplate extends Object
          * 1) Config Smarty
          */
         if (! self::$globalSmarty instanceof Smarty) {
-            /* @var $YANA Yana */
-            global $YANA;
+            $registry = Registry::getGlobalInstance();
 
             self::$globalSmarty = new Smarty();
 
@@ -182,11 +181,11 @@ class SmartTemplate extends Object
             /**
              * 1.2) directories
              */
-            if (isset($YANA)) {
-                SmartUtility::loadSmilies($YANA->getVar("PROFILE.SMILEYDIR"));
+            if ($registry instanceof Registry) {
+                SmartUtility::loadSmilies($registry->getVar("PROFILE.SMILEYDIR"));
                 self::$globalSmarty->template_dir = '.';
-                self::$globalSmarty->config_dir = $YANA->getVar('SKINCONFIGDIR');
-                self::$globalSmarty->compile_dir = $YANA->getVar('TEMPDIR');
+                self::$globalSmarty->config_dir = $registry->getVar('SKINCONFIGDIR');
+                self::$globalSmarty->compile_dir = $registry->getVar('TEMPDIR');
             } else {
                 self::$globalSmarty->template_dir = '.';
                 self::$globalSmarty->config_dir = 'skins/.config/';

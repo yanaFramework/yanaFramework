@@ -31,10 +31,8 @@
  * Values for plugin priority
  *
  * @access      public
- * @name        PluginActivity
  * @package     yana
  * @subpackage  core
- *
  * @ignore
  */
 class PluginPriorityEnumeration
@@ -58,11 +56,9 @@ class PluginPriorityEnumeration
      * @param   string  $string  text representation to convert
      * @return  int
      */
-    public static function getPriority($string)
+    public static function fromString($string)
     {
-        assert('is_string($string); // Wrong type for argument 1. String expected');
-
-        switch (mb_strtolower($string))
+        switch (mb_strtolower((string) $string))
         {
             case 'lowest':
             case '0':

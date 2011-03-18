@@ -438,15 +438,9 @@ class SmartUtility extends Utility
          */
         if (empty($array)) {
 
-            if (isset($GLOBALS['YANA'])) {
-                /* @var $view SmartView */
-                $view = $GLOBALS['YANA']->getView();
-                $array = $view->getVar();
-                self::_replace($string, $array);
-                return $string;
-
-            } else {
-                return $string;
+            $registry = Registry::getGlobalInstance();
+            if ($registry instanceof Registy) {
+                $array = $registry->getVar();
             }
 
         }
@@ -1536,8 +1530,8 @@ class SmartUtility extends Utility
      */
     public static function toolbar()
     {
-        $menu = PluginMenu::getTextMenu();
-        return self::printUL3($menu, true);
+        $menu = PluginMenu::getInstance();
+        return self::printUL3($menu->getTextMenu(), true);
     }
 
     /**
@@ -1687,31 +1681,26 @@ class SmartUtility extends Utility
      */
     public static function applicationBar()
     {
-        $yana = Yana::getInstance();
-
         $result = "";
-        $dir = $yana->getPlugins()->getPluginDir();
         $pluginMenu = PluginMenu::getInstance();
 
         $template = '<a class="applicationBar" href="' . self::url("action=", false, false) . '%s">' .
             '<img src="%s" title="%s" alt="%s"/></a>';
 
+        /* @var $entry PluginMenuEntry */
         foreach ($pluginMenu->getMenuEntries('start') as $action => $entry)
         {
-            $title = $entry[PluginAnnotationEnumeration::TITLE];
-            $image = $entry[PluginAnnotationEnumeration::IMAGE];
+            $title = $entry->getTitle();
+            $icon = $entry->getIcon();
 
-            if (!is_file($image)) {
-                if (is_file($dir . $image)) {
-                    $image = $dir . $image;
-                } else {
-                    Log::report("Sitemap icon not found: '${image}'.", E_USER_WARNING);
-                }
+            if (!is_file($icon)) {
+                Log::report("Sitemap icon not found: '" . $icon . "'.", E_USER_WARNING);
             }
-            $result .= sprintf($template, $action, $image, $title, $title);
+            $result .= sprintf($template, $action, $icon, $title, $title);
         } // end foreach
 
-        return $yana->getLanguage()->replaceToken($result);
+        $language = Yana::getInstance()->getLanguage();
+        return $language->replaceToken($result);
     }
 
     /**
