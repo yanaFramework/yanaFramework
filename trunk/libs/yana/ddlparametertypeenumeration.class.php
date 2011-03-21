@@ -37,7 +37,7 @@
  *
  * @ignore
  */
-class DDLParameterTypeEnumeration
+class DDLParameterTypeEnumeration extends AbstractEnumeration
 {
 
     /**#@+

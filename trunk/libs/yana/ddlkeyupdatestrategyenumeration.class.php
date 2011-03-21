@@ -37,7 +37,7 @@
  *
  * @ignore
  */
-class DDLKeyUpdateStrategyEnumeration
+class DDLKeyUpdateStrategyEnumeration extends AbstractEnumeration
 {
 
     /**#@+

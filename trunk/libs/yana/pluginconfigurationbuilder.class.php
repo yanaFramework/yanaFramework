@@ -71,7 +71,8 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             $this->object->setTitles($titles);
             $this->object->setTexts($texts);
             $this->object->setDirectory($this->_class->getDirectory());
-            $this->object->setType(mb_strtolower($this->_class->getTag(PluginAnnotationEnumeration::TYPE, 'default')));
+            $type = $this->_class->getTag(PluginAnnotationEnumeration::TYPE, PluginTypeEnumeration::DEFAULT_SETTING);
+            $this->object->setType($type);
             $this->object->setAuthors($this->_class->getTags(PluginAnnotationEnumeration::AUTHOR));
             $priorityString = $this->_class->getTag(PluginAnnotationEnumeration::PRIORITY);
             $this->object->setPriority(PluginPriorityEnumeration::fromString($priorityString));

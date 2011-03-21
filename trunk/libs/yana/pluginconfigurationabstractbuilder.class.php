@@ -37,7 +37,7 @@
  *
  * @ignore
  */
-abstract class PluginConfigurationAbstractBuilder
+abstract class PluginConfigurationAbstractBuilder extends Object
 {
 
     /**
@@ -46,6 +46,16 @@ abstract class PluginConfigurationAbstractBuilder
      * @var PluginConfigurationClass
      */
     protected $object = null;
+
+    /**
+     * constructor
+     *
+     * @access  public
+     */
+    public function __construct()
+    {
+        $this->createNewConfiguration();
+    }
 
     /**
      * Resets the instance that is currently build.

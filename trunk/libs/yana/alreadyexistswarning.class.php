@@ -36,7 +36,21 @@
  */
 class AlreadyExistsWarning extends Warning
 {
-    /* intentionally left blank */
+
+    /**
+     * Set id of duplicate entry.
+     *
+     * @access  public
+     * @param   scalar  $id  identifier of duplicate entry
+     * @return  AlreadyExistsWarning
+     */
+    public function setId($id)
+    {
+        assert('is_scalar($id); // Invalid argument $id: Scalar expected');
+        $this->data = array('ID' => $id);
+        return $this;
+    }
+
 }
 
 ?>

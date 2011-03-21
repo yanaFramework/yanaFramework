@@ -41,7 +41,7 @@
  *
  * @ignore
  */
-class PluginAnnotationEnumeration
+class PluginAnnotationEnumeration extends AbstractEnumeration
 {
     /**#@+
      * class constants
