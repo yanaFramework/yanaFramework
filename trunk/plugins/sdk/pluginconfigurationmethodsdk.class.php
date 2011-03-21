@@ -32,7 +32,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class PluginMethodConfigurator extends PluginConfigurationMethod
+class PluginConfigurationMethodSdk extends PluginConfigurationMethod
 {
 
     /**
