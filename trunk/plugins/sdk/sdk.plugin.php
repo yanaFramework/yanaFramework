@@ -29,7 +29,7 @@
 /**
  * @ignore
  */
-require_once 'pluginworker.class.php';
+require_once 'pluginconfigurationbuildersdk.class.php';
 
 /**
  * Software Developement Kit
@@ -89,8 +89,7 @@ class plugin_sdk extends StdClass implements IsPlugin
      * @menu        group: start
      * @safemode    true
      *
-     * @access      public
-     * @return      bool
+     * @access  public
      */
     public function sdk()
     {
@@ -106,7 +105,6 @@ class plugin_sdk extends StdClass implements IsPlugin
         $yana->setVar('ROLES', SessionManager::getRoles());
 
         $yana->setVar('LIST_OF_DBMS', self::$_listOfDBMS);
-        return true;
     }
 
     /**
@@ -123,43 +121,16 @@ class plugin_sdk extends StdClass implements IsPlugin
      *
      * @access      public
      * @param       array $ARGS array of params passed to the function
-     * @return      bool
      */
     public function sdk_write_plugin(array $ARGS)
     {
-        /* load files */
-        $pluginWorker = new PluginWorker();
-
-        $plugin = $pluginWorker->getPlugin();
-        $plugin->setTitle($ARGS['name']);
-        if (!empty($ARGS['parent'])) {
-            $plugin->setParent($ARGS['parent']);
-        }
-        if (!empty($ARGS['package'])) {
-            $plugin->setGroup($ARGS['package']);
-        }
-        if (!empty($ARGS['type'])) {
-            $plugin->setType($ARGS['type']);
-        }
-        if (!empty($ARGS['priority'])) {
-            $plugin->setPriority($ARGS['priority']);
-        }
-        if (!empty($ARGS['author'])) {
-            $plugin->setAuthor($ARGS['author']);
-        }
-        if (!empty($ARGS['description'])) {
-            $plugin->setText($ARGS['description']);
-        }
-        if (!empty($ARGS['url'])) {
-            $plugin->setUrl($ARGS['url']);
-        }
+        $pluginBuilder = new PluginConfigurationBuilderSdk();
+        $pluginBuilder->createNewConfiguration();
+        $pluginBuilder->setSdkConfiguration($ARGS);
+        $plugin = $pluginBuilder->getPluginConfigurationClass();
 
         if (!empty($ARGS['image'])) {
-            $pluginWorker->setImage($ARGS['image']);
-        }
-
-        if (!empty($ARGS['overwrite'])) {
-            $pluginWorker->setOverwrite(true);
+            $pluginBuilder->setImage($ARGS['image']);
         }
 
         // SQL files
@@ -170,7 +141,7 @@ class plugin_sdk extends StdClass implements IsPlugin
                 if (!preg_match('/^\S+\.sql$/s', $_FILES[$dbms]['name'])) {
                     throw new InvalidInputWarning();
                 }
-                $pluginWorker->addSqlFile($dbms, $_FILES[$dbms]['tmp_name']);
+                $pluginBuilder->addSqlFile($dbms, $_FILES[$dbms]['tmp_name']);
             }
         }
         unset($dbms);
@@ -182,64 +153,17 @@ class plugin_sdk extends StdClass implements IsPlugin
             if (!isset($node['name'])) {
                 $node->addAttribute('name', $plugin->getId());
             }
-            $pluginWorker->setSchemaXml($node);
+            $pluginBuilder->setSchemaXml($node);
             unset($node);
         }
 
-        // Custom interface
-        if ($ARGS['interface']) {
-            foreach (explode("\n", $ARGS['interface']) as $action)
-            {
-                $action = explode(",", $action);
-                $methodName = array_shift($action);
-                if(empty($methodName)) {
-                    continue;
-                }
-                $method = $plugin->addMethod($methodName);
-                $method->setType(array_shift($action));
-                $method->setTemplate(array_shift($action));
-                $user = new PluginUserLevel();
-                try {
-                    $user->setGroup(array_shift($action));
-                } catch (InvalidArgumentException $e) {
-                    $error = new InvalidCharacterWarning();
-                    $error->setField('GROUP')->setValid('a-z, 0-9, -, _')->setValue($group);
-                    throw $error;
-                }
-                try {
-                    $user->setRole(array_shift($action));
-                } catch (InvalidArgumentException $e) {
-                    $error = new InvalidCharacterWarning();
-                    $error->setField('ROLE')->setValid('a-z, 0-9, -, _')->setValue($role);
-                    throw $error;
-                }
-                try {
-                    $user->setLevel((int) array_shift($action));
-                } catch (InvalidArgumentException $e) {
-                    $error = new InvalidCharacterWarning();
-                    $error->setField('LEVEL')->setValid('0-100')->setValue($level);
-                    throw $error;
-                }
-                $method->addUserLevel($user);
-                $group = array_shift($action);
-                if (!empty($group)) {
-                    $menu = new PluginMenuEntry();
-                    $menu->setGroup($group);
-                    $method->setMenu($menu);
-                }
-            }
-            unset($action, $methodName, $method);
-        }
-
-        $pluginWorker->createPlugin();
+        $overwriteFiles = !empty($ARGS['overwrite']);
+        $pluginBuilder->buildPlugin($overwriteFiles);
 
         /* load new plugin */
         $yana = Yana::getInstance();
         $yana->callAction('refresh_pluginlist');
         self::_createBackup($ARGS);
-
-        return true;
-
     }
 
     /**

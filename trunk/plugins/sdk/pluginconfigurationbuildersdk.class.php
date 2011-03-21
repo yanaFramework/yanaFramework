@@ -28,7 +28,7 @@
 /**
  * @ignore
  */
-require_once 'pluginconfigurator.class.php';
+require_once 'pluginconfigurationclasssdk.class.php';
 
 /**
  * <<worker>> Plugin generator
@@ -42,70 +42,49 @@ require_once 'pluginconfigurator.class.php';
  * @package    yana
  * @subpackage plugins
  */
-class PluginWorker extends Object
+class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
 {
+
     /**
      * plugin configuration
      *
-     * @access  private
-     * @var     PluginConfigurator
+     * @access  protected
+     * @var     PluginConfigurationClassSdk
      * @ignore
      */
-    private $plugin = null;
+    protected $object = null;
 
     /**
      * directory
      *
      * @access  private
      * @var     Dir
-     * @ignore
      */
-    private $pluginDir = null;
-
-    /**
-     * directory
-     *
-     * @access  private
-     * @var     Dir
-     * @ignore
-     */
-    private $skinDir = null;
+    private $_pluginDir = null;
 
     /**
      * list of files to copy
      *
      * @access  private
      * @var     array
-     * @ignore
      */
-    private $filesToCopy = array();
-
-    /**
-     * overwrite existing files
-     *
-     * @access  private
-     * @var     bool
-     * @ignore
-     */
-    private $isOverwrite = false;
+    private $_filesToCopy = array();
 
     /**
      * list of templates to create
      *
      * @access  private
      * @var     array
-     * @ignore
      */
-    private $templates = array();
+    private $_templates = array();
 
     /**
      * database schema
      *
      * @access  private
      * @var     DDLDatabase
-     * @ignore
      */
-    private $schema = null;
+    private $_schema = null;
 
     /**
      * translation units
@@ -114,22 +93,28 @@ class PluginWorker extends Object
      *
      * @access  private
      * @var     array
-     * @ignore
      */
-    private $translations = array();
+    private $_translations = array();
 
     /**
-     * constructor
+     * SDK configuration
      *
-     * @access  public
-     * @param   PluginConfigurator  $plugin  new plugin configuration
+     * @access  private
+     * @var     array
      */
-    public function __construct(PluginConfigurator $plugin = null)
-    {
-        if (!is_null($plugin)) {
-            $this->plugin = $plugin;
-        }
-    }
+    private $_sdkConfiguration = array();
+
+    /**
+     * Method configuration.
+     *
+     * Numeric array containing method head.
+     * Used by buildMethod().
+     *
+     * @access  private
+     * @var     array
+     * @see     PluginConfigurationBuilderSdk::buildMethod()
+     */
+    private $_methodConfiguration = array();
 
     /**
      * get plugin directory
@@ -140,11 +125,11 @@ class PluginWorker extends Object
      */
     protected function getPluginDir()
     {
-        if (!isset($this->pluginDir)) {
-            $yana = Yana::getInstance();
-            $this->pluginDir  = new Dir($yana->getVar('PLUGINDIR') . $this->getPlugin()->getId() . '/');
+        if (!isset($this->_pluginDir)) {
+            $dir = PluginManager::getPluginDirectoryPath();
+            $this->_pluginDir  = new Dir($dir . '/' . $this->object->getId() . '/');
         }
-        return $this->pluginDir;
+        return $this->_pluginDir;
     }
 
     /**
@@ -152,6 +137,7 @@ class PluginWorker extends Object
      *
      * @access  public
      * @param   string  $image  image path
+     * @return  PluginConfigurationBuilderSdk
      */
     public function setImage($image)
     {
@@ -159,13 +145,8 @@ class PluginWorker extends Object
         {
             case !is_string($image):
             case !preg_match('/^[\d\w-_\.]+\.(gif|jpg|png)$/si', $image):
-                $options = array(
-                    'FIELD' => 'IMAGE',
-                    'VALUE' => print_r($image, true),
-                    'VALID' => 'file.gif, file.jpg, file.png'
-                );
                 $error = new InvalidSyntaxWarning();
-                $error->setData($options);
+                $error->setField('image')->setValue($image)->setValid('file.gif, file.jpg, file.png');
                 throw $error;
             break;
             default:
@@ -176,43 +157,19 @@ class PluginWorker extends Object
                 $iconDir = $pluginManager->{'sdk:/images/icons'};
 
                 // copy preview image
-                $this->filesToCopy[] = array(
+                $this->_filesToCopy[] = array(
                     'src' => $logoDir->getPath() . $image,
                     'dest' => $this->getPluginDir()->getPath() . 'preview.png'
                 );
                 // copy icon
-                $this->filesToCopy[] = array(
+                $this->_filesToCopy[] = array(
                     'src' => $iconDir->getPath() . $image,
                     'dest' => $this->getPluginDir()->getPath() . 'icon.png'
                 );
 
             break;
         }
-    }
-
-    /**
-     * get plugin-configurator
-     *
-     * @access  public
-     * @return  PluginConfigurator
-     */
-    public function getPlugin()
-    {
-        if (!isset($this->plugin)) {
-            $this->plugin = new PluginConfigurator();
-        }
-        return $this->plugin;
-    }
-
-    /**
-     * overwrite existing files
-     *
-     * @access  public
-     * @param   bool  $isOverwrite  overwrite existing files (true = yes, false = no)
-     */
-    public function setOverwrite($isOverwrite)
-    {
-        $this->isOverwrite = !empty($isOverwrite);
+        return $this;
     }
 
     /**
@@ -221,6 +178,7 @@ class PluginWorker extends Object
      * @access  public
      * @param   string  $dbms  name of dbms
      * @param   string  $file  sql file
+     * @return  PluginConfigurationBuilderSdk
      */
     public function addSqlFile($dbms, $file)
     {
@@ -237,10 +195,11 @@ class PluginWorker extends Object
             throw new Log("Unable to create the directory '{$dbms}'. " .
                 "The uploaded SQL-file could not be saved.");
         }
-        $this->filesToCopy[] = array(
+        $this->_filesToCopy[] = array(
             'src' => $file,
             'dest' => $installDirectory->getPath().$plugin->getId().'.sql'
         );
+        return $this;
     }
 
     /**
@@ -248,11 +207,11 @@ class PluginWorker extends Object
      *
      * @access  protected
      * @param   DDLForm $form  form object the template is based on
+     * @return  PluginConfigurationBuilderSdk
      */
     protected function addTemplate(DDLForm $form)
     {
         $yana = Yana::getInstance();
-        $plugin = $this->getPlugin();
         $name = $form->getTable();
 
         // create HTML page
@@ -260,28 +219,8 @@ class PluginWorker extends Object
         $html = $yana->getPlugins()->{'sdk:/templates/html.smarttemplate'};
         $html->setVar('form', $form);
         $html->setVar('database', $form->getDatabase());
-        $this->templates["$name.html.tpl"] = $html->toString();
-    }
-
-    /**
-     * set schema file
-     *
-     * @access  public
-     * @param   string  $file  sql file
-     */
-    public function setSchemaFile($file)
-    {
-        $xddlFile = new XDDL($file);
-        $this->schema = $xddlFile->toDatabase();
-        $this->findTranslations($this->schema);
-        $this->createForms($this->schema);
-
-        $plugin = $this->getPlugin();
-        $directory = DDL::getDirectory() . '/';
-        $this->filesToCopy[] = array(
-            'content' => $this->schema->toString(),
-            'dest' => $directory . $plugin->getId() . '.db.xml'
-        );
+        $this->_templates["$name.html.tpl"] = $html->toString();
+        return $this;
     }
 
     /**
@@ -289,21 +228,22 @@ class PluginWorker extends Object
      *
      * @access  public
      * @param   SimpleXMLElement  $node  database root node
+     * @return  PluginConfigurationBuilderSdk
      */
     public function setSchemaXml(SimpleXMLElement $node)
     {
-        $this->schema = DDLDatabase::unserializeFromXDDL($node);
-        $this->findTranslations($this->schema);
-        $this->createForms($this->schema);
+        $this->_schema = DDLDatabase::unserializeFromXDDL($node);
+        $this->findTranslations($this->_schema);
+        $this->buildForms($this->_schema);
 
-        $plugin = $this->getPlugin();
         $directory = DDL::getDirectory() . '/';
-        $dom = dom_import_simplexml($this->schema->serializeToXDDL())->ownerDocument;
+        $dom = dom_import_simplexml($this->_schema->serializeToXDDL())->ownerDocument;
         $dom->formatOutput = true;
-        $this->filesToCopy[] = array(
+        $this->_filesToCopy[] = array(
             'content' => $dom->saveXML(),
-            'dest' => $directory . $plugin->getId() . '.db.xml'
+            'dest' => $directory . $this->object->getId() . '.db.xml'
         );
+        return $this;
     }
 
     /**
@@ -311,11 +251,9 @@ class PluginWorker extends Object
      *
      * @access  protected
      * @param   DDLDatabase  $schema  schema definition
-     * @ignore
      */
-    protected function createForms(DDLDatabase $schema)
+    protected function buildForms(DDLDatabase $schema)
     {
-        $plugin = $this->getPlugin();
         /* @var $table DDLTable */
         assert('!isset($table); // Cannot redeclare var $table');
         foreach ($schema->getTables() as $table)
@@ -333,29 +271,29 @@ class PluginWorker extends Object
             /* @var $form DDLDefaultForm */
             $form->setTable($tableName);
 
-            $action = self::_createActionName($plugin->getId(), 'search', $tableName);
+            $action = self::_buildActionName($this->object->getId(), 'search', $tableName);
             $form->setSearchAction($action);
-            $plugin->addMethod($action)->setAutoGenerated();
+            $this->object->addMethod($action)->setAutoGenerated();
 
-            $action = self::_createActionName($plugin->getId(), 'insert', $tableName);
+            $action = self::_buildActionName($this->object->getId(), 'insert', $tableName);
             $form->setInsertAction($action);
-            $plugin->addMethod($action)->setAutoGenerated();
+            $this->object->addMethod($action)->setAutoGenerated();
 
-            $action = self::_createActionName($plugin->getId(), 'update', $tableName);
+            $action = self::_buildActionName($this->object->getId(), 'update', $tableName);
             $form->setUpdateAction($action);
-            $plugin->addMethod($action)->setAutoGenerated();
+            $this->object->addMethod($action)->setAutoGenerated();
 
-            $action = self::_createActionName($plugin->getId(), 'delete', $tableName);
+            $action = self::_buildActionName($this->object->getId(), 'delete', $tableName);
             $form->setDeleteAction($action);
-            $plugin->addMethod($action)->setAutoGenerated();
+            $this->object->addMethod($action)->setAutoGenerated();
 
-            $action = self::_createActionName($plugin->getId(), 'export', $tableName);
+            $action = self::_buildActionName($this->object->getId(), 'export', $tableName);
             $form->setExportAction($action);
-            $plugin->addMethod($action)->setAutoGenerated();
+            $this->object->addMethod($action)->setAutoGenerated();
 
             // only add download action if there is something to download
             if (count($table->getFileColumns()) > 0) {
-                $action = self::_createActionName($plugin->getId(), 'download', $tableName);
+                $action = self::_buildActionName($this->object->getId(), 'download', $tableName);
                 $form->setDownloadAction($action);
             }
 
@@ -376,7 +314,7 @@ class PluginWorker extends Object
                 } else {
                     $field = $form->getField($fieldName);
                 }
-                $targetAction = self::_createActionName($plugin->getId(), 'form', $targetTable);
+                $targetAction = self::_buildActionName($this->object->getId(), 'form', $targetTable);
                 $action = $field->addEvent($targetAction);
             }
             unset($foreign);
@@ -416,7 +354,7 @@ class PluginWorker extends Object
         $xliffTemplate = $yana->getPlugins()->{'sdk:/templates/language.smarttemplate'};
         $xliffTemplate->setVar('source', $source);
         $xliffTemplate->setVar('target', $target);
-        $xliffTemplate->setVar('translations', $this->translations);
+        $xliffTemplate->setVar('translations', $this->_translations);
         return $xliffTemplate->toString();
     }
 
@@ -424,23 +362,25 @@ class PluginWorker extends Object
      * create plugin
      *
      * @access  public
+     * @param   bool  $overwrite  Replace existing files? True = yes, false = no.
      */
-    public function createPlugin()
+    public function buildPlugin($overwrite = false)
     {
-        $plugin = $this->getPlugin();
+        assert('is_bool($overwrite); // Invalid argument $overwrite: bool expected');
+
         $pluginDir = $this->getPluginDir();
         $skinDir = new Dir($pluginDir->getPath() . '/templates/');
         $langDir = new Dir($pluginDir->getPath() . '/languages/');
         $enDir = new Dir($langDir->getPath() . '/en/');
         $deDir = new Dir($langDir->getPath() . '/de/');
-        if ($this->isOverwrite) {
+        if ($overwrite) {
             if ($pluginDir->exists()) {
                 $pluginDir->delete(true);
             }
         } elseif ($pluginDir->exists()) {
             $error = new AlreadyExistsWarning();
-            $error->setData(array('ID' => $plugin->getId()));
-            throw new $error;
+            $error->setId($this->object->getId());
+            throw $error;
         }
         // create directories
         $pluginDir->create(0777);
@@ -450,7 +390,7 @@ class PluginWorker extends Object
         $deDir->create(0777);
 
         // add program title
-        $this->addTranslation('program_title', $plugin->getTitle());
+        $this->addTranslation('program_title', $this->object->getTitle());
 
         /* If you wish to add a default menu for the plug-in, you may do it with this code:
          * $plugin->addMenu($plugin->getId(), $plugin->getTitle());
@@ -458,19 +398,19 @@ class PluginWorker extends Object
 
         // copy files
         assert('!isset($file); // Cannot redeclare var $file');
-        foreach ($this->filesToCopy as $file)
+        foreach ($this->_filesToCopy as $file)
         {
             if (isset($file['src'])) {
                 if (!copy($file['src'], $file['dest'])) {
                     $error = new NotWriteableError();
                     $error->setData(array('FILE' => $file['dest']));
-                    throw new $error;
+                    throw $error;
                 }
             } elseif (isset($file['content'])) {
                 if (file_put_contents($file['dest'], $file['content']) === false) {
                     $error = new NotWriteableError();
                     $error->setData(array('FILE' => $file['dest']));
-                    throw new $error;
+                    throw $error;
                 }
             }
             chmod($file['dest'], 0777);
@@ -480,20 +420,20 @@ class PluginWorker extends Object
         // copy templates
         assert('!isset($fileName); // Cannot redeclare var $fileName');
         assert('!isset($content); // Cannot redeclare var $content');
-        foreach ($this->templates as $fileName => $content)
+        foreach ($this->_templates as $fileName => $content)
         {
             file_put_contents($skinDir->getPath() . '/' . $fileName, $content);
         }
         unset($fileName, $content);
 
         // create class skeleton
-        $phpFile = new TextFile($pluginDir->getPath() . $plugin->getId() . '.plugin.php');
+        $phpFile = new TextFile($pluginDir->getPath() . $this->object->getId() . '.plugin.php');
         $phpFile->create();
         $phpFile->setContent($this->getClassSkeleton());
         if (!$phpFile->write()) {
             $error = new NotWriteableError();
             $error->setData(array('FILE' => $phpFile->getPath()));
-            throw new $error;
+            throw $error;
         }
 
         // create AJAX-Yana bridge
@@ -503,25 +443,25 @@ class PluginWorker extends Object
         if (!$apiFile->write()) {
             $error = new NotWriteableError();
             $error->setData(array('FILE' => $apiFile->getPath()));
-            throw new $error;
+            throw $error;
         }
 
         // create XLIFF translation file
-        $xliffFile = new TextFile($enDir->getPath() . '/' . $plugin->getId() . '.xlf');
+        $xliffFile = new TextFile($enDir->getPath() . '/' . $this->object->getId() . '.xlf');
         $xliffFile->create();
         $xliffFile->setContent("<?xml version=\"1.0\"?>\n" . $this->getXliff());
         if (!$xliffFile->write()) {
             $error = new NotWriteableError();
             $error->setData(array('FILE' => $xliffFile->getPath()));
-            throw new $error;
+            throw $error;
         }
-        $xliffFile = new TextFile($deDir->getPath() . '/' . $plugin->getId() . '.xlf');
+        $xliffFile = new TextFile($deDir->getPath() . '/' . $this->object->getId() . '.xlf');
         $xliffFile->create();
         $xliffFile->setContent("<?xml version=\"1.0\"?>\n" . $this->getXliff("en", "de"));
         if (!$xliffFile->write()) {
             $error = new NotWriteableError();
             $error->setData(array('FILE' => $xliffFile->getPath()));
-            throw new $error;
+            throw $error;
         }
     }
 
@@ -542,18 +482,18 @@ class PluginWorker extends Object
      */
     protected function addTranslation($id, $source, $target = "")
     {
-        assert('is_string($id); // Wrong argument type argument 1. String expected');
-        assert('is_string($source) || is_null($source); // Wrong argument type argument 2. String expected');
-        assert('is_string($target); // Wrong argument type argument 3. String expected');
+        assert('is_string($id); // Invalid argument $id: String expected');
+        assert('is_string($source) || is_null($source); // Invalid argument $source: String expected');
+        assert('is_string($target); // Invalid argument $target: string expected');
 
         if (!empty($source) && strpos($source, YANA_LEFT_DELIMITER) === false) {
             $i = "";
             // seek next free id (add auto-increment number, where necessary)
-            while (isset($this->translations["$id$i"]))
+            while (isset($this->_translations["$id$i"]))
             {
                 $i++; // auto-convert to integer
             }
-            $this->translations["$id$i"] = array(
+            $this->_translations["$id$i"] = array(
                 'source' => htmlspecialchars("$source"),
                 'target' => htmlspecialchars("$target")
             );
@@ -652,12 +592,11 @@ class PluginWorker extends Object
     protected function getJsApi()
     {
         $yana = Yana::getInstance();
-        $plugin = $this->getPlugin();
         /* @var $apiTemplate SmartTemplate */
         $apiTemplate = $yana->getPlugins()->{'sdk:/templates/jsapi.smarttemplate'};
-        $apiTemplate->setVar('plugin', $plugin);
+        $apiTemplate->setVar('plugin', $this->object);
         $apiTemplate->setVar('class', 'Api' .
-                str_replace(' ', '', ucwords(preg_replace('/_/', ' ', $plugin->getId()))));
+                str_replace(' ', '', ucwords(preg_replace('/_/', ' ', $this->object->getId()))));
         return $apiTemplate->toString();
     }
 
@@ -673,9 +612,9 @@ class PluginWorker extends Object
         $yana = Yana::getInstance();
         /* @var $phpTemplate SmartTemplate */
         $phpTemplate = $yana->getPlugins()->{'sdk:/templates/class.smarttemplate'};
-        $phpTemplate->setVar('plugin', $this->getPlugin());
-        if (isset($this->schema)) {
-            $phpTemplate->setVar('schema', $this->schema);
+        $phpTemplate->setVar('plugin', $this->object);
+        if (isset($this->_schema)) {
+            $phpTemplate->setVar('schema', $this->_schema);
         } else {
             $phpTemplate->setVar('schema', false);
         }
@@ -693,10 +632,159 @@ class PluginWorker extends Object
      * @return  string
      * @ignore
      */
-    private static function _createActionName($id, $name, $table)
+    private static function _buildActionName($id, $name, $table)
     {
         return "{$id}_{$name}_{$table}";
     }
+
+    /**
+     * Build class object.
+     *
+     * @access protected
+     */
+    protected function buildClass()
+    {
+        foreach ($this->_sdkConfiguration as $key => $value)
+        {
+            switch ($key)
+            {
+                case 'name':
+                    if (mb_strlen($value) > 15 || !preg_match('/^[\d\w-_ äüöß\(\)]+$/si', $value)) {
+                        $error = new InvalidCharacterWarning();
+                        $error->setField($key)->setValue($name)->setValid('a-z, 0-9, -, _, ß, ä, ö, ü, " "');
+                        throw $error;
+                    }
+                    $this->object->setDefaultTitle($value);
+                    $id = preg_replace('/[^\d\w_]/', '_', mb_strtolower($value));
+                    $this->setId($id);
+                    $this->setClassName('plugin_' . $id);
+                    break;
+                case 'parent':
+                    if (!preg_match('/^[\d\w-_]*$/si', $value)) {
+                        $error = new InvalidCharacterWarning();
+                        $error->setField($key)->setValue($value)->setValid('a-z, 0-9, -, _');
+                        throw $error;
+                    }
+                    $this->object->setParent($value);
+                    break;
+                case 'package':
+                    if (!preg_match('/^[\d\w-_]*$/si', $value)) {
+                        $error = new InvalidCharacterWarning();
+                        $error->setField($key)->setValue($value)->setValid('a-z, 0-9, -, _');
+                        throw $error;
+                    }
+                    $this->object->setGroup($value);
+                    break;
+                case 'type':
+                    $value = strip_tags(nl2br($value));
+                    $this->object->setType($value);
+                    break;
+                case 'priority':
+                    $value = strip_tags(nl2br($value));
+                    $this->object->setPriority($value);
+                    break;
+                case 'author':
+                    $value = strip_tags(nl2br($value));
+                    $this->object->setAuthors(array($value));
+                    break;
+                case 'description':
+                    $value = str_replace("\n", '<br/>', strip_tags($value));
+                    $this->object->setText($value);
+                    break;
+                case 'url':
+                    $value = strip_tags(nl2br($value));
+                    $this->object->setUrl($value);
+                    break;
+            }
+        }
+        if (!empty($this->_sdkConfiguration['interface'])) {
+            $value = strip_tags($this->_sdkConfiguration['interface']);
+            foreach (explode("\n", $value) as $action)
+            {
+                $this->_methodConfiguration = explode(",", $action);
+                $this->buildMethod();
+            }
+        }
+    }
+
+    /**
+     * Build method object.
+     *
+     * @access protected
+     */
+    protected function buildMethod()
+    {
+        $action = $this->_methodConfiguration;
+        $methodName = array_shift($action);
+        if(empty($methodName)) {
+            return;
+        }
+        $method = new PluginConfigurationMethodSdk();
+        $method->setMethodName($methodName)
+            ->setTitle($methodName)
+            ->setType(array_shift($action))
+            ->setTemplate(array_shift($action));
+
+        $user = new PluginUserLevel();
+        try {
+            $user->setGroup(array_shift($action));
+        } catch (InvalidArgumentException $e) {
+            $error = new InvalidCharacterWarning();
+            $error->setField('GROUP')->setValid('a-z, 0-9, -, _')->setValue($group);
+            throw $error;
+        }
+        try {
+            $user->setRole(array_shift($action));
+        } catch (InvalidArgumentException $e) {
+            $error = new InvalidCharacterWarning();
+            $error->setField('ROLE')->setValid('a-z, 0-9, -, _')->setValue($role);
+            throw $error;
+        }
+        try {
+            $user->setLevel((int) array_shift($action));
+        } catch (InvalidArgumentException $e) {
+            $error = new InvalidCharacterWarning();
+            $error->setField('LEVEL')->setValid('0-100')->setValue($level);
+            throw $error;
+        }
+        $method->addUserLevel($user);
+
+        $group = array_shift($action);
+        if (!empty($group)) {
+            $menu = new PluginMenuEntry();
+            $menu->setGroup($group);
+            $method->setMenu($menu);
+        }
+
+        $this->object->addMethod($method);
+    }
+
+    /**
+     * Resets the instance that is currently build.
+     *
+     * @access  public
+     */
+    public function createNewConfiguration()
+    {
+        $this->object = new PluginConfigurationClassSdk();
+        $this->_filesToCopy = array();
+        $this->_templates = array();
+        $this->_translations = array();
+    }
+
+    /**
+     * Set SDK configuration form values.
+     *
+     * @access  public
+     * @param   array  $sdkConfiguration  user input taken from HTML form
+     * @return  PluginConfigurationBuilderSdk
+     */
+    public function setSdkConfiguration(array $sdkConfiguration)
+    {
+        $this->_sdkConfiguration = $sdkConfiguration;
+        return $this;
+    }
+
 }
 
 ?>
