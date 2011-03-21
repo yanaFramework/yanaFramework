@@ -42,8 +42,9 @@
  * @package     yana
  * @subpackage  core
  */
-class Utility extends StdClass
+abstract class Utility extends StdClass
 {
+
     /**
      * check Utility - constraint
      *
@@ -51,7 +52,8 @@ class Utility extends StdClass
      * Utility classes do not allow any instances, since they are intended not
      * to have any instance specific members.
      *
-     * @access  protected
+     * @access  private
+     * @final
      */
     final private function __construct()
     {

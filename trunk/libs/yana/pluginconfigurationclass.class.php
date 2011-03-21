@@ -216,7 +216,7 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   string  $className  plugin's class name
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setClassName($className)
     {
@@ -230,7 +230,7 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   string  $directory  absolute path
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setDirectory($directory)
     {
@@ -246,7 +246,7 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   array  $titles  list of titles
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setTitles(array $titles)
     {
@@ -259,7 +259,7 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   string  $defaultTitle  title using default locale.
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setDefaultTitle($defaultTitle)
     {
@@ -273,7 +273,7 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   array  $texts  Keys are locales, values are texts.
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setTexts(array $texts)
     {
@@ -286,7 +286,7 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   string  $defaultText  some user-defined text
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setDefaultText($defaultText)
     {
@@ -298,14 +298,17 @@ class PluginConfigurationClass extends Object
     /**
      * Set plugin type.
      *
+     * Valid types are: primary, default, config, read, write, security, library.
+     *
      * @access  public
      * @param   string  $type  valid type identifier
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
+     * @throws  InvalidArgumentException  when an unknown type is encountered
      */
     public function setType($type)
     {
         assert('is_string($type); // Invalid argument $type: string expected');
-        $this->_type = $type;
+        $this->_type = PluginTypeEnumeration::fromString($type);
         return $this;
     }
 
@@ -314,7 +317,7 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   array  $authors  list of author names and/or e-mails.
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setAuthors(array $authors)
     {
@@ -327,11 +330,14 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   int  $priority  element of PluginPriorityEnumeration
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setPriority($priority)
     {
-        $priority = PluginPriorityEnumeration::fromString((string) $priority);
+        if (is_string($priority)) {
+            $priority = PluginPriorityEnumeration::fromString($priority);
+        }
+        assert('is_int($priority); // Invalid argument $priority: Integer expected');
         if ($priority < PluginPriorityEnumeration::LOWEST) {
             $priority = PluginPriorityEnumeration::LOWEST;
         }
@@ -347,7 +353,7 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   string  $group  unique identifier
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setGroup($group)
     {
@@ -361,7 +367,7 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   string  $parent  class name
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setParent($parent)
     {
@@ -375,7 +381,7 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   array  $dependencies  class names
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setDependencies(array $dependencies)
     {
@@ -388,7 +394,7 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   string  $license  some text
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setLicense($license)
     {
@@ -402,7 +408,7 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   string  $url  URL of plugin maker's website
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setUrl($url)
     {
@@ -416,7 +422,7 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   string  $version  some information - e.g. a date string.
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setVersion($version)
     {
@@ -430,7 +436,7 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   int  $lastModified
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setLastModified($lastModified)
     {
@@ -456,7 +462,7 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   array  $menus  Keys are menu ids and values are descriptions or language tokens.
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setMenus(array $menus)
     {
@@ -472,7 +478,7 @@ class PluginConfigurationClass extends Object
      *
      * @access  public
      * @param   int  $active  element of PluginActivityEnumeration
-     * @return  PluginConfigurationClass 
+     * @return  PluginConfigurationClass
      */
     public function setActive($active)
     {

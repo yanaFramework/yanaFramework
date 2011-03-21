@@ -35,7 +35,7 @@
  * @subpackage  core
  * @ignore
  */
-class PluginPriorityEnumeration
+class PluginPriorityEnumeration extends AbstractEnumeration
 {
 
     const LOWEST = 0;

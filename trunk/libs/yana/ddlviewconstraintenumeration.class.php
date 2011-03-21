@@ -37,7 +37,7 @@
  *
  * @ignore
  */
-class DDLViewConstraintEnumeration
+class DDLViewConstraintEnumeration extends AbstractEnumeration
 {
 
     /**#@+

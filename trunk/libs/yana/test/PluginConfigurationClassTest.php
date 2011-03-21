@@ -35,124 +35,136 @@ class PluginConfigurationClassTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testSetClassName().
+     * @test
      */
     public function testSetClassName()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->object->setClassName('ClassName');
+        $this->assertEquals('ClassName', $this->object->getClassName());
     }
 
     /**
-     * @todo Implement testSetDirectory().
+     * @test
      */
     public function testSetDirectory()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->object->setDirectory(dirname(__FILE__));
+        $this->assertEquals(dirname(__FILE__), $this->object->getDirectory());
     }
 
     /**
-     * @todo Implement testSetTitles().
+     * @test
      */
     public function testSetTitles()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
+        $titles = array(
+            'a' => 'Ä',
+            'a-b' => 'Ae'
         );
+        $this->object->setDefaultTitle('test Ä')
+            ->setTitles($titles);
+        $this->assertEquals('test Ä', $this->object->getTitle());
+        $this->assertEquals('Ä', $this->object->getTitle('a'));
+        $this->assertEquals('Ae', $this->object->getTitle('a', 'b'));
+        $this->assertEquals('Ä', $this->object->getTitle('a', 'c'));
+        $this->assertEquals('test Ä', $this->object->getTitle('b'));
     }
 
     /**
-     * @todo Implement testSetDefaultTitle().
+     * @test
      */
     public function testSetDefaultTitle()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->object->setDefaultTitle('test Ä');
+        $this->assertEquals('test Ä', $this->object->getTitle());
     }
 
     /**
-     * @todo Implement testSetTexts().
+     * @test
      */
     public function testSetTexts()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
+        $texts = array(
+            'a' => 'Ä',
+            'a-b' => 'Ae'
         );
+        $this->object->setDefaultText('test Ä')
+            ->setTexts($texts);
+        $this->assertEquals('test Ä', $this->object->getText());
+        $this->assertEquals('Ä', $this->object->getText('a'));
+        $this->assertEquals('Ae', $this->object->getText('a', 'b'));
+        $this->assertEquals('Ä', $this->object->getText('a', 'c'));
+        $this->assertEquals('test Ä', $this->object->getText('b'));
     }
 
     /**
-     * @todo Implement testSetDefaultText().
+     * @test
      */
     public function testSetDefaultText()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->object->setDefaultText('test Ä');
+        $this->assertEquals('test Ä', $this->object->getText());
     }
 
     /**
-     * @todo Implement testSetType().
+     * @test
      */
     public function testSetType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->object->setType('Library');
+        $this->assertEquals('library', $this->object->getType());
     }
 
     /**
-     * @todo Implement testSetAuthors().
+     * @test
+     * @expectedException  InvalidArgumentException
+     */
+    public function testSetTypeInvalidArgumentException()
+    {
+        $this->object->setType('Invalid type');
+    }
+
+    /**
+     * @test
      */
     public function testSetAuthors()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->object->setAuthors(array('Ä', 'b'));
+        $this->assertEquals(array('Ä', 'b'), $this->object->getAuthors());
+        $this->assertEquals('Ä, b', $this->object->getAuthor());
     }
 
     /**
-     * @todo Implement testSetPriority().
+     * @test
      */
     public function testSetPriority()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $max = PluginPriorityEnumeration::HIGHEST;
+        $min = PluginPriorityEnumeration::LOWEST;
+        $default = PluginPriorityEnumeration::NORMAL;
+        $this->assertEquals($default, $this->object->getPriority());
+        $this->assertEquals($min, $this->object->setPriority($min - 1)->getPriority());
+        $this->assertEquals($max, $this->object->setPriority($max + 1)->getPriority());
+        $this->assertEquals($default, $this->object->setPriority($default)->getPriority());
+        $this->assertEquals(PluginPriorityEnumeration::HIGH, $this->object->setPriority('high')->getPriority());
     }
 
     /**
-     * @todo Implement testSetGroup().
+     * @test
      */
     public function testSetGroup()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->object->setGroup('Test Ä');
+        $this->assertEquals('Test Ä', $this->object->getGroup());
     }
 
     /**
-     * @todo Implement testSetParent().
+     * @test
      */
     public function testSetParent()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->object->setParent('ClassName');
+        $this->assertEquals('ClassName', $this->object->getParent());
     }
 
     /**
@@ -244,212 +256,159 @@ class PluginConfigurationClassTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testGetTitle().
+     * @test
      */
     public function testGetTitle()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals('', $this->object->getTitle());
     }
 
     /**
-     * @todo Implement testGetText().
+     * @test
      */
     public function testGetText()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals('', $this->object->getText());
     }
 
     /**
-     * @todo Implement testGetType().
+     * @test
      */
     public function testGetType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals('default', $this->object->getType());
     }
 
     /**
-     * @todo Implement testGetAuthor().
+     * @test
      */
     public function testGetAuthor()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals('', $this->object->getAuthor());
     }
 
     /**
-     * @todo Implement testGetAuthors().
+     * @test
      */
     public function testGetAuthors()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals(array(), $this->object->getAuthors());
     }
 
     /**
-     * @todo Implement testGetPriority().
+     * @test
      */
     public function testGetPriority()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals(PluginPriorityEnumeration::NORMAL, $this->object->getPriority());
     }
 
     /**
-     * @todo Implement testGetGroup().
+     * @test
      */
     public function testGetGroup()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals('', $this->object->getGroup());
     }
 
     /**
-     * @todo Implement testGetParent().
+     * @test
      */
     public function testGetParent()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals('', $this->object->getParent());
     }
 
     /**
-     * @todo Implement testGetDependencies().
+     * @test
      */
     public function testGetDependencies()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals(array(), $this->object->getDependencies());
     }
 
     /**
-     * @todo Implement testGetVersion().
+     * @test
      */
     public function testGetVersion()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals('', $this->object->getVersion());
     }
 
     /**
-     * @todo Implement testGetUrl().
+     * @test
      */
     public function testGetUrl()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals('', $this->object->getUrl());
     }
 
     /**
-     * @todo Implement testGetLicense().
+     * @test
      */
     public function testGetLicense()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals('', $this->object->getLicense());
     }
 
     /**
-     * @todo Implement testGetMenuNames().
+     * @test
      */
     public function testGetMenuNames()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals(array(), $this->object->getMenuNames());
     }
 
     /**
-     * @todo Implement testGetMenuEntries().
+     * @test
      */
     public function testGetMenuEntries()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals(array(), $this->object->getMenuEntries());
     }
 
     /**
-     * @todo Implement testGetDirectory().
+     * @test
      */
     public function testGetDirectory()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals('', $this->object->getDirectory());
     }
 
     /**
-     * @todo Implement testGetActive().
+     * @test
      */
     public function testGetActive()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals(PluginActivityEnumeration::INACTIVE, $this->object->getActive());
     }
 
     /**
-     * @todo Implement testGetPreviewImage().
+     * @test
      */
     public function testGetPreviewImage()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals('/preview.png', $this->object->getPreviewImage());
+        $this->object->setDirectory('Ä/b');
+        $this->assertEquals('Ä/b/preview.png', $this->object->getPreviewImage());
     }
 
     /**
-     * @todo Implement testGetIcon().
+     * @test
      */
     public function testGetIcon()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals('/icon.png', $this->object->getIcon());
+        $this->object->setDirectory('Ä/b');
+        $this->assertEquals('Ä/b/icon.png', $this->object->getIcon());
     }
 
     /**
-     * @todo Implement testGetClassName().
+     * @test
      */
     public function testGetClassName()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals('', $this->object->getClassName());
     }
 
     /**

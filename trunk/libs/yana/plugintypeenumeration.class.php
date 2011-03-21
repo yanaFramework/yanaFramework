@@ -35,7 +35,7 @@
  * @subpackage  core
  * @ignore
  */
-class PluginTypeEnumeration
+class PluginTypeEnumeration extends AbstractEnumeration
 {
 
     /**

@@ -26,27 +26,26 @@
  */
 
 /**
- * <<Enumeration>> Foreign key matching strategy Enumeration
+ * <<Enumeration>> Abstract base enumeration class.
  *
- * Values for possible matching strategies.
- * Either full, partial, or simple matches.
- *
+ * @abstract
  * @access      public
  * @package     yana
- * @subpackage  database
- *
- * @ignore
+ * @subpackage  core
  */
-class DDLKeyMatchStrategyEnumeration extends AbstractEnumeration
+abstract class AbstractEnumeration extends StdClass
 {
 
-    /**#@+
-     * Values for match
+    /**
+     * Prevent instantiation.
+     *
+     * @access  private
+     * @final
      */
-    const SIMPLE = 5;
-    const FULL = 6;
-    const PARTIAL = 7;
-    /**#@-*/
+    final private function __construct()
+    {
+        // Cannot create an instance of a static 'enumeration' class
+    }
 
 }
 

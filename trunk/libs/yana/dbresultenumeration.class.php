@@ -37,7 +37,7 @@
  *
  * @ignore
  */
-class DbResultEnumeration
+class DbResultEnumeration extends AbstractEnumeration
 {
 
     /**

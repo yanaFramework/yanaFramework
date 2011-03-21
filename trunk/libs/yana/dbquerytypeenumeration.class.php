@@ -36,7 +36,7 @@
  *
  * @ignore
  */
-class DbQueryTypeEnumeration
+class DbQueryTypeEnumeration extends AbstractEnumeration
 {
 
     /**
