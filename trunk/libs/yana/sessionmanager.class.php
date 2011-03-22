@@ -310,24 +310,30 @@ class SessionManager extends Singleton implements Serializable
                     'action_title' => $title
                 );
             }
-            /** @var $level array */
             assert('!isset($row); // Cannot redeclare var $row');
+            assert('!isset($level); // Cannot redeclare var $level');
             foreach ($configuration->getUserLevels() as $level)
             {
+                /* @var $level PluginUserLevel */
                 $row = array(
                     'actionrule_predefined' => true,
-                    'action_id' => $name
+                    'action_id' => $name,
+                    'group' => mb_strtolower($level->getGroup()),
+                    'role' => mb_strtolower($level->getRole()),
+                    'level' => (int) $level->getLevel()
                 );
-                if (isset($level[PluginAnnotationEnumeration::GROUP])) {
-                    $row['group'] = mb_strtolower($level[PluginAnnotationEnumeration::GROUP]);
+                if (empty($row['group'])) {
+                    unset($row['group']);
+                } else {
                     $groups[] = $row['group'];
                 }
-                if (isset($level[PluginAnnotationEnumeration::ROLE])) {
-                    $row['role'] = mb_strtolower($level[PluginAnnotationEnumeration::ROLE]);
+                if (empty($row['role'])) {
+                    unset($row['role']);
+                } else {
                     $roles[] = $row['role'];
                 }
-                if (isset($level[PluginAnnotationEnumeration::LEVEL])) {
-                    $row['level'] = (int) $level[PluginAnnotationEnumeration::LEVEL];
+                if (empty($row['level'])) {
+                    unset($row['level']);
                 }
                 $rows[] = $row;
             }
