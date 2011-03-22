@@ -572,6 +572,7 @@ class PluginManager extends Singleton implements IsReportable
                     $pluginsWithDefaultMethods[$id] = $config;
                     continue;
                 }
+                $methodName = mb_strtolower($methodName);
 
                 $isOverwrite = $method->getOverwrite();
                 $isSubscriber = $method->getSubscribe();

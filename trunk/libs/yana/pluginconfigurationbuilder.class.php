@@ -149,6 +149,7 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
                 if (isset($tag[PluginAnnotationEnumeration::LEVEL])) {
                     $user->setLevel((int) $tag[PluginAnnotationEnumeration::LEVEL]);
                 }
+                $users[] = $user;
             }
             unset($item, $tag);
             $method->setUserLevels($users);
