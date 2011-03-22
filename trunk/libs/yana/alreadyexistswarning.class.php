@@ -46,7 +46,6 @@ class AlreadyExistsWarning extends Warning
      */
     public function setId($id)
     {
-        assert('is_scalar($id); // Invalid argument $id: Scalar expected');
         $this->data = array('ID' => $id);
         return $this;
     }

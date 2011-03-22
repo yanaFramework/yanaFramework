@@ -927,10 +927,11 @@ class PluginConfigurationMethod extends Object
     public function sendEvent(IsPlugin $instance)
     {
         if ($this->hasMethod($instance)) {
+            $methodName = $this->_methodName;
             if ($this->hasGenericParams()) {
-                return $instance->{$this->methodName}($this->_args);
+                return $instance->{$methodName}($this->_args);
             } else {
-                return call_user_func_array(array($instance, $this->_methodName), $this->_args);
+                return call_user_func_array(array($instance, $methodName), $this->_args);
             }
         } else {
             return $instance->catchAll($this->_methodName, $this->_args);
