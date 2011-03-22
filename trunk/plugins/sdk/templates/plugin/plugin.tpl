@@ -275,7 +275,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @language  {$plugin->getId()}
      * @access    public
      */
-    public function {$plugin->getId()}_{$form->getName()}()
+    public function {$plugin->getId()}{ucfirst($form->getName())}()
     {ldelim}
         // @todo add your code here
     {rdelim}
