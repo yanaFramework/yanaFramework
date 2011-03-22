@@ -656,8 +656,8 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
                     }
                     $this->object->setDefaultTitle($value);
                     $id = preg_replace('/[^\d\w_]/', '_', mb_strtolower($value));
-                    $this->setId($id);
-                    $this->setClassName('plugin_' . $id);
+                    $this->object->setId($id);
+                    $this->object->setClassName('plugin_' . $id);
                     break;
                 case 'parent':
                     if (!preg_match('/^[\d\w-_]*$/si', $value)) {
@@ -689,7 +689,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
                     break;
                 case 'description':
                     $value = str_replace("\n", '<br/>', strip_tags($value));
-                    $this->object->setText($value);
+                    $this->object->setDefaultText($value);
                     break;
                 case 'url':
                     $value = strip_tags(nl2br($value));
