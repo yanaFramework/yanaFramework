@@ -40,18 +40,7 @@
  */
 class PluginConfigurationClass extends Object
 {
-    /**#@+
-     * class constant
-     *
-     * @ignore
-     */
 
-    const DIR = 'dir';
-    const DEFAULT_TITLE = 'defaultTitle';
-    const DEFAULT_TEXT = 'defaultText';
-    const MODIFIED = 'modified';
-
-    /**#@-*/
     /**
      * class name
      *
@@ -203,6 +192,14 @@ class PluginConfigurationClass extends Object
     private $_active = PluginActivityEnumeration::INACTIVE;
 
     /**
+     * the plugin's identifier
+     *
+     * @access  private
+     * @var     string
+     */
+    private $_id = "";
+
+    /**
      * Public methods that this plugin offers.
      *
      * @access  protected
@@ -210,6 +207,31 @@ class PluginConfigurationClass extends Object
      * @ignore
      */
     protected $methods = array();
+
+    /**
+     * Set plug-in's id.
+     *
+     * @access  public
+     * @param   string  $id  plugin unique identifier
+     * @return  PluginConfigurationClassSdk
+     */
+    public function setId($id)
+    {
+        assert('is_string($id); // Invalid argument $id: String expected');
+        $this->_id = (string) $id;
+        return $this;
+    }
+
+    /**
+     * Get plug-in's id.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getId()
+    {
+        return $this->_id;
+    }
 
     /**
      * Set class name.
@@ -303,7 +325,6 @@ class PluginConfigurationClass extends Object
      * @access  public
      * @param   string  $type  valid type identifier
      * @return  PluginConfigurationClass
-     * @throws  InvalidArgumentException  when an unknown type is encountered
      */
     public function setType($type)
     {

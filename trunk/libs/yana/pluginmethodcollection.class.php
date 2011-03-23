@@ -52,6 +52,19 @@ class PluginMethodCollection extends Collection
     }
 
     /**
+     * Check if item exists.
+     *
+     * @access  public
+     * @param   scalar  $offset  index of item to test
+     * @return  bool
+     */
+    public function offsetExists($offset)
+    {
+        assert('is_string($offset); // Invalid argument $offset: string expected');
+        return parent::offsetExists(mb_strtolower($offset));
+    }
+
+    /**
      * Get item.
      *
      * @access  public

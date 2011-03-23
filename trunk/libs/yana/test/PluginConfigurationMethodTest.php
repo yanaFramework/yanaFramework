@@ -143,8 +143,7 @@ class PluginConfigurationMethodTest extends PHPUnit_Framework_TestCase
      */
     public function testGetMenu()
     {
-        $this->assertEquals(array(), $this->object->getMenu());
-        $this->object->setMenu(array());
+        $this->assertEquals(null, $this->object->getMenu());
     }
 
     /**

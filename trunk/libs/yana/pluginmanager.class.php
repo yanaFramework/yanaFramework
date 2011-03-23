@@ -67,33 +67,18 @@
  */
 class PluginManager extends Singleton implements IsReportable
 {
+
     /**#@+
-     * class constants
-     *
-     * @ignore
+     * @access  private
      */
-
-    const METHODS = 0;
-    const PLUGINS = 1;
-    const IMPLEMENTATIONS = 2;
-    const OVERWRITTEN = 3;
-    const ACTIVE = 4;
-
-    /**#@-*/
 
     /**
      * This is a place-holder for the singleton's instance
      *
-     * @access  private
+     * @var PluginManager
      * @static
-     * @var     object
      */
     private static $_instance = null;
-
-    /**#@+
-     * @ignore
-     * @access  private
-     */
 
     /**
      * @var string
@@ -109,12 +94,6 @@ class PluginManager extends Singleton implements IsReportable
      * @var bool
      */
     private $_isLoaded = false;
-
-    /**
-     * configuration
-     * @var array
-     */
-    private $_config = array();
 
     /**
      * result of last handled action
@@ -150,21 +129,29 @@ class PluginManager extends Singleton implements IsReportable
 
     /**
      * virtual drive
+     *
      * @var array
      */
     private $_drive = array();
 
     /**
      * plugin objects
+     *
      * @var array
      */
     private $_plugins = array();
 
     /**
      * currently loaded plugins
+     *
      * @var array
      */
     private $_loadedPlugins = array();
+
+    /**
+     * @var PluginRepository
+     */
+    private $_repository = null;
 
     /**#@-*/
     /**#@+
@@ -260,17 +247,21 @@ class PluginManager extends Singleton implements IsReportable
     }
 
     /**
-     * Get configuration array.
+     * Get configuration manager.
      *
      * @access  private
-     * @return  array
+     * @return  PluginRepository
      */
-    private function &_getConfig()
+    private function _getRepository()
     {
-        if (empty($this->_config) && file_exists(self::$_path)) {
-            $this->_config = unserialize(file_get_contents(self::$_path));
+        if (empty($this->_repository)) {
+            if (file_exists(self::$_path)) {
+                $this->_repository = unserialize(file_get_contents(self::$_path));
+            } else {
+                $this->_repository = new PluginRepository();
+            }
         }
-        return $this->_config;
+        return $this->_repository;
     }
 
     /**
@@ -280,47 +271,11 @@ class PluginManager extends Singleton implements IsReportable
      * of PluginConfigurationClass.
      *
      * @access  public
-     * @return  PluginConfigurationClass[]
+     * @return  PluginClassCollection
      */
     public function getPluginConfigurations()
     {
-        $config = $this->_getConfig();
-        return $config[self::PLUGINS];
-    }
-
-    /**
-     * Get implementations configuration array.
-     *
-     * If the event is not registered, the function returns NULL.
-     *
-     * @access  private
-     * @return  array
-     */
-    private function _getImplementationConfig($event)
-    {
-        $config = $this->_getConfig();
-        return (isset($config[self::IMPLEMENTATIONS][$event])) ? $config[self::IMPLEMENTATIONS][$event] : null;
-    }
-
-    /**
-     * Get activity state configuration.
-     *
-     * Returns an item of PluginActivityEnumeration.
-     * If the plugin does not exist, the function always returns
-     * PluginActivityEnumeration::INACTIVE.
-     *
-     * @access  private
-     * @param   $pluginName
-     * @return  int
-     */
-    private function _getActivityState($pluginName)
-    {
-        $config = $this->_getConfig();
-        if (isset($config[self::ACTIVE][$pluginName])) {
-            return $config[self::ACTIVE][$pluginName];
-        } else {
-            return PluginActivityEnumeration::INACTIVE;
-        }
+        return $this->_getRepository()->getPlugins();
     }
 
     /**
@@ -487,233 +442,17 @@ class PluginManager extends Singleton implements IsReportable
      */
     public function refreshPluginFile()
     {
-        $pluginDir = $this->getPluginDir();
-        $plugins = array();
-        assert('!isset($classFile); // Cannot redeclare var $classFile');
-        foreach (scandir(self::$_pluginDir) as $plugin)
-        {
-            if ($plugin[0] !== '.' && is_dir(self::$_pluginDir . '/' . $plugin)) {
-                $classFile = $pluginDir . $plugin . "/" . $plugin . ".plugin.php";
-                if (is_file($classFile)) {
-                    $plugins[$plugin] = "plugin_" . $plugin;
-                    include_once "$classFile";
-                }
-            }
-        }
-        unset($plugin, $classFile, $pluginDir);
-
-        // output var
-        $newPluginFile = array
-        (
-            self::PLUGINS => array(),
-            self::METHODS => array(),
-            self::OVERWRITTEN => array(),
-            self::IMPLEMENTATIONS => array(),
-            self::ACTIVE => array()
-        );
-
-        /* @var $config array */
-        assert('!isset($config); // Cannot redeclare var $config');
-        $config = $this->_getConfig();
-        // copy settings from old plugin repository
-        if (isset($config[self::ACTIVE])) {
-            $newPluginFile[self::ACTIVE] = $config[self::ACTIVE];
-        }
-        unset($config);
-
-        // initialize list for later use (see step 3)
-        $pluginsWithDefaultMethods = array();
-        $pluginGroups = array();
-
-        // clear cache
-        SmartTemplate::clearCache();
-
-        // list of subscribing methods
-        $subscribers = array();
-        $builder = new PluginConfigurationBuilder();
-
-        /**
-         * 1) build plugin repository
-         */
-        assert('!isset($reflectionClass); // Cannot redeclare var $reflectionClass');
-        assert('!isset($className); // Cannot redeclare var $className');
-        assert('!isset($config); // Cannot redeclare var $config');
-        assert('!isset($id); // Cannot redeclare var $id');
-        foreach ($plugins as $id => $className)
-        {
-            $builder->createNewConfiguration();
-            $builder->setReflection(new PluginReflectionClass($className));
-            $config = $builder->getPluginConfigurationClass();
-            $newPluginFile[self::PLUGINS][$id] = $config;
-
-            // get name of parent plugin
-            $parent = $config->getParent();
-
-            /**
-             * get active preset
-             *
-             * if the plugin's active state is unknown and there is a default state defined by the plugin,
-             * use the setting defined by the plugin.
-             */
-            if (!isset($newPluginFile[self::ACTIVE][$id])) {
-                $newPluginFile[self::ACTIVE][$id] = $config->getActive();
-            }
-            // ignore methods if plugin is not active
-            if ($newPluginFile[self::ACTIVE][$id] === PluginActivityEnumeration::INACTIVE) {
-                continue;
-            }
-            /**
-             * 2) build method repository
-             */
-            foreach ($config->getMethods() as $methodName => $method)
-            {
-                // skip default event handlers (will be handled in step 3)
-                if ($methodName == 'catchAll') {
-                    $pluginsWithDefaultMethods[$id] = $config;
-                    continue;
-                }
-                $methodName = mb_strtolower($methodName);
-
-                $isOverwrite = $method->getOverwrite();
-                $isSubscriber = $method->getSubscribe();
-
-                // add method to index
-                if ((!isset($newPluginFile[self::METHODS][$methodName]) || $isOverwrite) && !$isSubscriber) {
-                    $newPluginFile[self::METHODS][$methodName] = $method;
-                } elseif ($isSubscriber) {
-                    $subscribers[$methodName][] = $method; // will be used later
-                }
-
-                // overwrite method configuration of base plugin
-                if ($isOverwrite && !empty($parent)) {
-                    $newPluginFile[self::OVERWRITTEN][$methodName][$parent] = true;
-                    if (isset($newPluginFile[self::IMPLEMENTATIONS][$methodName][$parent])) {
-                        unset($newPluginFile[self::IMPLEMENTATIONS][$methodName][$parent]);
-                    }
-                }
-
-                // add to implementations
-                if (!isset($newPluginFile[self::OVERWRITTEN][$methodName][$className])) {
-                    $newPluginFile[self::IMPLEMENTATIONS][$methodName][$id] = $config->getPriority();
-                }
-            } // end foreach method
-            unset($isOverwrite, $isSubscriber, $methodName, $method);
-        } // end foreach plugin
-        unset($id, $name, $parent);
-
-        /**
-         * 3) join default event handlers to event implementations
-         *
-         * A plugin may define a function named "catchAll" to catch all events.
-         * These event handlers need to be added as recipients to any event
-         * defintion of the corresponding group and type of the implementing
-         * plugin.
-         */
-
-        /**
-         * plugin multicast-groups configuration
-         */
-        $mulitcastGroups = Yana::getDefault("MULTICAST_GROUPS");
-        // default value
-        if (empty($mulitcastGroups)) {
-            $mulitcastGroups = array
-            (
-                'read' => array
-                (
-                    'security' => true,
-                    'library' => true,
-                    'read' => true,
-                    'primary' => true,
-                    'default' => true
-                ),
-                'write' => array
-                (
-                    'security' => true,
-                    'library' => true,
-                    'write' => true,
-                    'primary' => true,
-                    'default' => true
-                ),
-                'config' => array
-                (
-                    'security' => true,
-                    'library' => true,
-                    'config' => true
-                ),
-                'primary' => array
-                (
-                    'security' => true,
-                    'library' => true,
-                    'primary' => true
-                ),
-                'default' => array
-                (
-                    'security' => true,
-                    'library' => true,
-                    'default' => true
-                ),
-                'security' => array
-                (
-                    'security' => true,
-                    'library' => true
-                ),
-                'library' => array
-                (
-                )
-            );
-        } else {
-            $mulitcastGroups = Hashtable::changeCase($mulitcastGroups, CASE_LOWER);
-        } // end if
-
-        // load configuration settings for each method and build list of implementing classes
-        assert('!isset($methodName); // Cannot redeclare var $methodName');
-        assert('!isset($methodConfig); // Cannot redeclare var $methodConfig');
-        foreach ($newPluginFile[self::METHODS] as $methodName => $methodConfig)
-        {
-            // get type of current event
-            $baseType = $methodConfig->getType();
-            $baseGroup = $methodConfig->getGroup();
-
-            // copy properties from subscribers
-            if (!empty($subscribers[$methodName])) {
-                assert('!isset($subscriberConfig); // Cannot redeclare var $subscriberConfig');
-                foreach ($subscribers[$methodName] as $subscriberConfig)
-                {
-                    $methodConfig->addSubscription($subscriberConfig);
-                }
-                unset($subscriberConfig);
-            }
-
-            assert('!isset($pluginName); // Cannot redeclare var $pluginName');
-            assert('!isset($pluginConfig); // Cannot redeclare var $pluginConfig');
-            foreach ($pluginsWithDefaultMethods as $pluginName => $pluginConfig)
-            {
-                // get type of current plugin
-                $currentType = $pluginConfig->getType();
-                $currentGroup = $pluginConfig->getGroup();
-
-                // skip if group doesn't match
-                if (!empty($currentGroup) && $baseGroup != $currentGroup) {
-                    continue;
-                }
-
-                // skip if type is not in group of recipients
-                if (empty($mulitcastGroups[$baseType][$currentType])) {
-                    continue;
-                }
-
-                $newPluginFile[self::IMPLEMENTATIONS][$methodName][$pluginName] = $pluginConfig->getPriority();
-            }
-            unset($pluginName, $pluginConfig);
-        }
-        unset($methodName, $config);
+        $builder = new PluginRepositoryBuilder();
+        $builder->addDirectory($this->getPluginDir());
+        $builder->setBaseRepository($this->_getRepository());
+        $repository = $builder->getRepository();
 
         // create repository cache
-        if (file_put_contents(self::$_path, serialize($newPluginFile))) {
+        if (file_put_contents(self::$_path, serialize($repository))) {
             // cache has been written and is not empty
 
             // actuate current config setting
-            $this->_config = $newPluginFile;
+            $this->_repository = $repository;
             return true;
         } else {
             // an error occured - unable to write cache file
@@ -735,7 +474,11 @@ class PluginManager extends Singleton implements IsReportable
     public function isActive($pluginName)
     {
         assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
-        $active = $this->_getActivityState($pluginName);
+        $plugins = $this->_getRepository()->getPlugins();
+        $active = null;
+        if ($plugins->offsetExists($pluginName)) {
+            $active = $plugins->offsetGet($pluginName)->getActive();
+        }
         return $active === PluginActivityEnumeration::ACTIVE || $active === PluginActivityEnumeration::DEFAULT_ACTIVE;
     }
 
@@ -755,46 +498,40 @@ class PluginManager extends Singleton implements IsReportable
     public function isDefaultActive($pluginName)
     {
         assert('is_string($pluginName); // Wrong type for argument 1. String expected');
-        $active = $this->_getActivityState($pluginName);
+        $plugins = $this->_getRepository()->getPlugins();
+        $active = null;
+        if ($plugins->offsetExists($pluginName)) {
+            $active = $plugins->offsetGet($pluginName)->getActive();
+        }
         return $active === PluginActivityEnumeration::DEFAULT_ACTIVE;
     }
 
     /**
-     * activate / deactive a plugin
-     *
-     * Sets the plugin identified by $pluginName
-     * to active (1) or inactive (0).
-     *
-     * Returns bool(true) on success and bool(false) on error.
+     * Activate / deactive a plugin.
      *
      * @access  public
-     * @param   string  $pluginName  identifier for the plugin to be de-/activated
-     * @param   int     $state       0 = off, 1 = on, 2 = reserved (do not use)
-     * @return  bool
-     *
-     * @ignore
+     * @param   string  $pluginName   identifier for the plugin to be de-/activated
+     * @param   int     $state        PluginActivityEnumeration::INACTIVE = off, PluginActivityEnumeration::ACTIVE = on
+     * @throws  NotFoundException     when no plugin with the given name is found
+     * @throws  InvalidValueException when trying to change a default plugin
      */
     public function setActive($pluginName, $state = PluginActivityEnumeration::ACTIVE)
     {
-        assert('is_string($pluginName); // Wrong type for argument 1. String expected');
-        assert('is_int($state); // Wrong type for argument 2. Integer expected');
-
-        $pluginConfig = $this->getPluginConfigurations();
-        $config =& $this->_getConfig();
-        if (isset($pluginConfig[$pluginName])) {
-            if ($config[self::ACTIVE][$pluginName] != PluginActivityEnumeration::DEFAULT_ACTIVE) {
-                $config[self::ACTIVE][$pluginName] = $state;
-                return true;
-            } else {
-                return false;
+        $plugins = $this->_getRepository()->getPlugins();
+        if ($plugins->offsetExists($pluginName)) {
+            $plugin = $plugins->offsetGet($pluginName);
+            if ($plugin->getActive() === PluginActivityEnumeration::DEFAULT_ACTIVE) {
+                $message = "Changing activity state of plugin '$pluginName' with setting: 'always active' is not allowed.";
+                throw new InvalidValueException($message);
             }
+            $plugin->setActive($state);
         } else {
-            return false;
+            throw new NotFoundException("No such plugin: '$pluginName'.");
         }
     }
 
     /**
-     * get a file from a virtual drive
+     * Get a file from a virtual drive.
      *
      * Each plugin defines it's own virtual drive with files that are required
      * for it to function as intended.
@@ -814,7 +551,6 @@ class PluginManager extends Singleton implements IsReportable
         assert('is_string($pluginName); // Wrong type for argument 1. String expected');
         assert('is_string($key); // Wrong type for argument 2. String expected');
 
-        /* settype to STRING */
         $pluginName = (string) $pluginName;
         $key = (string) $key;
 
@@ -950,8 +686,7 @@ class PluginManager extends Singleton implements IsReportable
      */
     public function getPluginNames()
     {
-        $pluginConfig = $this->getPluginConfigurations();
-        return array_keys($pluginConfig);
+        return array_keys($this->getPluginConfigurations()->toArray());
     }
 
     /**
@@ -995,42 +730,31 @@ class PluginManager extends Singleton implements IsReportable
     }
 
     /**
-     * get the event configuration
+     * Get the event configuration.
      *
      * @access  public
      * @param   string  $eventName  identifier of the wanted event
      * @return  PluginConfigurationMethod
-     * @ignore
      */
     public function getEventConfiguration($eventName)
     {
         assert('is_string($eventName); // Invalid argument $eventName: string expected');
-        $eventName = mb_strtolower("$eventName");
-        $config = $this->getEventConfigurations();
-        if (isset($config[$eventName])) {
-            return $config[$eventName];
-        } else {
-            return null;
-        }
+        return $this->getEventConfigurations()->offsetGet($eventName);
     }
 
     /**
-     * get list of event configurations
+     * Get list of event configurations.
      *
      * @access  public
-     * @return  array of PluginConfigurationMethods
-     * @ignore
+     * @return  PluginMethodCollection
      */
     public function getEventConfigurations()
     {
-        $config = $this->_getConfig();
-        $methods = $config[self::METHODS];
-        assert('is_array($methods); // List of methods not available');
-        return $methods;
+        return $this->_getRepository()->getMethods();
     }
 
     /**
-     * check if event is defined
+     * Check if event is defined.
      *
      * Returns bool(true) if the given string matches the name
      * of an defined event and bool(false) otherwise.
@@ -1042,13 +766,11 @@ class PluginManager extends Singleton implements IsReportable
     public function isEvent($eventName)
     {
         assert('is_string($eventName); // Invalid argument $eventName: string expected');
-        $eventName = mb_strtolower("$eventName");
-        $eventConfig = $this->getEventConfiguration($eventName);
-        return !is_null($eventConfig);
+        return $this->_getRepository()->isMethod($eventName);
     }
 
     /**
-     * check if plugin is currently loaded
+     * Check if plugin is currently loaded.
      *
      * @access  public
      * @param   string  $pluginName  identifier of the plugin to check
@@ -1074,20 +796,14 @@ class PluginManager extends Singleton implements IsReportable
         assert('is_string($event); // Invalid argument $event: string expected');
         $this->_loadedPlugins = array();
 
-        $result = array();
-        $config = $this->_getImplementationConfig($event);
+        $config = $this->_getRepository()->getImplementations($event);
 
-        if (!empty($config)) {
-            foreach ($config as $pluginName => $priority)
-            {
-                if ($this->isActive($pluginName)) {
-                    $this->_loadedPlugins[$pluginName] = true;
-                    $result[$pluginName] = $priority;
-                }
-            }
+        foreach (array_keys($config) as $pluginName)
+        {
+            $this->_loadedPlugins[$pluginName] = true;
         }
-        arsort($result);
-        return $result;
+        arsort($config);
+        return $config;
     }
 
     /**
