@@ -321,12 +321,13 @@ class plugin_config extends StdClass implements IsPlugin
             /* We don't mind, wether $plugin is a plugin or not, since
              * the PluginManager does this checking for us.
              */
-            if (in_array($plugin, $plugins)) {
-                $test = $pluginManager->setActive($plugin, PluginActivityEnumeration::ACTIVE);
-            } else {
-                $test = $pluginManager->setActive($plugin, PluginActivityEnumeration::INACTIVE);
-            }
-            if ($test === false) {
+            try {
+                if (in_array($plugin, $plugins)) {
+                    $pluginManager->setActive($plugin, PluginActivityEnumeration::ACTIVE);
+                } else {
+                    $pluginManager->setActive($plugin, PluginActivityEnumeration::INACTIVE);
+                }
+            } catch (NotFoundException $e) {
                 throw new InvalidInputWarning();
             }
         }

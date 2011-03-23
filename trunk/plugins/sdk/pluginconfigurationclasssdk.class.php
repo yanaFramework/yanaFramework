@@ -41,39 +41,6 @@ class PluginConfigurationClassSdk extends PluginConfigurationClass
 {
 
     /**
-     * the plugin's identifier
-     *
-     * @access  private
-     * @var     string
-     */
-    private $_id = null;
-
-    /**
-     * Set plug-in's id.
-     *
-     * @access  public
-     * @param   string  $id  plugin unique identifier
-     * @return  PluginConfigurationClassSdk
-     */
-    public function setId($id)
-    {
-        assert('is_string($id); // Invalid argument $id: String expected');
-        $this->_id = (string) $id;
-        return $this;
-    }
-
-    /**
-     * Get plug-in's id.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getId()
-    {
-        return $this->_id;
-    }
-
-    /**
      * convert to string
      *
      * Outputs the results as a PHP-Doc comment
