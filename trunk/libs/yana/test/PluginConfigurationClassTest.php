@@ -117,15 +117,6 @@ class PluginConfigurationClassTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException  InvalidArgumentException
-     */
-    public function testSetTypeInvalidArgumentException()
-    {
-        $this->object->setType('Invalid type');
-    }
-
-    /**
-     * @test
      */
     public function testSetAuthors()
     {

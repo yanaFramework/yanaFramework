@@ -39,6 +39,7 @@
  */
 class PluginActivityEnumeration extends AbstractEnumeration
 {
+
     /**
      * plugin is not active
      */

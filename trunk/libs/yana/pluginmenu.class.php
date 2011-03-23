@@ -91,7 +91,7 @@ class PluginMenu extends Singleton
          * initialize names
          */
         $pluginManager = PluginManager::getInstance();
-        $plugins = $pluginManager->getPluginConfigurations();
+        $plugins = $pluginManager->getPluginConfigurations()->toArray();
 
         /* @var $pluginConfiguration PluginConfigurationClass */
         foreach ($plugins as $pluginName => $pluginConfiguration)

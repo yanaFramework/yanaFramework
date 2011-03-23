@@ -56,11 +56,25 @@ class PluginClassCollection extends Collection
      *
      * @access  public
      * @param   string  $offset  lower-cased method-name
+     * @return  PluginConfigurationClass
      */
     public function offsetGet($offset)
     {
         assert('is_string($offset); // Invalid argument $offset: string expected');
         return parent::offsetGet(mb_strtolower($offset));
+    }
+
+    /**
+     * Check if item exists.
+     *
+     * @access  public
+     * @param   scalar  $offset  index of item to test
+     * @return  bool
+     */
+    public function offsetExists($offset)
+    {
+        assert('is_string($offset); // Invalid argument $offset: string expected');
+        return parent::offsetExists(mb_strtolower($offset));
     }
 
     /**
