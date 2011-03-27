@@ -47,19 +47,13 @@
  */
 class SmartTemplate extends Object
 {
-    /**#@+
-     * @ignore
-     *
+
+    /**
      * @access  private
      * @static
+     * @var     string
      */
-
-    /** @var array  */ private static $functions = array();
-    /** @var array  */ private static $modifiers = array();
-    /** @var array  */ private static $blocks = array();
-    /** @var string */ private static $cacheId = "";
-
-    /**#@-*/
+    private static $cacheId = "";
 
     /**
      * local Smarty instance
@@ -294,7 +288,7 @@ class SmartTemplate extends Object
                 'import' =>              array('SmartUtility::import', false),
                 'smilies' =>             array('SmartUtility::guiSmilies', true),
                 'embeddedTags' =>        array('SmartUtility::guiEmbeddedTags', true),
-                'create' =>              array('SmartUtility::create', false),
+                'create' =>              array('SmartFormUtility::createFrom', false),
                 'captcha' =>             array('SmartUtility::captcha', true),
                 'slider' =>              array('SmartUtility::slider', true),
                 'sizeOf' =>              array('SmartUtility::sizeOf', true),
@@ -317,10 +311,14 @@ class SmartTemplate extends Object
             self::$globalSmarty->registered_plugins[Smarty::PLUGIN_BLOCK]['loop'] = array(
                 'SmartUtility::loopArray', false
             );
-            self::$globalSmarty->registered_filters[Smarty::FILTER_PRE][] = array('SmartUtility', 'htmlPreProcessor');
-            self::$globalSmarty->registered_filters[Smarty::FILTER_POST][] = array('SmartUtility', 'htmlPostProcessor');
-            self::$globalSmarty->registered_filters[Smarty::FILTER_OUTPUT][] = array('SmartUtility', 'outputFilter');
-            self::$globalSmarty->default_modifiers = array('replaceToken');
+            self::$globalSmarty->registered_filters[Smarty::FILTER_PRE][] =
+                array('SmartHtmlProcessorUtility', 'htmlPreProcessor');
+            self::$globalSmarty->registered_filters[Smarty::FILTER_POST][] =
+                array('SmartHtmlProcessorUtility', 'htmlPostProcessor');
+            self::$globalSmarty->registered_filters[Smarty::FILTER_OUTPUT][] =
+                array('SmartHtmlProcessorUtility', 'outputFilter');
+            self::$globalSmarty->default_modifiers =
+                array('replaceToken');
 
             self::$globalSmarty->registered_resources["template"] = array(
                 array(
