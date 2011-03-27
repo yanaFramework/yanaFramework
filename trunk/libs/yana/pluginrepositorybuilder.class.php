@@ -78,7 +78,7 @@ class PluginRepositoryBuilder extends PluginRepositoryAbstractBuilder
                 if ($plugin[0] !== '.' && is_dir($directory . '/' . $plugin)) {
                     $classFile = $directory . $plugin . "/" . $plugin . ".plugin.php";
                     if (is_file($classFile)) {
-                        $this->_plugins[$plugin] = "plugin_" . $plugin;
+                        $this->_plugins[$plugin] = PluginManager::PREFIX . $plugin;
                         include_once "$classFile";
                     }
                 }
