@@ -66,222 +66,7 @@ class PluginReflectionClass extends ReflectionClass
     }
 
     /**
-     * get doc-tags from comment
-     *
-     * extract tags and values
-     *
-     * valid tag styles:
-     * <code>
-     * &#64;foo
-     * &#64;foo  value
-     * &#64;foo  key: value
-     * &#64;foo  key1: value 1, key2: value 2
-     * {&#64;foo
-     *   key1: value 1,
-     *   key2: value 2
-     * }
-     * </code>
-     *
-     * The above tags will return the following values:
-     * <code>
-     * Array
-     * (
-     *     [0] => 1
-     *
-     *     [1] => value
-     *
-     *     [2] => Array
-     *         (
-     *             [key] => value
-     *         )
-     *
-     *     [2] => Array
-     *         (
-     *             [key1] => value 1
-     *             [key2] => value 2
-     *         )
-     *
-     *     [3] => Array
-     *         (
-     *             [key1] => value 1
-     *             [key2] => value 2
-     *         )
-     * )
-     * </code>
-     *
-     * If the same key is mentionend multiple times,
-     * the value of the last occurence overwrites the previous.
-     *
-     * @access  public
-     * @static
-     * @param   string  $comment  doc-block of parsed file
-     * @param   string  $tagName  name of doc-tag to extract
-     * @return  array
-     */
-    public static function getTagsFromComment($comment, $tagName)
-    {
-        assert('is_string($comment); // Wrong type for argument 1. String expected');
-        assert('is_string($tagName); // Wrong type for argument 2. String expected');
-        $tagName = preg_quote($tagName, '/');
-
-        $result = array();
-        $match = array();
-        /**
-         * 1) get tags
-         */
-
-        /**
-         * 1.1) simple tags: @foo
-         */
-        if (preg_match_all('/ @' . $tagName . '(\s.*|)$/mi', $comment, $match)) {
-
-            assert('!isset($i); // Cannot redeclare var $i');
-            assert('!isset($tagContent); // Cannot redeclare var $tagContent');
-            foreach ($match[1] as $i => $tagContent)
-            {
-                $count = count($result);
-
-                $tagContent = trim($tagContent);
-                /**
-                 * 2) get list of values
-                 */
-                assert('!isset($match2); // Cannot redeclare var $match2');
-                if ($tagContent === "") {
-                    $result[$count] = true;
-                } elseif (preg_match_all('/([\w-]+)\:\s+([^,]*)/', $match[1][$i], $match2)) {
-                    $result[$count] = array();
-                    for ($j = 0; $j < count($match2[0]); $j++)
-                    {
-                        /**
-                         * 3) assign values
-                         */
-                        $key = $match2[1][$j];
-                        $value = trim($match2[2][$j]);
-                        if ($value === "") {
-                            $result[$count][$match2[1][$j]] = true;
-                        } else {
-                            $result[$count][$match2[1][$j]] = $value;
-                        }
-                    }
-                } else {
-                    $result[$count] = $tagContent;
-                }
-                unset($match2);
-            } /* end foreach */
-            unset($i, $tagContent);
-        } /* end if */
-
-        /**
-         * 1.2) more complex tags: {@foo ... }
-         */
-        if (preg_match_all('/\{@' . $tagName . '\s*([^\}]*)/si', $comment, $match)) {
-
-            assert('!isset($i); // Cannot redeclare var $i');
-            assert('!isset($tagContent); // Cannot redeclare var $tagContent');
-            foreach ($match[1] as $i => $tagContent)
-            {
-                $count = count($result);
-
-                $tagContent = trim(preg_replace('/^\s*\*\s*/Um', ' ', $tagContent));
-                /**
-                 * 2) get list of values
-                 */
-                assert('!isset($match2); // Cannot redeclare var $match2');
-                if ($tagContent === "") {
-                    $result[$count] = true;
-                } elseif (preg_match('/([\w-]+)\:\s+/', $tagContent)) {
-                    $result[$count] = array();
-                    while (preg_match('/(([\w-]+)\:\s+(.*?))(?:,?\s*?[\w-]+\:|$)/s', $tagContent, $match2))
-                    {
-                        $tagContent = str_replace($match2[1], '', $tagContent);
-                        /**
-                         * 3) assign values
-                         */
-                        $key = $match2[2];
-                        $value = trim($match2[3]);
-                        if ($value === "") {
-                            $result[$count][$match2[2]] = true;
-                        } else {
-                            $result[$count][$match2[2]] = $value;
-                        }
-                    } /* end while */
-                } else {
-                    $result[$count] = $tagContent;
-                }
-                unset($match2);
-            } /* end foreach */
-            unset($i, $value);
-        } /* end if */
-
-        assert('is_array($result); // result is expected to be an array');
-        return $result;
-    }
-
-    /**
-     * get single doc-tag
-     *
-     * Returns the doc tag as a string.
-     *
-     * Use this function if you expect only one tag with a single value.
-     * Otherwise the default value is returned.
-     *
-     * @access  public
-     * @static
-     * @param   string  $comment  doc-block of parsed file
-     * @param   string  $tagName  name of doc-tag to extract
-     * @param   string  $default  default value (if tag not found)
-     * @return  string
-     */
-    public static function getTagFromComment($comment, $tagName, $default = "")
-    {
-        assert('is_string($comment); // Wrong type for argument 1. String expected');
-        assert('is_string($tagName); // Wrong type for argument 2. String expected');
-        assert('is_string($default); // Wrong type for argument 3. String expected');
-        $result = self::getTagsFromComment($comment, $tagName);
-        if (count($result) === 1) {
-            return $result[0];
-        } else {
-            return $default;
-        }
-    }
-
-    /**
-     * get tag list
-     *
-     * Returns the doc tag as a string.
-     *
-     * Use this function if you expect only one tag with a single value.
-     * Otherwise the default value is returned.
-     *
-     * @access  public
-     * @param   string  $tagName  name of doc-tag to extract
-     * @return  array
-     */
-    public function getTags($tagName)
-    {
-        return PluginReflectionClass::getTagsFromComment($this->getPageComment(), $tagName);
-    }
-
-    /**
-     * get string from tag
-     *
-     * Returns the doc tag as a string.
-     *
-     * Use this function if you expect only one tag with a single value.
-     * Otherwise the default value is returned.
-     *
-     * @access  public
-     * @param   string  $tagName  name of doc-tag to extract
-     * @param   string  $default  default value (if tag not found)
-     * @return  array
-     */
-    public function getTag($tagName, $default = "")
-    {
-        return PluginReflectionClass::getTagFromComment($this->getPageComment(), $tagName, $default);
-    }
-
-    /**
-     * get class name
+     * Get class name.
      *
      * @access  public
      * @return  string
@@ -292,7 +77,7 @@ class PluginReflectionClass extends ReflectionClass
     }
 
     /**
-     * get method
+     * Get method reflection.
      *
      * @access  public
      * @param   string  $methodName   method name
@@ -304,7 +89,7 @@ class PluginReflectionClass extends ReflectionClass
     }
 
     /**
-     * get methods
+     * Get methods as reflections.
      *
      * @access  public
      * @param   int  $filter    filter
@@ -323,7 +108,10 @@ class PluginReflectionClass extends ReflectionClass
     }
 
     /**
-     * get title
+     * Get title.
+     *
+     * The title is the first line or first sentence of a comment.
+     * It should be followed by a blank line.
      *
      * @access  public
      * @return  string
@@ -340,9 +128,9 @@ class PluginReflectionClass extends ReflectionClass
     }
 
     /**
-     * get description text
+     * Get description text.
      *
-     * Returns bool(false) on error.
+     * The description is the comment text without the title and possibly following annotations.
      *
      * @access  public
      * @return  string
@@ -363,7 +151,7 @@ class PluginReflectionClass extends ReflectionClass
     }
 
     /**
-     * get page comment
+     * Get page comment.
      *
      * @access  public
      * @return  string

@@ -67,41 +67,6 @@ class PluginReflectionMethod extends ReflectionMethod
     }
 
     /**
-     * get tag list
-     *
-     * Returns the doc tag as a string.
-     *
-     * Use this function if you expect only one tag with a single value.
-     * Otherwise the default value is returned.
-     *
-     * @access  public
-     * @param   string  $tagName  name of doc-tag to extract
-     * @return  array
-     */
-    public function getTags($tagName)
-    {
-        return PluginReflectionClass::getTagsFromComment($this->getDocComment(), $tagName);
-    }
-
-    /**
-     * get tag
-     *
-     * Returns the doc tag as a string.
-     *
-     * Use this function if you expect only one tag with a single value.
-     * Otherwise the default value is returned.
-     *
-     * @access  public
-     * @param   string  $tagName  name of doc-tag to extract
-     * @param   string  $default  default value (if tag not found)
-     * @return  array
-     */
-    public function getTag($tagName, $default = "")
-    {
-        return PluginReflectionClass::getTagFromComment($this->getDocComment(), $tagName, $default);
-    }
-
-    /**
      * get title
      *
      * @access  public
