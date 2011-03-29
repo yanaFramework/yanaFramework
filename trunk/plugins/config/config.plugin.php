@@ -389,22 +389,21 @@ class plugin_config extends StdClass implements IsPlugin
         $profileDir = $profileDir->getPath();
         $newProfile = new SML("{$profileDir}{$id}.cfg", CASE_MIXED);
         if ($newProfile->exists()) {
-            throw new AlreadyExistsWarning();
+            $error = new AlreadyExistsWarning();
+            throw $error->setId($id);
         }
         try {
             $newProfile->create();
         } catch (Exception $e) {
             $error = new FileNotCreatedError();
-            $error->setData(array("FILE" => $newProfile->getPath()));
-            throw $error;
+            throw $error->setFilename($newProfile->getPath());
         }
         if (!$newProfile->set($REF)) {
             throw new Error();
         }
         if (!$newProfile->write()) {
             $error = new NotWriteableError();
-            $error->setData(array("FILE" => $newProfile->getPath()));
-            throw $error;
+            throw $error->setFilename($newProfile->getPath());
         }
         return true;
     }

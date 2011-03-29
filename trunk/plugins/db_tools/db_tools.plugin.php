@@ -139,8 +139,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
         $filename = 'database.db.xml';
         if (empty($xml)) {
             $error = new FileNotCreatedError();
-            $error->setData(array('FILE' => $filename));
-            throw $error;
+            throw $error->setFilename($filename);
         }
         // output file
         header("Content-Disposition: attachment; filename=${filename}");
@@ -175,8 +174,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
         $filename = 'database.xml';
         if (empty($xml)) {
             $error = new FileNotCreatedError();
-            $error->setData(array('FILE' => $filename));
-            throw $error;
+            throw $error->setFilename($filename);
         }
         // output file
         header("Content-Disposition: attachment; filename=${filename}");
@@ -215,8 +213,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
             $filename = 'database.config';
             if (!empty($structure)) {
                 $error = new FileNotCreatedError();
-                $error->setData(array('FILE' => $filename));
-                throw $error;
+                throw $error->setFilename($filename);
             }
             // output file
             header("Content-Disposition: attachment; filename=${filename}");
@@ -260,8 +257,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
         $filename = 'database.config';
         if (empty($structure)) {
             $error = new FileNotCreatedError();
-            $error->setData(array('FILE' => $filename));
-            throw $error;
+            throw $error->setFilename($filename);
         }
         // output file
         header("Content-Disposition: attachment; filename=${filename}");
@@ -323,8 +319,8 @@ class plugin_db_tools extends StdClass implements IsPlugin
                 case 'ifx':
                 case 'sybase':
                 default:
-                    throw new InvalidValueWarning('DBMS=' . $dbms);
-                break;
+                    $error = new InvalidValueWarning();
+                    throw $error->setField('DBMS=' . $dbms);
             }
             $dbc = new DbCreator( XDDL::getDatabase($dbName) );
             $arrayOfStmts = $dbc->$methodName();
@@ -334,8 +330,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
         $filename = mb_strtolower(preg_replace('/\W/', '_', $dbms) . '.sql');
         if (empty($fileContents)) {
             $error = new FileNotCreatedError();
-            $error->setData(array('FILE' => $filename));
-            throw $error;
+            throw $error->setFilename($filename);
         }
         header("Content-Disposition: attachment; filename=${filename}");
         header("Content-type: text/plain");
