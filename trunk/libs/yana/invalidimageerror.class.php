@@ -26,15 +26,15 @@
  */
 
 /**
- * Error
+ * Invalid image file error.
  *
- * This class represents errors passed to the user.
+ * Used when an image is found that is not valid for the requested operation.
  *
  * @access      public
  * @package     yana
  * @subpackage  error_reporting
  */
-class InvalidImageError extends Error
+class InvalidImageError extends FileError
 {
     /* intentionally left blank */
 }

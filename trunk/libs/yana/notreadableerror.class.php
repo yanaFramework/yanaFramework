@@ -26,15 +26,15 @@
  */
 
 /**
- * Error
+ * File not readable error.
  *
- * This class represents errors passed to the user.
+ * Used when a requested file is not readable.
  *
  * @access      public
  * @package     yana
  * @subpackage  error_reporting
  */
-class NotReadableError extends Error
+class NotReadableError extends FileError
 {
     /* intentionally left blank */
 }

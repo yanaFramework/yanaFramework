@@ -282,7 +282,8 @@ class DbInsert extends DbQuery
 
         // error - duplicate value
         if (isset($this->queue[$table][$column])) {
-            throw new InvalidValueWarning($column);
+            $error = new InvalidValueWarning();
+            throw $error->setField($column);
         }
         // append value to queue
         $this->queue[$table][$column] = $value;

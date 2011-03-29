@@ -26,15 +26,15 @@
  */
 
 /**
- * Error
+ * File not created error.
  *
- * This class represents errors passed to the user.
+ * Used when a file could not be created during an operation.
  *
  * @access      public
  * @package     yana
  * @subpackage  error_reporting
  */
-class FileNotCreatedError extends Error
+class FileNotCreatedError extends FileError
 {
     /* intentionally left blank */
 }

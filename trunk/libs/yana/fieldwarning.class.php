@@ -26,17 +26,31 @@
  */
 
 /**
- * Warning
+ * Invalid field warning.
  *
- * This class represents warnings passed to the user.
+ * Base class, used when any input for a given form field is invalid.
  *
  * @access      public
  * @package     yana
  * @subpackage  error_reporting
  */
-class MissingFieldWarning extends FieldWarning
+class FieldWarning extends Warning
 {
-    /* intentionally left blank */
+
+    /**
+     * Set field name.
+     *
+     * @access  public
+     * @param   string  $field  Field that contained the invalid value
+     * @return  InvalidFieldWarning 
+     */
+    public function setField($field)
+    {
+        assert('is_string($field); // Invalid argument $field: string expected');
+        $this->data['FIELD'] = $field;
+        return $this;
+    }
+
 }
 
 ?>

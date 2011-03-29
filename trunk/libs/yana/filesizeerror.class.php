@@ -26,17 +26,30 @@
  */
 
 /**
- * Error
+ * Filesize error.
  *
- * This class represents errors passed to the user.
+ * Used when a file exceeds the maximum allowed size.
  *
  * @access      public
  * @package     yana
  * @subpackage  error_reporting
  */
-class FilesizeError extends Error
+class FilesizeError extends FileError
 {
-    /* intentionally left blank */
+
+    /**
+     * Set maximum file size.
+     *
+     * @access  public
+     * @param   scalar  $max  maximum file size in byte
+     * @return  FilesizeError
+     */
+    public function setMaxSize($max)
+    {
+        $this->data['MAXIMUM'] = (string) $max;
+        return $this;
+    }
+
 }
 
 ?>

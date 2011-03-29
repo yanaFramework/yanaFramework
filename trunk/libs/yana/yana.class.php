@@ -341,7 +341,7 @@ final class Yana extends Singleton implements IsReportable
         $eventConfiguration = $plugins->getEventConfiguration($action);
         if (!($eventConfiguration instanceof PluginConfigurationMethod)) {
             $error = new InvalidActionError();
-            $error->setData(array('ACTION' => $action));
+            $error->setAction($action);
             return false;
         }
 
@@ -465,7 +465,7 @@ final class Yana extends Singleton implements IsReportable
                 case isset($action) && !is_string($action):
                 case isset($action) && !$this->getPlugins()->isEvent($action):
                     $error = new InvalidActionError();
-                    $error->setData(array('ACTION' => $action));
+                    $error->setAction($action);
                 // fall through
                 case empty($action):
                     assert('!empty(self::$_config["DEFAULT"]["HOMEPAGE"]); // Configuration missing default homepage.');

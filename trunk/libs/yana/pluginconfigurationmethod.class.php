@@ -823,7 +823,8 @@ class PluginConfigurationMethod extends Object
                     case 'integer':
                     case 'int':
                         if (!is_numeric($value)) {
-                            throw new InvalidValueWarning($name);
+                            $error = new InvalidValueWarning();
+                            throw $error->setField($name);
                         } else {
                             $this->_args[$name] = (int) $value;
                         }
@@ -831,7 +832,8 @@ class PluginConfigurationMethod extends Object
                     case 'float':
                     case 'double':
                         if (!is_numeric($value)) {
-                            throw new InvalidValueWarning($name);
+                            $error = new InvalidValueWarning();
+                            throw $error->setField($name);
                         } else {
                             $this->_args[$name] = (float) $value;
                         }
@@ -842,14 +844,16 @@ class PluginConfigurationMethod extends Object
                     break;
                     case 'array':
                         if (!is_array($value)) {
-                            throw new InvalidValueWarning($name);
+                            $error = new InvalidValueWarning();
+                            throw $error->setField($name);
                         } else {
                             $this->_args[$name] = $value;
                         }
                     break;
                     default:
                         if (!is_string($value)) {
-                            throw new InvalidValueWarning($name);
+                            $error = new InvalidValueWarning();
+                            throw $error->setField($name);
                         } else {
                             $this->_args[$name] = $value;
                         }

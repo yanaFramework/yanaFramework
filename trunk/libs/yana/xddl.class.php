@@ -103,7 +103,7 @@ class XDDL extends File
      * @access  public
      * @return  DDLDatabase
      * @throws  NotFoundException     when file does not exist
-     * @throws  InvalidSyntaxWarning  when file is invalid
+     * @throws  InvalidSyntaxException  when file is invalid
      */
     public function toDatabase()
     {
@@ -123,7 +123,7 @@ class XDDL extends File
      * @param   string  $databaseName  database name
      * @return  DDLDatabase
      * @throws  NotFoundException     when file does not exist
-     * @throws  InvalidSyntaxWarning  when file is invalid
+     * @throws  InvalidSyntaxException  when file is invalid
      */
     public static function getDatabase($databaseName)
     {
@@ -138,7 +138,7 @@ class XDDL extends File
      * @param   string  $path  file path
      * @return  DDLDatabase
      * @throws  NotFoundException     when file does not exist
-     * @throws  InvalidSyntaxWarning  when file is invalid
+     * @throws  InvalidSyntaxException  when file is invalid
      */
     private static function _getDatabaseFromPath($path)
     {
@@ -156,7 +156,7 @@ class XDDL extends File
 
         } catch (Exception $e) {
             Log::report("Error in XDDL-file: '$path'.", E_USER_WARNING, $e->getMessage());
-            throw new InvalidSyntaxWarning("Error in XDDL-file.", E_USER_WARNING, $e);
+            throw new InvalidSyntaxException("Error in XDDL-file.", E_USER_WARNING, $e);
         }
         assert('$ddl instanceof DDLDatabase; // Invalid return value. DDLDatabase expected');
         return $ddl;
