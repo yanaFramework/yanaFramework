@@ -26,17 +26,30 @@
  */
 
 /**
- * Warning
+ * File error.
  *
- * This class represents warnings passed to the user.
+ * This is a base class for all errors that have to do with files.
  *
  * @access      public
  * @package     yana
  * @subpackage  error_reporting
  */
-class MissingFieldWarning extends FieldWarning
+class FileError extends Error
 {
-    /* intentionally left blank */
+
+    /**
+     * Set file name.
+     *
+     * @access  public
+     * @param   scalar  $file  path to some file or filename
+     * @return  UploadFailedError
+     */
+    public function setFilename($file)
+    {
+        $this->data['FILE'] = (string) $file;
+        return $this;
+    }
+
 }
 
 ?>

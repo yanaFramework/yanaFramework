@@ -34,9 +34,36 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class InvalidSyntaxWarning extends Warning
+class InvalidSyntaxWarning extends FieldWarning
 {
-    /* intentionally left blank */
+
+    /**
+     * Set invalid value.
+     *
+     * @access  public
+     * @param   mixed $value the invalid value
+     * @return  InvalidCharacterWarning 
+     */
+    public function setValue($value)
+    {
+        $this->data['VALUE'] = print_r($value, true);
+        return $this;
+    }
+
+    /**
+     * Set list of valid characters.
+     *
+     * @access  public
+     * @param   string  $valid  list of valid characters
+     * @return  InvalidCharacterWarning 
+     */
+    public function setValid($valid)
+    {
+        assert('is_string($valid); // Invalid argument $valid: string expected');
+        $this->data['VALID'] = $valid;
+        return $this;
+    }
+
 }
 
 ?>

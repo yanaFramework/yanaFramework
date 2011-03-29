@@ -3809,7 +3809,8 @@ class DbStructure extends SML
                     if ($this->isUnsigned($table, $column) && $row[$column] < 0) {
                         if (isset($GLOBALS['YANA']) && $GLOBALS['YANA']->getPlugins()->getEventType() === 'write') {
                             $code = $this->getDescription($table, $column);
-                            throw new InvalidValueWarning($code);
+                            $error = new InvalidValueWarning();
+                            throw $error->setField($code);
                         }
                         $message = "SYNTAX ERROR: The value '" . $row[$column] . "' for column '{$column}' " .
                             "must not be negative.";

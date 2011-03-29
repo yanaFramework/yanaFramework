@@ -34,7 +34,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class InvalidValueWarning extends Warning
+class InvalidValueWarning extends FieldWarning
 {
     /* intentionally left blank */
 }

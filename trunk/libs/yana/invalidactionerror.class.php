@@ -36,7 +36,20 @@
  */
 class InvalidActionError extends Error
 {
-    /* intentionally left blank */
+
+    /**
+     * Set invalid action name.
+     *
+     * @access  public
+     * @param   scalar  $action  identifier
+     * @return  InvalidActionError
+     */
+    public function setAction($action)
+    {
+        $this->data['ACTION'] = (string) $action;
+        return $this;
+    }
+
 }
 
 ?>

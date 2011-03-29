@@ -321,8 +321,8 @@ class PluginManager extends Singleton implements IsReportable
         $config = $this->getEventConfiguration($event);
         if (!($config instanceof PluginConfigurationMethod)) {
             $error = new InvalidActionError();
-            $error->setData(array('ACTION' => $event));
-            throw new $error;
+            $error->setAction($event);
+            throw $error;
         }
 
         if (empty(self::$_firstEvent)) {

@@ -26,15 +26,15 @@
  */
 
 /**
- * Error
+ * File not writeable error.
  *
- * This class represents errors passed to the user.
+ * Used when a requested file is not writeable.
  *
  * @access      public
  * @package     yana
  * @subpackage  error_reporting
  */
-class NotWriteableError extends Error
+class NotWriteableError extends FileError
 {
     /* intentionally left blank */
 }

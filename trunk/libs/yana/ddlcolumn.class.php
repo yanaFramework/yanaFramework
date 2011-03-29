@@ -1802,7 +1802,8 @@ class DDLColumn extends DDLNamedObject
         // validate pattern
         $pattern = $column->getPattern();
         if (!empty($pattern) && !preg_match("/^$pattern\$/", $value)) {
-            throw new InvalidValueWarning($title);
+            $error = new InvalidValueWarning();
+            throw $error->setField($title);
         }
 
         switch ($type)
@@ -1868,8 +1869,7 @@ class DDLColumn extends DDLNamedObject
                         $maxSize = (int) $column->getSize();
                         if ($maxSize > 0 && $file['size'] > $maxSize) {
                             $alert = new FilesizeError("", UPLOAD_ERR_SIZE);
-                            $alert->setData(array('FILE' => "$filename", 'MAXIMUM' => "$maxSize"));
-                            throw $alert;
+                            throw $alert->setFilename($filename)->setMaxSize($maxSize);
                         }
                         $id = DbBlob::getNewFileId($this);
                         $value['column'] = $column;
@@ -1889,7 +1889,8 @@ class DDLColumn extends DDLNamedObject
             case 'range':
                 $value = filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 if (filter_var($value, FILTER_VALIDATE_FLOAT) === false) {
-                    throw new InvalidValueWarning($title);
+                    $error = new InvalidValueWarning();
+                    throw $error->setField($title);
                 }
                 if (($value <= $column->getRangeMax()) && ($value >= $column->getRangeMin())) {
                     return (float) $value;
@@ -1898,7 +1899,8 @@ class DDLColumn extends DDLNamedObject
             case 'float':
                 $value = filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 if ($column->isUnsigned() && $value < 0) {
-                    throw new InvalidValueWarning($title);
+                    $error = new InvalidValueWarning();
+                    throw $error->setField($title);
                 }
                 if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
                     $precision = (int) $column->getPrecision();
@@ -1923,7 +1925,8 @@ class DDLColumn extends DDLNamedObject
             case 'integer':
                 $value = filter_var($value, FILTER_SANITIZE_NUMBER_INT);
                 if ($column->isUnsigned() && $value < 0) {
-                    throw new InvalidValueWarning($title);
+                    $error = new InvalidValueWarning();
+                    throw $error->setField($title);
                 }
                 if (filter_var($value, FILTER_VALIDATE_INT) !== false) {
                     return untaintInput($value, $type, $length);
@@ -1953,7 +1956,8 @@ class DDLColumn extends DDLNamedObject
                     if (YANA_DB_STRICT) {
                         $enumerationItems = $column->getEnumerationItemNames();
                         if (count(array_diff($value, $enumerationItems)) > 0) {
-                            throw new InvalidValueWarning($title);
+                            $error = new InvalidValueWarning();
+                            throw $error->setField($title);
                         }
                         unset($enumerationItems);
                     }
@@ -2012,7 +2016,8 @@ class DDLColumn extends DDLNamedObject
                 throw new NotImplementedException("Type '$type' not implemented.", E_USER_ERROR);
             break;
         }
-        throw new InvalidValueWarning($title);
+        $error = new InvalidValueWarning();
+        throw $error->setField($title);
     }
 
     /**

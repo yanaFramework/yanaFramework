@@ -477,12 +477,11 @@ class DbBlob extends FileReadonly
      * @static
      * @param   array  $file  item taken from $_FILES array
      * @return  string
-     * @ignore
      */
     private static function _getTempName(array $file)
     {
         // get original filename (for reporting purposes only)
-        $filename = $file['name'];
+        $filename = self::_getOriginalName($file);
         // check error state
         if (!empty($file['error'])) {
             // check type of error
@@ -499,14 +498,12 @@ class DbBlob extends FileReadonly
                         $maxSize = (int) $_POST['MAX_FILE_SIZE'];
                     }
                     $alert = new FilesizeError("", $file['error']);
-                    $alert->setData(array('FILE' => "$filename", 'MAXIMUM' => "$maxSize"));
-                    throw $alert;
+                    throw $alert->setFilename($filename)->setMaxSize($maxSize);
                 break;
 
                 case UPLOAD_ERR_FILE_TYPE:
                     $error = new UploadFailedError("", UPLOAD_ERR_FILE_TYPE);
-                    $error->setData(array('FILE' => "$filename"));
-                    throw $error;
+                    throw $error->setFilename($filename);
                 break;
 
                 case UPLOAD_ERR_INVALID_TARGET:
@@ -522,6 +519,19 @@ class DbBlob extends FileReadonly
         }
 
         return $file['tmp_name'];
+    }
+
+    /**
+     * Get original filename.
+     *
+     * @access  private
+     * @static
+     * @param   array  $file  item taken from $_FILES array
+     * @return  string
+     */
+    private static function _getOriginalName(array $file)
+    {
+        return $file['name'];
     }
 
     /**
@@ -572,13 +582,12 @@ class DbBlob extends FileReadonly
         $dir = self::getDbBlobDir();
 
         $fileTempName = self::_getTempName($file);
-        $filename = $file['name'];
+        $filename = self::_getOriginalName($file);
 
         /* handle errors */
         if (!is_file($fileTempName) || !is_readable($fileTempName)) {
             $error = new UploadFailedError("", E_USER_NOTICE);
-            $error->setData(array('FILE' => $filename));
-            throw $error;
+            throw $error->setFilename($filename);
 
         } /* end error handling */
 
@@ -661,23 +670,20 @@ class DbBlob extends FileReadonly
     public static function uploadImage(array $file, $fileId, array $settings)
     {
         $dir = self::getDbBlobDir();
+        $fileTempName = self::_getTempName($file);
+        $filename = self::_getOriginalName($file);
 
         // check mime-type of uploaded file
         if (!empty($file['type'])) {
             if (!preg_match('/^image\/(\w+)$/s', $file['type'], $mimetype)) {
-                $options = array(
-                    'FILE' => "$filename"
-                    );
                 $error = new InvalidImageError("", UPLOAD_ERR_FILE_TYPE);
-                $error->setData($options);
-                throw $error;
+                throw $error->setFilename($filename);
             }
             $mimetype = $mimetype[1];
         } else {
             $mimetype = 'png';
         }
 
-        $fileTempName = self::_getTempName($file);
         /* name of output files */
         $path = "{$dir}/{$fileId}";
         $thumbnailPath = "{$dir}/thumb.{$fileId}";
@@ -697,7 +703,8 @@ class DbBlob extends FileReadonly
          * check if the "broken" flag has been set
          */
         if ($image->isBroken()) {
-            throw new InvalidImageError("", UPLOAD_ERR_FILE_TYPE);
+            $error = new InvalidImageError("", UPLOAD_ERR_FILE_TYPE);
+            throw $error->setFilename($filename);
         }
         $width = $height = $background = null; // init image settings
         if (!empty($settings['width'])) {
