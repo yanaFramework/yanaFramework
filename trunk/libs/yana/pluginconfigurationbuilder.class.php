@@ -53,6 +53,12 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
     private $_method = null;
 
     /**
+     * @access  private
+     * @var     IsAnnotationParser
+     */
+    private $_parser = null;
+
+    /**
      * Build class object.
      *
      * @access protected
@@ -61,6 +67,8 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
     {
         if ($this->_class) {
             $this->object->setClassName($this->_class->getClassName());
+            $parser = $this->getAnnotationParser();
+            $parser->setText($this->_class->getPageComment());
 
             $titles = array();
             $texts = array();
@@ -71,23 +79,23 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             $this->object->setTitles($titles);
             $this->object->setTexts($texts);
             $this->object->setDirectory($this->_class->getDirectory());
-            $type = $this->_class->getTag(PluginAnnotationEnumeration::TYPE, PluginTypeEnumeration::DEFAULT_SETTING);
+            $type = $parser->getTag(PluginAnnotationEnumeration::TYPE, PluginTypeEnumeration::DEFAULT_SETTING);
             $this->object->setType($type);
-            $this->object->setAuthors($this->_class->getTags(PluginAnnotationEnumeration::AUTHOR));
-            $priorityString = $this->_class->getTag(PluginAnnotationEnumeration::PRIORITY);
+            $this->object->setAuthors($parser->getTags(PluginAnnotationEnumeration::AUTHOR));
+            $priorityString = $parser->getTag(PluginAnnotationEnumeration::PRIORITY);
             $this->object->setPriority(PluginPriorityEnumeration::fromString($priorityString));
-            $this->object->setGroup(mb_strtolower($this->_class->getTag(PluginAnnotationEnumeration::GROUP)));
-            $this->object->setParent($this->_class->getTag(PluginAnnotationEnumeration::PARENT));
-            $this->object->setDependencies($this->_class->getTags(PluginAnnotationEnumeration::REQUIRES));
-            $this->object->setLicense($this->_class->getTag(PluginAnnotationEnumeration::LICENSE));
-            $this->object->setUrl($this->_class->getTag(PluginAnnotationEnumeration::URL));
-            $this->object->setVersion($this->_class->getTag(PluginAnnotationEnumeration::VERSION));
+            $this->object->setGroup(mb_strtolower($parser->getTag(PluginAnnotationEnumeration::GROUP)));
+            $this->object->setParent($parser->getTag(PluginAnnotationEnumeration::PARENT));
+            $this->object->setDependencies($parser->getTags(PluginAnnotationEnumeration::REQUIRES));
+            $this->object->setLicense($parser->getTag(PluginAnnotationEnumeration::LICENSE));
+            $this->object->setUrl($parser->getTag(PluginAnnotationEnumeration::URL));
+            $this->object->setVersion($parser->getTag(PluginAnnotationEnumeration::VERSION));
             $this->object->setLastModified($this->_class->getLastModified());
-            $activityString = $this->_class->getTag(PluginAnnotationEnumeration::ACTIVE, '0');
+            $activityString = $parser->getTag(PluginAnnotationEnumeration::ACTIVE, '0');
             $this->object->setActive(PluginActivityEnumeration::getActiveState($activityString));
             assert('!isset($tags); // Cannot redeclare var $tags');
             assert('!isset($tag); // Cannot redeclare var $tag');
-            $tags = $this->_class->getTags(PluginAnnotationEnumeration::MENU);
+            $tags = $parser->getTags(PluginAnnotationEnumeration::MENU);
             foreach ($tags as $tag) {
                 assert('!isset($menu); // Cannot redeclare var $menu');
                 $menu = new PluginMenuEntry();
@@ -104,7 +112,8 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
 
             foreach ($this->_class->getMethods(ReflectionProperty::IS_PUBLIC) as $method)
             {
-                if (!$method->getTag(PluginAnnotationEnumeration::IGNORE)) {
+                $parser->setText($method->getDocComment());
+                if (!$parser->getTag(PluginAnnotationEnumeration::IGNORE)) {
                     $this->_method = $method;
                     $this->buildMethod();
                 }
@@ -122,22 +131,24 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
     {
         $method = new PluginConfigurationMethod();
         if ($this->_method) {
+            $parser = $this->getAnnotationParser();
+
             $classPath = $this->_class->getDirectory();
             assert(is_dir($classPath));
             $method->setClassName($this->_method->getClassName());
             $method->setMethodName($this->_method->getName());
 
             $typeClassTag = $this->object->getType();
-            $method->setType(mb_strtolower($this->_method->getTag(PluginAnnotationEnumeration::TYPE, $typeClassTag)));
+            $method->setType(mb_strtolower($parser->getTag(PluginAnnotationEnumeration::TYPE, $typeClassTag)));
             $method->addPath($classPath);
-            $method->setTitle($this->_method->getTag(PluginAnnotationEnumeration::TITLE));
-            $method->setReturn($this->_method->getTag(PluginAnnotationEnumeration::RETURN_VALUE));
-            $method->setTemplate(mb_strtolower($this->_method->getTag(PluginAnnotationEnumeration::TEMPLATE, 'null')));
+            $method->setTitle($parser->getTag(PluginAnnotationEnumeration::TITLE));
+            $method->setReturn($parser->getTag(PluginAnnotationEnumeration::RETURN_VALUE));
+            $method->setTemplate(mb_strtolower($parser->getTag(PluginAnnotationEnumeration::TEMPLATE, 'null')));
             assert('!isset($users); // Cannot redeclare var $users');
             $users = array();
             assert('!isset($item); // Cannot redeclare var $item');
             assert('!isset($tag); // Cannot redeclare var $tag');
-            foreach ($this->_method->getTags(PluginAnnotationEnumeration::USER, array()) as $tag)
+            foreach ($parser->getTags(PluginAnnotationEnumeration::USER, array()) as $tag)
             {
                 $user = new PluginUserLevel();
                 if (isset($tag[PluginAnnotationEnumeration::GROUP])) {
@@ -154,7 +165,7 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             unset($item, $tag);
             $method->setUserLevels($users);
             assert('!isset($tag); // Cannot redeclare var $tag');
-            $tag = $this->_method->getTag(PluginAnnotationEnumeration::MENU);
+            $tag = $parser->getTag(PluginAnnotationEnumeration::MENU);
             if (!empty($tag)) {
                 assert('!isset($menu); // Cannot redeclare var $menu');
                 $menu = new PluginMenuEntry();
@@ -167,7 +178,7 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
                 $method->setMenu($menu);
                 unset($menu);
             }
-            $tag = $this->_method->getTag(PluginAnnotationEnumeration::ONERROR);
+            $tag = $parser->getTag(PluginAnnotationEnumeration::ONERROR);
             if (!empty($tag)) {
                 assert('!isset($event); // Cannot redeclare var $event');
                 $event = new PluginEventRoute();
@@ -180,7 +191,7 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
                 $method->setOnError($event);
                 unset($event);
             }
-            $tag = $this->_method->getTag(PluginAnnotationEnumeration::ONSUCCESS);
+            $tag = $parser->getTag(PluginAnnotationEnumeration::ONSUCCESS);
             if (!empty($tag)) {
                 assert('!isset($event); // Cannot redeclare var $event');
                 $event = new PluginEventRoute();
@@ -194,18 +205,18 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
                 unset($event);
             }
             unset($tag);
-            $method->setSafeMode($this->_method->getTag(PluginAnnotationEnumeration::SAFEMODE));
+            $method->setSafeMode($parser->getTag(PluginAnnotationEnumeration::SAFEMODE));
             if ($this->_class) {
-                $method->setGroup(mb_strtolower($this->_class->getTag(PluginAnnotationEnumeration::GROUP)));
+                $method->setGroup($this->object->getGroup());
             }
-            $method->setOverwrite((bool) $this->_method->getTag(PluginAnnotationEnumeration::OVERWRITE, '0'));
-            $method->setSubscribe((bool) $this->_method->getTag(PluginAnnotationEnumeration::SUBSCRIBE, '0'));
-            $method->setLanguages($this->_method->getTags(PluginAnnotationEnumeration::LANGUAGE));
+            $method->setOverwrite((bool) $parser->getTag(PluginAnnotationEnumeration::OVERWRITE, '0'));
+            $method->setSubscribe((bool) $parser->getTag(PluginAnnotationEnumeration::SUBSCRIBE, '0'));
+            $method->setLanguages($parser->getTags(PluginAnnotationEnumeration::LANGUAGE));
             // process and add scripts
             assert('!isset($scripts); // Cannot redeclare var $scripts');
             $scripts = array();
             assert('!isset($script); // Cannot redeclare var $script');
-            foreach ($this->_method->getTags(PluginAnnotationEnumeration::SCRIPT, array()) as $script)
+            foreach ($parser->getTags(PluginAnnotationEnumeration::SCRIPT, array()) as $script)
             {
                 if (!is_string($script)) {
                     $message = 'Syntax error in @script: ' . $this->className . '::' . $this->methodName . '()';
@@ -220,7 +231,7 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             assert('!isset($styles); // Cannot redeclare var $scripts');
             $styles = array();
             assert('!isset($style); // Cannot redeclare var $style');
-            foreach ($this->_method->getTags(PluginAnnotationEnumeration::STYLE, array()) as $style)
+            foreach ($parser->getTags(PluginAnnotationEnumeration::STYLE, array()) as $style)
             {
                 if (!is_string($style)) {
                     $message = 'Syntax error in @style: ' .$this->className . '::' . $this->methodName . '()';
@@ -233,7 +244,7 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             unset($styles, $style);
             // process template
             assert('!isset($template); // Cannot redeclare var $template');
-            $template = $classPath . "/" . $this->_method->getTag(PluginAnnotationEnumeration::TEMPLATE);
+            $template = $classPath . "/" . $parser->getTag(PluginAnnotationEnumeration::TEMPLATE);
             if (is_file($template)) {
                 $method->setTemplate($template);
             }
@@ -245,7 +256,7 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             assert('!isset($match); // Cannot redeclare var $match');
             assert('!isset($name); // Cannot redeclare var $name');
             assert('!isset($type); // Cannot redeclare var $type');
-            foreach ($this->_method->getTags(PluginAnnotationEnumeration::PARAM, array()) as $param)
+            foreach ($parser->getTags(PluginAnnotationEnumeration::PARAM, array()) as $param)
             {
                 if (!is_string($param)) {
                     $message = 'Syntax error in @param: ' .$this->className . '::' . $this->methodName . '()';
@@ -281,12 +292,45 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
     /**
      * Build from PHP reflection.
      *
-     * @access public
-     * @param  PluginReflectionClass  $pluginClass  base class description
+     * @access  public
+     * @param   PluginReflectionClass  $pluginClass  base class description
+     * @return  PluginConfigurationBuilder 
      */
     public function setReflection(PluginReflectionClass $pluginClass)
     {
         $this->_class = $pluginClass;
+        return $this;
+    }
+
+    /**
+     * Select annotation parser to use.
+     *
+     * Defaults to {@see PluginAnnotationParser}.
+     *
+     * @access  public
+     * @param   IsAnnotationParser  $parser  used to parse the class for annotations.
+     * @return  PluginConfigurationBuilder 
+     */
+    public function setAnnotationParser(IsAnnotationParser $parser)
+    {
+        $this->_parser = $parser;
+        return $this;
+    }
+
+    /**
+     * Get annotation parser to use.
+     *
+     * Defaults to {@see PluginAnnotationParser}.
+     *
+     * @access  protected
+     * @return  IsAnnotationParser 
+     */
+    protected function getAnnotationParser()
+    {
+        if (!isset($this->_parser)) {
+            $this->_parser = new PluginAnnotationParser();
+        }
+        return $this->_parser;
     }
 
     /**
@@ -299,7 +343,9 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
      */
     private function _getTranslation(PluginReflectionClass $pluginClass, array &$title, array &$text)
     {
-        $translation = $pluginClass->getTag(PluginAnnotationEnumeration::TRANSLATION);
+        $parser = $this->getAnnotationParser();
+        $parser->setText($pluginClass->getPageComment());
+        $translation = $parser->getTag(PluginAnnotationEnumeration::TRANSLATION);
         $title = array();
         $text = array();
 
