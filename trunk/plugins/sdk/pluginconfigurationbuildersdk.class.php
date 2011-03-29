@@ -138,6 +138,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
      * @access  public
      * @param   string  $image  image path
      * @return  PluginConfigurationBuilderSdk
+     * @throws  InvalidSyntaxWarning  when the image has no valid type
      */
     public function setImage($image)
     {
@@ -395,13 +396,13 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
             if (isset($file['src'])) {
                 if (!copy($file['src'], $file['dest'])) {
                     $error = new NotWriteableError();
-                    $error->setData(array('FILE' => $file['dest']));
+                    $error->setFilename($file['dest']);
                     throw $error;
                 }
             } elseif (isset($file['content'])) {
                 if (file_put_contents($file['dest'], $file['content']) === false) {
                     $error = new NotWriteableError();
-                    $error->setData(array('FILE' => $file['dest']));
+                    $error->setFilename($file['dest']);
                     throw $error;
                 }
             }
@@ -424,7 +425,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
         $phpFile->setContent($this->getClassSkeleton());
         if (!$phpFile->write()) {
             $error = new NotWriteableError();
-            $error->setData(array('FILE' => $phpFile->getPath()));
+            $error->setFilename($phpFile->getPath());
             throw $error;
         }
 
@@ -434,7 +435,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
         $apiFile->setContent($this->getJsApi());
         if (!$apiFile->write()) {
             $error = new NotWriteableError();
-            $error->setData(array('FILE' => $apiFile->getPath()));
+            $error->setFilename($apiFile->getPath());
             throw $error;
         }
 
@@ -444,7 +445,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
         $xliffFile->setContent("<?xml version=\"1.0\"?>\n" . $this->getXliff());
         if (!$xliffFile->write()) {
             $error = new NotWriteableError();
-            $error->setData(array('FILE' => $xliffFile->getPath()));
+            $error->setFilename($xliffFile->getPath());
             throw $error;
         }
         $xliffFile = new TextFile($deDir->getPath() . '/' . $pluginId . '.xlf');
@@ -452,7 +453,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
         $xliffFile->setContent("<?xml version=\"1.0\"?>\n" . $this->getXliff("en", "de"));
         if (!$xliffFile->write()) {
             $error = new NotWriteableError();
-            $error->setData(array('FILE' => $xliffFile->getPath()));
+            $error->setFilename($xliffFile->getPath());
             throw $error;
         }
     }

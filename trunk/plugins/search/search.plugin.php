@@ -527,21 +527,23 @@ class plugin_search extends StdClass implements IsPlugin
          * 3) check names of uploaded files
          */
         if ($_FILES['documents_dat']['name'] !== 'documents.dat') {
-            $data = 'documents.dat = "' . $_FILES['documents_dat']['name'] . '"';
-            throw new InvalidValueWarning($data);
+            $error = new InvalidValueWarning();
+            throw $error->setField('documents.dat = "' . $_FILES['documents_dat']['name'] . '"');
         }
         if ($_FILES['keywords_dat']['name'] !== 'keywords.dat') {
-            $data = '"keywords.dat = "' . $_FILES['keywords_dat']['name'] . '"';
-            throw new InvalidValueWarning($data);
+            $error = new InvalidValueWarning();
+            throw $error->setField('"keywords.dat = "' . $_FILES['keywords_dat']['name'] . '"');
         }
         /*
          * 4) move uploaded files to destination
          */
         if (!move_uploaded_file($_FILES['documents_dat']['tmp_name'], $documents_dat)) {
-            throw new InvalidValueWarning('"documents.dat"');
+            $error = new InvalidValueWarning();
+            throw $error->setField('"documents.dat"');
         }
         if (!move_uploaded_file($_FILES['keywords_dat']['tmp_name'], $keywords_dat)) {
-            throw new InvalidValueWarning('"keywords.dat"');
+            $error = new InvalidValueWarning();
+            throw $error->setField('"keywords.dat"');
         }
         return true;
     }

@@ -511,8 +511,8 @@ class plugin_db_admin extends StdClass implements IsPlugin
             case 'IFX':
             case 'SYBASE':
             default:
-                throw new InvalidValueWarning('DBMS=' . $dbms);
-            break;
+                $error = new InvalidValueWarning();
+                throw $error->setField('DBMS=' . $dbms);
         }
 
         foreach ($list as $dbName)
@@ -543,8 +543,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
             return true;
         } else {
             $error = new FileNotCreatedError();
-            $error->setData(array('FILE' => $filename));
-            throw $error;
+            throw $error->setFilename($filename);
         }
     }
 
