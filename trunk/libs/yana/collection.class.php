@@ -103,7 +103,7 @@ class Collection extends Object implements Iterator, Countable, ArrayAccess
      */
     public function valid()
     {
-        return $this->offsetExists(key($this->_items));
+        return !is_null(key($this->_items));
     }
 
     /**
