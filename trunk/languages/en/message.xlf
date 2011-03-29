@@ -192,7 +192,7 @@
                     <source/>
                 </trans-unit>
                 <trans-unit id="MissingFieldWarning.p">
-                    <target>The following mandatory information is missing: <bpt id="b1">&lt;b&gt;</bpt>{$MESSAGE}<ept id="b1">&lt;/b&gt;</ept></target>
+                    <target>The following mandatory information is missing: <bpt id="b1">&lt;b&gt;</bpt>{$FIELD}<ept id="b1">&lt;/b&gt;</ept></target>
                     <source/>
                 </trans-unit>
             </group>
@@ -202,7 +202,7 @@
                     <source/>
                 </trans-unit>
                 <trans-unit id="InvalidValueWarning.p">
-                    <target>The following fields contain invalid input: <bpt id="b1">&lt;b&gt;</bpt>{$MESSAGE}<ept id="b1">&lt;/b&gt;</ept></target>
+                    <target>The following fields contain invalid input: <bpt id="b1">&lt;b&gt;</bpt>{$FIELD}<ept id="b1">&lt;/b&gt;</ept></target>
                     <source/>
                 </trans-unit>
             </group>
