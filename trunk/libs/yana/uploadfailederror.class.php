@@ -34,7 +34,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class UploadFailedError extends Error
+class UploadFailedError extends FileError
 {
     /* intentionally left blank */
 }
