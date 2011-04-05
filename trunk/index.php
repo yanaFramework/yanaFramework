@@ -23,7 +23,7 @@
  * @link       http://www.yanaframework.net
  * @license    http://www.gnu.org/licenses/gpl.txt
  * @package    yana
- * @copyright  2009 Thomas Meyer
+ * @copyright  2011 Thomas Meyer
  */
 /**#@+
  * @ignore
