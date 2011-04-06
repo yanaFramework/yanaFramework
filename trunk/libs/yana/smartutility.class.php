@@ -76,6 +76,7 @@ class SmartUtility extends Utility
         $ldim = YANA_LEFT_DELIMITER . '$';
         $rdim = YANA_RIGHT_DELIMITER;
 
+        $match = array();
         if (preg_match_all("/$ldimRegExp([\w_\.]+?)$rdimRegExp/", $template, $match) > 0) {
             $match = $match[1];
             foreach ($match as $currentMatch)
@@ -237,6 +238,7 @@ class SmartUtility extends Utility
         }
 
         // get time-format from profile settings
+        $timeformat = array('PHP' => 'j.n.Y', 'JS' => 'j.n.Y');
         if (isset($YANA)) {
             $profileTimeFormat = $YANA->getVar("PROFILE.TIMEFORMAT");
             if (!is_numeric($profileTimeFormat)) {
@@ -245,8 +247,6 @@ class SmartUtility extends Utility
             $timeformat = $YANA->getVar("DATE.".$profileTimeFormat);
             assert('is_array($timeformat); // Time-format is expected to be an array.');
             unset($profileTimeFormat);
-        } else {
-            $timeformat = array('PHP' => 'j.n.Y', 'JS' => 'j.n.Y');
         }
 
         $script = "";
@@ -326,6 +326,7 @@ class SmartUtility extends Utility
         /**
          * 1) encode URL
          */
+        $m = array();
         preg_match_all("/(&|^)(.*)=(.*)(&|$)/U", $string, $m);
         for ($i = 0; $i < count($m[0]); $i++)
         {
@@ -500,11 +501,13 @@ class SmartUtility extends Utility
          */
         if (!is_string($txt)) {
             return $txt;
+        }
 
         /*
          * if not necessary -> skip the whole section for better performance
          */
-        } elseif (mb_strpos($txt, '[') !== false && preg_match_all('/(?<=\[)\w+/', $txt, $machtedTags)) {
+        $machtedTags = array();
+        if (mb_strpos($txt, '[') !== false && preg_match_all('/(?<=\[)\w+/', $txt, $machtedTags)) {
 
             $offset = mb_strpos($txt, '[');
 
@@ -545,6 +548,7 @@ class SmartUtility extends Utility
                      */
                     case 'php':
                         if (YANA_EMBTAG_ALLOW_PHP) {
+                            $m = array();
                             while (preg_match('/\[php\](.*)(\[\/php\]|$)/Us', $txt, $m))
                             {
                                 /*
@@ -601,6 +605,7 @@ class SmartUtility extends Utility
                         }
                         $pattern1 = "/\[mail=(.*)\](.*)\[\/mail\]/Usi";
                         $pattern2 = "/\[mail\](.*)\[\/mail\]/Ui";
+                        $matches1 = $matches2 = array();
                         while (preg_match($pattern1, $txt, $matches1) || preg_match($pattern2, $txt, $matches2))
                         {
                             if (!empty($matches1)) {
@@ -1624,6 +1629,10 @@ class SmartUtility extends Utility
      */
     public static function printUL2(array $array, $keys = false, $allowHtml = false, $isRoot = true)
     {
+        /* @var $dir string */
+        $dir = "";
+        /* @var $ul string */
+        $ul = "";
         if (isset($GLOBALS['YANA'])) {
             $dir = $GLOBALS['YANA']->getVar('DATADIR');
         } else {
@@ -1950,15 +1959,13 @@ class SmartUtility extends Utility
 
         $listOfTags = array('b','i','u','h','emp','c','small','big','hide',
                             'code','img','url','mail','color','mark','smilies');
+        assert('isset($params["show"]) && is_string($params["show"]); // Invalid argument "show": string expected');
+        assert('isset($params["hide"]) && is_string($params["hide"]); // Invalid argument "hide": string expected');
+        $show = array();
+        $hide = array();
 
         /* Argument 'show' */
-        if (isset($params['show']) && !is_string($params['show'])) {
-            $message = sprintf(YANA_ERROR_WRONG_ARGUMENT, 'show in '.__FUNCTION__.
-                '()', 'String', gettype($params['show']));
-            trigger_error($message, E_USER_WARNING);
-            return "";
-
-        } elseif (isset($params['show']) && !preg_match('/^(\w+|\||-)(,(\w+|\||-))*$/is', $params['show'])) {
+        if (isset($params['show']) && !preg_match('/^(\w+|\||-)(,(\w+|\||-))*$/is', $params['show'])) {
             $message = "Argument 'show' contains illegal characters in function ".__FUNCTION__."().";
             trigger_error($message, E_USER_WARNING);
             return "";
@@ -1972,13 +1979,7 @@ class SmartUtility extends Utility
         }
 
         /* Argument 'hide' */
-        if (!empty($params['hide']) && !is_string($params['hide'])) {
-            $message = sprintf(YANA_ERROR_WRONG_ARGUMENT, 'hide in '.__FUNCTION__.
-                '()', 'String', gettype($params['hide']));
-            trigger_error($message, E_USER_WARNING);
-            return "";
-
-        } elseif (!empty($params['hide']) && !preg_match('/^[\w,]+$/is', $params['hide'])) {
+        if (!empty($params['hide']) && !preg_match('/^[\w,]+$/is', $params['hide'])) {
             $message = "Argument 'hide' contains illegal characters for function ".__FUNCTION__."().";
             trigger_error($message, E_USER_WARNING);
             return "";
@@ -2305,6 +2306,7 @@ class SmartUtility extends Utility
      */
     public static function import(array $params)
     {
+        $filename = '';
         if (isset($params['file'])) {
 
             assert('$params["file"]; // Wrong argument type argument 1. String expected');
@@ -2346,25 +2348,24 @@ class SmartUtility extends Utility
      */
     public static function captcha(array $params)
     {
+        $id = '';
         if (isset($params['id']) && is_string($params['id'])) {
             $id = ' id="' . htmlspecialchars($params['id'], ENT_COMPAT, 'UTF-8') . '"';
-        } else {
-            $id = '';
         }
         $index = rand(1, 9);
 
         global $YANA;
+        $title = "";
         if (isset($YANA)) {
             $title = $YANA->getLanguage()->getVar('SECURITY_IMAGE.DESCRIPTION');
-        } else {
-            $title = "";
         }
 
         return '<input type="hidden" name="security_image_index" value="' . $index . '"/>' .
-        '<img alt="" hspace="5" src=' .
-        self::href("action=security_get_image&security_image_index={$index}") . '/>' .
-        '<input maxlength="5" size="5"' . $id . ' title="' . $title . '" type="text" name="security_image"/>';
+            '<img alt="" hspace="5" src=' .
+            self::href("action=security_get_image&security_image_index={$index}") . '/>' .
+            '<input maxlength="5" size="5"' . $id . ' title="' . $title . '" type="text" name="security_image"/>';
     }
+
 }
 
 ?>
