@@ -390,7 +390,7 @@ class plugin_calendar extends StdClass implements IsPlugin
         // load the calendar model content
         $content = file_get_contents($path);
         if (!empty($content)) {
-            $newCalendarXML = new SimpleXMLElement($content);
+            $newCalendarXML = new \SimpleXMLElement($content);
             $xmlCalendarModel = $newCalendarXML->asXML();
         } else {
             return false;
@@ -883,7 +883,6 @@ class plugin_calendar extends StdClass implements IsPlugin
         if ($xml == false) {
             return false;
         }
-        //$content = new SimpleXMLElement($xml);
         $content = $xml;
         $writeXML = self::writeXml($content, $filename);
         if ($writeXML) {
@@ -1306,7 +1305,7 @@ class plugin_calendar extends StdClass implements IsPlugin
             return false;
         }
 
-        $xmlRoot = new SimpleXMLElement($xmlContent);
+        $xmlRoot = new \SimpleXMLElement($xmlContent);
         $count = 0;
         $string = null;
         $array= array();

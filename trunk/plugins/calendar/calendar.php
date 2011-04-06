@@ -45,34 +45,35 @@ class Calendar extends FileSystemResource
      * @ignore
      */
 
-    /* @var string           */ protected        $name         = "";
-    /* @var string           */ protected        $id           = "";
-    /* @var SimpleXMLElement */ protected        $content      = null;
-    /* @var array            */ protected        $vevents      = null;
-    /* @var array            */ protected        $eventList    = null;
-    /* @var string           */ protected        $owner        = "";
-    /* @var bool             */ protected        $readonly     = false;
-    /* @var string           */ protected        $className    = '';
-    /* @var SimpleXMLElement */ protected        $eventByID    = null;
+    /* @var string            */ protected $name      = "";
+    /* @var string            */ protected $id        = "";
+    /* @var \SimpleXMLElement */ protected $content   = null;
+    /* @var array             */ protected $vevents   = null;
+    /* @var array             */ protected $eventList = null;
+    /* @var string            */ protected $owner     = "";
+    /* @var bool              */ protected $readonly  = false;
+    /* @var string            */ protected $className = '';
+    /* @var \SimpleXMLElement */ protected $eventByID = null;
 
-    /* @var array            */ private   static $categories   = array();
+    /* @var array             */ private static $categories = array();
 
-    /* @var array    */
+    /* @var array */
     protected static $eventKeys = array(
-        'uid'           =>  'id',
-        'summary'       =>  'title',
-        'location'      =>  'location',
-        'created'       =>  'created',
-        'dtstart'       =>  'start',
-        'dtend'         =>  'end',
-        'last-modified' =>  'last-modified',
-        'dtstamp'       =>  'dtstmap',
-        'exdate'        =>  'exdate',
-        'categories'    =>  'categories',
-        'description'   =>  'description',
-        'rrule'         =>  'rrule');
+        'uid' => 'id',
+        'summary' => 'title',
+        'location' => 'location',
+        'created' => 'created',
+        'dtstart' => 'start',
+        'dtend' => 'end',
+        'last-modified' => 'last-modified',
+        'dtstamp' => 'dtstmap',
+        'exdate' => 'exdate',
+        'categories' => 'categories',
+        'description' => 'description',
+        'rrule' => 'rrule'
+    );
 
-    /* @var array    */
+    /* @var array */
     protected static $additionalEventKeys = array();
 
     /**#@-*/
@@ -142,7 +143,7 @@ class Calendar extends FileSystemResource
      * Use this function only if u want the events as readonly
      *
      * @access  public
-     * @param   bool   $readonly   set true if the events should be only for read
+     * @param   bool   $readonly  set to true if the events should be only for read
      * @return  bool
      */
     public function setDisableEvents($readonly = false)
@@ -207,7 +208,7 @@ class Calendar extends FileSystemResource
      *
      * @access  public
      * @static
-     * @return array
+     * @return  array
      */
     public static function getCategories()
     {
@@ -243,11 +244,10 @@ class Calendar extends FileSystemResource
     public function getOwner()
     {
         if (empty($this->owner)) {
-            $user = YanaUser::getUserName();
+            return YanaUser::getUserName();
         } else {
-            $user = $this->owner;
+            return $this->owner;
         }
-        return $user;
     }
 
     /**
@@ -270,8 +270,8 @@ class Calendar extends FileSystemResource
      *
      * This function get the name of the current calendar
      *
-     * @access      public
-     * @return      string
+     * @access  public
+     * @return  string
      */
     public function getName()
     {
@@ -286,9 +286,9 @@ class Calendar extends FileSystemResource
      * This steep is setting the recurencerule object and calculate the additional keys when they set.
      *
      * @access  private
-     * @param   SimpleXMLElement   $xml  event dataset
+     * @param   \SimpleXMLElement  $xml  event dataset
      */
-    private function _addEventFromXML(SimpleXMLElement $xml)
+    private function _addEventFromXML(\SimpleXMLElement $xml)
     {
         $event = array();
         $exdate = array();
@@ -315,6 +315,7 @@ class Calendar extends FileSystemResource
                 $check = $xml->x;
                 $additionalKeys = array_flip($replaceKey['event']);
                 if (!empty($check)) {
+                    $name = "";
                     foreach ($xml->x as $exKey => $attr)
                     {
                         $name = (string) $attr->attributes()->name;
@@ -368,15 +369,15 @@ class Calendar extends FileSystemResource
      *
      * This function get all Events
      *
-     * @access      public
-     * @return      array
+     * @access  public
+     * @return  array
      */
     public function getEvents()
     {
         if (!isset($this->vevents)) {
             $this->vevents = array();
             $xml = $this->getContent();
-            if ($xml instanceof SimpleXMLElement) {
+            if ($xml instanceof \SimpleXMLElement) {
                 foreach ($xml->xpath('//vevent') as $vEvent)
                 {
                     $this->_addEventFromXML($vEvent);
@@ -391,9 +392,9 @@ class Calendar extends FileSystemResource
      *
      * This function get all merged Events
      *
-     * @access      public
+     * @access  public
      * @static
-     * @return      array
+     * @return  array
      */
     public function getMergedEvents()
     {
@@ -412,8 +413,8 @@ class Calendar extends FileSystemResource
      *
      * This function get the content of the current calendar.
      *
-     * @access      protected
-     * @return      SimpleXmlElement
+     * @access  protected
+     * @return  \SimpleXmlElement
      */
     protected function getContent()
     {
@@ -429,7 +430,7 @@ class Calendar extends FileSystemResource
      *
      * This function retrieves and returns all vendor specific, non-standard calendar extension settings.
      * (In ICal these are marked by a "X" character, followed by a vendor specific name.)
-     * If there are none, the returned array will be empty. Otherwise the list will contain SimpleXMLElements,
+     * If there are none, the returned array will be empty. Otherwise the list will contain \SimpleXMLElements,
      * each with an attribute "name" and a value.
      *
      * @access  public
@@ -729,7 +730,7 @@ class Calendar extends FileSystemResource
         {
             $removeID = (string) $id->uid;
             if ($removeID === $eventID) {
-                $dom = dom_import_simplexml($id);
+                $dom = \dom_import_simplexml($id);
                 $dom->parentNode->removeChild($dom);
             }
         }
@@ -791,11 +792,11 @@ class Calendar extends FileSystemResource
      * This function insert a event into calendar.
      * This function is called when the current user update an event for more users.
      *
-     * @access      public
-     * @param       SimpleXMLElement  $content  xml content for insert
-     * @return      bool
+     * @access  public
+     * @param   \SimpleXMLElement  $content  xml content for insert
+     * @return  bool
      */
-    public function insertEvent(SimpleXMLElement $content)
+    public function insertEvent(\SimpleXMLElement $content)
     {
 
         $calendar = $this->getContent();
@@ -1186,7 +1187,7 @@ class Calendar extends FileSystemResource
                                         {
                                             $existNode = (string)$xEvent->attributes()->name;
                                             if ($existNode == $key) {
-                                                $dom=dom_import_simplexml($xEvent);
+                                                $dom = \dom_import_simplexml($xEvent);
                                                 $dom->parentNode->removeChild($dom);
                                                 $ext = $event->addChild('x', $item);
                                                 $ext->addAttribute('name', $key);
@@ -1319,15 +1320,13 @@ class Calendar extends FileSystemResource
         $year = (int) $array['year'];
         $month = (int) $array['month'];
         $day = (int) $array['day'] + $dayOffset;
+        $hour = 0;
+            $minute = 0;
         if (!empty($array['hour'])) {
             $hour = (int) $array['hour'];
-        } else {
-            $hour = 0;
         }
         if (!empty($array['minute'])) {
             $minute = (int) $array['minute'] + $minuteOffset;
-        } else {
-            $minute = 0;
         }
         return mktime($hour, $minute, 0, $month, $day, $year);
     }
@@ -1337,11 +1336,11 @@ class Calendar extends FileSystemResource
      *
      * @access  private
      * @static
-     * @param   SimpleXMLElement  $event  event node
-     * @param   string            $name   name of date node
-     * @param   mixed             $value  date value to parse
+     * @param   \SimpleXMLElement  $event  event node
+     * @param   string             $name   name of date node
+     * @param   mixed              $value  date value to parse
      */
-    private static function _addDateNode(SimpleXMLElement $event, $name, $value)
+    private static function _addDateNode(\SimpleXMLElement $event, $name, $value)
     {
         if (is_array($value)) {
             $value = self::_arrayToTime($value);
@@ -1370,6 +1369,7 @@ class Calendar extends FileSystemResource
                 $value = date('Ymd\THis\Z', $value);
             }
         }
+        $dateNode = null;
         if (!isset($event->$name)) {
             $dateNode = $event->addChild($name, $value);
         } else {
@@ -1391,10 +1391,10 @@ class Calendar extends FileSystemResource
      *
      * @access  private
      * @static
-     * @param  SimpleXmlElement  $xml   calendar node
-     * @param  array             $data  event information
+     * @param  \SimpleXmlElement  $xml   calendar node
+     * @param   array             $data  event information
      */
-    private static function _addEventToXML(SimpleXmlElement $xml, array $data)
+    private static function _addEventToXML(\SimpleXmlElement $xml, array $data)
     {
         $eventNode = $xml->vcalendar->addChild('vevent');
 
@@ -1429,31 +1429,30 @@ class Calendar extends FileSystemResource
      *
      * This function get the current start and end date of the event
      *
-     * @access      public
-     * @param       string   $id  event ID
-     * @return      array
+     * @access  public
+     * @param   string  $uid  event ID
+     * @return  array
      */
-    public function getTimeByEventID($id)
+    public function getTimeByEventID($uid)
     {
-        $uid = $id;
         // load the current calendar file
         $path = $this->getPath();
         $xmlFile = new TextFile($path);
         $xmlFile->read();
         $content = $xmlFile->getContent();
-        $xml = simplexml_load_string($content);
+        $xml = \simplexml_load_string($content);
         $result = array();
         foreach ($xml->xpath('//vevent') as $event)
         {
             $currentID = (string) $event->uid;
             if ($currentID === $uid) {
-                $result['start'] = (string)$event->dtstart;
+                $result['start'] = (string) $event->dtstart;
                 $result['end'] = (string) $event->dtend;
-                if (!preg_match('/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(\w*)/', $result['start'], $sTime)) {
-                    $result['start'] =$result['start'].'T000000';
+                if (!preg_match('/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(\w*)/', $result['start'])) {
+                    $result['start'] .= 'T000000';
                 }
-                if (!preg_match('/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(\w*)/', $result['end'], $eTime)) {
-                    $result['end'] =$result['end'].'T000000';
+                if (!preg_match('/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(\w*)/', $result['end'])) {
+                    $result['end'] .= 'T000000';
                 }
             }
         }
