@@ -571,6 +571,7 @@ class SmartTemplate extends Object
         $registry = Registry::getGlobalInstance();
 
         /* 1) make sure .htaccess does'nt get deleted */
+        $dir = '';
         if (isset($registry)) {
             $dir = $registry->getVar('TEMPDIR');
         } else {
@@ -784,21 +785,21 @@ class SmartTemplate extends Object
         if (empty(self::$cacheId)) {
 
             // get query string (with session-id stripped)
+            $queryString = "";
             if (isset($_SERVER['QUERY_STRING'])) {
                 $query = $_REQUEST;
                 ksort($query);
-                assert('!isset($queryString); /* Cannot redeclare variable $queryString */');
                 unset($query[YANA_SESSION_NAME]);
                 assert('is_array($query); /* Array expected: $query */');
                 $queryString = http_build_query($query);
                 unset($query);
-            } else {
-                $queryString = "";
             }
 
             // build id
+            $id = "";
             if (!empty($queryString)) {
                 // get language
+                $language = "";
                 if (isset($GLOBALS['YANA'])) {
                     $language = $GLOBALS['YANA']->getLanguage()->getLocale();
                 } else {
