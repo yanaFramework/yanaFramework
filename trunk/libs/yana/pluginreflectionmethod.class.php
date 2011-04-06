@@ -38,7 +38,7 @@
  *
  * @ignore
  */
-class PluginReflectionMethod extends ReflectionMethod
+class PluginReflectionMethod extends \ReflectionMethod
 {
 
     /**#@+

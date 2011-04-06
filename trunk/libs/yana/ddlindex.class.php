@@ -380,17 +380,16 @@ class DDLIndex extends DDLObject
      *
      * @access  public
      * @static
-     * @param   SimpleXMLElement  $node    XML node
-     * @param   mixed             $parent  parent node (if any)
+     * @param   \SimpleXMLElement  $node    XML node
+     * @param   mixed              $parent  parent node (if any)
      * @return  DDLIndex
      */
-    public static function unserializeFromXDDL(SimpleXMLElement $node, $parent = null)
+    public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
+        $name = "";
         if (isset($attributes['name'])) {
             $name = (string) $attributes['name'];
-        } else {
-            $name = "";
         }
         $ddl = new self($name, $parent);
         $ddl->_unserializeFromXDDL($node);

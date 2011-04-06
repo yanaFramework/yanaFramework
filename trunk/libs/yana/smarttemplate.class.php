@@ -164,7 +164,7 @@ class SmartTemplate extends Object
         if (! self::$globalSmarty instanceof Smarty) {
             $registry = Registry::getGlobalInstance();
 
-            self::$globalSmarty = new Smarty();
+            self::$globalSmarty = new \Smarty();
 
             /**
              * 1.1) delimiters

@@ -66,11 +66,11 @@ class Log extends ReportAbstract
     /**
      * constructor
      *
-     * @param  string     $message   the message that should be reported
-     * @param  int        $code      optional error code
-     * @param  Exception  $previous  use this when you need to rethrow a catched exception
+     * @param  string      $message   the message that should be reported
+     * @param  int         $code      optional error code
+     * @param  \Exception  $previous  use this when you need to rethrow a catched exception
      */
-    public function __construct($message = "", $code = E_USER_NOTICE, Exception $previous = null)
+    public function __construct($message = "", $code = E_USER_NOTICE, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
         self::$queue[] = $this;
@@ -177,11 +177,11 @@ class Log extends ReportAbstract
      *
      * @access  public
      * @static
-     * @param   Exception  $exception  exception object to get log from
-     * @param   string     $prefix     string to put before each key string
+     * @param   \Exception  $exception  exception object to get log from
+     * @param   string      $prefix     string to put before each key string
      * @return  array
      */
-    public static function getLog(Exception $exception, $prefix = "")
+    public static function getLog(\Exception $exception, $prefix = "")
     {
         assert('is_string($prefix); // Wrong argument type for argument 2, String expected');
         $prefix = mb_strtoupper("$prefix");

@@ -2053,7 +2053,7 @@ class DDLColumn extends DDLNamedObject
                     $column = $column->getReferenceColumn();
                 }
                 return $column;
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 throw new NotFoundException("Database definition not found: " . $e->getMessage());
             }
             unset($tableName, $columnName);
@@ -2226,10 +2226,10 @@ class DDLColumn extends DDLNamedObject
      * If no parent tag is given, it will just return the column.
      *
      * @access  public
-     * @param   SimpleXMLElement $parentNode  parent node
-     * @return  SimpleXMLElement
+     * @param   \SimpleXMLElement $parentNode  parent node
+     * @return  \SimpleXMLElement
      */
-    public function serializeToXDDL(SimpleXMLElement $parentNode = null)
+    public function serializeToXDDL(\SimpleXMLElement $parentNode = null)
     {
         if ($this->xddlTag === 'file' || $this->xddlTag === 'image') {
             if (isset($this->size)) {
@@ -2269,14 +2269,14 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * serialize options and optgroups to SimpleXMLElement
+     * Serialize options and optgroups to \SimpleXMLElement.
      *
      * @access  private
      * @static
-     * @param   SimpleXMLElement  $node   node to serialize items to
-     * @param   array             $items  list of option and optgroup items
+     * @param   \SimpleXMLElement  $node   node to serialize items to
+     * @param   array              $items  list of option and optgroup items
      */
-    private static function _serializeOptions(SimpleXMLElement $node, array $items)
+    private static function _serializeOptions(\SimpleXMLElement $node, array $items)
     {
         foreach ($items as $key => $item)
         {
@@ -2302,20 +2302,19 @@ class DDLColumn extends DDLNamedObject
      *
      * @access  public
      * @static
-     * @param   SimpleXMLElement  $node    XML node
-     * @param   mixed             $parent  parent node (if any)
+     * @param   \SimpleXMLElement  $node    XML node
+     * @param   mixed              $parent  parent node (if any)
      * @return  DDLTable
      */
-    public static function unserializeFromXDDL(SimpleXMLElement $node, $parent = null)
+    public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         // unserialize single column
         if ($node->getName() !== 'declaration') {
             $attributes = $node->attributes();
-            if (isset($attributes['name'])) {
-                $ddl = new self((string) $attributes['name'], $parent);
-            } else {
+            if (!isset($attributes['name'])) {
                 throw new InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
             }
+            $ddl = new self((string) $attributes['name'], $parent);
             $ddl->_unserializeFromXDDL($node);
             $ddl->type = $node->getName();
             // default settings
@@ -2351,15 +2350,15 @@ class DDLColumn extends DDLNamedObject
      * unserialize column's option nodes
      *
      * @access  private
-     * @param   SimpleXMLElement  $node   column node
+     * @param   \SimpleXMLElement  $node   column node
      * @return  array
      */
-    private static function _unserializeOptions(SimpleXMLElement $node)
+    private static function _unserializeOptions(\SimpleXMLElement $node)
     {
         $items = array();
         foreach ($node->children() as $child)
         {
-            /* @var $child SimpleXMLElement */
+            /* @var $child \SimpleXMLElement */
             switch ($child->getName())
             {
                 case 'option':
@@ -2380,6 +2379,7 @@ class DDLColumn extends DDLNamedObject
         } // end foreach
         return $items;
     }
+
 }
 
 ?>

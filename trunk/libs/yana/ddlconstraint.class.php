@@ -155,18 +155,18 @@ class DDLConstraint extends DDLObject
      *
      * @access  public
      * @static
-     * @param   SimpleXMLElement  $node    XML node
-     * @param   mixed             $parent  parent node (if any)
+     * @param   \SimpleXMLElement  $node    XML node
+     * @param   mixed              $parent  parent node (if any)
      * @return  DDLConstraint
      */
-    public static function unserializeFromXDDL(SimpleXMLElement $node, $parent = null)
+    public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
+        $name = "";
         if (isset($attributes['name'])) {
-            $ddl = new self((string) $attributes['name'], $parent);
-        } else {
-            $ddl = new self();
+            $name = (string) $attributes['name'];
         }
+        $ddl = new self($name);
         $ddl->_unserializeFromXDDL($node);
         return $ddl;
     }

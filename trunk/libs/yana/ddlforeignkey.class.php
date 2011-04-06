@@ -542,10 +542,10 @@ class DDLForeignKey extends DDLObject
      * Returns the serialized object as a string in XML-DDL format.
      *
      * @access  public
-     * @param   SimpleXMLElement $parentNode  parent node
-     * @return  SimpleXMLElement
+     * @param   \SimpleXMLElement $parentNode  parent node
+     * @return  \SimpleXMLElement
      */
-    public function serializeToXDDL(SimpleXMLElement $parentNode = null)
+    public function serializeToXDDL(\SimpleXMLElement $parentNode = null)
     {
         switch ($this->match)
         {
@@ -605,17 +605,16 @@ class DDLForeignKey extends DDLObject
      *
      * @access  public
      * @static
-     * @param   SimpleXMLElement  $node    XML node
-     * @param   mixed             $parent  parent node (if any)
+     * @param   \SimpleXMLElement  $node    XML node
+     * @param   mixed              $parent  parent node (if any)
      * @return  DDLForeignKey
      */
-    public static function unserializeFromXDDL(SimpleXMLElement $node, $parent = null)
+    public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
+        $name = "";
         if (isset($attributes['name'])) {
             $name = (string) $attributes['name'];
-        } else {
-            $name = "";
         }
         $ddl = new self($name, $parent);
         $ddl->_unserializeFromXDDL($node);

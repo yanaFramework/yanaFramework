@@ -349,7 +349,7 @@ class SML extends File
     {
         try {
             return $this->getContent();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return ""; // toString() must not throw an exception
         }
     }

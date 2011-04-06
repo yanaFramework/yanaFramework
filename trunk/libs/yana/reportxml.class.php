@@ -48,7 +48,7 @@
  *
  * @ignore
  */
-class ReportXML extends SimpleXMLElement
+class ReportXML extends \SimpleXMLElement
 {
     /**
      * <<factory>> load a file
@@ -66,9 +66,9 @@ class ReportXML extends SimpleXMLElement
         assert('is_string($path); // Wrong type for argument 1. String expected');
         try {
 
-            return simplexml_load_file($path, __CLASS__);
+            return \simplexml_load_file($path, __CLASS__);
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Log::report("Error in report file: '$path'.", E_USER_WARNING, $e->getMessage());
             return null;
         }

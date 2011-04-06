@@ -1967,7 +1967,7 @@ abstract class DbQuery extends Object implements Serializable
     {
         assert('is_string($sqlStmt); // Wrong argument type argument 1. String expected');
         $sqlStmt = trim($sqlStmt);
-        $parser = new SQL_Parser();
+        $parser = new \SQL_Parser();
         $ast = $parser->parse($sqlStmt); // get abstract syntax tree (AST)
         if (is_array($ast) && !empty($ast['command'])) {
             switch ($ast['command'])

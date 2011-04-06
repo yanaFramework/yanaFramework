@@ -41,11 +41,11 @@ class DbEventLog extends Log
      *
      * This function creates a new log message.
      *
-     * @param  string     $message   the message that should be reported
-     * @param  int        $code      optional error code
-     * @param  Exception  $previous  use this when you need to rethrow a catched exception
+     * @param  string      $message   the message that should be reported
+     * @param  int         $code      optional error code
+     * @param  \Exception  $previous  use this when you need to rethrow a catched exception
      */
-    public function __construct($message = "", $code = E_USER_NOTICE, Exception $previous = null)
+    public function __construct($message = "", $code = E_USER_NOTICE, \Exception $previous = null)
     {
         parent::__construct("DB: $message", $code, $previous);
     }

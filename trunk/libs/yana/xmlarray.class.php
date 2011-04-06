@@ -39,7 +39,7 @@
  * @subpackage file_system
  * @name       XmlArray
  */
-class XmlArray extends SimpleXMLElement
+class XmlArray extends \SimpleXMLElement
 {
     /**
      * get XML content as array

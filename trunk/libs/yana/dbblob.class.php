@@ -431,13 +431,10 @@ class DbBlob extends FileReadonly
      *
      * For file upload error handling see the following example:
      * <code>
-     * try
-     * {
+     * try {
      *     $filename = self::_sanitizeFile($_FILES['my_file']);
      *     move_uploaded_file($filename, "upload/foo.bar"));
-     * }
-     * catch (Exception $e)
-     * {
+     * } catch (\Exception $e) {
      *     switch ($e->getCode())
      *     {
      *        case UPLOAD_ERR_INI_SIZE:
