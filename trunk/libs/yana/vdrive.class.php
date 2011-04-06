@@ -329,8 +329,9 @@ class VDrive extends FileSystemResource implements IsReportable, Serializable
                     // assign value
                     $this->vars[$name] = $value;
                 }
+                unset($name, $value);
             }
-            unset($name, $value, $node);
+            unset($node);
 
             /* 2) handle includes */
             assert('!isset($node); // Cannot redeclare var $node');
@@ -380,6 +381,8 @@ class VDrive extends FileSystemResource implements IsReportable, Serializable
                 } elseif ($node->isFile()) {
 
                     // get class name
+                    assert('!isset($type); // Cannot redeclare var $type');
+                    $type = array();
                     if (preg_match('/\.(\w+)$/', $name, $type)) {
                         $type = $type[1];
                     } else {
@@ -388,6 +391,7 @@ class VDrive extends FileSystemResource implements IsReportable, Serializable
 
                     // create a new mount-point
                     $this->drive[$name] = new VDriveFile($source, $type);
+                    unset($type);
 
                 } /* end if */
 
