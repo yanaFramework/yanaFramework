@@ -535,6 +535,7 @@ class YanaUser extends Object
 
         /* create new session with new session id */
         $sessionId = uniqid(self::getApplicationId());
+        $encryptedId = "";
         if (function_exists('sha1')) {
             $encryptedId = sha1($sessionId);
         } else {
@@ -1042,10 +1043,9 @@ class YanaUser extends Object
     protected static function getApplicationId()
     {
         if (!isset(self::$applicationId)) {
+            $remoteAddr = '127.0.0.1';
             if (isset($_SERVER['REMOTE_ADDR'])) {
                 $remoteAddr = $_SERVER['REMOTE_ADDR'];
-            } else {
-                $remoteAddr = '127.0.0.1';
             }
             self::$applicationId = $remoteAddr . '@' . dirname(__FILE__);
         }
