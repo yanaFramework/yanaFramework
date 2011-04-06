@@ -578,7 +578,7 @@ class DbStream extends Object implements Serializable
                 {
                     try {
                         $selectQuery->setInnerJoin($table2, $columns[0], $columns[1]);
-                    } catch (Exception $e) {
+                    } catch (\Exception $e) {
                         Log::report("Unable to join tables '{$tableName}' and " .
                             "'{$table2}'. Cause: " . $e->getMessage(), E_USER_WARNING);
                         return false;

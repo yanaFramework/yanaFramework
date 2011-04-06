@@ -82,7 +82,6 @@ class DDLField extends DDLNamedObject
     /** @var int         */ protected $tabIndex = null;
     /** @var DDLGrant[]  */ protected $grants = array();
     /** @var DDLEvent[]  */ protected $events = array();
-    /** @var DDLForm     */ protected $parent = null;
     /** @var DDLColumn   */ protected $column = null;
 
     /**#@-*/
@@ -102,28 +101,6 @@ class DDLField extends DDLNamedObject
     protected $isGrantable = null;
 
     /**#@-*/
-
-    /**
-     * constructor
-     *
-     * @param  string   $name    form field name
-     * @param  DDLForm  $parent  parent database
-     */
-    public function __construct($name, DDLForm $parent = null)
-    {
-        parent::__construct($name);
-        $this->parent = $parent;
-    }
-
-    /**
-     * get parent
-     *
-     * @return  DDLForm
-     */
-    public function getParent()
-    {
-        return $this->parent;
-    }
 
     /**
      * get the user description
@@ -691,19 +668,17 @@ class DDLField extends DDLNamedObject
      *
      * @access  public
      * @static
-     * @param   SimpleXMLElement  $node    XML node
-     * @param   mixed             $parent  parent node (if any)
+     * @param   \SimpleXMLElement  $node  XML node
      * @return  DDLField
      */
-    public static function unserializeFromXDDL(SimpleXMLElement $node, $parent = null)
+    public static function unserializeFromXDDL(\SimpleXMLElement $node)
     {
         $attributes = $node->attributes();
-        if (isset($attributes['name'])) {
-            $ddl = new self((string) $attributes['name'], $parent);
-        } else {
+        if (!isset($attributes['name'])) {
             throw new InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
         }
-        /* @var $child SimpleXMLElement */
+        $ddl = new self((string) $attributes['name']);
+        /* @var $child \SimpleXMLElement */
         foreach ($node->children() as $child)
         {
             if (!isset($ddl->xddlTags[$child->getName()])) {

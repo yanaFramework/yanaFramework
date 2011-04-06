@@ -77,7 +77,7 @@ class Object extends StdClass implements IsObject, IsCloneable
     {
         try {
             return $this->toString();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return "$e";
         }
     }

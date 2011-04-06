@@ -83,11 +83,11 @@ abstract class ReportAbstract extends Exception
      *
      * Create a new instance, representing a system message.
      *
-     * @param  string     $message   the message that should be reported
-     * @param  int        $code      optional error code
-     * @param  Exception  $previous  use this when you need to rethrow a catched exception
+     * @param  string      $message   the message that should be reported
+     * @param  int         $code      optional error code
+     * @param  \Exception  $previous  use this when you need to rethrow a catched exception
      */
-    public function __construct($message = "", $code = E_USER_NOTICE, Exception $previous = null)
+    public function __construct($message = "", $code = E_USER_NOTICE, \Exception $previous = null)
     {
         assert('is_string($message); // Wrong argument type for argument 1, String expected');
         assert('is_int($code); // Wrong argument type for argument 2, Integer expected');
@@ -97,8 +97,7 @@ abstract class ReportAbstract extends Exception
             $this->data['MESSAGE'] = $message;
         }
 
-        // parameter $previous not supported in PHP 5.2.x - providing it results in fatal error
-        parent::__construct($message, $code);
+        parent::__construct($message, $code, $previous);
     }
 
     /**
@@ -276,7 +275,6 @@ abstract class ReportAbstract extends Exception
         }
         return $this->text;
     }
-
 
 }
 

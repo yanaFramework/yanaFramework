@@ -406,7 +406,7 @@ final class Yana extends Singleton implements IsReportable
 
             $result = $plugins->broadcastEvent($action, $args);
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $message = get_class($e) . ': ' . $e->getMessage() . ' Thrown in ' . $e->getFile() .
                 ' on line ' . $e->getLine();
             trigger_error($message, E_USER_WARNING);

@@ -37,7 +37,7 @@
  *
  * @ignore
  */
-class LanguageInterchangeFile extends SimpleXMLElement
+class LanguageInterchangeFile extends \SimpleXMLElement
 {
     /**
      * get source language

@@ -159,10 +159,10 @@ class DDLFunctionParameter extends DDLNamedObject
      * Returns the serialized object as a string in XML-DDL format.
      *
      * @access  public
-     * @param   SimpleXMLElement $parentNode  parent node
-     * @return  SimpleXMLElement
+     * @param   \SimpleXMLElement $parentNode  parent node
+     * @return  \SimpleXMLElement
      */
-    public function serializeToXDDL(SimpleXMLElement $parentNode = null)
+    public function serializeToXDDL(\SimpleXMLElement $parentNode = null)
     {
         switch ($this->mode)
         {
@@ -186,18 +186,17 @@ class DDLFunctionParameter extends DDLNamedObject
      *
      * @access  public
      * @static
-     * @param   SimpleXMLElement  $node    XML node
-     * @param   mixed             $parent  parent node (if any)
+     * @param   \SimpleXMLElement  $node    XML node
+     * @param   mixed              $parent  parent node (if any)
      * @return  DDLFunctionParameter
      */
-    public static function unserializeFromXDDL(SimpleXMLElement $node, $parent = null)
+    public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
-        if (isset($attributes['name'])) {
-            $ddl = new self((string) $attributes['name'], $parent);
-        } else {
+        if (!isset($attributes['name'])) {
             throw new InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
         }
+        $ddl = new self((string) $attributes['name'], $parent);
         $ddl->_unserializeFromXDDL($node);
         switch ($ddl->_mode)
         {

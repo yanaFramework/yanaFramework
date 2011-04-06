@@ -405,18 +405,18 @@ class DDLTrigger extends DDLObject
      *
      * @access  public
      * @static
-     * @param   SimpleXMLElement  $node    XML node
+     * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed             $parent  parent node (if any)
      * @return  DDLTrigger
      */
-    public static function unserializeFromXDDL(SimpleXMLElement $node, $parent = null)
+    public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
+        $name = "";
         if (isset($attributes['name'])) {
-            $ddl = new self((string) $attributes['name']);
-        } else {
-            $ddl = new self();
+            $name = $attributes['name'];
         }
+        $ddl = new self($name);
         $ddl->_unserializeFromXDDL($node);
         return $ddl;
     }

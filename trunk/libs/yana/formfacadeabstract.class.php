@@ -26,30 +26,74 @@
  */
 
 /**
- * Database alert
- *
- * This class represents alerts passed to the user.
+ * <<facade>> Form wrapper base class.
  *
  * @access      public
+ * @abstract
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  form
+ * @ignore
  */
-class DbAlert extends Alert
+abstract class FormFacadeAbstract extends Object
 {
+
     /**
-     * constructor
+     * Form definition
      *
-     * This function creates a new log message.
-     *
-     * @param  string      $message   the message that should be reported
-     * @param  int         $code      optional error code
-     * @param  \Exception  $previous  use this when you need to rethrow a catched exception
+     * @access  protected
+     * @var     DDLForm
      */
-    public function __construct($message = "", $code = E_USER_NOTICE, \Exception $previous = null)
+    protected $form = null;
+
+    /**
+     * Form setup
+     *
+     * @access  protected
+     * @var     FormSetup
+     */
+    protected $setup = null;
+
+    /**
+     * Form query
+     *
+     * @access  protected
+     * @var     DbSelect
+     */
+    protected $query = null;
+
+    /**
+     * Get form structure.
+     *
+     * @access  public
+     * @return  DDLForm
+     */
+    public function getForm()
     {
-        parent::__construct("DB: $message", $code, $previous);
-        Log::report($message, $code);
+        return $this->setup;
     }
+
+    /**
+     * Get form setup.
+     *
+     * @access  public
+     * @return  FormSetup
+     */
+    public function getSetup()
+    {
+        return $this->setup;
+    }
+
+    /**
+     * Get query to load form contents.
+     *
+     * @access  public
+     * @return  DbQuery
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
 }
 
 ?>

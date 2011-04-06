@@ -37,6 +37,7 @@
  */
 abstract class DDLObject extends DDL
 {
+
     /**
      * Object name
      *
@@ -98,6 +99,7 @@ abstract class DDLObject extends DDL
             $this->name = mb_strtolower($name);
         }
     }
+
 }
 
 ?>

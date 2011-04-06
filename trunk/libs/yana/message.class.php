@@ -57,11 +57,11 @@ class Message extends ReportAbstract
      * It checks whether data is array or empty or other and replaces token
      * found in the message string.
      *
-     * @param  string     $message   the message that should be reported
-     * @param  int        $code      optional error code
-     * @param  Exception  $previous  use this when you need to rethrow a catched exception
+     * @param  string      $message   the message that should be reported
+     * @param  int         $code      optional error code
+     * @param  \Exception  $previous  use this when you need to rethrow a catched exception
      */
-    public function __construct($message = "", $code = E_USER_NOTICE, Exception $previous = null)
+    public function __construct($message = "", $code = E_USER_NOTICE, \Exception $previous = null)
     {
         assert('is_scalar($message); // Wrong argument type for argument 1, String expected');
         assert('is_int($code); // Wrong argument type for argument 2, Integer expected');
@@ -84,6 +84,7 @@ class Message extends ReportAbstract
      */
     public static function report($message, $code = E_USER_NOTICE, $data = null)
     {
+        $exception = null;
         if (is_int($code)) {
             $exception = new self($message, $code);
         } else {

@@ -260,7 +260,7 @@ abstract class DataContainerAbstract extends Object
             if ($this->_isModified) {
                 self::getDataAdapter()->updateInstance($this);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // A destructor may not throw an exception, since there is nobody who could catch it.
             Message::report($e->getMessage(), E_USER_ERROR);
         }

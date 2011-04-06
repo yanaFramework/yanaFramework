@@ -36,7 +36,7 @@
  * @package     yana
  * @subpackage  core
  */
-class PluginReflectionClass extends ReflectionClass
+class PluginReflectionClass extends \ReflectionClass
 {
 
     /**#@+
@@ -95,7 +95,7 @@ class PluginReflectionClass extends ReflectionClass
      * @param   int  $filter    filter
      * @return  PluginReflectionMethod[]
      */
-    public function getMethods($filter = ReflectionProperty::IS_PUBLIC)
+    public function getMethods($filter = \ReflectionProperty::IS_PUBLIC)
     {
         if (empty($this->_methods[$filter])) {
             $this->_methods[$filter] = array();

@@ -315,7 +315,7 @@ class Language extends Singleton implements Serializable
                      */
                     try {
 
-                        // LanguageInterchangeFile extends of SimpleXMLElement
+                        // LanguageInterchangeFile extends \SimpleXMLElement
                         $xml = new LanguageInterchangeFile($selectedFile, LIBXML_NOENT, true);
                         $xml->toArray($this->_strings);
                         $xml->getGroups($this->_groups);
@@ -323,15 +323,16 @@ class Language extends Singleton implements Serializable
                         $this->_strings = array_change_key_case($this->_strings, CASE_LOWER);
                         $this->_groups = array_change_key_case($this->_groups, CASE_LOWER);
 
-                    } catch (Exception $e) {
+                    } catch (\Exception $e) {
                         assert('!isset($message); // Cannot redeclare var $message');
-                        $message = "Error in language file: '$filename'.";
+                        $message = "Error in language file: '$file'.";
                         Log::report($message, E_USER_WARNING, $e->getMessage());
                         unset($message);
                     }
                 }
+                unset($selectedFile);
             }
-            unset($directory, $selectedFile);
+            unset($directory);
         }
         if (!empty($this->_fileLoaded[$file])) {
             return true;
@@ -499,11 +500,10 @@ class Language extends Singleton implements Serializable
             foreach (glob($this->getDefaultDirectory() . "*" . self::$_fileExtension) as $file)
             {
                 $id = basename($file, self::$_fileExtension);
-                $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
+                $xml = \simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
+                $title = $id;
                 if (!empty($xml)) {
                     $title = (string) $xml->title;
-                } else {
-                    $title = $id;
                 }
                 $this->_languages[$id] = $title;
             }
@@ -556,10 +556,9 @@ class Language extends Singleton implements Serializable
         $selectedCountry = mb_strtoupper($selectedCountry);
 
         // convert to locale string
+        $locale = "$selectedLanguage";
         if ($selectedCountry != "") {
-            $locale = "$selectedLanguage-$selectedCountry";
-        } else {
-            $locale = "$selectedLanguage";
+            $locale .= "-$selectedCountry";
         }
 
         // check if locale is valid
@@ -714,6 +713,7 @@ class Language extends Singleton implements Serializable
         assert('is_string($string); // Wrong argument type for argument 1. String expected.');
 
         $pattern = '/'. YANA_LEFT_DELIMITER_REGEXP . 'lang id=["\']([\w_\.]+)["\']' . YANA_RIGHT_DELIMITER_REGEXP .'/';
+        $matches = array();
         if (preg_match_all($pattern, $string, $matches)) {
             foreach ($matches[1] as $i => $key)
             {

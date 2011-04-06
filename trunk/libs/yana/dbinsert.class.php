@@ -500,7 +500,7 @@ class DbInsert extends DbQuery
         // this is a parser/lexer, that parses a given SQL string into an AST
         if (!is_array($sqlStmt)) {
             assert('is_string($sqlStmt); // Wrong argument type for argument 1. String expected.');
-            $parser = new SQL_Parser();
+            $parser = new \SQL_Parser();
             $sqlStmt = $parser->parse($sqlStmt); // get abstract syntax tree (AST)
         }
 

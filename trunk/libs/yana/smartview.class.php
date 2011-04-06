@@ -111,7 +111,7 @@ class SmartView extends SmartTemplate
         }
         try {
             $template = self::_getFilename($template);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             trigger_error("Template error:" . $e->getMessage(), E_USER_WARNING);
             return false;
         }
@@ -133,7 +133,7 @@ class SmartView extends SmartTemplate
         if (!is_file($id)) {
             try {
                 $id = Yana::getInstance()->getSkin()->getFile($id);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 Log::report("Template error: " . $e->getMessage());
             }
         }
@@ -233,7 +233,7 @@ class SmartView extends SmartTemplate
         assert('is_string($filename); // Wrong argument type argument 1. String expected');
         try {
             $filename = self::_getFilename($filename);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             trigger_error("Template error: " . $e->getMessage(), E_USER_WARNING);
             return false;
         }

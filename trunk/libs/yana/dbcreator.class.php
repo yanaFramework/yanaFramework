@@ -104,15 +104,15 @@ class DbCreator extends Object
         assert('is_file($xslFilename); // File not found $xslFilename');
 
         // Stylesheet
-        $xsl = new DOMDocument();
+        $xsl = new \DOMDocument();
         $xsl->load($xslFilename);
 
         // Source file
-        $xml = new DOMDocument();
+        $xml = new \DOMDocument();
         $xml->loadXML($xmlString);
 
         // XSLT processor
-        $xsltProcessor = new XSLTProcessor();
+        $xsltProcessor = new \XSLTProcessor();
         $xsltProcessor->importStyleSheet($xsl); // attach the xsl rules
 
         // Transform to SQL

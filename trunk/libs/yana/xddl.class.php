@@ -62,7 +62,7 @@ class XDDL extends File
         if (isset($this->ddl) && $this->ddl->isModified()) {
             assert('!isset($xddl); // Cannot redeclare var $xddl');
             $xddl = $this->ddl->serializeToXDDL();
-            assert('$xddl instanceof SimpleXMLElement; // Expecting serializeToXDDL() to return a SimpleXMLElement.');
+            assert('$xddl instanceof \SimpleXMLElement; // Expecting serializeToXDDL() to return a \SimpleXMLElement.');
             assert('!isset($xml); // Cannot redeclare var $xml');
             $xml = $xddl->asXML();
             assert('is_string($xml); // Expecting function toXML() to return a string.');
@@ -84,11 +84,11 @@ class XDDL extends File
     /**
      * get XML content as simple XML Element
      *
-     * Returns an instance of SimpleXMLElement.
+     * Returns an instance of \SimpleXMLElement.
      * If the file is empty or does not exist, the returned element will be empty as well.
      *
      * @access  public
-     * @return  SimpleXMLElement
+     * @return  \SimpleXMLElement
      */
     public function toSimpleXML()
     {
@@ -154,7 +154,7 @@ class XDDL extends File
             $simpleXml = simplexml_load_file($path);
             $ddl = DDLDatabase::unserializeFromXDDL($simpleXml, null, $path);
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Log::report("Error in XDDL-file: '$path'.", E_USER_WARNING, $e->getMessage());
             throw new InvalidSyntaxException("Error in XDDL-file.", E_USER_WARNING, $e);
         }

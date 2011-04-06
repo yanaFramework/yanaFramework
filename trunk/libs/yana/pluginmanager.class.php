@@ -47,7 +47,7 @@
  * $manager = PluginManager::getInstance();
  * try {
  *   $result = $manager->broadcastEvent('newState', $arguments);
- * } catch (Exception $e) {
+ * } catch (\Exception $e) {
  *   // put error handling here
  * }
  * </code>

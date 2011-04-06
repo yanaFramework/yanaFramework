@@ -138,7 +138,7 @@ abstract class DDL extends Object
         try {
             $xml = $this->serializeToXDDL();
             return $xml->asXML();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $e->getMessage(); // toString() must not throw an exception
         }
     }
@@ -149,18 +149,20 @@ abstract class DDL extends Object
      * Returns the serialized object as a string in XML-DDL format.
      *
      * @access  public
-     * @param   SimpleXMLElement $parentNode  parent node
-     * @return  SimpleXMLElement
+     * @param   \SimpleXMLElement $parentNode  parent node
+     * @return  \SimpleXMLElement
      */
-    public function serializeToXDDL(SimpleXMLElement $parentNode = null)
+    public function serializeToXDDL(\SimpleXMLElement $parentNode = null)
     {
         // is not serializable - need tag name!
         if (empty($this->xddlTag)) {
             return "";
+        }
 
+        $xddl = null;
         // is root node
-        } elseif (is_null($parentNode)) {
-            $xddl = new SimpleXMLElement('<' . $this->xddlTag . '/>', LIBXML_NOXMLDECL | LIBXML_NOENT);
+        if (is_null($parentNode)) {
+            $xddl = new \SimpleXMLElement('<' . $this->xddlTag . '/>', LIBXML_NOXMLDECL | LIBXML_NOENT);
 
         // is inner node with pcdata-section
         } elseif (isset($this->xddlAttributes['#pcdata'])) {
@@ -191,10 +193,10 @@ abstract class DDL extends Object
      *
      * @access  protected
      * @final
-     * @param   SimpleXMLElement  $node  XML node
+     * @param   \SimpleXMLElement  $node  XML node
      * @ignore
      */
-    final protected function _serializeAttributes(SimpleXMLElement $node)
+    final protected function _serializeAttributes(\SimpleXMLElement $node)
     {
         foreach ($this->xddlAttributes as $name => $attribute)
         {
@@ -238,10 +240,10 @@ abstract class DDL extends Object
      *
      * @access  protected
      * @final
-     * @param   SimpleXMLElement  $node  XML node
+     * @param   \SimpleXMLElement  $node  XML node
      * @ignore
      */
-    final protected function _serializeChildren(SimpleXMLElement $node)
+    final protected function _serializeChildren(\SimpleXMLElement $node)
     {
         foreach ($this->xddlTags as $name => $tag)
         {
@@ -290,21 +292,20 @@ abstract class DDL extends Object
                     // is list of string tags
                     } else {
                         // attribute name for keys
+                        $keyAttr = null;
                         if (isset($tag[3])) {
                             $keyAttr = $tag[3];
-                        } else {
-                            $keyAttr = null;
                         }
+                        $valAttr = null;
                         // attribute name for values
                         if (isset($tag[4])) {
                             $valAttr = $tag[4];
-                        } else {
-                            $valAttr = null;
                         }
                         // iterate through
                         assert('!isset($key);');
                         assert('!isset($value);');
                         assert('!isset($childNode);');
+                        $childNode = null;
                         foreach ($this->$property as $key => $value)
                         {
                             if (is_null($valAttr)) {
@@ -349,11 +350,11 @@ abstract class DDL extends Object
      * @access  public
      * @abstract
      * @static
-     * @param   SimpleXMLElement  $node    node create via XMLArray::toArray()
-     * @param   mixed             $parent  parent node (if any)
+     * @param   \SimpleXMLElement  $node    node create via XMLArray::toArray()
+     * @param   mixed              $parent  parent node (if any)
      * @return  DDL
      */
-    public static function unserializeFromXDDL(SimpleXMLElement $node, $parent = null)
+    public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         // Note: as of PHP 5.2 static functions may not be declared abstract
     }
@@ -365,10 +366,10 @@ abstract class DDL extends Object
      *
      * @access  protected
      * @final
-     * @param   SimpleXMLElement  $node  XML node
+     * @param   \SimpleXMLElement  $node  XML node
      * @ignore
      */
-    final protected function _unserializeFromXDDL(SimpleXMLElement $node)
+    final protected function _unserializeFromXDDL(\SimpleXMLElement $node)
     {
         $this->_unserializeAttributes($node);
         foreach ($node->children() as $currentNode)
@@ -382,10 +383,10 @@ abstract class DDL extends Object
      *
      * @access  protected
      * @final
-     * @param   SimpleXMLElement  $node  XML node
+     * @param   \SimpleXMLElement  $node  XML node
      * @ignore
      */
-    final protected function _unserializeChild(SimpleXMLElement $node)
+    final protected function _unserializeChild(\SimpleXMLElement $node)
     {
         $xml = $node->getName();
         $attributes = $node->attributes();
@@ -403,36 +404,32 @@ abstract class DDL extends Object
                 break;
                 case 'array':
                     $array =& $this->$property;
+                    $index = 'name';
                     if (isset($tag[3])) {
                         $index = $tag[3];
-                    } else {
-                        $index = 'name';
                     }
+                    $id = null;
                     if (isset($attributes->$index)) {
                         $id = (string) $attributes->$index;
-                    } else {
-                        $id = null;
                     }
                     unset($index);
+                    $value = null;
                     if (isset($tag[2])) {
                         if (!is_null($id)) {
                             $id = mb_strtolower($id);
                         }
                         $class = $tag[2];
                         $value = call_user_func(array($class, 'unserializeFromXDDL'), $node, $this);
-                    } else {
-                        $value = null;
-                        if (isset($tag[4])) {
-                            $index = $tag[4];
-                            if (isset($attributes->$index)) {
-                                $value = (string) $attributes->$index;
-                            } else {
-                                $value = "";
-                            }
+                    } elseif (isset($tag[4])) {
+                        $index = $tag[4];
+                        if (isset($attributes->$index)) {
+                            $value = (string) $attributes->$index;
                         } else {
-                            $value = trim("$node");
+                            $value = "";
                         }
                         unset($index);
+                    } else {
+                        $value = trim("$node");
                     }
                     if (!is_null($id)) {
                         $array["$id"] = $value;
@@ -464,10 +461,10 @@ abstract class DDL extends Object
      *
      * @access  protected
      * @final
-     * @param   SimpleXMLElement  $node  XML node
+     * @param   \SimpleXMLElement  $node  XML node
      * @ignore
      */
-    final protected function _unserializeAttributes(SimpleXMLElement $node)
+    final protected function _unserializeAttributes(\SimpleXMLElement $node)
     {
         $attributes = $node->attributes();
         // set attributes

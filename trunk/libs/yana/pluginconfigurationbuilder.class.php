@@ -110,7 +110,7 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             }
             unset($tags, $tag);
 
-            foreach ($this->_class->getMethods(ReflectionProperty::IS_PUBLIC) as $method)
+            foreach ($this->_class->getMethods(\ReflectionProperty::IS_PUBLIC) as $method)
             {
                 $parser->setText($method->getDocComment());
                 if (!$parser->getTag(PluginAnnotationEnumeration::IGNORE)) {
@@ -272,7 +272,7 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             $method->setParams($params);
             $method->setHasGenericParams(isset($params['ARGS']));
             unset($params, $match, $name, $type, $param);
-            /* @var $param ReflectionParameter */
+            /* @var $param \ReflectionParameter */
             assert('!isset($defaults); // Cannot redeclare var $defaults');
             $defaults = array();
             assert('!isset($param); // Cannot redeclare var $param');

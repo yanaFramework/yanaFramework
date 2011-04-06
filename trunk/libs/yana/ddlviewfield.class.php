@@ -132,18 +132,17 @@ class DDLViewField extends DDLNamedObject
      *
      * @access  public
      * @static
-     * @param   SimpleXMLElement  $node    XML node
-     * @param   mixed             $parent  parent node (if any)
+     * @param   \SimpleXMLElement  $node    XML node
+     * @param   mixed              $parent  parent node (if any)
      * @return  DDLView
      */
-    public static function unserializeFromXDDL(SimpleXMLElement $node, $parent = null)
+    public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
-        if (isset($attributes['column'])) {
-            $ddl = new self((string) $attributes['column'], $parent);
-        } else {
+        if (!isset($attributes['column'])) {
             throw new InvalidArgumentException("Missing column attribute.", E_USER_WARNING);
         }
+        $ddl = new self((string) $attributes['column'], $parent);
         $ddl->_unserializeFromXDDL($node);
         return $ddl;
     }

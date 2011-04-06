@@ -143,7 +143,7 @@ class SXML extends SML
 
                 $sxml = simplexml_load_file($input, 'XmlArray');
 
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 trigger_error("XML ERROR in file '{$input}'.", E_USER_WARNING);
                 return array();
             }
@@ -152,7 +152,7 @@ class SXML extends SML
 
                 $sxml = simplexml_load_string(implode("", $input), 'XmlArray');
 
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 trigger_error("XML ERROR in file.", E_USER_WARNING);
                 return array();
             }
