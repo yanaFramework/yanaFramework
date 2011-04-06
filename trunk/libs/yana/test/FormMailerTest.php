@@ -116,15 +116,15 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
         try {
             $result = $this->object->send(1);
             $this->fail("FormMailer should not accept a number as recipient.");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // success
         }
 
-        // Test Exception Empty as Recipient
+        // Test exception empty as recipient
         try {
             $result = $this->object->send("");
             $this->fail("FormMailer should not accept an empty recipient.");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // success
         }
 
@@ -133,7 +133,7 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
         $result = true;
         try {
             $result = $this->object->send("mail@domain.tld");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail("Unexpected exception: " . $e->getMessage());
         }
         $this->assertFalse($result, "FormMailer should not accept an empty Content");
@@ -145,7 +145,7 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
         try {
             $this->object->send("mail@domain.tld");
             $this->fail("FormMailer should not accept a number as subject.");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // success
         }
 
@@ -156,7 +156,7 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
         try {
             $this->object->send("mail@domain.tld");
             $this->fail("FormMailer should not accept a number as headline.");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // success
         }
 
@@ -168,7 +168,7 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
         try {
             $this->object->send("mail@domain.tld");
             $this->fail("FormMailer should only accept scalar values or arrays as content-elements.");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $expectedNoticeString = $e->getMessage();
             $this->assertRegExp('/Invalid form data/i', $expectedNoticeString, "FormMailer should only accept scalar values or arrays in form fields.");
         }
@@ -177,7 +177,7 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
         $this->object->content = array("äöüß" => "aaa");
         try {
             $this->object->send("mail@domain.tld");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail("FormMailer should accept Umlaut characters in keys");
         }
 
@@ -188,7 +188,7 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
         try {
             $this->object->send("mail@domain.tld");
             $this->fail("FormMailer should not accept special characters in keys.");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $expectedNoticeString = $e->getMessage();
             $this->assertRegExp('/Invalid form data/i', $expectedNoticeString, "FormMailer should not accept special characters in keys.");
         }
@@ -222,7 +222,7 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
         try {
             FormMailer::mail(1, $subject, $formdata);
             $this->fail("FormMailer should not accept a number as recipient.");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // success
         }
 
@@ -230,7 +230,7 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
         try {
             FormMailer::mail("", $subject, $formdata);
             $this->fail("FormMailer should not accept an empty recipient.");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // success
         }
 
@@ -238,7 +238,7 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
         try {
             FormMailer::mail($recipient, array(), $formdata);
             $this->fail("FormMailer should not accept an array as subject.");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // success
         }
 
@@ -247,7 +247,7 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
         $emptyContent = array();
         try {
             $result = FormMailer::mail($recipient, $subject, $emptyContent);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail("Unexpected exception: " . $e->getMessage());
         }
         $this->assertFalse($result, "FormMailer should return false if there is no content.");

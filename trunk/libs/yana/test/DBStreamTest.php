@@ -58,7 +58,7 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
             chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
             $schema = XDDL::getDatabase('check');
             $this->dbsobj = new DbStream($schema);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->markTestSkipped("Unable to connect to database");
         }
     }

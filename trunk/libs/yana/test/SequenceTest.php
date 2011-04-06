@@ -90,7 +90,7 @@ class SequenceTest extends PHPUnit_Framework_TestCase
             $this->ascendingSequence = new Sequence($this->ascendingId);
             $this->descendingSequence = new Sequence($this->descendingId);
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->markTestSkipped("Unable to connect to database: " . $e->getMessage());
             chdir(CWD);
         }
@@ -227,7 +227,7 @@ class SequenceTest extends PHPUnit_Framework_TestCase
 
         } catch (OutOfBoundsException $e) {
             // success
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail("Unexpected exception: " . $e->getMessage());
         }
 

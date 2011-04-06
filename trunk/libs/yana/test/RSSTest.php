@@ -98,7 +98,7 @@ class RSSTest extends PHPUnit_Framework_TestCase
         $pattern = '/\<\?xml[^>]*?\>/';
         $replace = preg_replace($pattern, '$0' . $dtd, $toString);
 
-        $dom = new DOMDocument();
+        $dom = new \DOMDocument();
         $dom->loadXML($replace);
         $valid = $dom->validate();
 
@@ -133,7 +133,7 @@ class RSSTest extends PHPUnit_Framework_TestCase
         $pattern = '/\<\?xml[^>]*?\>/';
         $replace = preg_replace($pattern, '$0' . $dtd, $toString);
 
-        $dom = new DOMDocument();
+        $dom = new \DOMDocument();
         $dom->loadXML($replace);
         $valid = $dom->validate();
 
@@ -194,7 +194,7 @@ class RSSTest extends PHPUnit_Framework_TestCase
         $pattern = '/\<\?xml[^>]*?\>/';
         $replace = preg_replace($pattern, '$0' . $dtd, $toString);
 
-        $dom = new DOMDocument();
+        $dom = new \DOMDocument();
         $dom->loadXML($replace);
         $valid = $dom->validate();
 

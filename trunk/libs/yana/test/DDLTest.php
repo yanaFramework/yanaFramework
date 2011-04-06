@@ -68,7 +68,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
             $this->_file->read();
             $this->_object = $this->_file->toDatabase();
             $this->_object->setModified();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $message = "Error loading file '" . CWD . $this->_path . "'. Message: " . $e->getMessage();
             $this->fail($message);
         }
@@ -116,9 +116,8 @@ class DDLTest extends PHPUnit_Framework_TestCase
         $expected = preg_replace($pattern, $replacement, $xml);
         $expected = str_replace('&gt;', '>', $expected);
         // validate XML
-        $domDocument = new DomDocument();
+        $domDocument = new \DomDocument();
         $domDocument->loadXML($expected);
-//        $domDocument->save('test.xml');
         $isValid = $domDocument->validate();
 
         $message = "Round-trip decoding/encoding of source-document failed. " .

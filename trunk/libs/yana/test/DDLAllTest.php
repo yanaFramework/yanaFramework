@@ -898,7 +898,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             $this->ddlcolumn->setAutoFill(false);
             $this->fail("DDLColumn::setAutoFill for an image-column should raise an exception");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             //success
         }
     }
@@ -1212,7 +1212,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $result = true;
         try {
             $this->ddlcolumn->addConstraint(4711, "someName", "mysql");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $result = false;
         }
         $this->assertFalse($result, "DDLColumn::addConstraint should not accept an Integer as Constraint");
@@ -1221,7 +1221,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $result = true;
         try {
             $this->ddlcolumn->addConstraint("someConstraints", 4711, "mysql");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $result = false;
         }
         $this->assertFalse($result, "DDLColumn::addConstraint should not accept an Integer as Name");
@@ -1230,7 +1230,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $result = true;
         try {
             $this->ddlcolumn->addConstraint(4711, "mysql");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $result = false;
         }
         $this->assertFalse($result, "DDLColumn::getConstraint should not accept an Integer as Name");
@@ -1507,7 +1507,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             // supposed to succeed
             $this->ddldatabase->addTable('table');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
@@ -1620,7 +1620,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             // supposed to succeed
             $this->ddldatabase->addView('view');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
@@ -1702,7 +1702,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             // supposed to succeed
             $this->ddldatabase->addFunction('function');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
@@ -1883,7 +1883,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             $get = $this->ddlview->getField('abcd');
             $this->fail("DDLView::dropField didn't drop the Column");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             //success
         }
     }
@@ -1965,7 +1965,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             // supposed to succeed
             $this->ddlform->addField('field');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
@@ -2073,7 +2073,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             // supposed to succeed
             $this->ddldatabase->addSequence('sequence');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
@@ -2107,7 +2107,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $result = true;
         try {
             $this->ddlindexcolumn->setSorting(4711);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $result = false;
         }
         $this->assertFalse($result, "DDLIndexColumn::setSorting should not accept anything but Boolean");
@@ -2245,7 +2245,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             // supposed to succeed
             $this->ddldatabase->addForm('form');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
@@ -2311,7 +2311,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             $testForeignKey->setColumns($array);
             $this->fail("DDLForeignKey::setCoLumns should fail, if one of the Columns in the Targettable does not exists");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             //success
         }
 
@@ -2319,7 +2319,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             $this->ddlindex->addColumn("noColumn");
             $this->fail("DDLIndex::not existing column should raise an exception");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // success
         }
 
@@ -2335,8 +2335,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $result = $this->ddlindex->addColumn($someNames[2]);
         try {
             $this->ddlindex->addColumn($someNames[0]);
-            $this->fail("DDLIndex::redefining column should rise an Exception");
-        } catch (Exception $e) {
+            $this->fail("DDLIndex::redefining column should rise an exception");
+        } catch (\Exception $e) {
             // success
         }
 
@@ -2867,7 +2867,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             // supposed to succeed
             $this->ddlfunctionimplementation->addParameter('parameter');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
@@ -3854,7 +3854,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             // supposed to succeed
             $this->ddltable->addIndex('column', 'index');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
@@ -3873,7 +3873,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             // supposed to succeed
             $this->ddltable->addColumn('column', 'string');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail

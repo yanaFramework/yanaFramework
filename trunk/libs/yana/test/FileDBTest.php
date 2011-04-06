@@ -57,7 +57,7 @@ class FileDbTest extends PHPUnit_Framework_TestCase
             $this->dbsobj = new FileDb($schema);
             restore_error_handler();
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->markTestSkipped("Unable to connect to database");
         }
     }
@@ -113,7 +113,7 @@ class FileDbTest extends PHPUnit_Framework_TestCase
         try {
             $this->dbsobj->insertOrUpdate( 't.foo2', array ('tvalue' => 1, 'FTid' => 2 ) );
             $this->fail('expected insert of t.foo2 to fail, due to a foreign-key constraint');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // success
         }
 
@@ -145,7 +145,7 @@ class FileDbTest extends PHPUnit_Framework_TestCase
             @$this->dbsobj->commit();
             $this->fail('duplicate key test (1) failed');
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // success
         }
 
@@ -157,7 +157,7 @@ class FileDbTest extends PHPUnit_Framework_TestCase
             @$this->dbsobj->commit();
             $this->fail('duplicate key test (2) failed');
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // success
         }
 
@@ -322,7 +322,7 @@ class FileDbTest extends PHPUnit_Framework_TestCase
         try {
             $this->dbsobj->update('t.foo.tf', -1);
             $this->fail('"unsigned" test failed');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // success
         }
 

@@ -91,7 +91,7 @@ class CounterTest extends PHPUnit_Framework_TestCase
         try {
             Counter::create($this->_counterId, 1, null, null, null, true);
             Counter::create($this->_counterNoIPId, 1, null, null, null, true, false);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail($e->getMessage());
             chdir(CWD);
         }
