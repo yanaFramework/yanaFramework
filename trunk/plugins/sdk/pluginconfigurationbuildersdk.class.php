@@ -228,17 +228,17 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
      * set schema from XML
      *
      * @access  public
-     * @param   SimpleXMLElement  $node  database root node
+     * @param   \SimpleXMLElement  $node  database root node
      * @return  PluginConfigurationBuilderSdk
      */
-    public function setSchemaXml(SimpleXMLElement $node)
+    public function setSchemaXml(\SimpleXMLElement $node)
     {
         $this->_schema = DDLDatabase::unserializeFromXDDL($node);
         $this->findTranslations($this->_schema);
         $this->buildForms($this->_schema);
 
         $directory = DDL::getDirectory() . '/';
-        $dom = dom_import_simplexml($this->_schema->serializeToXDDL())->ownerDocument;
+        $dom = \dom_import_simplexml($this->_schema->serializeToXDDL())->ownerDocument;
         $dom->formatOutput = true;
         $this->_filesToCopy[] = array(
             'content' => $dom->saveXML(),
@@ -268,7 +268,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
                 continue; // form does already exist
             }
 
-            $form = $schema->addForm($tableName, 'DDLDefaultForm');
+            $form = $schema->addForm($tableName);
             /* @var $form DDLDefaultForm */
             $form->setTable($tableName);
 
@@ -301,7 +301,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
                 }
                 /* @var $field DDLDefaultField */
                 if (!$form->isField($fieldName)) {
-                    $field = $form->addField($fieldName, 'DDLDefaultField');
+                    $field = $form->addField($fieldName);
                 } else {
                     $field = $form->getField($fieldName);
                 }
@@ -313,7 +313,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
             // let's auto-hide the primary-key
             $key = $table->getPrimaryKey();
             if (!$form->isField($key)) {
-                $field = $form->addField($key, 'DDLDefaultField');
+                $field = $form->addField($key);
                 $field->setVisible(false);
             }
 
