@@ -64,7 +64,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
                 $schema = XDDL::getDatabase('check');
                 $this->db = new FileDb($schema);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->markTestSkipped("Unable to connect to database");
         }
     }

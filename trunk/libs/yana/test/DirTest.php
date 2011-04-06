@@ -76,7 +76,7 @@ class DirTest extends PHPUnit_Framework_TestCase
     {
         try {
             $this->existingDir->read();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail("Unable to read directory: " . $e->getMessage());
         }
     }

@@ -76,7 +76,7 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        unset($this->_object, $obj, $dbcreator);
+        unset($this->_object);
     }
 
     /**
@@ -298,13 +298,9 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
         $fk->setOnDelete(DDLKeyUpdateStrategyEnumeration::SETNULL);
 
         $obj = new DbCreator($db);
-        try {
-            $result = $obj->createMySQL();
-            $this->assertType('array', $result, 'assert failed the result should be of type array');
-            $this->assertNotEquals(0, count($result), 'assert failed, the expected value must have some entries');
-        } catch(Exception $e) {
-            $this->fail($e->getMessage());
-        }
+        $result = $obj->createMySQL();
+        $this->assertType('array', $result, 'assert failed the result should be of type array');
+        $this->assertNotEquals(0, count($result), 'assert failed, the expected value must have some entries');
     }
 
     /**
@@ -315,13 +311,9 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
     public function test4()
     {
         $dbcreator = new DbCreator(XDDL::getDatabase(CWD.'resources/check.db.xml'));
-        try {
-            $result = $dbcreator->createMySQL();
-            $this->assertType('array', $result, 'assert failed the result should be of type array');
-            $this->assertNotEquals(0, count($result), 'assert failed, the expected value must have some entries');
-        } catch(Exception $e) {
-            $this->fail($e->getMessage());
-        }
+        $result = $dbcreator->createMySQL();
+        $this->assertType('array', $result, 'assert failed the result should be of type array');
+        $this->assertNotEquals(0, count($result), 'assert failed, the expected value must have some entries');
     }
 
     /**
@@ -333,15 +325,11 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
     {
         // generate mySQL for testxml.db.xml
         $dbcreator = new DbCreator(XDDL::getDatabase(CWD.'resources/testxml.db.xml'));
-        try {
-            // invalid sql code because some tabels missing in the current file
-            // it does not work on because the preset foreignKeys has an non existing tabels
-            $result = $dbcreator->createMySQL();
-            $this->assertType('array', $result, 'assert failed the result should be of type array');
-            $this->assertNotEquals(0, count($result), 'assert failed, the expected value must have some entries');
-        } catch (Exception $e) {
-            $this->fail($e->getMessage());
-        }
+        // invalid sql code because some tabels missing in the current file
+        // it does not work on because the preset foreignKeys has an non existing tabels
+        $result = $dbcreator->createMySQL();
+        $this->assertType('array', $result, 'assert failed the result should be of type array');
+        $this->assertNotEquals(0, count($result), 'assert failed, the expected value must have some entries');
     }
 
 }

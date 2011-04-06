@@ -64,7 +64,7 @@ class DbStructureTest extends PHPUnit_Framework_TestCase
             $this->object = new DbStructure ( $this->databaseName );
             restore_error_handler();
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->markTestSkipped("Unable to connect to database");
         }
     }
