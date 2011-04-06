@@ -523,6 +523,7 @@ class VDriveConfiguration extends XmlArray
         {
             case 'dir':
             case 'file':
+                $requirements = null;
                 if (!isset($this->requirements)) {
                     $requirements = $this->addChild('requirements');
                     if ($readable) {
@@ -559,10 +560,8 @@ class VDriveConfiguration extends XmlArray
                     }
                 }
                 return $requirements;
-            break;
             default:
                 return null;
-            break;
         }
     }
 

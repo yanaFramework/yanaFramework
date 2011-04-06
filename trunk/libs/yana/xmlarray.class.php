@@ -131,11 +131,13 @@ class XmlArray extends \SimpleXMLElement
                 {
                     $array["@$name"] = (string) $value;
                 }
+                unset($name, $value);
             }
 
             if (count($children) > 0) {
                 foreach ($children as $name => $node)
                 {
+                    $value = null;
                     if (!$node->children()) {
                         if ($asNumericArray) {
                             $value = array(
@@ -167,6 +169,7 @@ class XmlArray extends \SimpleXMLElement
 
                     }
                 } // end foreach
+                unset($name, $node);
 
             // has no children (is text-node)
             } else {

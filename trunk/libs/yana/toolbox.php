@@ -342,6 +342,7 @@ function untaintInput($value, $type = "", $length = 0, $escape = 0, $doubleEncod
     $escape = (int) $escape;
     $precision = (int) $precision;
     $type = mb_strtolower("$type");
+    $test = false;
 
     switch ($type)
     {
@@ -466,11 +467,7 @@ function untaintInput($value, $type = "", $length = 0, $escape = 0, $doubleEncod
          */
         case "boolean":
         case "bool":
-            if ($value) {
-                return true;
-            } else {
-                return false;
-            }
+            return !empty($value);
         break;
 
         default:
@@ -501,7 +498,7 @@ function untaintInput($value, $type = "", $length = 0, $escape = 0, $doubleEncod
              */
             case is_array($value):
                 if ($length > 0 && count($value) > $length) {
-                    $value = array_slice($array, 0, $length, true);
+                    $value = array_slice($value, 0, $length, true);
                 }
             break;
             /*
