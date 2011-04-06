@@ -535,12 +535,6 @@ class SML extends File
             ' String or array expected. */');
         assert('$caseSensitive === CASE_MIXED || $caseSensitive === CASE_LOWER || $caseSensitive === CASE_UPPER;');
 
-        /* $translatedKey holds the debugging backtrace */
-        if (defined('YANA_ERROR_REPORTING') && YANA_ERROR_REPORTING !== YANA_ERROR_OFF) {
-            $translatedKey = array();
-            $i = 0;
-            $isValid = true;
-        }
         $result = array();
         $stack = array(&$result);
         $stackLength = 0;
@@ -549,13 +543,16 @@ class SML extends File
         $handle = null;
         $buffer = "";
         $isFile = false;
+        // the following vars are for debugging purposes only:
+        $i = 0;
+        $translatedKey = array();  // holds the debugging backtrace
+        $isValid = true;
 
         if (is_file("$input")) {
             $handle  = fopen("$input", "r");;
             $isFile = true;
         } elseif (is_array($input)) {
             $isFile = false;
-            $i = 0;
         } else {
             $message = "Argument 1 is expected to be a filename or an array " .
                 "created with file().\n\t\tInstead found " . gettype($input) .
@@ -617,16 +614,16 @@ class SML extends File
                     /* hide follow up errors */
                     if ($isValid === true) {
                         assert('!isset($m);');
+                        $m = array();
                         preg_match("/<\/([^>]*)>/U", $buffer, $m);
                         $closedTag = $m[1];
                         unset($m);
                         if (strcasecmp($openTag, $closedTag) !== 0) {
+                            $message = "Unclosed tag '" . implode('.', $translatedKey) . '.' . $openTag . "'.";
                             if ($isFile) {
-                                $message = "SML ERROR in file '".$input."' on line ".$i.": Unclosed tag '"
-                                    .implode('.', $translatedKey).'.'.$openTag."'.";
+                                $message = "SML ERROR in file '" . $input . "' on line " . $i . ": " . $message;
                             } else {
-                                $message = "SML ERROR on line ".$i.": Unclosed tag '".implode('.', $translatedKey).'.'
-                                    .$openTag."'.";
+                                $message = "SML ERROR on line " . $i . ": " . $message;
                             }
                             trigger_error($message, E_USER_WARNING);
                             $isValid = false;
@@ -646,11 +643,11 @@ class SML extends File
         }
 
         if (defined('YANA_ERROR_REPORTING') && YANA_ERROR_REPORTING !== YANA_ERROR_OFF && $stackLength !== 0) {
+            $message = "The tag '" . implode('.', $translatedKey) . "' has never been closed.";
             if ($isFile) {
-                $message = "SML ERROR in file '{$input}': The tag '".implode('.', $translatedKey).
-                    "' has never been closed.";
+                $message = "SML ERROR in file '" . $input . "': " . $message;
             } else {
-                $message = "SML ERROR: The tag '".implode('.', $translatedKey)."' has never been closed.";
+                $message = "SML ERROR: " . $message;
             }
             trigger_error($message, E_USER_WARNING);
         }
@@ -725,11 +722,7 @@ class SML extends File
             $name = mb_strtolower($name);
         }
 
-        if ((is_null($name) || $name === "") && is_array($data)) {
-            $ignore_name = true;
-        } else {
-            $ignore_name = false;
-        }
+        $ignoreName = (bool) ((is_null($name) || $name === "") && is_array($data));
 
         /* indent tag */
         $tab = "";
@@ -743,19 +736,19 @@ class SML extends File
         {
             case is_bool($data):
                 return $tab."<$name>".( ($data) ? "true" : "false" )."</$name>"."\n";
-            break;
+
             case is_string($data):
                 return $tab."<$name>".preg_replace("/\s/", " ", strip_tags($data))."</$name>"."\n";
-            break;
+
             case is_integer($data): case is_float($data):
                 return $tab."<$name>".$data."</$name>"."\n";
-            break;
+
             case is_object($data):
                 $data = get_object_vars($data);
             // fall through
             case is_array($data):
-                $ignore_name || $txt = $tab."<$name>"."\n";
-                $ignore_name || $indent++;
+                $ignoreName || $txt = $tab."<$name>"."\n";
+                $ignoreName || $indent++;
                 if ($indent < 50) { // recursion protection: maximal nesting level of 50
                     foreach ($data as $key => $element)
                     {
@@ -766,12 +759,12 @@ class SML extends File
                         }
                     } /* end foreach */
                 }
-                $ignore_name || $txt .= $tab."</$name>"."\n";
+                $ignoreName || $txt .= $tab."</$name>"."\n";
                 return $txt;
-            break;
+
             default:
                 return $tab."<$name>".$data."</$name>"."\n";
-            break;
+
         } /* end switch */
     }
 
