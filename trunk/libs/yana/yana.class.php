@@ -997,13 +997,10 @@ final class Yana extends Singleton implements IsReportable
         $event = $pluginManager->getFirstEvent();
         $result = $pluginManager->getLastResult();
         $eventConfiguration = $pluginManager->getEventConfiguration($event);
-        if ($eventConfiguration instanceof PluginConfigurationMethod) {
-            $template = $eventConfiguration->getTemplate();
-
-        } else {
-            // error - unable to continue
-            return;
+        if (! $eventConfiguration instanceof PluginConfigurationMethod) {
+            return; // error - unable to continue
         }
+        $template = $eventConfiguration->getTemplate();
         unset($eventConfiguration);
 
         switch (strtolower($template))
@@ -1086,6 +1083,7 @@ final class Yana extends Singleton implements IsReportable
         $pluginManager = $this->getPlugins();
         $route = $pluginManager->getNextEvent();
         $target = "";
+        $messageClass = "";
 
         if ($route instanceof PluginEventRoute) {
             // create default message if there is none
@@ -1402,6 +1400,7 @@ final class Yana extends Singleton implements IsReportable
         $stdout = array();
 
         assert('!isset($messages); // Cannot redeclare variable $messages');
+        $messages = array();
         if (defined('YANA_ERROR_REPORTING') && YANA_ERROR_REPORTING === YANA_ERROR_ON) {
             $messages = ReportAbstract::getMessages();
         } else {
