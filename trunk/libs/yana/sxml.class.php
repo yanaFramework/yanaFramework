@@ -138,6 +138,7 @@ class SXML extends SML
             'String or array expected. */');
         assert('$caseSensitive === CASE_MIXED || $caseSensitive === CASE_LOWER || $caseSensitive === CASE_UPPER;');
 
+        $sxml = "";
         if (is_file("$input")) {
             try {
 

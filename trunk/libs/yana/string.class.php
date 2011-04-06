@@ -783,6 +783,7 @@ class String extends Utility
     {
         assert('is_string($string); // Wrong argument type for argument 1. String expected.');
         assert('is_string($regularExpression); // Wrong argument type for argument 2. String expected.');
+        $matches = array();
         $count = (int) preg_match($regularExpression, $string, $matches);
         if ($count > 0) {
             assert('is_array($matches);');
@@ -815,6 +816,7 @@ class String extends Utility
     {
         assert('is_string($string); // Wrong argument type for argument 1. String expected.');
         assert('is_string($regularExpression); // Wrong argument type for argument 2. String expected.');
+        $matches = array();
         $count = (int) preg_match_all($regularExpression, $string, $matches);
         if ($count > 0) {
             assert('is_array($matches);');
@@ -1000,11 +1002,10 @@ class String extends Utility
         assert('is_string($needle); // Wrong argument type for argument 2. String expected.');
         assert('is_int($offset); // Wrong argument type for argument 3. Integer expected.');
 
-        if ($offset > 0) {
-            $result = mb_strpos($string, $needle, $offset);
-        } else {
-            $result = mb_strpos($string, $needle);
+        if ($offset <= 0) {
+            $offset = null;
         }
+        $result = mb_strpos($string, $needle, $offset);
         if ($result === false) {
             return -1;
         } else {
@@ -1052,6 +1053,7 @@ class String extends Utility
     {
         assert('is_string($string); // Wrong argument type for argument 1. String expected.');
         if (!empty($string)) {
+            $array = array();
             preg_match_all('/./us', $string, $array);
             shuffle($array[0]);
             return join('', $array[0]);
@@ -1076,6 +1078,7 @@ class String extends Utility
     {
         assert('is_string($string); // Wrong argument type for argument 1. String expected.');
         if (!empty($string)) {
+            $array = array();
             preg_match_all('/./us', $string, $array);
             return join('', array_reverse($array[0]));
         }
