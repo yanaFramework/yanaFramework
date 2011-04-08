@@ -220,6 +220,9 @@ function yanaGetCookie($key)
  */
 function yanaMaxLength($node, $length, $event)
 {
+    if ($length <= 0) {
+        return true;
+    }
     var o = $node;
     var len = $length;
     var e = $event;
@@ -326,6 +329,9 @@ function yanaInitTextareas()
 {
     yanaAddEventListener('onmouseover', function(e, node) {window.focusedTextarea = node.id;}, 'textarea');
     yanaAddEventListener('onkeydown', function(e, node) {window.focusedTextarea = node.id;}, 'textarea');
+    yanaAddEventListener(
+        'onkeypress', function(e, node) { if (node.maxlength) yanaMaxLength(node, node.maxlength, e);}, 'textarea'
+    );
     yanaAddEventListener('onsubmit', yanaCheckEmbTags, 'form');
     yanaAddEventListener('onload', yanaInitTextareas, 'body');
     return true;
