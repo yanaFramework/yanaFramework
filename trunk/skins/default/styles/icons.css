@@ -6,6 +6,7 @@
 .icon_dot, .icon_dot_hover,
 .icon_download, .icon_download_hover,
 .icon_edit, .icon_edit_hover,
+.icon_false, .icon_false_hover,
 .icon_favorites, .icon_favorites_hover,
 .icon_female, .icon_female_hover,
 .icon_filter, .icon_filter_hover,
@@ -23,6 +24,7 @@
 .icon_show, .icon_show_hover,
 .icon_slidedown, .icon_slidedown_hover,
 .icon_slideup, .icon_slideup_hover,
+.icon_true, .icon_true_hover,
 .icon_upload, .icon_upload_hover
 {
     background-repeat: no-repeat;
@@ -153,6 +155,18 @@
 .icon_edit:hover, .icon_edit_hover
 {
     background-image: url(icons/edit.png);
+}
+.icon_false
+{
+    background-image: url(icons/nofalse.png);
+}
+.li_false
+{
+    list-style-image: url(icons/false.png);
+}
+.icon_false:hover, .icon_false_hover
+{
+    background-image: url(icons/false.png);
 }
 .icon_favorites
 {
@@ -357,6 +371,18 @@
 .icon_slideup:hover, .icon_slideup_hover
 {
     background-image: url(icons/slideup.png);
+}
+.icon_true
+{
+    background-image: url(icons/notrue.png);
+}
+.li_true
+{
+    list-style-image: url(icons/true.png);
+}
+.icon_true:hover, .icon_true_hover
+{
+    background-image: url(icons/true.png);
 }
 .icon_upload
 {
