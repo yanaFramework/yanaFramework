@@ -71,6 +71,7 @@
             <style>default/scripts/photodesk/css/jquery.photodesk.css</style>
             <script id="gui">default/scripts/gui_generator.js</script>
             <script id="tinymce">default/scripts/tiny_mce/tiny_mce_config.js</script>
+            <script id="htmleditor">default/scripts/tiny_mce/tiny_mce.js</script>
             <script id="calendar">default/scripts/calendar/calendar.js</script>
             <script id="calendar_setup">default/scripts/calendar/calendar-setup.js</script>
             <script id="jquerytransform">default/scripts/photodesk/jquery.transform-0.6.2.min.js</script>
