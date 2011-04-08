@@ -37,380 +37,45 @@
  * @package     yana
  * @subpackage  form
  */
-class FormFieldHtmlBuilder extends Object
+class FormFieldHtmlBuilder extends FormHtmlBuilder
 {
 
     /**
-     * HTML attribute "id".
+     * create HTML for current field
      *
-     * @access  private
-     * @var     string
-     */
-    private $_id = "";
-
-    /**
-     * HTML attribute "name".
-     *
-     * @access  private
-     * @var     string
-     */
-    private $_name = "";
-
-    /**
-     * HTML attribute "class".
-     *
-     * @access  private
-     * @var     string
-     */
-    private $_class = "";
-
-    /**
-     * Other HTML attributes.
-     *
-     * @access  private
-     * @var     string
-     */
-    private $_attr = "";
-
-    /**
-     * Initialize new instance.
-     *
-     * @access  public
-     */
-    public function _construct()
-    {
-        $this->createNewField();
-    }
-
-    /**
-     * Reset instance and create new field.
-     * 
-     * @access  public
-     * @return  FormHtmlBuilder 
-     */
-    public function createNewField()
-    {
-        $this->_attr = "";
-        $this->_class = "";
-        $this->_id = "";
-        $this->_name = "";
-        return $this;
-    }
-
-    /**
-     * Get HTML attribute "id".
+     * Returns the HTML-code representing an input element for the current field.
+     * If the field has an action attached to it, an clickable icon or text-link is created next to it.
      *
      * @access  public
      * @return  string
-     */
-    public function getId()
-    {
-        return $this->_id;
-    }
-
-    /**
-     * Set HTML attribute "id".
      *
-     * @access  public
-     * @param   string  $id  must be valid unique identifier
-     * @return  FormHtmlBuilder 
+     * @ignore
      */
-    public function setId($id)
+    public function buildByType(DDLField $field)
     {
-        $this->_id = $id;
-        return $this;
-    }
-
-    /**
-     * Get HTML attribute "name".
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getName()
-    {
-        return $this->_name;
-    }
-
-    /**
-     * Set HTML attribute "name".
-     *
-     * @access  public
-     * @param   string  $name  must be valid unique identifier
-     * @return  FormHtmlBuilder 
-     */
-    public function setName($name)
-    {
-        $this->_name = $name;
-        return $this;
-    }
-
-    /**
-     * Get HTML attribute "class".
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getCssClass()
-    {
-        return $this->_class;
-    }
-
-    /**
-     * Set HTML attribute "class".
-     *
-     * @access  public
-     * @param   string  $class  must be valid CSS class name
-     * @return  FormHtmlBuilder 
-     */
-    public function setCssClass($class)
-    {
-        $this->_class = $class;
-        return $this;
-    }
-
-    /**
-     * Get other HTML attributes.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getAttr()
-    {
-        return $this->_attr;
-    }
-
-    /**
-     * Set other HTML attributes as HTML code.
-     *
-     * @access  public
-     * @param   string  $attr  list of HTML attributes.
-     * @return  FormHtmlBuilder 
-     */
-    public function setAttr($attr)
-    {
-        $this->_attr = $attr;
-        return $this;
-    }
-
-    /**
-     * Generate HTML select element.
-     *
-     * @access  public
-     * @param   array   $values    item list
-     * @param   string  $selected  selected value
-     * @param   string  $null      text for NULL item (may be empty if there is none)
-     * @return  string
-     */
-    public function buildSelect(array $values, $selected, $null = "")
-    {
-        return '<select class="' . $this->getCssClass() . '" id="' . $this->getId() . '" name="' . $this->getName() .
-             '" ' . $this->getAttr() . '>' . (($null) ? '<option value="">'. $null . '</option>' : '') .
-            self::_getOptions($values, $selected) .
-            '</select>';
-    }
-
-    /**
-     * generate HTML option and optgroup elements
-     *
-     * @access  private
-     * @static
-     * @param   array   $values    item list
-     * @param   string  $selected  selected value
-     * @return  string
-     */
-    private static function _getOptions(array $values, $selected)
-    {
-        $result = "";
-        foreach ($values as $key => $text)
-        {
-            if (is_array($text)) { // is optgroup
-                $result .= '<optgroup label="' . $key . '">' .
-                    self::_getOptions($text, $selected) . '</optgroup>';
-            } else { // is option
-                $result .= '<option value="' . $key . '" ' .
-                    (($key == $selected) ? 'selected="selected"' : '') . '>' . $text . '</option>';
-            }
+        // field may be edited
+        if ($field->isUpdatable() && $this->form->getUpdateAction()) {
+            return parent::toString() . $this->createLink();
         }
-        return $result;
+        // field may not be changed
+        return $this->buildByTypeNonUpdatable() . $this->createLink();
     }
 
-    /**
-     * generate HTML radio element
-     *
-     * @access  public
-     * @param   array   $values    item list
-     * @param   string  $selected  selected value
-     * @param   string  $null      text for NULL item (may be empty if there is none)
-     * @return  string
-     */
-    public function buildRadio(array $values, $selected, $null = "")
-    {
-        $this->_attr = $this->getAttr();
-        $result = '';
-        if ($null) {
-            $result = '<label class="' . $this->_class . '"><input type="radio" ' . $this->_attr . ' ' .
-                'name="' . $this->getName() . '" value=""/>' . $null . '</label> ';
-        }
-
-        $id = ' id="' . $this->getId() . '"'; // only first element
-        foreach ($values as $key => $text)
-        {
-            $result .= ' <label class="' . $this->_class . '"><input' . $id . ' ' . $this->_attr . ' type="radio" ' .
-                'name="' . $this->getName() . '" value="' . $key . '" ' .
-                (($key === $selected) ? 'checked="checked"' : '') . '/>' . $text . '</label>';
-            $id = ""; // reset id for secound element
-        }
-
-        return $result;
-    }
-
-    /**
-     * generate HTML checkbox element
-     *
-     * @access  public
-     * @param   array   $values    item list
-     * @param   array   $checked  selected values
-     * @return  string
-     */
-    public function buildCheckboxes(array $values, array $checked)
-    {
-        $template = '<label class="' . $this->getCssClass() . '"><input %s' . $this->getAttr() .
-            ' type="checkbox" ' . 'name="' . $this->getName() . '[]" value="%s"/>%s</label>' . "\n";
-        $attributes = ' id="' . $this->getId() . '"'; // only first element
-        return self::_getCheckBoxes($template, $attributes, $values, $checked);
-    }
-
-    /**
-     * Returns HTML-code for a checkbox.
-     *
-     * Creates two input HTML-tags: a hidden-field containing the value "0" = FALSE and a checkbox,
-     * containting the real value.
-     * The value
-     *
-     * Adding a hidden field with value = "0" prior to a checkbox will ensure the form always returns a value.
-     * "1" = checked, "0" = not checked.
-     *
-     * @access  public
-     * @param   bool    $isChecked  true = checkbox is checked, false = checkbox is not checked
-     * @return  string
-     */
-    public function buildBoolCheckbox($isChecked)
-    {
-        $class = ($this->getCssClass()) ? $this->getCssClass() : "gui_generator_check";
-        return '<input type="hidden" name="' . $this->getName() . '" value="0"/>' . // add a default value
-            '<input' . $this->getAttr() . ' id="' . $this->getId() . '" class="' . $class . '" type="checkbox" ' .
-            'name="' . $this->getName() . '" value="1" ' . (($isChecked) ? 'checked="checked"' : '') . '/>';
-    }
-
-    /**
-     * generate HTML checkbox and fieldset elements
-     *
-     * @access  protected
-     * @static
-     * @param   string  $template  checkbox template for sprintf
-     * @param   string  &$attr     additional attributes (for first element only)
-     * @param   array   $items     item list
-     * @param   array   $checked   selected values
-     * @return  string
-     */
-    private static function _getCheckBoxes($template, &$attr, array $items, array $checked)
-    {
-        $result = "";
-        foreach ($items as $key => $text)
-        {
-            if (is_array($text)) { // is optgroup
-                $result .= '<fieldset><legend>' . $key . '</legend>' .
-                    self::_getCheckBoxes($template, $attr, $text, $checked) . '</fieldset>';
-            } else { // is option
-                if (in_array($key, $checked, true)) {
-                    $attr .= ' checked="checked"';
-                }
-                $result .=  sprintf($template, $attr, $key, $text);
-            }
-            $attr = ""; // reset attribute list for second element
-        }
-
-        return $result;
-    }
-
-    /**
-     * Create list of HTML input fields for arrays.
-     *
-     * @access  public
-     * @param   mixed   $values     list of items  
-     * @param   bool    $isNumeric  true = numeric list, false = associative array
-     * @return  string 
-     */
-    public function buildList(array $values = array(), $isNumeric = false)
+    public function buildExternalLink($url)
     {
         $lang = Language::getInstance();
-        $template = '';
 
-        if (!$isNumeric) {
-            $template = '<input' . $this->getAttr() . ' size="5" type="text" name="' . $this->getName() . '[names][]" value="%s"/>' .
-                '&nbsp;=&nbsp;<input size="10" type="text" name="' . $this->getName() . '[values][]" value="%s"/>' .
-                '<a class="buttonize" href="javascript://yanaRemoveItem(this)" ' .
-                'onclick="yanaRemoveItem(this)" title="'. $lang->getVar('remove') . '">' .
-                '<span class="icon_delete">&nbsp;</span></a>' .
-                '<a class="buttonize" href="javascript://yanaAddItem(this)" onclick="yanaAddItem(this)" ' .
-                'title="' . $lang->getVar('button_new') . '">' .
-                '<span class="icon_new">&nbsp;</span></a>';
-        } else {
-            $template = '<input' . $this->getAttr() . ' size="21" type="text" name="' . $this->getName() .'[%i]" value="%s"/>' .
-                '<a class="buttonize" href="javascript://yanaRemoveItem(this)" ' .
-                'onclick="yanaRemoveItem(this)" title="'. $lang->getVar('remove') . '">' .
-                '<span class="icon_delete">&nbsp;</span></a>' .
-                '<a class="buttonize" href="javascript://yanaAddItem(this)" onclick="yanaAddItem(this)" ' .
-                'title="' . $lang->getVar('button_new') . '">' .
-                '<span class="icon_new">&nbsp;</span></a>';
+        $class = ($this->getCssClass()) ? $this->getCssClass() : 'gui_generator_ext_link';
+        $title = ($this->getTitle()) ? $this->getTitle() : $lang->getVar('ext_link');
+
+        $onclick = 'return confirm(\'' . $lang->getVar('confirm_ext_link') . '\')';
+        $href = htmlspecialchars($url, ENT_COMPAT, 'UTF-8');
+        $text = $url;
+        if (mb_strlen($text) > 80) {
+            $text = mb_substr($text, 0, 76) . ' ...';
         }
-
-        $result = '<div class="' . (($this->getCssClass()) ? $this->getCssClass() : "gui_generator_array")  . '">';
-
-        /* list of entries*/
-        $result .= '<ol>';
-
-        if (!empty($values)) {
-            $template = '<li>' . $template . '</li>';
-            ksort($values);
-            foreach ($values as $key => $text)
-            {
-                $result .= sprintf($template, $key, $text);
-            }
-        } else {
-            $result .= '<li>' . sprintf($template, '', '') . '</li>';
-        }
-
-        // link to add new entry
-        $result .= '</ol></div>';
-
-        return $result;
-    }
-
-    /**
-     * Create HTML input field of type text.
-     *
-     * @access  public
-     * @param   string  $value  some text, must not contain line-breaks.
-     * @return  string
-     */
-    public function buildTextfield($value)
-    {
-        return '<input' . $this->getAttr() . ' id="' . $this->getId() . '" name="' . $this->getName() . '" ' .
-            'class="' . $this->getCssClass() . '" type="text" value="' . $value . '"/>';
-    }
-
-    /**
-     * Create HTML input field of type color.
-     *
-     * @access  public
-     * @param   string  $value  some text, must not contain line-breaks.
-     * @return  string
-     */
-    public function buildColorpicker($value)
-    {
-        return $this->buildTextfield($value) . SmartUtility::colorpicker(array('id' => $this->getId()));
+        return '<a' . $this->getAttr() . ' id="' . $this->getId() . '" class="' . $class . '" onclick="' . $onclick .
+            '" title="' . $this->getTitle() . '" href="' . $href . '">' . $text . '</a>';
     }
 
     /**
@@ -424,13 +89,10 @@ class FormFieldHtmlBuilder extends Object
      *
      * @ignore
      */
-    public function buildByType(DDLField $field)
+    protected function buildByTypeUpdateable(DDLField $field, FormSetup $setup)
     {
         $column = $field->getColumnDefinition();
-        $length = $column->getLength();
 
-        $name = $this->getName();
-        $id = $this->getId();
         $lang = Language::getInstance();
 
         // retrieve search arguments
@@ -469,71 +131,32 @@ class FormFieldHtmlBuilder extends Object
                     $this->setCssClass("gui_generator_set");
                 }
                 return $this->buildSelect($items, $value, $null);
-            break;
             case 'file':
-                global $YANA;
                 $result = '<div class="gui_generator_file_download">';
-                $download = $this->form->getDownloadAction();
-                if (!empty($value) && $YANA->getSession()->checkPermission(null, $download)) {
-                    $value = DbBlob::storeFilenameInSession($value);
-                    $result .= '<a class="buttonize" title="' . $lang->getVar('title_download') . '" href=' .
-                        SmartUtility::href("action={$download}&target={$value}") .
-                        '><span class="icon_download">&nbsp;</span></a>';
-
-                } else {
-                    $result .= '<span class="icon_blank">&nbsp;</span>';
-                }
-            // fall through
-
-            /*
-             * an image is a file which has a preview
-             */
-            case 'image':
-                global $YANA;
-                if (!isset($result)) {
-                    $result = '<div class="gui_generator_image">';
-                    $download = $this->form->getDownloadAction();
-                    if (!empty($value) && $YANA->getSession()->checkPermission(null, $download)) {
-                        $value = DbBlob::storeFilenameInSession($value);
-                        $result .= '<a href=' .
-                            SmartUtility::href("action={$download}&target={$value}&fullsize=true") .
-                            '><img border="0" alt="" src=' .
-                            SmartUtility::href("action={$download}&target={$value}") . '/></a>';
-
-                    } else {
-                        $result .= '&nbsp;';
-                    }
-                }
-                if ($length > 0) {
-                    $result .= '<input type="hidden" name="MAX_FILE_SIZE" value="' . $length . '"/>';
-                }
-                $result .= '<input' . $attr .' size="1" type="file" id="' . $id . '" name="' . $name . '"/>';
-                if (!empty($value) && $column->isNullable()) {
-                    $result .= '<label class="gui_generator_file_delete">' .
-                        '<input title="' . $lang->getVar('button_delete_one') . '" type="checkbox" ' .
-                        'id="' . $id . '_delete" name="' . $name . '" value="1"/>' .
-                        $lang->getVar('button_delete_one') . '</label>';
-                }
+                $result .= $this->buildFileDownload($value, $setup->getDownloadAction());
+                $hasDelete = !empty($value) && $column->isNullable();
+                $result .= $this->buildFilefield($hasDelete);
                 $result .= '</div>';
                 return $result;
-            break;
+            case 'image':
+                $result = '<div class="gui_generator_image">';
+                $result .= $this->buildImageDownload($value, $setup->getDownloadAction());
+                $hasDelete = !empty($value) && $column->isNullable();
+                $result .= $this->buildFilefield($hasDelete, "image/*");
+                $result .= '</div>';
+                return $result;
             case 'float':
+                $length = (int) $column->getLength();
                 $precision = (int) $column->getPrecision();
-                $title = $field->getTitle() . ': ' . (($length < 8) ? str_pad('', $length, '#') : '########') .
-                     '.' . (($precision < 8) ? str_pad('', $precision, '#') : '########');
-                $length++;
-                return '<input' . $attr .' id="' . $id . '" name="' . $name . '" type="text" value="' . $value .
-                    '" ' . ( ($length > 0 ) ? 'maxlength="' . $length . '"' : '' ) .
-                    ( ($length < 22 ) ? ' size="' . $length . '"' : '' ) . ' title="' . $title . '"' . '/>';
-            break;
+                $this->setTitle($field->getTitle() . ': ' . (($length < 8) ? str_pad('', $length, '#') : '########') .
+                     '.' . (($precision < 8) ? str_pad('', $precision, '#') : '########'));
+                $this->setMaxLength($length + 1);
+                return $this->buildTextfield($value);
             case 'html':
-                return '<textarea' . $attr .' class="editable" id="' . $id . '" name="' . $name . '" ' .
-                    ' rows="3" cols="20">' . $value . '</textarea>' .
-                    '<script type="text/javascript" src="skins/default/scripts/tiny_mce/tiny_mce.js"></script>';
-            break;
+                $this->setCssClass("editable");
+                return $this->buildTextarea($value);
             case 'password':
-                return '<input' . $attr .' id="' . $id . '" name="' . $name . '" type="password" value=""/>';
-            break;
+                return $this->buildTextfield('', 'password');
             case 'range':
                 $rangeStep = $column->getRangeStep();
                 if (empty($rangeStep)) {
@@ -542,40 +165,34 @@ class FormFieldHtmlBuilder extends Object
                 if (empty($value)) {
                     $value = $column->getRangeMin();
                 }
-                return '<input' . $attr . ' size="4" id="' . $id . '" name="' . $name . '" type="text" value="' .
-                    $value . '"/>' .
-                    '<script type="text/javascript">yanaSlider("' . $id . '", ' . $column->getRangeMin() .
+                $this->setMaxLength(4);
+                return $this->buildTextfield($value) .
+                    '<script type="text/javascript">yanaSlider("' . $this->getId() . '", ' . $column->getRangeMin() .
                      ', ' . $column->getRangeMax() . ', ' . $rangeStep . ', ' . $value . ');</script>';
-            break;
             case 'reference':
                 $null = "";
                 if ($column->isNullable()) {
                     $null = $lang->getVar('choose_option');
                 }
+                $this->setCssClass("gui_generator_reference");
                 $items = $this->getReferenceValues($field->getName());
-                return self::generateSelect($id, $name, "gui_generator_reference", $items, $value, $null, $attr);
-            break;
+                return $this->buildSelect($items, $value, $null);
             case 'set':
                 assert('!isset($items); // Cannot redeclare var $items');
                 $items = $column->getEnumerationItems();
                 if (empty($value)) {
                     $value = array();
                 }
-                return self::generateCheckboxes($id, $name, "gui_generator_set", $items, $value, $attr);
-            break;
-            case 'text':
-                $check = "";
-                if ($length > 0) {
-                    $check = 'onkeypress="if (yanaMaxLength) yanaMaxLength(this, ' . $length . ', event)"';
-                }
-                if ($length > 2000) {
-                    $check .= ' cols="30"';
+                $this->setCssClass("gui_generator_set");
+                $result = "";
+                if (count($items) < 5) {
+                    $result = $this->buildCheckboxes($items, $value);
                 } else {
-                    $check .= ' cols="20"';
+                    $result = $this->buildSelectMultiple($items, $value);
                 }
-                return '<textarea' . $attr . ' id="' . $id . '" name="' . $name . '" ' . $check .
-                    ' rows="3">' . $value . '</textarea>';
-            break;
+                return $result;
+            case 'text':
+                return $this->buildTextarea($value);
             case 'date':
                 if (is_string($value)) {
                     $value = strtotime($value);
@@ -583,14 +200,15 @@ class FormFieldHtmlBuilder extends Object
                 if (is_int($value)) {
                     $value = getdate($value);
                 }
-                return '<span id="' . $id . '" class="gui_generator_date">' .
+                $this->setCssClass("gui_generator_date");
+                return $this->buildSpan(
                     SmartUtility::selectDate(array(
                         'time' => $value,
-                        'attr' => $attr,
-                        'id' => $id,
-                        'name' => $name)
-                    ) . '</span>';
-            break;
+                        'attr' => $this->getAttr(),
+                        'id' => $this->getId(),
+                        'name' => $this->getName())
+                    )
+                );
             case 'time':
             case 'timestamp':
                 if (is_string($value)) {
@@ -599,31 +217,176 @@ class FormFieldHtmlBuilder extends Object
                 if (is_int($value)) {
                     $value = getdate($value);
                 }
-                return '<span id="' . $id . '" class="gui_generator_time">' .
+                $this->setCssClass("gui_generator_time");
+                return $this->buildSpan(
                     SmartUtility::selectDate(array(
                         'time' => $value,
-                        'attr' => $attr,
-                        'id' => $id,
-                        'name' => $name)
+                        'attr' => $this->getAttr(),
+                        'id' => $this->getId(),
+                        'name' => $this->getName())
                     ) .
                     SmartUtility::selectTime(array(
                         'time' => $value,
-                        'attr' => $attr,
-                        'id' => $id,
-                        'name' => $name)
-                    ) . '</span>';
-            break;
+                        'attr' => $this->getAttr(),
+                        'id' => $this->getId(),
+                        'name' => $this->getName())
+                    )
+                );
             case 'url':
-                return '<input' . $attr . ' id="' . $id . '" name="' . $name . '" type="text" value="' . $value .
-                    '" ' .( ($length > 0 ) ? 'maxlength="' . $length . '"' : '' ) .
-                    ( ($length > 0 && $length < 22 ) ? 'size="' . $length . '"' : '' ) . '/>';
-            break;
+                return $this->buildTextfield($value);
             default:
-                return '<input' . $attr . ' id="' . $id . '" name="' . $name . '" type="text" value="' . $value .
-                    '" ' .( ($length > 0 ) ? 'maxlength="' . $length . '"' : '' ) .
-                    ( ($length > 0 && $length < 22 ) ? ' size="' . $length . '"' : '' ) . '/>';
-            break;
+                return $this->buildTextfield($value);
         }
+    }
+
+    /**
+     * create HTML for non-updatable field
+     *
+     * Returns the HTML-code representing an input element for the current field.
+     *
+     * @access  protected
+     * @return  string
+     *
+     * @ignore
+     */
+    protected function buildByTypeNonUpdatable(DDLField $field, FormSetup $setup)
+    {
+        $column = $field->getColumnDefinition();
+
+        // retrieve search arguments
+        $value = $this->getValue();
+        if (empty($value) && $value !== false) {
+            return '&ndash;';
+        }
+
+        // get javascript events
+        assert('!isset($attr); // Cannot redeclare var $attr');
+        $attr = $field->getEventsAsHTML();
+
+        /**
+         * Switch by column's type
+         */
+        switch ($field->getType())
+        {
+            case 'array':
+                $this->setCssClass("gui_generator_array");
+                return $this->buildDiv(SmartUtility::printUL1($value));
+            case 'bool':
+                $value = ($value) ? "true" : "false";
+                $this->setCssClass("gui_generator_bool icon_" . $value);
+                return $this->buildSpan('&nbsp;');
+            case 'color':
+                $this->setAttr(' style="background-color: ' . $value . '"')->setCssClass("gui_generator_color");
+                return $this->buildSpan($value);
+            case 'date':
+                return $this->buildSpan(SmartUtility::date($value));
+            case 'file':
+                $this->setCssClass('gui_generator_file_download');
+                return $this->buildSpan($this->buildFileDownload($value, $setup->getDownloadAction()));
+            case 'text':
+                $value = SmartUtility::smilies(SmartUtility::embeddedTags($value));
+            // fall through
+            case 'html':
+                if (mb_strlen($value) > 25) {
+                    $this->setCssClass('gui_generator_readonly_textarea');
+                }
+                return $this->buildDiv($value);
+            case 'image':
+                $this->setCssClass('gui_generator_image');
+                return $this->buildDiv($this->buildImageDownload($value, $setup->getDownloadAction()));
+            case 'enum':
+            case 'set':
+            case 'list':
+                $this->setCssClass('gui_generator_array');
+                return $this->buildDiv(SmartUtility::printUL1($value, 2));
+            case 'password':
+                return '&ndash;'; // never show password
+            case 'reference':
+                $references = $this->getReferences();
+                if (isset($references[$field->getName()])) {
+                    $reference = $references[$field->getName()];
+                    $label = strtolower($reference['label']);
+                    $row = $this->currentRow();
+                    if (isset($row[$label])) {
+                        $value = $row[$label];
+                    }
+                }
+                return $this->buildSpan($value);
+            case 'time':
+            case 'timestamp':
+                return $this->buildSpan(SmartUtility::date($value));
+            case 'url':
+                return $this->buildExternalLink($value);
+            default:
+                if (mb_strlen($value) > 80) {
+                    $value = mb_substr($value, 0, 76) . '&nbsp;...';
+                }
+                return $this->buildSpan($value);
+        }
+    }
+
+    /**
+     * create a reference link (where available)
+     *
+     * Returns the HTML-code for this field.
+     *
+     * @access  protected
+     * @return  string
+     *
+     * @ignore
+     */
+    protected function createLink()
+    {
+        $value = $this->getValue();
+        if (empty($value) && $value !== false) {
+            return '';
+        }
+        $lang = Language::getInstance();
+        $field = $this->current();
+        $column = $field->getColumnDefinition();
+        $table = $this->form->getTableDefinition();
+        $id = 'id="' . $this->form->getName() . '-' . $this->primaryColumn() . '-' .
+            $this->primaryKey() . '-' . $field->getName() . '"';
+        $class = 'class="gui_generator_int_link"';
+        $result = "";
+        /* @var $event DDLEvent */
+        foreach ($field->getEvents() as $event)
+        {
+            $code = $event->getAction();
+            $label = $event->getLabel();
+            $title = $event->getTitle();
+            $icon = $event->getIcon();
+            $href = "";
+
+            switch (strtolower($event->getLanguage()))
+            {
+                case 'javascript':
+                    assert('!isset($actionId);');
+                    $actionId = String::htmlSpecialChars($event->getAction());
+                    $href = 'href="javascript://" ' . $event->getName() . '="' . $actionId . '"';
+                    unset($actionId);
+                break;
+                default:
+                    $actionParam = "action=" . $event->getName();
+                    $targetParam = "target[" . $table->getPrimaryKey() . "]=" . $this->primaryKey() .
+                        "&target[" . $field->getName() . "]=" . $value;
+                    $href = 'href="' . SmartUtility::url("$actionParam&$targetParam") . '"';
+                    if (empty($title)) {
+                        $title = $lang->getVar('DB_ENTITY_LINK');
+                    }
+                break;
+            }
+            if (!empty($title)) {
+                $title = "title=\"$title\"";
+            }
+            if (!empty($icon)) {
+                $icon  = '<img src="' . $icon . '" alt="' . $lang->getVar('BUTTON_OPEN') . '"/>';
+            }
+            if (!empty($label)) {
+                $result .= "<a $id $class $title $href>$label$icon</a>";
+            }
+        } // end foreach
+        return $result;
     }
 
 }
