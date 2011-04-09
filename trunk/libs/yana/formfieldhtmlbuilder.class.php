@@ -41,6 +41,50 @@ class FormFieldHtmlBuilder extends FormHtmlBuilder
 {
 
     /**
+     * Field value.
+     *
+     * @access  private
+     * @var     mixed
+     */
+    private $_value = null;
+
+    /**
+     * Field value.
+     *
+     * @access  public
+     * @return  mixed
+     */
+    public function getValue()
+    {
+        return $this->_value;
+    }
+
+    /**
+     * Set HTML attribute "id".
+     *
+     * @access  public
+     * @param   string  $value  must be valid unique identifier
+     * @return  FormFieldHtmlBuilder 
+     */
+    public function setValue($value)
+    {
+        $this->_value = $value;
+        return $this;
+    }
+
+    /**
+     * Reset instance and create new field.
+     *
+     * @access  public
+     * @return  FormFieldHtmlBuilder
+     */
+    public function createNewField()
+    {
+        $this->_value = null;
+        return parent::createNewField();
+    }
+
+    /**
      * create HTML for current field
      *
      * Returns the HTML-code representing an input element for the current field.
@@ -55,27 +99,10 @@ class FormFieldHtmlBuilder extends FormHtmlBuilder
     {
         // field may be edited
         if ($field->isUpdatable() && $this->form->getUpdateAction()) {
-            return parent::toString() . $this->createLink();
+            return $this->buildByTypeUpdatable($field) . $this->createLink();
         }
         // field may not be changed
-        return $this->buildByTypeNonUpdatable() . $this->createLink();
-    }
-
-    public function buildExternalLink($url)
-    {
-        $lang = Language::getInstance();
-
-        $class = ($this->getCssClass()) ? $this->getCssClass() : 'gui_generator_ext_link';
-        $title = ($this->getTitle()) ? $this->getTitle() : $lang->getVar('ext_link');
-
-        $onclick = 'return confirm(\'' . $lang->getVar('confirm_ext_link') . '\')';
-        $href = htmlspecialchars($url, ENT_COMPAT, 'UTF-8');
-        $text = $url;
-        if (mb_strlen($text) > 80) {
-            $text = mb_substr($text, 0, 76) . ' ...';
-        }
-        return '<a' . $this->getAttr() . ' id="' . $this->getId() . '" class="' . $class . '" onclick="' . $onclick .
-            '" title="' . $this->getTitle() . '" href="' . $href . '">' . $text . '</a>';
+        return $this->buildByTypeNonUpdatable($field) . $this->createLink();
     }
 
     /**
@@ -104,9 +131,7 @@ class FormFieldHtmlBuilder extends FormHtmlBuilder
             $value = String::htmlSpecialChars($value);
         }
 
-        // get javascript events
-        assert('!isset($attr); // Cannot redeclare var $attr');
-        $attr = $field->getEventsAsHTML();
+        $this->setAttr($this->createJavascriptEvents($field) . $this->getAttr()); // get javascript events
 
         /**
          * Switch by column's type
@@ -259,9 +284,7 @@ class FormFieldHtmlBuilder extends FormHtmlBuilder
             return '&ndash;';
         }
 
-        // get javascript events
-        assert('!isset($attr); // Cannot redeclare var $attr');
-        $attr = $field->getEventsAsHTML();
+        $this->setAttr($this->createJavascriptEvents($field)); // get javascript events
 
         /**
          * Switch by column's type
@@ -326,13 +349,12 @@ class FormFieldHtmlBuilder extends FormHtmlBuilder
     }
 
     /**
-     * create a reference link (where available)
+     * Create a reference link (where available).
      *
      * Returns the HTML-code for this field.
      *
      * @access  protected
      * @return  string
-     *
      * @ignore
      */
     protected function createLink()
@@ -387,6 +409,40 @@ class FormFieldHtmlBuilder extends FormHtmlBuilder
             }
         } // end foreach
         return $result;
+    }
+
+    /**
+     * Create a javascript events (where available).
+     *
+     * Returns the HTML-code for the generated attributes.
+     *
+     * Example:
+     * <pre> onclick="alert('Hello World')" onchange="validate(this)"</pre>
+     *
+     * Note: the results are cached.
+     *
+     * @access  public
+     * @param   DDLField  $field  input field
+     * @return  string
+     * @ignore
+     */
+    protected function createJavascriptEvents(DDLField $field)
+    {
+        $eventsAsHtml = "";
+        /* @var $event DDLEvent */
+        foreach ($field->getEvents() as $event)
+        {
+            if (strtolower($event->getLanguage()) !== 'javascript') {
+                continue; // non-javascript - ignore!
+            }
+            if ($event->getLabel() || $event->getIcon() ) {
+                continue; // these are links - ignore!
+            }
+            $name = $event->getName();
+            $code = String::htmlSpecialChars($event->getAction());
+            $eventsAsHtml .= " $name=\"$code\"";
+        } // end foreach
+        return $eventsAsHtml;
     }
 
 }
