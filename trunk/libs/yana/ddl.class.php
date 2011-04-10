@@ -350,11 +350,10 @@ abstract class DDL extends Object
      * @access  public
      * @abstract
      * @static
-     * @param   \SimpleXMLElement  $node    node create via XMLArray::toArray()
-     * @param   mixed              $parent  parent node (if any)
+     * @param   \SimpleXMLElement  $node  node create via XMLArray::toArray()
      * @return  DDL
      */
-    public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
+    public static function unserializeFromXDDL(\SimpleXMLElement $node)
     {
         // Note: as of PHP 5.2 static functions may not be declared abstract
     }
@@ -600,10 +599,11 @@ abstract class DDL extends Object
     public static function getListOfFiles($useFullFilename = false)
     {
         assert('is_bool($useFullFilename); // Wrong type for argument 1. Boolean expected');
+        $dbDir = "";
         if (isset($GLOBALS['YANA'])) {
             $dbDir = $GLOBALS['YANA']->getVar('DBDIR');
         } else {
-            $dbDir = "config/db/";
+            $dbDir = dirname(__FILE__) . "/../../config/db";
         }
         $list = array();
         $dirList = glob($dbDir . "/*" . DDL::$extension);
