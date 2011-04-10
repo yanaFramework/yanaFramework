@@ -318,7 +318,7 @@ class DDLField extends DDLNamedObject
     public function setVisible($isVisible)
     {
         assert('is_bool($isVisible); // Wrong type for argument 1. Boolean expected');
-        $this->hidden = (bool) $isVisible;
+        $this->hidden = ! (bool) $isVisible;
         return $this;
     }
 
