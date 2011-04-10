@@ -234,7 +234,7 @@ class DDLField extends DDLNamedObject
      */
     public function getEvent($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (isset( $this->events[$name])) {
             return $this->events[$name];
         } else {
@@ -259,7 +259,7 @@ class DDLField extends DDLNamedObject
      */
     public function addEvent($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->events[$name])) {
             throw new AlreadyExistsException("Another action with the name '$name' is already defined.");
@@ -281,7 +281,7 @@ class DDLField extends DDLNamedObject
      */
     public function dropEvent($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (isset($this->events["$name"])) {
             unset($this->events["$name"]);
             return true;
