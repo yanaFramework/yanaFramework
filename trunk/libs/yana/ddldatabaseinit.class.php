@@ -64,7 +64,7 @@ class DDLDatabaseInit extends DDL
     /**#@-*/
 
     /**
-     * get target DBMS
+     * Get target DBMS.
      *
      * Returns the name of the target DBMS for this definition as a lower-cased string or NULL if
      * there is none specified. The default is "generic".
@@ -86,7 +86,7 @@ class DDLDatabaseInit extends DDL
     }
 
     /**
-     * set target DBMS
+     * Set target DBMS.
      *
      * While you may settle for any target DBMS you want and provide it in any kind of writing you
      * choose, you should remind, that not every DBMS is supported by the database API provided
@@ -98,6 +98,7 @@ class DDLDatabaseInit extends DDL
      *
      * @access  public
      * @param   string  $dbms  target DBMS, defaults to "generic"
+     * @return  DDLDatabaseInit
      */
     public function setDBMS($dbms = "generic")
     {
@@ -109,10 +110,11 @@ class DDLDatabaseInit extends DDL
         } else {
             $this->dbms = "$dbms";
         }
+        return $this;
     }
 
     /**
-     * get sql statement
+     * Get sql statement.
      *
      * Returns the SQL statement for this operation.
      *
@@ -129,12 +131,11 @@ class DDLDatabaseInit extends DDL
     }
 
     /**
-     * set sql statement
-     *
      * Set the SQL statement for this operation.
      *
      * @access  public
-     * @param   string  $sql    SQL statement
+     * @param   string  $sql  SQL statement
+     * @return  DDLDatabaseInit
      */
     public function setSQL($sql)
     {
@@ -144,6 +145,7 @@ class DDLDatabaseInit extends DDL
         } else {
             $this->sql = "$sql";
         }
+        return $this;
     }
 
     /**
@@ -163,6 +165,7 @@ class DDLDatabaseInit extends DDL
         $ddl->_unserializeFromXDDL($node);
         return $ddl;
     }
+
 }
 
 ?>

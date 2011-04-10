@@ -157,7 +157,7 @@ class DDLColumn extends DDLNamedObject
     private $_enumValues = null;
 
     /**
-     * get list of column types
+     * Get list of column types.
      *
      * Returns a list with all supported column types as a numeric array.
      *
@@ -174,7 +174,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * constructor
+     * Initialize instance.
      *
      * @param  string    $name    foreign key name
      * @param  DDLTable  $parent  parent table
@@ -187,7 +187,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * get parent
+     * Get parent database.
      *
      * @return  DDLDatabase
      */
@@ -197,7 +197,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * get data type of column
+     * Get data type of column.
      *
      * The 'type' is a lower-cased string, that represents the semantic data type of the column.
      * It is the same as the column's tag-name in XDDL files.
@@ -222,7 +222,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * check if column is a type containing a file
+     * Check if column is a type containing a file.
      *
      * This function returns bool(true) if the column is of type 'file' or 'image'
      * and bool(false) otherwise.
@@ -237,7 +237,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * set the type of a field as specified in the structure
+     * Set the type of a field as specified in the structure.
      *
      * The display attribute is an information that 1st informs about the type of a columns and 2nd
      * aims at UI-generators to tell them, how to interpret and display a certain field.
@@ -285,6 +285,7 @@ class DDLColumn extends DDLNamedObject
      *
      * @access  public
      * @param   string  $value  new value of this property
+     * @return  DDLColumn 
      */
     public function setType($value)
     {
@@ -296,10 +297,11 @@ class DDLColumn extends DDLNamedObject
         } else {
             throw new InvalidArgumentException("Parameter with the name '\$value' can not be empty.");
         }
+        return $this;
     }
 
     /**
-     * get title
+     * Get title.
      *
      * The title is a label text that should be displayed in the UI when viewing this object.
      *
@@ -318,13 +320,14 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * set title
+     * Set title.
      *
      * Sets the title used to display the object in the UI.
      * To reset the property, leave the parameter empty.
      *
      * @access  public
      * @param   string  $title  set title for display in User Interface
+     * @return  DDLColumn
      */
     public function setTitle($title = "")
     {
@@ -334,10 +337,11 @@ class DDLColumn extends DDLNamedObject
         } else {
             $this->title = "$title";
         }
+        return $this;
     }
 
     /**
-     * get pattern
+     * Get pattern.
      *
      * A pattern is a textual regular expression pattern using the syntax described in
      * the ECMA262 standard, without delimiters or modifiers.
@@ -361,7 +365,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * set pattern
+     * Set pattern.
      *
      * A pattern is a textual regular expression pattern using the syntax described in
      * the ECMA262 standard, without delimiters or modifiers.
@@ -375,6 +379,7 @@ class DDLColumn extends DDLNamedObject
      *
      * @access  public
      * @param   string  $pattern  regular expression pattern
+     * @return  DDLColumn
      */
     public function setPattern($pattern = "")
     {
@@ -384,10 +389,11 @@ class DDLColumn extends DDLNamedObject
         } else {
             $this->pattern = "$pattern";
         }
+        return $this;
     }
 
     /**
-     * get the user description
+     * Get the user description.
      *
      * The description serves two purposes:
      * 1st as offline-documentation 2nd as online-documentation.
@@ -413,7 +419,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * set the description property
+     * Set the description property.
      *
      * The description serves two purposes:
      * 1st as offline-documentation 2nd as online-documentation.
@@ -425,6 +431,7 @@ class DDLColumn extends DDLNamedObject
      *
      * @access  public
      * @param   string  $description  new value of this property
+     * @return  DDLColumn
      */
     public function setDescription($description = "")
     {
@@ -434,10 +441,11 @@ class DDLColumn extends DDLNamedObject
         } else {
             $this->description = "$description";
         }
+        return $this;
     }
 
     /**
-     * get rights management settings
+     * Get rights management settings.
      *
      * Returns an array of DDLGrant objects.
      *
@@ -457,7 +465,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * drop rights management settings
+     * Drop rights management settings.
      *
      * {@link DDLGrant}s control the access permissions granted to the user.
      *
@@ -474,7 +482,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * set rights management setting
+     * Set rights management setting.
      *
      * {@link DDLGrant}s control the access permissions granted to the user.
      *
@@ -482,14 +490,16 @@ class DDLColumn extends DDLNamedObject
      *
      * @access  public
      * @param   DDLGrant  $grant set a new grant object
+     * @return  DDLColumn 
      */
     public function setGrant(DDLGrant $grant)
     {
         $this->grants[] = $grant;
+        return $this;
     }
 
     /**
-     * add rights management setting
+     * Add rights management setting.
      *
      * {@link DDLGrant}s control the access permissions granted to the user.
      *
@@ -534,11 +544,7 @@ class DDLColumn extends DDLNamedObject
     public function isUpdatable()
     {
         if (!isset($this->isUpdatable)) {
-            if (DDLGrant::checkPermissions($this->getGrants(), false, false, true)) {
-                $this->isUpdatable = true;
-            } else {
-                $this->isUpdatable = false;
-            }
+            $this->isUpdatable = (bool) DDLGrant::checkPermissions($this->getGrants(), false, false, true);
         }
         return $this->isUpdatable;
     }
@@ -556,11 +562,7 @@ class DDLColumn extends DDLNamedObject
      */
     public function isReadonly()
     {
-        if (empty($this->readonly)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->readonly);
     }
 
     /**
@@ -571,15 +573,13 @@ class DDLColumn extends DDLNamedObject
      *
      * @access  public
      * @param   bool  $isReadonly   set read-only access
+     * @return  DDLColumn
      */
     public function setReadonly($isReadonly = false)
     {
         assert('is_bool($isReadonly); // Wrong type for argument 1. Boolean expected');
-        if ($isReadonly) {
-            $this->readonly = true;
-        } else {
-            $this->readonly = false;
-        }
+        $this->readonly = (bool) $isReadonly;
+        return $this;
     }
 
     /**
@@ -595,15 +595,11 @@ class DDLColumn extends DDLNamedObject
      */
     public function isNullable()
     {
-        if (empty($this->notNull)) {
-            return true;
-        } else {
-            return false;
-        }
+        return empty($this->notNull);
     }
 
     /**
-     * choose wether column should be nullable
+     * Choose wether column should be nullable.
      *
      * If the argument $isNullable is bool(false), then the DDL for this column would contain the
      * "not null" keyword. This means a column may not contain undefined values, if the property is
@@ -617,15 +613,12 @@ class DDLColumn extends DDLNamedObject
     public function setNullable($isNullable = true)
     {
         assert('is_bool($isNullable); // Wrong type for argument 1. Boolean expected');
-        if ($isNullable) {
-            $this->notNull = false;
-        } else {
-            $this->notNull = true;
-        }
+        $this->notNull = ! $isNullable;
+        return $this;
     }
 
     /**
-     * check whether a column has a unique constraint
+     * Check whether a column has a unique constraint.
      *
      * Returns bool(true) if this column has a unique constraint.
      * Returns bool(false) otherwise.
@@ -647,15 +640,11 @@ class DDLColumn extends DDLNamedObject
      */
     public function isUnique()
     {
-        if (empty($this->unique)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->unique);
     }
 
     /**
-     * add/remove a unique constraint on a column
+     * Add/remove a unique constraint on a column.
      *
      * Note: you don't need to set a "unique" constraint on a primary key. Primary keys implicitely
      * have a unique constraint.
@@ -673,20 +662,18 @@ class DDLColumn extends DDLNamedObject
      * should use an unique index.
      *
      * @access  public
-     * @param   bool    $isUnique  new value
+     * @param   bool  $isUnique  new value
+     * @return  DDLColumn
      */
     public function setUnique($isUnique = true)
     {
         assert('is_bool($isUnique); // Wrong type for argument 1. Boolean expected');
-        if ($isUnique) {
-            $this->unique = true;
-        } else {
-            $this->unique = false;
-        }
+        $this->unique = (bool) $isUnique;
+        return $this;
     }
 
     /**
-     * check whether column is unsigned number
+     * Check whether column is unsigned number.
      *
      * Returns bool(true) if this column has the flag unsigned set to bool(true).
      * Returns bool(false) otherwise.
@@ -710,7 +697,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * set column to unsigned number
+     * Set column to unsigned number.
      *
      * An "unsigned" number is supposed to be interpreted as a positive value.
      * This means, with "unsigned" = true, any value lesser than 0 is invalid.
@@ -724,6 +711,7 @@ class DDLColumn extends DDLNamedObject
      *
      * @access  public
      * @param   bool    $isUnsigned      true: unsigned number, false: signed number
+     * @return  DDLColumn
      * @throws  NotImplementedException  if column is not a number
      */
     public function setUnsigned($isUnsigned)
@@ -734,15 +722,12 @@ class DDLColumn extends DDLNamedObject
             throw new NotImplementedException($message, E_USER_WARNING);
         }
 
-        if ($isUnsigned) {
-            $this->unsigned = true;
-        } else {
-            $this->unsigned = false;
-        }
+        $this->unsigned = (bool) $isUnsigned;
+        return $this;
     }
 
     /**
-     * check whether a column is a fixed-length number
+     * Check whether a column is a fixed-length number.
      *
      * Returns bool(true) if this column has the flag fixed set to bool(true).
      * Returns bool(false) otherwise.
@@ -761,15 +746,11 @@ class DDLColumn extends DDLNamedObject
      */
     public function isFixed()
     {
-        if (empty($this->fixed)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->fixed);
     }
 
     /**
-     * set a numeric column to fixed length
+     * Set a numeric column to fixed length.
      *
      * Note: For columns of type integer, this sets the zerofill-flag for MySQL.
      *
@@ -780,7 +761,8 @@ class DDLColumn extends DDLNamedObject
      * database API.
      *
      * @access  public
-     * @param   bool    $isFixed  new value
+     * @param   bool  $isFixed  new value
+     * @return  DDLColumn
      */
     public function setFixed($isFixed)
     {
@@ -791,10 +773,11 @@ class DDLColumn extends DDLNamedObject
         } else {
             $this->fixed = false;
         }
+        return $this;
     }
 
     /**
-     * check whether column uses auto-increment
+     * Check whether column uses auto-increment.
      *
      * Returns bool(true) if this is an autonumbered colummn. Returns bool(false) otherwise.
      *
@@ -814,7 +797,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * make a column use auto-increment
+     * Make a column use auto-increment.
      *
      * Auto-increment is a MySQL-feature, that may be emulated on other DBMS.
      * It can however only be used on columns of type integer.
@@ -828,6 +811,7 @@ class DDLColumn extends DDLNamedObject
      *
      * @access  public
      * @param   bool   $isAutoIncrement  new value of this property
+     * @return  DDLColumn
      * @throws  NotImplementedException  if column is not a number
      */
     public function setAutoIncrement($isAutoIncrement)
@@ -838,15 +822,12 @@ class DDLColumn extends DDLNamedObject
             throw new NotImplementedException($message, E_USER_WARNING);
         }
 
-        if ($isAutoIncrement) {
-            $this->autoincrement = true;
-        } else {
-            $this->autoincrement = false;
-        }
+        $this->autoincrement = (bool) $isAutoIncrement;
+        return $this;
     }
 
     /**
-     * check whether a column uses the "auto-fill" feature
+     * Check whether a column uses the "auto-fill" feature.
      *
      * Returns bool(true) the column uses an auto-fill feature. Returns bool(false) otherwise.
      *
@@ -877,7 +858,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * make a column use auto-filled values
+     * Make a column use auto-filled values.
      *
      * This enables the "auto-fill" feature, which is available for columns of several types. On
      * columns of type "integer" it mimics MySQL's "auto increment" feature.
@@ -900,6 +881,7 @@ class DDLColumn extends DDLNamedObject
      *
      * @access  public
      * @param   bool  $isAutoFill        new value of this property
+     * @return  DDLColumn
      * @throws  NotImplementedException  when auto-fill is not available for this column type
      */
     public function setAutoFill($isAutoFill)
@@ -935,10 +917,11 @@ class DDLColumn extends DDLNamedObject
                 throw new NotImplementedException($message, E_USER_NOTICE);
             break;
         } // end switch
+        return $this;
     }
 
     /**
-     * check whether a foreign key exists in the current structure
+     * Check whether a foreign key exists in the current structure.
      *
      * Returns bool(true) if the parent table is known and the current column is in its list of
      * foreign keys. Returns bool(false) otherwise.
@@ -973,15 +956,11 @@ class DDLColumn extends DDLNamedObject
                 }
             }
         }
-        if ($this->isForeignKey) {
-            return true;
-        } else {
-            return false;
-        }
+        return (bool) $this->isForeignKey;
     }
 
     /**
-     * check whether a primary key exists in the current structure
+     * Check whether a primary key exists in the current structure.
      *
      * Returns bool(true) if the parent table is known and the current column is it's primary key.
      * Returns bool(false) otherwise.
@@ -1002,7 +981,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * check if column has a numeric data type
+     * Check if column has a numeric data type.
      *
      * Returns bool(true) if and only if the column has a numeric data type.
      * Returns bool(false) otherwise.
@@ -1025,7 +1004,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * get the maximum length of a column
+     * Get the maximum length of a column.
      *
      * Alias of getSize().
      *
@@ -1039,7 +1018,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * set the maximum length
+     * Set the maximum length.
      *
      * The argument $length must be a positive integer.
      *
@@ -1053,6 +1032,7 @@ class DDLColumn extends DDLNamedObject
      * @access  public
      * @param   int  $length     a positive integer
      * @param   int  $precision  applies to type float only
+     * @return  DDLColumn
      * @see     DDLColumn::setSize()
      * @throws  InvalidArgumentExpection  if precission is greater than length
      */
@@ -1071,10 +1051,11 @@ class DDLColumn extends DDLNamedObject
         } else {
             $this->precision = null;
         }
+        return $this;
     }
 
     /**
-     * get the maximum size of a column
+     * Get the maximum size of a column.
      *
      * Returns the maximum size of the colum or NULL if the value is not set.
      *
@@ -1087,7 +1068,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * get the maximum length of the decimal fraction of a float
+     * Get the maximum length of the decimal fraction of a float.
      *
      * Returns the maximum size of the colum or NULL if the value is not set.
      * Note that this value applies to columns of type float only.
@@ -1101,7 +1082,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * set the maximum size
+     * Set the maximum size.
      *
      * The argument $size must be a positive integer. To reset the property, leave the argument off.
      *
@@ -1111,6 +1092,7 @@ class DDLColumn extends DDLNamedObject
      *
      * @access  public
      * @param   int  $size  maximum size in byte
+     * @return  DDLColumn
      */
     public function setSize($size = -1)
     {
@@ -1120,10 +1102,11 @@ class DDLColumn extends DDLNamedObject
         } else {
             $this->size = null;
         }
+        return $this;
     }
 
     /**
-     * get the properties of a field of type 'image'
+     * Get the properties of a field of type 'image'.
      *
      * Returns an array of the following values:
      * <code>
@@ -1151,7 +1134,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * set the properties of a field of type 'image'
+     * Set the properties of a field of type 'image'.
      *
      * To reset one of the values, set it to null.
      *
@@ -1160,6 +1143,7 @@ class DDLColumn extends DDLNamedObject
      * @param   int     $height      vertical dimension in px
      * @param   bool    $ratio       keep aspect-ratio (true=yes, false=no)
      * @param   string  $background  hex-color of canvas (#RRGGBB)
+     * @return  DDLColumn 
      */
     public function setImageSettings($width = null, $height = null, $ratio = null, $background = null)
     {
@@ -1171,10 +1155,11 @@ class DDLColumn extends DDLNamedObject
         $this->imageHeight = $height;
         $this->imageRatio = $ratio;
         $this->imageBackground = $background;
+        return $this;
     }
 
     /**
-     * get the properties of a field of type 'reference'
+     * Get the properties of a field of type 'reference'.
      *
      * Returns an array of the following values:
      * <code>
@@ -1200,7 +1185,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * set the properties of a field of type 'reference'
+     * Set the properties of a field of type 'reference'.
      *
      * To reset one of the values, set it to null.
      * This applies to columns of type reference only.
@@ -1214,9 +1199,10 @@ class DDLColumn extends DDLNamedObject
      * The target column MUST be unique, the label column SHOULD be unique.
      *
      * @access  public
-     * @param   string   $table     table name
-     * @param   string   $column    column name
-     * @param   string   $label     label 
+     * @param   string   $table   table name
+     * @param   string   $column  column name
+     * @param   string   $label   label
+     * @return  DDLColumn
      */
     public function setReferenceSettings($table = null, $column = null, $label = null)
     {
@@ -1226,10 +1212,11 @@ class DDLColumn extends DDLNamedObject
         $this->referenceTable = $table;
         $this->referenceColumn = $column;
         $this->referenceLabel = $label;
+        return $this;
     }
 
     /**
-     * get the default values
+     * Get the default values.
      *
      * Returns an associative array of all default values of the column, where
      * the target DBMS are the keys and the defaults are the values of the
@@ -1249,7 +1236,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * get the default value
+     * Get the default value.
      *
      * Returns the default value of the column (where available) or NULL, if there is none.
      * The type of the default value returned depends on the type of the column.
@@ -1273,7 +1260,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * set the default value
+     * Set the default value.
      *
      * Set the default value for the specified DBMS. Note that the type of the value depends on the
      * type of column. The physical default value may depend on the DBMS and physical data type.
@@ -1290,6 +1277,7 @@ class DDLColumn extends DDLNamedObject
      * @param   mixed   $value  new value of this property
      * @param   string  $dbms   target DBMS, defaults to "generic"
      * @throws  InvalidArgumentException  when parameter is empty
+     * @return  DDLColumn
      */
     public function setDefault($value = null, $dbms = "generic")
     {
@@ -1303,13 +1291,13 @@ class DDLColumn extends DDLNamedObject
         } else {
             throw new InvalidArgumentException("Parameter with the name '\$dbms' can not be empty.");
         }
+        return $this;
     }
 
     /**
-     * list all constraints
+     * List all constraints.
      *
-     * Retrieves all "constraint" entries that apply to the given DBMS and returns the results as a
-     * numeric array.
+     * Retrieves all "constraint" entries that apply to the given DBMS and returns the results as a numeric array.
      *
      * If no constraints have been defined the returned array will be empty.
      *
@@ -1334,7 +1322,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * get constraint
+     * Get constraint.
      *
      * Returns the an instance of DDLConstraint, that matches the given name and target DBMS.
      * If no such instance is found the function returns NULL instead.
@@ -1361,7 +1349,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * add constraint
+     * Add constraint.
      *
      * Note: This function can't ensure that your codes makes sense.
      * So keep in mind that it is your job in the first place to ensure the constraint is valid!
@@ -1396,8 +1384,6 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * drop constraints
-     *
      * Drops the list of all defined constraints.
      *
      * @access  public
@@ -1408,7 +1394,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * set enumeration option
+     * Set enumeration option.
      *
      * Applies to columns of type Enumeration only.
      *
@@ -1427,7 +1413,8 @@ class DDLColumn extends DDLNamedObject
      *
      * @access  public
      * @param   scalar  $name   name of the enum
-     * @param   string  $value  value 
+     * @param   string  $value  value
+     * @return  DDLColumn
      */
     public function setEnumerationItem($name, $value = null)
     {
@@ -1435,10 +1422,11 @@ class DDLColumn extends DDLNamedObject
         assert('is_null($value) || is_string($value); // Wrong type for argument 2. String value expected');
         $this->enumerationItems[$name] = $value;
         $this->_enumValues = null; // reset cache
+        return $this;
     }
 
     /**
-     * set enumeration options
+     * Set enumeration options.
      *
      * Applies to columns of type Enumeration only.
      *
@@ -1457,15 +1445,17 @@ class DDLColumn extends DDLNamedObject
      *
      * @access  public
      * @param   array  $options expected an array with options for the enumeration column.
+     * @return  DDLColumn
      */
     public function setEnumerationItems(array $options)
     {
         $this->enumerationItems = $options;
         $this->_enumValues = null; // reset cache
+        return $this;
     }
 
     /**
-     * drop enumeration options
+     * Drop enumeration options.
      *
      * Applies to columns of type Enumeration only.
      *
@@ -1480,7 +1470,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * get all enumeration options
+     * Get all enumeration options.
      *
      * Applies to columns of type Enumeration only.
      *
@@ -1499,7 +1489,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * get all enumeration options
+     * Get all enumeration options.
      *
      * Applies to columns of type Enumeration only.
      *
@@ -1526,7 +1516,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * get enumeration option
+     * Get enumeration option.
      *
      * Applies to columns of type Enumeration only.
      *
@@ -1548,7 +1538,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * get names of enumeration options
+     * Get names of enumeration options.
      *
      * Applies to columns of type Enumeration only.
      *
@@ -1575,7 +1565,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * get range's upper boundary
+     * Get range's upper boundary.
      *
      * Applies to columns of type Range only.
      *
@@ -1595,7 +1585,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * get range's lower boundary
+     * Get range's lower boundary.
      *
      * Applies to columns of type Range only.
      *
@@ -1615,7 +1605,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * get range's step value
+     * Get range's step value.
      *
      * Applies to columns of type Range only.
      *
@@ -1635,7 +1625,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * set range values
+     * Set range values.
      *
      * Applies to columns of type Range only.
      *
@@ -1648,6 +1638,7 @@ class DDLColumn extends DDLNamedObject
      * @param   float  $min   lower boundary
      * @param   float  $max   upper boundary
      * @param   float  $step  step value (defaults to 1.0)
+     * @return  DDLColumn
      */
     public function setRange($min, $max, $step = 1.0)
     {
@@ -1660,6 +1651,7 @@ class DDLColumn extends DDLNamedObject
         $this->min = (float) $min;
         $this->max = (float) $max;
         $this->step = (float) $step;
+        return $this;
     }
 
     /**
@@ -1692,15 +1684,11 @@ class DDLColumn extends DDLNamedObject
                 }
             }
         }
-        if ($this->hasIndex) {
-            return true;
-        } else {
-            return false;
-        }
+        return (bool) $this->hasIndex;
     }
 
     /**
-     * get auto-filled value
+     * Get auto-filled value.
      *
      * Returns the default value for the column (if there is any).
      * If there is none, NULL is returned.
@@ -1772,7 +1760,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * validate a row against database schema
+     * Validate a row against database schema.
      *
      * The argument $row is expected to be an associative array of values, representing
      * a row that should be inserted or updated in the table. The keys of the array $row are
@@ -2021,7 +2009,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * get referenced target column for columns of type "reference"
+     * Get referenced target column for columns of type "reference".
      *
      * @access  private
      * @return  DDLColumn
@@ -2063,7 +2051,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * prepare a database entry for output
+     * Prepare a database entry for output.
      *
      * @access  public
      * @param   mixed   $value  value of the row
@@ -2215,7 +2203,7 @@ class DDLColumn extends DDLNamedObject
     }
 
     /**
-     * serialize this object to XDDL
+     * Serialize this object to XDDL.
      *
      * Returns the serialized object as a string in XML-DDL format.
      *

@@ -103,7 +103,7 @@ class DDLField extends DDLNamedObject
     /**#@-*/
 
     /**
-     * get the user description
+     * Get the user description.
      *
      * The description serves two purposes:
      * 1st is offline-documentation 2nd is online-documentation.
@@ -131,7 +131,7 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * set the description property
+     * Set the description property.
      *
      * The description serves two purposes:
      * 1st is offline-documentation 2nd is online-documentation.
@@ -143,6 +143,7 @@ class DDLField extends DDLNamedObject
      *
      * @access  public
      * @param   string  $description  new value of this property
+     * @return  DDLField
      */
     public function setDescription($description = "")
     {
@@ -154,10 +155,11 @@ class DDLField extends DDLNamedObject
         } else {
             $this->description = "$description";
         }
+        return $this;
     }
 
     /**
-     * get title
+     * Get title.
      *
      * A text that may be used in the UI as a label for the control element associated with the
      * field.
@@ -180,7 +182,7 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * set title
+     * Set title.
      *
      * A text that may be used in the UI as a label for the control element associated with the
      * field.
@@ -191,6 +193,7 @@ class DDLField extends DDLNamedObject
      *
      * @access  public
      * @param   string  $title  title 
+     * @return  DDLField
      */
     public function setTitle($title = "")
     {
@@ -200,10 +203,11 @@ class DDLField extends DDLNamedObject
         } else {
             $this->title = "$title";
         }
+        return $this;
     }
 
     /**
-     * get list of events
+     * Get list of events.
      *
      * Events are Javascript functions that are fired when the user clicks the field.
      * See the manual for more details.
@@ -219,7 +223,7 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * get event by name
+     * Get event by name.
      *
      * Actions are (Javascript) functions that are fired when the user clicks the field.
      * See the manual for more details.
@@ -239,7 +243,7 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * add event
+     * Add event.
      *
      * Adds a new event item and returns the definition as an instance of {@see DDLEvent}.
      *
@@ -267,9 +271,7 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * drop event
-     *
-     * Drops the event with the specified name.
+     * Drop the event with the specified name.
      *
      * Returns bool(true) on success and bool(false) if there is no such event to drop.
      *
@@ -289,7 +291,7 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * check whether the column should be visible
+     * Check whether the column should be visible
      *
      * A field may be hidden, in which case it is not to be shown in the UI.
      * Note that an element may also not be visible due to the fact, that the user has no permission
@@ -300,34 +302,28 @@ class DDLField extends DDLNamedObject
      */
     public function isVisible()
     {
-        if (empty($this->hidden)) {
-            return true;
-        } else {
-            return false;
-        }
+        return empty($this->hidden);
     }
 
     /**
-     * select whether the column should be visible
+     * Celect whether the column should be visible
      *
      * A field may be hidden, in which case it is not to be shown in the UI.
      * Set this to bool(false) to hide the field or bool(true) to make it visible.
      *
      * @access  public
      * @param   bool  $isVisible  new value of this property
+     * @return  DDLField
      */
     public function setVisible($isVisible)
     {
         assert('is_bool($isVisible); // Wrong type for argument 1. Boolean expected');
-        if ($isVisible) {
-            $this->hidden = false;
-        } else {
-            $this->hidden = true;
-        }
+        $this->hidden = (bool) $isVisible;
+        return $this;
     }
 
     /**
-     * check if form is selectable
+     * Check if form is selectable.
      *
      * Returns bool(true) if form is selectable to the current user and bool(false) otherwise.
      *
@@ -347,7 +343,7 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * check if form is insertable
+     * Check if form is insertable.
      *
      * Returns bool(true) if form is insertable to the current user and bool(false) otherwise.
      *
@@ -367,7 +363,7 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * check if form is updatable
+     * Check if form is updatable.
      *
      * Returns bool(true) if form is updatable to the current user and bool(false) otherwise.
      *
@@ -387,7 +383,7 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * check if form is deletable
+     * Check if form is deletable.
      *
      * Returns bool(true) if form is deletable to the current user and bool(false) otherwise.
      *
@@ -407,7 +403,7 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * check if form is grantable
+     * Check if form is grantable.
      *
      * Returns bool(true) if form is grantable to the current user and bool(false) otherwise.
      *
@@ -427,7 +423,7 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * check whether the dbo has read-only access
+     * Check whether the dbo has read-only access.
      *
      * Returns bool(true) if the field is read-only and bool(false)
      * otherwise.
@@ -439,34 +435,28 @@ class DDLField extends DDLNamedObject
      */
     public function isReadonly()
     {
-        if (empty($this->readonly)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->readonly);
     }
 
     /**
-     * set read-only access
+     * Set read-only access.
      *
      * You may set the field to be read-only to prevent any changes to it by setting this to
      * bool(true).
      *
      * @access  public
      * @param   bool  $isReadonly   new value of this property
+     * @return  DDLField
      */
     public function setReadonly($isReadonly)
     {
         assert('is_bool($isReadonly); // Wrong type for argument 1. Boolean expected');
-        if ($isReadonly) {
-            $this->readonly = true;
-        } else {
-            $this->readonly = false;
-        }
+        $this->readonly = (bool) $isReadonly;
+        return $this;
     }
 
     /**
-     * get CSS class attribute
+     * Get CSS class attribute.
      *
      * Returns the prefered CSS-class for this field as a string or NULL if there is none.
      *
@@ -483,7 +473,7 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * set CSS class attribute
+     * Set CSS class attribute.
      *
      * The UI usually should provide id-attributes and CSS-classes for fields automatically.
      * However: you may add your own CSS-class here.
@@ -492,6 +482,7 @@ class DDLField extends DDLNamedObject
      *
      * @access  public
      * @param   string  $class  name of a css class
+     * @return  DDLField
      */
     public function setCssClass($class = "")
     {
@@ -501,10 +492,11 @@ class DDLField extends DDLNamedObject
         } else {
             $this->cssClass = "$class";
         }
+        return $this;
     }
 
     /**
-     * get tab-index attribute
+     * Get tab-index attribute.
      *
      * Returns the prefered tab-index for this field as an integer or NULL if there is none.
      *
@@ -521,7 +513,7 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * set tab-index attribute
+     * Set tab-index attribute.
      *
      * The tab-index is usually to be generated autoamtically by the UI. But you may overwrite this
      * setting.
@@ -529,7 +521,8 @@ class DDLField extends DDLNamedObject
      * To reset the property, leave the parameter empty.
      *
      * @access  public
-     * @param   int  $index   tab-index
+     * @param   int  $index  tab-index
+     * @return  DDLField
      */
     public function setTabIndex($index = null)
     {
@@ -539,10 +532,11 @@ class DDLField extends DDLNamedObject
         } else {
             $this->tabIndex = (int) $index;
         }
+        return $this;
     }
 
     /**
-     * get rights management settings
+     * Get rights management settings.
      *
      * Returns an array of {@link DDLGrant} objects.
      *
@@ -567,7 +561,7 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * drop rights management settings
+     * Drop rights management settings.
      *
      * {@link DDLGrant}s control the access permissions granted to the user.
      *
@@ -589,7 +583,7 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * add rights management setting
+     * Add rights management setting.
      *
      * {@link DDLGrant}s control the access permissions granted to the user.
      *
@@ -628,14 +622,15 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * set rights management setting
+     * Set rights management setting.
      *
      * {@link DDLGrant}s control the access permissions granted to the user.
      *
      * This function adds a new grant to the configuration.
      *
      * @access  public
-     * @param   DDLGrant  $grant set a new grnat object
+     * @param   DDLGrant  $grant  new grant object
+     * @return  DDLField
      */
     public function setGrant(DDLGrant $grant)
     {
@@ -645,10 +640,11 @@ class DDLField extends DDLNamedObject
         } else {
             $this->grants[] = $grant;
         }
+        return $this;
     }
 
     /**
-     * check if the field has a column element
+     * Check if the field has a column element.
      *
      * If the field has a column as child element, it does not refer to a column in a real table.
      * Therefore it must not be included in any queries on the database.
@@ -690,6 +686,7 @@ class DDLField extends DDLNamedObject
         $ddl->_unserializeFromXDDL($node);
         return $ddl;
     }
+
 }
 
 ?>

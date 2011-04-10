@@ -97,7 +97,7 @@ class DDLForeignKey extends DDLObject
     /** @var string  */ protected $_onUpdate = null;
 
     /**
-     * constructor
+     * Initialize instance.
      *
      * @param  string    $name    foreign key name
      * @param  DDLTable  $parent  parent table
@@ -109,7 +109,7 @@ class DDLForeignKey extends DDLObject
     }
 
     /**
-     * get parent
+     * Get parent table.
      *
      * @return  DDLTable
      */
@@ -119,7 +119,7 @@ class DDLForeignKey extends DDLObject
     }
 
     /**
-     * get name of target table
+     * Get name of target table.
      *
      * The target table is where the foreign-keys refer to.
      *
@@ -136,7 +136,7 @@ class DDLForeignKey extends DDLObject
     }
 
     /**
-     * set name of target table
+     * Set name of target table.
      *
      * The target table is where the foreign-keys refer to.
      *
@@ -144,7 +144,8 @@ class DDLForeignKey extends DDLObject
      * of referencing columns.
      *
      * @access  public
-     * @param   string  $name name of target table
+     * @param   string  $name  name of target table
+     * @return  DDLForeignKey
      */
     public function setTargetTable($name)
     {
@@ -154,10 +155,11 @@ class DDLForeignKey extends DDLObject
         } else {
             $this->targetTable = mb_strtolower("$name");
         }
+        return $this;
     }
 
     /**
-     * get name of the source table
+     * Get name of the source .
      *
      * The source table is where the foreign-key-constraint is defined.
      *
@@ -174,7 +176,7 @@ class DDLForeignKey extends DDLObject
     }
 
     /**
-     * get list of referencing columns
+     * Get list of referencing columns.
      *
      * Returns an associative array of referencing columns, where the keys are
      * the source columns and the values are the target columns.
@@ -189,7 +191,7 @@ class DDLForeignKey extends DDLObject
     }
 
     /**
-     * set column references
+     * Set column references.
      *
      * Sets the list of references for the primary key constraint (and
      * overwrites any previous settings).
@@ -203,6 +205,7 @@ class DDLForeignKey extends DDLObject
      *
      * @access  public
      * @param   array  $columns list of columns in current table
+     * @return  DDLForeignKey
      * @throws  NotFoundException  if any of the targets does not exists
      */
     public function setColumns(array $columns)
@@ -217,6 +220,7 @@ class DDLForeignKey extends DDLObject
             }
         }
         $this->columns = $columns;
+        return $this;
     }
 
     /**
@@ -229,6 +233,7 @@ class DDLForeignKey extends DDLObject
      * @access  public
      * @param   string  $source  name of source column in current table
      * @param   string  $target  name of target column in referenced table
+     * @return  DDLForeignKey
      * @throws  NotFoundException  if any of the targets does not exists
      */
     public function setColumn($source, $target = "")
@@ -271,10 +276,11 @@ class DDLForeignKey extends DDLObject
         } else {
             $this->columns[$source] = $target;
         }
+        return $this;
     }
 
     /**
-     * get match type
+     * Get match type.
      *
      * Returns one of the following constants:
      * <ul>
@@ -303,7 +309,7 @@ class DDLForeignKey extends DDLObject
     }
 
     /**
-     * set match type
+     * Set match type.
      *
      * Parameter $match must be one of the following constants:
      * <ul>
@@ -314,6 +320,7 @@ class DDLForeignKey extends DDLObject
      *
      * @access  public
      * @param   int  $match     match type
+     * @return  DDLForeignKey
      * @see     DDLForeignKey::getMatch()
      */
     public function setMatch($match)
@@ -330,10 +337,11 @@ class DDLForeignKey extends DDLObject
                 $this->match = DDLKeyMatchStrategyEnumeration::SIMPLE;
             break;
         }
+        return $this;
     }
 
     /**
-     * get on-delete action
+     * Get on-delete action.
      *
      * Returns one of the following constants:
      * <ul>
@@ -384,7 +392,7 @@ class DDLForeignKey extends DDLObject
     }
 
     /**
-     * set on-delete action
+     * Set on-delete action.
      *
      * Param $action may be one of the following constants:
      * <ul>
@@ -399,6 +407,7 @@ class DDLForeignKey extends DDLObject
      *
      * @access  public
      * @param   int  $match     type name (allowed params are on the top of this comment)
+     * @return  DDLForeignKey
      * @see     DDLForeignKey::getOnDelete()
      */
     public function setOnDelete($match)
@@ -418,9 +427,11 @@ class DDLForeignKey extends DDLObject
                 $this->onDelete = DDLKeyUpdateStrategyEnumeration::NOACTION;
             break;
         }
+        return $this;
     }
+
     /**
-     * get on-update action
+     * Get on-update action.
      *
      * Returns one of the following constants:
      * <ul>
@@ -444,7 +455,7 @@ class DDLForeignKey extends DDLObject
     }
 
     /**
-     * set on-delete action
+     * Set on-delete action.
      *
      * Param $action may be one of the following constants:
      * <ul>
@@ -458,7 +469,8 @@ class DDLForeignKey extends DDLObject
      * The default is NOACTION.
      *
      * @access  public
-     * @param   int  $match     type name (allowed params are on the top of this comment)
+     * @param   int  $match  type name (allowed params are on the top of this comment)
+     * @return  DDLForeignKey
      * @see     DDLForeignKey::getOnDelete()
      */
     public function setOnUpdate($match)
@@ -477,10 +489,11 @@ class DDLForeignKey extends DDLObject
                 $this->onUpdate = DDLKeyUpdateStrategyEnumeration::NOACTION;
             break;
         }
+        return $this;
     }
 
     /**
-     * check wether integrity check is deferrable
+     * Check wether integrity check is deferrable.
      *
      * Returns bool(true) if an integrity check is deferrable and bool(false)
      * otherwise. Deferrable means, the DBS should wait till the end of a
@@ -509,31 +522,25 @@ class DDLForeignKey extends DDLObject
      */
     public function isDeferrable()
     {
-        if (empty($this->deferrable)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->deferrable);
     }
 
     /**
-     * check wether integrity check is deferrable
+     * Check wether integrity check is deferrable.
      *
      * Deferrable means, the DBS should wait till the end of a transaction
      * before it check inserted or updated foreign keys.
      *
      * @access  public
-     * @param   bool  $isDeferrable     new value of this property
+     * @param   bool  $isDeferrable  true = is deferable, false = is not deferable
+     * @return  DDLForeignKey
      * @see     DDLForeignKey::isDeferrable()
      */
     public function setDeferrable($isDeferrable)
     {
         assert('is_bool($isDeferrable); // Wrong type for argument 1. Boolean expected');
-        if ($isDeferrable) {
-            $this->deferrable = true;
-        } else {
-            $this->deferrable = false;
-        }
+        $this->deferrable = (bool) $isDeferrable;
+        return $this;
     }
 
     /**
