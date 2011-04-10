@@ -59,7 +59,7 @@ abstract class DDLNamedObject extends DDL
      */
     public function __construct($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $this->setName($name);
     }
 
@@ -87,7 +87,7 @@ abstract class DDLNamedObject extends DDL
      */
     public function setName($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (!preg_match('/^[a-z][\w-]*$/is', $name)) {
             $message = "Not a valid object name: '$name'. Must start with a letter and may only contain: " .
                 "a-z, 0-9, '-' and '_'.";

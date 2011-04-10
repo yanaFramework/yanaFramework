@@ -394,7 +394,7 @@ class DDLTrigger extends DDLObject
         $attributes = $node->attributes();
         $name = "";
         if (isset($attributes['name'])) {
-            $name = $attributes['name'];
+            $name = (string) $attributes['name'];
         }
         $ddl = new self($name);
         $ddl->_unserializeFromXDDL($node);
