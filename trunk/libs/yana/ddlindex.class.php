@@ -81,7 +81,7 @@ class DDLIndex extends DDLObject
     /**#@-*/
 
     /**
-     * constructor
+     * Initialize instance.
      *
      * @access  public
      * @param   string    $name     index name
@@ -94,7 +94,7 @@ class DDLIndex extends DDLObject
     }
 
     /**
-     * get parent
+     * Get parent table.
      *
      * @return  DDLTable
      */
@@ -104,7 +104,7 @@ class DDLIndex extends DDLObject
     }
 
     /**
-     * get title
+     * Get title of index.
      *
      * The title is a label text that should be displayed in the UI when viewing this object.
      *
@@ -123,13 +123,14 @@ class DDLIndex extends DDLObject
     }
 
     /**
-     * set title
+     * Set title.
      *
      * Sets the title used to display the object in the UI.
      * To reset the property, leave the parameter empty.
      *
      * @access  public
-     * @param   string  $title  new value of this property
+     * @param   string  $title  any text is valid
+     * @return  DDLIndex
      */
     public function setTitle($title = "")
     {
@@ -139,10 +140,11 @@ class DDLIndex extends DDLObject
         } else {
             $this->title = "$title";
         }
+        return $this;
     }
 
     /**
-     * get the user description
+     * Get the description.
      *
      * The description serves two purposes:
      * 1st is offline-documentation 2nd is online-documentation.
@@ -168,7 +170,7 @@ class DDLIndex extends DDLObject
     }
 
     /**
-     * set the description property
+     * Set a description.
      *
      * The description serves two purposes:
      * 1st is offline-documentation 2nd is online-documentation.
@@ -180,6 +182,7 @@ class DDLIndex extends DDLObject
      *
      * @access  public
      * @param   string  $description  new value of this property
+     * @return  DDLIndex
      */
     public function setDescription($description = "")
     {
@@ -189,10 +192,11 @@ class DDLIndex extends DDLObject
         } else {
             $this->description = "$description";
         }
+        return $this;
     }
 
     /**
-     * get name of the source table
+     * Get name of the source table.
      *
      * The source table is where the foreign-key-constraint is defined.
      *
@@ -209,7 +213,7 @@ class DDLIndex extends DDLObject
     }
 
     /**
-     * get list of indexed columns
+     * Get list of indexed columns.
      *
      * Returns an associative array of indexed columns, where the keys are
      * the column names and the values are instances of DDLIndexColumn.
@@ -224,8 +228,6 @@ class DDLIndex extends DDLObject
     }
 
     /**
-     * add a column
-     *
      * Adds a column to be indexed.
      *
      * The argument $isAscending may be set to false, to create an index that
@@ -264,8 +266,6 @@ class DDLIndex extends DDLObject
     }
 
     /**
-     * drop a column
-     *
      * Removes the column from the index, if it is defined.
      *
      * @access  public
@@ -281,7 +281,7 @@ class DDLIndex extends DDLObject
     }
 
     /**
-     * check wether index contains only unique values
+     * Check wether index contains only unique values.
      *
      * Note: a unique index demands an unique-constraint on the column and vice
      * versa.
@@ -291,34 +291,28 @@ class DDLIndex extends DDLObject
      */
     public function isUnique()
     {
-        if (empty($this->unique)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->unique);
     }
 
     /**
-     * set wether index contains only unique values
+     * Set wether index contains only unique values.
      *
      * Note: a unique index demands an unique-constraint on the column and vice
      * versa.
      *
      * @access  public
      * @param   bool  $isUnique   new value of this property
+     * @return  DDLIndex 
      */
     public function setUnique($isUnique)
     {
         assert('is_bool($isUnique); // Wrong type for argument 1. Boolean expected');
-        if ($isUnique) {
-            $this->unique = true;
-        } else {
-            $this->unique = false;
-        }
+        $this->unique = (bool) $isUnique;
+        return $this;
     }
 
     /**
-     * check wether index is clustered (MSSQL)
+     * Check wether index is clustered (MSSQL).
      *
      * This applies to MSSQL only.
      * A clustered index means, that the DBS should try to store values, which
@@ -331,15 +325,11 @@ class DDLIndex extends DDLObject
      */
     public function isClustered()
     {
-        if (empty($this->clustered)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->clustered);
     }
 
     /**
-     * set wether index should be clustered (MSSQL)
+     * Set wether index should be clustered (MSSQL).
      *
      * This applies to MSSQL only.
      * A clustered index means, that the DBS should try to store values, which
@@ -355,7 +345,8 @@ class DDLIndex extends DDLObject
      * unclustered.
      *
      * @access  public
-     * @param   bool  $isClustered      new value of this property
+     * @param   bool  $isClustered  new value of this property
+     * @return  DDLIndex
      */
     public function setClustered($isClustered)
     {
@@ -371,12 +362,11 @@ class DDLIndex extends DDLObject
         } else {
             $this->clustered = false;
         }
+        return $this;
     }
 
     /**
-     * unserialize a XDDL-node to an object
-     *
-     * Returns the unserialized object.
+     * Unserializes a XDDL-node to an instance of this class and returns it.
      *
      * @access  public
      * @static
@@ -395,6 +385,7 @@ class DDLIndex extends DDLObject
         $ddl->_unserializeFromXDDL($node);
         return $ddl;
     }
+
 }
 
 ?>
