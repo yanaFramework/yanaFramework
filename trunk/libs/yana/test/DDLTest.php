@@ -83,7 +83,6 @@ class DDLTest extends PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         if (!empty($this->_object)) {
-            $this->_object->__destruct();
             unset($this->_object);
         }
     }
@@ -909,7 +908,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
         $columnAutoInc = array(true,false,false,false,false);
         $columnPrimKey = array(true,false,false,false,false);
 
-
+        $tableColumn = array();
         $tableColumn[0] = $table->getColumn($columnNames[0]);
         $tableColumn[1] = $table->getColumn($columnNames[1]);
         $tableColumn[2] = $table->getColumn($columnNames[2]);
