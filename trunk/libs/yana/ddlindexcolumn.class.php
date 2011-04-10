@@ -65,7 +65,7 @@ class DDLIndexColumn extends DDLNamedObject
     /**#@-*/
 
     /**
-     * check if column is sorted in ascending order
+     * Check if column is sorted in ascending order.
      *
      * In an index, each column may be sorted separately for performance reasons.
      * This is especially used for indexes with multiple columns.
@@ -79,15 +79,11 @@ class DDLIndexColumn extends DDLNamedObject
      */
     public function isAscendingOrder()
     {
-        if ($this->isAscending) {
-            return true;
-        } else {
-            return false;
-        }
+        return (bool) $this->isAscending;
     }
 
     /**
-     * check if column is sorted in descending order
+     * Check if column is sorted in descending order.
      *
      * This is the opposite of {@link DDLIndex::isAscendingOrder()}.
      *
@@ -100,15 +96,11 @@ class DDLIndexColumn extends DDLNamedObject
      */
     public function isDescendingOrder()
     {
-        if ($this->isAscending) {
-            return false;
-        } else {
-            return true;
-        }
+        return ! (bool) $this->isAscending;
     }
 
     /**
-     * set sorting order of a column
+     * Set sorting order of a column.
      *
      * In an index, each column may be sorted separately for performance reasons.
      * This is especially used for indexes with multiple columns.
@@ -119,19 +111,17 @@ class DDLIndexColumn extends DDLNamedObject
      * @param   bool  $isAscending  true: sort ascending, false: sort descending
      * @name    DDLIndexColumn::isDescendingOrder()
      * @see     DDLIndexColumn::isAscendingOrder()
+     * @return  DDLIndex
      */
     public function setSorting($isAscending = true)
     {
         assert('is_bool($isAscending); // Wrong type for argument 1. Boolean expected');
-        if ($isAscending) {
-            $this->isAscending = true;
-        } else {
-            $this->isAscending = false;
-        }
+        $this->isAscending = (bool) $isAscending;
+        return $this;
     }
 
     /**
-     * get maximum length of index values (MySQL)
+     * Get maximum length of index values (MySQL).
      *
      * This is only used for full-text indexes in MySQL.
      *
@@ -170,7 +160,7 @@ class DDLIndexColumn extends DDLNamedObject
     }
 
     /**
-     * set maximum length of index values (MySQL)
+     * Set maximum length of index values (MySQL).
      *
      * This applies to full-text indexes in MySQL only.
      *
@@ -178,6 +168,7 @@ class DDLIndexColumn extends DDLNamedObject
      * @param   int  $length    maximum length of index values
      * @name    DDLIndexColumn::setLength()
      * @see     DDLIndexColumn::getLength()
+     * @return  DDLIndex
      */
     public function setLength($length)
     {
@@ -187,11 +178,10 @@ class DDLIndexColumn extends DDLNamedObject
         } else {
             $this->length = $length;
         }
+        return $this;
     }
 
     /**
-     * serialize this object to XDDL
-     *
      * Returns the serialized object as a string in XML-DDL format.
      *
      * @access  public
@@ -209,9 +199,7 @@ class DDLIndexColumn extends DDLNamedObject
     }
 
     /**
-     * unserialize a XDDL-node to an object
-     *
-     * Returns the unserialized object.
+     * Unserializes a XDDL-node to an instance of this class and returns it.
      *
      * @access  public
      * @static
@@ -230,6 +218,7 @@ class DDLIndexColumn extends DDLNamedObject
         $ddl->isAscending = ($ddl->sorting !== 'descending');
         return $ddl;
     }
+
 }
 
 ?>
