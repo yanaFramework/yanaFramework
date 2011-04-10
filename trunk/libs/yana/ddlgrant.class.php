@@ -105,7 +105,7 @@ class DDLGrant extends DDL
     /**#@-*/
 
     /**
-     * get user role
+     * Get user role.
      *
      * The role a user plays inside a user group.
      * This may be any string value.
@@ -123,7 +123,7 @@ class DDLGrant extends DDL
     }
 
     /**
-     * set role
+     * Set required user role.
      *
      * The role a user plays inside a user group.
      * This may be any string value.
@@ -132,6 +132,7 @@ class DDLGrant extends DDL
      *
      * @access  public
      * @param   string  $role  new value of this property
+     * @return  DDLGrant
      */
     public function setRole($role = "")
     {
@@ -141,10 +142,11 @@ class DDLGrant extends DDL
         } else {
             $this->role = "$role";
         }
+        return $this;
     }
 
     /**
-     * get user group
+     * Get user group.
      *
      * The group a user belongs. Each group defines it's own default security level (which may be
      * overwritten though).
@@ -164,7 +166,7 @@ class DDLGrant extends DDL
     }
 
     /**
-     * set user group
+     * Set required user group.
      *
      * The group a user belongs. Each group defines it's own default security level (which may be
      * overwritten though).
@@ -175,6 +177,7 @@ class DDLGrant extends DDL
      *
      * @access  public
      * @param   string  $user  new value of this property
+     * @return  DDLGrant 
      */
     public function setUser($user = "")
     {
@@ -184,14 +187,16 @@ class DDLGrant extends DDL
         } else {
             $this->user = "$user";
         }
+        return $this;
     }
 
     /**
-     * get security level
+     * Get security level.
      *
      * The security level may be any integer number of 0 through 100.
      * You may translate this to 0-100 percent, where 0 is the lowest level of access and 100 is the
      * highest.
+     * If there is no restriction, the function returns NULL.
      *
      * @access  public
      * @return  int
@@ -206,7 +211,7 @@ class DDLGrant extends DDL
     }
 
     /**
-     * set security level
+     * Set security level.
      *
      * The security level may be any integer number of 0 through 100.
      * You may translate this to 0-100 percent, where 0 is the lowest level of access and 100 is the
@@ -217,6 +222,7 @@ class DDLGrant extends DDL
      * @access  public
      * @param   string  $level  new value of this property
      * @throws  InvalidArgumentException  when parameter $level is outside range [0,100]
+     * @return  DDLGrant 
      */
     public function setLevel($level = null)
     {
@@ -228,10 +234,11 @@ class DDLGrant extends DDL
         } else {
             $this->level = (int) $level;
         }
+        return $this;
     }
 
     /**
-     * grant select statements
+     * Grant select statements.
      *
      * Tells whether the user is granted to issue a select-statement on the database object.
      *
@@ -240,15 +247,11 @@ class DDLGrant extends DDL
      */
     public function isSelectable()
     {
-        if (empty($this->select)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->select);
     }
 
     /**
-     * set/revoke select
+     * Set/revoke select.
      *
      * Tells whether the user is granted to issue a select-statement on the database object.
      *
@@ -256,19 +259,17 @@ class DDLGrant extends DDL
      *
      * @access  public
      * @param   bool  $isSelectable  true: selectable, false: not selectable
+     * @return  DDLGrant 
      */
     public function setSelect($isSelectable = true)
     {
         assert('is_bool($isSelectable); // Wrong type for argument 1. Boolean expected');
-        if ($isSelectable) {
-            $this->select = true;
-        } else {
-            $this->select = false;
-        }
+        $this->select = (bool) $isSelectable;
+        return $this;
     }
 
     /**
-     * grant insert statements
+     * Grant insert statements.
      *
      * Tells whether the user is granted to issue an insert-statement on the database object.
      *
@@ -277,35 +278,29 @@ class DDLGrant extends DDL
      */
     public function isInsertable()
     {
-        if (empty($this->insert)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->insert);
     }
 
     /**
-     * set/revoke insert
+     * Set/revoke insert.
      *
      * Tells whether the user is granted to issue an insert-statement on the database object.
      *
      * This value defaults to bool(true).
      *
      * @access  public
-     * @param   bool  $isInsertable  new value of this property
+     * @param   bool  $isInsertable  true = allow, false = disallow insert statements
+     * @return  DDLGrant 
      */
     public function setInsert($isInsertable = true)
     {
         assert('is_bool($isInsertable); // Wrong type for argument 1. Boolean expected');
-        if ($isInsertable) {
-            $this->insert = true;
-        } else {
-            $this->insert = false;
-        }
+        $this->insert = (bool) $isInsertable;
+        return $this;
     }
 
     /**
-     * grant update statements
+     * Grant update statements.
      *
      * Tells whether the user is granted to issue an update-statement on the database object.
      *
@@ -314,15 +309,11 @@ class DDLGrant extends DDL
      */
     public function isUpdatable()
     {
-        if (empty($this->update)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->update);
     }
 
     /**
-     * set/revoke update
+     * Set/revoke update.
      *
      * Tells whether the user is granted to issue an update-statement on the database object.
      *
@@ -330,19 +321,17 @@ class DDLGrant extends DDL
      *
      * @access  public
      * @param   bool  $isUpdatable  new value of this property
+     * @return  DDLGrant 
      */
     public function setUpdate($isUpdatable = true)
     {
         assert('is_bool($isUpdatable); // Wrong type for argument 1. Boolean expected');
-        if ($isUpdatable) {
-            $this->update = true;
-        } else {
-            $this->update = false;
-        }
+        $this->update = (bool) $isUpdatable;
+        return $this;
     }
 
     /**
-     * grant delete statements
+     * Grant delete statements.
      *
      * Tells whether the user is granted to issue a delete-statement on the database object.
      *
@@ -351,11 +340,7 @@ class DDLGrant extends DDL
      */
     public function isDeletable()
     {
-        if (empty($this->delete)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->delete);
     }
 
     /**
@@ -371,15 +356,11 @@ class DDLGrant extends DDL
     public function setDelete($isDeletable = true)
     {
         assert('is_bool($isDeletable); // Wrong type for argument 1. Boolean expected');
-        if ($isDeletable) {
-            $this->delete = true;
-        } else {
-            $this->delete = false;
-        }
+        $this->delete = (bool) $isDeletable;
     }
 
     /**
-     * has grant option
+     * Has grant option.
      *
      * Tells whether the user may temporarily grant his security permissions to other users.
      *
@@ -392,33 +373,27 @@ class DDLGrant extends DDL
      */
     public function isGrantable()
     {
-        if (empty($this->grant)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->grant);
     }
 
     /**
-     * set/revoke grant option
+     * Set/revoke grant option.
      *
      * Tells whether the user may temporarily grant his security permissions to other users.
      *
      * @access  public
      * @param   bool  $isGrantable  true: may grant, false: may not grant
+     * @return  DDLGrant 
      */
     public function setGrantOption($isGrantable = true)
     {
         assert('is_bool($isGrantable); // Wrong type for argument 1. Boolean expected');
-        if ($isGrantable) {
-            $this->grant = true;
-        } else {
-            $this->grant = false;
-        }
+        $this->grant = (bool) $isGrantable;
+        return $this;
     }
 
     /**
-     * check if the current user is granted a certain permission
+     * Check if the current user is granted a certain permission.
      *
      * Returns bool(true) if the current grant permits the user to a certain action,
      * or a certain combination of actions.
@@ -474,7 +449,7 @@ class DDLGrant extends DDL
     }
 
     /**
-     * check if the user is granted certain permissions
+     * Check if the user is granted certain permissions.
      *
      * The function takes a list of grant objects and a list of requirements.
      *
@@ -508,9 +483,7 @@ class DDLGrant extends DDL
     }
 
     /**
-     * unserialize a XDDL-node to an object
-     *
-     * Returns the unserialized object.
+     * Unserializes a XDDL-node to an instance of this class and returns it.
      *
      * @access  public
      * @static
@@ -524,6 +497,7 @@ class DDLGrant extends DDL
         $ddl->_unserializeFromXDDL($node);
         return $ddl;
     }
+
 }
 
 ?>
