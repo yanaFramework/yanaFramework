@@ -76,7 +76,7 @@ class DDLFunctionParameter extends DDLNamedObject
     /**#@-*/
 
     /**
-     * get data type
+     * Get data type.
      *
      * Returns the data type of the parameter as a string.
      *
@@ -89,7 +89,7 @@ class DDLFunctionParameter extends DDLNamedObject
     }
 
     /**
-     * set data type
+     * Set data type.
      *
      * Sets the data type of the parameter. The list of supported data types depends on the chosen
      * DBMS. For "generic" it is equivalent to all simple data types known in PHP.
@@ -97,15 +97,17 @@ class DDLFunctionParameter extends DDLNamedObject
      *
      * @access  public
      * @param   string  $type   data type of the parameter
+     * @return  DDLFunctionParameter 
      */
     public function setType($type)
     {
         assert('is_string($type); // Wrong type for argument 1. String expected');
         $this->type = "$type";
+        return $this;
     }
 
     /**
-     * get parameter input mode
+     * Get parameter input mode.
      *
      * Returns one of the following constants:
      * <ul>
@@ -123,7 +125,7 @@ class DDLFunctionParameter extends DDLNamedObject
     }
 
     /**
-     * set parameter input mode
+     * Set parameter input mode.
      *
      * The parameter $mode must be one of the following constants:
      * <ul>
@@ -136,6 +138,7 @@ class DDLFunctionParameter extends DDLNamedObject
      *
      * @access  public
      * @param   int  $mode  parameter input mode
+     * @return  DDLFunctionParameter 
      */
     public function setMode($mode = DDLParameterTypeEnumeration::IN)
     {
@@ -151,11 +154,10 @@ class DDLFunctionParameter extends DDLNamedObject
                 $this->mode = DDLParameterTypeEnumeration::IN;
             break;
         }
+        return $this;
     }
 
     /**
-     * serialize this object to XDDL
-     *
      * Returns the serialized object as a string in XML-DDL format.
      *
      * @access  public
@@ -180,9 +182,7 @@ class DDLFunctionParameter extends DDLNamedObject
     }
 
     /**
-     * unserialize a XDDL-node to an object
-     *
-     * Returns the unserialized object.
+     * Unserializes a XDDL-node to an instance of this class and returns it.
      *
      * @access  public
      * @static

@@ -73,7 +73,7 @@ class DDLEvent extends DDLNamedObject
     /**#@-*/
 
     /**
-     * get action
+     * Get action code.
      *
      * The code or function name that should be executed when the event is fired.
      * The syntax is dependent on the chosen language.
@@ -90,22 +90,24 @@ class DDLEvent extends DDLNamedObject
     }
 
     /**
-     * set action
+     * Set action code.
      *
      * Set the code or function name that should be executed when the event is fired.
      * The syntax is dependent on the chosen language.
      *
      * @access  public
-     * @param   string  $action     action 
+     * @param   string  $action  function name (if language = php) or program code (if language = javascript)
+     * @return  DDLEvent 
      */
     public function setAction($action = "")
     {
         assert('is_string($action); // Wrong type for argument 1. String expected');
         $this->action = "$action";
+        return $this;
     }
 
     /**
-     * get language
+     * Get programming language.
      *
      * Returns the programming language of the event-implementation as a string or NULL if the
      * option is not set.
@@ -123,7 +125,7 @@ class DDLEvent extends DDLNamedObject
     }
 
     /**
-     * set language
+     * Set programming language.
      *
      * The programming language of the event-implementation. May be any string.
      * If the option is not set, the framework will interpret the event-handler as the name of a
@@ -132,7 +134,8 @@ class DDLEvent extends DDLNamedObject
      * To reset the property, leave the parameter empty.
      *
      * @access  public
-     * @param   string  $language   language
+     * @param   string  $language   name of programming language (currently just "javascript" and "php" are supported)
+     * @return  DDLEvent 
      */
     public function setLanguage($language = "")
     {
@@ -142,6 +145,7 @@ class DDLEvent extends DDLNamedObject
         } else {
             $this->language = "$language";
         }
+        return $this;
     }
 
     /**
@@ -162,13 +166,14 @@ class DDLEvent extends DDLNamedObject
     }
 
     /**
-     * set label
+     * Set text-label.
      *
      * Sets the label used for the clickable link.
      * To reset the property, leave the parameter empty.
      *
      * @access  public
-     * @param   string  $label  label
+     * @param   string  $label  any text
+     * @return  DDLEvent 
      */
     public function setLabel($label = "")
     {
@@ -178,6 +183,7 @@ class DDLEvent extends DDLNamedObject
         } else {
             $this->label = "$label";
         }
+        return $this;
     }
 
     /**
@@ -199,13 +205,14 @@ class DDLEvent extends DDLNamedObject
     }
 
     /**
-     * set title
+     * Set title.
      *
      * Sets the title-attribute used for the clickable link.
      * To reset the property, leave the parameter empty.
      *
      * @access  public
-     * @param   string  $title  title
+     * @param   string  $title  any text, but no HTML
+     * @return  DDLEvent 
      */
     public function setTitle($title = "")
     {
@@ -213,12 +220,13 @@ class DDLEvent extends DDLNamedObject
         if (empty($title)) {
             $this->title = null;
         } else {
-            $this->title = "$title";
+            $this->title = String::htmlEntities("$title");
         }
+        return $this;
     }
 
     /**
-     * get icon image
+     * Get path to icon image.
      *
      * Returns the file path for the icon image that should be displayed on the clickable link
      * or NULL if the property is not set.
@@ -236,7 +244,7 @@ class DDLEvent extends DDLNamedObject
     }
 
     /**
-     * set icon image
+     * Set path to icon image.
      *
      * Sets the source file for the image used to create the clickable link.
      * To reset the property, leave the parameter empty.
@@ -253,6 +261,7 @@ class DDLEvent extends DDLNamedObject
         } else {
             $this->icon = "$icon";
         }
+        return $this;
     }
 
     /**

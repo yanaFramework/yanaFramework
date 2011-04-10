@@ -77,12 +77,12 @@ class DDLFunctionImplementation extends DDL
     /**#@-*/
 
     /**
-     * magic get
+     * <<magic>> Get function parameter, with the given name.
      *
-     * Returns a function parameter, with the given name.
+     * Alias of {@see DDLFunctionImplementation::getParameter()}.
      *
      * @access  public
-     * @param   string $name    name
+     * @param   string  $name  parameter name
      * @return  DDLFunctionParameter
      */
     public function __get($name)
@@ -129,7 +129,7 @@ class DDLFunctionImplementation extends DDL
     }
 
     /**
-     * get returned type
+     * Get returned data-type.
      *
      * The data-type returned by the function.
      * Will return NULL if the returned type is void.
@@ -143,7 +143,7 @@ class DDLFunctionImplementation extends DDL
     }
 
     /**
-     * set returned type
+     * Set returned data-type.
      *
      * The data-type the function should return.
      *
@@ -152,7 +152,8 @@ class DDLFunctionImplementation extends DDL
      * to 'void'.
      *
      * @access  public
-     * @param   string  $type   type
+     * @param   string  $type  valid data-type in the selected programming-language
+     * @return  DDLFunctionImplementation 
      */
     public function setReturn($type = "")
     {
@@ -162,6 +163,7 @@ class DDLFunctionImplementation extends DDL
         } else {
             $this->return = "$type";
         }
+        return $this;
     }
 
     /**
@@ -280,22 +282,24 @@ class DDLFunctionImplementation extends DDL
     }
 
     /**
-     * set code
+     * Set source code.
      *
      * Sets the implementing source-code for this function.
      * Note that it is not checked wether or not the given code is valid.
      *
      * @access  public
-     * @param   string  $code   code
+     * @param   string  $code  must be a valid implementation for the selected programming language (not checked here)
+     * @return  DDLFunctionImplementation 
      */
     public function setCode($code)
     {
         assert('is_string($code); // Wrong type for argument 1. String expected');
         $this->code = "$code";
+        return $this;
     }
 
     /**
-     * get programming-language
+     * Get programming-language.
      *
      * Get the programming-language the implementing code is written for.
      * Most DBMS should at least support the value "SQL" as a language, while
@@ -315,7 +319,7 @@ class DDLFunctionImplementation extends DDL
     }
 
     /**
-     * set programming-language
+     * Set programming-language.
      *
      * Sets the programming-language the implementing code is written for.
      * Most DBMS should at least support the value "SQL" as a language, while
@@ -331,11 +335,13 @@ class DDLFunctionImplementation extends DDL
      *
      * @access  public
      * @param   string  $language   name of a programming-language
+     * @return  DDLFunctionImplementation 
      */
     public function setLanguage($language)
     {
         assert('is_string($language); // Wrong type for argument 1. String expected');
         $this->language = "$language";
+        return $this;
     }
 
     /**
