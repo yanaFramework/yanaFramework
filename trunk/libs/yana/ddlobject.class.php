@@ -84,7 +84,7 @@ abstract class DDLObject extends DDL
      */
     public function setName($name = "")
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (empty($name)) {
             $this->name = null;
 
