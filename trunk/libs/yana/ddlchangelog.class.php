@@ -70,7 +70,7 @@ class DDLChangeLog extends DDL
     /**#@-*/
 
     /**
-     * constructor
+     * Initialize instance.
      *
      * @param  DDLDatabase  $parent  parent database
      */
@@ -80,7 +80,7 @@ class DDLChangeLog extends DDL
     }
 
     /**
-     * get parent
+     * Get parent database.
      *
      * Returns the declaration of the Datebase the object is defined in.
      *
@@ -92,7 +92,7 @@ class DDLChangeLog extends DDL
     }
 
     /**
-     * add a new change-log entry
+     * Add a new change-log entry.
      *
      * This function prepends a new entry at the beginning of the change-log.
      * The change-log is sorting by version-number in descending order.
@@ -106,7 +106,7 @@ class DDLChangeLog extends DDL
     }
 
     /**
-     * flush the change-log
+     * Flush the change-log.
      *
      * This function completly deletes any chang-log entries, if there are any.
      *
@@ -118,7 +118,7 @@ class DDLChangeLog extends DDL
     }
 
     /**
-     * list of changes
+     * List of changes.
      *
      * Returns a list of change-log entries as a numeric array, each of which are instances of
      * DDLLog.
@@ -187,6 +187,7 @@ class DDLChangeLog extends DDL
         $ddl->_unserializeFromXDDL($node);
         return $ddl;
     }
+
 }
 
 ?>

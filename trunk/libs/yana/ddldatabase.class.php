@@ -125,7 +125,7 @@ class DDLDatabase extends DDLObject
     private $_loadedIncludes = array();
 
     /**
-     * constructor
+     * Initialize instance.
      *
      * @access  public
      * @param   string  $name  database name
@@ -171,7 +171,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * check if database structure has been modified
+     * Check if database structure has been modified.
      *
      * Returns bool(true) if the database has been marked as modified and bool(false) otherwise.
      *
@@ -189,7 +189,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * Mark database as modified
+     * Mark database as modified.
      *
      * Marks that the structure of the database has been modified.
      * This is to be used as an indicator for any scripts, that the database definition contains
@@ -197,6 +197,7 @@ class DDLDatabase extends DDLObject
      *
      * @access  public
      * @param   bool  $isModified  new value of this property
+     * @return  DDLDatabase
      * @ignore
      */
     public function setModified($isModified = true)
@@ -214,10 +215,11 @@ class DDLDatabase extends DDLObject
         } else {
             $this->modified = false;
         }
+        return $this;
     }
 
     /**
-     * get list of supported DBMS
+     * Get list of supported DBMS.
      *
      * Returns a list with all supported DBMS as a numeric array.
      *
@@ -233,7 +235,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * get list of include files
+     * Get list of include files.
      *
      * Returns the list of included XDDL-files.
      * Database definitions may be shared among others.
@@ -258,7 +260,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * set list of include files
+     * Set list of include files.
      *
      * Database definitions may be shared among others.
      * E.g. this may be necessary if you wish to create a reference to another
@@ -276,14 +278,16 @@ class DDLDatabase extends DDLObject
      * @access  public
      * @param   array  $includes  list of files to include
      * @see     DDL::getDataSource()
+     * @return  DDLDatabase
      */
     public function setIncludes(array $includes = array())
     {
         $this->includes = $includes;
+        return $this;
     }
 
     /**
-     * add include file name
+     * Add include file name.
      *
      * Database definitions may be shared among others.
      * E.g. this may be necessary if you wish to create a reference to another
@@ -309,7 +313,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * load included DDL files
+     * Load included DDL files.
      *
      * To check if a table is included from another file, use the following code:
      * <code>
@@ -417,7 +421,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * get the user description
+     * Get the user description.
      *
      * The description serves two purposes:
      * 1st is offline-documentation 2nd is online-documentation.
@@ -443,7 +447,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * set the description property
+     * Set the description property.
      *
      * The description serves two purposes:
      * 1st is offline-documentation 2nd is online-documentation.
@@ -455,6 +459,7 @@ class DDLDatabase extends DDLObject
      *
      * @access  public
      * @param   string  $description  new value of this property
+     * @return  DDLDatabase
      */
     public function setDescription($description = "")
     {
@@ -464,10 +469,11 @@ class DDLDatabase extends DDLObject
         } else {
             $this->description = "$description";
         }
+        return $this;
     }
 
     /**
-     * get title
+     * Get title.
      *
      * The title is a label text that should be displayed in the UI when viewing this object.
      *
@@ -486,13 +492,14 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * set title
+     * Set title.
      *
      * Sets the title used to display the object in the UI.
      * To reset the property, leave the parameter empty.
      *
      * @access  public
      * @param   string  $title title for display in UI
+     * @return  DDLDatabase
      */
     public function setTitle($title = "")
     {
@@ -502,10 +509,11 @@ class DDLDatabase extends DDLObject
         } else {
             $this->title = "$title";
         }
+        return $this;
     }
 
     /**
-     * get database charset
+     * Get database charset.
      *
      * The charset may only be set upon creation of the database.
      * If you decide to use an existing database, please note, that the charset
@@ -527,7 +535,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * set database charset
+     * Set database charset.
      *
      * The charset may only be set upon creation of the database.
      * If you decide to use an existing database, please note, that the charset
@@ -539,6 +547,7 @@ class DDLDatabase extends DDLObject
      *
      * @access  public
      * @param   string  $charset  database charset
+     * @return  DDLDatabase
      */
     public function setCharset($charset = "")
     {
@@ -548,10 +557,11 @@ class DDLDatabase extends DDLObject
         } else {
             $this->charset = "$charset";
         }
+        return $this;
     }
 
     /**
-     * get data-source name
+     * Get data-source name.
      *
      * Returns the name of the data-source.
      *
@@ -580,7 +590,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * set data-source name
+     * Set data-source name.
      *
      * Note that this information is optional. To reset it, leave the parameter
      * $dataSource empty.
@@ -590,6 +600,7 @@ class DDLDatabase extends DDLObject
      *
      * @access  public
      * @param   string  $dataSource  data-source name
+     * @return  DDLDatabase
      * @see     DDL::getDataSource()
      */
     public function setDataSource($dataSource = "")
@@ -600,10 +611,11 @@ class DDLDatabase extends DDLObject
         } else {
             $this->datasource = "$dataSource";
         }
+        return $this;
     }
 
     /**
-     * check whether the dbo has read-only access
+     * Check whether the dbo has read-only access.
      *
      * Returns bool(true) if the database is read-only and bool(false)
      * otherwise.
@@ -618,34 +630,28 @@ class DDLDatabase extends DDLObject
      */
     public function isReadonly()
     {
-        if (empty($this->readonly)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->readonly);
     }
 
     /**
-     * set read-only access
+     * Set read-only access.
      *
      * You may set the database to be read-only to prevent any changes to it.
      * Use this if you wish to create a database viewer, or CD-ROM application.
      *
      * @access  public
      * @param   bool  $isReadonly   new value of this property
+     * @return  DDLDatabase
      */
     public function setReadonly($isReadonly = false)
     {
         assert('is_bool($isReadonly); // Wrong type for argument 1. Boolean expected');
-        if ($isReadonly) {
-            $this->readonly = true;
-        } else {
-            $this->readonly = false;
-        }
+        $this->readonly = (bool) $isReadonly;
+        return $this;
     }
 
     /**
-     * get table definition
+     * Get table definition.
      *
      * Returns the table definition with the name $name as an instance of
      * DDLTable. If no table with the given name exists, the function returns
@@ -667,7 +673,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * add table definition
+     * Add table definition.
      *
      * Adds a new table item to the database definition and returns the table
      * definition as an instance of DDLTable.
@@ -697,7 +703,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * list all tables by definition
+     * List all tables by definition.
      *
      * Returns a list of table definitions, where each element is a DDLTable
      * object.
@@ -716,7 +722,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * list all tables by name
+     * List all tables by name.
      *
      * Returns a numeric array with the names of all registered tables.
      *
@@ -730,7 +736,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * get view definition
+     * Get view definition.
      *
      * Returns the view definition with the name $name as an instance of
      * DDLView. If no view with the given name exists, the function returns
@@ -752,7 +758,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * add view definition
+     * Add view definition.
      *
      * Adds a new view item to the database definition and returns the view
      * definition as an instance of DDLView.
@@ -782,10 +788,9 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * list all views by definition
+     * List all views by definition.
      *
-     * Returns a list of view definitions, where each element is a DDLView
-     * object.
+     * Returns a list of view definitions, where each element is a DDLView object.
      * If no views are defined, the list is empty.
      *
      * Important note! You can NOT add a new view to the database by adding a
@@ -801,7 +806,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * list all views by name
+     * List all views by name.
      *
      * Returns a numeric array with the names of all registered views.
      *
@@ -815,7 +820,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * get function definition
+     * Get function definition.
      *
      * Returns the function definition with the name $name as an instance of
      * DDLFunction. If no function with the given name exists, NULL is returned
@@ -836,7 +841,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * add function definition
+     * Add function definition.
      *
      * Adds a new function item to the database definition and returns the
      * function definition as an instance of DDLFunction.
@@ -866,7 +871,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * list all functions by definition
+     * List all functions by definition.
      *
      * Returns a list of function definitions, where each element is a
      * DDLFunction object.
@@ -885,7 +890,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * list all functions by name
+     * List all functions by name.
      *
      * Returns a numeric array with the names of all registered functions.
      *
@@ -899,7 +904,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * get sequence definition
+     * Get sequence definition.
      *
      * Returns the sequence definition with the name $name as an instance of
      * DDLSequence. If no sequence with the given name exists, NULL is returned
@@ -920,7 +925,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * add sequence definition
+     * Add sequence definition.
      *
      * Adds a new sequence item to the database definition and returns the
      * sequence definition as an instance of DDLSequence.
@@ -950,7 +955,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * list all sequences by definition
+     * List all sequences by definition.
      *
      * Returns a list of sequence definitions, where each element is a
      * DDLSequence object.
@@ -969,7 +974,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * list all sequences by name
+     * List all sequences by name.
      *
      * Returns a numeric array with the names of all registered sequences.
      *
@@ -983,7 +988,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * list sql for database-initialization
+     * List sql for database-initialization.
      *
      * Returns an ordered list of all initialization SQL statements for the given DBMS.
      * If no DBMS is given, it defaults to "generic".
@@ -1017,7 +1022,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * drop database-initialization
+     * Drop database-initialization.
      *
      * Removes all previously set SQL-statements for initialization of the
      * database.
@@ -1030,8 +1035,6 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * drop table
-     *
      * Remove a table from the database definition.
      *
      * Note: the object is NOT deleted. Only the definition is lost.
@@ -1052,8 +1055,6 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * drop view
-     *
      * Remove a view from the database definition.
      *
      * Note: the object is NOT deleted. Only the definition is lost.
@@ -1074,8 +1075,6 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * drop form
-     *
      * Remove a form from the database definition.
      *
      * Note: the object is NOT deleted. Only the definition is lost.
@@ -1096,8 +1095,6 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * drop function
-     *
      * Remove a form function the database definition.
      *
      * Note: the object is NOT deleted. Only the definition is lost.
@@ -1118,8 +1115,6 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * drop sequence
-     *
      * Remove a sequence function the database definition.
      *
      * Note: the object is NOT deleted. Only the definition is lost.
@@ -1140,7 +1135,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * add sql-initialization
+     * Add sql-initialization.
      *
      * Appends the SQL-statement for initialization of the database to the end
      * of the statements-list.
@@ -1166,7 +1161,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * check if table exists
+     * Check if table exists.
      *
      * Returns bool(true) if a table with the given name is registered and bool(false) otherwise.
      * Note that this operation is not case sensitive.
@@ -1183,7 +1178,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * check if view exists
+     * Check if view exists.
      *
      * Returns bool(true) if a view with the given name is registered and bool(false) otherwise.
      * Note that this operation is not case sensitive.
@@ -1200,7 +1195,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * check if function exists
+     * Check if function exists.
      *
      * Returns bool(true) if a function with the given name is registered and bool(false) otherwise.
      * Note that this operation is not case sensitive.
@@ -1217,7 +1212,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * check if sequence exists
+     * Check if sequence exists.
      *
      * Returns bool(true) if a sequence with the given name is registered and bool(false) otherwise.
      * Note that this operation is not case sensitive.
@@ -1234,7 +1229,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * check if form exists
+     * Check if form exists.
      *
      * Returns bool(true) if a form with the given name is registered and bool(false) otherwise.
      * Note that this operation is not case sensitive.
@@ -1251,7 +1246,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * get form by name
+     * Get form by name.
      *
      * Returns the form definition with the name $name as an instance of
      * DDLForm. If no form with the given name exists, NULL is returned
@@ -1273,7 +1268,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * add form
+     * Add form.
      *
      * Adds a new form item to the database definition and returns the
      * sequence definition as an instance of DDLForm.
@@ -1284,31 +1279,25 @@ class DDLDatabase extends DDLObject
      * '_'. Otherwise an InvalidArgumentException is thrown.
      *
      * @access  public
-     * @param   string  $name       new Form name
-     * @param   string  $className  form class name
+     * @param   string  $name  new Form name
      * @return  DDLForm
-     * @throws  AlreadyExistsException    if another form with the same name is already defined
-     * @throws  InvalidArgumentException  if given an invalid name or class
+     * @throws  AlreadyExistsException  if another form with the same name is already defined
      */
-    public function addForm($name, $className = 'DDLForm')
+    public function addForm($name)
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
         $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             $message = "Another form with the name '$name' already exists in database '{$this->getName()}'.";
             throw new AlreadyExistsException($message, E_USER_WARNING);
-
-        } elseif ($className !== 'DDLForm' && !is_subclass_of($className, 'DDLForm')) {
-            throw new InvalidArgumentException("The class '$className' must be a sub-class of DDLForm.");
-
-        } else {
-            $this->forms[$name] = new $className($name, $this);
-            return $this->forms[$name];
         }
+        // add element to list of defined forms
+        $this->forms[$name] = new DDLForm($name, $this);
+        return $this->forms[$name];
     }
 
     /**
-     * get list of forms
+     * Get list of forms.
      *
      * Returns an associative array of all forms, where the array keys are the
      * names and the values are instances of DDLForm.
@@ -1328,7 +1317,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * list all forms by name
+     * List all forms by name.
      *
      * Returns a numeric array with the names of all registered forms.
      *
@@ -1342,7 +1331,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * list of changes
+     * List of changes.
      *
      * Returns a list of change-log entries as a numeric array, each of which
      * are instances of DDLLog.
@@ -1373,7 +1362,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * compare with another object
+     * Compare with another object.
      *
      * Returns bool(true) if this object and $anotherObject
      * are equal and bool(false) otherwise.
@@ -1400,9 +1389,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * magic get
-     *
-     * returns a table, with the given attribute name
+     * <<magic>> Get a table, with the given attribute name.
      *
      * @access  public
      * @param   string  $name   name
@@ -1436,7 +1423,7 @@ class DDLDatabase extends DDLObject
     }
 
     /**
-     * magic is set
+     * <<magic>> is set.
      *
      * Returns true if a named object with the given name exists in the database schema.
      *
@@ -1456,15 +1443,16 @@ class DDLDatabase extends DDLObject
      *
      * @access  public
      * @static
-     * @param   SimpleXMLElement  $node    XML node
-     * @param   mixed             $parent  parent node (if any)
-     * @param   string            $path    file path
+     * @param   \SimpleXMLElement  $node    XML node
+     * @param   mixed              $parent  parent node (if any)
+     * @param   string             $path    file path
      * @return  DDLDatabase
      */
-    public static function unserializeFromXDDL(SimpleXMLElement $node, $parent = null, $path = "")
+    public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null, $path = "")
     {
         assert('is_string($path); // Wrong type for argument 3. String expected');
         $attributes = $node->attributes();
+        $name = "";
         if (isset($attributes['name'])) {
             $name = mb_strtolower($attributes['name']);
         } else {
@@ -1506,6 +1494,7 @@ class DDLDatabase extends DDLObject
         // return cached object
         return self::$instances[$path];
     }
+
 }
 
 ?>

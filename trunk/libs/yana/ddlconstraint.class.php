@@ -65,7 +65,7 @@ class DDLConstraint extends DDLObject
     /**#@-*/
 
     /**
-     * get target DBMS
+     * Get target DBMS.
      *
      * Returns the name of the target DBMS for this definition as a lower-cased string.
      * The default is "generic".
@@ -79,7 +79,7 @@ class DDLConstraint extends DDLObject
     }
 
     /**
-     * set target DBMS
+     * Set target DBMS.
      *
      * While you may settle for any target DBMS you want and provide it in any kind of writing you
      * choose, you should remind, that not every DBMS is supported by the database API provided
@@ -93,6 +93,7 @@ class DDLConstraint extends DDLObject
      *
      * @access  public
      * @param   string  $dbms  target DBMS, defaults to "generic"
+     * @return  DDLColumn
      */
     public function setDBMS($dbms = "generic")
     {
@@ -104,10 +105,11 @@ class DDLConstraint extends DDLObject
         } else {
             $this->dbms = "$dbms";
         }
+        return $this;
     }
 
     /**
-     * get constraint
+     * Get constraint.
      *
      * Returns the code of the constraint or NULL if it has not been set.
      * The syntax depends on the target DBMS. For type "generic" the feature is emulated using PHP
@@ -126,7 +128,7 @@ class DDLConstraint extends DDLObject
     }
 
     /**
-     * set constraint
+     * Set constraint.
      *
      * Note: This function can't ensure that your codes makes sense.
      * So keep in mind that it is your job in the first place to ensure the constraint is valid!
@@ -137,6 +139,7 @@ class DDLConstraint extends DDLObject
      *
      * @access  public
      * @param   string  $constraint  evaluation rule
+     * @return  DDLColumn
      */
     public function setConstraint($constraint = "")
     {
@@ -146,6 +149,7 @@ class DDLConstraint extends DDLObject
         } else {
             $this->constraint = "$constraint";
         }
+        return $this;
     }
 
     /**
@@ -170,6 +174,7 @@ class DDLConstraint extends DDLObject
         $ddl->_unserializeFromXDDL($node);
         return $ddl;
     }
+
 }
 
 ?>
