@@ -85,6 +85,21 @@ abstract class DDLLog extends DDL
     protected $parent = null;
 
     /**
+     * tags for persistance mapping: object <-> XDDL
+     * @var  array
+     */
+    protected $xddlTags = array(
+        'description' => array('description', 'string')
+    );
+
+    /** 
+     * @access  protected
+     * @var     string
+     * @ignore
+     */
+    protected $description = null;
+
+    /**
      * Get parent database.
      *
      * @return  DDLDatabase
@@ -126,6 +141,41 @@ abstract class DDLLog extends DDL
             $this->version = null;
         } else {
             $this->version = "$version";
+        }
+        return $this;
+    }
+
+    /**
+     * Returns a custom log-message.
+     *
+     * Note that this is free-text that may contain any format.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getDescription()
+    {
+        if (is_string($this->description)) {
+            return $this->description;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Set description.
+     *
+     * @access  public
+     * @param   string  $description  a log-message of your choice
+     * @return  DDLLog
+     */
+    public function setDescription($description)
+    {
+        assert('is_string($description); // Wrong type for argument 1. String expected');
+        if (empty($description)) {
+            $this->description = null;
+        } else {
+            $this->description = "$description";
         }
         return $this;
     }

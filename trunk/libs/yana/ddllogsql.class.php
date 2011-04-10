@@ -73,7 +73,7 @@ class DDLLogSql extends DDLLog
     /**#@-*/
 
     /**
-     * constructor
+     * Initialize instance.
      *
      * @param  DDLChangeLog  $parent  parent database
      */
@@ -83,7 +83,7 @@ class DDLLogSql extends DDLLog
     }
 
     /**
-     * get target DBMS
+     * Get target DBMS.
      *
      * Returns the name of the target DBMS for this definition as a lower-cased string.
      * The default is "generic".
@@ -101,7 +101,7 @@ class DDLLogSql extends DDLLog
     }
 
     /**
-     * set target DBMS
+     * Set target DBMS.
      *
      * While you may settle for any target DBMS you want and provide it in any kind of writing you
      * choose, you should remind, that not every DBMS is supported by the database API provided
@@ -112,6 +112,7 @@ class DDLLogSql extends DDLLog
      *
      * @access  public
      * @param   string  $dbms   target DBMS, defaults to "generic"
+     * @return  DDLLogSql
      */
     public function setDBMS($dbms = "generic")
     {
@@ -123,47 +124,10 @@ class DDLLogSql extends DDLLog
         } else {
             $this->dbms = "$dbms";
         }
+        return $this;
     }
 
     /**
-     * get description
-     *
-     * Returns a custom log-message.
-     * Not that this is free-text that may contain any format.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getDescription()
-    {
-        if (is_string($this->description)) {
-            return $this->description;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * set description
-     *
-     * Sets the description as a log-message of your choice.
-     *
-     * @access  public
-     * @param   string  $description    new value of this property
-     */
-    public function setDescription($description)
-    {
-        assert('is_string($description); // Wrong type for argument 1. String expected');
-        if (empty($description)) {
-            $this->description = null;
-        } else {
-            $this->description = "$description";
-        }
-    }
-
-    /**
-     * get sql statement
-     *
      * Returns the SQL statement for this operation.
      *
      * @access  public
@@ -179,12 +143,11 @@ class DDLLogSql extends DDLLog
     }
 
     /**
-     * set sql statement
-     *
      * Set the SQL statement for this operation.
      *
      * @access  public
-     * @param   string  $sql    sql statement
+     * @param   string  $sql  sql statement
+     * @return  DDLLogSql
      */
     public function setSQL($sql)
     {
@@ -194,6 +157,29 @@ class DDLLogSql extends DDLLog
         } else {
             $this->sql = "$sql";
         }
+        return $this;
+    }
+
+    /**
+     * Set function to handle updates.
+     *
+     * Provided arguments for handler are the object's parameter list.
+     *
+     * @access  public
+     * @param   string|array  $functionName     name of the function which is called
+     * @param   string        $functionType     function type
+     * @throws  InvalidArgumentException
+     * @return  DDLLogChange
+     */
+    public static function setHandler($functionName, $functionType = "default")
+    {
+        assert('is_string($functionType); // Wrong argument type for argument 2. String expected');
+        if (is_callable($functionName)) {
+            self::$handlers["$functionType"] = $functionName;
+        } else {
+            throw new InvalidArgumentException("The function name '$functionName' is not callable.", E_USER_WARNING);
+        }
+        return $this;
     }
 
     /**
