@@ -109,7 +109,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     /**#@-*/
 
     /**
-     * constructor
+     * Initialize instance.
      *
      * @param  string       $name    foreign key name
      * @param  DDLDatabase  $parent  parent database
@@ -121,7 +121,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get parent
+     * Get parent database.
      *
      * @return  DDLDatabase
      */
@@ -131,7 +131,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get title
+     * Get title.
      *
      * The title is a label text that should be displayed in the UI when viewing this object.
      *
@@ -150,13 +150,14 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set title
+     * Set title.
      *
      * Sets the title used to display the object in the UI.
      * To reset the property, leave the parameter empty.
      *
      * @access  public
-     * @param   string  $title  title
+     * @param   string  $title  some text
+     * @return  DDLView
      */
     public function setTitle($title = "")
     {
@@ -166,10 +167,11 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
         } else {
             $this->title = "$title";
         }
+        return $this;
     }
 
     /**
-     * get the user description
+     * Get the description.
      *
      * The description serves two purposes:
      * 1st as offline-documentation 2nd as online-documentation.
@@ -195,7 +197,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set the description property
+     * Set the description property.
      *
      * The description serves two purposes:
      * 1st as offline-documentation 2nd as online-documentation.
@@ -207,6 +209,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
      *
      * @access  public
      * @param   string  $description  new value of this property
+     * @return  DDLView
      */
     public function setDescription($description)
     {
@@ -216,10 +219,11 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
         } else {
             $this->description = "$description";
         }
+        return $this;
     }
 
     /**
-     * check whether the dbo has read-only access
+     * Check whether the dbo has read-only access.
      *
      * Returns bool(true) if the view is read-only and bool(false) otherwise.
      *
@@ -230,15 +234,11 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
      */
     public function isReadonly()
     {
-        if (empty($this->readonly)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->readonly);
     }
 
     /**
-     * set read-only access
+     * Set read-only access.
      *
      * You may set the view to be read-only to prevent any changes to it by setting this to
      * bool(true).
@@ -246,19 +246,17 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
      *
      * @access  public
      * @param   bool  $isReadonly   new value of this property
+     * @return  DDLView
      */
     public function setReadonly($isReadonly)
     {
         assert('is_bool($isReadonly); // Wrong type for argument 1. Boolean expected');
-        if ($isReadonly) {
-            $this->readonly = true;
-        } else {
-            $this->readonly = false;
-        }
+        $this->readonly = (bool) $isReadonly;
+        return $this;
     }
 
     /**
-     * check whether or not to use check-option
+     * Check whether or not to use check-option.
      *
      * If true, the where-clause of the select-statement will be interpreted as
      * check-constraint. All input will be validated against the where-clause
@@ -270,15 +268,11 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
      */
     public function hasCheckOption()
     {
-        if (!empty($this->checkOption)) {
-            return  true;
-        } else {
-            return false;
-        }
+        return !empty($this->checkOption);
     }
 
     /**
-     * get type of check option
+     * Get type of check option.
      *
      * Get the behavior of the check option.
      * Returns one of the following constants:
@@ -321,6 +315,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
      * @access  public
      * @param   int  $checkOption   new value of this property
      * @see     DDLView::getCheckOption()
+     * @return  DDLView 
      */
     public function setCheckOption($checkOption)
     {
@@ -335,10 +330,11 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
                 $this->checkOption = DDLViewConstraintEnumeration::NONE;
             break;
         }
+        return $this;
     }
 
     /**
-     * get field by name
+     * Get field by name.
      *
      * Returns the DDLViewField item with the given name from the current view.
      * If no such item can be found, an exception will be thrown.
@@ -358,7 +354,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get list of fields
+     * Get list of fields.
      *
      * Returns an associative array of all DDLViewField items in this view.
      * The keys are the unique names of the fields.
@@ -378,7 +374,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * add field by name
+     * Add field by name.
      *
      * Adds a field element by the given name and returns it.
      * Throws an exception if a field with the given name already exists.
@@ -400,12 +396,10 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * drop field
-     *
      * Removes a field element by the given name if it exists.
      *
      * @access  public
-     * @param   string  $name    name of the droped field
+     * @param   string  $name  name of the droped field
      */
     public function dropField($name)
     {
@@ -416,7 +410,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get SQL-query by dbms
+     * Get SQL-query by dbms.
      *
      * Returns the source code of the SQL query as a string or NULL if none has been defined.
      *
@@ -437,7 +431,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get list of SQL-queries
+     * Get list of SQL-queries.
      *
      * Returns a list of source codes of the SQL queries as an array.
      * The syntax depends on the chosen DBMS.
@@ -458,7 +452,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set SQL-query
+     * Set SQL-query.
      *
      * Sets the source code of the SQL query. The syntax depends on the chosen DBMS.
      *
@@ -481,9 +475,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * drop SQL-query
-     *
-     * Drops the query for the chosen DBMS if there is any.
+     * Drops the SQL-query for the chosen DBMS if there is any.
      *
      * @access  public
      * @param   string  $dbms  target DBMS, defaults to "generic"
@@ -499,7 +491,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get list of tables
+     * Get list of tables.
      *
      * This is a generic information.
      *
@@ -519,7 +511,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set list of tables
+     * Set list of tables.
      *
      * This is a generic information.
      *
@@ -536,6 +528,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
      * @param   array  $tables     list of tables
      * @throws  NotFoundException  when a table does not exist
      * @throws  InvalidArgumentException  if the list of tables is empty
+     * @return  DDLView 
      */
     public function setTables(array $tables)
     {
@@ -553,10 +546,11 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
         } else {
             throw new InvalidArgumentException("Parameter with the name '$tables' can not be empty.");
         }
+        return $this;
     }
 
     /**
-     * get where-clause
+     * Get where-clause.
      *
      * This is a generic information.
      *
@@ -576,7 +570,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set where-clause
+     * Set where-clause.
      *
      * This is a generic information.
      *
@@ -607,7 +601,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get list of sorting-columns
+     * Get list of sorting-columns.
      *
      * Returns a list of columns for sorting the output.
      * If no order-by-clause has been defined, the returned array is empty.
@@ -618,16 +612,11 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     public function getOrderBy()
     {
         assert('is_array($this->orderBy); // Wrong type for argument 1. Array expected');
-        if (!empty ($this->orderBy)) {
-            $result = $this->orderBy;
-        } else {
-            $result =  array();
-        }
-        return $result;
+        return (!empty($this->orderBy)) ? $this->orderBy : array();
     }
 
     /**
-     * set list of sorting-columns
+     * Set list of sorting-columns.
      *
      * Set a list of columns for sorting the output.
      * You may provide an empty array for $orderBy, to reset the property.
@@ -641,6 +630,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
      * @access  public
      * @param   array  $orderBy  list of column names
      * @param   bool   $isDesc   sorting order (false = ascending, true = descending)
+     * @return  DDLView
      */
     public function setOrderBy(array $orderBy, $isDesc = false)
     {
@@ -648,15 +638,12 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
         assert('is_bool($isDesc); // Wrong type for argument 2. Boolean expected');
 
         $this->orderBy = $orderBy;
-        if ($isDesc) {
-            $this->descendingOrder = true;
-        } else {
-            $this->descendingOrder = false;
-        }
+        $this->descendingOrder = (bool) $isDesc;
+        return $this;
     }
 
     /**
-     * get sorting order
+     * Get sorting order.
      *
      * Returns bool(false) for ascending, and bool(true) for descending order.
      * The default is bool(false).
@@ -666,15 +653,11 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
      */
     public function isDescendingOrder()
     {
-        if (empty($this->descendingOrder)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->descendingOrder);
     }
 
     /**
-     * get rights management settings
+     * Get rights management settings.
      *
      * Returns an array of DDLGrant objects.
      *
@@ -694,7 +677,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * drop rights management settings
+     * Drop rights management settings.
      *
      * {@link DDLGrant}s control the access permissions granted to the user.
      *
@@ -711,7 +694,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set rights management setting
+     * Set rights management setting.
      *
      * {@link DDLGrant}s control the access permissions granted to the user.
      *
@@ -719,14 +702,16 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
      *
      * @access  public
      * @param   DDLGrant  $grant    new grant object (rights management)
+     * @return  DDLView
      */
     public function setGrant(DDLGrant $grant)
     {
         $this->grants[] = $grant;
+        return $this;
     }
 
     /**
-     * add rights management setting
+     * Add rights management setting.
      *
      * {@link DDLGrant}s control the access permissions granted to the user.
      *
@@ -761,9 +746,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * magic get
-     *
-     * returns a ViewField, with the given attribute name
+     * <<magic>> Returns a ViewField, with the given attribute name.
      *
      * @access  public
      * @param   string $name  name
@@ -774,7 +757,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * serialize this object to XDDL
+     * Serialize this object to XDDL.
      *
      * Returns the serialized object as a string in XML-DDL format.
      *
@@ -838,5 +821,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
         $ddl->_unserializeFromXDDL($node);
         return $ddl;
     }
+
 }
+
 ?>

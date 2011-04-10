@@ -83,7 +83,7 @@ class DDLTrigger extends DDLObject
     /**#@-*/
 
     /**
-     * get target DBMS
+     * Get target DBMS.
      *
      * Returns the name of the target DBMS for this definition as a lower-cased string.
      * The default is "generic".
@@ -97,7 +97,7 @@ class DDLTrigger extends DDLObject
     }
 
     /**
-     * set target DBMS
+     * Set target DBMS.
      *
      * While you may settle for any target DBMS you want and provide it in any kind of writing you
      * choose, you should remind, that not every DBMS is supported by the database API provided
@@ -111,6 +111,7 @@ class DDLTrigger extends DDLObject
      *
      * @access  public
      * @param   string  $dbms  target DBMS, defaults to "generic"
+     * @return  DDLTrigger
      */
     public function setDBMS($dbms = "generic")
     {
@@ -122,10 +123,11 @@ class DDLTrigger extends DDLObject
         } else {
             $this->dbms = "$dbms";
         }
+        return $this;
     }
 
     /**
-     * get trigger code
+     * Get trigger code.
      *
      * Retrieve the trigger code and return it.
      * The syntax of the code depends on the type of DBMS used.
@@ -143,7 +145,7 @@ class DDLTrigger extends DDLObject
     }
 
     /**
-     * set trigger code
+     * Set trigger code.
      *
      * Set the trigger code that should be executed when the trigger is fired.
      *
@@ -160,15 +162,17 @@ class DDLTrigger extends DDLObject
      *
      * @access  public
      * @param   string  $trigger  code that should be executed (possibly a function call)
+     * @return  DDLTrigger
      */
     public function setTrigger($trigger)
     {
         assert('is_string($trigger); // Wrong type for argument 1. String expected');
         $this->trigger = "$trigger";
+        return $this;
     }
 
     /**
-     * check wether triggered before statement
+     * Check wether triggered before statement.
      *
      * Before refers to triggers that fire BEFORE the statement is carried out.
      *
@@ -177,15 +181,11 @@ class DDLTrigger extends DDLObject
      */
     public function isBefore()
     {
-        if ($this->on === 'before') {
-            return true;
-        } else {
-            return false;
-        }
+        return ($this->on === 'before');
     }
 
     /**
-     * check wether triggered after statement
+     * Check wether triggered after statement.
      *
      * After refers to triggers that fire AFTER the statement or transaction has been successfully
      * carried out. It is not fired if the statement results in an error.
@@ -195,15 +195,11 @@ class DDLTrigger extends DDLObject
      */
     public function isAfter()
     {
-        if ($this->on === 'after') {
-            return true;
-        } else {
-            return false;
-        }
+        return ($this->on === 'after');
     }
 
     /**
-     * check wether triggered instead of statement
+     * Check wether triggered instead of statement.
      *
      * Instead referes to triggers that fire INSTEAD of the statement. The statement is not
      * executed. This option is not supported by all DBMS. However: if it is not, you may emulate
@@ -214,15 +210,11 @@ class DDLTrigger extends DDLObject
      */
     public function isInstead()
     {
-        if ($this->on === 'instead') {
-            return true;
-        } else {
-            return false;
-        }
+        return ($this->on === 'instead');
     }
 
     /**
-     * set trigger on before statement
+     * Set trigger on before statement.
      *
      * Before refers to triggers that fire BEFORE the statement is carried out.
      *
@@ -230,14 +222,16 @@ class DDLTrigger extends DDLObject
      * of these. This setting is mandatory. There is no default value.
      *
      * @access  public
+     * @return  DDLTrigger
      */
     public function setBefore()
     {
         $this->on = 'before';
+        return $this;
     }
 
     /**
-     * set trigger on after statement
+     * Set trigger on after statement.
      *
      * After refers to triggers that fire AFTER the statement or transaction has been successfully
      * carried out. It is not fired if the statement results in an error.
@@ -246,14 +240,16 @@ class DDLTrigger extends DDLObject
      * of these. This setting is mandatory. There is no default value.
      *
      * @access  public
+     * @return  DDLTrigger
      */
     public function setAfter()
     {
         $this->on = 'after';
+        return $this;
     }
 
     /**
-     * set trigger to replace statement
+     * Set trigger to replace statement.
      *
      * Instead referes to triggers that fire INSTEAD of the statement. The statement is not
      * executed. This option is not supported by all DBMS. However: if it is not, you may emulate
@@ -263,10 +259,12 @@ class DDLTrigger extends DDLObject
      * of these. This setting is mandatory. There is no default value.
      *
      * @access  public
+     * @return  DDLTrigger
      */
     public function setInstead()
     {
         $this->on = 'instead';
+        return $this;
     }
 
     /**
@@ -283,15 +281,11 @@ class DDLTrigger extends DDLObject
      */
     public function isInsert()
     {
-        if ($this->insert) {
-            return true;
-        } else {
-            return false;
-        }
+        return !empty($this->insert);
     }
 
     /**
-     * check if triggered on update statements
+     * Check if triggered on update statements.
      *
      * This option selects when a trigger is fired. This is either on insert or update or delete
      * statement or a combination of those.
@@ -304,15 +298,11 @@ class DDLTrigger extends DDLObject
      */
     public function isUpdate()
     {
-        if ($this->update) {
-            return true;
-        } else {
-            return false;
-        }
+        return !empty($this->update);
     }
 
     /**
-     * check if triggered on delete statements
+     * Check if triggered on delete statements.
      *
      * This option selects when a trigger is fired. This is either on insert or update or delete
      * statement or a combination of those.
@@ -325,15 +315,11 @@ class DDLTrigger extends DDLObject
      */
     public function isDelete()
     {
-        if ($this->delete) {
-            return true;
-        } else {
-            return false;
-        }
+        return !empty($this->delete);
     }
 
     /**
-     * set trigger on insert statement
+     * Set trigger on insert statement.
      *
      * This option selects when a trigger is fired. This is either on insert or update or delete
      * statement or a combination of those.
@@ -343,19 +329,17 @@ class DDLTrigger extends DDLObject
      *
      * @access  public
      * @param   bool  $isInsert  true: fire on insert, false: ignore insert
+     * @return  DDLTrigger
      */
     public function setInsert($isInsert = true)
     {
         assert('is_bool($isInsert); // Wrong type for argument 1. Boolean expected');
-        if ($isInsert) {
-            $this->insert = true;
-        } else {
-            $this->insert = false;
-        }
+        $this->insert = (bool) $isInsert;
+        return $this;
     }
 
     /**
-     * set trigger on update statement
+     * Set trigger on update statement.
      *
      * This option selects when a trigger is fired. This is either on insert or update or delete
      * statement or a combination of those.
@@ -365,19 +349,17 @@ class DDLTrigger extends DDLObject
      *
      * @access  public
      * @param   bool  $isUpdate  true: fire on update, false: ignore update
+     * @return  DDLTrigger
      */
     public function setUpdate($isUpdate = true)
     {
         assert('is_bool($isUpdate); // Wrong type for argument 1. Boolean expected');
-        if ($isUpdate) {
-            $this->update = true;
-        } else {
-            $this->update = false;
-        }
+        $this->update = (bool) $isUpdate;
+        return $this;
     }
 
     /**
-     * set trigger on delete statement
+     * Set trigger on delete statement.
      *
      * This option selects when a trigger is fired. This is either on insert or update or delete
      * statement or a combination of those.
@@ -387,15 +369,13 @@ class DDLTrigger extends DDLObject
      *
      * @access  public
      * @param   bool  $isDelete  true: fire on delete, false: ignore delete
+     * @return  DDLTrigger
      */
     public function setDelete($isDelete = true)
     {
         assert('is_bool($isDelete); // Wrong type for argument 1. Boolean expected');
-        if ($isDelete) {
-            $this->delete = true;
-        } else {
-            $this->delete = false;
-        }
+        $this->delete = (bool) $isDelete;
+        return $this;
     }
 
     /**
@@ -420,6 +400,7 @@ class DDLTrigger extends DDLObject
         $ddl->_unserializeFromXDDL($node);
         return $ddl;
     }
+
 }
 
 ?>
