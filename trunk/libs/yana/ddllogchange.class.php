@@ -89,7 +89,7 @@ class DDLLogChange extends DDLLog
     protected static $handlers = array();
 
     /**
-     * constructor
+     * Initialize instance.
      *
      * @param  DDLChangeLog  $parent  parent database
      */
@@ -99,7 +99,7 @@ class DDLLogChange extends DDLLog
     }
 
     /**
-     * get target DBMS
+     * Get target DBMS.
      *
      * Returns the name of the target DBMS for this definition as a lower-cased string.
      * The default is "generic".
@@ -117,7 +117,7 @@ class DDLLogChange extends DDLLog
     }
 
     /**
-     * set target DBMS
+     * Set target DBMS.
      *
      * While you may settle for any target DBMS you want and provide it in any kind of writing you
      * choose, you should remind, that not every DBMS is supported by the database API provided
@@ -128,6 +128,7 @@ class DDLLogChange extends DDLLog
      *
      * @access  public
      * @param   string  $dbms   target DBMS, defaults to "generic"
+     * @return  DDLLogChange
      */
     public function setDBMS($dbms = "generic")
     {
@@ -139,10 +140,11 @@ class DDLLogChange extends DDLLog
         } else {
             $this->dbms = "$dbms";
         }
+        return $this;
     }
 
     /**
-     * get description
+     * Get description.
      *
      * Returns a custom log-message.
      * Not that this is free-text that may contain any format.
@@ -160,12 +162,11 @@ class DDLLogChange extends DDLLog
     }
 
     /**
-     * set description
-     *
-     * Sets the description as a log-message of your choice.
+     * Set description.
      *
      * @access  public
-     * @param   string  $description    new value of this property
+     * @param   string  $description  a log-message of your choice
+     * @return  DDLLogChange
      */
     public function setDescription($description)
     {
@@ -175,10 +176,11 @@ class DDLLogChange extends DDLLog
         } else {
             $this->description = "$description";
         }
+        return $this;
     }
 
     /**
-     * get sql statement
+     * Get sql statement.
      *
      * Returns the type of this operation.
      * This also sets which handler to use, as the handler is associated with a certain type.
@@ -196,13 +198,14 @@ class DDLLogChange extends DDLLog
     }
 
     /**
-     * set type of change
+     * Set type of change.
      *
      * Set the type the type of this operation.
      * This also sets which handler to use, as the handler is associated with a certain type.
      *
      * @access  public
      * @param   string  $type   type of this operation
+     * @return  DDLLogChange
      */
     public function setType($type = "default")
     {
@@ -212,10 +215,11 @@ class DDLLogChange extends DDLLog
         } else {
             $this->type = "$type";
         }
+        return $this;
     }
 
     /**
-     * get list of parameters
+     * Get list of parameters.
      *
      * Returns an associative array of parameters for this change.
      * These parameters are passed to the handler function.
@@ -230,9 +234,8 @@ class DDLLogChange extends DDLLog
     }
 
     /**
-     * add a parameter
-     *
      * Adds a new parameter to the parameter list.
+     *
      * These parameters are passed to the handler function.
      *
      * @access  public
@@ -252,9 +255,7 @@ class DDLLogChange extends DDLLog
     }
 
     /**
-     * drop list of parameters
-     *
-     * Drops and resets the current list of parameters
+     * Drops and resets the current list of parameters.
      *
      * @access  public
      */
@@ -264,7 +265,7 @@ class DDLLogChange extends DDLLog
     }
 
     /**
-     * set function to handle updates
+     * Set function to handle updates.
      *
      * Provided arguments for handler are the object's parameter list.
      *
@@ -272,6 +273,7 @@ class DDLLogChange extends DDLLog
      * @param   string|array  $functionName     name of the function which is called
      * @param   string        $functionType     function type
      * @throws  InvalidArgumentException
+     * @return  DDLLogChange
      */
     public static function setHandler($functionName, $functionType = "default")
     {
@@ -281,14 +283,13 @@ class DDLLogChange extends DDLLog
         } else {
             throw new InvalidArgumentException("The function name '$functionName' is not callable.", E_USER_WARNING);
         }
+        return $this;
     }
 
     /**
-     * carry out the update
-     *
      * Calls the provided handler function.
-     * Provided arguments are the object's parameter list.
      *
+     * Provided arguments are the object's parameter list.
      * Returns bool(true) on success and bool(false) on error.
      *
      * @access  public
@@ -308,9 +309,7 @@ class DDLLogChange extends DDLLog
     }
 
     /**
-     * unserialize a XDDL-node to an object
-     *
-     * Returns the unserialized object.
+     * Unserializes a XDDL-node to an instance of this class and returns it.
      *
      * @access  public
      * @static
@@ -324,6 +323,7 @@ class DDLLogChange extends DDLLog
         $ddl->_unserializeFromXDDL($node);
         return $ddl;
     }
+
 }
 
 ?>
