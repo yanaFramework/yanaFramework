@@ -67,13 +67,12 @@ class DDLLogCreate extends DDLLog
     );
 
     /** @var string */ protected $subject = null;
-    /** @var string */ protected $description = null;
     /** @var string */ protected $name = null;
 
     /**#@-*/
 
     /**
-     * constructor
+     * Initialize instance.
      *
      * @param  string        $name      name of logcreate
      * @param  DDLChangeLog  $parent    parent
@@ -86,10 +85,9 @@ class DDLLogCreate extends DDLLog
     }
 
     /**
-     * get type of changed object
+     * Get type of changed object.
      *
-     * Returns the type as "table", "column", "index", "sequence", "trigger",
-     * "constraint", "view".
+     * Returns the type as "table", "column", "index", "sequence", "trigger", "constraint", "view".
      *
      * Note: For columns the returned name includes the table ("table.column").
      *
@@ -106,13 +104,13 @@ class DDLLogCreate extends DDLLog
     }
 
     /**
-     * set type of changed object
+     * Set type of changed object.
      *
-     * Subject may be: "table", "column", "index", "sequence", "trigger",
-     * "constraint", "view".
+     * Subject may be: "table", "column", "index", "sequence", "trigger", "constraint", "view".
      *
      * @access  public
-     * @param   string  $subject    new value of this property
+     * @param   string  $subject  new value of this property
+     * @return  DDLLogCreate 
      */
     public function setSubject($subject = "")
     {
@@ -124,47 +122,10 @@ class DDLLogCreate extends DDLLog
         } else {
             $this->subject = "$subject";
         }
+        return $this;
     }
 
     /**
-     * get description
-     *
-     * Returns a custom log-message.
-     * Not that this is free-text that may contain any format.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getDescription()
-    {
-        if (is_string($this->description)) {
-            return $this->description;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * set description
-     *
-     * Sets the description as a log-message of your choice.
-     *
-     * @access  public
-     * @param   string  $description    new value of this property
-     */
-    public function setDescription($description)
-    {
-        assert('is_string($description); // Wrong type for argument 1. String expected');
-        if (empty($description)) {
-            $this->description = null;
-        } else {
-            $this->description = "$description";
-        }
-    }
-
-    /**
-     * get name of changed object
-     *
      * Returns the name of the object that has changed.
      *
      * Note: For columns the returned name includes the table ("table.column").
@@ -182,7 +143,7 @@ class DDLLogCreate extends DDLLog
     }
 
     /**
-     * set name of changed object
+     * Set name of changed object.
      *
      * The name is mandatory.
      * If an empty or invalid name is provided, the function throws an InvalidArgumentException.
@@ -190,6 +151,7 @@ class DDLLogCreate extends DDLLog
      * @access  public
      * @param   string  $name   name of changed object
      * @throws  InvalidArgumentException  when name is invalid
+     * @return  DDLLogCreate
      */
     public function setName($name)
     {
@@ -202,11 +164,35 @@ class DDLLogCreate extends DDLLog
         } else {
             $this->name = mb_strtolower($name);
         }
+        return $this;
     }
 
     /**
-     * carry out the update
+     * Set function to handle updates.
      *
+     * Provided arguments for handler are the object's parameter list.
+     *
+     * @access  public
+     * @param   string|array  $functionName     name of the function which is called
+     * @param   string        $functionType     function type
+     * @throws  InvalidArgumentException
+     * @return  DDLLogChange
+     */
+    public static function setHandler($functionName, $functionType = "default")
+    {
+        assert('is_string($functionType); // Wrong argument type for argument 2. String expected');
+        if (is_callable($functionName)) {
+            self::$handlers["$functionType"] = $functionName;
+        } else {
+            throw new InvalidArgumentException("The function name '$functionName' is not callable.", E_USER_WARNING);
+        }
+        return $this;
+    }
+
+    /**
+     * Calls the provided handler function.
+     *
+     * Provided arguments are the object's parameter list.
      * Returns bool(true) on success and bool(false) on error.
      *
      * @access  public
@@ -214,8 +200,12 @@ class DDLLogCreate extends DDLLog
      */
     public function commitUpdate()
     {
-        if (isset(self::$handler)) {
-            return call_user_func(self::$handler, $this->getSubject(), $this->getName());
+        $type = $this->getType();
+        if (is_null($type)) {
+            $type = "default";
+        }
+        if (isset(self::$handlers[$type])) {
+            return call_user_func(self::$handlers[$type], $this->getParameters());
         } else {
             return false;
         }

@@ -76,7 +76,7 @@ class DDLLogUpdate extends DDLLogCreate
     /**#@-*/
 
     /**
-     * get name of updated property
+     * Get name of updated property.
      *
      * Specifies which property of the object has been updated.
      * Returns the name of the property.
@@ -94,12 +94,13 @@ class DDLLogUpdate extends DDLLogCreate
     }
 
     /**
-     * set name of updated property
+     * Set name of updated property.
      *
      * Specifies which property of the object has been updated.
      *
      * @access  public
-     * @param   string  $name   name of updated property
+     * @param   string  $name  name of updated property
+     * @return  DDLLogUpdate
      */
     public function setPropertyName($name)
     {
@@ -109,10 +110,11 @@ class DDLLogUpdate extends DDLLogCreate
         } else {
             $this->propertyName = "$name";
         }
+        return $this;
     }
 
     /**
-     * get new value of updated property
+     * Get new value of updated property.
      *
      * Returns the new value of the property.
      * Note that the value may be a serialized string, depending on the
@@ -131,13 +133,13 @@ class DDLLogUpdate extends DDLLogCreate
     }
 
     /**
-     * set new value of updated property
+     * Set new value of updated property.
      *
-     * Note that the value may be a serialized string, depending on the
-     * implementation you use.
+     * Note that the value may be a serialized string, depending on the implementation you use.
      *
      * @access  public
      * @param   string  $value  value of updated property
+     * @return  DDLLogUpdate
      */
     public function setPropertyValue($value)
     {
@@ -147,14 +149,13 @@ class DDLLogUpdate extends DDLLogCreate
         } else {
             $this->propertyValue = "$value";
         }
+        return $this;
     }
 
     /**
-     * get old value of updated property
+     * Get the old value of the property.
      *
-     * Returns the old value of the property.
-     * Note that the value may be a serialized string, depending on the
-     * implementation you use.
+     * Note that the value may be a serialized string, depending on the implementation you use.
      *
      * @access  public
      * @return  string
@@ -169,13 +170,14 @@ class DDLLogUpdate extends DDLLogCreate
     }
 
     /**
-     * set old value of updated property
+     * Set old value of updated property.
      *
      * Note that the value may be a serialized string, depending on the
      * implementation you use.
      *
      * @access  public
      * @param   string  $oldValue   old value of updated property
+     * @return  DDLLogUpdate
      */
     public function setOldPropertyValue($oldValue)
     {
@@ -185,6 +187,30 @@ class DDLLogUpdate extends DDLLogCreate
         } else {
             $this->oldPropertyValue = "$oldValue";
         }
+        return $this;
+    }
+
+
+    /**
+     * Set function to handle updates.
+     *
+     * Provided arguments for handler are the object's parameter list.
+     *
+     * @access  public
+     * @param   string|array  $functionName     name of the function which is called
+     * @param   string        $functionType     function type
+     * @throws  InvalidArgumentException
+     * @return  DDLLogUpdate
+     */
+    public static function setHandler($functionName, $functionType = "default")
+    {
+        assert('is_string($functionType); // Wrong argument type for argument 2. String expected');
+        if (is_callable($functionName)) {
+            self::$handlers["$functionType"] = $functionName;
+        } else {
+            throw new InvalidArgumentException("The function name '$functionName' is not callable.", E_USER_WARNING);
+        }
+        return $this;
     }
 
     /**

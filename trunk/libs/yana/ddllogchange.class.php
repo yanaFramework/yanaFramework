@@ -69,7 +69,6 @@ class DDLLogChange extends DDLLog
 
     /** @var string */ protected $dbms = null;
     /** @var string */ protected $type = null;
-    /** @var string */ protected $description = null;
     /** @var array  */ protected $parameters = array();
 
     /**#@-*/
@@ -139,42 +138,6 @@ class DDLLogChange extends DDLLog
             $this->dbms = null;
         } else {
             $this->dbms = "$dbms";
-        }
-        return $this;
-    }
-
-    /**
-     * Get description.
-     *
-     * Returns a custom log-message.
-     * Not that this is free-text that may contain any format.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getDescription()
-    {
-        if (is_string($this->description)) {
-            return $this->description;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Set description.
-     *
-     * @access  public
-     * @param   string  $description  a log-message of your choice
-     * @return  DDLLogChange
-     */
-    public function setDescription($description)
-    {
-        assert('is_string($description); // Wrong type for argument 1. String expected');
-        if (empty($description)) {
-            $this->description = null;
-        } else {
-            $this->description = "$description";
         }
         return $this;
     }
