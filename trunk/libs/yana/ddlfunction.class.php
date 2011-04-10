@@ -93,7 +93,7 @@ class DDLFunction extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get parent
+     * Get parent.
      *
      * @return  DDLDatabase
      */
@@ -103,7 +103,7 @@ class DDLFunction extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get title
+     * Get title.
      *
      * The title is a label text that should be displayed in the UI when viewing this object.
      *
@@ -122,13 +122,14 @@ class DDLFunction extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set title
+     * Set title.
      *
      * Sets the title used to display the object in the UI.
      * To reset the property, leave the parameter empty.
      *
      * @access  public
-     * @param   string  $title  title
+     * @param   string  $title  any text is valid
+     * @return  DDLFunction
      */
     public function setTitle($title = "")
     {
@@ -138,10 +139,11 @@ class DDLFunction extends DDLNamedObject implements IsIncludableDDL
         } else {
             $this->title = "$title";
         }
+        return $this;
     }
     
     /**
-     * get the description
+     * Get the description.
      *
      * The description serves two purposes:
      * 1st is offline-documentation 2nd is online-documentation.
@@ -167,7 +169,7 @@ class DDLFunction extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set the description
+     * Set the description.
      *
      * The description serves two purposes:
      * 1st is offline-documentation 2nd is online-documentation.
@@ -178,7 +180,8 @@ class DDLFunction extends DDLNamedObject implements IsIncludableDDL
      * To reset the property, leave the parameter $description empty.
      *
      * @access  public
-     * @param   string  $description  new value of this property
+     * @param   string  $description  any text is valid
+     * @return  DDLFunction
      */
     public function setDescription($description)
     {
@@ -188,6 +191,7 @@ class DDLFunction extends DDLNamedObject implements IsIncludableDDL
         } else {
             $this->description = "$description";
         }
+        return $this;
     }
 
     /**
