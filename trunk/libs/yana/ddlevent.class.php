@@ -220,7 +220,7 @@ class DDLEvent extends DDLNamedObject
         if (empty($title)) {
             $this->title = null;
         } else {
-            $this->title = String::htmlEntities("$title");
+            $this->title = "$title";
         }
         return $this;
     }
