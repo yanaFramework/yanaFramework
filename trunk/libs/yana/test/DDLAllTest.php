@@ -2174,12 +2174,16 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testGetListOfFiles()
     {
         $get = DDL::getListOfFiles();
-        $this->assertFalse(in_array('config/db//user.db.xml', $get), 'assert failed, the value can not be exist in array');
+        $this->assertFalse(in_array('config/db/user.db.xml', $get), 'assert failed, the value can not be exist in array');
         $this->assertTrue(in_array('user', $get), 'assert failed, the value must be exist in array');
         $this->assertType('array', $get, 'assert failed, the value should be from type array');
 
         $get = DDL::getListOfFiles(true);
-        $this->assertTrue(in_array('config/db//user.db.xml', $get), 'assert failed, the value must be exist in array');
+        $this->assertTrue(count($get) > 0, 'assert failed, the value must be exist in array');
+        foreach ($get as $file)
+        {
+            $this->assertTrue(is_file($file));
+        }
         $this->assertFalse(in_array('user', $get), 'assert failed, the value can not be exist in array');
         $this->assertType('array', $get, 'assert failed, the value should be from type array');
     }
