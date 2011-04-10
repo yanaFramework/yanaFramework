@@ -92,7 +92,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
     /**#@-*/
 
     /**
-     * constructor
+     * Initialize instance.
      *
      * @param  string       $name    sequence name
      * @param  DDLDatabase  $parent  parent database
@@ -104,7 +104,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get parent
+     * Fet parent database.
      *
      * @return  DDLDatabase
      */
@@ -114,7 +114,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get the description
+     * Get the description.
      *
      * The description is used for your documentation purposes only.
      *
@@ -131,12 +131,13 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set the description
+     * Set the description.
      *
      * The description is used for your documentation purposes only.
      *
      * @access  public
      * @param   string  $description  new value of this property
+     * @return  DDLSequence
      */
     public function setDescription($description)
     {
@@ -146,10 +147,11 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
         } else {
             $this->description = "$description";
         }
+        return $this;
     }
 
     /**
-     * get start value
+     * Get start value.
      *
      * A sequence always starts with an initial value.
      *
@@ -171,7 +173,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set start value
+     * Set start value.
      *
      * Set the start value of the sequence to a custom value.
      * The default value is the minimal value for ascending sequences and the maximal value for
@@ -197,10 +199,11 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
         } else {
             $this->start = (int) $start;
         }
+        return $this;
     }
 
     /**
-     * get increment value
+     * Get increment value.
      *
      * An increment-value (or step-value) specifies the number that is added to
      * the sequence each time it is incremented.
@@ -220,7 +223,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set increment value
+     * Set increment value.
      *
      * An increment-value (or step-value) specifies the number that is added to
      * the sequence each time it is incremented.
@@ -232,7 +235,8 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
      * To reset the value, leave the argument $increment empty.
      *
      * @access  public
-     * @param   int  $increment   increment value
+     * @param   int  $increment  increment value
+     * @return  DDLSequence
      */
     public function setIncrement($increment = 1)
     {
@@ -244,10 +248,11 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
             $message = "Increment value must not be 0 in sequence '{$this->name}'.";
             throw new InvalidArgumentException($message, E_USER_WARNING);
         }
+        return $this;
     }
 
     /**
-     * get minimum value
+     * Get minimum value.
      *
      * The minimal value is a lower boundary for a sequence.
      * All sequence values must be larger or equal the minimal value.
@@ -265,7 +270,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set minimum value
+     * Set minimum value.
      *
      * You may set a lower boundary for a sequence.
      *
@@ -273,7 +278,8 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
      * The minimal value may not be larger than the maximal value.
      *
      * @access  public
-     * @param   int  $min   minimum value
+     * @param   int  $min  minimum value
+     * @return  DDLSequence
      */
     public function setMin($min = null)
     {
@@ -289,10 +295,11 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
         } else {
             $this->min = (int) $min;
         }
+        return $this;
     }
 
     /**
-     * get maximum value
+     * Get maximum value.
      *
      * The maximum value is an upper boundary for a sequence.
      * All sequence values must be smaller or equal the maximum value.
@@ -310,7 +317,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set maximum value
+     * Set maximum value.
      *
      * You may set an upper boundary for a sequence.
      *
@@ -318,7 +325,8 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
      * The maximum value may not be smaller or equal the minimum value.
      *
      * @access  public
-     * @param   int  $max    maximum value
+     * @param   int  $max  maximum value
+     * @return  DDLSequence
      */
     public function setMax($max = null)
     {
@@ -334,10 +342,11 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
         } else {
             $this->max = (int) $max;
         }
+        return $this;
     }
 
     /**
-     * check wether sequence is number cycle
+     * Check wether sequence is number cycle.
      *
      * If a sequence is a number cycle and the value of the sequence reaches
      * an upper- or lower-boundary, it will be reset to the minimum value for
@@ -348,11 +357,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
      */
     public function isCycle()
     {
-        if (empty($this->cycle)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->cycle);
     }
 
     /**
@@ -366,21 +371,17 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
      *
      * @access  public
      * @param   bool  $isCycle  new value of this property
+     * @return  DDLSequence
      */
     public function setCycle($isCycle = false)
     {
         assert('is_bool($isCycle); // Wrong type for argument 1. Boolean expected');
-        if ($isCycle) {
-            $this->cycle = true;
-        } else {
-            $this->cycle = false;
-        }
+        $this->cycle = (bool) $isCycle;
+        return $this;
     }
 
     /**
-     * unserialize a XDDL-node to an object
-     *
-     * Returns the unserialized object.
+     * Unserializes a XDDL-node to an instance of this class and returns it.
      *
      * @access  public
      * @static
@@ -398,5 +399,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
         $ddl->_unserializeFromXDDL($node);
         return $ddl;
     }
+
 }
+
 ?>

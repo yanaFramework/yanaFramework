@@ -90,7 +90,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     /**#@-*/
 
     /**
-     * constructor
+     * Initialize instance.
      *
      * @param  string       $name    foreign key name
      * @param  DDLDatabase  $parent  parent database
@@ -102,7 +102,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get parent
+     * Get parent database.
      *
      * @return  DDLDatabase
      */
@@ -112,7 +112,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get title
+     * Get title.
      *
      * The title is a label text that should be displayed in the UI when viewing this object.
      *
@@ -131,13 +131,14 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set title
+     * Set title.
      *
      * Sets the title used to display the object in the UI.
      * To reset the property, leave the parameter empty.
      *
      * @access  public
-     * @param   string  $title  title
+     * @param   string  $title  some text
+     * @return  DDLTable 
      */
     public function setTitle($title = "")
     {
@@ -147,10 +148,11 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
         } else {
             $this->title = "$title";
         }
+        return $this;
     }
 
     /**
-     * get the user description
+     * Get the user description.
      *
      * The description serves two purposes:
      * 1st as offline-documentation 2nd as online-documentation.
@@ -176,7 +178,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set the description property
+     * Set the description property.
      *
      * The description serves two purposes:
      * 1st as offline-documentation 2nd as online-documentation.
@@ -188,6 +190,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      *
      * @access  public
      * @param   string  $description  new value of this property
+     * @return  DDLTable 
      */
     public function setDescription($description = "")
     {
@@ -197,10 +200,11 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
         } else {
             $this->description = "$description";
         }
+        return $this;
     }
 
     /**
-     * check whether the dbo has read-only access
+     * Check whether the dbo has read-only access.
      *
      * Returns bool(true) if the table is read-only and bool(false) otherwise.
      *
@@ -211,34 +215,28 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      */
     public function isReadonly()
     {
-        if (empty($this->readonly)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->readonly);
     }
 
     /**
-     * set read-only access
+     * Set read-only access.
      *
      * You may set the table to be read-only to prevent any changes to it by setting this to
      * bool(true).
      *
      * @access  public
      * @param   bool  $isReadonly   new value of this property
+     * @return  DDLTable
      */
     public function setReadonly($isReadonly = false)
     {
         assert('is_bool($isReadonly); // Wrong type for argument 1. Boolean expected');
-        if ($isReadonly) {
-            $this->readonly = true;
-        } else {
-            $this->readonly = false;
-        }
+        $this->readonly = (bool) $isReadonly;
+        return $this;
     }
 
     /**
-     * get column definition
+     * Get column definition.
      *
      * Returns the column definition with the name $name as an instance of
      * DDLColumn. If no column with the given name exists, the function returns
@@ -260,7 +258,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * list all columns that match a certain type
+     * List all columns that match a certain type.
      *
      * @access  public
      * @param   string  $type   datatype ('string', 'text', 'int', ...)
@@ -282,7 +280,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * list of all columns
+     * List of all columns.
      *
      * Returns an associative array of all columns in the table, where each key is the column name
      * and each value is and object of type {@see DDLColumn}.
@@ -297,7 +295,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * list names of all columns in a table
+     * List names of all columns in a table.
      *
      * Returns a numeric array of the names of all columns in the table.
      *
@@ -311,7 +309,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * list all columns that contain blobs
+     * List all columns that contain blobs.
      *
      * This function provides a list of all columns, which are of type "image" or "file" in the
      * table as a numeric array of objects of type {@see DDLColumn}.
@@ -333,7 +331,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get name of table, a foreign key refers to
+     * Get name of table, a foreign key refers to.
      *
      * Returns the lower-cased table name. Throws a NotFoundException when the column does not
      * exist. If there is no foreign key for the given column, NULL is returned.
@@ -361,7 +359,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get target column, a foreign key refers to
+     * Get target column, a foreign key refers to.
      *
      * Returns a column object.
      * Throws a NotFoundException when the column does not exist
@@ -406,7 +404,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * check whether a column exists in the current structure
+     * Check whether a column exists in the current structure.
      *
      * Returns bool(true) if the column is listed. Returns bool(false) otherwise.
      * Note that this operation is not case sensitive.
@@ -418,16 +416,11 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     public function isColumn($columnName)
     {
         assert('is_string($columnName); // Wrong type for argument 1. String expected');
-        $columnName = mb_strtolower($columnName);
-        if (isset($this->columns[$columnName])) {
-            return true;
-        } else {
-            return false;
-        }
+        return isset($this->columns[mb_strtolower($columnName)]);
     }
 
     /**
-     * add a new column
+     * Add a new column.
      *
      * Adds a column of the given type and name and returns it as an instance of {@see DDLColumn}.
      *
@@ -456,7 +449,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * check whether the table has a column containing a profile id
+     * Check whether the table has a column containing a profile id.
      *
      * Returns bool(true) if there is a column named 'profile_id' and bool(false) otherwise.
      * The profile id is meant to allow rows in a table to be visible to seperate client profiles
@@ -467,15 +460,11 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      */
     public function hasProfile()
     {
-        if (isset($this->columns['profile_id'])) {
-            return true;
-        } else {
-            return false;
-        }
+        return isset($this->columns['profile_id']);
     }
 
     /**
-     * add/remove a profile constraint
+     * Add/remove a profile constraint.
      *
      * The profile id is meant to allow rows in a table to be visible to seperate client profiles
      * only, which share the same database.
@@ -484,7 +473,8 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * column of this name, if it is missing.
      *
      * @access  public
-     * @param   bool  $hasProfileConstraint   profile constraint
+     * @param   bool  $hasProfileConstraint  profile constraint
+     * @return  DDLTable 
      */
     public function setProfile($hasProfileConstraint)
     {
@@ -500,11 +490,10 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
                 $this->addColumn('profile_id', 'string');
             }
         }
+        return $this;
     }
 
     /**
-     * drop column
-     *
      * Removes the column if it exists.
      *
      * @access  public
@@ -524,7 +513,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * check whether the table has columns used for version control
+     * Check whether the table has columns used for version control.
      *
      * The framework is capable of automatic version control. This means, if
      * two users work on the same row in the same table at the same time and one
@@ -567,7 +556,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * add/remove a version check
+     * Add/remove a version check.
      *
      * The framework is capable of automatic version control. This means, if
      * two users work on the same row in the same table at the same time and one
@@ -578,6 +567,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * @access  public
      * @param   bool  $hasVersionCheck  new value of this property
      * @param   bool  $lastModified     true: check for time_modified, false check for time_created
+     * @return  DDLTable 
      */
     public function setVersionCheck($hasVersionCheck, $lastModified = true)
     {
@@ -602,13 +592,13 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
                 }
             }
         }
+        return $this;
     }
 
     /**
-     * check whether the table has columns used for author
+     * Check whether the table has columns used for author.
      *
-     * The framework may protocol the name of the author who created and/or
-     * modified a row.
+     * The framework may protocol the name of the author who created and/or modified a row.
      *
      * @access  public
      * @param   bool  $lastModified  true: check for user_modified, false check for user_created
@@ -618,29 +608,21 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     {
         assert('is_bool($lastModified); // Wrong type for argument 1. Boolean expected');
         if ($lastModified) {
-            if (isset($this->columns['user_modified'])) {
-                return true;
-            } else {
-                return false;
-            }
+            return isset($this->columns['user_modified']);
         } else {
-            if (isset($this->columns['user_created'])) {
-                return true;
-            } else {
-                return false;
-            }
+            return isset($this->columns['user_created']);
         }
     }
 
     /**
-     * add/remove a author
+     * Add/remove a author.
      *
-     * The framework may protocol the name of the author who created and/or
-     * modified a row.
+     * The framework may protocol the name of the author who created and/or modified a row.
      *
      * @access  public
      * @param   bool  $hasAuthorLog  new value of this property
      * @param   bool  $lastModified  true: check for user_modified, false check for user_created
+     * @return  DDLTable
      */
     public function setAuthorLog($hasAuthorLog, $lastModified = true)
     {
@@ -649,28 +631,22 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
         if ($this->hasAuthorLog($lastModified)) {
             // remove version check
             if (!$hasAuthorLog) {
-                if ($lastModified) {
-                    $this->dropColumn('user_modified');
-                } else {
-                    $this->dropColumn('user_created');
-                }
+                $column = ($lastModified) ? 'user_modified' : 'user_created';
+                $this->dropColumn($column);
             }
         } else {
             // create version check
             if ($hasAuthorLog) {
-                if ($lastModified) {
-                    $this->addColumn('user_modified', 'string');
-                } else {
-                    $this->addColumn('user_created', 'string');
-                }
+                $column = ($lastModified) ? 'user_modified' : 'user_created';
+                $this->addColumn($column, 'string');
             }
         }
+        return $this;
     }
 
     /**
-     * list of foreign keys
-     *
      * Returns an array of foreign keys.
+     *
      * If the table has no foreign keys, an empty array is returned.
      *
      * The returned results will be objects of type {@see DDLForeignKey}.
@@ -685,11 +661,10 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get foreign key
+     * Get foreign key.
      *
      * Returns the foreign key definition with the name $name as an instance of
-     * {@see DDLForeignKey}. If no foreign key with the given name exists, the function returns NULL
-     * instead.
+     * {@see DDLForeignKey}. If no foreign key with the given name exists, the function returns NULL instead.
      *
      * @access  public
      * @param   string  $name   name of a foreign key
@@ -707,7 +682,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * add a foreign key constraint
+     * Add a foreign key constraint.
      *
      * Sets a foreign key constraint on a column.
      * The foreign key will point to the target $table.
@@ -743,7 +718,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get the primary key of a table
+     * Get the primary key of a table.
      *
      * Returns the name of the primary key column of the table as a lower-cased string.
      * Returns NULL and issues an E_USER_WARNING if there is no primary key for $table.
@@ -762,7 +737,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set the primary key
+     * Set the primary key.
      *
      * Select $columnName as the primary key of the table.
      * Throws a NotFoundException, if the column does not exist.
@@ -770,6 +745,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * @access  public
      * @param   string  $columnName  name of column
      * @throws  NotFoundException    if column does not exist
+     * @return  DDLTable 
      */
     public function setPrimaryKey($columnName)
     {
@@ -781,10 +757,11 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
             $message = "No such column '$columnName' in table '{$this->getName()}'.";
             throw new NotFoundException($message, E_USER_WARNING);
         }
+        return $this;
     }
 
     /**
-     * get parent table
+     * Get parent table.
      *
      * Returns the name of the parent table as a string, or NULL if there is none.
      *
@@ -808,7 +785,8 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * Set parameter $name to NULL to reset the setting.
      *
      * @access  public
-     * @param   string  $name   name of the parent table
+     * @param   string  $name  name of the parent table
+     * @return  DDLTable 
      */
     public function setInheritance($name)
     {
@@ -817,13 +795,13 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
         } else {
             $this->inheritance = null;
         }
+        return $this;
     }
 
     /**
-     * list of all indexes
+     * List of all indexes.
      *
-     * Returns a list of all defined indexes on the table as a numeric array of objects of type
-     * {@see DDLIndex}.
+     * Returns a list of all defined indexes on the table as a numeric array of objects of type {@see DDLIndex}.
      *
      * @access  public
      * @return  array
@@ -835,10 +813,9 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get index by name
+     * Get index by name.
      *
-     * Returns the index with the given name as an instance of {@see DDLIndex}, or NULL if it does
-     * not exist.
+     * Returns the index with the given name as an instance of {@see DDLIndex}, or NULL if it does not exist.
      *
      * @access  public
      * @param   string  $name  name of index
@@ -856,7 +833,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * add an index
+     * Add an index.
      *
      * Adds an index to the given column and returns it as an instance of {@see DDLIndex}.
      *
@@ -882,7 +859,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * list all columns with unique-constraints
+     * List all columns with unique-constraints.
      *
      * Returns a list of all {@see DDLColumn}s, that define an unique constraint.
      *
@@ -905,10 +882,9 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get the database name associated with a table
+     * Get the database name associated with a table.
      *
-     * Returns NULL if the schema name is unknown or an empty string if the schema name is
-     * undefined.
+     * Returns NULL if the schema name is unknown or an empty string if the schema name is undefined.
      *
      * @access  public
      * @return  string
@@ -924,7 +900,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * list all constraints
+     * List all constraints.
      *
      * Retrieves all "constraint" entries that apply to the given DBMS and returns the results as a
      * numeric array.
@@ -953,7 +929,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get constraint
+     * Get constraint.
      *
      * Returns the an instance of DDLConstraint, that matches the given name and target DBMS.
      * If no such instance is found the function returns NULL instead.
@@ -981,12 +957,11 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set constraint
+     * Add constraint.
      *
      * Note: This function can't ensure that your codes makes sense.
      * So keep in mind that it is your job in the first place to ensure the constraint is valid!
-     * The syntax depends on the target DBMS. For type "generic" the feature is emulated using PHP
-     * code.
+     * The syntax depends on the target DBMS. For type "generic" the feature is emulated using PHP code.
      *
      * BE WARNED: As always - do NOT use this function with any unchecked user input.
      *
@@ -1017,8 +992,6 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * drop constraints
-     *
      * Drops the list of all defined constraints.
      *
      * @access  public
@@ -1047,7 +1020,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      */
 
     /**
-     * get code triggered before insert
+     * Get code triggered before insert.
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
@@ -1057,7 +1030,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get code triggered before update
+     * Get code triggered before update.
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
@@ -1067,7 +1040,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get code triggered before delete
+     * Get code triggered before delete.
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
@@ -1077,7 +1050,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get code triggered after insert
+     * Get code triggered after insert.
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
@@ -1087,7 +1060,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get code triggered after update
+     * Get code triggered after update.
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
@@ -1097,7 +1070,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get code triggered after delete
+     * Get code triggered after delete.
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
@@ -1107,7 +1080,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get code triggered instead of insert
+     * Get code triggered instead of insert.
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
@@ -1117,7 +1090,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get code triggered instead of update
+     * Get code triggered instead of update.
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
@@ -1127,7 +1100,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get code triggered instead of delete
+     * Get code triggered instead of delete.
      *
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
@@ -1166,11 +1139,12 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      */
 
     /**
-     * set trigger before insert
+     * Set trigger before insert.
      *
      * @param   string  $trigger  code (possibly a function call)
      * @param   string  $dbms     target DBMS
      * @param   string  $name     optional trigger name
+     * @return  DDLTrigger
      */
     public function setTriggerBeforeInsert($trigger, $dbms = "generic", $name = "")
     {
@@ -1178,11 +1152,12 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set trigger before update
+     * Set trigger before update.
      *
      * @param   string  $trigger  code (possibly a function call)
      * @param   string  $dbms     target DBMS
      * @param   string  $name     optional trigger name
+     * @return  DDLTrigger
      */
     public function setTriggerBeforeUpdate($trigger, $dbms = "generic", $name = "")
     {
@@ -1190,11 +1165,12 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set trigger before delete
+     * Set trigger before delete.
      *
      * @param   string  $trigger  code (possibly a function call)
      * @param   string  $dbms     target DBMS
      * @param   string  $name     optional trigger name
+     * @return  DDLTrigger
      */
     public function setTriggerBeforeDelete($trigger, $dbms = "generic", $name = "")
     {
@@ -1202,11 +1178,12 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set trigger after insert
+     * Set trigger after insert.
      *
      * @param   string  $trigger  code (possibly a function call)
      * @param   string  $dbms     target DBMS
      * @param   string  $name     optional trigger name
+     * @return  DDLTrigger
      */
     public function setTriggerAfterInsert($trigger, $dbms = "generic", $name = "")
     {
@@ -1219,6 +1196,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * @param   string  $trigger  code (possibly a function call)
      * @param   string  $dbms     target DBMS
      * @param   string  $name     optional trigger name
+     * @return  DDLTrigger
      */
     public function setTriggerAfterUpdate($trigger, $dbms = "generic", $name = "")
     {
@@ -1226,11 +1204,12 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set trigger after delete
+     * Set trigger after delete.
      *
      * @param   string  $trigger  code (possibly a function call)
      * @param   string  $dbms     target DBMS
      * @param   string  $name     optional trigger name
+     * @return  DDLTrigger
      */
     public function setTriggerAfterDelete($trigger, $dbms = "generic", $name = "")
     {
@@ -1238,11 +1217,12 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set trigger instead of insert
+     * Set trigger instead of insert.
      *
      * @param   string  $trigger  code (possibly a function call)
      * @param   string  $dbms     target DBMS
      * @param   string  $name     optional trigger name
+     * @return  DDLTrigger
      */
     public function setTriggerInsteadInsert($trigger, $dbms = "generic", $name = "")
     {
@@ -1250,11 +1230,12 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set trigger instead of update
+     * Set trigger instead of update.
      *
      * @param   string  $trigger  code (possibly a function call)
      * @param   string  $dbms     target DBMS
      * @param   string  $name     optional trigger name
+     * @return  DDLTrigger
      */
     public function setTriggerInsteadUpdate($trigger, $dbms = "generic", $name = "")
     {
@@ -1262,11 +1243,12 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set trigger instead of delete
+     * Set trigger instead of delete.
      *
      * @param   string  $trigger  code (possibly a function call)
      * @param   string  $dbms     target DBMS
      * @param   string  $name     optional trigger name
+     * @return  DDLTrigger
      */
     public function setTriggerInsteadDelete($trigger, $dbms = "generic", $name = "")
     {
@@ -1275,7 +1257,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     /**#@-*/
 
     /**
-     * get trigger code
+     * Get trigger code.
      *
      * @access  private
      * @param   string  $dbms   target DBMS, defaults to "generic"
@@ -1311,7 +1293,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set trigger code
+     * Set trigger code.
      *
      * @access  private
      * @param   string  $trigger  code (possibly a function call)
@@ -1319,7 +1301,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * @param   string  $name     optional trigger name
      * @param   int     $on       on
      * @param   int     $event    event
-     * @return  string
+     * @return  DDLTrigger
      */
     private function _setTrigger($trigger, $dbms, $name, $on, $event)
     {
@@ -1359,7 +1341,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get rights management settings
+     * Get rights management settings.
      *
      * Returns an array of DDLGrant objects.
      *
@@ -1379,7 +1361,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * drop rights management settings
+     * Drop rights management settings.
      *
      * {@link DDLGrant}s control the access permissions granted to the user.
      *
@@ -1396,7 +1378,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * add rights management setting
+     * Add rights management setting.
      *
      * {@link DDLGrant}s control the access permissions granted to the user.
      *
@@ -1431,7 +1413,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set rights management setting
+     * Set rights management setting.
      *
      * {@link DDLGrant}s control the access permissions granted to the user.
      *
@@ -1439,14 +1421,16 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      *
      * @access  public
      * @param   DDLGrant  $grant    expected an grand object ( rights management)
+     * @return  DDLTable 
      */
     public function setGrant(DDLGrant $grant)
     {
         $this->grants[] = $grant;
+        return $this;
     }
 
     /**
-     * validate a row against database schema
+     * Validate a row against database schema.
      *
      * The argument $row is expected to be an associative array of values, representing
      * a row that should be inserted or updated in the table. The keys of the array $row are
@@ -1524,7 +1508,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set primary/clustered index
+     * Set primary/clustered index.
      *
      * Removes attribute clustered from previous clustered index.
      * Sets index as new clustered index.
@@ -1535,7 +1519,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      *
      * @access  public
      * @param   DDLIndex $index primary/clustered index
-     * @ignore
+     * @return  DDLTable 
      */
     public function setPrimaryIndex(DDLIndex $index)
     {
@@ -1545,12 +1529,11 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
             }
             $this->primaryIndex = $index;
         }
+        return $this;
     }
 
     /**
-     * magic get
-     *
-     * returns a column with the given name
+     * <<magic>> Returns a column with the given name.
      *
      * @access  public
      * @param   string $name   name
@@ -1599,6 +1582,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
         }
         return $ddl;
     }
+
 }
 
 ?>

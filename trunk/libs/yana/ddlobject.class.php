@@ -48,7 +48,7 @@ abstract class DDLObject extends DDL
     protected $name = null;
 
     /**
-     * constructor
+     * Initialize instance.
      *
      * @access  public
      * @param   string        $name     name
@@ -62,8 +62,6 @@ abstract class DDLObject extends DDL
     }
 
     /**
-     * get object name
-     *
      * Returns the object name.
      *
      * @access  public
@@ -75,14 +73,14 @@ abstract class DDLObject extends DDL
     }
 
     /**
-     * set object name
+     * Set object name.
      *
-     * The name is optional. To reset the property, leave the parameter $name
-     * empty.
+     * The name is optional. To reset the property, leave the parameter $name empty.
      *
      * @access  public
      * @param   string  $name   object name
      * @throws  InvalidArgumentException  when given name is invalid
+     * @return  DDLObject 
      */
     public function setName($name = "")
     {
@@ -98,6 +96,7 @@ abstract class DDLObject extends DDL
         } else {
             $this->name = mb_strtolower($name);
         }
+        return $this;
     }
 
 }

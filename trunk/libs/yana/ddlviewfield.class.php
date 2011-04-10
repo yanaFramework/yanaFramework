@@ -64,7 +64,7 @@ class DDLViewField extends DDLNamedObject
     /**#@-*/
 
     /**
-     * get table name
+     * Get table name.
      *
      * @access  public
      * @return  string
@@ -79,10 +79,11 @@ class DDLViewField extends DDLNamedObject
     }
 
     /**
-     * set table name
+     * Set table name.
      *
      * @access  public
      * @param   string  $table  table name
+     * @return  DDLViewField
      */
     public function setTable($table)
     {
@@ -92,10 +93,11 @@ class DDLViewField extends DDLNamedObject
         } else {
             $this->table = "$table";
         }
+        return $this;
     }
 
     /**
-     * get column alias
+     * Get column alias.
      *
      * @access  public
      * @return  string
@@ -110,10 +112,11 @@ class DDLViewField extends DDLNamedObject
     }
 
     /**
-     * set column alias
+     * Set column alias.
      *
      * @access  public
      * @param   string  $alias  column alias
+     * @return  DDLViewField
      */
     public function setAlias($alias)
     {
@@ -123,6 +126,7 @@ class DDLViewField extends DDLNamedObject
         } else {
             $this->alias = "$alias";
         }
+        return $this;
     }
 
     /**
@@ -146,6 +150,7 @@ class DDLViewField extends DDLNamedObject
         $ddl->_unserializeFromXDDL($node);
         return $ddl;
     }
+
 }
 
 ?>
