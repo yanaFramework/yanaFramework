@@ -134,9 +134,9 @@ class DDLDatabase extends DDLObject
      */
     public function __construct($name = "", $path = "")
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
-        assert('is_string($path); // Wrong type for argument 2. String expected');
-        assert('empty($path) || is_file($path); // Invalid argument 2. File expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($path); // Invalid argument $path: string expected');
+        assert('empty($path) || is_file($path); // Invalid argument $path. File expected');
         parent::__construct($name);
         $this->changelog = new DDLChangeLog($this);
         // save path information
@@ -663,7 +663,7 @@ class DDLDatabase extends DDLObject
      */
     public function getTable($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->tables[$name])) {
             return $this->tables[$name];
@@ -691,7 +691,7 @@ class DDLDatabase extends DDLObject
      */
     public function addTable($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->tables[$name])) {
             throw new AlreadyExistsException("Another table with the name '$name' is already defined.");
@@ -748,7 +748,7 @@ class DDLDatabase extends DDLObject
      */
     public function getView($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->views[$name])) {
             return $this->views[$name];
@@ -776,7 +776,7 @@ class DDLDatabase extends DDLObject
      */
     public function addView($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->views[$name])) {
             throw new AlreadyExistsException("Another view with the name '$name' is already defined.");
@@ -859,7 +859,7 @@ class DDLDatabase extends DDLObject
      */
     public function addFunction($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->functions[$name])) {
             throw new AlreadyExistsException("Another function with the name '$name' is already defined.");
@@ -943,7 +943,7 @@ class DDLDatabase extends DDLObject
      */
     public function addSequence($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->sequences[$name])) {
             throw new AlreadyExistsException("Another sequence with the name '$name' is already defined.");
@@ -1045,7 +1045,7 @@ class DDLDatabase extends DDLObject
      */
     public function dropTable($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->tables[$name])) {
             $this->tables[$name] = null;
@@ -1065,7 +1065,7 @@ class DDLDatabase extends DDLObject
      */
     public function dropView($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->views[$name])) {
             $this->views[$name] = null;
@@ -1085,7 +1085,7 @@ class DDLDatabase extends DDLObject
      */
     public function dropForm($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             $this->forms[$name] = null;
@@ -1105,7 +1105,7 @@ class DDLDatabase extends DDLObject
      */
     public function dropFunction($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->functions[$name])) {
             $this->functions[$name] = null;
@@ -1125,7 +1125,7 @@ class DDLDatabase extends DDLObject
      */
     public function dropSequence($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->sequences[$name])) {
             $this->sequences[$name] = null;
@@ -1172,7 +1172,7 @@ class DDLDatabase extends DDLObject
      */
     public function isTable($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         return isset($this->tables[$name]);
     }
@@ -1189,7 +1189,7 @@ class DDLDatabase extends DDLObject
      */
     public function isView($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         return isset($this->views[$name]);
     }
@@ -1206,7 +1206,7 @@ class DDLDatabase extends DDLObject
      */
     public function isFunction($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         return isset($this->functions[$name]);
     }
@@ -1223,7 +1223,7 @@ class DDLDatabase extends DDLObject
      */
     public function isSequence($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         return isset($this->sequences[$name]);
     }
@@ -1240,7 +1240,7 @@ class DDLDatabase extends DDLObject
      */
     public function isForm($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         return isset($this->forms[$name]);
     }
@@ -1258,7 +1258,7 @@ class DDLDatabase extends DDLObject
      */
     public function getForm($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             return $this->forms[$name];
@@ -1285,7 +1285,7 @@ class DDLDatabase extends DDLObject
      */
     public function addForm($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             $message = "Another form with the name '$name' already exists in database '{$this->getName()}'.";
@@ -1397,7 +1397,7 @@ class DDLDatabase extends DDLObject
      */
     public function __get($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         switch (true)
         {
@@ -1450,7 +1450,7 @@ class DDLDatabase extends DDLObject
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null, $path = "")
     {
-        assert('is_string($path); // Wrong type for argument 3. String expected');
+        assert('is_string($path); // Invalid argument $path: string expected');
         $attributes = $node->attributes();
         $name = "";
         if (isset($attributes['name'])) {

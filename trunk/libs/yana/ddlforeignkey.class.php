@@ -149,7 +149,7 @@ class DDLForeignKey extends DDLObject
      */
     public function setTargetTable($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (empty($name)) {
             $this->targetTable = null;
         } else {

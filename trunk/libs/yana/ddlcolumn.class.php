@@ -1334,8 +1334,8 @@ class DDLColumn extends DDLNamedObject
      */
     public function getConstraint($name, $dbms = "generic")
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
-        assert('is_string($dbms); // Wrong type for argument 2. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($dbms); // Invalid argument $dbms: string expected');
         $dbms = strtolower($dbms);
         if (!empty($this->constraints)) {
             foreach ($this->constraints as $constraint)
