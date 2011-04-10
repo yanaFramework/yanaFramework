@@ -85,7 +85,7 @@ abstract class DDLLog extends DDL
     protected $parent = null;
 
     /**
-     * get parent
+     * Get parent database.
      *
      * @return  DDLDatabase
      */
@@ -95,7 +95,7 @@ abstract class DDLLog extends DDL
     }
 
     /**
-     * get version string
+     * Get version string.
      *
      * The data-type returned by the function.
      * Will return NULL if no version is set.
@@ -109,14 +109,15 @@ abstract class DDLLog extends DDL
     }
 
     /**
-     * set version string
+     * Set version string.
      *
      * The version this log-entry applies to.
      *
      * To reset this option, call the function with an empty parameter.
      *
      * @access  public
-     * @param   string  $version    new value of this property
+     * @param   string  $version  new value of this property
+     * @return  DDLLog
      */
     public function setVersion($version = "")
     {
@@ -126,45 +127,41 @@ abstract class DDLLog extends DDL
         } else {
             $this->version = "$version";
         }
+        return $this;
     }
 
     /**
-     * check wether to ignore errors
+     * Check wether to ignore errors.
      *
      * @access  public
      * @return  bool
      */
     public function ignoreError()
     {
-        if (!empty($this->ignoreError)) {
-            return true;
-        } else {
-            return false;
-        }
+        return !empty($this->ignoreError);
     }
 
     /**
-     * set wether to ignore errors
+     * Set wether to ignore errors.
      *
      * @access  public
      * @param   bool  $ignoreError  ignore errors
+     * @return  DDLLog
      */
     public function setIgnoreError($ignoreError)
     {
         assert('is_bool($ignoreError); // Wrong argument type for argument 1. Boolean expected');
-        if (!empty($ignoreError)) {
-            $this->ignoreError = true;
-        } else {
-            $this->ignoreError = false;
-        }
+        $this->ignoreError = (bool) $ignoreError;
+        return $this;
     }
 
     /**
-     * set function to handle updates
+     * Set function to handle updates.
      *
      * @access  public
      * @param   string|array  $functionName   name of the function which is called
      * @throws  InvalidArgumentException
+     * @return  DDLLog
      */
     public static function setHandler($functionName)
     {
@@ -173,10 +170,11 @@ abstract class DDLLog extends DDL
         } else {
             throw new InvalidArgumentException("The function name '$functionName' is not callable.", E_USER_WARNING);
         }
+        return $this;
     }
 
     /**
-     * carry out the update
+     * Carry out the update.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -187,7 +185,7 @@ abstract class DDLLog extends DDL
     abstract public function commitUpdate();
 
     /**
-     * get type of update
+     * Get type of update.
      *
      * Returns a string that is equivalent to the XDDL tag of this object.
      *

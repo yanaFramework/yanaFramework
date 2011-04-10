@@ -222,9 +222,7 @@ class DDLLogCreate extends DDLLog
     }
 
     /**
-     * unserialize a XDDL-node to an object
-     *
-     * Returns the unserialized object.
+     * Unserializes a XDDL-node to an instance of this class and returns it.
      *
      * @access  public
      * @static
@@ -242,6 +240,7 @@ class DDLLogCreate extends DDLLog
         $ddl->_unserializeFromXDDL($node);
         return $ddl;
     }
+
 }
 
 ?>
