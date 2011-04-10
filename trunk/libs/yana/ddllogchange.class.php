@@ -73,7 +73,6 @@ class DDLLogChange extends DDLLog
 
     /**#@-*/
 
-
     /**
      * list of functions to apply changes to the database structure
      *
@@ -236,7 +235,6 @@ class DDLLogChange extends DDLLog
      * @param   string|array  $functionName     name of the function which is called
      * @param   string        $functionType     function type
      * @throws  InvalidArgumentException
-     * @return  DDLLogChange
      */
     public static function setHandler($functionName, $functionType = "default")
     {
@@ -246,7 +244,6 @@ class DDLLogChange extends DDLLog
         } else {
             throw new InvalidArgumentException("The function name '$functionName' is not callable.", E_USER_WARNING);
         }
-        return $this;
     }
 
     /**

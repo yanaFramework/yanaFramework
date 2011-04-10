@@ -211,7 +211,6 @@ abstract class DDLLog extends DDL
      * @access  public
      * @param   string|array  $functionName   name of the function which is called
      * @throws  InvalidArgumentException
-     * @return  DDLLog
      */
     public static function setHandler($functionName)
     {
@@ -220,7 +219,6 @@ abstract class DDLLog extends DDL
         } else {
             throw new InvalidArgumentException("The function name '$functionName' is not callable.", E_USER_WARNING);
         }
-        return $this;
     }
 
     /**

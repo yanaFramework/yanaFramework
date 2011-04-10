@@ -68,29 +68,6 @@ class DDLLogDrop extends DDLLogCreate
 
     /**#@-*/
 
-
-    /**
-     * Set function to handle updates.
-     *
-     * Provided arguments for handler are the object's parameter list.
-     *
-     * @access  public
-     * @param   string|array  $functionName     name of the function which is called
-     * @param   string        $functionType     function type
-     * @throws  InvalidArgumentException
-     * @return  DDLLogDrop
-     */
-    public static function setHandler($functionName, $functionType = "default")
-    {
-        assert('is_string($functionType); // Wrong argument type for argument 2. String expected');
-        if (is_callable($functionName)) {
-            self::$handlers["$functionType"] = $functionName;
-        } else {
-            throw new InvalidArgumentException("The function name '$functionName' is not callable.", E_USER_WARNING);
-        }
-        return $this;
-    }
-
     /**
      * Calls the provided handler function.
      *
