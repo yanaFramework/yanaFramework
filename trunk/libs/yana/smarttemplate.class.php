@@ -288,7 +288,7 @@ class SmartTemplate extends Object
                 'import' =>              array('SmartUtility::import', false),
                 'smilies' =>             array('SmartUtility::guiSmilies', true),
                 'embeddedTags' =>        array('SmartUtility::guiEmbeddedTags', true),
-                'create' =>              array('SmartFormUtility::createFrom', false),
+                'create' =>              array('SmartFormUtility::createForm', false),
                 'captcha' =>             array('SmartUtility::captcha', true),
                 'slider' =>              array('SmartUtility::slider', true),
                 'sizeOf' =>              array('SmartUtility::sizeOf', true),
