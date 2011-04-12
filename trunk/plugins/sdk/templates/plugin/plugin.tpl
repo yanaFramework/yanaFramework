@@ -1,7 +1,7 @@
 <?php{$plugin}
 
 /**
- * <<plugin>> class "{$plugin->getClassName()}"
+ * <<plugin>> Class "{$plugin->getClassName()}"
  *
  * @package     yana
  * @subpackage  plugins
@@ -33,7 +33,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
 {/if}
 {/foreach}
     /**
-     * return database connection
+     * Return database connection.
      *
      * @access  protected
      * @static
@@ -49,7 +49,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
     {rdelim}
 
     /**
-     * auto-update form values
+     * Auto-update form values.
      *
      * This function determines if the given form has any updated values and if
      * so it will try to update the underlying table.
@@ -96,7 +96,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
     {rdelim}
 
     /**
-     * delete rows from a form
+     * Delete rows from a form.
      *
      * This function tries to delete entries from the given form and will return
      * bool(true) on success and bool(false) on error.
@@ -129,7 +129,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
     {rdelim}
 
     /**
-     * add content to the form
+     * Add content to the form.
      *
      * This function determines if the given form has a new row and if so it
      * will try to insert it into the underlying table.
@@ -165,7 +165,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
     {rdelim}
 
     /**
-     * download a file
+     * Download a file.
      *
      * This function will automatically determine the requested resource. It will
      * check whether it is of type "image" or "file" and handle the request
@@ -206,7 +206,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
 {foreach item="form" from=$schema->getForms()}
 {if $form->getSchemaName() == $schema->getName()}
     /**
-     * get form definition
+     * Get form definition.
      *
      * @access  protected
      * @static
@@ -225,7 +225,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
 {/foreach}
 {/if}
     /**
-     * Default event handler
+     * Default event handler.
      *
      * The default event handler catches all events, whatever they might be.
      * If you don't need it, you may deactive it by adding an @ignore to the annotations below.
@@ -264,7 +264,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
 {foreach item="form" from=$schema->getForms()}
 {if $form->getSchemaName() == $schema->getName()}
     /**
-     * provide edit-form
+     * Provide edit-form.
      *
      * @type      read
      * @user      group: {$plugin->getId()}
@@ -280,9 +280,9 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
         // @todo add your code here
     {rdelim}
 
-{if $form->getSearchAction()}
+{if $form->getEvent('search')}
     /**
-     * process search query
+     * Process search query.
      *
      * @type      read
      * @user      group: {$plugin->getId()}
@@ -291,7 +291,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @language  {$plugin->getId()}
      * @access    public
      */
-    public function {$form->getSearchAction()}()
+    public function {$form->getEvent('search')->getAction()}()
     {ldelim}
         $form = self::get{$form->getName()|capitalize}Form();
         $having = $form->getSearchValuesAsWhereClause();
@@ -301,9 +301,9 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
     {rdelim}
 
 {/if}
-{if $form->getUpdateAction()}
+{if $form->getEvent('update')}
     /**
-     * save changes made in edit-form
+     * Save changes made in edit-form.
      *
      * @type       write
      * @user       group: {$plugin->getId()}, role: moderator
@@ -315,16 +315,16 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @access     public
      * @return     bool
      */
-    public function {$form->getUpdateAction()}()
+    public function {$form->getEvent('update')->getAction()}()
     {ldelim}
         $form = self::get{$form->getName()|capitalize}Form();
         return self::updateContent($form);
     {rdelim}
 
 {/if}
-{if $form->getDeleteAction()}
+{if $form->getEvent('delete')}
     /**
-     * delete an entry
+     * Delete an entry.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -339,16 +339,16 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @param      array  $selected_entries  array of entries to delete
      * @return     bool
      */
-    public function {$form->getDeleteAction()}(array $selected_entries)
+    public function {$form->getEvent('delete')->getAction()}(array $selected_entries)
     {ldelim}
         $form = self::get{$form->getName()|capitalize}Form();
         return self::deleteContent($form, $selected_entries);
     {rdelim}
 
 {/if}
-{if $form->getInsertAction()}
+{if $form->getEvent('insert')}
     /**
-     * write new entry to database
+     * Write new entry to database.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -362,16 +362,16 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @access     public
      * @return     bool
      */
-    public function {$form->getInsertAction()}()
+    public function {$form->getEvent('insert')->getAction()}()
     {ldelim}
         $form = self::get{$form->getName()|capitalize}Form();
         return self::insertContent($form);
     {rdelim}
 
 {/if}
-{if $form->getExportAction()}
+{if $form->getEvent('export')}
     /**
-     * write new entry to database
+     * Export entry from database.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -382,16 +382,16 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @access     public
      * @return     string
      */
-    public function {$form->getExportAction()}()
+    public function {$form->getEvent('export')->getAction()}()
     {ldelim}
         $query = self::get{$form->getName()|capitalize}Form()->getQuery();
         return $query->toCSV();
     {rdelim}
 
 {/if}
-{if $form->getDownloadAction() != 'download_file'}
+{if $form->getEvent('download') && $form->getEvent('download')->getAction() != 'download_file'}
     /**
-     * download action
+     * Download action.
      *
      * {ldelim}@internal
      * If you need to restrict access to images or files in the database,
@@ -403,7 +403,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @user    group: admin, level: 100
      * @access  public
      */
-    public function {$form->getDownloadAction()}()
+    public function {$form->getEvent('download')->getAction()}()
     {ldelim}
         self::downloadFile();
     {rdelim}
