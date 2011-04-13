@@ -319,6 +319,21 @@ class FormSetup extends Object
     }
 
     /**
+     * Add new form values.
+     *
+     * Replaces existing values, adds new values and keeps values that haven't been changed in the request.
+     *
+     * @access  public
+     * @param   array  $values  new values
+     * @return  FormSetup
+     */
+    public function addValues(array $values)
+    {
+        $this->_values = $values + $this->_values;
+        return $this;
+    }
+
+    /**
      * check if form has a filter
      *
      * This funciton returns bool(true) if a filter has been set on any of the forms columns,
