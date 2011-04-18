@@ -1906,7 +1906,6 @@ class DbStream extends Object implements Serializable
         }
     }
 
-
     /**
      * Reset the object to default values
      *
@@ -2141,6 +2140,7 @@ class DbStream extends Object implements Serializable
         }
         return $this->database;
     }
+
 }
 
 ?>
