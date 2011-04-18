@@ -71,7 +71,7 @@ class plugin_check extends StdClass implements IsPlugin
     {
         print '<h1>SQL command line</h1>';
 
-        global $YANA;
+        $registry = Registry::getGlobalInstance();
         if (!empty($sql)) {
             $sql = stripcslashes($sql);
             $fileDb = new FileDb(XDDL::getDatabase($db));
@@ -114,7 +114,7 @@ class plugin_check extends StdClass implements IsPlugin
             $result = "";
         }
 
-        print '<form method="POST" action="' . $YANA->getVar('PHP_SELF') . '">' .
+        print '<form method="POST" action="' . $registry->getVar('PHP_SELF') . '">' .
         '<input type="hidden" name="' . session_name() . '" value="' . session_id() . '">' .
         '<input type="hidden" name="action" value="' . __FUNCTION__ . '">' .
         '<label>Database: <select name="db">';
