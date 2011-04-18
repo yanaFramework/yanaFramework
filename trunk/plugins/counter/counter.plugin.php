@@ -61,9 +61,7 @@ class plugin_counter extends StdClass implements IsPlugin
         }
         self::$counter = new Counter(self::$id);
         self::$counter->getNextValue();
-        if (isset($GLOBALS['YANA'])) {
-            $GLOBALS['YANA']->getView()->setFunction('visitorCount', array(__CLASS__, 'visitorCount'));
-        }
+        Yana::getInstance()->getView()->setFunction('visitorCount', array(__CLASS__, 'visitorCount'));
         return true;
     }
 
@@ -102,60 +100,57 @@ class plugin_counter extends StdClass implements IsPlugin
      * @access      public
      * @return      bool
      */
-    public function graphic_counter ()
+    public function graphic_counter()
     {
-        global $YANA;
-        $pluginManager = $YANA->getPlugins();
-        if (isset($YANA)) {
-            $background = $pluginManager->{'counter:/images/background.file'};
-            $blank = $pluginManager->{'counter:/images/blank.file'};
-            $dir = $pluginManager->{'counter:/images'};
-            $imageDir = $dir->getPath();
-            $imageExt = $dir->getFilter();
+        $pluginManager = PluginManager::getInstance();
+        $background = $pluginManager->{'counter:/images/background.file'};
+        $blank = $pluginManager->{'counter:/images/blank.file'};
+        $dir = $pluginManager->{'counter:/images'};
+        $imageDir = $dir->getPath();
+        $imageExt = $dir->getFilter();
 
-            $this->_default(__FUNCTION__, array());
-            $count = self::$counter->getCurrentValue();
+        $this->_default(__FUNCTION__, array());
+        $count = self::$counter->getCurrentValue();
 
-            $myImage = new Image($background->getPath());
-            $myImageValues = Image::getSize($background->getPath());
-            $previousImageWidths = 0;
+        $myImage = new Image($background->getPath());
+        $myImageValues = Image::getSize($background->getPath());
+        $previousImageWidths = 0;
 
-            if ($blank->exists()) {
-                $imageValues = Image::getSize($blank->getPath());
-                $previousImageWidths += $imageValues[0];
-            }
-
-            for ($i = 0; $i < mb_strlen("$count"); $i++)
-            {
-
-                $filename = $imageDir.mb_substr("$count", mb_strlen("$count")-$i-1, 1).$imageExt;
-                $imageValues = Image::getSize($filename);
-                $previousImageWidths += $imageValues[0];
-                if (($myImageValues[0]-$previousImageWidths) < 0 || ($myImageValues[1]-$imageValues[1]) < 0) {
-                    unset($myImage);
-                    $myImage = new Image();
-                    $myImage->resize(325, 55);
-                    $myImage->drawString("[ERROR] image size exceeds maximum",               5, 0);
-                    $myImage->drawString("or value to big to be displayed",                  5, 10);
-                    $myImage->drawString("1) check size of counter \"".
-                            mb_substr("$count", mb_strlen("$count")-$i-1, 1).".png\"",       5, 20);
-                    $myImage->drawString("2) check dimensions of file \"hintergrund.png\"",  5, 30);
-                    $myImage->drawString("   are big enough for the content.",               5, 40);
-                    $myImage->outputToScreen();
-                    die;
-                };
-                $image = new Image($filename, 'png');
-                $destX = ($myImageValues[0]-$previousImageWidths);
-                $destY = (int) floor(($myImageValues[1]-$imageValues[1])/2);
-                $myImage->copyRegion($image, 0, 0, null, null, $destX, $destY);
-                unset($image, $destX, $destY);
-
-            }
-
-            $myImage->outputToScreen();
+        if ($blank->exists()) {
+            $imageValues = Image::getSize($blank->getPath());
+            $previousImageWidths += $imageValues[0];
         }
+
+        for ($i = 0; $i < mb_strlen("$count"); $i++)
+        {
+
+            $filename = $imageDir . mb_substr("$count", mb_strlen("$count") - $i - 1, 1) . $imageExt;
+            $imageValues = Image::getSize($filename);
+            $previousImageWidths += $imageValues[0];
+            if (($myImageValues[0] - $previousImageWidths) < 0 || ($myImageValues[1] - $imageValues[1]) < 0) {
+                unset($myImage);
+                $myImage = new Image();
+                $myImage->resize(325, 55);
+                $myImage->drawString("[ERROR] image size exceeds maximum", 5, 0);
+                $myImage->drawString("or value to big to be displayed", 5, 10);
+                $myImage->drawString("1) check size of counter \"" .
+                    mb_substr("$count", mb_strlen("$count") - $i - 1, 1) . ".png\"", 5, 20);
+                $myImage->drawString("2) check dimensions of file \"hintergrund.png\"", 5, 30);
+                $myImage->drawString("   are big enough for the content.", 5, 40);
+                $myImage->outputToScreen();
+                die;
+            };
+            $image = new Image($filename, 'png');
+            $destX = ($myImageValues[0] - $previousImageWidths);
+            $destY = (int) floor(($myImageValues[1] - $imageValues[1]) / 2);
+            $myImage->copyRegion($image, 0, 0, null, null, $destX, $destY);
+            unset($image, $destX, $destY);
+        }
+
+        $myImage->outputToScreen();
         exit(0);
     }
+
 }
 
 ?>
