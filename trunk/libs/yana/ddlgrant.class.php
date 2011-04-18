@@ -436,11 +436,7 @@ class DDLGrant extends DDL
                 $profileId = Yana::getId();
                 $action = PluginManager::getLastEvent();
                 $userName = (string) YanaUser::getUserName();
-                if (SessionManager::checkRule($required, $profileId, $action, $userName)) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return (bool) SessionManager::checkRule($required, $profileId, $action, $userName);
             break;
             default:
                 return false;
