@@ -2182,6 +2182,7 @@ abstract class DbQuery extends Object implements Serializable
         $properties = get_object_vars($this);
         // remove the table object (it is redundant)
         unset($properties['table']);
+        $properties['db'] = $this->db->getName();
         return serialize($properties);
     }
 
@@ -2196,6 +2197,9 @@ abstract class DbQuery extends Object implements Serializable
         foreach (unserialize($string) as $key => $value)
         {
             $this->$key = $value;
+        }
+        if (is_string($this->db)) {
+            $this->db = Yana::connect($this->db);
         }
     }
 
