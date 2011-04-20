@@ -37,23 +37,6 @@ class FormSetupTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testGetColumnNames()
-    {
-        $this->assertEquals(array(), $this->object->getColumnNames());
-    }
-
-    /**
-     * @test
-     */
-    public function testSetColumnNames()
-    {
-        $columnNames = array('a', 'B', 'Ä');
-        $this->assertEquals($columnNames, $this->object->setColumnNames($columnNames)->getColumnNames());
-    }
-
-    /**
-     * @test
-     */
     public function testSetPage()
     {
         $this->assertEquals(5, $this->object->setPage(5)->getPage());
@@ -90,63 +73,6 @@ class FormSetupTest extends PHPUnit_Framework_TestCase
     public function testGetEntriesPerPage()
     {
         $this->assertEquals(5, $this->object->getEntriesPerPage());
-    }
-
-    /**
-     * @test
-     */
-    public function testGetValue()
-    {
-        $this->assertEquals(null, $this->object->getValue('test'));
-    }
-
-    /**
-     * @test
-     */
-    public function testGetValues()
-    {
-        $this->assertEquals(array(), $this->object->getValues());
-    }
-
-    /**
-     * @test
-     */
-    public function testSetValue()
-    {
-        $values = array('a' => 1, 'b' => array('a' => 2), 'c' => array('d' => array(1, 2, 3)));
-        $this->object->setValues($values);
-        $this->assertEquals($values['a'], $this->object->getValue('a'));
-        $this->assertEquals($values['b'], $this->object->getValue('b'));
-        $this->assertEquals($values['b']['a'], $this->object->getValue('b.a'));
-        $this->assertEquals($values['c'], $this->object->getValue('c'));
-        $this->assertEquals($values['c']['d'], $this->object->getValue('c.d'));
-        $this->assertEquals(1, $this->object->getValue('c.d.0'));
-    }
-
-    /**
-     * @test
-     */
-    public function testSetValues()
-    {
-        $values = array(1, 2, 3);
-        $this->assertEquals($values, $this->object->setValues($values)->getValues());
-    }
-
-    /**
-     * @test
-     */
-    public function testAddValues()
-    {
-        $newValues = array('b' => array('a' => 2), 'c' => array('d' => array(1, 2, 3)));
-        $oldValues = array('a' => 1, 'c' => array('d' => ''));
-        $this->object->setValues($oldValues);
-        $this->object->addValues($newValues);
-        $this->assertEquals($oldValues['a'], $this->object->getValue('a'));
-        $this->assertEquals($newValues['b'], $this->object->getValue('b'));
-        $this->assertEquals($newValues['b']['a'], $this->object->getValue('b.a'));
-        $this->assertEquals($newValues['c'], $this->object->getValue('c'));
-        $this->assertEquals($newValues['c']['d'], $this->object->getValue('c.d'));
-        $this->assertEquals(1, $this->object->getValue('c.d.0'));
     }
 
     /**

@@ -22,7 +22,7 @@ class FormSetupContextTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new FormSetupContext();
+        $this->object = new FormSetupContext('test');
     }
 
     /**
@@ -31,51 +31,95 @@ class FormSetupContextTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
+
     }
 
     /**
-     * @todo Implement testGetValue().
+     * @test
+     */
+    public function testGetName()
+    {
+        $this->assertEquals('test', $this->object->getName());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetRows()
+    {
+        $this->assertTrue($this->object->getRows() instanceof FormRowIterator, 'Instance of FormRowIterator expected.');
+    }
+
+    /**
+     * @test
+     */
+    public function testUpdateRow()
+    {
+        $newValues = array('b' => array('a' => 2), 'c' => array('d' => array(1, 2, 3)));
+        $oldValues = array('a' => 1, 'c' => array('d' => ''));
+        $this->object->updateRow(1, $oldValues);
+        $this->object->updateRow(1, $newValues);
+        $row = $this->object->getRows()->offsetGet(1);
+        $this->assertEquals($oldValues['a'], $row['a']);
+        $this->assertEquals($newValues['b'], $row['b']);
+        $this->assertEquals($newValues['c'], $row['c']);
+    }
+
+    /**
+     * @test
      */
     public function testGetValue()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals(null, $this->object->getValue('test'));
     }
 
     /**
-     * @todo Implement testGetValues().
+     * @test
      */
     public function testGetValues()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals(array(), $this->object->getValues());
     }
 
     /**
-     * @todo Implement testSetValue().
+     * @test
      */
     public function testSetValue()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $values = array('a' => 1, 'b' => array('a' => 2), 'c' => array('d' => array(1, 2, 3)));
+        $this->object->setValues($values);
+        $this->assertEquals($values['a'], $this->object->getValue('a'));
+        $this->assertEquals($values['b'], $this->object->getValue('b'));
+        $this->assertEquals($values['b']['a'], $this->object->getValue('b.a'));
+        $this->assertEquals($values['c'], $this->object->getValue('c'));
+        $this->assertEquals($values['c']['d'], $this->object->getValue('c.d'));
+        $this->assertEquals(1, $this->object->getValue('c.d.0'));
     }
 
     /**
-     * @todo Implement testSetValues().
+     * @test
      */
     public function testSetValues()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $values = array(1, 2, 3);
+        $this->assertEquals($values, $this->object->setValues($values)->getValues());
+    }
+
+    /**
+     * @test
+     */
+    public function testAddValues()
+    {
+        $newValues = array('b' => array('a' => 2), 'c' => array('d' => array(1, 2, 3)));
+        $oldValues = array('a' => 1, 'c' => array('d' => ''));
+        $this->object->setValues($oldValues);
+        $this->object->addValues($newValues);
+        $this->assertEquals($oldValues['a'], $this->object->getValue('a'));
+        $this->assertEquals($newValues['b'], $this->object->getValue('b'));
+        $this->assertEquals($newValues['b']['a'], $this->object->getValue('b.a'));
+        $this->assertEquals($newValues['c'], $this->object->getValue('c'));
+        $this->assertEquals($newValues['c']['d'], $this->object->getValue('c.d'));
+        $this->assertEquals(1, $this->object->getValue('c.d.0'));
     }
 
     /**
