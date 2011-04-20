@@ -29,7 +29,6 @@
  * Collection base class.
  *
  * @access      public
- * @abstract
  * @package     yana
  * @subpackage  core
  */
