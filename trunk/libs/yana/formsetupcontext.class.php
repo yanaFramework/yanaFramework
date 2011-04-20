@@ -39,20 +39,34 @@ class FormSetupContext extends Object
 {
 
     /**
+     * Context name.
+     *
+     * @access  private
+     * @var     string
+     */
+    private $_name = "";
+
+    /**
      * Form action name.
      *
      * @access  private
      * @var     string
-     * @ignore
      */
     private $_action = "";
 
     /**
-     * Values.
+     * Rows with values.
      *
      * @access  private
-     * @var     string
-     * @ignore
+     * @var     FormRowIterator
+     */
+    private $_rows = null;
+
+    /**
+     * Values if there are no rows.
+     *
+     * @access  private
+     * @var     array
      */
     private $_values = array();
 
@@ -65,6 +79,30 @@ class FormSetupContext extends Object
      * @var     array
      */
     private $_columnNames = array();
+
+    /**
+     * Initialize instance.
+     *
+     * @accesss  public
+     * @param    string  $name  context id
+     */
+    public function __construct($name)
+    {
+        assert('is_string($name); // Invalid argument $name: string expected');
+        $this->_name = (string) $name;
+        $this->_rows = new FormRowIterator();
+    }
+
+    /**
+     * Get context name.
+     *
+     * @accesss  public
+     * @return   string
+     */
+    public function getName()
+    {
+        return $this->_name;
+    }
 
     /**
      * get form value
@@ -117,6 +155,60 @@ class FormSetupContext extends Object
     {
         $this->_values = $values;
         return $this;
+    }
+
+    /**
+     * Add new form values.
+     *
+     * Replaces existing values, adds new values and keeps values that haven't been changed in the request.
+     *
+     * @access  public
+     * @param   array  $values  new values
+     * @return  FormSetup
+     */
+    public function addValues(array $values)
+    {
+        $this->_values = $values + $this->_values;
+        return $this;
+    }
+
+    /**
+     * Update form row.
+     *
+     * Replaces existing values, adds new values and keeps values that haven't been changed in the request.
+     * If the row does not exist, it is created.
+     *
+     * @access  public
+     * @param   array  $row  new values
+     * @return  FormSetup
+     */
+    public function updateRow($key, array $row)
+    {
+        $updatedRow = $row + (array) $this->getRows()->offsetGet($key);
+        $this->getRows()->offsetSet($key, $updatedRow);
+        return $this;
+    }
+
+    /**
+     * Get rows.
+     *
+     * @access  public
+     * @return  FormRowIterator
+     */
+    public function getRows()
+    {
+        return $this->_rows;
+    }
+
+    /**
+     * Get rows.
+     *
+     * @access  public
+     * @return  FormRowIterator
+     */
+    public function getRow()
+    {
+        return $this->_rows->current();
     }
 
     /**
