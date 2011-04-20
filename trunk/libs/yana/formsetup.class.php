@@ -52,24 +52,6 @@ class FormSetup extends Object
     private $_entriesPerPage = 5;
 
     /**
-     * Optional list of included column names.
-     *
-     * Empty = all.
-     *
-     * @access  private
-     * @var     array
-     */
-    private $_columnNames = array();
-
-    /**
-     * form data cache
-     *
-     * @access  private
-     * @var     array
-     */
-    private $_values = array();
-
-    /**
      * selected layout
      *
      * @access  private
@@ -117,13 +99,13 @@ class FormSetup extends Object
     private $_searchTerm = "";
 
     /**
-     * cached action
+     * Context setups.s
      *
      * @access  private
-     * @var     string
+     * @var     array
      * @ignore
      */
-    private $_searchAction = "";
+    private $_contexts = array();
 
     /**
      * cached action
@@ -133,24 +115,6 @@ class FormSetup extends Object
      * @ignore
      */
     private $_downloadAction = "";
-
-    /**
-     * cached action
-     *
-     * @access  private
-     * @var     string
-     * @ignore
-     */
-    private $_insertAction = "";
-
-    /**
-     * cached action
-     *
-     * @access  private
-     * @var     string
-     * @ignore
-     */
-    private $_updateAction = "";
 
     /**
      * cached action
@@ -171,33 +135,64 @@ class FormSetup extends Object
     private $_exportAction = "";
 
     /**
+     * Get a setup context.
+     *
+     * A context is a number of settings that apply to a form in a specified scenario.
+     * E.g. using an insert-context a form may have other contents than in an edit- or search-context.
+     * However: basic settings will always stay the same.
+     *
+     * Returns the context settings with the specified name.
+     * If the context does not exist, it is created.
+     *
+     * @access  public
+     * @param   string  $name  context name
+     * @return  FormSetupContext
+     */
+    public function getContext($name)
+    {
+        assert('is_string($name); // Invalid argument $name: string expected');
+        if (!isset($this->_contexts[$name])) {
+            $this->_contexts[$name] = new FormSetupContext($name);
+        }
+        return $this->_contexts[$name];
+    }
+
+    /**
+     * Get an array of all registered setup contexts.
+     *
+     * Returns an associative array where the keys are the context names,
+     * the values are instances of {@see FormSetupContext}.
      *
      * @access  public
      * @return  array
      */
-    public function getColumnNames()
+    public function getContexts()
     {
-        return $this->_columnNames;
+        return $this->_contexts;
     }
 
     /**
-     * Set unique list of column names.
+     * Set a setup context.
      *
-     * This does not check if the columns do exist.
-     * If the list is left empty. The form is meant to auto-detect the abvailable columns.
+     * Stores the given context settings under the specified name.
+     * If the context does not exist, it is created.
      *
      * @access  public
-     * @param   array  $columnNames  list of identifiers
-     * @return  FormSetup
+     * @param   string            $name     context name
+     * @param   FormSetupContext  $context  context settings
+     * @return  FormSetup 
      */
-    public function setColumnNames(array $columnNames)
+    public function setContext($name, FormSetupContext $context)
     {
-        $this->_columnNames = $columnNames;
+        assert('is_string($name); // Invalid argument $name: string expected');
+        if (!isset($this->_contexts[$name])) {
+            $this->_contexts[$name] = new FormSetupContext($name);
+        }
         return $this;
     }
 
     /**
-     * set current page
+     * Set current page.
      *
      * The first page is 0, the second is 1, aso., defaults to 0.
      * This function does not check if the page number is beyond the last viewable page.
@@ -266,75 +261,7 @@ class FormSetup extends Object
     }
 
     /**
-     * get form value
-     *
-     * @access  public
-     * @param   string  $key  id of value to retrieve
-     * @return  mixed
-     */
-    public function getValue($key)
-    {
-        assert('is_string($key); // Wrong argument type argument 1. String expected');
-        return Hashtable::get($this->_values, strtolower($key));
-    }
-
-    /**
-     * Get form values.
-     *
-     * @access  public
-     * @return  array
-     */
-    public function getValues()
-    {
-        assert('is_array($this->_values); // Member "values" is expected to be an array.');
-        return $this->_values;
-    }
-
-    /**
-     * Set form value.
-     *
-     * @access  public
-     * @param   string  $key    id of value to set
-     * @param   mixed   $value  new value
-     * @return  FormSetup
-     */
-    public function setValue($key, $value)
-    {
-        assert('is_string($key); // Wrong argument type argument 1. String expected');
-        $this->_values[$key] = $value;
-        return $this;
-    }
-
-    /**
-     * Set form values.
-     *
-     * @access  public
-     * @param   array  $values  new values
-     * @return  FormSetup
-     */
-    public function setValues(array $values)
-    {
-        $this->_values = $values;
-        return $this;
-    }
-
-    /**
-     * Add new form values.
-     *
-     * Replaces existing values, adds new values and keeps values that haven't been changed in the request.
-     *
-     * @access  public
-     * @param   array  $values  new values
-     * @return  FormSetup
-     */
-    public function addValues(array $values)
-    {
-        $this->_values = $values + $this->_values;
-        return $this;
-    }
-
-    /**
-     * check if form has a filter
+     * Check if form has a filter.
      *
      * This funciton returns bool(true) if a filter has been set on any of the forms columns,
      * and bool(false) otherwise.
@@ -583,7 +510,7 @@ class FormSetup extends Object
     public function setSearchAction($action)
     {
         assert('is_string($action); // Wrong type for argument 1. String expected');
-        $this->_searchAction = $action;
+        $this->getContext('search')->setAction($action);
         return $this;
     }
 
@@ -595,7 +522,7 @@ class FormSetup extends Object
      */
     public function getSearchAction()
     {
-        return $this->_searchAction;
+        return $this->getContext('search')->getAction();
     }
 
     /**
@@ -608,7 +535,7 @@ class FormSetup extends Object
     public function setInsertAction($action)
     {
         assert('is_string($action); // Wrong type for argument 1. String expected');
-        $this->_insertAction = $action;
+        $this->getContext('insert')->setAction($action);
         return $this;
     }
 
@@ -620,7 +547,7 @@ class FormSetup extends Object
      */
     public function getInsertAction()
     {
-        return $this->_insertAction;
+        return $this->getContext('insert')->getAction();
     }
 
     /**
@@ -633,7 +560,7 @@ class FormSetup extends Object
     public function setUpdateAction($action)
     {
         assert('is_string($action); // Wrong type for argument 1. String expected');
-        $this->_updateAction = $action;
+        $this->getContext('update')->setAction($action);
         return $this;
     }
 
@@ -645,7 +572,7 @@ class FormSetup extends Object
      */
     public function getUpdateAction()
     {
-        return $this->_updateAction;
+        return $this->getContext('update')->getAction();
     }
 
     /**
