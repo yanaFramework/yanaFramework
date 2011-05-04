@@ -74,7 +74,7 @@ class plugin_config extends StdClass implements IsPlugin
      * @access      public
      * @return      bool
      */
-    public function index ()
+    public function index()
     {
         global $YANA;
 
@@ -113,7 +113,7 @@ class plugin_config extends StdClass implements IsPlugin
      * @access      public
      * @return      bool
      */
-    public function index_plugins ()
+    public function index_plugins()
     {
         $yana = Yana::getInstance();
 
@@ -173,43 +173,32 @@ class plugin_config extends StdClass implements IsPlugin
             /* get setup information */
             if ($active !== 0) {
                 assert('!isset($method); // Cannot redeclare var $method');
+                /* @var $setup PluginMenuEntry */
                 foreach ($pluginConfiguration->getMenuEntries('setup') as $action => $setup)
                 {
-                    /* check if action requires to be run in safe-mode */
+                    // check if action requires to be run in safe-mode
                     /* @var $method PluginConfigurationMethod */
                     $method = $pluginConfiguration->getMethod($action);
                     $requiresDefault = $method->getSafeMode();
 
-                    if (is_array($setup)) {
-                        assert('is_array($setup); // Array expected');
-                        /* evaluate visibility */
-                        if ($requiresDefault === true && !$isDefault) {
-                            continue;
-                        }
-                        if ($requiresDefault === false && $isDefault) {
-                            continue;
-                        }
-                        /* @var $title string */
-                        assert('!isset($title); // Cannot redeclare var $title');
-                        $title = $method->getTitle();
-                        if (!empty($setup[PluginAnnotationEnumeration::TITLE])) {
-                            $title = $setup[PluginAnnotationEnumeration::TITLE];
-                        }
-                        if (empty($title)) {
-                            $title = $pluginTitle;
-                        }
-                        /* add configuration entry */
-                        $plugins[$j]['SETUP'][] = array
-                        (
-                            'ACTION' => $action,
-                            'TITLE' => $title
-                        );
-                    } else {
-                        $plugins[$j]['SETUP'][] = array
-                        (
-                            'ACTION' => $action
-                        );
+                    // evaluate visibility
+                    if ($requiresDefault === true && !$isDefault || $requiresDefault === false && $isDefault) {
+                        continue;
                     }
+                    /* @var $title string */
+                    assert('!isset($title); // Cannot redeclare var $title');
+                    $title = $pluginTitle;
+                    if ($setup->getTitle()) {
+                        $title = $setup->getTitle();
+                    } elseif ($method->getTitle()) {
+                        $title = $method->getTitle();
+                    }
+                    /* add configuration entry */
+                    $plugins[$j]['SETUP'][] = array
+                    (
+                        'ACTION' => $action,
+                        'TITLE' => $title
+                    );
                     unset($title);
                 } // end foreac
                 unset($method);
@@ -313,7 +302,7 @@ class plugin_config extends StdClass implements IsPlugin
      * @param       array  $plugins     activated plugins
      * @return      bool
      */
-    public function save_pluginlist (array $pluginlist, array $plugins)
+    public function save_pluginlist(array $pluginlist, array $plugins)
     {
         $pluginManager = PluginManager::getInstance();
         foreach($pluginlist as $plugin)
@@ -484,7 +473,7 @@ class plugin_config extends StdClass implements IsPlugin
      * @param       string  $target  id of chosen plugin, skin or language pack
      * @return      bool
      */
-    public function about ($type, $target)
+    public function about($type, $target)
     {
         global $YANA;
         $info = array();
@@ -661,6 +650,7 @@ class plugin_config extends StdClass implements IsPlugin
         }
 
     }
+
 }
 
 ?>
