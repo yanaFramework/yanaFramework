@@ -61,39 +61,6 @@ abstract class FormFacadeAbstract extends Object
      */
     protected $query = null;
 
-    /**
-     * Get form structure.
-     *
-     * @access  public
-     * @return  DDLForm
-     */
-    public function getForm()
-    {
-        return $this->setup;
-    }
-
-    /**
-     * Get form setup.
-     *
-     * @access  public
-     * @return  FormSetup
-     */
-    public function getSetup()
-    {
-        return $this->setup;
-    }
-
-    /**
-     * Get query to load form contents.
-     *
-     * @access  public
-     * @return  DbQuery
-     */
-    public function getQuery()
-    {
-        return $this->query;
-    }
-
 }
 
 ?>
