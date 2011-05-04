@@ -41,35 +41,29 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
 {
 
     /**
-     * Field value.
+     * Set name attribute based on field settings.
      *
-     * @access  private
-     * @var     mixed
+     * @access  protected
+     * @param   FormFieldFacade  $field  definition to create name from
+     * @return  FormFieldAutomatedHtmlBuilder
      */
-    private $_value = null;
-
-    /**
-     * Field value.
-     *
-     * @access  public
-     * @return  mixed
-     */
-    public function getValue()
+    private function _setName(FormFieldFacade $field)
     {
-        return $this->_value;
+        $name = $field->getForm()->getName() . "[" . $field->getContext()->getName() . "][" . $field->getName() . "]";
+        return $this->setName($name);
     }
 
     /**
-     * Set HTML attribute "id".
+     * Set id attribute based on field settings.
      *
-     * @access  public
-     * @param   string  $value  must be valid unique identifier
-     * @return  FormFieldAutomatedHtmlBuilder 
+     * @access  private
+     * @param   FormFieldFacade  $field  definition to create id from
+     * @return  FormFieldAutomatedHtmlBuilder
      */
-    public function setValue($value)
+    private function _setId(FormFieldFacade $field)
     {
-        $this->_value = $value;
-        return $this;
+        $id = $field->getForm()->getName() . "-" . $field->getContext()->getName() . "-" . $field->getName();
+        return $this->setId($id);
     }
 
     /**
@@ -91,18 +85,32 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      * If the field has an action attached to it, an clickable icon or text-link is created next to it.
      *
      * @access  public
+     * @param   FormFieldFacade  $field  structure definition
      * @return  string
      *
      * @ignore
      */
-    public function buildByType(DDLField $field)
+    public function buildByType(FormFieldFacade $field)
     {
-        // field may be edited
-        if ($field->isUpdatable() && $this->form->getUpdateAction()) {
-            return $this->buildByTypeUpdatable($field) . $this->createLink();
+        $this->_setName($field);
+        $this->_setId($field);
+        $setup = $field->getForm()->getSetup();
+        switch ($field->getContext()->getName())
+        {
+            case 'update':
+                if ($field->isUpdatable() && $this->form->getUpdateAction()) {
+                    return $this->buildByTypeUpdatable($field, $setup) . $this->createLink($field);
+                }
+            // fall through
+            case 'read':
+                return $this->buildByTypeNonUpdatable($field, $setup) . $this->createLink($field);
+            case 'search':
+                return $this->buildByTypeSearchfield($field, $setup);
+            case 'insert':
+                return $this->buildByTypeUpdatable($field, $setup);
+            default:
+                return "";
         }
-        // field may not be changed
-        return $this->buildByTypeNonUpdatable($field) . $this->createLink();
     }
 
     /**
@@ -110,20 +118,21 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      *
      * Returns the HTML-code representing an input element for the current field.
      *
-     * @access  public
-     * @static
+     * @access  protected
+     * @param   FormFieldFacade  $field  structure definition
+     * @param   FormSetup        $setup  information about how to treat the form
      * @return  string
      *
      * @ignore
      */
-    protected function buildByTypeUpdateable(DDLField $field, FormSetup $setup)
+    protected function buildByTypeUpdatable(FormFieldFacade $field, FormSetup $setup)
     {
-        $column = $field->getColumnDefinition();
+        $column = $field->getColumn();
 
         $lang = Language::getInstance();
 
         // retrieve search arguments
-        $value = $this->getValue();
+        $value = $field->getValue();
         if (is_null($value)) {
             $value = $column->getAutoValue();
         }
@@ -139,9 +148,9 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
         switch ($field->getType())
         {
             case 'array':
-                return $this->buildList($value, false);
+                return $this->buildList((array) $value, false);
             case 'list':
-                return $this->buildList($value, true);
+                return $this->buildList((array) $value, true);
             case 'bool':
                 return $this->buildBoolCheckbox($value);
             case 'color':
@@ -270,16 +279,18 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      * Returns the HTML-code representing an input element for the current field.
      *
      * @access  protected
+     * @param   FormFieldFacade  $field  structure definition
+     * @param   FormSetup        $setup  information about how to treat the form
      * @return  string
      *
      * @ignore
      */
-    protected function buildByTypeNonUpdatable(DDLField $field, FormSetup $setup)
+    protected function buildByTypeNonUpdatable(FormFieldFacade $field, FormSetup $setup)
     {
-        $column = $field->getColumnDefinition();
+        $column = $field->getColumn();
 
         // retrieve search arguments
-        $value = $this->getValue();
+        $value = $field->getValue();
         if (empty($value) && $value !== false) {
             return '&ndash;';
         }
@@ -353,19 +364,21 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      *
      * Returns the HTML-code representing an input element for the current field.
      *
-     * @access  public
+     * @access  protected
+     * @param   FormFieldFacade  $field  structure definition
+     * @param   FormSetup        $setup  information about how to treat the form
      * @return  string
      *
      * @ignore
      */
-    protected function buildByTypeSearchfield(DDLField $field, FormSetup $setup)
+    protected function buildByTypeSearchfield(FormFieldFacade $field, FormSetup $setup)
     {
-        $column = $field->getColumnDefinition();
+        $column = $field->getColumn();
 
         $lang = Language::getInstance();
 
         // retrieve search arguments
-        $value = $this->getValue();
+        $value = $field->getValue();
         if (is_null($value)) {
             $value = $column->getAutoValue();
         }
@@ -455,60 +468,62 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      * Returns the HTML-code for this field.
      *
      * @access  protected
+     * @param   FormFieldFacade  $field  structure definition
      * @return  string
      * @ignore
      */
-    protected function createLink()
+    protected function createLink(FormFieldFacade $field)
     {
-        $value = $this->getValue();
-        if (empty($value) && $value !== false) {
-            return '';
-        }
-        $lang = Language::getInstance();
-        $field = $this->current();
-        $column = $field->getColumnDefinition();
-        $table = $this->form->getTableDefinition();
-        $id = 'id="' . $this->form->getName() . '-' . $this->primaryColumn() . '-' .
-            $this->primaryKey() . '-' . $field->getName() . '"';
-        $class = 'class="gui_generator_int_link"';
         $result = "";
-        /* @var $event DDLEvent */
-        foreach ($field->getEvents() as $event)
-        {
-            $code = $event->getAction();
-            $label = $event->getLabel();
-            $title = $event->getTitle();
-            $icon = $event->getIcon();
-            $href = "";
-
-            switch (strtolower($event->getLanguage()))
+        if ($field->getField()) {
+            $value = $field->getValue();
+            if (empty($value) && $value !== false) {
+                return '';
+            }
+            $lang = Language::getInstance();
+            $column = $field->getColumn();
+            $table = $this->form->getTableDefinition();
+            $id = 'id="' . $this->form->getName() . '-' . $this->primaryColumn() . '-' .
+                $this->primaryKey() . '-' . $field->getName() . '"';
+            $class = 'class="gui_generator_int_link"';
+            /* @var $event DDLEvent */
+            foreach ($field->getField()->getEvents() as $event)
             {
-                case 'javascript':
-                    assert('!isset($actionId);');
-                    $actionId = String::htmlSpecialChars($event->getAction());
-                    $href = 'href="javascript://" ' . $event->getName() . '="' . $actionId . '"';
-                    unset($actionId);
-                break;
-                default:
-                    $actionParam = "action=" . $event->getName();
-                    $targetParam = "target[" . $table->getPrimaryKey() . "]=" . $this->primaryKey() .
-                        "&target[" . $field->getName() . "]=" . $value;
-                    $href = 'href="' . SmartUtility::url("$actionParam&$targetParam") . '"';
-                    if (empty($title)) {
-                        $title = $lang->getVar('DB_ENTITY_LINK');
-                    }
-                break;
-            }
-            if (!empty($title)) {
-                $title = "title=\"$title\"";
-            }
-            if (!empty($icon)) {
-                $icon  = '<img src="' . $icon . '" alt="' . $lang->getVar('BUTTON_OPEN') . '"/>';
-            }
-            if (!empty($label)) {
-                $result .= "<a $id $class $title $href>$label$icon</a>";
-            }
-        } // end foreach
+                $code = $event->getAction();
+                $label = $event->getLabel();
+                $title = $event->getTitle();
+                $icon = $event->getIcon();
+                $href = "";
+
+                switch (strtolower($event->getLanguage()))
+                {
+                    case 'javascript':
+                        assert('!isset($actionId);');
+                        $actionId = String::htmlSpecialChars($event->getAction());
+                        $href = 'href="javascript://" ' . $event->getName() . '="' . $actionId . '"';
+                        unset($actionId);
+                    break;
+                    default:
+                        $actionParam = "action=" . $event->getName();
+                        $targetParam = "target[" . $table->getPrimaryKey() . "]=" . $this->primaryKey() .
+                            "&target[" . $field->getName() . "]=" . $value;
+                        $href = 'href="' . SmartUtility::url("$actionParam&$targetParam") . '"';
+                        if (empty($title)) {
+                            $title = $lang->getVar('DB_ENTITY_LINK');
+                        }
+                    break;
+                }
+                if (!empty($title)) {
+                    $title = "title=\"$title\"";
+                }
+                if (!empty($icon)) {
+                    $icon  = '<img src="' . $icon . '" alt="' . $lang->getVar('BUTTON_OPEN') . '"/>';
+                }
+                if (!empty($label)) {
+                    $result .= "<a $id $class $title $href>$label$icon</a>";
+                }
+            } // end foreach
+        }
         return $result;
     }
 
@@ -522,27 +537,29 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      *
      * Note: the results are cached.
      *
-     * @access  public
-     * @param   DDLField  $field  input field
+     * @access  protected
+     * @param   FormFieldFacade  $field  input field
      * @return  string
      * @ignore
      */
-    protected function createJavascriptEvents(DDLField $field)
+    protected function createJavascriptEvents(FormFieldFacade $field)
     {
         $eventsAsHtml = "";
-        /* @var $event DDLEvent */
-        foreach ($field->getEvents() as $event)
-        {
-            if (strtolower($event->getLanguage()) !== 'javascript') {
-                continue; // non-javascript - ignore!
-            }
-            if ($event->getLabel() || $event->getIcon() ) {
-                continue; // these are links - ignore!
-            }
-            $name = $event->getName();
-            $code = String::htmlSpecialChars($event->getAction());
-            $eventsAsHtml .= " $name=\"$code\"";
-        } // end foreach
+        if ($field->getField()) {
+            /* @var $event DDLEvent */
+            foreach ($field->getField()->getEvents() as $event)
+            {
+                if (strtolower($event->getLanguage()) !== 'javascript') {
+                    continue; // non-javascript - ignore!
+                }
+                if ($event->getLabel() || $event->getIcon() ) {
+                    continue; // these are links - ignore!
+                }
+                $name = $event->getName();
+                $code = String::htmlSpecialChars($event->getAction());
+                $eventsAsHtml .= " $name=\"$code\"";
+            } // end foreach
+        }
         return $eventsAsHtml;
     }
 
