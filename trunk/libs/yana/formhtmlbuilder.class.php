@@ -41,24 +41,55 @@ class FormHtmlBuilder extends Object
 {
 
     /**
+     * Form facade.
+     *
+     * @access  private
+     * @var     FormFacade
+     */
+    private $_facade = null;
+
+    /**
      * Initialize new instance.
      *
      * @access  public
+     * @param   FormFacade  $facade  the form that is used for building HTML
      */
-    public function _construct()
+    public function __construct(FormFacade $facade)
     {
-        $this->createNewForm();
+        $this->createNewForm($facade);
     }
 
     /**
      * Reset instance and create new field.
      * 
      * @access  public
+     * @param   FormFacade  $facade  the form that is used for building HTML
      * @return  FormHtmlBuilder 
      */
-    public function createNewForm()
+    public function createNewForm(FormFacade $facade)
     {
+        $this->_facade = $facade;
         return $this;
+    }
+
+    /**
+     * create a form from the current instance and return it
+     *
+     * Returns the HTML-code for this form.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function buildHtml()
+    {
+        // setting up template
+        $file = Yana::getInstance()->getSkin()->getFile('gui_form');
+        assert('is_file($file); // Template file not found');
+        $template = new SmartView($file);
+        unset($file);
+
+        $template->setVar('form', $this->_facade);
+        return $template->toString();
     }
 
 }
