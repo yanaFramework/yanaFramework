@@ -166,8 +166,8 @@ class FormSetupBuilder extends Object
         if (isset($request['layout'])) {
             $setup->setLayout((int) $request['layout']);
         }
-        if (isset($request['search'])) {
-            $setup->setSearchTerm($request['search']);
+        if (isset($request['searchterm'])) {
+            $setup->setSearchTerm($request['searchterm']);
         }
         if (!empty($request['dropfilter'])) {
             $setup->setFilters();
@@ -186,6 +186,35 @@ class FormSetupBuilder extends Object
         }
         if (!empty($request['desc'])) {
             $setup->setSortOrder(true);
+        }
+        return $this;
+    }
+
+    /**
+     * Update values with request array.
+     *
+     * @access  public
+     * @param   array  $request  initial values (e.g. Request array)
+     * @return  FormSetupBuilder
+     */
+    public function updateValues(array $request = array())
+    {
+        $setup = $this->object;
+        foreach (array('insert', 'search') as $name)
+        {
+            $context = $setup->getContext($name);
+            if (isset($request[$name]) && is_array($request[$name])) {
+                $context->addValues($request[$name]);
+            }
+        }
+        $context = $setup->getContext('update');
+        if (isset($request['update']) && is_array($request['update'])) {
+            foreach ($request['update'] as $key => $row)
+            {
+                if (is_array($row)) {
+                    $context->updateRow($key, $row);
+                }
+            }
         }
         return $this;
     }
