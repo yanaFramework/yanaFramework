@@ -221,11 +221,11 @@ class FormFieldHtmlBuilder extends Object
      * If the var has no maximum length at all, the function will return a number < 1.
      *
      * @access  public
-     * @return  string
+     * @return  int
      */
     public function getMaxLength()
     {
-        return $this->_maxlength;
+        return $this->_maxLength;
     }
 
     /**
@@ -513,9 +513,9 @@ class FormFieldHtmlBuilder extends Object
      */
     public function buildTextfield($value, $type = 'text')
     {
-        assert('is_string($text); // Invalid argument $text: string expected');
-        assert('preg_match("/^[a-z]+$/", $text); // Invalid argument $text: must only contain characters a-z');
-        $maxLength = $this->getMaxLength();
+        assert('is_string($type); // Invalid argument $text: string expected');
+        assert('preg_match("/^[a-z]+$/", $type); // Invalid argument $text: must only contain characters a-z');
+        $maxLength = (int) $this->getMaxLength();
         return '<input' . $this->getAttr() .' id="' . $this->getId() . '" name="' . $this->getName() . '" ' .
             'class="' . $this->getCssClass() . '" type="' . $type . '" value="' . $value .
             '" ' . ( ($maxLength > 0 ) ? 'maxlength="' . $maxLength . '"' : '' ) .
@@ -566,7 +566,7 @@ class FormFieldHtmlBuilder extends Object
      */
     public function buildTextarea($value)
     {
-        $check .= ' cols="20"';
+        $check = ' cols="20"';
         if ($this->getMaxLength() > 2000) {
             $check .= ' cols="30"';
         }
