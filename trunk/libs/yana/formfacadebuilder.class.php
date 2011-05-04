@@ -44,6 +44,14 @@ class FormFacadeBuilder extends FormFacadeAbstract
     protected $object = null;
 
     /**
+     * Included builder.
+     *
+     * @access  protected
+     * @var     FormSetupBuilder
+     */
+    protected $formSetupBuilder = null;
+
+    /**
      * database schema
      *
      * @access  private
@@ -68,46 +76,6 @@ class FormFacadeBuilder extends FormFacadeAbstract
     private $_table = null;
 
     /**
-     * iterator for {@see DDLDefaultField} elements
-     *
-     * @access  private
-     * @var     DDLDefaultReportIterator
-     */
-    private $_reportIterator = null;
-
-    /**
-     * iterator for {@see DDLDefaultField} elements
-     *
-     * @access  private
-     * @var     DDLDefaultInsertIterator
-     */
-    private $_insertIterator = null;
-
-    /**
-     * iterator for {@see DDLDefaultField} elements
-     *
-     * @access  private
-     * @var     DDLDefaultUpdateIterator
-     */
-    private $_iterator = null;
-
-    /**
-     * iterator for {@see DDLDefaultField} elements
-     *
-     * @access  private
-     * @var     DDLDefaultSearchIterator
-     */
-    private $_searchIterator = null;
-
-    /**
-     * iterator for {@see DDLDefaultField} elements
-     *
-     * @access  private
-     * @var     DDLDefaultReadIterator
-     */
-    private $_readIterator = null;
-
-    /**
      * cache list of entries
      *
      * @access  private
@@ -128,6 +96,23 @@ class FormFacadeBuilder extends FormFacadeAbstract
     }
 
     /**
+     * Transparent wrapping functions.
+     *
+     * @access  public
+     * @param   string  $name  function name
+     * @param   array   $args  function arguments
+     * @return  mixed
+     */
+    public function __call($name, array $args)
+    {
+        if (method_exists($this->formSetupBuilder, $name)) {
+            return call_user_func_array(array($this->formSetupBuilder, $name), $arguments);
+        } else {
+            throw new NotImplementedException("Call to undefined function: '$name' in class " . __CLASS__ . ".");
+        }
+    }
+
+    /**
      * Create new facade instance.
      *
      * @access  public
@@ -145,7 +130,7 @@ class FormFacadeBuilder extends FormFacadeAbstract
      */
     public function buildFacade()
     {
-        $this->_initActions();
+        $this->object->setup = $this->formSetupBuilder->buildSetup();
         return $this->object;
     }
 
@@ -170,6 +155,11 @@ class FormFacadeBuilder extends FormFacadeAbstract
     public function setForm(DDLForm $form)
     {
         $this->object->form = $form;
+        if (!isset($this->formSetupBuilder)) {
+            $this->formSetupBuilder = new FormSetupBuilder($form);
+        } else {
+            $this->formSetupBuilder->setForm($form);
+        }
         return $this;
     }
 
@@ -193,6 +183,7 @@ class FormFacadeBuilder extends FormFacadeAbstract
      */
     public function setSetup(FormSetup $setup)
     {
+        $this->formSetupBuilder->setSetup($setup);
         $this->object->setup = $setup;
         return $this;
     }
@@ -206,6 +197,19 @@ class FormFacadeBuilder extends FormFacadeAbstract
     public function getQuery()
     {
         return $this->object->query;
+    }
+
+    /**
+     * Get setup builder.
+     *
+     * The setup builder is an internal builder that allows more detailed settings on the form's configuration.
+     *
+     * @access  public
+     * @return  FormSetupBuilder
+     */
+    public function getSetupBuilder()
+    {
+        return $this->formSetupBuilder;
     }
 
     /**
@@ -308,7 +312,7 @@ class FormFacadeBuilder extends FormFacadeAbstract
     }
 
     /**
-     * get query
+     * Get query.
      *
      * This returns the query object which is bound to the form.
      * You can modify this to filter the visible results.
@@ -335,8 +339,8 @@ class FormFacadeBuilder extends FormFacadeAbstract
                 $query->addHaving($havingClause);
             }
         }
-        if ($setup->getColumnNames()) {
-            $query->setColumns($setup->getColumnNames()); // throws NotFoundException
+        if ($setup->getContext('update')->getColumnNames()) {
+            $query->setColumns($setup->getContext('update')->getColumnNames()); // throws NotFoundException
         }
         return $this->object->query = $query;
     }
@@ -420,6 +424,25 @@ class FormFacadeBuilder extends FormFacadeAbstract
     }
 
     /**
+     * Set the form values.
+     *
+     * @access  public
+     * @param   array  $request  initial values (e.g. Request array)
+     * @return  FormFacadeBuilder 
+     */
+    public function setValues(array $request = array())
+    {
+        $name = $this->getForm()->getName();
+        $values = array();
+        if (isset($request[$name])) {
+            $request = $request[$name];
+            $this->formSetupBuilder->updateSetup($request);
+            $this->formSetupBuilder->updateValues($request);
+        }
+        return $this;
+    }
+
+    /**
      * Update setup with request array.
      *
      * @access  public
@@ -428,36 +451,7 @@ class FormFacadeBuilder extends FormFacadeAbstract
      */
     public function updateSetup(array $request = array())
     {
-        if (isset($request['page'])) {
-            $this->setup->setPage((int) $request['page']);
-        }
-        if (isset($request['entries'])) {
-            $this->setup->setEntriesPerPage((int) $request['entries']);
-        }
-        if (isset($request['layout'])) {
-            $this->setup->setLayout((int) $request['layout']);
-        }
-        if (isset($request['search'])) {
-            $this->setup->setSearchTerm($request['search']);
-        }
-        if (!empty($request['dropfilter'])) {
-            $this->setup->setFilters();
-        }
-        if (isset($request['filter']) && is_array($request['filter'])) {
-            foreach ($request['filter'] as $columnName => $searchTerm)
-            {
-                $this->setup->setFilter($columnName, $searchTerm);
-            }
-        }
-        if (!empty($request['sort'])) {
-            $this->setup->setOrderByField($request['sort']);
-        }
-        if (!empty($request['orderby'])) {
-            $this->setup->setOrderByField($request['orderby']);
-        }
-        if (!empty($request['desc'])) {
-            $this->setup->setSortOrder(true);
-        }
+        $this->formSetupBuilder->updateSetup($request);
         return $this;
     }
 
@@ -501,83 +495,6 @@ class FormFacadeBuilder extends FormFacadeAbstract
         foreach ($columns->getGrants() as $grant)
         {
             $field->setGrant($grant);
-        }
-    }
-
-    /**
-     * Scans the actions and removes those to whom the current user has no access.
-     *
-     * @access  protected
-     */
-    protected function _initActions()
-    {
-        $form = $this->getForm();
-        $setup = $this->getSetup();
-        $session = SessionManager::getInstance();
-
-        $action = $setup->getDownloadAction()
-            || ($event = $form->getEvent('download') && $action = $event->getAction())
-            || $action = "download_file";
-        unset($event);
-
-        if (!$form->isSelectable() || !$session->checkPermission(null, $action)) {
-            $action = "";
-        }
-        $setup->setDownloadAction($action);
-
-        $action = $setup->getSearchAction()
-            || ($event = $form->getEvent('search') && $action = $event->getAction());
-        unset($event);
-
-        if ($action) {
-            if (!$form->isSelectable() || !$session->checkPermission(null, $action)) {
-                $action = "";
-            }
-            $setup->setSearchAction($action);
-        }
-
-        $action = $setup->getInsertAction()
-            || ($event = $form->getEvent('insert') && $action = $event->getAction());
-        unset($event);
-
-        if ($action) {
-            if (!$form->isInsertable() || !$session->checkPermission(null, $action)) {
-                $action = "";
-            }
-            $setup->setInsertAction($action);
-        }
-
-        $action = $setup->getUpdateAction()
-            || ($event = $form->getEvent('update') && $action = $event->getAction());
-        unset($event);
-
-        if ($action) {
-            if (!$form->isUpdatable() || !$session->checkPermission(null, $action)) {
-                $action = "";
-            }
-            $setup->setUpdateAction($action);
-        }
-
-        $action = $setup->getDeleteAction()
-            || ($event = $form->getEvent('delete') && $action = $event->getAction());
-        unset($event);
-
-        if ($action) {
-            if (!$form->isDeletable() || !$session->checkPermission(null, $action)) {
-                $action = "";
-            }
-            $setup->setDeleteAction($action);
-        }
-
-        $action = $setup->getExportAction()
-            || ($event = $form->getEvent('export') && $action = $event->getAction());
-        unset($event);
-
-        if ($action) {
-            if (!$form->isSelectable() || !$session->checkPermission(null, $action)) {
-                $action = "";
-            }
-            $setup->setExportAction($action);
         }
     }
 
@@ -648,66 +565,6 @@ class FormFacadeBuilder extends FormFacadeAbstract
     //abstract public function _isLastPage();
 
     /**
-     * get default form iterator
-     *
-     * This returns an object, which implements the Iterator interface.
-     * Use this to walk across all {@see DDLDefaultField}s that are suitable for searching.
-     *
-     * @access  protected
-     * @return  DDLDefaultUpdateIterator
-     */
-    protected function _buildUpdateIterator()
-    {
-        if (!isset($this->_iterator)) {
-            $this->_iterator = new DDLDefaultUpdateIterator($this->getForm());
-        }
-        return $this->_iterator;
-    }
-
-    /**
-     * get values of update form
-     *
-     * This returns an array of values entered in the update form.
-     *
-     * @access  protected
-     * @return  array
-     */
-    protected function _getUpdateValues()
-    {
-        return $this->getIterator()->getValues();
-    }
-
-    /**
-     * get search form iterator
-     *
-     * This returns an object, which implements the Iterator interface.
-     * Use this to walk across all {@see DDLDefaultField}s that are suitable for searching.
-     *
-     * @access  protected
-     * @return  DDLDefaultSearchIterator
-     */
-    protected function _buildSearchIterator()
-    {
-        if (!isset($this->_searchIterator)) {
-            $this->_searchIterator = new DDLDefaultSearchIterator($this->getForm());
-        }
-        return $this->_searchIterator;
-    }
-
-    /**
-     * get values of search form
-     *
-     * This returns an array of values entered in the search form.
-     *
-     * @access  protected
-     * @return  array
-     */
-    protected function _getSearchValues()
-    {
-        return $this->getSearchIterator()->getValues();
-    }
-
-    /**
      * get values of search form as where clause
      *
      * This returns an array of values entered in the search form.
@@ -748,97 +605,6 @@ class FormFacadeBuilder extends FormFacadeAbstract
             }
         }
         return $clause;
-    }
-
-    /**
-     * get search form iterator
-     *
-     * This returns an object, which implements the Iterator interface.
-     * Use this to walk across all {@see DDLDefaultField}s that are suitable for searching.
-     *
-     * @access  protected
-     * @return  DDLDefaultReportIterator
-     */
-    protected function _buildReportIterator()
-    {
-        if (!isset($this->_reportIterator)) {
-            $this->_reportIterator = new DDLDefaultReportIterator($this->getForm());
-        }
-        return $this->_reportIterator;
-    }
-
-    /**
-     * get values of report form
-     *
-     * This returns an array of values entered in the report form.
-     *
-     * @access  protected
-     * @return  array
-     */
-    protected function _getReportValues()
-    {
-        return $this->getReportIterator()->getValues();
-    }
-
-    /**
-     * get insert form iterator
-     *
-     * This returns an object, which implements the Iterator interface.
-     * Use this to walk across all {@see DDLDefaultField}s that are needed for inserting.
-     *
-     * @access  protected
-     * @return  DDLDefaultInsertIterator
-     */
-    protected function _buildInsertIterator()
-    {
-        if (!isset($this->_insertIterator)) {
-            $this->_insertIterator = new DDLDefaultInsertIterator($this->getForm());
-        }
-        return $this->_insertIterator;
-    }
-
-    /**
-     * get values of insert form
-     *
-     * This returns an array of values entered in the insert form.
-     *
-     * @access  protected
-     * @return  array
-     */
-    protected function _getInsertValues()
-    {
-        $iterator = $this->buildInsertIterator();
-        $values = $iterator->getValues();
-        $form = $this->getForm();
-        $parentForm = $form->getParent();
-        // copy foreign key from parent query
-        if ($parentForm instanceof DDLAbstractForm && $parentForm->getTable() !== $form->getTable()) {
-            $results = $parentForm->getQuery()->getResults();
-            if (count($results) === 1) {
-                $foreignKey = array_shift($this->getForeignKey());
-                $values[$foreignKey] = key($results);
-                unset($foreignKey);
-            }
-            unset($results);
-        }
-        return $values;
-    }
-
-    /**
-     * get read form iterator
-     *
-     * This returns an object, which implements the Iterator interface.
-     * Use this to walk across all {@see DDLDefaultField}s that may be viewed.
-     *
-     * @access  protected
-     * @return  DDLDefaultReadIterator
-     */
-    protected function _buildReadIterator()
-    {
-        if (!isset($this->_readIterator)) {
-            $this->_readIterator = new DDLDefaultReadIterator($this->getForm());
-        }
-        return $this->_readIterator;
     }
 
     /**
@@ -897,7 +663,7 @@ class FormFacadeBuilder extends FormFacadeAbstract
     }
 
     /**
-     * create links to other pages
+     * Create links to other pages.
      *
      * @access  protected
      * @return  string
