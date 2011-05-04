@@ -37,182 +37,173 @@ class FormFieldFacade extends Object
 {
 
     /**
+     * Form in which the field is defined.
+     *
+     * @access  private
+     * @var     FormFacade
+     * @ignore
+     */
+    private $_form = null;
+
+    /**
+     * Structure definition of base column.
+     *
+     * @access  private
+     * @var     DDLColumn
+     */
+    private $_column = null;
+
+    /**
      * Field to operate on
      *
-     * @access  protected
+     * @access  private
      * @var     DDLField
-     * @ignore
      */
-    protected $field = null;
+    private $_field = null;
 
     /**
-     * Field to operate on
+     * Context in which the field is interpreted.
      *
      * @access  protected
-     * @var     DDLFieldSetup
+     * @var     FormSetupContext
      * @ignore
      */
-    protected $setup = null;
+    private $_context = null;
 
     /**
-     * create new instance
+     * Caches if the field can be used as a filter.
+     *
+     * @access  private
+     * @var     bool
+     * @ignore
+     */
+    private $_isFilterable = null;
+
+    /**
+     * Caches the filter (having clause) on this field.
+     *
+     * @access  private
+     * @var     array
+     * @ignore
+     */
+    private $_filter = null;
+
+    /**
+     * Caches the filter value (part of having clause) on this field.
+     *
+     * @access  private
+     * @var     string
+     * @ignore
+     */
+    private $_filterValue = null;
+
+    /**
+     * Create new instance.
      *
      * @access  public
-     * @param   DDLField  $field  wrapped field instance
+     * @param   FormFacade        $parentForm  form structure of configuration
+     * @param   DDLField          $field       wrapped field instance
+     * @param   FormSetupContext  $context     scenario that tells how to interprete the field
+     * @param   DDLColumn         $column      base column definition
      */
-    public function __construct(DDLField $field)
+    public function __construct(FormFacade $parentForm, DDLColumn $column, FormSetupContext $context, DDLField $field = null)
     {
-        $this->field = $field;
-        $this->setup = $setup;
+        $this->_form = $parentForm;
+        $this->_column = $column;
+        $this->_field = $field;
+        $this->_context = $context;
     }
 
     /**
      * Transparent wrapping functions.
      *
      * @access  public
-     * @param   string  $name  function name
-     * @param   array   $args  function arguments
+     * @param   string  $name       function name
+     * @param   array   $arguments  function arguments
      * @return  mixed
      */
-    public function __call($name, array $args)
+    public function __call($name, array $arguments)
     {
-        return call_user_method_array($name, $this->object, $args);
+        if (isset($this->_field) && method_exists($this->_field, $name)) {
+            return call_user_func_array(array($this->_field, $name), $arguments);
+        } elseif (isset($this->_context) && method_exists($this->_context, $name)) {
+            return call_user_func_array(array($this->_context, $name), $arguments);
+        } elseif (isset($this->_column) && method_exists($this->_column, $name)) {
+            return call_user_func_array(array($this->_column, $name), $arguments);
+        } else {
+            throw new NotImplementedException("Call to undefined function: '$name' in class " . __CLASS__ . ".");
+        }
     }
 
     /**
-     * defition of underlying Column object
-     *
-     * @access  private
-     * @var     DDLColumn
-     */
-    private $columnDefinition = null;
-
-    /**
-     * caches if the field can be used as a filter
-     *
-     * @access  private
-     * @var     bool
-     * @ignore
-     */
-    private $isFilterable = null;
-
-    /**
-     * caches the generated HTML for event elements
-     *
-     * @access  private
-     * @var     bool
-     * @ignore
-     */
-    private $eventsAsHTML = null;
-
-    /**
-     * caches the filter (having clause) on this field
-     *
-     * @access  private
-     * @var     array
-     * @ignore
-     */
-    private $filter = null;
-
-    /**
-     * caches the filter value (part of having clause) on this field
-     *
-     * @access  private
-     * @var     string
-     * @ignore
-     */
-    private $filterValue = null;
-
-    /**
-     * get column definition
-     *
-     * Each field definition must be linked to a column in the same database.
-     * This function looks it up and returns this definition.
+     * Get column definition.
      *
      * @access  public
      * @return  DDLColumn
-     * @throws  NotFoundException  when the database, form, table, or column was not found
      */
-    public function getColumnDefinition()
+    public function getColumn()
     {
-        if (isset($this->column)) {
-            return $this->column; // has no external column definition
-        } elseif (!isset($this->columnDefinition)) {
-            /* @var $parent DDLAbstractForm */
-            $parent = $this->getParent();
-            if (!($parent instanceof DDLAbstractForm)) {
-                $message = "Error in form-field '{$this->getName()}'. No parent form defined.";
-                throw new NotFoundException($message);
-            }
-            $table = $parent->getTableDefinition();
-            $column = $table->getColumn($this->getName());
-            if (!($column instanceof DDLColumn)) {
-                $message = "Error in form '{$parent->getName()}'. The form is using a column named " .
-                    "'{$this->getName()}' which does not exist in the base table '{$table->getName()}'.";
-                throw new NotFoundException($message);
-            }
-            $this->columnDefinition = $column;
-        }
-        return $this->columnDefinition;
+        return $this->_column;
     }
 
     /**
-     * get title
+     * Get field definition.
+     *
+     * @access  public
+     * @return  DDLField
+     */
+    public function getField()
+    {
+        return $this->_field;
+    }
+
+    /**
+     * Get form context.
+     *
+     * @access  public
+     * @return  FormSetupContext
+     */
+    public function getContext()
+    {
+        return $this->_context;
+    }
+
+    /**
+     * Get form structure.
+     *
+     * @access  public
+     * @return  FormFacade
+     */
+    public function getForm()
+    {
+        return $this->_form;
+    }
+
+    /**
+     * Get title.
      *
      * The title is a label text that should be displayed in the UI when viewing this object.
-     *
-     * It is optional. If it is not set, the function returns NULL instead.
      *
      * @access  public
      * @return  string
      */
     public function getTitle()
     {
-        if (empty($this->title)) {
-            try {
-                $this->title = $this->getColumnDefinition()->getTitle();
-            } catch (\Exception $e) {
-                $this->title = $this->getName(); // fall back to name if table does not exist
-            }
+        $title = "";
+        if ($this->getField()) {
+            $title = $this->getField()->getTitle();
         }
-        return $this->title;
+        if (empty($title)) {
+            $title = $this->getColumn()->getTitle();
+        }
+        if (empty($title)) {
+            $title = $this->getField()->getName();
+        }
+        return $title;
     }
 
     /**
-     * get data type
-     *
-     * This returns the type of the underlying column.
-     * It is a shortcut for: DDLDefaultField::getColumn()->getType().
-     *
-     * @access  public
-     * @return  string
-     * @throws  NotFoundException  when column definition was not found 
-     */
-    public function getType()
-    {
-        $column = $this->getColumnDefinition();
-        return $column->getType();
-    }
-
-    /**
-     * check whether column allows NULL values
-     *
-     * Returns bool(true) if the column allows undefined values (NULL).
-     * Returns bool(false) otherwise.
-     *
-     * The default is bool(true).
-     *
-     * @access  public
-     * @return  bool
-     * @throws  NotFoundException  when column definition was not found
-     */
-    public function isNullable()
-    {
-        return $this->getColumnDefinition()->isNullable();
-    }
-
-    /**
-     * check if a filter is set
+     * Check if a filter is set.
      *
      * Returns bool(true) if a filter has been set on the column and bool(false) otherwise.
      *
@@ -221,11 +212,11 @@ class FormFieldFacade extends Object
      */
     public function hasFilter()
     {
-        return !is_null($this->filter);
+        return !is_null($this->_filter);
     }
 
     /**
-     * check if column has a scalar type
+     * Check if column has a scalar type.
      *
      * Returns bool(true) if the column exists and has a scalar type, which's values can be
      * displayed without line-breaks. Returns bool(false) otherwise.
@@ -239,8 +230,8 @@ class FormFieldFacade extends Object
      */
     public function isFilterable()
     {
-        if (!isset($this->isFilterable)) {
-            switch ($this->getType())
+        if (!isset($this->_isFilterable)) {
+            switch ($this->getColumn()->getType())
             {
                 case 'bool':
                 case 'color':
@@ -255,24 +246,84 @@ class FormFieldFacade extends Object
                 case 'text':
                 case 'html':
                 case 'url':
-                    $this->isFilterable = (bool) $this->refersToTable();
+                    $this->_isFilterable = (bool) !$this->getField() || $this->getField()->refersToTable();
                 break;
                 default:
-                    $this->isFilterable = false;
+                    $this->_isFilterable = false;
                 break;
             }
         }
-        return !empty($this->isFilterable);
+        return !empty($this->_isFilterable);
     }
 
     /**
-     * get Query definition from form
+     * Is single-line.
+     *
+     * Returns bool(true) if the current field can be displayed using an input element,
+     * which requires no more than a single line of text. Returns bool(false) otherwise.
+     *
+     * @access  public
+     * @return  bool
+     */
+    public function isSingleLine()
+    {
+        // filter fields by column type
+        switch ($this->getColumn()->getType())
+        {
+            case 'bool':
+            case 'date':
+            case 'enum':
+            case 'file':
+            case 'float':
+            case 'inet':
+            case 'integer':
+            case 'mail':
+            case 'string':
+            case 'tel':
+            case 'time':
+            case 'timestamp':
+            case 'url':
+            case 'reference':
+                return true;
+            default:
+                return false;
+        } // end switch
+    }
+
+    /**
+     * Is multi-line.
+     *
+     * Returns bool(true) if the current field can be displayed using an input element,
+     * which requires multiple lines. Returns bool(false) otherwise.
+     *
+     * @access  public
+     * @return  bool
+     */
+    public function isMultiLine()
+    {
+        // filter fields by column type
+        switch ($this->getColumn()->getType())
+        {
+            case 'text':
+            case 'html':
+            case 'image':
+            case 'set':
+            case 'list':
+                return true;
+            default:
+                return false;
+        } // end switch
+    }
+
+    /**
+     * Get Query definition from form.
      *
      * Looks up and returns the DbSelectQuery object from the underlying form and returns it.
      *
      * @access  private
      * @throws  NotFoundException  when form or query was not found
      * @return  DbSelect
+     * @deprecated
      */
     private function _getQuery()
     {
@@ -295,22 +346,23 @@ class FormFieldFacade extends Object
      * @param   scalar  $value        column value to filter by
      * @param   bool    $isMandatory  switch between operators (true='AND', false='OR')
      * @throws  NotFoundException  when form or query was not found
+     * @deprecated
      */
-    public function setFilter($value, $isMandatory = true)
+    private function _setFilter($value, $isMandatory = true)
     {
         assert('is_scalar($value); // Wrong type for argument 1. String expected');
         assert('is_bool($isMandatory); // Wrong type for argument 2. Boolean expected');
         $this->dropFilter();
         $query = $this->_getQuery();
-        $this->filterValue = $value;
+        $this->_filterValue = $value;
         $value = strtr($value, '*?', '%_'); // translate wildcards
         $value = String::htmlSpecialChars($value);
-        $this->filter = array($this->name, 'like', $value);
-        $query->addHaving($this->filter, $isMandatory);
+        $this->_filter = array($this->name, 'like', $value);
+        $query->addHaving($this->_filter, $isMandatory);
     }
 
     /**
-     * get the currently set filter on a certain column
+     * Get the currently set filter on a certain column.
      *
      * Returns an array containing the having clause on this column, or
      * NULL if there is none.
@@ -330,10 +382,11 @@ class FormFieldFacade extends Object
      *
      * @access  public
      * @return  array
+     * @deprecated
      */
-    public function getFilter()
+    private function _getFilter()
     {
-        return $this->filter;
+        return $this->_filter;
     }
 
     /**
@@ -346,10 +399,11 @@ class FormFieldFacade extends Object
      *
      * @access  public
      * @return  string
+     * @deprecated
      */
-    public function getFilterValue()
+    private function _getFilterValue()
     {
-        return $this->filterValue;
+        return $this->_filterValue;
     }
 
     /**
@@ -358,15 +412,16 @@ class FormFieldFacade extends Object
      * Unsets the having clause for this column (if there is any).
      *
      * @access  public
+     * @deprecated
      */
-    public function dropFilter()
+    private function __dropFilter()
     {
-        if (!is_null($this->filter)) {
+        if (!is_null($this->_filter)) {
             $query = $this->_getQuery();
             $having = $query->getHaving();
             $query->setHaving(self::_dropFilter($having, $this->name));
-            $this->filter = null;
-            $this->filterValue = null;
+            $this->_filter = null;
+            $this->_filterValue = null;
         }
     }
 
@@ -380,6 +435,7 @@ class FormFieldFacade extends Object
      * @param   array   $having  having clause (haystack)
      * @param   string  $name    name of field (needle)
      * @return  array
+     * @deprecated
      */
     private static function _dropFilter(array $having, $name)
     {
@@ -419,139 +475,196 @@ class FormFieldFacade extends Object
     }
 
     /**
-     * recursively check if field is selectable
+     * Get CSS class attribute.
      *
-     * Returns bool(true) if field is selectable to the current user and bool(false) otherwise.
-     *
-     * @access  public
-     * @return  bool
-     */
-    public function isSelectable()
-    {
-        if (!isset($this->isSelectable)) {
-            $this->isSelectable = $this->object->isSelectable() && $this->getParent()->isSelectable();
-        }
-        return $this->isSelectable;
-    }
-
-    /**
-     * recursively check if field is insertable
-     *
-     * Returns bool(true) if field is insertable to the current user and bool(false) otherwise.
-     *
-     * @access  public
-     * @return  bool
-     */
-    public function isInsertable()
-    {
-        if (!isset($this->isInsertable)) {
-            $this->isInsertable = parent::isInsertable() && $this->getParent()->isInsertable();
-        }
-        return $this->isInsertable;
-    }
-
-    /**
-     * recursively check if field is updatable
-     *
-     * Returns bool(true) if field is updatable to the current user and bool(false) otherwise.
-     *
-     * @access  public
-     * @return  bool
-     */
-    public function isUpdatable()
-    {
-        if (!isset($this->isUpdatable)) {
-            $this->isUpdatable = parent::isUpdatable() && $this->getParent()->isUpdatable() &&
-                !$this->isReadonly() && $this->getColumnDefinition()->isUpdatable();
-        }
-        return $this->isUpdatable;
-    }
-
-    /**
-     * recursively check if field is deletable
-     *
-     * Returns bool(true) if field is deletable to the current user and bool(false) otherwise.
-     *
-     * @access  public
-     * @return  bool
-     */
-    public function isDeletable()
-    {
-        if (!isset($this->isDeletable)) {
-            $this->isDeletable = parent::isDeletable() && $this->getParent()->isDeletable();
-        }
-        return $this->isDeletable;
-    }
-
-    /**
-     * recursively check if field is grantable
-     *
-     * Returns bool(true) if field is grantable to the current user and bool(false) otherwise.
-     *
-     * @access  public
-     * @return  bool
-     */
-    public function isGrantable()
-    {
-        if (!isset($this->isGrantable)) {
-            $this->isGrantable = parent::isGrantable() && $this->getParent()->isGrantable();
-        }
-        return $this->isGrantable;
-    }
-
-    /**
-     * create a javascript events (where available)
-     *
-     * Returns the HTML-code for the generated attributes.
-     *
-     * Example:
-     * <pre> onclick="alert('Hello World')" onchange="validate(this)"</pre>
-     *
-     * Note: the results are cached.
-     *
-     * @access  public
-     * @return  string
-     *
-     * @ignore
-     */
-    public function getEventsAsHTML()
-    {
-        if (!isset($this->eventsAsHTML)) {
-            $this->eventsAsHTML = "";
-            /* @var $event DDLEvent */
-            foreach ($this->getEvents() as $event)
-            {
-                if (strtolower($event->getLanguage()) !== 'javascript') {
-                    continue; // non-javascript - ignore!
-                }
-                if ($event->getLabel() || $event->getIcon() ) {
-                    continue; // these are links - ignore!
-                }
-                $name = $event->getName();
-                $code = String::htmlSpecialChars($event->getAction());
-                $this->eventsAsHTML .= " $name=\"$code\"";
-            } // end foreach
-        }
-        return $this->eventsAsHTML;
-    }
-
-    /**
-     * get CSS class attribute
-     *
-     * Returns the prefered CSS-class for this field as a string or NULL if there is none.
-     * This function falls back to
+     * Returns the prefered CSS-class for this field as a string.
+     * If there is none this function falls back to a generic name: gui_generator_col_[name],
+     * where [name] is the name attribute of the column.
      *
      * @access  public
      * @return  string
      */
     public function getCssClass()
     {
-        $cssClass = $this->setup->getCssClass();
+        $cssClass = "";
+        if (isset($this->_field)) {
+            $cssClass = $this->getField()->getCssClass();
+        }
         if (empty($cssClass)) {
-            return "gui_generator_col_" . $this->field->getName();
+            return "gui_generator_col_" . $this->getColumn()->getName();
         } else {
             return $cssClass;
         }
+    }
+
+    /**
+     * Get form value.
+     *
+     * @access  public
+     * @return  mixed
+     */
+    public function getValue()
+    {
+        $name = $this->getName(); // returns either field or column name
+        $collection = $this->_context->getRows();
+        $value = null;
+        if ($collection->count() > 0) {
+            $values = $collection->current();
+            if (isset($values[$name])) {
+                $value = $values[$name];
+            }
+        }
+        return $value;
+    }
+
+    /**
+     * Get minimal form value.
+     *
+     * Applies to search forms only.
+     * If the field has a range of minimal and maximal value, this returns the minimal value of the field.
+     * Otherwise it returns NULL.
+     *
+     * @access  public
+     * @return  scalar
+     */
+    public function getMinValue()
+    {
+        $value = $this->getValue();
+        if (is_array($value) && isset($value['start'])) {
+            return $value['start'];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get maximal form value.
+     *
+     * Applies to search forms only.
+     * If the field has a range of minimal and maximal value, this returns the maximal value of the field.
+     * Otherwise it returns NULL.
+     *
+     * @access  public
+     * @return  scalar
+     */
+    public function getMaxValue()
+    {
+        $value = $this->getValue();
+        if (is_array($value) && isset($value['end'])) {
+            return $value['end'];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * get current value as where clause
+     *
+     * This function returns an array of (leftOperand, operator, rightOperand),
+     * which may be used to set a where clause on a database query object.
+     *
+     * If the value is empty, the function return NULL instead.
+     *
+     * @access  public
+     * @return  array
+     */
+    public function getValueAsWhereClause()
+    {
+        $value = $this->getValue();
+        if (is_null($value) || $value === '') {
+            return null;
+        }
+        $field = $this->current();
+        if (!$field->refersToTable()) {
+            return null;
+        }
+        $leftOperand = array($this->_form->getBaseForm()->getTable(), $column->getName());
+        /**
+         * Switch by column's type
+         */
+        switch ($this->getColumn()->getType())
+        {
+            case 'bool':
+                switch ($value)
+                {
+                    case 'true':
+                        $rightOperand = true;
+                    break;
+                    case 'false':
+                        $rightOperand = false;
+                    break;
+                    default:
+                        return null;
+                    break;
+                }
+                $operator = '=';
+            break;
+            case 'enum':
+            case 'set':
+                if (!is_array($value)) {
+                    return null;
+                }
+                $operator = 'IN';
+                $validItems = $column->getEnumerationItemNames();
+                // prevent use of invalid items (possible injection)
+                $rightOperand = array_intersect($value, $validItems);
+                if (!empty($rightOperand)) {
+                    return null;
+                }
+                assert('is_array($rightOperand);');
+            break;
+            case 'time':
+            case 'timestamp':
+            case 'date':
+                if (!isset($value['active']) || $value['active'] !== 'true') {
+                    return null;
+                }
+                $operator = 'AND';
+                $min = $this->getMinValue();
+                $max = $this->getMaxValue();
+                $minTime = mktime(0, 0, 0, $min['month'], $min['day'], $min['year']);
+                $maxTime = mktime(23, 59, 59, $max['month'], $max['day'], $max['year']);
+                $rightOperand = array($leftOperand, '<=', $maxTime);
+                $leftOperand = array($leftOperand, '>=', $minTime);
+            break;
+            case 'integer':
+            case 'float':
+            case 'range':
+                $min = $this->getMinValue();
+                $max = $this->getMaxValue();
+                if ($min != '') {
+                    $rightOperand = $min;
+                    if ($min === $max) {
+                        $operator = '=';
+                    } else {
+                        $operator = '>=';
+                    }
+                } elseif ($max != '') {
+                    $rightOperand = $max;
+                    $operator = '<=';
+                } else {
+                    return null;
+                }
+            break;
+            default:
+                $operator = 'LIKE';
+                $value = strtr($value, '*?', '%_'); // translate wildcards
+                $value = String::htmlSpecialChars($value);
+                $rightOperand = $value;
+            break;
+        }
+        return array($leftOperand, $operator, $rightOperand);
+    }
+
+    /**
+     *
+     * @access  public
+     * @return  string
+     */
+    public function toString()
+    {
+        $builder = new FormFieldAutomatedHtmlBuilder();
+        return $builder->buildByType($this);
     }
 
 }
