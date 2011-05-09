@@ -416,21 +416,15 @@ class FormFacadeBuilder extends FormFacadeAbstract
     }
 
     /**
-     * Set the form values.
+     * Update the form values.
      *
      * @access  public
      * @param   array  $request  initial values (e.g. Request array)
      * @return  FormFacadeBuilder 
      */
-    public function setValues(array $request = array())
+    public function updateValues(array $request = array())
     {
-        $name = $this->getForm()->getName();
-        $values = array();
-        if (isset($request[$name])) {
-            $request = $request[$name];
-            $this->formSetupBuilder->updateSetup($request);
-            $this->formSetupBuilder->updateValues($request);
-        }
+        $this->formSetupBuilder->updateValues($request);
         return $this;
     }
 
