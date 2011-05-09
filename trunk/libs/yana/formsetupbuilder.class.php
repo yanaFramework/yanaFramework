@@ -157,13 +157,13 @@ class FormSetupBuilder extends Object
     public function updateSetup(array $request = array())
     {
         $setup = $this->object;
-        if (isset($request['page'])) {
+        if (isset($request['page']) && $request['entries'] >= 0) {
             $setup->setPage((int) $request['page']);
         }
-        if (isset($request['entries'])) {
+        if (isset($request['entries']) && $request['entries'] > 0) {
             $setup->setEntriesPerPage((int) $request['entries']);
         }
-        if (isset($request['layout'])) {
+        if (isset($request['layout']) && $request['layout'] >= 0) {
             $setup->setLayout((int) $request['layout']);
         }
         if (isset($request['searchterm'])) {
@@ -217,6 +217,101 @@ class FormSetupBuilder extends Object
             }
         }
         return $this;
+    }
+
+    /**
+     * Create links to other pages.
+     *
+     * @access  protected
+     * @return  string
+     */
+    private function _buildListOfEntries()
+    {
+        $lastPage = $this->object->getLastPage();
+        $entriesPerPage = $this->object->getEntriesPerPage();
+        assert('$entriesPerPage > 0; // invalid number of entries to view per page');
+        $currentPage = $this->object->getPage();
+        $listOfEntries = "";
+        assert('!isset($pluginManager); // Cannot redeclare var $pluginManager');
+        $pluginManager = PluginManager::getInstance();
+        $action = $pluginManager->getFirstEvent();
+        $lang = Language::getInstance();
+        $linkTemplate = '<a class="gui_generator_%s" href=' .
+            SmartUtility::href("action=$action&" . $this->getForm()->getName() . "[page]=%s") .
+            ' title="%s">%s</a>';
+        // previous page
+        if ($currentPage > 0) { // is not first page
+            $page = $currentPage - $entriesPerPage;
+            if ($page < 0) {
+                $page = 0;
+            }
+            $listOfEntries .= sprintf($linkTemplate, 'previous', $page,
+                $lang->getVar("TITLE_PREVIOUS"), $lang->getVar("BUTTON_PREVIOUS"));
+        }
+        // more pages
+        if ($lastPage > ($entriesPerPage * 2)) { // has more than 2 pages
+
+            $dots = false;
+
+            $title = $lang->getVar("TITLE_LIST");
+            $isTooLong = $lastPage > (10 * $entriesPerPage); // has more than 10 pages
+
+            for ($page = 0; $page < ceil($lastPage / $entriesPerPage); $page++)
+            {
+                /**
+                 * if more than 10 pages exist and current page is not first page or last page
+                 * and is not current page or previous or next 3 pages
+                 */
+                $isNearCurrent = (floor($currentPage / $entriesPerPage) - 3) < $page && // previous 3 pages, or
+                    $page < (floor($currentPage / $entriesPerPage) + 3);                // next 3 pages
+
+                $isFirstOrLast = $page <= 1 ||                         // is first page, or
+                    $page >= (ceil($lastPage / $entriesPerPage) - 2 ); // is last page
+
+                if ($isTooLong && !$isFirstOrLast && !$isNearCurrent) {
+                    /* this marks an elipsis */
+                    if ($dots === false) {
+                        $listOfEntries .= "...";
+                        $dots = true;
+                    } else {
+                        /* ignore this page */
+                        continue;
+                    }
+                } else {
+                    $first = ($page * $entriesPerPage);
+                    $last = $lastPage;
+                    if (($page + 1) * $entriesPerPage < $lastPage) {
+                        $last = ($page + 1) * $entriesPerPage;
+                    }
+                    $text = '';
+                    // link text
+                    if ($first + 1 != $last) {
+                        $text = '[' . ($first + 1) . '-' . $last . ']';
+                    } else {
+                        $text = '[' . $last . ']';
+                    }
+                    if ($currentPage < $first || $currentPage > $last - 1) { // is not current page
+                        $listOfEntries .= sprintf($linkTemplate, 'page', $first,
+                            $title, $text);
+                    } else {
+                        $listOfEntries .= $text;
+                    }
+                    if ($isNearCurrent) {
+                        $dots = false;
+                    }
+                }
+            } // end for
+        }
+        if (true) {
+           $b = $a;
+        }
+        // next page
+        if (!$this->isLastPage()) { // is not last page
+            $page = $currentPage + $entriesPerPage;
+            $listOfEntries .= sprintf($linkTemplate, 'next', $page,
+                $lang->getVar("TITLE_NEXT"), $lang->getVar("BUTTON_NEXT"));
+        }
+        return $listOfEntries;
     }
 
     /**
@@ -351,12 +446,13 @@ class FormSetupBuilder extends Object
             } else {
                 $field = new DDLField($columnName);
             }
-            if (!$field->refersToTable()) {
-                $column = $field->getColumn();
-            } elseif ($table->isColumn($columnName)) {
-                $column = $table->getColumn($columnName);
-            } else {
-                continue;
+            $column = $field->getColumn();
+            if (!$column instanceof DDLColumn) {
+                if ($table->isColumn($columnName)) {
+                    $column = $table->getColumn($columnName);
+                } else {
+                    continue;
+                }
             }
             if ($field->isVisible() && $field->isSelectable()) {
                 $readCollection[$columnName] = $column;
@@ -393,7 +489,7 @@ class FormSetupBuilder extends Object
             }
         }
         $this->object->getContext('read')->setColumnNames(array_keys($readCollection->toArray()));
-        $this->object->getContext('update')->setColumnNames(array_keys($updateCollection->toArray()));
+        $this->object->getContext('update')->setColumnNames(array_keys($readCollection->toArray()));
         $this->object->getContext('insert')->setColumnNames(array_keys($insertCollection->toArray()));
         $this->object->getContext('search')->setColumnNames(array_keys($searchCollection->toArray()));
         $this->_applyWhitelistColumnNames();

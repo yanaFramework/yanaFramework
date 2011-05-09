@@ -49,7 +49,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      */
     private function _setName(FormFieldFacade $field)
     {
-        $name = $field->getForm()->getName() . "[" . $field->getContext()->getName() . "][" . $field->getName() . "]";
+        $name = $field->getForm()->getName() . "[" . $field->getContext()->getContextName() . "][" . $field->getName() . "]";
         return $this->setName($name);
     }
 
@@ -62,7 +62,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      */
     private function _setId(FormFieldFacade $field)
     {
-        $id = $field->getForm()->getName() . "-" . $field->getContext()->getName() . "-" . $field->getName();
+        $id = $field->getForm()->getName() . "-" . $field->getContext()->getContextName() . "-" . $field->getName();
         return $this->setId($id);
     }
 
@@ -95,10 +95,10 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
         $this->_setName($field);
         $this->_setId($field);
         $setup = $field->getForm()->getSetup();
-        switch ($field->getContext()->getName())
+        switch ($field->getContext()->getContextName())
         {
             case 'update':
-                if ($field->isUpdatable() && $this->form->getUpdateAction()) {
+                if ($field->isUpdatable() && $field->getForm()->getSetup()->getUpdateAction()) {
                     return $this->buildByTypeUpdatable($field, $setup) . $this->createLink($field);
                 }
             // fall through
@@ -419,11 +419,11 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
             case 'time':
             case 'timestamp':
             case 'date':
-                $startTime = $this->getMinValue(); // @todo FIXME!
+                $startTime = $field->getMinValue();
                 if (empty($startTime)) {
                     $startTime = array();
                 }
-                $endTime = $this->getMaxValue(); // @todo FIXME!
+                $endTime = $field->getMaxValue();
                 if (empty($endTime)) {
                     $endTime = array();
                 }
@@ -475,16 +475,17 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
     protected function createLink(FormFieldFacade $field)
     {
         $result = "";
-        if ($field->getField()) {
+        if ($field->getField() instanceof DDLField) {
             $value = $field->getValue();
             if (empty($value) && $value !== false) {
                 return '';
             }
             $lang = Language::getInstance();
             $column = $field->getColumn();
-            $table = $this->form->getTableDefinition();
-            $id = 'id="' . $this->form->getName() . '-' . $this->primaryColumn() . '-' .
-                $this->primaryKey() . '-' . $field->getName() . '"';
+            $form = $field->getForm();
+            $table = $form->getTable();
+            $id = 'id="' . $form->getName() . '-' . $table->getPrimaryKey() . '-' .
+                $form->getPrimaryKey() . '-' . $field->getName() . '"';
             $class = 'class="gui_generator_int_link"';
             /* @var $event DDLEvent */
             foreach ($field->getField()->getEvents() as $event)
@@ -505,7 +506,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                     break;
                     default:
                         $actionParam = "action=" . $event->getName();
-                        $targetParam = "target[" . $table->getPrimaryKey() . "]=" . $this->primaryKey() .
+                        $targetParam = "target[" . $table->getPrimaryKey() . "]=" . $form->getPrimaryKey() .
                             "&target[" . $field->getName() . "]=" . $value;
                         $href = 'href="' . SmartUtility::url("$actionParam&$targetParam") . '"';
                         if (empty($title)) {

@@ -44,6 +44,14 @@ class FormSetup extends Object
     private $_page = 0;
 
     /**
+     * number of viewable pages (for multi-page layout)
+     *
+     * @access  private
+     * @var     int
+     */
+    private $_pageCount = 0;
+
+    /**
      * number of entries per page (for multi-page layout)
      *
      * @access  private
@@ -226,6 +234,41 @@ class FormSetup extends Object
     public function getPage()
     {
         return $this->_page;
+    }
+
+    /**
+     * Set number of pages.
+     *
+     * This function sets the number of viewable pages.
+     *
+     * @access  public
+     * @param   int  $pageCount  number of pages
+     * @throws  InvalidArgumentException if $pageCount is < 0
+     * @return  FormSetup
+     */
+    public function setPageCount($pageCount = 0)
+    {
+        assert('is_int($pageCount); // Wrong type for argument 1. Integer expected');
+
+        /* default values */
+        if ($pageCount < 0) {
+            throw new InvalidArgumentException("Page count must be a positive integer.");
+        }
+        $this->_pageCount = (int) $pageCount;
+        return $this;
+    }
+
+    /**
+     * Get the currently selected page.
+     *
+     * Expected to default to 0.
+     *
+     * @access  public
+     * @return  int
+     */
+    public function getPageCount()
+    {
+        return $this->_pageCount;
     }
 
     /**

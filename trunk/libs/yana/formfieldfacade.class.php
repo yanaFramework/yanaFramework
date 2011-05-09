@@ -40,8 +40,7 @@ class FormFieldFacade extends Object
      * Form in which the field is defined.
      *
      * @access  private
-     * @var     FormFacade
-     * @ignore
+     * @var     FormContextSensitiveWrapper
      */
     private $_form = null;
 
@@ -60,15 +59,6 @@ class FormFieldFacade extends Object
      * @var     DDLField
      */
     private $_field = null;
-
-    /**
-     * Context in which the field is interpreted.
-     *
-     * @access  protected
-     * @var     FormSetupContext
-     * @ignore
-     */
-    private $_context = null;
 
     /**
      * Caches if the field can be used as a filter.
@@ -101,17 +91,15 @@ class FormFieldFacade extends Object
      * Create new instance.
      *
      * @access  public
-     * @param   FormFacade        $parentForm  form structure of configuration
-     * @param   DDLField          $field       wrapped field instance
-     * @param   FormSetupContext  $context     scenario that tells how to interprete the field
-     * @param   DDLColumn         $column      base column definition
+     * @param   FormContextSensitiveWrapper  $parentForm  form structure of configuration
+     * @param   DDLField                     $field       wrapped field instance
+     * @param   DDLColumn                    $column      base column definition
      */
-    public function __construct(FormFacade $parentForm, DDLColumn $column, FormSetupContext $context, DDLField $field = null)
+    public function __construct(FormContextSensitiveWrapper $parentForm, DDLColumn $column, DDLField $field = null)
     {
         $this->_form = $parentForm;
         $this->_column = $column;
         $this->_field = $field;
-        $this->_context = $context;
     }
 
     /**
@@ -126,12 +114,10 @@ class FormFieldFacade extends Object
     {
         if (isset($this->_field) && method_exists($this->_field, $name)) {
             return call_user_func_array(array($this->_field, $name), $arguments);
-        } elseif (isset($this->_context) && method_exists($this->_context, $name)) {
-            return call_user_func_array(array($this->_context, $name), $arguments);
-        } elseif (isset($this->_column) && method_exists($this->_column, $name)) {
+        } elseif (method_exists($this->_column, $name)) {
             return call_user_func_array(array($this->_column, $name), $arguments);
         } else {
-            throw new NotImplementedException("Call to undefined function: '$name' in class " . __CLASS__ . ".");
+            return call_user_func_array(array($this->_form, $name), $arguments);
         }
     }
 
@@ -165,7 +151,7 @@ class FormFieldFacade extends Object
      */
     public function getContext()
     {
-        return $this->_context;
+        return $this->_form->getContext();
     }
 
     /**
@@ -246,7 +232,7 @@ class FormFieldFacade extends Object
                 case 'text':
                 case 'html':
                 case 'url':
-                    $this->_isFilterable = (bool) !$this->getField() || $this->getField()->refersToTable();
+                    $this->_isFilterable = (bool) !$this->getField() || $this->refersToTable();
                 break;
                 default:
                     $this->_isFilterable = false;
@@ -254,6 +240,24 @@ class FormFieldFacade extends Object
             }
         }
         return !empty($this->_isFilterable);
+    }
+
+    /**
+     * Check if the field has a column element.
+     *
+     * If the field has a column as child element, it does not refer to a column in a real table.
+     *
+     * On the other hand, if there is no field definition and instead it is automatically derived
+     * from the base table, then it does refer to (this) table.
+     *
+     * Therefore it must not be included in any queries on the database.
+     *
+     * @access  public
+     * @return  bool
+     */
+    public function refersToTable()
+    {
+        return !($this->_field instanceof DDLField && $this->_field->getColumn() instanceof DDLColumn);
     }
 
     /**
@@ -390,7 +394,7 @@ class FormFieldFacade extends Object
     }
 
     /**
-     * get the column filter value
+     * Get the column filter value.
      *
      * If the column values are to be filtered, this returns the currntly set search term
      * as a string. The string may contain wildcards.
@@ -399,11 +403,10 @@ class FormFieldFacade extends Object
      *
      * @access  public
      * @return  string
-     * @deprecated
      */
-    private function _getFilterValue()
+    public function getFilterValue()
     {
-        return $this->_filterValue;
+        return $this->_form->getSetup()->getFilter($this->getName());
     }
 
     /**
@@ -505,12 +508,12 @@ class FormFieldFacade extends Object
      */
     public function getValue()
     {
-        $name = $this->getName(); // returns either field or column name
-        $collection = $this->_context->getRows();
+        $name = strtoupper($this->getName()); // returns either field or column name
+        $collection = $this->_form->getContext()->getRows();
         $value = null;
-        if ($collection->count() > 0) {
+        if ($collection->valid()) {
             $values = $collection->current();
-            if (isset($values[$name])) {
+            if (is_array($values) && isset($values[$name])) {
                 $value = $values[$name];
             }
         }
@@ -574,15 +577,15 @@ class FormFieldFacade extends Object
         if (is_null($value) || $value === '') {
             return null;
         }
-        $field = $this->current();
-        if (!$field->refersToTable()) {
+        $column = $this->current()->getColumn();
+        if (!$column instanceof DDLColumn) {
             return null;
         }
         $leftOperand = array($this->_form->getBaseForm()->getTable(), $column->getName());
         /**
          * Switch by column's type
          */
-        switch ($this->getColumn()->getType())
+        switch ($column->getType())
         {
             case 'bool':
                 switch ($value)

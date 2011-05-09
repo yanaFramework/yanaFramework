@@ -26,7 +26,7 @@
  */
 
 /**
- * <<wrapper>> A context-sensitive form wrapper.
+ * <<wrapper, facade>> A context-sensitive form wrapper.
  *
  * This class is meant to provide a context-aware form objects, by binding a form,
  * it's current context and identifying the fields that apply to it.
@@ -36,7 +36,7 @@
  * @subpackage  form
  * @ignore
  */
-class FormContextSensitiveWrapper extends FormFieldFacadeCollection
+class FormContextSensitiveWrapper extends FormFieldFacadeCollection implements Iterator
 {
 
     /**
@@ -88,6 +88,30 @@ class FormContextSensitiveWrapper extends FormFieldFacadeCollection
     }
 
     /**
+     * Get form context.
+     *
+     * @access  public
+     * @return  FormSetupContext
+     */
+    public function getContext()
+    {
+        return $this->_context;
+    }
+
+    /**
+     * Get primary key of the current row.
+     *
+     * If there is no current row, the function returns NULL instead.
+     *
+     * @access  public
+     * @return  scalar
+     */
+    public function getPrimaryKey()
+    {
+        return $this->getContext()->getRows()->key();
+    }
+
+    /**
      * Build a field collection from a given context.
      *
      * @access  private
@@ -105,9 +129,9 @@ class FormContextSensitiveWrapper extends FormFieldFacadeCollection
             }
             try {
                 $field = $this->_form->getField($columnName);
-                $facade = new FormFieldFacade($this->_form, $column, $context, $field);
+                $facade = new FormFieldFacade($this, $column, $field);
             } catch (NotFoundException $e) {
-                $facade = new FormFieldFacade($this->_form, $column, $context); // ignore invalid field definition
+                $facade = new FormFieldFacade($this, $column); // ignore invalid field definition
             }
             $this->offsetSet($columnName, $facade);
         }
@@ -142,6 +166,55 @@ class FormContextSensitiveWrapper extends FormFieldFacadeCollection
     public function getRowCount()
     {
         return $this->_context->getRows()->count();
+    }
+
+    /**
+     * Advances the pointer one row.
+     *
+     * @access  public
+     */
+    public function nextRow()
+    {
+        $this->_context->getRows()->next();
+    }
+
+    /**
+     * Check if the current page is the last page.
+     *
+     * Returns bool(true) if the current page number + visible entries per page
+     * is less than the overall number of rows.
+     *
+     * @access  public
+     * @return  bool
+     */
+    public function isLastPage()
+    {
+        $setup = $this->_form->getSetup();
+        return ($setup->getPage() + $setup->getEntriesPerPage() >= $this->getLastPage());
+    }
+
+    /**
+     * Get the form's row-count.
+     *
+     * Returns the number of rows in the current form.
+     * If the form is empty, it returns int(0).
+     *
+     * @access  protected
+     * @return  int
+     */
+    public function getPageCount()
+    {
+        if (!isset($this->_lastPage)) {
+            $query = $this->getQuery();
+            $offset = $query->getOffset();
+            $limit = $query->getLimit();
+            $query->setLimit(0);
+            $query->setOffset(0);
+            $this->_lastPage = $query->countResults();
+            $query->setLimit($limit);
+            $query->setOffset($offset);
+        }
+        return $this->_lastPage;
     }
 
 }
