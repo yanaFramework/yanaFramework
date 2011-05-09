@@ -111,6 +111,20 @@ abstract class DbQuery extends Object implements Serializable
     }
 
     /**
+     * magic function
+     *
+     * This is automatically used to create copies of the object when using the "clone" keyword.
+     * This creates a shallow copy and thus overwrites the default behavior of the parent class.
+     *
+     * @access  public
+     * @ignore
+     */
+    public function __clone()
+    {
+        // overwrite parent
+    }
+
+    /**
      * magic get
      *
      * Returns a database object definition from the schema.
