@@ -60,6 +60,14 @@ class FormQueryBuilder extends Object
     private $_form = null;
 
     /**
+     * Object cache.
+     *
+     * @access  private
+     * @var     array
+     */
+    private $_cache = array();
+
+    /**
      * Initialize instance.
      *
      * @access  public
@@ -82,6 +90,7 @@ class FormQueryBuilder extends Object
     public function setForm(FormFacade $form)
     {
         $this->_form = $form;
+        $this->_cache = array();
         return $this;
     }
 
@@ -115,7 +124,7 @@ class FormQueryBuilder extends Object
     }
 
     /**
-     * Get query.
+     * Create a select query.
      *
      * This returns the query object which is bound to the form.
      * You can modify this to filter the visible results.
@@ -124,27 +133,50 @@ class FormQueryBuilder extends Object
      * @return  DbSelect
      * @throws  NotFoundException  if the selected table or one of the selected columns is not found
      */
-    public function buildQuery()
+    public function buildSelectQuery()
     {
-        $setup = $this->_form->getSetup();
-        $query = new DbSelect($this->_db);
-        $query->setTable($this->_form->getBaseForm()->getTable());
-        $query->setLimit($setup->getEntriesPerPage());
-        $query->setOffset($setup->getPage() * $setup->getEntriesPerPage());
-        if ($setup->getOrderByField()) {
-            $query->setOrderBy((array) $setup->getOrderByField(), (array) $setup->isDescending());
-        }
-        if ($setup->hasFilter()) {
-            foreach ($setup->getFilters() as $columnName => $filter)
-            {
-                $havingClause = array($columnName, 'like', $filter);
-                $query->addHaving($havingClause);
+        if (!isset($this->_cache[__FUNCTION__])) {
+            $setup = $this->_form->getSetup();
+            $query = new DbSelect($this->_db);
+            $query->setTable($this->_form->getBaseForm()->getTable());
+            $query->setLimit($setup->getEntriesPerPage());
+            $query->setOffset($setup->getPage() * $setup->getEntriesPerPage());
+            if ($setup->getOrderByField()) {
+                $query->setOrderBy((array) $setup->getOrderByField(), (array) $setup->isDescending());
             }
+            if ($setup->hasFilter()) {
+                foreach ($setup->getFilters() as $columnName => $filter)
+                {
+                    $havingClause = array($columnName, 'like', $filter);
+                    $query->addHaving($havingClause);
+                }
+            }
+            if ($setup->getContext('update')->getColumnNames()) {
+                $query->setColumns($setup->getContext('update')->getColumnNames()); // throws NotFoundException
+            }
+            $this->_cache[__FUNCTION__] = $query;
         }
-        if ($setup->getContext('update')->getColumnNames()) {
-            $query->setColumns($setup->getContext('update')->getColumnNames()); // throws NotFoundException
+        return $this->_cache[__FUNCTION__];
+    }
+
+    /**
+     * Create a count query.
+     *
+     * This returns a query object bound to the form, that can be used to count the pages.
+     *
+     * @access  protected
+     * @return  DbSelectCount
+     */
+    public function buildCountQuery()
+    {
+        if (!isset($this->_cache[__FUNCTION__])) {
+            $query = $this->buildSelectQuery();
+            assert('$query instanceof DbSelectCount;');
+            $query->setLimit(0);
+            $query->setOffset(0);
+            $this->_cache[__FUNCTION__] = $query;
         }
-        return $query;
+        return $this->_cache[__FUNCTION__];
     }
 
 }

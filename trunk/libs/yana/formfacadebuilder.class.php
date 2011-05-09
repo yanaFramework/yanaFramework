@@ -76,14 +76,6 @@ class FormFacadeBuilder extends FormFacadeAbstract
     private $_table = null;
 
     /**
-     * cache list of entries
-     *
-     * @access  private
-     * @var     string
-     */
-    private $_listOfEntries = null;
-
-    /**
      * Initialize instance
      *
      * @access  public
@@ -529,42 +521,6 @@ class FormFacadeBuilder extends FormFacadeAbstract
     }
 
     /**
-     * Get the form's row-count.
-     *
-     * Returns the number of rows in the current form.
-     * If the form is empty, it returns int(0).
-     *
-     * @access  protected
-     * @return  int
-     */
-    protected function _getLastPage()
-    {
-        if (!isset($this->_lastPage)) {
-            $query = $this->getQuery();
-            $offset = $query->getOffset();
-            $limit = $query->getLimit();
-            $query->setLimit(0);
-            $query->setOffset(0);
-            $this->_lastPage = $query->countResults();
-            $query->setLimit($limit);
-            $query->setOffset($offset);
-        }
-        return $this->_lastPage;
-    }
-
-    /**
-     * check if the current page is the last page
-     *
-     * Returns bool(true) if the current page number + visible entries per page
-     * is less than the overall number of rows.
-     *
-     * @access  protected
-     * @abstract
-     * @return  bool
-     */
-    //abstract public function _isLastPage();
-
-    /**
      * get values of search form as where clause
      *
      * This returns an array of values entered in the search form.
@@ -660,105 +616,6 @@ class FormFacadeBuilder extends FormFacadeAbstract
             throw new DbWarning($message, E_USER_WARNING);
         }
         return array($keyName, $columnName);
-    }
-
-    /**
-     * Create links to other pages.
-     *
-     * @access  protected
-     * @return  string
-     */
-    protected function _buildListOfEntries()
-    {
-        if (!isset($this->_listOfEntries)) {
-            $setup = $this->getSetup();
-            $form = $this->getForm();
-            $lastPage = $this->getLastPage();
-            $entriesPerPage = $setup->getEntriesPerPage();
-            assert('$entriesPerPage > 0; // invalid number of entries to view per page');
-            $currentPage = $setup->getPage();
-            $this->_listOfEntries = "";
-            assert('!isset($pluginManager); // Cannot redeclare var $pluginManager');
-            $pluginManager = PluginManager::getInstance();
-            $action = $pluginManager->getFirstEvent();
-            $lang = Language::getInstance();
-            $linkTemplate = '<a class="gui_generator_%s" href=' .
-                SmartUtility::href("action=$action&" . $form->getName() . "[page]=%s") .
-                ' title="%s">%s</a>';
-            // previous page
-            if ($currentPage > 0) { // is not first page
-                $page = $currentPage - $entriesPerPage;
-                if ($page < 0) {
-                    $page = 0;
-                }
-                $this->_listOfEntries .= sprintf($linkTemplate, 'previous', $page,
-                    $lang->getVar("TITLE_PREVIOUS"), $lang->getVar("BUTTON_PREVIOUS"));
-            }
-            // more pages
-            if ($lastPage > ($entriesPerPage * 2)) { // has more than 2 pages
-
-                $dots = false;
-
-                $title = $lang->getVar("TITLE_LIST");
-                $isTooLong = $lastPage > (10 * $entriesPerPage); // has more than 10 pages
-
-                for ($page = 0; $page < ceil($lastPage / $entriesPerPage); $page++)
-                {
-                    /**
-                     * if more than 10 pages exist and current page is not first page or last page
-                     * and is not current page or previous or next 3 pages
-                     */
-                    $isNearCurrent = (floor($currentPage / $entriesPerPage) - 3) < $page && // previous 3 pages, or
-                        $page < (floor($currentPage / $entriesPerPage) + 3);                // next 3 pages
-
-                    $isFirstOrLast = $page <= 1 ||                         // is first page, or
-                        $page >= (ceil($lastPage / $entriesPerPage) - 2 ); // is last page
-
-                    if ($isTooLong && !$isFirstOrLast && !$isNearCurrent) {
-                        /* this marks an elipsis */
-                        if ($dots === false) {
-                            $this->_listOfEntries .= "...";
-                            $dots = true;
-                        } else {
-                            /* ignore this page */
-                            continue;
-                        }
-                    } else {
-                        $first = ($page * $entriesPerPage);
-                        $last = $lastPage;
-                        if (($page + 1) * $entriesPerPage < $lastPage) {
-                            $last = ($page + 1) * $entriesPerPage;
-                        }
-                        $text = '';
-                        // link text
-                        if ($first + 1 != $last) {
-                            $text = '[' . ($first + 1) . '-' . $last . ']';
-                        } else {
-                            $text = '[' . $last . ']';
-                        }
-                        if ($currentPage < $first || $currentPage > $last - 1) { // is not current page
-                            $this->_listOfEntries .= sprintf($linkTemplate, 'page', $first,
-                                $title, $text);
-                        } else {
-                            $this->_listOfEntries .= $text;
-                        }
-                        if ($isNearCurrent) {
-                            $dots = false;
-                        }
-                    }
-                } // end for
-            }
-            if (true) {
-               $b = $a;
-            }
-            // next page
-            if (!$this->isLastPage()) { // is not last page
-                $page = $currentPage + $entriesPerPage;
-                $this->_listOfEntries .= sprintf($linkTemplate, 'next', $page,
-                    $lang->getVar("TITLE_NEXT"), $lang->getVar("BUTTON_NEXT"));
-            }
-        }
-        return $this->_listOfEntries;
     }
 
 }

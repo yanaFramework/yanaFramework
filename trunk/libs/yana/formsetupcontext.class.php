@@ -44,7 +44,7 @@ class FormSetupContext extends Object
      * @access  private
      * @var     string
      */
-    private $_name = "";
+    private $_contextName = "";
 
     /**
      * Form action name.
@@ -53,6 +53,14 @@ class FormSetupContext extends Object
      * @var     string
      */
     private $_action = "";
+
+    /**
+     * Footer text.
+     *
+     * @access  private
+     * @var     string
+     */
+    private $_footer = "";
 
     /**
      * Rows with values.
@@ -89,7 +97,7 @@ class FormSetupContext extends Object
     public function __construct($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        $this->_name = (string) $name;
+        $this->_contextName = (string) $name;
         $this->_rows = new FormRowIterator();
     }
 
@@ -99,9 +107,9 @@ class FormSetupContext extends Object
      * @accesss  public
      * @return   string
      */
-    public function getName()
+    public function getContextName()
     {
-        return $this->_name;
+        return $this->_contextName;
     }
 
     /**
@@ -204,11 +212,36 @@ class FormSetupContext extends Object
      * Get rows.
      *
      * @access  public
-     * @return  FormRowIterator
+     * @return  array
      */
     public function getRow()
     {
         return $this->_rows->current();
+    }
+
+    /**
+     * Set footer text.
+     *
+     * @access  public
+     * @param   string  $footer  any text or HTML
+     * @return  FormSetupContext
+     */
+    public function setFooter($footer)
+    {
+        assert('is_string($footer); // Invalid argument $footer: string expected');
+        $this->_footer = (string) $footer;
+        return $this;
+    }
+
+    /**
+     * Get footer text.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getFooter()
+    {
+        return $this->_footer;
     }
 
     /**

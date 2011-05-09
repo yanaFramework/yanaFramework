@@ -124,7 +124,7 @@ class FormFacade extends FormFacadeAbstract
     }
 
     /**
-     * get list of foreign-key reference settings
+     * Get list of foreign-key reference settings.
      *
      * This returns an array of the following contents:
      * <code>
@@ -426,19 +426,6 @@ class FormFacade extends FormFacadeAbstract
     }
 
     /**
-     * Get values of read form.
-     *
-     * This returns an array of values entered in the report form.
-     *
-     * @access  public
-     * @return  array
-     */
-    public function getReportValues()
-    {
-        return $this->setup->getContext('read')->getValues();
-    }
-
-    /**
      * Get values of search form.
      *
      * This returns an array of values entered in the search form.
@@ -449,35 +436,6 @@ class FormFacade extends FormFacadeAbstract
     public function getSearchValues()
     {
         return $this->setup->getContext('search')->getValues();
-    }
-
-    /**
-     * Build a field collection from a given context.
-     *
-     * @access  private
-     * @param   FormSetupContext  $context  form context to take the field list from
-     * @return  FormFieldFacade 
-     */
-    private function _buildFormFieldCollection(FormSetupContext $context)
-    {
-        $table = $this->getTable();
-        $collection = new FormFieldFacadeCollection();
-        foreach ($context->getColumnNames() as $columnName)
-        {
-            try {
-                $column = $table->getColumn($columnName);
-            } catch (NotFoundException $e) {
-                continue; // skip invalid column definition
-            }
-            try {
-                $field = $this->form->getField($columnName);
-                $facade = new FormFieldFacade($this, $column, $context, $field);
-            } catch (NotFoundException $e) {
-                $facade = new FormFieldFacade($this, $column, $context); // ignore invalid field definition
-            }
-            $collection[$columnName] = $facade;
-        }
-        return $collection;
     }
 
     /**
