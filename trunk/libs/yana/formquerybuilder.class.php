@@ -170,7 +170,7 @@ class FormQueryBuilder extends Object
     public function buildCountQuery()
     {
         if (!isset($this->_cache[__FUNCTION__])) {
-            $query = $this->buildSelectQuery();
+            $query = clone $this->buildSelectQuery();
             assert('$query instanceof DbSelectCount;');
             $query->setLimit(0);
             $query->setOffset(0);
