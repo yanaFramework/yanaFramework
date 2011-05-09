@@ -153,11 +153,11 @@ class Index extends Utility
          * Abbr: "gc" = garbage collector
          * }}
          */
+        session_name(YANA_SESSION_NAME);
         // limit session cookie to 1 hour and the local script directory
         session_set_cookie_params(3600, dirname($_SERVER['PHP_SELF']) . '/');
         // set session lifetime to 1 hour
         ini_set("session.gc_maxlifetime", "3600");
-        session_name(YANA_SESSION_NAME);
         @session_start();
 
         // Check language settings
