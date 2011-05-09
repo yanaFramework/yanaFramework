@@ -229,6 +229,7 @@ class FormSetupBuilder extends Object
     public function setRows(array $rows = array())
     {
         $this->object->getContext('update')->setRows($rows);
+        $this->_buildFooter();
         return $this;
     }
 
@@ -236,12 +237,16 @@ class FormSetupBuilder extends Object
      * Create links to other pages.
      *
      * @access  protected
-     * @return  string
+     * @return  FormSetupBuilder
      */
-    private function _buildListOfEntries()
+    private function _buildFooter()
     {
-        $lastPage = $this->object->getLastPage();
+        $context = $this->object->getContext('update');
         $entriesPerPage = $this->object->getEntriesPerPage();
+        $pageCount = $this->object->getPageCount();
+        $lastPage = $pageCount - 1;
+        $entryCount = $this->object->getEntryCount();
+
         assert('$entriesPerPage > 0; // invalid number of entries to view per page');
         $currentPage = $this->object->getPage();
         $listOfEntries = "";
@@ -254,7 +259,7 @@ class FormSetupBuilder extends Object
             ' title="%s">%s</a>';
         // previous page
         if ($currentPage > 0) { // is not first page
-            $page = $currentPage - $entriesPerPage;
+            $page = $currentPage - 1;
             if ($page < 0) {
                 $page = 0;
             }
@@ -262,24 +267,24 @@ class FormSetupBuilder extends Object
                 $lang->getVar("TITLE_PREVIOUS"), $lang->getVar("BUTTON_PREVIOUS"));
         }
         // more pages
-        if ($lastPage > ($entriesPerPage * 2)) { // has more than 2 pages
+        if ($pageCount > 2) { // has more than 2 pages
 
             $dots = false;
 
             $title = $lang->getVar("TITLE_LIST");
-            $isTooLong = $lastPage > (10 * $entriesPerPage); // has more than 10 pages
+            $isTooLong = $pageCount > 10; // has more than 10 pages
 
-            for ($page = 0; $page < ceil($lastPage / $entriesPerPage); $page++)
+            for ($page = 0; $page < $pageCount; $page++)
             {
                 /**
                  * if more than 10 pages exist and current page is not first page or last page
                  * and is not current page or previous or next 3 pages
                  */
-                $isNearCurrent = (floor($currentPage / $entriesPerPage) - 3) < $page && // previous 3 pages, or
-                    $page < (floor($currentPage / $entriesPerPage) + 3);                // next 3 pages
+                // previous 3, or next 3 pages
+                $isNearCurrent = $currentPage - 3 < $page && $page < $currentPage + 3;
 
-                $isFirstOrLast = $page <= 1 ||                         // is first page, or
-                    $page >= (ceil($lastPage / $entriesPerPage) - 2 ); // is last page
+                // is first page, or last page
+                $isFirstOrLast = $page <= 1 || $page >= $lastPage;
 
                 if ($isTooLong && !$isFirstOrLast && !$isNearCurrent) {
                     /* this marks an elipsis */
@@ -292,9 +297,9 @@ class FormSetupBuilder extends Object
                     }
                 } else {
                     $first = ($page * $entriesPerPage);
-                    $last = $lastPage;
-                    if (($page + 1) * $entriesPerPage < $lastPage) {
-                        $last = ($page + 1) * $entriesPerPage;
+                    $last = $first + $entriesPerPage;
+                    if ($last > $entryCount) {
+                        $last = $entryCount;
                     }
                     $text = '';
                     // link text
@@ -303,9 +308,8 @@ class FormSetupBuilder extends Object
                     } else {
                         $text = '[' . $last . ']';
                     }
-                    if ($currentPage < $first || $currentPage > $last - 1) { // is not current page
-                        $listOfEntries .= sprintf($linkTemplate, 'page', $first,
-                            $title, $text);
+                    if ($currentPage != $page) { // is not current page
+                        $listOfEntries .= sprintf($linkTemplate, 'page', $page, $title, $text);
                     } else {
                         $listOfEntries .= $text;
                     }
@@ -315,16 +319,16 @@ class FormSetupBuilder extends Object
                 }
             } // end for
         }
-        if (true) {
-           $b = $a;
-        }
         // next page
-        if (!$this->isLastPage()) { // is not last page
-            $page = $currentPage + $entriesPerPage;
+        if ($currentPage < $lastPage) { // is not last page
+            $page = $currentPage + 1;
             $listOfEntries .= sprintf($linkTemplate, 'next', $page,
                 $lang->getVar("TITLE_NEXT"), $lang->getVar("BUTTON_NEXT"));
         }
-        return $listOfEntries;
+
+        $context->setFooter($listOfEntries);
+
+        return $this;
     }
 
     /**

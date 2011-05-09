@@ -178,45 +178,6 @@ class FormContextSensitiveWrapper extends FormFieldFacadeCollection implements I
         $this->_context->getRows()->next();
     }
 
-    /**
-     * Check if the current page is the last page.
-     *
-     * Returns bool(true) if the current page number + visible entries per page
-     * is less than the overall number of rows.
-     *
-     * @access  public
-     * @return  bool
-     */
-    public function isLastPage()
-    {
-        $setup = $this->_form->getSetup();
-        return ($setup->getPage() + $setup->getEntriesPerPage() >= $this->getLastPage());
-    }
-
-    /**
-     * Get the form's row-count.
-     *
-     * Returns the number of rows in the current form.
-     * If the form is empty, it returns int(0).
-     *
-     * @access  protected
-     * @return  int
-     */
-    public function getPageCount()
-    {
-        if (!isset($this->_lastPage)) {
-            $query = $this->getQuery();
-            $offset = $query->getOffset();
-            $limit = $query->getLimit();
-            $query->setLimit(0);
-            $query->setOffset(0);
-            $this->_lastPage = $query->countResults();
-            $query->setLimit($limit);
-            $query->setOffset($offset);
-        }
-        return $this->_lastPage;
-    }
-
 }
 
 ?>

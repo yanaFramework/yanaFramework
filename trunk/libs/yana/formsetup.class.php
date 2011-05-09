@@ -52,6 +52,14 @@ class FormSetup extends Object
     private $_pageCount = 0;
 
     /**
+     * number of viewable entries (for multi-page layout)
+     *
+     * @access  private
+     * @var     int
+     */
+    private $_entryCount = 0;
+
+    /**
      * number of entries per page (for multi-page layout)
      *
      * @access  private
@@ -237,25 +245,39 @@ class FormSetup extends Object
     }
 
     /**
-     * Set number of pages.
+     * Set number of rows.
      *
-     * This function sets the number of viewable pages.
+     * This function sets the number of viewable rows and pages.
      *
      * @access  public
-     * @param   int  $pageCount  number of pages
-     * @throws  InvalidArgumentException if $pageCount is < 0
+     * @param   int  $entryCount  number of entry
+     * @throws  InvalidArgumentException if $entryCount is < 0
      * @return  FormSetup
      */
-    public function setPageCount($pageCount = 0)
+    public function setEntryCount($entryCount)
     {
-        assert('is_int($pageCount); // Wrong type for argument 1. Integer expected');
+        assert('is_int($entryCount); // Invalid argument $entryCount: int expected');
 
         /* default values */
-        if ($pageCount < 0) {
-            throw new InvalidArgumentException("Page count must be a positive integer.");
+        if ($entryCount < 0) {
+            throw new InvalidArgumentException("Entry count must be a positive integer.");
         }
-        $this->_pageCount = (int) $pageCount;
+        $this->_entryCount = (int) $entryCount;
+        $this->_pageCount = (int) ceil($this->_entryCount / $this->getEntriesPerPage());
         return $this;
+    }
+
+    /**
+     * Get the number of entries.
+     *
+     * Expected to default to 0.
+     *
+     * @access  public
+     * @return  int
+     */
+    public function getEntryCount()
+    {
+        return $this->_entryCount;
     }
 
     /**
