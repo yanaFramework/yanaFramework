@@ -198,6 +198,19 @@ class FormSetupContext extends Object
     }
 
     /**
+     * Replace form rows.
+     *
+     * @access  public
+     * @param   array  $rows  new values
+     * @return  FormSetup
+     */
+    public function setRows(array $rows)
+    {
+        $this->getRows()->setItems($rows);
+        return $this;
+    }
+
+    /**
      * Get rows.
      *
      * @access  public

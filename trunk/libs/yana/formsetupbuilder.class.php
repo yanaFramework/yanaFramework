@@ -157,7 +157,7 @@ class FormSetupBuilder extends Object
     public function updateSetup(array $request = array())
     {
         $setup = $this->object;
-        if (isset($request['page']) && $request['entries'] >= 0) {
+        if (isset($request['page']) && $request['page'] >= 0) {
             $setup->setPage((int) $request['page']);
         }
         if (isset($request['entries']) && $request['entries'] > 0) {
@@ -216,6 +216,19 @@ class FormSetupBuilder extends Object
                 }
             }
         }
+        return $this;
+    }
+
+    /**
+     * Overwrite row values.
+     *
+     * @access  public
+     * @param   array  $rows  initial values
+     * @return  FormSetupBuilder
+     */
+    public function setRows(array $rows = array())
+    {
+        $this->object->getContext('update')->setRows($rows);
         return $this;
     }
 
