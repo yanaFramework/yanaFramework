@@ -60,16 +60,13 @@ class AutoLoader extends Utility
         {
             case 'smarty':
                 $path = '/../smarty/Smarty.class.php';
-                break;
             break;
             case 'sql_parser':
                 $path = '/../sql_parser/Parser.php';
-                break;
             break;
             case 'mdb2':
                 include_once "MDB2.php";
-                return;
-            break;
+            return;
             default:
                 $path = str_replace(array('_', '\\'), '/', $className);
                 $path .= '.class.php';
