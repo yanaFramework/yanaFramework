@@ -65,7 +65,6 @@ class FormFieldFacade extends Object
      *
      * @access  private
      * @var     bool
-     * @ignore
      */
     private $_isFilterable = null;
 
@@ -74,18 +73,18 @@ class FormFieldFacade extends Object
      *
      * @access  private
      * @var     array
-     * @ignore
      */
     private $_filter = null;
 
     /**
-     * Caches the filter value (part of having clause) on this field.
+     * States if the given value is valid.
+     *
+     * True = is valid, False = is invalid, Null = not checked.
      *
      * @access  private
-     * @var     string
-     * @ignore
+     * @var     bool
      */
-    private $_filterValue = null;
+    private $_isValid = null;
 
     /**
      * Create new instance.
@@ -320,80 +319,6 @@ class FormFieldFacade extends Object
     }
 
     /**
-     * Get Query definition from form.
-     *
-     * Looks up and returns the DbSelectQuery object from the underlying form and returns it.
-     *
-     * @access  private
-     * @throws  NotFoundException  when form or query was not found
-     * @return  DbSelect
-     * @deprecated
-     */
-    private function _getQuery()
-    {
-        if (!($this->parent instanceof DDLAbstractForm)) {
-            throw new NotFoundException("No form found.");
-        }
-        return $this->parent->getQuery();
-    }
-
-    /**
-     * set a filter
-     *
-     * Adds the following having-clause to the query: "HAVING {column} like '{value}'".
-     * If another entry already exists for the column, it is replaced.
-     *
-     * Note: you may use wildcards (* or %, ? or _) in your query.
-     * (Characters ? and * are automatically translated to _ and %)
-     *
-     * @access  public
-     * @param   scalar  $value        column value to filter by
-     * @param   bool    $isMandatory  switch between operators (true='AND', false='OR')
-     * @throws  NotFoundException  when form or query was not found
-     * @deprecated
-     */
-    private function _setFilter($value, $isMandatory = true)
-    {
-        assert('is_scalar($value); // Wrong type for argument 1. String expected');
-        assert('is_bool($isMandatory); // Wrong type for argument 2. Boolean expected');
-        $this->dropFilter();
-        $query = $this->_getQuery();
-        $this->_filterValue = $value;
-        $value = strtr($value, '*?', '%_'); // translate wildcards
-        $value = String::htmlSpecialChars($value);
-        $this->_filter = array($this->name, 'like', $value);
-        $query->addHaving($this->_filter, $isMandatory);
-    }
-
-    /**
-     * Get the currently set filter on a certain column.
-     *
-     * Returns an array containing the having clause on this column, or
-     * NULL if there is none.
-     *
-     * A having clause is an array of [leftOperand, operator, rightOperand].
-     * Example:
-     * <code>
-     * array(
-     *     'column',
-     *     'like',
-     *     'value'
-     * )
-     * </code>
-     *
-     * Note that the clause is unparsed. It may not be the identical to the
-     * clause that's finally stored in the query.
-     *
-     * @access  public
-     * @return  array
-     * @deprecated
-     */
-    private function _getFilter()
-    {
-        return $this->_filter;
-    }
-
-    /**
      * Get the column filter value.
      *
      * If the column values are to be filtered, this returns the currntly set search term
@@ -407,74 +332,6 @@ class FormFieldFacade extends Object
     public function getFilterValue()
     {
         return $this->_form->getSetup()->getFilter($this->getName());
-    }
-
-    /**
-     * remove filter
-     *
-     * Unsets the having clause for this column (if there is any).
-     *
-     * @access  public
-     * @deprecated
-     */
-    private function __dropFilter()
-    {
-        if (!is_null($this->_filter)) {
-            $query = $this->_getQuery();
-            $having = $query->getHaving();
-            $query->setHaving(self::_dropFilter($having, $this->name));
-            $this->_filter = null;
-            $this->_filterValue = null;
-        }
-    }
-
-    /**
-     * drop a filter
-     *
-     * Removes all having clauses that contain the column and returns
-     * the cleansed array as result.
-     *
-     * @access  public
-     * @param   array   $having  having clause (haystack)
-     * @param   string  $name    name of field (needle)
-     * @return  array
-     * @deprecated
-     */
-    private static function _dropFilter(array $having, $name)
-    {
-        if (empty($having)) {
-            return array();
-        }
-        $leftOperand = $having[0];
-        $operator = $having[1];
-        $rightOperand = $having[2];
-        switch ($operator)
-        {
-            case 'and':
-            case 'or':
-                $leftOperand = self::_dropFilter($leftOperand, $name);
-                $rightOperand = self::_dropFilter($rightOperand, $name);
-                if (empty($leftOperand) && empty($rightOperand)) {
-                    return array();
-                } elseif (empty($leftOperand)) {
-                    return $rightOperand;
-                } elseif (empty($rightOperand)) {
-                    return $leftOperand;
-                } else {
-                    return array($leftOperand, $operator, $rightOperand);
-                }
-            break;
-            case 'like':
-                if (is_array($leftOperand) && $leftOperand[1] == $name) {
-                    return array();
-                } else {
-                    return $having;
-                }
-            break;
-            default:
-                return $having;
-            break;
-        }
     }
 
     /**
@@ -657,6 +514,33 @@ class FormFieldFacade extends Object
             break;
         }
         return array($leftOperand, $operator, $rightOperand);
+    }
+
+    /**
+     * Validate value.
+     *
+     * This validates the current content of the field and returns bool(true) if it is valid and bool(false) otherwise.
+     *
+     * @access  public
+     * @return  bool
+     * @throws  NotFoundException  when column definition was not found (unable to validate)
+     */
+    public function isValid()
+    {
+        $key = $this->getName();
+        if (!isset($this->_isValid)) {
+            $column = $this->getColumn();
+            try {
+
+                $column->sanitizeValue($this->getValue());
+                $this->_isValid = true;
+
+            } catch (\Exception $e) {
+                $this->_isValid = false; // an error occured - Field is not valid
+            }
+        }
+        assert('is_bool($this->isValid);');
+        return (bool) $this->_isValid;
     }
 
     /**

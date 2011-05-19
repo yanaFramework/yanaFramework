@@ -60,14 +60,6 @@ class FormFacadeBuilder extends FormFacadeAbstract
     private $_database = null;
 
     /**
-     * last page (for multi-page layout)
-     *
-     * @access  private
-     * @var     int
-     */
-    private $_lastPage = null;
-
-    /**
      * DDL definition object of selected table
      *
      * @access  private
@@ -147,6 +139,7 @@ class FormFacadeBuilder extends FormFacadeAbstract
     public function setForm(DDLForm $form)
     {
         $this->object->form = $form;
+        // initialize setup too
         if (!isset($this->formSetupBuilder)) {
             $this->formSetupBuilder = new FormSetupBuilder($form);
         } else {
@@ -304,40 +297,6 @@ class FormFacadeBuilder extends FormFacadeAbstract
     }
 
     /**
-     * Get query.
-     *
-     * This returns the query object which is bound to the form.
-     * You can modify this to filter the visible results.
-     *
-     * @access  public
-     * @return  DbSelect
-     * @throws  NotFoundException  if the selected table or one of the selected columns is not found
-     */
-    public function buildQuery(DbStream $connection)
-    {
-        $form = $this->getForm();
-        $setup = $this->getSetup();
-        $query = new DbSelect($connection);
-        $query->setTable($form->getTable());
-        $query->setLimit($setup->getEntriesPerPage());
-        $query->setOffset($setup->getPage() * $setup->getEntriesPerPage());
-        if ($setup->getOrderByField()) {
-            $query->setOrderBy((array) $setup->getOrderByField(), (array) $setup->isDescending());
-        }
-        if ($setup->hasFilter()) {
-            foreach ($setup->getFilters() as $columnName => $filter)
-            {
-                $havingClause = array($columnName, 'like', $filter);
-                $query->addHaving($havingClause);
-            }
-        }
-        if ($setup->getContext('update')->getColumnNames()) {
-            $query->setColumns($setup->getContext('update')->getColumnNames()); // throws NotFoundException
-        }
-        return $this->object->query = $query;
-    }
-
-    /**
      * create form object settings from database query
      *
      * This function takes a database query and initializes the form using the
@@ -378,8 +337,9 @@ class FormFacadeBuilder extends FormFacadeAbstract
         {
             $form->setGrant($grant);
         }
+        $this->setForm($form);
 
-        return $this->object->form = $form;
+        return $form;
     }
 
     /**
@@ -512,104 +472,6 @@ class FormFacadeBuilder extends FormFacadeAbstract
             $this->_table = $tableDefinition;
         }
         return $this->_table;
-    }
-
-    /**
-     * get values of search form as where clause
-     *
-     * This returns an array of values entered in the search form.
-     * If there are no entries, the function will return NULL.
-     *
-     * Example:
-     * <code>
-     * $query = $form->getQuery();
-     * $where = $form->getSearchValuesAsWhereClause();
-     * if (!is_null($where)) {
-     *     $query->setWhere($where);
-     * }
-     * $results = $query->getResults();
-     * </code>
-     *
-     * @access  protected
-     * @return  array
-     */
-    protected function _getSearchValuesAsWhereClause()
-    {
-        if (is_null($this->getSearchValues())) {
-            return null;
-        }
-        /* @var $iterator DDLDefaultSearchIterator */
-        $iterator = $this->buildSearchIterator();
-        $clause = array();
-        /* @var $field DDLDefaultField */
-        foreach ($iterator as $field)
-        {
-            $test = $iterator->getValueAsWhereClause();
-            if (is_null($test)) {
-                continue; // field is empty
-            }
-            if (!empty($clause)) {
-                $clause = array($clause, 'AND', $test);
-            } else {
-                $clause = $test;
-            }
-        }
-        return $clause;
-    }
-
-    /**
-     * get foreign key for base form
-     *
-     * This function returns the foreign key definition for subforms.
-     * The return value is an array of the source-column in the table of the subform and
-     * the target-column in the table of the base-form.
-     *
-     * @access  pubprotectedlic
-     * @throws  DBWarning  when no foreign key is found
-     * @return  array
-     * @throws  NotFoundException  when the database, or table was not found
-     */
-    protected function _getForeignKey()
-    {
-        $form = $this->getForm();
-        if (!($form->getParent() instanceof DDLForm)) {
-            return null;
-        }
-        $query = $this->getQuery();
-        $results = $query->getResults();
-        $db = $form->getDatabase();
-
-        $targetTable = $form->getParent()->getTable();
-        $sourceTable = $this->getTable();
-        $keyName = $this->getKey();
-        $columnName = null;
-        /* @var $foreign DDLForeignKey */
-        foreach ($sourceTable->getForeignKeys() as $foreign)
-        {
-            if ($targetTable != $foreign->getTargetTable()) {
-                continue;
-            }
-            $columns = $foreign->getColumns();
-            if (!empty($keyName)) {
-                if (!isset($columns[$keyName])) {
-                    continue;
-                } elseif (!empty($columns[$keyName])) {
-                    $columnName = $columns[$keyName];
-                } else {
-                    $columnName = $db->getTable($targetTable)->getPrimaryKey();
-                }
-                break;
-            } else {
-                $keyName = key($columns);
-                $columnName = current($columns);
-                break;
-            }
-        }
-        if (empty($keyName) || empty($columnName)) {
-            $message = "No suitable foreign-key found in form '{$this->getName()}'.";
-            throw new DbWarning($message, E_USER_WARNING);
-        }
-        return array($keyName, $columnName);
     }
 
 }

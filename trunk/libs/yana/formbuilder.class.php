@@ -58,12 +58,20 @@ class FormBuilder extends Object
     private $_schema;
 
     /**
-     * Builder class.
+     * Facade builder class.
      *
      * @access  private
      * @var     FormFacadeBuilder
      */
-    private $_builder;
+    private $_facadeBuilder;
+
+    /**
+     * Query builder class.
+     *
+     * @access  private
+     * @var     FormQueryBuilder
+     */
+    private $_queryBuilder;
 
     /**
      * (mandatory) path and name of structure file
@@ -200,6 +208,14 @@ class FormBuilder extends Object
      * @var     int
      */
     private $_layout = 0;
+
+    /**
+     * base form
+     *
+     * @access  private
+     * @var     DDLForm
+     */
+    private $_form = null;
 
     /**
      * Get name of database file.
@@ -613,6 +629,21 @@ class FormBuilder extends Object
     }
 
     /**
+     * Set bsae DDLForm.
+     *
+     * @access  protected
+     * @param   DDLForm $form  base form definition
+     * @return  SmartFormUtility 
+     */
+    protected function setForm(DDLForm $form, FormFacade $parentForm = null)
+    {
+        $this->_form = $form;
+        $this->_facadeBuilder->setForm($this->_form);
+        $this->_queryBuilder->setParentForm($parentForm);
+        return $this;
+    }
+
+    /**
      * Initialize instance
      *
      * @access  public
@@ -623,7 +654,8 @@ class FormBuilder extends Object
         $this->_file = (string) $file;
         $this->_database = Yana::connect($this->_file);
         $this->_schema = $this->_database->getSchema();
-        $this->_builder = new FormFacadeBuilder($this->_schema);
+        $this->_facadeBuilder = new FormFacadeBuilder($this->_schema);
+        $this->_queryBuilder = new FormQueryBuilder($this->_database);
     }
 
     /**
@@ -650,39 +682,60 @@ class FormBuilder extends Object
         $form = $this->_buildForm();
 
         $where = array();
+        $formSetup = null;
 
         $cache = new FormSetupCacheManager();
         if (isset($cache->{$form->getName()})) {
             $formSetup = $cache->{$form->getName()};
-            $this->_builder->setSetup($formSetup);
+            $this->_facadeBuilder->setSetup($formSetup);
         } else {
             $formSetup = $this->_buildSetup($form);
             $where = $this->getWhere();
         }
 
-        $request = Request::getVars($form->getName());
-        if ($request) {
-            $this->_builder->updateSetup($request);
+        $request = (array) Request::getVars($form->getName());
+        $files = (array) Request::getFiles($form->getName());
+        if (!empty($files)) {
+            $request = Hashtable::merge($request, $files);
+        }
+        if (!empty($request)) {
+            $this->_facadeBuilder->updateSetup($request);
         }
 
-        $facade = $this->_builder->buildFacade();
-        $queryBuilder = new FormQueryBuilder($this->_database, $facade);
+        $facade = $this->_facadeBuilder->buildFacade();
+        $this->_queryBuilder->setForm($facade);
 
-        $query = $queryBuilder->buildCountQuery();
-        $this->_builder->getSetup()->setEntryCount($query->countResults());
+        $query = $this->_queryBuilder->buildCountQuery();
+        $this->_facadeBuilder->getSetup()->setEntryCount($query->countResults());
 
-        $query = $queryBuilder->buildSelectQuery();
+        $query = $this->_queryBuilder->buildSelectQuery();
         if (!empty($where)) {
             $query->setWhere($where);
         }
-        $this->_builder->getSetupBuilder()->setRows($query->getResults());
+        $values = $query->getResults();
+        if (!empty($values) && $query->getExpectedResult() === DbResultEnumeration::ROW) {
+            assert('!isset($key); // Cannot redeclare var $key');
+            $key = $this->_form->getKey();
+            if (empty($key)) {
+                assert('!isset($table); // Cannot redeclare var $table');
+                $table = $query->getDatabase()->getSchema()->getTable($query->getTable());
+                $key = $table->getPrimaryKey();
+                unset($table);
+            }
+            assert('!isset($id); // Cannot redeclare var $id');
+            $id = $values[strtoupper($key)];
+            $values = array($id => $values);
+            unset($id, $key);
+        }
+        $this->_facadeBuilder->getSetupBuilder()->setRows($values);
 
         // This needs to be done after the rows have been set. Otherwise the user input would be overwritten.
         if ($request) {
-            $this->_builder->updateValues($request);
+            $this->_facadeBuilder->updateValues($request);
         }
 
-        $cache->{$form->getName()} = $this->_builder->getSetup(); // add to cache
+        $cache->{$form->getName()} = $this->_facadeBuilder->getSetup(); // add to cache
+        $this->_buildSubForms($facade);
 
         return $facade;
     }
@@ -697,39 +750,59 @@ class FormBuilder extends Object
      */
     private function _buildForm()
     {
-        // Either parameter 'id' or 'table' is required (not both). Parameter 'id' takes precedence.
-        if ($this->getId()) {
-            $id = $this->getId();
-            if (!$this->_schema->isForm($id)) {
-                throw new \InvalidArgumentException("The form with name '" . $id . "' was not found.");
-            }
-            $form = $this->_schema->getForm($id);
-            $this->_builder->setForm($form);
-        } elseif ($this->getTable()) {
-                $table = $this->_schema->getTable($this->getTable());
-                if (! $table instanceof DDLTable) {
-                    throw new \InvalidArgumentException("The table with name '" . $this->getTable() . "' was not found.");
+        if (!isset($this->_form)) {
+            // Either parameter 'id' or 'table' is required (not both). Parameter 'id' takes precedence.
+            if ($this->getId()) {
+                $id = $this->getId();
+                if (!$this->_schema->isForm($id)) {
+                    throw new \InvalidArgumentException("The form with name '" . $id . "' was not found.");
                 }
-                $form = $this->_builder->buildFormFromTable($table);
-        } else {
-            throw new \BadMethodCallException("Missing either parameter 'id' or 'table'.");
+                $this->_form = $this->_schema->getForm($id);
+                $this->_facadeBuilder->setForm($this->_form);
+            } elseif ($this->getTable()) {
+                    $table = $this->_schema->getTable($this->getTable());
+                    if (! $table instanceof DDLTable) {
+                        throw new \InvalidArgumentException("The table with name '" . $this->getTable() . "' was not found.");
+                    }
+                    $this->_form = $this->_facadeBuilder->buildFormFromTable($table);
+            } else {
+                throw new \BadMethodCallException("Missing either parameter 'id' or 'table'.");
+            }
         }
-        return $form;
+        return $this->_form;
     }
 
     /**
      * Build DDLForm object.
      *
      * @access  private
-     * @return  DDLForm
+     * @param   FormFacade  $form  parent form
      * @throws  \BadMethodCallException    when a parameter is missing
      * @throws  \InvalidArgumentException  when a paraemter is not valid
      */
     private function _buildSubForms(FormFacade $form)
     {
-        foreach ($form->getForms() as $formFacade)
+        $baseForm = $form->getBaseForm();
+        foreach ($baseForm->getForms() as $subForm)
         {
-            
+            /* @var $builder FormBuilder */
+            $builder = null;
+            if (strcasecmp($subForm->getTable(), $baseForm->getTable()) === 0) {
+                $builder = clone $this;
+            } else {
+                $builder = new FormBuilder($this->_file);
+            }
+            $builder->setForm($subForm, $form);
+            // copy search term to sub-forms
+            assert('!isset($searchTerm); // Cannot redeclare var $searchTerm');
+            $searchTerm = $form->getSetup()->getSearchTerm();
+            if (!empty($searchTerm)) {
+                $builder->_facadeBuilder->getSetup()->setSearchTerm($searchTerm);
+            }
+            unset($searchTerm);
+            // build sub-form
+            $subFormFacade = $builder->__invoke();
+            $form->addForm($subFormFacade);
         }
         return $form;
     }
@@ -744,7 +817,7 @@ class FormBuilder extends Object
      */
     private function _buildSetup(DDLForm $form)
     {
-        $formSetup = $this->_builder->getSetup();
+        $formSetup = $this->_facadeBuilder->getSetup();
         $formSetup->setPage($this->getPage());
         $formSetup->setEntriesPerPage($this->getEntries());
         $formSetup->setLayout($this->getLayout());
@@ -790,7 +863,7 @@ class FormBuilder extends Object
         } else {
             $hideColumns = array();
         }
-        $builder = $this->_builder->getSetupBuilder();
+        $builder = $this->_facadeBuilder->getSetupBuilder();
         $builder->setColumnsWhitelist(array_diff($showColumns, $hideColumns));
         $builder->setColumnsBlacklist($hideColumns);
         return $this;

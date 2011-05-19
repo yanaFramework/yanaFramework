@@ -114,7 +114,7 @@ class FormFacade extends FormFacadeAbstract
      */
     public function __call($name, $arguments)
     {
-        if (method_exists($this->form, $name)) {
+        if (isset($this->form) && method_exists($this->form, $name)) {
             return call_user_func_array(array($this->form, $name), $arguments);
         } elseif (method_exists($this->setup, $name)) {
             return call_user_func_array(array($this->setup, $name), $arguments);
@@ -215,11 +215,10 @@ class FormFacade extends FormFacadeAbstract
      * @param   DDLForm  $form  new form that will be wrapped
      * @return  FormFacade
      */
-    public function addForm(DDLForm $form)
+    public function addForm(FormFacade $form)
     {
         $name = $form->getName();
-        $this->_forms[$name] = new FormFacade();
-        $this->_forms[$name]->form = $form;
+        $this->_forms[$name] = $form;
         return $this->_forms[$name];
     }
 

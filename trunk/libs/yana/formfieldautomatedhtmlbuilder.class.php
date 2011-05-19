@@ -49,7 +49,9 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      */
     private function _setName(FormFieldFacade $field)
     {
-        $name = $field->getForm()->getName() . "[" . $field->getContext()->getContextName() . "][" . $field->getName() . "]";
+        $key = $field->getContext()->getRows()->key();
+        $name = $field->getForm()->getName() . "[" . $field->getContext()->getContextName() . "]" .
+            ((!is_null($key)) ? "[" . $key . "]" : "") . "[" . $field->getName() . "]";
         return $this->setName($name);
     }
 
@@ -64,6 +66,19 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
     {
         $id = $field->getForm()->getName() . "-" . $field->getContext()->getContextName() . "-" . $field->getName();
         return $this->setId($id);
+    }
+
+    /**
+     * Set class attribute based on field settings.
+     *
+     * @access  private
+     * @param   FormFieldFacade  $field  definition to create id from
+     * @return  FormFieldAutomatedHtmlBuilder
+     */
+    private function _setCssClass(FormFieldFacade $field)
+    {
+        $class = $field->getForm()->getName() . "-" . $field->getContext()->getContextName() . "-" . $field->getName();
+        return $this->setCssClass($class);
     }
 
     /**
@@ -93,7 +108,6 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
     public function buildByType(FormFieldFacade $field)
     {
         $this->_setName($field);
-        $this->_setId($field);
         $setup = $field->getForm()->getSetup();
         switch ($field->getContext()->getContextName())
         {
@@ -103,10 +117,13 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                 }
             // fall through
             case 'read':
+                $this->_setCssClass($field);
                 return $this->buildByTypeNonUpdatable($field, $setup) . $this->createLink($field);
             case 'search':
+                $this->_setId($field);
                 return $this->buildByTypeSearchfield($field, $setup);
             case 'insert':
+                $this->_setId($field);
                 return $this->buildByTypeUpdatable($field, $setup);
             default:
                 return "";
