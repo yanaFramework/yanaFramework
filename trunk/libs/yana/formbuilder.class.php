@@ -74,6 +74,14 @@ class FormBuilder extends Object
     private $_queryBuilder;
 
     /**
+     * Included builder.
+     *
+     * @access  protected
+     * @var     FormSetupBuilder
+     */
+    private $_setupBuilder = null;
+
+    /**
      * (mandatory) path and name of structure file
      *
      * @access  private
@@ -639,7 +647,14 @@ class FormBuilder extends Object
     {
         $this->_form = $form;
         $this->_facadeBuilder->setForm($this->_form);
-        $this->_queryBuilder->setParentForm($parentForm);
+        if ($this->_setupBuilder) {
+            $this->_setupBuilder->setForm($this->_form);
+        } else {
+            $this->_setupBuilder = new FormSetupBuilder($this->_form);
+        }
+        if ($parentForm) {
+            $this->_queryBuilder->setParentForm($parentForm);
+        }
         return $this;
     }
 
@@ -687,11 +702,11 @@ class FormBuilder extends Object
         $cache = new FormSetupCacheManager();
         if (isset($cache->{$form->getName()})) {
             $formSetup = $cache->{$form->getName()};
-            $this->_facadeBuilder->setSetup($formSetup);
         } else {
             $formSetup = $this->_buildSetup($form);
             $where = $this->getWhere();
         }
+        $this->_facadeBuilder->setSetup($formSetup);
 
         $request = (array) Request::getVars($form->getName());
         $files = (array) Request::getFiles($form->getName());
@@ -699,7 +714,7 @@ class FormBuilder extends Object
             $request = Hashtable::merge($request, $files);
         }
         if (!empty($request)) {
-            $this->_facadeBuilder->updateSetup($request);
+            $this->_setupBuilder->updateSetup($request);
         }
 
         $facade = $this->_facadeBuilder->buildFacade();
@@ -727,11 +742,11 @@ class FormBuilder extends Object
             $values = array($id => $values);
             unset($id, $key);
         }
-        $this->_facadeBuilder->getSetupBuilder()->setRows($values);
+        $this->_setupBuilder->setRows($values);
 
         // This needs to be done after the rows have been set. Otherwise the user input would be overwritten.
         if ($request) {
-            $this->_facadeBuilder->updateValues($request);
+            $this->_setupBuilder->updateValues($request);
         }
 
         $cache->{$form->getName()} = $this->_facadeBuilder->getSetup(); // add to cache
@@ -758,18 +773,95 @@ class FormBuilder extends Object
                     throw new \InvalidArgumentException("The form with name '" . $id . "' was not found.");
                 }
                 $this->_form = $this->_schema->getForm($id);
-                $this->_facadeBuilder->setForm($this->_form);
             } elseif ($this->getTable()) {
                     $table = $this->_schema->getTable($this->getTable());
                     if (! $table instanceof DDLTable) {
                         throw new \InvalidArgumentException("The table with name '" . $this->getTable() . "' was not found.");
                     }
-                    $this->_form = $this->_facadeBuilder->buildFormFromTable($table);
+                    $this->_form = $this->_buildFormFromTable($table);
             } else {
                 throw new \BadMethodCallException("Missing either parameter 'id' or 'table'.");
             }
+            $this->setForm($this->_form);
         }
         return $this->_form;
+    }
+
+    /**
+     * Create form object from table definition.
+     *
+     * This function takes a table and initializes the form based on it's structure and columns.
+     *
+     * @access  protected
+     * @return  DDLForm
+     */
+    protected function _buildFormFromTable(DDLTable $table)
+    {
+        $genericName = $this->_database->getName() . '-' . $table->getName();
+
+        $form = new DDLForm($genericName); // from scratch
+        $form->setTable($table->getName());
+
+        $title = $table->getTitle();
+        if (empty($title)) {
+            $title = $table->getName(); // fall back to table name if title is empty
+        }
+        $form->setTitle($title);
+
+        // copy security settings from table to form
+        assert('!isset($grant); // Cannot redeclare var $grant');
+        foreach ($table->getGrants() as $grant)
+        {
+            $form->setGrant($grant);
+        }
+        unset($grant);
+        assert('!isset($column); // Cannot redeclare var $column');
+        foreach ($table->getColumns() as $column)
+        {
+            $this->_addFieldByColumn($form, $column);
+        }
+        unset($column);
+        $this->setForm($form);
+
+        return $form;
+    }
+
+    /**
+     * Add field by column definition.
+     *
+     * @access  private
+     * @param   DDLForm    $form    form definition
+     * @param   DDLColumn  $column  column definition
+     */
+    private function _addFieldByColumn(DDLForm $form, DDLColumn $column)
+    {
+        $field = null;
+        try {
+            $field = $form->addField($column->getName());
+        } catch (AlreadyExistsException $e) {
+            return; // field already exists - nothing to do!
+        }
+
+        // set the column title (aka "label")
+        assert('!isset($title); // Cannot redeclare var $title');
+        $title = $column->getTitle();
+        if (!empty($title)) {
+            $field->setTitle($title);
+        } elseif ($column->isPrimaryKey()) {
+            $field->setTitle("ID");
+        } else {
+            // fall back to column name if title is empty
+            $field->setTitle($column->getName());
+        }
+        unset($title);
+
+        // copy column grants to field
+        assert('!isset($grant); // Cannot redeclare var $grant');
+        foreach ($column->getGrants() as $grant)
+        {
+            $field->setGrant($grant);
+        }
+        unset($grant);
     }
 
     /**
@@ -817,7 +909,7 @@ class FormBuilder extends Object
      */
     private function _buildSetup(DDLForm $form)
     {
-        $formSetup = $this->_facadeBuilder->getSetup();
+        $formSetup  = $this->_setupBuilder->buildSetup();
         $formSetup->setPage($this->getPage());
         $formSetup->setEntriesPerPage($this->getEntries());
         $formSetup->setLayout($this->getLayout());
@@ -849,23 +941,20 @@ class FormBuilder extends Object
      */
     private function _selectColumns($showColumns, $hideColumns)
     {
-        if (!empty($showColumns)) {
-            if (!is_array($showColumns)) {
-                $showColumns = explode(',', $showColumns);
-            }
-        } else {
-            $showColumns = array();
+        $whitelist = array();
+        $blacklist = array();
+        if (!empty($showColumns) && !is_array($showColumns)) {
+            $whitelist = explode(',', $showColumns);
         }
-        if (!empty($hideColumns)) {
-            if (!is_array($hideColumns)) {
-                $hideColumns = explode(',', $hideColumns);
-            }
-        } else {
-            $hideColumns = array();
+        if (!empty($hideColumns) && !is_array($hideColumns)) {
+            $blacklist = explode(',', $hideColumns);
         }
-        $builder = $this->_facadeBuilder->getSetupBuilder();
-        $builder->setColumnsWhitelist(array_diff($showColumns, $hideColumns));
-        $builder->setColumnsBlacklist($hideColumns);
+        if (!empty($whitelist)) {
+            $this->_setupBuilder->setColumnsWhitelist(array_diff($whitelist, $blacklist));
+        }
+        if (!empty($blacklist)) {
+            $this->_setupBuilder->setColumnsBlacklist($blacklist);
+        }
         return $this;
     }
 

@@ -555,13 +555,15 @@ class FormSetupBuilder extends Object
      */
     private function _applyWhitelistColumnNames()
     {
-        if (!empty($this->_whitelistColumnNames))
-        foreach ($this->object->getContexts() as $context) {
+        foreach ($this->object->getContexts() as $context)
+        {
             $columns = $context->getColumnNames();
-            if (!empty($columns)) {
-                $columns = array_intersect($columns, $this->_whitelistColumnNames);
-            } else {
-                $columns = $this->_whitelistColumnNames;
+            if (!empty($this->_whitelistColumnNames)) {
+                if (!empty($columns)) {
+                    $columns = array_intersect($columns, $this->_whitelistColumnNames);
+                } else {
+                    $columns = $this->_whitelistColumnNames;
+                }
             }
             if (!empty($this->_blacklistColumnNames)) {
                 $columns = array_diff($columns, $this->_blacklistColumnNames);

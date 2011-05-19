@@ -226,7 +226,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                     $null = $lang->getVar('choose_option');
                 }
                 $this->setCssClass("gui_generator_reference");
-                $items = $this->getReferenceValues($field->getName());
+                $items = $this->getReferenceValues($field->getName()); // @todo fix this function reference
                 return $this->buildSelect($items, $value, $null);
             case 'set':
                 assert('!isset($items); // Cannot redeclare var $items');
@@ -353,7 +353,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
             case 'password':
                 return '&ndash;'; // never show password
             case 'reference':
-                $references = $this->getReferences();
+                $references = $this->getReferences(); // @todo fix this function reference
                 if (isset($references[$field->getName()])) {
                     $reference = $references[$field->getName()];
                     $label = strtolower($reference['label']);
