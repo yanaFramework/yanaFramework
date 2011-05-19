@@ -89,8 +89,8 @@
                 var maxzidx = parseInt(findHighestZIndex()) + 1;
                 calcPosition();
                 var param    = {
-                    'width'   : $settings.pWidth + 'px',
-                    'height'  : $settings.pHeight + 'px',
+                    'width'   : $settings.photoW + 'px',
+                    'height'  : $settings.photoH + 'px',
                     'top'     : (Math.floor(Math.random() * (maxH - minH + 1)) + minH) +'px',
                     'left'    : (Math.floor(Math.random() * (maxW - minW + 1)) + minW) +'px',
                     'z-index' : maxzidx
@@ -99,6 +99,13 @@
                 $photo.css(param);
                 if(!ie) {
                     $photo.transform({'rotate'    : r + 'deg'});
+                } else {
+                    var ieR = (r / 90);
+                    var ieScaling = 1 - (Math.abs(ieR) / 2);
+                    $photo.css({
+                        'filter'    : "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', " +
+                                      "M11=" + ieScaling + ", M12=" + -ieR + ", M21=" + ieR + ", M22=" + ieScaling + ")"
+                    });
                 }
                 $photo.show();
                 if(cntPhotos == photosSize) {
@@ -113,8 +120,8 @@
             }
         });
         $container.find('.pd_photo img').css({
-            width: $settings.pWidth + 'px',
-            height: $settings.pHeight + 'px'
+            width: $settings.photoW + 'px',
+            height: $settings.photoH + 'px'
         });
         /**
          * grab a photo
@@ -124,18 +131,17 @@
             idx         = $photo.index() + 1;
             var maxzidx = parseInt(findHighestZIndex()) + 1;
             $photo.css('z-index',maxzidx);
-            if(ie)
             var param = {
                 'width'  : '+=40px',
                 'height' : '+=40px'
             };
-            else
-            var param = {
-                'width'  : '+=40px',
-                'height' : '+=40px',
-                'rotate' : '0deg',
-                'shadow' : '5px 5px 15px #222'
-            };
+            if(!ie) {
+                param.rotate = '0deg';
+                param.shadow = '5px 5px 15px #222';
+            } else {
+                $photo.css({'filter': "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', " +
+                                      "M11=1, M12=0, M21=0, M22=1)"});
+            }
             $photo.stop(true,true).animate(param,100).find('img').stop(true,true).animate({
                 'width'  : '+=40px',
                 'height' : '+=40px'
@@ -166,6 +172,11 @@
                 if(!ie) {
                     param.rotate = r + 'deg';
                     param.shadow = '0 0 5px #000';
+                } else {
+                    var ieR = (r / 90);
+                    var ieScaling = 1 - (Math.abs(ieR) / 2);
+                    param.filter = "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', " +
+                        "M11=" + ieScaling + ", M12=" + -ieR + ", M21=" + ieR + ", M22=" + ieScaling + ")";
                 }
                 $photo.stop(true,true).animate(param,200).find('img').stop(true,true).animate({
                     'width'  : '-=40px',
@@ -278,6 +289,9 @@
             if (!ie) {
                 param.rotate = '0deg';
                 param.shadow = '5px 5px 15px #222';
+            } else {
+                $photo.css({'filter': "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', " +
+                    "M11=1, M12=0, M21=0, M22=1)"});
             }
             $photo.animate(param,500,function(){
                 idxLarge = $(this).index();
@@ -372,6 +386,11 @@
             if(!ie) {
                 param.rotate = r + 'deg';
                 param.shadow = '1px 1px 5px #555';
+            } else {
+                var ieR = (r / 90);
+                var ieScaling = 1 - (Math.abs(ieR) / 2);
+                param.filter = "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', " +
+                    "M11=" + ieScaling + ", M12=" + -ieR + ", M21=" + ieR + ", M22=" + ieScaling + ")";
             }
             $photo.stop(true).animate(param,500,function(){
                 ++navPage;
@@ -402,7 +421,12 @@
                 };
                 if(!ie) {
                    param.rotate = r + 'deg';
-                };
+                } else {
+                    var ieR = (r / 180);
+                    var ieScaling = 1 - (Math.abs(ieR) / 2);
+                    param.filter = "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', " +
+                        "M11=" + ieScaling + ", M12=" + -ieR + ", M21=" + ieR + ", M22=" + ieScaling + ")";
+                }
                 $photo.animate(param,800);
             });
         }
