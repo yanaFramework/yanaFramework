@@ -46,14 +46,6 @@ class FormFacade extends FormFacadeAbstract
     protected $references = null;
 
     /**
-     * List of foreign key values.
-     *
-     * @access  private
-     * @var     array
-     */
-    private $_referenceValues = null;
-
-    /**
      * List of sub-forms.
      *
      * @access  private
@@ -121,91 +113,6 @@ class FormFacade extends FormFacadeAbstract
         } else {
             throw new NotImplementedException("Call to undefined function: '$name' in class " . __CLASS__ . ".");
         }
-    }
-
-    /**
-     * Get list of foreign-key reference settings.
-     *
-     * This returns an array of the following contents:
-     * <code>
-     * array(
-     *   'primaryKey1' => array(
-     *     'table' => 'name of target table'
-     *     'column' => 'name of target column'
-     *     'label' => 'name of a column in target table that should be used as a label'
-     * }
-     * </code>
-     *
-     * @access  private
-     * @return  array
-     * @ignore
-     *
-     * @todo    move to builder class
-     */
-    private function _getReferences()
-    {
-        if (!isset($this->references)) {
-            $this->references = array();
-            assert('!isset($field);');
-            /* @var $field DDLDefaultField */
-            foreach ($this->toArray() as $field)
-            {
-                if ($field->getType() !== 'reference') {
-                    continue;
-                }
-                assert('!isset($column);');
-                $column = $field->getColumnDefinition();
-                $reference = $column->getReferenceSettings();
-                if (!isset($reference['column'])) {
-                    $reference['column'] = $column->getReferenceColumn()->getName();
-                }
-                if (!isset($reference['label'])) {
-                    $reference['label'] = $reference['column'];
-                }
-                if (!isset($reference['table'])) {
-                    $reference['table'] = $column->getReferenceColumn()->getParent()->getName();
-                }
-                $this->references[$field->getName()] = $reference;
-                unset($column);
-            } // end foreach
-            unset($field);
-        }
-        return $this->references;
-    }
-
-    /**
-     * get reference values
-     *
-     * This function returns an array, where the keys are the values of the primary keys in the
-     *
-     * @access  private
-     * @param   string  $fieldName  name of field to look up
-     * @return  array
-     * @ignore
-     *
-     * @todo    move to builder class
-     */
-    private function _getReferenceValues($fieldName)
-    {
-        if (!isset($this->_referenceValues[$fieldName])) {
-            $this->_referenceValues[$fieldName] = array();
-            $references = $this->_getReferences();
-            if (isset($references[$fieldName])) {
-                $reference = $references[$fieldName];
-                $db = $this->form->getQuery()->getDatabase();
-                $select = new DbSelect($db);
-                $select->setTable($reference['table']);
-                $columns = array('LABEL' => $reference['label'], 'VALUE' => $reference['column']);
-                $select->setColumns($columns);
-                $values = array();
-                foreach ($select->getResults() as $row)
-                {
-                    $values[$row['VALUE']] = $row['LABEL'];
-                }
-                $this->_referenceValues[$fieldName] = $values;
-            }
-        }
-        return $this->_referenceValues[$fieldName];
     }
 
     /**
@@ -388,7 +295,7 @@ class FormFacade extends FormFacadeAbstract
      */
     public function getUpdateValues()
     {
-        return $this->setup->getContext('update')->getValues();
+        return $this->setup->getContext('update')->getRows()->toArray();
     }
 
     /**

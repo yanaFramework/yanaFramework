@@ -26,32 +26,51 @@
  */
 
 /**
- * <<facade>> Form wrapper base class.
+ * <<worker, facade>> Implements CRUD-functions for form elements.
  *
  * @access      public
- * @abstract
  * @package     yana
  * @subpackage  form
- * @ignore
  */
-abstract class FormFacadeAbstract extends Object
+class FormWorker extends Object
 {
 
     /**
-     * Form definition
+     * Database connection.
      *
-     * @access  protected
-     * @var     DDLForm
+     * @access  private
+     * @var     DbStream
      */
-    protected $form = null;
+    private $_database;
 
     /**
-     * Form setup
+     * Form definition.
      *
-     * @access  protected
-     * @var     FormSetup
+     * @access  private
+     * @var     FormFacade
      */
-    protected $setup = null;
+    private $_form;
+
+    /**
+     * Query builder class.
+     *
+     * @access  private
+     * @var     FormQueryBuilder
+     */
+    private $_queryBuilder;
+
+    /**
+     * Initialize instance
+     *
+     * @access  public
+     * @param   string  $file  name of database to connect to
+     */
+    public function __construct(DbStream $database, FormFacade $form)
+    {
+        $this->_database = $database;
+        $this->_form = $form;
+        $this->_queryBuilder = new FormQueryBuilder($this->_database);
+    }
 
 }
 
