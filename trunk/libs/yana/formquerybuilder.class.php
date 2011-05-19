@@ -60,6 +60,16 @@ class FormQueryBuilder extends Object
     private $_form = null;
 
     /**
+     * If the current form is a child element, this will point to it's parent.
+     *
+     * Leave blank if it is a root element.
+     *
+     * @access  private
+     * @var     FormFacade
+     */
+    private $_parentForm = null;
+
+    /**
      * Object cache.
      *
      * @access  private
@@ -71,13 +81,11 @@ class FormQueryBuilder extends Object
      * Initialize instance.
      *
      * @access  public
-     * @param   DbStream    $db    database connection used to create the querys
-     * @param   FormFacade  $form  base form defintion that the query will apply to
+     * @param   DbStream  $db  database connection used to create the querys
      */
-    public function __construct(DbStream $db, FormFacade  $form)
+    public function __construct(DbStream $db)
     {
         $this->_db = $db;
-        $this->_form = $form;
     }
 
     /**
@@ -95,32 +103,20 @@ class FormQueryBuilder extends Object
     }
 
     /**
-     * Get table definition.
+     * Set parent form.
      *
-     * Each form definition must be linked to a table in the same database.
-     * This function looks it up and returns this definition.
+     * If the current form is a child element, this will point to it's parent.
+     * Set to NULL if it is a root element and there is no parent.
      *
-     * @access  protected
-     * @return  DDLTable
-     * @throws  NotFoundException  when the database, or table was not found
+     * @access  public
+     * @param   FormFacade  $parentForm  configuring the contents of the parent form
+     * @return  FormQueryBuilder
      */
-    protected function _getTable()
+    public function setParentForm(FormFacade $parentForm = null)
     {
-        if (!isset($this->_table)) {
-            $name = $this->_form->getTable();
-            $database = $this->_form->getDatabase();
-            if (!($database instanceof DDLDatabase)) {
-                $message = "Error in form '" . $this->_form->getName() . "'. No parent database defined.";
-                throw new NotFoundException($message);
-            }
-            $tableDefinition = $database->getTable($name);
-            if (!($tableDefinition instanceof DDLTable)) {
-                $message = "Error in form '" . $this->_form->getName() . "'. Parent table '$name' not found.";
-                throw new NotFoundException($message);
-            }
-            $this->_table = $tableDefinition;
-        }
-        return $this->_table;
+        $this->_parentForm = $parentForm;
+        $this->_cache = array();
+        return $this;
     }
 
     /**
@@ -136,27 +132,157 @@ class FormQueryBuilder extends Object
     public function buildSelectQuery()
     {
         if (!isset($this->_cache[__FUNCTION__])) {
-            $setup = $this->_form->getSetup();
             $query = new DbSelect($this->_db);
-            $query->setTable($this->_form->getBaseForm()->getTable());
-            $query->setLimit($setup->getEntriesPerPage());
-            $query->setOffset($setup->getPage() * $setup->getEntriesPerPage());
-            if ($setup->getOrderByField()) {
-                $query->setOrderBy((array) $setup->getOrderByField(), (array) $setup->isDescending());
-            }
-            if ($setup->hasFilter()) {
-                foreach ($setup->getFilters() as $columnName => $filter)
-                {
-                    $havingClause = array($columnName, 'like', $filter);
-                    $query->addHaving($havingClause);
+            if ($this->_form) {
+                $setup = $this->_form->getSetup();
+                $query->setTable($this->_form->getBaseForm()->getTable());
+                $query->setLimit($setup->getEntriesPerPage());
+                $query->setOffset($setup->getPage() * $setup->getEntriesPerPage());
+                if ($setup->getOrderByField()) {
+                    $query->setOrderBy((array) $setup->getOrderByField(), (array) $setup->isDescending());
                 }
-            }
-            if ($setup->getContext('update')->getColumnNames()) {
-                $query->setColumns($setup->getContext('update')->getColumnNames()); // throws NotFoundException
+                // apply filters
+                if ($setup->getSearchTerm()) {
+                    $this->_processSearchTerm($query);
+                } else {
+                    $this->_processSearchValues($query);
+                }
+                $this->_processFilters($query);
+                // set output columns
+                if ($setup->getContext('update')->getColumnNames()) {
+                    $query->setColumns($setup->getContext('update')->getColumnNames()); // throws NotFoundException
+                }
+                $query = $this->_buildSelectForSubForm($query);
             }
             $this->_cache[__FUNCTION__] = $query;
         }
         return $this->_cache[__FUNCTION__];
+    }
+
+    /**
+     * This processes a global search-term submitted via the search-form.
+     *
+     * It creates a new having clause and adds it to the select query.
+     * The new clause will use fuzzy-search with wildcards and be appended using the "OR" operator.
+     *
+     * @access  protected
+     * @param   DbSelect  $select  query that is to be modified
+     */
+    protected function _processSearchTerm(DbSelect $select)
+    {
+        $setup = $this->_form->getSetup();
+        $searchTerm = $setup->getSearchTerm();
+        if (!empty($searchTerm)) {
+            // process fields
+            foreach ($this->_form->getUpdateForm() as $field)
+            {
+                /* @var $field FormFieldFacade */
+                if ($field->isSelectable() && $field->isVisible() && $field->isFilterable()) {
+                    $havingClause = array($field->getName(), 'like', $searchTerm);
+                    $select->addHaving($havingClause);
+                }
+            }
+        }
+    }
+
+    /**
+     * This processes values submitted via the search-form.
+     *
+     * It creates a new where clause and adds it to the select query.
+     * The new clause will be appended using the "AND" operator.
+     *
+     * @access  protected
+     * @param   DbSelect  $select  query that is to be modified
+     */
+    protected function _processSearchValues(DbSelect $select)
+    {
+        if ($this->_form->getSearchValues()) {
+            $clause = $select->getWhere();
+            // determine new where clause
+            /* @var $field FormFieldFacade */
+            foreach ($this->_form->getSearchForm() as $field)
+            {
+                $test = $field->getValueAsWhereClause();
+                if (is_null($test)) {
+                    continue; // field is empty
+                }
+                if (!empty($clause)) {
+                    $clause = array($clause, 'AND', $test);
+                } else {
+                    $clause = $test;
+                }
+            }
+            unset($field, $test);
+            $select->setWhere($clause); // apply created where clause
+        }
+    }
+
+    /**
+     * This processes filters submitted via the update-form.
+     *
+     * It creates a new having clause and adds it to the select query.
+     * The new clause will be appended using the "AND" operator.
+     *
+     * @access  protected
+     * @param   DbSelect  $select  query that is to be modified
+     */
+    protected function _processFilters(DbSelect $select)
+    {
+        $setup = $this->_form->getSetup();
+        if ($setup->hasFilter()) {
+            assert('!isset($updateForm); // Cannot redeclare var $updateForm');
+            $updateForm = $this->_form->getUpdateForm();
+            foreach ($setup->getFilters() as $columnName => $filter)
+            {
+                /* @var $field FormFieldFacade */
+                $field = $updateForm->offsetGet($columnName);
+                if ($field && $field->isSelectable() && $field->getField()->isVisible() && $field->isFilterable()) {
+                    $havingClause = array($columnName, 'like', $filter);
+                    $select->addHaving($havingClause);
+                }
+            }
+            unset($updateForm);
+        }
+    }
+
+    /**
+     * Checks if a parent form exists and modifies the query accordingly.
+     *
+     * @access  private
+     * @param   DbSelect  $select  base query for current form
+     * @return  DbSelect
+     */
+    private function _buildSelectForSubForm(DbSelect $select)
+    {
+        $parentForm = $this->_parentForm;
+        // copy foreign key from parent query
+        if ($parentForm instanceof FormFacade) {
+
+            $parentResults = $parentForm->getSetup()->getContext('update')->getRows();
+            if ($parentForm->getBaseForm()->getTable() === $this->_form->getBaseForm()->getTable()) {
+                $select->setRow($parentResults->key());
+                $this->_form->getSetup()->setEntriesPerPage(1);
+            } else {
+                $source = $target = "";
+                list($source, $target) = $this->getForeignKey($select);
+                $target = strtoupper($target);
+                $results = $parentResults->toArray();
+                if (count($results) === 1) {
+                    $results = current($results);
+                    if (isset($results[$target])) {
+                        $where = $select->getWhere();
+                        $foreignKeyClause = array($source, '=', $results[$target]);
+                        if (empty($where)) {
+                            $where = $foreignKeyClause;
+                        } else {
+                            $where = array($where, 'AND', $foreignKeyClause);
+                        }
+                        $select->setWhere($where);
+                    }
+                }
+            }
+        }
+        return $select;
     }
 
     /**
@@ -177,6 +303,70 @@ class FormQueryBuilder extends Object
             $this->_cache[__FUNCTION__] = $query;
         }
         return $this->_cache[__FUNCTION__];
+    }
+
+    /**
+     * Get the foreign key definition for subforms.
+     *
+     * If the form is associated with the parent form via a foreign key,
+     * this function will return it. If there is none, it will return NULL instead.
+     *
+     * If no key is set this function will try to resolve it.
+     *
+     * The return value is an array of the source-column in the table of the subform and
+     * the target-column in the table of the base-form.
+     *
+     * @access  protected
+     * @param   DbSelect  $select  base query for current form
+     * @return  array
+     * @throws  DBWarning  when no foreign key is found
+     */
+    protected function getForeignKey(DbSelect $select)
+    {
+        assert('$this->_form instanceof FormFacade;');
+        $form = $this->_form->getBaseForm();
+        $parentForm = $form->getParent();
+        if (!$parentForm instanceof DDLForm) {
+            return null;
+        }
+        $results = $select->getResults();
+        $db = $form->getDatabase();
+
+        $targetTable = $parentForm->getTable();
+        $sourceTable = $this->_form->getTable();
+        $keyName = $form->getKey();
+        $columnName = "";
+        /* @var $foreign DDLForeignKey */
+        foreach ($sourceTable->getForeignKeys() as $foreign)
+        {
+            if ($targetTable !== $foreign->getTargetTable()) {
+                continue;
+            }
+            $columns = $foreign->getColumns();
+            if (!empty($keyName)) {
+                // Form explicitely defines a key-column, so all we need is the target
+                if (!isset($columns[$keyName])) {
+                    continue;
+                } elseif (!empty($columns[$keyName])) {
+                    $columnName = $columns[$keyName];
+                }
+            } else {
+                // try to determine a matching source and target column
+                $keyName = key($columns);
+                $columnName = current($columns);
+                reset($columns);
+            }
+            // fall back to primary key, if the target is undefined
+            if (empty($columnName)) {
+                $columnName = $db->getTable($targetTable)->getPrimaryKey();
+            }
+            break;
+        }
+        if (empty($keyName) || empty($columnName)) {
+            $message = "No suitable foreign-key found in form '" . $form->getName() . "'.";
+            throw new DbWarning($message, E_USER_ERROR);
+        }
+        return array($keyName, $columnName);
     }
 
 }
