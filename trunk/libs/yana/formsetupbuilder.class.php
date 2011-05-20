@@ -128,7 +128,7 @@ class FormSetupBuilder extends Object
      *
      * @access  public
      * @param   DDLForm  $form  configuring the contents of the form
-     * @return  FormFacadeBuilder 
+     * @return  FormSetupBuilder
      */
     public function setForm(DDLForm $form)
     {
