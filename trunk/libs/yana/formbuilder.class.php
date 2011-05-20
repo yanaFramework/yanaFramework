@@ -717,7 +717,7 @@ class FormBuilder extends Object
             $this->_setupBuilder->updateSetup($request);
         }
 
-        $facade = $this->_facadeBuilder->buildFacade();
+        $facade = $this->_facadeBuilder->__invoke();
         $this->_queryBuilder->setForm($facade);
 
         $query = $this->_queryBuilder->buildCountQuery();
