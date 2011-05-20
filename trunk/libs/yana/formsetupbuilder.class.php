@@ -83,17 +83,6 @@ class FormSetupBuilder extends Object
      */
     public function __construct(DDLForm $form)
     {
-        $this->createNewSetup($form);
-    }
-
-    /**
-     * Create new facade instance.
-     *
-     * @access  public
-     * @param   DDLForm    $form   base form defintion that the setup will apply to
-     */
-    public function createNewSetup(DDLForm $form)
-    {
         $this->_form = $form;
         $this->object = new FormSetup();
     }
@@ -117,7 +106,7 @@ class FormSetupBuilder extends Object
      * @access  public
      * @return  FormSetup
      */
-    public function buildSetup()
+    public function __invoke()
     {
         $this->_buildActions()->_buildSetupContext();
         return $this->object;

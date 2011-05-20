@@ -82,19 +82,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
     }
 
     /**
-     * Reset instance and create new field.
-     *
-     * @access  public
-     * @return  FormFieldAutomatedHtmlBuilder
-     */
-    public function createNewField()
-    {
-        $this->_value = null;
-        return parent::createNewField();
-    }
-
-    /**
-     * create HTML for current field
+     * Create HTML for current field.
      *
      * Returns the HTML-code representing an input element for the current field.
      * If the field has an action attached to it, an clickable icon or text-link is created next to it.
@@ -105,7 +93,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      *
      * @ignore
      */
-    public function buildByType(FormFieldFacade $field)
+    public function __invoke(FormFieldFacade $field)
     {
         $this->_setName($field);
         $setup = $field->getForm()->getSetup();

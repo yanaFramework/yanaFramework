@@ -78,7 +78,7 @@ class FormFieldHtmlBuilder extends Object
      * @access  private
      * @var     int
      */
-    private $_maxLength = "";
+    private $_maxLength = 0;
 
     /**
      * Other HTML attributes.
@@ -87,33 +87,6 @@ class FormFieldHtmlBuilder extends Object
      * @var     string
      */
     private $_attr = "";
-
-    /**
-     * Initialize new instance.
-     *
-     * @access  public
-     */
-    public function _construct()
-    {
-        $this->createNewField();
-    }
-
-    /**
-     * Reset instance and create new field.
-     * 
-     * @access  public
-     * @return  FormFieldHtmlBuilder 
-     */
-    public function createNewField()
-    {
-        $this->_attr = "";
-        $this->_class = "";
-        $this->_id = "";
-        $this->_name = "";
-        $this->_maxLength = 0;
-        $this->_title = "";
-        return $this;
-    }
 
     /**
      * Get HTML attribute "id".

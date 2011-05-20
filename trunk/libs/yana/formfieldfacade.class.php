@@ -551,7 +551,7 @@ class FormFieldFacade extends Object
     public function toString()
     {
         $builder = new FormFieldAutomatedHtmlBuilder();
-        return $builder->buildByType($this);
+        return $builder->__invoke($this);
     }
 
 }

@@ -56,20 +56,7 @@ class FormHtmlBuilder extends Object
      */
     public function __construct(FormFacade $facade)
     {
-        $this->createNewForm($facade);
-    }
-
-    /**
-     * Reset instance and create new field.
-     * 
-     * @access  public
-     * @param   FormFacade  $facade  the form that is used for building HTML
-     * @return  FormHtmlBuilder 
-     */
-    public function createNewForm(FormFacade $facade)
-    {
         $this->_facade = $facade;
-        return $this;
     }
 
     /**
@@ -80,7 +67,7 @@ class FormHtmlBuilder extends Object
      * @access  public
      * @return  string
      */
-    public function buildHtml()
+    public function __invoke()
     {
         // setting up template
         $file = Yana::getInstance()->getSkin()->getFile('gui_form');

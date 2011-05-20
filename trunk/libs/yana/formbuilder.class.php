@@ -909,7 +909,7 @@ class FormBuilder extends Object
      */
     private function _buildSetup(DDLForm $form)
     {
-        $formSetup  = $this->_setupBuilder->buildSetup();
+        $formSetup  = $this->_setupBuilder->__invoke();
         $formSetup->setPage($this->getPage());
         $formSetup->setEntriesPerPage($this->getEntries());
         $formSetup->setLayout($this->getLayout());
