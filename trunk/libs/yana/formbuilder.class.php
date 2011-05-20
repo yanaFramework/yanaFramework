@@ -58,12 +58,12 @@ class FormBuilder extends Object
     private $_schema;
 
     /**
-     * Facade builder class.
+     * Form facade.
      *
      * @access  private
-     * @var     FormFacadeBuilder
+     * @var     FormFacade
      */
-    private $_facadeBuilder;
+    private $_facade;
 
     /**
      * Query builder class.
@@ -646,14 +646,14 @@ class FormBuilder extends Object
     protected function setForm(DDLForm $form, FormFacade $parentForm = null)
     {
         $this->_form = $form;
-        $this->_facadeBuilder->setForm($this->_form);
+        $this->_facade->setBaseForm($this->_form);
         if ($this->_setupBuilder) {
             $this->_setupBuilder->setForm($this->_form);
         } else {
             $this->_setupBuilder = new FormSetupBuilder($this->_form);
         }
         if ($parentForm) {
-            $this->_facadeBuilder->setParentForm($parentForm);
+            $this->_facade->setParent($parentForm);
         }
         return $this;
     }
@@ -669,7 +669,7 @@ class FormBuilder extends Object
         $this->_file = (string) $file;
         $this->_database = Yana::connect($this->_file);
         $this->_schema = $this->_database->getSchema();
-        $this->_facadeBuilder = new FormFacadeBuilder($this->_schema);
+        $this->_facade = new FormFacade();
         $this->_queryBuilder = new FormQueryBuilder($this->_database);
     }
 
@@ -706,7 +706,7 @@ class FormBuilder extends Object
             $formSetup = $this->_buildSetup($form);
             $where = $this->getWhere();
         }
-        $this->_facadeBuilder->setSetup($formSetup);
+        $this->_facade->setSetup($formSetup);
 
         $request = (array) Request::getVars($form->getName());
         $files = (array) Request::getFiles($form->getName());
@@ -717,11 +717,10 @@ class FormBuilder extends Object
             $this->_setupBuilder->updateSetup($request);
         }
 
-        $facade = $this->_facadeBuilder->__invoke();
-        $this->_queryBuilder->setForm($facade);
+        $this->_queryBuilder->setForm($this->_facade);
 
         $query = $this->_queryBuilder->buildCountQuery();
-        $this->_facadeBuilder->getSetup()->setEntryCount($query->countResults());
+        $this->_facade->getSetup()->setEntryCount($query->countResults());
 
         $query = $this->_queryBuilder->buildSelectQuery();
         if (!empty($where)) {
@@ -749,10 +748,10 @@ class FormBuilder extends Object
             $this->_setupBuilder->updateValues($request);
         }
 
-        $cache->{$form->getName()} = $this->_facadeBuilder->getSetup(); // add to cache
-        $this->_buildSubForms($facade);
+        $cache->{$form->getName()} = $this->_facade->getSetup(); // add to cache
+        $this->_buildSubForms($this->_facade);
 
-        return $facade;
+        return $this->_facade;
     }
 
     /**
@@ -889,7 +888,7 @@ class FormBuilder extends Object
             assert('!isset($searchTerm); // Cannot redeclare var $searchTerm');
             $searchTerm = $form->getSetup()->getSearchTerm();
             if (!empty($searchTerm)) {
-                $builder->_facadeBuilder->getSetup()->setSearchTerm($searchTerm);
+                $builder->_facade->getSetup()->setSearchTerm($searchTerm);
             }
             unset($searchTerm);
             // build sub-form

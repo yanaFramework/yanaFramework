@@ -33,7 +33,7 @@
  * @subpackage  form
  * @ignore
  */
-class FormFacade extends FormFacadeAbstract
+class FormFacade extends Object
 {
 
     /**
@@ -77,13 +77,39 @@ class FormFacade extends FormFacadeAbstract
     private $_table = null;
 
     /**
+     * Form definition
+     *
+     * @access  private
+     * @var     DDLForm
+     */
+    private $_form = null;
+
+    /**
+     * Form setup
+     *
+     * @access  private
+     * @var     FormSetup
+     */
+    private $_setup = null;
+
+    /**
+     * If the current form is a child element, this will point to it's parent.
+     *
+     * Leave blank if it is a root element.
+     *
+     * @access  private
+     * @var     FormFacade
+     */
+    private $_parent = null;
+
+    /**
      * create new instance
      *
      * @access  public
      */
     public function __construct()
     {
-        $this->setup = new FormSetup();
+        $this->_setup = new FormSetup();
     }
 
     /**
@@ -97,10 +123,10 @@ class FormFacade extends FormFacadeAbstract
      */
     public function __call($name, $arguments)
     {
-        if (isset($this->form) && method_exists($this->form, $name)) {
-            return call_user_func_array(array($this->form, $name), $arguments);
-        } elseif (method_exists($this->setup, $name)) {
-            return call_user_func_array(array($this->setup, $name), $arguments);
+        if (isset($this->_form) && method_exists($this->_form, $name)) {
+            return call_user_func_array(array($this->_form, $name), $arguments);
+        } elseif (method_exists($this->_setup, $name)) {
+            return call_user_func_array(array($this->_setup, $name), $arguments);
         } else {
             throw new NotImplementedException("Call to undefined function: '$name' in class " . __CLASS__ . ".");
         }
@@ -143,7 +169,20 @@ class FormFacade extends FormFacadeAbstract
      */
     public function getBaseForm()
     {
-        return $this->form;
+        return $this->_form;
+    }
+
+    /**
+     * Set form object.
+     *
+     * @access  public
+     * @param   DDLForm  $form  configuring the contents of the form
+     * @return  FormFacade
+     */
+    public function setBaseForm(DDLForm $form)
+    {
+        $this->_form = $form;
+        return $this;
     }
 
     /**
@@ -160,7 +199,23 @@ class FormFacade extends FormFacadeAbstract
      */
     public function getParent()
     {
-        return $this->parent;
+        return $this->_parent;
+    }
+
+    /**
+     * Set parent form.
+     *
+     * If the current form is a child element, this will point to it's parent.
+     * Set to NULL if it is a root element and there is no parent.
+     *
+     * @access  public
+     * @param   FormFacade  $parentForm  configuring the contents of the parent form
+     * @return  FormFacade
+     */
+    public function setParent(FormFacade $parentForm = null)
+    {
+        $this->_parent = $parentForm;
+        return $this;
     }
 
     /**
@@ -171,7 +226,20 @@ class FormFacade extends FormFacadeAbstract
      */
     public function getSetup()
     {
-        return $this->setup;
+        return $this->_setup;
+    }
+
+    /**
+     * Set form setup.
+     *
+     * @access  public
+     * @param   FormSetup  $setup  configuring the behavior of the form
+     * @return  FormFacade
+     */
+    public function setSetup(FormSetup $setup)
+    {
+        $this->_setup = $setup;
+        return $this;
     }
 
     /**
@@ -197,7 +265,7 @@ class FormFacade extends FormFacadeAbstract
     public function hasInsertableChildren()
     {
         /* @var $form DDLForm */
-        foreach ($this->form->getForms() as $form)
+        foreach ($this->_form->getForms() as $form)
         {
             if ($form->getEvent('insert')) {
                 return true;
@@ -218,7 +286,7 @@ class FormFacade extends FormFacadeAbstract
     public function hasUpdatableChildren()
     {
         /* @var $form DDLForm */
-        foreach ($this->form->getForms() as $form)
+        foreach ($this->_form->getForms() as $form)
         {
             if ($form->getEvent('update')) {
                 return true;
@@ -239,7 +307,7 @@ class FormFacade extends FormFacadeAbstract
     public function hasSearchableChildren()
     {
         /* @var $form DDLDefaultForm */
-        foreach ($this->form->getForms() as $form)
+        foreach ($this->_form->getForms() as $form)
         {
             if ($form->getEvent('search')) {
                 return true;
@@ -257,7 +325,7 @@ class FormFacade extends FormFacadeAbstract
     public function getSearchForm()
     {
         if (!isset($this->_searchForm)) {
-            $context = $this->setup->getContext('search');
+            $context = $this->_setup->getContext('search');
             $this->_searchForm = new FormContextSensitiveWrapper($this, $context);
         }
         return $this->_searchForm;
@@ -272,7 +340,7 @@ class FormFacade extends FormFacadeAbstract
     public function getUpdateForm()
     {
         if (!isset($this->_updateForm)) {
-            $context = $this->setup->getContext('update');
+            $context = $this->_setup->getContext('update');
             $this->_updateForm = new FormContextSensitiveWrapper($this, $context);
         }
         return $this->_updateForm;
@@ -287,7 +355,7 @@ class FormFacade extends FormFacadeAbstract
     public function getInsertForm()
     {
         if (!isset($this->_insertForm)) {
-            $context = $this->setup->getContext('insert');
+            $context = $this->_setup->getContext('insert');
             $this->_insertForm = new FormContextSensitiveWrapper($this, $context);
         }
         return $this->_insertForm;
@@ -303,7 +371,7 @@ class FormFacade extends FormFacadeAbstract
      */
     public function getUpdateValues()
     {
-        return $this->setup->getContext('update')->getRows()->toArray();
+        return $this->_setup->getContext('update')->getRows()->toArray();
     }
 
     /**
@@ -316,7 +384,7 @@ class FormFacade extends FormFacadeAbstract
      */
     public function getInsertValues()
     {
-        $values = $this->setup->getContext('insert')->getValues();
+        $values = $this->_setup->getContext('insert')->getValues();
         
         /**
          * @todo need to review this section:
@@ -349,7 +417,7 @@ class FormFacade extends FormFacadeAbstract
      */
     public function getSearchValues()
     {
-        return $this->setup->getContext('search')->getValues();
+        return $this->_setup->getContext('search')->getValues();
     }
 
     /**
@@ -365,15 +433,15 @@ class FormFacade extends FormFacadeAbstract
     public function getTable()
     {
         if (!isset($this->_table)) {
-            $tableName = $this->form->getTable();
-            $database = $this->form->getDatabase();
+            $tableName = $this->_form->getTable();
+            $database = $this->_form->getDatabase();
             if (!($database instanceof DDLDatabase)) {
-                $message = "Error in form '" . $this->form->getName() . "'. No parent database defined.";
+                $message = "Error in form '" . $this->_form->getName() . "'. No parent database defined.";
                 throw new NotFoundException($message);
             }
             $table = $database->getTable($tableName);
             if (!($table instanceof DDLTable)) {
-                $message = "Error in form '" . $this->form->getName() . "'. Parent table '" . $tableName . "' not found.";
+                $message = "Error in form '" . $this->_form->getName() . "'. Parent table '" . $tableName . "' not found.";
                 throw new NotFoundException($message);
             }
             $this->_table = $table;
@@ -393,12 +461,12 @@ class FormFacade extends FormFacadeAbstract
      */
     public function getTitle()
     {
-        $title = $this->form->getTitle();
+        $title = $this->_form->getTitle();
         if (empty($title)) {
             try {
                 $title = $this->getTable()->getTitle();
             } catch (\Exception $e) {
-                $title = $this->form->getName(); // fall back to name if table does not exist
+                $title = $this->_form->getName(); // fall back to name if table does not exist
             }
         }
         return $title;
