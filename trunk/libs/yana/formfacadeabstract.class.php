@@ -38,6 +38,14 @@ abstract class FormFacadeAbstract extends Object
 {
 
     /**
+     * This function must initialize the protected class-members.
+     *
+     * @access  protected
+     * @abstract
+     */
+    abstract protected function __construct();
+
+    /**
      * Form definition
      *
      * @access  protected

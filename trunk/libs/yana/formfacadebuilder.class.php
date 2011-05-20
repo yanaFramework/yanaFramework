@@ -60,16 +60,6 @@ class FormFacadeBuilder extends FormFacadeAbstract
     public function __construct(DDLDatabase $database)
     {
         $this->_database = $database;
-        $this->createNewFacade();
-    }
-
-    /**
-     * Create new facade instance.
-     *
-     * @access  public
-     */
-    public function createNewFacade()
-    {
         $this->object = new FormFacade();
     }
 
@@ -79,7 +69,7 @@ class FormFacadeBuilder extends FormFacadeAbstract
      * @access  public
      * @return  FormFacade 
      */
-    public function buildFacade()
+    public function __invoke()
     {
         return $this->object;
     }
@@ -106,6 +96,20 @@ class FormFacadeBuilder extends FormFacadeAbstract
     {
         $this->object->form = $form;
         return $this;
+    }
+
+    /**
+     * Get parent form.
+     *
+     * Carefull: may return NULL, if there is no parent.
+     * Check results!
+     *
+     * @access  public
+     * @return  FormFacade
+     */
+    public function getParentForm()
+    {
+        return $this->object->parent;
     }
 
     /**
