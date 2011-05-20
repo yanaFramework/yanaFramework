@@ -653,7 +653,7 @@ class FormBuilder extends Object
             $this->_setupBuilder = new FormSetupBuilder($this->_form);
         }
         if ($parentForm) {
-            $this->_queryBuilder->setParentForm($parentForm);
+            $this->_facadeBuilder->setParentForm($parentForm);
         }
         return $this;
     }
