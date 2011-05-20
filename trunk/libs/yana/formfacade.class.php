@@ -413,7 +413,7 @@ class FormFacade extends FormFacadeAbstract
     public function toString()
     {
         $htmlBuilder = new FormHtmlBuilder($this);
-        return $htmlBuilder->buildHtml();
+        return $htmlBuilder->__invoke();
     }
 
 }
