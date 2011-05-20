@@ -37,15 +37,6 @@ class FormFacade extends FormFacadeAbstract
 {
 
     /**
-     * List of foreign key references.
-     *
-     * @access  protected
-     * @var     array
-     * @ignore
-     */
-    protected $references = null;
-
-    /**
      * List of sub-forms.
      *
      * @access  private
