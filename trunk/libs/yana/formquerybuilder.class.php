@@ -44,30 +44,12 @@ class FormQueryBuilder extends Object
     private $_db = null;
 
     /**
-     * DDL definition object of selected table
-     *
-     * @access  private
-     * @var     DDLTable
-     */
-    private $_table = null;
-
-    /**
      * Definition of form.
      *
      * @access  private
      * @var     FormFacade
      */
     private $_form = null;
-
-    /**
-     * If the current form is a child element, this will point to it's parent.
-     *
-     * Leave blank if it is a root element.
-     *
-     * @access  private
-     * @var     FormFacade
-     */
-    private $_parentForm = null;
 
     /**
      * Object cache.
@@ -98,23 +80,6 @@ class FormQueryBuilder extends Object
     public function setForm(FormFacade $form)
     {
         $this->_form = $form;
-        $this->_cache = array();
-        return $this;
-    }
-
-    /**
-     * Set parent form.
-     *
-     * If the current form is a child element, this will point to it's parent.
-     * Set to NULL if it is a root element and there is no parent.
-     *
-     * @access  public
-     * @param   FormFacade  $parentForm  configuring the contents of the parent form
-     * @return  FormQueryBuilder
-     */
-    public function setParentForm(FormFacade $parentForm = null)
-    {
-        $this->_parentForm = $parentForm;
         $this->_cache = array();
         return $this;
     }
@@ -254,7 +219,7 @@ class FormQueryBuilder extends Object
      */
     private function _buildSelectForSubForm(DbSelect $select)
     {
-        $parentForm = $this->_parentForm;
+        $parentForm = $this->_form->getParent();
         // copy foreign key from parent query
         if ($parentForm instanceof FormFacade) {
 

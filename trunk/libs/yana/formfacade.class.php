@@ -147,6 +147,23 @@ class FormFacade extends FormFacadeAbstract
     }
 
     /**
+     * Get parent form.
+     *
+     * Forms may have sub-forms, which then have a parent.
+     * This function returns it.
+     *
+     * The result may be null, if there is no parent at all.
+     * Check the result object!
+     *
+     * @access  public
+     * @return  FormFacade
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
      * Get the setup configuration of this form.
      *
      * @access  public

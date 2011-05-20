@@ -109,6 +109,22 @@ class FormFacadeBuilder extends FormFacadeAbstract
     }
 
     /**
+     * Set parent form.
+     *
+     * If the current form is a child element, this will point to it's parent.
+     * Set to NULL if it is a root element and there is no parent.
+     *
+     * @access  public
+     * @param   FormFacade  $parentForm  configuring the contents of the parent form
+     * @return  FormFacadeBuilder
+     */
+    public function setParentForm(FormFacade $parentForm = null)
+    {
+        $this->object->parent = $parentForm;
+        return $this;
+    }
+
+    /**
      * Get form setup.
      *
      * @access  public

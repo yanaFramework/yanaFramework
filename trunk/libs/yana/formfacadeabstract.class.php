@@ -53,6 +53,16 @@ abstract class FormFacadeAbstract extends Object
      */
     protected $setup = null;
 
+    /**
+     * If the current form is a child element, this will point to it's parent.
+     *
+     * Leave blank if it is a root element.
+     *
+     * @access  protected
+     * @var     FormFacade
+     */
+    protected $parent = null;
+
 }
 
 ?>
