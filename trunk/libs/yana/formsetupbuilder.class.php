@@ -145,36 +145,35 @@ class FormSetupBuilder extends Object
      */
     public function updateSetup(array $request = array())
     {
-        $setup = $this->object;
         if (isset($request['page']) && $request['page'] >= 0) {
-            $setup->setPage((int) $request['page']);
+            $this->object->setPage((int) $request['page']);
         }
         if (isset($request['entries']) && $request['entries'] > 0) {
-            $setup->setEntriesPerPage((int) $request['entries']);
+            $this->object->setEntriesPerPage((int) $request['entries']);
         }
         if (isset($request['layout']) && $request['layout'] >= 0) {
-            $setup->setLayout((int) $request['layout']);
+            $this->object->setLayout((int) $request['layout']);
         }
         if (isset($request['searchterm'])) {
-            $setup->setSearchTerm($request['searchterm']);
+            $this->object->setSearchTerm($request['searchterm']);
         }
         if (!empty($request['dropfilter'])) {
-            $setup->setFilters();
+            $this->object->setFilters();
         }
         if (isset($request['filter']) && is_array($request['filter'])) {
             foreach ($request['filter'] as $columnName => $searchTerm)
             {
-                $setup->setFilter($columnName, $searchTerm);
+                $this->object->setFilter($columnName, $searchTerm);
             }
         }
         if (!empty($request['sort'])) {
-            $setup->setOrderByField($request['sort']);
+            $this->object->setOrderByField($request['sort']);
         }
         if (!empty($request['orderby'])) {
-            $setup->setOrderByField($request['orderby']);
+            $this->object->setOrderByField($request['orderby']);
         }
         if (!empty($request['desc'])) {
-            $setup->setSortOrder(true);
+            $this->object->setSortOrder(true);
         }
         return $this;
     }

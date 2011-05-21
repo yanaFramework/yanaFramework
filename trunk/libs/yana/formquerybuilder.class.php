@@ -116,6 +116,7 @@ class FormQueryBuilder extends Object
                 // set output columns
                 if ($setup->getContext('update')->getColumnNames()) {
                     $query->setColumns($setup->getContext('update')->getColumnNames()); // throws NotFoundException
+                    $query->addColumn($this->_form->getTable()->getPrimaryKey());
                 }
                 $query = $this->_buildSelectForSubForm($query);
             }

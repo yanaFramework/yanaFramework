@@ -192,6 +192,7 @@ class FormSetupContext extends Object
      */
     public function updateRow($key, array $row)
     {
+        $row = Hashtable::changeCase($row, CASE_UPPER);
         $updatedRow = $row + (array) $this->getRows()->offsetGet($key);
         $this->getRows()->offsetSet($key, $updatedRow);
         return $this;

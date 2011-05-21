@@ -72,6 +72,76 @@ class FormWorker extends Object
         $this->_queryBuilder = new FormQueryBuilder($this->_database);
     }
 
+    public function create()
+    {
+        $newEntry = $this->_form->getInsertValues();
+        $tableName = $this->_form->getBaseForm()->getTable();
+
+        if (empty($newEntry)) {
+            throw new InvalidInputWarning('No data has been provided.');
+        }
+
+        if (!$this->_database->insert($tableName, $newEntry)) {
+            throw new InvalidInputWarning('Unable to insert entry. Is database read-only?');
+        }
+        return $this->_database->commit();
+    }
+
+    public function read()
+    {
+        return true;
+    }
+
+    public function autocomplete()
+    {
+        return true;
+    }
+
+    public function update()
+    {
+        $updatedEntries = $this->_form->getUpdateValues();
+        $tableName = $this->_form->getBaseForm()->getTable();
+
+        /* no data has been provided */
+        if (empty($updatedEntries)) {
+            throw new InvalidInputWarning();
+        }
+
+        foreach ($updatedEntries as $id => $entry)
+        {
+            $id = mb_strtolower($id);
+
+            /* before doing anything, check if entry exists */
+            if (!$this->_database->exists("{$tableName}.{$id}")) {
+
+                /* error - no such entry */
+                throw new InvalidInputWarning();
+
+            /* update the row */
+            } elseif (!$this->_database->update("{$tableName}.{$id}", $entry)) {
+                /* error - unable to perform update - possibly readonly */
+                return false;
+            }
+        } /* end for */
+        /* commit changes */
+        return $this->_database->commit();
+    }
+
+    public function delete(array $selected_entries)
+    {
+        // check if user forgot to mark at least 1 row
+        if (empty($selected_entries)) {
+            throw new MissingInputWarning();
+        }
+        $tableName = $this->_form->getBaseForm()->getTable();
+        // remove entry from database
+        foreach ($selected_entries as $id)
+        {
+            $this->_database->remove("{$tableName}.{$id}");
+        }
+        return $this->_database->commit();
+    }
+
 }
 
 ?>
