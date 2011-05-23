@@ -18,9 +18,6 @@
             <string name="media_filename" title="{lang id=&quot;media_filename&quot;}" readonly="yes" length="80"/>
             <integer name="media_filesize" title="{lang id=&quot;media_filesize&quot;}" length="10"/>
             <file name="media_file" title="{lang id=&quot;media_file&quot;}" notnull="yes"/>
-            <bool name="public" title="{lang id=&quot;media_public&quot;}" notnull="yes">
-                <default dbms="generic">0</default>
-            </bool>
             <string name="profile_id" notnull="yes" length="128"/>
             <string name="user_created" notnull="yes" length="128"/>
             <string name="user_modified" length="128"/>
