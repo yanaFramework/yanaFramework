@@ -449,7 +449,7 @@
                 </trans-unit>
             </group>
             <trans-unit id="descr_user_edit">
-                <source>Here you may edit {$USER.USER_ID}'s profile.</source>
+                <source>Here you may edit {$USERNAME}'s profile.</source>
                 <target>Hier können Sie das Profil des Nutzers {$USER.USER_ID} editieren.</target>
             </trans-unit>
             <trans-unit id="descr_user_configuration">

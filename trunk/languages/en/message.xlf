@@ -10,7 +10,7 @@
                     <source/>
                 </trans-unit>
                 <trans-unit id="SuccessMessage.p">
-                    <target>Thank You !!!</target>
+                    <target></target>
                     <source/>
                 </trans-unit>
             </group>
