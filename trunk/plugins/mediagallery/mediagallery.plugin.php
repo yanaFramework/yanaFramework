@@ -81,7 +81,7 @@ class plugin_mediagallery extends StdClass implements IsPlugin
     protected static function getDatabase()
     {
         if (!isset(self::$database)) {
-            self::$database = Yana::connect("mediadb");
+            self::$database = Yana::connect("mediagallery");
         }
         return self::$database;
     }
@@ -106,23 +106,21 @@ class plugin_mediagallery extends StdClass implements IsPlugin
      * @menu     group: start
      * @user     level: 1
      * @user     group: gallery
+     * @language mediagallery
      * @template templates/gallery.html.tpl
-     * @style    templates/css/jquery-ui-1.8.custom.css
-     * @style    templates/gallery.css
-     * @script   templates/jquery-1.4.2.min.js
-     * @script   templates/jquery-ui-1.8.custom.min.js
-     * @script   templates/jquery.galleriffic.js
      * @access   public
      */
     public function mediagallery()
     {
-        /** @ignore */
-        include_once 'gallerydatabaseadapter.class.php';
-        /** @ignore */
-        include_once 'gallery.class.php';
-        $db = self::getDatabase();
-        Gallery::registerDataAdapter(new GalleryDatabaseAdapter($db, 'mediafolder'));
-        GalleryItem::registerDataAdapter(new GalleryDatabaseAdapter($db, 'media'));
+        $builder = new FormBuilder('mediagallery');
+        $builder->setId('mediagallery');
+        $builder->setWhere(
+            array(
+                array('user_created', '=', YanaUser::getUserName()), 'or', array('public', '=', true)
+            )
+        );
+        $gallery = $builder->__invoke();
+        Yana::getInstance()->setVar('gallery', $gallery);
     }
 
 }
