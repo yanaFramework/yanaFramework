@@ -42,24 +42,6 @@ class plugin_project extends StdClass implements IsPlugin
     private static $database = null;
 
     /**
-     * Form definition for projects
-     *
-     * @access  private
-     * @static
-     * @var     DDLDefaultForm
-     */
-    private static $projectForm = null;
-
-    /**
-     * Form definition for efforts
-     *
-     * @access  private
-     * @static
-     * @var     DDLDefaultForm
-     */
-    private static $effortForm = null;
-
-    /**
      * get database connection
      *
      * @access  protected
@@ -79,15 +61,12 @@ class plugin_project extends StdClass implements IsPlugin
      *
      * @access  protected
      * @static
-     * @return  DDLDefaultForm
+     * @return  FormFacade
      */
     protected static function getProjectForm()
     {
-        if (!isset(self::$projectForm)) {
-            $db = self::getDatabase();
-            self::$projectForm = $db->getSchema()->getForm("project");
-        }
-        return self::$projectForm;
+        $builder = new FormBuilder('project');
+        return $builder->setId('project')->__invoke();
     }
 
     /**
@@ -95,21 +74,16 @@ class plugin_project extends StdClass implements IsPlugin
      *
      * @access  protected
      * @static
-     * @return  DDLDefaultForm
+     * @return  FormFacade
      */
     protected static function getEffortForm()
     {
-        if (!isset(self::$effortForm)) {
-            $form = self::getProjectForm();
-            self::$effortForm = $form->getForm("effort");
-        }
-        return self::$effortForm;
+        $form = self::getProjectForm();
+        return $form->getForm("effort");
     }
 
     /**
-     * Default event handler
-     *
-     * returns bool(true) on success and bool(false) on error
+     * Default event handler.
      *
      * @access  public
      * @return  bool
@@ -123,9 +97,7 @@ class plugin_project extends StdClass implements IsPlugin
     }
 
     /**
-     * project_list
-     *
-     * returns bool(true) on success and bool(false) on error
+     * Show project list
      *
      * @type        read
      * @user        group: project
@@ -136,8 +108,6 @@ class plugin_project extends StdClass implements IsPlugin
      * @menu        group: start
      *
      * @access      public
-     * @return      bool
-     * @name        plugin_project::project_list()
      */
     public function project()
     {
@@ -150,13 +120,10 @@ class plugin_project extends StdClass implements IsPlugin
         $desc = true;
         $rows = self::getDatabase()->select($key, $where, $orderBy, $offset, $limit, $desc);
         Yana::getInstance()->setVar('PROJECT', $rows);
-        return true;
     }
 
     /**
      * calculate sum of hours spent on a project
-     *
-     * returns bool(true) on success and bool(false) on error
      *
      * @type        read
      * @user        group: project
@@ -166,8 +133,6 @@ class plugin_project extends StdClass implements IsPlugin
      *
      * @access      public
      * @param       int  $target  project id
-     * @return      bool
-     * @name        plugin_project::project_list()
      */
     public function project_sum($target)
     {
@@ -219,9 +184,7 @@ class plugin_project extends StdClass implements IsPlugin
     }
 
     /**
-     * project_write_edit_project
-     *
-     * returns bool(true) on success and bool(false) on error
+     * Edit projects
      *
      * @type        write
      * @user        group: project, role: moderator
@@ -232,43 +195,16 @@ class plugin_project extends StdClass implements IsPlugin
      *
      * @access      public
      * @return      bool
-     * @name        plugin_project::project_write_edit_project()
      */
-    public function project_edit_project ()
+    public function project_edit_project()
     {
-        $database = self::getDatabase();
-        $updatedEntries = self::getProjectForm()->getUpdateValues();
-
-        /* no data has been provided */
-        if (empty($updatedEntries)) {
-            throw new InvalidInputWarning();
-        }
-
-        foreach ($updatedEntries as $id => $entry)
-        {
-            $id = mb_strtolower($id);
-
-            /* before doing anything, check if entry exists */
-            if (!$database->exists("project.${id}")) {
-
-                /* error - no such entry */
-                throw new InvalidInputWarning();
-
-            /* update the row */
-            } else if (!$database->update("project.${id}", $entry)) {
-                /* error - unable to perform update - possibly readonly */
-                return false;
-            }
-        } /* end for */
-        /* commit changes */
-        return $database->write();
+        $form = self::getProjectForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->update();
     }
 
-
     /**
-     * project_write_delete_project
-     *
-     * returns bool(true) on success and bool(false) on error
+     * Delete projects
      *
      * @type        write
      * @user        group: project, role: moderator
@@ -280,27 +216,16 @@ class plugin_project extends StdClass implements IsPlugin
      * @access      public
      * @param       array  $selected_entries  list of projects to delete
      * @return      bool
-     * @name        plugin_project::project_write_delete_project()
      */
-    public function project_delete_project (array $selected_entries)
+    public function project_delete_project(array $selected_entries)
     {
-        $database = self::getDatabase();
-        /* remove entry from database */
-        foreach ($selected_entries as $id)
-        {
-            if (!$database->remove("project.${id}")) {
-                /* entry does not exist */
-                throw new InvalidInputWarning();
-            }
-        } /* end for */
-        /* commit changes */
-        return $database->commit();
+        $form = self::getProjectForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->delete($selected_entries);
     }
 
     /**
-     * project_write_new_project
-     *
-     * returns bool(true) on success and bool(false) on error
+     * Add new project
      *
      * @type        write
      * @user        group: project, role: moderator
@@ -311,30 +236,16 @@ class plugin_project extends StdClass implements IsPlugin
      *
      * @access      public
      * @return      bool
-     * @name        plugin_project::project_write_new_project()
      */
-    public function project_new_project ()
+    public function project_new_project()
     {
-        $newEntry = self::getProjectForm()->getInsertValues();
-
-        /* no data has been provided */
-        if (empty($newEntry)) {
-            throw new InvalidInputWarning();
-        }
-
-        $database = self::getDatabase();
-        /* insert new entry into table */
-        if (!$database->insert("project.*", $newEntry)) {
-            throw new InvalidInputWarning();
-        } else {
-            return $database->write();
-        }
+        $form = self::getProjectForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->create();
     }
 
     /**
-     * project_write_edit_effort
-     *
-     * returns bool(true) on success and bool(false) on error
+     * Edit efforts
      *
      * @type        write
      * @user        group: project, role: moderator
@@ -345,43 +256,16 @@ class plugin_project extends StdClass implements IsPlugin
      *
      * @access      public
      * @return      bool
-     * @name        plugin_project::project_write_edit_effort()
      */
-    public function project_edit_effort ()
+    public function project_edit_effort()
     {
-        $database = self::getDatabase();
-        $updatedEntries = self::getEffortForm()->getUpdateValues();
-
-        /* no data has been provided */
-        if (empty($updatedEntries)) {
-            throw new InvalidInputWarning();
-        }
-
-        foreach ($updatedEntries as $id => $entry)
-        {
-            $id = mb_strtolower($id);
-
-            /* before doing anything, check if entry exists */
-            if (!$database->exists("effort.${id}")) {
-
-                /* error - no such entry */
-                throw new InvalidInputWarning();
-
-            /* update the row */
-            } elseif (!$database->update("effort.${id}", $entry)) {
-                /* error - unable to perform update - possibly readonly */
-                return false;
-            }
-        } /* end for */
-        /* commit changes */
-        return $database->write();
+        $form = self::getEffortForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->update();
     }
 
-
     /**
-     * project_write_delete_effort
-     *
-     * returns bool(true) on success and bool(false) on error
+     * Delete efforts
      *
      * @type        write
      * @user        group: project, role: moderator
@@ -393,27 +277,16 @@ class plugin_project extends StdClass implements IsPlugin
      * @access      public
      * @param       array  $selected_entries  list of efforts to delete
      * @return      bool
-     * @name        plugin_project::project_write_delete_effort()
      */
-    public function project_delete_effort (array $selected_entries)
+    public function project_delete_effort(array $selected_entries)
     {
-        $database = self::getDatabase();
-        /* remove entry from database */
-        foreach ($selected_entries as $id)
-        {
-            if (!$database->remove("effort.${id}")) {
-                /* entry does not exist */
-                throw new InvalidInputWarning();
-            }
-        } /* end for */
-        /* commit changes */
-        return $database->write();
+        $form = self::getEffortForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->delete($selected_entries);
     }
 
     /**
-     * project_write_new_effort
-     *
-     * returns bool(true) on success and bool(false) on error
+     * Add new effort
      *
      * @type        write
      * @user        group: project
@@ -424,30 +297,16 @@ class plugin_project extends StdClass implements IsPlugin
      *
      * @access      public
      * @return      bool
-     * @name        plugin_project::project_write_new_effort()
      */
-    public function project_new_effort ()
+    public function project_new_effort()
     {
-        $newEntry = self::getEffortForm()->getInsertValues();
-
-        /* no data has been provided */
-        if (empty($newEntry)) {
-            throw new InvalidInputWarning();
-        }
-
-        $database = self::getDatabase();
-        /* insert new entry into table */
-        if (!$database->insert("effort.*", $newEntry)) {
-            throw new InvalidInputWarning();
-        } else {
-            return $database->write();
-        }
+        $form = self::getEffortForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->create();
     }
 
     /**
-     * event handler
-     *
-     * returns bool(true) on success and bool(false) on error
+     * Search projects list
      *
      * @type        read
      * @user        group: project
@@ -458,25 +317,14 @@ class plugin_project extends StdClass implements IsPlugin
      * @onerror     goto: project_read_search_project
      *
      * @access      public
-     * @return      bool
      */
     public function project_search_project()
     {
-        if (!$this->project()) {
-            return false;
-        }
-        $form = $this->getProjectForm();
-        $where = $form->getSearchValuesAsWhereClause();
-        if (!is_null($where)) {
-            $form->getQuery()->setHaving($where);
-        }
-        return true;
+        $this->project();
     }
 
     /**
-     * event handler
-     *
-     * returns bool(true) on success and bool(false) on error
+     * Search efforts list
      *
      * @type        read
      * @user        group: project
@@ -487,19 +335,10 @@ class plugin_project extends StdClass implements IsPlugin
      * @onerror     goto: project_read_search_effort
      *
      * @access      public
-     * @return      bool
      */
     public function project_search_effort()
     {
-        if (!$this->project()) {
-            return false;
-        }
-        $form = $this->getEffortForm();
-        $where = $form->getSearchValuesAsWhereClause();
-        if (!is_null($where)) {
-            $form->getQuery()->setHaving($where);
-        }
-        return true;
+        $this->project();
     }
 
 }

@@ -24,13 +24,13 @@
 
 <p class="description" style="padding: 5px;">
     <!-- {if $PAGE > 0} --><!-- {assign var="NEXT_PAGE" value=$PAGE-$ENTRIES_PER_PAGE} -->
-    <a onclick="YanaGuestbook.prototype.guestbookRequest('{$ACTION}','guestbook','sort={$SORT}&desc={$DESC}&entries={$ENTRIES_PER_PAGE}&where={$WHERE}&page={$NEXT_PAGE}');return false" href={"action=$ACTION&sort=$SORT&desc=$DESC&entries=$ENTRIES_PER_PAGE&where=$WHERE&page=$NEXT_PAGE"|href} title="{lang id="TITLE_PREVIOUS"}">{lang id="BUTTON_PREVIOUS"}</a>
+    <a onclick="YanaGuestbook.prototype.guestbookRequest('{$ACTION}','guestbook','sort={$SORT}&desc={$DESC}&entries={$ENTRIES_PER_PAGE}&page={$NEXT_PAGE}');return false" href={"action=$ACTION&sort=$SORT&desc=$DESC&entries=$ENTRIES_PER_PAGE&page=$NEXT_PAGE"|href} title="{lang id="TITLE_PREVIOUS"}">{lang id="BUTTON_PREVIOUS"}</a>
     <!-- {/if} -->
     {foreach item="ENTRY" from=$LIST_OF_ENTRIES}
         <!-- {if $ENTRY.TOO_MANY} -->
         &nbsp;...&nbsp;
         <!-- {elseif $PAGE < $ENTRY.FIRST - 1 || $PAGE > $ENTRY.LAST - 1} --><!-- {assign var="NEXT_PAGE" value=$ENTRY.FIRST-1} -->
-        <a onclick="YanaGuestbook.prototype.guestbookRequest('{$ACTION}','guestbook','sort={$SORT}&desc={$DESC}&entries={$ENTRIES_PER_PAGE}&where={$WHERE}&page={$NEXT_PAGE}');return false" href={"action=$ACTION&sort=$SORT&desc=$DESC&entries=$ENTRIES_PER_PAGE&where=$WHERE&page=$NEXT_PAGE"|href} title="{lang id="TITLE_LIST"}">
+        <a onclick="YanaGuestbook.prototype.guestbookRequest('{$ACTION}','guestbook','sort={$SORT}&desc={$DESC}&entries={$ENTRIES_PER_PAGE}&page={$NEXT_PAGE}');return false" href={"action=$ACTION&sort=$SORT&desc=$DESC&entries=$ENTRIES_PER_PAGE&page=$NEXT_PAGE"|href} title="{lang id="TITLE_LIST"}">
             [{$ENTRY.FIRST}-{$ENTRY.LAST}]
         </a>
         <!-- {else} -->
@@ -38,7 +38,7 @@
         <!-- {/if} -->
     {/foreach}
     <!-- {if $PAGE + $ENTRIES_PER_PAGE < $LAST_PAGE} --><!-- {assign var="NEXT_PAGE" value=$PAGE+$ENTRIES_PER_PAGE} -->
-    <a onclick="YanaGuestbook.prototype.guestbookRequest('{$ACTION}','guestbook','sort={$SORT}&desc={$DESC}&entries={$ENTRIES_PER_PAGE}&where={$WHERE}&page={$NEXT_PAGE}');return false" href={"action=$ACTION&sort=$SORT&desc=$DESC&entries=$ENTRIES_PER_PAGE&where=$WHERE&page=$NEXT_PAGE"|href} title="{lang id="TITLE_NEXT"}">{lang id="BUTTON_NEXT"}</a>
+    <a onclick="YanaGuestbook.prototype.guestbookRequest('{$ACTION}','guestbook','sort={$SORT}&desc={$DESC}&entries={$ENTRIES_PER_PAGE}&page={$NEXT_PAGE}');return false" href={"action=$ACTION&sort=$SORT&desc=$DESC&entries=$ENTRIES_PER_PAGE&page=$NEXT_PAGE"|href} title="{lang id="TITLE_NEXT"}">{lang id="BUTTON_NEXT"}</a>
     <!-- {/if} -->
 </p>
 </body>

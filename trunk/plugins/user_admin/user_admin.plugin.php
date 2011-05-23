@@ -27,10 +27,9 @@
  */
 
 /**
- * user management plugin
+ * User management plugin.
  *
- * This creates forms and implements functions to
- * manage user data.
+ * This creates forms and implements functions to manage user data.
  *
  * @access     public
  * @package    yana
@@ -38,6 +37,7 @@
  */
 class plugin_user_admin extends StdClass implements IsPlugin
 {
+
     /**
      * Connection to data source (API)
      *
@@ -46,24 +46,6 @@ class plugin_user_admin extends StdClass implements IsPlugin
      * @var     DbStream
      */
     private static $database = null;
-
-    /**
-     * Form definition
-     *
-     * @access  private
-     * @static
-     * @var     DDLDefaultForm
-     */
-    private static $accessForm = null;
-
-    /**
-     * Form definition
-     *
-     * @access  private
-     * @static
-     * @var     DDLDefaultForm
-     */
-    private static $userForm = null;
 
     /**
      * get database connection
@@ -85,15 +67,12 @@ class plugin_user_admin extends StdClass implements IsPlugin
      *
      * @access  protected
      * @static
-     * @return  DDLDefaultForm
+     * @return  FormFacade
      */
     protected static function getAccessForm()
     {
-        if (!isset(self::$accessForm)) {
-            $database = self::getDatabase();
-            self::$accessForm = $database->getSchema()->getForm("securityrules");
-        }
-        return self::$accessForm;
+        $builder = new FormBuilder('user_admin');
+        return $builder->setId('securityrules')->__invoke();
     }
 
     /**
@@ -101,15 +80,12 @@ class plugin_user_admin extends StdClass implements IsPlugin
      *
      * @access  protected
      * @static
-     * @return  DDLDefaultForm
+     * @return  FormFacade
      */
     protected static function getUserForm()
     {
-        if (!isset(self::$userForm)) {
-            $database = self::getDatabase();
-            self::$userForm = $database->getSchema()->getForm("user");
-        }
-        return self::$userForm;
+        $builder = new FormBuilder('user_admin');
+        return $builder->setId('user')->__invoke();
     }
 
     /**
@@ -240,42 +216,33 @@ class plugin_user_admin extends StdClass implements IsPlugin
      */
     public function set_user_edit()
     {
-        $updatedEntries = self::getUserForm()->getUpdateValues();
-
-        /* no data has been provided */
-        if (empty($updatedEntries)) {
-            throw new InvalidInputWarning();
-        }
-
-        $database = SessionManager::getDatasource();
-        foreach ($updatedEntries as $id => $entry)
-        {
-            $id = mb_strtolower($id);
-
-            foreach (array_keys($entry) as $i)
+        $form = self::getUserForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        $visibleColumns = $this->visibleColumns;
+        $worker->beforeUpdate(
+            function ($id, $entry) use ($visibleColumns)
             {
-                if (!in_array($i, $this->visibleColumns)) {
-                    unset($entry[$i]);
+                $id = mb_strtolower($id);
+
+                foreach (array_keys($entry) as $i)
+                {
+                    if (!in_array($i, $visibleColumns)) {
+                        unset($entry[$i]);
+                    }
+                }
+
+                // before doing anything, check if entry exists 
+                if (!YanaUser::isUser($id)) {
+                    throw new UserNotFoundError();
+                }
+
+                /* should not deactivate administrator */
+                if ($id === "administrator" && !$entry['user_active']) {
+                    throw new UserDeleteAdminError();
                 }
             }
-
-            /* before doing anything, check if entry exists */
-            if (!YanaUser::isUser($id)) {
-                throw new InvalidInputWarning(); // error - no such entry
-            }
-
-            /* should not deactivate administrator */
-            if ($id === "administrator" && !$entry['user_active']) {
-                throw new UserDeleteAdminError();
-            }
-
-            if (!$database->update("user.$id", $entry)) {
-                return false;
-            }
-        } /* end for */
-
-        /* commit changes */
-        return $database->commit();
+        );
+        return $worker->update();
     }
 
     /**
@@ -365,36 +332,13 @@ class plugin_user_admin extends StdClass implements IsPlugin
      */
     public function set_access_edit()
     {
-        $updatedEntries = self::getAccessForm()->getUpdateValues();
-
-        /* no data has been provided */
-        if (empty($updatedEntries)) {
-            throw new InvalidInputWarning();
-        }
-
-        $database = self::getDatabase();
-        foreach ($updatedEntries as $id => $entry)
-        {
-            $id = mb_strtolower($id);
-
-            /* before doing anything, check if entry exists */
-            if (!$database->exists("securityrules.${id}")) {
-
-                /* error - no such entry */
-                throw new InvalidInputWarning();
-            }
-            /* update the row */
-            if (!$database->update("securityrules.${id}", $entry)) {
-                /* error - unable to perform update - possibly readonly */
-                return false;
-            }
-        } /* end for */
-        /* commit changes */
-        return $database->write();
+        $form = self::getAccessForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->update();
     }
 
     /**
-     * Revoke access rights
+     * Revoke access rights.
      *
      * returns bool(true) on success and bool(false) on error
      *
@@ -410,22 +354,13 @@ class plugin_user_admin extends StdClass implements IsPlugin
      */
     public function set_access_delete(array $selected_entries)
     {
-        $database = self::getDatabase();
-
-        /* remove entry from database */
-        foreach ($selected_entries as $id)
-        {
-            if (!$database->remove("securityrules.${id}")) {
-                /* entry does not exist */
-                throw new InvalidInputWarning();
-            }
-        } /* end for */
-        /* commit changes */
-        return $database->write();
+        $form = self::getAccessForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->delete($selected_entries);
     }
 
     /**
-     * Grant access rights
+     * Grant access rights.
      *
      * returns bool(true) on success and bool(false) on error
      *
@@ -440,20 +375,11 @@ class plugin_user_admin extends StdClass implements IsPlugin
      */
     public function set_access_new()
     {
-        $newEntry = self::getAccessForm()->getInsertValues();
-
-        /* no data has been provided */
-        if (empty($newEntry)) {
-            throw new InvalidInputWarning();
-        }
-
-        $database = self::getDatabase();
-        /* insert new entry into table */
-        if (!$database->insert("securityrules.*", $newEntry)) {
-            throw new InvalidInputWarning();
-        }
-        return $database->commit();
+        $form = self::getAccessForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->create();
     }
+
 }
 
 ?>

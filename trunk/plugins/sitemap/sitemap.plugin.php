@@ -36,8 +36,6 @@ class plugin_sitemap extends StdClass implements IsPlugin
     /**
      * Default event handler
      *
-     * returns bool(true) on success and bool(false) on error
-     *
      * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
@@ -50,9 +48,7 @@ class plugin_sitemap extends StdClass implements IsPlugin
     }
 
     /**
-     * Show Sitemap
-     *
-     * this function does not expect any arguments
+     * Show Sitemap.
      *
      * @type        primary
      * @template    sitemap
@@ -65,7 +61,6 @@ class plugin_sitemap extends StdClass implements IsPlugin
         /* this function expects no arguments */
         global $YANA;
         $YANA->getView()->setFunction('sitemap', array(__CLASS__, 'createSitemap'));
-        return true;
     }
 
     /**

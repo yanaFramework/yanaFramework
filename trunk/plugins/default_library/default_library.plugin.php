@@ -32,10 +32,9 @@
  */
 class plugin_default_library extends StdClass implements IsPlugin
 {
+
     /**
      * Default event handler
-     *
-     * returns bool(true) on success and bool(false) on error
      *
      * @access  public
      * @param   string  $event  name of the called event in lower-case
@@ -51,8 +50,6 @@ class plugin_default_library extends StdClass implements IsPlugin
     /**
      * clear server's template-cache
      *
-     * this function does not expect any arguments
-     *
      * @type        primary
      * @template    message
      * @user        group: admin, level: 100
@@ -60,13 +57,11 @@ class plugin_default_library extends StdClass implements IsPlugin
      * @onerror     goto: index
      *
      * @access      public
-     * @return      bool
      */
     public function clear_server_cache()
     {
         SmartTemplate::clearCache();
         PluginMenu::clearCache();
-        return true;
     }
 
     /**
@@ -86,9 +81,8 @@ class plugin_default_library extends StdClass implements IsPlugin
      * @access      public
      * @param       string  $eintraege        text to format
      * @param       bool    $is_ajax_request  is Ajax request
-     * @return      bool
      */
-    public function preview ($eintraege, $is_ajax_request = false)
+    public function preview($eintraege, $is_ajax_request = false)
     {
         $eintraege = untaintInput($eintraege, "text", 0, YANA_ESCAPE_USERTEXT, true);
         $eintraege = SmartUtility::smilies($eintraege);
@@ -104,7 +98,7 @@ class plugin_default_library extends StdClass implements IsPlugin
     }
 
     /**
-     *  check for correct syntax of embedded tags in all textarea fields
+     * Check for correct syntax of embedded tags in all textarea fields.
      *
      * Note: this function ends the program
      *
@@ -130,9 +124,8 @@ class plugin_default_library extends StdClass implements IsPlugin
      *
      * @access      public
      * @param       array  $text  text to be checked
-     * @return      bool
      */
-    public function chkembtags (array $text)
+    public function chkembtags(array $text)
     {
         $yana = Yana::getInstance();
         $language = $yana->getLanguage();
@@ -266,7 +259,7 @@ class plugin_default_library extends StdClass implements IsPlugin
     }
 
     /**
-     * create CAPTCHA-image
+     * Create CAPTCHA-image.
      *
      * parameters taken:
      *
@@ -279,9 +272,8 @@ class plugin_default_library extends StdClass implements IsPlugin
      *
      * @access      public
      * @param       int  $security_image_index  id of index to check
-     * @return      bool
      */
-    public function security_get_image ($security_image_index)
+    public function security_get_image($security_image_index)
     {
         global $YANA;
         $imagesrc = $YANA->getVar("CONFIGDIR") . "security_image/security_image" . rand(0, 9) . ".png";
@@ -357,7 +349,7 @@ class plugin_default_library extends StdClass implements IsPlugin
     }
 
     /**
-     * test if a string matches the corresponding CAPTCHA
+     * Test if a string matches the corresponding CAPTCHA.
      *
      * parameters taken:
      *
@@ -373,7 +365,7 @@ class plugin_default_library extends StdClass implements IsPlugin
      * @param       int  $security_image_index  id of index to check
      * @return      bool
      */
-    public function security_check_image ($security_image_index)
+    public function security_check_image($security_image_index)
     {
         global $YANA;
 
@@ -407,7 +399,7 @@ class plugin_default_library extends StdClass implements IsPlugin
     }
 
     /**
-     * create a microsummary for a page
+     * Create a microsummary for a page.
      *
      * Note: this function terminates program execution.
      *
@@ -453,9 +445,8 @@ class plugin_default_library extends StdClass implements IsPlugin
      *
      * @access      public
      * @param       string  $target  identifies summary to get
-     * @return      bool
      */
-    public function get_microsummary ($target)
+    public function get_microsummary($target)
     {
         if (empty($target)) {
             exit('Error: illegal request');
@@ -484,7 +475,7 @@ class plugin_default_library extends StdClass implements IsPlugin
      * @access      public
      * @param       int   $target    image identifier
      * @param       bool  $fullsize  show fullsize image (or preview?)
-     * @return      bool
+     * @throws      FileNotFoundError
      */
     public function download_file($target, $fullsize = false)
     {
@@ -493,8 +484,7 @@ class plugin_default_library extends StdClass implements IsPlugin
         $source = DbBlob::getFilenameFromSession($target, $fullsize);
 
         if ($source === false) {
-            /* error - file does not exist */
-            return false;
+            throw new FileNotFoundError();
         }
 
         /* download a file */
@@ -543,36 +533,31 @@ class plugin_default_library extends StdClass implements IsPlugin
     }
 
     /**
-     * color-picker
-     *
      * Shows a color-picker.
      *
      * @type        primary
      * @template    colorpicker
      *
      * @access      public
-     * @return      bool
      */
-    public function colorpicker ()
+    public function colorpicker()
     {
-        return true;
+        // Just views template - no business logic required.
     }
 
     /**
-     * color-map
-     *
      * Shows a map of several color value.
      *
      * @type        primary
      * @template    colormap
      *
      * @access      public
-     * @return      bool
      */
-    public function colormap ()
+    public function colormap()
     {
-        return true;
+        // Just views template - no business logic required.
     }
+
 }
 
 ?>

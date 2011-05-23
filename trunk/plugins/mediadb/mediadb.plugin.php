@@ -41,24 +41,6 @@ class plugin_mediadb extends StdClass implements IsPlugin
     private static $database = null;
 
     /**
-     * Form definition media
-     *
-     * @access  private
-     * @static
-     * @var     DDLDefaultForm
-     */
-    private static $mediaForm = null;
-
-    /**
-     * Form definition mediafolder
-     *
-     * @access  private
-     * @static
-     * @var     DDLDefaultForm
-     */
-    private static $mediafolderForm = null;
-
-    /**
      * get where clause as array
      *
      * @access  private
@@ -95,17 +77,12 @@ class plugin_mediadb extends StdClass implements IsPlugin
      *
      * @access  protected
      * @static
-     * @return  DDLDefaultForm
+     * @return  FormFacade
      */
     protected static function getMediaForm()
     {
-        if (!isset(self::$mediaForm)) {
-            $folderForm = self::getMediafolderForm();
-            self::$mediaForm = $folderForm->getForm("media");
-            $query = self::$mediaForm->getQuery();
-            $query->setWhere(self::_getWhere());
-        }
-        return self::$mediaForm;
+        $form = self::getMediafolderForm();
+        return $form->getForm('media');
     }
 
     /**
@@ -113,17 +90,12 @@ class plugin_mediadb extends StdClass implements IsPlugin
      *
      * @access  protected
      * @static
-     * @return  DDLDefaultForm
+     * @return  FormFacade
      */
     protected static function getMediafolderForm()
     {
-        if (!isset(self::$mediafolderForm)) {
-            $database = self::getDatabase();
-            self::$mediafolderForm = $database->getSchema()->getForm("mediafolder");
-            $query = self::$mediafolderForm->getQuery();
-            $query->setWhere(self::_getWhere());
-        }
-        return self::$mediafolderForm;
+        $builder = new FormBuilder('mediadb');
+        return $builder->setId('mediafolder')->setWhere(self::_getWhere())->__invoke();
     }
 
     /**
@@ -135,29 +107,12 @@ class plugin_mediadb extends StdClass implements IsPlugin
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
      * @return  bool
+     * @ignore
      */
-    function catchAll($event, array $ARGS)
+    public function catchAll($event, array $ARGS)
     {
-        $event = strtolower("$event");
-
-        /* global variables */
-        global $YANA;
-
-        /* do something */
-
-        /* NOTE: event handlers should always return a boolean value.
-         * Return "true" on success or "false" on error.
-         */
         return true;
     }
-
-    /* NOTE:
-     * All member-functions stated here act as action handlers (event handlers) and may be called
-     * directly in a browser by typing: index.php?action=function_name
-     *
-     * You may exclude a single function from this behaviour by either making it non-public, or by
-     * adding @ignore to the function description.
-     */
 
     /**
      * save changes made in edit-form
@@ -174,29 +129,9 @@ class plugin_mediadb extends StdClass implements IsPlugin
      */
     public function mediadb_edit_media()
     {
-        $updatedEntries = $this->getMediaForm()->getUpdateValues();
-
-        if (empty($updatedEntries)) {
-            throw new InvalidInputWarning(); // no data has been provided
-        }
-
-        $database = self::getDatabase();
-        foreach ($updatedEntries as $id => $entry)
-        {
-            $id = mb_strtolower($id);
-
-            // before doing anything, check if entry exists
-            if (!$database->exists("media.$id")) {
-                throw new InvalidInputWarning(); // error - no such entry
-            }
-
-            // update the row
-            if (!$database->update("media.$id", $entry)) {
-                // error - unable to perform update - possibly readonly
-                return false;
-            }
-        } // end foreach
-        return $database->write(); // commit changes
+        $form = self::getMediaForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->update();
     }
 
     /**
@@ -217,19 +152,9 @@ class plugin_mediadb extends StdClass implements IsPlugin
      */
     public function mediadb_delete_media(array $selected_entries)
     {
-        // check if user forgot to mark at least 1 row
-        if (empty($selected_entries)) {
-            throw new InvalidInputWarning();
-        }
-        $database = self::getDatabase();
-        // remove entry from database
-        foreach ($selected_entries as $id)
-        {
-            if (!$database->remove("media.$id")) {
-                throw new InvalidInputWarning(); // entry does not exist
-            }
-        } // end foreach
-        return $database->commit(); // commit changes
+        $form = self::getMediaForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->delete($selected_entries);
     }
 
     /**
@@ -249,18 +174,9 @@ class plugin_mediadb extends StdClass implements IsPlugin
      */
     public function mediadb_new_media()
     {
-        $newEntry = $this->getMediaForm()->getInsertValues();
-
-        if (empty($newEntry)) {
-            throw new InvalidInputWarning(); // no data has been provided
-        }
-
-        $database = self::getDatabase();
-        // insert new entry into table
-        if (!$database->insert("media.*", $newEntry)) {
-            throw new InvalidInputWarning();
-        }
-        return $database->commit(); // commit changes
+        $form = self::getMediaForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->create();
     }
 
     /**
@@ -301,16 +217,10 @@ class plugin_mediadb extends StdClass implements IsPlugin
      * @template  templates/mediafolder.html.tpl
      * @language  mediadb
      * @access    public
-     * @return    bool
      */
     public function mediadb_search_mediafolder()
     {
-        $form = $this->getMediafolderForm();
-        $having = $form->getSearchValuesAsWhereClause();
-        if (!is_null($having)) {
-            $form->getQuery()->setHaving($having);
-        }
-        return true;
+        return $this->mediadb();
     }
 
     /**
@@ -328,29 +238,9 @@ class plugin_mediadb extends StdClass implements IsPlugin
      */
     public function mediadb_update_mediafolder()
     {
-        $updatedEntries = $this->getMediafolderForm()->getUpdateValues();
-
-        if (empty($updatedEntries)) {
-            throw new InvalidInputWarning(); // no data has been provided
-        }
-
-        $database = self::getDatabase();
-        foreach ($updatedEntries as $id => $entry)
-        {
-            $id = mb_strtolower($id);
-
-            // before doing anything, check if entry exists
-            if (!$database->exists("mediafolder.$id")) {
-                throw new InvalidInputWarning(); // error - no such entry
-            }
-
-            // update the row
-            if (!$database->update("mediafolder.$id", $entry)) {
-                // error - unable to perform update - possibly readonly
-                return false;
-            }
-        } // end foreach
-        return $database->write(); // commit changes
+        $form = self::getMediafolderForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->update();
     }
 
     /**
@@ -371,19 +261,9 @@ class plugin_mediadb extends StdClass implements IsPlugin
      */
     public function mediadb_delete_mediafolder(array $selected_entries)
     {
-        // check if user forgot to mark at least 1 row
-        if (empty($selected_entries)) {
-            throw new InvalidInputWarning();
-        }
-        $database = self::getDatabase();
-        // remove entry from database
-        foreach ($selected_entries as $id)
-        {
-            if (!$database->remove("mediafolder.$id")) {
-                throw new InvalidInputWarning(); // entry does not exist
-            }
-        } // end foreach
-        return $database->commit(); // commit changes
+        $form = self::getMediafolderForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->delete($selected_entries);
     }
 
     /**
@@ -403,18 +283,9 @@ class plugin_mediadb extends StdClass implements IsPlugin
      */
     public function mediadb_insert_mediafolder()
     {
-        $newEntry = $this->getMediafolderForm()->getInsertValues();
-
-        if (empty($newEntry)) {
-            throw new InvalidInputWarning(); // no data has been provided
-        }
-
-        $database = self::getDatabase();
-        // insert new entry into table
-        if (!$database->insert("mediafolder.*", $newEntry)) {
-            throw new InvalidInputWarning();
-        }
-        return $database->commit(); // commit changes
+        $form = self::getMediafolderForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->create();
     }
 
     /**
@@ -431,7 +302,7 @@ class plugin_mediadb extends StdClass implements IsPlugin
      */
     public function mediadb_export_mediafolder()
     {
-        $query = $this->getMediafolderForm()->getQuery();
+        $query = $this->getMediafolderForm()->getQuery(); // @todo Fixme!
         return $query->toCSV();
     }
 }

@@ -42,12 +42,10 @@ class plugin_config extends StdClass implements IsPlugin
      * @access  private
      * @var     bool
      */
-    private $isExpert = null;
+    private $_isExpert = null;
 
     /**
      * Default event handler
-     *
-     * returns bool(true) on success and bool(false) on error
      *
      * @access  public
      * @return  bool
@@ -72,7 +70,6 @@ class plugin_config extends StdClass implements IsPlugin
      * @title       {lang id="configmenu"}
      *
      * @access      public
-     * @return      bool
      */
     public function index()
     {
@@ -97,8 +94,6 @@ class plugin_config extends StdClass implements IsPlugin
 
         $YANA->setVar('USER_IS_EXPERT', $this->_getIsExpert());
         $YANA->getView()->setFunction('updateCheck', array($this, '_updateCheck'));
-
-        return true;
     }
 
     /**
@@ -111,7 +106,6 @@ class plugin_config extends StdClass implements IsPlugin
      * @user        group: admin, level: 1
      *
      * @access      public
-     * @return      bool
      */
     public function index_plugins()
     {
@@ -210,7 +204,6 @@ class plugin_config extends StdClass implements IsPlugin
 
         $yana->setVar('USER_IS_EXPERT', $this->_getIsExpert());
         $yana->setVar('PLUGINS', $plugins);
-        return true;
     }
 
     /**
@@ -223,7 +216,7 @@ class plugin_config extends StdClass implements IsPlugin
      */
     private function _getIsExpert()
     {
-        if (!isset($this->isExpert)) {
+        if (!isset($this->_isExpert)) {
             // get current user name
             if (!isset($_SESSION['user_name'])) {
                 return false;
@@ -234,12 +227,12 @@ class plugin_config extends StdClass implements IsPlugin
             $database = SessionManager::getDatasource();
             // get current user-mode
             if ($database->select("user.$userName.user_is_expert")) {
-                $this->isExpert = true;
+                $this->_isExpert = true;
             } else {
-                $this->isExpert = false;
+                $this->_isExpert = false;
             }
         }
-        return $this->isExpert;
+        return $this->_isExpert;
     }
 
     /**
@@ -265,7 +258,7 @@ class plugin_config extends StdClass implements IsPlugin
             }
         } else {
             return -1;
-        } /* end if */
+        }
     }
 
     /**
@@ -356,8 +349,6 @@ class plugin_config extends StdClass implements IsPlugin
     /**
      * event handler
      *
-     * this function does not expect any arguments
-     *
      * @type        config
      * @user        group: admin, level: 100
      * @template    MESSAGE
@@ -367,7 +358,6 @@ class plugin_config extends StdClass implements IsPlugin
      *
      * @access      public
      * @param       string  $id  new profile id
-     * @return      bool
      */
     public function config_create_profile($id)
     {
@@ -394,13 +384,10 @@ class plugin_config extends StdClass implements IsPlugin
             $error = new NotWriteableError();
             throw $error->setFilename($newProfile->getPath());
         }
-        return true;
     }
 
     /**
      * event handler
-     *
-     * this function does not expect any arguments
      *
      * @type        config
      * @user        level: 1
@@ -509,7 +496,6 @@ class plugin_config extends StdClass implements IsPlugin
             break;
             default:
                 return false;
-            break;
         }
         if (!empty($info)) {
             $YANA->setVar("INFO", $info);

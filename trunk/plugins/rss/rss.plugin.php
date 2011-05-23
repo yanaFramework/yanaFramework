@@ -32,6 +32,7 @@
  */
 class plugin_rss extends StdClass implements IsPlugin
 {
+
     /**#@+
      * @ignore
      * @access  private
@@ -77,8 +78,6 @@ class plugin_rss extends StdClass implements IsPlugin
     /**
      * Default event handler
      *
-     * returns bool(true) on success and bool(false) on error
-     *
      * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
@@ -94,8 +93,6 @@ class plugin_rss extends StdClass implements IsPlugin
      * Transform RSS/XML to HTML
      *
      * This creates the output.
-     *
-     * This function does not expect any arguments
      *
      * @type        read
      * @template    RSS_NEWS
@@ -149,7 +146,7 @@ class plugin_rss extends StdClass implements IsPlugin
 
             return true;
 
-        } /* end if */
+        } // end if
     }
 
     /**
@@ -159,10 +156,9 @@ class plugin_rss extends StdClass implements IsPlugin
      * @param   int     $parser parser
      * @param   string  $name   name
      * @param   array   $attrs  attributes
-     * @return  bool
      * @ignore
      */
-    function _startElement($parser, $name, $attrs)
+    public function _startElement($parser, $name, $attrs)
     {
         if (preg_match("/title|pubDate|description|link|author|category|comments/i", $name)) {
             $this->currentTag = mb_strtoupper($name);
@@ -181,7 +177,7 @@ class plugin_rss extends StdClass implements IsPlugin
      * @return  bool
      * @ignore
      */
-    function _endElement($parser, $name)
+    public function _endElement($parser, $name)
     {
         if (mb_strtoupper($name) == "ITEM") {
             $this->currentEntry++;
@@ -197,7 +193,7 @@ class plugin_rss extends StdClass implements IsPlugin
      * @return  bool
      * @ignore
      */
-    function _characterData($parser, $data)
+    public function _characterData($parser, $data)
     {
 
         if ( trim($data) && $this->currentEntry > -1) {

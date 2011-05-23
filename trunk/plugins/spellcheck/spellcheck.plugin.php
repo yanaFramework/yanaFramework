@@ -37,10 +37,9 @@
  */
 class plugin_spellcheck extends StdClass implements IsPlugin
 {
+
     /**
      * Default event handler
-     *
-     * returns bool(true) on success and bool(false) on error
      *
      * @access  public
      * @return  bool
@@ -108,6 +107,7 @@ class plugin_spellcheck extends StdClass implements IsPlugin
             "error" => null
         )));
     }
+
 }
 
 ?>

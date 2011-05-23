@@ -46,8 +46,6 @@ class plugin_ipblock_admin extends StdClass implements IsPlugin
     /**
      * Default event handler
      *
-     * returns bool(true) on success and bool(false) on error
-     *
      * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
@@ -101,12 +99,10 @@ class plugin_ipblock_admin extends StdClass implements IsPlugin
      * @safemode    true
      *
      * @access      public
-     * @return      bool
      */
     public function get_root_block()
     {
         $this->_getBlock();
-        return true;
     }
 
     /**
@@ -119,12 +115,10 @@ class plugin_ipblock_admin extends StdClass implements IsPlugin
      * @safemode    false
      *
      * @access      public
-     * @return      bool
      */
     public function get_block()
     {
         $this->_getBlock();
-        return true;
     }
 
     /**
@@ -228,6 +222,7 @@ class plugin_ipblock_admin extends StdClass implements IsPlugin
         }
         return true;
     }
+
 }
 
 ?>

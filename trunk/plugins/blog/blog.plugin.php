@@ -41,24 +41,6 @@ class plugin_blog extends StdClass implements IsPlugin
     private static $database = null;
 
     /**
-     * Form definition for blog entries
-     *
-     * @access  private
-     * @static
-     * @var     DDLDefaultForm
-     */
-    private static $blogForm = null;
-
-    /**
-     * Form definition for blog comments
-     *
-     * @access  private
-     * @static
-     * @var     DDLDefaultForm
-     */
-    private static $commentForm = null;
-
-    /**
      * get database connection
      *
      * @access  protected
@@ -78,15 +60,12 @@ class plugin_blog extends StdClass implements IsPlugin
      *
      * @access  protected
      * @static
-     * @return  DDLDefaultForm
+     * @return  FormFacade
      */
     protected static function getBlogForm()
     {
-        if (!isset(self::$blogForm)) {
-            $database = self::getDatabase();
-            self::$blogForm = $database->getSchema()->getForm("blog");
-        }
-        return self::$blogForm;
+        $builder = new FormBuilder('blog');
+        return $builder->setId('blog')->__invoke();
     }
 
     /**
@@ -94,15 +73,12 @@ class plugin_blog extends StdClass implements IsPlugin
      *
      * @access  protected
      * @static
-     * @return  DDLDefaultForm
+     * @return  FormFacade
      */
     protected static function getCommentForm()
     {
-        if (!isset(self::$commentForm)) {
-            $form = self::getBlogForm();
-            self::$commentForm = $form->getForm("blogcmt");
-        }
-        return self::$commentForm;
+        $form = self::getBlogForm();
+        return $form->getForm('blogcmt');
     }
 
     /**
@@ -153,15 +129,7 @@ class plugin_blog extends StdClass implements IsPlugin
      */
     public function blog_search_blog()
     {
-        if (!$this->blog()) {
-            return false;
-        }
-        $form = $this->getBlogForm();
-        $where = $form->getSearchValuesAsWhereClause();
-        if (!is_null($where)) {
-            $form->getQuery()->setHaving($where);
-        }
-        return true;
+        return $this->blog();
     }
 
     /**
@@ -181,32 +149,9 @@ class plugin_blog extends StdClass implements IsPlugin
      */
     public function blog_edit_blog()
     {
-        $database = self::getDatabase();
-        $updatedEntries = self::getBlogForm()->getUpdateValues();
-
-        /* no data has been provided */
-        if (empty($updatedEntries)) {
-            throw new InvalidInputWarning();
-        }
-
-        foreach ($updatedEntries as $id => $entry)
-        {
-            $id = mb_strtolower($id);
-
-            /* before doing anything, check if entry exists */
-            if (!$database->exists("blog.${id}")) {
-
-                /* error - no such entry */
-                throw new InvalidInputWarning();
-
-            /* update the row */
-            } elseif (!$database->update("blog.${id}", $entry)) {
-                /* error - unable to perform update - possibly readonly */
-                return false;
-            }
-        } /* end for */
-        /* commit changes */
-        return $database->write();
+        $form = self::getBlogForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->update();
     }
 
     /**
@@ -228,20 +173,9 @@ class plugin_blog extends StdClass implements IsPlugin
      */
     public function blog_delete_blog(array $selected_entries)
     {
-        /* check if user forgot to mark at least 1 row */
-        if (empty($selected_entries)) {
-            throw new InvalidInputWarning();
-        }
-        $database = self::getDatabase();
-        /* remove entry from database */
-        foreach ($selected_entries as $id)
-        {
-            if (!$database->remove("blog.${id}")) {
-                /* entry does not exist */
-                throw new InvalidInputWarning();
-            }
-        } /* end for */
-        return $database->commit(); // commit changes
+        $form = self::getBlogForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->delete($selected_entries);
     }
 
     /**
@@ -263,19 +197,8 @@ class plugin_blog extends StdClass implements IsPlugin
     public function blog_new_blog()
     {
         $form = self::getBlogForm();
-        $newEntry = $form->getInsertValues();
-
-        /* no data has been provided */
-        if (empty($newEntry)) {
-            throw new InvalidInputWarning();
-        }
-
-        $database = self::getDatabase();
-        /* insert new entry into table */
-        if (!$database->insert("blog.*", $newEntry)) {
-            throw new InvalidInputWarning();
-        }
-        if ($database->write()) {
+        $worker = new FormWorker(self::getDatabase(), $form);
+        if ($worker->create()) {
             Microsummary::setText(__CLASS__, 'Blog, update '.date('d M y G:s', time()));
             return true;
         } else {
@@ -311,21 +234,9 @@ class plugin_blog extends StdClass implements IsPlugin
                 throw new SpamError();
             }
         }
-
-        $database = self::getDatabase();
         $form = self::getCommentForm();
-        $newEntry = $form->getInsertValues();
-
-        /* no data has been provided */
-        if (empty($newEntry)) {
-            throw new InvalidInputWarning();
-        }
-
-        /* insert new entry into table */
-        if (!$database->insert("blogcmt.*", $newEntry)) {
-            throw new InvalidInputWarning();
-        }
-        return $database->write();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->create();
     }
 
     /**
@@ -347,32 +258,8 @@ class plugin_blog extends StdClass implements IsPlugin
     public function blog_edit_blogcmt()
     {
         $form = self::getCommentForm();
-        $updatedEntries = $form->getUpdateValues();
-
-        /* no data has been provided */
-        if (empty($updatedEntries)) {
-            throw new InvalidInputWarning();
-        }
-
-        $database = self::getDatabase();
-        foreach ($updatedEntries as $id => $entry)
-        {
-            $id = mb_strtolower($id);
-
-            /* before doing anything, check if entry exists */
-            if (!$database->exists("blogcmt.${id}")) {
-
-                /* error - no such entry */
-                throw new InvalidInputWarning();
-
-            /* update the row */
-            } else if (!$database->update("blogcmt.${id}", $entry)) {
-                /* error - unable to perform update - possibly readonly */
-                return false;
-            }
-        } /* end for */
-        /* commit changes */
-        return $database->write();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->update();
     }
 
     /**
@@ -394,21 +281,9 @@ class plugin_blog extends StdClass implements IsPlugin
      */
     public function blog_delete_blogcmt (array $selected_entries)
     {
-        /* check if user forgot to mark at least 1 row */
-        if (empty($selected_entries)) {
-            throw new InvalidInputWarning();
-        }
-        $database = self::getDatabase();
-        /* remove entry from database */
-        foreach ($selected_entries as $id)
-        {
-            if (!$database->remove("blogcmt.${id}")) {
-                /* entry does not exist */
-                throw new InvalidInputWarning();
-            }
-        } /* end for */
-        /* commit changes */
-        return $database->write();
+        $form = self::getCommentForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->delete($selected_entries);
     }
 
     /**

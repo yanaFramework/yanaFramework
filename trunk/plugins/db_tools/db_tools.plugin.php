@@ -64,8 +64,6 @@ class plugin_db_tools extends StdClass implements IsPlugin
     /**
      * Default event handler
      *
-     * returns bool(true) on success and bool(false) on error
-     *
      * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
@@ -88,11 +86,10 @@ class plugin_db_tools extends StdClass implements IsPlugin
      * @safemode    true
      *
      * @access      public
-     * @return      bool
      */
-    public function db_tools_config_import ()
+    public function db_tools_config_import()
     {
-        return true;
+        // Just views template - no business logic required.
     }
 
     /**
@@ -106,15 +103,14 @@ class plugin_db_tools extends StdClass implements IsPlugin
      * @safemode    true
      *
      * @access      public
-     * @return      bool
      */
-    public function db_tools_config_export ()
+    public function db_tools_config_export()
     {
         global $YANA;
         $YANA->setVar('SELECTED_DBMS', YANA_DATABASE_DBMS);
         $YANA->setVar('LIST_OF_EXPORTABLE_DBMS', $this->listOfExportableDBMS);
         $YANA->setVar("DATABASE_LIST", DDL::getListOfFiles());
-        return true;
+        // Just views template - no further business logic required.
     }
 
     /**
@@ -126,9 +122,8 @@ class plugin_db_tools extends StdClass implements IsPlugin
      * @safemode    true
      *
      * @access      public
-     * @return      bool
      */
-    public function db_tools_write_config ()
+    public function db_tools_write_config()
     {
         global $YANA;
         $errorReporting = error_reporting(E_ERROR | E_WARNING); // suppress MDB2 Notices
@@ -160,9 +155,8 @@ class plugin_db_tools extends StdClass implements IsPlugin
      *
      * @access      public
      * @param       array  $list  list of database schemas
-     * @return      bool
      */
-    public function db_tools_exportxml (array $list)
+    public function db_tools_exportxml(array $list)
     {
         global $YANA;
 
@@ -196,7 +190,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
      * @access      public
      * @return      bool
      */
-    public function db_tools_importmdb2 ()
+    public function db_tools_importmdb2()
     {
         if (!empty($_FILES['mdb2']['tmp_name'])) {
             $structure = DbMDB2::getStructureFromString($_FILES['mdb2']['tmp_name']);
@@ -277,7 +271,6 @@ class plugin_db_tools extends StdClass implements IsPlugin
      * @access      public
      * @param       string  $dbms           type of DBMS
      * @param       array   $list  list of database schemas
-     * @return      bool
      */
     public function db_tools_exportsql ($dbms, array $list)
     {
@@ -337,6 +330,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
         header("Content-Length: " . mb_strlen($fileContents));
         exit($fileContents);
     }
+
 }
 
 ?>

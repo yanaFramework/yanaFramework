@@ -35,10 +35,9 @@
  */
 class plugin_guestbook_admin extends StdClass implements IsPlugin
 {
+
     /**
      * Default event handler
-     *
-     * returns bool(true) on success and bool(false) on error
      *
      * @access  public
      * @param   string  $event  name of the called event in lower-case
@@ -48,15 +47,11 @@ class plugin_guestbook_admin extends StdClass implements IsPlugin
      */
     public function catchAll($event, array $ARGS)
     {
-        global $YANA;
-        /* do nothing */
         return true;
     }
 
     /**
      * Guestbook Setup (Administrator)
-     *
-     * this function does not expect any arguments
      *
      * @type        security
      * @user        group: admin, level: 100
@@ -70,7 +65,6 @@ class plugin_guestbook_admin extends StdClass implements IsPlugin
      * @language    admin
      *
      * @access      public
-     * @return      bool
      */
     public function get_admin()
     {
@@ -80,13 +74,10 @@ class plugin_guestbook_admin extends StdClass implements IsPlugin
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_ADMIN"));
         $configFile = $YANA->getResource('system:/config');
         $YANA->setVar("WRITEABLE", $configFile->isWriteable());
-        return true;
     }
 
     /**
      * Guestbook Setup (Moderator)
-     *
-     * this function does not expect any arguments
      *
      * @type        security
      * @user        group: admin, level: 60
@@ -100,7 +91,6 @@ class plugin_guestbook_admin extends StdClass implements IsPlugin
      * @language    admin
      *
      * @access      public
-     * @return      bool
      */
     public function get_mod()
     {
@@ -110,7 +100,6 @@ class plugin_guestbook_admin extends StdClass implements IsPlugin
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_MOD"));
         $configFile = $YANA->getResource('system:/config');
         $YANA->setVar("WRITEABLE", $configFile->isWriteable());
-        return true;
     }
 
 }

@@ -24,8 +24,6 @@ class plugin_check extends StdClass implements IsPlugin
     /**
      * Default event handler
      *
-     * returns bool(true) on success and bool(false) on error
-     *
      * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
@@ -38,7 +36,7 @@ class plugin_check extends StdClass implements IsPlugin
     }
 
     /**
-     * SQL command line interface
+     * SQL command line interface.
      *
      * This is a console application to run tests on the FileDB database driver and SQL-/Query-parser.
      * It takes a SQL command as input and displays the transformed internal query as it would be understood
@@ -65,7 +63,6 @@ class plugin_check extends StdClass implements IsPlugin
      * @access  public
      * @param   string  $db   database schema
      * @param   string  $sql  SQL statement
-     * @return  bool
      */
     public function check_sql($db = 'check', $sql = '')
     {
@@ -132,7 +129,7 @@ class plugin_check extends StdClass implements IsPlugin
     }
 
     /**
-     * check_foo
+     * dummy
      *
      * @type  primary
      * @user  group: default, level: 100
@@ -142,7 +139,7 @@ class plugin_check extends StdClass implements IsPlugin
     }
 
     /**
-     * check_newfoo
+     * dummy
      *
      * @type  primary
      * @user  group: default, role: default, level: 80
@@ -152,7 +149,7 @@ class plugin_check extends StdClass implements IsPlugin
     }
 
     /**
-     * check_oldfoo
+     * dummy
      *
      * @type  primary
      * @user  group: default, level: 60
@@ -162,7 +159,7 @@ class plugin_check extends StdClass implements IsPlugin
     }
 
     /**
-     * check_presentfoo
+     * dummy
      *
      * @type  primary
      * @user  group: default, role: manager, level: 40
@@ -172,7 +169,7 @@ class plugin_check extends StdClass implements IsPlugin
     }
 
     /**
-     * check_insertfoo
+     * dummy
      *
      * @type  primary
      * @user  group: admin, role: default, level: 75
@@ -183,7 +180,7 @@ class plugin_check extends StdClass implements IsPlugin
     }
 
     /**
-     * check_selectfoo
+     * dummy
      *
      * @type  primary
      * @user  group: default, role: user, level: 75
@@ -193,7 +190,7 @@ class plugin_check extends StdClass implements IsPlugin
     }
 
     /**
-     * check_editfoo
+     * dummy
      *
      * @type  primary
      * @user  group: admin, role: user, level: 60
@@ -203,7 +200,7 @@ class plugin_check extends StdClass implements IsPlugin
     }
 
     /**
-     * check_tesafoo
+     * dummy
      *
      * @type  primary
      * @user  group: default, role: otherusers, level: 50
@@ -213,7 +210,7 @@ class plugin_check extends StdClass implements IsPlugin
     }
 
     /**
-     * check_barfoo
+     * dummy
      *
      * @type  primary
      * @user  group: bar, role: sales, level: 80
@@ -223,7 +220,7 @@ class plugin_check extends StdClass implements IsPlugin
     }
 
     /**
-     * check_redirectfoo
+     * dummy
      *
      * @type  primary
      * @user  group: bar, role: sales, level: 70
@@ -234,7 +231,7 @@ class plugin_check extends StdClass implements IsPlugin
     }
 
     /**
-     * check_addfoobar
+     * dummy
      *
      * @type primary
      * @user  role: print, level: 50
@@ -245,7 +242,7 @@ class plugin_check extends StdClass implements IsPlugin
     }
 
     /**
-     * check_readfoobar
+     * dummy
      *
      * @type primary
      * @user  group: bar
@@ -256,7 +253,7 @@ class plugin_check extends StdClass implements IsPlugin
     }
 
     /**
-     * check_deletebar
+     * dummy
      *
      * @type primary
      * @user  group: bar, role: sales, level: 90
@@ -267,7 +264,7 @@ class plugin_check extends StdClass implements IsPlugin
     }
 
     /**
-     * check_baricons
+     * dummy
      *
      * @type primary
      * @user  level: 60
