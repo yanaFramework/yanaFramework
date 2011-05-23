@@ -8,6 +8,70 @@
                 <source/>
                 <target>Mediengalerie</target>
             </trans-unit>
+            <trans-unit id="media_id">
+                <source>Id</source>
+                <target>Id</target>
+            </trans-unit>
+            <trans-unit id="media">
+                <source>Files</source>
+                <target>Dateien</target>
+            </trans-unit>
+            <trans-unit id="mediafolder">
+                <source>Folders</source>
+                <target>Ordner</target>
+            </trans-unit>
+            <trans-unit id="media_name">
+                <source>Name</source>
+                <target>Name</target>
+            </trans-unit>
+            <trans-unit id="media_description">
+                <source>Description</source>
+                <target>Beschreibung</target>
+            </trans-unit>
+            <trans-unit id="media_mimetype">
+                <source>Type</source>
+                <target>Typ</target>
+            </trans-unit>
+            <trans-unit id="media_public">
+                <source>Public</source>
+                <target>Öffentlich</target>
+            </trans-unit>
+            <trans-unit id="media_preview">
+                <source>Preview</source>
+                <target>Vorschau</target>
+            </trans-unit>
+            <trans-unit id="media_filename">
+                <source>Filename</source>
+                <target>Dateiname</target>
+            </trans-unit>
+            <trans-unit id="media_filesize">
+                <source>Size (kb)</source>
+                <target>Größe (kb)</target>
+            </trans-unit>
+            <trans-unit id="media_file">
+                <source>File</source>
+                <target>Datei</target>
+            </trans-unit>
+            <trans-unit id="mediafolder_name">
+                <source>Folder</source>
+                <target>Ordner</target>
+            </trans-unit>
+            <trans-unit id="mediafolder_description">
+                <source>Description</source>
+                <target>Beschreibung</target>
+            </trans-unit>
+            <trans-unit id="mediafolder_location">
+                <source>Location</source>
+                <target>Ort</target>
+            </trans-unit>
+            <trans-unit id="mediacount_id">
+                <source>Id</source>
+                <target>Id</target>
+            </trans-unit>
+            <trans-unit id="program_title">
+                <source>Media Database</source>
+                <target>Mediendatenbank</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
