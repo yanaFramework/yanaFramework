@@ -777,6 +777,7 @@ fieldset:hover > .gui_generator_toolbar > a
     width: 200px;
     margin: auto;
     overflow: hidden;
+    margin-bottom: 1em;
 }
 
 .gui_generator_gallery_entry img
