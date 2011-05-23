@@ -86,7 +86,6 @@ class SmartTemplate extends Object
         // initialize smarty instance
         $smarty = self::getGlobalSmarty();
         $this->localSmarty = $smarty->createTemplate($filename);
-        //$this->localSmarty->append($smarty->getTemplateVars());
     }
 
     /**

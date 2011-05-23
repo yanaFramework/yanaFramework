@@ -366,13 +366,16 @@ class FormFieldFacade extends Object
     public function getValue()
     {
         $name = strtoupper($this->getName()); // returns either field or column name
-        $collection = $this->_form->getContext()->getRows();
+        $context = $this->_form->getContext();
+        $collection = $context->getRows();
         $value = null;
         if ($collection->valid()) {
             $values = $collection->current();
             if (is_array($values) && isset($values[$name])) {
                 $value = $values[$name];
             }
+        } else {
+            $value = $context->getValue($name);
         }
         return $value;
     }

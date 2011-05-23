@@ -137,7 +137,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     private $_grantable = null;
 
     /**
-     * constructor
+     * Initialize instance.
      *
      * @access  public
      * @param   string  $name    form name
@@ -156,7 +156,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get parent
+     * Get parent object.
      *
      * The result is wether an instance of {@see DDLDatabase} or {@see DDLForm}.
      * This depends on wether this is a sub-form of a parent-form, or not.
@@ -164,6 +164,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      *
      * Thus you should check the result object by using instanceof.
      *
+     * @access  public
      * @return  DDL
      */
     public function getParent()
@@ -172,8 +173,9 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get database
+     * Get database.
      *
+     * @access  public
      * @return  DDLDatabase
      */
     public function getDatabase()
@@ -186,7 +188,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get the database name associated with a table
+     * Get the database name associated with a table.
      *
      * Returns NULL if the schema name is unknown or an empty string if the schema name is
      * undefined.
@@ -207,7 +209,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get table name
+     * Get table name.
      *
      * Returns the name of the source table or view.
      * If none has been defined the function returns NULL instead.
@@ -225,7 +227,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set table name
+     * Set table name.
      *
      * Sets the name of the source table or view.
      * Note that for views the view should be updatable or otherwise you won't be able to use an
@@ -235,15 +237,17 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      *
      * @access  public
      * @param   string  $table  table name
+     * @return  DDLForm
      */
     public function setTable($table)
     {
         assert('is_string($table); // Wrong type for argument 1. String expected');
         $this->table = "$table";
+        return $this;
     }
 
     /**
-     * get title
+     * Get title.
      *
      * The title is a label text that should be displayed in the UI when viewing this object.
      *
@@ -262,13 +266,14 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set title
+     * Set title.
      *
      * Sets the title used to display the object in the UI.
      * To reset the property, leave the parameter empty.
      *
      * @access  public
-     * @param   string  $title  title
+     * @param   string  $title  some text
+     * @return  DDLForm
      */
     public function setTitle($title = "")
     {
@@ -278,10 +283,11 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
         } else {
             $this->title = "$title";
         }
+        return $this;
     }
 
     /**
-     * get the user description
+     * Get the user description.
      *
      * The description serves two purposes:
      * 1st is offline-documentation 2nd is online-documentation.
@@ -307,7 +313,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set the description property
+     * Set the description property.
      *
      * The description serves two purposes:
      * 1st is offline-documentation 2nd is online-documentation.
@@ -319,6 +325,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      *
      * @access  public
      * @param   string  $description  new value of this property
+     * @return  DDLForm
      */
     public function setDescription($description)
     {
@@ -328,10 +335,11 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
         } else {
             $this->description = "$description";
         }
+        return $this;
     }
 
     /**
-     * get form template
+     * Get form template.
      *
      * The template may be any value supported by a form-generator class.
      * It informs the generator how present the contents of the form.
@@ -349,13 +357,14 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set form template
+     * Set form template.
      *
      * The template may be any value supported by a form-generator class.
      * It informs the generator how present the contents of the form.
      *
      * @access  public
      * @param   string  $template  name or id of template to use
+     * @return  DDLForm
      */
     public function setTemplate($template)
     {
@@ -365,10 +374,11 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
         } else {
             $this->template = "$template";
         }
+        return $this;
     }
 
     /**
-     * get foreign key
+     * Get foreign key.
      *
      * If the form is associated with the parent form via a foreign key,
      * this function will return it. If there is none, it will return NULL instead.
@@ -386,7 +396,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set form template
+     * Set form template.
      *
      * The form may be associated with the parent form via a foreign key, if the
      * form and the parent form inherit from different base tables.
@@ -394,6 +404,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      *
      * @access  public
      * @param   string  $key  name of foreign key column
+     * @return  DDLForm
      */
     public function setKey($key)
     {
@@ -403,10 +414,11 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
         } else {
             $this->key = "$key";
         }
+        return $this;
     }
 
     /**
-     * get rights management settings
+     * Get rights management settings.
      *
      * Returns an array of DDLGrant objects.
      *
@@ -426,7 +438,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * drop rights management settings
+     * Drop rights management settings.
      *
      * {@link DDLGrant}s control the access permissions granted to the user.
      *
@@ -443,22 +455,24 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set rights management setting
+     * Set rights management setting.
      *
      * {@link DDLGrant}s control the access permissions granted to the user.
      *
      * This function adds a new grant to the configuration.
      *
      * @access  public
-     * @param   DDLGrant  $grant    grant object expected (rights managment)
+     * @param   DDLGrant  $grant  grant object expected (rights managment)
+     * @return  DDLForm
      */
     public function setGrant(DDLGrant $grant)
     {
         $this->grants[] = $grant;
+        return $this;
     }
 
     /**
-     * add rights management setting
+     * Add rights management setting.
      *
      * {@link DDLGrant}s control the access permissions granted to the user.
      *
@@ -493,7 +507,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get form by name
+     * Get form by name.
      *
      * Returns the DDLForm sub-form with the given name from the current form.
      * If no such item can be found, an exception will be thrown.
@@ -505,7 +519,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      */
     public function getForm($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (isset($this->forms[$name])) {
             return $this->forms[$name];
         } else {
@@ -515,38 +529,28 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * add sub-form by name
+     * Add sub-form by name.
      *
      * Adds a form element by the given name and returns it.
-     * Throws an exception if a field with the given name already exists.
      *
      * @access  public
-     * @param   string  $name       form name
-     * @param   string  $className  form class name
+     * @param   string  $name  form name
      * @return  DDLForm
-     * @throws  AlreadyExistsException    when a sub-form with the same name already exists
-     * @throws  InvalidArgumentException  if given an invalid name or class
+     * @throws  AlreadyExistsException  when a sub-form with the same name already exists
      */
-    public function addForm($name, $className = __CLASS__)
+    public function addForm($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (isset($this->forms[$name])) {
             $message = "Another form with the name '$name' already exists in form '{$this->getName()}'.";
             throw new AlreadyExistsException($message, E_USER_WARNING);
-
-        } elseif ($className !== __CLASS__ && !is_subclass_of($className, __CLASS__)) {
-            throw new InvalidArgumentException("The class '$className' must be a sub-class of DDLForm.");
-
-        } else {
-            $this->forms[$name] = new $className($name, $this);
-            return $this->forms[$name];
         }
+        $this->forms[$name] = new self($name, $this);
+        return $this->forms[$name];
     }
 
     /**
-     * get list of sub-forms
-     *
-     * Returns an array of DDLForm elements.
+     * Returns an array of sub-forms as DDLForm elements.
      *
      * @access  public
      * @return  array
@@ -557,9 +561,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get list of form names
-     *
-     * Returns an array of form names as strings.
+     * Get list of form names as an array of strings.
      *
      * @access  public
      * @return  array
@@ -570,24 +572,21 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * drop sub-form
-     *
-     * Drops the form with the specified name.
+     * Drop the sub-form with the specified name.
      *
      * @access  public
-     * @param   string  $name    form name
-     *
+     * @param   string  $name  form name
      */
     public function dropForm($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (isset($this->forms["$name"])) {
             unset($this->forms["$name"]);
         }
     }
 
     /**
-     * check if field exists
+     * Check if field exists.
      *
      * Returns bool(true) if a field with the given name is already defined.
      * Returns bool(false) otherwise.
@@ -598,12 +597,12 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      */
     public function isField($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         return isset($this->fields[$name]);
     }
 
     /**
-     * get field by name
+     * Get field by name.
      *
      * Returns the DDLField item with the given name from the current view.
      * If no such item can be found, an exception will be thrown.
@@ -615,7 +614,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      */
     public function getField($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (isset($this->fields[$name])) {
             return $this->fields[$name];
         } else {
@@ -625,7 +624,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get list of fields
+     * Get list of fields.
      *
      * Returns an associative array of all DDLField items in this form.
      * The keys are the unique names of the fields.
@@ -640,39 +639,31 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * add field by name
+     * Add field by name.
      *
      * Adds a field element by the given name and returns it.
      * Throws an exception if a field with the given name already exists.
      *
      * @access  public
-     * @param   string  $name       name of a new field
-     * @param   string  $className  field class name
+     * @param   string  $name  name of a new field
      * @return  DDLField
-     * @throws  AlreadyExistsException    when a field with the same name already exists
-     * @throws  InvalidArgumentException  if given an invalid name or class
+     * @throws  AlreadyExistsException  when a field with the same name already exists
      */
-    public function addField($name, $className = 'DDLField')
+    public function addField($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (isset($this->fields[$name])) {
-            $message = "Another field with the name '$name' already exists in form '{$this->getName()}'.";
+            $message = "Another field with the name '$name' already exists in form '" . $this->getName() . "'.";
             throw new AlreadyExistsException($message, E_USER_WARNING);
-
-        } elseif ($className !== 'DDLField' && !is_subclass_of($className, 'DDLField')) {
-            throw new InvalidArgumentException("The class '$className' must be a sub-class of DDLField.");
-
-        } else {
-            // add element to list of defined fields
-            $this->fields[$name] = new $className($name, $this);
-            return $this->fields[$name];
         }
+        // add element to list of defined fields
+        $this->fields[$name] = new DDLField($name);
+        return $this->fields[$name];
     }
 
     /**
-     * drop field by name
+     * Removes a field element by the given name.
      *
-     * Removes a field element by the given.
      * Throws an exception if a field with the given name does not exist.
      *
      * @access  public
@@ -682,18 +673,17 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      */
     public function dropField($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
-        if (isset($this->fields[$name])) {
-            $this->fields[$name] = null;
-        } else {
-            $message = "No such field '$name' in form '{$this->getName()}'.";
+        if (!isset($this->fields[$name])) {
+            $message = "No such field '$name' in form '" . $this->getName() . "'.";
             throw new NotFoundException($message, E_USER_WARNING);
         }
+        $this->fields[$name] = null;
     }
 
     /**
-     * get list of events
+     * Get list of events.
      *
      * Events are fired when the user clicks a certain button in the form. The types of supported
      * events depend on the UI-implementation and the form template.
@@ -710,7 +700,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * get event by name
+     * Get event by name.
      *
      * Events are fired when the user clicks a certain button in the form. The types of supported
      * depend on the UI-implementation and the form template.
@@ -722,7 +712,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      */
     public function getEvent($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (isset( $this->events[$name])) {
             return $this->events[$name];
         } else {
@@ -731,7 +721,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * add event
+     * Add event.
      *
      * Adds a new event item and returns the definition as an instance of {@see DDLEvent}.
      *
@@ -747,7 +737,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      */
     public function addEvent($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->events[$name])) {
             throw new AlreadyExistsException("Another action with the name '$name' is already defined.");
@@ -759,8 +749,6 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * drop event
-     *
      * Drops the event with the specified name.
      *
      * Returns bool(true) on success and bool(false) if there is no such event to drop.
@@ -771,7 +759,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      */
     public function dropEvent($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (isset($this->events["$name"])) {
             unset($this->events["$name"]);
             return true;
@@ -781,7 +769,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * check if form is selectable
+     * Check if form is selectable.
      *
      * Returns bool(true) if form is selectable to the current user and bool(false) otherwise.
      *
@@ -801,7 +789,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * check if form is insertable
+     * Check if form is insertable.
      *
      * Returns bool(true) if form is insertable to the current user and bool(false) otherwise.
      *
@@ -821,7 +809,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * check if form is updatable
+     * Check if form is updatable.
      *
      * Returns bool(true) if form is updatable to the current user and bool(false) otherwise.
      *
@@ -841,7 +829,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * has all input
+     * Has all input.
      *
      * Returns bool(true) if the form is supposed to include all columns from the source table,
      * or bool(false), if it should just take the named fields.
@@ -862,7 +850,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * set wether form should include all input fields
+     * Set wether form should include all input fields.
      *
      * This function sets the attribute "allinput" of the form.
      *
@@ -880,15 +868,17 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      *
      * @access  public
      * @param   bool  $allinput  use all table columns (true = yes, false = no)
+     * @return  DDLForm
      */
     public function setAllInput($allinput)
     {
         assert('is_bool($allinput); // Wrong argument type argument 1. Boolean expected');
         $this->allinput = !empty($allinput);
+        return $this;
     }
 
     /**
-     * check if form is deletable
+     * Check if form is deletable.
      *
      * Returns bool(true) if form is deletable to the current user and bool(false) otherwise.
      *
@@ -908,7 +898,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * check if form is grantable
+     * Check if form is grantable.
      *
      * Returns bool(true) if form is grantable to the current user and bool(false) otherwise.
      *
@@ -928,9 +918,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
-     * magic get
-     *
-     * Returns a sub-form or field, with the given attribute name.
+     * <<magic>> Returns a sub-form or field, with the given attribute name.
      *
      * @access  public
      * @param   string  $name  sub-form or field name
@@ -959,11 +947,11 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      *
      * @access  public
      * @static
-     * @param   SimpleXMLElement  $node    XML node
-     * @param   mixed             $parent  parent node (if any)
+     * @param   \SimpleXMLElement  $node    XML node
+     * @param   mixed              $parent  parent node (if any)
      * @return  DDLForm
      */
-    public static function unserializeFromXDDL(SimpleXMLElement $node, $parent = null)
+    public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
@@ -974,27 +962,12 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
         }
         $name = (string) $attributes['name'];
         $table = (string) $attributes['table'];
+        $template = 0;
         if (isset($attributes['template'])) {
             $template = $attributes['template'];
-        } else {
-            $template = 0;
         }
         // create instance depending on chosen template
-        $isDefaultForm = ($parent instanceof DDLDefaultForm) || ($parent instanceof DDLDatabase);
-        if ($isDefaultForm || is_numeric($template)) {
-            // registered templates (with default handler)
-            $ddl = new DDLDefaultForm($name, $parent);
-            $ddl->setLayout((int) $template);
-        } elseif (class_exists($template) && is_subclass_of($template, DDLForm)) {
-            // registered templates (with custom handler)
-            $ddl = new $attributes['template']($name, $parent);
-            if (!($ddl instanceof DDLForm)) {
-                $message = "Invalid template attribue. Must be a subclass of DDLForm.";
-                throw new InvalidArgumentException($message, E_USER_WARNING);
-            }
-        } else {
-            $ddl = new self($name, $parent);
-        }
+        $ddl = new self($name, $parent);
         $ddl->_unserializeFromXDDL($node);
         if ($ddl->hasAllInput()) {
             $ddl->setAllInput(true); // this initializes the instance

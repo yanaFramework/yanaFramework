@@ -4134,7 +4134,7 @@ class Image extends Object
      * If you set one of these to NULL, the other one will be determined automatically.
      * If you leave both to NULL, the image will not be resized at all.
      *
-     * The default thumbnail-size is 75x75 pixel.
+     * The default thumbnail-size is 100x100 pixel.
      *
      * The argument $keepAspectRatio triggers how the image is resized.
      * If it is false, the image will be stretched or compressed to the dimensions
@@ -4171,7 +4171,7 @@ class Image extends Object
      * @return  bool
      * @since   3.1.0
      */
-    public function createThumbnail($width = 75, $height = 75, $keepAspectRatio = true, array $backgroundColor = null)
+    public function createThumbnail($width = 100, $height = 100, $keepAspectRatio = true, array $backgroundColor = null)
     {
         assert('is_null($width) || is_int($width); // Wrong type for argument 1. Integer expected');
         assert('is_null($height) || is_int($height); // Wrong type for argument 2. Integer expected');

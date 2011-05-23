@@ -729,7 +729,7 @@ class DbBlob extends FileReadonly
             move_uploaded_file($fileTempName, "$path.$mimetype");
         }
         // create thumbnail
-        $image->createThumbnail(75, 75, true, $background);
+        $image->createThumbnail(100, 100, true, $background);
         $image->outputToFile($thumbnailPath, 'png');
         return $path;
     }

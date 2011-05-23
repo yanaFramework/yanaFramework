@@ -1959,8 +1959,8 @@ class SmartUtility extends Utility
 
         $listOfTags = array('b','i','u','h','emp','c','small','big','hide',
                             'code','img','url','mail','color','mark','smilies');
-        assert('isset($params["show"]) && is_string($params["show"]); // Invalid argument "show": string expected');
-        assert('isset($params["hide"]) && is_string($params["hide"]); // Invalid argument "hide": string expected');
+        assert('!isset($params["show"]) || is_string($params["show"]); // Invalid argument "show": string expected');
+        assert('!isset($params["hide"]) || is_string($params["hide"]); // Invalid argument "hide": string expected');
         $show = array();
         $hide = array();
 
@@ -1998,7 +1998,7 @@ class SmartUtility extends Utility
         $tags = array_diff($show, $hide);
 
         /* create document */
-        $document = new SmartView("gui_embedded_tags");
+        $document = new SmartView("id:GUI_EMBEDDED_TAGS");
         $document->setVar('TAGS', $tags);
         $document->setVar('USER_DEFINED', $yana->getVar('PROFILE.EMBTAG'));
         $document->setVar('LANGUAGE', $yana->getLanguage()->getVar());
