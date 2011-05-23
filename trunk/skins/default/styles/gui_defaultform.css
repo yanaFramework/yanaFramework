@@ -780,6 +780,12 @@ fieldset:hover > .gui_generator_toolbar > a
     margin-bottom: 1em;
 }
 
+.gui_generator_gallery_entry .gui_generator_dummyimage
+{
+    background: no-repeat url(gui_gallery_folder.png);
+}
+
+.gui_generator_gallery_entry .gui_generator_dummyimage,
 .gui_generator_gallery_entry img
 {
     display: inline-block;
