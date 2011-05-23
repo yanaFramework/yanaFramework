@@ -336,7 +336,7 @@ class FormBuilder extends Object
      * Get where clause.
      *
      * @access  public
-     * @return  string
+     * @return  string|array
      */
     public function getWhere()
     {
@@ -346,13 +346,38 @@ class FormBuilder extends Object
     /**
      * Set sequence for SQL-where clause.
      *
-     * Note: this does not use SQL-format but: column1="value",column2="value2" aso.
+     * The syntax is as follows:
+     * <ol>
+     * <li> left operand </li>
+     * <li> operator </li>
+     * <li> right operand </li>
+     * </ol>
+     *
+     * List of supported operators:
+     * <ul>
+     * <li> and, or (indicates that both operands are sub-clauses) </li>
+     * <li> =, !=, <, <=, >, >=, like, regexp </li>
+     * </ul>
+     *
+     * Example:
+     * <code>
+     * array(
+     *     array('col1', '=', 'val1'),
+     *     'and',
+     *     array(
+     *         array('col2', '<', 1),
+     *         'or',
+     *         array('col2', '>', 3)
+     *     )
+     * )
+     * </code>
      *
      * @access  public
-     * @param   string  $where  valid where clause
-     * @return  SmartFormUtility 
+     * @param   array  $where  valid where clause
+     * @return  SmartFormUtility
+     * @see     DbSelectExist::setWhere()
      */
-    public function setWhere($where)
+    public function setWhere(array $where)
     {
         $this->_where = $where;
         return $this;
@@ -706,6 +731,7 @@ class FormBuilder extends Object
             $formSetup = $this->_buildSetup($form);
             $where = $this->getWhere();
         }
+        $this->_setupBuilder->setSetup($formSetup);
         $this->_facade->setSetup($formSetup);
 
         $request = (array) Request::getVars($form->getName());
@@ -748,7 +774,7 @@ class FormBuilder extends Object
             $this->_setupBuilder->updateValues($request);
         }
 
-        $cache->{$form->getName()} = $this->_facade->getSetup(); // add to cache
+        $cache->{$form->getName()} = $this->_setupBuilder->__invoke(); // add to cache
         $this->_buildSubForms($this->_facade);
 
         return $this->_facade;
@@ -908,7 +934,7 @@ class FormBuilder extends Object
      */
     private function _buildSetup(DDLForm $form)
     {
-        $formSetup  = $this->_setupBuilder->__invoke();
+        $formSetup = new FormSetup();
         $formSetup->setPage($this->getPage());
         $formSetup->setEntriesPerPage($this->getEntries());
         $formSetup->setLayout($this->getLayout());

@@ -55,7 +55,7 @@ class SmartFormUtility extends Utility
 {
 
     /**
-     * <<smarty function>> create
+     * <<smarty function>> Create.
      *
      * This is a generator function to create dynamic HTML forms from database
      * schema files and database values.
@@ -113,180 +113,74 @@ class SmartFormUtility extends Utility
      */
     public static function createForm(array $params)
     {
-        /**
-         * parameter 'file'
-         *
-         * This parameter is mandatory.
-         */
+        // parameter 'file' is mandatory.
         if (!isset($params['file']) || !is_string($params['file'])) {
-            return "";
+            return "Error: Missing parameter 'file'.";
         }
 
         // create database query
-        $database = Yana::connect($params['file']);
-        $dbSchema = $database->getSchema();
+        $smartForm = new FormBuilder($params['file']);
 
-        switch (true)
-        {
-            /**
-             * parameter 'id'
-             *
-             * This parameter is mandatory, if the parameter 'table' is not present.
-             */
-            case isset($params['id']):
-                if (!$dbSchema->isForm($params['id'])) {
-                    return "The form with name '" . $params['id'] . "' was not found.";
-                }
-                $form = $database->getForm($params['id']);
-            break;
-            /**
-             * parameter 'table'
-             *
-             * This parameter is mandatory. When present, the parameter 'id' is ignored.
-             */
-            case isset($params['table']):
-
-                $genericName = $dbSchema->getName() . '-' . $params['table'];
-
-                if ($dbSchema->isForm($genericName)) { // form already exists
-                    $form = $dbSchema->getForm($genericName);
-                    assert('$form instanceof DDLAbstractForm; // form not found');
-                    break;
-                }
-
-                $table = $dbSchema->getTable($params['table']);
-                if (! $table instanceof DDLTable) {
-                    return ""; // error - table not found
-                }
-
-                // create new form object
-                $form = $dbSchema->addForm($genericName, 'DDLDefaultForm');
-                unset($genericName);
-
-                /**
-                 * create query
-                 */
-                $query = new DbSelect($database);
-                $query->setTable($table->getName());
-
-                /**
-                 * parameters 'show', 'hide'
-                 *
-                 * These black- and whitelist params are used to create
-                 * the column list for the query.
-                 */
-                $showColumns = array();
-                if (isset($params['show'])) {
-                    if (!is_array($params['show'])) {
-                        $showColumns = explode(',', $params['show']);
-                    } else {
-                        $showColumns = $params['show'];
-                    }
-                }
-                $hideColumns = array();
-                if (isset($params['hide'])) {
-                    if (!is_array($params['hide'])) {
-                        $hideColumns = explode(',', $params['hide']);
-                    } else {
-                        $hideColumns = $params['hide'];
-                    }
-                }
-
-                /**
-                 * set columns
-                 *
-                 * This column list is used to auto-generate a list of DDLDefaultField entries
-                 * for the generated form.
-                 */
-                $columnNames = array_diff($showColumns, $hideColumns);
-                if (!empty($columnNames)) {
-                    $query->setColumns($columnNames);
-                } else {
-                    $columnNames = $table->getColumnNames();
-                }
-                unset($showColumns, $hideColumns);
-
-                $form->setQuery($query);
-            break; // end if params[table]
-            /**
-             * error - missing on of the followin params: 'id', 'table'
-             */
-            default:
-                return "";
-            break;
+        if (isset($params['id'])) {
+            $smartForm->setId($params['id']);
+        }
+        if (isset($params['table'])) {
+            $smartForm->setTable($params['table']);
+        }
+        if (isset($params['show'])) {
+            if (!is_array($params['show'])) {
+                $params['show'] = explode(',', $params['show']);
+            }
+            $smartForm->setShow($params['show']);
+        }
+        if (isset($params['hide'])) {
+            if (!is_array($params['hide'])) {
+                $params['hide'] = explode(',', $params['hide']);
+            }
+            $smartForm->setHide($params['hide']);
+        }
+        if (isset($params['where'])) {
+            $smartForm->setWhere($params['where']);
+        }
+        if (isset($params['on_insert'])) {
+            $smartForm->setOninsert($params['on_insert']);
+        }
+        if (isset($params['on_update'])) {
+            $smartForm->setOnupdate($params['on_update']);
+        }
+        if (isset($params['on_delete'])) {
+            $smartForm->setOndelete($params['on_delete']);
+        }
+        if (isset($params['on_search'])) {
+            $smartForm->setOnsearch($params['on_search']);
+        }
+        if (isset($params['on_export'])) {
+            $smartForm->setOnexport($params['on_export']);
+        }
+        if (isset($params['on_download'])) {
+            $smartForm->setOndownload($params['on_download']);
+        }
+        if (isset($params['sort'])) {
+            $smartForm->setSort($params['sort']);
+        }
+        if (isset($params['desc'])) {
+            $smartForm->setDescending($params['desc']);
+        }
+        if (isset($params['page'])) {
+            $smartForm->setPage($params['page']);
+        }
+        if (isset($params['entries'])) {
+            $smartForm->setEntries($params['entries']);
+        }
+        if (isset($params['layout'])) {
+            $smartForm->setLayout($params['layout']);
         }
 
-        if (!$form->isCached()) {
-            $formSetup = new FormSetup();
-            /**
-             * parameters 'sort', 'desc'
-             *
-             * set 'orderBy' - clause
-             */
-            if (isset($params['sort'])) {
-                try {
-                    $form->getQuery()->setOrderBy($params['sort'], !empty($params['desc']));
-                } catch (NotFoundException $e) {
-                    return "";
-                }
-            }
-
-            /**
-             * parameter 'where'
-             */
-            if (!empty($params['where'])) {
-                try {
-                    $form->getQuery()->setWhere($params['where']);
-                } catch (Exception $e) {
-                    return "";
-                }
-            }
-
-            if (isset($params['on_insert'])) {
-                $form->setInsertAction($params['on_insert']);
-            }
-            if (isset($params['on_update'])) {
-                $form->setUpdateAction($params['on_update']);
-            }
-            if (isset($params['on_delete'])) {
-                $form->setDeleteAction($params['on_delete']);
-            }
-            if (isset($params['on_search'])) {
-                $form->setSearchAction($params['on_search']);
-            }
-            if (isset($params['on_export'])) {
-                $form->setExportAction($params['on_export']);
-            }
-            if (isset($params['on_download'])) {
-                $form->setDownloadAction($params['on_download']);
-            } else {
-                // initialize download action
-                $form->setDownloadAction('download_file');
-            }
-            if (isset($params['layout'])) {
-                $formSetup->setLayout((int) $params['layout']);
-                $form->setLayout((int) $params['layout']); // @deprecated
-            }
-
-            /**
-             * parameter 'page'
-             */
-            if (isset($params['page'])) {
-                $formSetup->setPage((int) $params['page']);
-                $form->setPage((int) $params['page']); // @deprecated
-            }
-            /**
-             * parameter 'entries'
-             */
-            if (isset($params['entries'])) {
-                $formSetup->setEntriesPerPage((int) $params['entries']);
-                $form->setEntriesPerPage((int) $params['entries']); // @deprecated
-            }
-            $form->__wakeup(); // @deprecated
+        try {
+            return (string) $smartForm->__invoke();
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
-        $formSetup->updateSetup(Request::getVars());
-
-        return $form->toString(); // @deprecated
     }
 
 }

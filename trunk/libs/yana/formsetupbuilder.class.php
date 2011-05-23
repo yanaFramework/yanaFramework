@@ -192,14 +192,20 @@ class FormSetupBuilder extends Object
         {
             $context = $setup->getContext($name);
             if (isset($request[$name]) && is_array($request[$name])) {
-                $context->addValues($request[$name]);
+                $columnNames = $context->getColumnNames();
+                // security check: allow only fields, that exist in the form
+                $values = array_intersect_key($request[$name], array_flip($columnNames));
+                $context->setValues($values);
             }
         }
+        // security check: allow only fields, that exist and are really updatable
+        $columnNames = array_flip($setup->getContext('editable')->getColumnNames());
         $context = $setup->getContext('update');
         if (isset($request['update']) && is_array($request['update'])) {
             foreach ($request['update'] as $key => $row)
             {
                 if (is_array($row)) {
+                    $row = array_intersect_key($row, $columnNames);
                     $context->updateRow($key, $row);
                 }
             }
@@ -488,12 +494,12 @@ class FormSetupBuilder extends Object
                         $insertCollection[$columnName] = $column;
                     }
                     if ($column->isUpdatable() && $field->isUpdatable()) {
-                        $updateCollection = new DDLColumnCollection();
+                        $updateCollection[$columnName] = $column;
                     }
                 }
             }
         }
-        $this->object->getContext('read')->setColumnNames(array_keys($readCollection->toArray()));
+        $this->object->getContext('editable')->setColumnNames(array_keys($updateCollection->toArray()));
         $this->object->getContext('update')->setColumnNames(array_keys($readCollection->toArray()));
         $this->object->getContext('insert')->setColumnNames(array_keys($insertCollection->toArray()));
         $this->object->getContext('search')->setColumnNames(array_keys($searchCollection->toArray()));

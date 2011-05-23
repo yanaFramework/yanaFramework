@@ -384,27 +384,7 @@ class FormFacade extends Object
      */
     public function getInsertValues()
     {
-        $values = $this->_setup->getContext('insert')->getValues();
-        
-        /**
-         * @todo need to review this section:
-         * We need to copy the primary key of the parent form to the foreign key column of the child form.
-         * Otherwise the inserted row would get rejected for a foreign key constraint mismatch.
-         *
-         * Should we do this here or when retrieving the results of the base form?
-         */
-
-//        $parentForm = $this->getParent();
-//        // copy foreign key from parent query
-//        if ($parentForm instanceof DDLAbstractForm && $parentForm->getTable() !== $this->getTable()) {
-//            $results = $parentForm->getQuery()->getResults();
-//            if (count($results) === 1) {
-//                $foreignKey = array_shift($this->getForeignKey());
-//                $values[$foreignKey] = key($results);
-//            }
-//            unset($results, $foreignKey);
-//        }
-        return $values;
+        return $this->_setup->getContext('insert')->getValues();
     }
 
     /**

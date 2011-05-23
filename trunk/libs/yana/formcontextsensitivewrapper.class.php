@@ -127,12 +127,11 @@ class FormContextSensitiveWrapper extends FormFieldFacadeCollection implements I
             } catch (NotFoundException $e) {
                 continue; // skip invalid column definition
             }
-            try {
+            $field = null;
+            if ($this->_form->isField($columnName)) {
                 $field = $this->_form->getField($columnName);
-                $facade = new FormFieldFacade($this, $column, $field);
-            } catch (NotFoundException $e) {
-                $facade = new FormFieldFacade($this, $column); // ignore invalid field definition
             }
+            $facade = new FormFieldFacade($this, $column, $field);
             $this->offsetSet($columnName, $facade);
         }
     }

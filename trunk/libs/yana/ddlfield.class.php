@@ -373,7 +373,7 @@ class DDLField extends DDLNamedObject
     public function isUpdatable()
     {
         if (!isset($this->isUpdatable)) {
-            if (DDLGrant::checkPermissions($this->getGrants(), false, false, true)) {
+            if (!$this->isReadonly() && DDLGrant::checkPermissions($this->getGrants(), false, false, true)) {
                 $this->isUpdatable = true;
             } else {
                 $this->isUpdatable = false;
@@ -393,7 +393,7 @@ class DDLField extends DDLNamedObject
     public function isDeletable()
     {
         if (!isset($this->isDeletable)) {
-            if (DDLGrant::checkPermissions($this->getGrants(), false, false, false, true)) {
+            if (!$this->isReadonly() && DDLGrant::checkPermissions($this->getGrants(), false, false, false, true)) {
                 $this->isDeletable = true;
             } else {
                 $this->isDeletable = false;
@@ -644,17 +644,18 @@ class DDLField extends DDLNamedObject
     }
 
     /**
-     * Check if the field has a column element.
+     * Get underlying column (if any).
      *
      * If the field has a column as child element, it does not refer to a column in a real table.
-     * Therefore it must not be included in any queries on the database.
+     * If such a column element exists, this function returns it.
+     * If not, it returns NULL instead.
      *
      * @access  public
-     * @return  bool
+     * @return  DDLColumn
      */
-    public function refersToTable()
+    public function getColumn()
     {
-        return !($this->column instanceof DDLColumn);
+        return $this->column;
     }
 
     /**

@@ -588,7 +588,6 @@ class DbSelect extends DbSelectCount
                 }
                 // create body
                 return $csv . $this->_valueToCSV($resultset) . "$rowSep";
-            break;
             // handle rows
             case DbResultEnumeration::ROW:
                 // create header
@@ -604,7 +603,6 @@ class DbSelect extends DbSelectCount
                 }
                 // create body
                 return $csv . self::_rowToCsv($resultset, $colSep, $rowSep);
-            break;
             // handle tables and columns
             case DbResultEnumeration::COLUMN:
             case DbResultEnumeration::TABLE:
@@ -629,14 +627,12 @@ class DbSelect extends DbSelectCount
                     }
                 }
                 return $csv;
-            break;
             default:
                 /* Query is incomplete or invalid.
                  * This may occur if no table is selected.
                  */
                 $message = "Unable to create CSV string. Your query is invalid.";
                 throw new InvalidValueException($message, E_USER_WARNING);
-            break;
         }
     }
 

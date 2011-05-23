@@ -38,26 +38,26 @@ class FormQueryBuilder extends Object
     /**
      * Database connection used to create the querys.
      *
-     * @access  private
+     * @access  protected
      * @var     DbStream
      */
-    private $_db = null;
+    protected $_db = null;
 
     /**
      * Definition of form.
      *
-     * @access  private
+     * @access  protected
      * @var     FormFacade
      */
-    private $_form = null;
+    protected $_form = null;
 
     /**
      * Object cache.
      *
-     * @access  private
+     * @access  protected
      * @var     array
      */
-    private $_cache = array();
+    protected $_cache = array();
 
     /**
      * Initialize instance.
@@ -162,7 +162,7 @@ class FormQueryBuilder extends Object
      */
     protected function _processSearchValues(DbSelect $select)
     {
-        if ($this->_form->getSearchValues()) {
+        if ($this->_form->getSetup()->getContext('search')->getValues()) {
             $clause = $select->getWhere();
             // determine new where clause
             /* @var $field FormFieldFacade */
@@ -202,7 +202,7 @@ class FormQueryBuilder extends Object
             {
                 /* @var $field FormFieldFacade */
                 $field = $updateForm->offsetGet($columnName);
-                if ($field && $field->isSelectable() && $field->getField()->isVisible() && $field->isFilterable()) {
+                if ($field && $field->isSelectable() && $field->isFilterable()) {
                     $havingClause = array($columnName, 'like', $filter);
                     $select->addHaving($havingClause);
                 }
@@ -230,7 +230,7 @@ class FormQueryBuilder extends Object
                 $this->_form->getSetup()->setEntriesPerPage(1);
             } else {
                 $source = $target = "";
-                list($source, $target) = $this->getForeignKey($select);
+                list($source, $target) = $this->getForeignKey();
                 $target = strtoupper($target);
                 $results = $parentResults->toArray();
                 if (count($results) === 1) {
@@ -283,11 +283,10 @@ class FormQueryBuilder extends Object
      * the target-column in the table of the base-form.
      *
      * @access  protected
-     * @param   DbSelect  $select  base query for current form
      * @return  array
      * @throws  DBWarning  when no foreign key is found
      */
-    protected function getForeignKey(DbSelect $select)
+    protected function getForeignKey()
     {
         assert('$this->_form instanceof FormFacade;');
         $form = $this->_form->getBaseForm();
@@ -295,7 +294,6 @@ class FormQueryBuilder extends Object
         if (!$parentForm instanceof DDLForm) {
             return null;
         }
-        $results = $select->getResults();
         $db = $form->getDatabase();
 
         $targetTable = $parentForm->getTable();
@@ -333,101 +331,6 @@ class FormQueryBuilder extends Object
             throw new DbWarning($message, E_USER_ERROR);
         }
         return array($keyName, $columnName);
-    }
-
-    /**
-     * This returns an array of foreign-key reference settings.
-     *
-     * Example:
-     * <code>
-     * array(
-     *   'primaryKey1' => array(
-     *     'table' => 'name of target table'
-     *     'column' => 'name of target column'
-     *     'label' => 'name of a column in target table that should be used as a label'
-     * }
-     * </code>
-     *
-     * @access  private
-     * @return  array
-     */
-    private function _getReferences()
-    {
-        if (!isset($this->_cache[__FUNCTION__])) {
-            $this->_cache[__FUNCTION__] = array();
-            assert('!isset($field);');
-            /* @var $field FormFieldFacade */
-            foreach ($this->_form->getUpdateForm() as $field)
-            {
-                $column = $field->getColumn();
-                if ($column->getType() !== 'reference') {
-                    continue;
-                }
-                assert('!isset($column);');
-                $reference = $column->getReferenceSettings();
-                if (!isset($reference['column'])) {
-                    $reference['column'] = $column->getReferenceColumn()->getName();
-                }
-                if (!isset($reference['label'])) {
-                    $reference['label'] = $reference['column'];
-                }
-                if (!isset($reference['table'])) {
-                    $reference['table'] = $column->getReferenceColumn()->getParent()->getName();
-                }
-                $this->_cache[__FUNCTION__][$field->getName()] = $reference;
-            } // end foreach
-        }
-        return $this->_cache[__FUNCTION__];
-    }
-
-    /**
-     * Look up list of reference values.
-     *
-     * This function returns an array, where the keys are the values of a unique key in the
-     * target table and the values are the labels for those keys.
-     *
-     * Use this function for AJAX auto-completion in reference column.
-     *
-     * The search term allows to find all rows whose labels start with a given text.
-     * You may use the wildcards '%' and '_'.
-     *
-     * Note: you may want to introduce an index on the label-column of your database.
-     *
-     * If the field does not refer to a column of type "reference", then an empty array will be returned.
-     *
-     * @access  public
-     * @param   string  $fieldName   name of field to look up
-     * @param   string  $searchTerm  find all entries that start with ...
-     * @param   int     $limit       maximum number of hits, set to 0 to get all (default = 50)
-     * @return  array
-     */
-    public function buildReferenceValues($fieldName, $searchTerm = "", $limit = 50)
-    {
-        assert('is_string($fieldName); // Invalid argument $fieldName: string expected');
-        assert('is_string($searchTerm); // Invalid argument $searchTerm: string expected');
-        $referenceValues = array();
-        $references = $this->_getReferences();
-        if (isset($references[$fieldName])) {
-            $reference = $references[$fieldName];
-            $select = new DbSelect($this->_db);
-            $select->setTable($reference['table']);
-            $columns = array('LABEL' => $reference['label'], 'VALUE' => $reference['column']);
-            $select->setColumns($columns);
-            if ($limit > 0) {
-                $select->setLimit($limit);
-            }
-            $select->setOrderBy($reference['label']);
-            if (!empty($searchTerm)) {
-                $select->setWhere(array($reference['label'], 'like', $searchTerm . '%'));
-            }
-            $values = array();
-            foreach ($select->getResults() as $row)
-            {
-                $values[$row['VALUE']] = $row['LABEL'];
-            }
-            $referenceValues = $values;
-        }
-        return $referenceValues;
     }
 
 }
