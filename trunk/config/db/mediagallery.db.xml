@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE database SYSTEM "../dtd/database.dtd">
+<database name="mediadb">
+    <include>mediadb</include>
+    <form name="mediagallery" table="mediafolder" allinput="no" template="6" title="{lang id=&quot;mediafolder&quot;}">
+        <input name="mediafolder_id" hidden="yes"/>
+        <input name="user_created" hidden="yes"/>
+        <input name="public" hidden="yes"/>
+        <input name="mediafolder_name" readonly="yes"/>
+        <form name="media" table="media" allinput="no" template="6" title="{lang id=&quot;media&quot;}">
+            <input name="media_id" hidden="yes"/>
+            <input name="mediafolder_id" hidden="yes"/>
+            <input name="media_name" readonly="yes"/>
+            <input name="media_preview" readonly="yes"/>
+            <input name="media_file" readonly="yes"/>
+        </form>
+    </form>
+</database>
