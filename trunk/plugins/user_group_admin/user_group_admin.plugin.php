@@ -41,33 +41,6 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
     private static $database = null;
 
     /**
-     * Form definition
-     *
-     * @access  private
-     * @static
-     * @var     DDLDefaultForm
-     */
-    private static $actionForm = null;
-
-    /**
-     * Form definition
-     *
-     * @access  private
-     * @static
-     * @var     DDLDefaultForm
-     */
-    private static $groupForm = null;
-
-    /**
-     * Form definition
-     *
-     * @access  private
-     * @static
-     * @var     DDLDefaultForm
-     */
-    private static $roleForm = null;
-
-    /**
      * get database connection
      *
      * @access  protected
@@ -87,15 +60,12 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      *
      * @access  protected
      * @static
-     * @return  DDLDefaultForm
+     * @return  FormFacade
      */
     protected static function getActionForm()
     {
-        if (!isset(self::$actionForm)) {
-            $database = self::getDatabase();
-            self::$actionForm = $database->getSchema()->getForm("securityactionrules");
-        }
-        return self::$actionForm;
+        $builder = new FormBuilder('user_admin');
+        return $builder->setId('securityactionrules')->__invoke();
     }
 
     /**
@@ -103,15 +73,12 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      *
      * @access  protected
      * @static
-     * @return  DDLDefaultForm
+     * @return  FormFacade
      */
     protected static function getGroupForm()
     {
-        if (!isset(self::$groupForm)) {
-            $database = self::getDatabase();
-            self::$groupForm = $database->getSchema()->getForm("securitygroup");
-        }
-        return self::$groupForm;
+        $builder = new FormBuilder('user_admin');
+        return $builder->setId('securitygroup')->__invoke();
     }
 
     /**
@@ -119,21 +86,16 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      *
      * @access  protected
      * @static
-     * @return  DDLDefaultForm
+     * @return  FormFacade
      */
     protected static function getRoleForm()
     {
-        if (!isset(self::$roleForm)) {
-            $database = self::getDatabase();
-            self::$roleForm = $database->getSchema()->getForm("securityrole");
-        }
-        return self::$roleForm;
+        $builder = new FormBuilder('user_admin');
+        return $builder->setId('securityrole')->__invoke();
     }
 
     /**
-     * Default event handler
-     *
-     * returns bool(true) on success and bool(false) on error
+     * Default event handler.
      *
      * @access  public
      * @return  bool
@@ -156,15 +118,14 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      * @title       {lang id="USER.OPTION.26"}
      *
      * @access      public
-     * @return      bool
      */
     public function get_usergroups()
     {
-        return true;
+        // Just views template - no business logic required.
     }
 
     /**
-     * user groups panel
+     * user actions panel
      *
      * @type        config
      * @template    USER_ACTION_SETTINGS_TEMPLATE
@@ -173,13 +134,11 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      * @title       {lang id="USER.OPTION.32"}
      *
      * @access      public
-     * @return      bool
      */
     public function get_user_action_settings()
     {
-        global $YANA;
-        $YANA->setVar('WHERE', array('actionrule_predefined', '=', false));
-        return true;
+        Yana::getInstance()->setVar('WHERE', array('actionrule_predefined', '=', false));
+        // Just views template - no further business logic required.
     }
 
     /**
@@ -196,39 +155,23 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      * @access      public
      * @return      bool
      */
-    public function set_user_action_settings_edit ()
+    public function set_user_action_settings_edit()
     {
-        $updatedEntries = self::getActionForm()->getUpdateValues();
-
-        /* no data has been provided */
-        if (empty($updatedEntries)) {
-            throw new InvalidInputWarning();
-        }
-
-        $database = $this->getDatabase();
-        foreach ($updatedEntries as $id => $entry)
-        {
-            $id = mb_strtolower($id);
-            if ($entry['level'] > 100) {
-                $entry['level'] = 100;
+        $form = self::getActionForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker->beforeUpdate(
+            function (&$id, &$entry)
+            {
+                $id = mb_strtolower($id);
+                if ($entry['level'] > 100) {
+                    $entry['level'] = 100;
+                }
+                if ($entry['level'] < 0) {
+                    $entry['level'] = 0;
+                }
             }
-            if ($entry['level'] < 0) {
-                $entry['level'] = 0;
-            }
-            /* before doing anything, check if entry exists */
-            if (!$database->exists("securityactionrules.${id}")) {
-
-                /* error - no such entry */
-                throw new InvalidInputWarning();
-
-            /* update the row */
-            } else if (!$database->update("securityactionrules.${id}", $entry)) {
-                /* error - unable to perform update - possibly readonly */
-                return false;
-            }
-        } /* end for */
-        /* commit changes */
-        return $database->write();
+        );
+        return $worker->update();
     }
 
     /**
@@ -243,10 +186,10 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      * @onerror     goto: GET_USER_ACTION_SETTINGS
      *
      * @access      public
-     * @return      bool
      * @param       array  $selected_entries  array of params passed to the function
+     * @return      bool
      */
-    public function set_user_action_settings_delete (array $selected_entries)
+    public function set_user_action_settings_delete(array $selected_entries)
     {
         $database = self::getDatabase();
 
@@ -265,8 +208,6 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
     /**
      * Create user action settings
      *
-     * returns bool(true) on success and bool(false) on error
-     *
      * @type        config
      * @user        group: admin, level: 100
      * @template    message
@@ -278,33 +219,24 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      */
     public function set_user_action_settings_new()
     {
-        $newEntry = self::getActionForm()->getInsertValues();
-
-        /* no data has been provided */
-        if (empty($newEntry)) {
-            throw new InvalidInputWarning();
-        }
-
-        if ($newEntry['level'] > 100) {
-            $newEntry['level'] = 100;
-        }
-        if ($newEntry['level'] < 0) {
-            $newEntry['level'] = 0;
-        }
-        $database = self::getDatabase();
-        /* insert new entry into table */
-        if (!$database->insert("securityactionrules.*", $newEntry)) {
-            throw new InvalidInputWarning();
-        } else {
-            return $database->write();
-        }
+        $form = self::getActionForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker->beforeCreate(
+            function (&$newEntry)
+            {
+                if ($newEntry['level'] > 100) {
+                    $newEntry['level'] = 100;
+                }
+                if ($newEntry['level'] < 0) {
+                    $newEntry['level'] = 0;
+                }
+            }
+        );
+        return $worker->create();
     }
-
 
     /**
      * Edit user groups
-     *
-     * returns bool(true) on success and bool(false) on error
      *
      * @type        config
      * @user        group: admin, level: 100
@@ -317,38 +249,19 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      */
     public function set_usergroup_edit()
     {
-        $updatedEntries = self::getGroupForm()->getUpdateValues();
-
-        /* no data has been provided */
-        if (empty($updatedEntries)) {
-            throw new InvalidInputWarning();
-        }
-
-        $database = self::getDatabase();
-        foreach ($updatedEntries as $id => $entry)
-        {
-            $id = mb_strtolower($id);
-
-            /* before doing anything, check if entry exists */
-            if (!$database->exists("securitygroup.${id}")) {
-
-                /* error - no such entry */
-                throw new InvalidInputWarning();
+        $form = self::getGroupForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker->beforeUpdate(
+            function (&$id)
+            {
+                $id = mb_strtolower($id);
             }
-            /* update the row */
-            if (!$database->update("securitygroup.${id}", $entry)) {
-                /* error - unable to perform update - possibly readonly */
-                return false;
-            }
-        } /* end for */
-        /* commit changes */
-        return $database->write();
+        );
+        return $worker->update();
     }
 
     /**
      * Delete user groups
-     *
-     * returns bool(true) on success and bool(false) on error
      *
      * @type        config
      * @user        group: admin, level: 100
@@ -357,29 +270,18 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      * @onerror     goto: GET_USERGROUPS
      *
      * @access      public
-     * @return      bool
      * @param       array  $selected_entries  array of params passed to the function
+     * @return      bool
      */
-    public function set_usergroup_delete (array $selected_entries)
+    public function set_usergroup_delete(array $selected_entries)
     {
-        $database = self::getDatabase();
-
-        /* remove entry from database */
-        foreach ($selected_entries as $id)
-        {
-            if (!$database->remove("securitygroup.${id}")) {
-                /* entry does not exist */
-                throw new InvalidInputWarning();
-            }
-        } /* end for */
-        /* commit changes */
-        return $database->write();
+        $form = self::getGroupForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->delete($selected_entries);
     }
 
     /**
      * Create user group
-     *
-     * returns bool(true) on success and bool(false) on error
      *
      * @type        config
      * @user        group: admin, level: 100
@@ -392,19 +294,9 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      */
     public function set_usergroup_new()
     {
-        $newEntry = self::getGroupForm()->getInsertValues();
-
-        /* no data has been provided */
-        if (empty($newEntry)) {
-            throw new InvalidInputWarning();
-        }
-
-        $database = self::getDatabase();
-        /* insert new entry into table */
-        if (!$database->insert("securitygroup.*", $newEntry)) {
-            throw new InvalidInputWarning();
-        }
-        return $database->write();
+        $form = self::getGroupForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->create();
     }
 
     /**
@@ -417,17 +309,14 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      * @title       {lang id="USER.OPTION.25"}
      *
      * @access      public
-     * @return      bool
      */
     public function get_userroles()
     {
-        return true;
+        // Just views template - no business logic required.
     }
 
     /**
      * Edit user roles
-     *
-     * returns bool(true) on success and bool(false) on error
      *
      * @type        config
      * @user        group: admin, level: 100
@@ -440,38 +329,19 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      */
     public function set_userrole_edit()
     {
-        $updatedEntries = self::getRoleForm()->getUpdateValues();
-
-        /* no data has been provided */
-        if (empty($updatedEntries)) {
-            throw new InvalidInputWarning();
-        }
-
-        $database = self::getDatabase();
-        foreach ($updatedEntries as $id => $entry)
-        {
-            $id = mb_strtolower($id);
-
-            /* before doing anything, check if entry exists */
-            if (!$database->exists("securityrole.${id}")) {
-
-                /* error - no such entry */
-                throw new InvalidInputWarning();
+        $form = self::getRoleForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker->beforeUpdate(
+            function (&$id)
+            {
+                $id = mb_strtolower($id);
             }
-            /* update the row */
-            if (!$database->update("securityrole.${id}", $entry)) {
-                /* error - unable to perform update - possibly readonly */
-                return false;
-            }
-        } /* end for */
-        /* commit changes */
-        return $database->write();
+        );
+        return $worker->update();
     }
 
     /**
      * Delete user roles
-     *
-     * returns bool(true) on success and bool(false) on error
      *
      * @type        config
      * @user        group: admin, level: 100
@@ -480,23 +350,14 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      * @onerror     goto: GET_USERROLES
      *
      * @access      public
-     * @return      bool
      * @param       array  $selected_entries  array of params passed to the function
+     * @return      bool
      */
     public function set_userrole_delete(array $selected_entries)
     {
-        $database = self::getDatabase();
-
-        /* remove entry from database */
-        foreach ($selected_entries as $id)
-        {
-            if (!$database->remove("securityrole.${id}")) {
-                /* entry does not exist */
-                throw new InvalidInputWarning();
-            }
-        } /* end for */
-        /* commit changes */
-        return $database->write();
+        $form = self::getRoleForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->delete($selected_entries);
     }
 
     /**
@@ -515,20 +376,11 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      */
     public function set_userrole_new()
     {
-        $newEntry = self::getRoleForm()->getInsertValues();
-
-        /* no data has been provided */
-        if (empty($newEntry)) {
-            throw new InvalidInputWarning();
-        }
-
-        $database = self::getDatabase();
-        /* insert new entry into table */
-        if (!$database->insert("securityrole.*", $newEntry)) {
-            throw new InvalidInputWarning();
-        }
-        return $database->write();
+        $form = self::getRoleForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->create();
     }
+
 }
 
 ?>

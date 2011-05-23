@@ -53,10 +53,9 @@ class plugin_user_group extends StdClass implements IsPlugin
     private static $userSettings = array();
 
     /**
-     * constructor
+     * Registers user-group security rule.
      *
      * @access  public
-     * @ignore
      */
     public function __construct()
     {
@@ -65,9 +64,9 @@ class plugin_user_group extends StdClass implements IsPlugin
     }
 
     /**
-     * Default event handler
+     * Default event handler.
      *
-     * returns bool(true) on success and bool(false) on error
+     * Keep this active to ensure, the security rule (checkGroupsAndRoles) is loaded for every event.
      *
      * @access  public
      * @return  bool
@@ -76,7 +75,7 @@ class plugin_user_group extends StdClass implements IsPlugin
      */
     public function catchAll($event, array $ARGS)
     {
-        return true;
+        return true; // Nothing to do: The security rule is called automatically.
     }
 
     /**
@@ -214,6 +213,7 @@ class plugin_user_group extends StdClass implements IsPlugin
         // match found, return success
         return true;
     }
+
 }
 
 ?>

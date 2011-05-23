@@ -40,8 +40,6 @@ class plugin_search_admin extends StdClass implements IsPlugin
     /**
      * Default event handler
      *
-     * returns bool(true) on success and bool(false) on error
-     *
      * @access  public
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
@@ -54,9 +52,7 @@ class plugin_search_admin extends StdClass implements IsPlugin
     }
 
     /**
-     * Create form
-     *
-     * returns bool(true) on success and bool(false) on error
+     * Show setup form.
      *
      * @type        config
      * @user        group: admin, level: 50
@@ -64,12 +60,12 @@ class plugin_search_admin extends StdClass implements IsPlugin
      * @menu        group: setup
      *
      * @access      public
-     * @return      bool
      */
     public function search_setup()
     {
-        return true;
+        // Just views a template. No business logic required.
     }
+
 }
 
 ?>

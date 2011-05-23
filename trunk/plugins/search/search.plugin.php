@@ -58,8 +58,6 @@ class plugin_search extends StdClass implements IsPlugin
     /**
      * Default event handler
      *
-     * returns bool(true) on success and bool(false) on error
-     *
      * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
@@ -74,13 +72,10 @@ class plugin_search extends StdClass implements IsPlugin
     /**
      * Show table of statistics
      *
-     * this function does not expect any arguments
-     *
      * @type        read
      * @template    SEARCH_START
      *
      * @access      public
-     * @return      bool
      */
     public function search_stats ()
     {
@@ -96,12 +91,10 @@ class plugin_search extends StdClass implements IsPlugin
             uasort($numbers, array($this, "_sortStatistics"));
             $YANA->setVar("STATS", $numbers);
         }
-
-        return true;
     }
 
     /**
-     * Search index for a specific string
+     * Search index for a specific string.
      *
      * parameters taken:
      *
@@ -115,16 +108,15 @@ class plugin_search extends StdClass implements IsPlugin
      *
      * @access      public
      * @param       string  $target  search term
-     * @return      bool
      */
-    public function search_start ($target)
+    public function search_start($target)
     {
         global $YANA;
 
         $this->searchString = preg_replace("/[^\s\w\däöüß&;]/ui", "", $target);
 
         if (empty($this->searchString)) {
-            return true;
+            return;
         }
         assert('!isset($temp);');
         $temp = explode(" ", mb_strtolower($this->searchString));
@@ -191,13 +183,10 @@ class plugin_search extends StdClass implements IsPlugin
         unset($i);
 
         $YANA->setVar("RESULTS", $results);
-
-        return true;
-
     }
 
     /**
-     * Create index file for search engine
+     * Create index file for search engine.
      *
      * parameters taken:
      *
@@ -218,7 +207,7 @@ class plugin_search extends StdClass implements IsPlugin
      * @param       bool    $meta     use meta tags (yes/no)
      * @return      bool
      */
-    public function search_create_index ($dir, $recurse = false, $meta = false)
+    public function search_create_index($dir, $recurse = false, $meta = false)
     {
         global $YANA;
 
@@ -781,7 +770,6 @@ class plugin_search extends StdClass implements IsPlugin
      * @param   array  $A  base array of statistics
      * @param   array  $B  compared array of statistics
      * @return  int
-     * @ignore
      */
     private function _sortStatistics($A, $B)
     {
@@ -806,7 +794,6 @@ class plugin_search extends StdClass implements IsPlugin
      * @param   string  $inputString  input var
      * @param   string  &$compare     output var
      * @return  string
-     * @ignore
      */
     private static function _applyStemming($inputString, &$compare)
     {
@@ -873,7 +860,6 @@ class plugin_search extends StdClass implements IsPlugin
      * @param   string  $filter   filter
      * @param   bool    $recurse  recurse
      * @return  array
-     * @ignore
      */
     private static function _getListOfFiles($dir, $filter, $recurse)
     {
@@ -917,7 +903,6 @@ class plugin_search extends StdClass implements IsPlugin
      * @access  private
      * @param   string  $subject    subject
      * @return  array|bool(false)
-     * @ignore
      */
     private function _getFromCache($subject)
     {
@@ -962,6 +947,7 @@ class plugin_search extends StdClass implements IsPlugin
             return false;
         }
     }
+
 }
 
 ?>

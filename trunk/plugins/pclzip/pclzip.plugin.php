@@ -24,10 +24,9 @@
  */
 class plugin_pclzip extends StdClass implements IsPlugin
 {
+
     /**
-     * Default event handler
-     *
-     * returns bool(true) on success and bool(false) on error
+     * Loads library.
      *
      * @access  public
      * @return  bool
@@ -40,6 +39,9 @@ class plugin_pclzip extends StdClass implements IsPlugin
          * @ignore
          */
         include_once 'pclzip.lib.php';
+        return true;
     }
+
 }
+
 ?>

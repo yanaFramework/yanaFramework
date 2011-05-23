@@ -40,8 +40,6 @@ class plugin_diagnostics extends StdClass implements IsPlugin
     /**
      * Default event handler
      *
-     * returns bool(true) on success and bool(false) on error
-     *
      * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
@@ -69,9 +67,8 @@ class plugin_diagnostics extends StdClass implements IsPlugin
      * @access      public
      * @param       bool  $details  include details (yes/no)
      * @param       bool  $xml      export as XML (yes/no)
-     * @return      bool
      */
-    public function test ($details = false, $xml = false)
+    public function test($details = false, $xml = false)
     {
         global $YANA;
 
@@ -118,6 +115,7 @@ class plugin_diagnostics extends StdClass implements IsPlugin
 
         exit(0);
     }
+
 }
 
 ?>

@@ -45,10 +45,9 @@
  */
 class plugin_user_registration extends StdClass implements IsPlugin
 {
+
     /**
-     * Default event handler
-     *
-     * returns bool(true) on success and bool(false) on error
+     * Default event handler.
      *
      * @access  public
      * @return  bool
@@ -63,13 +62,12 @@ class plugin_user_registration extends StdClass implements IsPlugin
     }
 
     /**
-     * Create session: mail-authentification
+     * Create session: mail-authentification.
      *
      * @type        config
      * @template    MESSAGE
      *
      * @access      public
-     * @return      bool
      * @param       string  $username  user name
      * @param       string  $mail      user mail
      */
@@ -131,15 +129,13 @@ class plugin_user_registration extends StdClass implements IsPlugin
             throw new InvalidInputWarning();
 
         } elseif (!$database->write()) {
-            return false;
+            throw new Error();
         }
 
         $YANA->setVar('WEBSITE_URL', $YANA->getVar("REFERER"));
         $YANA->setVar('KEY', $key);
         $YANA->setVar('MAIL', $mail);
         self::_sendMail($mail, $YANA->getSkin()->getFile("USER_CONFIRM_MAIL"));
-
-        return true;
     }
 
     /**
@@ -156,11 +152,10 @@ class plugin_user_registration extends StdClass implements IsPlugin
      * @title       {lang id="create_user"}
      *
      * @access      public
-     * @return      bool
      */
     public function get_user_mail()
     {
-        return true;
+        // Just views template - no business logic required.
     }
 
     /**
@@ -180,7 +175,6 @@ class plugin_user_registration extends StdClass implements IsPlugin
      * @language    user
      *
      * @access      public
-     * @return      bool
      * @param       string  $target  new user-key
      */
     public function user_authentification($target)
@@ -198,11 +192,11 @@ class plugin_user_registration extends StdClass implements IsPlugin
         $entry = $database->select($select);
         assert('is_array($entry); // Array expected: $entry. Invalid dataset or invalid query.');
         if (empty($entry)) {
-            return false;
+            throw new UserNotFoundError();
         }
         $entry = array_pop($entry);
         if (!isset($entry['NEWUSER_NAME']) || !isset($entry['NEWUSER_MAIL'])) {
-            return false;
+            throw new UserNotFoundError();
         }
 
         // try to create user
@@ -221,8 +215,6 @@ class plugin_user_registration extends StdClass implements IsPlugin
             $mail->setVar('DATE', date('d-m-Y'));
             $mail->subject = $YANA->getLanguage()->getVar("user.mail_subject");
             $mail->send($user->getMail());
-
-            return true;
 
         } catch (InvalidArgumentException $e) {
             throw new InvalidInputWarning();
@@ -254,6 +246,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
         $mail->setVar('DATE', $now['mday'] . '.' . $now['mon'] . '.' . $now['year']);
         $mail->send($mail);
     }
+
 }
 
 ?>

@@ -153,8 +153,6 @@ class plugin_calendar extends StdClass implements IsPlugin
     /**
      * Default event handler
      *
-     * returns bool(true) on success and bool(false) on error
-     *
      * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
@@ -195,7 +193,6 @@ class plugin_calendar extends StdClass implements IsPlugin
      * @script      ../../skins/default/scripts/calendar/calendar-setup.js
      *
      * @access      public
-     * @return      bool
      */
     public function get_calendar_input()
     {
@@ -268,7 +265,6 @@ class plugin_calendar extends StdClass implements IsPlugin
             $calendarName = basename($defaultCalendar->getPath(), '.xml');
             $yana->setVar('calendarName', $calendarName);
         }
-        return true;
     }
 
     /**
@@ -542,7 +538,7 @@ class plugin_calendar extends StdClass implements IsPlugin
      *
      * Prepare the serialized array dataset
      *
-     * @access      public
+     * @access      protected
      * @param       array   $event  event arguments
      * @return      array
      * @ignore
@@ -568,9 +564,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     }
 
     /**
-     * update_event_by_resize
-     *
-     * Prepare the Event by resize
+     * Prepare the event by resize.
      *
      * @type    write
      * @user    group: admin, level: 100
@@ -592,9 +586,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     }
 
     /**
-     * update_event_by_drop
-     *
-     * Prepare the Event by resize
+     * Updates the event after drag'n'drop.
      *
      * @type        write
      * @user        group: admin, level: 100
@@ -616,9 +608,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     }
 
     /**
-     * calendar_send_event
-     *
-     * This function send the ical file (file to download) .
+     * This function sends the ical file (file to download) .
      *
      * @type        write
      * @user        group: admin, level: 100
@@ -642,9 +632,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     }
 
     /**
-     * remove_calendar_event
-     *
-     * remove the current event by ID
+     * Remove the current event by ID.
      *
      * @type    write
      * @user    group: admin, level: 100
@@ -759,9 +747,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     }
 
     /**
-     * insert calendar
-     *
-     * insert new calendar with the current user data
+     * Insert new calendar with the current user data.
      *
      * @access  public
      * @static
@@ -807,9 +793,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     }
 
     /**
-     * refresh_calendar_subscribe
-     *
-     * This function import an calendar events with feiertagen into our calendar
+     * Import calendar events with holidays.
      *
      * @type        write
      * @user        group: admin, level: 100
@@ -843,9 +827,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     }
 
     /**
-     * subscribe_calendar
-     *
-     * This function subscribe a calendar
+     * Subscribe to an internet-calendar.
      *
      * @type        write
      * @user        group: admin, level: 100
@@ -898,9 +880,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     }
 
     /**
-     * writeXml
-     *
-     * This function write the changes into the expected xml file
+     * Export changes to XML file.
      *
      * @access  protected
      * @static
@@ -923,14 +903,11 @@ class plugin_calendar extends StdClass implements IsPlugin
             $file->create();
         }
         $file->setContent($content);
-        $result = $file->write();
-        return $result;
+        return $file->write();
     }
 
     /**
-     * remove user calendar
-     *
-     * This function will be remove the user calendar
+     * Remove a calendar.
      *
      * @type        write
      * @template    MESSAGE
@@ -960,9 +937,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     }
 
     /**
-     * remove user calendar file
-     *
-     * This function remove the calendar file
+     * Remove calendar file.
      *
      * @type        write
      * @template    MESSAGE
@@ -994,9 +969,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     }
 
     /**
-     * convert_to_xcal
-     *
-     * This function convert ical calendar file into xcal
+     * Convert ical calendar file to xcal.
      *
      * @access  protected
      * @param   string  $path  path to ICal file
@@ -1188,9 +1161,7 @@ class plugin_calendar extends StdClass implements IsPlugin
 
 
     /**
-     * set xml
-     *
-     * convert ical format into the xcal format
+     * Convert ical format to xcal format.
      *
      * @type        write
      * @template    MESSAGE
@@ -1257,9 +1228,8 @@ class plugin_calendar extends StdClass implements IsPlugin
     }
 
     /**
-     * set_ical
+     * This function convert xcal to ical.
      *
-     * This function convert xcal into ical.
      * The default use of this option is set only the datasetID for convert a xcal file into ical.
      * The second option is to set the datasetID of null and the second paramenter needs a xml content of an event
      * which will be convertet into the ical standard. Important is if both are set than the convert will be executed
@@ -1423,9 +1393,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     }
 
     /**
-     * calendar download file
-     *
-     * This function set the calendar file for download
+     * Download calendar file.
      *
      * @type        read
      * @user        group: admin, level: 100
@@ -1450,9 +1418,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     }
 
     /**
-     * download_file
-     *
-     * This function set the ics for download
+     * Download ICAL file.
      *
      * @access      protected
      * @static
@@ -1507,5 +1473,7 @@ class plugin_calendar extends StdClass implements IsPlugin
 
         return true;
     }
+
 }
+
 ?>

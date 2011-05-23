@@ -49,8 +49,6 @@ class plugin_db_admin extends StdClass implements IsPlugin
     /**
      * Default event handler
      *
-     * returns bool(true) on success and bool(false) on error
-     *
      * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
@@ -72,7 +70,6 @@ class plugin_db_admin extends StdClass implements IsPlugin
      * @safemode    true
      *
      * @access      public
-     * @return      bool
      */
     public function get_db_configuration()
     {
@@ -93,7 +90,6 @@ class plugin_db_admin extends StdClass implements IsPlugin
         $yana->setVar("YANA_DATABASE_ACTIVE", YANA_DATABASE_ACTIVE);
         $DATABASE_LIST = DDL::getListOfFiles();
         $yana->setVar("DATABASE_LIST", $DATABASE_LIST);
-        return true;
     }
 
     /**
@@ -471,7 +467,6 @@ class plugin_db_admin extends StdClass implements IsPlugin
      * @param       string  $target_dbms  the DBMS to install databases on
      * @param       array   $list         a list of databases to install
      * @param       array   $options      a list of flags structure, data, zip
-     * @return      bool
      */
     public function db_backup($target_dbms, array $list, array $options)
     {
@@ -526,25 +521,24 @@ class plugin_db_admin extends StdClass implements IsPlugin
         }
 
         $filename = mb_strtolower(preg_replace('/\W/', '_', $dbms) . '.sql');
-        if (!empty($fileContents)) {
-            header("Pragma: no-cache");
-            if ($useZip) {
-                $fileContents = gzencode($fileContents, 9);
-                $filename .= '.gz';
-                header("Content-type: text/plain");
-                header("Content-Disposition: attachment; filename=${filename}");
-                header("Content-Length: " . strlen($fileContents));
-            } else {
-                header("Content-type: text/plain");
-                header("Content-Disposition: attachment; filename=${filename}");
-                header("Content-Length: " . strlen($fileContents));
-            }
-            exit($fileContents);
-            return true;
-        } else {
+        if (empty($fileContents)) {
             $error = new FileNotCreatedError();
             throw $error->setFilename($filename);
         }
+
+        header("Pragma: no-cache");
+        if ($useZip) {
+            $fileContents = gzencode($fileContents, 9);
+            $filename .= '.gz';
+            header("Content-type: text/plain");
+            header("Content-Disposition: attachment; filename=${filename}");
+            header("Content-Length: " . strlen($fileContents));
+        } else {
+            header("Content-type: text/plain");
+            header("Content-Disposition: attachment; filename=${filename}");
+            header("Content-Length: " . strlen($fileContents));
+        }
+        exit($fileContents);
     }
 
     /**
@@ -569,7 +563,6 @@ class plugin_db_admin extends StdClass implements IsPlugin
      * @param       bool    $autoinstall  install automatically?
      * @param       bool    $autosync     synchronize automatically?
      * @param       bool    $silent       mute error messages
-     * @return      bool
      */
     public function set_db_configuration($active, $dbms, $host = "", $port = "", $user = "", $password = "", $name = "", $prefix = "", $autoinstall = false, $autosync = false, $silent = false)
     {
@@ -668,8 +661,6 @@ class plugin_db_admin extends StdClass implements IsPlugin
         $file->read();
         $file->setContent($text);
         $file->failSafeWrite();
-
-        return true;
     }
 
 }

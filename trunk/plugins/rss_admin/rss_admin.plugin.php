@@ -33,10 +33,9 @@
  */
 class plugin_rss_admin extends StdClass implements IsPlugin
 {
+
     /**
      * Default event handler
-     *
-     * returns bool(true) on success and bool(false) on error
      *
      * @access  public
      * @return  bool
@@ -46,13 +45,11 @@ class plugin_rss_admin extends StdClass implements IsPlugin
      */
     public function catchAll($event, array $ARGS)
     {
-        global $YANA;
-        /* do nothing */
         return true;
     }
 
     /**
-     * create configuration panel
+     * Show configuration panel.
      *
      * @type        config
      * @user        group: admin, level: 100
@@ -61,17 +58,15 @@ class plugin_rss_admin extends StdClass implements IsPlugin
      *
      * @access      public
      * @param       string  $id  profile id
-     * @return      bool
      */
     public function get_rss_to_html_config($id = "")
     {
         global $YANA;
         $YANA->setVar("ID", $id);
-        return true;
     }
 
     /**
-     * Save configuration data to profi
+     * Save configuration data to profile.
      *
      * parameters taken:
      *

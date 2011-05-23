@@ -32,9 +32,9 @@ class plugin_antispam extends StdClass implements IsPlugin
 {
 
     /**
-     * Default event handler
+     * Default event handler.
      *
-     * returns bool(true) on success and bool(false) on error
+     * returns bool(true) on success and bool(false) on error.
      *
      * {@internal
      *
@@ -327,4 +327,5 @@ class plugin_antispam extends StdClass implements IsPlugin
     }
 
 }
+
 ?>

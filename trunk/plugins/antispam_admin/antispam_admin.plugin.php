@@ -35,8 +35,6 @@ class plugin_antispam_admin extends StdClass implements IsPlugin
     /**
      * Default event handler
      *
-     * returns bool(true) on success and bool(false) on error
-     *
      * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
@@ -49,9 +47,7 @@ class plugin_antispam_admin extends StdClass implements IsPlugin
     }
 
     /**
-     * Get global settings
-     *
-     * this function does not expect any arguments
+     * Get global settings.
      *
      * @type        security
      * @user        group: admin, level: 100
@@ -60,7 +56,6 @@ class plugin_antispam_admin extends StdClass implements IsPlugin
      * @safemode    true
      *
      * @access      public
-     * @return      bool
      */
     public function get_setup_global_antispam()
     {
@@ -70,13 +65,10 @@ class plugin_antispam_admin extends StdClass implements IsPlugin
         $configFile = $YANA->getResource('system:/config');
         $YANA->setVar("WRITEABLE", $configFile->isWriteable());
         $YANA->setVar("NEXT_ACTION", 'set_setup_global_antispam');
-        return true;
     }
 
     /**
-     * Save global settings
-     *
-     * takes configuration settings from the form as input
+     * Save global settings.
      *
      * @type        config
      * @user        group: admin, level: 100
@@ -86,7 +78,7 @@ class plugin_antispam_admin extends StdClass implements IsPlugin
      * @safemode    true
      *
      * @access      public
-     * @param       array  $ARGS  array of params passed to the function
+     * @param       array  $ARGS  configuration settings from the form
      * @return      bool
      */
     public function set_setup_global_antispam(array $ARGS)
@@ -95,9 +87,7 @@ class plugin_antispam_admin extends StdClass implements IsPlugin
     }
 
     /**
-     * Get profile settings
-     *
-     * this function does not expect any arguments
+     * Get profile settings.
      *
      * @type        security
      * @user        group: admin, level: 60
@@ -106,7 +96,6 @@ class plugin_antispam_admin extends StdClass implements IsPlugin
      * @safemode    false
      *
      * @access  public
-     * @return  bool
      */
     public function get_setup_antispam()
     {
@@ -116,13 +105,10 @@ class plugin_antispam_admin extends StdClass implements IsPlugin
         $configFile = $YANA->getResource('system:/config');
         $YANA->setVar("WRITEABLE", $configFile->isWriteable());
         $YANA->setVar("NEXT_ACTION", 'set_setup_antispam');
-        return true;
     }
 
     /**
-     * Save profile settings
-     *
-     * takes configuration settings from the form as input
+     * Save profile settings.
      *
      * @type        config
      * @user        group: admin, level: 60
@@ -132,7 +118,7 @@ class plugin_antispam_admin extends StdClass implements IsPlugin
      * @safemode    false
      *
      * @access  public
-     * @param   array  $ARGS  array of params passed to the function
+     * @param   array  $ARGS  configuration settings from the form
      * @return  bool
      */
     public function set_setup_antispam(array $ARGS)
@@ -146,7 +132,6 @@ class plugin_antispam_admin extends StdClass implements IsPlugin
      * @access  private
      * @param   array  $ARGS  array of params passed to the function
      * @return  array
-     * @ignore
      */
     private function _getArguments(array $ARGS)
     {
@@ -228,10 +213,11 @@ class plugin_antispam_admin extends StdClass implements IsPlugin
                     }
                     $settings['spam/level'] = -1;
                 break;
-
             }
         }
         return $settings;
     }
+
 }
+
 ?>

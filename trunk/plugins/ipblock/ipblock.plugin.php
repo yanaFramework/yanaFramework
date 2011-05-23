@@ -33,8 +33,9 @@
  */
 class plugin_ipblock extends StdClass implements IsPlugin
 {
+
     /**
-     * check user
+     * Check user's IP.
      *
      * Checks if the user's IP is black-listed and if so, produces an error message and returns false.
      *
@@ -44,7 +45,6 @@ class plugin_ipblock extends StdClass implements IsPlugin
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
-     * @ignore
      */
     public function catchAll($event, array $ARGS)
     {

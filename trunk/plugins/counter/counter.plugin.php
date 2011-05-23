@@ -34,19 +34,17 @@ class plugin_counter extends StdClass implements IsPlugin
      * @static
      * @var     Counter
      */
-    private static $counter = null;
+    private static $_counter = null;
 
     /**
      * @access  private
      * @static
      * @var     string
      */
-    private static $id = "default";
+    private static $_id = "default";
 
     /**
-     * Default event handler
-     *
-     * returns bool(true) on success and bool(false) on error
+     * Calculates and displays visitor count.
      *
      * @access  public
      * @return  bool
@@ -55,12 +53,12 @@ class plugin_counter extends StdClass implements IsPlugin
      */
     public function catchAll($event, array $ARGS)
     {
-        self::$id = __CLASS__ . '\\' . Yana::getId();
-        if (!Counter::exists(self::$id)) {
-            Counter::create(self::$id);
+        self::$_id = __CLASS__ . '\\' . Yana::getId();
+        if (!Counter::exists(self::$_id)) {
+            Counter::create(self::$_id);
         }
-        self::$counter = new Counter(self::$id);
-        self::$counter->getNextValue();
+        self::$_counter = new Counter(self::$_id);
+        self::$_counter->getNextValue();
         Yana::getInstance()->getView()->setFunction('visitorCount', array(__CLASS__, 'visitorCount'));
         return true;
     }
@@ -77,7 +75,7 @@ class plugin_counter extends StdClass implements IsPlugin
      */
     public static function visitorCount(array $params)
     {
-        $count = self::$counter->getCurrentValue();
+        $count = self::$_counter->getCurrentValue();
         $text = Language::getInstance()->getVar("VISITOR_COUNT");
 
         return $text . ' <span style="font-weight: bold;">' . $count . '</span>';
@@ -98,7 +96,6 @@ class plugin_counter extends StdClass implements IsPlugin
      * @template    null
      *
      * @access      public
-     * @return      bool
      */
     public function graphic_counter()
     {
@@ -110,7 +107,7 @@ class plugin_counter extends StdClass implements IsPlugin
         $imageExt = $dir->getFilter();
 
         $this->_default(__FUNCTION__, array());
-        $count = self::$counter->getCurrentValue();
+        $count = self::$_counter->getCurrentValue();
 
         $myImage = new Image($background->getPath());
         $myImageValues = Image::getSize($background->getPath());

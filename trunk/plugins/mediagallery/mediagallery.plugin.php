@@ -87,10 +87,7 @@ class plugin_mediagallery extends StdClass implements IsPlugin
     }
 
     /**
-     * Default event handler
-     *
-     * The default event handler catches all events, whatever they might be.
-     * If you don't need it, you may deactive it by adding an @ignore to the annotations below.
+     * Default event handler.
      *
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
@@ -123,14 +120,11 @@ class plugin_mediagallery extends StdClass implements IsPlugin
         include_once 'gallerydatabaseadapter.class.php';
         /** @ignore */
         include_once 'gallery.class.php';
-        /** @ignore */
-        include_once 'galleryview.class.php';
         $db = self::getDatabase();
         Gallery::registerDataAdapter(new GalleryDatabaseAdapter($db, 'mediafolder'));
         GalleryItem::registerDataAdapter(new GalleryDatabaseAdapter($db, 'media'));
-        $yana = Yana::getInstance();
-        $view = new GalleryView();
-        $yana->setVar('gallery', $view);
     }
+
 }
+
 ?>

@@ -87,20 +87,18 @@ class plugin_guestbook extends StdClass implements IsPlugin
         global $YANA;
         if (isset($YANA)) {
             /* Plugin-specific addities */
-            $YANA->setVar("ACTION_ENTRY",         $this->actionEntry);
-            $YANA->setVar("ACTION_NEW_WRITE",     $this->actionNewWrite);
-            $YANA->setVar("ACTION_DELETE",        $this->actionDelete);
-            $YANA->setVar("ACTION_EDIT",          $this->actionEdit);
-            $YANA->setVar("ACTION_EDIT_WRITE",    $this->actionEditWrite);
-            $YANA->setVar("ACTION_COMMENT",       $this->actionComment);
-            $YANA->setVar("ACTION_COMMENT_WRITE", $this->actionCommentWrite);
+            $YANA->setVar('ACTION_ENTRY',         $this->actionEntry);
+            $YANA->setVar('ACTION_NEW_WRITE',     $this->actionNewWrite);
+            $YANA->setVar('ACTION_DELETE',        $this->actionDelete);
+            $YANA->setVar('ACTION_EDIT',          $this->actionEdit);
+            $YANA->setVar('ACTION_EDIT_WRITE',    $this->actionEditWrite);
+            $YANA->setVar('ACTION_COMMENT',       $this->actionComment);
+            $YANA->setVar('ACTION_COMMENT_WRITE', $this->actionCommentWrite);
         }
     }
 
     /**
      * Default event handler
-     *
-     * returns bool(true) on success and bool(false) on error
      *
      * @access  public
      * @return  bool
@@ -124,11 +122,10 @@ class plugin_guestbook extends StdClass implements IsPlugin
      * @template    templates/edit.html.tpl
      * @language    guestbook
      * @style       templates/default.css
-     * @onerror     goto: GUESTBOOK_READ, text: InvalidInputWarning
+     * @onerror     goto: GUESTBOOK_READ
      *
      * @access      public
      * @param       int  $target  id of guestbook entry
-     * @return      bool
      */
     public function guestbook_read_edit($target)
     {
@@ -138,11 +135,10 @@ class plugin_guestbook extends StdClass implements IsPlugin
 
         /* check if target row exists */
         if (empty($row)) {
-            return false;
+            throw new InvalidInputWarning();
         }
 
         $YANA->setVar('ROW', $row);
-        return true;
     }
 
     /**
@@ -215,11 +211,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         }
 
         /* don't forget to save your recent changes ;-) */
-        if ($database->write()) {
-            return true;
-        } else {
-            return false;
-        }
+        return $database->write();
     }
 
     /**
@@ -278,24 +270,17 @@ class plugin_guestbook extends StdClass implements IsPlugin
             }
         } /* end foreach */
         /* now delete those entries */
-        if ($database->write()) {
-            return true;
-        } else {
-            return false;
-        }
+        return $database->write();
     }
 
     /**
      * output RSS feed
-     *
-     * this function expects no arguments
      *
      * @type        read
      * @template    NULL
      * @language    guestbook
      *
      * @access      public
-     * @return      bool
      */
     public function guestbook_read_rss()
     {
@@ -303,9 +288,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         if (!class_exists('RSS')) {
             throw new Error("RSS wrapper class not found. Unable to proceed.");
         }
-        if (self::_securityCheck() === false) {
-            return false;
-        }
+        self::_securityCheck(); // throws FileNotFoundError
 
         /* get entries */
         $rows = $this->_getTable();
@@ -369,14 +352,11 @@ class plugin_guestbook extends StdClass implements IsPlugin
      * @param       string  $hometown    author location
      * @param       string  $homepage    URL
      * @param       int     $opinion     rating (0..5)
-     * @return      bool
      */
     public function guestbook_write_new($name, $message, $msgtyp, $messenger = "", $mail = "", $hometown = "", $homepage = "", $opinion = "")
     {
         global $YANA;
-        if (self::_securityCheck() === false) {
-            return false;
-        }
+        self::_securityCheck(); // throws FileNotFoundError
 
         $permission = $YANA->getVar("PERMISSION");
         /* avoid spamming */
@@ -446,7 +426,6 @@ class plugin_guestbook extends StdClass implements IsPlugin
             self::_sendMail($mailer, $ARGS);
         }
         Microsummary::setText(__CLASS__, 'Guestbook, update ' . date('d M y G:s', time()));
-        return true;
     }
 
     /**
@@ -465,9 +444,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
     public function guestbook_entry($target)
     {
         global $YANA;
-        if (self::_securityCheck() === false) {
-            return false;
-        }
+        self::_securityCheck(); // throws FileNotFoundError
 
         // create link to user profile (if profile viewer is installed)
         if ($YANA->getPlugins()->isActive('user_admin')) {
@@ -502,14 +479,11 @@ class plugin_guestbook extends StdClass implements IsPlugin
      * @access      public
      * @param       int  $page     current page number (if there are more)
      * @param       int  $entries  number of entries per page
-     * @return      bool
      */
     public function guestbook_read($page = 0, $entries = null)
     {
         global $YANA;
-        if (self::_securityCheck() === false) {
-            return false;
-        }
+        self::_securityCheck(); // throws FileNotFoundError
 
         Microsummary::publishSummary(__CLASS__);
         RSS::publishFeed('guestbook_read_rss');
@@ -525,8 +499,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
             $YANA->setVar('GUESTBOOK_USER_LINK', false);
         }
         $YANA->setVar('ROWS', $rows);
-        $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar('descr_show'));
-        return true;
+        $YANA->setVar('DESCRIPTION', $YANA->getLanguage()->getVar('descr_show'));
     }
 
     /**
@@ -544,7 +517,6 @@ class plugin_guestbook extends StdClass implements IsPlugin
      *
      * @access      public
      * @param       int  $target  id of comment to retrieve
-     * @return      bool
      */
     public function guestbook_default_comment($target)
     {
@@ -553,7 +525,6 @@ class plugin_guestbook extends StdClass implements IsPlugin
         if (!empty($guestbook_comment)) {
              $YANA->setVar('GUESTBOOK_COMMENT', $guestbook_comment);
         }
-        return true;
     }
 
     /**
@@ -569,7 +540,6 @@ class plugin_guestbook extends StdClass implements IsPlugin
      * @access      public
      * @param       int     $target             id of comment to edit
      * @param       string  $guestbook_comment  comment text
-     * @return      bool
      */
     public function guestbook_write_comment($target, $guestbook_comment = "")
     {
@@ -585,7 +555,6 @@ class plugin_guestbook extends StdClass implements IsPlugin
             Log::report($message, E_USER_ERROR, array('guestbook_comment' => $guestbook_comment));
             throw new Error();
         }
-        return true;
     }
 
     /**
@@ -630,9 +599,6 @@ class plugin_guestbook extends StdClass implements IsPlugin
         $last_page = $database->length($table->getName(), $where); /* total number of rows */
         $YANA->setVar('LAST_PAGE', $last_page);
         $YANA->setVar('SORT', $sortBy); /* column name */
-
-        /* deprecated */
-        $YANA->setVar('WHERE', ''); /* the content of the where clause is not provided anymore */
 
         /* create a footer with links to other pages of the resultset */
         if ($last_page > ($entPerPage * 2)) {
@@ -696,8 +662,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
      *
      * @access  private
      * @static
-     * @return  bool
-     * @ignore
+     * @throws  FileNotFoundError
      */
     private static function _securityCheck()
     {
@@ -705,12 +670,10 @@ class plugin_guestbook extends StdClass implements IsPlugin
         $id = Yana::getId();
         /* do not show new guestbooks, if Auto-Option is deactivated */
         $dir = $YANA->getResource('system:/config/profiledir');
-        $file = new FileReadonly($dir->getPath().$id.'.cfg');
+        $file = new FileReadonly($dir->getPath() . $id . '.cfg');
         if ($id !== 'default' && !$file->exists() && !$YANA->getVar("PROFILE.AUTO")) {
-            Log::report('Access restriction in effect. Access to undefined profile '.$id.' denied.');
+            Log::report('Access restriction in effect. Access to undefined profile ' . $id . ' denied.');
             throw new FileNotFoundError();
-        } else {
-            return true;
         }
     }
 
@@ -721,7 +684,6 @@ class plugin_guestbook extends StdClass implements IsPlugin
      * @static
      * @param   Mailer  $mail       mail template
      * @param   array   $INPUT      input data
-     * @ignore
      */
     private static function _sendMail(Mailer $mail, array $INPUT)
     {

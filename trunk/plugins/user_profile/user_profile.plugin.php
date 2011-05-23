@@ -33,6 +33,7 @@
  */
 class plugin_user_profile extends StdClass implements IsPlugin
 {
+
     /**
      * @access  private
      * @static
@@ -41,25 +42,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
     private static $database = null;
 
     /**
-     * Form definition
-     *
-     * @access  private
-     * @static
-     * @var     DDLDefaultForm
-     */
-    private static $profileForm = null;
-
-    /**
-     * Form definition
-     *
-     * @access  private
-     * @static
-     * @var     DDLDefaultForm
-     */
-    private static $detailForm = null;
-
-    /**
-     * get database connection
+     * Get database connection.
      *
      * @access  protected
      * @static
@@ -74,41 +57,33 @@ class plugin_user_profile extends StdClass implements IsPlugin
     }
 
     /**
-     * get form definition
+     * Get form definition.
      *
      * @access  protected
      * @static
-     * @return  DDLDefaultForm
+     * @return  FormFacade
      */
     protected static function getProfileForm()
     {
-        if (!isset(self::$profileForm)) {
-            $database = self::getDatabase();
-            self::$profileForm = $database->getSchema()->getForm("userprofile");
-        }
-        return self::$profileForm;
+        $builder = new FormBuilder('user_admin');
+        return $builder->setId('userprofile')->__invoke();
     }
 
     /**
-     * get form definition
+     * Get form definition.
      *
      * @access  protected
      * @static
-     * @return  DDLDefaultForm
+     * @return  FormFacade
      */
     protected static function getDetailForm()
     {
-        if (!isset(self::$detailForm)) {
-            $database = self::getDatabase();
-            self::$detailForm = $database->getSchema()->getForm("userdetails");
-        }
-        return self::$detailForm;
+        $builder = new FormBuilder('user_admin');
+        return $builder->setId('userdetails')->__invoke();
     }
 
     /**
-     * Default event handler
-     *
-     * returns bool(true) on success and bool(false) on error
+     * Default event handler.
      *
      * @access  public
      * @return  bool
@@ -133,25 +108,18 @@ class plugin_user_profile extends StdClass implements IsPlugin
      * @onerror     goto: index, text: UserNotFoundError
      *
      * @access      public
-     * @return      bool
      */
     public function get_profile_edit()
     {
         global $YANA;
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_USER_EDIT"));
-        $form = self::getDetailForm();
-        $query = $form->getQuery();
-        $query->setRow(YanaUser::getUserName());
-        $form->setEntriesPerPage(1);
-
-        $userData = $query->getResults();
-
-        if (empty($userData['USER_ID']) || empty($userData['USER_ACTIVE'])) {
-            return false;
-        }
-
-        $YANA->setVar("USER", $userData);
-        return true;
+        $YANA->setVar("USERNAME", YanaUser::getUserName());
+        $builder = new FormBuilder('user_admin');
+        $builder->setId('userdetails')
+            ->setEntries(1)
+            ->setLayout(1)
+            ->setWhere(array('USER_ID', '=', YanaUser::getUserName()));
+        $YANA->setVar("USERFORM", $builder->__invoke());
     }
 
     /**
@@ -168,30 +136,20 @@ class plugin_user_profile extends StdClass implements IsPlugin
      */
     public function set_profile_edit()
     {
-        $updatedEntries = self::getProfileForm()->getUpdateValues();
+        $form = self::getProfileForm();
 
-        /* no data has been provided */
-        if (count($updatedEntries) !== 1) {
+        if (count($form->getUpdateValues()) !== 1) {
             throw new InvalidInputWarning();
         }
 
-        $id = YanaUser::getUserName();
-        $entry = array_pop($updatedEntries);
-
-        /* before doing anything, check if entry exists */
-        if (!$database->exists("userprofile.${id}")) {
-
-            /* error - no such entry */
-            throw new InvalidInputWarning();
-        }
-        /* update the row */
-        if (!$database->update("userprofile.${id}", $entry)) {
-            /* error - unable to perform update - possibly readonly */
-            return false;
-        }
-
-        /* commit changes */
-        return $database->write();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker->beforeCreate(
+            function (&$id)
+            {
+                $id = YanaUser::getUserName();
+            }
+        );
+        return $worker->update();
     }
 
     /**
@@ -208,35 +166,18 @@ class plugin_user_profile extends StdClass implements IsPlugin
      */
     public function set_profiles_edit()
     {
-        $updatedEntries = self::getProfileForm()->getUpdateValues();
+        $form = self::getProfileForm();
 
-        /* no data has been provided */
-        if (count($updatedEntries) !== 1) {
+        if (count($form->getUpdateValues()) !== 1) {
             throw new InvalidInputWarning();
         }
 
-        $database = self::getDatabase();
-        foreach ($updatedEntries as $id => $entry)
-        {
-            /* before doing anything, check if entry exists */
-            if (!$database->exists("userprofile.${id}")) {
-
-                /* error - no such entry */
-                throw new InvalidInputWarning();
-            }
-
-            /* update the row */
-            if (!$database->update("userprofile.${id}", $entry)) {
-                /* error - unable to perform update - possibly readonly */
-                return false;
-            }
-        } /* end for */
-        /* commit changes */
-        return $database->write();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->update();
     }
 
     /**
-     * view user profiles
+     * View user profiles.
      *
      * @type        default
      * @template    PROFILE_LIST_TEMPLATE
@@ -244,11 +185,10 @@ class plugin_user_profile extends StdClass implements IsPlugin
      * @title       {lang id="user.25"}
      *
      * @access      public
-     * @return      bool
      */
     public function get_profile_list()
     {
-        return true;
+        // Just views template - no business logic required.
     }
 
     /**
@@ -256,19 +196,17 @@ class plugin_user_profile extends StdClass implements IsPlugin
      *
      * @type        default
      * @template    PROFILE_VIEW_TEMPLATE
-     * @onerror     goto: index, text: UserNotFoundError
+     * @onerror     goto: index
      *
      * @access      public
-     * @return      bool
      * @param       array  $target  array of params passed to the function
      */
     public function view_profile(array $target = array())
     {
-        global $YANA;
         if (isset($target['user_id'])) {
             $userId = $target['user_id'];
             $_SESSION['user'][__FUNCTION__] = $target['user_id'];
-        } else if (isset($_SESSION['user'][__FUNCTION__])) {
+        } elseif (isset($_SESSION['user'][__FUNCTION__])) {
             $userId = $_SESSION['user'][__FUNCTION__];
         } else {
             $userId = YanaUser::getUserName();
@@ -280,8 +218,9 @@ class plugin_user_profile extends StdClass implements IsPlugin
             return false;
         }
 
+        global $YANA;
+        $YANA->setVar("USERNAME", $userId);
         $YANA->setVar("USER", $userData);
-        return true;
     }
 
     /**
@@ -292,14 +231,11 @@ class plugin_user_profile extends StdClass implements IsPlugin
      * @onerror     goto: index
      *
      * @access      public
-     * @return      bool
      * @param       string  $target  user id
      * @param       bool    $thumb   use thumbnail (yes/no)
      */
     public function get_profile_image($target, $thumb = false)
     {
-        /* @var $YANA Yana */
-        global $YANA;
         $userData = self::getDatabase()->select("userprofile.$target");
 
         // user not found or not active
@@ -315,11 +251,12 @@ class plugin_user_profile extends StdClass implements IsPlugin
                 $image = new Image(str_replace('/image.', '/thumb.', $userData['USER_IMAGE']));
             }
         } else {
-            $image = new Image($YANA->getVar('DATADIR').'userpic.gif');
+            $image = new Image(Yana::getInstance()->getVar('DATADIR') . 'userpic.gif');
         }
         $image->outputToScreen();
         exit;
     }
+
 }
 
 ?>

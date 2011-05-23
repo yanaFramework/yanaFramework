@@ -33,8 +33,6 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
     /**
      * Default event handler
      *
-     * returns bool(true) on success and bool(false) on error
-     *
      * @access  public
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
@@ -49,8 +47,6 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
     /**
      * Password quality Setup (Default settings)
      *
-     * this function does not expect any arguments
-     *
      * @type        security
      * @user        group: admin, level: 100
      * @template    user_pwd_quality
@@ -58,7 +54,6 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
      * @safemode    true
      *
      * @access      public
-     * @return      bool
      */
     public function get_pwd_quality_default()
     {
@@ -66,13 +61,10 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
         $YANA->setVar("ON_SUBMIT", "set_config_default");
         $configFile = $YANA->getResource('system:/config');
         $YANA->setVar("WRITEABLE", $configFile->isWriteable());
-        return true;
     }
 
     /**
      * Password quality Setup (Profile specific settings)
-     *
-     * this function does not expect any arguments
      *
      * @type        security
      * @user        group: admin, level: 100
@@ -81,7 +73,6 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
      * @safemode    false
      *
      * @access      public
-     * @return      bool
      */
     public function get_pwd_quality_profile()
     {
@@ -89,7 +80,6 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
         $YANA->setVar("ON_SUBMIT", "set_config_profile");
         $configFile = $YANA->getResource('system:/config');
         $YANA->setVar("WRITEABLE", $configFile->isWriteable());
-        return true;
     }
 
     /**
@@ -118,9 +108,7 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
     }
 
     /**
-     * Password quality
-     *
-     * this function checks if the password quality is high enough.
+     * Cchecks if the password quality is high enough.
      *
      * @subscribe
      *
@@ -331,5 +319,7 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
         }
         return true;
     }
+
 }
+
 ?>
