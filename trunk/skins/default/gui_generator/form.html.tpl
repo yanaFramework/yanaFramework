@@ -6,10 +6,10 @@
                       id="{$form->getName()}-search-small" class="gui_generator_search_small">
                     <input type="hidden" name="id" value="{$ID}"/>
                     <input type="hidden" name="{$SESSION_NAME}" value="{$SESSION_ID}"/>
-                    <input type="hidden" name="action" value="{$ACTION}"/>
+                    <input type="hidden" name="action" value="{$form->getSearchAction()}"/>
                     <label>
                         <span class="buttonize_static"><span class="icon_magnifier_hover">&nbsp;</span></span>
-                        <input name="{$form->getName()}[search]" type="text" value="{$form->getValue('search')|entities}"/>
+                        <input name="{$form->getName()}[searchterm]" type="text" value="{$form->getSearchTerm()|entities}"/>
                     </label>
                     <input value='{lang id="ok"}' type="submit"/>
                 </form>
@@ -18,6 +18,7 @@
                 <form method="post" action="{$PHP_SELF}" enctype="multipart/form-data" accept-charset="UTF-8">
                     <input type="hidden" name="id" value="{$ID}"/>
                     <input type="hidden" name="{$SESSION_NAME}" value="{$SESSION_ID}"/>
+                    <input type="hidden" name="action" value="{$form->getSearchAction()}"/>
                     <fieldset id="{$form->getName()}-search" class="gui_generator_search">
                         <legend>
                             <a class="buttonize" href="javascript://"
@@ -31,38 +32,13 @@
                 </form>
             {/if}
         {/if}
-        {if $form->getInsertAction() || $form->hasInsertableChildren()}
-            <form method="post" action="{$PHP_SELF}" enctype="multipart/form-data" accept-charset="UTF-8">
-                <input type="hidden" name="id" value="{$ID}"/>
-                <input type="hidden" name="{$SESSION_NAME}" value="{$SESSION_ID}"/>
-                <fieldset id="{$form->getName()}-new" class="gui_generator_new">
-                    <legend>
-                        <a class="buttonize" href="javascript://" onclick="$('#{$form->getName()}-new').hide('slow')">
-                            <span class="icon_new">&nbsp;</span>
-                            {lang id="new_entry"}
-                        </a>
-                    </legend>
-                    {import file="insert.html.tpl" form=$form}
-                </fieldset>
-            </form>
-        {/if}
-        {if $form->isSelectable()}
-        <form method="post" action="{$PHP_SELF}" enctype="multipart/form-data" accept-charset="UTF-8">
-                <input type="hidden" name="id" value="{$ID}"/>
-                <input type="hidden" name="{$SESSION_NAME}" value="{$SESSION_ID}"/>
-                <input type="hidden" name="action" value="{$ACTION}"/>
-                <div class="gui_generator_edit">
-                    {import file="subform.html.tpl" form=$form}
-                </div>
-        </form>
-        {/if}
+        {import file="subform.html.tpl" form=$form}
     </div>
     {if $form->isSelectable()}
         <script type="text/javascript"><!--
-            $(document).ready(function() {ldelim}
+            $(document).ready(function() {
                 $('#{$form->getName()}-search').hide();
                 $('#{$form->getName()}-search-small').hide();
-                $('#{$form->getName()}-new').hide();
                 $.fn.fancybox.defaults.hideOnContentClick = true;
                 $.fn.fancybox.defaults.titlePosition = 'over';
                 $.fn.fancybox.defaults.showCloseButton = false;
@@ -70,39 +46,18 @@
                 {if $form->isSelectable()}
                     $('#{$form->getName()}-search-small').after(
                         '<a class="gui_generator_icon_search" href="javascript://" ' +
-                        'onclick="$(\'#{$form->getName()}-search-small\').toggle(\'slow\')">' +
+                        'onclick="$(\'#{$form->getName()}-search-small\').slideToggle()">' +
                         '<span class="icon_magnifier">&nbsp;</span></a>'
-                        {if $form->getInsertAction() || $form->hasInsertableChildren()}
-                        + '<a class="gui_generator_icon_new" href="javascript://" ' +
-                        'onclick="$(\'#{$form->getName()}-new\').toggle(\'slow\')">' +
-                        '<span class="icon_new">&nbsp;</span></a>'
-                        {/if}
                     );
-                    {if $form->getSearchAction() || $form->hasSearchableChildren()}
+                    {if $form->getEvent('search') || $form->hasSearchableChildren()}
                     $('#{$form->getName()}-search-small').append(
                         '<a class="buttonize" href="javascript://" ' +
-                        'onclick="$(\'#{$form->getName()}-search\').toggle(\'slow\')">' +
+                        'onclick="$(\'#{$form->getName()}-search\').slideToggle()">' +
                         '<span class="icon_pointer">&nbsp;</span></a>'
                     );
                     {/if}
                 {/if}
-            {rdelim});
+            });
         //--></script>
     {/if}
-{*
-    <div class="gui_generator_footer" id="footer-{$form->getName()}">
-        {* Spam protection: Captcha *}{*
-        {if $PROFILE.SPAM.CAPTCHA && ($PROFILE.SPAM.PERMISSION || !$PERMISSION)}
-            <label class="gui_generator_captcha" title='{lang id="SECURITY_IMAGE.DESCRIPTION"}'>
-                <span class="gui_generator_mandatory" title='{lang id="MANDATORY"}'>*</span>
-                {lang id="SECURITY_IMAGE.TITLE"}
-                {captcha}
-            </label>
-        {/if}
-        <input type="submit" value='{lang id="BUTTON_SAVE"}'/>
-        {if $form->isUpdatable()}
-            <div class="gui_generator_mandatory">{lang id="MANDATORY"}</div>
-        {/if}
-    </div>
-*}
 </div>

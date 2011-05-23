@@ -78,7 +78,7 @@ li.gui_generator_array_reference
     list-style-position: inside;
 }
 
-.gui_generator_array img, div.gui_generator_edit .gui_generator_array img
+.gui_generator_array img, gui_generator_edit .gui_generator_array img
 {
     vertical-align: -5px;
     margin-left: 5px;

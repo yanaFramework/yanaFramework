@@ -15,7 +15,7 @@
 <!-- BEGIN: table -->
 
   <div class="config_head">
-      <div class="config_title" onclick="yanaToggleMenu(this.parentNode)">{$USER.USER_ID}{lang id="USER.PROFIL.0"}{* Foo's Profil *}</div>
+      <div class="config_title" onclick="yanaToggleMenu(this.parentNode)">{$USERNAME}{lang id="USER.PROFIL.0"}{* Foo's Profil *}</div>
   </div>
 
   <div class="help">
@@ -27,7 +27,7 @@
   <div class="option">
 
     <div class="optionbody">
-      {create file="user_admin" id="userdetails" template="1"}
+      {$USERFORM}
 
       <fieldset class="label" style="text-align: center; margin: auto;">
         <legend>{lang id="FORMAT_TEXT"}</legend>

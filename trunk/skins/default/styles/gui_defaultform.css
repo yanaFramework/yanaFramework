@@ -719,7 +719,77 @@ fieldset:hover > .gui_generator_toolbar > a
 .gui_generator_search
 {
     /* CSS 2.1 for IE8 */
-    background-color: #f0f0f0;
+    background-color: #fcfcfc;
     /* CSS 3 for Firefox, Chrome, Opera and others */
     background-color: rgba(255, 255, 255, 0.5);
+}
+
+.gui_generator_form fieldset
+{
+    /* CSS 2.1 for IE6-IE8 (solid color) */
+    background-color: #f5f5f5;
+    /* CSS 3 for IE9, Firefox, Chrome, Opera and others (transparent, skinable color) */
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.pd_photo .pd_description,
+.pd_photo .gui_generator_image > *
+{
+    display: none;
+}
+
+.pd_photo .gui_generator_image a
+{
+    display: inherit;
+}
+
+/* Gallery layout 6 */
+.gui_generator_gallery_content
+{
+    text-align: center;
+}
+
+.gui_generator_gallery_content .gui_generator_gallery_entry
+{
+    padding: 5px;
+    display: block;
+    width: 200px;
+    min-height: 100px;
+    background-color: #fff;
+    -moz-box-shadow: 2px 2px 2px #aaa;
+    -webkit-box-shadow: 2px 2px 2px #aaa;
+    -o-box-shadow: 2px 2px 2px #aaa;
+    box-shadow: 2px 2px 2px #aaa;
+    margin: 5px;
+    border: 4px double #555;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.gui_generator_gallery_content .gui_generator_gallery_title
+{
+    min-height: 30px;
+    text-shadow: 1px 1px 1px #aaa;
+}
+
+.gui_generator_gallery_entry .gui_generator_image
+{
+    width: 200px;
+    margin: auto;
+    overflow: hidden;
+}
+
+.gui_generator_gallery_entry img
+{
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+}
+
+.gui_generator_gallery_entry img:hover
+{
+    width: 110px;
+    height: 110px;
+    margin: 5px;
 }

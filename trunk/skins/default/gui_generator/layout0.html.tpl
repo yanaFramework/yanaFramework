@@ -5,7 +5,7 @@
       <!-- Heading -->
         <thead>
             <tr>
-                {if $iterator->hasRows() && $form->getEntriesPerPage() > 1}
+                {if $form->hasRows() && $form->getEntriesPerPage() > 1}
                     <th title='{lang id="TITLE_DETAILS"}'>
                         <div class="gui_generator_details">
                             <span class="icon_show">&nbsp;</span>
@@ -13,10 +13,10 @@
                     </th>
                 {/if}
                 <!-- BEGIN insert form contents -->
-                {foreach from=$iterator item="field"}
-                    {if $iterator->isSingleline()}
-                    <th class="{$iterator->getCssClass()}">
-                        <!-- {if $field->isFilterable() && $iterator->hasRows()}
+                {foreach from=$form item="field"}
+                    {if $field->isSingleline()}
+                    <th class="{$field->getCssClass()}">
+                        <!-- {if $field->isFilterable() && $form->hasRows()}
                             BEGIN: filter settings
                         -->
                         <a class="gui_generator_filter" href={"action=$ACTION"|href}
@@ -31,8 +31,8 @@
                             END: filter settings
                         {/if}-->
 
-                        {if $iterator->hasRows() && $form->getEntriesPerPage() > 1 && $field->refersToTable()}
-                            {assign var="url" value="action=$ACTION&$formName"|cat:"[orderby]=$field&$formName"|cat:"[desc]"}
+                        {if $form->hasRows() && $form->getEntriesPerPage() > 1 && $field->refersToTable()}
+                            {assign var="url" value="action=$ACTION&$formName"|cat:"[orderby]={$field->getName()}&$formName"|cat:"[desc]"}
                             <a href={"$url=0"|href} class="gui_generator_sort" title='{lang id="ORDER.ASCENDING"}'>
                                 {if $field->getName() == $form->getOrderByField() && !$form->isDescending()}
                                     <span class="icon_arrowup_hover">&nbsp;</span>
@@ -65,7 +65,7 @@
                     </th>
                     {/if}
                 {/foreach}
-                {if $iterator->hasRows() && $form->isDeletable() && $deleteAction}
+                {if $form->hasRows() && $form->isDeletable() && $deleteAction}
                     <th title='{lang id="delete"}'>
                         <div class="gui_generator_delete">
                             <span class="icon_delete">&nbsp;</span>
@@ -74,49 +74,49 @@
                 {/if}
             </tr>
         </thead>
-    {if $iterator->getRowCount()}
-      <!-- Entries {$iterator->rewind()}{assign var="formName" value=$form->getName()} -->
+    {if $form->getRowCount()}
+      <!-- Entries {assign var="formName" value=$form->getName()} -->
         <tbody>
-            {section name="update" loop=$iterator->getRowCount()}
+            {section name="update" loop=$form->getRowCount()}
                 <tr class="gui_generator_{cycle values='even,odd'}_row">
-                    {if $iterator->hasRows() && $form->getEntriesPerPage() > 1}
+                    {if $form->hasRows() && $form->getEntriesPerPage() > 1}
                         <td title='{lang id="TITLE_DETAILS"}'>
-                            {assign var="url" value="action=$ACTION&$formName"|cat:"[entries]=1&$formName"|cat:"[layout]=2&$formName"|cat:"[page]="|cat:$iterator->getPage()}
+                            {assign var="url" value="action=$ACTION&$formName"|cat:"[entries]=1&$formName"|cat:"[layout]=2&$formName"|cat:"[page]="|cat:$form->getPage()}
                             <a class="gui_generator_details buttonize" href={$url|href}>
                                 <span class="icon_pointer">&nbsp;</span>
                             </a>
                         </td>
                     {/if}
-                    {foreach from=$iterator item="field"}
-                        {if $iterator->isSingleline()}
-                            <td title="{$field->getTitle()}" class="{$iterator->getCssClass()}">
-                                {$iterator}
+                    {foreach from=$form item="field"}
+                        {if $field->isSingleline()}
+                            <td title="{$field->getTitle()}" class="{$field->getCssClass()}">
+                                {$field->toString()}
                             </td>
                         {/if}
                     {/foreach}
-                    {if $iterator->hasRows() && $form->isDeletable() && $deleteAction}
+                    {if $form->hasRows() && $form->isDeletable() && $deleteAction}
                         <td title='{lang id="delete"}'>
                             <a class="gui_generator_delete buttonize"
                                onclick="return confirm('{lang id="prompt_delete"}')"
-                               href={"action=$deleteAction&selected_entries[]="|cat:$iterator->primaryKey()|href}>
+                               href={"action=$deleteAction&selected_entries[]={$form->getPrimaryKey()}"|href}>
                                 <span class="icon_delete">&nbsp;</span>
                             </a>
                         </td>
                     {/if}
                 </tr>
-                {if $iterator->hasRows()}
-                    {$iterator->nextRow()}
+                {if $form->hasRows()}
+                    {$form->nextRow()}
                 {/if}
             {/section}
         </tbody>
     {/if}
     </table>
 </div>
-{if !$iterator->getRowCount()}
+{if !$form->getRowCount()}
     <div class="gui_generator_no_entries_found">{lang id="NO_ENTRIES_FOUND"}</div>
 {/if}
 <script type="text/javascript"><!--
-    $(function() {ldelim}
+    $(function() {
         $('.gui_generator_image a').fancybox();
-    {rdelim});
+    });
 //--></script>

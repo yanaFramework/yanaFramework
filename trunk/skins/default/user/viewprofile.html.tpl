@@ -15,7 +15,7 @@
 <!-- BEGIN: table -->
 
   <div class="config_head">
-      <div class="config_title" onclick="yanaToggleMenu(this.parentNode)">{$USER.USER_ID}{lang id="USER.PROFIL.0"}{* Foo's Profil *}</div>
+      <div class="config_title" onclick="yanaToggleMenu(this.parentNode)">{$USERNAME}{lang id="USER.PROFIL.0"}{* Foo's Profil *}</div>
   </div>
 
   <div class="help">
@@ -27,7 +27,7 @@
   <div class="option">
 
     <div class="white_box" style="float: right;">
-      <img alt="" {if $USER.USERPROFILE_IMAGE && $USER.USERPROFILE_IMAGE_ACTIVE == 1}src={"action=get_profile_image&target="|cat:$USER.USER_ID|href}{else} src="{$DATADIR}userpic.gif" {/if} style="min-width: 30px; min-height: 30px; max-width: 320px; max-height: 320px"/>
+      <img alt="" {if $USER.USERPROFILE_IMAGE && $USER.USERPROFILE_IMAGE_ACTIVE == 1}src={"action=get_profile_image&target=$USERNAME"|href}{else} src="{$DATADIR}userpic.gif" {/if} style="min-width: 30px; min-height: 30px; max-width: 320px; max-height: 320px"/>
     <!-- {if $USER.USERPROFILE_IMAGE && ! $USER.USERPROFILE_IMAGE_ACTIVE} -->
       <p class="comment">{lang id="USER.OPTION.18"}</p>
     <!-- {/if} -->
