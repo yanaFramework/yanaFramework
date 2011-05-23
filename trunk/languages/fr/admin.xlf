@@ -101,6 +101,10 @@
                     <source>on/off</source>
                     <target>marche/arrêt</target>
                 </trans-unit>
+                <trans-unit id="admin.28">
+                    <source>e-mail</source>
+                    <target>e-mail</target>
+                </trans-unit>
                 <trans-unit id="admin.31">
                     <source>program setup</source>
                     <target>setup de software</target>

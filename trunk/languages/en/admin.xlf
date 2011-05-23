@@ -288,6 +288,10 @@
                     <source/>
                     <target>installed language versions</target>
                 </trans-unit>
+                <trans-unit id="admin.28">
+                    <source/>
+                    <target>e-mail</target>
+                </trans-unit>
                 <trans-unit id="admin.29">
                     <source/>
                     <target>Look &amp; Feel</target>

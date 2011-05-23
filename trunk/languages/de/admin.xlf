@@ -279,6 +279,10 @@
                     <source>installed language versions</source>
                     <target>installierte Sprachen</target>
                 </trans-unit>
+                <trans-unit id="admin.27">
+                    <source>e-mail</source>
+                    <target>E-mail</target>
+                </trans-unit>
                 <trans-unit id="admin.29">
                     <source>Look &amp; Feel</source>
                     <target>Darstellungsoptionen</target>
