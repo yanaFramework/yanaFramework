@@ -1,21 +1,21 @@
 {assign var="deleteAction" value=$form->getDeleteAction()}
 {assign var="formName" value=$form->getName()}
 <!-- BEGIN form contents -->
-{section name="view" loop=$iterator->getRowCount()}
     <div id="{$formName}-photodesk" class="gui_generator_view gui_generator_view_gallery">
+{for $i=1 to max($form->getRowCount(), ! $form->hasRows())}
         <div class="pd_photo">
             <div class="pd_hold">
-                {foreach from=$iterator item="field"}
+                {foreach from=$form item="field"}
                     {if $field->getType() === "image"}
-                        {$iterator}
+                        {$field}
                     {/if}
                 {/foreach}
-                {$iterator->rewind()}
+                {$form->rewind()}
                 <div class="pd_description">
-                    {foreach from=$iterator item="field"}
-                        {if $iterator->isSingleLine()}
-                            <span class="optionitem {$iterator->getCssClass()}" title="{$field->getTitle()}">
-                                <!-- {if $field->isFilterable() && $iterator->hasRows() && $form->getEntriesPerPage() > 1}
+                    {foreach from=$form item="field"}
+                        {if $field->isSingleLine()}
+                            <span class="optionitem {$field->getCssClass()}" title="{$field->getTitle()}">
+                                <!-- {if $field->isFilterable() && $form->hasRows() && $form->getEntriesPerPage() > 1}
                                     BEGIN: filter settings
                                 -->
                                 <span class="gui_generator_filter">
@@ -36,8 +36,8 @@
                                     {if !$field->isNullable()}
                                         <span class="gui_generator_mandatory" title="{lang id="MANDATORY"}">*</span>
                                     {/if}
-                                    {if $iterator->hasRows() && $form->getEntriesPerPage() > 1}
-                                        {assign var="url" value="action=$ACTION&$formName"|cat:"[orderby]=$field&$formName"|cat:"[desc]"}
+                                    {if $form->hasRows() && $form->getEntriesPerPage() > 1}
+                                        {assign var="url" value="action=$ACTION&$formName"|cat:"[orderby]={$field->getName()}&$formName"|cat:"[desc]"}
                                         <a title='{lang id="ORDER.BY"} &quot;{$field->getTitle()}&quot;' href={"$url=0"|href}>
                                             {$field->getTitle()}
                                         </a>
@@ -45,21 +45,21 @@
                                         {$field->getTitle()}
                                     {/if}
                                 </span>
-                                {$iterator}
+                                {$field}
                             </span>
                         {/if}
                     {/foreach}
                 </div>
             </div>
-            <span onclick="if (confirm('{lang id="prompt_delete"}')) document.location.href = '{"action=$deleteAction&selected_entries[]="|cat:$iterator->primaryKey()|href}'" title='{lang id="delete"}' class="gui_generator_delete delete"></span>
+            <span onclick="if (confirm('{lang id="prompt_delete"}')) document.location.href = '{"action=$deleteAction&selected_entries[]="|cat:$form->getPrimaryKey()|href}'" title='{lang id="delete"}' class="gui_generator_delete delete"></span>
         </div>
-        {if $iterator->hasRows()}
-            {$iterator->nextRow()}
+        {if $form->hasRows()}
+            {$form->nextRow()}
         {/if}
+{forelse}
+        <div class="gui_generator_no_entries_found">{lang id="NO_ENTRIES_FOUND"}</div>
+{/for}
     </div>
-{sectionelse}
-    <div class="gui_generator_no_entries_found">{lang id="NO_ENTRIES_FOUND"}</div>
-{/section}
 <script type="text/javascript"><!--
     $(function() {ldelim}
         $('#{$formName}-photodesk').photoDesk({ldelim}
@@ -68,6 +68,5 @@
             showShuffle: false,
             showViewAll: false
         {rdelim});
-        $('.pd_description, .pd_photo .gui_generator_image a ~ *').hide();
     {rdelim});
 //--></script>

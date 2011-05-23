@@ -1,11 +1,10 @@
-{if $iterator->getRowCount()}
     <!-- BEGIN insert form contents -->
     <div class="gui_generator_config optionbody">
-        {section name="update" loop=$iterator->getRowCount()}
-            {foreach from=$iterator item="field"}
-            <div class="optionitem {$iterator->getCssClass()}" title="{$field->getTitle()}">
+        {for $i=1 to max($form->getRowCount(), ! $form->hasRows())}
+            {foreach from=$form item="field"}
+            <div class="optionitem {$field->getCssClass()}" title="{$field->getTitle()}">
                 <div class="label">
-                    <!-- {if $field->isFilterable() && $iterator->hasRows() && $form->getEntriesPerPage() > 1}
+                    <!-- {if $field->isFilterable() && $form->hasRows() && $form->getEntriesPerPage() > 1}
                         BEGIN: filter settings
                     -->
                     <div class="gui_generator_filter">
@@ -26,8 +25,8 @@
                         {if !$field->isNullable()}
                             <span class="gui_generator_mandatory" title="{lang id="MANDATORY"}">*</span>
                         {/if}
-                        {if $iterator->hasRows() && $form->getEntriesPerPage() > 1 && $field->refersToTable()}
-                            {assign var="url" value="action=$ACTION&$formName"|cat:"[orderby]=$field&$formName"|cat:"[desc]"}
+                        {if $form->hasRows() && $form->getEntriesPerPage() > 1 && $field->refersToTable()}
+                            {assign var="url" value="action=$ACTION&$formName"|cat:"[orderby]={$field->getName()}&$formName"|cat:"[desc]"}
                             <a title='{lang id="ORDER.BY"} &quot;{$field->getTitle()}&quot;' href={"$url=0"|href}>
                                 {$field->getTitle()}
                             </a>
@@ -36,19 +35,18 @@
                         {/if}
                     </div>
                 </div>
-                {$iterator}
+                {$field}
             </div>
             {/foreach}
-            {if $iterator->hasRows()}
-                {$iterator->nextRow()}
+            {if $form->hasRows()}
+                {$form->nextRow()}
             {/if}
-        {/section}
+        {forelse}
+            <div class="gui_generator_no_entries_found">{lang id="NO_ENTRIES_FOUND"}</div>
+        {/for}
     </div>
-{else}
-    <div class="gui_generator_no_entries_found">{lang id="NO_ENTRIES_FOUND"}</div>
-{/if}
 <script type="text/javascript"><!--
-    $(function() {ldelim}
+    $(function() {
         $('.gui_generator_image a').fancybox();
-    {rdelim});
+    });
 //--></script>
