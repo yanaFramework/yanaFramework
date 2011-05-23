@@ -66,7 +66,7 @@
         {if $form->isSelectable() && !$form->getContext('update')->getRows()->count()}
             <div class="gui_generator_no_entries_found">{lang id="NO_ENTRIES_FOUND"}</div>
         {/if}
-        {if $form->getInsertAction()}
+        {if $form->isInsertable() && $form->getInsertAction()}
             <form method="post" action="{$PHP_SELF}" enctype="multipart/form-data" accept-charset="UTF-8" id="{$form->getName()}-new">
                 <input type="hidden" name="id" value="{$ID}"/>
                 <input type="hidden" name="{$SESSION_NAME}" value="{$SESSION_ID}"/>
@@ -154,7 +154,7 @@
                 'href={"action={$ACTION}&{$formName}[entries]=5&$formName"|cat:"[layout]="|cat:$form->getTemplate()|href}>' +
                 '<span class="icon_upload">&nbsp;</span></a>' +
             {/if}
-            {if $form->getInsertAction()}
+            {if $form->isInsertable() && $form->getInsertAction()}
                 '<a class="gui_generator_icon_new" href="javascript://" ' +
                 'onclick="$(\'#{$formName}-new\').slideToggle()">' +
                 '<span class="icon_new">&nbsp;</span></a>' +
