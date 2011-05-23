@@ -443,7 +443,7 @@
             </group>
             <trans-unit id="descr_user_edit">
                 <source/>
-                <target>Here you may edit {$USER.USER_ID}'s profile.</target>
+                <target>Here you may edit {$USERNAME}'s profile.</target>
             </trans-unit>
             <trans-unit id="descr_user_configuration">
                 <source/>

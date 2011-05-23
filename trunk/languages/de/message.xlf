@@ -10,8 +10,8 @@
                     <target>Änderungen wurden gespeichert.</target>
                 </trans-unit>
                 <trans-unit id="SuccessMessage.p">
-                    <source>Thank You !!!</source>
-                    <target>Vielen Dank !!!</target>
+                    <source></source>
+                    <target></target>
                 </trans-unit>
             </group>
             <group id="Error">
