@@ -239,7 +239,7 @@ class FormFieldHtmlBuilder extends Object
     public function setAttr($attr)
     {
         assert('is_string($attr); // Invalid argument $attr: string expected');
-        $this->_attr = String::htmlSpecialChars($attr, ENT_IGNORE);
+        $this->_attr = String::htmlSpecialChars($attr, ENT_NOQUOTES);
         return $this;
     }
 
