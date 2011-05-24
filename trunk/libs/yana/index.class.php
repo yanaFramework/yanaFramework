@@ -185,19 +185,21 @@ class Index extends Utility
          *
          * }}
          */
+        $outputCompressionActive = false;
         if (headers_sent() === false && !ini_get('zlib.output_compression')) {
             $acceptEncoding = $_SERVER['HTTP_ACCEPT_ENCODING'];
             if (isset($acceptEncoding) && strpos($acceptEncoding, "gzip") !== false) {
                 // "output compression level" is an integer between -1 (off/default) - 9 (max)
                 ini_set('zlib.output_compression_level', 6);
                 ob_start("ob_gzhandler");
+                $outputCompressionActive = true;
             }
         }
         $YANA = Yana::getInstance(); // Get a yana-instance
         $YANA->callAction();         // Handle the request
         $YANA->outputResults();      // Create the output
         // flush the output buffer (GZ-compression)
-        if (ob_get_length() !== false) {
+        if ($outputCompressionActive && ob_get_length() !== false) {
             ob_end_flush();
         }
     }
