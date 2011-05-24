@@ -215,7 +215,7 @@ class FormBuilder extends Object
      * @access  private
      * @var     int
      */
-    private $_layout = 0;
+    private $_layout = null;
 
     /**
      * base form
@@ -937,7 +937,13 @@ class FormBuilder extends Object
         $formSetup = new FormSetup();
         $formSetup->setPage($this->getPage());
         $formSetup->setEntriesPerPage($this->getEntries());
-        $formSetup->setLayout($this->getLayout());
+        $layout = $this->getLayout();
+        if (!is_int($layout)) {
+            $layout = $this->_form->getTemplate();
+        }
+        if (is_numeric($layout)) {
+            $formSetup->setLayout((int) $layout);
+        }
         $formSetup->setOrderByField($this->getSort());
         $formSetup->setSortOrder($this->isDescending());
 
