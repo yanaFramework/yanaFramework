@@ -80,7 +80,7 @@ class SmartIdResource extends SmartFileResource
     {
         assert('is_string($id); // Wrong argument type argument 1. String expected');
         $filename = Yana::getInstance()->getSkin()->getFile($id);
-        if (parent::getTemplate($filename, &$output, $smarty)) {
+        if (parent::getTemplate($filename, $output, $smarty)) {
             return true;
         } else {
             $smarty->trigger_error("Invalid template '$id': File '$filename' not found.");
@@ -106,7 +106,7 @@ class SmartIdResource extends SmartFileResource
     {
         assert('is_string($id); // Wrong argument type argument 1. String expected');
         $filename = Yana::getInstance()->getSkin()->getFile($id);
-        return parent::getTimestamp($filename, &$output, $smarty);
+        return parent::getTimestamp($filename, $output, $smarty);
     }
 
 }
