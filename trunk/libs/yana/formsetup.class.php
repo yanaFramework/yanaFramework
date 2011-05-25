@@ -248,6 +248,7 @@ class FormSetup extends Object
      * Set number of rows.
      *
      * This function sets the number of viewable rows and pages.
+     * If the current page lies beyond the last page, it is reset to 0 (the first page).
      *
      * @access  public
      * @param   int  $entryCount  number of entry
