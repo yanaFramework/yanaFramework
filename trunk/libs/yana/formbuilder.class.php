@@ -751,7 +751,7 @@ class FormBuilder extends Object
         $this->_queryBuilder->setForm($this->_facade);
 
         $query = $this->_queryBuilder->buildCountQuery();
-        $this->_facade->getSetup()->setEntryCount($query->countResults());
+        $formSetup->setEntryCount($query->countResults());
 
         $query = $this->_queryBuilder->buildSelectQuery();
         if (!empty($where)) {
