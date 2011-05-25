@@ -734,6 +734,11 @@ class FormBuilder extends Object
         $this->_setupBuilder->setSetup($formSetup);
         $this->_facade->setSetup($formSetup);
 
+        // copy search term from parent-forms
+        if ($this->_facade->getParent()) {
+            $formSetup->setSearchTerm($this->_facade->getParent()->getSetup()->getSearchTerm());
+        }
+
         $request = (array) Request::getVars($form->getName());
         $files = (array) Request::getFiles($form->getName());
         if (!empty($files)) {
@@ -910,13 +915,6 @@ class FormBuilder extends Object
                 $builder = new FormBuilder($this->_file);
             }
             $builder->setForm($subForm, $form);
-            // copy search term to sub-forms
-            assert('!isset($searchTerm); // Cannot redeclare var $searchTerm');
-            $searchTerm = $form->getSetup()->getSearchTerm();
-            if (!empty($searchTerm)) {
-                $builder->_facade->getSetup()->setSearchTerm($searchTerm);
-            }
-            unset($searchTerm);
             // build sub-form
             $subFormFacade = $builder->__invoke();
             $form->addForm($subFormFacade);
