@@ -460,7 +460,7 @@ class plugin_default_library extends StdClass implements IsPlugin
     }
 
     /**
-     * create an image or download a file from a source
+     * Create an image or download a file from a source.
      *
      * This function is called by form-generator
      *
@@ -479,8 +479,6 @@ class plugin_default_library extends StdClass implements IsPlugin
      */
     public function download_file($target, $fullsize = false)
     {
-        global $YANA;
-
         $source = DbBlob::getFilenameFromSession($target, $fullsize);
 
         if ($source === false) {
@@ -526,8 +524,9 @@ class plugin_default_library extends StdClass implements IsPlugin
             gzclose($gz);
 
         } else {
-            $image = new Image($source);
-            $image->outputToScreen();
+            header("Content-type: image/png");
+            $handle = fopen($source, 'r');
+            fpassthru($handle);
         }
         exit(0);
     }
