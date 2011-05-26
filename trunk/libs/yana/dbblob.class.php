@@ -317,17 +317,30 @@ class DbBlob extends FileReadonly
     }
 
     /**
-     * get filename by id
+     * Get matching filename for a given id.
      *
-     * Searches for a matching filename for a given id.
-     *
-     * @param   string  $id  file id
+     * @access  public
+     * @static
+     * @param   string  $id    file id
+     * @param   bool    $type  file type (image or file, leave blank for auto-detect)
      * @return  string
      */
-    public static function getFilenameFromFileId($id)
+    public static function getFilenameFromFileId($id, $type = '')
     {
+        switch ($type)
+        {
+            case 'image':
+                $id .= '.png';
+            break;
+            case 'file':
+                $id .= '.gz';
+            break;
+            case 'file':
+                $id .= '.*';
+            break;
+        }
         assert('is_string($id); // Wrong argument type argument 1. String expected');
-        foreach (glob(self::getDbBlobDir() . "{$id}*") as $filename)
+        foreach (glob(self::getDbBlobDir() . $id) as $filename)
         {
             return $filename;
         }

@@ -2121,7 +2121,7 @@ class DDLColumn extends DDLNamedObject
                 if (empty($value)) {
                     return null;
                 }
-                return DbBlob::getFilenameFromFileId($value);
+                return DbBlob::getFilenameFromFileId($value, $type);
             break;
             case 'range':
             case 'float':
