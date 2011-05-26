@@ -204,7 +204,7 @@ class DbBlob extends FileReadonly
             $file = self::getThumbnailFromFileId($id);
         }
         if (!is_file($file)) {
-            throw new FileNotFoundError();
+            throw new FileNotFoundError($file);
         }
         return $file;
     }
@@ -313,7 +313,7 @@ class DbBlob extends FileReadonly
     public static function getFileIdFromFilename($filename)
     {
         assert('is_string($filename); // Wrong argument type for argument 1. String expected');
-        return preg_replace('/^.*?(\w+)\.\w+$/', '$1', $filename);
+        return preg_replace('/^.*?([\w-_]+)\.\w+$/', '$1', $filename);
     }
 
     /**
@@ -327,24 +327,31 @@ class DbBlob extends FileReadonly
      */
     public static function getFilenameFromFileId($id, $type = '')
     {
+        assert('is_string($id); // Invalid argument $id: string expected');
+        assert('is_string($type); // Invalid argument $type: string expected');
+
+        $file = self::getDbBlobDir() . $id;
         switch ($type)
         {
             case 'image':
-                $id .= '.png';
+                $file .= '.png';
             break;
             case 'file':
-                $id .= '.gz';
+                $file .= '.gz';
             break;
             case 'file':
-                $id .= '.*';
+                $file .= '.*';
             break;
         }
-        assert('is_string($id); // Wrong argument type argument 1. String expected');
-        foreach (glob(self::getDbBlobDir() . $id) as $filename)
-        {
-            return $filename;
+        if (is_file($file)) {
+            return $file;
+        } else {
+            foreach (glob(self::getDbBlobDir() . $id) as $filename)
+            {
+                return $filename;
+            }
+            return "";
         }
-        return "";
     }
 
     /**
