@@ -1,4 +1,5 @@
-<div class="gui_generator_gallery_content">    
+<div class="gui_generator_gallery_content">
+    {assign var="formName" value=$form->getName()}
     {for $i=1 to max($form->getRowCount(), ! $form->hasRows())}
         <div class="gui_generator_gallery_entry">
             <div class="gui_generator_gallery_image">
@@ -9,7 +10,7 @@
                 {/foreach}
                 {if !$hasImage}
                     <a class="gui_generator_dummyimage" title='{lang id="TITLE_DETAILS"}'
-                       href={"action=$ACTION&{$form->getName()}[entries]=1"|href}>&nbsp;</a>
+                       href={"action=$ACTION&{$formName}[entries]=1&{$formName}[page]={$form->getRows()->key()-1}"|href}>&nbsp;</a>
                 {/if}
             </div>
             <div class="gui_generator_gallery_title">

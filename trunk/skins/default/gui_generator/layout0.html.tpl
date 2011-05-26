@@ -81,8 +81,8 @@
                 <tr class="gui_generator_{cycle values='even,odd'}_row">
                     {if $form->hasRows() && $form->getEntriesPerPage() > 1}
                         <td title='{lang id="TITLE_DETAILS"}'>
-                            {assign var="url" value="action=$ACTION&$formName"|cat:"[entries]=1&$formName"|cat:"[layout]=2&$formName"|cat:"[page]="|cat:$form->getPage()}
-                            <a class="gui_generator_details buttonize" href={$url|href}>
+                            <a class="gui_generator_details buttonize"
+                               href={"action=$ACTION&{$formName}[entries]=1&{$formName}[layout]=2&{$formName}[page]={$form->getRows()->key()-1}"|href}>
                                 <span class="icon_pointer">&nbsp;</span>
                             </a>
                         </td>
