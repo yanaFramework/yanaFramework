@@ -348,4 +348,5 @@ class plugin_blog extends StdClass implements IsPlugin
     }
 
 }
+
 ?>
