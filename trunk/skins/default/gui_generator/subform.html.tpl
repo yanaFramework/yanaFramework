@@ -4,7 +4,7 @@
         <form method="post" action="{$PHP_SELF}" enctype="multipart/form-data" accept-charset="UTF-8" class="gui_generator_toolbar" id="{$form->getName()}-toolbar">
             <input type="hidden" name="id" value="{$ID}"/>
             <input type="hidden" name="{$SESSION_NAME}" value="{$SESSION_ID}"/>
-            <input type="hidden" name="action" value="{$ACTION}"/>
+            {if $ACTION}<input type="hidden" name="action" value="{$ACTION}"/>{/if}
             <div class="gui_generator_settings" id="{$form->getName()}-settings">
                 <!-- BEGIN settings {assign var="formName" value=$form->getName()} -->
                 <span class="buttonize_static"><span class="icon_edit_hover">&nbsp;</span></span>
@@ -151,7 +151,7 @@
             $('#{$form->getName()}-toolbar').append(
             {if $form->getEntriesPerPage() == 1}
                 '<a class="gui_generator_icon_up buttonize" title=\'{lang id="title_overview"}\'' +
-                'href={"action={$ACTION}&{$formName}[entries]=5&$formName"|cat:"[layout]="|cat:$form->getTemplate()|href}>' +
+                'href={"action={$ACTION}&{$formName}[entries]=5&{$formName}[layout]={$form->getTemplate()}&{$formName}[page]=0"|href}>' +
                 '<span class="icon_upload">&nbsp;</span></a>' +
             {/if}
             {if $form->isInsertable() && $form->getInsertAction()}

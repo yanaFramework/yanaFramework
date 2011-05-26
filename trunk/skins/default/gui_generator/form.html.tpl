@@ -6,7 +6,7 @@
                       id="{$form->getName()}-search-small" class="gui_generator_search_small">
                     <input type="hidden" name="id" value="{$ID}"/>
                     <input type="hidden" name="{$SESSION_NAME}" value="{$SESSION_ID}"/>
-                    <input type="hidden" name="action" value="{$ACTION}"/>
+                    {if $ACTION}<input type="hidden" name="action" value="{$ACTION}"/>{/if}
                     <label>
                         <span class="buttonize_static"><span class="icon_magnifier_hover">&nbsp;</span></span>
                         <input name="{$form->getName()}[searchterm]" type="text" value="{$form->getSearchTerm()|entities}"/>
