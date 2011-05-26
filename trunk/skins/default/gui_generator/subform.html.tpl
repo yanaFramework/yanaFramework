@@ -167,7 +167,7 @@
         //--></script>
     </fieldset>
 {/if}
-{if $form->getEntriesPerPage() === 1 || !$form->getFields()}
+{if $form->getEntriesPerPage() === 1 || $form->getSearchTerm() || !$form->getFields()}
     {foreach from=$form->getForms() item="subform"}
         {import file="subform.html.tpl" form=$subform}
     {/foreach}
