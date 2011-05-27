@@ -185,7 +185,7 @@ class plugin_calendar extends StdClass implements IsPlugin
      * @style       ../../skins/default/styles/icons.css
      * @script      ../../skins/default/styles/dynamic-styles.js
      * @script      ../../skins/default/styles/admin-styles.js
-     * @script      ../../skins/default/scripts/jquery/jquery-1.4.2.min.js
+     * @script      ../../skins/default/scripts/jquery/jquery-1.6.1.min.js
      * @script      ../../skins/default/scripts/jquery/jquery-ui-1.8.custom.min.js
      * @script      ../../skins/default/scripts/jquery/calendar/fullcalendar.min.js
      * @script      ../../skins/default/scripts/gui_generator.js
