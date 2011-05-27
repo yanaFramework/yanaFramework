@@ -144,7 +144,7 @@ class FormQueryBuilder extends Object
             {
                 /* @var $field FormFieldFacade */
                 if ($field->isSelectable() && $field->isVisible() && $field->isFilterable()) {
-                    $havingClause = array($field->getName(), 'like', $searchTerm);
+                    $havingClause = array($field->getName(), 'like', "%$searchTerm%");
                     $select->addHaving($havingClause);
                 }
             }
@@ -229,15 +229,15 @@ class FormQueryBuilder extends Object
                 $select->setRow($parentResults->key());
                 $this->_form->getSetup()->setEntriesPerPage(1);
             } else {
-                $source = $target = "";
-                list($source, $target) = $this->getForeignKey();
-                $target = strtoupper($target);
+                $sourceColumnName = $targetColumnName = "";
+                list($sourceColumnName, $targetColumnName) = $this->getForeignKey();
+                $targetColumnName = strtoupper($targetColumnName);
                 $results = $parentResults->toArray();
                 if (count($results) === 1) {
                     $results = current($results);
-                    if (isset($results[$target])) {
+                    if (isset($results[$targetColumnName])) {
                         $where = $select->getWhere();
-                        $foreignKeyClause = array($source, '=', $results[$target]);
+                        $foreignKeyClause = array($sourceColumnName, '=', $results[$targetColumnName]);
                         if (empty($where)) {
                             $where = $foreignKeyClause;
                         } else {
