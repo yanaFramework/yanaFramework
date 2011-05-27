@@ -83,14 +83,12 @@
             var $photo     = $(this);
             $('<img />').load(function(){
                 ++cntPhotos;
-                var $image     = $(this);
 
                 var r = Math.floor(Math.random()*201)-100;//*41
                 var maxzidx = parseInt(findHighestZIndex()) + 1;
                 calcPosition();
                 var param    = {
                     'width'   : $settings.photoW + 'px',
-                    'height'  : $settings.photoH + 'px',
                     'top'     : (Math.floor(Math.random() * (maxH - minH + 1)) + minH) +'px',
                     'left'    : (Math.floor(Math.random() * (maxW - minW + 1)) + minW) +'px',
                     'z-index' : maxzidx
