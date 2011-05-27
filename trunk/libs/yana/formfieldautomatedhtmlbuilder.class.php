@@ -342,11 +342,10 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
             case 'password':
                 return '&ndash;'; // never show password
             case 'reference':
-                $references = $this->getReferences(); // @todo fix this function reference
-                if (isset($references[$field->getName()])) {
-                    $reference = $references[$field->getName()];
-                    $label = strtolower($reference['label']);
-                    $row = $this->currentRow();
+                $references = $field->getColumn()->getReferenceSettings();
+                $row = $field->getContext()->getRow();
+                if (!empty($references['label'])) {
+                    $label = mb_strtoupper($references['label']);
                     if (isset($row[$label])) {
                         $value = $row[$label];
                     }
