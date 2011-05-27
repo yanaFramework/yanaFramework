@@ -70,9 +70,9 @@ YanaGuestbook.prototype.callFunctionByName = function($func, $args, $handler)
                 YanaGuestbook.initPage();
             });
         }
-        this.http.send('action=' + escape($func) + '&' + $args);
+        this.http.send('action=' + encodeURIComponent($func) + '&' + $args, 'post');
+        }
     }
-}
 
 /* BEGIN custom events */
 
@@ -95,11 +95,11 @@ YanaGuestbook.prototype.guestbookRequest = function ($func, $id, $args, $form)
             for (var i = 0; i < o.elements.length; i++)
             {
                 if (o.elements[i].name) {
-                    $args += '&' + escape(o.elements[i].name.toLowerCase()) + '=' + escape(o.elements[i].value);
+                        $args += '&' + encodeURIComponent(o.elements[i].name.toLowerCase()) + '=' + encodeURIComponent(o.elements[i].value);
+                    }
                 }
             }
         }
-    }
     guestbook.callFunctionByName($func, $args);
 }
 
