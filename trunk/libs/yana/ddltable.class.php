@@ -1492,7 +1492,8 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
                     if (empty($title)) {
                         $title = $column->getName();
                     }
-                    throw new MissingFieldWarning($title);
+                    $warning = new MissingFieldWarning();
+                    throw $warning->setField($title);
                 }
             /*
              * 4) this input is valid - move to next
