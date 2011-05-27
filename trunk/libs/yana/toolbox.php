@@ -341,18 +341,14 @@ function untaintInput($value, $type = "", $length = 0, $escape = 0, $doubleEncod
     $length = (int) $length;
     $escape = (int) $escape;
     $precision = (int) $precision;
-    $type = mb_strtolower("$type");
-    $test = false;
 
-    switch ($type)
+    switch (mb_strtolower("$type"))
     {
         case "inet":
-            if (filter_var($value, FILTER_VALIDATE_IP)) {
-                return $value;
-            } else {
-                return null;
+            if (filter_var($value, FILTER_VALIDATE_IP) === false) {
+                $value = null;
             }
-        break;
+            return $value;
 
         case "url":
             $value = filter_var($value, FILTER_SANITIZE_URL);
@@ -363,46 +359,9 @@ function untaintInput($value, $type = "", $length = 0, $escape = 0, $doubleEncod
                 $value = substr($value, 0, $length);
             }
             if (filter_var($value, FILTER_VALIDATE_URL) === false) {
-                return "";
-            } else {
-                return $value;
+                $value = "";
             }
-        break;
-
-        case "mail":
-            $value = filter_var($value, FILTER_SANITIZE_EMAIL);
-            if ($length > 0) {
-                $value = substr($value, 0, $length);
-            }
-            if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                return "";
-            }
-            $test = true;
-            $type = "string";
-        break;
-
-        case "select":
-        case "text":
-        case "file":
-        case "image":
-        case "profile":
-            $test = true;
-            $type = "string";
-        break;
-
-        case "array":
-        case "set":
-            $test  = true;
-            $type  = "string";
-            /* settype to ARRAY */
-            $value = (array) $value;
-            $value = SML::encode($value, null, CASE_UPPER);
-        break;
-
-        case "string":
-        case "object":
-            $test = true;
-        break;
+            return $value;
 
         /* this maps aliases to values, returned by gettype according to php manual*/
         case "int":
@@ -427,7 +386,6 @@ function untaintInput($value, $type = "", $length = 0, $escape = 0, $doubleEncod
                 }
             }
             return $value;
-        break;
 
         case "float":
         case "double":
@@ -447,83 +405,68 @@ function untaintInput($value, $type = "", $length = 0, $escape = 0, $doubleEncod
                 if ($value < 0) {
                     $_value = '-' . $_value;
                 }
-                return (float) $_value;
+                $value = (float) $_value;
 
             /*
              * round to precision
              */
             } elseif ($precision >= 0) {
-                return (float) round($value, $precision);
+                $value = (float) round($value, $precision);
 
-            } else {
-                return $value;
             }
-        break;
+            return $value;
 
-        /*
-         * handle BOOLEAN
-         *
-         * just return - length does'nt matter
-         */
         case "boolean":
         case "bool":
             return !empty($value);
+
+        case "object":
+            if (!is_object($value)) {
+                $value = null;
+            }
+            return $value;
+
+        case "mail":
+            $value = (string) filter_var($value, FILTER_SANITIZE_EMAIL);
+            if ($length > 0) {
+                $value = substr($value, 0, $length);
+            }
+            if (filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
+                return "";
+            }
         break;
 
-        default:
-            $test = false;
+        case "text":
+            // strip NULL-chars et al.
+            $value = preg_replace('/[\x00-\x08\x0b]*|[\x0e-\x1f]*/', '', "$value");
+        break;
+
+        case "select":
+        case "file":
+        case "image":
+        case "profile":
+        case "string":
+            // strip tags, new-lines and chars < 32
+            $value = filter_var((string) $value, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+        break;
+
+        case "array":
+        case "set":
+            $value = SML::encode((array) $value, null, CASE_UPPER);
         break;
 
     }
 
-    if ($test === true) {
-
-        switch (true)
-        {
-            /*
-             * handle other SCALAR value
-             *
-             * create substring
-             */
-            case is_scalar($value) || $type === "string":
-                $value = preg_replace('/[\x00-\x08\x0b]*|[\x0e-\x1f]*/', '', "$value");
-                if ($length > 0 && mb_strlen("$value") > $length) {
-                    $value = mb_substr($value, 0, $length);
-                }
-            break;
-            /*
-             * handle ARRAYS
-             *
-             * create array slice
-             */
-            case is_array($value):
-                if ($length > 0 && count($value) > $length) {
-                    $value = array_slice($value, 0, $length, true);
-                }
-            break;
-            /*
-             * other
-             */
-            default:
-                /* intentionally left blank */
-            break;
-        } /* end switch */
-
-        /* type may have been changed! */
-        settype($value, $type);
-
-    /*
-     * Here the data type is unknown and thus the length attribute
-     * is interpreted as "numer of characters".
-     *
-     * convert to string and create substring
-     */
-    } else {
-
-        if (mb_strlen($value) > $length) {
-            $value = mb_substr($value, 0, $length);
+    if ($length > 0) {
+        if (is_scalar($value)) {
+            if (mb_strlen("$value") > $length) {
+                $value = mb_substr($value, 0, $length);
+            }
+        } elseif (is_array($value)) {
+            if (count($value) > $length) {
+                $value = array_slice($value, 0, $length, true);
+            }
         }
-
     }
 
     /*
@@ -612,7 +555,6 @@ function untaintInput($value, $type = "", $length = 0, $escape = 0, $doubleEncod
         $value = String::htmlEntities($value);
     }
 
-    assert('$type === "" || gettype($value) === $type; // Unexpected result. Type does not match');
     return $value;
 
 }
