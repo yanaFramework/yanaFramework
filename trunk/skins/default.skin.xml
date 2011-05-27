@@ -58,12 +58,12 @@
             <script id="default">default/scripts/default.js</script>
             <script id="ajax">default/scripts/ajax.js</script>
             <script id="configuration">default/configuration/index.js</script>
-            <script id="jquery">default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script id="jquery">default/scripts/jquery/jquery-1.6.1.min.js</script>
             <script id="applicationbar">default/scripts/applicationbar.js</script>
         </template>
         <template id="GUI_FORM" file="default/gui_generator/form.html.tpl">
             <style>default/styles/gui_defaultform.css</style>
-            <script id="jquery">default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script id="jquery">default/scripts/jquery/jquery-1.6.1.min.js</script>
             <script id="jquerytabs">default/scripts/jquery/jquery-ui-1.8.custom.min.js</script>
             <script id="jquerycookie">default/scripts/jquery/jquery.cookie.js</script>
             <style id="calendar">default/scripts/calendar/calendar.css</style>
@@ -81,7 +81,7 @@
         </template>
         <template id="GUI_FORM_0" file="default/gui_generator/layout0.html.tpl">
             <style>default/styles/gui_defaultform.css</style>
-            <script id="jquery">default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script id="jquery">default/scripts/jquery/jquery-1.6.1.min.js</script>
             <script id="jquerytabs">default/scripts/jquery/jquery-ui-1.8.custom.min.js</script>
             <style id="calendar">default/scripts/calendar/calendar.css</style>
             <style>default/scripts/photodesk/css/jquery.fancybox-1.3.1.css</style>
@@ -93,7 +93,7 @@
         </template>
         <template id="GUI_FORM_1" file="default/gui_generator/layout1.html.tpl">
             <style>default/styles/gui_defaultform.css</style>
-            <script id="jquery">default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script id="jquery">default/scripts/jquery/jquery-1.6.1.min.js</script>
             <script id="jquerytabs">default/scripts/jquery/jquery-ui-1.8.custom.min.js</script>
             <style id="calendar">default/scripts/calendar/calendar.css</style>
             <style>default/scripts/photodesk/css/jquery.fancybox-1.3.1.css</style>
@@ -105,7 +105,7 @@
         </template>
         <template id="GUI_FORM_2" file="default/gui_generator/layout2.html.tpl">
             <style>default/styles/gui_defaultform.css</style>
-            <script id="jquery">default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script id="jquery">default/scripts/jquery/jquery-1.6.1.min.js</script>
             <script id="jquerytabs">default/scripts/jquery/jquery-ui-1.8.custom.min.js</script>
             <style id="calendar">default/scripts/calendar/calendar.css</style>
             <style>default/scripts/photodesk/css/jquery.fancybox-1.3.1.css</style>
@@ -117,7 +117,7 @@
         </template>
         <template id="GUI_FORM_3" file="default/gui_generator/layout3.html.tpl">
             <style>default/styles/gui_defaultform.css</style>
-            <script id="jquery">default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script id="jquery">default/scripts/jquery/jquery-1.6.1.min.js</script>
             <script id="jquerytabs">default/scripts/jquery/jquery-ui-1.8.custom.min.js</script>
             <style id="calendar">default/scripts/calendar/calendar.css</style>
             <style>default/scripts/photodesk/css/jquery.fancybox-1.3.1.css</style>
@@ -129,7 +129,7 @@
         </template>
         <template id="GUI_FORM_4" file="default/gui_generator/layout4.html.tpl">
             <style>default/styles/gui_defaultform.css</style>
-            <script id="jquery">default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script id="jquery">default/scripts/jquery/jquery-1.6.1.min.js</script>
             <script id="jquerytabs">default/scripts/jquery/jquery-ui-1.8.custom.min.js</script>
             <style id="calendar">default/scripts/calendar/calendar.css</style>
             <script id="gui">default/scripts/gui_generator.js</script>
@@ -141,7 +141,7 @@
             <style>default/styles/gui_defaultform.css</style>
             <style>default/scripts/photodesk/css/jquery.fancybox-1.3.1.css</style>
             <style>default/scripts/photodesk/css/jquery.photodesk.css</style>
-            <script id="jquery">default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script id="jquery">default/scripts/jquery/jquery-1.6.1.min.js</script>
             <script id="jquerytabs">default/scripts/jquery/jquery-ui-1.8.custom.min.js</script>
             <style id="calendar">default/scripts/calendar/calendar.css</style>
             <script id="gui">default/scripts/gui_generator.js</script>
@@ -202,7 +202,7 @@
             <language>user</language>
             <style>default/styles/admin.css</style>
             <script>default/configuration/index.js</script>
-            <script>default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script>default/scripts/jquery/jquery-1.6.1.min.js</script>
         </template>
         <template id="USER_CONFIGURATION_TEMPLATE" file="default/user/config.html.tpl">
             <language>admin</language>
@@ -241,7 +241,7 @@
             <style>default/styles/proxy.css</style>
             <script>default/styles/dynamic-styles.js</script>
             <script>default/user/proxy.js</script>
-            <script>default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script>default/scripts/jquery/jquery-1.6.1.min.js</script>
         </template>
         <template id="USER_LOST_PASSWORD" file="default/user/lostpwd.html.tpl">
             <language>user</language>
@@ -304,7 +304,7 @@
         </template>
         <template id="COLORPICKERHOVER_TEMPLATE" file="default/color/colorpickerhover.html.tpl">
             <language>admin</language>
-            <script>default/scripts/jquery/jquery-1.4.2.min.js</script>
+            <script>default/scripts/jquery/jquery-1.6.1.min.js</script>
             <script>default/color/program.js</script>
         </template>
         <template id="ABOUT_TEMPLATE" file="default/configuration/about.html.tpl">
