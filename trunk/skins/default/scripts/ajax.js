@@ -32,10 +32,10 @@ function AjaxRequest($url, $synchron)
     if (this.url && !this.url.match(/\?/)) {
         this.url += '?';
         if (window.yanaProfileId) {
-            this.url += 'id=' + escape(window.yanaProfileId) + "&";
+            this.url += 'id=' + encodeURIComponent(window.yanaProfileId) + "&";
         }
         if (window.yanaSessionName && window.yanaSessionId) {
-            this.url += escape(window.yanaSessionName) + "=" + escape(window.yanaSessionId) + "&";
+            this.url += encodeURIComponent(window.yanaSessionName) + "=" + encodeURIComponent(window.yanaSessionId) + "&";
         }
     }
 
