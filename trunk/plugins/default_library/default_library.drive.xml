@@ -8,7 +8,7 @@
 -->
 <drive name="lib">
     <file name="security.datfile">
-   		<source>../../{$TEMPDIR}security_image.tmp</source>
+   		<source>{$TEMPDIR}security_image.tmp</source>
     	<requirements writeable="yes"/>
     </file>
 </drive>

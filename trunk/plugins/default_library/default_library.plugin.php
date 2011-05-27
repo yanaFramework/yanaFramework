@@ -278,6 +278,7 @@ class plugin_default_library extends StdClass implements IsPlugin
         global $YANA;
         $imagesrc = $YANA->getVar("CONFIGDIR") . "security_image/security_image" . rand(0, 9) . ".png";
         $file = $YANA->getPlugins()->default_library->getResource('lib:/security.datfile');
+        $contents = array();
 
         if (!$file->exists()) {
             $file->create();
@@ -285,8 +286,6 @@ class plugin_default_library extends StdClass implements IsPlugin
         $file->read();
         if (!$file->isEmpty()) {
             $contents = $file->getLine(0);
-        } else {
-            $contents = array();
         }
 
         if (!isset($contents['TIME']) || $contents['TIME'] < time() || $contents['MAX_TIME'] < time()) {
@@ -299,7 +298,7 @@ class plugin_default_library extends StdClass implements IsPlugin
                 {
                     $letter = "";
                     // while letter is empty or black-listed
-                    while (empty($letter) || in_array(mb_strtolower($letter), 'o', 'l', 'i'))
+                    while (empty($letter) || in_array(mb_strtolower($letter), array('1', '0', 'o', 'l', 'i')))
                     {
                         switch (rand(0, 2))
                         {
@@ -362,10 +361,11 @@ class plugin_default_library extends StdClass implements IsPlugin
      * @template    null
      *
      * @access      public
-     * @param       int  $security_image_index  id of index to check
+     * @param       int     $security_image_index  id of index to check
+     * @param       string  $security_image        user-entered text
      * @return      bool
      */
-    public function security_check_image($security_image_index)
+    public function security_check_image($security_image_index, $security_image)
     {
         global $YANA;
 
@@ -390,11 +390,7 @@ class plugin_default_library extends StdClass implements IsPlugin
             } else {
                 $text =& $contents['_'.$security_image_index];
             }
-            if (!empty($text) && ($ARGS['security_image'] == $text)) {
-                return true;
-            } else {
-                return false;
-            }
+            return (bool) (!empty($text) && ($security_image == $text));
         }
     }
 
