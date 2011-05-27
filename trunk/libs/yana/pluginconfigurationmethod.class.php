@@ -863,7 +863,8 @@ class PluginConfigurationMethod extends Object
                 $this->_args[$name] = $this->_defaults[$i];
             } else {
                 // missing parameter
-                throw new MissingFieldWarning($name);
+                $error = new MissingFieldWarning();
+                throw $error->setField($name);
             }
             $i++;
         } // end foreach

@@ -3826,7 +3826,8 @@ class DbStructure extends SML
              */
             } else {
                 if (isset($GLOBALS['YANA']) && $GLOBALS['YANA']->getPlugins()->getEventType() === 'write') {
-                    throw new MissingFieldWarning($this->getDescription($table, $column));
+                    $warning = new MissingFieldWarning();
+                    throw $warning->setField($this->getDescription($table, $column));
                 }
                 $message = "SQL ERROR: A required attribute '{$column}' has not been provided." .
                     "Insert/Update operation aborted.";

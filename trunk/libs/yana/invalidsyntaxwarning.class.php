@@ -42,7 +42,7 @@ class InvalidSyntaxWarning extends FieldWarning
      *
      * @access  public
      * @param   mixed $value the invalid value
-     * @return  InvalidCharacterWarning 
+     * @return  InvalidSyntaxWarning 
      */
     public function setValue($value)
     {
@@ -55,7 +55,7 @@ class InvalidSyntaxWarning extends FieldWarning
      *
      * @access  public
      * @param   string  $valid  list of valid characters
-     * @return  InvalidCharacterWarning 
+     * @return  InvalidSyntaxWarning 
      */
     public function setValid($valid)
     {
