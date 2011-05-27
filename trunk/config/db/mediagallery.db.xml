@@ -13,6 +13,7 @@
             <input name="media_name" readonly="yes"/>
             <input name="media_preview" readonly="yes"/>
             <input name="media_file" readonly="yes"/>
+            <event name="download">mediagalleryDownloadFile</event>
         </form>
     </form>
 </database>
