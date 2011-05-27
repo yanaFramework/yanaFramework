@@ -90,7 +90,7 @@ function {$plugin->getClassName()}($id)
                 {rdelim}                
             {rdelim});
         {rdelim}
-        this.http.send('action=' + escape($func) + '&' + $args);
+        this.http.send('action=' + encodeURIComponent($func) + '&' + $args, 'post');
     {rdelim}
 {rdelim}
 
