@@ -758,20 +758,6 @@ class FormBuilder extends Object
             $query->setWhere($where);
         }
         $values = $query->getResults();
-        if (!empty($values) && $query->getExpectedResult() === DbResultEnumeration::ROW) {
-            assert('!isset($key); // Cannot redeclare var $key');
-            $key = $this->_form->getKey();
-            if (empty($key)) {
-                assert('!isset($table); // Cannot redeclare var $table');
-                $table = $query->getDatabase()->getSchema()->getTable($query->getTable());
-                $key = $table->getPrimaryKey();
-                unset($table);
-            }
-            assert('!isset($id); // Cannot redeclare var $id');
-            $id = $values[strtoupper($key)];
-            $values = array($id => $values);
-            unset($id, $key);
-        }
         $this->_setupBuilder->setRows($values);
 
         // This needs to be done after the rows have been set. Otherwise the user input would be overwritten.
