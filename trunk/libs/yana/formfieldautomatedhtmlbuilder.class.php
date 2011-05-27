@@ -96,6 +96,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
     public function __invoke(FormFieldFacade $field)
     {
         $this->_setName($field);
+        $this->setTitle($field->getTitle());
         $setup = $field->getForm()->getSetup();
         switch ($field->getContext()->getContextName())
         {
