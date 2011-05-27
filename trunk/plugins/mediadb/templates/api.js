@@ -89,7 +89,7 @@ plugin_mediadb.prototype.callFunctionByName = function($func, $args, $handler)
                 }                
             });
         }
-        this.http.send('action=' + escape($func) + '&' + $args);
+        this.http.send('action=' + encodeURIComponent($func) + '&' + $args, 'post');
     }
 }
 
