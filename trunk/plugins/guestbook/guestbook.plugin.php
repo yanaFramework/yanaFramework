@@ -173,7 +173,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         /* avoid spamming */
         if (!is_int($permission) || $permission < 1) {
             if ($YANA->getVar("PROFILE.SPAM.CAPTCHA") === true) {
-                if ($YANA->callAction("security_check_image", $ARGS) === false) {
+                if ($YANA->callAction("security_check_image", Request::getPost()) === false) {
                     Log::report('SPAM: CAPTCHA not solved, entry has not been created.');
                     throw new SpamError();
                 }
@@ -339,6 +339,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
      * save a new guestbook entry
      *
      * @type        write
+     * @language    guestbook
      * @template    MESSAGE
      * @onsuccess   goto: GUESTBOOK_READ
      * @onerror     goto: GUESTBOOK_READ
@@ -362,7 +363,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         /* avoid spamming */
         if (!is_int($permission) || $permission < 1) {
             if ($YANA->getVar("PROFILE.SPAM.CAPTCHA") === true) {
-                if ($YANA->callAction("security_check_image", $ARGS) === false) {
+                if ($YANA->callAction("security_check_image", Request::getPost()) === false) {
                     Log::report('SPAM: CAPTCHA not solved, entry has not been created.');
                     throw new SpamError();
                 }
@@ -372,14 +373,14 @@ class plugin_guestbook extends StdClass implements IsPlugin
         $database = self::getDatabase();
         /* values to create new entry */
         $entry = array(
-            'GUESTBOOK_NAME' => $name,
-            'GUESTBOOK_MESSAGE' => $message,
-            'GUESTBOOK_MSGTYPE' => $msgtyp,
-            'GUESTBOOK_MESSENGER' => $messenger,
-            'GUESTBOOK_MAIL' => $mail,
-            'GUESTBOOK_HOMETOWN' => $hometown,
-            'GUESTBOOK_HOMEPAGE' => $homepage,
-            'GUESTBOOK_OPINION' => $opinion
+            'guestbook_name' => $name,
+            'guestbook_message' => $message,
+            'guestbook_msgtype' => $msgtyp,
+            'guestbook_messenger' => $messenger,
+            'guestbook_mail' => $mail,
+            'guestbook_hometown' => $hometown,
+            'guestbook_homepage' => $homepage,
+            'guestbook_opinion' => $opinion
         );
 
         /* set profile id (overwrite if already exists */
@@ -410,7 +411,6 @@ class plugin_guestbook extends StdClass implements IsPlugin
         if ($myFlood->getMax() > 0) {
             $myFlood->set();
         }
-
         /* insert new entry into table */
         if (!$database->insert('guestbook.*', $entry)) {
             Log::report('Failed to insert entry.', E_USER_NOTICE, $entry);
@@ -423,7 +423,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         /* send Mail */
         if ($YANA->getVar("PROFILE.GUESTBOOK.MAIL") && $YANA->getVar("PROFILE.GUESTBOOK.NOTIFICATION")) {
             $mailer = $YANA->getPlugins()->{"guestbook:/notification.mailer"};
-            self::_sendMail($mailer, $ARGS);
+            self::_sendMail($mailer, $entry);
         }
         Microsummary::setText(__CLASS__, 'Guestbook, update ' . date('d M y G:s', time()));
     }
