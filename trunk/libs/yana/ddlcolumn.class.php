@@ -1960,7 +1960,7 @@ class DDLColumn extends DDLNamedObject
             break;
             case 'text':
                 if (is_string($value)) {
-                    return untaintInput($value, 'string', $length, YANA_ESCAPE_USERTEXT);
+                    return untaintInput($value, 'text', $length, YANA_ESCAPE_USERTEXT);
                 }
             break;
             case 'time':
