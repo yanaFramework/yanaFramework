@@ -750,14 +750,18 @@ class FormBuilder extends Object
 
         $this->_queryBuilder->setForm($this->_facade);
 
-        $query = $this->_queryBuilder->buildCountQuery();
-        $formSetup->setEntryCount($query->countResults());
-
-        $query = $this->_queryBuilder->buildSelectQuery();
+        $countQuery = $this->_queryBuilder->buildCountQuery();
         if (!empty($where)) {
-            $query->setWhere($where);
+            $countQuery->setWhere($where);
         }
-        $values = $query->getResults();
+        $formSetup->setEntryCount($countQuery->countResults());
+
+        $selectQuery = $this->_queryBuilder->buildSelectQuery();
+        if (!empty($where)) {
+            $selectQuery->setWhere($where);
+        }
+        $selectQuery->setOffset($formSetup->getPage() * $formSetup->getEntriesPerPage());
+        $values = $selectQuery->getResults();
         $this->_setupBuilder->setRows($values);
 
         // This needs to be done after the rows have been set. Otherwise the user input would be overwritten.
