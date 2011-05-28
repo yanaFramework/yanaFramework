@@ -82,7 +82,7 @@
                     {if $form->hasRows() && $form->getEntriesPerPage() > 1}
                         <td title='{lang id="TITLE_DETAILS"}'>
                             <a class="gui_generator_details buttonize"
-                               href={"action=$ACTION&{$formName}[entries]=1&{$formName}[layout]=2&{$formName}[page]={$form->getRows()->key()-1}"|href}>
+                               href={"action=$ACTION&{$formName}[entries]=1&{$formName}[layout]=2&{$formName}[page]={($form->getPage() * $form->getEntriesPerPage()) + $i - 1}"|href}>
                                 <span class="icon_pointer">&nbsp;</span>
                             </a>
                         </td>

@@ -38,7 +38,7 @@
         <script type="text/javascript"><!--
             $(document).ready(function() {
                 $('#{$form->getName()}-search').hide();
-                $('#{$form->getName()}-search-small').hide();
+                {if !$form->getSearchTerm()}$('#{$form->getName()}-search-small').hide();{/if}
                 $.fn.fancybox.defaults.hideOnContentClick = true;
                 $.fn.fancybox.defaults.titlePosition = 'over';
                 $.fn.fancybox.defaults.showCloseButton = false;

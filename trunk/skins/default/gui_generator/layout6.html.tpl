@@ -10,7 +10,7 @@
                 {/foreach}
                 {if !$hasImage}
                     <a class="gui_generator_dummyimage" title='{lang id="TITLE_DETAILS"}'
-                       href={"action=$ACTION&{$formName}[entries]=1&{$formName}[page]={$form->getRows()->key()-1}"|href}>&nbsp;</a>
+                       href={"action=$ACTION&{$formName}[entries]=1&{$formName}[page]={($form->getPage() * $form->getEntriesPerPage()) + $i - 1}"|href}>&nbsp;</a>
                 {/if}
             </div>
             <div class="gui_generator_gallery_title">

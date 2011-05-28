@@ -13,7 +13,7 @@
                     </a>
                 {/if}
                 {if $form->getEntriesPerPage() > 1}
-                    {assign var="url" value="action=$ACTION&$formName"|cat:"[entries]=1&$formName"|cat:"[layout]=2&$formName"|cat:"[page]="|cat:$form->getPage()}
+                    {assign var="url" value="action=$ACTION&{$formName}[entries]=1&{$formName}[layout]=2&{$formName}[page]={($form->getPage() * $form->getEntriesPerPage()) + $i - 1}"}
                     <a title='{lang id="TITLE_DETAILS"}' class="gui_generator_details buttonize" href={$url|href}>
                         <span class="icon_pointer">&nbsp;</span>
                     </a>
