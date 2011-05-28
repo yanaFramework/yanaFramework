@@ -262,51 +262,6 @@ class FormWorker extends FormQueryBuilder
     }
 
     /**
-     * This returns an array of foreign-key reference settings.
-     *
-     * Example:
-     * <code>
-     * array(
-     *   'primaryKey1' => array(
-     *     'table' => 'name of target table'
-     *     'column' => 'name of target column'
-     *     'label' => 'name of a column in target table that should be used as a label'
-     * }
-     * </code>
-     *
-     * @access  private
-     * @return  array
-     */
-    private function _getReferences()
-    {
-        if (!isset($this->_cache[__FUNCTION__])) {
-            $this->_cache[__FUNCTION__] = array();
-            assert('!isset($field);');
-            /* @var $field FormFieldFacade */
-            foreach ($this->_form->getUpdateForm() as $field)
-            {
-                $column = $field->getColumn();
-                if ($column->getType() !== 'reference') {
-                    continue;
-                }
-                assert('!isset($column);');
-                $reference = $column->getReferenceSettings();
-                if (!isset($reference['column'])) {
-                    $reference['column'] = $column->getReferenceColumn()->getName();
-                }
-                if (!isset($reference['label'])) {
-                    $reference['label'] = $reference['column'];
-                }
-                if (!isset($reference['table'])) {
-                    $reference['table'] = $column->getReferenceColumn()->getParent()->getName();
-                }
-                $this->_cache[__FUNCTION__][$field->getName()] = $reference;
-            } // end foreach
-        }
-        return $this->_cache[__FUNCTION__];
-    }
-
-    /**
      * Look up list of reference values.
      *
      * This function returns an array, where the keys are the values of a unique key in the
@@ -322,37 +277,21 @@ class FormWorker extends FormQueryBuilder
      * If the field does not refer to a column of type "reference", then an empty array will be returned.
      *
      * @access  public
-     * @param   string  $fieldName   name of field to look up
+     * @param   string  $columnName  name of column to look up
      * @param   string  $searchTerm  find all entries that start with ...
      * @param   int     $limit       maximum number of hits, set to 0 to get all (default = 50)
      * @return  array
      */
-    public function autocomplete($fieldName, $searchTerm = "", $limit = 50)
+    public function autocomplete($columnName, $searchTerm = "", $limit = 50)
     {
         assert('is_string($fieldName); // Invalid argument $fieldName: string expected');
         assert('is_string($searchTerm); // Invalid argument $searchTerm: string expected');
         $referenceValues = array();
         if ($this->_form) {
-            $references = $this->_getReferences();
-            if (isset($references[$fieldName])) {
-                $reference = $references[$fieldName];
-                $select = new DbSelect($this->_db);
-                $select->setTable($reference['table']);
-                $columns = array('LABEL' => $reference['label'], 'VALUE' => $reference['column']);
-                $select->setColumns($columns);
-                if ($limit > 0) {
-                    $select->setLimit($limit);
-                }
-                $select->setOrderBy($reference['label']);
-                if (!empty($searchTerm)) {
-                    $select->setWhere(array($reference['label'], 'like', $searchTerm . '%'));
-                }
-                $values = array();
-                foreach ($select->getResults() as $row)
-                {
-                    $values[$row['VALUE']] = $row['LABEL'];
-                }
-                $referenceValues = $values;
+            $references = $this->_form->getSetup()->getForeignKeys();
+            if (isset($references[$columnName])) {
+                $query = $this->buildAutocompleteQuery($targetReference, $searchTerm, $limit);
+                $referenceValues = $query->getResults();
             }
         }
         return $referenceValues;

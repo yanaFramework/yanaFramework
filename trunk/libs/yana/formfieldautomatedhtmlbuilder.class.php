@@ -344,11 +344,9 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
             case 'reference':
                 $references = $field->getColumn()->getReferenceSettings();
                 $row = $field->getContext()->getRow();
-                if (!empty($references['label'])) {
-                    $label = mb_strtoupper($references['label']);
-                    if (isset($row[$label])) {
-                        $value = $row[$label];
-                    }
+                $label = mb_strtoupper($references->getLabel());
+                if (!empty($label) && isset($row[$label])) {
+                    $value = $row[$label];
                 }
                 return $this->buildSpan($value);
             case 'time':

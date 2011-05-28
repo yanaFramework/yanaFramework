@@ -119,10 +119,43 @@ class FormQueryBuilder extends Object
                     $query->addColumn($this->_form->getTable()->getPrimaryKey());
                 }
                 $query = $this->_buildSelectForSubForm($query);
+                /* @var $reference DDLReference */
+                foreach ($this->_form->getSetup()->getForeignKeys() as $columnName => $reference)
+                {
+                    $query->setLeftJoin($reference->getTable(), $columnName, $reference->getColumn());
+                    $query->addColumn($reference->getTable() . '.' . $reference->getColumn());
+                    $query->addColumn($reference->getTable() . '.' . $reference->getLabel());
+                }
             }
             $this->_cache[__FUNCTION__] = $query;
         }
         return $this->_cache[__FUNCTION__];
+    }
+
+    /**
+     * Create an autocomplete query.
+     *
+     * Allows you to search a specific column of the table for any values that start with a given search-term.
+     * The returned query uses the aliases "VALUE" and "LABEL" for the target value-column and target label-column.
+     *
+     * @access  public
+     * @param   string  $targetReference  defining the target table and columns
+     * @param   string  $searchTerm       find all entries that start with ...
+     * @param   int     $limit            maximum number of hits, set to 0 to get all
+     * @return  DbSelect
+     */
+    public function buildAutocompleteQuery(DDLReference $targetReference, $searchTerm, $limit)
+    {
+        assert('is_string($searchTerm); // Invalid argument $searchTerm: string expected');
+        assert('is_int($limit); // Invalid argument $limit: int expected');
+
+        $query = new DbSelect($this->_db);
+        $query->setTable($targetReference->getTable());
+        $query->setLimit((int) $limit);
+        $query->setOrderBy((array) $targetReference->getLabel());
+        $query->addColumn($targetReference->getColumn(), 'VALUE');
+        $query->addColumn($targetReference->getLabel(), 'LABEL');
+        return $query;
     }
 
     /**

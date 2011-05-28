@@ -72,7 +72,6 @@ class FormSetup extends Object
      *
      * @access  private
      * @var     int
-     * @ignore
      */
     private $_layout = 0;
 
@@ -81,7 +80,6 @@ class FormSetup extends Object
      *
      * @access  private
      * @var     array
-     * @ignore
      */
     private $_filters = array();
 
@@ -92,7 +90,6 @@ class FormSetup extends Object
      *
      * @access  private
      * @var     string
-     * @ignore
      */
     private $_orderByField = "";
 
@@ -101,7 +98,6 @@ class FormSetup extends Object
      *
      * @access  private
      * @var     bool
-     * @ignore
      */
     private $_isDescending = false;
 
@@ -110,43 +106,52 @@ class FormSetup extends Object
      *
      * @access  private
      * @var     string
-     * @ignore
      */
     private $_searchTerm = "";
 
     /**
-     * Context setups.s
+     * Context setups.
      *
      * @access  private
-     * @var     array
-     * @ignore
+     * @var     FormSetupContext[]
      */
     private $_contexts = array();
 
     /**
-     * cached action
+     * Defined list of auto-replaced references.
+     *
+     * @access  private
+     * @var     DDLReference[]
+     */
+    private $_foreignKeyRefrences = array();
+
+    /**
+     * Name of download action.
+     *
+     * This global definition applies to all contexts.
      *
      * @access  private
      * @var     string
-     * @ignore
      */
     private $_downloadAction = "";
 
     /**
-     * cached action
+     * Name of delete action.
+     *
+     * This global definition applies to all contexts.
      *
      * @access  private
      * @var     string
-     * @ignore
      */
     private $_deleteAction = "";
 
     /**
-     * export action
+     * export name of export action.
+     *
+     * This global definition applies to all contexts.
      *
      * @access  private
      * @var     string
-     * @ignore
      */
     private $_exportAction = "";
 
@@ -204,6 +209,36 @@ class FormSetup extends Object
         if (!isset($this->_contexts[$name])) {
             $this->_contexts[$name] = new FormSetupContext($name);
         }
+        return $this;
+    }
+
+    /**
+     * This returns an array of foreign-key reference settings.
+     *
+     * @access  public
+     * @return  DDLReference[]
+     */
+    public function getForeignKeys()
+    {
+        return $this->_foreignKeyRefrences;
+    }
+
+    /**
+     * Add a foreign key reference.
+     *
+     * You may setup a different column to view instead of a (possibly numeric) forein key.
+     * To do this, just add a foreign-key reference by naming the source and target column,
+     * plus the column you wish to use as a label.
+     *
+     * @access  public
+     * @param   string       $columnName  name of source column
+     * @param   DDLReference $foreignKey  settings of source reference
+     * @return  FormSetup 
+     */
+    public function addForeignKeyReference($columnName, DDLReference $foreignKey)
+    {
+        assert('is_string($columnName); // Invalid argument $columnName: string expected');
+        $this->_foreignKeyRefrences[$columnName] = $foreignKeys;
         return $this;
     }
 
