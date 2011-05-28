@@ -47,12 +47,12 @@
                 title="Messenger">
             </string>
             <enum
-                name="guestbook_msgtyp"
+                name="guestbook_msgtype"
                 title="Typ">
-                <option value="icq">ICQ</option>
-                <option value="aol">AOL</option>
-                <option value="yahoo">Yahoo!</option>
-                <option value="msn">MSN</option>
+                <option value="ICQ">ICQ</option>
+                <option value="AOL">AOL</option>
+                <option value="YAHOO">Yahoo!</option>
+                <option value="MSN">MSN</option>
             </enum>
             <enum
                 name="guestbook_opinion"
