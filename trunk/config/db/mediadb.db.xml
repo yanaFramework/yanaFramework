@@ -27,6 +27,7 @@
             <timestamp name="time_modified">
                 <default>CURRENT_TIMESTAMP</default>
             </timestamp>
+            <list name="media_keywords" title="Keywords"/>
         </declaration>
     </table>
     <table name="mediafolder">
