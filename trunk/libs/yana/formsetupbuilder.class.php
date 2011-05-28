@@ -504,7 +504,36 @@ class FormSetupBuilder extends Object
         $this->object->getContext('insert')->setColumnNames(array_keys($insertCollection->toArray()));
         $this->object->getContext('search')->setColumnNames(array_keys($searchCollection->toArray()));
         $this->_applyWhitelistColumnNames();
+        $this->_buildForeignKeyReferences($readCollection);
         return $this;
+    }
+
+    /**
+     * This returns an array of foreign-key reference settings.
+     *
+     * @access  private
+     * @return  DDLReference[]
+     */
+    private function _buildForeignKeyReferences(DDLColumnCollection $collection)
+    {
+        /* @var $column DDLColumn */
+        foreach ($collection as $columnName => $column)
+        {
+            if ($column->getType() !== 'reference') {
+                continue;
+            }
+            $reference = $column->getReferenceSettings();
+            if (!$reference->getColumn()) {
+                $reference->setColumn($column->getReferenceColumn()->getName());
+            }
+            if (!$reference->getLabel()) {
+                $reference->setLabel($reference['column']);
+            }
+            if (!$reference->getTable()) {
+                $reference->setTable($column->getReferenceColumn()->getParent()->getName());
+            }
+            $this->object->addForeignKeyReference($columnName, $reference);
+        } // end foreach
     }
 
     /**

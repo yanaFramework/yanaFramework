@@ -1085,18 +1085,11 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $column = 'somecolumn';
         $label = 'somelabel';
 
-        $expected = array('table' => $table, 'column' => $column, 'label' => $label);
+        $expected = new DDLReference($table, $column, $label);
         $this->ddlcolumn->setReferenceSettings($table, $column, $label);
         $get = $this->ddlcolumn->getReferenceSettings();
-        $this->assertType('array', $get, 'assert failed, DDLColumn : the value is not from type Array');
-        $this->assertEquals($expected, $get, 'assert failed, DDLColumn : the reference settings are not set');
-
-        $expected = array('table' => '', 'column' => '', 'label' => '');
-        $this->ddlcolumn->setReferenceSettings();
-        $get = $this->ddlcolumn->getReferenceSettings();
-        $this->assertType('array', $get, 'assert failed, DDLColumn : the value is not from type Array');
-        $this->assertEquals(3, count($get), 'assert failed, DDLColumn : the reference settings are not set');
-        $this->assertEquals($expected, $get, 'assert failed, DDLColumn : the reference settings are not set');
+        $this->assertTrue($get instanceof DDLReference, 'Instance of DDLReference expected');
+        $this->assertEquals($expected, $get, 'Expected values not found in returned DDLReference');
     }
 
     /**

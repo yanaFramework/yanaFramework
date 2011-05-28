@@ -1160,28 +1160,13 @@ class DDLColumn extends DDLNamedObject
 
     /**
      * Get the properties of a field of type 'reference'.
-     *
-     * Returns an array of the following values:
-     * <code>
-     * array (
-     *    'table'      : string,  // name of target table
-     *    'column'     : string,  // name of target column
-     *    'label'      : string,  // name of a column in target table that should be used as a label
-     * )
-     * </code>
-     * If one of the values above does not exist, the field is set to 'null'.
      * 
      * @access  public
-     * @return  array
+     * @return  DDLReference
      */
     public function getReferenceSettings()
     {
-        $referenceSettings = array(
-            'table' => $this->referenceTable,
-            'column' => $this->referenceColumn,
-            'label' => $this->referenceLabel
-        );
-        return $referenceSettings;
+        return new DDLReference((string) $this->referenceTable, (string) $this->referenceColumn, (string) $this->referenceLabel);
     }
 
     /**
@@ -2011,43 +1996,39 @@ class DDLColumn extends DDLNamedObject
     /**
      * Get referenced target column for columns of type "reference".
      *
-     * @access  private
+     * @access  public
      * @return  DDLColumn
-     * @ignore
      */
     public function getReferenceColumn()
     {
         /*
          * if (is foreign-key) then { get target column }
          */
+        $refrenceColumn = $this;
         if ($this->getType() === 'reference' && isset($this->parent)) {
             $referenceSettings = $this->getReferenceSettings();
-            if (is_string($referenceSettings['table'])) {
-                $tableName = $referenceSettings['table'];
-            } else {
+            $tableName = $referenceSettings->getTable();
+            if (empty($tableName)) {
                 $tableName = $this->parent->getTableByForeignKey($this->name);
                 $this->referenceTable = $tableName;
             }
-            if (is_string($referenceSettings['column'])) {
-                $columnName = $referenceSettings['column'];
-            } else {
+            $columnName = $referenceSettings->getColumn();
+            if (empty($columnName)) {
                 $columnName = $this->parent->getColumnByForeignKey($this->name);
                 $this->referenceColumn = $columnName;
             }
             try {
                 /* @var $column DDLColumn */
-                $column = $this->getParent()->getParent()->{$tableName}->{$columnName};
-                if ($column->getType() === 'reference') {
-                    $column = $column->getReferenceColumn();
+                $refrenceColumn = $this->getParent()->getParent()->{$tableName}->{$columnName};
+                if ($refrenceColumn->getType() === 'reference') {
+                    $refrenceColumn = $refrenceColumn->getReferenceColumn();
                 }
-                return $column;
             } catch (\Exception $e) {
                 throw new NotFoundException("Database definition not found: " . $e->getMessage());
             }
             unset($tableName, $columnName);
-        } else {
-            return $this;
         }
+        return $refrenceColumn;
     }
 
     /**
