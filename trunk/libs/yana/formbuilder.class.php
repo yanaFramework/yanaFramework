@@ -159,7 +159,7 @@ class FormBuilder extends Object
      * @access  private
      * @var     string
      */
-    private $_entries = 5;
+    private $_entries = 20;
 
     /**
      * (optional) name of action (plugin-function) to execute on the event
@@ -470,7 +470,7 @@ class FormBuilder extends Object
      * Set number of entries to view per page.
      *
      * @access  public
-     * @param   int  $entries  positive number (default = 5)
+     * @param   int  $entries  positive number (default = 20)
      * @return  SmartFormUtility 
      */
     public function setEntries($entries)
