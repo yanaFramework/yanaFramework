@@ -300,7 +300,7 @@ class FormSetup extends Object
         }
         $this->_entryCount = (int) $entryCount;
         $this->_pageCount = (int) ceil($this->_entryCount / $this->getEntriesPerPage());
-        if ($this->getPage() >= $this->_pageCount) {
+        if ($this->getPage() >= $this->_pageCount -1) {
             $this->setPage(0); // make sure the user cannot go beyond the last page
         }
         return $this;
