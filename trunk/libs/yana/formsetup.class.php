@@ -238,7 +238,7 @@ class FormSetup extends Object
     public function addForeignKeyReference($columnName, DDLReference $foreignKey)
     {
         assert('is_string($columnName); // Invalid argument $columnName: string expected');
-        $this->_foreignKeyRefrences[$columnName] = $foreignKeys;
+        $this->_foreignKeyRefrences[$columnName] = $foreignKey;
         return $this;
     }
 
@@ -300,7 +300,7 @@ class FormSetup extends Object
         }
         $this->_entryCount = (int) $entryCount;
         $this->_pageCount = (int) ceil($this->_entryCount / $this->getEntriesPerPage());
-        if ($this->getPage() >= $this->_pageCount -1) {
+        if ($this->getPage() >= $this->_pageCount) {
             $this->setPage(0); // make sure the user cannot go beyond the last page
         }
         return $this;
