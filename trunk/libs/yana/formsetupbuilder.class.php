@@ -188,25 +188,37 @@ class FormSetupBuilder extends Object
     public function updateValues(array $request = array())
     {
         $setup = $this->object;
-        foreach (array('insert', 'search') as $name)
-        {
-            $context = $setup->getContext($name);
-            if (isset($request[$name]) && is_array($request[$name])) {
-                $columnNames = $context->getColumnNames();
-                // security check: allow only fields, that exist in the form
-                $values = array_intersect_key($request[$name], array_flip($columnNames));
-                $context->setValues($values);
-            }
+
+        $contextNames = array();
+        if ($setup->getInsertAction()) {
+            $contextNames[] = 'insert';
         }
-        // security check: allow only fields, that exist and are really updatable
-        $columnNames = array_flip($setup->getContext('editable')->getColumnNames());
-        $context = $setup->getContext('update');
-        if (isset($request['update']) && is_array($request['update'])) {
-            foreach ($request['update'] as $key => $row)
-            {
-                if (is_array($row)) {
-                    $row = array_intersect_key($row, $columnNames);
-                    $context->updateRow($key, $row);
+        if ($setup->getSearchAction()) {
+            $contextNames[] = 'search';
+        }
+        if ($setup->getUpdateAction()) {
+            $contextNames[] = 'update';
+        }
+
+        foreach ($contextNames as $name)
+        {
+            if (isset($request[$name]) && is_array($request[$name])) {
+                $context = $setup->getContext($name);
+                if ($name == 'update') {
+                    $columnNames = array_flip($setup->getContext('editable')->getColumnNames());
+                    foreach ($request[$name] as $key => $row)
+                    {
+                        if (is_array($row)) {
+                            // security check: allow only fields, that exist in the form
+                            $row = array_intersect_key($row, $columnNames);
+                            $context->updateRow($key, $row);
+                        }
+                    }
+                } else {
+                    $columnNames = array_flip($context->getColumnNames());
+                    // security check: allow only fields, that exist in the form
+                    $values = array_intersect_key($request[$name], $columnNames);
+                    $context->setValues($values);
                 }
             }
         }
