@@ -1864,10 +1864,14 @@ abstract class DbQuery extends Object implements Serializable
         // iterate over list of file-columns
         foreach ($files as $column)
         {
-            if (!empty($column['error'])) {
+            if (is_array($column) && !empty($column['error'])) {
                 continue;
             }
-            $columnName = mb_strtoupper($column['column']->getName());
+            if (!$column instanceof DDLColumn) {
+                $column = $column['column'];
+            }
+            assert('$column instanceof DDLColumn;');
+            $columnName = mb_strtoupper($column->getName());
             // delete old files
             if (isset($values[$columnName])) {
                 assert('is_string($values[$columnName]);');
