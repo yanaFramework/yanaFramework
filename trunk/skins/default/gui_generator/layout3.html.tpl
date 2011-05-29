@@ -4,7 +4,7 @@
     <!-- BEGIN insert form contents -->
     <div class="gui_generator_view">
         <ol class="gui_generator_view_list">
-            {section name="update" loop=$form->getRowCount()}
+            {for $i=1 to max($form->getRowCount(), ! $form->hasRows())}
                 <li>
                     {if $form->hasRows() && $form->getEntriesPerPage() > 1}
                         {assign var="url" value="action=$ACTION&{$formName}[entries]=1&{$formName}[layout]=2&{$formName}[page]={($form->getPage() * $form->getEntriesPerPage()) + $i - 1}"}
@@ -17,7 +17,7 @@
                             <span class="{$field->getCssClass()}">
                                 <span class="gui_generator_list_title">
                                     {if $form->hasRows() && $form->getEntriesPerPage() > 1 && $field->refersToTable()}
-                                        {assign var="url" value="action=$ACTION&$formName"|cat:"[orderby]={$field->getName()}&$formName"|cat:"[desc]"}
+                                        {assign var="url" value="action=$ACTION&{$formName}[orderby]={$field->getName()}&{$formName}[desc]"}
                                         <a title='{lang id="ORDER.BY"} &quot;{$field->getTitle()}&quot;' href={"$url=0"|href}>
                                             {$field->getTitle()}
                                         </a>
@@ -42,7 +42,7 @@
                 {if $form->hasRows()}
                     {$form->nextRow()}
                 {/if}
-            {/section}
+            {/for}
         </ol>
     </div>
 {else}

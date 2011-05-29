@@ -15,7 +15,7 @@
             </div>
             <div class="gui_generator_gallery_title">
                 {foreach from=$form item="field"}
-                    {if ($field->getType() == 'string' || $field->getType() == 'file')}{$field}{/if}
+                    {if $field->getType() !== 'image'}{$field}{/if}
                 {/foreach}
             </div>
         </div>
