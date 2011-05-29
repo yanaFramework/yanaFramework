@@ -382,7 +382,7 @@ class DbBlob extends FileReadonly
      *
      * @access  public
      * @param   string    $fileToDelete  filename which would be removed
-     * @throws  NotFoundException    when the given file was not found
+     * @throws  NotFoundException        when the given file was not found
      * @since   3.1.0
      * @ignore
      */
@@ -395,17 +395,16 @@ class DbBlob extends FileReadonly
         }
 
         $id = self::getFileIdFromFilename($fileToDelete);
-        $file = self::getFilenameFromFileId($id);
         $thumbFile = self::getThumbnailFromFileId($id);
 
         // error - file does not exist
-        if (!is_file($file)) {
-            throw new NotFoundException("File not found: $file");
+        if (!is_file($fileToDelete)) {
+            throw new NotFoundException("File not found: $fileToDelete");
         }
 
         // delete file
-        unlink($file);
-        assert('!is_file($file); // file was not deleted');
+        unlink($fileToDelete);
+        assert('!is_file($fileToDelete); // file was not deleted');
 
         // applies to images only:
         if (is_file($thumbFile)) {
