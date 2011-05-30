@@ -77,7 +77,7 @@
     {if $form->getRowCount()}
       <!-- Entries {assign var="formName" value=$form->getName()} -->
         <tbody>
-            {section name="update" loop=$form->getRowCount()}
+            {for $i=1 to $form->getRowCount()}
                 <tr class="gui_generator_{cycle values='even,odd'}_row">
                     {if $form->hasRows() && $form->getEntriesPerPage() > 1}
                         <td title='{lang id="TITLE_DETAILS"}'>
@@ -107,7 +107,7 @@
                 {if $form->hasRows()}
                     {$form->nextRow()}
                 {/if}
-            {/section}
+            {/for}
         </tbody>
     {/if}
     </table>
