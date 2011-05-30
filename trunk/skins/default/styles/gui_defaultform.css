@@ -761,7 +761,7 @@ fieldset:hover > .gui_generator_toolbar > a
     padding: 5px;
     display: block;
     width: 200px;
-    min-height: 100px;
+    height: 250px;
     background-color: #fff;
     -moz-box-shadow: 2px 2px 2px #aaa;
     -webkit-box-shadow: 2px 2px 2px #aaa;
@@ -770,7 +770,7 @@ fieldset:hover > .gui_generator_toolbar > a
     margin: 5px;
     border: 4px double #555;
     display: inline-block;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .gui_generator_gallery_content .gui_generator_gallery_title
