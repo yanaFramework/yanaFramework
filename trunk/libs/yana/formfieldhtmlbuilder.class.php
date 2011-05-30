@@ -561,6 +561,8 @@ class FormFieldHtmlBuilder extends Object
         if (empty($filename) || empty($downloadAction)) {
             return '<span class="icon_blank">&nbsp;</span>';
         } else {
+            assert('is_string($filename); // Invalid argument $filename: string expected');
+            assert('is_string($downloadAction); // Invalid argument $downloadAction: string expected');
             $lang = Language::getInstance();
             $fileId = DbBlob::storeFilenameInSession($filename);
             return '<a class="buttonize" title="' . $lang->getVar('title_download') . '" href=' .

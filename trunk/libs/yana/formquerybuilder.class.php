@@ -85,6 +85,28 @@ class FormQueryBuilder extends Object
     }
 
     /**
+     * Get form object.
+     *
+     * @access  public
+     * @return  FormFacade
+     */
+    public function getForm()
+    {
+        return $this->_form;
+    }
+
+    /**
+     * Get database connection
+     *
+     * @access  public
+     * @return  DbStream
+     */
+    public function getDatabase()
+    {
+        return $this->_db;
+    }
+
+    /**
      * Create a select query.
      *
      * This returns the query object which is bound to the form.
@@ -139,9 +161,9 @@ class FormQueryBuilder extends Object
      * The returned query uses the aliases "VALUE" and "LABEL" for the target value-column and target label-column.
      *
      * @access  public
-     * @param   string  $targetReference  defining the target table and columns
-     * @param   string  $searchTerm       find all entries that start with ...
-     * @param   int     $limit            maximum number of hits, set to 0 to get all
+     * @param   DDLReference  $targetReference  defining the target table and columns
+     * @param   string        $searchTerm       find all entries that start with ...
+     * @param   int           $limit            maximum number of hits, set to 0 to get all
      * @return  DbSelect
      */
     public function buildAutocompleteQuery(DDLReference $targetReference, $searchTerm, $limit)
@@ -178,7 +200,7 @@ class FormQueryBuilder extends Object
                 /* @var $field FormFieldFacade */
                 if ($field->isSelectable() && $field->isVisible() && $field->isFilterable()) {
                     $havingClause = array($field->getName(), 'like', "%$searchTerm%");
-                    $select->addHaving($havingClause);
+                    $select->addHaving($havingClause, false);
                 }
             }
         }

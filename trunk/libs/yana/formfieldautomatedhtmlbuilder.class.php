@@ -171,6 +171,9 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                 }
                 return $this->buildSelect($items, $value, $null);
             case 'file':
+                if (!is_string($value)) {
+                    $value = "";
+                }
                 $result = '<div class="gui_generator_file_download">';
                 $result .= $this->buildFileDownload($value, $setup->getDownloadAction());
                 $hasDelete = !empty($value) && $column->isNullable();
@@ -214,7 +217,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                     $null = $lang->getVar('choose_option');
                 }
                 $this->setCssClass("gui_generator_reference");
-                $items = $this->getReferenceValues($field->getName()); // @todo fix this function reference
+                $items = $field->getForm()->getSetup()->getReferenceValues($column->getName());
                 return $this->buildSelect($items, $value, $null);
             case 'set':
                 assert('!isset($items); // Cannot redeclare var $items');
@@ -321,6 +324,9 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                 return $this->buildSpan(SmartUtility::date($value));
             case 'file':
                 $this->setCssClass('gui_generator_file_download');
+                if (!is_string($value)) {
+                    $value = "";
+                }
                 return $this->buildSpan($this->buildFileDownload($value, $setup->getDownloadAction()));
             case 'text':
                 $value = SmartUtility::smilies(SmartUtility::embeddedTags($value));
