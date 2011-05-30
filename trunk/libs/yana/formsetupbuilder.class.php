@@ -501,7 +501,7 @@ class FormSetupBuilder extends Object
                         $searchCollection[$columnName] = $column;
                         break;
                 } // end switch
-                if (!$table->isReadonly() && !$column->isReadonly() && !$field->isReadonly()) {
+                if (!$table->isReadonly()) {
                     if ($field->isInsertable()) {
                         $insertCollection[$columnName] = $column;
                     }

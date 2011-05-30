@@ -156,6 +156,14 @@ class FormSetup extends Object
     private $_exportAction = "";
 
     /**
+     * Index of autocomplete values stored for column-names.
+     *
+     * @access  private
+     * @var     string
+     */
+    private $_referenceValues = array();
+
+    /**
      * Get a setup context.
      *
      * A context is a number of settings that apply to a form in a specified scenario.
@@ -449,6 +457,39 @@ class FormSetup extends Object
             $this->setFilter($columnName, $filter);
         }
         return $this;
+    }
+
+    /**
+     * Set values for autocompletion of columns.
+     *
+     * @access  public
+     * @param   array  $values  associative array, where keys are the colum names and values rows
+     * @return  FormSetup
+     */
+    public function setReferenceValues(array $values)
+    {
+        $this->_referenceValues = array_change_key_case($values, CASE_UPPER);
+        return $this;
+    }
+
+    /**
+     * Get values for autocompletion of columns.
+     *
+     * Returns an empty array if the column is not found or has no references.
+     *
+     * @access  public
+     * @param   string  $columnName  name of column-index to look up
+     * @return  array
+     */
+    public function getReferenceValues($columnName)
+    {
+        assert('is_string($columnName); // Invalid argument $name: string expected');
+        $columnName = strtoupper($columnName);
+        $values = array();
+        if (isset($this->_referenceValues[$columnName]) && is_array($this->_referenceValues[$columnName])) {
+            $values = $this->_referenceValues[$columnName];
+        }
+        return $values;
     }
 
     /**

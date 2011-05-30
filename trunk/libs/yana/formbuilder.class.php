@@ -69,7 +69,7 @@ class FormBuilder extends Object
      * Query builder class.
      *
      * @access  private
-     * @var     FormQueryBuilder
+     * @var     FormWorker
      */
     private $_queryBuilder;
 
@@ -224,6 +224,28 @@ class FormBuilder extends Object
      * @var     DDLForm
      */
     private $_form = null;
+
+    /**
+     * Get setup-builder.
+     *
+     * @access  protected
+     * @return  FormSetupBuilder
+     */
+    protected function _getSetupBuilder()
+    {
+        return $this->_setupBuilder;
+    }
+
+    /**
+     * Get query-builder.
+     *
+     * @access  protected
+     * @return  FormWorker
+     */
+    protected function _getQueryBuilder()
+    {
+        return $this->_queryBuilder;
+    }
 
     /**
      * Get name of database file.
@@ -695,7 +717,7 @@ class FormBuilder extends Object
         $this->_database = Yana::connect($this->_file);
         $this->_schema = $this->_database->getSchema();
         $this->_facade = new FormFacade();
-        $this->_queryBuilder = new FormQueryBuilder($this->_database);
+        $this->_queryBuilder = new FormWorker($this->_database, $this->_facade);
     }
 
     /**
@@ -763,6 +785,13 @@ class FormBuilder extends Object
         $selectQuery->setOffset($formSetup->getPage() * $formSetup->getEntriesPerPage());
         $values = $selectQuery->getResults();
         $this->_setupBuilder->setRows($values);
+        $referenceValues = array();
+        foreach ($formSetup->getForeignKeys() as $name => $reference)
+        {
+            $autocompleteQuery = $this->_queryBuilder->buildAutocompleteQuery($reference, "", 0);
+            $referenceValues[$name] = $autocompleteQuery->getResults();
+        }
+        $formSetup->setReferenceValues($referenceValues);
 
         // This needs to be done after the rows have been set. Otherwise the user input would be overwritten.
         if ($request) {

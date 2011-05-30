@@ -290,7 +290,7 @@ class FormWorker extends FormQueryBuilder
         if ($this->_form) {
             $references = $this->_form->getSetup()->getForeignKeys();
             if (isset($references[$columnName])) {
-                $query = $this->buildAutocompleteQuery($targetReference, $searchTerm, $limit);
+                $query = $this->buildAutocompleteQuery($references[$columnName], $searchTerm, $limit);
                 $referenceValues = $query->getResults();
             }
         }
