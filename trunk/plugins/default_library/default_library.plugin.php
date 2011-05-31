@@ -135,15 +135,15 @@ class plugin_default_library extends StdClass implements IsPlugin
             $tags .= '|' . mb_strtolower(implode('|', array_keys($userTags)));
         }
         /* get strings */
-        $langError      = ($language->getVar('TAGS.JS.ERR'));
-        $langChar       = ($language->getVar('TAGS.JS.CHAR'));
-        $langEndTag     = ($language->getVar('TAGS.JS.END'));
-        $langUnknownTag = ($language->getVar('TAGS.JS.UNKNOWN'));
-        $langUnexpTag   = ($language->getVar('TAGS.JS.UNEXP'));
-        $langExpTag     = ($language->getVar('TAGS.JS.EXP'));
-        $langUnclTag    = ($language->getVar('TAGS.JS.UNCL'));
-        $langBr         = ($language->getVar('TAGS.JS.BR'));
-        $langProceed    = ($language->getVar('TAGS.JS.PROCEED'));
+        $langError      = $language->getVar('TAGS.JS.ERR');
+        $langChar       = $language->getVar('TAGS.JS.CHAR');
+        $langEndTag     = $language->getVar('TAGS.JS.END');
+        $langUnknownTag = $language->getVar('TAGS.JS.UNKNOWN');
+        $langUnexpTag   = $language->getVar('TAGS.JS.UNEXP');
+        $langExpTag     = $language->getVar('TAGS.JS.EXP');
+        $langUnclTag    = $language->getVar('TAGS.JS.UNCL');
+        $langBr         = $language->getVar('TAGS.JS.BR');
+        $langProceed    = $language->getVar('TAGS.JS.PROCEED');
 
         /* check request */
         foreach ($text as $index => $val)
