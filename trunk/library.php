@@ -52,47 +52,6 @@ mb_language('uni');
 require_once 'libs/yana/toolbox.php';
 
 /**#@-*/
-
-/**#@+
- * escape method
- *
- * These constants are used by the function untaintInput() to identify the
- * method that should be used to escape characters of an input string.
- *
- * See the API-documentation for details and examples.
- *
- * We use an Integer as an array of bool at this point.
- * Thus the "strange" choice of numbers, which are all elements of {n^2}.
- *
- * @see  untaintInput()
- */
-
-if (!defined('YANA_ESCAPE_NONE')) {
-    define('YANA_ESCAPE_NONE',       0);
-}
-if (!defined('YANA_ESCAPE_SLASHED')) {
-    // Don't use integer 1 as value, to avoid accidental evaluation to bool(true).
-    define('YANA_ESCAPE_SLASHED',    2);
-}
-if (!defined('YANA_ESCAPE_TOKEN')) {
-    define('YANA_ESCAPE_TOKEN',      4);
-}
-if (!defined('YANA_ESCAPE_CODED')) {
-    define('YANA_ESCAPE_CODED',      8);
-}
-if (!defined('YANA_ESCAPE_LINEBREAK')) {
-    define('YANA_ESCAPE_LINEBREAK',  16);
-}
-if (!defined('YANA_ESCAPE_USERTEXT')) {
-    define('YANA_ESCAPE_USERTEXT',   32);
-}
-if (!defined('YANA_ESCAPE_ALL')) {
-    /* Don't change the value of YANA_ESCAPE_ALL unless you got a real good reason.
-     */
-    define('YANA_ESCAPE_ALL',        PHP_INT_MAX -2);
-}
-
-/**#@-*/
 /**#@+
  * directory scanning
  *
