@@ -37,12 +37,12 @@ require_once dirname(__FILE__) . '/include.php';
  */
 class FormMailerTest extends PHPUnit_Framework_TestCase
 {
+
     /**
      * @var    FormMailer
      * @access protected
      */
     protected $object;
-   
     /**
      * sammelt die Maileinträge
      * 
@@ -50,7 +50,6 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
      * @access protected
      */
     protected $mails = array();
-
     /**
      * @var    string
      * @access protected
@@ -107,10 +106,7 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
      */
     public function testSend()
     {
-        $this->object->subject = "";
-        $this->object->headline = "";
-        $this->object->footline = "";
-        $this->object->content = array('Test');
+        $this->object->setContent(array('Test'));
 
         // Test Exception Number as Recipient
         try {
@@ -129,7 +125,7 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
         }
 
         // Test empty content
-        $this->object->content = array();
+        $this->object->setContent(array());
         $result = true;
         try {
             $result = $this->object->send("mail@domain.tld");
@@ -138,33 +134,9 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
         }
         $this->assertFalse($result, "FormMailer should not accept an empty Content");
 
-        // Testing _makeMail
-        // wrong Subject-Type
-        $this->object->subject = 1;
-        $this->object->content = array("test");
-        try {
-            $this->object->send("mail@domain.tld");
-            $this->fail("FormMailer should not accept a number as subject.");
-        } catch (\Exception $e) {
-            // success
-        }
-
-        // wrong Headline-Type
-        $this->object->subject = "abc";
-        $this->object->headline = 1;
-        $this->object->content = array("test");
-        try {
-            $this->object->send("mail@domain.tld");
-            $this->fail("FormMailer should not accept a number as headline.");
-        } catch (\Exception $e) {
-            // success
-        }
-
         // wrong Element Type 'Object'
         $exception = false;
-        $this->object->subject = "abc";
-        $this->object->headline = "abc";
-        $this->object->content = array("test" => new Object());
+        $this->object->setContent(array("test" => new Object()));
         try {
             $this->object->send("mail@domain.tld");
             $this->fail("FormMailer should only accept scalar values or arrays as content-elements.");
@@ -174,7 +146,7 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
         }
 
         // äöüß are no illegal Character
-        $this->object->content = array("äöüß" => "aaa");
+        $this->object->setContent(array("äöüß" => "aaa"));
         try {
             $this->object->send("mail@domain.tld");
         } catch (\Exception $e) {
@@ -183,7 +155,7 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
 
         // illegal Characters in the Key
         // should throw a Notice
-        $this->object->content = array(iconv("", "UTF-8", "áéí") => "aaa");
+        $this->object->setContent(array(iconv("", "UTF-8", "áéí") => "aaa"));
         $expectedNoticeString = "";
         try {
             $this->object->send("mail@domain.tld");
@@ -193,9 +165,9 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
             $this->assertRegExp('/Invalid form data/i', $expectedNoticeString, "FormMailer should not accept special characters in keys.");
         }
 
-        $this->object->content = array("a" => "b", "c" => 1, 2 => "d");
-        $this->object->subject = "mySubject";
-        $this->object->headline = "myHeadline";
+        $this->object->setContent(array("a" => "b", "c" => 1, 2 => "d"))
+            ->setSubject("mySubject")
+            ->setHeadline("myHeadline");
         $result = $this->object->send("mail@domain.tld");
         $this->assertTrue($result, "Mail has not been sent.");
 
@@ -206,51 +178,6 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
         $this->assertRegExp("/charset\s*=\s*UTF\-8/i", $lastMail[3], "Formmailer should send UTF-8, if not stated otherwise");
     }
 
-    /**
-     * static mail function
-     *
-     * @test
-     */
-    public function testMail()
-    {
-
-        $recipient = "mail@domain.tld";
-        $subject = "test";
-        $formdata = array("aaa" => "eee", "bbb" => 11, 12 => "fff");
-
-        // Test Number as Recipient
-        try {
-            FormMailer::mail(1, $subject, $formdata);
-            $this->fail("FormMailer should not accept a number as recipient.");
-        } catch (\Exception $e) {
-            // success
-        }
-
-        // Test empty Recipient
-        try {
-            FormMailer::mail("", $subject, $formdata);
-            $this->fail("FormMailer should not accept an empty recipient.");
-        } catch (\Exception $e) {
-            // success
-        }
-
-        // Test Array as Subject
-        try {
-            FormMailer::mail($recipient, array(), $formdata);
-            $this->fail("FormMailer should not accept an array as subject.");
-        } catch (\Exception $e) {
-            // success
-        }
-
-        // Test empty content
-        $result = true;
-        $emptyContent = array();
-        try {
-            $result = FormMailer::mail($recipient, $subject, $emptyContent);
-        } catch (\Exception $e) {
-            $this->fail("Unexpected exception: " . $e->getMessage());
-        }
-        $this->assertFalse($result, "FormMailer should return false if there is no content.");
-    }
 }
+
 ?>

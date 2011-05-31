@@ -512,6 +512,9 @@ final class Request extends Utility
     private static function _untaintRequest(array $value, $unquote = false)
     {
         $value = array_change_key_case($value, CASE_LOWER);
+        $sanitizer = new \Yana\Io\StringValidator();
+        $sanitizer->setMaxLength(50000)
+            ->addOption(\Yana\Io\StringValidator::TOKEN);
         foreach ($value as $i => $item)
         {
             if (is_array($item)) {
@@ -520,7 +523,7 @@ final class Request extends Utility
                 if ($unquote === true) {
                     $item = stripcslashes($item);
                 }
-                $value[$i] = untaintInput($item, "string", 50000, YANA_ESCAPE_TOKEN, true);
+                $value[$i] = $sanitizer($item);
             }
         }
         return $value;

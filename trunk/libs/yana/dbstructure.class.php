@@ -2200,7 +2200,7 @@ class DbStructure extends SML
                 if (preg_match($regEx, $default)) {
                     continue;
                 }
-                return untaintInput($default, "string", 0, YANA_ESCAPE_TOKEN);
+                return \Yana\Io\StringValidator::sanitize($default, 0, \Yana\Io\StringValidator::TOKEN);
             } // end foreach
             return null;
         } else {
@@ -3703,142 +3703,6 @@ class DbStructure extends SML
     }
 
     /**
-     * validate a row against this file
-     *
-     * The argument $row is expected to be an
-     * associative array of values, representing
-     * a row that should be inserted or updated
-     * in $table. The keys of the array $row are
-     * expected to be the lowercased column names.
-     *
-     * Returns bool(true) if $row is valid and
-     * bool(false) otherwise.
-     *
-     * @access  public
-     * @param   string  $table     table name
-     * @param   mixed   &$row      values of the inserted/updated row
-     * @param   bool    $isInsert  type of operation (true = insert, false = update)
-     * @return  bool
-     */
-    public function checkRow($table, &$row, $isInsert = true)
-    {
-        if (!$this->isTable($table)) {
-            assert('!isset($message); // Cannot redeclare var $message');
-            $message = "Table '$table' not found.";
-            Log::report($message, E_USER_WARNING);
-            if (isset($GLOBALS['YANA']) && $GLOBALS['YANA']->getPlugins()->getEventType() === 'write') {
-                throw new Error();
-            }
-            return false;
-        }
-
-        foreach ($this->getColumns($table) as $column)
-        {
-            $column = mb_strtolower("$column");
-            /*
-             * 1) error - not writeable
-             */
-            if (!$isInsert && $this->isReadonly($table, $column) && isset($row[$column])) {
-                assert('!isset($message); // Cannot redeclare var $message');
-                $message = "Database is readonly. Update operation on table '$table' aborted.";
-                Log::report($message, E_USER_WARNING);
-                if (isset($GLOBALS['YANA'])&& $GLOBALS['YANA']->getPlugins()->getEventType() === 'write') {
-                    throw new Error();
-                }
-                return false;
-            }
-            /*
-             * 2) value is optional - ignore
-             */
-            if ($this->isNullable($table, $column)) {
-                continue;
-            }
-            // valid: value may be empty for update-queries
-            if (!$isInsert) {
-                continue;
-            }
-            // valid: value exists
-            if (isset($row[$column]) && $row[$column] !== "") {
-                continue;
-            }
-            /*
-             * 3) value requires closer investigation
-             */
-            $default = $this->getDefault($table, $column);
-            $type    = $this->getType($table, $column);
-            $isAuto  = $this->isAuto($table, $column);
-            /*
-             * 3.1) autofill column
-             */
-            if ($isAuto && ($type == 'time' || $type == 'timestamp')) {
-                $row[$column] = time();
-
-            } elseif ($isAuto && $type == 'ip') {
-                if (isset($_SERVER['REMOTE_ADDR'])) {
-                    $row[$column] = $_SERVER['REMOTE_ADDR'];
-                } else {
-                    $row[$column] = '0.0.0.0';
-                }
-
-            } elseif ($isAuto && strcasecmp($column, $this->getProfile($table)) === 0) {
-                $row[$column] = Yana::getId();
-
-            } elseif ($isAuto && is_null($default)) {
-                $row[$column] = false;
-
-            /*
-             * 3.2) default value available
-             */
-            } elseif (!is_null($default) && !$this->isForeignKey($table, $column)) {
-                if (is_array($default)) {
-                    $row[$column] = $this->untaintInput($table, $column, array_shift(array_keys($default)),
-                                    YANA_ESCAPE_NONE);
-                } elseif (is_scalar($default)) {
-                    $row[$column] = $this->untaintInput($table, $column, $default, YANA_ESCAPE_NONE);
-                } else {
-                    $message = "Invalid default value for column '{$column}'. The structure file is not valid.";
-
-                    Log::report($message, E_USER_WARNING, array('FILE'=>$this->getPath()));
-                    if (isset($GLOBALS['YANA']) && $GLOBALS['YANA']->getPlugins()->getEventType() === 'write') {
-                        throw new Error();
-                    }
-                    trigger_error("SYNTAX ERROR: $message.", E_USER_ERROR);
-
-                }
-                if ($this->isNumber($table, $column)) {
-                    if ($this->isUnsigned($table, $column) && $row[$column] < 0) {
-                        if (isset($GLOBALS['YANA']) && $GLOBALS['YANA']->getPlugins()->getEventType() === 'write') {
-                            $code = $this->getDescription($table, $column);
-                            $error = new InvalidValueWarning();
-                            throw $error->setField($code);
-                        }
-                        $message = "SYNTAX ERROR: The value '" . $row[$column] . "' for column '{$column}' " .
-                            "must not be negative.";
-                        trigger_error($message, E_USER_ERROR);
-                        return false;
-                    }
-                } elseif ($this->getType($table, $column) === 'string') {
-                    $row[$column] = SmartUtility::replaceToken($row[$column]);
-                }
-
-            /*
-             * 3.3) error - value is missing
-             */
-            } else {
-                if (isset($GLOBALS['YANA']) && $GLOBALS['YANA']->getPlugins()->getEventType() === 'write') {
-                    $warning = new MissingFieldWarning();
-                    throw $warning->setField($this->getDescription($table, $column));
-                }
-                $message = "SQL ERROR: A required attribute '{$column}' has not been provided." .
-                    "Insert/Update operation aborted.";
-                trigger_error($message, E_USER_NOTICE);
-                return false;
-            } // end if
-        } // end for
-        return true;
-    }
-
-    /**
      * get all fields for an address
      *
      * Retrieves all "$fieldname" entries that apply to the given
@@ -3965,31 +3829,6 @@ class DbStructure extends SML
             return $list_of_results;
         }
 
-    }
-
-    /**
-     * untaint user input data with the help of the schema
-     *
-     * Will convert input to a datatype and argument length that fits
-     * the settings of the provided column.
-     *
-     * For details on the $escape argument, see {@link function_untaintInput()}.
-     *
-     * @access  public
-     * @param   string  $table   name of table
-     * @param   string  $column  name of column
-     * @param   mixed   $value   value to untaint
-     * @param   int     $escape  automated charater escaping
-     * @return  mixed
-     * @name    DbStructure::untaintInput()
-     * @see     function_untaintInput()
-     */
-    public function untaintInput($table, $column, $value, $escape = YANA_ESCAPE_NONE)
-    {
-        $type = (string) $this->getType($table, $column);
-        $length = (int) $this->getLength($table, $column);
-        $precision = (int) $this->getPrecision($table, $column);
-        return untaintInput($value, $type, $length, $escape, false, $precision);
     }
 
     /**

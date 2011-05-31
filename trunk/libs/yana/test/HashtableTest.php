@@ -37,18 +37,18 @@ require_once dirname(__FILE__) . '/include.php';
  */
 class HashtableTest extends PHPUnit_Framework_TestCase
 {
-    
+
     /**
      * @var    array
      * @access protected
      */
-    protected $array=array(
-                           'ID1'=>'abc',
-                           'ID2'=>'def',
-                           'ID3'=> array(
-                                       'test'=>'result'),
-                           'ID4'=>true
-                          );
+    protected $array = array(
+        'ID1' => 'abc',
+        'ID2' => 'def',
+        'ID3' => array(
+            'test' => 'result'),
+        'ID4' => true
+    );
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -73,34 +73,30 @@ class HashtableTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * get
-     *
      * @test
      */
     public function testGet()
     {
         $get = Hashtable::get($this->array, '*');
-        $this->assertType('array', $get, 'assert failed, value is not from type array');
+        $this->assertType('array', $get);
 
         $get = Hashtable::get($this->array, 'ID2');
-        $this->assertType('string', $get, 'assert failed, value is not from type string');
+        $this->assertType('string', $get);
         //expected string "def"
-        $this->assertEquals('def', $get, 'assert failed, expected result "def" has failed wrong value given');
+        $this->assertEquals('def', $get, 'expected result "def" has failed wrong value given');
 
         $get = Hashtable::get($this->array, 'ID3.test');
-        $this->assertType('string', $get, 'assert failed, value is not from type string');
+        $this->assertType('string', $get);
         //expected string "result"
-        $this->assertEquals('result', $get, 'assert failed, expected result "result" has failed wrong value given');
+        $this->assertEquals('result', $get, 'expected result "result" has failed wrong value given');
 
         $get = Hashtable::get($this->array, 'ID3.idks');
-        $this->assertType('null', $get, 'assert failed, value is not from type null');
+        $this->assertType('null', $get);
         //expected null
-        $this->assertEquals(null, $get, 'assert failed, expected result "result" has failed wrong value given');
+        $this->assertEquals(null, $get, 'expected result "result" has failed wrong value given');
     }
 
     /**
-     * set by reference
-     *
      * @test
      */
     public function testSetByReference()
@@ -111,12 +107,12 @@ class HashtableTest extends PHPUnit_Framework_TestCase
         $validate = Hashtable::get($this->array, 'ID2');
         $getAll = Hashtable::get($this->array, '*');
 
-        $this->assertEquals($validate, $array, 'assert failed, vaules should be equal');
-        $this->assertArrayHasKey('ID2', $getAll, 'assert failed, "setByReferences" has failed- key doesnt exist in array');
+        $this->assertEquals($validate, $array, 'vaules should be equal');
+        $this->assertArrayHasKey('ID2', $getAll, '"setByReferences" has failed- key doesnt exist in array');
 
         $array[0] = 2;
         $validate = Hashtable::get($this->array, 'ID2.0');
-        $this->assertEquals($validate, 2, 'assert failed, value is not a reference');
+        $this->assertEquals($validate, 2, 'value is not a reference');
 
         $array = array('a' => 3);
         Hashtable::setByReference($this->array, '*', $array);
@@ -128,8 +124,6 @@ class HashtableTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * SetByReferenceInvalidArgument
-     *
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
@@ -140,46 +134,45 @@ class HashtableTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * set
-     * @todo set a value or array without key(or non existing key) doesnt work exemple : $set = Hashtable::set($this->array, '*', array);
      * @test
      */
     public function testSet()
     {
         $copyOfArray = $this->array;
-        Hashtable::set($this->array, 'ID1', 'work');    
+        Hashtable::set($this->array, 'ID1', 'work');
         $validate = Hashtable::get($this->array, '*');
-        $this->assertArrayHasKey('ID1', $validate, 'assert failed, key doesnt exist on array');
-        $this->assertEquals('work', $validate['ID1'], 'assert failed, "setByReferences" has failed, expected value doesn exist in key "ID5"');
+        $this->assertArrayHasKey('ID1', $validate);
+        $this->assertEquals('work', $validate['ID1']);
+
+        Hashtable::set($this->array, 'non-existing', 'test');
+        $validate = Hashtable::get($this->array, '*');
+        $this->assertArrayHasKey('non-existing', $validate);
+        $this->assertEquals('test', $validate['non-existing']);
 
         $array = array(1, 2, 3);
         Hashtable::setByReference($copyOfArray, 'ID5', $array);
         $get = Hashtable::get($copyOfArray, '*');
-        $this->assertArrayHasKey('ID5', $get, 'assert failed, key doesnt exist on array');
-        $this->assertEquals($array, $get['ID5'], 'assert failed, "setByReferences" has failed, expected value doesn exist in key "ID5"');
+        $this->assertArrayHasKey('ID5', $get);
+        $this->assertEquals($array, $get['ID5'], '"setByReferences" has failed, expected value doesn exist in key "ID5"');
     }
 
     /**
-     * set type
-     *
-     * test
+     * @test
      */
     public function testSetType()
     {
         $setType = Hashtable::setType($this->array, 'ID1', 'integer');
-        $this->assertTrue($setType, 'assert failed, change typ for givin value has failed');
+        $this->assertTrue($setType, 'change type for given value has failed');
         $get = Hashtable::get($this->array, '*');
-        $this->assertType('integer', $get['ID1'], 'assert failed, the value is not from type integer');
+        $this->assertType('integer', $get['ID1']);
 
         $setType = Hashtable::setType($this->array, 'ID4', 'string');
         $get = Hashtable::get($this->array, '*');
-        $this->assertTrue($setType, 'assert failed, set typ for value failed, value doesnt exist');
-        $this->assertType('string', $get['ID4'], 'assert failed, the valie is not from type string');
+        $this->assertTrue($setType, 'set type for value failed, value doesnt exist');
+        $this->assertType('string', $get['ID4']);
     }
 
     /**
-     * SetTypeInvalidArgument
-     *
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
@@ -190,184 +183,257 @@ class HashtableTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * exist
-     *
      * @test
      */
     public function testExists()
     {
         $exist = Hashtable::exists($this->array, 'ID1');
-        $this->assertTrue($exist, 'assert failed, key should be exist in givin array');
+        $this->assertTrue($exist, 'key should be exist in given array');
 
         $notExist = Hashtable::exists($this->array, 'ID9');
-        $this->assertFalse($notExist, 'assert failed, key cant be exist in givin array');
+        $this->assertFalse($notExist, 'key cant be exist in given array');
     }
 
     /**
-     * remove
-     *
      * @test
      */
     public function testRemove()
     {
         //success remove by key
         $remove = Hashtable::remove($this->array, 'ID1');
-        $this->assertTrue($remove, 'assert failed, remove key operation has failed');
+        $this->assertTrue($remove, 'remove key operation has failed');
 
         // success
         $remove = Hashtable::remove($this->array, 'ID3.test');
-        $this->assertTrue($remove, 'assert failed, remove key operation has failed');
+        $this->assertTrue($remove, 'remove key operation has failed');
 
         //failed column doesnt exist
         $remove = Hashtable::remove($this->array, 'ID3.def');
-        $this->assertFalse($remove, 'assert failed, removed "key" doesnt exist');
+        $this->assertFalse($remove, 'removed "key" doesnt exist');
 
         //success remove all
         $remove = Hashtable::remove($this->array, '*');
-        $this->assertTrue($remove, 'assert failed, remove array has failed');
+        $this->assertTrue($remove, 'remove array has failed');
     }
 
     /**
-     * chnange case
-     *
      * @test
      */
     public function testChangeCase()
     {
         // success default CASE_LOWER
         $changeCase = Hashtable::changeCase($this->array);
-        $this->assertType('array', $changeCase, 'assert failed, value is not from type array');
-        $this->assertNotEquals($changeCase, $this->array, 'assert failed, the variables cant be equal');
+        $this->assertType('array', $changeCase);
+        $this->assertNotEquals($changeCase, $this->array);
 
         // success CASE_LOWER
         $changeCase = Hashtable::changeCase($this->array, 0);
-        $this->assertType('array', $changeCase, 'assert failed, value is not from type array');
-        $this->assertNotEquals($changeCase, $this->array, 'assert failed, the variables cant be equal');
+        $this->assertType('array', $changeCase);
+        $this->assertNotEquals($changeCase, $this->array);
 
         // success CASE_LOWER
         $changeCase = Hashtable::changeCase($this->array, false);
-        $this->assertType('array', $changeCase, 'assert failed, value is not from type array');
-        $this->assertNotEquals($changeCase, $this->array, 'assert failed, the variables cant be equal');
+        $this->assertType('array', $changeCase);
+        $this->assertNotEquals($changeCase, $this->array);
 
         // success CASE_UPPER
         $changeCase = Hashtable::changeCase($this->array, CASE_UPPER);
-        $this->assertType('array', $changeCase, 'assert failed, value is not from type array');
-        $this->assertNotEquals($changeCase, $this->array, 'assert failed, the variables cant be equal');
+        $this->assertType('array', $changeCase);
+        $this->assertNotEquals($changeCase, $this->array);
 
         // success CASE_UPPER
         $changeCase = Hashtable::changeCase($this->array, 1);
-        $this->assertType('array', $changeCase, 'assert failed, value is not from type array');
-        $this->assertNotEquals($changeCase, $this->array, 'assert failed, the variables cant be equal');
+        $this->assertType('array', $changeCase);
+        $this->assertNotEquals($changeCase, $this->array);
 
         // success CASE_UPPER
         $changeCase = Hashtable::changeCase($this->array, true);
-        $this->assertType('array', $changeCase, 'assert failed, value is not from type array');
-        $this->assertNotEquals($changeCase, $this->array, 'assert failed, the variables cant be equal');
+        $this->assertType('array', $changeCase);
+        $this->assertNotEquals($changeCase, $this->array);
     }
 
     /**
-     * merge
-     *
      * @test
      */
     public function testMerge()
     {
-        $array1 = array('abc' => 'rot',
-                        'cdf' => 'jkl',
-                        'test'=>'test',
-                        'new'=>array('color'=>'ftf'),
-                         2,
-                         4);
-                     
-        $array2 = array('a',
-                        'b',
-                        'ssd' => 'fds',
-                        'cdf' => 'jkl',
-                        'test'=>'Test',
-                        'new'=>array('color'=>'ere',
-                                     'asa'=>'upper'),
-                         4,
-                        'old'=>array('gfg'=>'lower'));
+        $array1 = array(
+            'abc' => 'rot',
+            'cdf' => 'jkl',
+            'test' => 'test',
+            'new' => array('color' => 'ftf'),
+            2,
+            4
+        );
+
+        $array2 = array(
+            'a',
+            'b',
+            'ssd' => 'fds',
+            'cdf' => 'jkl',
+            'test' => 'Test',
+            'new' => array(
+                'color' => 'ere',
+                'asa' => 'upper'
+            ),
+            4,
+            'old' => array('gfg' => 'lower')
+        );
         $a = array();
         $b = array();
 
         $merge = Hashtable::merge($array1, $array2);
-        $this->assertNotEquals($merge, $array1, 'assert failed, the variables cant be equal');
-        $this->assertNotEquals('test', $merge['test'], 'assert failed, the varialbles should not be equal');
-        $this->assertEquals('Test', $merge['test'], 'assert failed, the varialbles should be equal');
+        $this->assertNotEquals($merge, $array1);
+        $this->assertNotEquals('test', $merge['test']);
+        $this->assertEquals('Test', $merge['test']);
 
         $merge = Hashtable::merge($array1, $b);
-        $this->assertEquals($merge, $array1, 'assert failed, the varialbles should be equal');
+        $this->assertEquals($merge, $array1);
         $merge = Hashtable::merge($a, $array2);
-        $this->assertEquals($merge, $array2, 'assert failed, the varialbles should be equal');
+        $this->assertEquals($merge, $array2);
     }
 
-    public function test1()
+    /**
+     * @test
+     */
+    public function testCloneArray()
+    {
+        $array1 = array(
+            'adc',
+            'def',
+            'ghjk',
+            'pio',
+            'tqasd'
+        );
+        $array2 = array(
+            'adc' => array(
+                'def',
+                'ghjk',
+                'pio',
+                'tqasd'
+            )
+        );
+
+        $result = Hashtable::cloneArray($array1);
+        $this->assertType('array', $result);
+        $this->assertEquals($array1, $result);
+
+        $result = Hashtable::cloneArray($array2);
+        $this->assertType('array', $result);
+        $this->assertEquals($array2, $result);
+    }
+
+    /**
+     * Tests: get, set, merge, changeType, changeCase and remove.
+     *
+     * @test
+     */
+    public function testCombined()
     {
         $array1 = $this->array;
-        $array2 = array('iop' => array('ads' => 'qwerty',
-                                      'ggh' => 'lik'),
-                        'lkjh' => 'red',
-                        'nrub' => array(10,
-                                           20,
-                                           8,
-                                           65),
-                        'ID1' => 'ngr');
+        $array2 = array(
+            'iop' => array(
+                'ads' => 'qwerty',
+                'ggh' => 'lik'
+            ),
+            'lkjh' => 'red',
+            'nrub' => array(
+                10,
+                20,
+                8,
+                65
+            ),
+            'ID1' => 'ngr'
+        );
 
         $caseUpper = Hashtable::changeCase($array2, 1);
-        $this->assertType('array', $caseUpper, 'assert failed, value is not from type array');
-        $this->assertNotEquals($caseUpper, $array2, 'assert failed, the values cant be equal');
+        $this->assertType('array', $caseUpper);
+        $this->assertNotEquals($caseUpper, $array2);
 
         $value = 'blue';
         Hashtable::set($caseUpper, 'LKJH', $value);
 
         $caseLower = Hashtable::changeCase($caseUpper, 0);
-        $this->assertType('array', $caseLower, 'assert failed, value is not from type array');
-        $this->assertNotEquals($caseLower, $array2, 'assert failed, the values cant be equal');
+        $this->assertType('array', $caseLower);
+        $this->assertNotEquals($caseLower, $array2);
 
         // check if color sets to blue
         $get = Hashtable::get($caseLower, '*');
-        $this->assertEquals('blue', $get['lkjh'], 'assert failed, the variables should be equal');
+        $this->assertEquals('blue', $get['lkjh']);
 
         // take a key from the org array and chack if exist in the actually
-        $this->assertArrayHasKey('lkjh', $array2, 'assert failed, the key must have a match in validate array ');
-        $this->assertArrayNotHasKey('id1', $array2, 'assert failed, the giving key doesnt exist in array');
+        $this->assertArrayHasKey('lkjh', $array2, 'the key must have a match in validate array');
+        $this->assertArrayNotHasKey('id1', $array2, 'the giving key doesnt exist in array');
 
         // set type for one key and try to write/ set a value with a different data type
         $setType = Hashtable::setType($caseLower, 'id1', 'integer');
-        $this->assertTrue($setType, 'assert failed, the typ of the key doesnt change');
-        $this->assertType('integer', $caseLower['id1'], 'assert failed, the value is not from type integer');
-        
+        $this->assertTrue($setType, 'the typ of the key doesnt change');
+        $this->assertType('integer', $caseLower['id1'], 'the value is not from type integer');
+
         $value = 'description';
         Hashtable::set($caseLower, 'id1', $value);
-        $this->assertEquals($value, $caseLower['id1'], 'assert failed, the variables should be equal');
+        $this->assertEquals($value, $caseLower['id1']);
 
         // verifi with orginal array
-        $this->assertNotEquals($caseLower, $array2, 'assert failed, the 2 variables cant be equal');
+        $this->assertNotEquals($caseLower, $array2);
 
         $arrayBeforeRemove = $caseLower;
         // remove the key "iop"
         $remove = Hashtable::remove($caseLower, 'iop');
-        $this->assertTrue($remove, 'assert failed, remove the key has failed');
-        $this->assertNotEquals($arrayBeforeRemove, $caseLower, 'assert failed, the variables cant be equal');
+        $this->assertTrue($remove, 'remove the key has failed');
+        $this->assertNotEquals($arrayBeforeRemove, $caseLower);
 
         // remove "lkjh"
         $remove = Hashtable::remove($caseLower, 'lkjh');
-        $this->assertTrue($remove, 'assert failed, remove all entries has failed');
+        $this->assertTrue($remove, 'remove all entries has failed');
         // remove "nrub"
         $remove = Hashtable::remove($caseLower, 'nrub');
-        $this->assertTrue($remove, 'assert failed, remove all entries has failed');
+        $this->assertTrue($remove, 'remove all entries has failed');
         // remove "id1"
         $remove = Hashtable::remove($caseLower, 'id1');
-        $this->assertTrue($remove, 'assert failed, remove all entries has failed');
+        $this->assertTrue($remove, 'remove all entries has failed');
 
-        $this->assertType('array', $caseLower, 'assert failed, value is not from type array');        
-        $this->assertEquals(count($caseLower), 0, 'assert failed, remove all entries from the array has failed');
+        $this->assertType('array', $caseLower);
+        $this->assertEquals(count($caseLower), 0, 'remove all entries from the array has failed');
 
         $merge = Hashtable::merge($array1, $caseLower);
-        $this->assertEquals($array1, $merge, 'assert failed, the variables should be equal');
+        $this->assertEquals($array1, $merge);
         $upperKeys = Hashtable::changeCase($merge, CASE_UPPER);
-        $this->assertNotEquals($upperKeys, $merge, 'assert failed, the values are not equal');
+        $this->assertNotEquals($upperKeys, $merge);
     }
+
+    /**
+     * Array to XML conversion
+     *
+     * Calls function Hashtable::toXML().
+     *
+     * @test
+     */
+    public function testArrayToXML()
+    {
+        // read file and write to an array
+        $array = array(
+            1 => 'a',
+            2 => array(
+                'b',
+                'c'
+            ),
+            3 => 1
+        );
+        $xml = Hashtable::toXML($array);
+
+        // expected result
+        $expected = "<array id=\"root\">\n\t<string id=\"1\">a</string>\n" .
+            "\t<array id=\"2\">\n\t\t<string id=\"0\">b</string>\n" .
+            "\t\t<string id=\"1\">c</string>\n\t</array>\n" .
+            "\t<integer id=\"3\">1</integer>\n</array>\n";
+        $encoding = iconv_get_encoding("internal_encoding");
+        $expected = '<?xml version="1.0" encoding="' . $encoding . '"?>' . "\n" . $expected;
+
+        // compare source and generated result
+        $this->assertEquals($expected, $xml, "Round-trip decoding/encoding of source-document failed. The result is differs from the source file.");
+    }
+
 }
+
 ?>
