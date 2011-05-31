@@ -7,6 +7,7 @@
         <input name="user_session" hidden="yes"/>
         <input name="user_mail" readonly="yes">
             <grant insert="no" update="no"/>
+            <grant user="admin" level="100"/>
         </input>
         <input name="user_active">
             <grant insert="no" update="no"/>
