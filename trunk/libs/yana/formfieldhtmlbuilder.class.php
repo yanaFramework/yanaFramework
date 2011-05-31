@@ -545,7 +545,7 @@ class FormFieldHtmlBuilder extends Object
         }
         $value = str_replace('[br]', "\n", $value);
         return '<textarea' . $this->getAttr() . ' id="' . $this->getId() . '" name="' . $this->getName() .
-            '" class="' . $this->getCssClass() . '" ' . '" title="' . $this->getTitle() . '" ' . $check . ' rows="3">' .
+            '" class="' . $this->getCssClass() . '" title="' . $this->getTitle() . '" ' . $check . ' rows="3">' .
             $value . '</textarea>';
     }
 
