@@ -543,6 +543,7 @@ class FormFieldHtmlBuilder extends Object
         if ($this->getMaxLength() > 2000) {
             $check .= ' cols="30"';
         }
+        $value = str_replace('[br]', "\n", $value);
         return '<textarea' . $this->getAttr() . ' id="' . $this->getId() . '" name="' . $this->getName() .
             '" class="' . $this->getCssClass() . '" ' . '" title="' . $this->getTitle() . '" ' . $check . ' rows="3">' .
             $value . '</textarea>';
