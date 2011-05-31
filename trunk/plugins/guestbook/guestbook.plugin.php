@@ -693,8 +693,8 @@ class plugin_guestbook extends StdClass implements IsPlugin
         if (filter_var($recipient, FILTER_VALIDATE_EMAIL) && filter_var($sender, FILTER_VALIDATE_EMAIL)) {
             $INPUT = Hashtable::changeCase($INPUT, CASE_UPPER);
             $now = getdate();
-            $mail->subject = $YANA->getLanguage()->getVar("MAIL_SUBJECT");
-            $mail->sender = $sender;
+            $mail->setSubject($YANA->getLanguage()->getVar("MAIL_SUBJECT"));
+            $mail->setSender($sender);
             $mail->setVar('*', $INPUT);
             $mail->setVar('DATE', $now['mday'] . '.' . $now['mon'] . '.' . $now['year']);
             $mail->send($recipient);

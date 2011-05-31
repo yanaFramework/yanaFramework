@@ -73,12 +73,15 @@ class plugin_user_registration extends StdClass implements IsPlugin
      */
     public function set_user_mail($username, $mail)
     {
-        global $YANA;
         $database = Yana::connect("user");
-        $mail = untaintInput(mb_strtolower($mail), 'mail', 255);
-        $name = mb_strtolower($username);
 
-        if (empty($name) || empty($mail)) {
+        $mail = mb_substr(mb_strtolower($mail), 0, 255);
+        if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidInputWarning();
+        }
+
+        $name = mb_strtolower($username);
+        if (empty($name)) {
             throw new InvalidInputWarning();
         }
 
@@ -132,6 +135,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
             throw new Error();
         }
 
+        global $YANA;
         $YANA->setVar('WEBSITE_URL', $YANA->getVar("REFERER"));
         $YANA->setVar('KEY', $key);
         $YANA->setVar('MAIL', $mail);
@@ -211,9 +215,9 @@ class plugin_user_registration extends StdClass implements IsPlugin
             $YANA->setVar('PASSWORT', $password);
             $YANA->setVar('NAME', $user->getName());
             $mail = new Mailer($YANA->getSkin()->getFile("USER_PASSWORD_MAIL"));
-            $mail->sender = $YANA->getVar("PROFILE.MAIL");
+            $mail->setSender($YANA->getVar("PROFILE.MAIL"));
             $mail->setVar('DATE', date('d-m-Y'));
-            $mail->subject = $YANA->getLanguage()->getVar("user.mail_subject");
+            $mail->setSubject($YANA->getLanguage()->getVar("user.mail_subject"));
             $mail->send($user->getMail());
 
         } catch (InvalidArgumentException $e) {
@@ -242,7 +246,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
         global $YANA;
         $now = getdate();
         $mail = new Mailer($template);
-        $mail->subject = $YANA->getLanguage()->getVar("USER.MAIL_SUBJECT")."\n";
+        $mail->setSubject($YANA->getLanguage()->getVar("USER.MAIL_SUBJECT")."\n");
         $mail->setVar('DATE', $now['mday'] . '.' . $now['mon'] . '.' . $now['year']);
         $mail->send($mail);
     }

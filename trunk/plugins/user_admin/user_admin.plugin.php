@@ -172,9 +172,9 @@ class plugin_user_admin extends StdClass implements IsPlugin
             if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
                 $now = getdate();
                 $mail = new Mailer($YANA->getSkin()->getFile("USER_PASSWORD_MAIL"));
-                $mail->sender = $sender;
+                $mail->setSender($sender);
                 $mail->setVar('DATE', date('d-m-Y'));
-                $mail->subject = $YANA->getLanguage()->getVar("user.mail_subject");
+                $mail->setSubject($YANA->getLanguage()->getVar("user.mail_subject"));
                 $mail->send($user->getMail());
             }
             unset($sender);
