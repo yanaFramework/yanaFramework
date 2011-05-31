@@ -84,7 +84,7 @@ class plugin_default_library extends StdClass implements IsPlugin
      */
     public function preview($eintraege, $is_ajax_request = false)
     {
-        $eintraege = untaintInput($eintraege, "text", 0, YANA_ESCAPE_USERTEXT, true);
+        $eintraege = \Yana\Io\StringValidator::sanitize($eintraege, 0, \Yana\Io\StringValidator::USERTEXT);
         $eintraege = SmartUtility::smilies($eintraege);
         $eintraege = SmartUtility::embeddedTags($eintraege);
         if ($is_ajax_request) {

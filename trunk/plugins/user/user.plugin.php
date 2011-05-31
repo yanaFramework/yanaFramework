@@ -287,19 +287,12 @@ class plugin_user extends StdClass implements IsPlugin
 
         // set the mail values
         $mailer = new Mailer($fileName);
-        $mailer->subject = $subject;
-        $mailer->sender = $sender;
+        $mailer->setSubject($subject);
+        $mailer->setSender($sender);
         $mailer->setVar('NAME', $userName);
         $mailer->setVar('TIME', date("m.d.y H:i:s"));
         $mailer->setVar('WEBSITE', $website);
-        $result = $mailer->send($recipient);
-        // check for mail result
-        if ($result) {
-            return true;
-        } else {
-            // mail can not be send
-            return false;
-        }
+        return (bool) $mailer->send($recipient);
     }
 
     /**
