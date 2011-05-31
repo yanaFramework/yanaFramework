@@ -620,6 +620,27 @@ fieldset > .gui_generator_toolbar
     padding-right: 2px;
     margin-top: -8px;
 }
+fieldset
+{
+    margin-bottom: 2em;
+}
+fieldset > legend
+{
+    border: 1px solid #aaa;
+    border-radius: 4em;
+    -moz-border-radius: 4em;
+    -webkit-border-radius: 4em;
+    -ms-border-radius: 4em;
+    -o-border-radius: 4em;
+    box-shadow: 0 0 2px #888888;
+    -moz-box-shadow: 0 0 2px #888888;
+    -webkit-box-shadow: 0 0 2px #888888;
+    -o-box-shadow: 0 0 2px #888888;
+    -ms-box-shadow: 0 0 2px #888888;
+    padding: 0.2em 1.5em 0.2em 1.5em;
+    background-color: inherit;
+    font-weight: bold;
+}
 fieldset > legend > a.buttonize
 {
     padding: 4px
