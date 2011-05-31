@@ -372,10 +372,6 @@ function yanaInitContentHover()
             }
         }
     }
-    yanaAddEventListener('onmouseover', function(e, node) {window.focusedTextarea = node.id;}, 'textarea');
-    yanaAddEventListener('onkeydown', function(e, node) {window.focusedTextarea = node.id;}, 'textarea');
-    yanaAddEventListener('onsubmit', yanaCheckEmbTags, 'form');
-    yanaAddEventListener('onload', yanaInitTextareas, 'body');
     return true;
 }
 
