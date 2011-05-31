@@ -129,6 +129,7 @@ class PluginRepositoryBuilder extends PluginRepositoryAbstractBuilder
         {
             $builder->createNewConfiguration();
             $builder->setReflection(new PluginReflectionClass($className));
+            $pluginId = preg_replace('/^plugin_/', '', strtolower($className));
             $config = $builder->getPluginConfigurationClass();
             $config->setId($id);
             $this->object->addPlugin($config);
@@ -180,7 +181,7 @@ class PluginRepositoryBuilder extends PluginRepositoryAbstractBuilder
                 }
 
                 // add to implementations
-                if (!isset($overwrittenMethods[$methodName][$className])) {
+                if (!isset($overwrittenMethods[$methodName][$pluginId])) {
                     $this->object->setImplementation($method, $config);
                 }
             } // end foreach method
