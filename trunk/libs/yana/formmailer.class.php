@@ -35,32 +35,139 @@
 class FormMailer extends Object
 {
 
-    /**#@+
-     * @access public
+    /**
+     * Subject line of mail to be send.
+     *
+     * @access  private
+     * @var     string
      */
-
-    /** @var string */  public $subject  = "";
-    /** @var string */  public $headline = "";
-    /** @var string */  public $footline = "";
-    /** @var array  */  public $content  = array();
-
-    /**#@-*/
+    private $_subject = "";
 
     /**
-     * constructor
+     * Line of text before content.
      *
-     * Creates a new instance of this class.
+     * @access  private
+     * @var     string
      */
-    public function __construct()
+    private $_headline = "";
+
+    /**
+     * Line of text after content.
+     *
+     * @access  private
+     * @var     string
+     */
+    private $_footline = "";
+
+    /**
+     * The form content.
+     *
+     * @access  private
+     * @var     string
+     */
+    private $_content  = array();
+
+    /**
+     * Get subject line.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getSubject()
     {
-        /* intentionally left blank */
+        return $this->_subject;
     }
 
     /**
-     * send an e-mail
+     * Set subject line.
      *
-     * Sends the current contents to $recipient,
-     * where $recipient should be a valid mail address.
+     * @access  public
+     * @param   string  $subject  single-line of text
+     * @return  FormMailer
+     */
+    public function setSubject($subject)
+    {
+        assert('is_string($subject); // Invalid argument $subject: string expected');
+        $this->_subject = $subject;
+        return $this;
+    }
+
+    /**
+     * Get line of text before content.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getHeadline()
+    {
+        return $this->_headline;
+    }
+
+    /**
+     * Set line of text before content.
+     *
+     * @access  public
+     * @param   string  $headline  single-line of text
+     * @return  FormMailer
+     */
+    public function setHeadline($headline)
+    {
+        assert('is_string($headline); // Invalid argument $headline: string expected');
+        $this->_headline = $headline;
+        return $this;
+    }
+
+    /**
+     * Get line of text after content.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getFootline()
+    {
+        return $this->_footline;
+    }
+
+    /**
+     * Set line of text after content.
+     *
+     * @access  public
+     * @param   string  $footline  single-line of text
+     * @return  FormMailer
+     */
+    public function setFootline($footline)
+    {
+        assert('is_string($footline); // Invalid argument $footline: string expected');
+        $this->_footline = $footline;
+        return $this;
+    }
+
+    /**
+     * Get form content.
+     *
+     * @access  public
+     * @return  array
+     */
+    public function getContent()
+    {
+        return $this->_content;
+    }
+
+    /**
+     * Set form content.
+     *
+     * @access  public
+     * @param   string  $content  list of key-value pairs, where keys are field-names
+     * @return  FormMailer
+     */
+    public function setContent(array $content)
+    {
+        $this->_content = $content;
+        return $this;
+    }
+
+    /**
+     * Send an e-mail with the current contents to a recipient.
      *
      * Returns bool(true) on success or bool(false) on error.
      *
@@ -71,29 +178,24 @@ class FormMailer extends Object
      */
     public function send($recipient, $mailHandler = null)
     {
-        assert('is_string($recipient); // Wrong type for argument 1. String expected');
-        assert('is_null($mailHandler) || is_callable($mailHandler); // Wrong type for argument 2. Function expected');
+        assert('is_string($recipient); // Invalid argument $recipient: string expected');
+        assert('is_null($mailHandler) || is_callable($mailHandler); // Invalid argument $mailHandler: Function expected');
         assert('!empty($recipient); // Recipient cannot be empty');
 
-        /* settype to STRING */
-        $recipient = (string) $recipient;
-
-        if (count($this->content) > 0 && $recipient !== '') {
+        $test = false;
+        if (count($this->_content) > 0 && !empty($recipient)) {
 
             /* untaint subject */
-            assert('is_string($this->subject);');
-            $this->subject = untaintInput($this->subject, "string", 128, YANA_ESCAPE_LINEBREAK);
-            $this->subject = strip_tags($this->subject);
-            $this->subject = preg_replace("/[^\w \(\)äÄüÜöÖß]/", "", $this->subject);
+            assert('is_string($this->_subject);');
+            $this->_subject = \Yana\Io\StringValidator::sanitize($this->_subject, 128, \Yana\Io\StringValidator::LINEBREAK);
+            $this->_subject = strip_tags($this->_subject);
+            $this->_subject = preg_replace("/[^\w \(\)äÄüÜöÖß]/", "", $this->_subject);
             /* untaint send mail */
-            $test = Mailer::mail($recipient, "[MAILFORM] " . $this->subject, $this->_makeMail(), array(), $mailHandler);
-            assert('is_bool($test); // Unexpected result: $test. Boolean expected.');
-            return $test;
-
-        } else {
-            return false;
+            $subject = "[MAILFORM] " . $this->_subject;
+            $test = Mailer::mail((string) $recipient, $subject, $this->_makeMail(), array(), $mailHandler);
         }
-
+        assert('is_bool($test); // Unexpected result: $test. Boolean expected.');
+        return $test;
     }
 
     /**
@@ -105,22 +207,22 @@ class FormMailer extends Object
      */
     private function _makeMail()
     {
-        assert('is_string($this->headline);');
-        $mail  = $this->headline;
+        assert('is_string($this->_headline);');
+        $mail  = $this->_headline;
 
         $mail .= "==========================================\n";
-        assert('is_string($this->subject);');
-        if (!empty($this->subject)) {
-            $mail .= "  " . $this->subject . "\n";
+        assert('is_string($this->_subject);');
+        if (!empty($this->_subject)) {
+            $mail .= "  " . $this->_subject . "\n";
             $mail .= "==========================================\n\n";
         }
 
-        assert('is_array($this->content) || is_string($this->content);');
+        assert('is_array($this->_content);');
         /* settype to ARRAY */
-        $this->content = (array) $this->content;
+        $this->_content = (array) $this->_content;
         assert('!isset($a); /* cannot redeclare variable $a */');
         assert('!isset($b); /* cannot redeclare variable $b */');
-        foreach ($this->content as $a => $b)
+        foreach ($this->_content as $a => $b)
         {
             /* 1) check if key is valid */
             if (!preg_match('/^[\w\döäüß\/_\- ]+$/si', $a)) {
@@ -148,51 +250,10 @@ class FormMailer extends Object
             $mail .= "IP:\tno IP available\n";
         }
 
-        assert('is_string($this->footline);');
-        $mail .= $this->footline;
+        assert('is_string($this->_footline);');
+        $mail .= $this->_footline;
 
         return $mail;
-    }
-
-    /**
-     * create an automatically formated e.mail from an array of form data
-     *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * @access  public
-     * @static
-     * @param   string    $recipient    mail address
-     * @param   string    $subject      subject of the mail
-     * @param   array     &$formdata    form-data submitted by the user
-     * @param   function  $mailHandler  function to handle mails
-     * @return  bool
-     * @since   2.8
-     */
-    public static function mail($recipient, $subject, array &$formdata, $mailHandler = null)
-    {
-        assert('is_string($recipient); // Wrong type for argument 1. String expected');
-        assert('is_string($subject); // Wrong type for argument 2. String expected');
-        assert('is_null($mailHandler) || is_callable($mailHandler); // Wrong type for argument 3. Function expected');
-        assert('!empty($recipient); // Recipient cannot be empty');
-
-        unset($formdata['action']);
-
-        $formMail = new formMailer();
-        $formMail->subject = $subject;
-        $formMail->content =& $formdata;
-
-        $recipient = untaintInput($recipient, 'mail');
-
-        if (!empty($recipient)) {
-            if ($formMail->send($recipient, $mailHandler)) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            trigger_error("Invalid recipient, the provided value is not a valid mail adress.", E_USER_NOTICE);
-            return false;
-        }
     }
 
 }

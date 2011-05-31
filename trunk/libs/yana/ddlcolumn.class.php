@@ -1870,24 +1870,18 @@ class DDLColumn extends DDLNamedObject
                 }
             break;
             case 'float':
-                $value = filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                if ($column->isUnsigned() && $value < 0) {
-                    $error = new InvalidValueWarning();
-                    throw $error->setField($title);
-                }
-                if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
-                    $precision = (int) $column->getPrecision();
-                    return untaintInput($value, $type, $length, 0, false, $precision);
+                $precision = (int) $column->getPrecision();
+                if (\Yana\Io\FloatValidator::validate($value, $length - $precision, (bool) $column->isUnsigned())) {
+                    return round($value, $precision);
                 }
             break;
             case 'html':
                 if (is_string($value)) {
                     $value = String::htmlSpecialChars($value);
                     if ($length > 0) {
-                        return mb_substr($value, 0, $length);
-                    } else {
-                        return $value;
+                        $value = mb_substr($value, 0, $length);
                     }
+                    return $value;
                 }
             break;
             case 'inet':
@@ -1896,13 +1890,8 @@ class DDLColumn extends DDLNamedObject
                 }
             break;
             case 'integer':
-                $value = filter_var($value, FILTER_SANITIZE_NUMBER_INT);
-                if ($column->isUnsigned() && $value < 0) {
-                    $error = new InvalidValueWarning();
-                    throw $error->setField($title);
-                }
-                if (filter_var($value, FILTER_VALIDATE_INT) !== false) {
-                    return untaintInput($value, $type, $length);
+                if (\Yana\Io\IntegerValidator::validate($value, $length, (bool) $column->isUnsigned())) {
+                    return (int) $value;
                 }
             break;
             case 'list':
@@ -1940,12 +1929,12 @@ class DDLColumn extends DDLNamedObject
             case 'reference':
             case 'string':
                 if (is_string($value)) {
-                    return untaintInput($value, 'string', $length, YANA_ESCAPE_LINEBREAK);
+                    return \Yana\Io\StringValidator::sanitize($value, $length, \Yana\Io\StringValidator::LINEBREAK);
                 }
             break;
             case 'text':
                 if (is_string($value)) {
-                    return untaintInput($value, 'text', $length, YANA_ESCAPE_USERTEXT);
+                    return \Yana\Io\StringValidator::sanitize($value, $length, \Yana\Io\StringValidator::USERTEXT);
                 }
             break;
             case 'time':

@@ -631,7 +631,7 @@ class SmartUtility extends Utility
                             $mailHref = strip_tags($mailHref);
                             $mailHref = preg_replace('/ ?(\[wbr\]|\[br\])/', '', $mailHref);
                             $mailHref = preg_replace('/^mailto:/i', '', $mailHref);
-                            $mailHref = untaintInput($mailHref, 'mail');
+                            $mailHref = filter_var($mailHref, FILTER_SANITIZE_EMAIL);
                             $mailHref = htmlspecialchars($mailHref, ENT_COMPAT, 'UTF-8');
                             if (!empty($mailHref)) {
                                 $txt = str_replace(
@@ -703,13 +703,12 @@ class SmartUtility extends Utility
                              */
                             $uriHref = strip_tags($uriHref);
                             $uriHref = preg_replace('/ ?(\[wbr\]|\[br\])/', '', $uriHref);
-                            $uriHref = untaintInput($uriHref, 'url');
+                            $uriHref = filter_var($uriHref, FILTER_SANITIZE_URL);
                             $uriHref = htmlspecialchars($uriHref, ENT_COMPAT, 'UTF-8');
-                            $pattern = '/^(https?:\/\/|ftp:\/\/)/';
-                            if (!preg_match($pattern, $uriHref) && preg_match('/^[^:]+:/', $uriHref)) {
-                                $uriHref = '';
-                            } elseif (!preg_match('/^[^:]+:/', $uriHref)) {
+                            if (!preg_match('/^[^:]+:/', $uriHref)) {
                                 $uriHref = 'http://'.$uriHref;
+                            } elseif (!preg_match('/^(https?:\/\/|ftp:\/\/)/', $uriHref)) {
+                                $uriHref = '';
                             }
                             if (!empty($uriHref)) {
                                 $replace = '<a href="' . $uriHref . '" target="_blank">' . $uriText . '</a>';

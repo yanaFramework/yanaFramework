@@ -544,6 +544,7 @@ class SmartTemplate extends Object
      *
      * @access  public
      * @param   string  $filename  name of the template file
+     * @return  SmartTemplate
      * @throws  InvalidArgumentException when the filename is invalid
      */
     public function setPath($filename)
@@ -554,6 +555,7 @@ class SmartTemplate extends Object
             throw new InvalidArgumentException("Access denied for file '$filename'.");
         }
         $this->localSmarty->template_resource = "$filename";
+        return $this;
     }
 
     /**
@@ -639,6 +641,7 @@ class SmartTemplate extends Object
      * @access  public
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
+     * @return  SmartTemplate
      */
     public function setFunction($name, $code)
     {
@@ -647,6 +650,7 @@ class SmartTemplate extends Object
 
         $smarty = self::getGlobalSmarty();
         $smarty->registered_plugins[Smarty::PLUGIN_FUNCTION][$name] = array($code, true);
+        return $this;
     }
 
     /**
@@ -662,6 +666,7 @@ class SmartTemplate extends Object
      * @access  public
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
+     * @return  SmartTemplate
      */
     public function setModifier($name, $code)
     {
@@ -670,6 +675,7 @@ class SmartTemplate extends Object
 
         $smarty = self::getGlobalSmarty();
         $smarty->registered_plugins[Smarty::PLUGIN_MODIFIER][$name] = array($code, true);
+        return $this;
     }
 
     /**
@@ -685,6 +691,7 @@ class SmartTemplate extends Object
      * @access  public
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
+     * @return  SmartTemplate
      */
     public function setBlockFunction($name, $code)
     {
@@ -693,6 +700,7 @@ class SmartTemplate extends Object
 
         $smarty = self::getGlobalSmarty();
         $smarty->registered_plugins[Smarty::PLUGIN_BLOCK][$name] = array($code, true);
+        return $this;
     }
 
     /**

@@ -558,7 +558,7 @@ class FormFieldHtmlBuilder extends Object
      */
     public function buildFileDownload($filename, $downloadAction)
     {
-        if (empty($filename) || empty($downloadAction)) {
+        if (empty($filename) || !is_string($filename) || empty($downloadAction)) {
             return '<span class="icon_blank">&nbsp;</span>';
         } else {
             assert('is_string($filename); // Invalid argument $filename: string expected');
@@ -584,6 +584,8 @@ class FormFieldHtmlBuilder extends Object
         if (empty($filename) || empty($downloadAction)) {
             return '<span class="icon_blank">&nbsp;</span>';
         } else {
+            assert('is_string($filename); // Invalid argument $filename: string expected');
+            assert('is_string($downloadAction); // Invalid argument $downloadAction: string expected');
             $fileId = DbBlob::storeFilenameInSession($filename);
             return '<a href=' .
                 SmartUtility::href("action={$downloadAction}&target={$fileId}&fullsize=true") .

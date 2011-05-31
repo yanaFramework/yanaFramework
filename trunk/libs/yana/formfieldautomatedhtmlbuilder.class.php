@@ -181,6 +181,9 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                 $result .= '</div>';
                 return $result;
             case 'image':
+                if (!is_string($value)) {
+                    $value = "";
+                }
                 $result = '<div class="gui_generator_image">';
                 $result .= $this->buildImageDownload($value, $setup->getDownloadAction());
                 $hasDelete = !empty($value) && $column->isNullable();
@@ -337,6 +340,9 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                 }
                 return $this->buildDiv($value);
             case 'image':
+                if (!is_string($value)) {
+                    $value = "";
+                }
                 $this->setCssClass('gui_generator_image');
                 return $this->buildDiv($this->buildImageDownload($value, $setup->getDownloadAction()));
             case 'enum':

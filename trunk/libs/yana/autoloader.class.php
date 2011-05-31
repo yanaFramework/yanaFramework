@@ -69,6 +69,7 @@ class AutoLoader extends Utility
             return;
             default:
                 $path = str_replace(array('_', '\\'), '/', $className);
+                $path = preg_replace('/^\/?yana\//', '', $path);
                 $path .= '.class.php';
             break;
         }

@@ -36,46 +36,96 @@ class Mailer extends SmartTemplate
 {
 
     /**
-     * handler function to send mail
+     * Handler function to send mail.
      *
      * @access  private
      * @var     mixed
      */
-    private $mailHandler = null;
+    private $_mailHandler = null;
 
     /**
-     * global handler function to send mail
+     * Global handler function to send mail.
      *
      * @access  private
      * @static
      * @var     mixed
      */
-    private static $globalMailHandler = "mb_send_mail";
+    private static $_globalMailHandler = "mb_send_mail";
 
     /**
-     * subject line of mail to be send
+     * Subject line of mail to be send.
      *
-     * @access  public
+     * @access  private
      * @var     string
      */
-    public $subject = "";
+    private $_subject = "";
 
     /**
-     * sender of mail to be send
+     * Sender of mail to be send.
+     *
+     * Be warned that some e-mail providers may check
+     * if the address given here exists and will
+     * not deliver any e-mail in case it doesn't.
+     *
+     * @access  private
+     * @var     string
+     */
+    private $_sender  = "";
+
+    /**
+     * Get subject line.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getSubject()
+    {
+        return $this->_subject;
+    }
+
+    /**
+     * Set subject line.
+     *
+     * @access  public
+     * @param   string  $subject  single-line of text
+     * @return  Mailer
+     */
+    public function setSubject($subject)
+    {
+        $this->_subject = $subject;
+        return $this;
+    }
+
+    /**
+     * Get sender of mail.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getSender()
+    {
+        return $this->_sender;
+    }
+
+    /**
+     * Set sender of mail.
      *
      * Be warned that some e-mail providers may check
      * if the address given here exists and will
      * not deliver any e-mail in case it doesn't.
      *
      * @access  public
-     * @var     string
+     * @param   string  $sender  e-mail address
+     * @return  Mailer
      */
-    public $sender  = "";
-
-    /**#@-*/
+    public function setSender($sender)
+    {
+        $this->_sender = $sender;
+        return $this;
+    }
 
     /**
-     * send an e.mail
+     * Send an e.mail.
      *
      * This function sends an e.mail with the currently set subject
      * and content to the recipient you provide.
@@ -89,8 +139,8 @@ class Mailer extends SmartTemplate
      */
     public function send($recipient)
     {
-        assert('is_string($this->subject); // Invalid property "subject". String expected');
-        assert('is_string($this->sender); // Invalid property "sender". String expected');
+        assert('is_string($this->_subject); // Invalid property "subject". String expected');
+        assert('is_string($this->_sender); // Invalid property "sender". String expected');
         assert('is_string($recipient); // Wrong type for argument 1. String expected');
 
         /* Why do we replace the default modifiers?
@@ -103,15 +153,15 @@ class Mailer extends SmartTemplate
         $smarty->default_modifiers = array('replaceToken');
 
         /* prepare header */
-        if (!empty($this->sender)) {
+        if (!empty($this->_sender)) {
             $header = array();
-            $header['from']        = $this->sender;
-            $header['return-path'] = $this->sender;
+            $header['from']        = $this->_sender;
+            $header['return-path'] = $this->_sender;
         } else {
             $header = array();
         }
         $content = preg_replace("/<br ?\/?>/", "\n", $this->toString());
-        return Mailer::mail($recipient, "[MAILFORM] " . $this->subject, $content, $header, $this->mailHandler);
+        return Mailer::mail($recipient, "[MAILFORM] " . $this->_subject, $content, $header, $this->_mailHandler);
     }
 
     /**
@@ -136,7 +186,7 @@ class Mailer extends SmartTemplate
     public static function setGlobalMailHandler($function)
     {
         if (is_callable($function)) {
-            self::$globalMailHandler = $function;
+            self::$_globalMailHandler = $function;
         } else {
             throw new InvalidArgumentException("The argument '" .
                 print_r($function, true) . "' is not a callable mail handler.",
@@ -165,8 +215,8 @@ class Mailer extends SmartTemplate
      */
     public static function getGlobalMailHandler()
     {
-        assert('is_callable(self::$globalMailHandler); // Unexpected value. mailHandler should be callable');
-        return self::$globalMailHandler;
+        assert('is_callable(self::$_globalMailHandler); // Unexpected value. mailHandler should be callable');
+        return self::$_globalMailHandler;
     }
 
     /**
@@ -187,7 +237,7 @@ class Mailer extends SmartTemplate
     public function setMailHandler($function)
     {
         if (is_callable($function)) {
-            $this->mailHandler = $function;
+            $this->_mailHandler = $function;
         } else {
             throw new InvalidArgumentException("The argument '" .
                 print_r($function, true) . "' is not a callable mail handler.",
@@ -215,8 +265,8 @@ class Mailer extends SmartTemplate
      */
     public function getMailHandler()
     {
-        if (is_callable($this->mailHandler)) {
-            return $this->mailHandler;
+        if (is_callable($this->_mailHandler)) {
+            return $this->_mailHandler;
         } else {
             return self::getGlobalMailHandler();
         }
@@ -315,16 +365,15 @@ class Mailer extends SmartTemplate
     public static function mail($recipient, $subject, $text, array $header = array(), $mailHandler = null)
     {
         if (is_null($mailHandler)) {
-            $mailHandler = self::$globalMailHandler;
+            $mailHandler = self::$_globalMailHandler;
         }
         assert('is_string($recipient); // Wrong type for argument 1. String expected');
         assert('is_string($subject); // Wrong type for argument 2. String expected');
         assert('is_string($text); // Wrong type for argument 3. String expected');
         assert('is_callable($mailHandler); // Wrong type for argument 5. Function expected');
 
-        $recipient = untaintInput($recipient, 'mail');
-        $subject = strip_tags(untaintInput($subject, "string", 128, YANA_ESCAPE_LINEBREAK));
-        $text = untaintInput($text, "text");
+        $recipient = filter_var($recipient, FILTER_SANITIZE_EMAIL);
+        $subject = strip_tags(\Yana\Io\StringValidator::sanitize($subject, 128, \Yana\Io\StringValidator::LINEBREAK));
         assert('is_string($text); // Unexpected result: $text. String expected.');
 
         /* settype to ARRAY */
@@ -352,7 +401,7 @@ class Mailer extends SmartTemplate
             foreach ($header as $key => $value)
             {
                 if (preg_match('/^[a-z\d-]+$/', $key) && !preg_match('/[\r\n]/', $value)) {
-                    $value = untaintInput($value, "string", 128, YANA_ESCAPE_LINEBREAK);
+                    $value = \Yana\Io\StringValidator::sanitize($value, 128, \Yana\Io\StringValidator::LINEBREAK);
                     if (!empty($value)) {
                         switch ($key) {
                             case 'cc':
@@ -361,8 +410,7 @@ class Mailer extends SmartTemplate
                                     assert('!isset($a_value); /* cannot redeclare variable $a_value */');
                                     foreach ($value as $a_key => $a_value)
                                     {
-                                        $a_value = untaintInput($a_value, "mail");
-                                        if (!empty($a_value)) {
+                                        if (filter_var($a_value, FILTER_VALIDATE_EMAIL)) {
                                             if (empty($untainted_header['cc'])) {
                                                 $untainted_header['cc']  = "$a_value";
                                             } else {
@@ -371,11 +419,8 @@ class Mailer extends SmartTemplate
                                         }
                                     } /* end foreach */
                                     unset($a_key, $a_value);
-                                } else {
-                                    $value = untaintInput($value, "mail");
-                                    if (!empty($value)) {
-                                        $untainted_header['cc'] = "$value";
-                                    }
+                                } elseif (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                                    $untainted_header['cc'] = "$value";
                                 }
                             break;
                             case 'bcc':
@@ -384,14 +429,12 @@ class Mailer extends SmartTemplate
                                 $untainted_header['x-yana-php-spam-protection'] = $spamProtection;
                             break;
                             case 'return-path':
-                                $value = untaintInput($value, "mail");
-                                if (!empty($value)) {
+                                if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
                                     $untainted_header['return-path'] = "$value";
                                 }
                             break;
                             case 'from':
-                                $value = untaintInput($value, "mail");
-                                if (!empty($value)) {
+                                if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
                                     $untainted_header['from'] = "$value";
                                 }
                             break;
@@ -445,7 +488,7 @@ class Mailer extends SmartTemplate
         }
         unset($key,$value);
 
-        $text = preg_replace('/@/', '[at]', $text);
+        $text = preg_replace('/@/', '[at]', "$text");
 
         if (preg_match('/^text\/plain/i', $untainted_header['content-type'])) {
             $text = wordwrap($text, 70);

@@ -1537,9 +1537,9 @@ final class Yana extends Singleton implements IsReportable
 
             if (!empty($logMail)) {
                 $mail = new FormMailer();
-                $mail->content = $db->select('log', array(), array('LOG_ID'));
-                $mail->subject = 'JOURNAL';
-                $mail->send($logMail);
+                $mail->setContent($db->select('log', array(), array('LOG_ID')))
+                    ->setSubject('JOURNAL')
+                    ->send($logMail);
                 unset($mail);
             }
             unset($logMail);

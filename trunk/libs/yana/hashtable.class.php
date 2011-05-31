@@ -25,6 +25,13 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+if (!defined('CASE_MIXED')) {
+    /**
+     * @ignore
+     */
+    define('CASE_MIXED', -1);
+}
+
 /**
  * <<utility>> Hashtable
  *

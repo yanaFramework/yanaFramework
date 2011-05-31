@@ -37,18 +37,17 @@ require_once dirname(__FILE__) . '/include.php';
  */
 class MailerTest extends PHPUnit_Framework_TestCase
 {
+
     /**
      * @var    Mailer
      * @access protected
      */
     protected $mailer;
-
     /**
      * @var    string
      * @access protected
      */
     protected $backupMailHandler;
-
     /**
      * @var    array
      * @access protected
@@ -74,13 +73,9 @@ class MailerTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
-        global $YANA;
-        if (!isset($YANA)) {
-            $YANA = Yana::getInstance();
-        }
-        $this->mailer = new Mailer(CWD.'resources/mail.tpl');
-        $this->mailer->sender = 'qwerty@domain.tld';
-        $this->mailer->subject = 'unit test';
+        $this->mailer = new Mailer(CWD . 'resources/mail.tpl');
+        $this->mailer->setSender('qwerty@domain.tld');
+        $this->mailer->setSubject('unit test');
         $this->backupMailHandler = Mailer::getGlobalMailHandler();
         Mailer::setGlobalMailHandler(array($this, 'sendMail'));
     }
@@ -118,8 +113,6 @@ class MailerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Send
-     *
      * @test
      */
     public function testSend()
@@ -143,8 +136,6 @@ class MailerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * setGlobalMailHandler Exception
-     *
      * @expectedException InvalidArgumentException
      * @test
      */
@@ -154,8 +145,6 @@ class MailerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * set Mail Handler Exception
-     *
      * @expectedException InvalidArgumentException
      * @test
      */
@@ -165,13 +154,11 @@ class MailerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Mail
-     *
      * @test
      */
     public function testMail()
     {
-        $subject = $this->mailer->subject;
+        $subject = $this->mailer->getSubject();
         $recipient = 'mail@domain.tld';
         $text = 'qwerty qwerty qwerty qwerty qwerty'."\n".
                 'ytrewq ytrewq ytrewq ytrewq ytrewq';
@@ -198,5 +185,7 @@ class MailerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($result[0] instanceof MailerTest, 'assert failed , value should be an instance of MailerTest');
         $this->assertTrue($result[1] == 'sendMail', 'assert failed, the variables should be equal');
     }
+
 }
+
 ?>
