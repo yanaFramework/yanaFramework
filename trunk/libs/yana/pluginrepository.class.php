@@ -153,11 +153,12 @@ class PluginRepository extends Object
      * Otherwise it returns a list of items of {@see PluginPriorityEnumeration}.
      *
      * @access  public
-     * @param   $methodName  name of the event to check for
+     * @param   string $methodName  name of the event to check for
      * @return  array
      */
     public function getImplementations($methodName)
     {
+        assert('is_string($methodName); // Invalid argument $methodName: string expected');
         return (isset($this->_implementations[$methodName])) ? $this->_implementations[$methodName] : array();
     }
 
