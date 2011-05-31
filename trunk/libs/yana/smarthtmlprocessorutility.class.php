@@ -266,13 +266,6 @@ class SmartHtmlProcessorUtility extends Utility
              * remove empty comments
              */
             $source = preg_replace('/\s*<\!--\s*-->\s*/s', '', $source);
-
-            /*
-             * convert [br] tags in textareas to new-line
-             */
-            $pattern = "/(<textarea [^>]*>[^<]*)\[br\]([^<]*<\/textarea>)/Usi";
-
-            $source = preg_replace($pattern, '${1}' . "\n" . '${2}', $source);
         } // end if
 
         $source = Language::getInstance()->replaceToken($source);
