@@ -20,8 +20,7 @@
                                  <span class="gui_generator_mandatory" title="{lang id="MANDATORY"}">*</span>
                             {/if}
                             {if $form->hasRows() && $form->getEntriesPerPage() > 1 && $field->refersToTable()}
-                                {assign var="url" value="action=$ACTION&$formName"|cat:"[orderby]={$field->getName()}&$formName"|cat:"[desc]"}
-                                <a title='{lang id="ORDER.BY"} &quot;{$field->getTitle()}&quot;' href={"$url=0"|href}>
+                                <a title='{lang id="ORDER.BY"} &quot;{$field->getTitle()}&quot;' href={"action=$ACTION&{$formName}[orderby]={$field->getName()}&{$formName}[desc]=0"|href}>
                                     {$field->getTitle()}
                                 </a>
                             {else}
