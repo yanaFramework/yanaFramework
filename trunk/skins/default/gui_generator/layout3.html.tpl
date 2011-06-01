@@ -17,8 +17,8 @@
                             <span class="{$field->getCssClass()}">
                                 <span class="gui_generator_list_title">
                                     {if $form->hasRows() && $form->getEntriesPerPage() > 1 && $field->refersToTable()}
-                                        {assign var="url" value="action=$ACTION&{$formName}[orderby]={$field->getName()}&{$formName}[desc]"}
-                                        <a title='{lang id="ORDER.BY"} &quot;{$field->getTitle()}&quot;' href={"$url=0"|href}>
+                                        <a title='{lang id="ORDER.BY"} &quot;{$field->getTitle()}&quot;'
+                                           href={"action=$ACTION&{$formName}[orderby]={$field->getName()}&{$formName}[desc]=0"|href}>
                                             {$field->getTitle()}
                                         </a>
                                     {else}
@@ -34,7 +34,7 @@
                     {if $form->hasRows() && $form->isDeletable() && $deleteAction}
                         <a class="buttonize gui_generator_delete" title='{lang id="delete"}'
                            onclick="return confirm('{lang id="prompt_delete"}')"
-                           href={"action=$deleteAction&selected_entries[]="|cat:$form->getPrimaryKey()|href}>
+                           href={"action=$deleteAction&selected_entries[]={$form->getPrimaryKey()}"|href}>
                             <span class="icon_delete">&nbsp;</span>
                         </a>
                     {/if}

@@ -8,7 +8,7 @@
                 {if $form->isDeletable() && $deleteAction}
                     <a class="gui_generator_delete buttonize"
                        onclick="return confirm('{lang id="prompt_delete"}')"
-                       href={"action=$deleteAction&selected_entries[]="|cat:$form->getPrimaryKey()|href}>
+                       href={"action=$deleteAction&selected_entries[]={$form->getPrimaryKey()}"|href}>
                         <span class="icon_delete">&nbsp;</span>
                     </a>
                 {/if}
@@ -40,8 +40,8 @@
                         {/if}-->
 
                         {if $form->hasRows() && $form->getEntriesPerPage() > 1 && $field->refersToTable()}
-                            {assign var="url" value="action=$ACTION&$formName"|cat:"[orderby]={$field->getName()}&$formName"|cat:"[desc]"}
-                            <a href={"$url=0"|href} class="gui_generator_sort" title='{lang id="ORDER.ASCENDING"}'>
+                            <a href={"action=$ACTION&{$formName}[orderby]={$field->getName()}&{$formName}[desc]=0"|href}
+                               class="gui_generator_sort" title='{lang id="ORDER.ASCENDING"}'>
                                 {if $field->getName() == $form->getOrderByField() && !$form->isDescending()}
                                     <span class="icon_arrowup_hover">&nbsp;</span>
                                 {else}

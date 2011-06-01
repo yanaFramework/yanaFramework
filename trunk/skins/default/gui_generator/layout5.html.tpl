@@ -17,7 +17,8 @@
                     {/foreach}
                 </div>
             </div>
-            <span {if $deleteAction}onclick="if (confirm('{lang id="prompt_delete"}')) document.location.href = '{"action=$deleteAction&selected_entries[]={$form->getPrimaryKey()}"|url}'"{/if} title='{lang id="delete"}' class="gui_generator_delete delete"></span>
+            <span {if $deleteAction}onclick="if (confirm('{lang id="prompt_delete"}')) document.location.href = '{"action=$deleteAction&selected_entries[]={$form->getPrimaryKey()}"|url}'"{/if}
+                title='{lang id="delete"}' class="gui_generator_delete delete"></span>
         </div>
         {if $form->hasRows()}
             {$form->nextRow()}
