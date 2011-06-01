@@ -97,48 +97,62 @@ final class Yana extends Singleton implements IsReportable
      */
     protected $_isSafeMode = null;
 
-    /**#@+
-     * This variable is <<readonly>>
-     * @access  public
-     */
-
     /**
      * to communicate with plugins
-     * @var PluginManager
+     *
+     * @access  private
+     * @var     PluginManager
      */
     private $_plugins = null;
 
     /**
      * to load language strings
-     * @var Language
+     *
+     * @access  private
+     * @var     Language
      */
     private $_language = null;
 
     /**
      * to load skins and templates
-     * @var Skin
+     *
+     * @access  private
+     * @var     Skin
      */
     private $_skin = null;
 
     /**
      * to read and write data to the global registry
-     * @var Registry
+     *
+     * @access  private
+     * @var     Registry
      */
     private $_registry = null;
 
     /**
      * to read and write user data and permissions
-     * @var SessionManager
+     *
+     * @access  private
+     * @var     SessionManager
      */
     private $_session = null;
 
     /**
      * the currently selected template
-     * @var SmartView
+     *
+     * @access  private
+     * @var     SmartView
      */
     private $_view = null;
 
-    /**#@-*/
+    /**
+     * caches database connections
+     *
+     * @access  private
+     * @static
+     * @var     DbStream[]
+     */
+    private static $_connections = array();
 
     /**
      * get instance of this class
@@ -1219,11 +1233,33 @@ final class Yana extends Singleton implements IsReportable
      */
     public static function connect($schema)
     {
-        if (YANA_DATABASE_ACTIVE) {
-            return new DbStream($schema);
-        } else {
-            return new FileDb($schema);
+        $connection = null;
+
+        $schemaName = "";
+        if (is_string($schema)) {
+            $schemaName = strtolower($schema);
+            if (isset(self::$_connections[$schemaName])) {
+                return self::$_connections[$schemaName];
+            }
+            if (YANA_CACHE_ACTIVE === true) {
+                $cacheFile = self::$_config['TEMPDIR'] . 'ddl_' . $schemaName . '.tmp';
+                if (is_file($cacheFile)) {
+                    $schema = unserialize(file_get_contents($cacheFile));
+                } else {
+                    $schema = XDDL::getDatabase($schema);
+                    file_put_contents($cacheFile, serialize($schema));
+                }
+            }
         }
+        if (YANA_DATABASE_ACTIVE) {
+            $connection = new DbStream($schema);
+        } else {
+            $connection = new FileDb($schema);
+        }
+        if (!empty($schemaName)) {
+            self::$_connections[$schemaName] = $connection;
+        }
+        return $connection;
     }
 
     /**
