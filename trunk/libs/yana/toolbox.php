@@ -146,7 +146,6 @@ function dirlist($dir, $filter = "", $switch = YANA_GET_ALL)
     assert('is_string($filter); /* Wrong argument type for argument 2. String expected. */');
     assert('$switch === YANA_GET_ALL || $switch === YANA_GET_DIRS  || $switch === YANA_GET_FILES; /* '.
         'Invalid value for argument 3. */');
-    /* settype to STRING */
     $dir = (string) $dir;
     $filter = (string) $filter;
 
@@ -165,7 +164,7 @@ function dirlist($dir, $filter = "", $switch = YANA_GET_ALL)
             if ($tok !== false) {
                 $filter .= "|";
             }
-        } /* end while */
+        }
         unset($tok);
     } else {
         $filter = preg_replace("/[^\.\-\_\w\d]/", "", $filter);
@@ -173,36 +172,39 @@ function dirlist($dir, $filter = "", $switch = YANA_GET_ALL)
     }
 
     /* read contents from directory */
+    $dirlist = array();
     if (is_dir($dir)) {
-        assert('!isset($dirlist); /* cannot redeclare variable $dirlist */');
-        assert('!isset($d);       /* cannot redeclare variable $d       */');
-        assert('!isset($entry);   /* cannot redeclare variable $entry   */');
-        $dirlist = array();
-        $d = dir($dir);
-        while($entry = $d->read())
+        $dirHandle = dir($dir);
+        while($entry = $dirHandle->read())
         {
-            if (!preg_match('/^\.{1,2}/', $entry) && ($filter === false || preg_match("/(?:{$filter})$/i", $entry))) {
+            if ($entry[0] !== '.' && ($filter === false || preg_match("/(?:{$filter})$/i", $entry))) {
                 assert('is_array($dirlist); /* Invariant condition failed: $dirlist is not an array. */');
-                if ($switch === YANA_GET_ALL) {
-                    $dirlist[] = $entry;
-                } elseif ($switch === YANA_GET_DIRS && is_dir($dir.$entry)) {
-                    $dirlist[] = $entry;
-                } elseif ($switch === YANA_GET_FILES && is_file($dir.$entry)) {
-                    $dirlist[] = $entry;
-                } else {
-                    continue;
+                switch ($switch)
+                {
+                    case YANA_GET_ALL:
+                        $dirlist[] = $entry;
+                    break;
+                    case YANA_GET_DIRS:
+                        if (is_dir($dir.$entry)) {
+                            $dirlist[] = $entry;
+                        }
+                    break;
+                    case YANA_GET_FILES:
+                        if (is_file($dir.$entry)) {
+                            $dirlist[] = $entry;
+                        }
+                    break;
                 }
             }
-        } /* end while */
+        } // end while
         unset($entry);
-        $d->close();
+        $dirHandle->close();
         sort($dirlist);
         assert('is_array($dirlist); /* Unexpected result: $dirlist is not an array. */');
-        return $dirlist;
     } else {
         trigger_error("The directory '{$dir}' does not exist.", E_USER_NOTICE);
-        return array();
     }
+    return $dirlist;
 
 }
 
