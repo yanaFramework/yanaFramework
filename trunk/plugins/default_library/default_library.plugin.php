@@ -323,24 +323,11 @@ class plugin_default_library extends StdClass implements IsPlugin
      * Shows a color-picker.
      *
      * @type        primary
-     * @template    colorpicker
+     * @template    COLORPICKER_CONTENT
      *
      * @access      public
      */
     public function colorpicker()
-    {
-        // Just views template - no business logic required.
-    }
-
-    /**
-     * Shows a map of several color value.
-     *
-     * @type        primary
-     * @template    colormap
-     *
-     * @access      public
-     */
-    public function colormap()
     {
         // Just views template - no business logic required.
     }
