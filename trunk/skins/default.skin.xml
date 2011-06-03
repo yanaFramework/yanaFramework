@@ -40,15 +40,6 @@
         <template id="STDOUT" file="default/stdout.html.tpl">
             <style id="stdout">default/styles/stdout.css</style>
         </template>
-        <template id="COLORPICKER" file="default/color/index.html.tpl">
-            <style>default/color/default.css</style>
-            <script>default/color/program.js</script>
-            <language id="color">color</language>
-        </template>
-        <template id="COLORMAP" file="default/color/map.html.tpl">
-            <style>default/color/default.css</style>
-            <language id="color">color</language>
-        </template>
         <template id="INDEX" file="default/index.html.tpl">
             <style id="default">default/styles/default.css</style>
             <style id="btn">default/styles/btn.css</style>
@@ -302,10 +293,14 @@
             <language>admin</language>
             <style>default/styles/admin.css</style>
         </template>
-        <template id="COLORPICKERHOVER_TEMPLATE" file="default/color/colorpickerhover.html.tpl">
+        <template id="COLORPICKER" file="default/color/colorpicker.html.tpl">
             <language>admin</language>
-            <script>default/scripts/jquery/jquery-1.6.1.min.js</script>
-            <script>default/color/program.js</script>
+            <script>default/color/colorpicker.js</script>
+        </template>
+        <template id="COLORPICKER_CONTENT" file="default/color/index.html.tpl">
+            <style>default/color/colorpicker.css</style>
+            <script>default/color/colorpicker.js</script>
+            <language id="color">color</language>
         </template>
         <template id="ABOUT_TEMPLATE" file="default/configuration/about.html.tpl">
             <language>admin</language>
