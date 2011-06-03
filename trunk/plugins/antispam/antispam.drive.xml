@@ -6,7 +6,7 @@
 	This file contains a list of mount points for a virtual drive!
 	The contained entries may not be changed at any case.
 -->
-<drive name="lib">
+<drive name="antispam">
     <file name="security.datfile">
    		<source>{$TEMPDIR}security_image.tmp</source>
     	<requirements writeable="yes"/>
