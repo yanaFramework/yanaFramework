@@ -294,13 +294,10 @@
             <style>default/styles/admin.css</style>
         </template>
         <template id="COLORPICKER" file="default/color/colorpicker.html.tpl">
-            <language>admin</language>
             <script>default/color/colorpicker.js</script>
         </template>
         <template id="COLORPICKER_CONTENT" file="default/color/index.html.tpl">
-            <style>default/color/colorpicker.css</style>
             <script>default/color/colorpicker.js</script>
-            <language id="color">color</language>
         </template>
         <template id="ABOUT_TEMPLATE" file="default/configuration/about.html.tpl">
             <language>admin</language>
