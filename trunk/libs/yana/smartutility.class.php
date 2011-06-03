@@ -1914,7 +1914,7 @@ class SmartUtility extends Utility
      */
     public static function colorpicker(array $params)
     {
-        $document = new SmartTemplate("id:colorpickerhover_template");
+        $document = new SmartTemplate("id:colorpicker");
         if (isset($params['id'])) {
             $document->setVar('target', $params['id']);
         }
