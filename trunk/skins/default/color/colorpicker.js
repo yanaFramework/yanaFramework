@@ -67,7 +67,7 @@ function pickColor(event)
     hue_old = hue; sat_old = sat; light_old = light;
 
     calcColor();
-    fixColor();
+    calcHex();
 }
 
 function pickSw(event)
@@ -82,7 +82,7 @@ function pickSw(event)
     hue_old = hue; sat_old = sat; light_old = light;
 
     calcColor();
-    fixColor();
+    calcHex();
 }
 
 function calcColor()
@@ -165,31 +165,16 @@ function showColor()
 
     var disp = document.getElementById('color');
     disp.style.backgroundColor = "#"+redHex+greenHex+blueHex;
-
-    disp = document.getElementById('hex_new');
     txt = hexstring;
     txt = txt.replace(/%REDHEX%/i, redHex);
     txt = txt.replace(/%GREENHEX%/i, greenHex);
     txt = txt.replace(/%BLUEHEX%/i, blueHex);
-
     disp.innerHTML=txt;
-}
-
-function fixColor()
-{
-    calcHex();
-
-    var preview = document.getElementById('color_preview');
-
-    preview.style.backgroundColor = "#"+redHex+greenHex+blueHex;
-
-    preview = document.getElementById('hex_old');
-    var txt = hexstring;
-    txt = txt.replace(/%REDHEX%/i, redHex);
-    txt = txt.replace(/%GREENHEX%/i, greenHex);
-    txt = txt.replace(/%BLUEHEX%/i, blueHex);
-
-    preview.innerHTML=txt;
+    if (light > 50) {
+        disp.style.color = '#000000';
+    } else {
+        disp.style.color = '#FFFFFF';
+    }
 }
 
 function resetColor()
@@ -231,12 +216,12 @@ function showColorPicker(e, elemName)
         o.style.position = 'absolute';
         o.style.left = left + 'px';
         o.style.top = (top - 50) + 'px';
-        o.style.width = '450px';
+        o.style.width = '300px';
         o.style.display = 'block';
     } else {
         o.style.display = 'none';
     }
-    fixColor();
+    calcHex();
 }
 /**
  * @author Mathias Weitz
