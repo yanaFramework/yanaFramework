@@ -172,7 +172,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         $permission = $YANA->getVar("PERMISSION");
         /* avoid spamming */
         if (!is_int($permission) || $permission < 1) {
-            if ($YANA->getVar("PROFILE.SPAM.CAPTCHA") === true) {
+            if (PluginManager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
                 if ($YANA->callAction("security_check_image", Request::getPost()) === false) {
                     Log::report('SPAM: CAPTCHA not solved, entry has not been created.');
                     throw new SpamError();
@@ -362,7 +362,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         $permission = $YANA->getVar("PERMISSION");
         /* avoid spamming */
         if (!is_int($permission) || $permission < 1) {
-            if ($YANA->getVar("PROFILE.SPAM.CAPTCHA") === true) {
+            if (PluginManager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
                 if ($YANA->callAction("security_check_image", Request::getPost()) === false) {
                     Log::report('SPAM: CAPTCHA not solved, entry has not been created.');
                     throw new SpamError();

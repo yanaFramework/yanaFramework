@@ -225,9 +225,11 @@ class plugin_user extends StdClass implements IsPlugin
         $sessionManager = SessionManager::getInstance();
         $database = SessionManager::getDatasource();
         // check captcha field
-        if ($YANA->callAction("security_check_image", $ARGS) === false) {
-            Log::report('SPAM: CAPTCHA not solved, entry has not been created.');
-            return false;
+        if (PluginManager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
+            if ($YANA->callAction("security_check_image", $ARGS) === false) {
+                Log::report('SPAM: CAPTCHA not solved, entry has not been created.');
+                return false;
+            }
         }
 
         $userMail = mb_strtolower($ARGS['user']);
