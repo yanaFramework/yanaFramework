@@ -123,27 +123,6 @@ class plugin_mediagallery extends StdClass implements IsPlugin
         Yana::getInstance()->setVar('gallery', $gallery);
     }
 
-    /**
-     * Download a file.
-     *
-     * This function will automatically determine the requested resource. It will
-     * check whether it is of type "image" or "file" and handle the request
-     * accordingly. This means it will be sending appropriate headers,
-     * retrieving and outputting the contents of the resource and terminating
-     * the program.
-     *
-     * @access  public
-     * @param   int   $target    image identifier
-     * @param   bool  $fullsize  show fullsize image (or preview?)
-     * @throws  FileNotFoundError
-     */
-    public function mediagalleryDownloadFile($target, $fullsize = false)
-    {
-        include_once dirname(__FILE__) . '/../default_library/default_library.plugin.php';
-        $plugin = new plugin_default_library();
-        $plugin->download_file($target, $fullsize);
-    }
-
 }
 
 ?>
