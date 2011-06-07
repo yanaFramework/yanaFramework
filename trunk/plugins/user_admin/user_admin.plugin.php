@@ -72,7 +72,7 @@ class plugin_user_admin extends StdClass implements IsPlugin
     protected static function getAccessForm()
     {
         $builder = new FormBuilder('user_admin');
-        return $builder->setId('securityrules')->__invoke();
+        return self::getUserForm()->getForm('securityrules');
     }
 
     /**
@@ -324,8 +324,8 @@ class plugin_user_admin extends StdClass implements IsPlugin
      * @type        config
      * @user        group: admin, level: 100
      * @template    message
-     * @onsuccess   goto: GET_ACCESS_LIST
-     * @onerror     goto: GET_ACCESS_LIST
+     * @onsuccess   goto: get_user_list
+     * @onerror     goto: get_user_list
      *
      * @access      public
      * @return      bool
@@ -345,8 +345,8 @@ class plugin_user_admin extends StdClass implements IsPlugin
      * @type        config
      * @user        group: admin, level: 100
      * @template    message
-     * @onsuccess   goto: GET_ACCESS_LIST
-     * @onerror     goto: GET_ACCESS_LIST
+     * @onsuccess   goto: get_user_list
+     * @onerror     goto: get_user_list
      *
      * @access      public
      * @return      bool
@@ -367,8 +367,8 @@ class plugin_user_admin extends StdClass implements IsPlugin
      * @type        config
      * @user        group: admin, level: 100
      * @template    message
-     * @onsuccess   goto: GET_ACCESS_LIST
-     * @onerror     goto: GET_ACCESS_LIST
+     * @onsuccess   goto: get_user_list
+     * @onerror     goto: get_user_list
      *
      * @access      public
      * @return      bool
