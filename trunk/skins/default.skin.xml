@@ -173,11 +173,6 @@
             <style>default/styles/config.css</style>
             <script>default/styles/dynamic-styles.js</script>
         </template>
-        <template id="SEARCH_START" file="default/search/index.html.tpl">
-            <language>search</language>
-            <style>default/styles/searchengine.css</style>
-            <script id="HITLIST">default/search/program.js</script>
-        </template>
         <template id="SEARCH_SETUP" file="default/search/setup.html.tpl">
             <language>search</language>
             <style>default/styles/config.css</style>
