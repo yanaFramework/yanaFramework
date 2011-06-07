@@ -73,22 +73,22 @@ class plugin_search extends StdClass implements IsPlugin
      * Show table of statistics
      *
      * @type        read
-     * @template    SEARCH_START
+     * @template    templates/index.html.tpl
+     * @style       templates/searchengine.css
+     * @script      templates/program.js
+     * @language    search
      *
      * @access      public
      */
-    public function search_stats ()
+    public function search_stats()
     {
-        global $YANA;
-
         if (class_exists('Microsummary')) {
             Microsummary::publishSummary(__CLASS__);
         }
-
-        $counter = new Counter(self::$name);
-        $numbers = $counter->get();
+        $numbers = Yana::connect('search')->select('searchstats');
         if (!empty($numbers)) {
             uasort($numbers, array($this, "_sortStatistics"));
+            global $YANA;
             $YANA->setVar("STATS", $numbers);
         }
     }
@@ -103,84 +103,87 @@ class plugin_search extends StdClass implements IsPlugin
      * </ul>
      *
      * @type        read
-     * @template    SEARCH_START
+     * @template    templates/index.html.tpl
+     * @style       templates/searchengine.css
+     * @script      templates/program.js
+     * @language    search
      * @menu        group: start
      *
      * @access      public
      * @param       string  $target  search term
      */
-    public function search_start($target)
+    public function search_start($target = "")
     {
         global $YANA;
+        $results = array();
+        if ($target) {
+            $this->searchString = preg_replace("/[^\s\w\däöüß&;]/ui", "", $target);
 
-        $this->searchString = preg_replace("/[^\s\w\däöüß&;]/ui", "", $target);
-
-        if (empty($this->searchString)) {
-            return;
-        }
-        assert('!isset($temp);');
-        $temp = explode(" ", mb_strtolower($this->searchString));
-        for ($i = 0; $i < count($temp); $i++)
-        {
-            /* update counter value */
-            assert('!isset($counter_id);');
-            assert('!isset($counter_info);');
-            assert('!isset($counter_value);');
-            $dummy = null;
-            $counter_id = self::_applyStemming($temp[$i], $dummy);
-            unset($dummy);
-            $counter_info = $temp[$i];
-            /* @var $statistics Counter */
-            $statistics = Counter::getInstance(self::$name . '/' . $counter_id);
-            $statistics->setInfo($counter_info);
-            $counter_value = $statistics->getNextValue();
-            /* update Microsummary */
-            if (class_exists('Microsummary')) {
-                assert('!isset($numbers);');
-                $numbers = $statistics->getCount();
-                if (is_array($numbers) && count($numbers) > 0) {
-                    $most_wanted = array_pop($numbers);
-                    if ($most_wanted <= $counter_value) {
+            if (empty($this->searchString)) {
+                return;
+            }
+            $db = Yana::connect('search');
+            assert('!isset($temp);');
+            $temp = explode(" ", mb_strtolower($this->searchString));
+            for ($i = 0; $i < count($temp); $i++)
+            {
+                /* update counter value */
+                assert('!isset($counterId);');
+                assert('!isset($counterInfo);');
+                assert('!isset($counterValue);');
+                assert('!isset($statistics);');
+                $dummy = null;
+                $counterId = self::_applyStemming($temp[$i], $dummy);
+                unset($dummy);
+                $counterInfo = $temp[$i];
+                $statistics = (array) $db->select("searchstats.$counterId");
+                $statistics['SEARCHTERM'] = $counterInfo;
+                $counterValue = @$statistics['SEARCHCOUNT']++;
+                /* update Microsummary */
+                if (class_exists('Microsummary')) {
+                    assert('!isset($mostWanted);');
+                    $mostWanted = $db->select("searchstats", array(), 'searchcount', 0, 1, true);
+                    if ($mostWanted <= $counterValue) {
                         Microsummary::setText(__CLASS__,
-                            'Search most wanted: '.$counter_info.'('.$counter_value.')');
+                            'Search most wanted: '.$counterInfo.'('.$counterValue.')');
+                    }
+                    unset($mostWanted);
+                }
+                $db->updateOrInsert("searchstats.$counterId", $statistics);
+                $db->commit();
+                unset($counterId, $counterInfo, $counterValue, $statistics);
+            } // end for
+            unset($temp, $db);
+
+            $hitlist = $this->_getFromCache($this->searchString);
+            if (empty($hitlist)) {
+                $hitlist = $this->_commit($this->searchString);
+            }
+
+            $YANA->setVar("SUBJECT", $this->searchString);
+            $target = $YANA->getVar("PROFILE.SEARCH.TARGET");
+            if (empty($target)) {
+                $target = "_self";
+            }
+            $prefix = $YANA->getVar("PROFILE.SEARCH.PREFIX");
+
+            for ($i = 0; $i < count($hitlist); $i++)
+            {
+                if (count($hitlist[$i]) > 0 && isset($hitlist[$i][0]) && $hitlist[$i][0] != "\n") {
+                    $subject = preg_replace("/^\n/u", "", $hitlist[$i][0]);
+                    $url = $prefix . htmlspecialchars(preg_replace("/^.\//u", "", $subject), ENT_COMPAT, 'UTF-8');
+                    if (!empty($hitlist[$i][1]) || !empty($hitlist[$i][2])) {
+                        $results[] = array(
+                            'URL' => $url,
+                            'TARGET' => $target,
+                            'TITLE' => @$hitlist[$i][1],
+                            'TEXT' => @$hitlist[$i][2]
+                        );
                     }
                 }
-                unset($numbers);
-            }
-            unset($counter_id,$counter_info,$counter_value);
-        } /* end for */
-        unset($temp);
-
-        $hitlist = $this->_getFromCache($this->searchString);
-        if (empty($hitlist)) {
-            $hitlist = $this->_commit($this->searchString);
+            } // end for
+            unset($i);
         }
-
-        $YANA->setVar("SUBJECT", $this->searchString);
-        $target = $YANA->getVar("PROFILE.SEARCH.TARGET");
-        if (empty($target)) {
-            $target = "_self";
-        }
-        $prefix = $YANA->getVar("PROFILE.SEARCH.PREFIX");
-
-        assert('!isset($results); // Cannot redeclare var $results');
-        $results = array();
-        for ($i = 0; $i < count($hitlist); $i++)
-        {
-            if (count($hitlist[$i]) > 0 && isset($hitlist[$i][0]) && $hitlist[$i][0] != "\n") {
-                $subject = preg_replace("/^\n/u", "", $hitlist[$i][0]);
-                $url = $prefix . htmlspecialchars(preg_replace("/^.\//u", "", $subject), ENT_COMPAT, 'UTF-8');
-                if (!empty($hitlist[$i][1]) || !empty($hitlist[$i][2])) {
-                    $results[] = array(
-                        'URL' => $url,
-                        'TARGET' => $target,
-                        'TITLE' => @$hitlist[$i][1],
-                        'TEXT' => @$hitlist[$i][2]
-                    );
-                }
-            }
-        } /* end for */
-        unset($i);
 
         $YANA->setVar("RESULTS", $results);
     }
@@ -370,8 +373,8 @@ class plugin_search extends StdClass implements IsPlugin
             unset($keywords, $headContent, $docTitle, $docDesc);
 
             ++$currentDocument;
-        } /* end foreach */
-        unset($i, $file); /* clean up garbage */
+        } // end foreach
+        unset($i, $file);
 
         /**
          * 5) compress results
@@ -600,7 +603,7 @@ class plugin_search extends StdClass implements IsPlugin
                             $request[$i]. '&quot;:</a> ' . $whatsRelated . '</span>';
                     }
                     $found = true;
-                } /* end if */
+                } // end if
 
                 array_shift($prev_n);
                 $prev_n[count($prev_n)] = $n;
@@ -616,8 +619,8 @@ class plugin_search extends StdClass implements IsPlugin
                     break;
                 }
 
-            } /* end while */
-        } /* end for */
+            } // end while
+        } // end for
         unset($i);
 
         if (count($hits) > 0) {
@@ -639,7 +642,7 @@ class plugin_search extends StdClass implements IsPlugin
             }
             unset($j);
             $hitlist = $myTemp;
-        } /* end for */
+        } // end for
         unset($i);
         /* END logical AND */
 
@@ -661,7 +664,7 @@ class plugin_search extends StdClass implements IsPlugin
             } else {
                 $buffer .= $temp;
             }
-        } /* end while */
+        } // end while
         flock($file, LOCK_UN);
         fclose($file);
         /* END load list if documents */
@@ -676,9 +679,9 @@ class plugin_search extends StdClass implements IsPlugin
                 if (isset($hitlist[$i]) && $hitlist[$i] != "") {
                     $hitlist[$i] = $documentList[(int) $hitlist[$i]];
                 }
-            } /* end for */
+            } // end for
             unset($i);
-        } /* end if */
+        } // end if
 
         return $hitlist;
     }
@@ -773,13 +776,13 @@ class plugin_search extends StdClass implements IsPlugin
      */
     private function _sortStatistics($A, $B)
     {
-        if ($A['COUNT'] < $B['COUNT']) {
+        if ($A['SEARCHCOUNT'] < $B['SEARCHCOUNT']) {
             return +1;
-        } elseif ($A['COUNT'] > $B['COUNT']) {
+        } elseif ($A['SEARCHCOUNT'] > $B['SEARCHCOUNT']) {
             return -1;
-        } elseif ($A['INFO'] < $B['INFO']) {
+        } elseif ($A['SEARCHTERM'] < $B['SEARCHTERM']) {
             return -1;
-        } elseif ($A['INFO'] > $B['INFO']) {
+        } elseif ($A['SEARCHTERM'] > $B['SEARCHTERM']) {
             return +1;
         } else {
             return 0;
