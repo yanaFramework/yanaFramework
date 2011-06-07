@@ -38,24 +38,16 @@
         <script type="text/javascript"><!--
             $(document).ready(function() {
                 $('#{$form->getName()}-search').hide();
-                {if !$form->getSearchTerm()}$('#{$form->getName()}-search-small').hide();{/if}
                 $.fn.fancybox.defaults.hideOnContentClick = true;
                 $.fn.fancybox.defaults.titlePosition = 'over';
                 $.fn.fancybox.defaults.showCloseButton = false;
                 $.fn.fancybox.defaults.type = 'image';
-                {if $form->isSelectable()}
-                    $('#{$form->getName()}-search-small').after(
-                        '<a class="gui_generator_icon_search" href="javascript://" ' +
-                        'onclick="$(\'#{$form->getName()}-search-small\').slideToggle()">' +
-                        '<span class="icon_magnifier">&nbsp;</span></a>'
-                    );
-                    {if $form->getEvent('search') || $form->hasSearchableChildren()}
+                {if $form->isSelectable() && ($form->getEvent('search') || $form->hasSearchableChildren())}
                     $('#{$form->getName()}-search-small').append(
                         '<a class="buttonize" href="javascript://" ' +
                         'onclick="$(\'#{$form->getName()}-search\').slideToggle()">' +
                         '<span class="icon_pointer">&nbsp;</span></a>'
                     );
-                    {/if}
                 {/if}
             });
         //--></script>
