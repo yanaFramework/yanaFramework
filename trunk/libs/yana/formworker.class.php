@@ -284,14 +284,18 @@ class FormWorker extends FormQueryBuilder
      */
     public function autocomplete($columnName, $searchTerm = "", $limit = 50)
     {
-        assert('is_string($fieldName); // Invalid argument $fieldName: string expected');
+        assert('is_string($columnName); // Invalid argument $columnName: string expected');
         assert('is_string($searchTerm); // Invalid argument $searchTerm: string expected');
         $referenceValues = array();
         if ($this->_form) {
             $references = $this->_form->getSetup()->getForeignKeys();
             if (isset($references[$columnName])) {
                 $query = $this->buildAutocompleteQuery($references[$columnName], $searchTerm, $limit);
-                $referenceValues = $query->getResults();
+                $referenceValues = array();
+                foreach ($query->getResults() as $row)
+                {
+                    $referenceValues[$row['VALUE']] = $row['LABEL'];
+                }
             }
         }
         return $referenceValues;
