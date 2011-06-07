@@ -1494,6 +1494,8 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
                     }
                     $warning = new MissingFieldWarning();
                     throw $warning->setField($title);
+                } else {
+                    $row[$columnName] = null;
                 }
             /*
              * 4) this input is valid - move to next
@@ -1505,6 +1507,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
                 continue;
             } // end if
         } // end for
+
         return $row;
     }
 
