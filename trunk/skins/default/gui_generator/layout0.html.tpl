@@ -32,7 +32,7 @@
                         {/if}-->
 
                         {if $form->hasRows() && $form->getEntriesPerPage() > 1 && $field->refersToTable()}
-                            <a href={""action=$ACTION&{$formName}[orderby]={$field->getName()}&{$formName}[desc]=0"|href} class="gui_generator_sort" title='{lang id="ORDER.ASCENDING"}'>
+                            <a href={"action=$ACTION&{$formName}[orderby]={$field->getName()}&{$formName}[desc]=0"|href} class="gui_generator_sort" title='{lang id="ORDER.ASCENDING"}'>
                                 {if $field->getName() == $form->getOrderByField() && !$form->isDescending()}
                                     <span class="icon_arrowup_hover">&nbsp;</span>
                                 {else}
