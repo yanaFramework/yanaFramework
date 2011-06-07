@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<!DOCTYPE database SYSTEM "../dtd/database.dtd">
+<database>
+    <table name="searchstats">
+        <primarykey>searchstats_id</primarykey>
+        <declaration>
+            <string name="searchstats_id" length="50" title="Term" notnull="yes"/>
+            <string name="searchterm" length="80" title="Info"/>
+            <integer name="searchcount" length="10" title="Count" notnull="yes">
+                <default>0</default>
+            </integer>
+        </declaration>
+    </table>
+</database>
