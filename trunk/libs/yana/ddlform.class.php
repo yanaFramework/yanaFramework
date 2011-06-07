@@ -507,6 +507,23 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     }
 
     /**
+     * Check if sub-form exists.
+     *
+     * Returns bool(true) if a form with the given name is registered and bool(false) otherwise.
+     * Note that this operation is not case sensitive.
+     *
+     * @access  public
+     * @param   string  $name   new value of this property
+     * @return  bool
+     */
+    public function isForm($name)
+    {
+        assert('is_string($name); // Invalid argument $name: string expected');
+        $name = mb_strtolower($name);
+        return isset($this->forms[$name]);
+    }
+
+    /**
      * Get form by name.
      *
      * Returns the DDLForm sub-form with the given name from the current form.
@@ -520,6 +537,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     public function getForm($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
+        $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             return $this->forms[$name];
         } else {
@@ -541,6 +559,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     public function addForm($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
+        $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             $message = "Another form with the name '$name' already exists in form '{$this->getName()}'.";
             throw new AlreadyExistsException($message, E_USER_WARNING);
@@ -580,8 +599,9 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
     public function dropForm($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
-        if (isset($this->forms["$name"])) {
-            unset($this->forms["$name"]);
+        $name = mb_strtolower($name);
+        if (isset($this->forms[$name])) {
+            unset($this->forms[$name]);
         }
     }
 
@@ -930,13 +950,10 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
         {
             case isset($this->forms[$name]):
                 return $this->forms[$name];
-            break;
             case isset($this->fields[$name]):
                 return $this->fields[$name];
-            break;
             default:
                 return parent::__get($name);
-            break;
         }
     }
 

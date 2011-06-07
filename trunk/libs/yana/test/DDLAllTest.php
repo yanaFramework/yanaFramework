@@ -1966,6 +1966,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function testIsForm()
+    {
+        $this->assertFalse($this->ddlform->isForm('non-existing-form'));
+    }
+
+    /**
      * getFormInvalidArgumentException
      *
      * @covers DDLForm::getFrom
@@ -1975,7 +1983,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testGetFormInvalidArgumentException()
     {
-      $this->ddlform->getForm('non-existing-form');
+        $this->ddlform->getForm('non-existing-form');
     }
 
     /**
