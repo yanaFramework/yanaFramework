@@ -272,6 +272,9 @@ class FormBuilder extends Object
     /**
      * Set name of form to use.
      *
+     * If you wish to extract a sub-form, give the full path separate the names with a dot.
+     * Example: "form.subform".
+     *
      * @access  public
      * @param   string  $id  valid form name
      * @return  SmartFormUtility 
@@ -817,11 +820,16 @@ class FormBuilder extends Object
         if (!isset($this->_form)) {
             // Either parameter 'id' or 'table' is required (not both). Parameter 'id' takes precedence.
             if ($this->getId()) {
-                $id = $this->getId();
-                if (!$this->_schema->isForm($id)) {
-                    throw new \InvalidArgumentException("The form with name '" . $id . "' was not found.");
+                $ids = $this->getId();
+                $form = $this->_schema;
+                foreach (explode('.', $ids) as $id)
+                {
+                    if (!$form->isForm($id)) {
+                        throw new \InvalidArgumentException("The form with name '" . $ids . "' was not found.");
+                    }
+                    $form = $form->getForm($id);
                 }
-                $this->_form = $this->_schema->getForm($id);
+                $this->_form = $form;
             } elseif ($this->getTable()) {
                     $table = $this->_schema->getTable($this->getTable());
                     if (! $table instanceof DDLTable) {
