@@ -7,23 +7,13 @@
         <input name="user_created" hidden="yes"/>
         <input name="public" hidden="yes"/>
         <input name="mediafolder_name" readonly="yes"/>
-        <form name="mediagallery_content" table="media" allinput="no" template="6" key="mediafolder_id" title="{lang id=&quot;media&quot;}">
+        <form name="content" table="media" allinput="no" template="6" key="mediafolder_id" title="{lang id=&quot;media&quot;}">
             <input name="media_id" hidden="yes"/>
             <input name="mediafolder_id" hidden="yes"/>
             <input name="media_name" readonly="yes"/>
             <input name="media_preview" readonly="yes"/>
             <input name="media_file" readonly="yes"/>
             <input name="media_description" readonly="yes"/>
-            <event name="download">mediagalleryDownloadFile</event>
         </form>
-    </form>
-    <form name="content" table="media" allinput="no" template="6" key="mediafolder_id" title="{lang id=&quot;media&quot;}">
-        <input name="media_id" hidden="yes"/>
-        <input name="mediafolder_id" hidden="yes"/>
-        <input name="media_name" readonly="yes"/>
-        <input name="media_preview" readonly="yes"/>
-        <input name="media_file" readonly="yes"/>
-        <input name="media_description" readonly="yes"/>
-        <event name="download">mediagalleryDownloadFile</event>
     </form>
 </database>
