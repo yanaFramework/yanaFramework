@@ -791,8 +791,7 @@ class FormBuilder extends Object
         $referenceValues = array();
         foreach ($formSetup->getForeignKeys() as $name => $reference)
         {
-            $autocompleteQuery = $this->_queryBuilder->buildAutocompleteQuery($reference, "", 0);
-            $referenceValues[$name] = $autocompleteQuery->getResults();
+            $referenceValues[$name] = $this->_queryBuilder->autocomplete($name,  "", 0);
         }
         $formSetup->setReferenceValues($referenceValues);
 
