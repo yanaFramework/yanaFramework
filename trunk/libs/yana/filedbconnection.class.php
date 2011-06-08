@@ -1571,8 +1571,10 @@ class FileDbConnection extends Object
                 }
             }
 
+            $ignoreTable = null;
             if (!$joinedValueExists) {
                 if ($isLeftJoin) {
+                    $ignoreTable = $tableBDef;
                     $value = array(array()); // dummy table for left-join
                 } else {
                     continue; // values do not match
@@ -1585,7 +1587,7 @@ class FileDbConnection extends Object
             {
                 /* add primary key to result - otherwise it would be missing */
                 $currentValue[$pkA] = $id;
-                if ($isLeftJoin || $this->_doWhere($currentValue, $where) === true) {
+                if ($this->_doWhere($currentValue, $where, $ignoreTable) === true) {
                     $this->_buildResultset($resultSet, $columns, $currentValue, $row, true);
                 }
             } // end foreach value
@@ -1660,12 +1662,13 @@ class FileDbConnection extends Object
      * returns bool(false) otherwise.
      *
      * @access  private
-     * @param   array  $current  dataset that is to be checked
-     * @param   array  $where    where clause (left operand, right, operand, operator)
+     * @param   array     $current      dataset that is to be checked
+     * @param   array     $where        where clause (left operand, right, operand, operator)
+     * @param   DDLTable  $ignoreTable  used to set an overwrite for tables during outer joins
      * @return  bool
      * @ignore
      */
-    private function _doWhere(array $current, array $where)
+    private function _doWhere(array $current, array $where, DDLTable $ignoreTable = null)
     {
         if (empty($where)) {
             return true;
@@ -1704,8 +1707,10 @@ class FileDbConnection extends Object
         }
         if (isset($current[mb_strtoupper($leftOperand)])) {
             $value = $current[mb_strtoupper($leftOperand)];
-        } else {
+        } elseif ($table !== $ignoreTable) {
             $value = null;
+        } else {
+            return true; // the table is not checked - used for ON-clause during outer joins
         }
         /* handle non-scalar values */
         if (!is_scalar($value)) {
