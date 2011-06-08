@@ -1,7 +1,8 @@
 {assign var="formName" value=$form->getName()}
     <!-- BEGIN insert form contents -->
-    <div class="gui_generator_config optionbody">
+    <div class="gui_generator_config">
         {for $i=1 to max($form->getRowCount(), ! $form->hasRows())}
+        <div class="optionbody">
             {foreach from=$form item="field"}
             <div class="optionitem {$field->getCssClass()}" title="{$field->getTitle()}">
                 <div class="label">
@@ -42,6 +43,7 @@
             {if $form->hasRows()}
                 {$form->nextRow()}
             {/if}
+        </div>
         {forelse}
             <div class="gui_generator_no_entries_found">{lang id="NO_ENTRIES_FOUND"}</div>
         {/for}

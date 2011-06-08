@@ -26,7 +26,7 @@
         <div class="optionhead">{lang id="USER.OPTION.25"}{* Nutzerrollen editieren *}</div>
 
         <div class="optionbody" align="center" style="padding: 30px 10px;">
-{create file="user_admin" table="securityrole"}
+{create file="user_admin" id="securityrole"}
         </div>
 
   </div>

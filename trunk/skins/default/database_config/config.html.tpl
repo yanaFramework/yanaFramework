@@ -57,7 +57,7 @@
                 <option value="db2" {if    $DATABASE_DBMS=="db2"}selected="selected"{/if}>DB2</option>
                 <option value="dbase" {if  $DATABASE_DBMS=="dbase"}selected="selected"{/if}>dBase</option>
                 <option value="fbsql" {if  $DATABASE_DBMS=="fbsql"}selected="selected"{/if}>FrontBase</option>
-                <option value="ibase" {if  $DATABASE_DBMS=="ibase"selected="selected"{/if}>InterBase</option>
+                <option value="ibase" {if  $DATABASE_DBMS=="ibase"}selected="selected"{/if}>InterBase</option>
                 <option value="ifx" {if    $DATABASE_DBMS=="ifx"}selected="selected"{/if}>Informix</option>
                 <option value="access" {if $DATABASE_DBMS=="access"}selected="selected"{/if}>Microsoft Access</option>
                 <option value="mssql" {if  $DATABASE_DBMS=="mssql"}selected="selected"{/if}>Microsoft SQL-Server</option>
