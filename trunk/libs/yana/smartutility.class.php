@@ -2328,7 +2328,8 @@ class SmartUtility extends Utility
         if (count($params) > 0) {
             $document->setVarByReference('*', $params);
         }
-        $document->setVar('FILE_IS_INCLUDE', "true");
+        $document->setVar('FILE_IS_INCLUDE', true);
+
         return $document->toString();
     }
 
