@@ -17,7 +17,7 @@
       <div class="guestbook_head" id="guestbook_form_new_head">{lang id="20"}</div>
       
       <div class="guestbook_form_content" id="guestbook_form_new_content">
-    <!-- {if $PROFILE.SPAM.CAPTCHA && ($PROFILE.SPAM.PERMISSION || !$PERMISSION)} -->
+    <!-- {if $USE_CAPTCHA} -->
           <div class="label" style="display: block; height: 30px;">
             <span class="gui_generator_mandatory">*&nbsp;</span>
             {lang id="SECURITY_IMAGE.TITLE"}, {lang id="SECURITY_IMAGE.DESCRIPTION"}:
@@ -33,7 +33,7 @@
           <label class="label" style="display: block; margin-left: 50%; height: 30px;">
             <img border="0" src="data/mail.gif" hspace="8" width="23" height="20" alt='{lang id="3"}'/>
             <input type="text" title='{lang id="27"}' size="22" name="mail" maxlength="60"
-                   onchange="if(null==(this.value.match(/^[äöüß\w\d-_\.]+\@[äöüß\w\d-_\.]+\.[\w\d-_\.]+$/i))){ldelim}alert('{lang id="INVALID_INPUT"}');this.value='';this.className='invalid';{rdelim}else{ldelim}this.className='';{rdelim}"/>
+                   onchange="if(null==(this.value.match(/^[Ã¤Ã¶Ã¼ÃŸ\w\d-_\.]+\@[Ã¤Ã¶Ã¼ÃŸ\w\d-_\.]+\.[\w\d-_\.]+$/i))){ldelim}alert('{lang id="INVALID_INPUT"}');this.value='';this.className='invalid';{rdelim}else{ldelim}this.className='';{rdelim}"/>
           </label>
     
           <label class="label" style="display: block; float: left; width: 50%; text-align: right; height: 30px;">
