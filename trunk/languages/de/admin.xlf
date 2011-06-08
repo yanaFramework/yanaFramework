@@ -279,7 +279,7 @@
                     <source>installed language versions</source>
                     <target>installierte Sprachen</target>
                 </trans-unit>
-                <trans-unit id="admin.27">
+                <trans-unit id="admin.28">
                     <source>e-mail</source>
                     <target>E-mail</target>
                 </trans-unit>
