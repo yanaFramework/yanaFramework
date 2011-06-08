@@ -745,8 +745,6 @@ class FormBuilder extends Object
     public function __invoke()
     {
         $form = $this->_buildForm();
-
-        $where = array();
         $formSetup = null;
 
         $cache = new FormSetupCacheManager();
@@ -754,7 +752,6 @@ class FormBuilder extends Object
             $formSetup = $cache->{$form->getName()};
         } else {
             $formSetup = $this->_buildSetup($form);
-            $where = $this->getWhere();
         }
         $this->_setupBuilder->setSetup($formSetup);
         $this->_facade->setSetup($formSetup);
@@ -776,6 +773,7 @@ class FormBuilder extends Object
         $this->_queryBuilder->setForm($this->_facade);
 
         $countQuery = $this->_queryBuilder->buildCountQuery();
+        $where = $this->getWhere();
         if (!empty($where)) {
             $countQuery->setWhere($where);
         }
@@ -855,7 +853,7 @@ class FormBuilder extends Object
     {
         $genericName = $this->_database->getName() . '-' . $table->getName();
 
-        $form = new DDLForm($genericName); // from scratch
+        $form = new DDLForm($genericName, $this->_schema); // from scratch
         $form->setTable($table->getName());
 
         $title = $table->getTitle();

@@ -181,8 +181,11 @@ class FormFieldFacade extends Object
         if (empty($title)) {
             $title = $this->getColumn()->getTitle();
         }
-        if (empty($title)) {
+        if (empty($title) && $this->getField()) {
             $title = $this->getField()->getName();
+        }
+        if (empty($title)) {
+            $title = $this->getColumn()->getName();
         }
         return $title;
     }

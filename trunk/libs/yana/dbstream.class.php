@@ -56,7 +56,8 @@ class DbStream extends Object implements Serializable
     /** @var  array  */  private $_joins = array();
     /** @var  array  */  private $_reservedSqlKeywords = null;
     /** @var  array  */  private $_lastModified = array();
-    /** @var  string */  private $_lastModifiedPath = "";
+    /** @var  string */  private $_lastModifiedPath = "db_last_modified.tmp";
+    /** @var  string */  private static $_tempDir = "cache/";
 
     /**#@-*/
 
@@ -109,6 +110,36 @@ class DbStream extends Object implements Serializable
             assert('is_string($schema); // Wrong argument type $schema. String expected');
             $this->name = (string) $schema;
         }
+    }
+
+    /**
+     * Set path to temporary directory.
+     *
+     * The target directory must be read- and writable.
+     *
+     * @access  public
+     * @static
+     * @param   string  $dir  absolute path to temp-directory
+     */
+    public static function setTempDir($dir)
+    {
+        assert('is_string($dir); // Invalid argument $dir: string expected');
+        self::$_tempDir = $dir . '/';
+    }
+
+    /**
+     * Get absolute path to temporary directory.
+     *
+     * The returned path always ends with a slash.
+     * Note that this function does not check if the given path is valid.
+     *
+     * @access  public
+     * @static
+     * @return  string
+     */
+    public static function getTempDir()
+    {
+        return self::$_tempDir;
     }
 
     /**
@@ -464,8 +495,8 @@ class DbStream extends Object implements Serializable
         /*
          * 5.2) commit successful
          */
-        if (YANA_DB_STRICT && !empty($this->_lastModified) && !empty($this->_lastModifiedPath)) {
-            file_put_contents($this->_lastModifiedPath, serialize($this->_lastModified));
+        if (YANA_DB_STRICT && !empty($this->_lastModified)) {
+            file_put_contents(self::getTempDir() . $this->_lastModifiedPath, serialize($this->_lastModified));
         }
         $this->_queue = array();
         return true;
@@ -1836,29 +1867,20 @@ class DbStream extends Object implements Serializable
         /* settype to STRING */
         $table = (string) $table;
         $row = (string) $row;
+        $path = self::getTempDir() . $this->_lastModifiedPath;
 
         /*
          * 1) load file
          */
-        if (empty($this->_lastModifiedPath)) {
-            // get filename
-            if (isset($GLOBALS['YANA'])) {
-                $this->_lastModifiedPath = $GLOBALS['YANA']->getVar('TEMPDIR');
-            } else {
-                $this->_lastModifiedPath = 'cache';
+        if (empty($this->_lastModified) && file_exists($path)) {
+            assert('!isset($lastModified); // Cannot redeclare var $lastModified');
+            $lastModified = unserialize(file_get_contents($path));
+            if (!is_array($lastModified)) {
+                $lastModified = array();
+                trigger_error("File content is not valid '{$path}'.", E_USER_NOTICE);
             }
-            $this->_lastModifiedPath .= '/db_last_modified.tmp';
-            // load file contents
-            if (file_exists($this->_lastModifiedPath)) {
-                assert('!isset($lastModified); // Cannot redeclare var $lastModified');
-                $lastModified = unserialize(file_get_contents($this->_lastModifiedPath));
-                if (!is_array($lastModified)) {
-                    $lastModified = array();
-                    trigger_error("File content is not valid '{$this->_lastModifiedPath}'.", E_USER_NOTICE);
-                }
-                $this->_lastModified = $lastModified;
-                unset($lastModified);
-            }
+            $this->_lastModified = $lastModified;
+            unset($lastModified);
             assert('is_array($this->_lastModified);');
         }
 

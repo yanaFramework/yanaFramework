@@ -264,6 +264,7 @@ final class Yana extends Singleton implements IsReportable
         self::$_config['CONFIGDIR'] = $cwd . self::$_config['CONFIGDIR'];
         self::$_config['CONFIGDRIVE'] = $cwd . self::$_config['CONFIGDRIVE'];
         self::$_config['PLUGINFILE'] = $cwd . self::$_config['PLUGINFILE'];
+        DbStream::setTempDir(self::$_config['TEMPDIR']);
     }
 
     /**

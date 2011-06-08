@@ -539,7 +539,7 @@ class FormSetupBuilder extends Object
                 $reference->setColumn($column->getReferenceColumn()->getName());
             }
             if (!$reference->getLabel()) {
-                $reference->setLabel($reference['column']);
+                $reference->setLabel($column->getReferenceColumn()->getName());
             }
             if (!$reference->getTable()) {
                 $reference->setTable($column->getReferenceColumn()->getParent()->getName());
