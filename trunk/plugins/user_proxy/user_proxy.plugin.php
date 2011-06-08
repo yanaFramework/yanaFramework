@@ -399,6 +399,7 @@ class plugin_user_proxy extends StdClass implements IsPlugin
     private static function _getLevels(array $rows, array &$profiles, &$users = false)
     {
         $userLevels = array();
+        $defaultProfile = Yana::getDefault('profile');
         foreach($rows as $key => $item)
         {
             if (!empty($item['PROFILE'])) {
@@ -444,6 +445,7 @@ class plugin_user_proxy extends StdClass implements IsPlugin
     private static function _getRules(array $rows, array &$profiles, &$users = false)
     {
         $userRules = array();
+        $defaultProfile = Yana::getDefault('profile');
         foreach($rows as $key => $item)
         {
             if (!empty($item['PROFILE'])) {
