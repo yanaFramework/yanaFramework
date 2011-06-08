@@ -367,8 +367,8 @@ class SmartTemplate extends Object
      */
     public function &getSmarty()
     {
-        if (!empty($this->localSmarty->smarty)) {
-            return $this->localSmarty->smarty;
+        if (!empty($this->localSmarty)) {
+            return $this->localSmarty;
         } else {
             return self::getGlobalSmarty();
         }
@@ -518,7 +518,7 @@ class SmartTemplate extends Object
         /* @var $template SmartTemplate */
         $template = clone $this;
         $template->setPath($filename);
-        $template->setVar('FILE_IS_INCLUDE', 'true');
+        $template->setVar('FILE_IS_INCLUDE', true);
         $this->localSmarty->assign("$varName", $template->toString());
         return true;
     }
