@@ -500,6 +500,9 @@ class plugin_guestbook extends StdClass implements IsPlugin
         }
         $YANA->setVar('ROWS', $rows);
         $YANA->setVar('DESCRIPTION', $YANA->getLanguage()->getVar('descr_show'));
+        $useCaptcha = PluginManager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA") &&
+            !YanaUser::isLoggedIn();
+        $YANA->setVar('USE_CAPTCHA', $useCaptcha);
     }
 
     /**
