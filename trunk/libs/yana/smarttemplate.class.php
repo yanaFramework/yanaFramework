@@ -59,10 +59,10 @@ class SmartTemplate extends Object
      * local Smarty instance
      *
      * @access  protected
-     * @var     Smarty
+     * @var     Smarty_Internal_Template
      * @ignore
      */
-    protected $localSmarty = null;
+    protected $template = null;
 
     /**
      * global Smarty instance
@@ -72,7 +72,7 @@ class SmartTemplate extends Object
      * @var     Smarty
      * @ignore
      */
-    protected static $globalSmarty = null;
+    protected static $smarty = null;
 
     /**
      * create an instance
@@ -84,8 +84,13 @@ class SmartTemplate extends Object
     public function __construct($filename = "")
     {
         // initialize smarty instance
-        $smarty = self::getGlobalSmarty();
-        $this->localSmarty = $smarty->createTemplate($filename);
+        $smarty = self::_getSmarty();
+        $cacheId = self::_getCacheId();
+        if ($smarty->caching > 0) {
+            $this->template = $smarty->createTemplate($filename, $cacheId, $cacheId);
+        } else {
+            $this->template = $smarty->createTemplate($filename, null, $cacheId);
+        }
     }
 
     /**
@@ -103,13 +108,7 @@ class SmartTemplate extends Object
      */
     public function toString()
     {
-        // fetch and return template
-        $cacheId = self::_getCacheId();
-        if (self::$globalSmarty->caching > 0) {
-            return $this->localSmarty->fetch(null, $cacheId, $cacheId);
-        } else {
-            return $this->localSmarty->fetch(null, null, $cacheId);
-        }
+        return $this->template->fetch();
     }
 
     /**
@@ -133,94 +132,90 @@ class SmartTemplate extends Object
         assert('is_string($key); // Wrong argument type for argument 1. String expected.');
         /* 1) get all template vars */
         if (empty($key) || $key === '*') {
-            return $this->localSmarty->getTemplateVars();
+            return $this->template->getTemplateVars();
         }
 
         /* 2) get one template var, identified by $key */
-        $resource = $this->localSmarty->getTemplateVars();
+        $resource = $this->template->getTemplateVars();
         assert('is_array($resource); /* unexpected result: $resource should be an array */');
         return Hashtable::get($resource, "$key");
     }
 
     /**
-     * bypass template class
+     * Initializes 
      *
-     * This function is used to unbox the smarty instance inside the
-     * object. It may be used to bypass the template class in cases
-     * where direct access to the smarty template engine is necessary.
-     *
-     * @access  public
+     * @access  protected
      * @static
      * @return  Smarty
      * @since   3.1.0
      * @ignore
      */
-    public static function getGlobalSmarty()
+    protected static function _getSmarty()
     {
         /**
          * 1) Config Smarty
          */
-        if (! self::$globalSmarty instanceof Smarty) {
+        if (! self::$smarty instanceof Smarty) {
             $registry = Registry::getGlobalInstance();
 
-            self::$globalSmarty = new \Smarty();
+            self::$smarty = new \Smarty();
 
             /**
              * 1.1) delimiters
              */
-            self::$globalSmarty->left_delimiter = YANA_LEFT_DELIMITER;
-            self::$globalSmarty->right_delimiter = YANA_RIGHT_DELIMITER;
+            self::$smarty->left_delimiter = YANA_LEFT_DELIMITER;
+            self::$smarty->right_delimiter = YANA_RIGHT_DELIMITER;
 
             /**
              * 1.2) directories
              */
             if ($registry instanceof Registry) {
                 SmartUtility::loadSmilies($registry->getVar("PROFILE.SMILEYDIR"));
-                self::$globalSmarty->template_dir = '.';
-                self::$globalSmarty->config_dir = $registry->getVar('SKINCONFIGDIR');
-                self::$globalSmarty->compile_dir = $registry->getVar('TEMPDIR');
+                self::$smarty->template_dir = '.';
+                self::$smarty->config_dir = $registry->getVar('SKINCONFIGDIR');
+                self::$smarty->compile_dir = $registry->getVar('TEMPDIR');
             } else {
-                self::$globalSmarty->template_dir = '.';
-                self::$globalSmarty->config_dir = 'skins/.config/';
+                self::$smarty->template_dir = '.';
+                self::$smarty->config_dir = 'skins/.config/';
                 if (YANA_CDROM === true) {
-                    self::$globalSmarty->compile_dir = YANA_CDROM_DIR;
+                    self::$smarty->compile_dir = YANA_CDROM_DIR;
                 } else {
-                    self::$globalSmarty->compile_dir = 'cache/';
+                    self::$smarty->compile_dir = 'cache/';
                 }
             }
 
             /**
              * 1.3) security settings
              */
-            self::$globalSmarty->php_handling = Smarty::PHP_REMOVE;
-            self::$globalSmarty->security = true;
+            self::$smarty->php_handling = Smarty::PHP_REMOVE;
+            self::$smarty->security = true;
             /**
              * PHP-handling
              *
              * If set to TRUE, the $php_handling  setting is not checked for
              * security.
              */
-            self::$globalSmarty->security_settings['PHP_HANDLING'] = false;
+            self::$smarty->security_settings['PHP_HANDLING'] = false;
             /**
              * Include any
              *
              * If set to TRUE, any template can be included  from the file
              * system, regardless of the $secure_dir list.
              */
-            self::$globalSmarty->security_settings['INCLUDE_ANY'] = false;
+            self::$smarty->security_settings['INCLUDE_ANY'] = false;
             /**
              * PHP-tags
              *
              * If set to TRUE, {php}{/php}  tags are permitted in the templates.
              */
-            self::$globalSmarty->security_settings['PHP_TAGS'] = false;
+            self::$smarty->security_settings['PHP_TAGS'] = false;
             /**
              * PHP-constants
              *
              * If set to TRUE, constants via {$smarty.const.FOO} are allowed in
              * the templates.
              */
-            self::$globalSmarty->security_settings['ALLOW_CONSTANTS'] = false;
+            self::$smarty->security_settings['ALLOW_CONSTANTS'] = false;
             /**
              * PHP-super globals
              *
@@ -231,31 +226,31 @@ class SmartTemplate extends Object
              * This setting is available since Smarty 2.6.26
              * }}
              */
-            self::$globalSmarty->security_settings['ALLOW_SUPER_GLOBALS'] = false;
+            self::$smarty->security_settings['ALLOW_SUPER_GLOBALS'] = false;
 
             /*
              * 1.4) caching behaviour
              */
-            self::$globalSmarty->caching = YANA_TPL_CACHE;
-            self::$globalSmarty->use_sub_dirs = YANA_TPL_CACHE_DIR;
+            self::$smarty->caching = YANA_TPL_CACHE;
+            self::$smarty->use_sub_dirs = YANA_TPL_CACHE_DIR;
 
             /*
              * 1.4.1) default setting for compile check
              */
             if (!defined('YANA_ERROR_REPORTING') || !defined('YANA_ERROR_OFF')) {
-                self::$globalSmarty->compile_check = true;
+                self::$smarty->compile_check = true;
 
             /*
              * 1.4.2) distinguish between debug-mode and production-mode
              */
             } else {
                 if (YANA_ERROR_REPORTING !== YANA_ERROR_OFF) {
-                    self::$globalSmarty->compile_check = true;
+                    self::$smarty->compile_check = true;
                 } else {
-                    self::$globalSmarty->compile_check = false;
+                    self::$smarty->compile_check = false;
                 }
                 if (YANA_ERROR_REPORTING === YANA_ERROR_ON) {
-                    self::$globalSmarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['varDump']  = array(
+                    self::$smarty->registered_plugins[Smarty::PLUGIN_FUNCTION]['varDump']  = array(
                         'SmartUtility::varDump', true
                     );
                 }
@@ -276,10 +271,10 @@ class SmartTemplate extends Object
                 'url' =>          array('SmartUtility::url', false),
                 'urlEncode' =>    array('SmartUtility::urlEncode', true)
             );
-            if (!empty(self::$globalSmarty->registered_plugins[Smarty::PLUGIN_MODIFIER])) {
-                $modifiers = array_merge(self::$globalSmarty->registered_plugins[Smarty::PLUGIN_MODIFIER], $modifiers);
+            if (!empty(self::$smarty->registered_plugins[Smarty::PLUGIN_MODIFIER])) {
+                $modifiers = array_merge(self::$smarty->registered_plugins[Smarty::PLUGIN_MODIFIER], $modifiers);
             }
-            self::$globalSmarty->registered_plugins[Smarty::PLUGIN_MODIFIER] = $modifiers;
+            self::$smarty->registered_plugins[Smarty::PLUGIN_MODIFIER] = $modifiers;
             $functions = array(
                 'printArray' => array('SmartUtility::printArray', true),
                 'printUnorderedList' =>  array('SmartUtility::printUnorderedList', true),
@@ -303,23 +298,23 @@ class SmartTemplate extends Object
                 'selectDate' =>          array('SmartUtility::selectDate', true),
                 'selectTime' =>          array('SmartUtility::selectTime', true)
             );
-            if (!empty(self::$globalSmarty->registered_plugins[Smarty::PLUGIN_FUNCTION])) {
-                $functions = array_merge(self::$globalSmarty->registered_plugins[Smarty::PLUGIN_FUNCTION], $functions);
+            if (!empty(self::$smarty->registered_plugins[Smarty::PLUGIN_FUNCTION])) {
+                $functions = array_merge(self::$smarty->registered_plugins[Smarty::PLUGIN_FUNCTION], $functions);
             }
-            self::$globalSmarty->registered_plugins[Smarty::PLUGIN_FUNCTION] = $functions;
-            self::$globalSmarty->registered_plugins[Smarty::PLUGIN_BLOCK]['loop'] = array(
+            self::$smarty->registered_plugins[Smarty::PLUGIN_FUNCTION] = $functions;
+            self::$smarty->registered_plugins[Smarty::PLUGIN_BLOCK]['loop'] = array(
                 'SmartUtility::loopArray', false
             );
-            self::$globalSmarty->registered_filters[Smarty::FILTER_PRE][] =
+            self::$smarty->registered_filters[Smarty::FILTER_PRE][] =
                 array('SmartHtmlProcessorUtility', 'htmlPreProcessor');
-            self::$globalSmarty->registered_filters[Smarty::FILTER_POST][] =
+            self::$smarty->registered_filters[Smarty::FILTER_POST][] =
                 array('SmartHtmlProcessorUtility', 'htmlPostProcessor');
-            self::$globalSmarty->registered_filters[Smarty::FILTER_OUTPUT][] =
+            self::$smarty->registered_filters[Smarty::FILTER_OUTPUT][] =
                 array('SmartHtmlProcessorUtility', 'outputFilter');
-            self::$globalSmarty->default_modifiers =
+            self::$smarty->default_modifiers =
                 array('replaceToken');
 
-            self::$globalSmarty->registered_resources["template"] = array(
+            self::$smarty->registered_resources["template"] = array(
                 array(
                     "SmartFileResource::getTemplate",
                     "SmartFileResource::getTimestamp",
@@ -329,7 +324,7 @@ class SmartTemplate extends Object
                 false
             );
 
-            self::$globalSmarty->registered_resources["string"] = array(
+            self::$smarty->registered_resources["string"] = array(
                 array(
                     "SmartStringResource::getTemplate",
                     "SmartStringResource::getTimestamp",
@@ -339,7 +334,7 @@ class SmartTemplate extends Object
                 false
             );
 
-            self::$globalSmarty->registered_resources["id"] = array(
+            self::$smarty->registered_resources["id"] = array(
                 array(
                     "SmartIdResource::getTemplate",
                     "SmartIdResource::getTimestamp",
@@ -348,29 +343,30 @@ class SmartTemplate extends Object
                 ),
                 false
             );
-            self::$globalSmarty->default_resource_type = 'template';
+            self::$smarty->default_resource_type = 'template';
+            self::$smarty->error_reporting = E_ALL & ~E_NOTICE;
         } // end if
 
-        return self::$globalSmarty;
+        return self::$smarty;
     }
 
     /**
-     * bypass template class
+     * Bypass template class.
      *
-     * This function is used to unbox the smarty instance inside the
-     * object. It may be used to bypass the template class in cases
-     * where direct access to the smarty template engine is necessary.
+     * This function is used to unbox the smarty instance inside the object.
+     * It may be used to bypass the template class in caseswhere direct
+     * access to the smarty template engine is necessary.
      *
      * @access  public
      * @return  Smarty
      * @since   2.8.9
      */
-    public function &getSmarty()
+    public function getSmarty()
     {
-        if (!empty($this->localSmarty)) {
-            return $this->localSmarty;
+        if (!empty($this->template)) {
+            return $this->template;
         } else {
-            return self::getGlobalSmarty();
+            return self::_getSmarty();
         }
     }
 
@@ -412,11 +408,11 @@ class SmartTemplate extends Object
                     "' instead.", E_USER_WARNING);
                 return false;
             }
-            $this->localSmarty->assign($var);
+            $this->template->assign($var);
 
         /* 2) assign to var identified by $varName */
         } else {
-            $this->localSmarty->assign($varName, $var);
+            $this->template->assign($varName, $var);
         }
         return true;
 
@@ -467,14 +463,14 @@ class SmartTemplate extends Object
             assert('!isset($key); /* cannot redeclare variable $key */');
             foreach (array_keys($var) as $key)
             {
-                $this->localSmarty->assignByRef($key, $var[$key]);
+                $this->template->assignByRef($key, $var[$key]);
             }
             unset($key);
             return true;
 
         /* 2) assign to var identified by $varName */
         } else {
-            $this->localSmarty->assignByRef($varName, $var);
+            $this->template->assignByRef($varName, $var);
             return true;
         }
 
@@ -519,7 +515,7 @@ class SmartTemplate extends Object
         $template = clone $this;
         $template->setPath($filename);
         $template->setVar('FILE_IS_INCLUDE', true);
-        $this->localSmarty->assign("$varName", $template->toString());
+        $this->template->assign("$varName", $template->toString());
         return true;
     }
 
@@ -554,7 +550,7 @@ class SmartTemplate extends Object
         if (preg_match("/.*\.(register|config|cfg|lock|dat|htaccess|php|inc|conf)/Ui", $filename)) {
             throw new InvalidArgumentException("Access denied for file '$filename'.");
         }
-        $this->localSmarty->template_resource = "$filename";
+        $this->template->template_resource = "$filename";
         return $this;
     }
 
@@ -582,7 +578,7 @@ class SmartTemplate extends Object
             chmod($dir . '/.htaccess', 0550);
         }
         /* 2) clear Smarty cache */
-        $smarty = self::getGlobalSmarty();
+        $smarty = self::_getSmarty();
         $smarty->clearAllCache();
 
         /* 3) clear Yana cache */
@@ -648,7 +644,7 @@ class SmartTemplate extends Object
         assert('is_string($name); // Wrong type for argument $name. String expected.');
         assert('is_callable($code); // Wrong type for argument $code. Not a callable resource.');
 
-        $smarty = self::getGlobalSmarty();
+        $smarty = self::_getSmarty();
         $smarty->registered_plugins[Smarty::PLUGIN_FUNCTION][$name] = array($code, true);
         return $this;
     }
@@ -673,7 +669,7 @@ class SmartTemplate extends Object
         assert('is_string($name); // Wrong type for argument $name. String expected.');
         assert('is_callable($code); // Wrong type for argument $code. Not a callable resource.');
 
-        $smarty = self::getGlobalSmarty();
+        $smarty = self::_getSmarty();
         $smarty->registered_plugins[Smarty::PLUGIN_MODIFIER][$name] = array($code, true);
         return $this;
     }
@@ -698,7 +694,7 @@ class SmartTemplate extends Object
         assert('is_string($name); // Wrong type for argument $name. String expected.');
         assert('is_callable($code); // Wrong type for argument $code. Not a callable resource.');
 
-        $smarty = self::getGlobalSmarty();
+        $smarty = self::_getSmarty();
         $smarty->registered_plugins[Smarty::PLUGIN_BLOCK][$name] = array($code, true);
         return $this;
     }
@@ -720,7 +716,7 @@ class SmartTemplate extends Object
         assert('is_string($name); // Wrong argument type for argument 2. String expected.');
         assert('!empty($name); // Argument 2 cannot be empty.');
 
-        $smarty = self::getGlobalSmarty();
+        $smarty = self::_getSmarty();
         unset($smarty->registered_plugins[Smarty::PLUGIN_FUNCTION][$name]);
     }
 
@@ -741,7 +737,7 @@ class SmartTemplate extends Object
         assert('is_string($name); // Wrong argument type for argument 2. String expected.');
         assert('!empty($name); // Argument 2 cannot be empty.');
 
-        $smarty = self::getGlobalSmarty();
+        $smarty = self::_getSmarty();
         unset($smarty->registered_plugins[Smarty::PLUGIN_MODIFIER][$name]);
     }
 
@@ -762,7 +758,7 @@ class SmartTemplate extends Object
         assert('is_string($name); // Wrong argument type for argument 2. String expected.');
         assert('!empty($name); // Argument 2 cannot be empty.');
 
-        $smarty = self::getGlobalSmarty();
+        $smarty = self::_getSmarty();
         unset($smarty->registered_plugins[Smarty::PLUGIN_BLOCK][$name]);
     }
 
@@ -776,8 +772,8 @@ class SmartTemplate extends Object
      */
     public function getPath()
     {
-        assert('is_string($this->localSmarty->template_resource); // Unexpected result: Template path is not a string');
-        return $this->localSmarty->template_resource;
+        assert('is_string($this->template->template_resource); // Unexpected result: Template path is not a string');
+        return $this->template->template_resource;
     }
 
     /**

@@ -258,7 +258,7 @@ class SmartView extends SmartTemplate
     {
         // import vars from global registry and overwrite local vars
         if (isset($GLOBALS['YANA'])) {
-            $this->localSmarty->assign($GLOBALS['YANA']->getVar('*'));
+            $this->template->assign($GLOBALS['YANA']->getVar('*'));
         }
         return parent::toString();
     }

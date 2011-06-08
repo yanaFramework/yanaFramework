@@ -563,8 +563,8 @@ class Mailer extends SmartTemplate
         if (isset($YANA)) {
             /* import only non-existing vars */
             $vars = $YANA->getVar('*');
-            $vars = Hashtable::merge($vars, $this->localSmarty->getTemplateVars());
-            $this->localSmarty->assign($vars);
+            $vars = Hashtable::merge($vars, $this->template->getTemplateVars());
+            $this->template->assign($vars);
         }
         return parent::toString();
     }
