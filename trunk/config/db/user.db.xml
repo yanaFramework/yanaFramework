@@ -238,7 +238,8 @@
     	<declaration>
     		<string
     			name="group_id"
-    			length="32">
+    			length="32"
+    			title='ID'>
                 <grant update="no"/>
     		</string>
     		<string
@@ -254,7 +255,8 @@
     	<declaration>
     		<string
     			name="role_id"
-    			length="32">
+    			length="32"
+    			title='ID'>
                 <grant update="no"/>
     		</string>
     		<string
