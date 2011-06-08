@@ -73,8 +73,8 @@ class SmartHtmlProcessorUtility extends Utility
      *
      * @access  public
      * @static
-     * @param   string  $source         HTML source
-     * @param   Smarty  $templateClass  template class
+     * @param   string                    $source         HTML source
+     * @param   Smarty_Internal_Template  $templateClass  template class
      * @return  string
      * @ignore
      */
@@ -96,7 +96,7 @@ class SmartHtmlProcessorUtility extends Utility
             trigger_error("Illegal function name: {$tag[0]}", E_USER_ERROR);
             exit(1);
         }
-        unset ($pattern);
+        unset($pattern);
         /**
          * if file is included, display body content only
          */
@@ -127,23 +127,24 @@ class SmartHtmlProcessorUtility extends Utility
         /**
          * resolve relative path names
          */
-        $basedir = (string) $templateClass->getTemplateVars('BASEDIR');
+        $basedir = (string) dirname($templateClass->buildTemplateFilepath());
         if (!empty($basedir)) {
-            $pattern = '/('. YANA_LEFT_DELIMITER_REGEXP . ')import\s+(?:preparser(?:="true")?\s+|)file="(\S*)(".*' .
+            $basedir .= '/';
+            $pattern = '/(' . YANA_LEFT_DELIMITER_REGEXP . ')import\s+(?:preparser(?:="true")?\s+|)file="(\S*)(".*' .
                 YANA_RIGHT_DELIMITER_REGEXP . ')/Ui';
             preg_match_all($pattern, $source, $match2);
             for ($i = 0; $i < count($match2[0]); $i++)
             {
                 if (preg_match('/\sliteral\s/i', $match2[0][$i])) {
-                    $pattern = '/'.preg_quote($match2[0][$i], '/').'/i';
+                    $pattern = '/' . preg_quote($match2[0][$i], '/') . '/i';
                     $source = preg_replace($pattern, preg_replace("/\sliteral\s/i", " ", $match2[0][$i]), $source);
                 } elseif (preg_match('/\spreparser\s/i', $match2[0][$i])) {
                     $replacementPattern = "/.*<body[^>]*>(.*)<\/body>.*/si";
-                    $replacement = preg_replace($replacementPattern, "\\1", implode("", file($basedir.$match2[2][$i])));
-                    $pattern = '/'.preg_quote($match2[0][$i], '/').'/i';
+                    $replacement = preg_replace($replacementPattern, "\\1", implode("", file($basedir . $match2[2][$i])));
+                    $pattern = '/' . preg_quote($match2[0][$i], '/') . '/i';
                     $source = preg_replace($pattern, $replacement, $source);
                 } else {
-                    $replace = $match2[1][$i].'import file="'.$basedir.$match2[2][$i].$match2[3][$i];
+                    $replace = $match2[1][$i] . 'import file="' . $basedir . $match2[2][$i] . $match2[3][$i];
                     $source = str_replace($match2[0][$i], $replace, $source);
                 }
             }
@@ -152,19 +153,19 @@ class SmartHtmlProcessorUtility extends Utility
             preg_match_all($pattern, $source, $match2);
             for ($i = 0; $i < count($match2[0]); $i++)
             {
-                    $pattern = '/'.preg_quote($match2[0][$i], '/').'/i';
-                    $replacement = $match2[1][$i].'insert file="'.$basedir.$match2[2][$i].$match2[3][$i];
-                    $source = preg_replace($pattern, $replacement, $source);
+                $pattern = '/' . preg_quote($match2[0][$i], '/') . '/i';
+                $replacement = $match2[1][$i] . 'insert file="' . $basedir . $match2[2][$i] . $match2[3][$i];
+                $source = preg_replace($pattern, $replacement, $source);
             }
 
             preg_match_all('/ background\s*=\s*"(\S*)"/i', $source, $match2);
             for ($i = 0; $i < count($match2[1]); $i++)
             {
                 $pattern = '/^https?:\/\/\S*/i';
-                $secondPattern = '/^'.YANA_LEFT_DELIMITER_REGEXP.'\$PHP_SELF'.YANA_RIGHT_DELIMITER_REGEXP.'/i';
+                $secondPattern = '/^' . YANA_LEFT_DELIMITER_REGEXP . '\$PHP_SELF' . YANA_RIGHT_DELIMITER_REGEXP . '/i';
                 if (!preg_match($pattern, $match2[1][$i]) && !preg_match($secondPattern, $match2[1][$i])) {
-                    $pattern = '/ background\s*=\s*"'.preg_quote($match2[1][$i], '/').'"/i';
-                    $source = preg_replace($pattern, ' background="'.$basedir.$match2[1][$i].'"', $source);
+                    $pattern = '/ background\s*=\s*"' . preg_quote($match2[1][$i], '/') . '"/i';
+                    $source = preg_replace($pattern, ' background="' . $basedir . $match2[1][$i] . '"', $source);
                 }
             }
             $pattern = '/ src\s*=\s*"((?!' . YANA_LEFT_DELIMITER_REGEXP . '|http:|https:)\S*)"/i';
@@ -176,10 +177,9 @@ class SmartHtmlProcessorUtility extends Utility
             $pattern = '/ url\(("|\')((?!' . YANA_LEFT_DELIMITER_REGEXP . '|http:|https:)[^\1]*?)\1\)/i';
             $source = preg_replace($pattern, ' url($1' . $basedir . '$2$1)', $source);
 
-            $pattern = '/ href\s*=\s*"((?!' . YANA_LEFT_DELIMITER_REGEXP . '|http:|https:|javascript:|\&\#109\;'.
+            $pattern = '/ href\s*=\s*"((?!' . YANA_LEFT_DELIMITER_REGEXP . '|http:|https:|javascript:|\&\#109\;' .
                 '\&\#97\;\&\#105\;\&\#108\;\&\#116\;\&\#111\;\&\#58\;|mailto:)\S*)"/i';
             $source = preg_replace($pattern, ' href="' . $basedir . '$1"', $source);
-
         } // end if
 
         return $source;
