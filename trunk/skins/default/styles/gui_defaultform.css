@@ -58,7 +58,6 @@
     background-repeat: repeat-x;
 }
 .gui_generator_view_details tr:hover > *,
-.gui_generator_view_seperated .gui_generator_thead:hover,
 .gui_generator_view_seperated .gui_generator_tbody .gui_generator_tr:hover,
 .gui_generator_view .gui_generator_view_list li:hover,
 .gui_generator_edit tr:hover
@@ -115,12 +114,13 @@
     background-image: url('td_bgd.png');
     background-repeat: repeat-x;
     max-width: 800px;
+    color: #000;
 }
 .gui_generator_view_details tr th
 {
     width: 10%;
     padding: 2px;
-    background-color: #e8e3de;
+    background-color: #d8d4ce;
     background-image: url('th_v_bgd.png');
     background-repeat: repeat-y;
     border-right: 1px solid #777;
@@ -128,9 +128,12 @@
     border-top: 1px solid #ddd;
     border-left: 1px solid #ccc;
     white-space: nowrap;
+    color: #000;
 }
+.gui_generator_view_details tr:hover th,
 .gui_generator_view_details tr th:hover
 {
+    background-color: #e5d9c1;
     background-image: url('th_v_hover_bgd.gif');
 }
 /* reserve space after column label for filter and sort-controls */
@@ -278,6 +281,12 @@
     /* white-space: nowrap; */
     /* height: 30px; */
     /* overflow: hidden; */
+}
+
+.gui_generator_view_seperated .gui_generator_thead:hover
+{
+    background-color: #e5d9c1;
+    background-image: url('th_hover_bgd.gif');
 }
 .gui_generator_view_seperated .gui_generator_thead .gui_generator_tr
 {
@@ -581,15 +590,11 @@ a.gui_generator_ext_link img
 {
     color: #000;
 }
+.option .gui_generator_config .optionbody,
 .gui_generator_config .optionbody
 {
     font-size: 13px;
-    font-family: 'Arial', 'Helvetica', sans-serif;
-    font-weight: bold;
-}
-.gui_generator_config .optionbody
-{
-    padding-bottom: 10px;
+    padding-bottom: 2em;
 }
 .gui_generator_config .optionitem
 {

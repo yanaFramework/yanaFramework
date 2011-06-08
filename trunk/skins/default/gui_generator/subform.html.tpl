@@ -1,4 +1,4 @@
-{if $form->getFields()}
+{if $form->getFields() || $form->hasAllInput()}
     <fieldset id="{$form->getName()}-edit" class="gui_generator_pane">
         {if $form->getTitle()}<legend onclick="$(this).find('~ div, ~ input').toggle('slow')">{$form->getTitle()}</legend>{/if}
         <form method="post" action="{$PHP_SELF}" enctype="multipart/form-data" accept-charset="UTF-8" class="gui_generator_toolbar" id="{$form->getName()}-toolbar">
