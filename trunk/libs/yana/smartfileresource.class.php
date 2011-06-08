@@ -81,11 +81,6 @@ class SmartFileResource extends SmartAbstractResource
         assert('is_string($filename); // Wrong argument type argument 1. String expected');
         if (is_file($filename)) {
             $output = file_get_contents($filename);
-
-            if (preg_match("/^.*\//", $filename, $basedir)) {
-                $smarty->assign('BASEDIR', $basedir[0]);
-            }
-
             return true;
         } else {
             return false;
