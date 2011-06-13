@@ -5,7 +5,7 @@
             {import file="$advanced_fields"}
         {/if}
         <div class="multicol2">
-            <div class="col_left">                
+            <div class="col_left">
                 <label for="title">{lang id="calendar_fields.title"}:</label><br />
                 <label for="category">{lang id="calendar_fields.category"}:</label><br />
                 <label for="location">{lang id="calendar_fields.location"}:</label><br />
@@ -68,7 +68,7 @@
                     <!-- more options for display days -->
                     <input type="radio" name="dayOption" id="dayInterval" value="byDay" />
                     <span class="left">{lang id="calendar_fields.all_day"}</span>
-                    
+
                     <input type="radio" name="dayOption" id="dayNoInterval" value="byWeekDays" />
                     <span class="left">{lang id="calendar_fields.by_workday"}</span>
                     <br class="clear_both"/>
@@ -91,7 +91,7 @@
                     {/foreach}
                 </div>
                 <!-- End Weekly options -->
-                
+
 
                 <!-- Begin Monthly options -->
                 <div class="monthly" id="MONTHLY">
