@@ -477,49 +477,6 @@ class SmartTemplate extends Object
     }
 
     /**
-     * insert a file
-     *
-     * Load a file and assign it's content as a string
-     * to the provided template var.
-     *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * {@internal
-     *
-     * The following synopsis:
-     * <code>$smartTemplate->insertFile('*', string $filename)</code>
-     * has been dropped as of version 2.9.2.
-     *
-     * }}
-     *
-     * @access  public
-     * @param   string  $varName    variable name
-     * @param   string  $filename   filename
-     * @return  bool
-     */
-    public function insertFile($varName, $filename)
-    {
-        assert('is_string($varName); // Wrong argument type for argument 1. String expected.');
-        assert('!empty($varName); // Argument 1 must not be empty.');
-        assert('$varName !== "*"; // Argument 1 must not be a wildcard.');
-        assert('is_string($filename); // Wrong argument type for argument 2. String expected.');
-        assert('is_file($filename); // Argument 2 must be a valid file.');
-
-        if (!file_exists("$filename") || !is_readable("$filename")) {
-            trigger_error("The file '{$filename}' is not readable.", E_USER_WARNING);
-            return false;
-        }
-
-        /* import file */
-        /* @var $template SmartTemplate */
-        $template = clone $this;
-        $template->setPath($filename);
-        $template->setVar('FILE_IS_INCLUDE', true);
-        $this->template->assign("$varName", $template->toString());
-        return true;
-    }
-
-    /**
      * set filename of current template
      *
      * You may set another filename of a template to fetch.
