@@ -53,7 +53,8 @@
                 <!-- Begin Select Frequency -->
                 <div class="left">
                     <label for="freq">{lang id="calendar_fields.serial"}:
-                        <select name="freq" id="freq">
+                        <select name="freq" id="freq"
+                            onchange="$('#DAILY, #WEEKLY, #MONTHLY, #YEARLY').css('display', 'none'); $('#' + this.value).css('display', 'block')">
                             {foreach from=$frequencyOptions item=item key=key}
                                 <option value="{$item}">{lang id="calendar_fields.$item"}</option>
                             {/foreach}
