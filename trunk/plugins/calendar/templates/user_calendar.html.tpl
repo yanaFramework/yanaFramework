@@ -1025,11 +1025,6 @@
                                     $('#eventToolTip').hide();
                                 }
                             });
-                            // create tabs
-                            $('#tabs').tabs({
-                                fx : {opacity : 'toggle', duration : 'fast'},
-                                collapsible : true
-                            });
                             // insert keyword
                             $('#insertKeyword').click( function() {
                                 $('#agendaKeywordSelector option:selected').each( function() {
