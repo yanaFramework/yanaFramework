@@ -674,3 +674,8 @@ div.fc-event a span
 {
     padding: 0px 5px 0px 5px;
 }
+
+#dialog_event_form .event_field *
+{
+    font-size: inherit;
+}
