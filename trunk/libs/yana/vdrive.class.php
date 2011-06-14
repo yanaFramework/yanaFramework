@@ -78,7 +78,7 @@
  * @subpackage vdrive
  * @name       VDrive
  */
-class VDrive extends FileSystemResource implements IsReportable, Serializable
+class VDrive extends FileSystemResource implements \Yana\Report\IsReportable, \Serializable
 {
 
     /**#@+
@@ -587,15 +587,15 @@ class VDrive extends FileSystemResource implements IsReportable, Serializable
      * </code>
      *
      * @access  public
-     * @param   ReportXML  $report  base report
-     * @return  ReportXML
+     * @param   \Yana\Report\IsReport  $report  base report
+     * @return  \Yana\Report\IsReport
      * @name    VDrive::getReport()
      * @ignore
      */
-    public function getReport(ReportXML $report = null)
+    public function getReport(\Yana\Report\IsReport $report = null)
     {
         if (is_null($report)) {
-            $report = ReportXML::createReport(__CLASS__);
+            $report = \Yana\Report\Xml::createReport(__CLASS__);
         }
         $report->addText("Base directory: {$this->baseDir}");
 

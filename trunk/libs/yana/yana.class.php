@@ -47,8 +47,9 @@
  * @package     yana
  * @subpackage  core
  */
-final class Yana extends Singleton implements IsReportable
+final class Yana extends Singleton implements \Yana\Report\IsReportable
 {
+
     /**
      * This is a place-holder for the singleton's instance
      *
@@ -1290,15 +1291,15 @@ final class Yana extends Singleton implements IsReportable
      * </code>
      *
      * @access  public
-     * @param   ReportXML  $report  base report
-     * @return  ReportXML
+     * @param   \Yana\Report\IsReport  $report  base report
+     * @return  \Yana\Report\IsReport
      * @name    Yana::getReport()
      * @ignore
      */
-    public function getReport(ReportXML $report = null)
+    public function getReport(\Yana\Report\IsReport $report = null)
     {
         if (is_null($report)) {
-            $report = ReportXML::createReport(__CLASS__);
+            $report = \Yana\Report\Xml::createReport(__CLASS__);
         }
 
         /**
@@ -1384,22 +1385,24 @@ final class Yana extends Singleton implements IsReportable
             } else {
                 $subreport->addText("{$root} = " . md5_file($root));
             }
-        } /* end foreach */
+        } // end foreach
         foreach (glob(dirname(__FILE__) . '/*.php') as $root)
         {
             $subreport->addText("{$root} = " . md5_file($root));
         }
+        unset($subreport);
 
         /**
          *  5) Add subreports
          */
         foreach ($this as $name => $member)
         {
-            if (is_object($member) && $member instanceof IsReportable) {
-                $subReport = $report->addReport("$name");
-                $member->getReport($subReport);
+            if (is_object($member) && $member instanceof \Yana\Report\IsReportable) {
+                $subreport = $report->addReport("$name");
+                $member->getReport($subreport);
             }
         }
+        unset($subreport);
 
         /**
          * 6) check icons
@@ -1604,7 +1607,7 @@ final class Yana extends Singleton implements IsReportable
                             return null;
                         }
                     }
-                } /* end for */
+                } // end for
                 $db->commit();
             } else {
                 $db->rollback();

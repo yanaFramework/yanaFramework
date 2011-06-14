@@ -36,7 +36,7 @@
  *
  * @ignore
  */
-class Skin implements IsReportable
+class Skin implements \Yana\Report\IsReportable
 {
 
     /**
@@ -888,7 +888,7 @@ class Skin implements IsReportable
     /**
      * get a report
      *
-     * Returns a ReportXML object, which you may print, transform or output to a file.
+     * Returns a \Yana\Report\Xml object, which you may print, transform or output to a file.
      * It informs you about configuration issues or errors.
      *
      * Example:
@@ -909,15 +909,15 @@ class Skin implements IsReportable
      * </code>
      *
      * @access  public
-     * @param   ReportXML  $report  base report
-     * @return  ReportXML
+     * @param   \Yana\Report\IsReport  $report  base report
+     * @return  \Yana\Report\IsReport
      * @name    Skin::getReport()
      * @ignore
      */
-    public function getReport(ReportXML $report = null)
+    public function getReport(\Yana\Report\IsReport $report = null)
     {
         if (is_null($report)) {
-            $report = ReportXML::createReport(__CLASS__);
+            $report = \Yana\Report\Xml::createReport(__CLASS__);
         }
         $report->addText("Skin directory: {$this->_name}");
 

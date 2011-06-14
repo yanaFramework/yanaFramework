@@ -38,7 +38,7 @@
  *
  * @ignore
  */
-abstract class VDriveMountpoint extends Object implements IsReportable
+abstract class VDriveMountpoint extends Object implements \Yana\Report\IsReportable
 {
     /**#@+
      * @ignore
@@ -163,16 +163,16 @@ abstract class VDriveMountpoint extends Object implements IsReportable
     /**
      * get a report of this mountpoint
      *
-     * Returns a ReportXML object, which you may print, transform or output to a file.
+     * Returns a report, which you may print, transform or output to a file.
      *
      * @access  public
-     * @param   ReportXML  $report  reportXml object
-     * @return  ReportXML
+     * @param   \Yana\Report\IsReport  $report  base report
+     * @return  \Yana\Report\IsReport
      */
-    public function getReport(ReportXML $report = null)
+    public function getReport(\Yana\Report\IsReport $report = null)
     {
         if (is_null($report)) {
-            $report = ReportXML::createReport(__CLASS__);
+            $report = \Yana\Report\Xml::createReport(__CLASS__);
         }
 
         if (isset($this->mountpoint)) {

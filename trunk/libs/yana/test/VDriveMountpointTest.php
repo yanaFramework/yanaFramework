@@ -60,6 +60,7 @@ class VDriveMountpointImplementationTest extends VDriveMountpoint
  */
 class VDriveMountpointTest extends PHPUnit_Framework_TestCase
 {
+
     /**
      * @var    VDriveMountpoint
      * @access protected
@@ -96,9 +97,9 @@ class VDriveMountpointTest extends PHPUnit_Framework_TestCase
     public function testMount()
     {
         $mount = $this->object->mount();
-        $this->assertTrue($mount, 'assert failed, mount has failed');
+        $this->assertTrue($mount, 'mount has failed');
         $mount = $this->object->mount();
-        $this->assertTrue($mount, 'assert failed , already mounted');
+        $this->assertTrue($mount, 'already mounted');
     }
 
     /**
@@ -119,8 +120,8 @@ class VDriveMountpointTest extends PHPUnit_Framework_TestCase
     public function testGetPath()
     {
         $getPath = $this->object->getPath();
-        $this->assertType('string', $getPath, 'assert failed, the value should be of type string');
-        $this->assertEquals(CWD.'resources/file.txt', $getPath, 'assert failed, the given path should be the same as the expected');
+        $this->assertType('string', $getPath, 'the value should be of type string');
+        $this->assertEquals(CWD.'resources/file.txt', $getPath, 'the given path should be the same as the expected');
     }
 
     /**
@@ -131,8 +132,8 @@ class VDriveMountpointTest extends PHPUnit_Framework_TestCase
     public function testGetType()
     {
         $type = $this->object->getType();
-        $this->assertType('string', $type, 'assert failed, the value should be of type string');
-        $this->assertEquals('file', $type, 'assert failed, tha value of the given variable should be "file"');
+        $this->assertType('string', $type, 'the value should be of type string');
+        $this->assertEquals('file', $type, 'the value of the given variable should be "file"');
     }
 
     /**
@@ -143,8 +144,7 @@ class VDriveMountpointTest extends PHPUnit_Framework_TestCase
     public function testGetReport()
     {
         $getReport = $this->object->getReport();
-        $this->assertType('object', $getReport, 'assert failed, the value is not of type object');
-        $this->assertTrue($getReport instanceof ReportXML, 'assert failed, the value must be an instance of reportXML');
+        $this->assertTrue($getReport instanceof \Yana\Report\Xml, 'value must be an instance of \Yana\Report\Xml');
     }
 
     /**
@@ -155,7 +155,7 @@ class VDriveMountpointTest extends PHPUnit_Framework_TestCase
     public function testToString()
     {
         $string = $this->object->toString();
-        $this->assertType('string', $string, 'assert failed, the value is not of type string');
+        $this->assertType('string', $string, 'the value is not of type string');
     }
 
     /**
@@ -166,10 +166,10 @@ class VDriveMountpointTest extends PHPUnit_Framework_TestCase
     public function testIsMounted()
     {
         $isMounted = $this->object->isMounted();
-        $this->assertFalse($isMounted, 'assert failed, the vDrive is not mounted');
+        $this->assertFalse($isMounted, 'the vDrive is not mounted');
         $this->object->mount();
         $isMounted = $this->object->isMounted();
-        $this->assertTrue($isMounted, 'assert failed, the vDrive already mounted');
+        $this->assertTrue($isMounted, 'the vDrive already mounted');
 
     }
 
@@ -189,7 +189,7 @@ class VDriveMountpointTest extends PHPUnit_Framework_TestCase
         $vdrive->setRequirements(true,true,true);
         $equal = $vdrive->equals($anotherVDrive);
         //check
-        $this->assertFalse($equal, 'assert failed, the objects should be equal');
+        $this->assertFalse($equal, 'the objects should be equal');
     }
 
     /**
@@ -200,10 +200,10 @@ class VDriveMountpointTest extends PHPUnit_Framework_TestCase
     public function testRequiresReadable()
     {
        $requiresReadable = $this->object->requiresReadable();
-       $this->assertFalse($requiresReadable, 'assert failed, readable is not set');
+       $this->assertFalse($requiresReadable, 'readable is not set');
        $this->object->setRequirements(true);
        $requiresReadable = $this->object->requiresReadable();
-       $this->assertTrue($requiresReadable, 'assert failed, readable is set');
+       $this->assertTrue($requiresReadable, 'readable is set');
     }
 
     /**
@@ -214,10 +214,10 @@ class VDriveMountpointTest extends PHPUnit_Framework_TestCase
     public function testRequiresWriteable()
     {
        $requiresWriteable = $this->object->requiresWriteable();
-       $this->assertFalse($requiresWriteable, 'assert failed, writeable is not set');
+       $this->assertFalse($requiresWriteable, 'writeable is not set');
        $this->object->setRequirements(true, true);
        $requiresWriteable = $this->object->requiresWriteable();
-       $this->assertTrue($requiresWriteable, 'assert failed, writeable is set');
+       $this->assertTrue($requiresWriteable, 'writeable is set');
     }
 
     /**
@@ -228,19 +228,25 @@ class VDriveMountpointTest extends PHPUnit_Framework_TestCase
     public function testRequiresExecutable()
     {
        $requiresExecutable = $this->object->requiresExecutable();
-       $this->assertFalse($requiresExecutable, 'assert failed, executable is not set');
+       $this->assertFalse($requiresExecutable, 'executable is not set');
        $this->object->setRequirements(true, true, true);
        $requiresExecutable = $this->object->requiresExecutable();
-       $this->assertTrue($requiresExecutable, 'assert failed, executable is set');
+       $this->assertTrue($requiresExecutable, 'executable is set');
     }
 
-    public function test() {
+    /**
+     * @test
+     */
+    public function test()
+    {
         $vDrive = new VDriveMountpointImplementationTest('');
         $result = $vDrive->getPath();
         $this->assertFalse($result, 'asset failed the path is empty.');
-        $vDrive->setRequirements(true,true,true);
+        $vDrive->setRequirements(true, true, true);
         $report = $vDrive->getReport();
-        unset ($vDrive);
+        unset($vDrive);
     }
+
 }
+
 ?>

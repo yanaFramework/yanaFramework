@@ -25,8 +25,10 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Report;
+
 /**
- * Report Configuration
+ * Report Configuration.
  *
  * This is meant to be used to create new report files.
  *
@@ -37,29 +39,30 @@
  *
  * Example:
  * <code>
- * $report = ReportXML::createReport();
+ * $report = Xml::createReport();
  * $group = $report->addGroup("");
  * </code>
  *
  * @access     public
  * @package    yana
- * @subpackage error_reporting
- * @name       ReportXML
+ * @subpackage report
+ * @name       Xml
  *
  * @ignore
  */
-class ReportXML extends \SimpleXMLElement
+class Xml extends \SimpleXMLElement implements IsReport
 {
+
     /**
-     * <<factory>> load a file
+     * <<factory>> load a file.
      *
-     * Returns the file identified by $path as a ReportXML object.
+     * Returns the file identified by $path as a Xml object.
      * Returns NULL on error.
      *
      * @access  public
      * @static
      * @param   string  $path  file path
-     * @return  ReportXML
+     * @return  \Yana\Report\Xml
      */
     public static function loadFile($path)
     {
@@ -69,43 +72,39 @@ class ReportXML extends \SimpleXMLElement
             return \simplexml_load_file($path, __CLASS__);
 
         } catch (\Exception $e) {
-            Log::report("Error in report file: '$path'.", E_USER_WARNING, $e->getMessage());
+            \Log::report("Error in report file: '$path'.", E_USER_WARNING, $e->getMessage());
             return null;
         }
     }
 
     /**
-     * <<factory>> create a report
+     * <<factory>> create a report.
      *
-     * Returns the an empty file identified by $path as a ReportXML object.
-     *
-     * A report may have a title and contains a number of sub-reports or
-     * messages.
+     * A report may have a title and contains a number of sub-reports or messages.
      *
      * @access  public
      * @static
      * @param   string  $title  report title
-     * @return  ReportXML
+     * @return  \Yana\Report\Xml
      */
     public static function createReport($title = "")
     {
         assert('is_string($title); // Wrong type for argument 1. String expected');
+        $content = "";
         if (!empty($title)) {
-            return new ReportXML("<report><title>$title</title></report>");
-        } else {
-            return new ReportXML("<report></report>");
+            $content = "<title>$title</title>";
         }
+        return new self("<report>$content</report>");
     }
 
     /**
-     * add a sub-report
-     *
      * Adds a sub-report.
+     *
      * It may have a title, contain more sub-reports or messages.
      *
      * @access  public
      * @param   string  $title  report title
-     * @return  ReportXML
+     * @return  \Yana\Report\Xml
      */
     public function addReport($title = "")
     {
@@ -122,8 +121,6 @@ class ReportXML extends \SimpleXMLElement
     }
 
     /**
-     * get list of sub-reports
-     *
      * Returns a list of reports.
      *
      * @access  public
@@ -139,8 +136,6 @@ class ReportXML extends \SimpleXMLElement
     }
 
     /**
-     * get title
-     *
      * Returns the title of a report.
      *
      * @access  public
@@ -156,13 +151,11 @@ class ReportXML extends \SimpleXMLElement
     }
 
     /**
-     * add text
-     *
      * Adds a neutral text to the report.
      *
      * @access  public
      * @param   string  $message  text of message
-     * @return  string
+     * @return  \Yana\Report\Xml
      */
     public function addText($message)
     {
@@ -171,11 +164,10 @@ class ReportXML extends \SimpleXMLElement
         if ($this->getName() === 'report') {
             $this->addChild("text", (string) $message);
         }
+        return $this;
     }
 
     /**
-     * get list of texts
-     *
      * Returns a list of texts.
      *
      * @access  public
@@ -191,9 +183,8 @@ class ReportXML extends \SimpleXMLElement
     }
 
     /**
-     * add notice
-     *
      * Adds a notice to the report.
+     *
      * A notice is meant to inform about circumstances
      * that may or may be not the result of an error.
      *
@@ -204,7 +195,7 @@ class ReportXML extends \SimpleXMLElement
      *
      * @access  public
      * @param   string  $message  text of message
-     * @return  string
+     * @return  \Yana\Report\Xml
      */
     public function addNotice($message)
     {
@@ -213,11 +204,10 @@ class ReportXML extends \SimpleXMLElement
         if ($this->getName() === 'report') {
             $this->addChild("notice", (string) $message);
         }
+        return $this;
     }
 
     /**
-     * get list of notices
-     *
      * Returns a list of notices.
      *
      * @access  public
@@ -233,9 +223,8 @@ class ReportXML extends \SimpleXMLElement
     }
 
     /**
-     * add warning
-     *
      * Adds a warning to the report.
+     *
      * A warning is meant to inform the user that something is wrong.
      * While the issue itself is not critical, it may lead to more severe problems.
      *
@@ -244,7 +233,7 @@ class ReportXML extends \SimpleXMLElement
      *
      * @access  public
      * @param   string  $message  text of message
-     * @return  string
+     * @return  \Yana\Report\Xml
      */
     public function addWarning($message)
     {
@@ -253,11 +242,10 @@ class ReportXML extends \SimpleXMLElement
         if ($this->getName() === 'report') {
             $this->addChild("warning", (string) $message);
         }
+        return $this;
     }
 
     /**
-     * get list of warnings
-     *
      * Returns a list of warnings.
      *
      * @access  public
@@ -273,9 +261,8 @@ class ReportXML extends \SimpleXMLElement
     }
 
     /**
-     * add error
-     *
      * Adds an error to the report.
+     *
      * An error is meant to inform the user about a critical problem that
      * prevents the software from working properly.
      *
@@ -286,7 +273,7 @@ class ReportXML extends \SimpleXMLElement
      *
      * @access  public
      * @param   string  $message  text of message
-     * @return  string
+     * @return  \Yana\Report\Xml
      */
     public function addError($message)
     {
@@ -295,11 +282,10 @@ class ReportXML extends \SimpleXMLElement
         if ($this->getName() === 'report') {
             $this->addChild("error", (string) $message);
         }
+        return $this;
     }
 
     /**
-     * get list of errors
-     *
      * Returns a list of errors.
      *
      * @access  public
@@ -315,9 +301,7 @@ class ReportXML extends \SimpleXMLElement
     }
 
     /**
-     * <<magic>> convert to string
-     *
-     * Outputs the contents as an XML string.
+     * <<magic>> Outputs the contents as an XML string.
      *
      * @access  public
      * @return  string
@@ -329,8 +313,6 @@ class ReportXML extends \SimpleXMLElement
     }
 
     /**
-     * convert to string
-     *
      * Outputs the contents as an XML string.
      *
      * @access  public
@@ -342,9 +324,7 @@ class ReportXML extends \SimpleXMLElement
     }
 
     /**
-     * check type of node
-     *
-     * Returns bool(true) if the node has the given type and bool(false) otherwise.
+     * Returns bool(true) if the node is 'report'.
      *
      * @access  public
      * @return  bool
@@ -355,9 +335,7 @@ class ReportXML extends \SimpleXMLElement
     }
 
     /**
-     * check type of node
-     *
-     * Returns bool(true) if the node has the given type and bool(false) otherwise.
+     * Returns bool(true) if the node is 'title'.
      *
      * @access  public
      * @return  bool
@@ -368,9 +346,7 @@ class ReportXML extends \SimpleXMLElement
     }
 
     /**
-     * check type of node
-     *
-     * Returns bool(true) if the node has the given type and bool(false) otherwise.
+     * Returns bool(true) if the node is 'text'.
      *
      * @access  public
      * @return  bool
@@ -381,9 +357,7 @@ class ReportXML extends \SimpleXMLElement
     }
 
     /**
-     * check type of node
-     *
-     * Returns bool(true) if the node has the given type and bool(false) otherwise.
+     * Returns bool(true) if the node is 'notice'.
      *
      * @access  public
      * @return  bool
@@ -394,9 +368,7 @@ class ReportXML extends \SimpleXMLElement
     }
 
     /**
-     * check type of node
-     *
-     * Returns bool(true) if the node has the given type and bool(false) otherwise.
+     * Returns bool(true) if the node is 'warning'.
      *
      * @access  public
      * @return  bool
@@ -407,9 +379,7 @@ class ReportXML extends \SimpleXMLElement
     }
 
     /**
-     * check type of node
-     *
-     * Returns bool(true) if the node has the given type and bool(false) otherwise.
+     * Returns bool(true) if the node is 'error'.
      *
      * @access  public
      * @return  bool
@@ -418,6 +388,7 @@ class ReportXML extends \SimpleXMLElement
     {
         return $this->getName() === 'error';
     }
+
 }
 
 ?>
