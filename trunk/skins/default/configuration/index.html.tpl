@@ -13,7 +13,7 @@
         <link rel="stylesheet" type="text/css" href="../styles/stdout.css"/>
     </head>
 
-<body>{if $USER_IS_EXPERT}{assign var="isExpertStyle" value=""}{else}{assign var="isExpertStyle" value="display:none;"}{/if}
+<body>{if $USER_IS_EXPERT}{$isExpertStyle=""}{else}{$isExpertStyle="display:none;"}{/if}
 <div id="table_configmenu">
 
   <h1>{lang id="CONFIGMENU"}</h1>
