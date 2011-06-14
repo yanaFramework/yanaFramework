@@ -1005,14 +1005,13 @@ class YanaUser extends Object
      * calculate password
      *
      * This function takes user name and password phrase as clear text and returns the
-     * SHA1-hash for this password.
+     * hash-code for this password.
      *
-     * @access  private
+     * @access  public
      * @static
      * @param   string  $salt   user name
      * @param   string  $text   password (clear text)
      * @return  string
-     * @ignore
      */
     public static function calculatePassword($salt, $text)
     {
