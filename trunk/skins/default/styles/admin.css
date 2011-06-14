@@ -119,9 +119,33 @@
     vertical-align: top;
     border-bottom: 1px solid #999;
 }
+#config_plugins .unselected_option
+{
+    background-image: url(plugin_blank.png);
+    background-repeat: no-repeat;
+}
+#config_plugins .unselected_option .config_plugin_image
+{
+    visibility: hidden;
+}
+#config_plugins .unselected_option:hover .config_plugin_image
+{
+    visibility: visible;
+    opacity: 0.5;
+    filter: alpha(opacity=20);
+}
 #config_plugins .unselected_option .title
 {
     border-bottom-color: #aac;
+}
+#config_plugins .unselected_option > a,
+#config_plugins .default_selected_option > a,
+#config_plugins .selected_option > a,
+#config_plugins .unselected_option > .title,
+#config_plugins .default_selected_option > .title,
+#config_plugins .selected_option > .title
+{
+    display: inline-block;
 }
 .default_selected_option
 {
