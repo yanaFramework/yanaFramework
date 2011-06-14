@@ -75,7 +75,7 @@ class plugin_diagnostics extends StdClass implements IsPlugin
         /* get report */
         assert('!isset($report); // Cannot redeclare var $report');
         $report = $YANA->getReport();
-        assert('$report instanceof ReportXML; // unexpected return type - instance of ReportXML expected');
+        assert('$report instanceof \Yana\Report\IsReport; // unexpected return type - instance of Report\IsReport expected');
 
         if ($xml) {
 
