@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Report;
+
 /**
  * <<Interface>> reportable object
  *
@@ -45,10 +47,11 @@ interface IsReportable
      * For details see: config/dtd/report.dtd
      *
      * @access  public
-     * @param   ReportXML  $report  base report
-     * @return  ReportXML
+     * @param   IsReport  $report  base report
+     * @return  IsReport
      */
-    public function getReport(ReportXML $report = null);
+    public function getReport(IsReport $report = null);
+
 }
 
 ?>
