@@ -78,7 +78,7 @@ class SmartHtmlProcessorUtility extends Utility
      * @return  string
      * @ignore
      */
-    public static function htmlPreProcessor($source, $templateClass)
+    public static function htmlPreProcessor($source, Smarty_Internal_Template $templateClass)
     {
         assert('is_string($source); // Wrong type for argument 1. String expected');
         global $YANA;
@@ -127,9 +127,15 @@ class SmartHtmlProcessorUtility extends Utility
         /**
          * resolve relative path names
          */
-        $basedir = (string) dirname($templateClass->buildTemplateFilepath());
+        $basedir = $templateClass->smarty->getTemplateVars('BASEDIR');
+        if (empty($basedir)) {
+            $basedir = (string) dirname($templateClass->buildTemplateFilepath());
+        }
         if (!empty($basedir)) {
             $basedir .= '/';
+            if ($basedir[0] === '.') {
+                $basedir = preg_replace('/^\.[\/\\\]/', '' ,$basedir);
+            }
             $pattern = '/(' . YANA_LEFT_DELIMITER_REGEXP . ')import\s+(?:preparser(?:="true")?\s+|)file="(\S*)(".*' .
                 YANA_RIGHT_DELIMITER_REGEXP . ')/Ui';
             preg_match_all($pattern, $source, $match2);

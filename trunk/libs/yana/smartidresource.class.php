@@ -80,6 +80,7 @@ class SmartIdResource extends SmartFileResource
     {
         assert('is_string($id); // Wrong argument type argument 1. String expected');
         $filename = Yana::getInstance()->getSkin()->getFile($id);
+        $smarty->assign('BASEDIR', dirname($filename));
         if (parent::getTemplate($filename, $output, $smarty)) {
             return true;
         } else {
