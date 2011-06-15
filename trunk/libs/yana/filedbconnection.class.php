@@ -1739,7 +1739,7 @@ class FileDbConnection extends Object
                 $rightOperand = str_replace('%', '.*', $rightOperand);
                 $rightOperand = str_replace('_', '.?', $rightOperand);
             case 'regexp':
-                return preg_match('/^' . $rightOperand . '$/i', $value) === 1;
+                return preg_match('/^' . $rightOperand . '$/is', $value) === 1;
             break;
 
             case '<':
