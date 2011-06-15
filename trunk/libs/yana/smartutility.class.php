@@ -204,8 +204,8 @@ class SmartUtility extends Utility
          */
         if (empty($array)) {
 
-            $registry = Registry::getGlobalInstance();
-            if ($registry instanceof Registy) {
+            $registry = \Yana\VDrive\Registry::getGlobalInstance();
+            if ($registry instanceof \Yana\VDrive\Registry) {
                 $array = $registry->getVar();
             }
 

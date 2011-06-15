@@ -156,7 +156,7 @@ class SmartTemplate extends Object
          * 1) Config Smarty
          */
         if (! self::$smarty instanceof Smarty) {
-            $registry = Registry::getGlobalInstance();
+            $registry = \Yana\VDrive\Registry::getGlobalInstance();
 
             self::$smarty = new \Smarty();
 
@@ -169,7 +169,7 @@ class SmartTemplate extends Object
             /**
              * 1.2) directories
              */
-            if ($registry instanceof Registry) {
+            if ($registry instanceof \Yana\VDrive\Registry) {
                 SmartUtility::loadSmilies($registry->getVar("PROFILE.SMILEYDIR"));
                 self::$smarty->template_dir = '.';
                 self::$smarty->config_dir = $registry->getVar('SKINCONFIGDIR');
@@ -522,7 +522,7 @@ class SmartTemplate extends Object
      */
     public static function clearCache()
     {
-        $registry = Registry::getGlobalInstance();
+        $registry = \Yana\VDrive\Registry::getGlobalInstance();
 
         /* 1) make sure .htaccess does'nt get deleted */
         $dir = '';

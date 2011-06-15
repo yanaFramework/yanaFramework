@@ -126,7 +126,7 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable
      * to read and write data to the global registry
      *
      * @access  private
-     * @var     Registry
+     * @var     \Yana\VDrive\Registry
      */
     private $_registry = null;
 
@@ -517,7 +517,7 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable
      * These settings may be read later by using Yana::getVar().
      *
      * @access  public
-     * @return  Registry
+     * @return  \Yana\VDrive\Registry
      * @throws  NotReadableException    when Registry file is not readable
      * @throws  InvalidSyntaxException  when Registry file could not be read or contains invalid syntax
      */
@@ -528,13 +528,13 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable
             $cacheFile = self::$_config['TEMPDIR'] . 'registry_' . self::getId() . '.tmp';
 
             // get configuration mode
-            Registry::useDefaults($this->isSafemode());
+            \Yana\VDrive\Registry::useDefaults($this->isSafemode());
 
             if (YANA_CACHE_ACTIVE === true && file_exists($cacheFile)) {
                 $this->_registry = unserialize(file_get_contents($cacheFile));
-                assert('$this->_registry instanceof Registry;');
+                assert('$this->_registry instanceof \Yana\VDrive\Registry;');
             } else {
-                $this->_registry = new Registry(self::$_config['CONFIGDRIVE'], "");
+                $this->_registry = new \Yana\VDrive\Registry(self::$_config['CONFIGDRIVE'], "");
                 $this->_registry->setVar("ID", self::getId());
                 $this->_registry->mergeVars('*', self::$_config);
             }
