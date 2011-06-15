@@ -235,7 +235,35 @@ class FormSetupBuilder extends Object
     public function setRows(array $rows = array())
     {
         $this->object->getContext('update')->setRows($rows);
+        $this->_buildHeader();
         $this->_buildFooter();
+        return $this;
+    }
+
+    /**
+     * Create info on visible entries.
+     *
+     * @access  protected
+     * @return  FormSetupBuilder
+     */
+    private function _buildHeader()
+    {
+        $entriesPerPage = $this->object->getEntriesPerPage();
+        $firstPage = $this->object->getPage() * $entriesPerPage;
+        $offsetPage = $firstPage + $entriesPerPage - 1;
+        $lastPage = $this->object->getEntryCount();
+        if ($offsetPage > $lastPage) {
+            $offsetPage = $lastPage;
+        }
+        $params = array(
+            'FIRST_PAGE' => $firstPage,
+            'OFFSET_PAGE' => $offsetPage,
+            'LAST_PAGE' => $lastPage
+        );
+        $lang = Language::getInstance();
+        $header = $lang->getVar("DESCR_SHOW");
+        $header = SmartUtility::replaceToken($header, $params);
+        $this->object->getContext('update')->setHeader($header);
         return $this;
     }
 

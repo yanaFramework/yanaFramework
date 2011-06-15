@@ -37,9 +37,9 @@ class FormSetupContextTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testGetName()
+    public function testGetContextName()
     {
-        $this->assertEquals('test', $this->object->getName());
+        $this->assertEquals('test', $this->object->getContextName());
     }
 
     /**
@@ -55,14 +55,14 @@ class FormSetupContextTest extends PHPUnit_Framework_TestCase
      */
     public function testUpdateRow()
     {
-        $newValues = array('b' => array('a' => 2), 'c' => array('d' => array(1, 2, 3)));
-        $oldValues = array('a' => 1, 'c' => array('d' => ''));
+        $newValues = array('b' => array('A' => 2), 'c' => array('D' => array(1, 2, 3)));
+        $oldValues = array('a' => 1, 'c' => array('D' => ''));
         $this->object->updateRow(1, $oldValues);
         $this->object->updateRow(1, $newValues);
         $row = $this->object->getRows()->offsetGet(1);
-        $this->assertEquals($oldValues['a'], $row['a']);
-        $this->assertEquals($newValues['b'], $row['b']);
-        $this->assertEquals($newValues['c'], $row['c']);
+        $this->assertEquals($oldValues['a'], $row['A']);
+        $this->assertEquals($newValues['b'], $row['B']);
+        $this->assertEquals($newValues['c'], $row['C']);
     }
 
     /**
@@ -153,6 +153,40 @@ class FormSetupContextTest extends PHPUnit_Framework_TestCase
     {
         $columnNames = array('a', 'B', 'Ä');
         $this->assertEquals($columnNames, $this->object->setColumnNames($columnNames)->getColumnNames());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetFooter()
+    {
+        $this->assertEquals(null, $this->object->getFooter());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetFooter()
+    {
+        $test = "ä\n'<\"Äß#.";
+        $this->assertEquals($test, $this->object->setFooter($test)->getFooter());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetHeader()
+    {
+        $this->assertEquals(null, $this->object->getHeader());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetHeader()
+    {
+        $test = "ä\n'<\"Äß#.";
+        $this->assertEquals($test, $this->object->setHeader($test)->getHeader());
     }
 
 }

@@ -63,6 +63,14 @@ class FormSetupContext extends Object
     private $_footer = "";
 
     /**
+     * Header text.
+     *
+     * @access  private
+     * @var     string
+     */
+    private $_header = "";
+
+    /**
      * Rows with values.
      *
      * @access  private
@@ -256,6 +264,31 @@ class FormSetupContext extends Object
     public function getFooter()
     {
         return $this->_footer;
+    }
+
+    /**
+     * Set header text.
+     *
+     * @access  public
+     * @param   string  $header  any text or HTML
+     * @return  FormSetupContext
+     */
+    public function setHeader($header)
+    {
+        assert('is_string($header); // Invalid argument $footer: string expected');
+        $this->_header = (string) $header;
+        return $this;
+    }
+
+    /**
+     * Get header text.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getHeader()
+    {
+        return $this->_header;
     }
 
     /**
