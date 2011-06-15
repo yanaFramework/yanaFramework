@@ -456,8 +456,8 @@ class ErrorUtility extends Utility
         $base_style = 'font-size: 13px; font-weight: normal; padding: 5px; border: 1px solid #888; text-align: left;';
         $show_details = true;
         /* for readability do not report errors twice */
-        $registry = Registry::getGlobalInstance();
-        if ($registry instanceof Registry) {
+        $registry = \Yana\VDrive\Registry::getGlobalInstance();
+        if ($registry instanceof \Yana\VDrive\Registry) {
             $laseErrNr = $registry->getVar('lasterror.nr');
             $laseErrFile = $registry->getVar('lasterror.file');
             $laseErrLine = $registry->getVar('lasterror.line');

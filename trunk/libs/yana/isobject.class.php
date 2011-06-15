@@ -67,6 +67,7 @@ interface IsObject
      * @return bool
      */
     public function equals(object $anotherObject);
+
 }
 
 ?>

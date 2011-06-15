@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\VDrive;
+
 /**
  * @ignore
  */
@@ -35,7 +37,7 @@ require_once dirname(__FILE__) . '/include.php';
  *
  * @package test
  */
-class RegistryTest extends PHPUnit_Framework_TestCase
+class RegistryTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var    Registry
@@ -223,5 +225,7 @@ class RegistryTest extends PHPUnit_Framework_TestCase
         $getValue = $this->registry->getVarByReference('BAR.ID1.ID2');
         $this->assertEquals('foo', $getValue, 'assert failed, expected "foo" as value');
     }
+
 }
+
 ?>

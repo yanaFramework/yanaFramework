@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: VDriveMountpoint
+ * PHPUnit test-case: Mountpoint
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,18 +25,20 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\VDrive;
+
 /**
  * @ignore
  */
 require_once dirname(__FILE__) . '/include.php';
 
 /**
- * Test implementation for abstract class VDriveMountpoint
+ * Test implementation for abstract class Mountpoint
  *
  * @package test
  * @ignore
  */
-class VDriveMountpointImplementationTest extends VDriveMountpoint
+class MountpointImplementationTest extends Mountpoint
 {
     /**
      * constructor
@@ -48,21 +50,21 @@ class VDriveMountpointImplementationTest extends VDriveMountpoint
     public function __construct($path)
     {
         $this->path = $path;
-        $this->mountpoint = new File($path);
+        $this->mountpoint = new \File($path);
         $this->type = "file";
     }
 }
 
 /**
- * Test class for VDriveMountpoint
+ * Test class for Mountpoint
  *
  * @package  test
  */
-class VDriveMountpointTest extends PHPUnit_Framework_TestCase
+class MountpointTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    VDriveMountpoint
+     * @var    Mountpoint
      * @access protected
      */
     protected $object;
@@ -75,7 +77,7 @@ class VDriveMountpointTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new VDriveMountpointImplementationTest(CWD . 'resources/file.txt');
+        $this->object = new MountpointImplementationTest(CWD . 'resources/file.txt');
     }
 
     /**
@@ -181,10 +183,10 @@ class VDriveMountpointTest extends PHPUnit_Framework_TestCase
     public function testEquals()
     {
         // change to an other source
-        $anotherVDrive = new VDriveMountpointImplementationTest(CWD . 'resources/file.txt');
+        $anotherVDrive = new MountpointImplementationTest(CWD . 'resources/file.txt');
         $anotherVDrive->mount();
         $anotherVDrive->setRequirements(true,true,true);
-        $vdrive =  new VDriveMountpointImplementationTest(CWD . 'resources/file.txt');
+        $vdrive =  new MountpointImplementationTest(CWD . 'resources/file.txt');
         $vdrive->mount();
         $vdrive->setRequirements(true,true,true);
         $equal = $vdrive->equals($anotherVDrive);
@@ -239,7 +241,7 @@ class VDriveMountpointTest extends PHPUnit_Framework_TestCase
      */
     public function test()
     {
-        $vDrive = new VDriveMountpointImplementationTest('');
+        $vDrive = new MountpointImplementationTest('');
         $result = $vDrive->getPath();
         $this->assertFalse($result, 'asset failed the path is empty.');
         $vDrive->setRequirements(true, true, true);

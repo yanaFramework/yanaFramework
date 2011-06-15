@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\VDrive;
+
 /**
  * @ignore
  */
@@ -35,7 +37,7 @@ require_once dirname(__FILE__) . '/include.php';
  *
  * @package  test
  */
-class VDriveTest extends PHPUnit_Framework_TestCase
+class VDriveTest extends \PHPUnit_Framework_TestCase
 {
 
     /**

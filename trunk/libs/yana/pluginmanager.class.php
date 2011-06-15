@@ -568,7 +568,7 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
      *
      * @access  public
      * @param   string  $name  name of plugin
-     * @return  VDrive
+     * @return  \Yana\VDrive\VDrive
      */
     public function __get($name)
     {
@@ -845,7 +845,7 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
             assert('!isset($driveFile); // Cannot redeclare var $driveFile');
             $driveFile = "$pluginDir$name/$name.drive.xml";
             if (is_file($driveFile)) {
-                $this->_drive[$name] = new Registry($driveFile, $this->getPluginDir() . $name . "/");
+                $this->_drive[$name] = new \Yana\VDrive\Registry($driveFile, $this->getPluginDir() . $name . "/");
                 $this->_drive[$name]->read();
             }
             unset($driveFile);

@@ -29,7 +29,7 @@
  * handle php files
  *
  * This is a wrapper class for executable PHP files.
- * You may use this to auto-load source files via a {@see VDrive} configuration file.
+ * You may use this to auto-load source files via a {@see \Yana\VDrive\VDrive} configuration file.
  *
  * @access      public
  * @package     yana

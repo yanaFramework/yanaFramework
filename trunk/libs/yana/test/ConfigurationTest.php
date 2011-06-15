@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: VDriveConfiguration
+ * PHPUnit test-case: Configuration
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,20 +25,22 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\VDrive;
+
 /**
  * @ignore
  */
 require_once dirname(__FILE__) . '/include.php';
 
 /**
- * Test class for VDriveConfiguration
+ * Test class for Configuration
  *
  * @package  test
  */
-class VDriveConfigurationTest extends PHPUnit_Framework_TestCase
+class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var    VDriveConfiguration
+     * @var    Configuration
      * @access protected
      */
     protected $object;
@@ -51,7 +53,7 @@ class VDriveConfigurationTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = VDriveConfiguration::loadFile(CWD . '/resources/test.drive.xml');
+        $this->object = Configuration::loadFile(CWD . '/resources/test.drive.xml');
     }
 
     /**
@@ -74,7 +76,7 @@ class VDriveConfigurationTest extends PHPUnit_Framework_TestCase
         // test file loading
         $this->assertEquals($this->object->toString(), $xml->asXML(), '"file loading" test failed');
 
-        $this->object = VDriveConfiguration::createDrive();
+        $this->object = Configuration::createDrive();
         // test vars
         $this->object->addNodeVar('foo', 'yes');
         $this->object->addNodeVar('bar', 'no');
