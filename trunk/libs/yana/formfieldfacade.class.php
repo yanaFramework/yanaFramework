@@ -515,7 +515,7 @@ class FormFieldFacade extends Object
             default:
                 $operator = 'LIKE';
                 $value = strtr($value, '*?', '%_'); // translate wildcards
-                $value = String::htmlSpecialChars($value);
+                $value = \Yana\Util\String::htmlSpecialChars($value);
                 $rightOperand = $value;
             break;
         }

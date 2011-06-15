@@ -740,14 +740,14 @@ class DbStream extends Object implements Serializable
                 assert('!isset($_col); // Cannot redeclare var $_col');
                 $_col = mb_strtoupper($column);
                 if (isset($this->_cache[$tableName][$row][$_col])) {
-                    $_value = Hashtable::get($this->_cache[$tableName][$row][$_col], $arrayAddress);
+                    $_value = \Yana\Util\Hashtable::get($this->_cache[$tableName][$row][$_col], $arrayAddress);
                 } else {
                     $_value = $this->select("$tableName.$row.$column");
                 }
                 if (!is_array($_value)) {
                     $_value = array();
                 }
-                Hashtable::set($_value, $arrayAddress, $value);
+                \Yana\Util\Hashtable::set($_value, $arrayAddress, $value);
                 $value =& $_value;
                 $updateQuery->setValues($value);
                 unset($_value);
@@ -1830,7 +1830,7 @@ class DbStream extends Object implements Serializable
         }
 
         $name = mb_strtoupper($name);
-        if (Hashtable::quickSearch($this->_reservedSqlKeywords, $name) === false) {
+        if (\Yana\Util\Hashtable::quickSearch($this->_reservedSqlKeywords, $name) === false) {
             return false;
         } else {
             return true;

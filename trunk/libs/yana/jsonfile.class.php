@@ -105,7 +105,7 @@ class JsonFile extends SML
             throw new InvalidArgumentException($message);
         }
         if ($caseSensitive != CASE_MIXED) {
-            $result = Hashtable::changeCase($result, $caseSensitive);
+            $result = \Yana\Util\Hashtable::changeCase($result, $caseSensitive);
         }
 
         return $result;
@@ -152,7 +152,7 @@ class JsonFile extends SML
             $data = array($name => $data);
         }
         if ($caseSensitive != CASE_MIXED) {
-            $data = Hashtable::changeCase($data, $caseSensitive);
+            $data = \Yana\Util\Hashtable::changeCase($data, $caseSensitive);
         }
         return json_encode($data);
     }

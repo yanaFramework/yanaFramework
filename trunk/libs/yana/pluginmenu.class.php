@@ -239,7 +239,7 @@ class PluginMenu extends Singleton
     public function setMenuEntry($action, PluginMenuEntry $menuEntry)
     {
         assert('is_string($action); // Invalid argument $action: string expected');
-        Hashtable::set($this->_entries, $menuEntry->getGroup() . ".$action", $menuEntry);
+        \Yana\Util\Hashtable::set($this->_entries, $menuEntry->getGroup() . ".$action", $menuEntry);
     }
 
     /**
@@ -256,7 +256,7 @@ class PluginMenu extends Singleton
     {
         assert('is_string($action); // Invalid argument $action: string expected');
         assert('is_string($menuName); // Invalid argument $menuName: string expected');
-        return Hashtable::remove($this->_entries, $menuName . "." . $action);
+        return \Yana\Util\Hashtable::remove($this->_entries, $menuName . "." . $action);
     }
 
     /**
@@ -292,7 +292,7 @@ class PluginMenu extends Singleton
         if (empty($menuName)) {
             return $this->_entries;
         } else {
-            $result = Hashtable::get($this->_entries, $menuName);
+            $result = \Yana\Util\Hashtable::get($this->_entries, $menuName);
             if (is_array($result)) {
                 return $result;
             } else {

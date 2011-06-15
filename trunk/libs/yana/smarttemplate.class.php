@@ -138,7 +138,7 @@ class SmartTemplate extends Object
         /* 2) get one template var, identified by $key */
         $resource = $this->template->getTemplateVars();
         assert('is_array($resource); /* unexpected result: $resource should be an array */');
-        return Hashtable::get($resource, "$key");
+        return \Yana\Util\Hashtable::get($resource, "$key");
     }
 
     /**

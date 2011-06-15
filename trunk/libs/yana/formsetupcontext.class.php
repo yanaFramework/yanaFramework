@@ -130,7 +130,7 @@ class FormSetupContext extends Object
     public function getValue($key)
     {
         assert('is_string($key); // Wrong argument type argument 1. String expected');
-        return Hashtable::get($this->_values, strtolower($key));
+        return \Yana\Util\Hashtable::get($this->_values, strtolower($key));
     }
 
     /**
@@ -200,7 +200,7 @@ class FormSetupContext extends Object
      */
     public function updateRow($key, array $row)
     {
-        $row = Hashtable::changeCase($row, CASE_UPPER);
+        $row = \Yana\Util\Hashtable::changeCase($row, CASE_UPPER);
         $updatedRow = $row + (array) $this->getRows()->offsetGet($key);
         $this->getRows()->offsetSet($key, $updatedRow);
         return $this;

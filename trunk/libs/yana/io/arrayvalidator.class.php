@@ -186,7 +186,7 @@ class ArrayValidator extends AbstractValidator
 
         } elseif ($options & self::TO_XML) {
 
-            $array = \Hashtable::toXML($array);
+            $array = \Yana\Util\Hashtable::toXML($array);
 
         }
         return $array;

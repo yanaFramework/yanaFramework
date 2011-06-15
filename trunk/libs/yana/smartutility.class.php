@@ -81,7 +81,7 @@ class SmartUtility extends Utility
             $match = $match[1];
             foreach ($match as $currentMatch)
             {
-                $tmp =& Hashtable::get($array, mb_strtoupper($currentMatch));
+                $tmp =& \Yana\Util\Hashtable::get($array, mb_strtoupper($currentMatch));
                 /* if $tmp is NULL, the reference $match is pointing to a non-existing value */
                 if (is_null($tmp)) {
                     continue;
@@ -161,7 +161,7 @@ class SmartUtility extends Utility
      * // assume the token {$foo} is set to 'World'
      * $text = 'Hello {$foo}.';
      * // prints 'Hello World.'
-     * print String::replaceToken($string);
+     * print SmartUtility::replaceToken($string);
      * </code>
      *
      * NOTE: this method is case-insensitive
@@ -2141,7 +2141,7 @@ class SmartUtility extends Utility
         }
         if (!empty($in_section)) {
             assert('is_array($array); /* unexpected result: $array should be an array */');
-            $array = Hashtable::get($array, $in_section);
+            $array = \Yana\Util\Hashtable::get($array, $in_section);
         }
 
         /* resolve scope argument */
@@ -2175,7 +2175,7 @@ class SmartUtility extends Utility
                 if (empty($smarty->_config[$i]['vars'])) {
                     $smarty->_config[$i]['vars'] = $array;
                 } else {
-                    $smarty->_config[$i]['vars'] = Hashtable::merge($smarty->_config[$i]['vars'], $array);
+                    $smarty->_config[$i]['vars'] = \Yana\Util\Hashtable::merge($smarty->_config[$i]['vars'], $array);
                 }
                 $smarty->_config[$i]['files'][$in_file] = true;
 

@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Util;
+
 /**
  * @ignore
  */
@@ -35,7 +37,7 @@ require_once dirname(__FILE__) . '/include.php';
  *
  * @package  test
  */
-class StringTest extends PHPUnit_Framework_TestCase
+class StringTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -1027,14 +1029,16 @@ class StringTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testHtmlSpecialChars().
+     * @test
      */
     public function testHtmlSpecialChars()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+        $this->assertEquals(
+            "&lt;ä id=&quot;&quot; title=''&gt;",
+            String::htmlSpecialChars("<ä id=\"\" title=''>")
         );
     }
+
 }
+
 ?>

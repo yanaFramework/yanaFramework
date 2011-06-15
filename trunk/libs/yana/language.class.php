@@ -701,7 +701,7 @@ class Language extends Singleton implements Serializable
      * // assume the token {$foo} is set to 'World'
      * $text = 'Hello {$foo}.';
      * // prints 'Hello World.'
-     * print String::replaceToken($string);
+     * print \Yana\Util\String::replaceToken($string);
      * </code>
      *
      * @access  public

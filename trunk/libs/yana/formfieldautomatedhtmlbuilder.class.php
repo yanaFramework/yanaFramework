@@ -142,7 +142,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
             $value = $column->getAutoValue();
         }
         if (is_string($value)) {
-            $value = String::htmlSpecialChars($value);
+            $value = \Yana\Util\String::htmlSpecialChars($value);
         }
 
         $this->setAttr($this->createJavascriptEvents($field) . $this->getAttr()); // get javascript events
@@ -514,7 +514,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                 {
                     case 'javascript':
                         assert('!isset($actionId);');
-                        $actionId = String::htmlSpecialChars($event->getAction());
+                        $actionId = \Yana\Util\String::htmlSpecialChars($event->getAction());
                         $href = 'href="javascript://" ' . $event->getName() . '="' . $actionId . '"';
                         unset($actionId);
                     break;
@@ -571,7 +571,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                     continue; // these are links - ignore!
                 }
                 $name = $event->getName();
-                $code = String::htmlSpecialChars($event->getAction());
+                $code = \Yana\Util\String::htmlSpecialChars($event->getAction());
                 $eventsAsHtml .= " $name=\"$code\"";
             } // end foreach
         }

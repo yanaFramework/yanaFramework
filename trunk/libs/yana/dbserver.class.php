@@ -164,8 +164,8 @@ class DbServer extends Object
          * 2 process settings provided by the user
          */
         if (is_array($dsn)) {
-            $dsn = Hashtable::changeCase($dsn, CASE_UPPER);
-            $this->_dsn = Hashtable::merge($this->_dsn, $dsn);
+            $dsn = \Yana\Util\Hashtable::changeCase($dsn, CASE_UPPER);
+            $this->_dsn = \Yana\Util\Hashtable::merge($this->_dsn, $dsn);
         }
         assert('is_array($this->_dsn);');
         $dsn = array();

@@ -224,7 +224,7 @@ final class Request extends Utility
         if (is_null(self::$get)) {
             self::$get = self::_untaintRequest($_GET, YANA_AUTODEQUOTE && get_magic_quotes_gpc());
         }
-        return Hashtable::get(self::$get, $key);
+        return \Yana\Util\Hashtable::get(self::$get, $key);
     }
 
     /**
@@ -243,7 +243,7 @@ final class Request extends Utility
         if (is_null(self::$post)) {
             self::$post = self::_untaintRequest($_POST, YANA_AUTODEQUOTE && get_magic_quotes_gpc());
         }
-        return Hashtable::get(self::$post, $key);
+        return \Yana\Util\Hashtable::get(self::$post, $key);
     }
 
     /**
@@ -263,7 +263,7 @@ final class Request extends Utility
         if (is_null(self::$cookie)) {
             self::$cookie = self::_untaintRequest($_COOKIE, YANA_AUTODEQUOTE && get_magic_quotes_gpc());
         }
-        return Hashtable::get(self::$cookie, $key);
+        return \Yana\Util\Hashtable::get(self::$cookie, $key);
     }
 
 
@@ -302,7 +302,7 @@ final class Request extends Utility
 
             // for calls via web - interface
             if (!empty($_REQUEST)) {
-                $request = Hashtable::merge($_GET, $_POST);
+                $request = \Yana\Util\Hashtable::merge($_GET, $_POST);
                 self::$request = self::_untaintRequest($request, YANA_AUTODEQUOTE && get_magic_quotes_gpc());
 
             // for calls via command line - interface
@@ -310,12 +310,12 @@ final class Request extends Utility
                 foreach ($_SERVER['argv'] as $argument)
                 {
                     if (preg_match('/^([\w\d-_\.]*)=(.*)$/', "$argument", $m)) {
-                        Hashtable::set(self::$request, mb_strtolower($m[1]), $m[2]);
+                        \Yana\Util\Hashtable::set(self::$request, mb_strtolower($m[1]), $m[2]);
                     }
                 }
             }
         }
-        return Hashtable::get(self::$request, $key);
+        return \Yana\Util\Hashtable::get(self::$request, $key);
     }
 
     /**#@-*/
@@ -407,7 +407,7 @@ final class Request extends Utility
                     {
                         if (is_array($item)) {
                             $item = self::_buildFileArray($item, $property);
-                            $checkedItem = Hashtable::merge($checkedItem, $item);
+                            $checkedItem = \Yana\Util\Hashtable::merge($checkedItem, $item);
                         }
                     }
                     unset($item, $property);
@@ -417,7 +417,7 @@ final class Request extends Utility
                 self::$files = self::_removeEmptyFiles(self::$files);
             }
         }
-        return Hashtable::get(self::$files, $key);
+        return \Yana\Util\Hashtable::get(self::$files, $key);
     }
 
     /**
