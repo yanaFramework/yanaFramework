@@ -112,7 +112,7 @@ class DbInsert extends DbQuery
          * 1.a) lowercase array keys
          */
         if (is_array($values)) {
-            $values = Hashtable::changeCase($values, CASE_LOWER);
+            $values = \Yana\Util\Hashtable::changeCase($values, CASE_LOWER);
 
         } elseif ($this->type === DbQueryTypeEnumeration::INSERT) {
             throw new InvalidArgumentException("Invalid type. " .

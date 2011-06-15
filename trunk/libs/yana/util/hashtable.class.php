@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Util;
+
 if (!defined('CASE_MIXED')) {
     /**
      * @ignore
@@ -55,9 +57,9 @@ if (!defined('CASE_MIXED')) {
  * @access      public
  * @static
  * @package     yana
- * @subpackage  utilities
+ * @subpackage  util
  */
-class Hashtable extends Utility
+class Hashtable extends \Utility
 {
 
     /**
@@ -95,7 +97,7 @@ class Hashtable extends Utility
         } else {
             $listOfKeys = explode(".", $key);
             assert('is_array($listOfKeys) && count($listOfKeys) > 0;');
-            $a =& Hashtable::_get($hash, $listOfKeys);
+            $a =& self::_get($hash, $listOfKeys);
             return $a;
         }
     }
@@ -120,7 +122,7 @@ class Hashtable extends Utility
             if (count($listOfKeys) == 0) {
                 return $result;
             } else {
-                $a =& Hashtable::_get($result, $listOfKeys);
+                $a =& self::_get($result, $listOfKeys);
                 return $a;
             }
         } else {
@@ -210,7 +212,7 @@ class Hashtable extends Utility
     public static function setType(array &$hash, $key, $type)
     {
         assert('is_string($type)&& !empty($type); // Wrong type for argument 1. String expected');
-        $field =& Hashtable::get($hash, $key);
+        $field =& self::get($hash, $key);
         if (!is_null($field)) {
             return settype($field, $type);
         } else {
@@ -233,7 +235,7 @@ class Hashtable extends Utility
      */
     public static function exists(array &$hash, $key)
     {
-        return !is_null(Hashtable::get($hash, $key));
+        return !is_null(self::get($hash, $key));
     }
 
     /**
@@ -321,7 +323,7 @@ class Hashtable extends Utility
         foreach ($input as $k => $e)
         {
             if (is_array($e)) {
-                $input[$k] = Hashtable::changeCase($e, $case);
+                $input[$k] = self::changeCase($e, $case);
             }
         } // end foreach
         assert('is_array($input); // Unexpected result: $input. Array expected.');
@@ -329,7 +331,7 @@ class Hashtable extends Utility
     }
 
     /**
-     * recursively merge two arrays to one
+     * Recursively merge two arrays to one.
      *
      * This function is pretty much the same as the php function "array_merge_recursive"
      * except for the way how duplicate keys are treated. Dupplicate keys get replaced
@@ -397,7 +399,7 @@ class Hashtable extends Utility
         foreach (array_intersect_key($b, $a) as $k => $e)
         {
             if (is_array($e) && is_array($a[$k])) {
-                $a[$k] = Hashtable::merge($a[$k], $e); // merge recursive
+                $a[$k] = self::merge($a[$k], $e); // merge recursive
             } else {
                 $a[$k] = $e; // overwrite
             }

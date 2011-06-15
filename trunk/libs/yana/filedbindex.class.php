@@ -191,7 +191,7 @@ class FileDbIndex extends Object
             if (!empty($update)) {
                 assert('!isset($updateSet); // Cannot redeclar var $updateSet');
                 $updateSet = array(mb_strtoupper($update[0]) => array($column => $update[1]));
-                $dataset = Hashtable::merge($dataset, $updateSet);
+                $dataset = \Yana\Util\Hashtable::merge($dataset, $updateSet);
                 unset($updateSet);
             }
             assert('is_array($dataset);');

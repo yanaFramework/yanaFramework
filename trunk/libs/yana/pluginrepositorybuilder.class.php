@@ -250,7 +250,7 @@ class PluginRepositoryBuilder extends PluginRepositoryAbstractBuilder
                 )
             );
         } else {
-            $mulitcastGroups = Hashtable::changeCase($mulitcastGroups, CASE_LOWER);
+            $mulitcastGroups = \Yana\Util\Hashtable::changeCase($mulitcastGroups, CASE_LOWER);
         } // end if
 
         // load configuration settings for each method and build list of implementing classes

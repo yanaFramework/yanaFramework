@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Util;
+
 /**
  * @ignore
  */
@@ -35,7 +37,7 @@ require_once dirname(__FILE__) . '/include.php';
  *
  * @package  test
  */
-class HashtableTest extends PHPUnit_Framework_TestCase
+class HashtableTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -432,6 +434,47 @@ class HashtableTest extends PHPUnit_Framework_TestCase
 
         // compare source and generated result
         $this->assertEquals($expected, $xml, "Round-trip decoding/encoding of source-document failed. The result is differs from the source file.");
+    }
+
+    /**
+     * qSearchArray
+     * @todo problem with searching with follow example: qSearchArray(array('test'), 'test');
+     * @test
+     */
+    public function testqSearchArray()
+    {
+        // try search for a word in a array with 1 entrie
+        $array = array('test');
+        $array1 = array('abcd', 'abc');
+        $array2 = array('abcdabcd', 'abc');
+        $array3 = array('c', 'y');
+
+        // expecting result is "test"
+        $result = Hashtable::quickSearch($array, 'test');
+        $this->assertEquals($result, 0, 'Testing array with 1 element. Needle expected to be found at index 0.');
+
+        // expecting result is "test"
+        $result = Hashtable::quickSearch($array, 'non existing key');
+        $this->assertFalse($result, 'Testing array with 1 element. Needle should not be found.');
+
+        $result = Hashtable::quickSearch($array1, 'abcd');
+        $this->assertType('integer', $result);
+        //expected integer 0 - searching word is in the row[0]
+        $this->assertEquals($result, 0);
+        $this->assertEquals('abcd', $array1[$result]);
+
+        $result = Hashtable::quickSearch($array2, 'abcdabcd');
+        $this->assertType('integer', $result);
+        // expected integer 0
+        $this->assertEquals(0, $result);
+        $this->assertEquals('abcdabcd', $array2[$result]);
+
+
+        $result = Hashtable::quickSearch($array3, 'y');
+        $this->assertType('integer', $result);
+        //expected integer 1
+        $this->assertEquals($result, 1);
+        $this->assertEquals('y', $array3[$result]);
     }
 
 }

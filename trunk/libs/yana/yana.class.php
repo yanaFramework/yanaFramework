@@ -1194,7 +1194,7 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable
         if (isset(self::$_config['DEFAULT'][$key])) {
             return self::$_config['DEFAULT'][$key];
         } else {
-            return Hashtable::get(self::$_config['DEFAULT'], $key);
+            return \Yana\Util\Hashtable::get(self::$_config['DEFAULT'], $key);
         }
     }
 

@@ -378,7 +378,7 @@ class Mailer extends SmartTemplate
 
         /* settype to ARRAY */
         $header = (array) $header;
-        $header = Hashtable::changeCase($header, CASE_LOWER);
+        $header = \Yana\Util\Hashtable::changeCase($header, CASE_LOWER);
 
         $default_header = array();
         $default_header['x-mailer']      = "PHP/". phpversion();
@@ -563,7 +563,7 @@ class Mailer extends SmartTemplate
         if (isset($YANA)) {
             /* import only non-existing vars */
             $vars = $YANA->getVar('*');
-            $vars = Hashtable::merge($vars, $this->template->getTemplateVars());
+            $vars = \Yana\Util\Hashtable::merge($vars, $this->template->getTemplateVars());
             $this->template->assign($vars);
         }
         return parent::toString();

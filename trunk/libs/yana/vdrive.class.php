@@ -249,7 +249,7 @@ class VDrive extends FileSystemResource implements \Yana\Report\IsReportable, \S
             $array =& $file->getByReference();
             assert('is_null($array) || is_array($array); /* unexpected result: $array */');
             if (is_array($array)) {
-                $this->vars = Hashtable::merge($this->vars, $array);
+                $this->vars = \Yana\Util\Hashtable::merge($this->vars, $array);
             }
             unset($array);
         }

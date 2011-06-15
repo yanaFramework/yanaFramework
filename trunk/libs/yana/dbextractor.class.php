@@ -289,7 +289,7 @@ class DbExtractor extends DbCreator
                 /* @var $table DDLTable */
                 /* quote table */
                 $tableName = YANA_DATABASE_PREFIX . $table->getName();
-                if (Hashtable::quickSearch($sqlKeywords, $tableName) !== false) {
+                if (\Yana\Util\Hashtable::quickSearch($sqlKeywords, $tableName) !== false) {
                     $tableName = "\"{$tableName}\"";
                 }
                 /* quote columns */
@@ -297,7 +297,7 @@ class DbExtractor extends DbCreator
                 foreach ($table->getColumnNames() as $column)
                 {
                     $column = mb_strtolower($column);
-                    if (Hashtable::quickSearch($sqlKeywords, mb_strtoupper($column)) !== false) {
+                    if (\Yana\Util\Hashtable::quickSearch($sqlKeywords, mb_strtoupper($column)) !== false) {
                         $columns[$column] = "\"{$column}\"";
                     } else {
                         $columns[$column] = $column;
@@ -742,7 +742,7 @@ class DbExtractor extends DbCreator
                         $xml .= "$tab\t\t<$column>\n";
                         foreach ($value as $key => $item)
                         {
-                            $xml .= Hashtable::toXML($item, $key, CASE_MIXED, $indent + 3);
+                            $xml .= \Yana\Util\Hashtable::toXML($item, $key, CASE_MIXED, $indent + 3);
                         }
                         $xml .= "$tab\t\t</$column>\n";
                     }

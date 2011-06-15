@@ -414,7 +414,7 @@ class FileDbConnection extends Object
                         foreach ($listOfResultSets as $item)
                         {
                             if (!empty($item)) {
-                                $result = Hashtable::merge($result, $item);
+                                $result = \Yana\Util\Hashtable::merge($result, $item);
                             }
                         }
                         unset($item);
@@ -565,7 +565,7 @@ class FileDbConnection extends Object
 
                 /* update row */
                 } else {
-                    $set = Hashtable::changeCase($set, CASE_UPPER);
+                    $set = \Yana\Util\Hashtable::changeCase($set, CASE_UPPER);
                 }
 
                 assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
@@ -658,7 +658,7 @@ class FileDbConnection extends Object
                 $currentRow =& $smlfile->getVarByReference($primaryKey);
                 if (!empty($currentRow)) {
                     /* update row */
-                    $currentRow = Hashtable::merge($currentRow, $set);
+                    $currentRow = \Yana\Util\Hashtable::merge($currentRow, $set);
 
                     /* after data has been changed, reorganize all indexes */
                     $idxfile->create();
@@ -1197,7 +1197,7 @@ class FileDbConnection extends Object
     private function _buildResultset(array &$result, $columns, array $rowSet, array $joinedRow, $collapse)
     {
         if (empty($columns)) {
-            $result[] = Hashtable::merge($joinedRow, $rowSet);
+            $result[] = \Yana\Util\Hashtable::merge($joinedRow, $rowSet);
             return;
         }
         if ($collapse) {
@@ -1530,7 +1530,7 @@ class FileDbConnection extends Object
                 if (isset($cursorB[$keyA])) {
                     $joinedValueExists = true;
                     assert('!isset($_value); /* Cannot redeclare var $_value */');
-                    $_value = Hashtable::merge($row, $cursorB[$keyA]);
+                    $_value = \Yana\Util\Hashtable::merge($row, $cursorB[$keyA]);
                     $_value[$columnB] = $keyA;
                     $value[] = $_value;
                     unset($_value);

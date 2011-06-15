@@ -3744,7 +3744,7 @@ class DbStructure extends SML
                 if (isset($cache[1])) {
                     $list_of_results[1] =& $cache[1];
                 }
-                $columns = Hashtable::changeCase($columns, CASE_UPPER);;
+                $columns = \Yana\Util\Hashtable::changeCase($columns, CASE_UPPER);;
                 $match = array_intersect(array_keys($cache), $columns);
 
                 foreach ($match as $key => $definition)
@@ -4328,7 +4328,7 @@ class DbStructure extends SML
      * Here is an example on how to export the changelog to XML:
      * <code>
      * $log = $structure->getChangelog();
-     * print Hashtable::toXML($log);
+     * print \Yana\Util\Hashtable::toXML($log);
      * </code>
      * The created xml code may then be converted to HTML using
      * a xml-converter of your choice. As an alternative, you might

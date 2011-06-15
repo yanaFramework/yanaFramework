@@ -1877,7 +1877,7 @@ class DDLColumn extends DDLNamedObject
             break;
             case 'html':
                 if (is_string($value)) {
-                    $value = String::htmlSpecialChars($value);
+                    $value = \Yana\Util\String::htmlSpecialChars($value);
                     if ($length > 0) {
                         $value = mb_substr($value, 0, $length);
                     }
@@ -2050,7 +2050,7 @@ class DDLColumn extends DDLNamedObject
                 }
                 assert('is_array($value); // Unexpected result: $value should be an array.');
                 if ($key !== "") {
-                    $value = Hashtable::get($value, mb_strtolower($key));
+                    $value = \Yana\Util\Hashtable::get($value, mb_strtolower($key));
                     if (is_null($value)) {
                         $value = null;
                     }
@@ -2244,7 +2244,7 @@ class DDLColumn extends DDLNamedObject
                 self::_serializeOptions($optgroup, $item);
                 unset($optgroup);
             } else {
-                $option = $node->addChild('option', String::htmlEntities($item));
+                $option = $node->addChild('option', \Yana\Util\String::htmlEntities($item));
                 if ($key !== $item) {
                     $option->addAttribute('value', $key);
                 }

@@ -764,7 +764,7 @@ class FormBuilder extends Object
         $request = (array) Request::getVars($form->getName());
         $files = (array) Request::getFiles($form->getName());
         if (!empty($files)) {
-            $request = Hashtable::merge($request, $files);
+            $request = \Yana\Util\Hashtable::merge($request, $files);
         }
         if (!empty($request)) {
             $this->_setupBuilder->updateSetup($request);

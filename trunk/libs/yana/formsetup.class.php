@@ -432,7 +432,7 @@ class FormSetup extends Object
         assert('is_string($value); // Wrong argument type argument 2. String expected');
         if (!empty($value)) {
             $value = strtr($value, '*?', '%_'); // translate wildcards
-            $value = String::htmlSpecialChars($value);
+            $value = \Yana\Util\String::htmlSpecialChars($value);
             $this->_filters[$columnName] = $value;
         } else {
             unset($this->_filters[$columnName]);

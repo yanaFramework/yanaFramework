@@ -67,7 +67,7 @@ class FileDbResult extends Object
             $this->result = null;
         } else {
             assert('is_array($result);');
-            $this->result = Hashtable::changeCase($result, CASE_LOWER);
+            $this->result = \Yana\Util\Hashtable::changeCase($result, CASE_LOWER);
         }
         $this->message  = trim($message);
     }

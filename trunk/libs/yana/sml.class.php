@@ -201,7 +201,7 @@ class SML extends File
         if ($key === "*") {
             return $this->content;
         } else {
-            $result =& Hashtable::get($this->content, $key);
+            $result =& \Yana\Util\Hashtable::get($this->content, $key);
             return $result;
         }
     }
@@ -265,7 +265,7 @@ class SML extends File
         if (is_array($value)) {
             $this->_setKeyCase($value);
         }
-        Hashtable::set($this->content, $key, $value);
+        \Yana\Util\Hashtable::set($this->content, $key, $value);
     }
 
     /**
@@ -292,7 +292,7 @@ class SML extends File
         if (isset($this->content[$key])) {
             $this->content[$key] =& $value; // shortcut to improve performance
         } else {
-            Hashtable::setByReference($this->content, $key, $value);
+            \Yana\Util\Hashtable::setByReference($this->content, $key, $value);
         }
         return true;
     }
@@ -415,7 +415,7 @@ class SML extends File
             return count($this->content);
         }
         // count specific key
-        $result =& Hashtable::get($this->content, $key);
+        $result =& \Yana\Util\Hashtable::get($this->content, $key);
         if (is_null($result)) {
             return 0;
         } else {
@@ -461,7 +461,7 @@ class SML extends File
         }
 
         /* compute request */
-        return Hashtable::remove($this->content, $key);
+        return \Yana\Util\Hashtable::remove($this->content, $key);
 
     }
 
@@ -499,7 +499,7 @@ class SML extends File
         if ($key === '*') {
             return parent::exists();
         } else {
-            return Hashtable::exists($this->content, $key);
+            return \Yana\Util\Hashtable::exists($this->content, $key);
         }
 
     }
@@ -914,10 +914,10 @@ class SML extends File
         switch ($this->caseSensitive)
         {
             case CASE_UPPER:
-                $array = Hashtable::changeCase($array, CASE_UPPER);
+                $array = \Yana\Util\Hashtable::changeCase($array, CASE_UPPER);
             break;
             case CASE_LOWER:
-                $array = Hashtable::changeCase($array, CASE_LOWER);
+                $array = \Yana\Util\Hashtable::changeCase($array, CASE_LOWER);
             break;
             default:
                 /* intentionally left blank */

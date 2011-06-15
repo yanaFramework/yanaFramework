@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Util;
+
 /**
  * <<Utility>> String
  *
@@ -41,10 +43,9 @@
  *
  * @access      public
  * @package     yana
- * @subpackage  utilities
- * @name        String
+ * @subpackage  util
  */
-class String extends Utility
+class String extends \Utility
 {
     /**#@+
      * used as 2nd argument in method String::trim()
@@ -233,7 +234,7 @@ class String extends Utility
         /* check if $index is in bounds */
         /* If the input is no integer at all, issue an E_USER_ERROR and abort. */
         if ($index < 0 || $index >= mb_strlen($string)) {
-            throw new OutOfBoundsException("String index '".$index."' out of bounds.");
+            throw new \OutOfBoundsException("String index '".$index."' out of bounds.");
         } else {
             /* all fine, proceed */
             return $string[$index];
@@ -361,7 +362,7 @@ class String extends Utility
                     return crc32($string);
                 } else {
                     $message = "Unsupported encryption method: '$encryption'.";
-                    throw new NotImplementedException($message);
+                    throw new \NotImplementedException($message);
                 }
             break;
             case 'md5':
@@ -377,7 +378,7 @@ class String extends Utility
                     return sha1($string);
                 } else {
                     $message = "Unsupported encryption method: '$encryption'.";
-                    throw new NotImplementedException($message);
+                    throw new \NotImplementedException($message);
                 }
             break;
             case 'crypt':
@@ -415,7 +416,7 @@ class String extends Utility
 
                 } else {
                     $message = "Unsupported encryption method: '$encryption'.";
-                    throw new NotImplementedException($message);
+                    throw new \NotImplementedException($message);
                 }
             break;
             case 'metaphone':
@@ -429,7 +430,7 @@ class String extends Utility
                     }
                 } else {
                     $message = "Unsupported encryption method: '$encryption'.";
-                    throw new NotImplementedException($message);
+                    throw new \NotImplementedException($message);
                 }
             break;
             case 'xor':
@@ -442,7 +443,7 @@ class String extends Utility
             break;
             default:
                 $message = "Unsupported encryption method: '$encryption'.";
-                throw new NotImplementedException($message);
+                throw new \NotImplementedException($message);
             break;
         }
     }

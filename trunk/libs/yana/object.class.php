@@ -137,7 +137,7 @@ class Object extends StdClass implements IsObject, IsCloneable
             if (is_object($this->$attribute)) {
                 $this->$attribute = clone $this->$attribute;
             } elseif (is_array($this->$attribute)) {
-                $this->$attribute = Hashtable::cloneArray($this->$attribute);
+                $this->$attribute = \Yana\Util\Hashtable::cloneArray($this->$attribute);
             } else {
                 // nothing to do
             }

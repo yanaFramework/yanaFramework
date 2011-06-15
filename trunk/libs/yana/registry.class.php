@@ -163,7 +163,7 @@ class Registry extends VDrive
          */
         } else {
             
-            $this->cache[$key] =& Hashtable::get($this->vars, $key);
+            $this->cache[$key] =& \Yana\Util\Hashtable::get($this->vars, $key);
             if (is_null($this->cache[$key])) {
                 return false;
             } else {
@@ -208,7 +208,7 @@ class Registry extends VDrive
          */
         } else {
             /* returns NULL on error */
-            $this->cache[$key] =& Hashtable::get($this->vars, $key);
+            $this->cache[$key] =& \Yana\Util\Hashtable::get($this->vars, $key);
             return $this->cache[$key];
 
         }
@@ -244,7 +244,7 @@ class Registry extends VDrive
             return true;
         }
 
-        Hashtable::setByReference($this->vars, $key, $value);
+        \Yana\Util\Hashtable::setByReference($this->vars, $key, $value);
         $this->cache[$key] =& $value;
     }
 
@@ -288,24 +288,24 @@ class Registry extends VDrive
         assert('is_bool($overwrite); // Wrong argument type for argument 3, boolean expected');
 
         if ($key == "" || $key == "*") {
-            $this->vars = Hashtable::merge($this->vars, $array);
+            $this->vars = \Yana\Util\Hashtable::merge($this->vars, $array);
             $this->cache[$key] = array();
 
         } elseif ($overwrite) {
-            $vars =& Hashtable::get($this->vars, $key);
+            $vars =& \Yana\Util\Hashtable::get($this->vars, $key);
             if (is_null($vars)) {
-                Hashtable::set($this->vars, $key, $array);
+                \Yana\Util\Hashtable::set($this->vars, $key, $array);
             } else {
-                $vars = Hashtable::merge($vars, $array);
+                $vars = \Yana\Util\Hashtable::merge($vars, $array);
             }
 
         } else {
-            $vars =& Hashtable::get($this->vars, $key);
+            $vars =& \Yana\Util\Hashtable::get($this->vars, $key);
             if (is_null($vars)) {
-                Hashtable::set($this->vars, $key, $array);
+                \Yana\Util\Hashtable::set($this->vars, $key, $array);
             } else {
                 $array = array_diff_key($array, $vars);
-                $vars = Hashtable::merge($vars, $array);
+                $vars = \Yana\Util\Hashtable::merge($vars, $array);
             }
 
         } // end if
@@ -335,7 +335,7 @@ class Registry extends VDrive
             if (isset($this->cache[$key])) {
                 unset($this->cache[$key]);
             }
-            return Hashtable::remove($this->vars, $key);
+            return \Yana\Util\Hashtable::remove($this->vars, $key);
         }
 
     }
@@ -358,7 +358,7 @@ class Registry extends VDrive
     {
         assert('is_string($key);   // wrong argument type for argument 1, string expected');
         assert('is_string($type);  // wrong argument type for argument 2, string expected');
-        return Hashtable::setType($this->vars, "$key", "$type");
+        return \Yana\Util\Hashtable::setType($this->vars, "$key", "$type");
     }
 
 }

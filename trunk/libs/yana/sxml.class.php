@@ -172,7 +172,7 @@ class SXML extends SML
             $rootNode = $sxml->getName();
             $result = $sxml->toArray();
             if ($caseSensitive !== CASE_MIXED) {
-                $result = Hashtable::changeCase($result, $caseSensitive);
+                $result = \Yana\Util\Hashtable::changeCase($result, $caseSensitive);
             }
             return $result;
         }
