@@ -249,7 +249,7 @@ class FormSetupBuilder extends Object
     private function _buildHeader()
     {
         $entriesPerPage = $this->object->getEntriesPerPage();
-        $firstPage = $this->object->getPage() * $entriesPerPage;
+        $firstPage = ($this->object->getPage() * $entriesPerPage) + 1;
         $offsetPage = $firstPage + $entriesPerPage - 1;
         $lastPage = $this->object->getEntryCount();
         if ($offsetPage > $lastPage) {
