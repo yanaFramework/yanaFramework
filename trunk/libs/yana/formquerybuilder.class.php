@@ -195,17 +195,18 @@ class FormQueryBuilder extends Object
         $searchTerm = $setup->getSearchTerm();
         if (!empty($searchTerm)) {
             $searchTerm = preg_replace('/\s+/', '%', $searchTerm);
+            $form = $this->_form->getBaseForm();
+            $fields = array();
+            if ($form->hasAllInput()) {
+                $fields = $this->_form->getUpdateForm();
+            } else {
+                $fields = $form->getFields();
+            }
             // process fields
-            foreach ($this->_form->getUpdateForm() as $field)
+            foreach ($fields as $field)
             {
-                /* @var $field FormFieldFacade */
-                if ($field->isFilterable()) {
-                    $ddlField = $field->getField();
-                    if (!$ddlField || ($ddlField->isSelectable() && $ddlField->isVisible())) {
-                        $havingClause = array($field->getName(), 'like', "%$searchTerm%");
-                        $select->addHaving($havingClause, false);
-                    }
-                }
+                $havingClause = array($field->getName(), 'like', "%$searchTerm%");
+                $select->addHaving($havingClause, false);
             }
         }
     }
