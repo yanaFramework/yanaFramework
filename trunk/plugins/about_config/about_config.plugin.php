@@ -307,7 +307,7 @@ class plugin_about_config extends StdClass implements IsPlugin
         {
             if (preg_match("/\//", $key)) {
                 $key = preg_replace("/\//", ".", $key);
-                Hashtable::set($profile, $key, $element);
+                \Yana\Util\Hashtable::set($profile, $key, $element);
             } else {
                 $profile[$key] = $element;
             }
