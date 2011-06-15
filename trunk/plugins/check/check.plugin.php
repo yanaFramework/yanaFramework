@@ -68,7 +68,7 @@ class plugin_check extends StdClass implements IsPlugin
     {
         print '<h1>SQL command line</h1>';
 
-        $registry = Registry::getGlobalInstance();
+        $registry = \Yana\VDrive\Registry::getGlobalInstance();
         if (!empty($sql)) {
             $sql = stripcslashes($sql);
             $fileDb = new FileDb(XDDL::getDatabase($db));
