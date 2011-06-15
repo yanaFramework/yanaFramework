@@ -81,20 +81,12 @@
 {
 }
 /* header / footer */
-.gui_generator_footer
+.gui_generator_footer,
+.gui_generator_header
 {
     font-size: 13px;
     margin: 10px;
     text-align: center;
-}
-.gui_generator_header
-{
-    font-weight: bold;
-    font-size: 13px;
-    padding: 2px;
-    border: 1px solid #ccc;
-    background: url(gui_generator_header.png) #f0f0f0;
-    color: #4863A0;
 }
 /* template specific styles */
 .gui_generator_view_details

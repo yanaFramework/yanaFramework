@@ -131,22 +131,12 @@
 {
 }
 /* header / footer */
+.gui_generator_header,
 .gui_generator_footer
 {
     font-size: 13px;
     margin: 10px;
     text-align: center;
-}
-.gui_generator_header
-{
-    font-weight: bold;
-    font-size: 13px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    padding: 2px;
-    border: 1px solid #ccc;
-    background: url(gui_generator_header.png) #f0f0f0;
-    color: #4863A0;
 }
 /* template specific styles */
 .gui_generator_view table.gui_generator_view_details
