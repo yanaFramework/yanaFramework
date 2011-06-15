@@ -175,7 +175,8 @@ class SmartView extends SmartTemplate
      */
     public static function addStyles(array $files)
     {
-        self::$styles = $files + self::$styles;
+        self::$styles = array_merge(self::$styles, $files);
+        self::$styles = array_unique(self::$styles);
     }
 
     /**
@@ -187,7 +188,8 @@ class SmartView extends SmartTemplate
      */
     public static function addScripts(array $files)
     {
-        self::$scripts = $files + self::$scripts;
+        self::$scripts = array_merge(self::$scripts, $files);
+        self::$scripts = array_unique(self::$scripts);
     }
 
     /**
