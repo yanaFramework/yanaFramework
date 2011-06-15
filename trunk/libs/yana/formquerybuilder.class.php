@@ -202,12 +202,15 @@ class FormQueryBuilder extends Object
             } else {
                 $fields = $form->getFields();
             }
+            $clause = array();
             // process fields
             foreach ($fields as $field)
             {
-                $havingClause = array($field->getName(), 'like', "%$searchTerm%");
-                $select->addHaving($havingClause, false);
+                $_clause = array($field->getName(), 'like', "%$searchTerm%");
+                $clause = (empty($clause)) ? $_clause : array($clause, 'OR', $_clause);
             }
+            unset($_clause);
+            $select->addWhere($clause);
         }
     }
 
