@@ -128,11 +128,11 @@ if (!defined('ENT_FULL')) {
      * This adds a new constant ENT_FULL to the php predefined constants
      * ENT_COMPAT=2, ENT_QUOTES=3, ENT_NOQUOTES=0
      *
-     * Use of this constant with the method String::encode(), will force
+     * Use of this constant with the method \Yana\Util\String::encode(), will force
      * ALL characters of the string to be encoded as html entities.
      *
      * See this example:
-     * <code>$encoded = String::encode($string, 'entities', ENT_FULL)</code>
+     * <code>$encoded = \Yana\Util\String::encode($string, 'entities', ENT_FULL)</code>
      *
      * {@internal
      * Note:
@@ -141,7 +141,7 @@ if (!defined('ENT_FULL')) {
      * So setting the value ENT_FULL to 10 should avoid a collision.
      * }}
      *
-     * @see  String::encode()
+     * @see  \Yana\Util\String::encode()
      */
     define('ENT_FULL', 10);
 }
