@@ -1,29 +1,3 @@
-/* global template style definitions */
-div.gui_generator_edit
-{
-}
-div.gui_generator_new
-{
-}
-div.gui_generator_advanced_search
-{
-}
-div.gui_generator_search
-{
-}
-div.gui_generator_view
-{
-}
-div.gui_generator_view_seperated
-{
-}
-/* header / footer */
-p.gui_generator_footer
-{
-}
-p.gui_generator_header
-{
-}
 /* template specific styles */
 div.gui_generator_edit th, div.gui_generator_search th, div.gui_generator_view th
 {
@@ -147,12 +121,6 @@ span.gui_generator_mandatory
     overflow: auto;
     height: 75px;
     width: 100%;
-}
-div.gui_generator_no_entries_found
-{
-}
-table.gui_generator_smilies
-{
 }
 table.gui_generator_smilies td
 {

@@ -102,12 +102,16 @@
             </form>
         {/if}
         {if $form->isSelectable() && $form->getContext('update')->getRows()->count()}
+            {$updateForm=$form->getUpdateForm()}
             <form method="post" action="{$PHP_SELF}" enctype="multipart/form-data" accept-charset="UTF-8" class="gui_generator_edit">
                 <input type="hidden" name="id" value="{$ID}"/>
                 <input type="hidden" name="{$SESSION_NAME}" value="{$SESSION_ID}"/>
                 <input type="hidden" name="action" value="{$form->getUpdateAction()}"/>
                 <div class="gui_generator_edit">
-                    {assign var="updateForm" value=$form->getUpdateForm()}
+                    <div class="gui_generator_header">
+                        {$updateForm->getHeader()}
+                    </div>
+
                     {if $form->getLayout() === 0}
                         {import file="layout0.html.tpl" form=$updateForm}
                     {elseif $form->getLayout() === 1}
