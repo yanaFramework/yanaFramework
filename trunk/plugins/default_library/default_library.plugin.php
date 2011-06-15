@@ -174,7 +174,7 @@ class plugin_default_library extends StdClass implements IsPlugin
                             header('Charset: utf-8');
                             $data = array('error' => 1, 'text' => $langError . " " . $langChar . " " . $i .
                                 ".\n" . $langEndTag . " [" . $buffer . "].\n" . $langProceed) ;
-                            exit(Hashtable::toXML($data));
+                            exit(\Yana\Util\Hashtable::toXML($data));
                             unset ($data);
                         }
                         $isTag = true;
@@ -191,7 +191,7 @@ class plugin_default_library extends StdClass implements IsPlugin
 
                                 $data = array('error' => 2, 'text' => $langError . " " . $langChar . " " . $i .
                                     ".\n" . $langUnknownTag . " [" . $buffer . "].\n" . $langProceed);
-                                exit(XMLencHashtable::toXMLode($data));
+                                exit(XMLenc\Yana\Util\Hashtable::toXMLode($data));
                                 unset ($data);
                             } elseif ($isEndTag) {
                                 if ($top < 0) {
@@ -200,7 +200,7 @@ class plugin_default_library extends StdClass implements IsPlugin
                                     $data = array('error' => 3, 'text' => $langError . " " . $langChar . " " . $i .
                                         ".\n" . $langEndTag . " [/" . $buffer . "]. " . $langUnexpTag . ".\n" .
                                         $langProceed);
-                                    exit(Hashtable::toXML($data));
+                                    exit(\Yana\Util\Hashtable::toXML($data));
                                     unset ($data);
                                 } elseif ($buffer == $tagList[$top]) {
                                     unset($tagList[$top--]);
@@ -210,7 +210,7 @@ class plugin_default_library extends StdClass implements IsPlugin
                                     $data = array('error' => 4, 'text' => $langError . " " . $langChar . " " . $i .
                                         ".\n" . $langEndTag . " [/" . $buffer . "]. " . $langExpTag .
                                         " [/" . $tagList[$top] . "].\n" . $langProceed);
-                                    exit(Hashtable::toXML($data));
+                                    exit(\Yana\Util\Hashtable::toXML($data));
                                     unset ($data);
                                 }
                                 $isEndTag = false;
@@ -244,14 +244,14 @@ class plugin_default_library extends StdClass implements IsPlugin
                 header('Charset: utf-8');
                 $data = array('error' => 5, 'text' => $langError . ".\n" . $langUnclTag .
                     ": [" . implode('], [', $tagList) . "].\n" . $langProceed);
-                exit(Hashtable::toXML($data));
+                exit(\Yana\Util\Hashtable::toXML($data));
                 unset ($data);
             }
             if (preg_match('/^\s*(\[br\]|\n)/s', $text[$index])) {
                 header('Content-type: text/xml');
                 header('Charset: utf-8');
                 $data = array('error' => 6, 'text' =>  $langError . ".\n" . $langBr . ".\n" . $langProceed);
-                exit(Hashtable::toXML($data));
+                exit(\Yana\Util\Hashtable::toXML($data));
                 unset ($data);
             }
         }
