@@ -114,11 +114,12 @@ class plugin_mediagallery extends StdClass implements IsPlugin
         $builder->setId('mediagallery');
         $builder->setEntries(25);
         $builder->setLayout(6);
-        $builder->setWhere(
-            array(
-                array('user_created', '=', YanaUser::getUserName()), 'or', array('public', '=', true)
-            )
+        $where = array(
+            array('user_created', '=', YanaUser::getUserName()),
+            'or',
+            array('public', '=', true)
         );
+        $builder->setWhere($where);
         $gallery = $builder->__invoke();
         Yana::getInstance()->setVar('gallery', $gallery);
     }
