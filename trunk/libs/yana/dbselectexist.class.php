@@ -131,9 +131,7 @@ class DbSelectExist extends DbQuery
     {
         // clear cached query id
         $this->id = null;
-        if (empty($where)) {
-            $this->where = $this->parseWhereArray($where);
-        } else {
+        if (!empty($where)) {
             $this->where = array($this->parseWhereArray($where), 'and', $this->where);
         }
     }
