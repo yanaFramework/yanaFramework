@@ -1831,7 +1831,7 @@ class DDLColumn extends DDLNamedObject
                  * DbBlob class, which handles all database artifacts.
                  */
                 if (is_array($value)) {
-                    /* Value is the the uploaded file as if taken from $_FILES[$columnName].
+                    /* Value is the uploaded file as if taken from $_FILES[$columnName].
                      * This information is used later to iterate over the files to insert or update.
                      */
                     if (isset($value['error']) && $value['error'] !== UPLOAD_ERR_NO_FILE) {

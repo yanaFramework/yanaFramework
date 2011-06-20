@@ -775,13 +775,13 @@ class FormBuilder extends Object
         $countQuery = $this->_queryBuilder->buildCountQuery();
         $where = $this->getWhere();
         if (!empty($where)) {
-            $countQuery->setWhere($where);
+            $countQuery->addWhere($where);
         }
         $formSetup->setEntryCount($countQuery->countResults());
 
         $selectQuery = $this->_queryBuilder->buildSelectQuery();
         if (!empty($where)) {
-            $selectQuery->setWhere($where);
+            $selectQuery->addWhere($where);
         }
         $selectQuery->setOffset($formSetup->getPage() * $formSetup->getEntriesPerPage());
         $values = $selectQuery->getResults();
