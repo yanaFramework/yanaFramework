@@ -32,27 +32,36 @@
                         {/if}-->
 
                         {if $form->hasRows() && $form->getEntriesPerPage() > 1 && $field->refersToTable()}
-                            <a href={"action=$ACTION&{$formName}[orderby]={$field->getName()}&{$formName}[desc]=0"|href} class="gui_generator_sort" title='{lang id="ORDER.ASCENDING"}'>
-                                {if $field->getName() == $form->getOrderByField() && !$form->isDescending()}
-                                    <span class="icon_arrowup_hover">&nbsp;</span>
-                                {else}
-                                    <span class="icon_arrowup">&nbsp;</span>
-                                {/if}
-                            </a>
-                            <a href={"$url=1"|href}  class="gui_generator_sort" title='{lang id="ORDER.DESCENDING"}'>
-                                {if $field->getName() == $form->getOrderByField() && $form->isDescending()}
-                                    <span class="icon_arrowdown_hover">&nbsp;</span>
-                                {else}
-                                    <span class="icon_arrowdown">&nbsp;</span>
-                                {/if}
-                            </a>
+                            {if !$field->isFile()}
+                                <a href={"action=$ACTION&{$formName}[orderby]={$field->getName()}&{$formName}[desc]=0"|href}
+                                   class="gui_generator_sort" title='{lang id="ORDER.ASCENDING"}'>
+                                    {if $field->getName() == $form->getOrderByField() && !$form->isDescending()}
+                                        <span class="icon_arrowup_hover">&nbsp;</span>
+                                    {else}
+                                        <span class="icon_arrowup">&nbsp;</span>
+                                    {/if}
+                                </a>
+                                <a href={"action=$ACTION&{$formName}[orderby]={$field->getName()}&{$formName}[desc]=1"|href}
+                                   class="gui_generator_sort" title='{lang id="ORDER.DESCENDING"}'>
+                                    {if $field->getName() == $form->getOrderByField() && $form->isDescending()}
+                                        <span class="icon_arrowdown_hover">&nbsp;</span>
+                                    {else}
+                                        <span class="icon_arrowdown">&nbsp;</span>
+                                    {/if}
+                                </a>
+                            {/if}
                             <div class="gui_generator_description">
                                 {if !$field->isNullable()}
                                     <span class="gui_generator_mandatory" title="{lang id="MANDATORY"}">*</span>
                                 {/if}
-                                <a title='{lang id="ORDER.BY"} &quot;{$field->getTitle()}&quot;' href={"$url=0"|href}>
+                                {if !$field->isFile()}
+                                    <a title='{lang id="ORDER.BY"} &quot;{$field->getTitle()}&quot;'
+                                       href={"action=$ACTION&{$formName}[orderby]={$field->getName()}&{$formName}[desc]=0"|href}>
+                                        {$field->getTitle()}
+                                    </a>
+                                {else}
                                     {$field->getTitle()}
-                                </a>
+                                {/if}
                             </div>
                         {else}
                             {if !$field->isNullable() && $form->isInsertable()}
