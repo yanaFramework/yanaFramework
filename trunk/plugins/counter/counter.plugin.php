@@ -109,12 +109,12 @@ class plugin_counter extends StdClass implements IsPlugin
         $this->_default(__FUNCTION__, array());
         $count = self::$_counter->getCurrentValue();
 
-        $myImage = new Image($background->getPath());
-        $myImageValues = Image::getSize($background->getPath());
+        $myImage = new \Yana\Media\Image($background->getPath());
+        $myImageValues = \Yana\Media\Image::getSize($background->getPath());
         $previousImageWidths = 0;
 
         if ($blank->exists()) {
-            $imageValues = Image::getSize($blank->getPath());
+            $imageValues = \Yana\Media\Image::getSize($blank->getPath());
             $previousImageWidths += $imageValues[0];
         }
 
@@ -122,11 +122,11 @@ class plugin_counter extends StdClass implements IsPlugin
         {
 
             $filename = $imageDir . mb_substr("$count", mb_strlen("$count") - $i - 1, 1) . $imageExt;
-            $imageValues = Image::getSize($filename);
+            $imageValues = \Yana\Media\Image::getSize($filename);
             $previousImageWidths += $imageValues[0];
             if (($myImageValues[0] - $previousImageWidths) < 0 || ($myImageValues[1] - $imageValues[1]) < 0) {
                 unset($myImage);
-                $myImage = new Image();
+                $myImage = new \Yana\Media\Image();
                 $myImage->resize(325, 55);
                 $myImage->drawString("[ERROR] image size exceeds maximum", 5, 0);
                 $myImage->drawString("or value to big to be displayed", 5, 10);
@@ -137,7 +137,7 @@ class plugin_counter extends StdClass implements IsPlugin
                 $myImage->outputToScreen();
                 die;
             };
-            $image = new Image($filename, 'png');
+            $image = new \Yana\Media\Image($filename, 'png');
             $destX = ($myImageValues[0] - $previousImageWidths);
             $destY = (int) floor(($myImageValues[1] - $imageValues[1]) / 2);
             $myImage->copyRegion($image, 0, 0, null, null, $destX, $destY);
