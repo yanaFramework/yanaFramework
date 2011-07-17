@@ -246,12 +246,12 @@ class plugin_user_profile extends StdClass implements IsPlugin
         $isOwnProfile = strcasecmp($target, YanaUser::getUserName()) === 0;
         if (!empty($userData['USER_IMAGE']) && ($isOwnProfile || $userData['USER_IMAGE_ACTIVE'])) {
             if (!$thumb) {
-                $image = new Image($userData['USER_IMAGE']);
+                $image = new \Yana\Media\Image($userData['USER_IMAGE']);
             } else {
-                $image = new Image(str_replace('/image.', '/thumb.', $userData['USER_IMAGE']));
+                $image = new \Yana\Media\Image(str_replace('/image.', '/thumb.', $userData['USER_IMAGE']));
             }
         } else {
-            $image = new Image(Yana::getInstance()->getVar('DATADIR') . 'userpic.gif');
+            $image = new \Yana\Media\Image(Yana::getInstance()->getVar('DATADIR') . 'userpic.gif');
         }
         $image->outputToScreen();
         exit;

@@ -396,7 +396,7 @@ class plugin_antispam extends StdClass implements IsPlugin
             $text =& $contents['_'.$security_image_index];
         }
 
-        $image = new Image($imagesrc, 'png');
+        $image = new \Yana\Media\Image($imagesrc, 'png');
         for ($i = 0; $i < 5; $i++)
         {
             $image->drawString(
