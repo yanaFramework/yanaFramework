@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Media;
+
 /**
  * Brush wrapper class
  *
@@ -43,7 +45,7 @@
  * @since       2.8.7
  * @see         Image
  */
-class Brush extends Object
+class Brush extends \Object
 {
     /**#@+
      * @access  private
@@ -101,10 +103,10 @@ class Brush extends Object
          *
          * In case of an error a log entry is created.
          * Note: no error is triggered, since this might result in a broken image,
-         * when calling Image::outputToScreen().
+         * when calling \Yana\Media\Image::outputToScreen().
          */
         if (!function_exists('imagecreate') || !function_exists('imagecreatefrompng')) {
-            Log::report("Cannot create brush. This server is unable to handle PNG images.");
+            \Log::report("Cannot create brush. This server is unable to handle PNG images.");
 
         /* try to load the file */
         } else {
@@ -395,11 +397,7 @@ class Brush extends Object
      */
     public function equals(object $anotherObject)
     {
-        if ($anotherObject instanceof $this) {
-            return ( $this->_image === $anotherObject->getResource() );
-        } else {
-            return false;
-        }
+        return $anotherObject instanceof $this && $this->_image === $anotherObject->getResource();
     }
 
     /**

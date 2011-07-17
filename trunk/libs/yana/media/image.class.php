@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Media;
+
 /**
  * Image wrapper class
  *
@@ -55,7 +57,7 @@
  * @subpackage  utilities
  * @since       2.8.7
  */
-class Image extends Object
+class Image extends \Object
 {
     /**#@+
      * @access  private
@@ -183,7 +185,7 @@ class Image extends Object
         if (!function_exists('imagecreate')) {
             $message = "The GD library does not seem to be installed.\nWithout this library this framework will be ".
                 "unable to create images.\nPlease update your configuration!";
-            Log::report($message);
+            \Log::report($message);
 
         /* if no filename is provided, create an empty truecolor image */
         } elseif (is_null($filename)) {
@@ -198,7 +200,7 @@ class Image extends Object
             /* 1 check input */
             if (is_string($filename)) {
                 if (!file_exists($filename)) {
-                    Log::report("The image '{$filename}' does not exist.");
+                    \Log::report("The image '{$filename}' does not exist.");
                 } else {
                     $this->_path = $filename;
                     $this->_exists   = true;
@@ -282,7 +284,7 @@ class Image extends Object
                 if ($this->_image === false) {
                     $message = "The file '{$filename}' was not recognized as a valid ".
                         ((!empty($imageType))?$imageType." ":"")."image.";
-                    Log::report($message);
+                    \Log::report($message);
                     $this->_createErrorImage();
 
                 /* make image truecolor */
@@ -437,9 +439,7 @@ class Image extends Object
      */
     public function equals(object $anotherObject)
     {
-        if ($anotherObject instanceof $this) {
-            return ( $this->_image === $anotherObject->getResource() );
-        }
+        return $anotherObject instanceof $this && $this->_image === $anotherObject->getResource();
     }
 
     /**
@@ -1703,22 +1703,22 @@ class Image extends Object
 
         /* argument 1 */
         if ($r < 0 || $r > 255) {
-            throw new InvalidArgumentException("Invalid argument 1. Must be between 0 and 255.", E_USER_WARNING);
+            throw new \InvalidArgumentException("Invalid argument 1. Must be between 0 and 255.", E_USER_WARNING);
         }
 
         /* argument 2 */
         if ($g < 0 || $g > 255) {
-            throw new InvalidArgumentException("Invalid argument 2. Must be between 0 and 255.", E_USER_WARNING);
+            throw new \InvalidArgumentException("Invalid argument 2. Must be between 0 and 255.", E_USER_WARNING);
         }
 
         /* argument 3 */
         if ($b < 0 || $b > 255) {
-            throw new InvalidArgumentException("Invalid argument 3. Must be between 0 and 255.", E_USER_WARNING);
+            throw new \InvalidArgumentException("Invalid argument 3. Must be between 0 and 255.", E_USER_WARNING);
         }
 
         /* argument 4 */
         if (!is_null($opacity) && ($opacity < 0.0 || $opacity > 1.0)) {
-            throw new InvalidArgumentException("Invalid argument 4. Must be between 0.0 and 1.0.", E_USER_WARNING);
+            throw new \InvalidArgumentException("Invalid argument 4. Must be between 0.0 and 1.0.", E_USER_WARNING);
         }
 
         /**
@@ -1942,7 +1942,7 @@ class Image extends Object
          *  argument 1 - index out of bounds
          */
         } elseif ($replacedColor < 0 || $replacedColor > imagecolorstotal($this->_image)) {
-            throw new OutOfBoundsException("Replaced color is not in image palette.", E_USER_WARNING);
+            throw new \OutOfBoundsException("Replaced color is not in image palette.", E_USER_WARNING);
 
         } else {
 
@@ -2071,12 +2071,12 @@ class Image extends Object
         }
 
         if (is_string($brush) && is_file($brush)) {
-            $brush = new Image($brush);
+            $brush = new self($brush);
         }
         if (is_object($brush)) {
             if ($brush instanceof Brush) {
                 $resource = $brush->getResource();
-            } elseif ($brush instanceof Image) {
+            } elseif ($brush instanceof $this) {
                 if ($brush->isBroken()) {
                     return false;
                 } else {
@@ -3011,7 +3011,7 @@ class Image extends Object
         /* argument 1 */
         assert('!isset($resource); // cannot redeclare variable $resource');
         if (is_string($sourceImage) && is_file($sourceImage)) {
-            $sourceImage = new Image($sourceImage);
+            $sourceImage = new self($sourceImage);
             $resource = $sourceImage->_image;
         } elseif (is_object($sourceImage) && isset($sourceImage->_image) && is_resource($sourceImage->_image)) {
             $resource = $sourceImage->_image;
@@ -3966,7 +3966,7 @@ class Image extends Object
 
         /* argument 1 */
         if (is_string($sourceImage) && is_file($sourceImage)) {
-            $sourceImage = new Image($sourceImage);
+            $sourceImage = new self($sourceImage);
             $sourceImage = $sourceImage->_image;
         } elseif (is_object($sourceImage) && isset($sourceImage->_image) && is_resource($sourceImage->_image)) {
             $sourceImage = $sourceImage->_image;
@@ -4264,8 +4264,8 @@ class Image extends Object
         /* argument 1 */
         if (is_string($comparedImage) && is_file($comparedImage)) {
             /* is file name */
-            $otherImage = new Image($comparedImage);
-        } elseif (is_object($comparedImage) && $comparedImage instanceof Image) {
+            $otherImage = new self($comparedImage);
+        } elseif (is_object($comparedImage) && $comparedImage instanceof $this) {
             /* is object */
             $otherImage = clone $comparedImage;
         } else {

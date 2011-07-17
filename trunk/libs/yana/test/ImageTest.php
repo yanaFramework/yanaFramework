@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Media;
+
 /**
  * @ignore
  */
@@ -35,7 +37,7 @@ require_once dirname(__FILE__) . '/include.php';
  *
  * @package  test
  */
-class ImageTest extends PHPUnit_Framework_TestCase
+class ImageTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var    Image
@@ -153,7 +155,7 @@ class ImageTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($exists, 'assert failed, image doesnt exists');
 
         $noExist = $this->noexistImage->exists();
-        $this->assertFalse($noExist, 'assert failed , image exist');       
+        $this->assertFalse($noExist, 'assert failed , image exist');
     }
 
     /**
@@ -167,7 +169,7 @@ class ImageTest extends PHPUnit_Framework_TestCase
     {
         $isbroken = $this->noexistImage->isBroken();
         $this->assertTrue($isbroken, 'assert failed, the image is not broken');
-        
+
         $broken = $this->image->isBroken();
         // expecting false
         $this->assertFalse($broken, 'assert failed - the image is broken');
@@ -234,7 +236,7 @@ class ImageTest extends PHPUnit_Framework_TestCase
         $this->assertType('resource', $resource, 'assert failed, value is not from type resource');
         $equalsResource = $this->image->equalsResoure($resource);
         $this->assertTrue($equalsResource, 'assert "equalsResoure()" failed, invalid resource');
-        
+
         $resource = $this->emptyImage->getResource();
         $equalsResource = $this->image->equalsResoure($resource);
         $this->assertFalse($equalsResource, 'assert "equalsResoure()" failed , valid resource');
@@ -332,7 +334,7 @@ class ImageTest extends PHPUnit_Framework_TestCase
     {
         $drawLine = $this->image->drawLine(15, 15, 15, 80, $this->image->black);
         $this->assertTrue($drawLine, 'assert "drawLine()" failed, line is not set');
-        
+
         $drawLine = $this->image->drawLine(15, 15, 15, 80);
         $this->assertTrue($drawLine, 'assert "drawLine()" failed, line is not set');
 
@@ -440,7 +442,7 @@ class ImageTest extends PHPUnit_Framework_TestCase
                     0 => array( 20, 0  ),
                     1 => array( 40, 20 ),
                     2 => array( 0, 20  )
-                );               
+                );
         $drawPolygon = $this->noexistImage->drawPolygon($points, 53, 80, $this->image->black, $this->image->black);
         $this->assertFalse($drawPolygon, 'assert "drawPolygon()" failed , image is broken');
 
@@ -522,7 +524,7 @@ class ImageTest extends PHPUnit_Framework_TestCase
     public function testGetFontWidth()
     {
         $fontWidth = $this->image->getFontWidth(3);
-        $this->assertType('integer', $fontWidth, 'assert failed - "$fontWidth" is not from type integer');        
+        $this->assertType('integer', $fontWidth, 'assert failed - "$fontWidth" is not from type integer');
     }
 
     /**
@@ -550,7 +552,7 @@ class ImageTest extends PHPUnit_Framework_TestCase
         // broken
         $isBroken = $this->invalidImage->getColorValues($this->image->black);
         $this->assertFalse($isBroken, 'assert "getColorValues()" failed, image is broken');
-        
+
         $color = $this->image->getColor(153, 50, 204);
         $this->assertType('integer', $color, 'assert "getColor()" failed, value is not from type integer');
         $colorValues = $this->image->getColorValues($color);
@@ -705,7 +707,7 @@ class ImageTest extends PHPUnit_Framework_TestCase
 
         $setLineWidth = $this->image->setLineWidth(80);
         $this->assertTrue($setLineWidth, 'assert "setLineWidth()" failed, LineWidth is not set');
-        
+
         // param value = 0
         $setLineWidth = $this->image->setLineWidth(0);
         $this->assertFalse($setLineWidth, 'assert "SetLineWidth()" failed, the first argument must be in excess of 0');
@@ -750,7 +752,7 @@ class ImageTest extends PHPUnit_Framework_TestCase
 
         $replaceIndexColor = $this->image->replaceIndexColor(2, array('red'=>0,'green'=>255,'blue'=>100));
         $this->assertTrue($replaceIndexColor, 'assert "replaceIndexColor()" failed');
-        
+
         // expecting false
         $replaceIndexColor = $this->image->replaceIndexColor(2, array('red'=>321,'green'=>255,'blue'=>100));
         $this->assertFalse($replaceIndexColor, 'assert "replaceIndexColor()" failed, the integer value of red need to be beetwen 0 and 255');
@@ -908,7 +910,7 @@ class ImageTest extends PHPUnit_Framework_TestCase
         $interlaced = $this->image->isInterlaced();
         $this->assertFalse($interlaced, 'assert "isInterlaced" failed,  assert is true');
     }
-    
+
     /**
      * enable interlance
      *
@@ -921,7 +923,7 @@ class ImageTest extends PHPUnit_Framework_TestCase
         // broken
         $isBroken = $this->invalidImage->enableInterlace(true);
         $this->assertFalse($isBroken, 'assert "enableInterlace()" failed, image is broken');
-        
+
         $enableInterlace = $this->image->enableInterlace(true);
         $this->assertTrue($enableInterlace, 'assert "enableInterlace()" failed, assert is false');
 
@@ -1124,7 +1126,7 @@ class ImageTest extends PHPUnit_Framework_TestCase
         // broken
         $isBroken = $this->invalidImage->resize(100, 50);
         $this->assertFalse($isBroken, 'assert "resize()" failed, image is broken');
-        
+
         $resize = $this->image->resize(150, 50);
         $this->assertTrue($resize, 'assert "resize()" failed, assert is false');
 
@@ -1250,7 +1252,7 @@ class ImageTest extends PHPUnit_Framework_TestCase
         // broken
         $isBroken = $this->invalidImage->toGrayscale();
         $this->assertFalse($isBroken, 'assert "toGrayscale()" failed, image is broken');
-        
+
         $toGrayscale = $this->image->toGrayscale();
         $this->assertTrue($toGrayscale, 'assert "toGrayscale()" failed, assert is false');
     }
@@ -1412,7 +1414,7 @@ class ImageTest extends PHPUnit_Framework_TestCase
 
     /**
      * apply filter
-     * 
+     *
      * @test
      */
     public function testApplyFilter()
@@ -1692,7 +1694,7 @@ class ImageTest extends PHPUnit_Framework_TestCase
         $nonExistPath = 'nonexist.png';
         $this->image->compareImage($nonExistPath);
     }
-    
+
     /**
      * to string
      *
@@ -1791,7 +1793,7 @@ class ImageTest extends PHPUnit_Framework_TestCase
         $drawString1 = $this->emptyImage->drawString('canvas error', 20, 60, $this->emptyImage->red);
         $this->assertTrue($drawString1, 'assert failed "$drawString1" is false');
         $clearCanvas = $this->emptyImage->clearCanvas();
-        
+
 
         // this should do nothing
         $fill2 = $this->emptyImage->fill($this->emptyImage->red, 0, 0, $this->emptyImage->getBackgroundColor());

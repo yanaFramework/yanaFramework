@@ -714,7 +714,7 @@ class DbBlob extends FileReadonly
          * Note: this also checks the file content and will
          * set a "broken" flag if the image is not valid.
          */
-        $image = new Image($fileTempName, $mimetype);
+        $image = new \Yana\Media\Image($fileTempName, $mimetype);
         /*
          * check if the "broken" flag has been set
          */
