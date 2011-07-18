@@ -126,6 +126,18 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function testSetBrushDirectory()
+    {
+        $default = Brush::getDirectory();
+        Brush::setDirectory(__DIR__);
+        $this->assertEquals(__DIR__, Brush::getDirectory());
+        Brush::setDirectory($default);
+        $this->assertEquals($default, Brush::getDirectory());
+    }
+
+    /**
      * get path
      *
      * Expected test result : string
@@ -330,7 +342,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      *
      * @test
      */
-    function testDrawLine()
+    public function testDrawLine()
     {
         $drawLine = $this->image->drawLine(15, 15, 15, 80, $this->image->black);
         $this->assertTrue($drawLine, 'assert "drawLine()" failed, line is not set');
@@ -386,7 +398,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testDrawFormattedStringInvalidArgument()
+    public function testDrawFormattedStringInvalidArgument()
     {
         $this->image->drawFormattedString('test', 150, 80, $this->image->getColor(0, 0, 255), 'Not a font', 12, 15);
     }
@@ -565,7 +577,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testGetColorValuesInvalidArgument()
+    public function testGetColorValuesInvalidArgument()
     {
         $this->image->getColorValues(-1);
     }
@@ -617,7 +629,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testGetSizeInvalidArgument()
+    public function testGetSizeInvalidArgument()
     {
         $size = $this->image->getSize($this->image->black);
         $this->assertFalse($size, 'assert failed, first argument must be a string');
@@ -634,42 +646,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     {
         $color = $this->image->getColor(153, 50, 204);
         $this->assertType('integer', $color, 'assert "getColor()" failed, value is not from type integer');
-    }
-
-    /**
-     * Get Color Invalid Argument1
-     *
-     * @expectedException  InvalidArgumentException
-     * @test
-     */
-    function testGetColorInvalidArgument1()
-    {
-        $color = $this->image->getColor(255, 510, 255, null);
-        $this->assertFalse($color, 'assert failed, second argument must be an integer');
-    }
-
-    /**
-     * Get Color Invalid Argument2
-     *
-     * @expectedException  InvalidArgumentException
-     * @test
-     */
-    function testGetColorInvalidArgument2()
-    {
-        $color = $this->image->getColor(255, 255, -760, null);
-        $this->assertFalse($color, 'assert failed, third argument must be between 0 and 255');
-    }
-
-    /**
-     * Get Color Invalid Argument3
-     *
-     * @expectedException  InvalidArgumentException
-     * @test
-     */
-    function testGetColorInvalidArgument3()
-    {
-        $color = $this->image->getColor(255, 255, 255, 3);
-        $this->assertFalse($color, 'assert failed, fourth argument must have an integer value or NULL');
     }
 
     /**
@@ -777,7 +753,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException OutOfBoundsException
      * @test
      */
-    function testReplaceIndexColorInvalidArgument()
+    public function testReplaceIndexColorInvalidArgument()
     {
         // expecting false
         $this->image->reduceColorDepth(255);
@@ -792,7 +768,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testReplaceIndexColorInvalidArgument2()
+    public function testReplaceIndexColorInvalidArgument2()
     {
         // expecting false
         $this->image->reduceColorDepth(255);
@@ -825,9 +801,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetBrush()
     {
-        // set brush
-        Brush::setSourceDirectory(CWD . 'resources/brush/');
-
         // broken
         $isBroken = $this->invalidImage->setBrush('small star');
         $this->assertFalse($isBroken, 'assert "setBrush()" failed , image is broken');
@@ -852,13 +825,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     {
         $color = $this->image->getColor(153, 50, 204);
         $setBackgroundColor = $this->image->setBackgroundColor($color);
-        $this->assertTrue($setBackgroundColor, 'assert "setBackgroundColor()" failed , backgroundcolor is not set');
+        $this->assertTrue($setBackgroundColor, 'backgroundcolor is not set to $color');
 
         $setBackgroundColor = $this->image->setBackgroundColor();
-        $this->assertTrue($setBackgroundColor, 'assert "setBackgroundColor()" failed , backgroundcolor is not set');
+        $this->assertTrue($setBackgroundColor, 'backgroundcolor is not reset');
 
         $setBackgroundColor = $this->image->setBackgroundColor($color, false);
-        $this->assertTrue($setBackgroundColor, 'assert "setBackgroundColor()" failed , backgroundcolor is not set');
+        $this->assertTrue($setBackgroundColor, 'backgroundcolor is not replaced with $color');
     }
 
     /**
@@ -867,7 +840,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testSetBackgroundColorInvalidArgument()
+    public function testSetBackgroundColorInvalidArgument()
     {
         $setBackgroundColor = $this->image->setBackgroundColor(-1, true);
         $this->assertFalse($setBackgroundColor, 'First argument must be a valid color.');
@@ -995,7 +968,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testRotateInvalidArgument()
+    public function testRotateInvalidArgument()
     {
         $rotate = $this->image->rotate(MAX_INT);
         $this->assertFalse($rotate, 'assert failed, first argument must have a float value');
@@ -1035,7 +1008,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testResizeCanvasInvalidArgument()
+    public function testResizeCanvasInvalidArgument()
     {
         $resizeCanvas = $this->image->resizeCanvas(0);
         $this->assertFalse($resizeCanvas, 'First argument must be an integer value greater 0.');
@@ -1047,7 +1020,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testResizeCanvasInvalidArgument2()
+    public function testResizeCanvasInvalidArgument2()
     {
         $resizeCanvas = $this->image->resizeCanvas(1, 0);
         $this->assertFalse($resizeCanvas, 'Second argument must be an integer value greater 0.');
@@ -1059,7 +1032,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testResizeCanvasInvalidArgument3()
+    public function testResizeCanvasInvalidArgument3()
     {
         $resizeCanvas = $this->image->resizeCanvas(1, 1, 2);
         $this->assertFalse($resizeCanvas, 'Left padding may not exceed canvas size.');
@@ -1071,7 +1044,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testResizeCanvasInvalidArgument4()
+    public function testResizeCanvasInvalidArgument4()
     {
         $resizeCanvas = $this->image->resizeCanvas(1, 1, 0, 2);
         $this->assertFalse($resizeCanvas, 'Top padding may not exceed canvas size.');
@@ -1083,22 +1056,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testResizeCanvasInvalidArgument5()
+    public function testResizeCanvasInvalidArgument5()
     {
         $resizeCanvas = $this->image->resizeCanvas(100, 100, 20, 20, array('red' =>230, 'green' => 120));
         $this->assertFalse($resizeCanvas, 'Fifth argument must be an array with values red, green, blue.');
-    }
-
-    /**
-     * ResizeCanvas Invalid Argument 7
-     *
-     * @expectedException InvalidArgumentException
-     * @test
-     */
-    function testResizeCanvasInvalidArgument7()
-    {
-        $resizeCanvas = $this->image->resizeCanvas(100, 100, 20, 20, array('red' =>230, 'green' => 120, 'blue' => -1));
-        $this->assertFalse($resizeCanvas, 'Fifth argument must be a valid color value.');
     }
 
     /**
@@ -1293,7 +1254,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testMonochromaticInvalidArgument()
+    public function testMonochromaticInvalidArgument()
     {
         $this->image->monochromatic(500, 48, 255);
     }
@@ -1304,7 +1265,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testMonochromaticInvalidArgument1()
+    public function testMonochromaticInvalidArgument1()
     {
         $this->image->monochromatic(155, -25, 255);
     }
@@ -1335,7 +1296,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testBrightnessInvalidArgument()
+    public function testBrightnessInvalidArgument()
     {
         $this->image->brightness(-1);
     }
@@ -1346,7 +1307,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testBrightnessInvalidArgument1()
+    public function testBrightnessInvalidArgument1()
     {
         $this->image->brightness(5);
     }
@@ -1378,7 +1339,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testContrastInvalidArgument()
+    public function testContrastInvalidArgument()
     {
         $this->image->contrast(-3);
     }
@@ -1389,7 +1350,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testContrastInvalidArgument1()
+    public function testContrastInvalidArgument1()
     {
         $this->image->contrast(2);
     }
@@ -1463,7 +1424,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testColorizeInvalidArgument()
+    public function testColorizeInvalidArgument()
     {
         $this->image->colorize(256, 50, 150);
     }
@@ -1491,7 +1452,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testMultiplyInvalidArgument()
+    public function testMultiplyInvalidArgument()
     {
         $this->image->multiply(-255, 50, 150);
     }
@@ -1502,7 +1463,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testMultiplyInvalidArgument1()
+    public function testMultiplyInvalidArgument1()
     {
         $this->image->multiply(255, 500, 150);
     }
@@ -1530,7 +1491,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testBlurInvalidArgument()
+    public function testBlurInvalidArgument()
     {
         $this->image->blur(2.0);
     }
@@ -1541,7 +1502,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testBlurInvalidArgument1()
+    public function testBlurInvalidArgument1()
     {
         $this->image->blur(-1);
     }
@@ -1573,7 +1534,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testSharpenInvalidArgument()
+    public function testSharpenInvalidArgument()
     {
         $sharpen = $this->image->sharpen(2);
         $this->assertFalse($sharpen, 'assert failed, first argument must be between 0 and 1');
@@ -1646,7 +1607,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testOutputToScreenInvalidArgument()
+    public function testOutputToScreenInvalidArgument()
     {
         $outputToScreen = $this->image->outputToScreen($this->dummySource);
         $this->assertFalse($outputToScreen, 'assert "outputToScreen()" failed, assert is true');
@@ -1689,7 +1650,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @expectedException PHPUnit_Framework_Error
      * @test
      */
-    function testCompareImageInvalidArgument()
+    public function testCompareImageInvalidArgument()
     {
         $nonExistPath = 'nonexist.png';
         $this->image->compareImage($nonExistPath);
@@ -1923,14 +1884,9 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function test3()
     {
           // set brush
-          Brush::setSourceDirectory(CWD . 'resources/brush/');
           $brush = new Brush('small star');
 
-          $setColor = $brush->setColor(128, 128, 128);
-          $this->assertTrue($setColor, 'unable to set brush color');
-
-          $setSize = $brush->setSize(8);
-          $this->assertTrue($setSize, 'unable to set brush size');
+          $brush->setColor(128, 128, 128)->setSize(8);
 
           $setBackgroundColor = $this->emptyImage->setBackgroundColor($this->emptyImage->yellow);
           $this->assertTrue($setBackgroundColor, 'unable to set background color');
@@ -1985,5 +1941,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         unset($imageBlack, $imageWhite);
         $this->assertGreaterThan(0.9999, $compareImage, 'assert failed, images should NOT be equal');
     }
+
 }
+
 ?>
