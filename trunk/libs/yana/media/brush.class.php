@@ -85,17 +85,11 @@ class Brush extends \Object
     {
         assert('is_null($brushname) || is_string($brushname); // Wrong type for argument 1. String expected');
 
-        global $YANA;
-
         /**
          * Set Brush directory
          */
         if (is_null(self::$_brushdir)) {
-            if (isset($YANA)) {
-                self::$_brushdir = $YANA->getVar('BRUSHDIR');
-            } else {
-                self::$_brushdir = 'common_files/brush/';
-            }
+            self::$_brushdir = dirname(__FILE__) . '/brush/';
         }
 
         /**
