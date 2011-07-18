@@ -61,46 +61,118 @@ class Image extends \Object
 {
     /**#@+
      * @access  private
-     * @ignore
      */
 
+    /**
+     * Path to image file.
+     *
+     * @var string
+     */
     private $_path = null;
+
+    /**
+     * True if the path points to a file.
+     *
+     * @var bool
+     */
     private $_exists = false;
+
+    /**
+     * Integer identifying the image resource.
+     *
+     * @var ressource
+     */
     private $_image = null;
+
+    /**
+     * False if the path points to a valid image.
+     *
+     * @var false
+     */
     private $_isBroken = false;
+
+    /**
+     * Image Gamma setting.
+     *
+     * @var float
+     */
     private $_gamma = 1.0;
+
+    /**
+     * Line width in pixel.
+     *
+     * @var int
+     */
     private $_lineWidth = 1;
+
+    /**
+     * Line style settings.
+     *
+     * See setter function for details.
+     * Set to NULL to force default settings.
+     *
+     * @var array
+     */
     private $_lineStyle = null;
+
+    /**
+     * True to produce an interlaced image (certain image types only, e.g. GIF).
+     *
+     * @var bool
+     */
     private $_interlace = false;
+
+    /**
+     * True when an alpha-channel should be added (certain image types only, e.g. PNG).
+     *
+     * @var bool
+     */
     private $_alpha = false;
+
+    /**
+     * True when an alpha-channel should be added (certain image types only, e.g. PNG).
+     *
+     * @var \Yana\Media\Brush
+     */
     private $_brush = null;
 
     /**
      * Is set to the initial transparency color of the image (if any).
+     *
+     * @var int
      */
     private $_transparency = null;
 
     /**
-     * current background color
+     * Current background color.
+     *
+     * @var int
      */
     private $_backgroundColor = null;
 
-    /** @final */
+    /**
+     * Mapping of image types to: mime-type and function names.
+     *
+     * @var array
+     */
     private $_mapping  = array(
-    'png'  => array('image/png',          'imagepng',  'imagecreatefrompng' ),
-    'jpg'  => array('image/jpeg',         'imagejpeg', 'imagecreatefromjpeg'),
-    'jpeg' => array('image/jpeg',         'imagejpeg', 'imagecreatefromjpeg'),
-    'gif'  => array('image/gif',          'imagegif',  'imagecreatefromgif' ),
-    'bmp'  => array('image/vnd.wap.wbmp', 'imagewbmp', 'imagecreatefromwbmp')
+        'png'  => array('image/png',          'imagepng',  'imagecreatefrompng' ),
+        'jpg'  => array('image/jpeg',         'imagejpeg', 'imagecreatefromjpeg'),
+        'jpeg' => array('image/jpeg',         'imagejpeg', 'imagecreatefromjpeg'),
+        'gif'  => array('image/gif',          'imagegif',  'imagecreatefromgif' ),
+        'bmp'  => array('image/vnd.wap.wbmp', 'imagewbmp', 'imagecreatefromwbmp')
     );
     /**#@-*/
 
     /**#@+
-     * color
+     * Color.
+     *
+     * These standard palette colors are added for the users convenience.
+     * The class itself initializes, but doesn't use them.
+     * Note: if the palette does not have the exact color, a similar color is used instead.
      *
      * @access  public
      * @var     int
-     * @final
      */
 
     /** aqua = #00ffff */
@@ -426,18 +498,16 @@ class Image extends \Object
     }
 
     /**
-     * compare with another object
+     * Compare with another object.
      *
-     * Returns bool(true) if this object and $anotherObject
-     * have an image resource that is the same.
-     *
+     * Returns bool(true) if this object and $anotherObject have an image resource that is the same.
      * Returns bool(false) otherwise.
      *
      * @access  public
-     * @param   object  $anotherObject  any object or var you want to compare
+     * @param   \IsObject  $anotherObject  any object or var you want to compare
      * @return  bool
      */
-    public function equals(object $anotherObject)
+    public function equals(\Object $anotherObject)
     {
         return $anotherObject instanceof $this && $this->_image === $anotherObject->getResource();
     }
@@ -1699,35 +1769,13 @@ class Image extends \Object
         assert('is_int($r); // Wrong type for argument 1. Integer expected');
         assert('is_int($g); // Wrong type for argument 2. Integer expected');
         assert('is_int($b); // Wrong type for argument 3. Integer expected');
+        assert('$r >= 0 && $r <= 255; // Invalid argument $r: must be in range [0,255].');
+        assert('$g >= 0 && $g <= 255; // Invalid argument $g: must be in range [0,255].');
+        assert('$b >= 0 && $b <= 255; // Invalid argument $b: must be in range [0,255].');
         assert('is_null($opacity) || is_numeric($opacity); // Wrong type for argument 4. Float expected');
+        assert('!$opacity || ($opacity >= 0.0 && $opacity <= 1.0); // Invalid argument $opacity: must be in range [0.0,1.0].');
 
-        /* argument 1 */
-        if ($r < 0 || $r > 255) {
-            throw new \InvalidArgumentException("Invalid argument 1. Must be between 0 and 255.", E_USER_WARNING);
-        }
-
-        /* argument 2 */
-        if ($g < 0 || $g > 255) {
-            throw new \InvalidArgumentException("Invalid argument 2. Must be between 0 and 255.", E_USER_WARNING);
-        }
-
-        /* argument 3 */
-        if ($b < 0 || $b > 255) {
-            throw new \InvalidArgumentException("Invalid argument 3. Must be between 0 and 255.", E_USER_WARNING);
-        }
-
-        /* argument 4 */
-        if (!is_null($opacity) && ($opacity < 0.0 || $opacity > 1.0)) {
-            throw new \InvalidArgumentException("Invalid argument 4. Must be between 0.0 and 1.0.", E_USER_WARNING);
-        }
-
-        /**
-         * error - broken image
-         */
-        if ($this->isBroken()) {
-            return false;
-
-        } elseif (!function_exists('imagecolorallocate')) {
+        if ($this->isBroken() || !function_exists('imagecolorallocate')) {
             return false;
 
         } else {
@@ -2188,10 +2236,7 @@ class Image extends \Object
         /**
          * error - broken image
          */
-        if ($this->isBroken()) {
-            return false;
-
-        } elseif (!is_int($this->_backgroundColor)) {
+        if ($this->isBroken() || !is_int($this->_backgroundColor)) {
             return false;
 
         } else {
@@ -2213,14 +2258,11 @@ class Image extends \Object
         /**
          * error - broken image
          */
-        if ($this->isBroken()) {
+        if ($this->isBroken() || !is_bool($this->_interlace)) {
             return false;
-
-        } elseif (is_bool($this->_interlace)) {
-            return $this->_interlace;
 
         } else {
-            return false;
+            return $this->_interlace;
         }
     }
 
@@ -2246,10 +2288,7 @@ class Image extends \Object
         /**
          * error - broken image
          */
-        if ($this->isBroken()) {
-            return false;
-
-        } elseif (!function_exists('imageinterlace')) {
+        if ($this->isBroken() || !function_exists('imageinterlace')) {
             return false;
 
         } else {
@@ -2289,14 +2328,12 @@ class Image extends \Object
         /**
          * error - broken image
          */
-        if ($this->isBroken()) {
+        if ($this->isBroken() || !is_bool($this->_alpha)) {
             return false;
-
-        } elseif (is_bool($this->_alpha)) {
-            return $this->_alpha;
 
         } else {
-            return false;
+            return $this->_alpha;
+
         }
     }
 
@@ -2324,10 +2361,7 @@ class Image extends \Object
         /**
          * error - broken image
          */
-        if ($this->isBroken()) {
-            return false;
-
-        } elseif (!function_exists('imagegammacorrect')) {
+        if ($this->isBroken() || !function_exists('imagegammacorrect')) {
             return false;
 
         } else {
@@ -2341,10 +2375,8 @@ class Image extends \Object
 
             if ($test == true) {
                 $this->_gamma = $gamma;
-                return true;
-            } else {
-                return false;
             }
+            return (bool) $test;
 
         }
     }
@@ -2367,10 +2399,7 @@ class Image extends \Object
         /**
          * error - broken image
          */
-        if ($this->isBroken()) {
-            return false;
-
-        } elseif (!function_exists('imagerotate')) {
+        if ($this->isBroken() || !function_exists('imagerotate')) {
             return false;
 
         } else {
@@ -2650,14 +2679,7 @@ class Image extends \Object
         assert('is_null($width) || is_int($width); // Wrong type for argument 1. Integer expected');
         assert('is_null($height) || is_int($height); // Wrong type for argument 2. Integer expected');
 
-        /*
-         * error - broken image
-         */
-        if ($this->isBroken()) {
-            return false;
-
-        /* both values can't be NULL */
-        } elseif (is_null($width) && is_null($height)) {
+        if ($this->isBroken() || (is_null($width) && is_null($height))) {
             return false;
 
         } else {
@@ -2729,10 +2751,7 @@ class Image extends \Object
         /*
          * error - broken image
          */
-        if ($this->isBroken()) {
-            return false;
-
-        } elseif (!function_exists('imagecolortransparent')) {
+        if ($this->isBroken() ||!function_exists('imagecolortransparent')) {
             return false;
 
         } else {
@@ -2778,10 +2797,7 @@ class Image extends \Object
         /*
          * error - broken image
          */
-        if ($this->isBroken()) {
-            return false;
-
-        } elseif (!function_exists('imagecolortransparent')) {
+        if ($this->isBroken() || !function_exists('imagecolortransparent')) {
             return false;
 
         } else {
@@ -2848,10 +2864,7 @@ class Image extends \Object
         /**
          * error - broken image
          */
-        if ($this->isBroken()) {
-            return false;
-
-        } elseif (!function_exists('imagecolorstotal')) {
+        if ($this->isBroken() || !function_exists('imagecolorstotal')) {
             return false;
 
         } else {
@@ -2892,10 +2905,7 @@ class Image extends \Object
         /**
          * error - broken image
          */
-        if ($this->isBroken()) {
-            return false;
-
-        } elseif (!function_exists('imagetruecolortopalette')) {
+        if ($this->isBroken() || !function_exists('imagetruecolortopalette')) {
             return false;
 
         } else {
@@ -3143,36 +3153,11 @@ class Image extends \Object
         assert('is_int($r); // Wrong type for argument 1. Integer expected');
         assert('is_int($g); // Wrong type for argument 2. Integer expected');
         assert('is_int($b); // Wrong type for argument 3. Integer expected');
+        assert('$r >= 0 && $r <= 255; // Invalid argument $r: must be in range [0,255].');
+        assert('$g >= 0 && $g <= 255; // Invalid argument $g: must be in range [0,255].');
+        assert('$b >= 0 && $b <= 255; // Invalid argument $b: must be in range [0,255].');
 
-        /* argument 1 */
-        if ($r < 0 || $r > 255) {
-            trigger_error("Invalid argument 1. Must be between 0 and 255.", E_USER_WARNING);
-            return false;
-        }
-
-        /* argument 2 */
-        if ($g < 0 || $g > 255) {
-            trigger_error("Invalid argument 2. Must be between 0 and 255.", E_USER_WARNING);
-            return false;
-        }
-
-        /* argument 3 */
-        if ($b < 0 || $b > 255) {
-            trigger_error("Invalid argument 3. Must be between 0 and 255.", E_USER_WARNING);
-            return false;
-        }
-
-        /**
-         * error - broken image
-         */
-        if ($this->isBroken()) {
-            return false;
-        }
-
-        /**
-         * error - function not available
-         */
-        if (!function_exists('imagecolorset')) {
+        if ($this->isBroken() || !function_exists('imagecolorset')) {
             return false;
         }
 
@@ -3449,46 +3434,33 @@ class Image extends \Object
     {
         assert('is_int($filter); // Wrong type for argument 1. Integer expected');
 
-        /**
-         * error - broken image
-         */
-        if ($this->isBroken()) {
-            return false;
-        }
-
-        if (!function_exists('imagefilter')) {
+        if ($this->isBroken() || !function_exists('imagefilter')) {
             return false;
         }
         switch (func_num_args())
         {
             case 1:
                 return imagefilter($this->_image, $filter);
-            break;
             case 2:
                 $arg1 = func_get_arg(1);
                 return imagefilter($this->_image, $filter, $arg1);
-            break;
             case 3:
                 $arg1 = func_get_arg(1);
                 $arg2 = func_get_arg(2);
                 return imagefilter($this->_image, $filter, $arg1, $arg2);
-            break;
             case 4:
                 $arg1 = func_get_arg(1);
                 $arg2 = func_get_arg(2);
                 $arg3 = func_get_arg(3);
                 return imagefilter($this->_image, $filter, $arg1, $arg2, $arg3);
-            break;
             case 5:
                 $arg1 = func_get_arg(1);
                 $arg2 = func_get_arg(2);
                 $arg3 = func_get_arg(3);
                 $arg4 = func_get_arg(4);
                 return imagefilter($this->_image, $filter, $arg1, $arg2, $arg3, $arg4);
-            break;
             default:
                 return false;
-            break;
         }
     }
 
@@ -3513,29 +3485,14 @@ class Image extends \Object
         assert('is_int($r); // Wrong type for argument 1. Integer expected');
         assert('is_int($g); // Wrong type for argument 2. Integer expected');
         assert('is_int($b); // Wrong type for argument 3. Integer expected');
+        assert('$r >= 0 && $r <= 255; // Invalid argument $r: must be in range [0,255].');
+        assert('$g >= 0 && $g <= 255; // Invalid argument $g: must be in range [0,255].');
+        assert('$b >= 0 && $b <= 255; // Invalid argument $b: must be in range [0,255].');
 
         /**
          * error - broken image
          */
         if ($this->isBroken()) {
-            return false;
-        }
-
-        /* argument 1 */
-        if ($r < -255 || $r > 255) {
-            trigger_error("Invalid argument 1. Must be between -255 and 255.", E_USER_WARNING);
-            return false;
-        }
-
-        /* argument 2 */
-        if ($g < -255 || $g > 255) {
-            trigger_error("Invalid argument 2. Must be between -255 and 255.", E_USER_WARNING);
-            return false;
-        }
-
-        /* argument 3 */
-        if ($b < -255 || $b > 255) {
-            trigger_error("Invalid argument 3. Must be between -255 and 255.", E_USER_WARNING);
             return false;
         }
 
@@ -3601,33 +3558,11 @@ class Image extends \Object
         assert('is_int($r); // Wrong type for argument 1. Integer expected');
         assert('is_int($g); // Wrong type for argument 2. Integer expected');
         assert('is_int($b); // Wrong type for argument 3. Integer expected');
+        assert('$r >= 0 && $r <= 255; // Invalid argument $r: must be in range [0,255].');
+        assert('$g >= 0 && $g <= 255; // Invalid argument $g: must be in range [0,255].');
+        assert('$b >= 0 && $b <= 255; // Invalid argument $b: must be in range [0,255].');
 
-        /* argument 1 */
-        if ($r < 0 || $r > 255) {
-            trigger_error("Invalid argument 1. Must be between 0 and 255.", E_USER_WARNING);
-            return false;
-        }
-
-        /* argument 2 */
-        if ($g < 0 || $g > 255) {
-            trigger_error("Invalid argument 2. Must be between 0 and 255.", E_USER_WARNING);
-            return false;
-        }
-
-        /* argument 3 */
-        if ($b < 0 || $b > 255) {
-            trigger_error("Invalid argument 3. Must be between 0 and 255.", E_USER_WARNING);
-            return false;
-        }
-
-        /**
-         * error - broken image
-         */
-        if ($this->isBroken()) {
-            return false;
-        }
-
-        if (!function_exists('imagecolorset')) {
+        if ($this->isBroken() || !function_exists('imagecolorset')) {
             return false;
         }
 
