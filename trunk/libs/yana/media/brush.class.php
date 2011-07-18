@@ -28,15 +28,12 @@
 namespace Yana\Media;
 
 /**
- * Brush wrapper class
+ * Brush wrapper class.
  *
- * This class is meant as an add-on to the framework's
- * Image class. It is intended to handle predefined brushes
- * in PNG format, which reside in the directory
- * "common_files/brush/*.png" to ease work with images.
+ * This class is meant as an add-on to the framework's Image class.
+ * It is intended to handle predefined brushes in PNG format, which reside in the "brushes"-directory.
  *
- * Brush images need to be 2-colored black/white images
- * with color index 0 being black and index 1 being
+ * Brush images need to be 2-colored black/white images with color index 0 being black and index 1 being
  * the transparent color and width == height.
  *
  * @access      public
@@ -47,25 +44,41 @@ namespace Yana\Media;
  */
 class Brush extends \Object
 {
-    /**#@+
-     * @access  private
-     * @ignore
-     */
-
-    private $_brushname = null;
-    private static $_brushdir = null;
-    private $_image = null;
-
-    /**#@-*/
 
     /**
-     * create a new instance of this class
+     * Name of brush image.
+     *
+     * This is part of the file name.
+     *
+     * @access  private
+     * @var     string
+     */
+    private $_brushname = null;
+
+    /**
+     * Global directory where brush-images are stored.
+     *
+     * @access  private
+     * @static
+     * @var     string
+     */
+    private static $_brushdir = null;
+
+    /**
+     * Integer index of image resource.
+     *
+     * @access  private
+     * @var     resource
+     */
+    private $_image = null;
+
+    /**
+     * Create a new instance of this class.
      *
      * The argument $brushname determines wich brush to take the input from.
-     * If $brushname is not provided, a 1px square is used.
+     * Default is a single pixel.
      *
-     * The brush name can be any name of an existing PNG image (without the file extension),
-     * that must reside in the "common_files/brush/*.png" directory.
+     * The brush name can be any name of an existing PNG image (without the file extension).
      *
      * Here are some examples:
      * <ul>
@@ -80,102 +93,97 @@ class Brush extends \Object
      * </ul>
      *
      * @param  string  $brushname  see list
+     * @throws \NotImplementedException  if the GD-library is not available
+     * @throws \InvalidArgumentException when the requested brush is not found
      */
-    public function __construct($brushname = null)
+    public function __construct($brushname = 'point')
     {
-        assert('is_null($brushname) || is_string($brushname); // Wrong type for argument 1. String expected');
+        assert('is_string($brushname); // Wrong type for argument 1. String expected');
 
-        /**
-         * Set Brush directory
-         */
-        if (is_null(self::$_brushdir)) {
-            self::$_brushdir = dirname(__FILE__) . '/brush/';
+        // Check if GD-libary is available and able to handle PNG images.
+        if (!function_exists('imagecreate') || !function_exists('imagecreatefrompng')) {
+            throw new \NotImplementedException("Cannot create brush. This server is unable to handle PNG images.");
         }
 
-        /**
-         * Check if GD-libary is available and able to handle PNG images
+        $brushFile = self::getDirectory() . str_replace(' ', '-', $brushname) . '.png';
+
+        // check if file exists
+        if (!file_exists($brushFile)) {
+            throw new \InvalidArgumentException("Invalid brush file. File '$brushname' not found.");
+        }
+        $this->_brushname = $brushname;
+        $this->_image = imagecreatefrompng($brushFile);
+
+        // check if file is a valid image
+        if (!is_resource($this->_image)) {
+            throw new \InvalidArgumentException("The brush '{$brushname}' is not a valid image-file.");
+        }
+        /* Set background transparent.
          *
-         * In case of an error a log entry is created.
-         * Note: no error is triggered, since this might result in a broken image,
-         * when calling \Yana\Media\Image::outputToScreen().
+         * The source must be a black-white image, where palette index 1 is the background color.
          */
-        if (!function_exists('imagecreate') || !function_exists('imagecreatefrompng')) {
-            \Log::report("Cannot create brush. This server is unable to handle PNG images.");
-
-        /* try to load the file */
-        } else {
-
-            /* 1 check input */
-            if (is_null($brushname)) {
-                $brushname = 'point';
-            }
-            if (!is_string($brushname)) {
-                $brushFile = null;
-            } else {
-                $brushFile = self::$_brushdir . str_replace(' ', '-', $brushname) . '.png';
-            }
-
-            /* 2 create image resource */
-            if (!is_string($brushFile) || !file_exists($brushFile)) {
-                trigger_error("The brush '{$brushname}' does not exist.", E_USER_NOTICE);
-            } else {
-                $this->_brushname = $brushname;
-                $this->_image     = imagecreatefrompng($brushFile);
-            }
-
-            /* check if result is valid */
-            if (!is_resource($this->_image)) {
-                trigger_error("The brush {$brushname} is invalid.", E_USER_WARNING);
-            } else {
-                imagecolortransparent($this->_image, 1);
-            }
-        } /* end of section "create image resource" */
+        imagecolortransparent($this->_image, 1);
     }
 
     /**
-     * get name of this brush
-     *
-     * Returns bool(false) on error.
+     * Get name of this brush.
      *
      * @access  public
      * @return  string
      */
     public function getName()
     {
-        if (!is_string($this->_brushname)) {
-            return false;
-        } else {
-            return $this->_brushname;
-        }
+        return $this->_brushname;
     }
 
     /**
-     * set the directory that contains the brushes
+     * Set the directory that contains the brushes.
      *
      * This function will set the source directory for brushes.
      * The next time you create a Brush object, the png image
      * will automatically be searched for in the directory
      * you provided here.
      *
-     * Returns bool(true) on success and bool(false) on error.
-     *
      * @access  public
      * @static
      * @param   string  $directory  new source directory
-     * @return  bool
-     * @since   2.8.8
      */
-    public static function setSourceDirectory($directory)
+    public static function setDirectory($directory)
     {
-        assert('is_string($directory); // Wrong type for argument 1. String expected');
-        if (!is_dir($directory)) {
-            trigger_error("Not a directory '$directory'.", E_USER_WARNING);
-            return false;
+        assert('is_string($directory); // Invalid argument $directory: string expected');
+        assert('is_dir($directory); // Invalid argument $directory: must be a valid path');
+        self::$_brushdir = (string) $directory;
+    }
 
-        } else {
-            self::$_brushdir = $directory;
-            return true;
+    /**
+     * Reset the path to the brush-directory to the default.
+     *
+     * By default this will look for files in the "brush" sub-directory at the path where this class is stored.
+     *
+     * @access  public
+     * @static
+     */
+    public static function resetDirectory()
+    {
+        self::$_brushdir = __DIR__ . '/brushes/';
+    }
+
+    /**
+     * Get the directory that contains the brushes.
+     *
+     * This function will return the path to source directory for brushes.
+     *
+     * @access  public
+     * @static
+     * @return  string
+     */
+    public static function getDirectory()
+    {
+        if (is_null(self::$_brushdir)) {
+            self::resetDirectory();
+            assert('is_dir(self::$_brushdir);');
         }
+        return self::$_brushdir;
     }
 
     /**
@@ -188,122 +196,61 @@ class Brush extends \Object
      */
     public function getSize()
     {
-        if (!is_resource($this->_image)) {
-            return false;
-
-        } elseif (!function_exists('imagesx')) {
-            return false;
-
-        } else {
-            return imagesx($this->_image);
-
-        }
+        return imagesx($this->_image);
     }
 
     /**
-     * Resize the brush
-     *
-     * This resizes the brush.
+     * Resize the brush.
      *
      * The argument $size is the new size in pixel.
-     *
      * Returns bool(false) on error.
      *
      * @access  public
      * @param   int  $size  brush size in pixel
-     * @return  bool
+     * @return  \Yana\Media\Brush
      */
     public function setSize($size)
     {
-        assert('is_int($size); // Wrong type for argument 1. Integer expected');
+        assert('is_int($size); // Invalid argument $size: int expected');
+        assert('$size > 0; // Invalid argument $size: string expected');
 
-        if (!is_resource($this->_image)) {
-            return false;
-        } elseif (!function_exists('imagepalettecopy')) {
-            return false;
+        $currentSize = $this->getSize();
 
-        } else {
-
-            $currentSize = $this->getSize();
-
-            /* argument 1 */
-            if ($size < 1) {
-                trigger_error("Invalid value for argument 1. Size must be greater 0.", E_USER_WARNING);
-                return false;
-            }
-
-            if ($currentSize === $size) {
-
-                /* if image already has the expected size, then there is nothing to do here */
-                return true;
-
-            } else {
-
-                $oldImage    = $this->_image;
-                $this->_image = imagecreate($size, $size);
-                imagepalettecopy($this->_image, $oldImage);
-                imagefill($this->_image, 0, 0, 1);
-                imagecopyresized($this->_image, $oldImage, 0, 0, 0, 0, $size, $size, $currentSize, $currentSize);
-                imagecolortransparent($this->_image, 1);
-                imagedestroy($oldImage);
-                return true;
-
-            }
+        if ($currentSize !== $size) { // if image already has the expected size, then there is nothing to do here
+            $oldImage    = $this->_image;
+            $this->_image = imagecreate($size, $size);
+            imagepalettecopy($this->_image, $oldImage);
+            imagefill($this->_image, 0, 0, 1);
+            imagecopyresized($this->_image, $oldImage, 0, 0, 0, 0, $size, $size, $currentSize, $currentSize);
+            imagecolortransparent($this->_image, 1);
+            imagedestroy($oldImage);
         }
+        return $this;
     }
 
     /**
-     * set the color of this brush
+     * Set the color of this brush.
      *
-     * This function sets the color of the brush
-     * to a certain value, where the input is
+     * This function sets the color to a certain value, where the input is
      * the red, green and blue values of this color.
-     *
-     * The arguments $r, $g and $b need to be integer
-     * values between 0 and 255. For example,
-     * $r = 0 is interpreted as "0% red" and $r = 255
-     * is interpreted as "100% red".
+     * The palette index is detected automatically.
      *
      * @access  public
-     * @param   int    $r        red value
-     * @param   int    $g        green value
-     * @param   int    $b        blue value
-     * @return  string
+     * @param   int  $red    0 - 255 (255 = 100% red)
+     * @param   int  $green  0 - 255 (255 = 100% green)
+     * @param   int  $blue   0 - 255 (255 = 100% blue)
+     * @return  \Yana\Media\Brush
      */
-    public function setColor($r, $g, $b)
+    public function setColor($red, $green, $blue)
     {
-        assert('is_int($r); // Wrong type for argument 1. Integer expected');
-        assert('is_int($g); // Wrong type for argument 2. Integer expected');
-        assert('is_int($b); // Wrong type for argument 3. Integer expected');
-
-        /*
-         * check arguments
-         */
-        for ($i = 0; $i < 3; $i++)
-        {
-            $test = func_get_arg($i);
-            if ($test < 0 || $test > 255) {
-                $message = "Invalid value for argument {$i}. " .
-                    "Must be between 0 and 255, found '{$test}' instead.";
-                trigger_error($message, E_USER_WARNING);
-                return false;
-            }
-        }
-        unset($test, $i);
-
-        /* is image? */
-        if (!is_resource($this->_image)) {
-            return false;
-        }
-
-        /* GD library is there? */
-        if (!function_exists('imagecolorset')) {
-            return false;
-        }
-
-        /* set color */
-        imagecolorset($this->_image, 0, $r, $g, $b);
-        return true;
+        assert('is_int($red); // Wrong type for argument 1. Integer expected');
+        assert('is_int($green); // Wrong type for argument 2. Integer expected');
+        assert('is_int($blue); // Wrong type for argument 3. Integer expected');
+        assert('$red >= 0 && $red <= 255; // Invalid argument $red: must be in range [0,255].');
+        assert('$green >= 0 && $green <= 255; // Invalid argument $green: must be in range [0,255].');
+        assert('$blue >= 0 && $blue <= 255; // Invalid argument $blue: must be in range [0,255].');
+        imagecolorset($this->_image, 0, $red, $green, $blue);
+        return $this;
     }
 
     /**
@@ -318,13 +265,7 @@ class Brush extends \Object
      */
     public function getColor()
     {
-        if (!is_resource($this->_image)) {
-            return false;
-        } elseif (!function_exists('imagecolorsforindex')) {
-            return false;
-        } else {
-            return imagecolorsforindex($this->_image, 0);
-        }
+        return imagecolorsforindex($this->_image, 0);
     }
 
     /**
@@ -378,18 +319,16 @@ class Brush extends \Object
     }
 
     /**
-     * compare with another object
+     * Compare with another object.
      *
-     * Returns bool(true) if this object and $anotherObject
-     * have an image resource that is the same.
-     *
+     * Returns bool(true) if this object and $anotherObject have an image resource that is the same.
      * Returns bool(false) otherwise.
      *
      * @access  public
-     * @param   object  $anotherObject  any object or var you want to compare
+     * @param   \IsObject  $anotherObject  any object or var you want to compare
      * @return  bool
      */
-    public function equals(object $anotherObject)
+    public function equals(\Object $anotherObject)
     {
         return $anotherObject instanceof $this && $this->_image === $anotherObject->getResource();
     }
@@ -410,11 +349,7 @@ class Brush extends \Object
     public function equalsResoure($resource)
     {
         assert('is_resource($resource); // Wrong type for argument 1. Resource expected');
-        if (is_resource($resource) && $this->_image === $resource) {
-            return true;
-        } else {
-            return false;
-        }
+        return is_resource($resource) && $this->_image === $resource;
     }
 
     /**
@@ -440,7 +375,7 @@ class Brush extends \Object
     }
 
     /**
-     * Destructor
+     * Destructor.
      *
      * Automatically free memory for the image if object gets deleted.
      * Note that this is a PHP 5 feature. In PHP 4 you had to call
@@ -451,10 +386,8 @@ class Brush extends \Object
      */
     public function __destruct()
     {
-        if (function_exists('imagedestroy')) {
-            if (is_resource($this->_image)) {
-                imagedestroy($this->_image);
-            }
+        if (is_resource($this->_image)) {
+            imagedestroy($this->_image);
         }
     }
 
