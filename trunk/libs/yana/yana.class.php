@@ -183,7 +183,7 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable
             if (empty(self::$_config)) {
                 self::setConfiguration();
             }
-            self::$_instance = new Yana();
+            self::$_instance = new self();
         }
         return self::$_instance;
     }
