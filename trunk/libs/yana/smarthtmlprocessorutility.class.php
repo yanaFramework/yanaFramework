@@ -216,7 +216,7 @@ class SmartHtmlProcessorUtility extends Utility
              */
             settype($feeds, 'array');
             $title = Language::getInstance()->getVar("PROGRAM_TITLE");
-            foreach (RSS::getFeeds() as $action)
+            foreach (\Yana\RSS\Publisher::getFeeds() as $action)
             {
                 $htmlHead .= '        <link rel="alternate" type="application/rss+xml"' .
                 ' title="' . $title . '" href="' . SmartUtility::url("action=$action") . "\"/>\n";

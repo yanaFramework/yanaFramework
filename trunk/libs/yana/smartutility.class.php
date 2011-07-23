@@ -1362,7 +1362,7 @@ class SmartUtility extends Utility
         $title = $yana->getLanguage()->getVar('RSS_TITLE');
         $name = $yana->getLanguage()->getVar('PROGRAM_TITLE');
         $result = "";
-        foreach (RSS::getFeeds() as $action)
+        foreach (\Yana\RSS\Publisher::getFeeds() as $action)
         {
             $result .= '<a title="' . $name . ': ' . $title . '" href="' . self::url("action={$action}") . '">' .
             '<img alt="RSS" src="' . $image . '"/></a>';
