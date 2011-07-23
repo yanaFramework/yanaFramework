@@ -110,7 +110,7 @@ class plugin_blog extends StdClass implements IsPlugin
      */
     public function blog()
     {
-        RSS::publishFeed('blog_rss');
+        \Yana\RSS\Publisher::publishFeed('blog_rss');
         Microsummary::publishSummary(__CLASS__);
         return true;
     }
@@ -316,32 +316,31 @@ class plugin_blog extends StdClass implements IsPlugin
         /*
          * create RSS feed
          */
-        $rss = new RSS();
+        $rss = new \Yana\RSS\Feed();
         $rss->description = $YANA->getLanguage()->getVar('RSS_DESCRIPTION');
         /*
          * add items to feed
          */
         foreach ($rows as $row)
         {
-            $item = new RSSitem();
-            /* 1) process title */
-            $item->title = $row['BLOG_TITLE'];
-            /* 2) process link */
+            $item = new \Yana\RSS\Item($row['BLOG_TITLE']);
+            // process link
             $id = $row['BLOG_ID'];
-            $item->link = SmartUtility::url("action=blog_read_read_seperated_blog&blog_id=$id", true);
-            $item->link = str_replace(session_name()."=".session_id(), '', $item->link);
-            /* 3) process description */
-            $item->description = $row['BLOG_TEXT'];
-            $item->description = SmartUtility::embeddedTags($item->description);
-            $item->description = SmartUtility::smilies($item->description);
-            $item->description = strip_tags($item->description);
-            if (mb_strlen($item->description) > 500) {
-                $item->description = mb_substr($item->description, 0, 496).' ...';
+            $link = SmartUtility::url("action=blog_read_read_seperated_blog&blog_id=$id", true);
+            $link = str_replace(session_name()."=".session_id(), '', $link);
+            $item->setLink($link);
+            // process description
+            $description = $row['BLOG_TEXT'];
+            $description = SmartUtility::embeddedTags($description);
+            $description = SmartUtility::smilies($description);
+            $description = strip_tags($description);
+            if (mb_strlen($description) > 500) {
+                $description = mb_substr($description, 0, 496).' ...';
             }
-            /* 4) process pubDate */
-            $item->pubDate = $row['BLOG_CREATED'];
-            if (is_numeric($item->pubDate)) {
-                $item->pubDate = date('r', $item->pubDate);
+            $item->setDescription($description);
+            // process pubDate
+            if (is_numeric($row['BLOG_CREATED'])) {
+                $item->setPubDate(date('r', $row['BLOG_CREATED']));
             }
             $rss->addItem($item);
         } // end foreach

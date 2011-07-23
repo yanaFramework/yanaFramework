@@ -295,7 +295,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         assert('is_array($rows); /* unexpected result: $rows */');
 
         /* create RSS feed */
-        $rss = new RSS();
+        $rss = new \Yana\RSS\Feed();
         $rss->description = $YANA->getLanguage()->getVar('RSS_DESCRIPTION');
         if (empty($rss->description)) {
             $rss->description = 'the 10 most recent guestbook entries';
@@ -303,34 +303,33 @@ class plugin_guestbook extends StdClass implements IsPlugin
         SmartUtility::loadSmilies();
         foreach ($rows as $row)
         {
-            $item = new RSSitem();
-            /* 1) process title */
-            $item->title = $row['GUESTBOOK_NAME'];
-            /* 2) process link */
+            $item = new \Yana\RSS\Item($row['GUESTBOOK_NAME']);
+            // process link
             $id = $row['GUESTBOOK_ID'];
-            $item->link = SmartUtility::url('action=guestbook_read&target='.$id, true);
+            $link = SmartUtility::url('action=guestbook_read&target=' . $id, true);
             /**
              * {@internal
              * Note: guid is ignored by some aggregators and link is used instead
              * where this is the case, the session id can not be part of the uri as this
              * is subject to change. }}
              */
-            $item->link = str_replace(session_name()."=".session_id(), '', $item->link);
-            /* 3) process description */
-            $item->description = $row['GUESTBOOK_MESSAGE'];
-            $item->description = SmartUtility::embeddedTags($item->description);
-            $item->description = SmartUtility::smilies($item->description);
-            $item->description = strip_tags($item->description);
-            if (mb_strlen($item->description) > 500) {
-                $item->description = mb_substr($item->description, 0, 496).' ...';
+            $link = str_replace(session_name()."=".session_id(), '', $link);
+            $item->setLink($link);
+            // process description
+            $description = $row['GUESTBOOK_MESSAGE'];
+            $description = SmartUtility::embeddedTags($description);
+            $description = SmartUtility::smilies($description);
+            $description = strip_tags($description);
+            if (mb_strlen($description) > 500) {
+                $description = mb_substr($description, 0, 496).' ...';
             }
-            /* 4) process pubDate */
-            $item->pubDate     = $row['GUESTBOOK_DATE'];
-            if (is_numeric($item->pubDate)) {
-                $item->pubDate = date('r', $item->pubDate);
+            $item->setDescription($description);
+            // process pubDate
+            if (is_numeric($row['GUESTBOOK_DATE'])) {
+                $item->setPubDate(date('r', $row['GUESTBOOK_DATE']));
             }
             $rss->addItem($item);
-        } /* end foreach */
+        } // end foreach
         print $rss->toString();
         exit(0);
     }
@@ -486,7 +485,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         self::_securityCheck(); // throws FileNotFoundError
 
         Microsummary::publishSummary(__CLASS__);
-        RSS::publishFeed('guestbook_read_rss');
+        \Yana\RSS\Publisher::publishFeed('guestbook_read_rss');
 
         /* get entries */
         $rows = $this->_getTable($page, $entries);
