@@ -159,7 +159,6 @@
         <template id="SITEMAP" file="default/sitemap.html.tpl">
             <style>default/styles/sitemap.css</style>
         </template>
-        <template id="RSS_TEMPLATE" file="default/default.rss"></template>
         <template id="BLOCK_TEMPLATE" file="default/ipblock/config.html.tpl">
             <language>ipblock</language>
             <style>default/styles/config.css</style>
