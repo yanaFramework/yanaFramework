@@ -12,6 +12,10 @@
                 <source></source>
                 <target></target>
             </trans-unit>
+            <trans-unit id="calendar.messagename">
+                <source>Please enter a name.</source>
+                <target>Bitte geben Sie einen Namen an.</target>
+            </trans-unit>
             <group id="calendar">
                 <trans-unit id="calendar.list">
                     <source>calendar list</source>
@@ -288,6 +292,10 @@
                 <trans-unit id="calendar_fields.end">
                     <source>End</source>
                     <target>Ende</target>
+                </trans-unit>
+                <trans-unit id="calendar_fields.allday">
+                    <source>All day</source>
+                    <target>Ganztägig</target>
                 </trans-unit>
                 <trans-unit id="calendar_fields.description">
                     <source>Description</source>

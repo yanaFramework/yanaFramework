@@ -217,14 +217,10 @@
                             // if frequency is selected set counter as visible (default number 1) -  as default option
                             $("#counter:radio").val(["counter"]);
                             $("#count_nr").val(1);
-                            $("#count_nr").css({"display":"block"})
-                            $("#counter_visible").css({"display":"block"});
-                            $("#until_visible").css({"display":"none"});
+                            $("#count_nr, #counter_visible").show();
+                            $("#until_visible").hide();
                             // unlock time fields
-                            $('#startTime_hour').attr('disabled', false);
-                            $('#startTime_minute').attr('disabled', false);
-                            $('#endTime_hour').attr('disabled', false);
-                            $('#endTime_minute').attr('disabled', false);
+                            $('#startTime_hour, #startTime_minute, #endTime_hour, #endTime_minute').attr('disabled', false);
                             // set until 
                             $("#untilDate_year").val(Math.ceil(ye));
                             $("#untilDate_month").val(Math.ceil(mo));
@@ -256,18 +252,15 @@
                                 $("#eventID").val([""]);
                             });
                             if ($('#freq :selected').val() == 'NONE') {
-                                   $("#DAILY").css({"display":"none"});
-                                   $("#WEEKLY").css({"display":"none"});
-                                   $("#MONTHLY").css({"display":"none"});
-                                   $("#YEARLY").css({"display":"none"});
+                                   $("#DAILY, #WEEKLY, #MONTHLY, #YEARLY").hide();
                             };
 
                             if ($('#freq :selected').val() == 'DAILY') {
-                                $("#DAILY").css({"display":"block"});
+                                $("#DAILY").show();
                                 $("#dayInterval").val(["byDay"]);
                                 $("#endlose_serie").val(["endlessSerial"]);
-                                };
                             };
+                        };
                         // this function cancle the dialog
                         function cancleEventDialog() {
                             $(this).dialog("close");
@@ -281,12 +274,12 @@
                             var userDefault = false;
                             var userID = '';
                             $('#newAppointmentForUser option:selected').each( function() {
-                                    if ($(this).val() != 0) {
-                                        userID += $(this).val() + ',';
-                                    } else {
-                                        defaultID = $("input:radio:checked[name='current_calendar']").val();
-                                        userDefault = true;
-                                    }
+                                if ($(this).val() != 0) {
+                                    userID += $(this).val() + ',';
+                                } else {
+                                    defaultID = $("input:radio:checked[name='current_calendar']").val();
+                                    userDefault = true;
+                                }
                             });
                             if(userID == '') {
                                 userDefault = true;
@@ -433,22 +426,22 @@
                             $("#freq").val(calEvent.frequency);
                             $("#count_nr").val(["0"]);
                             $("#standard_option").css({"display":"block"});
-                            if ( calEvent.frequency == 'DAILY') {
+                            if (calEvent.frequency == 'DAILY') {
                                 $("#DAILY").css({"display":"block"});
                                 $("#WEEKLY").css({"display":"none"});
                                 $("#MONTHLY").css({"display":"none"});
                                 $("#YEARLY").css({"display":"none"});
-                                if(calEvent.workDays == false) {
+                                if (calEvent.workDays == false) {
                                     $("#dayInterval").val(["byDay"]);
                                     $("#allDayInterval").val(calEvent.interval);
                                     $("#allDayInterval").attr('disabled', false);
                                 }
-                                if(calEvent.workDays == true) {
+                                if (calEvent.workDays == true) {
                                     $("#dayNoInterval").val(["byWeekDays"]);
                                     $("#dayNoInterval").attr('disabled', false);
                                     $("#allDayInterval").attr('disabled', true);
                                 }
-                                if(calEvent.endlessSerial == true) {
+                                if (calEvent.endlessSerial == true) {
                                     $('#endlose_serie').val(["endlessSerial"]);
                                 }
                             }
@@ -461,7 +454,7 @@
                                    $("#standard_option").css({"display":"none"});
                             };
 
-                            if ( calEvent.frequency == 'WEEKLY') {
+                            if (calEvent.frequency == 'WEEKLY') {
                                 $("#WEEKLY").css({"display":"block"});
                                 $("#DAILY").css({"display":"none"});
                                 $("#MONTHLY").css({"display":"none"});
@@ -472,8 +465,7 @@
                                     if (calEvent.su == 0) {
                                         $("#week_days_0:checkbox").val(["0"]);
                                     }
-                                }
-                                if (sun == true) {
+                                } else {
                                     if (calEvent.su == null) {
                                         $("#week_days_0").val(["0"]);
                                     }
@@ -484,21 +476,18 @@
                                     if (calEvent.mo == 1) {
                                         $("#week_days_1").val(["1"]);
                                     }
-                                }
-                                if (mon == true) {
+                                } else {
                                     if (calEvent.mo == null) {
                                         $("#week_days_1").val(["0"]);
                                     }
                                 }
-
 
                                 var tue = $('#week_days_2').attr('checked');
                                 if (tue == false) {
                                     if (calEvent.tu == 2) {
                                         $("#week_days_2").val(["2"]);
                                     }
-                                }
-                                if (tue == true) {
+                                } else {
                                     if (calEvent.tu == null) {
                                         $("#week_days_2").val(["1"]);
                                     }
@@ -509,8 +498,7 @@
                                     if (calEvent.we == 3) {
                                         $("#week_days_3").val(["3"]);
                                     }
-                                }
-                                if (wed == true) {
+                                } else {
                                     if (calEvent.we == null) {
                                         $("#week_days_3").val(["1"]);
                                     }
@@ -521,8 +509,7 @@
                                     if (calEvent.th == 4) {
                                         $("#week_days_4").val(["4"]);
                                     }
-                                }
-                                if (thu == true) {
+                                } else {
                                     if (calEvent.th == null) {
                                         $("#week_days_4").val(["1"]);
                                     }
@@ -533,8 +520,7 @@
                                     if (calEvent.fr == 5) {
                                         $("#week_days_5").val(["5"]);
                                     }
-                                }
-                                if (fri == true) {
+                                } else {
                                     if (calEvent.fr == null) {
                                         $("#week_days_5").val(["1"]);
                                     }
@@ -545,8 +531,7 @@
                                     if (calEvent.sa == 6) {
                                         $("#week_days_6").val(["6"]);
                                     }
-                                }
-                                if (sat == true) {
+                                } else {
                                     if (calEvent.sa == null) {
                                         $("#week_days_6").val(["1"]);
                                     }
@@ -558,14 +543,11 @@
                             }
                             if ( calEvent.frequency == 'MONTHLY') {
                                 $("#MONTHLY").css({"display":"block"});
-                                $("#WEEKLY").css({"display":"none"});
-                                $("#DAILY").css({"display":"none"});
-                                $("#YEARLY").css({"display":"none"});
+                                $("#WEEKLY, #DAILY, #YEARLY").css({"display":"none"});
                                 if (calEvent.workDays == false) {
                                     $("#monthly_repeat_opt:radio").val(["bymonthday"]);
                                     $("#month_repeat_opt_visible").css({"display":"block"});
-                                    $("#select_weekInterval").attr('disabled', true);
-                                    $("#month_weekInterval").attr('disabled', true);
+                                    $("#select_weekInterval, #month_weekInterval").attr('disabled', true);
                                     $.each(calEvent.monthdays, function(index, value) {
                                         var dayID = '#day_' + index;
                                         if (value == true) {
@@ -578,8 +560,7 @@
                                 }
                                 if (calEvent.workDays == true) {
                                     $("#monthly_default_opt:radio").val(["monthByDay"]);
-                                    $("#select_weekInterval").attr('disabled', false);
-                                    $("#month_weekInterval").attr('disabled', false);
+                                    $("#select_weekInterval, #month_weekInterval").attr('disabled', false);
                                     $("#month_repeat_opt_visible").css({"display":"none"});
                                     $("#select_weekInterval").val(calEvent.repeatPosition);
                                     $("#month_weekInterval").val(calEvent.monthEachWeekDay);
@@ -590,16 +571,11 @@
                             }
                             if (calEvent.frequency == 'YEARLY') {
                                 $("#YEARLY").css({"display":"block"});
-                                $("#WEEKLY").css({"display":"none"});
-                                $("#MONTHLY").css({"display":"none"});
-                                $("#DAILY").css({"display":"none"});
+                                $("#WEEKLY, #MONTHLY, #DAILY").css({"display":"none"});
                                 if (calEvent.workDays == false) {
                                     $("#y_opt_1").val(["yearMonthDay"]);
-                                    $("#year_weekInterval").attr('disabled', true);
-                                    $("#year_day").attr('disabled', true);
-                                    $("#year_month").attr('disabled', true);
-                                    $("#numbers").attr('disabled', false);
-                                    $("#month").attr('disabled', false);
+                                    $("#year_weekInterval, #year_day, #year_month").attr('disabled', true);
+                                    $("#numbers, #month").attr('disabled', false);
                                     $.each(calEvent.monthdays, function(index, value) {
                                         if (value == true) {
                                             $("#numbers").val(index);
@@ -609,11 +585,8 @@
                                 }
                                 if (calEvent.workDays == true) {
                                     $("#y_opt_2").val(["yearMonthDayInterval"]);
-                                    $("#year_weekInterval").attr('disabled', false);
-                                    $("#year_day").attr('disabled', false);
-                                    $("#year_month").attr('disabled', false);
-                                    $("#numbers").attr('disabled', true);
-                                    $("#month").attr('disabled', true);
+                                    $("#year_weekInterval, #year_day, #year_month").attr('disabled', false);
+                                    $("#numbers, #month").attr('disabled', true);
                                     $("#year_weekInterval").val(calEvent.repeatPosition);
                                     $("#year_day").val(calEvent.monthEachWeekDay);
                                     $("#year_month").val(calEvent.month);
@@ -675,7 +648,6 @@
                                 $("#untilTime_minute").val(Math.ceil(emin));
                             }
 
-
                             // additional cc options
                             if (calEvent.memo) {
                                 $("#memo").val(calEvent.memo);
@@ -691,22 +663,18 @@
                             $('#category').removeClass();
                             $('#category').addClass('selected_' + calEvent.className);
                             // check if all day is set
+                            var showTime = false;
                             if (calEvent.allDay == true) {
                                 $('#allDayEvent').attr('checked', true);
                                 $('#startTime_hour').val(['00']);
                                 $('#startTime_minute').val(['00']);
                                 $('#endTime_hour').val(['00']);
                                 $('#endTime_minute').val(['00']);
-                                $('#startTime_hour').attr('disabled', true);
-                                $('#startTime_minute').attr('disabled', true);
-                                $('#endTime_hour').attr('disabled', true);
-                                $('#endTime_minute').attr('disabled', true);
+                                showTime = true;
                             } else {
-                                $('#startTime_hour').attr('disabled', false);
-                                $('#startTime_minute').attr('disabled', false);
-                                $('#endTime_hour').attr('disabled', false);
-                                $('#endTime_minute').attr('disabled', false);
+                                showTime = false;
                             }
+                            $('#startTime_hour, #startTime_minute, #endTime_hour, #endTime_minute').attr('disabled', showTime);
 
                         };
                         
@@ -847,7 +815,7 @@
 
                             },
                             // this function is checking if the event has an serial (by existing serial a edit dialog will be open)
-                            eventDragStart: function( event, jsEvent, ui, view ) {
+                            eventDragStart: function(event, jsEvent, ui, view) {
                                 if (event.readonly == true) {
                                     $('#calendar').fullCalendar('refetchEvents');
                                 }
@@ -856,7 +824,7 @@
                                 }
                             },
                             // this function is checking if the event has an serial (by existing serial a edit dialog will be open)
-                            eventResizeStart: function( event, jsEvent, ui, view ) {
+                            eventResizeStart: function(event, jsEvent, ui, view) {
                                 if (event.readonly == true) {
                                     $('#calendar').fullCalendar('refetchEvents');
                                 }
@@ -945,14 +913,12 @@
                             $('#calendar').fullCalendar('refetchEvents');
                         });
                         $("#monthly_default_opt").click(function () {
-                            $("#month_repeat_opt_visible").css({"display":"none"});
-                            $("#select_weekInterval").attr('disabled', false);
-                            $("#month_weekInterval").attr('disabled', false);
+                            $("#month_repeat_opt_visible").hide();
+                            $("#select_weekInterval, #month_weekInterval").attr('disabled', false);
                         });
                         $("#monthly_repeat_opt").click(function () {
-                            $("#month_repeat_opt_visible").css({"display":"block"});
-                            $("#select_weekInterval").attr('disabled', true);
-                            $("#month_weekInterval").attr('disabled', true);
+                            $("#month_repeat_opt_visible").show();
+                            $("#select_weekInterval, #month_weekInterval").attr('disabled', true);
                         });
                         $("#dayInterval").click(function () {
                             $("#allDayInterval").attr('disabled', false);
@@ -960,79 +926,57 @@
                         $("#dayNoInterval").click(function () {
                             $("#allDayInterval").attr('disabled', true);
                         });
+                        var dialogOptions = {
+                            autoOpen     : true,
+                            modal        : true,
+                            minHeight    : 80,
+                            maxHeight    : 800,
+                            resizable    : false,
+                            draggable    : true
+                        };
                         $("#open_import_calendar").click(function () {
-                            $('#import_new_calendar').dialog({
-                                autoOpen     : true,
-                                modal        : true,
-                                title        : '{lang id="calendar.import_calendar"}',
-                                width        : 500,
-                                minHeight    : 80,
-                                maxHeight    : 800,
-                                resizable    : false,
-                                draggable    : true
-                            });
+                            dialogOptions.title = '{lang id="calendar.import_calendar"}';
+                            dialogOptions.width = 500;
+                            $('#import_new_calendar').dialog(dialogOptions);
                         });
                         $("#new_calendar_create").submit(function () {
-                           var value = $("#new_calendar_name").val();
-                           if (value.length <= 2) {
-                                alert('Das Feld name darf nicht leer sein');
+                            var value = $("#new_calendar_name").val();
+                            var result = value.length > 2;
+                            if (!result) {
+                                alert('{lang id="calendar.messagename"}');
                                 $("#new_calendar_name").focus();
-                                return false;
-                           } else {
-                                return true;
-                           }
+                            }
+                            return result;
                         });
+                        dialogOptions.minHeight = 60;
+                        dialogOptions.width = 400;
                         $("#open_create_calendar").click(function () {
-                            $('#new_calendar_create').dialog({
-                                autoOpen     : true,
-                                modal        : true,
-                                title        : '{lang id="calendar.create_calendar"}',
-                                width        : 400,
-                                minHeight    : 60,
-                                maxHeight    : 800,
-                                resizable    : false,
-                                draggable    : true
-                            });
+                            dialogOptions.title = '{lang id="calendar.create_calendar"}';
+                            $('#new_calendar_create').dialog(dialogOptions);
                         });
                         $("#open_subscribe_calendar").click(function () {
-                            $('#subscriptions').dialog({
-                                autoOpen     : true,
-                                modal        : true,
-                                title        : '{lang id="calendar.subscribe_calendar"}',
-                                width        : 400,
-                                minHeight    : 60,
-                                maxHeight    : 800,
-                                resizable    : false,
-                                draggable    : true
-                            });
+                            dialogOptions.title = '{lang id="calendar.subscribe_calendar"}';
+                            $('#subscriptions').dialog(dialogOptions);
                         });
                         $("#endlose_serie").click(function () {
-                            $("#counter_visible").css({"display":"none"});
-                            $("#until_visible").css({"display":"none"});
+                            $("#counter_visible").hide();
+                            $("#until_visible").hide();
                         });
                         $("#counter").click(function () {
-                            $("#counter_visible").css({"display":"block"});
-                            $("#until_visible").css({"display":"none"});
+                            $("#counter_visible").show();
+                            $("#until_visible").hide();
                         });
                         $("#until").click(function () {
-                            $("#counter_visible").css({"display":"none"});
-                            $("#until_visible").css({"display":"block"});
+                            $("#counter_visible").hide();
+                            $("#until_visible").show();
                         });
                         $("#y_opt_1").click(function () {
-                            $('#year_weekInterval').attr('disabled', true);
-                            $('#year_day').attr('disabled', true);
-                            $('#year_month').attr('disabled', true);
-
-                            $('#numbers').attr('disabled', false);
-                            $('#month').attr('disabled', false);
+                            $('#year_weekInterval, #year_day, #year_month').attr('disabled', true);
+                            $('#numbers,#month').attr('disabled', false);
                         });
-                            $("#y_opt_2").click(function () {
-                            $('#numbers').attr('disabled', true);
-                            $('#month').attr('disabled', true);
-
-                            $('#year_weekInterval').attr('disabled', false);
-                            $('#year_day').attr('disabled', false);
-                            $('#year_month').attr('disabled', false);
+                        $("#y_opt_2").click(function () {
+                            $('#numbers, #month').attr('disabled', true);
+                            $('#year_weekInterval, #year_day, #year_month').attr('disabled', false);
                         });
                         $("#category").change(function () {
                             $('#category').removeClass();
@@ -1063,21 +1007,17 @@
                         });
                         // allDay event check
                         $("#allDayEvent").click(function () {
+                            var showTime = false;
                             if (this.checked == true) {
                                 $('#startTime_hour').val(['00']);
                                 $('#startTime_minute').val(['00']);
                                 $('#endTime_hour').val(['00']);
                                 $('#endTime_minute').val(['00']);
-                                $('#startTime_hour').attr('disabled', true);
-                                $('#startTime_minute').attr('disabled', true);
-                                $('#endTime_hour').attr('disabled', true);
-                                $('#endTime_minute').attr('disabled', true);
+                                showTime = true;
                             } else {
-                                $('#startTime_hour').attr('disabled', false);
-                                $('#startTime_minute').attr('disabled', false);
-                                $('#endTime_hour').attr('disabled', false);
-                                $('#endTime_minute').attr('disabled', false);
+                                showTime = false;
                             }
+                            $('#startTime_hour, #startTime_minute, #endTime_hour, #endTime_minute').attr('disabled', showTime);
                         });
                         // remove user calendar
                         $("#calendar_delete").click(function () {
@@ -1102,43 +1042,25 @@
                         // fill data after id
                         $("#freq").change(function () {
                             var name = $('#freq :selected').val();
+                            $("#DAILY, #WEEKLY, #MONTHLY, #YEARLY").hide();
+                            $("#standard_option").show();
                             if ( name == 'DAILY') {
-                                $("#DAILY").toggle();
-                                $("#WEEKLY").css({"display":"none"});
-                                $("#MONTHLY").css({"display":"none"});
-                                $("#YEARLY").css({"display":"none"});
-                                $("#standard_option").css({"display":"block"});
+                                $("#DAILY").show();
                                 $("#dayInterval:radio").val(["byDay"]);
                             }
                             if ( name == 'WEEKLY') {
-                                $("#WEEKLY").toggle();
-                                $("#DAILY").css({"display":"none"});
-                                $("#MONTHLY").css({"display":"none"});
-                                $("#YEARLY").css({"display":"none"});
-                                $("#standard_option").css({"display":"block"});
+                                $("#WEEKLY").show();
                             }
                             if ( name == 'MONTHLY') {
-                                $("#MONTHLY").toggle();
-                                $("#WEEKLY").css({"display":"none"});
-                                $("#DAILY").css({"display":"none"});
-                                $("#YEARLY").css({"display":"none"});
-                                $("#standard_option").css({"display":"block"});
+                                $("#MONTHLY").show();
                                 $("#monthly_default_opt:radio").val(["monthByDay"]);
                             }
                             if ($('#freq :selected').val() == 'YEARLY') {
-                                $("#YEARLY").toggle();
-                                $("#WEEKLY").css({"display":"none"});
-                                $("#MONTHLY").css({"display":"none"});
-                                $("#DAILY").css({"display":"none"});
                                 $("#standard_option").css({"display":"block"});
                                 $("#y_opt_1:radio").val(["yearMonthDay"]);
                             }
                             if ($('#freq :selected').val() == 'NONE') {
-                                $("#standard_option").css({"display":"none"});
-                                $("#DAILY").css({"display":"none"});
-                                $("#WEEKLY").css({"display":"none"});
-                                $("#MONTHLY").css({"display":"none"});
-                                $("#YEARLY").css({"display":"none"});
+                                $("#standard_option").hide();
                             }
                         });
                 });
