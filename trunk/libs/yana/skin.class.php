@@ -109,13 +109,11 @@ class Skin implements \Yana\Report\IsReportable
     private static $_baseDirectory = "";
 
     /**
-     * get skin
+     * Looks up and returns the instance by the given name.
      *
-     * Looks up an returns the instance by the given name.
      * If there is none, it creates a new one.
      *
-     * If $skinName is NULL the function will return the currently
-     * selected main skin instead.
+     * If no parameter is given the function will return the currently selected main skin instead.
      *
      * @access  public
      * @static
@@ -128,7 +126,7 @@ class Skin implements \Yana\Report\IsReportable
             $skinName = self::$_selectedSkin;
         }
         if (!isset(self::$_instances[$skinName])) {
-            self::$_instances[$skinName] = new Skin($skinName);
+            self::$_instances[$skinName] = new self($skinName);
         }
         return self::$_instances[$skinName];
     }
@@ -231,7 +229,7 @@ class Skin implements \Yana\Report\IsReportable
     {
         $file = self::getSkinPath($skinName);
         if (!is_file($file)) {
-            throw new NotFoundException("Skin definition not found: '$skinName'.");
+            throw new \NotFoundException("Skin definition not found: '$skinName'.");
         }
         // load definition
         $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
@@ -329,7 +327,7 @@ class Skin implements \Yana\Report\IsReportable
 
             // cache the name of the file
             if (!isset($this->_value[$key]['FILE'])) {
-                throw new NotFoundException("Missing file attribute for template with id '$key'.");
+                throw new \NotFoundException("Missing file attribute for template with id '$key'.");
             }
             self::$_filePaths[$key] = $this->_value[$key]['FILE'];
 
@@ -354,7 +352,7 @@ class Skin implements \Yana\Report\IsReportable
         $key = mb_strtoupper("$key");
 
         if (!isset($this->_value[$key])) {
-            throw new NotFoundException("Template '$key' not found.");
+            throw new \NotFoundException("Template '$key' not found.");
         }
 
         // load language files associated with the template
@@ -465,9 +463,7 @@ class Skin implements \Yana\Report\IsReportable
     }
 
     /**
-     * set javascript
-     *
-     * This sets a javascript-file for template $key.
+     * Sets a javascript-file for template $key.
      *
      * Examples:
      * <code>
@@ -556,7 +552,7 @@ class Skin implements \Yana\Report\IsReportable
         assert('is_string($name); // Wrong type for argument 4. String expected');
 
         if (empty($key)) {
-            throw new InvalidArgumentException("Template name may not be empty.");
+            throw new \InvalidArgumentException("Template name may not be empty.");
         } else {
             $key = mb_strtoupper("$key");
         }
@@ -640,7 +636,7 @@ class Skin implements \Yana\Report\IsReportable
         assert('is_string($propertyName); // Wrong type for argument 2. String expected');
         assert('$propertyName === strtoupper($propertyName); // Argument 2 must be upper-cased');
         if (empty($key)) {
-            throw new InvalidArgumentException("Template name may not be empty.");
+            throw new \InvalidArgumentException("Template name may not be empty.");
         } else {
             $key = mb_strtoupper("$key");
         }
@@ -805,16 +801,12 @@ class Skin implements \Yana\Report\IsReportable
         {
             case isset($this->_descriptions[$lang->getLocale()]):
                 return $this->_descriptions[$lang->getLocale()];
-            break;
             case isset($this->_descriptions[$lang->getLanguage()]):
                 return $this->_descriptions[$lang->getLanguage()];
-            break;
             case isset($this->_descriptions['']):
                 return $this->_descriptions[''];
-            break;
             default:
                 return "";
-            break;
         }
     }
 
