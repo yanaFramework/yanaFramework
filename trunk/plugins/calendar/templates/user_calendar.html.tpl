@@ -233,97 +233,14 @@
                         // Open a new window for download - export the current event
                         function openNewPopup (eventID) {
                             action = 'action=calendar_send_event';
-                            id = 'id=' + yanaProfileId;
+                            id = 'id=' + window.yanaProfileId;
                             session = window.yanaSessionName + '=' + window.yanaSessionId;
                             event = eventID;
                             url = 'index.php?' + session + '&' + id + '&' + action + '&' + 'eventid=' + event;
                             newWindow = window.open(url, "sendWindow", "width=500,height=100,scrollbars=no");
                             newWindow.focus();
                         };
-                        // remove the selected keyword
-                        $('#removeKeyword').click( function() {
-                            var args = '';
-                            $('#agendaKeywordSelector :selected').each(function(i, selected){
-                                args += $(selected).text() + ',';
-                            });
-                            if( confirm('{lang id="prompt_delete"}') ) {
-                                $.post(
-                                    php_self,
-                                    {//{/literal}
-                                        is_ajax_request: true,
-                                        action: 'remove_agenda_points',
-                                        agenda : args,
-                                        id: yanaProfileId,
-                                        {$SESSION_NAME}: window.yanaSessionId
-                                    },//{literal}
-                                    function(){},
-                                    "json"
-                                );
-                                $('#agendaKeywordSelector option:selected').remove();
-                            }
 
-                        });
-                        // save the selected keyword
-                        $('#saveAgendaKeyword').click( function() {
-                            var addID = $('#inputAgendaFirst').val();
-                            $('#agendaKeywordSelector').append('<option>' + addID +'<\/option>');
-                            var args = addID + ',';
-                            $('.agendaKeyWordInput').each( function( index, value ) {
-                                if( $(this).val().length > 0  && addID != $(this).val()) {
-                                    $('#agendaKeywordSelector').append('<option>' + $(this).val() +'<\/option>');
-                                    args += $(this).val() + ',';
-                                }
-                            });
-                            $.post(
-                                php_self,
-                                {//{/literal}
-                                    is_ajax_request: true,
-                                    action: 'save_agenda_point',
-                                    agenda : args,
-                                    id: yanaProfileId,
-                                    {$SESSION_NAME}: window.yanaSessionId
-                                },//{literal}
-                                function(){},
-                                "json"
-                            );
-                            $('#agendaKeywordEdit').dialog("close");
-                        });
-
-                        // add new input field for keyword
-                        $('.addAdditionalKeywordField').live( 'click', function() {
-                            var htmlAdd = '<tr id="agendaRow' + agendaEditCounter + '"><td>' +
-                                '<span id="delAgendaRow' + agendaEditCounter + '" class="delAdditionalKeywordField ui-icon ui-icon-circle-minus" ' +
-                                'title="' + '{lang id="remove"}' + '"><\/span><\/td>' +
-                                '<td><input type="text" class="agendaKeyWordInput" value="" /><\/td>' +
-                                '<td><span class="addAdditionalKeywordField ui-icon ui-icon-circle-plus" title="' + '{lang id="new_entry"}' +
-                                '"><\/span><\/td><\/tr>';
-                            $('#newAgendaKeyWords').append( htmlAdd );
-                            $('.agendaKeyWordInput').focus();
-                            agendaEditCounter++;
-                        });
-
-                        // remove the current keyword input fields
-                        $('.delAdditionalKeywordField').live( 'click', function() {
-                            var rowId = $(this).attr( 'id' ).replace( /delAgendaRow/, '' );
-                            if( rowId != "First" ) {
-                                $('#agendaRow' + rowId).remove();
-                            } else {
-                                $('#inputAgendaFirst').val( '' );
-                            }
-                        });
-                        // Keyword Editor for add or remove some Agenda points
-                        function openKeywordEdit () {
-                            $('#agendaKeywordEdit').dialog({
-                                autoOpen     : true,
-                                modal        : true,
-                                title        : '{lang id="new_entry"}',
-                                width        : 600,
-                                minHeight    : 100,
-                                maxHeight    : 800,
-                                resizable    : false,
-                                draggable    : true
-                            });
-                        };
                         // this function clear dialog form elements
                         function clearForm(form) {
                             $(':input', form).each(function() {
@@ -374,22 +291,24 @@
                             if(userID == '') {
                                 userDefault = true;
                             }
+                            var requestParams = {
+                                is_ajax_request: true,
+                                action: 'set_calendar_event_save',
+                                event: args,
+                                user_id: userID,
+                                current_user_calendar_id: defaultID,
+                                insert_for_default: userDefault,
+                                id: window.yanaProfileId
+                            };
+                            requestParams[window.yanaSessionName] = window.yanaSessionId;
                             $.post(
                                 php_self,
-                                {//{/literal}
-                                    is_ajax_request: true,
-                                    action: 'set_calendar_event_save',
-                                    event: args,
-                                    user_id: userID,
-                                    current_user_calendar_id: defaultID,
-                                    insert_for_default: userDefault,
-                                    id: yanaProfileId,
-                                    {$SESSION_NAME}: window.yanaSessionId
-                                },//{literal}
-                                function( data )
+                                requestParams,
+                                function(data)
                                 {
-                                    $( '#calendar' ).fullCalendar( 'refetchEvents' );
-                                }, "json"
+                                    $('#calendar').fullCalendar('refetchEvents');
+                                },
+                                "json"
                             );
                         };
                         // this function send the event
@@ -400,386 +319,377 @@
                         // this function remove the event
                         function removeEvent() {
                             eventID = $('#eventID').val();
+                            var requestParams = {
+                                is_ajax_request: true,
+                                action: 'remove_calendar_event',
+                                eventID: eventID,
+                                id: window.yanaProfileId
+                            };
+                            requestParams[window.yanaSessionName] = window.yanaSessionId;
                             $.post(
                                 php_self,
-                                {//{/literal}
-                                    is_ajax_request: true,
-                                    action: 'remove_calendar_event',
-                                    eventID: eventID,
-                                    id: yanaProfileId,
-                                    {$SESSION_NAME}: window.yanaSessionId
-                                },//{literal}
-                                function( data )
+                                requestParams,
+                                function(data)
                                 {
-                                    $( '#calendar' ).fullCalendar( 'refetchEvents' );
-                                }, "json"
+                                    $('#calendar').fullCalendar('refetchEvents');
+                                },
+                                "json"
                             );
                             $(this).dialog("close");
                         };
                         // this function remove an serial element
                         function removeSerialEvent() {
-                             args = $('#dialog_event_form').serializeArray();
-
+                            args = $('#dialog_event_form').serializeArray();
+                            var requestParams = {
+                                is_ajax_request: true,
+                                action: 'calendar_delete_serial_entry',
+                                event : args,
+                                id: window.yanaProfileId
+                            };
+                            requestParams[window.yanaSessionName] = window.yanaSessionId;
                             $.post(
                                 php_self,
-                                {//{/literal}
-                                    is_ajax_request: true,
-                                    action: 'calendar_delete_serial_entry',
-                                    event : args,
-                                    id: yanaProfileId,
-                                    {$SESSION_NAME}: window.yanaSessionId
-                                },//{literal}
+                                requestParams,
                                 function()
                                 {
-                                    $( '#calendar' ).fullCalendar( 'refetchEvents' );
-                                }, "json"
+                                    $('#calendar').fullCalendar('refetchEvents');
+                                },
+                                "json"
                             );
                         };
                         // function for edit an event or create a new one
                         function editForm(calEvent) {
-                                    clearForm($('#dialog_event_form'));
-                                    if (calEvent.readonly == true) {
-                                        $( '#calendar' ).fullCalendar( 'refetchEvents' );
-                                    } else if (calEvent.frequency == '') {
-                                        $("div#editable_event").dialog('open');
-                                        $("div#editable_event").dialog('option', 'title', '{lang id="calendar_fields.edit_appointment"}');
-                                        $("div#editable_event").dialog('option', 'buttons',
-                                        {
-                                            "{lang id='button_abort'}": function()
-                                            {
-                                                $(this).dialog("close");
-                                            },
-                                            "{lang id='button_delete_one'}": function()
-                                            {
-                                                removeEvent();
-                                                $(this).dialog("close");
-                                            },
-                                            '{lang id="button_send"}': function()
-                                            {
-                                                sendEvent();
-                                                $(this).dialog("close");
-                                            },
-                                            '{lang id="calendar_buttons.save"}': function()
-                                            {
-                                                $check = validateEvent();
-                                                if ($check == false) {
-                                                    saveEvent();
-                                                    $(this).dialog("close");
-                                                }
-                                            }
-                                        });
-                                    } else {
-                                        $("div#editable_event").dialog('open');
-                                        $("div#editable_event").dialog('option', 'title', '{lang id="calendar_fields.edit_appointment"}');
-                                        $("div#editable_event").dialog('option', 'buttons',
-                                        {
-                                            "{lang id='button_abort'}": function()
-                                            {
-                                                $(this).dialog("close");
-                                            },
-                                            '{lang id="button_delete_one"}': function()
-                                            {
-                                                removeEvent();
-                                                $(this).dialog("close");
-                                            },
-                                            '{lang id="calendar_buttons.remove_serial_element"}': function()
-                                            {
-                                                removeSerialEvent();
-                                                $(this).dialog("close");
-                                            },
-                                            '{lang id="button_send"}': function()
-                                            {
-                                                sendEvent();
-                                                $(this).dialog("close");
-                                            },
-                                            '{lang id="calendar_buttons.save"}': function()
-                                            {
-                                                $check = validateEvent();
-                                                if ($check == false) {
-                                                    saveEvent();
-                                                    $(this).dialog("close");
-                                                }
-                                            }
-                                        });
-                                    }
-                                    // set current event values
-                                    $("#eventID").val(calEvent.id);
-                                    $("#title").val(calEvent.title);
-                                    //$("#start").val(calEvent.start);
-                                    //$("#end").val(calEvent.end);
-                                    $("#location").val(calEvent.location);
-                                    $("#category").val(calEvent.categories);
-                                    $("#description").val(calEvent.description);
-                                    $("#freq").val(calEvent.frequency);
-                                    $("#count_nr").val(["0"]);
-                                    $("#standard_option").css({"display":"block"});
-                                    if ( calEvent.frequency == 'DAILY') {
-                                        $("#DAILY").css({"display":"block"});
-                                        $("#WEEKLY").css({"display":"none"});
-                                        $("#MONTHLY").css({"display":"none"});
-                                        $("#YEARLY").css({"display":"none"});
-                                        if(calEvent.workDays == false) {
-                                            $("#dayInterval").val(["byDay"]);
-                                            $("#allDayInterval").val(calEvent.interval);
-                                            $("#allDayInterval").attr('disabled', false);
-                                        }
-                                        if(calEvent.workDays == true) {
-                                            $("#dayNoInterval").val(["byWeekDays"]);
-                                            $("#dayNoInterval").attr('disabled', false);
-                                            $("#allDayInterval").attr('disabled', true);
-                                        }
-                                        if(calEvent.endlessSerial == true) {
-                                            $('#endlose_serie').val(["endlessSerial"]);
+                            clearForm($('#dialog_event_form'));
+                            if (calEvent.readonly == true) {
+                                $('#calendar').fullCalendar('refetchEvents');
+                            } else if (calEvent.frequency == '') {
+                                $("div#editable_event").dialog('open');
+                                $("div#editable_event").dialog('option', 'title', '{lang id="calendar_fields.edit_appointment"}');
+                                $("div#editable_event").dialog('option', 'buttons',
+                                {
+                                    "{lang id='button_abort'}": function()
+                                    {
+                                        $(this).dialog("close");
+                                    },
+                                    "{lang id='button_delete_one'}": function()
+                                    {
+                                        removeEvent();
+                                        $(this).dialog("close");
+                                    },
+                                    '{lang id="button_send"}': function()
+                                    {
+                                        sendEvent();
+                                        $(this).dialog("close");
+                                    },
+                                    '{lang id="calendar_buttons.save"}': function()
+                                    {
+                                        $check = validateEvent();
+                                        if ($check == false) {
+                                            saveEvent();
+                                            $(this).dialog("close");
                                         }
                                     }
-
-                                    if ($('#freq :selected').val() == 'NONE') {
-                                           $("#DAILY").css({"display":"none"});
-                                           $("#WEEKLY").css({"display":"none"});
-                                           $("#MONTHLY").css({"display":"none"});
-                                           $("#YEARLY").css({"display":"none"});
-                                           $("#standard_option").css({"display":"none"});
-                                    };
-
-                                    if ( calEvent.frequency == 'WEEKLY') {
-                                        $("#WEEKLY").css({"display":"block"});
-                                        $("#DAILY").css({"display":"none"});
-                                        $("#MONTHLY").css({"display":"none"});
-                                        $("#YEARLY").css({"display":"none"});
-
-                                        var sun = $('#week_days_0').attr('checked');
-                                        if (sun == false) {
-                                            if (calEvent.su == 0) {
-                                                $("#week_days_0:checkbox").val(["0"]);
-                                            }
-                                        }
-                                        if (sun == true) {
-                                            if (calEvent.su == null) {
-                                                $("#week_days_0").val(["0"]);
-                                            }
-                                        }
-
-                                        var mon = $('#week_days_1').attr('checked');
-                                        if (mon == false) {
-                                            if (calEvent.mo == 1) {
-                                                $("#week_days_1").val(["1"]);
-                                            }
-                                        }
-                                        if (mon == true) {
-                                            if (calEvent.mo == null) {
-                                                $("#week_days_1").val(["0"]);
-                                            }
-                                        }
-
-
-                                        var tue = $('#week_days_2').attr('checked');
-                                        if (tue == false) {
-                                            if (calEvent.tu == 2) {
-                                                $("#week_days_2").val(["2"]);
-                                            }
-                                        }
-                                        if (tue == true) {
-                                            if (calEvent.tu == null) {
-                                                $("#week_days_2").val(["1"]);
-                                            }
-                                        }
-
-                                        var wed = $('#week_days_3').attr('checked');
-                                        if (wed == false) {
-                                            if (calEvent.we == 3) {
-                                                $("#week_days_3").val(["3"]);
-                                            }
-                                        }
-                                        if (wed == true) {
-                                            if (calEvent.we == null) {
-                                                $("#week_days_3").val(["1"]);
-                                            }
-                                        }
-
-                                        var thu = $('#week_days_4').attr('checked');
-                                        if (thu == false) {
-                                            if (calEvent.th == 4) {
-                                                $("#week_days_4").val(["4"]);
-                                            }
-                                        }
-                                        if (thu == true) {
-                                            if (calEvent.th == null) {
-                                                $("#week_days_4").val(["1"]);
-                                            }
-                                        }
-
-                                        var fri = $('#week_days_5').attr('checked');
-                                        if (fri == false) {
-                                            if (calEvent.fr == 5) {
-                                                $("#week_days_5").val(["5"]);
-                                            }
-                                        }
-                                        if (fri == true) {
-                                            if (calEvent.fr == null) {
-                                                $("#week_days_5").val(["1"]);
-                                            }
-                                        }
-
-                                        var sat = $('#week_days_6').attr('checked');
-                                        if (sat == false) {
-                                            if (calEvent.sa == 6) {
-                                                $("#week_days_6").val(["6"]);
-                                            }
-                                        }
-                                        if (sat == true) {
-                                            if (calEvent.sa == null) {
-                                                $("#week_days_6").val(["1"]);
-                                            }
-                                        }
-
-                                        if(calEvent.endlessSerial == true) {
-                                            $('#endlose_serie').val(["endlessSerial"]);
+                                });
+                            } else {
+                                $("div#editable_event").dialog('open');
+                                $("div#editable_event").dialog('option', 'title', '{lang id="calendar_fields.edit_appointment"}');
+                                $("div#editable_event").dialog('option', 'buttons',
+                                {
+                                    "{lang id='button_abort'}": function()
+                                    {
+                                        $(this).dialog("close");
+                                    },
+                                    '{lang id="button_delete_one"}': function()
+                                    {
+                                        removeEvent();
+                                        $(this).dialog("close");
+                                    },
+                                    '{lang id="calendar_buttons.remove_serial_element"}': function()
+                                    {
+                                        removeSerialEvent();
+                                        $(this).dialog("close");
+                                    },
+                                    '{lang id="button_send"}': function()
+                                    {
+                                        sendEvent();
+                                        $(this).dialog("close");
+                                    },
+                                    '{lang id="calendar_buttons.save"}': function()
+                                    {
+                                        $check = validateEvent();
+                                        if ($check == false) {
+                                            saveEvent();
+                                            $(this).dialog("close");
                                         }
                                     }
-                                    if ( calEvent.frequency == 'MONTHLY') {
-                                        $("#MONTHLY").css({"display":"block"});
-                                        $("#WEEKLY").css({"display":"none"});
-                                        $("#DAILY").css({"display":"none"});
-                                        $("#YEARLY").css({"display":"none"});
-                                        if (calEvent.workDays == false) {
-                                            $("#monthly_repeat_opt:radio").val(["bymonthday"]);
-                                            $("#month_repeat_opt_visible").css({"display":"block"});
-                                            $("#select_weekInterval").attr('disabled', true);
-                                            $("#month_weekInterval").attr('disabled', true);
-                                            $.each(calEvent.monthdays, function(index, value) {
-                                                var dayID = '#day_' + index;
-                                                if (value == true) {
-                                                    $(dayID).attr('checked', true);
-                                                }
-                                                if (value == false) {
-                                                    $(dayID).attr('checked', false);
-                                                }
-                                            });
-                                        }
-                                        if (calEvent.workDays == true) {
-                                            $("#monthly_default_opt:radio").val(["monthByDay"]);
-                                            $("#select_weekInterval").attr('disabled', false);
-                                            $("#month_weekInterval").attr('disabled', false);
-                                            $("#month_repeat_opt_visible").css({"display":"none"});
-                                            $("#select_weekInterval").val(calEvent.repeatPosition);
-                                            $("#month_weekInterval").val(calEvent.monthEachWeekDay);
-                                        }
-                                        if(calEvent.endlessSerial == true) {
-                                            $('#endlose_serie').val(["endlessSerial"]);
-                                        }
-                                    }
-                                    if (calEvent.frequency == 'YEARLY') {
-                                        $("#YEARLY").css({"display":"block"});
-                                        $("#WEEKLY").css({"display":"none"});
-                                        $("#MONTHLY").css({"display":"none"});
-                                        $("#DAILY").css({"display":"none"});
-                                        if (calEvent.workDays == false) {
-                                            $("#y_opt_1").val(["yearMonthDay"]);
-                                            $("#year_weekInterval").attr('disabled', true);
-                                            $("#year_day").attr('disabled', true);
-                                            $("#year_month").attr('disabled', true);
-                                            $("#numbers").attr('disabled', false);
-                                            $("#month").attr('disabled', false);
-                                            $.each(calEvent.monthdays, function(index, value) {
-                                                if (value == true) {
-                                                    $("#numbers").val(index);
-                                                }
-                                            });
-                                            $("#month").val(calEvent.month);
-                                        }
-                                        if (calEvent.workDays == true) {
-                                            $("#y_opt_2").val(["yearMonthDayInterval"]);
-                                            $("#year_weekInterval").attr('disabled', false);
-                                            $("#year_day").attr('disabled', false);
-                                            $("#year_month").attr('disabled', false);
-                                            $("#numbers").attr('disabled', true);
-                                            $("#month").attr('disabled', true);
-                                            $("#year_weekInterval").val(calEvent.repeatPosition);
-                                            $("#year_day").val(calEvent.monthEachWeekDay);
-                                            $("#year_month").val(calEvent.month);
-                                        }
-                                        if(calEvent.endlessSerial == true) {
-                                            $('#endlose_serie').val(["endlessSerial"]);
-                                        }
-                                    }
-                                    // disable counter
-                                    $("#counter_visible").css({"display":"none"});
-                                    if(calEvent.count != 0 && calEvent.count != null) {
-                                        $("#counter:radio").val(["counter"]);
-                                        $("#count_nr").val(calEvent.count);
-                                        $("#counter_visible").css({"display":"block"});
-                                        $("#until_visible").css({"display":"none"});
-                                    }
-                                    $("#endTime_minute").val(["00"]);
-                                    $("#startTime_minute").val(["00"]);
+                                });
+                            }
+                            // set current event values
+                            $("#eventID").val(calEvent.id);
+                            $("#title").val(calEvent.title);
+                            $("#location").val(calEvent.location);
+                            $("#category").val(calEvent.categories);
+                            $("#description").val(calEvent.description);
+                            $("#freq").val(calEvent.frequency);
+                            $("#count_nr").val(["0"]);
+                            $("#standard_option").css({"display":"block"});
+                            if ( calEvent.frequency == 'DAILY') {
+                                $("#DAILY").css({"display":"block"});
+                                $("#WEEKLY").css({"display":"none"});
+                                $("#MONTHLY").css({"display":"none"});
+                                $("#YEARLY").css({"display":"none"});
+                                if(calEvent.workDays == false) {
+                                    $("#dayInterval").val(["byDay"]);
+                                    $("#allDayInterval").val(calEvent.interval);
+                                    $("#allDayInterval").attr('disabled', false);
+                                }
+                                if(calEvent.workDays == true) {
+                                    $("#dayNoInterval").val(["byWeekDays"]);
+                                    $("#dayNoInterval").attr('disabled', false);
+                                    $("#allDayInterval").attr('disabled', true);
+                                }
+                                if(calEvent.endlessSerial == true) {
+                                    $('#endlose_serie').val(["endlessSerial"]);
+                                }
+                            }
 
-                                    // set event date
-                                    syear  = $.fullCalendar.formatDate( calEvent.start, 'yyyy' );
-                                    smonth = $.fullCalendar.formatDate( calEvent.start, 'MM' );
-                                    sday   = $.fullCalendar.formatDate( calEvent.start, 'dd' );
-                                    shour  = $.fullCalendar.formatDate( calEvent.start, 'HH' );
-                                    smin   = $.fullCalendar.formatDate( calEvent.start, 'mm' );
-                                    $("#startDate_year").val(syear);
-                                    $("#startDate_month").val(Math.ceil(smonth));
-                                    $("#startDate_day").val(Math.ceil(sday));
-                                    $("#startTime_hour").val(Math.ceil(shour));
-                                    $("#startTime_minute").val(Math.ceil(smin));
+                            if ($('#freq :selected').val() == 'NONE') {
+                                   $("#DAILY").css({"display":"none"});
+                                   $("#WEEKLY").css({"display":"none"});
+                                   $("#MONTHLY").css({"display":"none"});
+                                   $("#YEARLY").css({"display":"none"});
+                                   $("#standard_option").css({"display":"none"});
+                            };
 
-                                    eyear  = $.fullCalendar.formatDate( calEvent.end, 'yyyy' );
-                                    emonth = $.fullCalendar.formatDate( calEvent.end, 'MM' );
-                                    eday   = $.fullCalendar.formatDate( calEvent.end, 'dd' );
-                                    ehour  = $.fullCalendar.formatDate( calEvent.end, 'HH' );
-                                    emin   = $.fullCalendar.formatDate( calEvent.end, 'mm' );
-                                    $("#endDate_year").val(eyear);
-                                    $("#endDate_month").val(Math.ceil(emonth));
-                                    $("#endDate_day").val(Math.ceil(eday));
-                                    $("#endTime_hour").val(Math.ceil(ehour));
-                                    $("#endTime_minute").val(Math.ceil(emin));
+                            if ( calEvent.frequency == 'WEEKLY') {
+                                $("#WEEKLY").css({"display":"block"});
+                                $("#DAILY").css({"display":"none"});
+                                $("#MONTHLY").css({"display":"none"});
+                                $("#YEARLY").css({"display":"none"});
 
-                                    // disable until
-                                    $("#until_visible").css({"display":"none"});
-                                    if (calEvent.until != null) {
-                                        $("#until:radio").val(["until"]);
-                                        $("#untilDate_year").val(calEvent.until.year);
-                                        $("#untilDate_month").val(Math.ceil(calEvent.until.month));
-                                        $("#untilDate_day").val(Math.ceil(calEvent.until.day));
-                                        $("#untilTime_hour").val(Math.ceil(calEvent.until.hour));
-                                        $("#untilTime_minute").val(Math.ceil(calEvent.until.minutes));
-                                        $("#counter_visible").css({"display":"none"});
-                                        $("#until_visible").css({"display":"block"});
-                                    } else {
-                                        $("#untilDate_year").val(eyear);
-                                        $("#untilDate_month").val(Math.ceil(emonth));
-                                        $("#untilDate_day").val(Math.ceil(eday));
-                                        $("#untilTime_hour").val(Math.ceil(ehour));
-                                        $("#untilTime_minute").val(Math.ceil(emin));
+                                var sun = $('#week_days_0').attr('checked');
+                                if (sun == false) {
+                                    if (calEvent.su == 0) {
+                                        $("#week_days_0:checkbox").val(["0"]);
                                     }
+                                }
+                                if (sun == true) {
+                                    if (calEvent.su == null) {
+                                        $("#week_days_0").val(["0"]);
+                                    }
+                                }
+
+                                var mon = $('#week_days_1').attr('checked');
+                                if (mon == false) {
+                                    if (calEvent.mo == 1) {
+                                        $("#week_days_1").val(["1"]);
+                                    }
+                                }
+                                if (mon == true) {
+                                    if (calEvent.mo == null) {
+                                        $("#week_days_1").val(["0"]);
+                                    }
+                                }
 
 
-                                    // additional cc options
-                                    if (calEvent.memo) {
-                                        $("#memo").val(calEvent.memo);
-                                    } else {
-                                        $("#memo").val([""]);
+                                var tue = $('#week_days_2').attr('checked');
+                                if (tue == false) {
+                                    if (calEvent.tu == 2) {
+                                        $("#week_days_2").val(["2"]);
                                     }
-                                    if (calEvent.agenda) {
-                                        $("#agenda").val(calEvent.agenda);
-                                    } else {
-                                        $("#agenda").val([""]);
+                                }
+                                if (tue == true) {
+                                    if (calEvent.tu == null) {
+                                        $("#week_days_2").val(["1"]);
                                     }
-                                    if (calEvent.dealerNumber) {
-                                        $("#dealer_number").val(calEvent.dealerNumber);
-                                    } else {
-                                        $("#dealer_number").val([""]);
+                                }
+
+                                var wed = $('#week_days_3').attr('checked');
+                                if (wed == false) {
+                                    if (calEvent.we == 3) {
+                                        $("#week_days_3").val(["3"]);
                                     }
-                                    if (calEvent.dealerName) {
-                                        $("#dealer_name").val(calEvent.dealerName);
-                                    } else {
-                                        $("#dealer_name").val([""]);
+                                }
+                                if (wed == true) {
+                                    if (calEvent.we == null) {
+                                        $("#week_days_3").val(["1"]);
                                     }
-                                    // set class for category
-                                    $('#category').removeClass();
-                                    $('#category').addClass('selected_' + calEvent.className);
+                                }
+
+                                var thu = $('#week_days_4').attr('checked');
+                                if (thu == false) {
+                                    if (calEvent.th == 4) {
+                                        $("#week_days_4").val(["4"]);
+                                    }
+                                }
+                                if (thu == true) {
+                                    if (calEvent.th == null) {
+                                        $("#week_days_4").val(["1"]);
+                                    }
+                                }
+
+                                var fri = $('#week_days_5').attr('checked');
+                                if (fri == false) {
+                                    if (calEvent.fr == 5) {
+                                        $("#week_days_5").val(["5"]);
+                                    }
+                                }
+                                if (fri == true) {
+                                    if (calEvent.fr == null) {
+                                        $("#week_days_5").val(["1"]);
+                                    }
+                                }
+
+                                var sat = $('#week_days_6').attr('checked');
+                                if (sat == false) {
+                                    if (calEvent.sa == 6) {
+                                        $("#week_days_6").val(["6"]);
+                                    }
+                                }
+                                if (sat == true) {
+                                    if (calEvent.sa == null) {
+                                        $("#week_days_6").val(["1"]);
+                                    }
+                                }
+
+                                if(calEvent.endlessSerial == true) {
+                                    $('#endlose_serie').val(["endlessSerial"]);
+                                }
+                            }
+                            if ( calEvent.frequency == 'MONTHLY') {
+                                $("#MONTHLY").css({"display":"block"});
+                                $("#WEEKLY").css({"display":"none"});
+                                $("#DAILY").css({"display":"none"});
+                                $("#YEARLY").css({"display":"none"});
+                                if (calEvent.workDays == false) {
+                                    $("#monthly_repeat_opt:radio").val(["bymonthday"]);
+                                    $("#month_repeat_opt_visible").css({"display":"block"});
+                                    $("#select_weekInterval").attr('disabled', true);
+                                    $("#month_weekInterval").attr('disabled', true);
+                                    $.each(calEvent.monthdays, function(index, value) {
+                                        var dayID = '#day_' + index;
+                                        if (value == true) {
+                                            $(dayID).attr('checked', true);
+                                        }
+                                        if (value == false) {
+                                            $(dayID).attr('checked', false);
+                                        }
+                                    });
+                                }
+                                if (calEvent.workDays == true) {
+                                    $("#monthly_default_opt:radio").val(["monthByDay"]);
+                                    $("#select_weekInterval").attr('disabled', false);
+                                    $("#month_weekInterval").attr('disabled', false);
+                                    $("#month_repeat_opt_visible").css({"display":"none"});
+                                    $("#select_weekInterval").val(calEvent.repeatPosition);
+                                    $("#month_weekInterval").val(calEvent.monthEachWeekDay);
+                                }
+                                if(calEvent.endlessSerial == true) {
+                                    $('#endlose_serie').val(["endlessSerial"]);
+                                }
+                            }
+                            if (calEvent.frequency == 'YEARLY') {
+                                $("#YEARLY").css({"display":"block"});
+                                $("#WEEKLY").css({"display":"none"});
+                                $("#MONTHLY").css({"display":"none"});
+                                $("#DAILY").css({"display":"none"});
+                                if (calEvent.workDays == false) {
+                                    $("#y_opt_1").val(["yearMonthDay"]);
+                                    $("#year_weekInterval").attr('disabled', true);
+                                    $("#year_day").attr('disabled', true);
+                                    $("#year_month").attr('disabled', true);
+                                    $("#numbers").attr('disabled', false);
+                                    $("#month").attr('disabled', false);
+                                    $.each(calEvent.monthdays, function(index, value) {
+                                        if (value == true) {
+                                            $("#numbers").val(index);
+                                        }
+                                    });
+                                    $("#month").val(calEvent.month);
+                                }
+                                if (calEvent.workDays == true) {
+                                    $("#y_opt_2").val(["yearMonthDayInterval"]);
+                                    $("#year_weekInterval").attr('disabled', false);
+                                    $("#year_day").attr('disabled', false);
+                                    $("#year_month").attr('disabled', false);
+                                    $("#numbers").attr('disabled', true);
+                                    $("#month").attr('disabled', true);
+                                    $("#year_weekInterval").val(calEvent.repeatPosition);
+                                    $("#year_day").val(calEvent.monthEachWeekDay);
+                                    $("#year_month").val(calEvent.month);
+                                }
+                                if(calEvent.endlessSerial == true) {
+                                    $('#endlose_serie').val(["endlessSerial"]);
+                                }
+                            }
+                            // disable counter
+                            $("#counter_visible").css({"display":"none"});
+                            if(calEvent.count != 0 && calEvent.count != null) {
+                                $("#counter:radio").val(["counter"]);
+                                $("#count_nr").val(calEvent.count);
+                                $("#counter_visible").css({"display":"block"});
+                                $("#until_visible").css({"display":"none"});
+                            }
+                            $("#endTime_minute").val(["00"]);
+                            $("#startTime_minute").val(["00"]);
+
+                            // set event date
+                            syear  = $.fullCalendar.formatDate( calEvent.start, 'yyyy' );
+                            smonth = $.fullCalendar.formatDate( calEvent.start, 'MM' );
+                            sday   = $.fullCalendar.formatDate( calEvent.start, 'dd' );
+                            shour  = $.fullCalendar.formatDate( calEvent.start, 'HH' );
+                            smin   = $.fullCalendar.formatDate( calEvent.start, 'mm' );
+                            $("#startDate_year").val(syear);
+                            $("#startDate_month").val(Math.ceil(smonth));
+                            $("#startDate_day").val(Math.ceil(sday));
+                            $("#startTime_hour").val(Math.ceil(shour));
+                            $("#startTime_minute").val(Math.ceil(smin));
+
+                            eyear  = $.fullCalendar.formatDate( calEvent.end, 'yyyy' );
+                            emonth = $.fullCalendar.formatDate( calEvent.end, 'MM' );
+                            eday   = $.fullCalendar.formatDate( calEvent.end, 'dd' );
+                            ehour  = $.fullCalendar.formatDate( calEvent.end, 'HH' );
+                            emin   = $.fullCalendar.formatDate( calEvent.end, 'mm' );
+                            $("#endDate_year").val(eyear);
+                            $("#endDate_month").val(Math.ceil(emonth));
+                            $("#endDate_day").val(Math.ceil(eday));
+                            $("#endTime_hour").val(Math.ceil(ehour));
+                            $("#endTime_minute").val(Math.ceil(emin));
+
+                            // disable until
+                            $("#until_visible").css({"display":"none"});
+                            if (calEvent.until != null) {
+                                $("#until:radio").val(["until"]);
+                                $("#untilDate_year").val(calEvent.until.year);
+                                $("#untilDate_month").val(Math.ceil(calEvent.until.month));
+                                $("#untilDate_day").val(Math.ceil(calEvent.until.day));
+                                $("#untilTime_hour").val(Math.ceil(calEvent.until.hour));
+                                $("#untilTime_minute").val(Math.ceil(calEvent.until.minutes));
+                                $("#counter_visible").css({"display":"none"});
+                                $("#until_visible").css({"display":"block"});
+                            } else {
+                                $("#untilDate_year").val(eyear);
+                                $("#untilDate_month").val(Math.ceil(emonth));
+                                $("#untilDate_day").val(Math.ceil(eday));
+                                $("#untilTime_hour").val(Math.ceil(ehour));
+                                $("#untilTime_minute").val(Math.ceil(emin));
+                            }
+
+
+                            // additional cc options
+                            if (calEvent.memo) {
+                                $("#memo").val(calEvent.memo);
+                            } else {
+                                $("#memo").val([""]);
+                            }
+                            if (calEvent.agenda) {
+                                $("#agenda").val(calEvent.agenda);
+                            } else {
+                                $("#agenda").val([""]);
+                            }
+                            // set class for category
+                            $('#category').removeClass();
+                            $('#category').addClass('selected_' + calEvent.className);
                             // check if all day is set
                             if (calEvent.allDay == true) {
                                 $('#allDayEvent').attr('checked', true);
@@ -799,260 +709,229 @@
                             }
 
                         };
+                        
+                        
                         // calendar render function
                         $('#calendar').fullCalendar({
-                                eventClick: function(calEvent, jsEvent, view) {
-                                    editForm(calEvent, jsEvent, view);
-                                },
-                                header: {
-                                        left: 'prev,next today',
-                                        center: 'title',
-                                        right: 'month,agendaWeek,agendaDay'
-                                },
-                                titleFormat : {
-                                    day  : "dddd, dd. MMM yyyy",
-                                    week : "dddd, dd. MMM yyyy"
-                                },
-                                monthNames : [ '{lang id="month_names.january"}', '{lang id="month_names.february"}', '{lang id="month_names.march"}', '{lang id="month_names.april"}', '{lang id="month_names.may"}', '{lang id="month_names.june"}', '{lang id="month_names.july"}', '{lang id="month_names.august"}', '{lang id="month_names.september"}', '{lang id="month_names.october"}', '{lang id="month_names.november"}', '{lang id="month_names.december"}' ],
-                                monthNamesShort: [ '{lang id="short_month_names.january"}', '{lang id="short_month_names.february"}', '{lang id="short_month_names.march"}', '{lang id="short_month_names.april"}', '{lang id="short_month_names.may"}', '{lang id="short_month_names.june"}', '{lang id="short_month_names.july"}', '{lang id="short_month_names.august"}', '{lang id="short_month_names.september"}', '{lang id="short_month_names.october"}', '{lang id="short_month_names.november"}', '{lang id="short_month_names.december"}' ],
-                                dayNames : [ '{lang id="day_names.sunday"}', '{lang id="day_names.monday"}', '{lang id="day_names.tuesday"}', '{lang id="day_names.wednesday"}', '{lang id="day_names.thursday"}', '{lang id="day_names.friday"}', '{lang id="day_names.saturday"}' ],
-                                dayNamesShort : [ '{lang id="short_day_names.sunday"}', '{lang id="short_day_names.monday"}', '{lang id="short_day_names.tuesday"}', '{lang id="short_day_names.wednesday"}', '{lang id="short_day_names.thursday"}', '{lang id="short_day_names.friday"}', '{lang id="short_day_names.saturday"}' ],
-                                columnFormat : {
-                                    day  : "dddd dd.MM.",
-                                    week : "ddd dd."
-                                },
-                                buttonText : {
-                                    today : '{lang id="calendar.today"}',
-                                    month : '{lang id="calendar.month"}',
-                                    week  : '{lang id="calendar.week"}',
-                                    day   : '{lang id="calendar.day"}'
-                                },
-                                minTime : '00:00',
-                                maxTime : '24:00',
-                                axisFormat : 'HH:mm',
-                                allDayText : '{lang id="calendar.all_day"}',
-                                timeFormat : 'H:mm',
-                                editable:true,
-                                lazyFetching :false,
-                                theme: true,
-                                firstDay:1,
-                                // Termine laden
-                                events : function( start, end ) {
-                                    var newCalendarID = '';
-                                    $('.calendar_file_id').each( function( index, value ) {
-                                        if ($(this).attr('checked')) {
-                                            newCalendarID += $(this).val() + ',';
-                                        }
-                                    });
-                                    var defaultID = $("input:radio:checked[name='current_calendar']").val();
+                            eventClick: function(calEvent, jsEvent, view) {
+                                editForm(calEvent, jsEvent, view);
+                            },
+                            header: {
+                                left: 'prev,next today',
+                                center: 'title',
+                                right: 'month,agendaWeek,agendaDay'
+                            },
+                            titleFormat: {
+                                day: "dddd, dd. MMM yyyy",
+                                week: "dddd, dd. MMM yyyy"
+                            },
+                            monthNames: [ '{lang id="month_names.january"}', '{lang id="month_names.february"}', '{lang id="month_names.march"}', '{lang id="month_names.april"}', '{lang id="month_names.may"}', '{lang id="month_names.june"}', '{lang id="month_names.july"}', '{lang id="month_names.august"}', '{lang id="month_names.september"}', '{lang id="month_names.october"}', '{lang id="month_names.november"}', '{lang id="month_names.december"}' ],
+                            monthNamesShort: [ '{lang id="short_month_names.january"}', '{lang id="short_month_names.february"}', '{lang id="short_month_names.march"}', '{lang id="short_month_names.april"}', '{lang id="short_month_names.may"}', '{lang id="short_month_names.june"}', '{lang id="short_month_names.july"}', '{lang id="short_month_names.august"}', '{lang id="short_month_names.september"}', '{lang id="short_month_names.october"}', '{lang id="short_month_names.november"}', '{lang id="short_month_names.december"}' ],
+                            dayNames: [ '{lang id="day_names.sunday"}', '{lang id="day_names.monday"}', '{lang id="day_names.tuesday"}', '{lang id="day_names.wednesday"}', '{lang id="day_names.thursday"}', '{lang id="day_names.friday"}', '{lang id="day_names.saturday"}' ],
+                            dayNamesShort: [ '{lang id="short_day_names.sunday"}', '{lang id="short_day_names.monday"}', '{lang id="short_day_names.tuesday"}', '{lang id="short_day_names.wednesday"}', '{lang id="short_day_names.thursday"}', '{lang id="short_day_names.friday"}', '{lang id="short_day_names.saturday"}' ],
+                            columnFormat: {
+                                day: "dddd dd.MM.",
+                                week: "ddd dd."
+                            },
+                            buttonText: {
+                                today: '{lang id="calendar.today"}',
+                                month: '{lang id="calendar.month"}',
+                                week: '{lang id="calendar.week"}',
+                                day: '{lang id="calendar.day"}'
+                            },
+                            minTime: '00:00',
+                            maxTime: '24:00',
+                            axisFormat: 'HH:mm',
+                            allDayText: '{lang id="calendar.all_day"}',
+                            timeFormat: 'H:mm',
+                            editable: true,
+                            lazyFetching: false,
+                            theme: true,
+                            firstDay: 1,
+                            // load events
+                            events: function(start, end, callback) {
+                                var newCalendarID = '';
+                                $('.calendar_file_id').each( function( index, value ) {
+                                    if ($(this).attr('checked')) {
+                                        newCalendarID += $(this).val() + ',';
+                                    }
+                                });
+                                var defaultID = $("input:radio:checked[name='current_calendar']").val();
+                                var requestParams = {
+                                    is_ajax_request: true,
+                                    action: 'display_calendar',
+                                    start: start.getTime() / 1000,
+                                    end: end.getTime() / 1000,
+                                    calendar_id: newCalendarID,
+                                    current_calendar_id: defaultID,
+                                    id: window.yanaProfileId
+                                };
+                                requestParams[window.yanaSessionName] = window.yanaSessionId;
+                                var events = new Array();
+                                $.post(
+                                    php_self,
+                                    requestParams,
+                                    function(result)
+                                    {
+                                        $.each(result, function() {
+                                            if (typeof this.id != 'undefined') {
+                                                events.push({
+                                                    id: this.id,
+                                                    title: this.title,
+                                                    start: this.start,
+                                                    end: this.end,
+                                                    location: this.location,
+                                                    categories: this.categories,
+                                                    description: this.description,
+                                                    frequency: this.frequency,
+                                                    interval: this.interval,
+                                                    count: this.count,
+                                                    until: this.until,
+                                                    workDays: this.workDays,
+                                                    className : this.className,
+                                                    su: this.SU,
+                                                    mo: this.MO,
+                                                    tu: this.TU,
+                                                    we: this.WE,
+                                                    th: this.TH,
+                                                    fr: this.FR,
+                                                    sa: this.SA,
+                                                    monthdays: this.monthdays,
+                                                    monthEachWeekDay: this.monthEachWeekDay,
+                                                    month: this.month,
+                                                    repeatPosition: this.repeat_position,
+                                                    endlessSerial: this.endlessSerial,
+                                                    readonly: this.readonly,
+                                                    createdBy: this.created_by
+                                                });
+                                            }
+                                        });
+                                        callback(events);
+                                    },
+                                    "json"
+                                );
+                            },
+                            // create new event
+                            dayClick: addDialogOpen,
+                            // save event by Dragging
+                            eventDrop: function(event, dayDelta, minuteDelta) {
+                                if (event.readonly == true) {
+                                    $('#calendar').fullCalendar('refetchEvents');
+                                }
+                                var endDate = 0;
+                                endDate = (event.end.getTime() / 1000);
+                                eventID = event.id;
+                                if (event.frequency == '') {
+                                    var requestParams = {
+                                        is_ajax_request: true,
+                                        action: 'update_event_by_drop',
+                                        eventID: eventID,
+                                        end: endDate,
+                                        resize: dayDelta,
+                                        min: minuteDelta,
+                                        id: window.yanaProfileId
+                                    };
+                                    requestParams[window.yanaSessionName] = window.yanaSessionId;
                                     $.post(
                                         php_self,
-                                        {//{/literal}
-                                            is_ajax_request: true,
-                                            action: 'display_calendar',
-                                            start: start.getTime() / 1000,
-                                            end: end.getTime() / 1000,
-                                            calendar_id: newCalendarID,
-                                            current_calendar_id: defaultID,
-                                            id: yanaProfileId,
-                                            {$SESSION_NAME}: window.yanaSessionId
-                                        },//{literal}
-                                        function( result )
+                                        requestParams,
+                                        function()
                                         {
-                                            var myEvents = new Array();
-                                            $.each( result, function() {
-                                                if (typeof this.id != 'undefined') {
-                                                    myEvents.push({
-                                                        id: this.id,
-                                                        title: this.title,
-                                                        allDay: this.allDay,
-                                                        //allDay: false,
-                                                        start: new Date(this.start),
-                                                        end: new Date(this.end),
-                                                        location: this.location,
-                                                        categories: this.categories,
-                                                        description: this.description,
-                                                        frequency: this.frequency,
-                                                        interval: this.interval,
-                                                        count: this.count,
-                                                        until: this.until,
-                                                        workDays: this.workDays,
-                                                        className : this.className,
-                                                        su: this.SU,
-                                                        mo: this.MO,
-                                                        tu: this.TU,
-                                                        we: this.WE,
-                                                        th: this.TH,
-                                                        fr: this.FR,
-                                                        sa: this.SA,
-                                                        monthdays: this.monthdays,
-                                                        //monthEachDay: this.monthEachDay,
-                                                        monthEachWeekDay: this.monthEachWeekDay,
-                                                        month: this.month,
-                                                        agenda: this.agenda,
-                                                        memo: this.memo,
-                                                        dealerNumber : this.dealer_number,
-                                                        dealerName : this.dealer_name,
-                                                        repeatPosition: this.repeat_position,
-                                                        endlessSerial: this.endlessSerial,
-                                                        readonly: this.readonly,
-                                                        createdBy:this.created_by
-                                                    });
-                                                }
-                                            });
-                                            $( '#calendar' ).fullCalendar( 'removeEvents' );
-                                            $( '#calendar' ).fullCalendar( 'addEventSource', myEvents );
+                                            $('#calendar').fullCalendar('refetchEvents');
                                         },
                                         "json"
                                     );
-                                },
-                                //timeFormat: 'H:mm' + '-' + '{H:mm}',
-                                // create new event
-                                dayClick : addDialogOpen,
-                                // save event by Dragging
-                                eventDrop: function( event, dayDelta, minuteDelta ) {
-                                    if (event.readonly == true) {
-                                        $( '#calendar' ).fullCalendar( 'refetchEvents' );
-                                    }
-                                    var endDate = 0;
-                                    endDate = (event.end.getTime() / 1000);
-                                    eventID = event.id;
-                                    if (event.frequency == '') {
-                                        $.post(
-                                            php_self,
-                                            {//{/literal}
-                                                is_ajax_request: true,
-                                                action: 'update_event_by_drop',
-                                                eventID: eventID,
-                                                end: endDate,
-                                                resize: dayDelta,
-                                                min: minuteDelta,
-                                                id: yanaProfileId,
-                                                {$SESSION_NAME}: window.yanaSessionId
-                                            },//{literal}
-                                            function()
-                                            {
-                                                $( '#calendar' ).fullCalendar( 'refetchEvents' );
-                                            }, "json"
-                                        );
-                                    } else {
-                                        $( '#calendar' ).fullCalendar( 'refetchEvents' );
-                                    }
-
-                                },
-                                // this function is checking if the event has an serial (by existing serial a edit dialog will be open)
-                                eventDragStart: function( event, jsEvent, ui, view ) {
-                                    if (event.readonly == true) {
-                                        $( '#calendar' ).fullCalendar( 'refetchEvents' );
-                                    }
-                                    if (event.frequency != '') {
-                                        editForm(event);
-                                    }
-                                },
-                                // this function is checking if the event has an serial (by existing serial a edit dialog will be open)
-                                eventResizeStart: function( event, jsEvent, ui, view ) {
-                                    if (event.readonly == true) {
-                                        $( '#calendar' ).fullCalendar( 'refetchEvents' );
-                                    }
-                                    if (event.frequency != '') {
-                                        editForm(event);
-                                    }
-                                },
-                                // save event by Resizing
-                                eventResize: function( event, dayDelta, minuteDelta ) {
-                                    if (event.readonly == true) {
-                                        $( '#calendar' ).fullCalendar( 'refetchEvents' );
-                                    }
-                                    var endDate = 0;
-                                    dayDelta = dayDelta;
-                                    minuteDelta = minuteDelta;
-                                    endDate = (event.end.getTime() / 1000);
-                                    eventID = event.id;
-                                    if (event.frequency == '') {
-                                        $.post(
-                                            php_self,
-                                            {//{/literal}
-                                                is_ajax_request: true,
-                                                action: 'update_event_by_resize',
-                                                eventID: eventID,
-                                                end: endDate,
-                                                resize: dayDelta,
-                                                min: minuteDelta,
-                                                id: yanaProfileId,
-                                                {$SESSION_NAME}: window.yanaSessionId
-                                            },//{literal}
-                                            function( data )
-                                            {
-                                                $( '#calendar' ).fullCalendar( 'refetchEvents' );
-                                            }, "json"
-                                        );
-                                    } else {
-                                        $( '#calendar' ).fullCalendar( 'refetchEvents' );
-                                    }
-                                },
-
-                                // Tooltip einblenden
-                                eventMouseover : function( calEvent, jsEvent, view ) {
-                                   var newToolTip = '';
-                                   eventdate = '';
-                                   // set the start and end date of the current event
-                                   if(calEvent.allDay == true) {
-                                       eventdate = $.fullCalendar.formatDate( calEvent.start, 'dd.MM.yy' ) +
-                                       ' - ' + $.fullCalendar.formatDate( calEvent.end, 'dd.MM.yy' );
-                                   } else {
-                                       eventdate = $.fullCalendar.formatDate( calEvent.start, 'dd.MM.yy HH:mm' ) +
-                                       ' - ' + $.fullCalendar.formatDate( calEvent.end, 'dd.MM.yy HH:mm' );
-                                   }
-
-                                   newToolTip += '<table><tr><td colspan="2" class="headline">'+ calEvent.title + '<\/td><\/tr>';
-                                   newToolTip += '<tr><td>{lang id="calendar_fields.title"}:<\/td><td>' + calEvent.title + '<\/td><\/tr>';
-                                   newToolTip += '<tr><td>{lang id="calendar_fields.location"}:<\/td><td>' + calEvent.location + '<\/td><\/tr>';
-                                   newToolTip += '<tr><td>{lang id="calendar_fields.date"}:<\/td><td>' + eventdate + '<\/td><\/tr>';
-                                   newToolTip += '<tr><td>{lang id="calendar_fields.content"}:<\/td><td>' + calEvent.description + '<\/td><\/tr>';
-                                   newToolTip +='<tr><td>{lang id="calendar_fields.memo"}:<\/td><td>' + calEvent.memo +'<\/td></tr>';
-                                   newToolTip += '<tr><td>{lang id="calendar_fields.created_by"}:<\/td><td>' + calEvent.createdBy + '<\/td><\/tr>';
-
-                                    $('#eventToolTip').html( newToolTip ).css({
-                                        'top' : jsEvent.pageY + 15,
-                                        'left' : jsEvent.pageX + 15
-                                    }).show();
-
-                                    window.setTimeout( '$("#eventToolTip").fadeOut("slow")', 10000 );
-                                },
-
-                                // Tooltip ausblenden, wenn außerhalb von Termin
-                                eventMouseout : function( calEvent, jsEvent, view ) {
-                                    $('#eventToolTip').hide();
-                                }
-                            });
-                            // insert keyword
-                            $('#insertKeyword').click( function() {
-                                $('#agendaKeywordSelector option:selected').each( function() {
-                                    var objekt = $('#agenda');
-                                    objekt.val( objekt.val() + (objekt.val().length > 0 ? "\n" : "") + "- " + $(this).text() );
-                                });
-                            });
-                            $('#to_cancle').click( function() {
-                                if (this.checked == true) {
-                                    $('#to_cancle_by').css({"display":"block"});
                                 } else {
-                                    $('#to_cancle_by').css({"display":"none"});
+                                    $('#calendar').fullCalendar('refetchEvents');
                                 }
-                            });
-                            // Open Keyword dialog
-                            $('#addNewKeyword').click( function() {
-                                // remove fields (remove only the fileds which are added after dialog)
-                                if (agendaEditCounter != 0) {
-                                    for (i = 0; i <= agendaEditCounter; i++) (function (i) {
-                                        $('#agendaRow' + i).remove();
-                                    })(i);
+
+                            },
+                            // this function is checking if the event has an serial (by existing serial a edit dialog will be open)
+                            eventDragStart: function( event, jsEvent, ui, view ) {
+                                if (event.readonly == true) {
+                                    $('#calendar').fullCalendar('refetchEvents');
                                 }
-                                agendaEditCounter = 0;
-                                $('#inputAgendaFirst').val( '' );
-                                openKeywordEdit();
-                                // set cursor into the fist input field
-                                $('#inputAgendaFirst').focus();
-                            });
+                                if (event.frequency != '') {
+                                    editForm(event);
+                                }
+                            },
+                            // this function is checking if the event has an serial (by existing serial a edit dialog will be open)
+                            eventResizeStart: function( event, jsEvent, ui, view ) {
+                                if (event.readonly == true) {
+                                    $('#calendar').fullCalendar('refetchEvents');
+                                }
+                                if (event.frequency != '') {
+                                    editForm(event);
+                                }
+                            },
+                            // save event by Resizing
+                            eventResize: function( event, dayDelta, minuteDelta ) {
+                                if (event.readonly == true) {
+                                    $('#calendar').fullCalendar('refetchEvents');
+                                }
+                                var endDate = 0;
+                                dayDelta = dayDelta;
+                                minuteDelta = minuteDelta;
+                                endDate = (event.end.getTime() / 1000);
+                                eventID = event.id;
+                                if (event.frequency == '') {
+                                    var requestParams = {
+                                        is_ajax_request: true,
+                                        action: 'update_event_by_resize',
+                                        eventID: eventID,
+                                        end: endDate,
+                                        resize: dayDelta,
+                                        min: minuteDelta,
+                                        id: window.yanaProfileId
+                                    };
+                                    requestParams[window.yanaSessionName] = window.yanaSessionId;
+                                    $.post(
+                                        php_self,
+                                        requestParams,
+                                        function(data)
+                                        {
+                                            $('#calendar').fullCalendar('refetchEvents');
+                                        },
+                                        "json"
+                                    );
+                                } else {
+                                    $('#calendar').fullCalendar('refetchEvents');
+                                }
+                            },
+
+                            // Tooltip einblenden
+                            eventMouseover : function( calEvent, jsEvent, view ) {
+                               var newToolTip = '';
+                               eventdate = '';
+                               // set the start and end date of the current event
+                               if(calEvent.allDay == true) {
+                                   eventdate = $.fullCalendar.formatDate( calEvent.start, 'dd.MM.yy' ) +
+                                   ' - ' + $.fullCalendar.formatDate( calEvent.end, 'dd.MM.yy' );
+                               } else {
+                                   eventdate = $.fullCalendar.formatDate( calEvent.start, 'dd.MM.yy HH:mm' ) +
+                                   ' - ' + $.fullCalendar.formatDate( calEvent.end, 'dd.MM.yy HH:mm' );
+                               }
+
+                               newToolTip += '<table><tr><td colspan="2" class="headline">'+ calEvent.title + '<\/td><\/tr>';
+                               newToolTip += '<tr><td>{lang id="calendar_fields.title"}:<\/td><td>' + calEvent.title + '<\/td><\/tr>';
+                               newToolTip += '<tr><td>{lang id="calendar_fields.location"}:<\/td><td>' + calEvent.location + '<\/td><\/tr>';
+                               newToolTip += '<tr><td>{lang id="calendar_fields.date"}:<\/td><td>' + eventdate + '<\/td><\/tr>';
+                               newToolTip += '<tr><td>{lang id="calendar_fields.content"}:<\/td><td>' + calEvent.description + '<\/td><\/tr>';
+                               newToolTip += '<tr><td>{lang id="calendar_fields.created_by"}:<\/td><td>' + calEvent.createdBy + '<\/td><\/tr>';
+
+                                $('#eventToolTip').html( newToolTip ).css({
+                                    'top' : jsEvent.pageY + 15,
+                                    'left' : jsEvent.pageX + 15
+                                }).show();
+
+                                window.setTimeout( '$("#eventToolTip").fadeOut("slow")', 10000 );
+                            },
+
+                            // Tooltip ausblenden, wenn außerhalb von Termin
+                            eventMouseout : function( calEvent, jsEvent, view ) {
+                                $('#eventToolTip').hide();
+                            }
+                        });
                         $("#editable_event").dialog(
                            {
                                 modal: true,
@@ -1062,8 +941,8 @@
                                 resizable: false
                             }
                         );
-                        $(".calendar_file_id").click(  function () {
-                            $( '#calendar' ).fullCalendar( 'refetchEvents');
+                        $(".calendar_file_id").click(function () {
+                            $('#calendar').fullCalendar('refetchEvents');
                         });
                         $("#monthly_default_opt").click(function () {
                             $("#month_repeat_opt_visible").css({"display":"none"});
@@ -1164,20 +1043,22 @@
                         // load|refresh feiertage
                         $("#import_refresh").click(function () {
                             value = $('#new_calendar_abo').val();
+                            var requestParams = {
+                                is_ajax_request: true,
+                                action: 'subscribe_calendar',
+                                url_path: value,
+                                id: window.yanaProfileId
+                            };
+                            requestParams[window.yanaSessionName] = window.yanaSessionId;
                             $.post(
                                 php_self,
-                                {//{/literal}
-                                    is_ajax_request: true,
-                                    action: 'subscribe_calendar',
-                                    url_path: value,
-                                    id: yanaProfileId,
-                                    {$SESSION_NAME}: window.yanaSessionId
-                                },//{literal}
+                                requestParams,
                                 function( data )
                                 {
                                     $(".calendar_list").load();
-                                    $( '#calendar' ).fullCalendar( 'refetchEvents' );
-                                }, "json"
+                                    $('#calendar').fullCalendar('refetchEvents');
+                                },
+                                "json"
                             );
                         });
                         // allDay event check
@@ -1201,93 +1082,24 @@
                         // remove user calendar
                         $("#calendar_delete").click(function () {
                             var key = $('#calendar_to_remove').val();
+                            var requestParams = {
+                                is_ajax_request: true,
+                                action: 'remove_user_calendar',
+                                id: window.yanaProfileId,
+                                key: key
+                            };
+                            requestParams[window.yanaSessionName] = window.yanaSessionId;
                             $.post(
                                 php_self,
-                                {//{/literal}
-                                    is_ajax_request: true,
-                                    action: 'remove_user_calendar',
-                                    id: yanaProfileId,
-                                    key: key,
-                                    {$SESSION_NAME}: window.yanaSessionId
-                                },//{literal}
+                                requestParams,
                                 function( data )
                                 {
-                                    $( '#calendar' ).fullCalendar( 'refetchEvents' );
-                                }, "json"
+                                    $('#calendar').fullCalendar('refetchEvents');
+                                },
+                                "json"
                             );
                         });
-                    // fill data after id
-                    $('#dealer_number').bind("keyup", function() {
-                        var dlnr = $(this).val();
-                        $.post(
-                                php_self,
-                                {//{/literal}
-                                    is_ajax_request: true,
-                                    action: 'get_dealer_by_id',
-                                    id: yanaProfileId,
-                                    dealer_id: dlnr,
-                                    {$SESSION_NAME}: window.yanaSessionId
-                                },//{literal}
-                                function( data )
-                                {
-                                    $.each( data, function( identnr, details ) {
-                                        $("#" + identnr).val([details]);
-                                    });
-
-                                }, "json"
-                            );
-                            // get the users for dealer
-                            $.post(
-                                php_self,
-                                {//{/literal}
-                                    is_ajax_request: true,
-                                    action: 'get_users_for_dealer',
-                                    id: yanaProfileId,
-                                    dealer_id: dlnr,
-                                    {$SESSION_NAME}: window.yanaSessionId
-                                },//{literal}
-                                function( data )
-                                {
-                                    if( !data.noentries) {
-                                        $( '#newAppointmentNoDealerNum' ).css( 'visibility', 'hidden' );
-                                            $.each( data, function( id, values ) {
-                                                var newCheckbox = '';
-                                                newCheckbox  = '<input type="checkbox" name="hdlinfo" class="hdlinfo"';
-                                                newCheckbox += 'value="' + values.user_id + '">';
-                                                newCheckbox += '<span class="hdltext">' + values.anrede + ' ';
-                                                newCheckbox += values.vorname + ' ';
-                                                newCheckbox += values.surname + '</span> <br class="hdlbr"/>';
-                                                $('#newDealers').append( newCheckbox );
-                                            });
-                                    } else {
-                                        $('.hdlinfo').remove();
-                                        $('.hdltext').remove();
-                                        $('.hdlbr').remove();
-                                        $( '#newAppointmentNoDealerNum' ).css( 'visibility', 'visible' );
-                                    }
-                                }, "json"
-                            );
-                        });
-                    $('#dealer_name').bind("keyup", function() {
-                        var dlname = $(this).val();
-                        $.post(
-                                php_self,
-                                {//{/literal}
-                                    is_ajax_request: true,
-                                    action: 'get_dealer_by_name',
-                                    id: yanaProfileId,
-                                    dealer_name: dlname,
-                                    {$SESSION_NAME}: window.yanaSessionId
-                                },//{literal}
-                                function( data )
-                                {
-                                    $.each( data, function( identnr, details ) {
-                                        $("#" + identnr).val([details]);
-                                    });
-
-                                }, "json"
-                            );
-                        });
+                        // fill data after id
                         $("#freq").change(function () {
                             var name = $('#freq :selected').val();
                             if ( name == 'DAILY') {

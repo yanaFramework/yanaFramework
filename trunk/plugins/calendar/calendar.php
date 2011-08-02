@@ -672,24 +672,18 @@ class Calendar extends FileSystemResource
         } else {
             if (preg_match('/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(\w*)/', $event['start'], $sTime)) {
                 $date = mktime($sTime[4], $sTime[5], $sTime[6], $sTime[2], $sTime[3], $sTime[1]);
-                // add micro-seconds (JavaScript uses a higher precission for timestamps)
-                $date *= 1000;
-                $e['start'] = $date ;
+                $e['start'] = $date;
             } else {
                 $start = '';
                 if (preg_match('/(\d{4})(\d{2})(\d{2})/', $event['start'], $sTime)) {
                     // for date only
                     $date = mktime(0, 0, 0, $sTime[2], $sTime[3], $sTime[1]);
-                    // add micro-seconds (JavaScript uses a higher precission for timestamps)
-                    $date *= 1000;
-                    $e['start'] = $date ;
+                    $e['start'] = $date;
                     $start = $sTime;
                 }
             }
             if (preg_match('/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(\w*)/', $event['end'], $eTime)) {
                 $date = mktime($eTime[4], $eTime[5], $eTime[6], $eTime[2], $eTime[3], $eTime[1]);
-                // add micro-seconds (JavaScript uses a higher precission for timestamps)
-                $date *= 1000;
                 $e['end'] = $date;
             } else {
                 if (preg_match('/(\d{4})(\d{2})(\d{2})/', $event['end'], $sTime)) {
@@ -698,8 +692,6 @@ class Calendar extends FileSystemResource
                     $month = $sTime[2];
                     // Note: end date is non-inclusive as of RFC 5545: thus $day - 1
                     $date = mktime(23, 59, 0, $month, $day - 1, $sTime[1]);
-                    // add micro-seconds (JavaScript uses a higher precission for timestamps)
-                    $date *= 1000;
                     $e['end'] = $date ;
                     //if no time is givin set all day true
                     $e['allDay'] = true;

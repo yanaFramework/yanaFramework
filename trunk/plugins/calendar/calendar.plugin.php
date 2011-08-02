@@ -262,39 +262,41 @@ class plugin_calendar extends StdClass implements IsPlugin
     }
 
     /**
-     * display_calendar
-     *
-     * Display calendar events
+     * Returns list of calendar events.
      *
      * @access  public
-     * @param   array  $ARGS  event arguments
+     * @param   int     $current_calendar_id  current calendar ID
+     * @param   string  $calendar_id          calendar ID
      * @return  array
      */
-    public function display_calendar($ARGS)
+    public function display_calendar($current_calendar_id, $calendar_id = null)
     {
-        if (isset($ARGS['calendar_id'])) {
-            $calendarID = $ARGS['calendar_id'];
-        }
-        if (isset($ARGS['current_calendar_id'])) {
-            $defaultID = (int) $ARGS['current_calendar_id'];
-        }
-        if (empty($calendarID) && isset($defaultID)) {
+        $data = array();
+        if (empty($calendar_id)) {
             $calendar = self::_getCalendar();
-            return $calendar->getMergedEvents();
+            $data = $calendar->getMergedEvents();
         } else {
-            return $this->set_double_view($calendarID, $defaultID);
+            $data = $this->set_double_view($calendar_id, $current_calendar_id);
         }
+        foreach ($data as &$event)
+        {
+            if (!empty($event['start'])) {
+                $event['start'] = date('Y-m-d H:i:s', $event['start']);
+            }
+            if (!empty($event['end'])) {
+                $event['end'] = date('Y-m-d H:i:s', $event['end']);
+            }
+        }
+        return $data;
     }
 
     /**
-     * set_double_view
+     * Returns content of two calendars.
      *
-     * This function is set two calendar for display.
-     *
-     * @access    public
-     * @param     string  $calendarIDs  calendarID
-     * @param     int     $defaultID    current calendar ID
-     * @return    array
+     * @access  public
+     * @param   string  $calendarIDs  calendarID
+     * @param   int     $defaultID    current calendar ID
+     * @return  array
      */
     public function set_double_view($calendarIDs, $defaultID)
     {
@@ -332,31 +334,24 @@ class plugin_calendar extends StdClass implements IsPlugin
     }
 
     /**
-     * create new calendar
+     * Creates a new calendar file for the current user.
      *
-     * This function create a new calendar file for current user
-     *
-     * @template    MESSAGE
-     * @type        write
-     * @user        group: admin, level: 100
-     * @onsuccess   goto: GET_CALENDAR_INPUT
-     * @onerror     goto: GET_CALENDAR_INPUT
-     * @param       array   $ARGS  event arguments
-     * @access      public
+     * @template   MESSAGE
+     * @type       write
+     * @user       group: admin, level: 100
+     * @onsuccess  goto: GET_CALENDAR_INPUT
+     * @onerror    goto: GET_CALENDAR_INPUT
+     * @access     public
+     * @param      string  $new_calendar_name  name of newly created calendar
+     * @return     bool
      */
-    public function new_calendar(array $ARGS)
+    public function new_calendar($new_calendar_name)
     {
-        if (empty($ARGS['new_calendar_name'])) {
-            return false;
-        }
-        $name = $ARGS['new_calendar_name'];
-        return self::createCalendar($name);
+        return self::createCalendar($new_calendar_name);
     }
 
     /**
-     * create new calendar
-     *
-     * This function create a new calendar file for current user
+     * Creates a new calendar file for the current user.
      *
      * @param   string   $name  calendar name
      * @static
