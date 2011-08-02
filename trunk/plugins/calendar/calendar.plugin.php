@@ -189,7 +189,6 @@ class plugin_calendar extends StdClass implements IsPlugin
      * @style       ../../skins/default/styles/user.css
      * @style       ../../skins/default/styles/icons.css
      * @script      ../../skins/default/styles/dynamic-styles.js
-     * @script      ../../skins/default/styles/admin-styles.js
      *
      * @access      public
      */
