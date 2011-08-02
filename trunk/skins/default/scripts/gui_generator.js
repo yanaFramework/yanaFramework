@@ -40,7 +40,7 @@ function yanaAddCalendar(img, id, insertAfterId, day, month, year)
                 imgNode.setAttribute('src', img);
                 imgNode.setAttribute('alt', '');
                 if (o.nextSibling) {
-                    o.nextSibling.insertBefore(imgNode);
+                    o.parentNode.insertBefore(imgNode, o.nextSibling);
                 } else {
                     o.parentNode.appendChild(imgNode);
                 }
