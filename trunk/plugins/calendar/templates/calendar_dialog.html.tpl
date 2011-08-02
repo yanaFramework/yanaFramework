@@ -11,7 +11,7 @@
                 <label for="location">{lang id="calendar_fields.location"}:</label><br />
                 <label>{lang id="calendar_fields.begin"}:</label><br />
                 <label>{lang id="calendar_fields.end"}:</label><br />
-                <label>Ganztägig :</label><br />
+                <label>{lang id="calendar_fields.allday"}:</label><br />
                 <label for="description" class="label_description">{lang id="calendar_fields.description"}:</label><br />
             </div>
             <!-- End label descriptions for input elements -->
@@ -53,8 +53,7 @@
                 <!-- Begin Select Frequency -->
                 <div class="left">
                     <label for="freq">{lang id="calendar_fields.serial"}:
-                        <select name="freq" id="freq"
-                            onchange="$('#DAILY, #WEEKLY, #MONTHLY, #YEARLY').css('display', 'none'); $('#' + this.value).css('display', 'block')">
+                        <select name="freq" id="freq">
                             {foreach from=$frequencyOptions item=item key=key}
                                 <option value="{$item}">{lang id="calendar_fields.$item"}</option>
                             {/foreach}
