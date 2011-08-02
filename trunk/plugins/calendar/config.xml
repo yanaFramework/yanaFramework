@@ -49,50 +49,6 @@
             <name>{lang id="categories.jubilee"}</name>
             <color>event_green</color>
         </category>
-        <category>
-            <name>{lang id="categories.client"}</name>
-            <color>event_default_color</color>
-        </category>
-        <category>
-            <name>{lang id="categories.business_competition"}</name>
-            <color>event_default_color</color>
-        </category>
-        <category>
-            <name>{lang id="categories.customer"}</name>
-            <color>event_default_color</color>
-        </category>
-        <category>
-            <name>{lang id="categories.suppliers"}</name>
-            <color>event_default_color</color>
-        </category>
-        <category>
-            <name>{lang id="categories.to_pursue"}</name>
-            <color>event_default_color</color>
-        </category>
-        <category>
-            <name>{lang id="categories.individually"}</name>
-            <color>event_default_color</color>
-        </category>
-        <category>
-            <name>{lang id="categories.projects"}</name>
-            <color>event_default_color</color>
-        </category>
-        <category>
-            <name>{lang id="categories.travel"}</name>
-            <color>event_default_color</color>
-        </category>
-        <category>
-            <name>{lang id="categories.status"}</name>
-            <color>event_default_color</color>
-        </category>
-        <category>
-            <name>{lang id="categories.holiday"}</name>
-            <color>event_default_color</color>
-        </category>
-        <category>
-            <name>{lang id="categories.miscellaneous"}</name>
-            <color>event_default_color</color>
-        </category>
     </categories>
     <frequency>
         <freq>NONE</freq>
