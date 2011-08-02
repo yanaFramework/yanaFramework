@@ -111,8 +111,8 @@ class SmartView extends SmartTemplate
         }
         try {
             $template = self::_getFilename($template);
-        } catch (\Exception $e) {
-            trigger_error("Template error:" . $e->getMessage(), E_USER_WARNING);
+        } catch (\NotFoundException $e) {
+            trigger_error("Template not found: " . $e->getMessage(), E_USER_WARNING);
             return false;
         }
         $this->setVar('SYSTEM_INSERT', $template);
@@ -120,7 +120,7 @@ class SmartView extends SmartTemplate
     }
 
     /**
-     * get template filename by id
+     * Get template filename by id.
      *
      * @access  private
      * @static
@@ -131,11 +131,7 @@ class SmartView extends SmartTemplate
     private static function _getFilename($id)
     {
         if (!is_file($id)) {
-            try {
-                $id = Yana::getInstance()->getSkin()->getFile($id);
-            } catch (\Exception $e) {
-                Log::report("Template error: " . $e->getMessage());
-            }
+            $id = \Yana::getInstance()->getSkin()->getFile($id); // throws NotFoundException
         }
         return $id;
     }
@@ -188,7 +184,7 @@ class SmartView extends SmartTemplate
      */
     public static function addScripts(array $files)
     {
-        self::$scripts = array_merge(self::$scripts, $files);
+        self::$scripts = array_merge($files, self::$scripts);
         self::$scripts = array_unique(self::$scripts);
     }
 
@@ -233,8 +229,8 @@ class SmartView extends SmartTemplate
         assert('is_string($filename); // Wrong argument type argument 1. String expected');
         try {
             $filename = self::_getFilename($filename);
-        } catch (\Exception $e) {
-            trigger_error("Template error: " . $e->getMessage(), E_USER_WARNING);
+        } catch (\NotFoundException $e) {
+            trigger_error("Template not found: " . $e->getMessage(), E_USER_WARNING);
             return false;
         }
         $this->setVar('SYSTEM_TEMPLATE', $filename);
