@@ -40,6 +40,7 @@
  */
 abstract class SmartAbstractResource extends Utility implements IsSmartResource
 {
+
     /**
      * Resource is secure
      *
@@ -75,6 +76,7 @@ abstract class SmartAbstractResource extends Utility implements IsSmartResource
     {
         return false;
     }
+
 }
 
 ?>
