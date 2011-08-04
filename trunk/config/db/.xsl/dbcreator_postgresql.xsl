@@ -489,21 +489,20 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:variable name="sequenceName" select="concat($prefix, @name)"/>
     <xsl:text>CREATE SEQUENCE </xsl:text>
     <xsl:value-of select="concat('&#34;', $sequenceName ,'&#34;')"/>
-    <!-- @todo check syntax for @start, @min, @max, @cycle -->
     <xsl:if test="@increment">
-        <xsl:value-of select="concat(' INCREMENT', @increment)"/>
-    </xsl:if>
-    <xsl:if test="@start">
-
+        <xsl:value-of select="concat(' INCREMENT ', @increment)"/>
     </xsl:if>
     <xsl:if test="@min">
-
+        <xsl:value-of select="concat(' MINVALUE ', @min)"/>
     </xsl:if>
     <xsl:if test="@max">
-
+        <xsl:value-of select="concat(' MAXVALUE ', @max)"/>
+    </xsl:if>
+    <xsl:if test="@start">
+        <xsl:value-of select="concat(' START ', @start)"/>
     </xsl:if>
     <xsl:if test="@cycle = 'yes'">
-
+        <xsl:text> CYCLE</xsl:text>
     </xsl:if>
     <xsl:text>;</xsl:text>
 </xsl:template>
