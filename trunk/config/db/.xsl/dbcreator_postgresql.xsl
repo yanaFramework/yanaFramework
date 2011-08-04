@@ -280,31 +280,29 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     </xsl:if>
 
     <!-- Add default value -->
-    <xsl:if test="$isReference = 0">
-        <xsl:choose>
-            <xsl:when test="@autoincrement = 'yes'">
-                <xsl:value-of select="concat('DEFAULT nextval(&#34;{', $tableName, '_', @name, '_sq&#34;)')"/>
-            </xsl:when>
-            <xsl:when test="$default != 'NULL'">
-                <xsl:value-of select="concat(' DEFAULT ', $default)"/>
-            </xsl:when>
-        </xsl:choose>
+    <xsl:if test="$isReference = 0 and $default != 'NULL'">
+        <xsl:value-of select="concat(' DEFAULT ', $default)"/>
     </xsl:if>
 </xsl:template>
 
 <!-- Handle column type -->
 <xsl:template name="type">
     <xsl:choose>
+        <xsl:when test="@autoincrement = 'yes' and (not(@length) or @length &gt; 8)">bigserial</xsl:when>
+        <xsl:when test="@autoincrement = 'yes'">serial</xsl:when>
         <xsl:when test="name() = 'bool'">boolean</xsl:when>
         <xsl:when test="name() = 'color'">char</xsl:when>
         <xsl:when test="name() = 'date'">date</xsl:when>
-        <!-- @todo look up datatype DECIMAL, LIST/ARRAY -->
-        <xsl:when test="name() = 'float' and @precision">DECIMAL</xsl:when>
-        <xsl:when test="name() = 'float'">double precision</xsl:when>
+        <!-- @todo look up datatype LIST/ARRAY -->
+        <xsl:when test="name() = 'float' and @precision">numeric</xsl:when>
+        <xsl:when test="name() = 'float'' and (not(@length) or @length &gt; 4)">double precision</xsl:when>
+        <xsl:when test="name() = 'float'">real</xsl:when>
         <xsl:when test="name() = 'range'">double precision</xsl:when>
         <xsl:when test="name() = 'text'">text</xsl:when>
         <xsl:when test="name() = 'time'">datetime</xsl:when>
         <xsl:when test="name() = 'timestamp'">integer</xsl:when>
+        <xsl:when test="name() = 'integer' and @length and @length &lt; 3">smallint</xsl:when>
+        <xsl:when test="name() = 'integer' and @length and @length &gt; 8">bigint</xsl:when>
         <xsl:when test="name() = 'integer'">integer</xsl:when>
         <!-- @todo look up datatype INET -->
         <xsl:when test="name() = 'inet'">inet</xsl:when>
@@ -334,12 +332,12 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <!-- Type Bool is not supported in MySQL, must be simulated -->
         <xsl:when test="name() = 'bool'">
             <xsl:choose>
-                <xsl:when test="$default = 'true' or $default = 'TRUE'">1</xsl:when>
-                <xsl:when test="$default = 'false' or $default = 'FALSE'">0</xsl:when>
+                <xsl:when test="$default = 'true' or $default = 'TRUE'">true</xsl:when>
+                <xsl:when test="$default = 'false' or $default = 'FALSE'">false</xsl:when>
                 <xsl:otherwise><xsl:value-of select="number($default)"/></xsl:otherwise>
             </xsl:choose>
         </xsl:when>
-        <!-- Type Inet is not supported in MySQL, must be simulated -->
+        <!-- Type default value REMOTE_ADDR is not supported and must be simulated -->
         <xsl:when test="name() = 'inet' and $default = 'REMOTE_ADDR'">NULL</xsl:when>
         <!-- CURRENT_TIMESTAMP must be mapped for types Date and DateTime
 
@@ -392,16 +390,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:template name="function">
     <xsl:variable name="functionName" select="concat($prefix, @name)"/>
     <xsl:for-each select="implementation[@dbms = 'postgresql']">
-        <xsl:choose>
-            <!-- function -->
-            <xsl:when test="return/.">
-                <xsl:text>CREATE FUNCTION </xsl:text>
-            </xsl:when>
-            <!-- procedure -->
-            <xsl:otherwise>
-                <xsl:text>CREATE PROCEDURE </xsl:text>
-            </xsl:otherwise>
-        </xsl:choose>
+        <xsl:text>CREATE OR REPLACE FUNCTION </xsl:text>
         <xsl:value-of select="concat('&#34;', $functionName, '&#34;')"/>
         <xsl:if test="param">
             <xsl:text> (</xsl:text>
@@ -425,7 +414,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <!-- Handle views -->
 <xsl:template name="view">
-    <xsl:value-of select="concat('CREATE VIEW &#34;', $prefix, @name, '&#34;')"/>
+    <xsl:value-of select="concat('CREATE OR REPLACE VIEW &#34;', $prefix, @name, '&#34;')"/>
     <xsl:if test="field">
         <xsl:text> (</xsl:text>
         <xsl:for-each select="field">
