@@ -115,7 +115,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
                 <xsl:when test="@onupdate = 'restrict'"><xsl:text> ON UPDATE RESTRICT</xsl:text></xsl:when>
                 <xsl:when test="@onupdate = 'cascade'"><xsl:text> ON UPDATE CASCADE</xsl:text></xsl:when>
                 <xsl:when test="@onupdate = 'set-null'"><xsl:text> ON UPDATE SET NULL</xsl:text></xsl:when>
-                <!-- set default is not supported in MySQL -->
+                <xsl:when test="@onupdate = 'set-default'"><xsl:text> ON DELETE SET DEFAULT</xsl:text></xsl:when>
             </xsl:choose>
         </xsl:variable>
         <xsl:variable name="onDelete">
@@ -123,7 +123,14 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
                 <xsl:when test="@ondelete = 'restrict'"><xsl:text> ON DELETE RESTRICT</xsl:text></xsl:when>
                 <xsl:when test="@ondelete = 'cascade'"><xsl:text> ON DELETE CASCADE</xsl:text></xsl:when>
                 <xsl:when test="@ondelete = 'set-null'"><xsl:text> ON DELETE SET NULL</xsl:text></xsl:when>
-                <!-- set default is not supported in MySQL -->
+                <xsl:when test="@ondelete = 'set-default'"><xsl:text> ON DELETE SET DEFAULT</xsl:text></xsl:when>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:variable name="match">
+            <xsl:choose>
+                <xsl:when test="@match = 'simple'"><xsl:text> MATCH SIMPLE</xsl:text></xsl:when>
+                <xsl:when test="@match = 'partial'"><xsl:text> MATCH PARTIAL</xsl:text></xsl:when>
+                <xsl:when test="@match = 'full'"><xsl:text> MATCH FULL</xsl:text></xsl:when>
             </xsl:choose>
         </xsl:variable>
         <xsl:variable name="sourceDeclaration">
@@ -148,7 +155,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:value-of select="concat('ALTER TABLE &#34;', $tableName, '&#34;')"/>
         <xsl:value-of select="concat(' ADD ', $foreignKeyName, ' FOREIGN KEY (', $sourceDeclaration, ')')"/>
         <xsl:value-of select="concat(' REFERENCES &#34;', $foreignTableName, '&#34; (', $targetDeclaration, ')')"/>
-        <xsl:value-of select="concat($onDelete, $onUpdate, ';&#10;')"/>
+        <xsl:value-of select="concat($match, $onDelete, $onUpdate, ';&#10;')"/>
     </xsl:for-each>
 </xsl:template>
 
