@@ -271,13 +271,12 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:value-of select="concat('(', $length, ')')"/>
     </xsl:if>
 
-    <xsl:if test="@unsigned = 'yes'"> UNSIGNED</xsl:if>
-    <xsl:if test="($type = 'INT' or $type = 'DOUBLE') and @fixed = 'yes'"> ZEROFILL</xsl:if>
+    <!-- Note: there is no "unsigned int" in PostgreSQL -->
 
     <!-- Add NOT NULL constraint -->
-    <xsl:if test="$isReference = 0">
-        <xsl:if test="@notnull = 'yes'"> NOT NULL</xsl:if>
-    </xsl:if>
+    <xsl:if test="@notnull = 'yes'"> NOT NULL</xsl:if>
+    <xsl:if test="@unique = 'yes'"> UNIQUE</xsl:if>
+    <xsl:if test="constraint[@dbms = 'postgresql']"> CHECK (<xsl:value-of select="default[@dbms = 'postgresql']"/>)</xsl:if>
 
     <!-- Add default value -->
     <xsl:if test="$isReference = 0 and $default != 'NULL'">
@@ -299,7 +298,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:when test="name() = 'float'">real</xsl:when>
         <xsl:when test="name() = 'range'">double precision</xsl:when>
         <xsl:when test="name() = 'text'">text</xsl:when>
-        <xsl:when test="name() = 'time'">datetime</xsl:when>
+        <!-- for compatibility reasons we don't use a time zone here -->
+        <xsl:when test="name() = 'time'">timestamp</xsl:when>
         <xsl:when test="name() = 'timestamp'">integer</xsl:when>
         <xsl:when test="name() = 'integer' and @length and @length &lt; 3">smallint</xsl:when>
         <xsl:when test="name() = 'integer' and @length and @length &gt; 8">bigint</xsl:when>
