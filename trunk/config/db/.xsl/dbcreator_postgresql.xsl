@@ -238,7 +238,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
     <!-- Add PRIMARY KEY constraint -->
     <xsl:value-of select="concat('&#09;PRIMARY KEY (&#34;', primarykey/., '&#34;)')"/><!-- Create primary-key -->
-
+    <xsl:if test="constraint[@dbms = 'postgresql']"> CHECK (<xsl:value-of select="default[@dbms = 'postgresql']"/>)</xsl:if>
+    
     <!-- Add UNIQUE constraints -->
     <xsl:if test="declaration/*[@unique = 'yes']">
         <xsl:value-of select="concat(', &#10;&#09;UNIQUE &#34;', $tableName, '&#34; (')"/>
