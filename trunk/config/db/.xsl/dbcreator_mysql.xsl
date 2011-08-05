@@ -275,6 +275,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:if test="$isReference = 0">
         <xsl:if test="@notnull = 'yes'"> NOT NULL</xsl:if>
     </xsl:if>
+    <xsl:if test="constraint[@dbms = 'mysql']"> CHECK (<xsl:value-of select="default[@dbms = 'mysql']"/>)</xsl:if>
 
     <!-- Add default value -->
     <xsl:if test="$isReference = 0">
