@@ -227,7 +227,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
     <!-- Add PRIMARY KEY constraint -->
     <xsl:value-of select="concat('&#09;PRIMARY KEY (`', primarykey/., '`)')"/><!-- Create primary-key -->
-
+    <xsl:if test="constraint[@dbms = 'mysql']"> CHECK (<xsl:value-of select="default[@dbms = 'mysql']"/>)</xsl:if>
+    
     <!-- Add UNIQUE constraints -->
     <xsl:if test="declaration/*[@unique = 'yes']">
         <xsl:value-of select="concat(', &#10;&#09;UNIQUE `', $tableName, '` (')"/>
