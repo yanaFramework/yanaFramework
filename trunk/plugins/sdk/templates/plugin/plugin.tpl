@@ -175,8 +175,8 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @user       group: admin, level: 75
      * @template   MESSAGE
      * @language   {$plugin->getId()}
-     * @onsuccess  goto: {$plugin->getId()}_{$form->getName()}
-     * @onerror    goto: {$plugin->getId()}_{$form->getName()}
+     * @onsuccess  goto: {$plugin->getId()}{$form->getName()}
+     * @onerror    goto: {$plugin->getId()}{$form->getName()}
      * @access     public
      * @return     bool
      */
@@ -199,8 +199,8 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @user       group: admin, level: 75
      * @template   MESSAGE
      * @language   {$plugin->getId()}
-     * @onsuccess  goto: {$plugin->getId()}_{$form->getName()}
-     * @onerror    goto: {$plugin->getId()}_{$form->getName()}
+     * @onsuccess  goto: {$plugin->getId()}{$form->getName()}
+     * @onerror    goto: {$plugin->getId()}{$form->getName()}
      * @access     public
      * @param      array  $selected_entries  array of entries to delete
      * @return     bool
@@ -224,8 +224,8 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @user       group: admin, level: 30
      * @template   MESSAGE
      * @language   {$plugin->getId()}
-     * @onsuccess  goto: {$plugin->getId()}_{$form->getName()}
-     * @onerror    goto: {$plugin->getId()}_{$form->getName()}
+     * @onsuccess  goto: {$plugin->getId()}{$form->getName()}
+     * @onerror    goto: {$plugin->getId()}{$form->getName()}
      * @access     public
      * @return     bool
      */
