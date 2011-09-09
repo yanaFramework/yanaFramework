@@ -32,13 +32,13 @@
  */
 class plugin_user_group extends StdClass implements IsPlugin
 {
+
     /**
      * default profile id
      *
      * @var     string
      * @access  private
      * @static
-     * @ignore
      */
     private static $defaultProfileId = null;
 
@@ -48,7 +48,6 @@ class plugin_user_group extends StdClass implements IsPlugin
      * @var     array
      * @access  private
      * @static
-     * @ignore
      */
     private static $userSettings = array();
 
