@@ -81,7 +81,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      *
      * @access  protected
      * @static
-     * @return  DDLDefaultForm
+     * @return  FormFacade
      */
     protected static function get{$form->getName()|capitalize}Form()
     {ldelim}
@@ -107,7 +107,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      */
     public function catchAll($event, array $ARGS)
     {ldelim}
-        /* @todo implement this function */
+        // @todo add your code here
         return true;
     {rdelim}
 
@@ -123,7 +123,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
 
 {$method}
     {ldelim}
-        /* @todo implement this function */
+        // @todo add your code here
         return true;
     {rdelim}
 
