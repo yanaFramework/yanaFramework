@@ -212,6 +212,9 @@ class plugin_search extends StdClass implements IsPlugin
      */
     public function search_create_index($dir, $recurse = false, $meta = false)
     {
+        include_once dirname(__FILE__) . '/bufferedreader.class.php';
+        include_once dirname(__FILE__) . '/pdftextreader.class.php';
+
         global $YANA;
 
         if (!headers_sent()) {
@@ -220,7 +223,7 @@ class plugin_search extends StdClass implements IsPlugin
 
         @set_time_limit(500);
 
-        if (!is_dir(dir)) {
+        if (!is_dir($dir)) {
             print "WARNING: Directory '{$dir}' not found.\n";
             return false;
         }
@@ -251,14 +254,18 @@ class plugin_search extends StdClass implements IsPlugin
          */
         assert('!isset($i); // Cannot redeclare var $i');
         assert('!isset($file); // Cannot redeclare var $file');
-        foreach (self::_getListOfFiles($dir, '*.htm|*.html|*.xml|*.shtml', $recurse) as $i =>  $file)
+        foreach (self::_getListOfFiles($dir, '*.htm|*.html|*.xml|*.shtml|*.pdf', $recurse) as $i =>  $file)
         {
-            $handle = fopen("$file", "r");
-            if ($handle === false) {
+            try {
+                if (preg_match('/\.pdf$/', $file)) {
+                    $fileReader = new PdfTextReader($file);
+                } else {
+                    $fileReader = new BufferedReader($file);
+                }
+                fwrite($hDocuments, $file);
+            } catch (Exception $e) {
                 print "NOTICE: Unable to open file '$file'.\n";
                 continue;
-            } else {
-                fwrite($hDocuments, $file);
             }
 
             print "(${i}) ${file}\n";
@@ -275,47 +282,55 @@ class plugin_search extends StdClass implements IsPlugin
             assert('!isset($content); // Cannot redeclare var $content');
             $content = '';
             assert('!isset($h); // Cannot redeclare var $h');
-            while (!feof($handle))
+            while ($fileReader->hasMoreContent())
             {
-                $content .= fread($handle, 8192);
-                $h = null;
-                if ($docTitle === false) {
-                    $isTitle = preg_match('/<title>\s*([^<]+)\s*<\/title>/uUsi', $content, $docTitle);
-                    $isTitle |= preg_match('/<meta\s+name="title"\s+content="([^">]+)"/uUsi', $content, $docTitle);
-                    if ($isTitle) {
-                        $content = str_replace($docTitle[0], '', $content);
-                        $docTitle = preg_replace('/\s+/us', ' ', $docTitle[1]
-                        );
-                    } else {
-                        $docTitle = false;
-                    }
-                }
-                $isHead = preg_match('/<head>.*?<\/head>/usi', $content, $headContent);
-                if ($meta === true && $keywords === false && $isHead) {
-                    $headContent = $headContent[0];
-                    while (preg_match('/<meta\s+name="keywords"\s+content="([^">]+)"/uUsi', $headContent, $h))
-                    {
-                        $headContent = str_replace($h[0], '', $headContent);
-                        $keywords = array();
-                        if (strpos($h[1], ',') !== false) {
-                            $keywords = array_merge($keywords, explode(',', preg_replace('/\s{2,}/u', ' ', $h[1])));
+                $fileReader->read();
+                $content .= $fileReader->getContent();
+                if (!$fileReader instanceof PdfTextReader) {
+                    $h = null;
+                    if ($docTitle === false) {
+                        $isTitle = preg_match('/<title>\s*([^<]+)\s*<\/title>/Usi', $content, $docTitle);
+                        if (!$isTitle) {
+                            $isTitle = preg_match('/<meta\s+name="title"\s+content="([^">]+)"/Usi', $content, $docTitle);
+                        }
+                        if ($isTitle) {
+                            $content = str_replace($docTitle[0], '', $content);
+                            $docTitle = preg_replace('/\s+/s', ' ', $docTitle[1]);
                         } else {
-                            $keywords[] = preg_replace('/\s+/us', ' ', $h[1]);
+                            $docTitle = false;
                         }
                     }
+                    $isHead = preg_match('/<head>.*?<\/head>/si', $content, $headContent);
+                    if ($meta === true && $keywords === false && $isHead) {
+                        $headContent = $headContent[0];
+                        while (preg_match('/<meta\s+name="keywords"\s+content="([^">]+)"/Usi', $headContent, $h))
+                        {
+                            $headContent = str_replace($h[0], '', $headContent);
+                            $keywords = array();
+                            if (strpos($h[1], ',') !== false) {
+                                $keywords = array_merge($keywords, explode(',', preg_replace('/\s{2,}/', ' ', $h[1])));
+                            } else {
+                                $keywords[] = preg_replace('/\s+/s', ' ', $h[1]);
+                            }
+                        }
+                    }
+                    if (empty($docDesc)) {
+                        $content = preg_replace('/^.*<body[^>]*>\s*/si', '', $content);
+                    }
+                    $content = preg_replace('/<[^>]+>/', ' ', $content);
+                    $content = html_entity_decode($content);
+                    $content = strip_tags($content);
+                    $content = preg_replace('/[\s\t]+/', ' ', $content);
+                    $content = preg_replace('/[^a-zA-Z\säöüß]+/', ' ', $content);
+                    $content = preg_replace('/[\s\t]+/', ' ', $content);
+                    unset($h);
+                } else {
+                    $content = strip_tags($content);
+                    $content = preg_replace('/[\s\t]+/', ' ', $content);
                 }
-                if (empty($docDesc)) {
-                    $content = preg_replace('/^.*<body[^>]*>\s*/usi', '', $content);
-                }
-                $content = preg_replace('/<[^>]+>/u', ' ', $content);
-                $content = html_entity_decode($content);
-                $content = strip_tags($content);
-                $content = preg_replace('/[\s\t]+/u', ' ', $content);
                 if (mb_strlen($docDesc) < 150) {
                     $docDesc .= trim($content);
                 }
-                $content = preg_replace('/[^a-zA-Z\säöüß]+/u', ' ', $content);
-                $content = preg_replace('/[\s\t]+/u', ' ', $content);
                 $content = explode(' ', $content);
                 for ($i = 0; $i < count($content) - 1; $i++)
                 {
@@ -330,12 +345,8 @@ class plugin_search extends StdClass implements IsPlugin
                 unset($i);
                 $content = array_pop($content) . ' ';
             }
-            unset($content, $h);
-
-            if (fclose($handle) === false) {
-                trigger_error("Unable to close file '$file'.", E_USER_NOTICE);
-                continue;
-            }
+            // free memory and auto-close file handle
+            unset($content, $fileReader);
 
             if (empty($docTitle)) {
                 $docTitle = $file;
@@ -386,6 +397,10 @@ class plugin_search extends StdClass implements IsPlugin
         foreach ($resultKeywords as $keyword => $array)
         {
             $compare = "";
+            if (!is_string($keyword)) {
+                unset($resultKeywords[$keyword]);
+                continue;
+            }
             $newKeyword = self::_applyStemming($keyword, $compare);
 
             if ($newKeyword === '') {
