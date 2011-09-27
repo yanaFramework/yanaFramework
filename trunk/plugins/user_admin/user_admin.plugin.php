@@ -71,8 +71,19 @@ class plugin_user_admin extends StdClass implements IsPlugin
      */
     protected static function getAccessForm()
     {
-        $builder = new FormBuilder('user_admin');
         return self::getUserForm()->getForm('securityrules');
+    }
+
+    /**
+     * get form definition
+     *
+     * @access  protected
+     * @static
+     * @return  FormFacade
+     */
+    protected static function getLevelForm()
+    {
+        return self::getUserForm()->getForm('securitylevel');
     }
 
     /**
@@ -376,6 +387,70 @@ class plugin_user_admin extends StdClass implements IsPlugin
     public function set_access_new()
     {
         $form = self::getAccessForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->create();
+    }
+
+    /**
+     * Edit access rights
+     *
+     * returns bool(true) on success and bool(false) on error
+     *
+     * @type        config
+     * @user        group: admin, level: 100
+     * @template    message
+     * @onsuccess   goto: get_user_list
+     * @onerror     goto: get_user_list
+     *
+     * @access      public
+     * @return      bool
+     */
+    public function set_securitylevel_edit()
+    {
+        $form = self::getLevelForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->update();
+    }
+
+    /**
+     * Revoke access rights.
+     *
+     * returns bool(true) on success and bool(false) on error
+     *
+     * @type        config
+     * @user        group: admin, level: 100
+     * @template    message
+     * @onsuccess   goto: get_user_list
+     * @onerror     goto: get_user_list
+     *
+     * @access      public
+     * @return      bool
+     * @param       array  $selected_entries  array of params passed to the function
+     */
+    public function set_securitylevel_delete(array $selected_entries)
+    {
+        $form = self::getLevelForm();
+        $worker = new FormWorker(self::getDatabase(), $form);
+        return $worker->delete($selected_entries);
+    }
+
+    /**
+     * Grant access rights.
+     *
+     * returns bool(true) on success and bool(false) on error
+     *
+     * @type        config
+     * @user        group: admin, level: 100
+     * @template    message
+     * @onsuccess   goto: get_user_list
+     * @onerror     goto: get_user_list
+     *
+     * @access      public
+     * @return      bool
+     */
+    public function set_securitylevel_new()
+    {
+        $form = self::getLevelForm();
         $worker = new FormWorker(self::getDatabase(), $form);
         return $worker->create();
     }
