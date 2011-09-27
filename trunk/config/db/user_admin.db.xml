@@ -30,6 +30,17 @@
             <event name="update">set_access_edit</event>
             <event name="delete">set_access_delete</event>
         </form>
+        <form name="securitylevel" table="securitylevel" allinput="yes">
+            <grant select="no"/>
+            <grant user="admin" level="100"/>
+            <input name="security_id" hidden="yes"/>
+            <input name="user_id" hidden="yes"/>
+            <input name="user_created" hidden="yes"/>
+            <input name="user_proxy_active" hidden="yes"/>
+            <event name="insert">set_securitylevel_new</event>
+            <event name="update">set_securitylevel_edit</event>
+            <event name="delete">set_securitylevel_delete</event>
+        </form>
         <event name="insert">set_user_new</event>
         <event name="update">set_user_edit</event>
         <event name="delete">set_user_delete</event>
