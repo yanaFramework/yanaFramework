@@ -455,11 +455,15 @@ function yanaOnLoad($userFunction)
     if (window.onload) {
         prevFunc = window.onload;
     } else {
-        prevFunc = function() {return true;};
+        prevFunc = function() { return true; };
     }
     window.onload = function()
     {
-        return prevFunc() && $userFunction();
+        var prevResult = prevFunc();
+        if (typeof prev == 'undefined') {
+            prevResult = true;
+        }
+        return prevResult && $userFunction();
     };
 }
 
