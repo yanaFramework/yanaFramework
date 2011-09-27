@@ -69,6 +69,21 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
     }
 
     /**
+     * Set id attribute based on row number and field settings.
+     *
+     * @access  protected
+     * @param   FormFieldFacade  $field  definition to create name from
+     * @return  FormFieldAutomatedHtmlBuilder
+     */
+    private function _setIdByRow(FormFieldFacade $field)
+    {
+        $key = $field->getContext()->getRows()->key();
+        $id = $field->getForm()->getName() . "-" . $field->getContext()->getContextName() .
+            ((!is_null($key)) ? "-" . $key : "") . "-" . $field->getName();
+        return $this->setId($id);
+    }
+
+    /**
      * Set class attribute based on field settings.
      *
      * @access  private
@@ -101,6 +116,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
         {
             case 'update':
                 if ($field->isUpdatable() && $field->getForm()->getSetup()->getUpdateAction()) {
+                    $this->_setIdByRow($field);
                     return $this->buildByTypeUpdatable($field, $setup) . $this->createLink($field);
                 }
             // fall through
@@ -212,8 +228,16 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                 }
                 $this->setMaxLength(4);
                 return $this->buildTextfield($value) .
-                    '<script type="text/javascript">yanaSlider("' . $this->getId() . '", ' . $column->getRangeMin() .
-                     ', ' . $column->getRangeMax() . ', ' . $rangeStep . ', ' . $value . ');</script>';
+                    '<script type="text/javascript">yanaSlider("' . $this->getId() . '", ' . (int) $column->getRangeMin() .
+                     ', ' . (int) $column->getRangeMax() . ', ' . (int) $rangeStep . ', ' . (int) $value . ');</script>';
+                /* HTML 5 version for later use
+                return '<input' . $this->getAttr() .' id="' . $this->getId() . '" name="' . $this->getName() . '" ' .
+                    'class="' . $this->getCssClass() . '" type="range" value="' . $value .
+                    '" min="' . $column->getRangeMin() . '" max="' . $column->getRangeMax() . '" step="' . $rangeStep .
+                    ' title="' . $this->getTitle() . '"' .
+                    ' onchange="document.getElementById(\'' . $this->getId() . 'output\').innerHTML=this.value"/>' .
+                    '<output for="' . $this->getId() . '" id="' . $this->getId() . 'output">' . $value . '</output>';
+                 */
             case 'reference':
                 $null = "";
                 if ($column->isNullable()) {
@@ -349,7 +373,10 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
             case 'set':
             case 'list':
                 $this->setCssClass('gui_generator_array');
-                return $this->buildDiv(SmartUtility::printUL1($value, 2));
+                if (is_array($value)) {
+                    $value = SmartUtility::printUL1($value, 2);
+                }
+                return $this->buildDiv((string) $value);
             case 'password':
                 return '&ndash;'; // never show password
             case 'reference':
