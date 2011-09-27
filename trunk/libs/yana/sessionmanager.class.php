@@ -697,7 +697,7 @@ class SessionManager extends Singleton implements Serializable
             }
 
             $level = array_pop($level);
-            assert('is_int($level);');
+            assert('is_numeric($level);');
             return (int) $level;
 
         } else {

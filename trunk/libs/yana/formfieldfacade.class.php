@@ -284,6 +284,7 @@ class FormFieldFacade extends Object
             case 'inet':
             case 'integer':
             case 'mail':
+            case 'range':
             case 'string':
             case 'tel':
             case 'time':
