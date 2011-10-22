@@ -39,7 +39,7 @@ namespace Yana\Db;
  * @package     yana
  * @subpackage  db
  */
-class SqlFactory extends \Object
+class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
 {
 
     /**
@@ -57,10 +57,10 @@ class SqlFactory extends \Object
      * Example of usage:
      * <code>
      * // create new instance of this class
-     * $dbc = new \Yana\Db\SqlFactory( XDDL::getDatabase('guestbook'));
+     * $dbc = new \Yana\Db\Export\SqlFactory( XDDL::getDatabase('guestbook'));
      * // since version 2.9.6 you may also write
      * $db = 'guestbook';
-     * $dbc = new \Yana\Db\SqlFactory($db);
+     * $dbc = new \Yana\Db\Export\SqlFactory($db);
      * // create SQL DDL (here: using MySQL syntax)
      * $arrayOfStmts = $dbc->createMySQL();
      * // This will output the result as text
@@ -81,6 +81,13 @@ class SqlFactory extends \Object
     }
 
     /**
+     * Create SQL.
+     *
+     * Returns a numeric array of SQL statements.
+     * Each element is a single statement.
+     * If you want to send the result to a SQL file
+     * you should "implode()" the array to a string.
+     *
      * @param string $name
      * @param array  $arguments 
      */
@@ -88,7 +95,12 @@ class SqlFactory extends \Object
     {
         if (strpos($name, 'create') === 0) { // expect "createDbmsName"
             $id = substr($name, 6); // extract "DbmsName"
-            $filename = $this->_provider->$name;
+
+            $xmlDocument = new \DOMDocument();
+            $xmlDocument->loadXML((string) $this->schema);
+
+            $xslDocument = $this->_getProvider()->$name;
+            return self::_transformToSql($xmlDocument, $xslDocument);
         }
         return parent__call($name, $arguments);
     }
@@ -103,50 +115,21 @@ class SqlFactory extends \Object
      * Note: due to restrictions of this XSLT processor, you are limited
      * to XSL version 1.0. Using XSL 2.0 will cause an error to be thrown.
      *
-     * @param  \DOMDocument $xmlString   XML source to transform
-     * @param  \DOMDocument $xslFilename path to XSL template that will do the transformation
+     * @param  \DOMDocument $xmlDocument   XML source to transform
+     * @param  \DOMDocument $xslDocument   XSL template that will do the transformation
      * @return array list of SQL commands
      */
-    private static function _transformToSql(\DOMDocument $xmlString, \DOMDocument $xslFilename)
+    private static function _transformToSql(\DOMDocument $xmlDocument, \DOMDocument $xslDocument)
     {
-        assert('is_string($xmlString); // Wrong argument type argument 1. String expected');
-        assert('is_string($xslFilename); // Wrong argument type argument 2. String expected');
-        assert('is_file($xslFilename); // File not found $xslFilename');
-
-        // Stylesheet
-        $xsl = new \DOMDocument();
-        $xsl->load($xslFilename);
-
-        // Source file
-        $xml = new \DOMDocument();
-        $xml->loadXML($xmlString);
-
         // XSLT processor
         $xsltProcessor = new \XSLTProcessor();
-        $xsltProcessor->importStyleSheet($xsl); // attach the xsl rules
+        $xsltProcessor->importStyleSheet($xslDocument); // attach the xsl rules
 
         // Transform to SQL
-        $sql = trim($xsltProcessor->transformToXml($xml));
+        $sql = trim($xsltProcessor->transformToXml($xmlDocument));
         $array = preg_split('/(?<=;)$/m', $sql);
         assert('is_array($array);');
         return $array;
-    }
-
-    /**
-     * create SQL for MySQL
-     *
-     * Returns a numeric array of SQL statements.
-     * Each element is a single statement.
-     * If you want to send the result to a SQL file
-     * you should "implode()" the array to a string.
-     *
-     * @return  array
-     */
-    public function createMySQL()
-    {
-        $xslFilename = \DDL::getDirectory() . '/.xsl/dbcreator_mysql.xsl'; // Stylesheet
-        $xmlString = (string) $this->schema; // Source file
-        return self::_transformToSql($xmlString, $xslFilename);
     }
 
     /**
@@ -159,7 +142,7 @@ class SqlFactory extends \Object
      *
      * @return  array
      */
-    public function createPostgreSQL()
+    private function _createPostgreSQL()
     {
         $xslFilename = \DDL::getDirectory() . '/.xsl/dbcreator_postgresql.xsl'; // Stylesheet
         $xmlString = (string) $this->schema; // Source file
@@ -482,10 +465,10 @@ class SqlFactory extends \Object
     }
 
     /**
-     * Same as \Yana\Db\SqlFactory::createMSSQL().
+     * Same as \Yana\Db\Export\SqlFactory::createMSSQL().
      *
      * @return  array
-     * @see     \Yana\Db\SqlFactory::createMSSQL()
+     * @see     \Yana\Db\Export\SqlFactory::createMSSQL()
      */
     public function createMSAccess()
     {

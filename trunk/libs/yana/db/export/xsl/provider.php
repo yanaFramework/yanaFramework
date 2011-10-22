@@ -26,7 +26,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db;
+namespace Yana\Db\Export\Xsl;
 
 /**
  * Transparent provider, that delivers pre-initialized \DomDocument instances.
@@ -38,7 +38,7 @@ namespace Yana\Db;
  * @property-read \DOMDocument $mysql      MySQL XSL-Template
  * @property-read \DOMDocument $postgresql PostGreSQL XSL-Template
  */
-class DomDocumentProvider extends \Object
+class Provider extends \Object implements \Yana\Db\Export\IsXslProvider
 {
 
     /**
@@ -47,21 +47,11 @@ class DomDocumentProvider extends \Object
     private static $_instances = array();
 
     /**
-     * MySQL
-     */
-    const MYSQL = 'mysql';
-
-    /**
-     * PostGreSQL
-     */
-    const POSTGRESQL = 'postgresql';
-
-    /**
      * Creates a new \DOMDocument of an XSL-template.
      *
      * @param string $name
      * @return \DOMDocument
-     * @throws \Yana\Db\DomProvider\InvalidNameException
+     * @throws \Yana\Db\Export\Xsl\InvalidNameException
      */
     public function __get($name)
     {
@@ -71,12 +61,12 @@ class DomDocumentProvider extends \Object
             $xslFilename = __DIR__ . '/';
             switch ($name)
             {
-                case 'mysql':
-                case 'postgresql':
+                case \Yana\Db\Export\IsXslProvider::MYSQL:
+                case \Yana\Db\Export\IsXslProvider::MSSQL:
                     $xslFilename .= $name . ".xsl";
                     break;
                 default:
-                    throw new \Yana\Db\DomProvider\InvalidNameException($name);
+                    throw new \Yana\Db\Export\Xsl\InvalidNameException($name);
             }
             // Stylesheet
             $xsl = new \DOMDocument();
