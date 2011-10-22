@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Db\FileDb;
+
 /**
  * counter wrapper
  *
@@ -41,32 +43,37 @@
  * @package     yana
  * @subpackage  database
  */
-class Counter extends Sequence
+class Counter extends \Yana\Db\FileDb\Sequence
 {
     /**#@+
-     * @access protected
      * @ignore
      */
-    /** @var boolean  */ protected $useIp = true;
-    /** @var string   */ protected $info = "";
-    /** @var array    */ protected $ip = array();
+
+    /**
+     * @var boolean
+     */
+    protected $useIp = true;
+
+    /**
+     * @var string
+     */
+    protected $info = "";
+
+    /**
+     * @var array
+     */
+    protected $ip = array();
 
     /**#@-*/
 
     /**
-     * @access protected
-     * @static
      * @var array
      * @ignore
      */
     protected static $instances = array();
 
     /**
-     * create a new instance
-     *
-     * This function reads all counter information from the database and initializes a new instance.
-     *
-     * A NotFoundException is thrown, if the counter does not exist.
+     * Reads all counter information from the database and initializes a new instance.
      *
      * @param   string    $name  counter name
      * @throws  NotFoundException  if the counter does not exist
@@ -380,7 +387,7 @@ class Counter extends Sequence
      * @access  public
      * @static
      * @param   string    $name  counter name
-     * @return  Counter
+     * @return  \Yana\Db\FileDb\Counter
      */
     public static function getInstance($name)
     {
@@ -389,7 +396,7 @@ class Counter extends Sequence
             if (!self::exists($name)) {
                 self::create($name);
             }
-            self::$instances[$name] = new Counter($name);
+            self::$instances[$name] = new self($name);
         }
         assert('isset(self::$instances[$name]);');
         return self::$instances[$name];
