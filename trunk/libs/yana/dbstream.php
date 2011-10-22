@@ -309,12 +309,12 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * @access  public
      * @return  bool
      * @name    DbStream::write()
+     * @throws  NotWriteableException  when the database or table is locked
      */
     public function write()
     {
         if (!$this->_isWriteable()) {
-            trigger_error('Operation aborted, not writeable.', E_USER_NOTICE);
-            return false;
+            throw new NotWriteableException('Operation aborted, not writeable.', E_USER_NOTICE);
         }
 
         /* Buffer empty */
@@ -1604,7 +1604,12 @@ class DbStream extends \Yana\Core\Object implements Serializable
         // input is array
         if (is_array($sqlFile)) {
             $this->_queue = $sqlFile;
-            if ($this->write() !== false) {
+            try {
+                $success = $this->write();
+            } catch (\Exception $e) {
+                $success = false;
+            }
+            if ($success !== false) {
                 Log::report("SQL import was successful.", E_USER_NOTICE, $sqlFile);
                 return true;
             } else {

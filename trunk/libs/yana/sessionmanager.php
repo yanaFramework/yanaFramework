@@ -680,17 +680,14 @@ class SessionManager extends Singleton implements Serializable
             $level = $database->select($query);
 
             // 2) fall-back to security level for default profile
-            if (empty($level) || !is_array($level)) {
-                if (self::$_defaultProfileId != $profileId) {
-                    $query->setWhere(array(
-                        array('user_id', '=', $userName),
-                        'and',
-                        array('profile', '=', self::$_defaultProfileId)
-                    ));
-                    $level = $database->select($query);
-                }
+            if ((empty($level) || !is_array($level)) && self::$_defaultProfileId != $profileId) {
+                $query->setWhere(array(
+                    array('user_id', '=', $userName),
+                    'and',
+                    array('profile', '=', self::$_defaultProfileId)
+                ));
+                $level = $database->select($query);
             }
-
 
             // 3) fall-back to default security level
             if (empty($level) || !is_array($level)) {
