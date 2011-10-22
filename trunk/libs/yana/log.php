@@ -50,7 +50,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class Log extends ReportAbstract
+class Log extends \Yana\Core\Exceptions\AbstractException
 {
 
     /**
@@ -191,7 +191,7 @@ class Log extends ReportAbstract
         $report = Log::getLogFromMessage($message, $prefix);
 
         /* 1. get data (if available) */
-        if ($exception instanceof ReportAbstract) {
+        if ($exception instanceof \Yana\Core\Exceptions\AbstractException) {
             $data = $exception->getData();
             if (empty($data)) {
                 $data = null;

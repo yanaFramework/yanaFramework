@@ -1045,7 +1045,7 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable
              * 3) all other template settings go here
              */
             default:
-                if ($result === false && ReportAbstract::countMessages() === 0) {
+                if ($result === false && \Yana\Core\Exceptions\AbstractException::countMessages() === 0) {
                     $this->_outputAsMessage($result);
                     return;
                 }
@@ -1442,7 +1442,7 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable
         assert('!isset($messages); // Cannot redeclare variable $messages');
         $messages = array();
         if (defined('YANA_ERROR_REPORTING') && YANA_ERROR_REPORTING === YANA_ERROR_ON) {
-            $messages = ReportAbstract::getMessages();
+            $messages = \Yana\Core\Exceptions\AbstractException::getMessages();
         } else {
             $messages = Message::getMessages();
         }

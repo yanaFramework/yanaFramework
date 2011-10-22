@@ -35,7 +35,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class NotReadableException extends ReportAbstract
+class NotReadableException extends \Yana\Core\Exceptions\DataException
 {
     /* intentionally left blank */
 }

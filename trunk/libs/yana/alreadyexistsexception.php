@@ -35,7 +35,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class AlreadyExistsException extends ReportAbstract
+class AlreadyExistsException extends \Yana\Core\Exceptions\DataException
 {
     /* intentionally left blank */
 }

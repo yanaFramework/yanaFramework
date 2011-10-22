@@ -25,18 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions;
+
 /**
- * Resource not writeable
+ * <<exception>> Indicates, that an operation on a data-resource has failed.
  *
- * Thrown when you try to modify a resource, but you are denied permission to do so.
- *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class NotWriteableException extends \Yana\Core\Exceptions\DataException
+class DataException extends \Yana\Core\Exceptions\RuntimeException
 {
-    /* intentionally left blank */
+    // intentionally left blank
 }
 
 ?>

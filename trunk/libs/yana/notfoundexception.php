@@ -35,7 +35,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class NotFoundException extends ReportAbstract
+class NotFoundException extends \Yana\Core\Exceptions\DataException
 {
     /* intentionally left blank */
 }
