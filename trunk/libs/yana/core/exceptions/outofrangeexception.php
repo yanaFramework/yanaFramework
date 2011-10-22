@@ -25,15 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Core;
+namespace Yana\Core\Exceptions;
 
 /**
- * <<exception>> Trying to access an undefined class property.
+ * <<exception>> An illegal index was requested.
+ *
+ * This represents errors that should be detected at compile time. 
  *
  * @package     yana
  * @subpackage  core
  */
-class UndefinedPropertyException extends \Yana\Core\Exceptions\LogicException
+class OutOfRangeException extends \Yana\Core\Exceptions\LogicException
 {
     // intentionally left blank
 }

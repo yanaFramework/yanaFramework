@@ -25,15 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Core;
+namespace Yana\Core\Exceptions;
 
 /**
- * <<exception>> Trying to access an undefined class property.
+ * <<exception>> A value does not match with a set of values.
+ *
+ * Typically this happens when a function calls another function and expects the return value to be of a certain type
+ * or value, not including arithmetic or buffer related errors. 
  *
  * @package     yana
  * @subpackage  core
  */
-class UndefinedPropertyException extends \Yana\Core\Exceptions\LogicException
+class UnexpectedValueException extends \Yana\Core\Exceptions\RuntimeException
 {
     // intentionally left blank
 }

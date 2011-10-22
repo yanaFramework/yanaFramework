@@ -25,15 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Core;
+namespace Yana\Core\Exceptions;
 
 /**
- * <<exception>> Trying to access an undefined class property.
+ * <<exception>> Indicate range errors during program execution.
+ *
+ * Normally this means there was an arithmetic error other than under/overflow.
+ * This is the runtime version of {@see \Yana\Core\Exceptions\DomainException}. 
  *
  * @package     yana
  * @subpackage  core
  */
-class UndefinedPropertyException extends \Yana\Core\Exceptions\LogicException
+class RangeException extends \Yana\Core\Exceptions\LogicException
 {
     // intentionally left blank
 }
