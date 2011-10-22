@@ -44,7 +44,7 @@ class DDLFieldCollection extends \Yana\Core\AbstractCollection
      * @access  public
      * @param   string    $offset  index of item to replace
      * @param   DDLField  $value   new value of item
-     * @throws  InvalidArgumentException
+     * @throws  \Yana\Core\InvalidArgumentException  when the given value is not valid
      */
     public function offsetSet($offset, $value)
     {

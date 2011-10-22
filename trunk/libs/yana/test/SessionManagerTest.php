@@ -150,6 +150,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
         // try to LogIn with a illegal (non exist) username and password
         // expecting false
         $user = YanaUser::getInstance('testuser');
+        $user->setActive(true);
         $user->setPassword();
         $canLogin = $user->checkPassword('invalid_password');
         $this->assertFalse($canLogin, 'must not allow login with invalid password');
@@ -167,6 +168,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     public function testIsLoggedIn()
     {
         $user = YanaUser::getInstance('testuser');
+        $user->setActive(true);
         $this->assertFalse($user->isLoggedIn(), 'user should not be logged in');
     }
 
@@ -186,6 +188,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($canLogin, 'login as admin has failed, possible reason is, that the admin has set a password');
         $loginCount = $user->getLoginCount();
         $loginTime = $user->getLoginTime();
+        $user->setActive(true);
         $user->login();
         $this->assertTrue(YanaUser::isLoggedIn(), 'login as admin has failed, possible reason is, that the admin has set a password');
         $this->assertEquals($user->getName(), YanaUser::getUserName(), 'getUserName() must return name of logged-in user.');
@@ -262,6 +265,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
         $canLogin = $user->checkPassword('UNINITIALIZED');
         $this->assertTrue($canLogin, 'Login has failed, this is essntial for the following tests');
         $user = YanaUser::getInstance('testuser');
+        $user->setActive(true);
         $user->login();
 
         $user->createPasswordRecoveryId();
@@ -312,6 +316,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     public function testSetPwd()
     {
         $user = YanaUser::getInstance('testuser');
+        $user->setActive(true);
         // try to set a password before u sign in
         $set = $user->setPassword();
         $this->assertType('string', $set, 'assert failed, the value must be from type string');
@@ -622,7 +627,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     /**
      * removeUser with empty user name
      *
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      * @test
      */
     function testRemoveUserInvalidArgument1()

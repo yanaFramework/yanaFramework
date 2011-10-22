@@ -317,7 +317,7 @@ class FileDbConnection extends \Yana\Core\Object
      * @param   DbQuery  &$dbQuery  query object
      * @return  FileDbResult
      * @since   2.9.3
-     * @throws  InvalidArgumentException  when given query is invalid
+     * @throws  \Yana\Core\InvalidArgumentException  when given query is invalid
      */
     public function dbQuery(&$dbQuery)
     {
@@ -825,7 +825,7 @@ class FileDbConnection extends \Yana\Core\Object
              */
             default:
                 $message = "Invalid or unknown SQL statement: {$this->_query}.";
-                throw new InvalidArgumentException($message, E_USER_ERROR);
+                throw new \Yana\Core\InvalidArgumentException($message, E_USER_ERROR);
             break;
         }
 

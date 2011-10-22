@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../formsetup.class.php';
+require_once dirname(__FILE__) . '/../formsetup.php';
 
 /**
  * Test class for FormSetup.
@@ -60,7 +60,7 @@ class FormSetupTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      */
     public function testSetEntriesPerPageInvalidArgumentException()
     {

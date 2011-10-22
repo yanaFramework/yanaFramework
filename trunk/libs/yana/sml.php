@@ -124,7 +124,7 @@ class SML extends File
      * @access  public
      * @param   string  $filename         filename
      * @param   int     $caseSensitive    one of: CASE_MIXED, CASE_LOWER, CASE_UPPER
-     * @throws  InvalidArgumentException  when argument $caseSensitive is invalid
+     * @throws  \Yana\Core\InvalidArgumentException  when argument $caseSensitive is invalid
      */
     public function __construct($filename, $caseSensitive = CASE_MIXED)
     {
@@ -143,7 +143,7 @@ class SML extends File
             default:
                 $message = "Invalid argument 2. Expected one of CASE_MIXED, CASE_UPPER, CASE_LOWER, found '" .
                     print_r($caseSensitive, true) . "' instead.";
-                throw new InvalidArgumentException($message, E_USER_WARNING);
+                throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
             break;
         }
         $this->decoder = $this;
@@ -523,7 +523,7 @@ class SML extends File
      * @param   array|string  $input          filename or file content
      * @param   int           $caseSensitive  CASE_UPPER|CASE_LOWER|CASE_MIXED
      * @return  array
-     * @throws  InvalidArgumentException
+     * @throws  \Yana\Core\InvalidArgumentException  when the input is not a filename or content-array
      *
      * @see     SML::encode()
      */
@@ -555,7 +555,7 @@ class SML extends File
             $message = "Argument 1 is expected to be a filename or an array " .
                 "created with file().\n\t\tInstead found " . gettype($input) .
                 " '" . print_r($input, true) . "'.";
-            throw new InvalidArgumentException($message);
+            throw new \Yana\Core\InvalidArgumentException($message);
         }
 
         while (true)

@@ -94,7 +94,7 @@ class Brush extends \Yana\Core\Object
      *
      * @param  string  $brushname  see list
      * @throws \NotImplementedException  if the GD-library is not available
-     * @throws \InvalidArgumentException when the requested brush is not found
+     * @throws \Yana\Core\InvalidArgumentException when the requested brush is not found
      */
     public function __construct($brushname = 'point')
     {
@@ -109,14 +109,14 @@ class Brush extends \Yana\Core\Object
 
         // check if file exists
         if (!file_exists($brushFile)) {
-            throw new \InvalidArgumentException("Invalid brush file. File '$brushname' not found.");
+            throw new \Yana\Core\InvalidArgumentException("Invalid brush file. File '$brushname' not found.");
         }
         $this->_brushname = $brushname;
         $this->_image = imagecreatefrompng($brushFile);
 
         // check if file is a valid image
         if (!is_resource($this->_image)) {
-            throw new \InvalidArgumentException("The brush '{$brushname}' is not a valid image-file.");
+            throw new \Yana\Core\InvalidArgumentException("The brush '{$brushname}' is not a valid image-file.");
         }
         /* Set background transparent.
          *

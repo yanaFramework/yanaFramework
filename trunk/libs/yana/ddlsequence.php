@@ -237,6 +237,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
      * @access  public
      * @param   int  $increment  increment value
      * @return  DDLSequence
+     * @throws  \Yana\Core\InvalidArgumentException  when the increment value equals 0.
      */
     public function setIncrement($increment = 1)
     {
@@ -246,7 +247,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
 
         } else {
             $message = "Increment value must not be 0 in sequence '{$this->name}'.";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
         return $this;
     }
@@ -388,12 +389,13 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed             $parent  parent node (if any)
      * @return  DDLSequence
+     * @throws  \Yana\Core\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
-            throw new InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
         }
         $ddl = new self((string) $attributes['name'], $parent);
         $ddl->_unserializeFromXDDL($node);

@@ -318,7 +318,7 @@ class plugin_user_admin extends StdClass implements IsPlugin
             }
             return $this->set_user_pwd(array('target' => array('user_id' => $userName)));
 
-        } catch (InvalidArgumentException $e) {
+        } catch (\Yana\Core\InvalidArgumentException $e) {
             throw new InvalidInputWarning();
         } catch (AlreadyExistsException $e) {
             throw new UserAllreadyExistsWarning();

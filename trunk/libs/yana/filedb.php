@@ -104,6 +104,7 @@ class FileDb extends DbStream
      * @return  mixed
      * @since   2.8.8
      * @ignore
+     * @throws  \Yana\Core\InvalidArgumentException  when the SQL statement is not valid
      */
     public function query($sqlStmt, $offset = 0, $limit = 0)
     {
@@ -114,7 +115,7 @@ class FileDb extends DbStream
         if ($sqlStmt instanceof DbQuery) {
             return $this->getConnection()->dbQuery($sqlStmt);
         } elseif (!is_string($sqlStmt)) {
-            throw new InvalidArgumentException('Argument $sqlStmt is expected to be a string.');
+            throw new \Yana\Core\InvalidArgumentException('Argument $sqlStmt is expected to be a string.');
         }
 
         $reg = "/;.*(?:select|insert|delete|update|create|alter|grant|revoke).*$/is";
@@ -122,7 +123,7 @@ class FileDb extends DbStream
             $message = "A semicolon has been found in the current input '{$sqlStmt}', " .
                 "indicating multiple queries.\n\t\t As this might be the result of a hacking attempt " .
                 "it is prohibited for security reasons and the queries won't be executed.";
-            throw new InvalidArgumentException($message);
+            throw new \Yana\Core\InvalidArgumentException($message);
         }
 
         // send query to database

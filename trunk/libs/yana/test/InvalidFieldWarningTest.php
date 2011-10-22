@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../invalidfieldwarning.class.php';
+require_once dirname(__FILE__) . '/../invalidfieldwarning.php';
 
 /**
  * Test class for InvalidFieldWarning.

@@ -542,6 +542,7 @@ class Skin implements \Yana\Report\IsReportable
      * @param   string  $name           name
      * @return  bool
      * @since   2.9.8
+     * @throws  \Yana\Core\InvalidArgumentException  when the key is empty
      */
     private function _setProperty($key, $propertyName, $file = '', $name = '')
     {
@@ -552,7 +553,7 @@ class Skin implements \Yana\Report\IsReportable
         assert('is_string($name); // Wrong type for argument 4. String expected');
 
         if (empty($key)) {
-            throw new \InvalidArgumentException("Template name may not be empty.");
+            throw new \Yana\Core\InvalidArgumentException("Template name may not be empty.");
         } else {
             $key = mb_strtoupper("$key");
         }
@@ -629,6 +630,7 @@ class Skin implements \Yana\Report\IsReportable
      * @param   string  $key            key
      * @param   string  $propertyName   property name
      * @return  array
+     * @throws  \Yana\Core\InvalidArgumentException  when the given key is empty
      */
     private function _getProperty($key, $propertyName)
     {
@@ -636,7 +638,7 @@ class Skin implements \Yana\Report\IsReportable
         assert('is_string($propertyName); // Wrong type for argument 2. String expected');
         assert('$propertyName === strtoupper($propertyName); // Argument 2 must be upper-cased');
         if (empty($key)) {
-            throw new \InvalidArgumentException("Template name may not be empty.");
+            throw new \Yana\Core\InvalidArgumentException("Template name may not be empty.");
         } else {
             $key = mb_strtoupper("$key");
         }

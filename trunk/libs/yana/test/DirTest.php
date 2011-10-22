@@ -159,7 +159,7 @@ class DirTest extends PHPUnit_Framework_TestCase
     /**
      * Create Invalid Argument
      *
-     * @expectedException  InvalidArgumentException
+     * @expectedException  \Yana\Core\InvalidArgumentException
      * @test
      */
     function testCreateInvalidArgumentLowerBounds()
@@ -171,7 +171,7 @@ class DirTest extends PHPUnit_Framework_TestCase
     /**
      * Create Invalid Argument
      *
-     * @expectedException  InvalidArgumentException
+     * @expectedException  \Yana\Core\InvalidArgumentException
      * @test
      */
     function testCreateInvalidArgumentUpperBounds()
@@ -369,7 +369,7 @@ class DirTest extends PHPUnit_Framework_TestCase
     /**
      * Copy Invalid Argument
      *
-     * @expectedException  InvalidArgumentException
+     * @expectedException  \Yana\Core\InvalidArgumentException
      * @test
      */
     function testCopyInvalidArgumentUpper()
@@ -381,7 +381,7 @@ class DirTest extends PHPUnit_Framework_TestCase
     /**
      * Copy Invalid Argument
      *
-     * @expectedException  InvalidArgumentException
+     * @expectedException  \Yana\Core\InvalidArgumentException
      * @test
      */
     function testCopyInvalidArgumentLower()

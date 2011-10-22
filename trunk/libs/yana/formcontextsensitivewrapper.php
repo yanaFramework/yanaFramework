@@ -78,7 +78,7 @@ class FormContextSensitiveWrapper extends FormFieldFacadeCollection implements I
      * @return  mixed
      * @throws  NotImplementedException  when the function is not found
      */
-    public function __call($name, $arguments)
+    public function __call($name, array $arguments)
     {
         if (method_exists($this->_context, $name)) {
             return call_user_func_array(array($this->_context, $name), $arguments);
@@ -119,20 +119,24 @@ class FormContextSensitiveWrapper extends FormFieldFacadeCollection implements I
      */
     private function _buildFormFieldCollection(FormSetupContext $context)
     {
-        $table = $this->_form->getTable();
-        foreach ($context->getColumnNames() as $columnName)
-        {
-            try {
-                $column = $table->getColumn($columnName);
-            } catch (NotFoundException $e) {
-                continue; // skip invalid column definition
+        try {
+            $table = $this->_form->getTable();
+            foreach ($context->getColumnNames() as $columnName)
+            {
+                try {
+                    $column = $table->getColumn($columnName);
+                } catch (NotFoundException $e) {
+                    continue; // skip invalid column definition
+                }
+                $field = null;
+                if ($this->_form->isField($columnName)) {
+                    $field = $this->_form->getField($columnName);
+                }
+                $facade = new FormFieldFacade($this, $column, $field);
+                $this->offsetSet($columnName, $facade);
             }
-            $field = null;
-            if ($this->_form->isField($columnName)) {
-                $field = $this->_form->getField($columnName);
-            }
-            $facade = new FormFieldFacade($this, $column, $field);
-            $this->offsetSet($columnName, $facade);
+        } catch (NotFoundException $e) {
+            // Collection will be empty
         }
     }
 

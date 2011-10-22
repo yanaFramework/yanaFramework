@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../formsetupcontext.class.php';
+require_once dirname(__FILE__) . '/../formsetupcontext.php';
 
 /**
  * Test class for FormSetupContext.

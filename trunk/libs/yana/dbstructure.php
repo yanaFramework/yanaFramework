@@ -3842,9 +3842,9 @@ class DbStructure extends SML
      * @access  public
      * @param   string  $filename  path to another structure file
      * @return  bool
-     * @throws  NotFoundException         when the included file is not found
-     * @throws  NotReadableException      when the included file is not readable
-     * @throws  InvalidArgumentException  when the provided file name is not valid
+     * @throws  NotFoundException                    when the included file is not found
+     * @throws  NotReadableException                 when the included file is not readable
+     * @throws  \Yana\Core\InvalidArgumentException  when the provided file name is not valid
      */
     public function includeFile($filename)
     {

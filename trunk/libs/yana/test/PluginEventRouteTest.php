@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../plugineventroute.class.php';
+require_once dirname(__FILE__) . '/../plugineventroute.php';
 
 /**
  * Test class for PluginEventRoute.

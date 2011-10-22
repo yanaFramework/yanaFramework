@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../pluginclasscollection.class.php';
+require_once dirname(__FILE__) . '/../pluginclasscollection.php';
 
 /**
  * Test class for PluginClassCollection.
@@ -73,7 +73,7 @@ class PluginClassCollectionTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      */
     public function testOffsetSetInvalidArgumentException()
     {

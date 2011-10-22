@@ -43,7 +43,7 @@ class DDLColumnCollection extends \Yana\Core\AbstractCollection
      * @access  public
      * @param   string     $offset  index of item to replace
      * @param   DDLColumn  $value   new value of item
-     * @throws  InvalidArgumentException
+     * @throws  \Yana\Core\InvalidArgumentException  if the given value is not valid
      */
     public function offsetSet($offset, $value)
     {

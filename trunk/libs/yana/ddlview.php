@@ -342,6 +342,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
      * @access  public
      * @param   string  $name   field name
      * @return  DDLViewField
+     * @throws  NotFoundException  when the given field does not exist
      */
     public function getField($name)
     {
@@ -349,7 +350,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
         if (isset($this->fields[$name])) {
             return $this->fields[$name];
         } else {
-            throw new InvalidArgumentException("Field with the name '$name' is not defined");
+            throw new NotFoundException("Field with the name '$name' is not defined");
         }
     }
 
@@ -525,9 +526,9 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
      * current database structure definition.
      *
      * @access  public
-     * @param   array  $tables     list of tables
-     * @throws  NotFoundException  when a table does not exist
-     * @throws  InvalidArgumentException  if the list of tables is empty
+     * @param   array  $tables  list of tables
+     * @throws  NotFoundException                    when a table does not exist
+     * @throws  \Yana\Core\InvalidArgumentException  if the list of tables is empty
      * @return  DDLView 
      */
     public function setTables(array $tables)
@@ -544,7 +545,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
         if (!empty($tables)) {
             $this->tables = $tables;
         } else {
-            throw new InvalidArgumentException("Parameter with the name '$tables' can not be empty.");
+            throw new \Yana\Core\InvalidArgumentException("Parameter with the name '$tables' can not be empty.");
         }
         return $this;
     }
@@ -723,7 +724,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
      * @param   string  $role   user role
      * @param   int     $level  security level
      * @return  DDLGrant
-     * @throws  InvalidArgumentException  when $level is out of range [0,100]
+     * @throws  \Yana\Core\InvalidArgumentException  when $level is out of range [0,100]
      */
     public function addGrant($user = null, $role = null, $level = null)
     {
@@ -737,7 +738,7 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
         if (!empty($role)) {
             $grant->setRole($role);
         }
-        // may throw an InvalidArgumentException
+        // may throw an \Yana\Core\InvalidArgumentException
         if (!is_null($level)) {
             $grant->setLevel($level);
         }
@@ -797,12 +798,13 @@ class DDLView extends DDLNamedObject implements IsIncludableDDL
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  DDLView
+     * @throws  \Yana\Core\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
-            throw new InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
         }
         $ddl = new self((string) $attributes['name'], $parent);
         $ddl->descendingOrder = ($ddl->_sorting !== 'ascending');

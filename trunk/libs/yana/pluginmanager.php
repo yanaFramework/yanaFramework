@@ -544,12 +544,12 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
      * @param   string  $pluginName  identifier for the plugin
      * @param   string  $key         identifier for the file to get
      * @return  FileSystemResource
-     * @throws  InvalidArgumentException
+     * @throws  \Yana\Core\InvalidArgumentException  when the plugin name is invalid
      */
     public function get($pluginName, $key)
     {
-        assert('is_string($pluginName); // Wrong type for argument 1. String expected');
-        assert('is_string($key); // Wrong type for argument 2. String expected');
+        assert('is_string($key); // Invalid argument $key: string expected');
+        assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
 
         $pluginName = (string) $pluginName;
         $key = (string) $key;
@@ -557,7 +557,7 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
         if (isset($this->_drive[$pluginName])) {
             return $this->_drive[$pluginName]->getResource($key);
         } else {
-            throw new InvalidArgumentException("There is no plugin named '".$pluginName."'.", E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException("There is no plugin named '" . $pluginName . "'.", E_USER_WARNING);
         }
     }
 

@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../invalidactionerror.class.php';
+require_once dirname(__FILE__) . '/../invalidactionerror.php';
 
 /**
  * Test class for InvalidActionError.

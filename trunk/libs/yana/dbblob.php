@@ -182,7 +182,7 @@ class DbBlob extends FileReadonly
      * @param   bool  $fullsize  show full size or thumb-nail (images only)
      * @static
      * @return  string
-     * @throws  InvalidArgumentException  if file with index $id does not exist
+     * @throws  \Yana\Core\InvalidArgumentException  if file with index $id does not exist
      * @throws  FileNotFoundError         if the requested file no longer exists
      */
     public static function getFilenameFromSession($id, $fullsize = false)
@@ -194,7 +194,7 @@ class DbBlob extends FileReadonly
 
         /* check arguments */
         if (!isset($_SESSION[__CLASS__][$id])) {
-            throw new InvalidArgumentException("Invalid argument. File '$id' is undefined.", E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException("Invalid argument. File '$id' is undefined.", E_USER_WARNING);
         }
 
         $file = $_SESSION[__CLASS__][$id];
@@ -244,7 +244,7 @@ class DbBlob extends FileReadonly
      * @param    bool    $overwrite  setting this to false will prevent
      *                               existing files from getting overwritten
      * @return   bool
-     * @throws   InvalidArgumentException  on invalid filename
+     * @throws   \Yana\Core\InvalidArgumentException  on invalid filename
      */
     public function copy($destFile, $overwrite = true)
     {
@@ -253,7 +253,7 @@ class DbBlob extends FileReadonly
 
         /* validity checking */
         if (mb_strlen($destFile) > 512 || !preg_match('/^[\w\d-_\.][\w\d-_\/\.]*$/', $destFile)) {
-            throw new InvalidArgumentException("Invalid filename '".$destFile."'.", E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException("Invalid filename '".$destFile."'.", E_USER_WARNING);
         }
 
         if (!$overwrite && file_exists($destFile)) {

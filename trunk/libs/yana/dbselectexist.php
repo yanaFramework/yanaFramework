@@ -103,8 +103,8 @@ class DbSelectExist extends DbQuery
      * providing a parameter.
      *
      * @param   array  $where  here clause
-     * @throws  NotFoundException         when a column is not found
-     * @throws  InvalidArgumentException  when the where-clause contains invalid values
+     * @throws  NotFoundException                    when a column is not found
+     * @throws  \Yana\Core\InvalidArgumentException  when the where-clause contains invalid values
      * @return  DbSelectExist 
      */
     public function setWhere(array $where = array())
@@ -122,8 +122,8 @@ class DbSelectExist extends DbQuery
      * '=', 'REGEXP', 'LIKE', '<', '>', '!=', '<=', '>='
      *
      * @param   array  $where  where clause
-     * @throws  NotFoundException         when a column is not found
-     * @throws  InvalidArgumentException  when the having-clause contains invalid values
+     * @throws  NotFoundException                    when a column is not found
+     * @throws  \Yana\Core\InvalidArgumentException  when the having-clause contains invalid values
      * @return  DbSelectExist 
      */
     public function addWhere(array $where)

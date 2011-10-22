@@ -97,12 +97,13 @@ class DDLLogDrop extends DDLLogCreate
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  DDLLogDrop
+     * @throws   \Yana\Core\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
-            throw new InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
         }
         $ddl = new self((string) $attributes['name'], $parent);
         $ddl->_unserializeFromXDDL($node);

@@ -52,7 +52,7 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
     public function __construct()
     {
         /** @ignore */
-        include_once CWD . '/../../../plugins/db_tools/dbinfotable.class.php';
+        include_once CWD . '/../../../plugins/db_tools/dbinfotable.php';
     }
 
     /**

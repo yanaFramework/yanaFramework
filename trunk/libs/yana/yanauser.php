@@ -559,7 +559,7 @@ class YanaUser extends \Yana\Core\Object
                 $languageManager->setLocale($this->_language);
                 $_SESSION['language'] = $this->_language;
 
-            } catch (InvalidArgumentException $e) {
+            } catch (\Yana\Core\InvalidArgumentException $e) {
                 // ignore
             }
             unset($languageManager);
@@ -802,11 +802,11 @@ class YanaUser extends \Yana\Core\Object
      * Returns bool(true) if the user is activated and bool(false) otherwise.
      *
      * @access  public
-     * @return  string
+     * @return  bool
      */
     public function isActive()
     {
-        return !empty($this->_isActive);
+        return (bool) $this->_isActive;
     }
 
     /**
@@ -913,8 +913,9 @@ class YanaUser extends \Yana\Core\Object
      * @static
      * @param   string  $userName  user name
      * @param   string  $mail      e-mail address
-     * @throws  AlreadyExistsException  if another user with the same name already exists
-     * @throws  DbError                 when the database entry could not be created
+     * @throws  AlreadyExistsException               if another user with the same name already exists
+     * @throws  DbError                              when the database entry could not be created
+     * @throws  \Yana\Core\InvalidArgumentException  when no user name is given
      */
     public static function createUser($userName, $mail)
     {
@@ -924,7 +925,7 @@ class YanaUser extends \Yana\Core\Object
         $userName = mb_strtoupper("$userName");
 
         if (empty($userName)) {
-            throw new InvalidArgumentException("No user name given.", E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException("No user name given.", E_USER_WARNING);
         }
         if (YanaUser::isUser($userName)) {
             throw new AlreadyExistsException("A user with the name '$userName' already exists.");
@@ -952,17 +953,17 @@ class YanaUser extends \Yana\Core\Object
      * @static
      * @param   string  $userName   user name
      * @return  bool
-     * @throws  InvalidArgumentException  when no valid user name given
-     * @throws  NotFoundException         when the given user does not exist
-     * @throws  DbError                   when a query on the database failed
-     * @throws  Error                     when the user may not be deleted for other reasons
+     * @throws  \Yana\Core\InvalidArgumentException  when no valid user name given
+     * @throws  NotFoundException                    when the given user does not exist
+     * @throws  DbError                              when a query on the database failed
+     * @throws  Error                                when the user may not be deleted for other reasons
      */
     public static function removeUser($userName)
     {
         assert('is_string($userName); // Wrong type for argument 1. String expected');
 
         if (empty($userName)) {
-            throw new InvalidArgumentException("No user name given.", E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException("No user name given.", E_USER_WARNING);
         }
         $userName = mb_strtoupper($userName);
 

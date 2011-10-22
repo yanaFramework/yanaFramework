@@ -130,7 +130,7 @@ class DDLDatabase extends DDLObject
      * @access  public
      * @param   string  $name  database name
      * @param   string  $path  file path
-     * @throws  InvalidArgumentException  when given name is invalid
+     * @throws  \Yana\Core\InvalidArgumentException  when given name is invalid
      */
     public function __construct($name = "", $path = "")
     {
@@ -680,14 +680,13 @@ class DDLDatabase extends DDLObject
      *
      * If another table with the same name already exists, it throws an
      * AlreadyExistsException.
-     * The name must start with a letter and may only contain: a-z, 0-9, '-' and
-     * '_'. Otherwise an InvalidArgumentException is thrown.
+     * The name must start with a letter and may only contain: a-z, 0-9, '-' and '_'.
      *
      * @access  public
      * @param   string  $name   set name for table
      * @return  DDLTable
-     * @throws  AlreadyExistsException    if another table with the same name is already defined
-     * @throws  InvalidArgumentException  if given an invalid table name
+     * @throws  AlreadyExistsException               if another table with the same name is already defined
+     * @throws  \Yana\Core\InvalidArgumentException  if given an invalid table name
      */
     public function addTable($name)
     {
@@ -765,14 +764,13 @@ class DDLDatabase extends DDLObject
      *
      * If another view with the same name already exists, it throws an
      * AlreadyExistsException.
-     * The name must start with a letter and may only contain: a-z, 0-9, '-' and
-     * '_'. Otherwise an InvalidArgumentException is thrown.
+     * The name must start with a letter and may only contain: a-z, 0-9, '-' and '_'.
      *
      * @access  public
      * @param   string  $name   name for view
      * @return  DDLView
-     * @throws  AlreadyExistsException    if another view with the same name is already defined
-     * @throws  InvalidArgumentException  if given an invalid view name
+     * @throws  AlreadyExistsException               if another view with the same name is already defined
+     * @throws  \Yana\Core\InvalidArgumentException  if given an invalid view name
      */
     public function addView($name)
     {
@@ -848,14 +846,13 @@ class DDLDatabase extends DDLObject
      *
      * If another function with the same name already exists, it throws an
      * AlreadyExistsException.
-     * The name must start with a letter and may only contain: a-z, 0-9, '-' and
-     * '_'. Otherwise an InvalidArgumentException is thrown.
+     * The name must start with a letter and may only contain: a-z, 0-9, '-' and '_'.
      *
      * @access  public
      * @param   string  $name  name for the new function
      * @return  DDLFunction
-     * @throws  AlreadyExistsException    if another function with the same name is already defined
-     * @throws  InvalidArgumentException  if given an invalid name
+     * @throws  AlreadyExistsException               if another function with the same name is already defined
+     * @throws  \Yana\Core\InvalidArgumentException  if given an invalid name
      */
     public function addFunction($name)
     {
@@ -932,14 +929,13 @@ class DDLDatabase extends DDLObject
      *
      * If another sequence with the same name already exists, it throws an
      * AlreadyExistsException.
-     * The name must start with a letter and may only contain: a-z, 0-9, '-' and
-     * '_'. Otherwise an InvalidArgumentException is thrown.
+     * The name must start with a letter and may only contain: a-z, 0-9, '-' and '_'.
      *
      * @access  public
      * @param   string  $name   name for the new sequence
      * @return  DDLSequence
-     * @throws  AlreadyExistsException    if another sequence with the same name is already defined
-     * @throws  InvalidArgumentException  if given an invalid name
+     * @throws  AlreadyExistsException               if another sequence with the same name is already defined
+     * @throws  \Yana\Core\InvalidArgumentException  if given an invalid name
      */
     public function addSequence($name)
     {
@@ -1275,8 +1271,7 @@ class DDLDatabase extends DDLObject
      *
      * If another form with the same name already exists, it throws an
      * AlreadyExistsException.
-     * The name must start with a letter and may only contain: a-z, 0-9, '-' and
-     * '_'. Otherwise an InvalidArgumentException is thrown.
+     * The name must start with a letter and may only contain: a-z, 0-9, '-' and '_'.
      *
      * @access  public
      * @param   string  $name  new Form name

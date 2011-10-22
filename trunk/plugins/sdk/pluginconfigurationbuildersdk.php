@@ -722,21 +722,21 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
         $user = new PluginUserLevel();
         try {
             $user->setGroup(array_shift($action));
-        } catch (InvalidArgumentException $e) {
+        } catch (\Yana\Core\InvalidArgumentException $e) {
             $error = new InvalidCharacterWarning();
             $error->setField('GROUP')->setValid('a-z, 0-9, -, _')->setValue($group);
             throw $error;
         }
         try {
             $user->setRole(array_shift($action));
-        } catch (InvalidArgumentException $e) {
+        } catch (\Yana\Core\InvalidArgumentException $e) {
             $error = new InvalidCharacterWarning();
             $error->setField('ROLE')->setValid('a-z, 0-9, -, _')->setValue($role);
             throw $error;
         }
         try {
             $user->setLevel((int) array_shift($action));
-        } catch (InvalidArgumentException $e) {
+        } catch (\Yana\Core\InvalidArgumentException $e) {
             $error = new InvalidCharacterWarning();
             $error->setField('LEVEL')->setValid('0-100')->setValue($level);
             throw $error;

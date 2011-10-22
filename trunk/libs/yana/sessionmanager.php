@@ -250,13 +250,14 @@ class SessionManager extends Singleton implements Serializable
      * @static
      * @param   string  $rule  must be a valid callback
      * @see     SessionManager::checkPermission()
+     * @throws  \Yana\Core\InvalidArgumentException when the function is not callable
      */
     public static function addSecurityRule($rule)
     {
         if (is_callable($rule)) {
             self::$rules[] = $rule;
         } else {
-            throw new InvalidArgumentException("The argument is not a valid callback function.");
+            throw new \Yana\Core\InvalidArgumentException("The argument is not a valid callback function.");
         }
     }
 

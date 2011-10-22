@@ -142,7 +142,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      * @access  public
      * @param   string  $name    form name
      * @param   DDL     $parent  parent form or parent database
-     * @throws  InvalidArgumentException
+     * @throws  \Yana\Core\InvalidArgumentException  when the given parent is not valid
      */
     public function __construct($name, DDL $parent = null)
     {
@@ -151,7 +151,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
             $this->parent = $parent;
         } else {
             $message = "Wrong argument type argument 1. DDLDatabase or DDLForm expected";
-            throw new InvalidArgumentException($message, E_USER_ERROR);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_ERROR);
         }
     }
 
@@ -484,7 +484,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      * @param   string  $role   user role
      * @param   int     $level  security level
      * @return  DDLGrant
-     * @throws  InvalidArgumentException  when $level is out of range [0,100]
+     * @throws  \Yana\Core\InvalidArgumentException  when $level is out of range [0,100]
      */
     public function addGrant($user = null, $role = null, $level = null)
     {
@@ -498,7 +498,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
         if (!empty($role)) {
             $grant->setRole($role);
         }
-        // may throw an InvalidArgumentException
+        // may throw an \Yana\Core\InvalidArgumentException
         if (!is_null($level)) {
             $grant->setLevel($level);
         }
@@ -532,7 +532,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      * @access  public
      * @param   string  $name  form name
      * @return  DDLForm
-     * @throws  InvalidArgumentException  when form does not exist
+     * @throws  \Yana\Core\InvalidArgumentException  when form does not exist
      */
     public function getForm($name)
     {
@@ -542,7 +542,7 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
             return $this->forms[$name];
         } else {
             $message = "No such sub-form '$name' in form '{$this->getName()}'.";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
     }
 
@@ -746,14 +746,13 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      * Adds a new event item and returns the definition as an instance of {@see DDLEvent}.
      *
      * If another event with the same name already exists, it throws an AlreadyExistsException.
-     * The name must start with a letter and may only contain: a-z, 0-9, '-' and
-     * '_'. Otherwise an InvalidArgumentException is thrown.
+     * The name must start with a letter and may only contain: a-z, 0-9, '-' and '_'.
      *
      * @access  public
      * @param   string  $name   event name
      * @return  DDLEvent
      * @throws  AlreadyExistsException    when an event with the same name already exists
-     * @throws  InvalidArgumentException  on invalid name
+     * @throws  \Yana\Core\InvalidArgumentException  on invalid name
      */
     public function addEvent($name)
     {
@@ -967,15 +966,16 @@ class DDLForm extends DDLNamedObject implements IsIncludableDDL
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  DDLForm
+     * @throws   \Yana\Core\InvalidArgumentException  when the name or table attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
-            throw new InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
         }
         if (!isset($attributes['table'])) {
-            throw new InvalidArgumentException("Missing table attribute.", E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException("Missing table attribute.", E_USER_WARNING);
         }
         $name = (string) $attributes['name'];
         $table = (string) $attributes['table'];

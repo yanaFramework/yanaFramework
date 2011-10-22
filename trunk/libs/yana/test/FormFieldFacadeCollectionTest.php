@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../formfieldfacadecollection.class.php';
+require_once dirname(__FILE__) . '/../formfieldfacadecollection.php';
 
 /**
  * Test class for FormFieldFacadeCollection.
@@ -39,21 +39,19 @@ class FormFieldFacadeCollectionTest extends PHPUnit_Framework_TestCase
      */
     public function testOffsetSet()
     {
-        $item = new FormFieldFacade(new FormFacade(), new DDLColumn('test'), new FormSetupContext('test'));
+        $item = new FormFieldFacade(new FormContextSensitiveWrapper(new FormFacade(), new FormSetupContext('test')),
+            new DDLColumn('test'), new DDLField('test'));
         $this->object['test'] = $item;
         $this->assertEquals($item, $this->object['test']);
     }
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      */
     public function testOffsetSetInvalidArgumentException()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->object->offsetSet('test', 'invalid value');
     }
 
 }

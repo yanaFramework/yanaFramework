@@ -220,7 +220,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
             $mail->setSubject($YANA->getLanguage()->getVar("user.mail_subject"));
             $mail->send($user->getMail());
 
-        } catch (InvalidArgumentException $e) {
+        } catch (\Yana\Core\InvalidArgumentException $e) {
             throw new InvalidInputWarning();
         } catch (AlreadyExistsException $e) {
             throw new UserAllreadyExistsWarning();

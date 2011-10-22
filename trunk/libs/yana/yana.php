@@ -643,7 +643,7 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable
             if (isset($_SESSION['language'])) {
                 try {
                     $this->_language->setLocale($_SESSION['language']);
-                } catch (InvalidArgumentException $e){
+                } catch (\Yana\Core\InvalidArgumentException $e){
                     unset($_SESSION['language']);
                 }
             }

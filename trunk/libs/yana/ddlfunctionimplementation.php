@@ -229,14 +229,13 @@ class DDLFunctionImplementation extends DDL
      *
      * If another parameter with the same name already exists, it throws an
      * AlreadyExistsException.
-     * The name must start with a letter and may only contain: a-z, 0-9, '-' and
-     * '_'. Otherwise an InvalidArgumentException is thrown.
+     * The name must start with a letter and may only contain: a-z, 0-9, '-' and '_'.
      *
      * @access  public
      * @param   string  $name   name of a new parameter
      * @return  DDLFunctionParameter
      * @throws  AlreadyExistsException  when a parameter with the same name already exists
-     * @throws  InvalidArgumentException  on invalid name
+     * @throws  \Yana\Core\InvalidArgumentException  on invalid name
      */
     public function addParameter($name)
     {

@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../pluginuserlevel.class.php';
+require_once dirname(__FILE__) . '/../pluginuserlevel.php';
 
 /**
  * Test class for PluginGrant.
@@ -53,7 +53,7 @@ class PluginUserLevelTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      */
     public function testSetRoleInvalidArgumentException()
     {
@@ -79,7 +79,7 @@ class PluginUserLevelTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      */
     public function testSetGroupInvalidArgumentException()
     {
@@ -107,7 +107,7 @@ class PluginUserLevelTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      */
     public function testSetLevelLowerBoundary()
     {
@@ -116,7 +116,7 @@ class PluginUserLevelTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      */
     public function testSetLevelUpperBoundary()
     {

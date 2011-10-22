@@ -237,9 +237,9 @@ class DDLIndex extends DDLObject
      * @param   string  $name             name of indexed column
      * @param   bool    $isAscending      optional sorting argument
      * @return  DDLIndexColumn
-     * @throws  NotFoundException         when column does not exists
-     * @throws  InvalidArgumentException  when name is invalid
-     * @throws  AlreadyExistsException    if the column is part of the index
+     * @throws  NotFoundException                    when column does not exists
+     * @throws  \Yana\Core\InvalidArgumentException  when name is invalid
+     * @throws  AlreadyExistsException               if the column is part of the index
      */
     public function addColumn($name, $isAscending = true)
     {
