@@ -52,23 +52,31 @@
  * want to return. You will find more details on that inside the developer's
  * cookbook in the manual.
  *
- * @access      public
  * @package     yana
  * @subpackage  database
  */
 class DbSelect extends DbSelectCount
 {
     /**#@+
-     * @access  protected
      * @ignore
      */
 
-    /** @var int   */ protected $type = DbQueryTypeEnumeration::SELECT;
+    /**
+     * @var int
+     */
+    protected $type = DbQueryTypeEnumeration::SELECT;
 
-    /** @var array */ protected $having = array();
-    /** @var int   */ protected $offset = 0;
+    /**
+     * @var array
+     */
+    protected $having = array();
 
-    /**#@-*/
+    /**
+     * @var int
+     */
+    protected $offset = 0;
+
+    /** #@- */
 
     /**
      * reset query
@@ -81,18 +89,18 @@ class DbSelect extends DbSelectCount
      * and reuse it without creating another one. This can
      * help to improve the performance of your application.
      *
-     * @access  public
-     * @since   2.9.4
+     * @return  DbSelect 
      */
     public function resetQuery()
     {
         parent::resetQuery();
         $this->having = array();
         $this->offset = 0;
+        return $this;
     }
 
     /**
-     * set source columns
+     * Set source columns.
      *
      * This sets the list of columns to retrieve, like in
      * SELECT col1, col2, ... colN FROM ...
@@ -134,7 +142,6 @@ class DbSelect extends DbSelectCount
      * $dbq->setColumns(array('foo1', 'table2.foo2'));
      * </code>
      *
-     * @access  public
      * @param   array  $columns  list of columns
      * @since   2.9.6
      * @name    DbQuery::setColumns()
@@ -142,6 +149,7 @@ class DbSelect extends DbSelectCount
      * @throws  DbEventLog                if table has not been initialized
      * @throws  InvalidArgumentException  if a given argument is invalid
      * @throws  NotFoundException         if the given table or column is not found
+     * @return  DbSelect 
      */
     public function setColumns(array $columns = array())
     {
@@ -196,10 +204,11 @@ class DbSelect extends DbSelectCount
         } else {
             $this->expectedResult = DbResultEnumeration::ROW;
         }
+        return $this;
     }
 
     /**
-     * add source columns
+     * Add source columns.
      *
      * This adds an item to the list of columns to retrieve, like in
      * SELECT col1, col2, ... colN FROM ...
@@ -208,7 +217,6 @@ class DbSelect extends DbSelectCount
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   string  $column  column name
      * @param   scalar  $alias   optional column alias
      * @name    DbQuery::setColumns()
@@ -216,6 +224,7 @@ class DbSelect extends DbSelectCount
      * @throws  DbEventLog                if table has not been initialized
      * @throws  InvalidArgumentException  if a given argument is invalid
      * @throws  NotFoundException         if the given table or column is not found
+     * @return  DbSelect 
      */
     public function addColumn($column, $alias = "")
     {
@@ -238,6 +247,7 @@ class DbSelect extends DbSelectCount
         } else {
             $this->expectedResult = DbResultEnumeration::ROW;
         }
+        return $this;
     }
 
     /**
@@ -249,7 +259,6 @@ class DbSelect extends DbSelectCount
      * When the table name is missing, it is determined automatically, unless the column name
      * is ambigious.
      *
-     * @access  private
      * @param   strinng  $column  column name
      * @return  array
      * @throws  NotFoundException  if the table or column was not found
@@ -286,12 +295,10 @@ class DbSelect extends DbSelectCount
     }
 
     /**
-     * get the currently selected array address
-     *
      * Returns the currently address as a string.
+     *
      * If none has been selected yet, an empty string is returned.
      *
-     * @access  public
      * @return  string
      */
     public function getArrayAddress()
@@ -303,16 +310,15 @@ class DbSelect extends DbSelectCount
     /**
      * set column to sort the resultset by
      *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * @access  public
      * @param   array  $orderBy  list of column names
      * @param   array  $desc     sort descending (true=yes, false=no)
      * @throws  NotFoundException  when a column or table does not exist
+     * @return  DbSelect
      */
     public function setOrderBy($orderBy, $desc = array())
     {
         parent::setOrderBy($orderBy, $desc);
+        return $this;
     }
 
     /**
@@ -321,7 +327,6 @@ class DbSelect extends DbSelectCount
      * Returns a lower-cased list of column names.
      * If none has been set yet, then the list is empty.
      *
-     * @access  public
      * @return  array
      */
     public function getOrderBy()
@@ -330,11 +335,8 @@ class DbSelect extends DbSelectCount
     }
 
     /**
-     * check if resultset is sorted in descending order
-     *
      * Returns an array of boolean values: true = descending, false = ascending.
      *
-     * @access  public
      * @return  array
      */
     public function getDescending()
@@ -391,10 +393,10 @@ class DbSelect extends DbSelectCount
      * If you have a choice you should always prefer 'where' over 'having', as using a where clause
      * usually is faster and consums less memory than using the same having clause.
      *
-     * @access  public
      * @param   array  $having  having clause
      * @throws  NotFoundException         when a column is not found
      * @throws  InvalidArgumentException  when the having-clause contains invalid values
+     * @return  DbSelect
      */
     public function setHaving(array $having = array())
     {
@@ -405,6 +407,7 @@ class DbSelect extends DbSelectCount
         } else {
             $this->having = $this->parseWhereArray($having);
         }
+        return $this;
     }
 
     /**
@@ -415,11 +418,11 @@ class DbSelect extends DbSelectCount
      * Where "operator" can be one of the following:
      * '=', 'REGEXP', 'LIKE', '<', '>', '!=', '<=', '>='
      *
-     * @access  public
      * @param   array  $having       having clause
      * @param   bool   $isMandatory  switch between operators (true='AND', false='OR')
      * @throws  NotFoundException         when a column is not found
      * @throws  InvalidArgumentException  when the having-clause contains invalid values
+     * @return  DbSelect
      */
     public function addHaving(array $having, $isMandatory = true)
     {
@@ -441,14 +444,12 @@ class DbSelect extends DbSelectCount
                 $having
             );
         }
+        return $this;
     }
 
     /**
-     * get the currently set having clause
-     *
      * Returns the current having clause.
      *
-     * @access  public
      * @return  array
      */
     public function getHaving()
@@ -461,26 +462,27 @@ class DbSelect extends DbSelectCount
      * set a limit for this query
      *
      * Note: This setting will not be part of the sql statement
-     * produced by toString().
+     * produced by __toString().
      * Use the API's $limit and $offset parameter instead when sending
      * the query.
      *
      * This restriction does not apply if you use sendQuery().
      *
-     * @access  public
      * @param   int  $limit  limit for this query
      * @throws  InvalidArgumentException  when limit is not positive
+     * @return  DbSelect
      */
     public function setLimit($limit)
     {
         parent::setLimit($limit);
+        return $this;
     }
 
     /**
-     * set an offset for this query
+     * Set an offset for this query.
      *
      * Note: This setting will not be part of the sql statement
-     * produced by {link DbQuery::toString()}. Use the API's $limit and
+     * produced by __toString(). Use the API's $limit and
      * $offset parameter instead when sending the query.
      *
      * This restriction does not apply if you use {link DbQuery::sendQuery()}.
@@ -488,31 +490,26 @@ class DbSelect extends DbSelectCount
      * Note: For security reasons all delete queries will automatically
      * have an offset of 0.
      *
-     * @access  public
      * @param   int  $offset  offset for this query
-     * @return  bool
-     * @since   2.9.3
+     * @return  DbSelect
      */
     public function setOffset($offset)
     {
         assert('is_int($offset); // Wrong argument type for argument 1. Integer expected.');
         $this->id = null;
-        if (is_int($offset) && $offset >= 0) {
-            $this->offset = $offset;
-            return true;
-        } else {
-            return false;
+        if ($offset >= 0) {
+            $this->offset = (int) $offset;
         }
+        return $this;
     }
 
     /**
-     * build a SQL-query
+     * Build a SQL-query.
      *
-     * @access  public
      * @param   string $stmt sql statement
      * @return  string
      */
-    public function toString($stmt = "SELECT %COLUMN% FROM %TABLE% %WHERE% %HAVING% %ORDERBY%")
+    public function __toString($stmt = "SELECT %COLUMN% FROM %TABLE% %WHERE% %HAVING% %ORDERBY%")
     {
         /* replace %HAVING% */
         if (strpos($stmt, '%HAVING%') !== false) {
@@ -535,12 +532,12 @@ class DbSelect extends DbSelectCount
             unset($having);
         }
 
-        return parent::toString($stmt);
+        return parent::__toString($stmt);
 
     }
 
     /**
-     * get results as CSV
+     * Get results as CSV.
      *
      * This exports the data as a comma-seperated list of values.
      *
@@ -563,7 +560,6 @@ class DbSelect extends DbSelectCount
      *
      * The CSV format is defined in {@link http://www.rfc-editor.org/rfc/rfc4180.txt RFC 4180}.
      *
-     * @access  public
      * @param   string  $colSep       column seperator
      * @param   string  $rowSep       row seperator
      * @param   bool    $hasHeader    add column names as first line (yes/no)
@@ -637,11 +633,8 @@ class DbSelect extends DbSelectCount
     }
 
     /**
-     * get CSV for single row
+     * Returns the CSV contents as a single-line string.
      *
-     * The function returns the CSV contents as a single-line string.
-     *
-     * @access  private
      * @param   array   $row          row data
      * @param   string  $colSep       column seperator
      * @param   string  $rowSep       row seperator
@@ -664,11 +657,8 @@ class DbSelect extends DbSelectCount
     }
 
     /**
-     * get CSV for single value
+     * Returns an escaped string for the given value.
      *
-     * The function returns an escaped string for the given value.
-     *
-     * @access  private
      * @param   mixed   $value        data
      * @return  string
      * @see     DbSelect::toCSV()
@@ -684,7 +674,6 @@ class DbSelect extends DbSelectCount
      * Returns the title attributes of all selected columns as a numeric
      * array.
      *
-     * @access  public
      * @return  array
      * @see     DbSelect::toCSV()
      */
@@ -705,45 +694,42 @@ class DbSelect extends DbSelectCount
     }
 
     /**
-     * set left join for two tables
-     *
-     * This will join the currently selected table with another (by using a left join).
+     * Joins the currently selected table with another (by using a left join).
      *
      * If $key1 is not provided, the function will automatically search for
      * a suitable foreign key, that refers to $tableName.
      * If $key2 is not provided, the function will automatically look up
      * the primary key of $tableName and use it instead.
      *
-     * @access  public
      * @param   string $tableName  name of another table to join the current table with
      * @param   string $key1       name of the foreign key in current table
      *                             (when omitted the API will look up the key in the structure file)
      * @param   string $key2       name of the key in foreign table that is referenced
      *                             (may be omitted if it is the primary key)
      * @throws  NotFoundException  if a provided table or column is not found
+     * @return  DbSelect
      */
     public function setLeftJoin($tableName, $key1 = null, $key2 = null)
     {
         parent::setJoin($tableName, $key1, $key2, true);
+        return $this;
     }
 
     /**
      * parse SQL query into query object
      *
-     * This is the opposite of toString().
+     * This is the opposite of __toString().
      * It takes a SQL query string as input and returns
      * a query object of the specific type that
      * corresponds to the given type of query.
      *
      * The result object is always a subclass of DbQuery.
      *
-     * @access  public
-     * @static
      * @param   string    $sqlStmt   SQL statement
      * @param   DbStream  $database  database connection
      * @return  DbSelect
-     * @throws  InvalidArgumentException  if the query is invalid or could not be parsed
-     * @throws  ParserError               when the SQL statement is invalid
+     * @throws  \Yana\Core\InvalidArgumentException  if the query is invalid or could not be parsed
+     * @throws  ParserError                          when the SQL statement is invalid
      */
     public static function parseSQL($sqlStmt, DbStream $database)
     {
@@ -761,7 +747,7 @@ class DbSelect extends DbSelectCount
         $orderBy = @$sqlStmt['sort_order']; // list of columns (keys) and asc/desc (value)
 
         if (empty($tables)) {
-            return false;
+            return \Yana\Core\InvalidArgumentException("SQL-statement has no table names: $sqlStmt.", E_USER_WARNING);
         }
 
         /*
@@ -871,7 +857,6 @@ class DbSelect extends DbSelectCount
      * where clause. If one is found, it completes and auto-adds a join-clause.
      * Returns bool(true) on success and bool(false) on failure.
      *
-     * @access  protected
      * @param   string  $leftTable   name of base table
      * @param   string  $rightTable  name of table to join
      * @param   array   $where       where clause (will be scanned)
@@ -948,7 +933,6 @@ class DbSelect extends DbSelectCount
      * This sends the query statement to the database and returns the results.
      * The return type depends on the query settings, see {@see DbQuery::getExpectedResult()}.
      *
-     * @access  public
      * @return  int
      */
     public function countResults()
@@ -974,7 +958,6 @@ class DbSelect extends DbSelectCount
      * This sends the query statement to the database and returns the results.
      * The return type depends on the query settings, see {@see DbQuery::getExpectedResult()}.
      *
-     * @access  public
      * @return  mixed
      * @throws  InvalidArgumentException   when one of the given arguments is not valid
      */

@@ -52,8 +52,6 @@
  * want to return. You will find more details on that inside the developer's
  * cookbook in the manual.
  *
- * @access      public
- * @abstract
  * @package     yana
  * @subpackage  database
  * @since       2.9 RC1
@@ -62,7 +60,6 @@ abstract class DbQuery extends Object implements Serializable
 {
 
     /**#@+
-     * @access  protected
      * @ignore
      */
 
@@ -116,7 +113,6 @@ abstract class DbQuery extends Object implements Serializable
      * This is automatically used to create copies of the object when using the "clone" keyword.
      * This creates a shallow copy and thus overwrites the default behavior of the parent class.
      *
-     * @access  public
      * @ignore
      */
     public function __clone()
@@ -133,7 +129,6 @@ abstract class DbQuery extends Object implements Serializable
      *
      * Note that you can't get an unnamed database object via this function.
      *
-     * @access  public
      * @param   string  $name   name of a database object
      * @return  DDL
      */
@@ -148,7 +143,6 @@ abstract class DbQuery extends Object implements Serializable
      *
      * Calls a function on the selected database schema and returns the result.
      *
-     * @access  public
      * @param   string  $name       name
      * @param   array   $arguments  arguments
      * @return  mixed
@@ -164,7 +158,6 @@ abstract class DbQuery extends Object implements Serializable
      *
      * Returns true if a named object with the given name exists in the database schema.
      *
-     * @access  public
      * @param   string  $name  name of a database object
      * @return  bool
      */
@@ -174,7 +167,7 @@ abstract class DbQuery extends Object implements Serializable
     }
 
     /**
-     * reset query
+     * Reset query.
      *
      * Resets all properties of the query object, except
      * for the database connection and the properties
@@ -184,8 +177,7 @@ abstract class DbQuery extends Object implements Serializable
      * and reuse it without creating another one. This can
      * help to improve the performance of your application.
      *
-     * @access  public
-     * @since   2.9.4
+     * @return  DbQuery 
      */
     public function resetQuery()
     {
@@ -203,6 +195,7 @@ abstract class DbQuery extends Object implements Serializable
         $this->parentTables   = array();
         $this->tableByColumn  = array();
         $this->oldValues      = null;
+        return $this;
     }
 
     /**
@@ -224,9 +217,9 @@ abstract class DbQuery extends Object implements Serializable
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  protected
      * @param   int  $type  set the kind of statement
      * @throws  InvalidArgumentException  when argument is not a valid constant
+     * @return  DbQuery
      * @ignore
      */
     protected function setType($type)
@@ -267,6 +260,7 @@ abstract class DbQuery extends Object implements Serializable
                     "The selected statement type is unknown.", E_USER_WARNING);
             break;
         }
+        return $this;
     }
 
     /**
@@ -274,7 +268,6 @@ abstract class DbQuery extends Object implements Serializable
      *
      * Returns currently selected constant.
      *
-     * @access  public
      * @return  int
      */
     public function getType()
@@ -300,7 +293,6 @@ abstract class DbQuery extends Object implements Serializable
      * When retrieving multiple columns from a row,
      * use DbResultEnumeration::ROW instead.
      *
-     * @access  public
      * @return  int
      * @since   2.9.3
      * @ignore
@@ -312,7 +304,7 @@ abstract class DbQuery extends Object implements Serializable
     }
 
     /**
-     * activate / deactivate automatic handling of inheritance
+     * Activate / deactivate automatic handling of inheritance.
      *
      * The query builder is able to detect if one table inherits
      * from another and if so, it will auto-join both tables.
@@ -330,17 +322,14 @@ abstract class DbQuery extends Object implements Serializable
      * Note: you have to set this before you set the table property.
      * Otherwise it will have no effect.
      *
-     * @access  public
      * @param   bool  $state  true = on, false = off
-     * @since   2.9.3
+     * @return  DbQuery
      */
     public function useInheritance($state)
     {
-        if ($state) {
-            $this->useInheritance = true;
-        } else {
-            $this->useInheritance = false;
-        }
+        assert('is_bool($state); // Invalid argument $state: bool expected');
+        $this->useInheritance = (bool) $state;
+        return $this;
     }
 
     /**
@@ -349,10 +338,10 @@ abstract class DbQuery extends Object implements Serializable
      * The query builder will set this automatically, to indicate,
      * that one table inherits from another.
      *
-     * @access  private
-     * @param   DDLTable  $table          table
+     * @param   DDLTable  $table          table definition
      * @param   DDLTable  $parentTable    parent table
      * @since   2.9.6
+     * @return  DbQuery 
      */
     private function _setParentTable(DDLTable $table, DDLTable $parentTable)
     {
@@ -373,6 +362,7 @@ abstract class DbQuery extends Object implements Serializable
          */
         $tableName = mb_strtoupper($table->getName());
         $this->parentTables[$tableName] = $parentTable;
+        return $this;
     }
 
     /**
@@ -388,7 +378,6 @@ abstract class DbQuery extends Object implements Serializable
      *
      * It will return bool(false) if there is no such parent.
      *
-     * @access  protected
      * @param   string  $columnName  name of a column
      * @since   2.9.6
      * @return  string
@@ -411,7 +400,6 @@ abstract class DbQuery extends Object implements Serializable
      * This function looks up the column name for a given alias and returns it as
      * an upper-cases string.
      *
-     * @access  protected
      * @param   string  $alias  column alias
      * @return  string
      * @ignore
@@ -437,7 +425,6 @@ abstract class DbQuery extends Object implements Serializable
      * If multiple tables are joined (either automatically or manually)
      * you may use this function to get the source table for a certain row.
      *
-     * @access  public
      * @param   string  $columnName  name of a column
      * @return  DDLTable
      * @throws  NotFoundException  if no column with the given name has been found
@@ -476,7 +463,7 @@ abstract class DbQuery extends Object implements Serializable
     }
 
     /**
-     * get the parent of a table
+     * Get the parent of a table.
      *
      * This function provides information on entity inheritance
      * within the database's data structure.
@@ -490,9 +477,9 @@ abstract class DbQuery extends Object implements Serializable
      * currently selected table (see {link DbQuery::setTable()})
      * is used instead.
      *
-     * @access  public
      * @param   string  $table  name of a table
      * @since   2.9.6
+     * @return  string
      */
     public function getParent($table = "")
     {
@@ -512,9 +499,9 @@ abstract class DbQuery extends Object implements Serializable
     /**
      * recursively detect the parent of a table
      *
-     * @access  protected
      * @param   DDLTable  $table    table
      * @since   2.9.6
+     * @return  DbQuery
      * @ignore
      */
     protected function detectInheritance(DDLTable $table)
@@ -548,6 +535,7 @@ abstract class DbQuery extends Object implements Serializable
                 break;
             }
         }
+        return $this;
     }
 
     /**
@@ -563,15 +551,14 @@ abstract class DbQuery extends Object implements Serializable
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  protected
      * @param   string $tableName   name of another table to join the current table with
      * @param   string $key1        name of the foreign key in current table
      *                              (when omitted the API will look up the key in the structure file)
      * @param   string $key2        name of the key in foreign table that is referenced
      *                              (may be omitted if it is the primary key)
      * @param   bool   $isLeftJoin  use left join instead of inner join
-     * @return  bool
      * @throws  NotFoundException  if a provided table or column is not found
+     * @return  DbQuery
      * @ignore
      */
     protected function setJoin($tableName, $key1 = null, $key2 = null, $isLeftJoin = false)
@@ -623,6 +610,7 @@ abstract class DbQuery extends Object implements Serializable
 
         /* 3. create new association */
         $this->joins[$tableName] = array($key1, $key2, (bool) $isLeftJoin);
+        return $this;
     }
 
     /**
@@ -638,8 +626,6 @@ abstract class DbQuery extends Object implements Serializable
      * Note: Detects foreign keys $source -> $target but NOT $source <- $target.
      * To detect both ($source <-> $target), call this function twice and swap the arguments.
      *
-     * @access  private
-     * @static
      * @param   DDLTable  $sourceTable  source table definition
      * @param   DDLTable  $targetTable  target table definition
      * @param   string    &$key1        source column
@@ -710,9 +696,9 @@ abstract class DbQuery extends Object implements Serializable
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   string  $table  table name for create
      * @throws  NotFoundException  when table does not exist
+     * @return  DbQuery
      */
     public function setTable($table)
     {
@@ -751,6 +737,7 @@ abstract class DbQuery extends Object implements Serializable
         if ($this->useInheritance) {
             $this->detectInheritance($this->table);
         }
+        return $this;
     }
 
     /**
@@ -760,7 +747,6 @@ abstract class DbQuery extends Object implements Serializable
      * selected table, or bool(false) if none has been
      * selected yet.
      *
-     * @access  public
      * @return  bool(false)|string
      */
     public function getTable()
@@ -776,7 +762,6 @@ abstract class DbQuery extends Object implements Serializable
     /**
      * get current table
      *
-     * @access  protected
      * @return  DDLTable
      */
     protected function currentTable()
@@ -793,12 +778,12 @@ abstract class DbQuery extends Object implements Serializable
      * Checks if the column exists and sets the source column
      * of the query to the given value.
      *
-     * @access  protected
      * @param   string  $column         column
      * @name    DbQuery::setColumn()
      * @throws  DbEventLog                if table has not been initialized
      * @throws  InvalidArgumentException  if a given argument is invalid
      * @throws  DbErrorLog         if the given column is not found in the table
+     * @return  DbQuery
      * @ignore
      */
     protected function setColumn($column = '*')
@@ -874,6 +859,7 @@ abstract class DbQuery extends Object implements Serializable
             }
 
         }
+        return $this;
     }
 
     /**
@@ -889,10 +875,10 @@ abstract class DbQuery extends Object implements Serializable
      * a valid key or if it really points to a value. If it is not,
      * the resultset will be empty.
      *
-     * @access  protected
      * @param   string  $arrayAddress   array address
      * @name    DbQuery::setArrayAddress()
      * @throws  InvalidArgumentException  if a given argument is invalid
+     * @return  DbQuery
      * @ignore
      */
     protected function setArrayAddress($arrayAddress = "")
@@ -921,6 +907,7 @@ abstract class DbQuery extends Object implements Serializable
         }
 
         $this->arrayAddress = "$arrayAddress";
+        return $this;
     }
 
     /**
@@ -941,7 +928,6 @@ abstract class DbQuery extends Object implements Serializable
      * See {link DbQuery::getColumns()} to get a list of all
      * selected columns.
      *
-     * @access  protected
      * @param   int     $i  index of column to get
      * @return  string
      * @name    DbQuery::getColumn()
@@ -983,7 +969,6 @@ abstract class DbQuery extends Object implements Serializable
      *
      * If none has been selected, an empty array is returned.
      *
-     * @access  protected
      * @return  array
      * @ignore
      */
@@ -1028,9 +1013,9 @@ abstract class DbQuery extends Object implements Serializable
      * Currently you may only request 1 row or all.
      * To search for all rows, use the wildcard '*'.
      *
-     * @access  public
      * @param   scalar  $row  set source row
      * @throws  DbEventLog  if table has not been initialized
+     * @return  DbQuery
      */
     public function setRow($row)
     {
@@ -1101,6 +1086,7 @@ abstract class DbQuery extends Object implements Serializable
                 $this->expectedResult = DbResultEnumeration::CELL;
             }
         }
+        return $this;
     }
 
     /**
@@ -1112,7 +1098,6 @@ abstract class DbQuery extends Object implements Serializable
      *
      * If none has been selected, '*' is returned.
      *
-     * @access  public
      * @return  string
      */
     public function getRow()
@@ -1130,9 +1115,9 @@ abstract class DbQuery extends Object implements Serializable
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   string  $key  resolve key address to determine table, column and row
      * @throws  DbErrorLog    if the given table or column is not found
+     * @return  DbQuery
      */
     public function setKey($key)
     {
@@ -1235,15 +1220,16 @@ abstract class DbQuery extends Object implements Serializable
         } else {
             $this->setColumn($array[2]);
         }
+        return $this;
     }
 
     /**
      * add column to "order by"-clause
      *
-     * @access  protected
      * @param   string  $column  column name
      * @param   bool    $desc    sort descending (true=yes, false=no)
      * @throws  NotFoundException  when a column or table does not exist
+     * @return  DbQuery
      * @ignore
      */
     protected function addOrderBy($column, $desc = false)
@@ -1273,15 +1259,16 @@ abstract class DbQuery extends Object implements Serializable
         }
         $this->orderBy[] = array($tableName, mb_strtolower($column));
         $this->desc[] = $desc;
+        return $this;
     }
 
     /**
      * set column to sort the resultset by
      *
-     * @access  protected
      * @param   array  $orderBy  list of column names
      * @param   array  $desc     list of sort order (true=desc, false=asc)
      * @throws  NotFoundException  when a column or table does not exist
+     * @return  DbQuery
      * @ignore
      */
     protected function setOrderBy($orderBy, $desc = array())
@@ -1301,6 +1288,7 @@ abstract class DbQuery extends Object implements Serializable
         {
             $this->addOrderBy($column, !empty($desc[$i]));
         }
+        return $this;
     }
 
     /**
@@ -1309,7 +1297,6 @@ abstract class DbQuery extends Object implements Serializable
      * Returns a lower-cased list of column names.
      * If none has been set yet, then the list is empty.
      *
-     * @access  protected
      * @return  array
      * @ignore
      */
@@ -1324,7 +1311,6 @@ abstract class DbQuery extends Object implements Serializable
      *
      * Returns an array of boolean values: true = descending, false = ascending.
      *
-     * @access  protected
      * @return  array
      * @ignore
      */
@@ -1339,7 +1325,6 @@ abstract class DbQuery extends Object implements Serializable
      *
      * Returns the where condition clause as a string for printing.
      *
-     * @access  protected
      * @param   array  $where  where clausel as an array
      * @return  string
      * @ignore
@@ -1384,7 +1369,7 @@ abstract class DbQuery extends Object implements Serializable
             assert('!isset($value); // cannot redeclare variable $value');
             assert('!isset($list); // cannot redeclare variable $list');
             if ($rightOperand instanceof DbSelect) {
-                $list = $rightOperand->toString();
+                $list = (string) $rightOperand;
             } else {
                 $list = "";
                 foreach ($rightOperand as $value)
@@ -1425,7 +1410,6 @@ abstract class DbQuery extends Object implements Serializable
      *
      * Returns the parsed and checked array.
      *
-     * @access  protected
      * @param   array  $where  where clausel as an array
      * @return  array
      * @throws  NotFoundException         when a column is not found
@@ -1657,11 +1641,11 @@ abstract class DbQuery extends Object implements Serializable
      * To unset the where clause, call this function without
      * providing a parameter.
      *
-     * @access  protected
      * @param   array  $where  where clause
      * @throws  NotFoundException         when a column is not found
      * @throws  InvalidArgumentException  when the where-clause contains invalid values
      * @ignore
+     * @return  DbQuery
      */
     protected function setWhere(array $where = array())
     {
@@ -1669,6 +1653,7 @@ abstract class DbQuery extends Object implements Serializable
         $this->id = null;
 
         $this->where = $this->parseWhereArray($where);
+        return $this;
     }
 
     /**
@@ -1676,7 +1661,6 @@ abstract class DbQuery extends Object implements Serializable
      *
      * Returns the current where clause.
      *
-     * @access  protected
      * @return  array
      * @ignore
      */
@@ -1718,10 +1702,9 @@ abstract class DbQuery extends Object implements Serializable
     }
 
     /**
-     * get the currently selected limit
+     * Get the currently selected limit.
      *
-     * Note: This setting will not be part of the sql statement
-     * produced by {link DbQuery::toString()}.
+     * Note: This setting will not be part of the sql statement produced by __toString().
      * Use the API's $limit and $offset parameter instead when sending
      * the query.
      *
@@ -1731,7 +1714,6 @@ abstract class DbQuery extends Object implements Serializable
      * Note: For security reasons all delete queries will automatically
      * be limited to 1 row at a time.
      *
-     * @access  public
      * @return  int
      * @since   2.9.3
      */
@@ -1744,13 +1726,11 @@ abstract class DbQuery extends Object implements Serializable
     /**
      * get the currently selected offset
      *
-     * Note: This setting will not be part of the sql statement
-     * produced by toString(). Use the API's $limit and
-     * $offset parameter instead when sending the query.
+     * Note: This setting will not be part of the sql statement produced by __toString().
+     * Use the API's $limit and $offset parameter instead when sending the query.
      *
      * This restriction does not apply if you use sendQuery().
      *
-     * @access  public
      * @return  int
      * @since   2.9.3
      */
@@ -1761,19 +1741,18 @@ abstract class DbQuery extends Object implements Serializable
     }
 
     /**
-     * set a limit for this query
+     * Set a limit for this query.
      *
-     * Note: This setting will not be part of the sql statement
-     * produced by {link DbQuery::toString()}.
+     * Note: This setting will not be part of the sql statement produced by __toString().
      * Use the API's $limit and $offset parameter instead when sending
      * the query.
      *
      * This restriction does not apply if you use
      * {link DbQuery::sendQuery()}.
      *
-     * @access  protected
      * @param   int  $limit  limit for this query
-     * @throws  InvalidArgumentException  when limit is not positive
+     * @throws  \Yana\Core\InvalidArgumentException  when limit is not positive
+     * @return  DbQuery
      */
     protected function setLimit($limit)
     {
@@ -1781,15 +1760,15 @@ abstract class DbQuery extends Object implements Serializable
         $this->id = null;
         if ($limit < 0) {
             $message = "Limit must not be negative: '$limit'";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
         $this->limit = (int) $limit;
+        return $this;
     }
 
     /**
      * get unique id
      *
-     * @access  public
      * @return  string
      * @since   2.9.3
      * @ignore
@@ -1808,7 +1787,6 @@ abstract class DbQuery extends Object implements Serializable
      *
      * For update and delete queries this function will retrieve and return the unmodified values.
      *
-     * @access  protected
      * @return  mixed
      * @ignore
      */
@@ -1829,7 +1807,6 @@ abstract class DbQuery extends Object implements Serializable
      *
      * This sends the query to the database and returns a result-object.
      *
-     * @access  public
      * @return  FileDbResult
      * @since   2.9.3
      * @ignore
@@ -1847,8 +1824,8 @@ abstract class DbQuery extends Object implements Serializable
      * A list of these files was created before the row was deleted or updated.
      * After the statements was successfully carried out, the old files need to be removed.
      *
-     * @access  protected
      * @param   array  $files  list of files that should be deleted
+     * @return  DbQuery
      * @ignore
      */
     protected function deleteFiles(array $files = array())
@@ -1886,16 +1863,16 @@ abstract class DbQuery extends Object implements Serializable
                 }
             }
         }
+        return $this;
     }
 
     /**
-     * build a SQL-query
+     * Build a SQL-query.
      *
-     * @access  public
      * @param   string  $stmt  sql statement template
      * @return  string
      */
-    public function toString($stmt = "")
+    public function __toString($stmt = "")
     {
         /* 1. replace %TABLE% */
         if (strpos($stmt, '%TABLE%') !== false) {
@@ -1967,15 +1944,13 @@ abstract class DbQuery extends Object implements Serializable
     /**
      * parse SQL query into query object
      *
-     * This is the opposite of toString().
+     * This is the opposite of __toString().
      * It takes a SQL query string as input and returns
      * a query object of the specific type that
      * corresponds to the given type of query.
      *
      * The result object is always a subclass of DbQuery.
      *
-     * @access  public
-     * @static
      * @param   string    $sqlStmt   SQL statement
      * @param   DbStream  $database  database connection
      * @return  DbQuery
@@ -2059,7 +2034,6 @@ abstract class DbQuery extends Object implements Serializable
      * Resolves the where clause and returns the parsed array.
      * The syntax is as follows: ([column] [operator] [value]) ( AND (...))*
      *
-     * @access  protected
      * @param   string   $where  where clause
      * @return  array
      * @ignore
@@ -2191,7 +2165,6 @@ abstract class DbQuery extends Object implements Serializable
      *
      * Returns the serialized object as a string.
      *
-     * @access  public
      * @return  string
      */
     public function serialize()
@@ -2207,7 +2180,6 @@ abstract class DbQuery extends Object implements Serializable
     /**
      * Reinitializes the object.
      *
-     * @access  public
      * @param   string  $string  string to unserialize
      */
     public function unserialize($string)

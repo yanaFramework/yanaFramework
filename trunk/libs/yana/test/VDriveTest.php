@@ -203,7 +203,7 @@ class VDriveTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, count($getReport->getErrors()), 'there should be no errors');
         $this->assertEquals(0, count($getReport->getWarnings()), 'there should be no warnings');
 
-        $string = $this->_object->toString();
+        $string = (string) $this->_object;
         $this->assertType('string', $string, 'assert faield, the value should be of type string');
         $this->assertNotEquals(0, strlen($string), 'the value can not be empty');
 

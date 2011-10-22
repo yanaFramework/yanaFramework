@@ -4267,7 +4267,7 @@ class Image extends \Object
      * @access  public
      * @return  string
      */
-    public function toString()
+    public function __toString()
     {
         $filename = $this->getPath();
         if (is_string($filename)) {

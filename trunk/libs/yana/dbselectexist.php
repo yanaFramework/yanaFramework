@@ -52,7 +52,6 @@
  * want to return. You will find more details on that inside the developer's
  * cookbook in the manual.
  *
- * @access      public
  * @package     yana
  * @subpackage  database
  */
@@ -60,9 +59,8 @@ class DbSelectExist extends DbQuery
 {
 
     /**
-     * @access  protected
-     * @ignore
      * @var int
+     * @ignore
      */
     protected $type = DbQueryTypeEnumeration::EXISTS;
 
@@ -104,14 +102,15 @@ class DbSelectExist extends DbQuery
      * To unset the where clause, call this function without
      * providing a parameter.
      *
-     * @access  public
      * @param   array  $where  here clause
      * @throws  NotFoundException         when a column is not found
      * @throws  InvalidArgumentException  when the where-clause contains invalid values
+     * @return  DbSelectExist 
      */
     public function setWhere(array $where = array())
     {
         parent::setWhere($where);
+        return $this;
     }
 
     /**
@@ -122,10 +121,10 @@ class DbSelectExist extends DbQuery
      * Where "operator" can be one of the following:
      * '=', 'REGEXP', 'LIKE', '<', '>', '!=', '<=', '>='
      *
-     * @access  public
      * @param   array  $where  where clause
      * @throws  NotFoundException         when a column is not found
      * @throws  InvalidArgumentException  when the having-clause contains invalid values
+     * @return  DbSelectExist 
      */
     public function addWhere(array $where)
     {
@@ -134,14 +133,12 @@ class DbSelectExist extends DbQuery
         if (!empty($where)) {
             $this->where = array($this->parseWhereArray($where), 'and', $this->where);
         }
+        return $this;
     }
 
     /**
-     * get the currently set where clause
-     *
      * Returns the current where clause.
      *
-     * @access  public
      * @return  array
      */
     public function getWhere()
@@ -150,26 +147,25 @@ class DbSelectExist extends DbQuery
     }
 
     /**
-     * join the resultsets for two tables
-     *
-     * This will join the currently selected table with another (by using an inner join).
+     * Joins the selected table with another (by using an inner join).
      *
      * If $key1 is not provided, the function will automatically search for
      * a suitable foreign key, that refers to $tableName.
      * If $key2 is not provided, the function will automatically look up
      * the primary key of $tableName and use it instead.
      *
-     * @access  public
      * @param   string $tableName   name of another table to join the current table with
      * @param   string $key1        name of the foreign key in current table
      *                              (when omitted the API will look up the key in the structure file)
      * @param   string $key2        name of the key in foreign table that is referenced
      *                              (may be omitted if it is the primary key)
      * @throws  NotFoundException  if a provided table or column is not found
+     * @return  DbSelectExist
      */
     public function setInnerJoin($tableName, $key1 = null, $key2 = null)
     {
         parent::setJoin($tableName, $key1, $key2);
+        return $this;
     }
 
     /**
@@ -180,9 +176,8 @@ class DbSelectExist extends DbQuery
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   string  $table  name of table to remove
-     * @return  bool
+     * @return  DbSelectExist
      * @throws  NotFoundException  if the table does not exist
      */
     public function unsetJoin($table)
@@ -194,22 +189,17 @@ class DbSelectExist extends DbQuery
             throw new NotFoundException("The table '$table' is unknown.", E_USER_WARNING);
         }
 
-        if (!isset($this->joins[$table])) {
-            return false;
-        } else {
-            unset($this->joins[$table]);
-            return true;
-        }
+        unset($this->joins[$table]);
+        return $this;
     }
 
     /**
-     * get foreign key columns
+     * Get foreign key columns.
      *
      * Returns an array of two column names, where the first is the column in the base table
      * and the second is the column in the target table (given by the parameter $table).
      * If the table is not joined, the function will return bool(false).
      *
-     * @access  public
      * @param   string  $table target table
      * @return  array
      * @throws  NotFoundException  when the target table does not exist
@@ -231,7 +221,7 @@ class DbSelectExist extends DbQuery
     }
 
     /**
-     * get a list of all joined tables
+     * Get a list of all joined tables.
      *
      * Returns an array where the keys are the names of the joined tables.
      * Each item is an array of two column names, where the first is the column in the base table
@@ -239,7 +229,6 @@ class DbSelectExist extends DbQuery
      *
      * The array will be empty if there are now table-joins in the current query.
      *
-     * @access  public
      * @return  array
      */
     public function getJoins()
@@ -248,7 +237,7 @@ class DbSelectExist extends DbQuery
     }
 
     /**
-     * get the number of entries
+     * Get the number of entries.
      *
      * This sends the query statement to the database and returns bool(true)
      * if the requested database object exists and bool(false) otherwise.
@@ -272,13 +261,12 @@ class DbSelectExist extends DbQuery
     }
 
     /**
-     * build a SQL-query
+     * Build a SQL-query.
      *
-     * @access  public
      * @param   string  $stmt  sql statement template
      * @return  string
      */
-    public function toString($stmt = "SELECT 1 FROM %TABLE% %WHERE%")
+    public function __toString($stmt = "SELECT 1 FROM %TABLE% %WHERE%")
     {
 
         /* prepare where clause */
@@ -345,26 +333,24 @@ class DbSelectExist extends DbQuery
         }
         unset($where);
 
-        return parent::toString($stmt);
+        return parent::__toString($stmt);
 
     }
 
     /**
      * parse SQL query into query object
      *
-     * This is the opposite of toString().
+     * This is the opposite of __toString().
      * It takes a SQL query string as input and returns
      * a query object of the specific type that
      * corresponds to the given type of query.
      *
      * The result object is always a subclass of DbQuery.
      *
-     * @access  public
-     * @static
      * @param   string    $sqlStmt   SQL statement
      * @param   DbStream  $database  database connection
      * @return  DbSelectExist
-     * @throws  InvalidArgumentException  if the query is invalid or could not be parsed
+     * @throws  \Yana\Core\InvalidArgumentException  if the query is invalid or could not be parsed
      */
     public static function parseSQL($sqlStmt, DbStream $database)
     {
@@ -380,10 +366,10 @@ class DbSelectExist extends DbQuery
         // retrieve table
         $tables = $sqlStmt['tables'];
         if (empty($tables)) {
-            return false;
+            return new \Yana\Core\InvalidArgumentException("SQL-statement has no table names: $sqlStmt.", E_USER_WARNING);
         } elseif (count($tables) > 1) {
             $message = "Checks for existence are not supported on joined tables.";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
         $query->setTable(current($tables));
 
@@ -395,6 +381,7 @@ class DbSelectExist extends DbQuery
 
         return $query;
     }
+
 }
 
 ?>

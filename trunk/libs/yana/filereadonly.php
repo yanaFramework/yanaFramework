@@ -150,7 +150,7 @@ class FileReadonly extends FileSystemResource implements IsReadable
      * @access  public
      * @return  string
      */
-    public function toString()
+    public function __toString()
     {
         if (!$this->exists()) {
             return "File ".$this->getPath()." does not exist\n";

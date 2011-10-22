@@ -159,24 +159,10 @@ class FileReadonlyTest extends PHPUnit_Framework_TestCase
         $fileContent = $this->object->getContent();
         $this->assertType('string', $fileContent, '"$fileContent" is not from type string');
 
-        $this->object->toString();
-        $fileContent = $this->object->getContent();
-
         $nonExistFile = new FileReadonly('resources/nonExistfile.txt');
         $fileContent = $nonExistFile->getContent();
         $this->assertEquals(mb_strlen($fileContent), 0, 'assert failed , expected result is 0');
         unset($nonExistFile);
-    }
-
-    /**
-     * to string
-     *
-     * @test
-     */
-    public function testToString()
-    {
-        $toString = $this->object->toString();
-        $this->assertType('string', $toString, '"$toString" is not from type string');
     }
 
     /**

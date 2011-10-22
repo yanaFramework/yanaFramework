@@ -134,8 +134,8 @@ class ExecutableTest extends PHPUnit_Framework_TestCase
      */
     public function testToString()
     {
-        $toString = $this->existingExecutable->toString();
-        $this->assertType('string', $toString, 'expected function toString() to return value of type string');        
+        $toString = (string) $this->existingExecutable;
+        $this->assertType('string', $toString, 'expected function __toString() to return value of type string');        
     }
 
     /**

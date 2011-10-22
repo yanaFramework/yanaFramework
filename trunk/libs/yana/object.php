@@ -26,15 +26,11 @@
  */
 
 /**
- * Object
+ * Object base class for all entities used in the framework.
+ * 
+ * It protects against common pitfalls, by throwing an exception
+ * whenever you try to access an undefiend method or property.
  *
- * This is a base class for all entities
- * used in the framework. It provides
- * same basic functionality that is common
- * for all subclasses.
- *
- * @abstract
- * @access      public
  * @package     yana
  * @subpackage  core
  */
@@ -42,81 +38,61 @@ class Object extends StdClass implements IsObject, IsCloneable
 {
 
     /**
-     * get a string representation of this object
+     * <<magic>> String conversion.
      *
-     * This function is intended to be called when the object
-     * is used in a string context.
+     * This is automatically used to "unbox" the object when used in a string context.
      *
      * You are encouraged to implement this for each derived subclass,
      * to reflect your implementation and purpose of your class.
      *
-     * @access  public
      * @return  string
-     */
-    public function toString()
-    {
-        return "Instance of '".$this->getClass()."'.\n";
-    }
-
-    /**
-     * magic function
-     *
-     * This is automatically used to "unbox" the object when used in
-     * a string context. The function itself became available in PHP 5.
-     * In versions prior to that, you had to call the function manually.
-     *
-     * Wide support for this became available as of PHP 5.2.
-     *
-     * @access  public
-     * @return  string
-     *
-     * @since   2.8.5
-     * @ignore
      */
     public function __toString()
     {
-        try {
-            return $this->toString();
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
+        return "Instance of '" . $this->getClass() . "'.\n";
     }
 
     /**
-     * magic function
+     * <<magic>> Issues a warning when trying to call an undefined method.
      *
-     * Issues a warning when trying to access undefined property.
+     * @param string $name       method name
+     * @param array  $arguments  method arguments
+     * @throws  \Yana\Core\UndefinedPropertyException  always!
+     */
+    public function __call($name, $arguments)
+    {
+        throw new \Yana\Core\UndefinedMethodException($name);
+    }
+
+    /**
+     * <<magic>> Issues a warning when trying to access undefined property.
      *
-     * @access  public
-     * @param   string  $name   name
+     * @param   string  $name  property name
      * @return  Object
-     * @throws  Error
+     * @throws  \Yana\Core\UndefinedPropertyException  always!
      * @ignore
      */
     public function __get($name)
     {
-        throw new Error("Trying to access undefined property '$name'.");
+        throw new \Yana\Core\UndefinedPropertyException($name);
     }
 
     /**
-     * magic function
+     * <<magic>> Issues a warning when trying to access undefined property.
      *
-     * Issues a warning when trying to access undefined property.
-     *
-     * @access  public
-     * @param   string  $name   name
-     * @param   string  $value  value
+     * @param   string  $name   property name
+     * @param   string  $value  nwe value
      * @return  Object
-     * @throws  Error
+     * @throws  \Yana\Core\UndefinedPropertyException  always!
      * @ignore
      */
     public function __set($name, $value)
     {
-        throw new Error("Trying to access undefined property '$name'.");
+        throw new \Yana\Core\UndefinedPropertyException($name);
     }
 
     /**
-     * magic function
+     * <<magic>> Deep copy.
      *
      * This is automatically used to create copies of the object when
      * using the "clone" keyword.
@@ -126,8 +102,6 @@ class Object extends StdClass implements IsObject, IsCloneable
      * Deep copies are created by relying upon a '__clone()' method within the
      * object, that is expected to return a deep copy of it.
      *
-     * @access  public
-     * @since   2.8.5
      * @ignore
      */
     public function __clone()
@@ -145,13 +119,9 @@ class Object extends StdClass implements IsObject, IsCloneable
     }
 
     /**
-     * get the class name of the instance
+     * Returns the name of this object's class as a string.
      *
-     * This function returns the name of the class of this object as a string.
-     *
-     * @access public
      * @return string
-     * @since  2.8.5
      */
     public function getClass()
     {
@@ -159,26 +129,17 @@ class Object extends StdClass implements IsObject, IsCloneable
     }
 
     /**
-     * compare with another object
-     *
-     * Returns bool(true) if this object and $anotherObject
-     * are the same and bool(false) otherwise.
+     * Returns TRUE if the objects are equal and FALSE otherwise.
      *
      * You are encouraged to overwrite this function in subclasses
      * to reflect your implementation.
      *
-     * @access public
-     * @param  object $anotherObject another object to compare
+     * @param  \stdClass $anotherObject another object to compare
      * @return bool
-     * @since  2.8.5
      */
-    public function equals(object $anotherObject)
+    public function equals(\stdClass $anotherObject)
     {
-        if ($this == $anotherObject) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this == $anotherObject;
     }
 
 }

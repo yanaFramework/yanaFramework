@@ -1657,19 +1657,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * to string
-     *
-     * Expected test result : string
-     *
-     * @test
-     */
-    public function testToString()
-    {
-        $toString = $this->image->toString();
-        $this->assertType('string', $toString, 'assert failed, value is not from type string');
-    }
-
-    /**
      * test 1
      *
      * Expected test result, see: resources/image/test1.png

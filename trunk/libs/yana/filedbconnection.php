@@ -324,7 +324,7 @@ class FileDbConnection extends Object
         /**
          * Add this line for debugging purposes
          *
-         * error_log($dbQuery->toString() . "\n", 3, 'test.log');
+         * error_log((string) $dbQuery . "\n", 3, 'test.log');
          */
         $this->_query =& $dbQuery;
         $offset = $this->_query->getOffset();

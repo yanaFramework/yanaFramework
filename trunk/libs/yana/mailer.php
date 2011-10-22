@@ -160,7 +160,7 @@ class Mailer extends SmartTemplate
         } else {
             $header = array();
         }
-        $content = preg_replace("/<br ?\/?>/", "\n", $this->toString());
+        $content = preg_replace("/<br ?\/?>/", "\n", (string) $this);
         return Mailer::mail($recipient, "[MAILFORM] " . $this->_subject, $content, $header, $this->_mailHandler);
     }
 
@@ -556,7 +556,7 @@ class Mailer extends SmartTemplate
      * @access  public
      * @return  string
      */
-    public function toString()
+    public function __toString()
     {
         global $YANA;
         /* 1.1) import vars from global registry */
@@ -566,7 +566,7 @@ class Mailer extends SmartTemplate
             $vars = \Yana\Util\Hashtable::merge($vars, $this->template->getTemplateVars());
             $this->template->assign($vars);
         }
-        return parent::toString();
+        return parent::__toString();
     }
 
 }

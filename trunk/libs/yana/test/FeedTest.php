@@ -312,7 +312,7 @@ class FeedTest extends \PHPUnit_Framework_TestCase
         $this->_rss->setLink('http://www.rsslink.tld');
         $this->_rss->setCss('test.css');
         $this->_rss->setXslt('test.xsl');
-        $toString = $this->_rss->toString();
+        $toString = (string) $this->_rss;
         $this->assertContains('test.css', $toString);
         $this->assertContains('test.xsl', $toString);
         $this->assertType('string', $toString, 'assert failed, the value is not from type string');

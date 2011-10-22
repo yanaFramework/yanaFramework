@@ -25,49 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core;
+
 /**
- * <<Interface>> object
+ * <<exception>> Trying to call an undefined class method.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */
-interface IsObject
+class UndefinedMethodException extends \Yana\Core\Exceptions\BadMethodCallException
 {
-
-    /**
-     * get a string representation of this object
-     *
-     * This function is intended to be called when the object
-     * is used in a string context.
-     *
-     * @access   public
-     * @return   string
-     */
-    public function __toString();
-
-    /**
-     * get the class name of the instance
-     *
-     * This function returns the name of the class of this object as a string.
-     *
-     * @access public
-     * @return string
-     */
-    public function getClass();
-
-    /**
-     * compare with another object
-     *
-     * Returns bool(true) if this object and $anotherObject
-     * are the same and bool(false) otherwise.
-     *
-     * @access public
-     * @param  object $anotherObject    another object to compare
-     * @return bool
-     */
-    public function equals(object $anotherObject);
-
+    // intentionally left blank
 }
 
 ?>

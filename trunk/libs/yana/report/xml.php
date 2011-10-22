@@ -309,17 +309,6 @@ class Xml extends \SimpleXMLElement implements IsReport
      */
     public function __toString()
     {
-        return $this->toString();
-    }
-
-    /**
-     * Outputs the contents as an XML string.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function toString()
-    {
         return $this->asXML();
     }
 

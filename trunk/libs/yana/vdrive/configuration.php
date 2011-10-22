@@ -632,19 +632,6 @@ class Configuration extends \XmlArray
      */
     public function __toString()
     {
-        return $this->toString();
-    }
-
-    /**
-     * convert to string
-     *
-     * Outputs the contents as an XML string.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function toString()
-    {
         return $this->asXML();
     }
 

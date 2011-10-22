@@ -90,7 +90,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $sqlStmt = 'SELECT 1 FROM ft WHERE ft.ftid = "2"';
         $this->query = DbQuery::parseSQL($sqlStmt, $this->db);
         $this->assertTrue($this->query instanceof DbSelectExist, "Parser error: $sqlStmt");
-        $sqlResult = $this->query->toString();
+        $sqlResult = (string) $this->query;
         $this->assertEquals($sqlStmt, $sqlResult, "Statement not resolved: $sqlResult");
     }
 
@@ -105,7 +105,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $sql3 = 'SELECT 1 FROM ft WHERE ftid = "2"';
         $this->query = DbQuery::parseSQL($sql3, $this->db);
         $this->assertTrue($this->query instanceof DbSelectExist, "Parser error: $sql3");
-        $sql2 = $this->query->toString();
+        $sql2 = (string) $this->query;
         $this->assertEquals($sql1, $sql2, "Statement not resolved: $sql2");
     }
 
@@ -120,7 +120,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $sql3 = 'SELECT ft.ftid FROM ft WHERE ft.ftid = "1" ORDER BY ftid';
         $this->query = DbQuery::parseSQL($sql3, $this->db);
         $this->assertTrue($this->query instanceof DbSelectExist, "Parser error: $sql3");
-        $sql2 = $this->query->toString();
+        $sql2 = (string) $this->query;
         $this->assertEquals($sql1, $sql2, "Statement not resolved: $sql2");
     }
 
@@ -135,7 +135,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $sql3 = 'SELECT * FROM ft WHERE ft.ftid = "1" ORDER BY ftid DESC';
         $this->query = DbQuery::parseSQL($sql3, $this->db);
         $this->assertTrue($this->query instanceof DbSelectExist, "Parser error: $sql3");
-        $sql2 = $this->query->toString();
+        $sql2 = (string) $this->query;
         $this->assertEquals($sql1, $sql2, "Statement not resolved: $sql2");
     }
 
@@ -149,13 +149,13 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $sql1 = 'DELETE FROM ft WHERE ft.ftvalue = "0"';
         $this->query = DbQuery::parseSQL($sql1, $this->db);
         $this->assertTrue($this->query instanceof DbDelete, "Parser error: $sql1");
-        $sql2 = $this->query->toString();
+        $sql2 = (string) $this->query;
         $this->assertEquals($sql1, $sql2, "Statement not resolved: $sql2");
 
         $sql1 = 'DELETE FROM ft WHERE ft.ftvalue = "1"';
         $this->query = DbQuery::parseSQL($sql1, $this->db);
         $this->assertTrue($this->query instanceof DbDelete, "Parser error: $sql1");
-        $sql2 = $this->query->toString();
+        $sql2 = (string) $this->query;
         $this->assertEquals($sql1, $sql2, "Statement not resolved: $sql2");
     }
 
@@ -183,7 +183,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $sql1 = 'SELECT count(*) FROM ft WHERE ft.ftid = "2"';
         $this->query = DbQuery::parseSQL($sql1, $this->db);
         $this->assertTrue($this->query instanceof DbSelectCount, "Parser error: $sql1");
-        $sql2 = $this->query->toString();
+        $sql2 = (string) $this->query;
         $this->assertEquals($sql1, $sql2, "Statement not resolved: $sql2");
     }
 
@@ -197,7 +197,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $sql1 = 'SELECT * FROM ft';
         $this->query = DbQuery::parseSQL($sql1, $this->db);
         $this->assertTrue($this->query instanceof DbSelect, "Parser error: $sql1");
-        $sql2 = $this->query->toString();
+        $sql2 = (string) $this->query;
         $this->assertEquals($sql1, $sql2, "Statement not resolved: $sql2");
     }
 
@@ -211,7 +211,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $sql1 = 'SELECT * FROM ft WHERE ft.ftid = "2"';
         $this->query = DbQuery::parseSQL($sql1, $this->db);
         $this->assertTrue($this->query instanceof DbSelect, "Parser error: $sql1");
-        $sql2 = $this->query->toString();
+        $sql2 = (string) $this->query;
         $this->assertEquals($sql1, $sql2, "Statement not resolved: $sql2");
     }
 
@@ -225,7 +225,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $sql1 = 'SELECT ftid FROM ft WHERE ftid = "2" ;';
         $this->query = DbQuery::parseSQL($sql1, $this->db);
         $this->assertTrue($this->query instanceof DbSelect, "Parser error: $sql1");
-        $sql2 = $this->query->toString();
+        $sql2 = (string) $this->query;
         $expected = 'SELECT ft.ftid FROM ft WHERE ft.ftid = "2"';
         $this->assertEquals($expected, $sql2, "Statement not resolved: $sql2");
     }
@@ -285,7 +285,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $sql1 = 'INSERT INTO t (tid, tvalue, ftid) VALUES ("1", "2", "1");';
         $this->query = DbQuery::parseSQL($sql1, $this->db);
         $this->assertTrue($this->query instanceof DbInsert, "Parser error: $sql1");
-        $sql2 = $this->query->toString();
+        $sql2 = (string) $this->query;
         $sql3 = 'INSERT INTO t (tid, tvalue, ftid) VALUES ("1", "2", "1")';
         $this->assertEquals($sql3, $sql2, "Statement not resolved: $sql2");
     }
@@ -313,7 +313,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $sql1 = 'UPDATE t SET tvalue="2" WHERE tid = "2"';
         $this->query = DbQuery::parseSQL($sql1, $this->db);
         $this->assertTrue($this->query instanceof DbUpdate, "Parser error: $sql1");
-        $sql2 = $this->query->toString();
+        $sql2 = (string) $this->query;
         $sql3 = 'UPDATE t SET tvalue = "2" WHERE t.tid = "2"';
         $this->assertEquals($sql3, $sql2, "Statement not resolved: $sql2");
     }
@@ -328,7 +328,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $sql1 = 'DELETE FROM ft';
         $this->query = DbQuery::parseSQL($sql1, $this->db);
         $this->assertTrue($this->query instanceof DbDelete, "Parser error: $sql1");
-        $sql2 = $this->query->toString();
+        $sql2 = (string) $this->query;
         $this->assertEquals($sql1, $sql2, "Statement not resolved: $sql2");
     }
 
@@ -366,7 +366,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $this->query->setColumn('ftid');
         $this->query->setRow('1');
         $this->query->setOrderBy(array('ftid'));
-        $s1 =  $this->query->toString();
+        $s1 =  (string) $this->query;
         $valid = 'SELECT ft.ftid FROM ft WHERE ft.ftid = "1" ORDER BY ft.ftid';
         $this->assertEquals($valid, $s1, 'assert failed, the sql select statements must be equal');
 
@@ -392,7 +392,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $this->query->setLimit(20);
         $getLimit = $this->query->getLimit();
         $this->assertEquals(20, $getLimit, 'assert failed, the expected value needs to be 20');
-        $s2 = $this->query->toString();
+        $s2 = (string) $this->query;
         $valid = 'SELECT * FROM t WHERE t.ftid = "2" ORDER BY t.tvalue';
         $this->assertEquals($valid, $s2, 'assert failed, the sql select statements must be equal');
     }
@@ -412,7 +412,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $this->query->setInnerJoin('ft', 'ftid', 'ftid');
         $getJoin = $this->query->getJoin('ft');
         $this->assertEquals(array('ftid', 'ftid', false), $getJoin, 'Join clause must match ftid=ftid, leftJoin=false');
-        $s3 = $this->query->toString();
+        $s3 = (string) $this->query;
         $valid = 'SELECT t.tid, t.tvalue, t.ti, t.ftid FROM t, ft  WHERE t.ftid = ft.ftid';
         $this->assertEquals($valid, $s3, 'assert failed the sql select statements must be equal');
     }
@@ -440,13 +440,13 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($unsetJoin, 'assert failed, the join is still avalible');
         $getJoin = $this->query->getJoin('ft');
         $this->assertFalse($getJoin, 'assert failed, the join ft does not exist');
-        $s4 = $this->query->toString();
+        $s4 = (string) $this->query;
         $valid = 'SELECT t.tid, t.tvalue, t.ti, t.ftid FROM t';
         $this->assertEquals($valid, $s4, 'assert failed, the expected sql select statement must be equal');
         $this->query->setLeftJoin('ft', 'ftid', 'ftid');
         $getJoin = $this->query->getJoin('ft');
         $this->assertEquals(array('ftid', 'ftid', true), $getJoin, 'Join clause must match ftid=ftid, leftJoin=true');
-        $s4 = $this->query->toString();
+        $s4 = (string) $this->query;
         $valid = 'SELECT t.tid, t.tvalue, t.ti, t.ftid FROM t LEFT JOIN ft ON t.ftid = ft.ftid';
         $this->assertEquals($valid, $s4, 'assert failed, the expected sql select statement must be equal');
     }
@@ -465,7 +465,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $this->query->setRow(2);
         $this->query->useInheritance(true);
         $getExpResults = $this->query->getExpectedResult();
-        $s5 = $this->query->toString();
+        $s5 = (string) $this->query;
         $valid = 'DELETE FROM ft WHERE ft.ftid = "2"';
         $this->assertEquals($valid, $s5, 'assert failed, the expected sql delete statement must be equal');
     }
@@ -485,7 +485,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $getValues = $this->query->getValues();
         $this->assertType('array', $getValues, 'assert failed, the value should be of type array');
         $this->assertTrue(in_array(50, $getValues), 'assert failed, the expected value 50 should be match an enry in givin array');
-        $s6 = $this->query->toString();
+        $s6 = (string) $this->query;
         $valid = 'INSERT INTO ft (ftid, ftvalue) VALUES ("2", "50")';
         $this->assertEquals($valid, $s6, 'assert failed, the expected sql insert statement must be equal');
 
@@ -514,7 +514,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
         $getHaving = $this->query->getHaving();
         $expected = array(array('t', 'tvalue'), '>', '20');
         $this->assertEquals($expected, $getHaving, 'assert failed, the values must be equal');
-        $string = $this->query->toString();
+        $string = (string) $this->query;
         $valid = 'SELECT t.tid, t.tvalue FROM t WHERE t.ftid = "1" HAVING t.tvalue > "20"';
         $this->assertEquals($valid, $string, 'assert failed, the sql select statements must be equal');
     }

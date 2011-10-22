@@ -215,7 +215,7 @@ abstract class Mountpoint extends \Object implements \Yana\Report\IsReportable
      * @access  public
      * @return  string
      */
-    public function toString()
+    public function __toString()
     {
         return (string) $this->getReport();
     }

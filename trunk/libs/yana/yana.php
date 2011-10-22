@@ -1155,7 +1155,7 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable
         $this->_prepareMessages();
 
         /* print the page to the client */
-        print $view->toString();
+        print (string) $view;
     }
 
     /**

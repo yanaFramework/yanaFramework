@@ -1312,7 +1312,7 @@ class SmartUtility extends Utility
             return "";
         }
         $document->setVar('inputName', $inputName);
-        return $document->toString();
+        return (string) $document;
     }
 
     /**
@@ -1586,15 +1586,9 @@ class SmartUtility extends Utility
                 $ul .= self::printUL1($element, $keys, $allowHtml);
 
             } elseif (is_object($element)) {
-                if ($element instanceof Object) {
-                    $ul .= '<span class="gui_array_value">'.htmlspecialchars($element->toString(), ENT_COMPAT, 'UTF-8').
-                        '</span>';
-                } else {
-                    $ul .= '<span class="gui_array_value">Instance of '.getclass($element).'</span>';
-                }
-
+                $ul .= '<span class="gui_array_value">' . htmlspecialchars((string) $element, ENT_COMPAT, 'UTF-8') . '</span>';
             } else {
-                $ul .= '<span class="gui_array_value">'.htmlspecialchars(print_r($element, true), ENT_COMPAT, 'UTF-8').
+                $ul .= '<span class="gui_array_value">' . htmlspecialchars(print_r($element, true), ENT_COMPAT, 'UTF-8') .
                     '</span>';
             }
 
@@ -1687,7 +1681,7 @@ class SmartUtility extends Utility
                     }
                 } elseif (is_object($element)) {
                     if ($element instanceof Object) {
-                        $ul .= htmlspecialchars($element->toString(), ENT_COMPAT, 'UTF-8');
+                        $ul .= htmlspecialchars((string) $element, ENT_COMPAT, 'UTF-8');
                     } else {
                         $ul .= 'Instance of '.getclass($element);
                     }
@@ -1776,14 +1770,8 @@ class SmartUtility extends Utility
                     } else {
                         $ul .= htmlspecialchars($element, ENT_COMPAT, 'UTF-8');
                     }
-                } elseif (is_object($element)) {
-                    if ($element instanceof Object) {
-                        $ul .= htmlspecialchars($element->toString(), ENT_COMPAT, 'UTF-8');
-                    } else {
-                        $ul .= 'Instance of '.getclass($element);
-                    }
                 } else {
-                    $ul .= htmlspecialchars(print_r($element, true), ENT_COMPAT, 'UTF-8');
+                    $ul .= htmlspecialchars(print_r((string) $element, true), ENT_COMPAT, 'UTF-8');
                 }
                 if ($keys == 0) {
                     $ul .= '</span>';
@@ -1918,7 +1906,7 @@ class SmartUtility extends Utility
         if (isset($params['id'])) {
             $document->setVar('target', $params['id']);
         }
-        return $document->toString();
+        return (string) $document;
     }
 
     /**
@@ -1940,7 +1928,7 @@ class SmartUtility extends Utility
             $document->setVar('HEIGHT', $params['height']);
         }
         $document->setVar('ID', uniqid('yana'));
-        return $document->toString();
+        return (string) $document;
     }
 
     /**
@@ -2002,7 +1990,7 @@ class SmartUtility extends Utility
         $document->setVar('USER_DEFINED', $yana->getVar('PROFILE.EMBTAG'));
         $document->setVar('LANGUAGE', $yana->getLanguage()->getVar());
 
-        return $document->toString();
+        return (string) $document;
     }
 
     /**
@@ -2330,7 +2318,7 @@ class SmartUtility extends Utility
         }
         $document->setVar('FILE_IS_INCLUDE', true);
 
-        return $document->toString();
+        return (string) $document;
     }
 
     /**

@@ -51,7 +51,7 @@ namespace Yana\RSS;
  *          ->setDescription('some text');
  *       $rss->addItem($item);
  *       // print rss feed
- *       print $rss->toString();
+ *       print (string) $rss;
  *       // when you're done, terminate the program
  *       exit(0);
  *  }
@@ -533,7 +533,7 @@ class Feed extends \Object
      *
      * @return  string
      */
-    public function toString()
+    public function __toString()
     {
         $xmlString = $this->toSimpleXml()->asXML();
         $xmlString = preg_replace('/<\?xml.*?\?>/', '', $xmlString);
