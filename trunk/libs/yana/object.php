@@ -49,7 +49,7 @@ class Object extends StdClass implements IsObject, IsCloneable
      */
     public function __toString()
     {
-        return "Instance of '" . $this->getClass() . "'.\n";
+        return "Instance of '" . $this->getClass() . "'.";
     }
 
     /**
@@ -134,10 +134,10 @@ class Object extends StdClass implements IsObject, IsCloneable
      * You are encouraged to overwrite this function in subclasses
      * to reflect your implementation.
      *
-     * @param  \stdClass $anotherObject another object to compare
+     * @param  Object $anotherObject another object to compare
      * @return bool
      */
-    public function equals(\stdClass $anotherObject)
+    public function equals(Object $anotherObject)
     {
         return $this == $anotherObject;
     }

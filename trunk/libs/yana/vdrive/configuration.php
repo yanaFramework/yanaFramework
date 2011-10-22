@@ -28,7 +28,10 @@
 namespace Yana\VDrive;
 
 /**
- * Virtual Drive File Configuration
+ * Virtual Drive File Configuration.
+ *
+ * WARNING! Don't try to string-cast this class.
+ * Always call ->__toString()!
  *
  * Class to abstract from real filesystems by mapping
  * filenames to aliases (mountpoints).
@@ -98,7 +101,7 @@ class Configuration extends \XmlArray
     public static function loadFile($path)
     {
         assert('is_string($path); // Wrong type for argument 1. String expected');
-        return \simplexml_load_file($path, __CLASS__);
+        return new self($path, 0, true);
     }
 
     /**

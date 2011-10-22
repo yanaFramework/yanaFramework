@@ -74,7 +74,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $xml = simplexml_load_file(CWD . '/resources/test.drive.xml');
 
         // test file loading
-        $this->assertEquals((string) $this->object, $xml->asXML(), '"file loading" test failed');
+        $this->assertEquals($this->object->__toString(), $xml->asXML(), '"file loading" test failed');
 
         $this->object = Configuration::createDrive();
         // test vars
@@ -82,9 +82,9 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->object->addNodeVar('bar', 'no');
         $this->assertEquals($this->object->getNodeVars()->asXML(), '<var name="foo" value="yes"/>', '"set/get vars" test failed');
         // test includes
-        $this->object->addNodeInclude('foo.class.php');
-        $this->object->addNodeInclude('bar.class.php');
-        $this->assertEquals($this->object->getNodeIncludes()->asXML(), '<include path="foo.class.php"/>', '"set/get includes" test failed');
+        $this->object->addNodeInclude('foo.php');
+        $this->object->addNodeInclude('bar.php');
+        $this->assertEquals($this->object->getNodeIncludes()->asXML(), '<include path="foo.php"/>', '"set/get includes" test failed');
         // test files
         $file = $this->object->addNodeFile("test", true);
         $this->assertTrue(isset($file), '"create file" test failed');

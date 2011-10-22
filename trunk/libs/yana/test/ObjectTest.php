@@ -82,7 +82,10 @@ class ObjectTest extends PHPUnit_Framework_TestCase
     public function testToString()
     {
         $string = $this->object->__toString();
-        $this->assertType('string', $string, 'assert failed, value is not from type string');
+        $this->assertType('string', $string, 'value is not from type string');
+        $string2 = (string) $this->object;
+        $this->assertEquals($string, $string2);
+        $this->assertEquals("Instance of '" . get_class($this->object). "'.", $string);
     }
 
     /**
@@ -93,7 +96,7 @@ class ObjectTest extends PHPUnit_Framework_TestCase
     public function testCloneObject()
     {
         $cloneObject = clone $this->object;
-        $this->assertEquals($cloneObject, $this->object, 'assert failed, there are two different objects');
+        $this->assertEquals($cloneObject, $this->object);
     }
 
     /**
@@ -104,7 +107,7 @@ class ObjectTest extends PHPUnit_Framework_TestCase
     public function test__clone()
     {
         $cloneObject = clone($this->object);
-        $this->assertEquals($cloneObject, $this->object, 'assert failed, there are two different objects');
+        $this->assertEquals($cloneObject, $this->object, 'there are two different objects');
         $this->assertFalse($cloneObject === $this->object, 'copy should not be identical');
     }
 
@@ -118,7 +121,7 @@ class ObjectTest extends PHPUnit_Framework_TestCase
         $getClass = $this->object->getClass();
         $this->assertType('string', $getClass, 'asserft faield, the value is not from type string');
         // expected Object as a string
-        $this->assertEquals('Object', $getClass, 'assert failed,  the values should be equal');
+        $this->assertEquals('Object', $getClass, ' the values should be equal');
     }
 
     /**
@@ -132,11 +135,11 @@ class ObjectTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->object, $clone, 'there are two different objects');
         $equals = $this->object->equals($clone);
         // expected the same object
-        $this->assertTrue($equals, 'assert failed, there are two different objects');
+        $this->assertTrue($equals, 'there are two different objects');
 
-        $this->assertEquals($this->object, $clone, 'assert failed, the two objects are equal');
+        $this->assertEquals($this->object, $clone, 'the two objects are equal');
         // expected false 
-        $this->assertFalse($clone === $this->object, 'assert failed, that two cant be identical');
+        $this->assertFalse($clone === $this->object, 'that two cant be identical');
     }
 }
 ?>

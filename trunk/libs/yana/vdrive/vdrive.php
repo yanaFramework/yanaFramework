@@ -482,7 +482,7 @@ class VDrive extends \FileSystemResource implements \Yana\Report\IsReportable, \
     {
         // read file if not already read
         $this->read();
-        return (string) $this->content;
+        return $this->content->__toString();
     }
 
     /**
