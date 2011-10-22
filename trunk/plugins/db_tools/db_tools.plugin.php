@@ -129,8 +129,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
         $errorReporting = error_reporting(E_ERROR | E_WARNING); // suppress MDB2 Notices
         $db = new DbServer();
         error_reporting($errorReporting);
-        $schema = DDLDatabaseFactory::createDatabase($db->getConnection());
-        $xml = $schema->toString();
+        $xml = (string) DDLDatabaseFactory::createDatabase($db->getConnection());
         $filename = 'database.db.xml';
         if (empty($xml)) {
             $error = new FileNotCreatedError();

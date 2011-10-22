@@ -83,7 +83,7 @@ class plugin_check extends StdClass implements IsPlugin
             if (strcasecmp($db, 'user') === 0) {
                 $result = "Access denied.";
             } elseif ($query instanceof DbQuery) {
-                $result = $query->toString(). "\n\n";
+                $result = (string) $query . "\n\n";
                 switch ($query->getType())
                 {
                     case DbQueryTypeEnumeration::SELECT:

@@ -84,7 +84,7 @@ class PluginConfigurationMethodSdk extends PluginConfigurationMethod
      * @access  public
      * @return  string
      */
-    public function toString()
+    public function __toString()
     {
         $tab = "\n     * ";
         $string = "    /**" . $tab;

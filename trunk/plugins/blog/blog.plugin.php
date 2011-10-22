@@ -344,7 +344,7 @@ class plugin_blog extends StdClass implements IsPlugin
             }
             $rss->addItem($item);
         } // end foreach
-        print $rss->toString();
+        print (string) $rss;
         exit(0);
     }
 

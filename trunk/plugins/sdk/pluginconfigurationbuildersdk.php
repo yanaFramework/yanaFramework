@@ -220,7 +220,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
         $html = $yana->getPlugins()->{'sdk:/templates/html.smarttemplate'};
         $html->setVar('form', $form);
         $html->setVar('database', $form->getDatabase());
-        $this->_templates["$name.html.tpl"] = $html->toString();
+        $this->_templates["$name.html.tpl"] = (string) $html;
         return $this;
     }
 
@@ -346,7 +346,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
         $xliffTemplate->setVar('source', $source);
         $xliffTemplate->setVar('target', $target);
         $xliffTemplate->setVar('translations', $this->_translations);
-        return $xliffTemplate->toString();
+        return (string) $xliffTemplate;
     }
 
     /**
@@ -590,7 +590,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
         $apiTemplate->setVar('plugin', $this->object);
         $apiTemplate->setVar('class', 'Api' .
                 str_replace(' ', '', ucwords(preg_replace('/_/', ' ', $this->object->getId()))));
-        return $apiTemplate->toString();
+        return (string) $apiTemplate;
     }
 
     /**
