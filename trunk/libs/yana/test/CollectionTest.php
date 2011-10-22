@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../collection.class.php';
+require_once __DIR__ . '/../collection.php';
 
 /**
  * Test class for Collection.
