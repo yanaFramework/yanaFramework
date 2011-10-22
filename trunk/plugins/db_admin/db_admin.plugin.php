@@ -126,7 +126,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
             $dbList = $list;
         }
 
-        /* Mapping the DBMS to the SQL export function in class \Yana\Db\SqlFactory */
+        /* Mapping the DBMS to the SQL export function in class \Yana\Db\Export\SqlFactory */
         switch ($dbms)
         {
             case 'DBASE':
@@ -172,7 +172,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
             return false;
         }
 
-        /* we assume the class \Yana\Db\SqlFactory has the desired method. This will be tested later! */
+        /* we assume the class \Yana\Db\Export\SqlFactory has the desired method. This will be tested later! */
 
         if (!$installDirectory->exists() && is_null($method_name)) {
             if (!$silent) {
@@ -204,13 +204,13 @@ class plugin_db_admin extends StdClass implements IsPlugin
             $database = new DbStream($dbSchema);
 
             /* If no SQL file for the current $item does exist,
-             * we need to call the appropriate \Yana\Db\SqlFactory method
+             * we need to call the appropriate \Yana\Db\Export\SqlFactory method
              * instead.
              */
             if (!is_readable($installFile)) {
-                $sqlFactory = new \Yana\Db\SqlFactory($database->getSchema());
+                $sqlFactory = new \Yana\Db\Export\SqlFactory($database->getSchema());
 
-                /* If the \Yana\Db\SqlFactory class does not support the desired function.
+                /* If the \Yana\Db\Export\SqlFactory class does not support the desired function.
                  */
                 if (!method_exists($sqlFactory, $method_name)) {
 
@@ -476,7 +476,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
         $dbms = mb_strtoupper($target_dbms);
         $fileContents = "";
 
-        /* Mapping the DBMS to the SQL export function in class \Yana\Db\SqlFactory */
+        /* Mapping the DBMS to the SQL export function in class \Yana\Db\Export\SqlFactory */
         switch ($dbms)
         {
             case 'DB2':
@@ -514,7 +514,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
         {
             if (is_string($dbName)) {
                 $db = Yana::connect($dbName);
-                $dbc = new \Yana\Db\DataExporter($db);
+                $dbc = new \Yana\Db\Export\DataFactory($db);
                 $arrayOfStmts = $dbc->$methodName($useStructure, $useData);
                 $fileContents .= implode("\n", $arrayOfStmts) . "\n";
             }
