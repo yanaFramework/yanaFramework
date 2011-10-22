@@ -443,7 +443,7 @@ class DbInsert extends DbQuery
      * @param   string $stmt sql statement
      * @return  string
      */
-    public function __toString($stmt = "INSERT INTO %TABLE% (%KEYS%) VALUES (%VALUES%)")
+    protected function toString($stmt = "INSERT INTO %TABLE% (%KEYS%) VALUES (%VALUES%)")
     {
         /*
          * replace %KEYS% and %VALUES%
@@ -485,7 +485,7 @@ class DbInsert extends DbQuery
             unset($keys, $values);
         }
 
-        return parent::__toString($stmt);
+        return parent::toString($stmt);
     }
 
     /**

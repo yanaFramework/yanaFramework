@@ -509,7 +509,7 @@ class DbSelect extends DbSelectCount
      * @param   string $stmt sql statement
      * @return  string
      */
-    public function __toString($stmt = "SELECT %COLUMN% FROM %TABLE% %WHERE% %HAVING% %ORDERBY%")
+    protected function toString($stmt = "SELECT %COLUMN% FROM %TABLE% %WHERE% %HAVING% %ORDERBY%")
     {
         /* replace %HAVING% */
         if (strpos($stmt, '%HAVING%') !== false) {
@@ -532,7 +532,7 @@ class DbSelect extends DbSelectCount
             unset($having);
         }
 
-        return parent::__toString($stmt);
+        return parent::toString($stmt);
 
     }
 
