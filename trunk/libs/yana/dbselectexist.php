@@ -266,7 +266,7 @@ class DbSelectExist extends DbQuery
      * @param   string  $stmt  sql statement template
      * @return  string
      */
-    public function __toString($stmt = "SELECT 1 FROM %TABLE% %WHERE%")
+    protected function toString($stmt = "SELECT 1 FROM %TABLE% %WHERE%")
     {
 
         /* prepare where clause */
@@ -333,7 +333,7 @@ class DbSelectExist extends DbQuery
         }
         unset($where);
 
-        return parent::__toString($stmt);
+        return parent::toString($stmt);
 
     }
 

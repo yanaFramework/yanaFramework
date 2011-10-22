@@ -221,13 +221,13 @@ abstract class AbstractException extends \Exception
     public function getHeader()
     {
         if (!isset($this->header)) {
-            $language = Language::getInstance();
+            $language = \Language::getInstance();
             $language->readFile('message');
             $id = get_class($this);
             if ($language->isVar("$id.h")) {
                 $this->header = (string) $language->getVar("$id.h");
                 if (!empty($this->data)) {
-                    $this->header = SmartUtility::replaceToken($this->header, $this->data);
+                    $this->header = \SmartUtility::replaceToken($this->header, $this->data);
                     $this->header = $language->replaceToken($this->header);
                 }
             } else {
@@ -249,14 +249,14 @@ abstract class AbstractException extends \Exception
     public function getText()
     {
         if (!isset($this->text)) {
-            $language = Language::getInstance();
+            $language = \Language::getInstance();
             $language->readFile('message');
             $id = get_class($this);
             $this->text = "";
             if ($language->isVar($id . ".p")) {
                 $this->text = (string) $language->getVar($id . ".p");
                 if (!empty($this->data)) {
-                    $this->text = SmartUtility::replaceToken($this->text, $this->data);
+                    $this->text = \SmartUtility::replaceToken($this->text, $this->data);
                     $this->text = $language->replaceToken($this->text);
                 }
             } elseif (!empty($this->message)) {

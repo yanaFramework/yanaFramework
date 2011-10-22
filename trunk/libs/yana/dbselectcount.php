@@ -147,7 +147,7 @@ class DbSelectCount extends DbSelectExist
      * @param   string  $stmt  sql statement template
      * @return  string
      */
-    public function __toString($stmt = "SELECT count(%COLUMN%) FROM %TABLE% %WHERE%")
+    protected function toString($stmt = "SELECT count(%COLUMN%) FROM %TABLE% %WHERE%")
     {
         /* replace %COLUMN% */
         if ($this->getColumn() === '*') {
@@ -183,7 +183,7 @@ class DbSelectCount extends DbSelectExist
             unset($column);
         }
 
-        return parent::__toString($stmt);
+        return parent::toString($stmt);
 
     }
 

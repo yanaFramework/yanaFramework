@@ -327,7 +327,7 @@ class DbUpdate extends DbInsert
      * @return  string
      * @throws  \Yana\Core\InvalidArgumentException  if the query is invalid or could not be parsed
      */
-    public function __toString($stmt = "UPDATE %TABLE% SET %SET% %WHERE%")
+    protected function toString($stmt = "UPDATE %TABLE% SET %SET% %WHERE%")
     {
         /*
          * replace %SET%
@@ -375,7 +375,7 @@ class DbUpdate extends DbInsert
             unset($set);
         }
 
-        return parent::__toString($stmt);
+        return parent::toString($stmt);
     }
 
     /**

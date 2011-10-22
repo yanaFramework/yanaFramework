@@ -1867,12 +1867,20 @@ abstract class DbQuery extends Object implements Serializable
     }
 
     /**
+     * @return  string
+     */
+    public function __toString()
+    {
+        return $this->_toString();
+    }
+
+    /**
      * Build a SQL-query.
      *
      * @param   string  $stmt  sql statement template
      * @return  string
      */
-    public function __toString($stmt = "")
+    protected function toString($stmt = "")
     {
         /* 1. replace %TABLE% */
         if (strpos($stmt, '%TABLE%') !== false) {
