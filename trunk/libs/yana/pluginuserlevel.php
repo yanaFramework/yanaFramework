@@ -42,7 +42,7 @@
  * @subpackage  core
  * @ignore
  */
-class PluginUserLevel extends Object
+class PluginUserLevel extends \Yana\Core\Object
 {
 
     /**

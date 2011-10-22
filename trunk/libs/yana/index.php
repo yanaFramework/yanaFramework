@@ -59,7 +59,7 @@
  * @package     yana
  * @subpackage  core
  */
-class Index extends Utility
+class Index extends \Yana\Core\AbstractUtility
 {
     /**
      * @access  private

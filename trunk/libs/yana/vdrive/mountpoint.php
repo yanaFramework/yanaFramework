@@ -39,7 +39,7 @@ namespace Yana\VDrive;
  *
  * @ignore
  */
-abstract class Mountpoint extends \Object implements \Yana\Report\IsReportable
+abstract class Mountpoint extends \Yana\Core\Object implements \Yana\Report\IsReportable
 {
     /**#@+
      * @ignore
@@ -246,10 +246,10 @@ abstract class Mountpoint extends \Object implements \Yana\Report\IsReportable
      * refer to the same filesystem resource.
      *
      * @access  public
-     * @param   \Object  $anotherObject  another object to compare
+     * @param   \Yana\Core\IsObject  $anotherObject  another object to compare
      * @return  string
      */
-    public function equals(\Object $anotherObject)
+    public function equals(\Yana\Core\IsObject $anotherObject)
     {
         if ($anotherObject instanceof $this && $this->getType() === $anotherObject->getType()) {
             if (isset($this->mountpoint) && isset($anotherObject->mountpoint)) {

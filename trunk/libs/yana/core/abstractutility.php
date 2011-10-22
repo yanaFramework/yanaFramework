@@ -25,26 +25,38 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core;
+
 /**
- * <<Enumeration>> Abstract base enumeration class.
+ * <<abstract>> Utility.
  *
- * @abstract
- * @access      public
+ * "Utility classes" contain only static methods and attributes.
+ * This means especially you can't create an instance of such classes.
+ *
+ * As an example they are usefull to group full static functions of the same domain
+ * within a class namespace instead of having them clutter your global namespace.
+ *
+ * To create a utility class, simply add "extends Utility" to your class definition.
+ * Note: this class is abstract by intention not by syntax.
+ *
  * @package     yana
  * @subpackage  core
  */
-abstract class AbstractEnumeration extends StdClass
+abstract class AbstractUtility extends \StdClass
 {
 
     /**
-     * Prevent instantiation.
+     * check Utility - constraint
      *
-     * @access  private
+     * This is a protected pseudo-constructor.
+     * Utility classes do not allow any instances, since they are intended not
+     * to have any instance specific members.
+     *
      * @final
      */
     final private function __construct()
     {
-        // Cannot create an instance of a static 'enumeration' class
+        // Cannot create an instance of a static 'utility' class
     }
 
 }

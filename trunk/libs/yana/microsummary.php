@@ -69,7 +69,7 @@
  * @package     yana
  * @subpackage  utilities
  */
-class Microsummary extends Utility
+class Microsummary extends \Yana\Core\AbstractUtility
 {
     /**
      * list of published microsummary

@@ -37,7 +37,7 @@
  * @package     yana
  * @subpackage  form
  */
-class FormHtmlBuilder extends Object
+class FormHtmlBuilder extends \Yana\Core\Object
 {
 
     /**

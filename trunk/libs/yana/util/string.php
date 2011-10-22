@@ -45,7 +45,7 @@ namespace Yana\Util;
  * @package     yana
  * @subpackage  util
  */
-class String extends \Utility
+class String extends \Yana\Core\AbstractUtility
 {
     /**#@+
      * used as 2nd argument in method String::trim()

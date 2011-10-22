@@ -59,7 +59,7 @@ if (!defined('CASE_MIXED')) {
  * @package     yana
  * @subpackage  util
  */
-class Hashtable extends \Utility
+class Hashtable extends \Yana\Core\AbstractUtility
 {
 
     /**

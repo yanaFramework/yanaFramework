@@ -68,7 +68,7 @@
  * @package     yana
  * @subpackage  core
  */
-abstract class Singleton extends Object implements IsSingleton
+abstract class Singleton extends \Yana\Core\Object implements IsSingleton
 {
     /**
      * This is a place-holder for the singleton's instance

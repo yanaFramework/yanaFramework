@@ -41,7 +41,7 @@
  * @package     yana
  * @subpackage  database
  */
-class Sequence extends Object
+class Sequence extends \Yana\Core\Object
 {
     /**#@+
      * @access protected
@@ -456,10 +456,10 @@ class Sequence extends Object
      * the same IP settings.
      *
      * @access   public
-     * @param    object  $anotherObject  any object or var you want to compare
+     * @param    \Yana\Core\IsObject  $anotherObject  any object or var you want to compare
      * @return   string
      */
-    public function equals(object $anotherObject)
+    public function equals(\Yana\Core\IsObject $anotherObject)
     {
         if ($anotherObject instanceof $this) {
             if ($this->name === $anotherObject->name) {

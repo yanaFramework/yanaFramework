@@ -32,7 +32,7 @@
  * @package     yana
  * @subpackage  form
  */
-class FormSetupBuilder extends Object
+class FormSetupBuilder extends \Yana\Core\Object
 {
 
     /**

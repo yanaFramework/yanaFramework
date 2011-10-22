@@ -36,7 +36,7 @@
  * @subpackage  database
  * @ignore
  */
-class DbStructureGenerics extends Object
+class DbStructureGenerics extends \Yana\Core\Object
 {
     /**
      * current operation

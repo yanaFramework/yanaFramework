@@ -34,7 +34,7 @@
  * @package     yana
  * @subpackage  core
  */
-class SessionAdapter extends Object implements IsDataAdapter
+class SessionAdapter extends \Yana\Core\Object implements IsDataAdapter
 {
     /**
      * session index

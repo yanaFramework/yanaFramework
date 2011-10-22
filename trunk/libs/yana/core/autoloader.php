@@ -25,18 +25,15 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core;
+
 /**
- * <<utility>> Automatic class loader
+ * <<utility>> YANA Automatic class loader.
  *
- * To use this
- *
- * @static
- * @access      public
- * @name        Index
  * @package     yana
  * @subpackage  core
  */
-class AutoLoader extends Utility
+class AutoLoader extends \Yana\Core\AbstractUtility
 {
 
     /**
@@ -47,8 +44,6 @@ class AutoLoader extends Utility
      *
      * For more information see the manual pages.
      *
-     * @static
-     * @access  public
      * @param   string  $className  class name
      * @link    http://de.php.net/manual/en/language.oop5.autoload.php
      * @link    http://de.php.net/manual/de/function.spl-autoload-register.php
@@ -73,7 +68,7 @@ class AutoLoader extends Utility
                 $path .= '.php';
             break;
         }
-        $dir = __DIR__ . '/';
+        $dir = __DIR__ . '/../';
         if (file_exists($dir . $path)) {
             include_once $dir . $path;
         }

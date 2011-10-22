@@ -35,7 +35,7 @@
  * @subpackage  core
  * @ignore
  */
-class PluginTypeEnumeration extends AbstractEnumeration
+class PluginTypeEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     /**

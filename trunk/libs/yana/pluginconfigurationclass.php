@@ -38,7 +38,7 @@
  *
  * @ignore
  */
-class PluginConfigurationClass extends Object
+class PluginConfigurationClass extends \Yana\Core\Object
 {
 
     /**

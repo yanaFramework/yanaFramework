@@ -41,7 +41,7 @@
  *
  * @ignore
  */
-class PluginAnnotationEnumeration extends AbstractEnumeration
+class PluginAnnotationEnumeration extends \Yana\Core\AbstractEnumeration
 {
     /**#@+
      * class constants

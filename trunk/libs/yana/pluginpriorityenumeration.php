@@ -35,7 +35,7 @@
  * @subpackage  core
  * @ignore
  */
-class PluginPriorityEnumeration extends AbstractEnumeration
+class PluginPriorityEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     const LOWEST = 0;

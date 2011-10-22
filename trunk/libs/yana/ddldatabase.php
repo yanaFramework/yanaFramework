@@ -1372,10 +1372,10 @@ class DDLDatabase extends DDLObject
      * refer to the same file.
      *
      * @access   public
-     * @param    object $anotherObject  another object to compare
+     * @param    \Yana\Core\IsObject $anotherObject  another object to compare
      * @return   string
      */
-    public function equals(object $anotherObject)
+    public function equals(\Yana\Core\IsObject $anotherObject)
     {
         if ($anotherObject instanceof $this) {
             if ($this->path == $anotherObject->path) {

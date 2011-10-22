@@ -25,40 +25,44 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core;
+
 /**
- * <<abstract>> Utility
+ * <<Interface>> object
  *
- * "Utility classes" contain only static methods and attributes.
- * This means especially you can't create an instance of such classes.
- *
- * As an example they are usefull to group full static functions of the same domain
- * within a class namespace instead of having them clutter your global namespace.
- *
- * To create a utility class, simply add "extends Utility" to your class definition.
- * Note: this class is abstract by intention not by syntax.
- *
- * @abstract
- * @access      public
  * @package     yana
  * @subpackage  core
  */
-abstract class Utility extends StdClass
+interface IsObject
 {
 
     /**
-     * check Utility - constraint
+     * Get a string representation of this object.
      *
-     * This is a protected pseudo-constructor.
-     * Utility classes do not allow any instances, since they are intended not
-     * to have any instance specific members.
+     * This function is intended to be called when the object
+     * is used in a string context.
      *
-     * @access  private
-     * @final
+     * @return   string
      */
-    final private function __construct()
-    {
-        // Cannot create an instance of a static 'utility' class
-    }
+    public function __toString();
+
+    /**
+     * Returns the name of the class of this object as a string.
+     *
+     * @return string
+     */
+    public function getClass();
+
+    /**
+     * compare with another object
+     *
+     * Returns bool(true) if this object and $anotherObject
+     * are the same and bool(false) otherwise.
+     *
+     * @param  \Yana\Core\IsObject $anotherObject    another object to compare
+     * @return bool
+     */
+    public function equals(\Yana\Core\IsObject $anotherObject);
 
 }
 

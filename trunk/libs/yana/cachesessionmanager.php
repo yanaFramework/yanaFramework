@@ -36,7 +36,7 @@
  * @package     yana
  * @subpackage  cache
  */
-class CacheSessionManager extends Object implements IsCacheManager
+class CacheSessionManager extends \Yana\Core\Object implements IsCacheManager
 {
 
     /**
@@ -92,8 +92,8 @@ class CacheSessionManager extends Object implements IsCacheManager
      * This adds or replaces an item of the cache at the given index with whatever object $value contains.
      *
      * @access  public
-     * @param   string  $name   index of cached object
-     * @param   object  $value  new value of cached instance
+     * @param   string             $name   index of cached object
+     * @param   \Yana\Core\Object  $value  new value of cached instance
      */
     public function __set($name, $value)
     {

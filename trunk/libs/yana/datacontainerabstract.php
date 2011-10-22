@@ -46,7 +46,7 @@
  * @package     yana
  * @subpackage  core
  */
-abstract class DataContainerAbstract extends Object
+abstract class DataContainerAbstract extends \Yana\Core\Object
 {
     /**
      * instance id

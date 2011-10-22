@@ -34,7 +34,7 @@
  * @package     yana
  * @subpackage  database
  */
-class DbStream extends Object implements Serializable
+class DbStream extends \Yana\Core\Object implements Serializable
 {
     /**#@+
      * @ignore
@@ -1966,10 +1966,10 @@ class DbStream extends Object implements Serializable
      * refer to the same structure file and use equal database connections.
      *
      * @access   public
-     * @param    object $anotherObject  another object to compare
+     * @param    \Yana\Core\IsObject $anotherObject  another object to compare
      * @return   string
      */
-    public function equals(object $anotherObject)
+    public function equals(\Yana\Core\IsObject $anotherObject)
     {
         if ($anotherObject instanceof $this) {
             if ($this->getName()->equals($anotherObject->getName()) && $this->database == $anotherObject->database) {

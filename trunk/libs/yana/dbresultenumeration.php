@@ -37,7 +37,7 @@
  *
  * @ignore
  */
-class DbResultEnumeration extends AbstractEnumeration
+class DbResultEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     /**

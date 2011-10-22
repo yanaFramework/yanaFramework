@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core;
+
 /**
  * Object base class for all entities used in the framework.
  * 
@@ -34,7 +36,7 @@
  * @package     yana
  * @subpackage  core
  */
-class Object extends StdClass implements IsObject, IsCloneable
+class Object extends \StdClass implements \Yana\Core\IsObject, \Yana\Core\IsCloneable
 {
 
     /**
@@ -68,7 +70,7 @@ class Object extends StdClass implements IsObject, IsCloneable
      * <<magic>> Issues a warning when trying to access undefined property.
      *
      * @param   string  $name  property name
-     * @return  Object
+     * @return  \Yana\Core\Object
      * @throws  \Yana\Core\UndefinedPropertyException  always!
      * @ignore
      */
@@ -82,7 +84,7 @@ class Object extends StdClass implements IsObject, IsCloneable
      *
      * @param   string  $name   property name
      * @param   string  $value  nwe value
-     * @return  Object
+     * @return  \Yana\Core\Object
      * @throws  \Yana\Core\UndefinedPropertyException  always!
      * @ignore
      */
@@ -134,10 +136,10 @@ class Object extends StdClass implements IsObject, IsCloneable
      * You are encouraged to overwrite this function in subclasses
      * to reflect your implementation.
      *
-     * @param  Object $anotherObject another object to compare
+     * @param  \Yana\Core\IsObject $anotherObject another object to compare
      * @return bool
      */
-    public function equals(Object $anotherObject)
+    public function equals(\Yana\Core\IsObject $anotherObject)
     {
         return $this == $anotherObject;
     }

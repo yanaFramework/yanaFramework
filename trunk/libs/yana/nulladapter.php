@@ -35,7 +35,7 @@
  * @package     yana
  * @subpackage  core
  */
-class NullAdapter extends Object implements IsDataAdapter
+class NullAdapter extends \Yana\Core\Object implements IsDataAdapter
 {
     /**
      * check if a instance of the given id exists

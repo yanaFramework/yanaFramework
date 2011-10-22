@@ -40,7 +40,7 @@
  *
  * @ignore
  */
-class FileDbConnection extends Object
+class FileDbConnection extends \Yana\Core\Object
 {
 
     /**#@+
@@ -1891,10 +1891,10 @@ class FileDbConnection extends Object
      * refer to the same structure file.
      *
      * @access   public
-     * @param    object  $anotherObject object to compare
+     * @param    \Yana\Core\IsObject  $anotherObject object to compare
      * @return   string
      */
-    public function equals(object $anotherObject)
+    public function equals(\Yana\Core\IsObject $anotherObject)
     {
         if ($anotherObject instanceof $this) {
             if (!isset($this->_schema) || !isset($anotherObject->_schema)) {

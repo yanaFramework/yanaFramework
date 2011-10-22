@@ -32,7 +32,7 @@
  * @package     yana
  * @subpackage  mail
  */
-class FormMailer extends Object
+class FormMailer extends \Yana\Core\Object
 {
 
     /**

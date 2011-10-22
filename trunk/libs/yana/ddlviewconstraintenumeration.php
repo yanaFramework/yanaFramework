@@ -37,7 +37,7 @@
  *
  * @ignore
  */
-class DDLViewConstraintEnumeration extends AbstractEnumeration
+class DDLViewConstraintEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     /**#@+

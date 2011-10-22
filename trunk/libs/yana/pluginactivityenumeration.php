@@ -37,7 +37,7 @@
  *
  * @ignore
  */
-class PluginActivityEnumeration extends AbstractEnumeration
+class PluginActivityEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     /**

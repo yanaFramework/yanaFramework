@@ -40,7 +40,7 @@
  * @package     yana
  * @subpackage  file_system
  */
-abstract class FileSystemResource extends Object
+abstract class FileSystemResource extends \Yana\Core\Object
 {
     /**#@+
      * @access  protected
@@ -292,10 +292,10 @@ abstract class FileSystemResource extends Object
      * of the same class and they both refer to the same filesystem resource.
      *
      * @access  public
-     * @param   object  $anotherObject  another object too compare
+     * @param   \Yana\Core\IsObject  $anotherObject  another object too compare
      * @return  bool
      */
-    public function equals(object $anotherObject)
+    public function equals(\Yana\Core\IsObject $anotherObject)
     {
         if ($anotherObject instanceof $this) {
             return $this->getPath() === $anotherObject->getPath();

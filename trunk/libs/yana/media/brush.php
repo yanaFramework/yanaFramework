@@ -42,7 +42,7 @@ namespace Yana\Media;
  * @since       2.8.7
  * @see         Image
  */
-class Brush extends \Object
+class Brush extends \Yana\Core\Object
 {
 
     /**
@@ -294,7 +294,7 @@ class Brush extends \Object
      * You are encouraged to reimplement this for each subclass.
      *
      * @access public
-     * @return Object
+     * @return Brush
      */
     public function __clone()
     {
@@ -325,10 +325,10 @@ class Brush extends \Object
      * Returns bool(false) otherwise.
      *
      * @access  public
-     * @param   \IsObject  $anotherObject  any object or var you want to compare
+     * @param   \Yana\Core\IsObject  $anotherObject  any object or var you want to compare
      * @return  bool
      */
-    public function equals(\Object $anotherObject)
+    public function equals(\Yana\Core\IsObject $anotherObject)
     {
         return $anotherObject instanceof $this && $this->_image === $anotherObject->getResource();
     }

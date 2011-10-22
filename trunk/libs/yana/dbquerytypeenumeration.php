@@ -36,7 +36,7 @@
  *
  * @ignore
  */
-class DbQueryTypeEnumeration extends AbstractEnumeration
+class DbQueryTypeEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     /**

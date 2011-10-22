@@ -35,7 +35,7 @@
  * @package     yana
  * @subpackage  core
  */
-abstract class AbstractAnnotationParser extends Object implements IsAnnotationParser
+abstract class AbstractAnnotationParser extends \Yana\Core\Object implements IsAnnotationParser
 {
 
     /**

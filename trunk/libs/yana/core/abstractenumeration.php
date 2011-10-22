@@ -25,26 +25,28 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core;
+
 /**
- * <<Interface>> cloneable object
+ * <<Enumeration>> Abstract base enumeration class.
  *
- * This class identifies classes that may clone instances.
- *
- * @access      public
  * @package     yana
  * @subpackage  core
  */
-interface IsCloneable
+abstract class AbstractEnumeration extends \StdClass
 {
+
     /**
-     * clone this object
+     * Prevent instantiation.
      *
-     * Creates a copy of this object.
-     *
-     * @access  public
-     * @return  IsCloneable
+     * @access  private
+     * @final
      */
-    public function __clone();
+    final private function __construct()
+    {
+        // Cannot create an instance of a static 'enumeration' class
+    }
+
 }
 
 ?>

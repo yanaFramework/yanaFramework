@@ -57,7 +57,7 @@
  * @subpackage  database
  * @ignore
  */
-class DbInfoColumn extends Object
+class DbInfoColumn extends \Yana\Core\Object
 {
     /**#@+
      * @access  private

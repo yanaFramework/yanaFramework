@@ -36,7 +36,7 @@
  * @package     yana
  * @subpackage  core
  */
-final class Request extends Utility
+final class Request extends \Yana\Core\AbstractUtility
 {
     /**
      * Untainted request vars send via method post
