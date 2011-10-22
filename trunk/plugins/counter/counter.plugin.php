@@ -32,7 +32,7 @@ class plugin_counter extends StdClass implements IsPlugin
     /**
      * @access  private
      * @static
-     * @var     Counter
+     * @var     \Yana\Db\FileDb\Counter
      */
     private static $_counter = null;
 
@@ -54,10 +54,10 @@ class plugin_counter extends StdClass implements IsPlugin
     public function catchAll($event, array $ARGS)
     {
         self::$_id = __CLASS__ . '\\' . Yana::getId();
-        if (!Counter::exists(self::$_id)) {
-            Counter::create(self::$_id);
+        if (!\Yana\Db\FileDb\Counter::exists(self::$_id)) {
+            \Yana\Db\FileDb\Counter::create(self::$_id);
         }
-        self::$_counter = new Counter(self::$_id);
+        self::$_counter = new \Yana\Db\FileDb\Counter(self::$_id);
         self::$_counter->getNextValue();
         Yana::getInstance()->getView()->setFunction('visitorCount', array(__CLASS__, 'visitorCount'));
         return true;

@@ -1045,10 +1045,10 @@ class FileDbConnection extends \Yana\Core\Object
         if (is_null($this->_autoIncrement)) {
             try {
                 $name = __CLASS__ . '\\' . $this->_database . '\\' . $this->_tableName;
-                $this->_autoIncrement = new Sequence($name);
+                $this->_autoIncrement = new \Yana\Db\FileDb\Sequence($name);
             } catch (NotFoundException $e) {
-                Sequence::create($name);
-                $this->_autoIncrement = new Sequence($name);
+                \Yana\Db\FileDb\Sequence::create($name);
+                $this->_autoIncrement = new \Yana\Db\FileDb\Sequence($name);
                 unset($e);
             }
             unset($name);

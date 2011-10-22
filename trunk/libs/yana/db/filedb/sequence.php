@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Db\FileDb;
+
 /**
  * Sequence wrapper
  *
@@ -44,18 +46,40 @@
 class Sequence extends \Yana\Core\Object
 {
     /**#@+
-     * @access protected
      * @ignore
      */
-    /** @var string  */ protected $name = "";
-    /** @var int     */ protected $value = 1;
-    /** @var int     */ protected $increment = 1;
-    /** @var int     */ protected $min = 1;
-    /** @var int     */ protected $max = PHP_INT_MAX;
-    /** @var bool    */ protected $cycle = false;
 
     /**
-     * @static
+     * @var string
+     */
+    protected $name = "";
+
+    /**
+     * @var int
+     */
+    protected $value = 1;
+
+    /**
+     * @var int
+     */
+    protected $increment = 1;
+
+    /**
+     * @var int
+     */
+    protected $min = 1;
+
+    /**
+     * @var int
+     */
+    protected $max = PHP_INT_MAX;
+
+    /**
+     * @var bool
+     */
+    protected $cycle = false;
+
+    /**
      * @var DBStream
      */
     protected static $db = null;
@@ -63,12 +87,7 @@ class Sequence extends \Yana\Core\Object
     /**#@-*/
 
     /**
-     * create a new instance
-     *
-     * This function reads all sequence information from the database and initializes a new
-     * instance.
-     *
-     * A NotFoundException is thrown, if the sequence does not exist.
+     * Reads all sequence information from the database and initializes a new instance.
      *
      * @param   string  $name  name of sequence
      * @throws  NotFoundException  if the sequence does not exist
