@@ -28,11 +28,11 @@
 /**
  * @ignore
  */
-require_once 'isdbimport.interface.php';
+require_once 'isdbimport.php';
 /**
  * @ignore
  */
-require_once 'dbinfotable.class.php';
+require_once 'dbinfotable.php';
 
 /**
  * MDB2 import class
@@ -567,7 +567,7 @@ class DbMDB2 extends File implements IsDbImport
          * Value
          */
         $expression = preg_replace("/\s*<value>(.*?)<\/value>\s*/sie",
-            '" " . ( (is_numeric("$1")) ? "$1" : DbExtractor::quoteValue("$1")) . " "', $expression);
+            '" " . ( (is_numeric("$1")) ? "$1" : \Yana\Db\DataExporter::quoteValue("$1")) . " "', $expression);
 
         /**
          * Null
@@ -647,13 +647,13 @@ class DbMDB2 extends File implements IsDbImport
         switch (true)
         {
             case isset($data['value']):
-                return DbExtractor::quoteValue($data['value']);
+                return \Yana\Db\DataExporter::quoteValue($data['value']);
             break;
             case isset($data['column']):
                 return $data['column'];
             break;
             case array_key_exists('null', $data):
-                return DbExtractor::quoteValue(null);
+                return \Yana\Db\DataExporter::quoteValue(null);
             break;
             case isset($data['function']):
                 $string = preg_replace('/^.*?<function>(.*?)<\/function>.*$/si', '$1', $string);

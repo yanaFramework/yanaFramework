@@ -28,11 +28,11 @@
 /**
  * @ignore
  */
-require_once 'isdbimport.interface.php';
+require_once 'isdbimport.php';
 /**
  * @ignore
  */
-require_once 'dbinfotable.class.php';
+require_once 'dbinfotable.php';
 
 /**
  * DBDesigner 4 import class
@@ -216,7 +216,7 @@ class DbDesigner4 extends File implements IsDbImport
                     while (preg_match('/(?<=\\\\a).*?(?=\\\\a)/is', $init, $m))
                     {
                         $quotedValue = preg_replace('/(?<!\\\\)\\\\(\d+)/ise', 'chr($1)', $m[0]);
-                        $quotedValue = DbExtractor::quoteValue($quotedValue);
+                        $quotedValue = \Yana\Db\DataExporter::quoteValue($quotedValue);
                         $init = str_replace("\\a" . $m[0] . "\\a", $quotedValue, $init);
                     }
                     unset($quotedValue);

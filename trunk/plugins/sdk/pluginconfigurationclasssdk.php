@@ -28,7 +28,7 @@
 /**
  * @ignore
  */
-require_once 'pluginconfigurationmethodsdk.class.php';
+require_once 'pluginconfigurationmethodsdk.php';
 
 /**
  * Plugin configurator for creating manual configurations

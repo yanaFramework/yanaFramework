@@ -28,7 +28,7 @@
 /**
  * @ignore
  */
-require_once 'pluginconfigurationclasssdk.class.php';
+require_once 'pluginconfigurationclasssdk.php';
 
 /**
  * <<worker>> Plugin generator
