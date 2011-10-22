@@ -108,20 +108,17 @@ abstract class Mountpoint extends \Yana\Core\Object implements \Yana\Report\IsRe
     }
 
     /**
-     * get mounted resource
-     *
      * Returns the mounted file resource or bool(false) if none is present.
      *
      * @access  public
      * @return  object|bool(false)
      */
-    public function &getMountpoint()
+    public function getMountpoint()
     {
         if (isset($this->mountpoint) && is_object($this->mountpoint)) {
             return $this->mountpoint;
         } else {
-            $error = false;
-            return $error;
+            return false;
         }
     }
 

@@ -25,38 +25,32 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core;
+
 /**
- * <<collection>> of form fields.
+ * Collection base class.
  *
- * A field represents an UI input-element inside a form.
- *
- * @access      public
  * @package     yana
- * @subpackage  database
- * @see         DDLField
+ * @subpackage  core
  */
-class DDLFieldCollection extends \Yana\Core\AbstractCollection
+class GenericCollection extends \Yana\Core\AbstractCollection
 {
 
     /**
      * Insert or replace item.
      *
-     * @access  public
-     * @param   string    $offset  index of item to replace
-     * @param   DDLField  $value   new value of item
-     * @throws  InvalidArgumentException
+     * Example:
+     * <code>
+     * $collection[$offset] = $item;
+     * parent::offsetSet($offset, $item);
+     * </code>
+     *
+     * @param   scalar  $offset  index of item to replace
+     * @param   mixed   $value   new value of item
      */
     public function offsetSet($offset, $value)
     {
-        if ($value instanceof DDLField) {
-            if (!is_string($offset)) {
-                $offset = $value->getName();
-            }
-            $this->_offsetSet(mb_strtolower($offset), $value);
-        } else {
-            $message = "Instance of DDLField expected. Found " . gettype($value) . "(" . get_class($value) . ") instead.";
-            throw new \Yana\Core\InvalidArgumentException($message);
-        }
+        $this->_offsetSet($offset, $value);
     }
 
 }

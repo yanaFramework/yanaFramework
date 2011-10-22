@@ -75,21 +75,6 @@ class File extends Mountpoint
         }
     }
 
-    /**
-     * Returns the mounted file resource or bool(false) if none is present.
-     *
-     * @access  public
-     * @return  \Object
-     */
-    public function getMountpoint()
-    {
-        if (isset($this->mountpoint) && is_object($this->mountpoint)) {
-            return $this->mountpoint;
-        } else {
-            return false;
-        }
-    }
-
 }
 
 ?>

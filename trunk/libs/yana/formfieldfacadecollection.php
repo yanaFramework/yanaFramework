@@ -34,7 +34,7 @@
  * @package     yana
  * @subpackage  form
  */
-class FormFieldFacadeCollection extends Collection
+class FormFieldFacadeCollection extends \Yana\Core\AbstractCollection
 {
 
     /**
@@ -51,10 +51,10 @@ class FormFieldFacadeCollection extends Collection
             if (!is_string($offset)) {
                 $offset = $value->getName();
             }
-            parent::offsetSet(mb_strtolower($offset), $value);
+            $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
             $message = "Instance of DDLField expected. Found " . gettype($value) . "(" . get_class($value) . ") instead.";
-            throw new InvalidArgumentException($message);
+            throw new \Yana\Core\InvalidArgumentException($message);
         }
     }
 

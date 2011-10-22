@@ -61,13 +61,6 @@
  */
 class Index extends \Yana\Core\AbstractUtility
 {
-    /**
-     * @access  private
-     * @static
-     * @var     string
-     * @ignore
-     */
-    private static $dir = null;
 
     /**
      * YANA controller

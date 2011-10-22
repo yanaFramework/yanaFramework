@@ -36,7 +36,7 @@
  *
  * @ignore
  */
-class PluginClassCollection extends Collection
+class PluginClassCollection extends \Yana\Core\AbstractCollection
 {
 
     /**
@@ -91,11 +91,11 @@ class PluginClassCollection extends Collection
             if (!is_string($offset)) {
                 $offset = preg_replace('/^Plugin_/i', '', $value->getClassName());
             }
-            parent::offsetSet(mb_strtolower($offset), $value);
+            $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
             $message = "Instance of PluginConfigurationClass expected. " .
                 "Found " . gettype($value) . "(" . get_class($value) . ") instead.";
-            throw new InvalidArgumentException($message);
+            throw new \Yana\Core\InvalidArgumentException($message);
         }
     }
 

@@ -25,39 +25,30 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core;
+
 /**
- * <<collection>> of form fields.
+ * Collection base class.
  *
- * A field represents an UI input-element inside a form.
- *
- * @access      public
  * @package     yana
- * @subpackage  database
- * @see         DDLField
+ * @subpackage  core
  */
-class DDLFieldCollection extends \Yana\Core\AbstractCollection
+interface IsCollection extends \Iterator, \Countable, \ArrayAccess
 {
 
     /**
-     * Insert or replace item.
+     * Set a list of items
      *
-     * @access  public
-     * @param   string    $offset  index of item to replace
-     * @param   DDLField  $value   new value of item
-     * @throws  InvalidArgumentException
+     * @param   array $items  list of items to work on
      */
-    public function offsetSet($offset, $value)
-    {
-        if ($value instanceof DDLField) {
-            if (!is_string($offset)) {
-                $offset = $value->getName();
-            }
-            $this->_offsetSet(mb_strtolower($offset), $value);
-        } else {
-            $message = "Instance of DDLField expected. Found " . gettype($value) . "(" . get_class($value) . ") instead.";
-            throw new \Yana\Core\InvalidArgumentException($message);
-        }
-    }
+    public function setItems(array $items = array());
+
+    /**
+     * Get item list.
+     *
+     * @return  array
+     */
+    public function toArray();
 
 }
 
