@@ -25,15 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Core;
+namespace Yana\Core\Exceptions;
 
 /**
- * <<exception>> Trying to access an undefined class property.
+ * <<exception>> A value is not a valid key.
+ *
+ * This represents errors that cannot be detected at compile time. 
  *
  * @package     yana
  * @subpackage  core
  */
-class UndefinedPropertyException extends \Yana\Core\Exceptions\LogicException
+class OutOfBoundsException extends \Yana\Core\Exceptions\RuntimeException
 {
     // intentionally left blank
 }
