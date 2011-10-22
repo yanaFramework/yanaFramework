@@ -34,7 +34,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class InvalidValueException extends ReportAbstract
+class InvalidValueException extends \Yana\Core\Exceptions\DomainException
 {
     // intentionally left blank
 }

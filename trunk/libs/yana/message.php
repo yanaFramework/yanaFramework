@@ -37,7 +37,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class Message extends ReportAbstract
+class Message extends \Yana\Core\Exceptions\AbstractException
 {
 
     /**

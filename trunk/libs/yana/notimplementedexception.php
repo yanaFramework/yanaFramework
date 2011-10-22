@@ -35,7 +35,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class NotImplementedException extends ReportAbstract
+class NotImplementedException extends \Yana\Core\Exceptions\BadMethodCallException
 {
     /* intentionally left blank */
 }

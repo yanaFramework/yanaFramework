@@ -35,7 +35,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class InvalidSyntaxException extends ReportAbstract
+class InvalidSyntaxException extends InvalidValueException
 {
     /* intentionally left blank */
 }
