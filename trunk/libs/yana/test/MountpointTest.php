@@ -150,17 +150,6 @@ class MountpointTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * to string
-     *
-     * @test
-     */
-    public function testToString()
-    {
-        $string = $this->object->toString();
-        $this->assertType('string', $string, 'the value is not of type string');
-    }
-
-    /**
      * is mounted
      *
      * @test

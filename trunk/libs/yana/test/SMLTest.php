@@ -194,7 +194,7 @@ class SMLTest extends PHPUnit_Framework_TestCase
     public function testGetFileContent()
     {
         $set = $this->instance->set ( array ('fo' => 'bar', 'FOO' => 'FOO', 'TEST' => 'description'));
-        $valid = mb_strlen($this->instance->toString());
+        $valid = mb_strlen((string) $this->instance);
         $getFileContent = $this->instance->getFileContent();
         $this->assertType('string', $getFileContent, 'assert failed, value is not from type string');
         $this->assertEquals(mb_strlen($getFileContent), $valid, 'assert failed, expected that the 2 variables are equal');
@@ -277,10 +277,10 @@ class SMLTest extends PHPUnit_Framework_TestCase
     public function testToString()
     {
         $nonExist = new SML('resources/nonexist.sml');
-        $toString = $nonExist->toString();
+        $toString = (string) $nonExist;
         $this->assertEquals("", $toString, 'Should return empty string if file does not exist');
 
-        $string = $this->instance->toString();
+        $string = (string) $this->instance;
         $this->assertType('string', $string, 'assert failed, valueis not from type string');
         $this->assertNotEquals(0, mb_strlen($string), 'assert failed , value is not empty');
     }

@@ -250,13 +250,13 @@ class SmartView extends SmartTemplate
      * @access  public
      * @return  string
      */
-    public function toString()
+    public function __toString()
     {
         // import vars from global registry and overwrite local vars
         if (isset($GLOBALS['YANA'])) {
             $this->template->assign($GLOBALS['YANA']->getVar('*'));
         }
-        return parent::toString();
+        return parent::__toString();
     }
 
     /**
@@ -284,7 +284,7 @@ class SmartView extends SmartTemplate
             $YANA->setVar('STDOUT.LEVEL', mb_strtolower("$type"));
         }
 
-        exit($this->toString());
+        exit((string) $this);
     }
 }
 

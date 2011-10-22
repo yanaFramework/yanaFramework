@@ -76,7 +76,7 @@ class FormHtmlBuilder extends Object
         unset($file);
 
         $template->setVar('form', $this->_facade);
-        return $template->toString();
+        return (string) $template;
     }
 
 }

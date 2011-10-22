@@ -52,7 +52,6 @@
  * want to return. You will find more details on that inside the developer's
  * cookbook in the manual.
  *
- * @access      public
  * @package     yana
  * @subpackage  database
  */
@@ -60,9 +59,8 @@ class DbSelectCount extends DbSelectExist
 {
 
     /**
-     * @access  protected
-     * @ignore
      * @var int
+     * @ignore
      */
     protected $type = DbQueryTypeEnumeration::COUNT;
 
@@ -72,17 +70,18 @@ class DbSelectCount extends DbSelectExist
      * Checks if the column exists and sets the source column
      * of the query to the given value.
      *
-     * @access  public
      * @param   string  $column           column name
      * @name    DbQuery::setColumn()
      * @see     DbQuery::setColumns()
      * @throws  DbEventLog                if table has not been initialized
      * @throws  InvalidArgumentException  if a given argument is invalid
      * @throws  NotFoundException         if the given column is not found in the table
+     * @return  DbSelectCount 
      */
     public function setColumn($column = '*')
     {
         parent::setColumn($column);
+        return $this;
     }
 
     /**
@@ -98,22 +97,20 @@ class DbSelectCount extends DbSelectExist
      * a valid key or if it really points to a value. If it is not,
      * the resultset will be empty.
      *
-     * @access  public
      * @param   string  $arrayAddress   array address
      * @name    DbQuery::setArrayAddress()
      * @throws  InvalidArgumentException  if a given argument is invalid
+     * @return  DbSelectCount 
      * @ignore
      */
     public function setArrayAddress($arrayAddress = "")
     {
         parent::setArrayAddress($arrayAddress);
+        return $this;
     }
 
     /**
-     * get the currently selected column
-     *
-     * Returns the lower-cased name of the currently
-     * selected column.
+     * Returns the lower-cased name of the currently selected column.
      *
      * If none has been selected, '*' is returned.
      *
@@ -124,7 +121,6 @@ class DbSelectCount extends DbSelectExist
      * If the argument $i is not provided, the function returns
      * the first column.
      *
-     * @access  public
      * @param   int     $i  index of column to get
      * @return  string
      */
@@ -134,14 +130,10 @@ class DbSelectCount extends DbSelectExist
     }
 
     /**
-     * get the list of all selected columns
-     *
-     * Returns the lower-cased names of the currently
-     * selected columns as a numeric array of strings.
+     * Returns lower-cased names of the selected columns as a numeric array of strings.
      *
      * If none has been selected, an empty array is returned.
      *
-     * @access  public
      * @return  array
      */
     public function getColumns()
@@ -150,13 +142,12 @@ class DbSelectCount extends DbSelectExist
     }
 
     /**
-     * build a SQL-query
+     * Build a SQL-query.
      *
-     * @access  public
      * @param   string  $stmt  sql statement template
      * @return  string
      */
-    public function toString($stmt = "SELECT count(%COLUMN%) FROM %TABLE% %WHERE%")
+    public function __toString($stmt = "SELECT count(%COLUMN%) FROM %TABLE% %WHERE%")
     {
         /* replace %COLUMN% */
         if ($this->getColumn() === '*') {
@@ -192,17 +183,16 @@ class DbSelectCount extends DbSelectExist
             unset($column);
         }
 
-        return parent::toString($stmt);
+        return parent::__toString($stmt);
 
     }
 
     /**
-     * get the number of entries
+     * Get the number of entries.
      *
      * This sends the query statement to the database and returns the results.
      * The return type depends on the query settings, see {@see DbQuery::getExpectedResult()}.
      *
-     * @access  public
      * @return  int
      */
     public function countResults()
@@ -228,15 +218,13 @@ class DbSelectCount extends DbSelectExist
     /**
      * parse SQL query into query object
      *
-     * This is the opposite of toString().
+     * This is the opposite of __toString().
      * It takes a SQL query string as input and returns
      * a query object of the specific type that
      * corresponds to the given type of query.
      *
      * The result object is always a subclass of DbQuery.
      *
-     * @access  public
-     * @static
      * @param   string    $sqlStmt   SQL statement
      * @param   DbStream  $database  database connection
      * @return  DbSelectCount
@@ -257,10 +245,10 @@ class DbSelectCount extends DbSelectExist
         // retrieve table
         $tables = $sqlStmt['tables'];
         if (empty($tables)) {
-            return false;
+            return new \Yana\Core\InvalidArgumentException("SQL-statement has no table names: $sqlStmt.", E_USER_WARNING);
         } elseif (count($tables) > 1) {
             $message = "Row-Counts are not supported on joined tables.";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
         $query->setTable(current($tables));
 
@@ -269,7 +257,7 @@ class DbSelectCount extends DbSelectExist
         if ($function['name'] !== 'count') {
             $message = "Funktion 'count' expected for 'Select count(foo) ...'-statement. " .
                 "Found '{$function['name']}' instead.";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
         $column = current($function['arg']);
         if ($column != '*') {

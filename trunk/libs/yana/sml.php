@@ -342,15 +342,13 @@ class SML extends File
      *
      * @access  public
      * @return  string
-     *
-     * @name    SML::toString()
      */
-    public function toString()
+    public function __toString()
     {
         try {
             return $this->getContent();
         } catch (\Exception $e) {
-            return ""; // toString() must not throw an exception
+            return ""; // must not throw an exception
         }
     }
 

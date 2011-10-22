@@ -216,12 +216,12 @@ class DirTest extends PHPUnit_Framework_TestCase
         $getAll = $this->existingDir->getContent();
         $this->assertType('array', $getAll, '"$getAll" is not of type array - assert failed');
 
-        $toString = $this->existingDir->toString();
+        $toString = (string) $this->existingDir;
         $this->assertType('string', $toString, '"toString" is not of type string - assert failed');
         
         // try with non exist Dir
         $newDir = new Dir('nonexistDir');
-        $toString = $newDir->toString();
+        $toString = (string) $newDir;
         unset($newDir);
     }
 

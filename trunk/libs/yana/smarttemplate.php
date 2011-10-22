@@ -106,7 +106,7 @@ class SmartTemplate extends Object
      * @access  public
      * @return  string
      */
-    public function toString()
+    public function __toString()
     {
         return $this->template->fetch();
     }

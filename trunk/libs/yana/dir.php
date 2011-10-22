@@ -260,12 +260,10 @@ class Dir extends FileSystemResource implements IsReadable
      * Returns a string with the contents of this directory.
      * Entries are seperated by line-breaks.
      *
-     * @uses    $Dir->toString()
-     *
      * @access  public
      * @return  string
      */
-    public function toString()
+    public function __toString()
     {
         if (!$this->exists()) {
             return "Directory ".$this->getPath()." does not exist\n";

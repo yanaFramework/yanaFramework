@@ -33,37 +33,54 @@
  *
  * Note: this class does NOT untaint input data for you.
  *
- * @access      public
  * @package     yana
  * @subpackage  database
  */
 class DbInsert extends DbQuery
 {
     /**#@+
-     * @access  protected
      * @ignore
      */
 
-    /** @var int   */ protected $type    = DbQueryTypeEnumeration::INSERT;
-    /** @var array */ protected $column  = array();
-    /** @var array */ protected $profile = array();
-    /** @var array */ protected $values  = null;
-    /** @var array */ protected $queue   = array();
-    /** @var array */ protected $files   = array();
-
-    /**#@-*/
+    /**
+     * @var int
+     */
+    protected $type = DbQueryTypeEnumeration::INSERT;
 
     /**
-     * clone (magic function)
-     *
-     * This is automatically used to create copies of the object when
-     * using the "clone" keyword.
+     * @var array
+     */
+    protected $column = array();
+
+    /**
+     * @var array
+     */
+    protected $profile = array();
+
+    /**
+     * @var array
+     */
+    protected $values = null;
+
+    /**
+     * @var array
+     */
+    protected $queue = array();
+
+    /**
+     * @var array
+     */
+    protected $files = array();
+
+    /** #@- */
+
+    /**
+     * <<magic>> Called to create copies of the object when using the "clone" keyword.
      *
      * It will empty the query queue for the cloned object.
      * Note: the cloned object will use the same database connection, since
      * connection are resources, which may not be cloned.
      *
-     * @access  public
      */
     public function __clone()
     {
@@ -71,7 +88,7 @@ class DbInsert extends DbQuery
     }
 
     /**
-     * reset query
+     * Reset query.
      *
      * Resets all properties of the query object, except
      * for the database connection and the properties
@@ -81,8 +98,7 @@ class DbInsert extends DbQuery
      * and reuse it without creating another one. This can
      * help to improve the performance of your application.
      *
-     * @access  public
-     * @since   2.9.4
+     * @return  DbInsert 
      */
     public function resetQuery()
     {
@@ -91,6 +107,7 @@ class DbInsert extends DbQuery
         $this->values  = null;
         $this->queue   = array();
         $this->files   = array();
+        return $this;
     }
 
     /**
@@ -99,11 +116,11 @@ class DbInsert extends DbQuery
      * This takes an associative array, where the keys are column names.
      * When updating a single column, it may also be a scalar value.
      *
-     * @access  public
      * @param   mixed  $values            value(s) for current query
      * @throws  InvalidArgumentException  if a given argument is invalid
      * @throws  InvalidValueWarning       if a givem value does not match expected criteria
      * @throws  DbWarningLog              if an input check fails
+     * @return  DbInsert 
      */
     public function setValues($values)
     {
@@ -246,14 +263,14 @@ class DbInsert extends DbQuery
          * 4) input is valid - update values
          */
         $this->values =& $values;
+        return $this;
     }
 
     /**
-     * get the list of values
+     * Get the list of values.
      *
      * If none are available, NULL (not bool(false)!) is returned.
      *
-     * @access  public
      * @return  mixed
      */
     public function &getValues()
@@ -262,9 +279,8 @@ class DbInsert extends DbQuery
     }
 
     /**
-     * append value to query queue
+     * Append value to query queue.
      *
-     * @access  private
      * @param   string  $table   table name
      * @param   string  $column  column name
      * @param   mixed   $value   value
@@ -290,9 +306,8 @@ class DbInsert extends DbQuery
     }
 
     /**
-     * check profile constraint
+     * Check profile constraint.
      *
-     * @access  protected
      * @param   mixed   &$value value
      * @return  bool
      * @since   2.9.3
@@ -319,11 +334,8 @@ class DbInsert extends DbQuery
     }
 
     /**
-     * send query to server
+     * Sends the query to the database server and returns a result-object.
      *
-     * This sends the query to the database and returns a result-object.
-     *
-     * @access  public
      * @return  FileDbResult
      * @throws  DbError  when a query fails
      * @ignore
@@ -387,8 +399,8 @@ class DbInsert extends DbQuery
      * A list of these files was created before the row was updated.
      * Now we need to remove the old files and upload the new ones.
      *
-     * @access  protected
      * @param   array  $files  list of files to upload
+     * @return  DbInsert
      * @ignore
      */
     protected function uploadFiles(array $files = array())
@@ -407,14 +419,13 @@ class DbInsert extends DbQuery
                 }
             }
         }
+        return $this;
     }
 
     /**
-     * get unique id
+     * Get unique id.
      *
-     * @access  public
      * @return  string
-     * @since   2.9.3
      * @ignore
      */
     public function toId()
@@ -427,13 +438,12 @@ class DbInsert extends DbQuery
     }
 
     /**
-     * build a SQL-query
+     * Build a SQL-query.
      *
-     * @access  public
      * @param   string $stmt sql statement
      * @return  string
      */
-    public function toString($stmt = "INSERT INTO %TABLE% (%KEYS%) VALUES (%VALUES%)")
+    public function __toString($stmt = "INSERT INTO %TABLE% (%KEYS%) VALUES (%VALUES%)")
     {
         /*
          * replace %KEYS% and %VALUES%
@@ -475,20 +485,19 @@ class DbInsert extends DbQuery
             unset($keys, $values);
         }
 
-        return parent::toString($stmt);
+        return parent::__toString($stmt);
     }
 
     /**
      * parse SQL query into query object
      *
-     * This is the opposite of toString().
+     * This is the opposite of __toString().
      * It takes a SQL query string as input and returns
      * a query object of the specific type that
      * corresponds to the given type of query.
      *
      * The result object is always a subclass of DbQuery.
      *
-     * @access  public
      * @static
      * @param   string    $sqlStmt   SQL statement
      * @param   DbStream  $database  database connection

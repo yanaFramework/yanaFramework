@@ -269,7 +269,7 @@ class Brush extends \Object
     }
 
     /**
-     * get a string representation of this object
+     * Get a string representation of this object.
      *
      * This function is intended to be called when the object
      * is used in a string context.
@@ -277,7 +277,7 @@ class Brush extends \Object
      * @access   public
      * @return   string
      */
-    public function toString()
+    public function __toString()
     {
         $name = $this->getName();
         if (is_string($name)) {

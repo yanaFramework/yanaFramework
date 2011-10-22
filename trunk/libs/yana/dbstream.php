@@ -1377,7 +1377,7 @@ class DbStream extends Object implements Serializable
      * @param   int             $offset   the row to start from
      * @param   int             $limit    the maximum numbers of rows in the resultset
      * @return  mixed
-     * @throws  InvalidArgumentException if the SQL statement is not valid
+     * @throws  \Yana\Core\InvalidArgumentException if the SQL statement is not valid
      */
     public function query($sqlStmt, $offset = 0, $limit = 0)
     {
@@ -1389,7 +1389,7 @@ class DbStream extends Object implements Serializable
         if (is_object($sqlStmt) && $sqlStmt instanceof DbQuery) {
             $offset = $sqlStmt->getOffset();
             $limit = $sqlStmt->getLimit();
-            $sqlStmt = $sqlStmt->toString();
+            $sqlStmt = (string) $sqlStmt;
             /*
              * Add this line for debugging purposes
              *
@@ -1397,14 +1397,14 @@ class DbStream extends Object implements Serializable
              */
         }
         if (!is_string($sqlStmt)) {
-            throw new InvalidArgumentException('Argument $sqlStmt is expected to be a string.');
+            throw new \Yana\Core\InvalidArgumentException('Argument $sqlStmt is expected to be a string.');
         }
         $reg = "/;.*(?:select|insert|delete|update|create|alter|grant|revoke).*$/is";
         if (strpos($sqlStmt, ';') !== false && preg_match($reg, $sqlStmt)) {
             $message = "A semicolon has been found in the current input '{$sqlStmt}', " .
                 "indicating multiple queries.\n\t\t As this might be the result of a hacking attempt " .
                 "it is prohibited for security reasons and the queries won't be executed.";
-            throw new InvalidArgumentException($message);
+            throw new \Yana\Core\InvalidArgumentException($message);
         }
 
         $dbConnection = $this->getConnection();
@@ -1648,7 +1648,7 @@ class DbStream extends Object implements Serializable
      * @return  string
      * @ignore
      */
-    public function toString()
+    public function __toString()
     {
         return $this->getSchema()->getName();
     }

@@ -74,7 +74,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $xml = simplexml_load_file(CWD . '/resources/test.drive.xml');
 
         // test file loading
-        $this->assertEquals($this->object->toString(), $xml->asXML(), '"file loading" test failed');
+        $this->assertEquals((string) $this->object, $xml->asXML(), '"file loading" test failed');
 
         $this->object = Configuration::createDrive();
         // test vars

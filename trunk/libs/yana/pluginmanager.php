@@ -614,7 +614,7 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
      *
      * @ignore
      */
-    public function toString()
+    public function __toString()
     {
         $pluginConfig = $this->getPluginConfigurations();
         if (!empty($pluginConfig)) {

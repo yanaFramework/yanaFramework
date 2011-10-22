@@ -33,7 +33,6 @@
  *
  * Note: this class does NOT untaint input data for you.
  *
- * @access      public
  * @package     yana
  * @subpackage  database
  */
@@ -43,7 +42,6 @@ class DbUpdate extends DbInsert
     /**
      * select type identifier
      *
-     * @access  protected
      * @var int
      * @ignore
      */
@@ -68,23 +66,21 @@ class DbUpdate extends DbInsert
      * An E_USER_WARNING is issued if the second argument is
      * provided but the targeted column is not of type 'array'.
      *
-     * @access  public
      * @param   string  $column         column
      * @return  bool
      * @throws  DbEventLog                if table has not been initialized
      * @throws  InvalidArgumentException  if a given argument is invalid
      * @throws  NotFoundException         if the given column is not found in the table
+     * @return  DbUpdate
      */
     public function setColumn($column = '*')
     {
         parent::setColumn($column);
+        return $this;
     }
 
     /**
-     * get the currently selected column
-     *
-     * Returns the lower-cased name of the currently
-     * selected column.
+     * Returns the lower-cased name of the currently selected column.
      *
      * If none has been selected, '*' is returned.
      *
@@ -95,7 +91,6 @@ class DbUpdate extends DbInsert
      * If the argument $i is not provided, the function returns
      * the first column.
      *
-     * @access  public
      * @param   int     $i  index of column to get
      * @return  string
      */
@@ -105,12 +100,10 @@ class DbUpdate extends DbInsert
     }
 
     /**
-     * get the currently selected array address
-     *
      * Returns the currently address as a string.
+     *
      * If none has been selected yet, an empty string is returned.
      *
-     * @access  public
      * @return  string
      */
     public function getArrayAddress()
@@ -122,27 +115,25 @@ class DbUpdate extends DbInsert
     /**
      * set column to sort the resultset by
      *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * @access  public
      * @param   array  $orderBy  list of column names
      * @param   array  $desc     sort descending (true=yes, false=no)
      * @throws  NotFoundException  when a column or table does not exist
+     * @return  DbUpdate
      */
     public function setOrderBy($orderBy, $desc = array())
     {
         settype($orderBy, 'array');
         settype($desc, 'array');
         parent::setOrderBy($orderBy, $desc);
+        return $this;
     }
 
     /**
-     * get the list of columns the resultset is ordered by
+     * Get the list of columns the resultset is ordered by.
      *
      * Returns a lower-cased list of column names.
      * If none has been set yet, then the list is empty.
      *
-     * @access  public
      * @return  array
      */
     public function getOrderBy()
@@ -151,11 +142,8 @@ class DbUpdate extends DbInsert
     }
 
     /**
-     * check if resultset is sorted in descending order
+     * Returns an array of booleans: true = descending, false = ascending.
      *
-     * Returns an array of boolean values: true = descending, false = ascending.
-     *
-     * @access  public
      * @return  array
      */
     public function getDescending()
@@ -164,7 +152,7 @@ class DbUpdate extends DbInsert
     }
 
     /**
-     * set where clause
+     * Set where clause.
      *
      * The syntax is as follows:
      * <ol>
@@ -201,14 +189,15 @@ class DbUpdate extends DbInsert
      * To unset the where clause, call this function without
      * providing a parameter.
      *
-     * @access  public
      * @param   array  $where  where clause
      * @throws  NotFoundException         when a column is not found
      * @throws  InvalidArgumentException  when the where-clause contains invalid values
+     * @return  DbUpdate
      */
     public function setWhere(array $where = array())
     {
         parent::setWhere($where);
+        return $this;
     }
 
     /**
@@ -216,7 +205,6 @@ class DbUpdate extends DbInsert
      *
      * Returns the current where clause.
      *
-     * @access  public
      * @return  array
      */
     public function getWhere()
@@ -227,7 +215,6 @@ class DbUpdate extends DbInsert
     /**
      * check profile constraint
      *
-     * @access  protected
      * @param   mixed   &$value value
      * @return  bool
      * @since   2.9.3
@@ -310,7 +297,6 @@ class DbUpdate extends DbInsert
      *
      * For update and delete queries this function will retrieve and return the unmodified values.
      *
-     * @access  public
      * @return  mixed
      */
     public function getOldValues()
@@ -319,11 +305,8 @@ class DbUpdate extends DbInsert
     }
 
     /**
-     * send query to server
+     * Sends the query to the database server and returns a result-object.
      *
-     * This sends the query to the database and returns a result-object.
-     *
-     * @access  public
      * @return  FileDbResult
      * @since   2.9.3
      * @ignore
@@ -338,13 +321,13 @@ class DbUpdate extends DbInsert
     }
 
     /**
-     * build a SQL-query
+     * Build a SQL-query.
      *
-     * @access  public
      * @param   string $stmt sql statement
      * @return  string
+     * @throws  \Yana\Core\InvalidArgumentException  if the query is invalid or could not be parsed
      */
-    public function toString($stmt = "UPDATE %TABLE% SET %SET% %WHERE%")
+    public function __toString($stmt = "UPDATE %TABLE% SET %SET% %WHERE%")
     {
         /*
          * replace %SET%
@@ -375,8 +358,8 @@ class DbUpdate extends DbInsert
                     }
                     unset($column, $value);
                 } else {
-                    trigger_error("Cannot build update statement. No valid values provided.", E_USER_WARNING);
-                    return "";
+                    throw new \Yana\Core\InvalidArgumentException("No valid values provided in statement: " . $stmt,
+                        E_USER_WARNING);
                 }
             } elseif ($this->expectedResult === DbResultEnumeration::CELL) {
                 if (is_array($this->values)) {
@@ -385,21 +368,20 @@ class DbUpdate extends DbInsert
                     $set = $this->getColumn() . ' = ' . $this->db->quote($this->values);
                 }
             } else {
-                trigger_error("Cannot build update statement. No row or cell selected for update.", E_USER_WARNING);
-                return "";
+                throw new \Yana\Core\InvalidArgumentException("No row or cell selected for update in statement: " . $stmt,
+                    E_USER_WARNING);
             }
             $stmt = str_replace('%SET%', $set, $stmt);
             unset($set);
         }
 
-        return parent::toString($stmt);
-
+        return parent::__toString($stmt);
     }
 
     /**
      * parse SQL query into query object
      *
-     * This is the opposite of toString().
+     * This is the opposite of __toString().
      * It takes a SQL query string as input and returns
      * a query object of the specific type that
      * corresponds to the given type of query.

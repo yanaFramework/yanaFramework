@@ -287,7 +287,7 @@ class Item extends \Object
      *
      * @return  string
      */
-    public function toString()
+    public function __toString()
     {
         return $this->toSimpleXml()->asXML();
     }

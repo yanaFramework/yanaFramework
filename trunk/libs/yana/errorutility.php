@@ -173,12 +173,12 @@ class ErrorUtility extends Utility
             $log =  Log::getLogFromMessage($error_log);
             unset($error_log);
 
-            $error_message = "";
+            $errorMessage = "";
 
             /* the result is already some message or status */
             if (is_scalar($log)) {
 
-                $error_message = (string) $log;
+                $errorMessage = (string) $log;
 
             /*
              * The result is an array, possibly containing a message
@@ -190,30 +190,23 @@ class ErrorUtility extends Utility
                 $log['TIME'] = date('r');
                 foreach ($log as $label => $value)
                 {
-                    $error_message .= $label;
+                    $errorMessage .= $label;
                     for ($i = mb_strlen($label); $i < 15; $i++)
                     {
-                        $error_message .= ' ';
+                        $errorMessage .= ' ';
                     }
-                    $error_message .= $value."\n";
+                    $errorMessage .= $value."\n";
                 }
-
-            /*
-             * If the result is a String object, just unbox it.
-             */
-            } elseif (is_object($log) && is_a($log, 'String')) {
-
-                $error_message = $log->toString();
 
             /* If the result is something unexpected output a default message. */
             } else {
 
-                $error_message = "The program encountered an unknown error.";
+                $errorMessage = "The program encountered an unknown error.";
 
             }
 
             /* output the error message to a log file */
-            if (error_log($error_message."\n", 3, $filename) === false) {
+            if (error_log($errorMessage."\n", 3, $filename) === false) {
                 print "Cannot write to file '$filename'.";
                 exit(1);
             }

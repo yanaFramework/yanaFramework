@@ -458,7 +458,7 @@ class FormFacade extends Object
      * @access  public
      * @return  string
      */
-    public function toString()
+    public function __toString()
     {
         $htmlBuilder = new FormHtmlBuilder($this);
         return $htmlBuilder->__invoke();

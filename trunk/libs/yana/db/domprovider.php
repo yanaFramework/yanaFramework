@@ -61,7 +61,7 @@ class DomDocumentProvider extends \Object
      *
      * @param string $name
      * @return \DOMDocument
-     * @throws \Yana\Core\UndefinedPropertyException
+     * @throws \Yana\Db\DomProvider\InvalidNameException
      */
     public function __get($name)
     {

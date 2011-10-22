@@ -462,19 +462,18 @@ class VDrive extends \FileSystemResource implements \Yana\Report\IsReportable, \
      *
      * You might want to use this for debugging purposes.
      *
-     * @uses    print "<pre>".$vDrive->toString()."</pre>";
+     * @uses    print "<pre>" . $vDrive . "</pre>";
      *
      * @access  public
-     * @name    VDrive::toString()
      * @return  string
      */
-    public function toString()
+    public function __toString()
     {
-        return $this->getReport()->toString();
+        return (string) $this->getReport();
     }
 
     /**
-     * return file contents as string
+     * Return file contents as string.
      *
      * @access  public
      * @return  string
@@ -483,7 +482,7 @@ class VDrive extends \FileSystemResource implements \Yana\Report\IsReportable, \
     {
         // read file if not already read
         $this->read();
-        return $this->content->toString();
+        return (string) $this->content;
     }
 
     /**

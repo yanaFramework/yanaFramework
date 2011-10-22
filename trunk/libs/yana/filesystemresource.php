@@ -33,7 +33,7 @@
  * For examples: resources may be files of any type, or directories.
  *
  * All subclasses should implement the abstract functions read() and isEmpty().
- * You are also encouraged to re-implement the function toString().
+ * You are also encouraged to re-implement the function __toString().
  *
  * @abstract
  * @access      public
@@ -75,10 +75,9 @@ abstract class FileSystemResource extends Object
      *
      * @access  public
      * @return  string
-     *
      * @ignore
      */
-    public function toString()
+    public function __toString()
     {
         return $this->getPath();
     }

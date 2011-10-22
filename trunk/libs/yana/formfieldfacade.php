@@ -555,7 +555,7 @@ class FormFieldFacade extends Object
      * @access  public
      * @return  string
      */
-    public function toString()
+    public function __toString()
     {
         $builder = new FormFieldAutomatedHtmlBuilder();
         return $builder->__invoke($this);

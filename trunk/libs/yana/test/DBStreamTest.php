@@ -141,12 +141,9 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
      */
     function testToString()
     {
-        $actual = $this->dbsobj->toString();
-        $expected = $this->dbsobj->schema->getName();
-        $this->assertEquals($expected, $actual, "Function toString() must return database name.");
         $actual = (string) $this->dbsobj;
         $expected = $this->dbsobj->schema->getName();
-        $this->assertEquals($expected, $actual, "Function toString() must be called automatically.");
+        $this->assertEquals($expected, $actual, "Function __toString() must return database name.");
     }
 
     /**

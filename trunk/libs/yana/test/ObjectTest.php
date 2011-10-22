@@ -75,22 +75,11 @@ class ObjectTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * ToString
-     *
-     * @test
-     */
-    public function testToString()
-    {
-        $string = $this->object->toString();
-        $this->assertType('string', $string, 'assert failed, value is not from type string');
-    }
-
-    /**
      * __toString
      *
      * @test
      */
-    public function test__toString()
+    public function testToString()
     {
         $string = $this->object->__toString();
         $this->assertType('string', $string, 'assert failed, value is not from type string');

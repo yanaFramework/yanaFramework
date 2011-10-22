@@ -145,7 +145,7 @@ class SqlFactory extends \Object
     public function createMySQL()
     {
         $xslFilename = \DDL::getDirectory() . '/.xsl/dbcreator_mysql.xsl'; // Stylesheet
-        $xmlString = $this->schema->toString(); // Source file
+        $xmlString = (string) $this->schema; // Source file
         return self::_transformToSql($xmlString, $xslFilename);
     }
 
@@ -162,7 +162,7 @@ class SqlFactory extends \Object
     public function createPostgreSQL()
     {
         $xslFilename = \DDL::getDirectory() . '/.xsl/dbcreator_postgresql.xsl'; // Stylesheet
-        $xmlString = $this->schema->toString(); // Source file
+        $xmlString = (string) $this->schema; // Source file
         return self::_transformToSql($xmlString, $xslFilename);
 
         foreach ($this->schema->getTables() as $table)

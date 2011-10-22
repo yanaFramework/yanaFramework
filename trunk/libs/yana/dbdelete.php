@@ -31,7 +31,6 @@
  * This class is a query builder that can be used to build SQL statements to delete an existing
  * row in a database-table.
  *
- * @access      public
  * @package     yana
  * @subpackage  database
  */
@@ -39,36 +38,33 @@ class DbDelete extends DbQuery
 {
 
     /**
-     * @access  protected
-     * @ignore
      * @var int
+     * @ignore
      */
     protected $type = DbQueryTypeEnumeration::DELETE;
 
     /**
-     * set column to sort the resultset by
+     * Set column to sort the resultset by.
      *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * @access  public
      * @param   array  $orderBy  column name / list of column names
      * @param   array  $desc     sort descending (true=yes, false=no)
      * @throws  NotFoundException  when a column or table does not exist
+     * @return  DbDelete 
      */
     public function setOrderBy($orderBy, $desc = array())
     {
         settype($orderBy, 'array');
         settype($desc, 'array');
         parent::setOrderBy($orderBy, $desc);
+        return $this;
     }
 
     /**
-     * get the list of columns the resultset is ordered by
+     * Get the list of columns the resultset is ordered by.
      *
      * Returns a lower-cased list of column names.
      * If none has been set yet, then the list is empty.
      *
-     * @access  public
      * @return  array
      */
     public function getOrderBy()
@@ -77,11 +73,10 @@ class DbDelete extends DbQuery
     }
 
     /**
-     * check if resultset is sorted in descending order
+     * Check if resultset is sorted in descending order.
      *
      * Returns an array of boolean values: true = descending, false = ascending.
      *
-     * @access  public
      * @return  array
      */
     public function getDescending()
@@ -90,7 +85,7 @@ class DbDelete extends DbQuery
     }
 
     /**
-     * set where clause
+     * Set where clause.
      *
      * The syntax is as follows:
      * <ol>
@@ -127,22 +122,20 @@ class DbDelete extends DbQuery
      * To unset the where clause, call this function without
      * providing a parameter.
      *
-     * @access  public
      * @param   array  $where  where clause
      * @throws  NotFoundException         when a column is not found
      * @throws  InvalidArgumentException  when the where-clause contains invalid values
+     * @return  DbDelete 
      */
     public function setWhere(array $where = array())
     {
         parent::setWhere($where);
+        return $this;
     }
 
     /**
-     * get the currently set where clause
-     *
      * Returns the current where clause.
      *
-     * @access  public
      * @return  array
      */
     public function getWhere()
@@ -151,31 +144,28 @@ class DbDelete extends DbQuery
     }
 
     /**
-     * set a limit for this query
+     * Set a limit for this query.
      *
-     * Note: This setting will not be part of the sql statement
-     * produced by toString().
+     * Note: This setting will not be part of the sql statement produced by __toString().
      * Use the API's $limit and $offset parameter instead when sending
      * the query.
      *
      * This restriction does not apply if you use sendQuery().
      *
-     * @access  public
      * @param   int  $limit  limit for this query
      * @return  bool
      * @throws  InvalidArgumentException  when limit is not positive
+     * @return  DbDelete 
      */
     public function setLimit($limit)
     {
         parent::setLimit($limit);
+        return $this;
     }
 
     /**
-     * Get old values
-     *
      * For update and delete queries this function will retrieve and return the unmodified values.
      *
-     * @access  public
      * @return  mixed
      */
     public function getOldValues()
@@ -184,11 +174,8 @@ class DbDelete extends DbQuery
     }
 
     /**
-     * send query to server
+     * Sends the query to the database server and returns a result-object.
      *
-     * This sends the query to the database and returns a result-object.
-     *
-     * @access  public
      * @return  FileDbResult
      * @since   2.9.3
      * @ignore
@@ -215,29 +202,26 @@ class DbDelete extends DbQuery
     }
 
     /**
-     * build a SQL-query
+     * Build a SQL-query.
      *
-     * @access  public
      * @param   string $stmt sql statement
      * @return  string
      */
-    public function toString($stmt = "DELETE FROM %TABLE% %WHERE% %ORDERBY%")
+    public function __toString($stmt = "DELETE FROM %TABLE% %WHERE% %ORDERBY%")
     {
-        return parent::toString($stmt);
+        return parent::__toString($stmt);
     }
 
     /**
      * parse SQL query into query object
      *
-     * This is the opposite of toString().
+     * This is the opposite of __toString().
      * It takes a SQL query string as input and returns
      * a query object of the specific type that
      * corresponds to the given type of query.
      *
      * The result object is always a subclass of DbQuery.
      *
-     * @access  public
-     * @static
      * @param   string    $sqlStmt   SQL statement
      * @param   DbStream  $database  database connection
      * @return  DbDelete

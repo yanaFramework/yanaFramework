@@ -26,12 +26,8 @@
  */
 
 /**
- * database structure
+ * This wrapper class represents the structure of a database.
  *
- * This wrapper class represents the structure of a database
- *
- * @access      public
- * @abstract
  * @package     yana
  * @subpackage  database
  */
@@ -40,9 +36,7 @@ abstract class DDL extends Object
     /**
      * File extensions
      *
-     * @access  protected
-     * @static
-     * @var     string
+     * @var  string
      * @ignore
      */
     protected static $extension = ".db.xml";
@@ -80,7 +74,6 @@ abstract class DDL extends Object
      * The type "nmtoken" refers to an identifier (like "name"), while "array" is a comma-seperated
      * list of identifiers.
      *
-     * @access  protected
      * @var     array
      * @see     DDL::_unserializeFromXDDL()
      * @ignore
@@ -108,7 +101,6 @@ abstract class DDL extends Object
      * The classes must all be sub-classes of DDL. These MUST implement DDL::unserializeFromXDDL()
      * and MAY overwrite DDL::serializeToXDDL().
      *
-     * @access  protected
      * @var     array
      * @see     DDL::_unserializeFromXDDL()
      * @ignore
@@ -118,37 +110,29 @@ abstract class DDL extends Object
     /**
      * database base directory
      *
-     * @access  protected
      * @var     string
      * @ignore
      */
     protected static $databaseDirectory = null;
 
     /**
-     * get a string representation of this object
+     * Get a string representation of this object.
      *
-     * This function is intended to be called when the object
-     * is used in a string context.
-     *
-     * @access  public
      * @return  string
      */
-    public function toString()
+    public function __toString()
     {
         try {
             $xml = $this->serializeToXDDL();
             return $xml->asXML();
         } catch (\Exception $e) {
-            return $e->getMessage(); // toString() must not throw an exception
+            return $e->getMessage(); // must not throw an exception
         }
     }
 
     /**
-     * serialize this object to XDDL
+     * Serializes this object to a string in XML-DDL format.
      *
-     * Returns the serialized object as a string in XML-DDL format.
-     *
-     * @access  public
      * @param   \SimpleXMLElement $parentNode  parent node
      * @return  \SimpleXMLElement
      */
@@ -191,7 +175,6 @@ abstract class DDL extends Object
     /**
      * serialize attributes
      *
-     * @access  protected
      * @final
      * @param   \SimpleXMLElement  $node  XML node
      * @ignore
@@ -238,7 +221,6 @@ abstract class DDL extends Object
     /**
      * serialize child nodes
      *
-     * @access  protected
      * @final
      * @param   \SimpleXMLElement  $node  XML node
      * @ignore
@@ -343,13 +325,8 @@ abstract class DDL extends Object
         unset($name, $tag);
     }
     /**
-     * unserialize a XDDL-node to an object
+     * Unserialize a XDDL-node to an object and returns it.
      *
-     * Returns the unserialized object.
-     *
-     * @access  public
-     * @abstract
-     * @static
      * @param   \SimpleXMLElement  $node  node create via XMLArray::toArray()
      * @return  DDL
      */
@@ -359,11 +336,8 @@ abstract class DDL extends Object
     }
 
     /**
-     * unserialize a XDDL-node to an object
+     * Unserialize a XDDL-node to an object and returns it.
      *
-     * Returns the unserialized object.
-     *
-     * @access  protected
      * @final
      * @param   \SimpleXMLElement  $node  XML node
      * @ignore
@@ -380,7 +354,6 @@ abstract class DDL extends Object
     /**
      * unserialize child node
      *
-     * @access  protected
      * @final
      * @param   \SimpleXMLElement  $node  XML node
      * @ignore
@@ -458,7 +431,6 @@ abstract class DDL extends Object
     /**
      * unserialize attributes
      *
-     * @access  protected
      * @final
      * @param   \SimpleXMLElement  $node  XML node
      * @ignore
@@ -511,8 +483,6 @@ abstract class DDL extends Object
      * The path is configured using the setting "DBDIR" in the system configuration.
      * You may overwrite this setting by calling DDL::setDirectory().
      *
-     * @access  public
-     * @static
      * @return  string
      */
     public static function getDirectory()
@@ -529,8 +499,6 @@ abstract class DDL extends Object
      *
      * Set the path to the directory where XDDL files are to be stored.
      *
-     * @access  public
-     * @static
      * @param   string  $directory  path to XDDL base directory
      */
     public static function setDirectory($directory)
@@ -546,8 +514,6 @@ abstract class DDL extends Object
      *
      * Looks up the source path for the wanted database in the file system and returns the path.
      *
-     * @access  public
-     * @static
      * @param   string  $databaseName   database name
      * @return  string
      */
@@ -568,8 +534,6 @@ abstract class DDL extends Object
      * Returns a unique identifier for the given file path as a string.
      * Actually this is the filename for the XDDL file.
      *
-     * @access  public
-     * @static
      * @param   string  $path   database path
      * @return  string
      */
@@ -591,8 +555,6 @@ abstract class DDL extends Object
      *
      * In case of an unexpected error, this function returns an empty array.
      *
-     * @static
-     * @access  public
      * @param   bool  $useFullFilename  return items as full filenames (true = yes, false = no)
      * @return  array
      */
