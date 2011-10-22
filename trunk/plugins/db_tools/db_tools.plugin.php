@@ -163,7 +163,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
             throw new InvalidInputWarning();
         }
 
-        $xml = \Yana\Db\DataExporter::createXML(true, array_values($list));
+        $xml = \Yana\Db\Export\DataFactory::createXML(true, array_values($list));
         $filename = 'database.xml';
         if (empty($xml)) {
             $error = new FileNotCreatedError();
@@ -283,7 +283,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
                 continue;
             }
 
-            /* Mapping the DBMS to the SQL export function in class \Yana\Db\SqlFactory */
+            /* Mapping the DBMS to the SQL export function in class \Yana\Db\Export\SqlFactory */
             switch ($dbms)
             {
                 case 'db2':
@@ -314,7 +314,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
                     $error = new InvalidValueWarning();
                     throw $error->setField('DBMS=' . $dbms);
             }
-            $dbc = new \Yana\Db\SqlFactory( XDDL::getDatabase($dbName) );
+            $dbc = new \Yana\Db\Export\SqlFactory( XDDL::getDatabase($dbName) );
             $arrayOfStmts = $dbc->$methodName();
             $fileContents .= implode("\n", $arrayOfStmts) . "\n";
         }
