@@ -180,7 +180,7 @@ class Sequence extends \Yana\Core\Object
      *
      * @access  public
      * @param   int  $max   maximal value
-     * @throws  InvalidArgumentException  when $max is smaller then minimum value
+     * @throws  \Yana\Core\InvalidArgumentException  when $max is smaller then minimum value
      */
     public function setMax($max)
     {
@@ -190,12 +190,12 @@ class Sequence extends \Yana\Core\Object
         } else {
             $message = "Maximum value '{$max}' must be bigger then minimum value '{$this->min}' in sequence '".
                 "{$this->name}'.";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
     }
 
     /**
-     * get minimum
+     * Get minimum value.
      *
      * @access  public
      * @return  int
@@ -206,11 +206,11 @@ class Sequence extends \Yana\Core\Object
     }
 
     /**
-     * set minimum
+     * Set minimum value.
      *
      * @access  public
      * @param   int  $min   minimal value
-     * @throws  InvalidArgumentException  when $min is bigger then maximum value
+     * @throws  \Yana\Core\InvalidArgumentException  when $min is bigger then maximum value
      */
     public function setMin($min)
     {
@@ -220,23 +220,19 @@ class Sequence extends \Yana\Core\Object
         } else {
             $message = "Minimum value '{$min}' must be smaller then maximum value '{$this->max}' in sequence '".
                 "{$this->name}'.";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
     }
 
     /**
-     * is cyclic
+     * Is cyclic.
      *
      * @access  public
      * @return  bool
      */
     public function isCycle()
     {
-        if ($this->cycle) {
-            return true;
-        } else {
-            return false;
-        }
+        return (bool) $this->cycle;
     }
 
     /**
@@ -248,11 +244,7 @@ class Sequence extends \Yana\Core\Object
     public function setCycle($cycle)
     {
         assert('is_bool($cycle); // Invalid argument type argument 1. Boolean expected.');
-        if ($cycle) {
-            $this->cycle = true;
-        } else {
-            $this->cycle = false;
-        }
+        $this->cycle = (bool) $cycle;
     }
 
     /**

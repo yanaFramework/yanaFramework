@@ -172,23 +172,20 @@ class Mailer extends SmartTemplate
      *
      * It is called when sending an e-mail.
      *
-     * If the argument $function is not a callable, an InvalidArgumentException
-     * is thrown.
-     *
      * This is a global setting that is used as a default for all instances.
      * It may be overwritten for a particular instead where needed.
      *
      * @access  public
      * @static
      * @param   function  $function  callable handler function
-     * @throws  InvalidArgumentException
+     * @throws  \Yana\Core\InvalidArgumentException  if the function is not callable
      */
     public static function setGlobalMailHandler($function)
     {
         if (is_callable($function)) {
             self::$_globalMailHandler = $function;
         } else {
-            throw new InvalidArgumentException("The argument '" .
+            throw new \Yana\Core\InvalidArgumentException("The argument '" .
                 print_r($function, true) . "' is not a callable mail handler.",
                 E_USER_WARNING);
         }
@@ -227,19 +224,16 @@ class Mailer extends SmartTemplate
      *
      * It is called when sending an e-mail.
      *
-     * If the argument $function is not a callable, an InvalidArgumentException
-     * is thrown.
-     *
      * @access  public
      * @param   function  $function  callable handler function
-     * @throws  InvalidArgumentException
+     * @throws  \Yana\Core\InvalidArgumentException  when the function is not callable
      */
     public function setMailHandler($function)
     {
         if (is_callable($function)) {
             $this->_mailHandler = $function;
         } else {
-            throw new InvalidArgumentException("The argument '" .
+            throw new \Yana\Core\InvalidArgumentException("The argument '" .
                 print_r($function, true) . "' is not a callable mail handler.",
                 E_USER_WARNING);
         }

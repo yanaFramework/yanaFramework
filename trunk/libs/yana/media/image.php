@@ -247,7 +247,7 @@ class Image extends \Yana\Core\Object
      *
      * @param   string  $filename    name of the source file
      * @param   string  $imageType   type of the image
-     * @throws  InvalidArgumentException
+     * @throws  \Yana\Core\InvalidArgumentException
      */
     public function __construct($filename = null, $imageType = null)
     {
@@ -1762,7 +1762,7 @@ class Image extends \Yana\Core\Object
      * @param   int    $b        blue value
      * @param   float  $opacity  alpha value
      * @return  int|bool(false)
-     * @throws  InvalidArgumentException
+     * @throws  \Yana\Core\InvalidArgumentException
      */
     public function getColor($r, $g, $b, $opacity = null)
     {

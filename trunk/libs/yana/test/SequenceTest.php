@@ -145,7 +145,7 @@ class SequenceTest extends PHPUnit_Framework_TestCase
      * @test
      * @covers  Sequence::getMax()
      * @covers  Sequence::setMax()
-     * @expectedException  InvalidArgumentException
+     * @expectedException  \Yana\Core\InvalidArgumentException
      */
     public function testMaxInvalidArgumentException()
     {
@@ -174,7 +174,7 @@ class SequenceTest extends PHPUnit_Framework_TestCase
      * @test
      * @covers  Sequence::getMin()
      * @covers  Sequence::setMin()
-     * @expectedException  InvalidArgumentException
+     * @expectedException  \Yana\Core\InvalidArgumentException
      */
     public function testMinInvalidArgumentException()
     {

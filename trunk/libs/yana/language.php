@@ -543,7 +543,7 @@ class Language extends Singleton implements Serializable
      * @access  public
      * @param   string  $selectedLanguage  current language
      * @param   string  $selectedCountry   current country (optional)
-     * @throws  InvalidArgumentException   when the provided locale is not valid
+     * @throws  \Yana\Core\InvalidArgumentException  when the provided locale is not valid
      *
      * @ignore
      */
@@ -564,7 +564,7 @@ class Language extends Singleton implements Serializable
         // check if locale is valid
         if (!preg_match('/^[a-z]{2}(-[A-Z]{2})?$/s', $locale)) {
             $message = "Invalid locale setting '$selectedLanguage'.";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
 
         // set system locale

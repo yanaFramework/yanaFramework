@@ -286,16 +286,17 @@ class DDLColumn extends DDLNamedObject
      * @access  public
      * @param   string  $value  new value of this property
      * @return  DDLColumn 
+     * @throws   \Yana\Core\InvalidArgumentException  if the parameter is empty
      */
     public function setType($value)
     {
-        assert('is_string($value) && !empty($value); // Wrong type for argument 1. String expected');
+        assert('is_string($value); // Invalid argument $value: string expected');
         $value = strtolower($value);
         assert('in_array($value, self::getSupportedTypes()); // Undefined column type "' . $value . '". ');
         if (!empty($value)) {
             $this->type = "$value";
         } else {
-            throw new InvalidArgumentException("Parameter with the name '\$value' can not be empty.");
+            throw new \Yana\Core\InvalidArgumentException("Type cannot be empty.");
         }
         return $this;
     }
@@ -511,7 +512,7 @@ class DDLColumn extends DDLNamedObject
      * @param   string  $role   user role
      * @param   int     $level  security level
      * @return  DDLGrant
-     * @throws  InvalidArgumentException  when $level is out of range [0,100]
+     * @throws  \Yana\Core\InvalidArgumentException  when $level is out of range [0,100]
      */
     public function addGrant($user = null, $role = null, $level = null)
     {
@@ -525,7 +526,7 @@ class DDLColumn extends DDLNamedObject
         if (!empty($role)) {
             $grant->setRole($role);
         }
-        // may throw an InvalidArgumentException
+        // may throw an \Yana\Core\InvalidArgumentException
         if (!is_null($level)) {
             $grant->setLevel($level);
         }
@@ -1042,7 +1043,7 @@ class DDLColumn extends DDLNamedObject
         assert('is_int($precision); // Wrong type for argument 2. Integer expected');
         if ($precision > $length) {
             $message = "The precission '$precision' may not exceed the maximum length of '$length'.";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
 
         $this->setSize($length);
@@ -1261,7 +1262,7 @@ class DDLColumn extends DDLNamedObject
      * @access  public
      * @param   mixed   $value  new value of this property
      * @param   string  $dbms   target DBMS, defaults to "generic"
-     * @throws  InvalidArgumentException  when parameter is empty
+     * @throws  \Yana\Core\InvalidArgumentException  when parameter is empty
      * @return  DDLColumn
      */
     public function setDefault($value = null, $dbms = "generic")
@@ -1274,7 +1275,7 @@ class DDLColumn extends DDLNamedObject
         } elseif (!empty($dbms)) {
             $this->default[$dbms] = $value;
         } else {
-            throw new InvalidArgumentException("Parameter with the name '\$dbms' can not be empty.");
+            throw new \Yana\Core\InvalidArgumentException("Parameter with the name '\$dbms' can not be empty.");
         }
         return $this;
     }
@@ -2270,7 +2271,7 @@ class DDLColumn extends DDLNamedObject
         if ($node->getName() !== 'declaration') {
             $attributes = $node->attributes();
             if (!isset($attributes['name'])) {
-                throw new InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+                throw new \Yana\Core\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
             }
             $ddl = new self((string) $attributes['name'], $parent);
             $ddl->_unserializeFromXDDL($node);

@@ -219,10 +219,10 @@ class File extends FileReadonly implements IsWritable
      * @param    bool     $isRecursive  setting this to true will automatically, recursively create directories
      *                                  in the $destFile string, if required
      * @param    int      $mode         the access restriction that applies to the copied file, defaults to 0766
-     * @throws   InvalidArgumentException  when one input argument is invalid
-     * @throws   AlreadyExistsException    if the target file already exists
-     * @throws   NotWriteableException     if the target location is not writeable
-     * @throws   NotFoundException         if the target directory does not exist
+     * @throws   \Yana\Core\InvalidArgumentException  when one input argument is invalid
+     * @throws   AlreadyExistsException               if the target file already exists
+     * @throws   NotWriteableException                if the target location is not writeable
+     * @throws   NotFoundException                    if the target directory does not exist
      */
     public function copy($destFile, $overwrite = true, $isRecursive = false, $mode = 0766)
     {
@@ -233,13 +233,13 @@ class File extends FileReadonly implements IsWritable
 
         if ($mode > 0777 || $mode < 1) {
             $message = "Argument mode must be an octal number in range: [1,0777].";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
 
         /* validity checking */
         if (empty($destFile) || mb_strlen($destFile) > 512) {
             $message = "Invalid filename '$destFile'.";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
 
         $destDir  = dirname($destFile) . '/';

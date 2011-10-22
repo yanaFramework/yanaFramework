@@ -809,8 +809,8 @@ class FormBuilder extends \Yana\Core\Object
      *
      * @access  private
      * @return  DDLForm
-     * @throws  \BadMethodCallException    when a parameter is missing
-     * @throws  \InvalidArgumentException  when a paraemter is not valid
+     * @throws  \Yana\Core\Exceptions\BadMethodCallException   when a parameter is missing
+     * @throws  \Yana\Core\InvalidArgumentException            when a paraemter is not valid
      */
     private function _buildForm()
     {
@@ -822,7 +822,7 @@ class FormBuilder extends \Yana\Core\Object
                 foreach (explode('.', $ids) as $id)
                 {
                     if (!$form->isForm($id)) {
-                        throw new \InvalidArgumentException("The form with name '" . $ids . "' was not found.");
+                        throw new \Yana\Core\InvalidArgumentException("The form with name '" . $ids . "' was not found.");
                     }
                     $form = $form->getForm($id);
                 }
@@ -830,11 +830,11 @@ class FormBuilder extends \Yana\Core\Object
             } elseif ($this->getTable()) {
                     $table = $this->_schema->getTable($this->getTable());
                     if (! $table instanceof DDLTable) {
-                        throw new \InvalidArgumentException("The table with name '" . $this->getTable() . "' was not found.");
+                        throw new \Yana\Core\InvalidArgumentException("The table with name '" . $this->getTable() . "' was not found.");
                     }
                     $this->_form = $this->_buildFormFromTable($table);
             } else {
-                throw new \BadMethodCallException("Missing either parameter 'id' or 'table'.");
+                throw new \Yana\Core\Exceptions\BadMethodCallException("Missing either parameter 'id' or 'table'.");
             }
             $this->setForm($this->_form);
         }
@@ -923,8 +923,8 @@ class FormBuilder extends \Yana\Core\Object
      *
      * @access  private
      * @param   FormFacade  $form  parent form
-     * @throws  \BadMethodCallException    when a parameter is missing
-     * @throws  \InvalidArgumentException  when a paraemter is not valid
+     * @throws  \Yana\Core\Exceptions\BadMethodCallException  when a parameter is missing
+     * @throws  \Yana\Core\InvalidArgumentException          when a paraemter is not valid
      */
     private function _buildSubForms(FormFacade $form)
     {

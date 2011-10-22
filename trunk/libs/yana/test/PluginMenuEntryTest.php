@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../pluginmenuentry.class.php';
+require_once dirname(__FILE__) . '/../pluginmenuentry.php';
 
 /**
  * Test class for PluginMenuEntry.

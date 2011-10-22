@@ -68,9 +68,9 @@ class DbUpdate extends DbInsert
      *
      * @param   string  $column         column
      * @return  bool
-     * @throws  DbEventLog                if table has not been initialized
-     * @throws  InvalidArgumentException  if a given argument is invalid
-     * @throws  NotFoundException         if the given column is not found in the table
+     * @throws  DbEventLog                           if table has not been initialized
+     * @throws  \Yana\Core\InvalidArgumentException  if a given argument is invalid
+     * @throws  NotFoundException                    if the given column is not found in the table
      * @return  DbUpdate
      */
     public function setColumn($column = '*')
@@ -190,8 +190,8 @@ class DbUpdate extends DbInsert
      * providing a parameter.
      *
      * @param   array  $where  where clause
-     * @throws  NotFoundException         when a column is not found
-     * @throws  InvalidArgumentException  when the where-clause contains invalid values
+     * @throws  NotFoundException                    when a column is not found
+     * @throws  \Yana\Core\InvalidArgumentException  when the where-clause contains invalid values
      * @return  DbUpdate
      */
     public function setWhere(array $where = array())
@@ -393,7 +393,7 @@ class DbUpdate extends DbInsert
      * @param   string    $sqlStmt   SQL statement
      * @param   DbStream  $database  database connection
      * @return  DbUpdate
-     * @throws  InvalidArgumentException  if the query is invalid or could not be parsed
+     * @throws  \Yana\Core\InvalidArgumentException  if the query is invalid or could not be parsed
      */
     public static function parseSQL($sqlStmt, DbStream $database)
     {
@@ -407,7 +407,7 @@ class DbUpdate extends DbInsert
         // security check: where clause must not be empty
         if (empty($sqlStmt['where_clause'])) {
             $message = "SQL security restriction. Cannot update a table (only rows and cells).";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
 
         $table = current($sqlStmt['tables']); // array of table names
@@ -434,7 +434,7 @@ class DbUpdate extends DbInsert
         // check security constraint
         if ($expectedResult !== DbResultEnumeration::ROW && $expectedResult !== DbResultEnumeration::CELL) {
             $message = "SQL security restriction. Cannot update a table (only rows and cells).";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
         return $query;
     }

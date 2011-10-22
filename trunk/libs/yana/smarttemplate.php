@@ -498,14 +498,14 @@ class SmartTemplate extends \Yana\Core\Object
      * @access  public
      * @param   string  $filename  name of the template file
      * @return  SmartTemplate
-     * @throws  InvalidArgumentException when the filename is invalid
+     * @throws  \Yana\Core\InvalidArgumentException  when the filename is invalid
      */
     public function setPath($filename)
     {
         assert('is_string($filename); // Wrong argument type for argument 1. String expected.');
 
         if (preg_match("/.*\.(register|config|cfg|lock|dat|htaccess|php|inc|conf)/Ui", $filename)) {
-            throw new InvalidArgumentException("Access denied for file '$filename'.");
+            throw new \Yana\Core\InvalidArgumentException("Access denied for file '$filename'.");
         }
         $this->template->template_resource = "$filename";
         return $this;

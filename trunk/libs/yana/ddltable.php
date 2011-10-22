@@ -428,8 +428,8 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * @param   string  $columnName  name of column
      * @param   string  $type        data-type
      * @return  DDLColumn
-     * @throws  AlreadyExistsException   when another column with the same name already exists
-     * @throws  InvalidArgumentException if the name is not valid
+     * @throws  AlreadyExistsException              when another column with the same name already exists
+     * @throws  \Yana\Core\InvalidArgumentException if the name is not valid
      */
     public function addColumn($columnName, $type)
     {
@@ -440,7 +440,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
             $message = "Another column with the name '$columnName' already exists in table '{$this->getName()}'.";
             throw new AlreadyExistsException($message, E_USER_WARNING);
         } else {
-            // may throw InvalidArgumentException
+            // may throw \Yana\Core\InvalidArgumentException
             $column = new DDLColumn($columnName, $this);
             $column->setType("$type");
             $this->columns[$columnName] = $column;
@@ -691,8 +691,8 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * @param   string  $table            name of target table
      * @param   string  $constraintName   optional name of foreign-key constraint
      * @return  DDLForeignKey
-     * @throws  NotFoundException         if target table does not exist
-     * @throws  InvalidArgumentException  if constraint name is not valid or column
+     * @throws  NotFoundException                    if target table does not exist
+     * @throws  \Yana\Core\InvalidArgumentException  if constraint name is not valid or column
      */
     public function addForeignKey($table, $constraintName = "")
     {
@@ -1390,7 +1390,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * @param   string  $role   user role
      * @param   int     $level  security level
      * @return  DDLGrant
-     * @throws  InvalidArgumentException  when $level is out of range [0,100]
+     * @throws  \Yana\Core\InvalidArgumentException  when $level is out of range [0,100]
      */
     public function addGrant($user = null, $role = null, $level = null)
     {
@@ -1404,7 +1404,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
         if (!empty($role)) {
             $grant->setRole($role);
         }
-        // may throw an InvalidArgumentException
+        // may throw an \Yana\Core\InvalidArgumentException
         if (!is_null($level)) {
             $grant->setLevel($level);
         }
@@ -1558,12 +1558,13 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed             $parent  parent node (if any)
      * @return  DDLTable
+     * @throws  \Yana\Core\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
-            throw new InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
         }
         $ddl = new self((string) $attributes['name'], $parent);
         $ddl->_unserializeFromXDDL($node);

@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../ddlfieldcollection.class.php';
+require_once dirname(__FILE__) . '/../ddlfieldcollection.php';
 
 /**
  * Test class for DDLFieldCollection.
@@ -58,7 +58,7 @@ class DDLFieldCollectionTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      */
     public function testOffsetSetInvalidArgumentException()
     {

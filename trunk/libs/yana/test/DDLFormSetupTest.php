@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../ddlformsetup.class.php';
+require_once dirname(__FILE__) . '/../ddlformsetup.php';
 
 /**
  * Test class for DDLFormSetup.
@@ -45,7 +45,7 @@ class DDLFormSetupTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      */
     public function testSetPageInvalidArgumentException()
     {
@@ -71,7 +71,7 @@ class DDLFormSetupTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      */
     public function testSetEntriesPerPageInvalidArgumentException()
     {

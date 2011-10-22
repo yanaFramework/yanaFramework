@@ -73,9 +73,9 @@ class DbSelectCount extends DbSelectExist
      * @param   string  $column           column name
      * @name    DbQuery::setColumn()
      * @see     DbQuery::setColumns()
-     * @throws  DbEventLog                if table has not been initialized
-     * @throws  InvalidArgumentException  if a given argument is invalid
-     * @throws  NotFoundException         if the given column is not found in the table
+     * @throws  DbEventLog                           if table has not been initialized
+     * @throws  \Yana\Core\InvalidArgumentException  if a given argument is invalid
+     * @throws  NotFoundException                    if the given column is not found in the table
      * @return  DbSelectCount 
      */
     public function setColumn($column = '*')
@@ -99,7 +99,7 @@ class DbSelectCount extends DbSelectExist
      *
      * @param   string  $arrayAddress   array address
      * @name    DbQuery::setArrayAddress()
-     * @throws  InvalidArgumentException  if a given argument is invalid
+     * @throws  \Yana\Core\InvalidArgumentException  if a given argument is invalid
      * @return  DbSelectCount 
      * @ignore
      */
@@ -228,8 +228,8 @@ class DbSelectCount extends DbSelectExist
      * @param   string    $sqlStmt   SQL statement
      * @param   DbStream  $database  database connection
      * @return  DbSelectCount
-     * @throws  InvalidArgumentException  if the query is invalid or could not be parsed
-     * @throws  ParserError               when the SQL statement is invalid
+     * @throws  \Yana\Core\InvalidArgumentException  if the query is invalid or could not be parsed
+     * @throws  ParserError                          when the SQL statement is invalid
      */
     public static function parseSQL($sqlStmt, DbStream $database)
     {

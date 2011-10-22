@@ -48,14 +48,11 @@ abstract class DDLNamedObject extends DDL
     protected $name = null;
 
     /**
-     * Initialize instance.
-     *
-     * The name is mandatory.
-     * If an empty or invalid name is provided, the function throws an InvalidArgumentException.
+     * Initialize instance and set a name.
      *
      * @access  public
      * @param   string        $name     name
-     * @throws  InvalidArgumentException
+     * @throws  \Yana\Core\InvalidArgumentException when an empty or invalid name is provided
      */
     public function __construct($name)
     {
@@ -78,11 +75,10 @@ abstract class DDLNamedObject extends DDL
      * Set object name.
      *
      * The name is mandatory.
-     * If an empty or invalid name is provided, the function throws an InvalidArgumentException.
      *
      * @access  public
      * @param   string  $name  object name
-     * @throws  InvalidArgumentException  when name is invalid
+     * @throws  \Yana\Core\InvalidArgumentException  when name is invalid
      * @return  DDLNamedObject 
      */
     public function setName($name)
@@ -91,7 +87,7 @@ abstract class DDLNamedObject extends DDL
         if (!preg_match('/^[a-z][\w-]*$/is', $name)) {
             $message = "Not a valid object name: '$name'. Must start with a letter and may only contain: " .
                 "a-z, 0-9, '-' and '_'.";
-            throw new InvalidArgumentException($message);
+            throw new \Yana\Core\InvalidArgumentException($message);
 
         } else {
             $this->name = mb_strtolower($name);

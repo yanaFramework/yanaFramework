@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../pluginconfigurationmethod.class.php';
+require_once dirname(__FILE__) . '/../pluginconfigurationmethod.php';
 
 /**
  * Test class for PluginConfigurationMethod.

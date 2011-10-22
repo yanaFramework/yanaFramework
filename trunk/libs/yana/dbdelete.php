@@ -124,7 +124,7 @@ class DbDelete extends DbQuery
      *
      * @param   array  $where  where clause
      * @throws  NotFoundException         when a column is not found
-     * @throws  InvalidArgumentException  when the where-clause contains invalid values
+     * @throws  \Yana\Core\InvalidArgumentException  when the where-clause contains invalid values
      * @return  DbDelete 
      */
     public function setWhere(array $where = array())
@@ -154,7 +154,7 @@ class DbDelete extends DbQuery
      *
      * @param   int  $limit  limit for this query
      * @return  bool
-     * @throws  InvalidArgumentException  when limit is not positive
+     * @throws  \Yana\Core\InvalidArgumentException  when limit is not positive
      * @return  DbDelete 
      */
     public function setLimit($limit)
@@ -225,7 +225,7 @@ class DbDelete extends DbQuery
      * @param   string    $sqlStmt   SQL statement
      * @param   DbStream  $database  database connection
      * @return  DbDelete
-     * @throws  InvalidArgumentException  if the query is invalid or could not be parsed
+     * @throws  \Yana\Core\InvalidArgumentException  if the query is invalid or could not be parsed
      */
     public static function parseSQL($sqlStmt, DbStream $database)
     {

@@ -179,9 +179,9 @@ class Dir extends FileSystemResource implements IsReadable
      * @access  public
      * @param   int  $mode  access mode, an octal number of 1 through 0777.
      * @name    Dir::create()
-     * @throws  InvalidArgumentException  when argument $mode is not an integer or out of range
-     * @throws  AlreadyExistsException    when the directory already exists
-     * @throws  NotWriteableException     when target location is not writeable
+     * @throws  \Yana\Core\InvalidArgumentException  when argument $mode is not an integer or out of range
+     * @throws  AlreadyExistsException               when the directory already exists
+     * @throws  NotWriteableException                when target location is not writeable
      */
     public function create($mode = 0777)
     {
@@ -189,7 +189,7 @@ class Dir extends FileSystemResource implements IsReadable
 
         if ($mode > 0777 || $mode < 1) {
             $message = "Argument mode must be an octal number in range: [1,0777].";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
 
         if ($this->exists()) {
@@ -509,9 +509,9 @@ class Dir extends FileSystemResource implements IsReadable
      * @param    string   $fileFilter   use this to limit the copied files to a specific extension
      * @param    string   $dirFilter    use this to limit the copied directories to those matching the filter
      * @param    bool     $useRegExp    set this to bool(true) if you want filters to be treated as a regular expression
-     * @throws   InvalidArgumentException  when one input argument is invalid
-     * @throws   AlreadyExistsException    if the target directory already exists
-     * @throws   NotWriteableException     if the target location is not writeable
+     * @throws   \Yana\Core\InvalidArgumentException  when one input argument is invalid
+     * @throws   AlreadyExistsException               if the target directory already exists
+     * @throws   NotWriteableException                if the target location is not writeable
      */
     public function copy($destDir, $overwrite = true, $mode = 0766, $copySubDirs = false, $fileFilter = null, $dirFilter = null, $useRegExp = false)
     {
@@ -525,13 +525,13 @@ class Dir extends FileSystemResource implements IsReadable
 
         if ($mode > 0777 || $mode < 1) {
             $message = "Argument mode must be an octal number in range: [1,0777].";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
 
         /* validity checking */
         if (empty($destDir) || mb_strlen($destDir) > 512) {
             $message = "Invalid directory name '{$destDir}'.";
-            throw new InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
         }
 
         /* check if directory already exists */

@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../pluginannotationparser.class.php';
+require_once dirname(__FILE__) . '/../pluginannotationparser.php';
 
 /**
  * Test class for PluginAnnotationParser.

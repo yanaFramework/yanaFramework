@@ -54,7 +54,7 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
         /**
          * @ignore
          */
-        include_once dirname(__FILE__) . '/../../../plugins/db_tools/dbinfocolumn.class.php';
+        include_once dirname(__FILE__) . '/../../../plugins/db_tools/dbinfocolumn.php';
     }
 
     /**

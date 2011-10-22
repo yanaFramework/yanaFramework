@@ -43,7 +43,7 @@ class FormFieldFacadeCollection extends \Yana\Core\AbstractCollection
      * @access  public
      * @param   string           $offset  index of item to replace
      * @param   FormFieldFacade  $value   new value of item
-     * @throws  InvalidArgumentException
+     * @throws  \Yana\Core\InvalidArgumentException  when the given value is not valid
      */
     public function offsetSet($offset, $value)
     {
@@ -53,7 +53,8 @@ class FormFieldFacadeCollection extends \Yana\Core\AbstractCollection
             }
             $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
-            $message = "Instance of DDLField expected. Found " . gettype($value) . "(" . get_class($value) . ") instead.";
+            $message = "Instance of DDLField expected. Found " . gettype($value) . "(" .
+                ((is_object($value)) ? get_class($value) : $value) . ") instead.";
             throw new \Yana\Core\InvalidArgumentException($message);
         }
     }

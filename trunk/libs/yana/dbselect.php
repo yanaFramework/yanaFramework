@@ -146,9 +146,9 @@ class DbSelect extends DbSelectCount
      * @since   2.9.6
      * @name    DbQuery::setColumns()
      * @see     DbQuery::setColumn()
-     * @throws  DbEventLog                if table has not been initialized
-     * @throws  InvalidArgumentException  if a given argument is invalid
-     * @throws  NotFoundException         if the given table or column is not found
+     * @throws  DbEventLog                           if table has not been initialized
+     * @throws  \Yana\Core\InvalidArgumentException  if a given argument is invalid
+     * @throws  NotFoundException                    if the given table or column is not found
      * @return  DbSelect 
      */
     public function setColumns(array $columns = array())
@@ -221,9 +221,9 @@ class DbSelect extends DbSelectCount
      * @param   scalar  $alias   optional column alias
      * @name    DbQuery::setColumns()
      * @see     DbQuery::setColumn()
-     * @throws  DbEventLog                if table has not been initialized
-     * @throws  InvalidArgumentException  if a given argument is invalid
-     * @throws  NotFoundException         if the given table or column is not found
+     * @throws  DbEventLog                           if table has not been initialized
+     * @throws  \Yana\Core\InvalidArgumentException  if a given argument is invalid
+     * @throws  NotFoundException                    if the given table or column is not found
      * @return  DbSelect 
      */
     public function addColumn($column, $alias = "")
@@ -394,8 +394,8 @@ class DbSelect extends DbSelectCount
      * usually is faster and consums less memory than using the same having clause.
      *
      * @param   array  $having  having clause
-     * @throws  NotFoundException         when a column is not found
-     * @throws  InvalidArgumentException  when the having-clause contains invalid values
+     * @throws  NotFoundException                    when a column is not found
+     * @throws  \Yana\Core\InvalidArgumentException  when the having-clause contains invalid values
      * @return  DbSelect
      */
     public function setHaving(array $having = array())
@@ -420,8 +420,8 @@ class DbSelect extends DbSelectCount
      *
      * @param   array  $having       having clause
      * @param   bool   $isMandatory  switch between operators (true='AND', false='OR')
-     * @throws  NotFoundException         when a column is not found
-     * @throws  InvalidArgumentException  when the having-clause contains invalid values
+     * @throws  NotFoundException                    when a column is not found
+     * @throws  \Yana\Core\InvalidArgumentException  when the having-clause contains invalid values
      * @return  DbSelect
      */
     public function addHaving(array $having, $isMandatory = true)
@@ -469,7 +469,7 @@ class DbSelect extends DbSelectCount
      * This restriction does not apply if you use sendQuery().
      *
      * @param   int  $limit  limit for this query
-     * @throws  InvalidArgumentException  when limit is not positive
+     * @throws  \Yana\Core\InvalidArgumentException  when limit is not positive
      * @return  DbSelect
      */
     public function setLimit($limit)
@@ -818,7 +818,7 @@ class DbSelect extends DbSelectCount
                         if (!$success) {
                             $message = "SQL error: accidental cross-join detected in statement '{$sqlStmt}'." .
                                 "\n\t\tThe statement has been ignored.";
-                            throw new InvalidArgumentException($message, E_USER_NOTICE);
+                            throw new \Yana\Core\InvalidArgumentException($message, E_USER_NOTICE);
                         }
                         continue;
                     break;
@@ -920,7 +920,7 @@ class DbSelect extends DbSelectCount
                 return true; // found
             } catch (NotFoundException $e) {
                 $message = "Unable to join tables '$tableA' and '$tableB'. Cause: " . $e->getMessage();
-                throw new InvalidArgumentException($message, E_USER_WARNING);
+                throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
             }
             unset($tables[$tableB], $where[$i]);
         }
@@ -959,7 +959,7 @@ class DbSelect extends DbSelectCount
      * The return type depends on the query settings, see {@see DbQuery::getExpectedResult()}.
      *
      * @return  mixed
-     * @throws  InvalidArgumentException   when one of the given arguments is not valid
+     * @throws  \Yana\Core\InvalidArgumentException   when one of the given arguments is not valid
      */
     public function getResults()
     {
@@ -1065,7 +1065,7 @@ class DbSelect extends DbSelectCount
                             $column = $table->getColumn($this->getColumn());
                         break;
                         default:
-                            throw new InvalidArgumentException("Syntax error. " .
+                            throw new \Yana\Core\InvalidArgumentException("Syntax error. " .
                                 "The input '{$key}' is not a valid key address.");
                         break;
                     } // end switch
@@ -1090,7 +1090,7 @@ class DbSelect extends DbSelectCount
                         $output[$rowId] = $value;
                     break;
                     default:
-                        throw new InvalidArgumentException("Syntax error. " .
+                        throw new \Yana\Core\InvalidArgumentException("Syntax error. " .
                             "The input '{$key}' is not a valid key address.");
                     break;
                 } // end switch

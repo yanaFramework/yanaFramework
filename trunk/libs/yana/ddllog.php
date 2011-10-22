@@ -210,14 +210,14 @@ abstract class DDLLog extends DDL
      *
      * @access  public
      * @param   string|array  $functionName   name of the function which is called
-     * @throws  InvalidArgumentException
+     * @throws   \Yana\Core\InvalidArgumentException  when the given function is not callable
      */
     public static function setHandler($functionName)
     {
         if (is_callable($functionName)) {
             self::$handler = $functionName;
         } else {
-            throw new InvalidArgumentException("The function name '$functionName' is not callable.", E_USER_WARNING);
+            throw new \Yana\Core\InvalidArgumentException("The function name '$functionName' is not callable.", E_USER_WARNING);
         }
     }
 

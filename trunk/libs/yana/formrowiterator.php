@@ -43,7 +43,7 @@ class FormRowIterator extends \Yana\Core\AbstractCollection
      * @access  public
      * @param   string  $offset  index of item to replace
      * @param   array   $row     new value of item
-     * @throws  InvalidArgumentException
+     * @throws  \Yana\Core\InvalidArgumentException
      */
     public function offsetSet($offset, $value)
     {

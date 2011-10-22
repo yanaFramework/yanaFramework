@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../filesizeerror.class.php';
+require_once dirname(__FILE__) . '/../filesizeerror.php';
 
 /**
  * Test class for FilesizeError.

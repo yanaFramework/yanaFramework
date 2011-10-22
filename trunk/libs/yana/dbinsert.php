@@ -116,10 +116,10 @@ class DbInsert extends DbQuery
      * This takes an associative array, where the keys are column names.
      * When updating a single column, it may also be a scalar value.
      *
-     * @param   mixed  $values            value(s) for current query
-     * @throws  InvalidArgumentException  if a given argument is invalid
-     * @throws  InvalidValueWarning       if a givem value does not match expected criteria
-     * @throws  DbWarningLog              if an input check fails
+     * @param   mixed  $values                       value(s) for current query
+     * @throws  \Yana\Core\InvalidArgumentException  if a given argument is invalid
+     * @throws  InvalidValueWarning                  if a givem value does not match expected criteria
+     * @throws  DbWarningLog                         if an input check fails
      * @return  DbInsert 
      */
     public function setValues($values)
@@ -132,14 +132,14 @@ class DbInsert extends DbQuery
             $values = \Yana\Util\Hashtable::changeCase($values, CASE_LOWER);
 
         } elseif ($this->type === DbQueryTypeEnumeration::INSERT) {
-            throw new InvalidArgumentException("Invalid type. " .
+            throw new \Yana\Core\InvalidArgumentException("Invalid type. " .
                 "Database values must be an array for insert-statements.");
 
         /*
          * 1.b) error - wrong argument type
          */
         } elseif (!is_scalar($values)) {
-            throw new InvalidArgumentException("Invalid type. " .
+            throw new \Yana\Core\InvalidArgumentException("Invalid type. " .
                 "Database values must be an array or scalar.");
         }
         assert('isset($this->tableName); // Cannot set values - need to set table first!');
@@ -502,7 +502,7 @@ class DbInsert extends DbQuery
      * @param   string    $sqlStmt   SQL statement
      * @param   DbStream  $database  database connection
      * @return  DbInsert
-     * @throws  InvalidArgumentException  if the query is invalid or could not be parsed
+     * @throws  \Yana\Core\InvalidArgumentException  if the query is invalid or could not be parsed
      */
     public static function parseSQL($sqlStmt, DbStream $database)
     {
@@ -536,7 +536,7 @@ class DbInsert extends DbQuery
         if ($query->getExpectedResult() !== DbResultEnumeration::ROW) {
             if (!$query->table->getColumn($query->table->getPrimaryKey())->isAutoFill()) {
                 $message = "SQL security restriction. Cannot insert a table (only rows).";
-                throw new InvalidArgumentException($message, E_USER_WARNING);
+                throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
             }
         }
         return $query;
@@ -552,7 +552,7 @@ class DbInsert extends DbQuery
      * @param   array  $keys      keys
      * @param   array  $values    values
      * @return  array
-     * @throws  InvalidArgumentException  when given column does not exist
+     * @throws  \Yana\Core\InvalidArgumentException  when given column does not exist
      * @ignore
      */
     protected function parseSet(array $keys, array $values)
@@ -577,7 +577,7 @@ class DbInsert extends DbQuery
         {
             $column = $table->getColumn($keys[$i]);
             if (! $column instanceof DDLColumn) {
-                throw new InvalidArgumentException("Column '".$keys[$i]."' does not exist " .
+                throw new \Yana\Core\InvalidArgumentException("Column '".$keys[$i]."' does not exist " .
                     "in table '" .$this->tableName."'.", E_USER_WARNING);
             }
             if ($column->getType() === 'array') {

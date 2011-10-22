@@ -1030,7 +1030,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * Size and precision with invalid argument
      *
      * @covers DDLColumn:setLength
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      *
      * @test
      */
@@ -1542,7 +1542,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * TablesInvalidArgumentException
      *
      * @covers DDLView::setTables
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      *
      * @test
      */
@@ -1921,7 +1921,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * addFieldInvalidArgumentException
      *
      * @covers DDLView::addField
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      *
      * @test
      */
@@ -1935,7 +1935,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * getFieldInvalidArgumentException4
      *
      * @covers DDLView::getField
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      *
      * @test
      */
@@ -1977,7 +1977,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * getFormInvalidArgumentException
      *
      * @covers DDLForm::getFrom
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      *
      * @test
      */
@@ -2415,7 +2415,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      *
      * @covers DDLObject::setName
      *
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      * @test
      */
     function testSetNameInvalidArgument()
@@ -2429,7 +2429,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      *
      * @covers DDLLogCreate::setName
      *
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      * @test
      */
     function testSetNameInvalidArgument1()
@@ -2577,7 +2577,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             $this->ddlsequence->setIncrement(0);
             $this->fail("Increment value may not be set to '0'.");
-        } catch (InvalidArgumentException $e) {
+        } catch (\Yana\Core\InvalidArgumentException $e) {
             // success
         }
     }
@@ -2632,7 +2632,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * @covers DDLSequence::getIncrement
      * @covers DDLSequence::setIncrement
      *
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      * @test
      */
     function testSetIncrementInvalidArgument()
@@ -3015,7 +3015,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      *
      * @test
      * @covers  DDLGrant::setLevel()
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      */
     public function testLevelInvalidArgument1()
     {
@@ -3027,7 +3027,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      *
      * @test
      * @covers  DDLGrant::setLevel()
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      */
     public function testLevelInvalidArgument2()
     {
@@ -3163,7 +3163,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * EventInvalidArgumentException
      *
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      *
      * @test
      */
@@ -3175,7 +3175,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * EventInvalidArgumentException
      *
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      *
      * @test
      */
@@ -3482,7 +3482,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * HandlerInvalidArgumentException
      *
      * @covers DDLLogSql::setHandler
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      *
      * @test
      */
@@ -3496,7 +3496,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * HandlerInvalidArgumentException1
      *
      * @covers DDLLogUpdate::setHandler
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      *
      * @test
      */
@@ -3510,7 +3510,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * HandlerInvalidArgumentException2
      *
      * @covers DDLLogRename::setHandler
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      *
      * @test
      */
@@ -3524,7 +3524,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * HandlerInvalidArgumentException3
      *
      * @covers DDLLogCreate::setHandler
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      *
      * @test
      */
@@ -3538,7 +3538,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * HandlerInvalidArgumentException4
      *
      * @covers DDLLogDrop::setHandler
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      *
      * @test
      */
@@ -4384,9 +4384,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $this->assertNull($get, 'assert failed, field is not droped"');
     }
 
-     /**
-     * drop Field InvalidArgumentException
-     *
+    /**
      * @covers DDLForm::dropField
      * @expectedException NotFoundException
      *
@@ -4397,9 +4395,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $this->ddlform->dropField('non-existing-field');
     }
 
-     /**
-     * getColumnByForeignKey InvalidArgumentException
-     *
+    /**
      * @covers DDLTable::getColumnByForeignKey
      * @expectedException NotFoundException
      *
@@ -4411,9 +4407,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $this->ddltable->getColumnByForeignKey('foo_bar');
     }
 
-     /**
-     * getColumnByForeignKey
-     *
+    /**
      * @covers DDLTable::getColumnByForeignKey
      *
      * @test
@@ -4443,5 +4437,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $result = $table->getColumnByForeignKey('foo_department_id');
         $this->assertTrue($result instanceof DDLColumn, 'assert failed, the expected value should be an instance of DDLColumn');
     }
+
 }
+
 ?>

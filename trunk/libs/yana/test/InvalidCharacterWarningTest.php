@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../invalidcharacterwarning.class.php';
+require_once dirname(__FILE__) . '/../invalidcharacterwarning.php';
 
 /**
  * Test class for InvalidCharacterWarning.

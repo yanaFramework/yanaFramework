@@ -572,7 +572,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * @param   bool             $desc     if true results will be ordered in descending,
      *                                     otherwise in ascending order
      * @return  mixed
-     * @throws  InvalidArgumentException   when one of the given arguments is not valid
+     * @throws  \Yana\Core\InvalidArgumentException  when one of the given arguments is not valid
      */
     public function select($key, array $where = array(), $orderBy = array(), $offset = 0, $limit = 0, $desc = false)
     {
@@ -660,7 +660,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * @see     DbStream::insertOrUpdate()
      * @see     DbStream::insert()
      * @since   2.9.5
-     * @throws  InvalidArgumentException  when either the given $key or $value is invalid
+     * @throws  \Yana\Core\InvalidArgumentException  when either the given $key or $value is invalid
      */
     public function update($key, $value = array())
     {
@@ -764,7 +764,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
         assert('!isset($expectedResult); /* Cannot redeclare var $expectedResult */');
         $expectedResult = $updateQuery->getExpectedResult();
         if ($expectedResult !== DbResultEnumeration::ROW && $expectedResult !== DbResultEnumeration::CELL) {
-            throw new InvalidArgumentException("Query is invalid. " .
+            throw new \Yana\Core\InvalidArgumentException("Query is invalid. " .
                 "Updating a table or column is illegal. Operation aborted.");
         }
 
@@ -998,13 +998,13 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * @see     DbStream::insertOrUpdate()
      * @see     DbStream::update()
      * @since   2.9.5
-     * @throws  InvalidArgumentException  when either $key or $value is invalid
+     * @throws  \Yana\Core\InvalidArgumentException  when either $key or $value is invalid
+     * @throws  NotWriteableException                when the table or database is locked
      */
     public function insert($key, $value = array())
     {
         if (!$this->_isWriteable()) {
-            trigger_error('Operation aborted, not writeable.', E_USER_NOTICE);
-            return false;
+            throw new NotWriteableException('Operation aborted, not writeable.', E_USER_NOTICE);
         }
 
         /*
@@ -1056,7 +1056,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
         $triggerArgs = array();
         $expectedResult = $insertQuery->getExpectedResult();
         if ($expectedResult !== DbResultEnumeration::ROW) {
-            throw new InvalidArgumentException("Query is invalid. " .
+            throw new \Yana\Core\InvalidArgumentException("Query is invalid. " .
                 "Can only insert a row, not a table, cell or column.");
         }
 
@@ -1064,9 +1064,9 @@ class DbStream extends \Yana\Core\Object implements Serializable
          * 3.2) error - constraint check failed
          */
         if (DbStructureGenerics::checkConstraint($table, $value) === false) {
-                Log::report("Insert on table '{$tableName}' failed. " .
-                    "Constraint check failed.", E_USER_WARNING, $value);
-                return false;
+            Log::report("Insert on table '{$tableName}' failed. " .
+                "Constraint check failed.", E_USER_WARNING, $value);
+            return false;
         }
         /*
          * 3.3) fire trigger
@@ -1272,7 +1272,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
      *          (when omitted the API will look up the key in the structure file)
      * @param   string $key2    name of the key in table2 that is referenced from table1
      *          (may be omitted if it is the primary key)
-     * @throws  InvalidArgumentException  when a required argument is missing
+     * @throws  \Yana\Core\InvalidArgumentException  when a required argument is missing
      */
     public function join($table1, $table2 = "", $key1 = "", $key2 = "")
     {
@@ -1285,7 +1285,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
          * base table
          */
         if (empty($table1) || $table1 === "*") {
-            throw new InvalidArgumentException("Wrong parameter count in " . __METHOD__ . "(). " .
+            throw new \Yana\Core\InvalidArgumentException("Wrong parameter count in " . __METHOD__ . "(). " .
                 "Unable to join tables, since no table has been selected for function join.");
         }
         $table1 = mb_strtolower($table1);
@@ -1570,11 +1570,11 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * @param   string|array  $sqlFile filename which contain the SQL statments or an nummeric array of SQL statments.
      * @return  bool
      * @name    DbStream::importsql()
-     * @throws  NotWriteableException     when database is readonly
-     * @throws  DbWarning                 when database has pending transaction
-     * @throws  InvalidArgumentException  when argument $sqlFile has an invalid value
-     * @throws  NotReadableException      when SQL file does not exist or is not readable
-     * @throws  NotWriteableException     when database is not writeable
+     * @throws  NotWriteableException                when database is readonly
+     * @throws  DbWarning                            when database has pending transaction
+     * @throws  \Yana\Core\InvalidArgumentException  when argument $sqlFile has an invalid value
+     * @throws  NotReadableException                 when SQL file does not exist or is not readable
+     * @throws  NotWriteableException                when database is not writeable
      */
     public function importSQL($sqlFile)
     {
@@ -1586,7 +1586,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
         }
         // check input and database settings
         if (empty($sqlFile)) {
-            throw new InvalidArgumentException("Argument \$sqlFile is empty in " . __METHOD__ . "().", E_USER_NOTICE);
+            throw new \Yana\Core\InvalidArgumentException("Argument \$sqlFile is empty in " . __METHOD__ . "().", E_USER_NOTICE);
         }
         if (!empty($this->_queue)) {
             $message = "Cannot import SQL statements in " . __METHOD__ . "().\n\t\tThere is a pending transaction" .
@@ -1650,7 +1650,11 @@ class DbStream extends \Yana\Core\Object implements Serializable
      */
     public function __toString()
     {
-        return $this->getSchema()->getName();
+        try {
+            return $this->getSchema()->getName();
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     /**

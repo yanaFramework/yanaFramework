@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../pluginmethodcollection.class.php';
+require_once dirname(__FILE__) . '/../pluginmethodcollection.php';
 
 /**
  * Test class for PluginMethodCollection.
@@ -73,11 +73,11 @@ class PluginMethodCollectionTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
+     * @expectedException \Yana\Core\InvalidArgumentException
      */
     public function testOffsetSetInvalidArgumentException()
     {
-        $this->object[] = new PluginConfigurationClass();
+        $this->object[] = "invalid value";
     }
 
 }

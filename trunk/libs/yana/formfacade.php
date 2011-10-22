@@ -121,7 +121,7 @@ class FormFacade extends \Yana\Core\Object
      * @return  mixed
      * @throws  NotImplementedException  when the function is not found
      */
-    public function __call($name, $arguments)
+    public function __call($name, array $arguments)
     {
         if (isset($this->_form) && method_exists($this->_form, $name)) {
             return call_user_func_array(array($this->_form, $name), $arguments);
@@ -152,7 +152,6 @@ class FormFacade extends \Yana\Core\Object
      * @access  public
      * @param   string  $name  name of requested sub-form.
      * @return  FormFacade
-     * @throws  InvalidArgumentException  when form does not exist
      */
     public function getForm($name)
     {
@@ -413,6 +412,9 @@ class FormFacade extends \Yana\Core\Object
     public function getTable()
     {
         if (!isset($this->_table)) {
+            if (!isset($this->_form)) {
+                throw new NotFoundException("No base form defined for table.");
+            }
             $tableName = $this->_form->getTable();
             $database = $this->_form->getDatabase();
             if (!($database instanceof DDLDatabase)) {

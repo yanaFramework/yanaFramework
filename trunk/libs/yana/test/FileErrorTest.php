@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../uploadfailederror.class.php';
+require_once dirname(__FILE__) . '/../uploadfailederror.php';
 
 /**
  * Test class for UploadFailedError.

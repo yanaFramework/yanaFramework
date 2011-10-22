@@ -149,7 +149,7 @@ class FileTest extends PHPUnit_Framework_TestCase
     /**
      * Copy with empty argument
      *
-     * @expectedException  InvalidArgumentException
+     * @expectedException  \Yana\Core\InvalidArgumentException
      * @test
      */
     function testCopyEmptyArgument()
@@ -160,7 +160,7 @@ class FileTest extends PHPUnit_Framework_TestCase
     /**
      * Copy Invalid Argument
      *
-     * @expectedException  InvalidArgumentException
+     * @expectedException  \Yana\Core\InvalidArgumentException
      * @test
      */
     function testCopyInvalidArgumentUpper()
@@ -172,7 +172,7 @@ class FileTest extends PHPUnit_Framework_TestCase
     /**
      * Copy Invalid Argument
      *
-     * @expectedException  InvalidArgumentException
+     * @expectedException  \Yana\Core\InvalidArgumentException
      * @test
      */
     function testCopyInvalidArgumentLower()
