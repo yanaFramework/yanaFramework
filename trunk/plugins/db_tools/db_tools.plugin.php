@@ -27,11 +27,11 @@
 /**
  * class to handle imports from DB-Designer 4
  */
-require_once 'dbdesigner4.class.php';
+require_once 'dbdesigner4.php';
 /**
  * class to handle imports from PEAR MDB2 Schema
  */
-require_once 'dbmdb2.class.php';
+require_once 'dbmdb2.php';
 
 /**
  * Database tools
@@ -164,7 +164,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
             throw new InvalidInputWarning();
         }
 
-        $xml = DbExtractor::createXML(true, array_values($list));
+        $xml = \Yana\Db\DataExporter::createXML(true, array_values($list));
         $filename = 'database.xml';
         if (empty($xml)) {
             $error = new FileNotCreatedError();
@@ -284,7 +284,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
                 continue;
             }
 
-            /* Mapping the DBMS to the SQL export function in class DbCreator */
+            /* Mapping the DBMS to the SQL export function in class \Yana\Db\SqlFactory */
             switch ($dbms)
             {
                 case 'db2':
@@ -315,7 +315,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
                     $error = new InvalidValueWarning();
                     throw $error->setField('DBMS=' . $dbms);
             }
-            $dbc = new DbCreator( XDDL::getDatabase($dbName) );
+            $dbc = new \Yana\Db\SqlFactory( XDDL::getDatabase($dbName) );
             $arrayOfStmts = $dbc->$methodName();
             $fileContents .= implode("\n", $arrayOfStmts) . "\n";
         }

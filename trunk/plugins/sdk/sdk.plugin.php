@@ -29,7 +29,7 @@
 /**
  * @ignore
  */
-require_once 'pluginconfigurationbuildersdk.class.php';
+require_once 'pluginconfigurationbuildersdk.php';
 
 /**
  * Software Developement Kit

@@ -126,7 +126,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
             $dbList = $list;
         }
 
-        /* Mapping the DBMS to the SQL export function in class DbCreator */
+        /* Mapping the DBMS to the SQL export function in class \Yana\Db\SqlFactory */
         switch ($dbms)
         {
             case 'DBASE':
@@ -172,7 +172,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
             return false;
         }
 
-        /* we assume the class DbCreator has the desired method. This will be tested later! */
+        /* we assume the class \Yana\Db\SqlFactory has the desired method. This will be tested later! */
 
         if (!$installDirectory->exists() && is_null($method_name)) {
             if (!$silent) {
@@ -204,15 +204,15 @@ class plugin_db_admin extends StdClass implements IsPlugin
             $database = new DbStream($dbSchema);
 
             /* If no SQL file for the current $item does exist,
-             * we need to call the appropriate DbCreator method
+             * we need to call the appropriate \Yana\Db\SqlFactory method
              * instead.
              */
             if (!is_readable($installFile)) {
-                $dbCreator = new DbCreator($database->getSchema());
+                $sqlFactory = new \Yana\Db\SqlFactory($database->getSchema());
 
-                /* If the DbCreator class does not support the desired function.
+                /* If the \Yana\Db\SqlFactory class does not support the desired function.
                  */
-                if (!method_exists($dbCreator, $method_name)) {
+                if (!method_exists($sqlFactory, $method_name)) {
 
                     if (!$silent) {
                         if (!file_exists($installFile)) {
@@ -229,7 +229,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                  */
                 } else {
                     /* create ... */
-                    $sqlStmts = $dbCreator->$method_name();
+                    $sqlStmts = $sqlFactory->$method_name();
                     /* ... execute */
                     if ($database->importSQL($sqlStmts) === false) {
                         Log::report("Note: Unable to install database '$item'.");
@@ -476,7 +476,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
         $dbms = mb_strtoupper($target_dbms);
         $fileContents = "";
 
-        /* Mapping the DBMS to the SQL export function in class DbCreator */
+        /* Mapping the DBMS to the SQL export function in class \Yana\Db\SqlFactory */
         switch ($dbms)
         {
             case 'DB2':
@@ -514,7 +514,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
         {
             if (is_string($dbName)) {
                 $db = Yana::connect($dbName);
-                $dbc = new DbExtractor($db);
+                $dbc = new \Yana\Db\DataExporter($db);
                 $arrayOfStmts = $dbc->$methodName($useStructure, $useData);
                 $fileContents .= implode("\n", $arrayOfStmts) . "\n";
             }

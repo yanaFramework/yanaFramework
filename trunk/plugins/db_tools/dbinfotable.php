@@ -28,7 +28,7 @@
 /**
  * @ignore
  */
-require_once 'dbinfocolumn.class.php';
+require_once 'dbinfocolumn.php';
 
 /**
  * table information

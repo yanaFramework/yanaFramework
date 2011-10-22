@@ -212,8 +212,8 @@ class plugin_search extends StdClass implements IsPlugin
      */
     public function search_create_index($dir, $recurse = false, $meta = false)
     {
-        include_once dirname(__FILE__) . '/bufferedreader.class.php';
-        include_once dirname(__FILE__) . '/pdftextreader.class.php';
+        include_once dirname(__FILE__) . '/bufferedreader.php';
+        include_once dirname(__FILE__) . '/pdftextreader.php';
 
         global $YANA;
 
