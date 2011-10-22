@@ -1885,7 +1885,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
      * @param   string  $stmt  sql statement template
      * @return  string
      */
-    protected function toString($stmt = "")
+    protected function _toString($stmt = "")
     {
         /* 1. replace %TABLE% */
         if (strpos($stmt, '%TABLE%') !== false) {
