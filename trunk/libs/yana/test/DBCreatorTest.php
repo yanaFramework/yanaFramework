@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: DbCreator
+ * PHPUnit test-case: \Yana\Db\SqlFactory
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,21 +25,23 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Db;
+
 /**
  * @ignore
  */
 require_once dirname(__FILE__) . '/include.php';
 
 /**
- * DbCreator test-case
+ * \Yana\Db\SqlFactory test-case
  *
  * @package  test
  */
-class DBCreatorTest extends PHPUnit_Framework_TestCase
+class SqlFactoryTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    DBCreator
+     * @var    \Yana\Db\SqlFactory
      * @access protected
      */
     protected $_object;
@@ -64,7 +66,7 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        // Note: the class DbCreator is currently undergoing refactoring. Tests are incomplete.
+        // Note: the class \Yana\Db\SqlFactory is currently undergoing refactoring. Tests are incomplete.
         $this->markTestIncomplete();
     }
 
@@ -92,7 +94,7 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
     {
 
         // create a da tabase with tables (columns)
-        $db = new DDLDatabase('foobar');
+        $db = new \DDLDatabase('foobar');
 
         /* create table "foo_department" and columns */
         $table = $db->addTable('foo_department');
@@ -248,7 +250,7 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
         $newfk->setColumn('employee_id');
         $newfk->setOnUpdate(DDLKeyUpdateStrategyEnumeration::CASCADE);
 
-        $this->_object = new DbCreator($db);
+        $this->_object = new \Yana\Db\SqlFactory($db);
         $result = $this->_object->createMySQL();
         //foreach($result as $t) print "$t\n";
         $this->assertType('array', $result, 'assert failed, the value should be of type array');
@@ -297,7 +299,7 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
         $fk->setColumn('foo_test_id');
         $fk->setOnDelete(DDLKeyUpdateStrategyEnumeration::SETNULL);
 
-        $obj = new DbCreator($db);
+        $obj = new \Yana\Db\SqlFactory($db);
         $result = $obj->createMySQL();
         $this->assertType('array', $result, 'assert failed the result should be of type array');
         $this->assertNotEquals(0, count($result), 'assert failed, the expected value must have some entries');
@@ -310,8 +312,8 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
      */
     public function test4()
     {
-        $dbcreator = new DbCreator(XDDL::getDatabase(CWD.'resources/check.db.xml'));
-        $result = $dbcreator->createMySQL();
+        $sqlFactory = new \Yana\Db\SqlFactory(XDDL::getDatabase(CWD.'resources/check.db.xml'));
+        $result = $sqlFactory->createMySQL();
         $this->assertType('array', $result, 'assert failed the result should be of type array');
         $this->assertNotEquals(0, count($result), 'assert failed, the expected value must have some entries');
     }
@@ -324,10 +326,10 @@ class DBCreatorTest extends PHPUnit_Framework_TestCase
     public function test5()
     {
         // generate mySQL for testxml.db.xml
-        $dbcreator = new DbCreator(XDDL::getDatabase(CWD.'resources/testxml.db.xml'));
+        $sqlFactory = new \Yana\Db\SqlFactory(XDDL::getDatabase(CWD.'resources/testxml.db.xml'));
         // invalid sql code because some tabels missing in the current file
         // it does not work on because the preset foreignKeys has an non existing tabels
-        $result = $dbcreator->createMySQL();
+        $result = $sqlFactory->createMySQL();
         $this->assertType('array', $result, 'assert failed the result should be of type array');
         $this->assertNotEquals(0, count($result), 'assert failed, the expected value must have some entries');
     }
