@@ -207,9 +207,9 @@ class DbDelete extends DbQuery
      * @param   string $stmt sql statement
      * @return  string
      */
-    public function __toString($stmt = "DELETE FROM %TABLE% %WHERE% %ORDERBY%")
+    public function toString($stmt = "DELETE FROM %TABLE% %WHERE% %ORDERBY%")
     {
-        return parent::__toString($stmt);
+        return parent::toString($stmt);
     }
 
     /**
