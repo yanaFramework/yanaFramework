@@ -320,10 +320,10 @@ require_once 'config/dbconfig.php';
 
 /* [main class] */
 
-require_once 'libs/yana/utility.php';
-require_once 'libs/yana/autoloader.php';
+require_once 'libs/yana/core/abstractutility.php';
+require_once 'libs/yana/core/autoloader.php';
 /**#@-*/
 
-spl_autoload_register('AutoLoader::autoload');
+spl_autoload_register('\Yana\Core\AutoLoader::autoload');
 
 ?>

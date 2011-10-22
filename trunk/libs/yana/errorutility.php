@@ -41,7 +41,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class ErrorUtility extends Utility
+class ErrorUtility extends \Yana\Core\AbstractUtility
 {
 
     /**

@@ -38,7 +38,7 @@
  * @subpackage  form
  * @ignore
  */
-class FormBuilder extends Object
+class FormBuilder extends \Yana\Core\Object
 {
 
     /**

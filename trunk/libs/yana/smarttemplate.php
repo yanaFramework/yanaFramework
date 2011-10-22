@@ -45,7 +45,7 @@
  * @package     yana
  * @subpackage  core
  */
-class SmartTemplate extends Object
+class SmartTemplate extends \Yana\Core\Object
 {
 
     /**

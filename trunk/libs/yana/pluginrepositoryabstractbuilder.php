@@ -35,7 +35,7 @@
  * @package     yana
  * @subpackage  core
  */
-abstract class PluginRepositoryAbstractBuilder extends Object
+abstract class PluginRepositoryAbstractBuilder extends \Yana\Core\Object
 {
 
     /**

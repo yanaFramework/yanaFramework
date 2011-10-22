@@ -68,7 +68,7 @@ require_once 'dbinfocolumn.php';
  * @subpackage  database
  * @ignore
  */
-class DbInfoTable extends Object
+class DbInfoTable extends \Yana\Core\Object
 {
     /**#@+
      * @access  private

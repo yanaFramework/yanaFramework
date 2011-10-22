@@ -34,7 +34,7 @@
  * @package     yana
  * @subpackage  core
  */
-class DatabaseAdapter extends Object implements IsDataAdapter
+class DatabaseAdapter extends \Yana\Core\Object implements IsDataAdapter
 {
     /**
      * database connection

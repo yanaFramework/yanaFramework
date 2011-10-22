@@ -32,7 +32,7 @@
  * @package     yana
  * @subpackage  form
  */
-class FormQueryBuilder extends Object
+class FormQueryBuilder extends \Yana\Core\Object
 {
 
     /**

@@ -38,7 +38,7 @@
  * @subpackage  core
  * @ignore
  */
-abstract class SmartAbstractResource extends Utility implements IsSmartResource
+abstract class SmartAbstractResource extends \Yana\Core\AbstractUtility implements IsSmartResource
 {
 
     /**

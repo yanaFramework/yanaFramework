@@ -36,7 +36,7 @@ namespace Yana\Io;
  * @subpackage  io
  * @ignore
  */
-abstract class AbstractValidator extends \Object
+abstract class AbstractValidator extends \Yana\Core\Object
 {
 
     /**

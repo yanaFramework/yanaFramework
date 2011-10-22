@@ -56,7 +56,7 @@
  * @subpackage  database
  * @since       2.9 RC1
  */
-abstract class DbQuery extends Object implements Serializable
+abstract class DbQuery extends \Yana\Core\Object implements Serializable
 {
 
     /**#@+

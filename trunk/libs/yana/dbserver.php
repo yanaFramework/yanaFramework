@@ -36,7 +36,7 @@
  * @package     yana
  * @subpackage  database
  */
-class DbServer extends Object
+class DbServer extends \Yana\Core\Object
 {
 
     /**#@+

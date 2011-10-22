@@ -33,7 +33,7 @@
  * @subpackage  form
  * @ignore
  */
-class FormFieldFacade extends Object
+class FormFieldFacade extends \Yana\Core\Object
 {
 
     /**

@@ -61,7 +61,7 @@ namespace Yana\RSS;
  * @package     yana
  * @subpackage  rss
  */
-class Feed extends \Object
+class Feed extends \Yana\Core\Object
 {
 
     /**

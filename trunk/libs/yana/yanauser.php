@@ -38,7 +38,7 @@
  *
  * @ignore
  */
-class YanaUser extends Object
+class YanaUser extends \Yana\Core\Object
 {
     /**
      * Name of currently selected user

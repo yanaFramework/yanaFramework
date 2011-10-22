@@ -25,49 +25,26 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core;
+
 /**
- * <<Interface>> object
+ * <<Interface>> cloneable object
  *
- * @access      public
+ * This class identifies classes that may clone instances.
+ *
  * @package     yana
  * @subpackage  core
  */
-interface IsObject
+interface IsCloneable
 {
-
     /**
-     * get a string representation of this object
+     * clone this object
      *
-     * This function is intended to be called when the object
-     * is used in a string context.
+     * Creates a copy of this object.
      *
-     * @access   public
-     * @return   string
+     * @return  IsCloneable
      */
-    public function __toString();
-
-    /**
-     * get the class name of the instance
-     *
-     * This function returns the name of the class of this object as a string.
-     *
-     * @access public
-     * @return string
-     */
-    public function getClass();
-
-    /**
-     * compare with another object
-     *
-     * Returns bool(true) if this object and $anotherObject
-     * are the same and bool(false) otherwise.
-     *
-     * @access public
-     * @param  object $anotherObject    another object to compare
-     * @return bool
-     */
-    public function equals(object $anotherObject);
-
+    public function __clone();
 }
 
 ?>

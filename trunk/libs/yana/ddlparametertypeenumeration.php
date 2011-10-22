@@ -37,7 +37,7 @@
  *
  * @ignore
  */
-class DDLParameterTypeEnumeration extends AbstractEnumeration
+class DDLParameterTypeEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     /**#@+

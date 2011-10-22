@@ -39,7 +39,7 @@
  * @since       2.8.6
  * @ignore
  */
-class FileDbIndex extends Object
+class FileDbIndex extends \Yana\Core\Object
 {
 
     /**#@+

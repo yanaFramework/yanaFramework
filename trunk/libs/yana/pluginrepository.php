@@ -34,7 +34,7 @@
  * @package     yana
  * @subpackage  core
  */
-class PluginRepository extends Object
+class PluginRepository extends \Yana\Core\Object
 {
 
     /**

@@ -51,7 +51,7 @@
  * @subpackage  core
  * @ignore
  */
-class SmartFormUtility extends Utility
+class SmartFormUtility extends \Yana\Core\AbstractUtility
 {
 
     /**

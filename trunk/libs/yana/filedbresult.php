@@ -38,7 +38,7 @@
  *
  * @ignore
  */
-class FileDbResult extends Object
+class FileDbResult extends \Yana\Core\Object
 {
 
     /**#@+
@@ -156,10 +156,10 @@ class FileDbResult extends Object
      * attributes are equal.
      *
      * @access   public
-     * @param    object  $anotherObject     another object too compare
+     * @param    \Yana\Core\IsObject  $anotherObject     another object too compare
      * @return   string
      */
-    public function equals(object $anotherObject)
+    public function equals(\Yana\Core\IsObject $anotherObject)
     {
         if ($anotherObject == $this) {
             return true;

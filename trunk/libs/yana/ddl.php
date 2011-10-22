@@ -31,7 +31,7 @@
  * @package     yana
  * @subpackage  database
  */
-abstract class DDL extends Object
+abstract class DDL extends \Yana\Core\Object
 {
     /**
      * File extensions

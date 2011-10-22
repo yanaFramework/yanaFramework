@@ -41,7 +41,7 @@
  * @subpackage  core
  * @ignore
  */
-class SmartHtmlProcessorUtility extends Utility
+class SmartHtmlProcessorUtility extends \Yana\Core\AbstractUtility
 {
 
     /**

@@ -57,7 +57,7 @@ namespace Yana\Media;
  * @subpackage  utilities
  * @since       2.8.7
  */
-class Image extends \Object
+class Image extends \Yana\Core\Object
 {
     /**#@+
      * @access  private
@@ -504,10 +504,10 @@ class Image extends \Object
      * Returns bool(false) otherwise.
      *
      * @access  public
-     * @param   \IsObject  $anotherObject  any object or var you want to compare
+     * @param   \Yana\Core\IsObject  $anotherObject  any object or var you want to compare
      * @return  bool
      */
-    public function equals(\Object $anotherObject)
+    public function equals(\Yana\Core\IsObject $anotherObject)
     {
         return $anotherObject instanceof $this && $this->_image === $anotherObject->getResource();
     }

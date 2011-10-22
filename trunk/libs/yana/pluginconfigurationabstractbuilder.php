@@ -37,7 +37,7 @@
  *
  * @ignore
  */
-abstract class PluginConfigurationAbstractBuilder extends Object
+abstract class PluginConfigurationAbstractBuilder extends \Yana\Core\Object
 {
 
     /**

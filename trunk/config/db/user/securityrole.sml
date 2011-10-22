@@ -5,4 +5,25 @@
 	<MODERATOR>
 		<ROLE_NAME>moderator</ROLE_NAME>
 	</MODERATOR>
+	<MANAGER>
+		<ROLE_NAME>manager</ROLE_NAME>
+	</MANAGER>
+	<USER>
+		<ROLE_NAME>user</ROLE_NAME>
+	</USER>
+	<OTHERUSERS>
+		<ROLE_NAME>otherusers</ROLE_NAME>
+	</OTHERUSERS>
+	<SALES>
+		<ROLE_NAME>sales</ROLE_NAME>
+	</SALES>
+	<PRINT>
+		<ROLE_NAME>print</ROLE_NAME>
+	</PRINT>
+	<HELPDESK>
+		<ROLE_NAME>helpdesk</ROLE_NAME>
+	</HELPDESK>
+	<EXAMPLE>
+		<ROLE_NAME>example</ROLE_NAME>
+	</EXAMPLE>
 </ROLE_ID>

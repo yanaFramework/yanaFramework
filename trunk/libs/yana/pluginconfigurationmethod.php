@@ -38,7 +38,7 @@
  *
  * @ignore
  */
-class PluginConfigurationMethod extends Object
+class PluginConfigurationMethod extends \Yana\Core\Object
 {
     /**
      * @access  private

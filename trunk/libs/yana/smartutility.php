@@ -51,7 +51,7 @@
  * @subpackage  core
  * @ignore
  */
-class SmartUtility extends Utility
+class SmartUtility extends \Yana\Core\AbstractUtility
 {
     /**
      * replace each token within a text/template
@@ -1679,14 +1679,8 @@ class SmartUtility extends Utility
                     } else {
                         $ul .= htmlspecialchars($element, ENT_COMPAT, 'UTF-8');
                     }
-                } elseif (is_object($element)) {
-                    if ($element instanceof Object) {
-                        $ul .= htmlspecialchars((string) $element, ENT_COMPAT, 'UTF-8');
-                    } else {
-                        $ul .= 'Instance of '.getclass($element);
-                    }
                 } else {
-                    $ul .= htmlspecialchars(print_r($element, true), ENT_COMPAT, 'UTF-8');
+                    $ul .= htmlspecialchars((string) $element, ENT_COMPAT, 'UTF-8');
                 }
                 if ($keys == 0) {
                     $ul .= '</span>';

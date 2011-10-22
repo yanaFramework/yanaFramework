@@ -37,7 +37,7 @@
  *
  * @ignore
  */
-class DDLKeyUpdateStrategyEnumeration extends AbstractEnumeration
+class DDLKeyUpdateStrategyEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     /**#@+

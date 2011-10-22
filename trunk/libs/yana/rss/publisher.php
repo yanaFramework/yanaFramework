@@ -43,7 +43,7 @@ namespace Yana\RSS;
  * @package     yana
  * @subpackage  rss
  */
-class Publisher extends \Utility
+class Publisher extends \Yana\Core\AbstractUtility
 {
 
     /**

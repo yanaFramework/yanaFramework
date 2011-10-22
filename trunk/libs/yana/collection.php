@@ -32,7 +32,7 @@
  * @package     yana
  * @subpackage  core
  */
-class Collection extends Object implements Iterator, Countable, ArrayAccess
+class Collection extends \Yana\Core\Object implements Iterator, Countable, ArrayAccess
 {
 
     /**

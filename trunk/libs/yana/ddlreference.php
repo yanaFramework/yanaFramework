@@ -34,7 +34,7 @@
  * @package     yana
  * @subpackage  database
  */
-class DDLReference extends Object
+class DDLReference extends \Yana\Core\Object
 {
 
     /**
