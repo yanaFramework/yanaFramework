@@ -36,7 +36,7 @@
  *
  * @ignore
  */
-class PluginMethodCollection extends Collection
+class PluginMethodCollection extends \Yana\Core\AbstractCollection
 {
 
     /**
@@ -91,11 +91,11 @@ class PluginMethodCollection extends Collection
                 $offset = $value->getMethodName();
             }
             assert('is_string($offset); // Invalid argument $offset: string expected');
-            parent::offsetSet(mb_strtolower($offset), $value);
+            $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
             $message = "Instance of PluginConfigurationMethod expected. " .
                 "Found " . gettype($value) . "(" . get_class($value) . ") instead.";
-            throw new InvalidArgumentException($message);
+            throw new \Yana\Core\InvalidArgumentException($message);
         }
     }
 

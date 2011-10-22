@@ -61,7 +61,7 @@ class Object extends \StdClass implements \Yana\Core\IsObject, \Yana\Core\IsClon
      * @param array  $arguments  method arguments
      * @throws  \Yana\Core\UndefinedPropertyException  always!
      */
-    public function __call($name, $arguments)
+    public function __call($name, array $arguments)
     {
         throw new \Yana\Core\UndefinedMethodException($name);
     }

@@ -34,7 +34,7 @@
  * @package     yana
  * @subpackage  form
  */
-class FormRowIterator extends Collection
+class FormRowIterator extends \Yana\Core\AbstractCollection
 {
 
     /**
@@ -48,10 +48,10 @@ class FormRowIterator extends Collection
     public function offsetSet($offset, $value)
     {
         if (is_array($value)) {
-            parent::offsetSet($offset, $value);
+            $this->_offsetSet($offset, $value);
         } else {
             $message = "Array expected. Found " . gettype($value) . " instead.";
-            throw new InvalidArgumentException($message);
+            throw new \Yana\Core\InvalidArgumentException($message);
         }
     }
 

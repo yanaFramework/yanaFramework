@@ -52,6 +52,24 @@ mb_language('uni');
 require_once 'libs/yana/toolbox.php';
 
 /**#@-*/
+/**
+ * Note: to make PHP produce clickable PHP error messages,
+ * the ini values docref_root and docref_ext need to be set.
+ * These are not set by default.
+ * In case they have not been set previously, the following
+ * passage will set them to point to the online version
+ * of the PHP manual.
+ */
+
+$docrefRoot = ini_get('docref_root');
+$docrefExt  = ini_get('docref_ext');
+if (empty($docrefRoot)) {
+    ini_set('docref_root', 'http://www.php.net/manual/en/');
+}
+if (empty($docrefExt)) {
+    ini_set('docref_ext', '.php');
+}
+unset($docrefRoot, $docrefExt);
 /**#@+
  * directory scanning
  *

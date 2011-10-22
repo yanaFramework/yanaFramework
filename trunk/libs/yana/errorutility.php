@@ -36,7 +36,6 @@
  * The center of interest for a common audience should be
  * how to enable or disable error reporting for debug purposes.
  *
- * @access      public
  * @name        ErrorUtility
  * @package     yana
  * @subpackage  error_reporting
@@ -50,15 +49,13 @@ class ErrorUtility extends \Yana\Core\AbstractUtility
      * This function creates colorfull error messages that should provide
      * better readability.
      *
-     * @access  public
-     * @param   int     $error_nr       error number
-     * @param   string  $description    description
-     * @param   string  $file           file
-     * @param   int     $line_nr        line number
-     * @static
+     * @param   int     $errorNumber   error number
+     * @param   string  $description   description
+     * @param   string  $file          file
+     * @param   int     $lineNumber    line number
      * @ignore
      */
-    public static function printError($error_nr, $description, $file, $line_nr)
+    public static function printError($errorNumber, $description, $file, $lineNumber)
     {
         /* NOTE: to trigger an user error inside an user error handler could cause an infinite loop
          * (and by the way it does'nt make any sense at all).
@@ -66,38 +63,29 @@ class ErrorUtility extends \Yana\Core\AbstractUtility
          */
 
         /* to check error reporting levels fall back to PHP's default settings */
-        switch ($error_nr)
+        switch ($errorNumber)
         {
             case E_USER_ASSERT:
-                $error_level = E_USER_ERROR;
+                $errorLevel = E_USER_ERROR;
             break;
             case E_UNKNOWN_ERROR:
-                $error_level = E_NOTICE;
+                $errorLevel = E_NOTICE;
             break;
             default:
-                $error_level = $error_nr;
+                $errorLevel = $errorNumber;
             break;
         }
 
-        $error_reporting = error_reporting();
+        $errorReporting = error_reporting();
         /* print an error only if the current error reporting level is high enough */
-        if (($error_reporting & ~$error_level) !== $error_reporting) {
-            print ErrorUtility::_formatError($error_nr, $description, $file, $line_nr, true);
-        }
+        if (($errorReporting & ~$errorLevel) !== $errorReporting) {
+            print ErrorUtility::_formatError($errorNumber, $description, $file, $lineNumber, true);
 
-        /* exit on error */
-        switch ($error_level)
-        {
-            case E_ERROR:
-            case E_USER_ERROR:
-            case E_COMPILE_ERROR:
-            case E_RECOVERABLE_ERROR:
-            case E_CORE_ERROR:
-                if (ob_get_length() !== false) {
-                    ob_end_flush();
-                }
-                exit(1);
-            break;
+            /* exit on error */
+            if (ob_get_length() !== false) {
+                ob_end_flush();
+            }
+            exit(1);
         }
     }
 
@@ -114,12 +102,10 @@ class ErrorUtility extends \Yana\Core\AbstractUtility
      * are still needed for backwards compatibility reasons. So using 'E_STRICT' will posssibly
      * flood your error logs or even crash the script.
      *
-     * @access  public
      * @param   int     $error_nr       error number
      * @param   string  $description    description
      * @param   string  $file           file
      * @param   int     $line_nr        line number
-     * @static
      * @ignore
      */
     public static function logError($error_nr, $description, $file, $line_nr)
@@ -220,11 +206,9 @@ class ErrorUtility extends \Yana\Core\AbstractUtility
      * Note: actually in PHP an assertion is treated as an "E_WARNING".
      * There is no such thing like an "E_ASSERT" error level.
      *
-     * @access  public
      * @param   string  $file         file
      * @param   int     $line_nr      line number
      * @param   string  $description  description
-     * @static
      * @ignore
      */
     public static function logAssertion($file, $line_nr, $description)
@@ -253,11 +237,9 @@ class ErrorUtility extends \Yana\Core\AbstractUtility
     /**
      * print failed assertions
      *
-     * @access  public
      * @param   string  $file         file
      * @param   int     $line_nr      line number
      * @param   string  $description  description
-     * @static
      * @ignore
      */
     public static function printAssertion($file, $line_nr, $description)
@@ -275,174 +257,97 @@ class ErrorUtility extends \Yana\Core\AbstractUtility
      * <li>  YANA_ERROR_LOG = write errors and messages to a log file  </li>
      * </ol>
      *
-     * @access  public
-     * @static
      * @name    ErrorUtility::setErrorReporting()
-     * @param   integer|string    $errorLevel    examples: YANA_ERROR_OFF, YANA_ERROR_LOG,
-     *                                           YANA_ERROR_ON or E_ALL, E_ALL & ~E_NOTICE
-     * @uses    ErrorUtility::setErrorReporting(YANA_ERROR_OFF)
+     * @param   string    $errorLevel    examples: YANA_ERROR_OFF, YANA_ERROR_LOG,
+     *                                   YANA_ERROR_ON or E_ALL, E_ALL & ~E_NOTICE
      */
     public static function setErrorReporting($errorLevel)
     {
-        /* Note: to make PHP produce clickable PHP error messages,
-         * the ini values docref_root and docref_ext need to be set.
-         * These are not set by default.
-         * In case they have not been set previously, the following
-         * passage will set them to point to the online version
-         * of the PHP manual.
-         */
-
-        $docref_root = ini_get('docref_root');
-        $docref_ext  = ini_get('docref_ext');
-        if (empty($docref_root)) {
-            ini_set('docref_root', 'http://www.php.net/manual/en/');
-        }
-        if (empty($docref_ext)) {
-            ini_set('docref_ext', '.php');
-        }
-
         /* Note: method overloading is not available in PHP. (like Perl, but unlike C++ or Java)
          * The following work-around is a common way to simulate that feature.
          */
 
-        /* Integer */
-        if (is_int($errorLevel)) {
-            ErrorUtility::_setLevelOfErrorHandling($errorLevel);
-
-        /* String */
-        } elseif (is_string($errorLevel)) {
-            ErrorUtility::_setTypeOfErrorHandling($errorLevel);
-
-        /* Other input */
-        } else {
-            $message = "Illegal argument type. Integer or string expected, found '".gettype($errorLevel)."' instead.";
-            trigger_error($message, E_USER_ERROR);
-        }
-    }
-
-    /**
-     * Set error reporting level via PHP's error_reporting() function
-     *
-     * returns previous error level or bool(false) on error
-     *
-     * @access  private
-     * @static
-     * @name    ErrorUtility::_setLevelOfErrorHandling()
-     * @param   int    $errorLevel    examples: E_ALL, E_ALL & ~E_NOTICE
-     * @return  int|bool(false)
-     *
-     * @ignore
-     */
-    private static function _setLevelOfErrorHandling($errorLevel = null)
-    {
-        if (is_null($errorLevel)) {
-            return error_reporting();
-        } elseif (!is_int($errorLevel)) {
-            $message = "Illegal argument type. Integer expected, found '".gettype($errorLevel)."' instead.";
-            trigger_error($message, E_USER_ERROR);
-            return false;
-        } else {
-            return error_reporting($errorLevel);
-        }
-    }
-
-    /**
-     * Set error reporting to on, off, or log
-     *
-     * @access  private
-     * @static
-     * @name    ErrorUtility::_setTypeOfErrorHandling()
-     * @param   string    $errorLevel    YANA_ERROR_OFF|YANA_ERROR_LOG|YANA_ERROR_ON
-     * @return  string|bool(false)
-     *
-     * @ignore
-     */
-    private static function _setTypeOfErrorHandling($errorLevel)
-    {
-        if (defined('YANA_ERROR_REPORTING') && $errorLevel !== YANA_ERROR_REPORTING) {
+        if (!is_string($errorLevel)) {
+            $message = "Illegal argument type. String expected, found '" . gettype($errorLevel) . "' instead.";
+            throw new \ErrorException($message, E_USER_ERROR);
+        } elseif (defined('YANA_ERROR_REPORTING') && $errorLevel !== YANA_ERROR_REPORTING) {
             $message = 'Error reporting level has already been set and can not be redefined.';
-            trigger_error($message, E_USER_WARNING);
-            return false;
-        } elseif (!is_string($errorLevel)) {
-            $message = "Illegal argument type. String expected, found '".gettype($errorLevel)."' instead.";
-            trigger_error($message, E_USER_ERROR);
-            return false;
-        } else {
-            switch ($errorLevel)
-            {
-                case YANA_ERROR_LOG:
-                    /*
-                     * Write errors to a log file, rather than passing them to a browser.
-                     */
-                    if (defined('E_STRICT')) {
-                        error_reporting(E_ALL & ~E_STRICT);
-                    } else {
-                        error_reporting(E_ALL);
-                    }
-                    set_error_handler(array(__CLASS__,'logError'));
-                    assert_options(ASSERT_ACTIVE,     1);
-                    assert_options(ASSERT_CALLBACK,   array(__CLASS__,'logAssertion'));
-                    assert_options(ASSERT_BAIL,       0);
-                    assert_options(ASSERT_WARNING,    0);
-                    assert_options(ASSERT_QUIET_EVAL, 0);
-                break;
-                case YANA_ERROR_ON:
-                    /* For debugging only:
-                     * show all errors, warnings and notices and evaluate assertions.
-                     */
-                    if (defined('E_STRICT')) {
-                        error_reporting(E_ALL & ~E_STRICT);
-                    } else {
-                        error_reporting(E_ALL);
-                    }
-                    set_error_handler(array(__CLASS__,'printError'));
-                    assert_options(ASSERT_ACTIVE,     1);
-                    assert_options(ASSERT_CALLBACK,   array(__CLASS__,'printAssertion'));
-                    assert_options(ASSERT_BAIL,       0);
-                    assert_options(ASSERT_WARNING,    0);
-                    assert_options(ASSERT_QUIET_EVAL, 0);
-                break;
-                case YANA_ERROR_OFF: default:
-                    /* Prevent PHP from showing error messages to avoid information leak to hackers.
-                     * Do no evaluate assertions for better performance.
-                     */
-                    error_reporting(0);
-                    assert_options(ASSERT_ACTIVE,    0);
-                    $errorLevel = YANA_ERROR_OFF;
-                break;
-            }
-            if (!defined('YANA_ERROR_REPORTING')) {
-                /**
-                 * what to do with errors and system messages
-                 *
-                 * This constant reflects the way how errors and other messages are treated.
-                 * It can be one of the following: 'on', 'off' or 'log'.
-                 *
-                 * Meaning:
-                 * <ol>
-                 * <li>  on = catch all errors and print to screen  </li>
-                 * <li>  off = do not report any errors or messages  </li>
-                 * <li>  log = write errors and messages to a log file  </li>
-                 * </ol>
-                 */
-                define('YANA_ERROR_REPORTING', $errorLevel);
-            }
-            return YANA_ERROR_REPORTING;
+            throw new \ErrorException($message, E_USER_WARNING);
         }
+
+        switch ($errorLevel)
+        {
+            case YANA_ERROR_LOG:
+                /*
+                 * Write errors to a log file, rather than passing them to a browser.
+                 */
+                if (defined('E_STRICT')) {
+                    error_reporting(E_ALL & ~E_STRICT);
+                } else {
+                    error_reporting(E_ALL);
+                }
+                set_error_handler(array(__CLASS__, 'logError'));
+                assert_options(ASSERT_ACTIVE, 1);
+                assert_options(ASSERT_CALLBACK, array(__CLASS__, 'logAssertion'));
+                assert_options(ASSERT_BAIL, 0);
+                assert_options(ASSERT_WARNING, 0);
+                assert_options(ASSERT_QUIET_EVAL, 0);
+
+                break;
+
+            case YANA_ERROR_ON:
+                /* For debugging only:
+                 * show all errors, warnings and notices and evaluate assertions.
+                 */
+                error_reporting(E_ALL);
+                set_error_handler(array(__CLASS__, 'printError'));
+                assert_options(ASSERT_ACTIVE, 1);
+                assert_options(ASSERT_CALLBACK, array(__CLASS__, 'printAssertion'));
+                assert_options(ASSERT_BAIL, 0);
+                assert_options(ASSERT_WARNING, 0);
+                assert_options(ASSERT_QUIET_EVAL, 0);
+
+                break;
+
+            case YANA_ERROR_OFF:
+            default:
+                /* Prevent PHP from showing error messages to avoid information leak to hackers.
+                 * Do no evaluate assertions for better performance.
+                 */
+                error_reporting(0);
+                assert_options(ASSERT_ACTIVE, 0);
+                $errorLevel = YANA_ERROR_OFF;
+
+                break;
+        }
+        if (!defined('YANA_ERROR_REPORTING')) {
+            /**
+             * what to do with errors and system messages
+             *
+             * This constant reflects the way how errors and other messages are treated.
+             * It can be one of the following: 'on', 'off' or 'log'.
+             *
+             * Meaning:
+             * <ol>
+             * <li>  on = catch all errors and print to screen  </li>
+             * <li>  off = do not report any errors or messages  </li>
+             * <li>  log = write errors and messages to a log file  </li>
+             * </ol>
+             */
+            define('YANA_ERROR_REPORTING', $errorLevel);
+        }
+        return YANA_ERROR_REPORTING;
     }
 
     /**
      * format error messages
      *
-     * @access  private
-     * @static
      * @param   int     $error_nr       error number
      * @param   string  $description    description
      * @param   string  $file           file
      * @param   int     $line_nr        line number
      * @param   bool    $as_html        as_html (set true if the message should be writen in html)
      * @return  string
-     * @ignore
      */
     private static function _formatError($error_nr, $description, $file, $line_nr, $as_html)
     {
@@ -698,9 +603,6 @@ class ErrorUtility extends \Yana\Core\AbstractUtility
      * ErrorUtility::breakpoint($foo, $bar);
      * // more code here ...
      * </code>
-     *
-     * @access  public
-     * @static
      */
     public static function breakpoint()
     {

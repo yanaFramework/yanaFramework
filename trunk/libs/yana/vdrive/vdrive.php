@@ -242,7 +242,7 @@ class VDrive extends \FileSystemResource implements \Yana\Report\IsReportable, \
             return false;
         }
         assert('!isset($file); // Cannot redeclare var $file');
-        $file = $this->files["$name"] =& $this->drive["$name"]->getMountpoint();
+        $file = $this->files["$name"] = $this->drive["$name"]->getMountpoint();
 
         /* if it is a SML file, load the configuration */
         if ($file instanceOf \SML && $file->exists()) {

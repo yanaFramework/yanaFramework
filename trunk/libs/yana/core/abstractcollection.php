@@ -25,20 +25,20 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core;
+
 /**
  * Collection base class.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */
-class Collection extends \Yana\Core\Object implements Iterator, Countable, ArrayAccess
+abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Core\IsCollection
 {
 
     /**
      * list of items to work on
      *
-     * @access  private
      * @var     array
      */
     private $_items = array();
@@ -46,7 +46,6 @@ class Collection extends \Yana\Core\Object implements Iterator, Countable, Array
     /**
      * Set a list of items
      *
-     * @access  public
      * @param   array $items  list of items to work on
      */
     public function setItems(array $items = array())
@@ -60,7 +59,6 @@ class Collection extends \Yana\Core\Object implements Iterator, Countable, Array
     /**
      * Get current item.
      *
-     * @access  public
      * @return  mixed
      * @throws  OutOfBoundsException  if the iterator is out of bounds
      */
@@ -75,8 +73,6 @@ class Collection extends \Yana\Core\Object implements Iterator, Countable, Array
 
     /**
      * Increment iterator to next item.
-     *
-     * @access  public
      */
     public function next()
     {
@@ -84,9 +80,8 @@ class Collection extends \Yana\Core\Object implements Iterator, Countable, Array
     }
 
     /**
-     * get field key
+     * Get field key.
      *
-     * @access  public
      * @return  string
      */
     public function key()
@@ -97,7 +92,6 @@ class Collection extends \Yana\Core\Object implements Iterator, Countable, Array
     /**
      * Check if iterator position is valid.
      *
-     * @access  public
      * @return  bool
      */
     public function valid()
@@ -107,8 +101,6 @@ class Collection extends \Yana\Core\Object implements Iterator, Countable, Array
 
     /**
      * Rewind iterator.
-     *
-     * @access  public
      */
     public function rewind()
     {
@@ -120,7 +112,6 @@ class Collection extends \Yana\Core\Object implements Iterator, Countable, Array
      *
      * If the collection is empty, it returns 0.
      *
-     * @access  public
      * @return  int
      */
     public function count()
@@ -131,7 +122,6 @@ class Collection extends \Yana\Core\Object implements Iterator, Countable, Array
     /**
      * Get item list.
      *
-     * @access  public
      * @return  array
      */
     public function toArray()
@@ -148,7 +138,6 @@ class Collection extends \Yana\Core\Object implements Iterator, Countable, Array
      * $bool = $collection->offsetExists($offset);
      * </code>
      *
-     * @access  public
      * @param   scalar  $offset  index of item to test
      * @return  bool
      */
@@ -166,7 +155,6 @@ class Collection extends \Yana\Core\Object implements Iterator, Countable, Array
      * $item = $collection->offsetGet($offset);
      * </code>
      *
-     * @access  public
      * @param   scalar  $offset  index of item to retrieve
      * @return  mixed
      */
@@ -182,17 +170,27 @@ class Collection extends \Yana\Core\Object implements Iterator, Countable, Array
     /**
      * Insert or replace item.
      *
+     * Implement this function in your sub-class as follows:
+     * <code>
+     * if ($yourTypeCheckHere) {
+     *     $this->_offsetSet($offset, $item);
+     * } else {
+     *     throw new \Yana\Core\InvalidArgumentException();
+     * }
+     * </code>
+     * 
+     *
      * Example:
      * <code>
      * $collection[$offset] = $item;
-     * $collection->offsetSet($offset, $item);
+     * parent::_offsetSet($offset, $item);
      * </code>
      *
-     * @access  public
      * @param   scalar  $offset  index of item to replace
      * @param   mixed   $value   new value of item
+     * @throws  \Yana\Core\InvalidArgumentException  if the value is not a valid collection item
      */
-    public function offsetSet($offset, $value)
+    protected function _offsetSet($offset, $value)
     {
         $this->_items[$offset] = $value;
     }
@@ -208,7 +206,6 @@ class Collection extends \Yana\Core\Object implements Iterator, Countable, Array
      * $collection->offsetUnset($offset);
      * </code>
      *
-     * @access  public
      * @param   scalar  $offset  index of item to remove
      */
     public function offsetUnset($offset)
