@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: \Yana\Db\SqlFactory
+ * PHPUnit test-case: \Yana\Db\Export\SqlFactory
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db;
+namespace Yana\Db\Export;
 
 /**
  * @ignore
@@ -33,7 +33,7 @@ namespace Yana\Db;
 require_once dirname(__FILE__) . '/include.php';
 
 /**
- * \Yana\Db\SqlFactory test-case
+ * \Yana\Db\Export\SqlFactory test-case
  *
  * @package  test
  */
@@ -41,7 +41,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    \Yana\Db\SqlFactory
+     * @var    \Yana\Db\Export\SqlFactory
      * @access protected
      */
     protected $_object;
@@ -66,7 +66,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        // Note: the class \Yana\Db\SqlFactory is currently undergoing refactoring. Tests are incomplete.
+        // Note: the class \Yana\Db\Export\SqlFactory is currently undergoing refactoring. Tests are incomplete.
         $this->markTestIncomplete();
     }
 
@@ -250,7 +250,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
         $newfk->setColumn('employee_id');
         $newfk->setOnUpdate(DDLKeyUpdateStrategyEnumeration::CASCADE);
 
-        $this->_object = new \Yana\Db\SqlFactory($db);
+        $this->_object = new \Yana\Db\Export\SqlFactory($db);
         $result = $this->_object->createMySQL();
         //foreach($result as $t) print "$t\n";
         $this->assertType('array', $result, 'assert failed, the value should be of type array');
@@ -299,7 +299,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
         $fk->setColumn('foo_test_id');
         $fk->setOnDelete(DDLKeyUpdateStrategyEnumeration::SETNULL);
 
-        $obj = new \Yana\Db\SqlFactory($db);
+        $obj = new \Yana\Db\Export\SqlFactory($db);
         $result = $obj->createMySQL();
         $this->assertType('array', $result, 'assert failed the result should be of type array');
         $this->assertNotEquals(0, count($result), 'assert failed, the expected value must have some entries');
@@ -312,7 +312,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function test4()
     {
-        $sqlFactory = new \Yana\Db\SqlFactory(XDDL::getDatabase(CWD.'resources/check.db.xml'));
+        $sqlFactory = new \Yana\Db\Export\SqlFactory(XDDL::getDatabase(CWD.'resources/check.db.xml'));
         $result = $sqlFactory->createMySQL();
         $this->assertType('array', $result, 'assert failed the result should be of type array');
         $this->assertNotEquals(0, count($result), 'assert failed, the expected value must have some entries');
@@ -326,7 +326,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
     public function test5()
     {
         // generate mySQL for testxml.db.xml
-        $sqlFactory = new \Yana\Db\SqlFactory(XDDL::getDatabase(CWD.'resources/testxml.db.xml'));
+        $sqlFactory = new \Yana\Db\Export\SqlFactory(XDDL::getDatabase(CWD.'resources/testxml.db.xml'));
         // invalid sql code because some tabels missing in the current file
         // it does not work on because the preset foreignKeys has an non existing tabels
         $result = $sqlFactory->createMySQL();

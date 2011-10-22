@@ -108,7 +108,7 @@ class BlockFileTest extends PHPUnit_Framework_TestCase
 
         $get = $this->_object->getContent();
         $this->assertEquals($input2."\n", $get, 'assert failed, the given content should be match the expected');
-        $this->assertEquals($input2."\n", (string) $this->_object, 'assert failed, the given string should be match the expected');
+        $this->assertEquals($input2."\n", $this->_object->__toString(), 'assert failed, the given string should be match the expected');
     }
 
 }

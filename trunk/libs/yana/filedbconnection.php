@@ -942,7 +942,7 @@ class FileDbConnection extends Object
      */
     public function quote($value)
     {
-        return \Yana\Db\DataExporter::quoteValue($value);
+        return \Yana\Db\Export\DataFactory::quoteValue($value);
     }
 
     /**

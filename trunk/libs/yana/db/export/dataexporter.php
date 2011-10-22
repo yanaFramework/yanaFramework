@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db;
+namespace Yana\Db\Export;
 
 /**
  * <<decorator>>  database Extractor
@@ -41,7 +41,7 @@ namespace Yana\Db;
  * // open new database connection
  * $db = Yana::connect('guestbook');
  * // create new instance
- * $dbe = new \Yana\Db\DataExporter($db);
+ * $dbe = new \Yana\Db\Export\DataExporter($db);
  * // extract contents (here: use MySQL syntax)
  * $sql = $dbe->createMySQL();
  * // print results
@@ -56,7 +56,7 @@ namespace Yana\Db;
  * @subpackage  db
  * @since       2.9.6
  */
-class DataExporter extends \Yana\Db\SqlFactory
+class DataFactory extends \Yana\Db\Export\SqlFactory
 {
 
     /**
@@ -227,7 +227,7 @@ class DataExporter extends \Yana\Db\SqlFactory
     }
 
     /**
-     * Same as \Yana\Db\SqlFactory::createMSSQL().
+     * Same as \Yana\Db\Export\SqlFactory::createMSSQL().
      *
      * The result may include the data and structure of a database.
      * Set the arguments $extractStructure or $extractData
@@ -236,7 +236,7 @@ class DataExporter extends \Yana\Db\SqlFactory
      * @param   bool  $extractStructure  for extract Structure set true otherwise false
      * @param   bool  $extractData       for extract Data set true otherwise false
      * @return  array
-     * @see     \Yana\Db\SqlFactory::createMSSQL()
+     * @see     \Yana\Db\Export\SqlFactory::createMSSQL()
      */
     public function createMSAccess($extractStructure = true, $extractData = true)
     {
@@ -416,7 +416,7 @@ class DataExporter extends \Yana\Db\SqlFactory
      *
      * The following function call will output the XML representation of both tables:
      * <code>
-     * print \Yana\Db\DataExporter::createXML(true, null, array('foo', 'bar'));
+     * print \Yana\Db\Export\DataExporter::createXML(true, null, array('foo', 'bar'));
      * </code>
      *
      * The result would look something like this:
