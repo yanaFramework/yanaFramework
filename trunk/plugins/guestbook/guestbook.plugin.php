@@ -330,7 +330,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
             }
             $rss->addItem($item);
         } // end foreach
-        print $rss->toString();
+        print (string) $rss;
         exit(0);
     }
 

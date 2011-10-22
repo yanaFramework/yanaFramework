@@ -204,8 +204,7 @@ class plugin_mediadb extends StdClass implements IsPlugin
      */
     public static function smartyFolderList()
     {
-        $form = self::getMediafolderForm();
-        return $form->toString();
+        return (string) self::getMediafolderForm();
     }
 
     /**
