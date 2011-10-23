@@ -40,11 +40,11 @@ interface IsLogHandler
     /**
      * This implements the logging behavior.
      *
-     * @param   int     $level    numeric level of severity
      * @param   string  $message  the message that should be reported
+     * @param   int     $level    numeric level of severity
      * @param   mixed   $data     any kind of data that might help to understand context in which the message was created
      */
-    public function addLog($level, $message, $data);
+    public function addLog($message, $level = IsLogger::INFO, $data = array());
 
 }
 

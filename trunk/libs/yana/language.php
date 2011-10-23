@@ -326,7 +326,7 @@ class Language extends Singleton implements Serializable
                     } catch (\Exception $e) {
                         assert('!isset($message); // Cannot redeclare var $message');
                         $message = "Error in language file: '$file'.";
-                        Log::report($message, E_USER_WARNING, $e->getMessage());
+                        \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_WARNING, $e->getMessage());
                         unset($message);
                     }
                 }
@@ -337,7 +337,7 @@ class Language extends Singleton implements Serializable
         if (!empty($this->_fileLoaded[$file])) {
             return true;
         } else {
-            Log::report("No language-file found for id '$file'.");
+            \Yana\Log\LogManager::getLogger()->addLog("No language-file found for id '$file'.");
             return false;
         }
     }
@@ -440,7 +440,7 @@ class Language extends Singleton implements Serializable
             return $array;
 
         } else {
-            Log::report("No text found for key '$key'.", E_USER_NOTICE);
+            \Yana\Log\LogManager::getLogger()->addLog("No text found for key '$key'.");
             return "$key";
         }
     }

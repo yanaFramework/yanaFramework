@@ -220,7 +220,7 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             {
                 if (!is_string($script)) {
                     $message = 'Syntax error in @script: ' . $this->className . '::' . $this->methodName . '()';
-                    Log::report($message, E_USER_ERROR, $param);
+                    \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_ERROR, $param);
                     continue;
                 }
                 $scripts[] = $classPath . "/" . $script;
@@ -235,7 +235,7 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             {
                 if (!is_string($style)) {
                     $message = 'Syntax error in @style: ' .$this->className . '::' . $this->methodName . '()';
-                    Log::report($message, E_USER_ERROR, $param);
+                    \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_ERROR, $param);
                     continue;
                 }
                 $styles[] = $classPath . "/" . $style;
@@ -260,7 +260,7 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             {
                 if (!is_string($param)) {
                     $message = 'Syntax error in @param: ' .$this->className . '::' . $this->methodName . '()';
-                    Log::report($message, E_USER_ERROR, $param);
+                    \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_ERROR, $param);
                     continue;
                 }
                 if (preg_match('/^(\w+)\s+\$(\w+)/', $param, $match)) {

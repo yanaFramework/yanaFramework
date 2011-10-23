@@ -146,7 +146,7 @@ class plugin_antispam extends StdClass implements IsPlugin
                     assert('!isset($log); // Cannot redeclare var $log');
                     $log = 'SPAM: blocked entry because no timestamp present ' .
                         '(possibly the form was never displayed).';
-                    Log::report($log, E_USER_NOTICE, $header_data);
+                    \Yana\Log\LogManager::getLogger()->addLog($log, E_USER_NOTICE, $header_data);
                     unset($log);
                 }
                 throw new SpamError();
@@ -160,7 +160,7 @@ class plugin_antispam extends StdClass implements IsPlugin
                     assert('!isset($log); // Cannot redeclare var $log');
                     $log = 'SPAM: blocked entry because a previous entry ' .
                         'has been issued within the last 5 seconds.';
-                    Log::report($log, E_USER_NOTICE, $header_data);
+                    \Yana\Log\LogManager::getLogger()->addLog($log, E_USER_NOTICE, $header_data);
                     unset($log);
                 }
                 throw new FormSuspendedWarning();
@@ -171,7 +171,7 @@ class plugin_antispam extends StdClass implements IsPlugin
                     assert('!isset($log); // Cannot redeclare var $log');
                     $log = 'SPAM: blocked entry because maximum time of ' .
                         'life (30 minutes) for the form has been exceeded.';
-                    Log::report($log, E_USER_NOTICE, $header_data);
+                    \Yana\Log\LogManager::getLogger()->addLog($log, E_USER_NOTICE, $header_data);
                     unset($log);
                 }
                 throw new FormTimeoutWarning();
@@ -186,7 +186,7 @@ class plugin_antispam extends StdClass implements IsPlugin
                     assert('!isset($log); // Cannot redeclare var $log');
                     $log = 'SPAM: blocked entry because a field that is ' .
                         'not visible to human visitors has been filled.';
-                    Log::report($log, E_USER_NOTICE, $header_data);
+                    \Yana\Log\LogManager::getLogger()->addLog($log, E_USER_NOTICE, $header_data);
                     unset($log);
                 }
                 throw new SpamError();
@@ -201,7 +201,8 @@ class plugin_antispam extends StdClass implements IsPlugin
                     case $_SESSION['yana_form_id'] === 'expired':
                     case strcasecmp($ARGS['yana_form_id'], $_SESSION['yana_form_id']) !== 0:
                         if (!empty($settings['LOG'])) {
-                            Log::report('SPAM: blocked entry because no valid form Id has been found.');
+                            $message = 'SPAM: blocked entry because no valid form Id has been found.';
+                            \Yana\Log\LogManager::getLogger()->addLog($message);
                         }
                         if ($_SESSION['yana_form_id'] === 'expired') {
                             throw new SpamWarning();
@@ -241,7 +242,7 @@ class plugin_antispam extends StdClass implements IsPlugin
                 if (!empty($settings['LOG'])) {
                     $log = "SPAM: blocked entry because of suspicious header. " .
                         "'Referer' is set while 'user agent' is missing.";
-                    Log::report($log, $header_data);
+                    \Yana\Log\LogManager::getLogger()->addLog($log, $header_data);
                     unset($log);
                 }
                 throw new SpamError();
@@ -261,7 +262,7 @@ class plugin_antispam extends StdClass implements IsPlugin
                     if (!empty($settings['LOG'])) {
                         $log = "SPAM: blocked entry because a blacklisted phrase '" . $m[0]  .
                             "' has been found.";
-                        Log::report($log, $header_data);
+                        \Yana\Log\LogManager::getLogger()->addLog($log, $header_data);
                         unset($log);
                     }
                     throw new SpamError();
@@ -279,7 +280,7 @@ class plugin_antispam extends StdClass implements IsPlugin
                         if (!empty($settings['LOG'])) {
                             $log = "SPAM: blocked entry because a blacklisted phrase " .
                                 "'${words}' has been found.";
-                            Log::report($log, $header_data);
+                            \Yana\Log\LogManager::getLogger()->addLog($log, $header_data);
                             unset($log);
                         }
                         throw new SpamError();

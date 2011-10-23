@@ -174,7 +174,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         if (!is_int($permission) || $permission < 1) {
             if (PluginManager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
                 if ($YANA->callAction("security_check_image", Request::getPost()) === false) {
-                    Log::report('SPAM: CAPTCHA not solved, entry has not been created.');
+                    \Yana\Log\LogManager::getLogger()->addLog('SPAM: CAPTCHA not solved, entry has not been created.');
                     throw new SpamError();
                 }
             }
@@ -197,7 +197,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         /* before doing anything, check if entry exists */
         if (!$database->exists("guestbook.$target")) {
             /* error - no such entry */
-            Log::report("The selected entry guestbook.$target does not exist!");
+            \Yana\Log\LogManager::getLogger()->addLog("The selected entry guestbook.$target does not exist!");
             throw new InvalidInputWarning();
         }
 
@@ -249,7 +249,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
              *    previously made, uncommited changes)
              */
             if (!$database->exists("guestbook.$id")) {
-                Log::report("The selected entry guestbook.$id does not exist!");
+                \Yana\Log\LogManager::getLogger()->addLog("The selected entry guestbook.$id does not exist!");
                 throw new InvalidInputWarning();
 
             }
@@ -363,7 +363,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         if (!is_int($permission) || $permission < 1) {
             if (PluginManager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
                 if ($YANA->callAction("security_check_image", Request::getPost()) === false) {
-                    Log::report('SPAM: CAPTCHA not solved, entry has not been created.');
+                    \Yana\Log\LogManager::getLogger()->addLog('SPAM: CAPTCHA not solved, entry has not been created.');
                     throw new SpamError();
                 }
             }
@@ -397,7 +397,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         $myFlood = $YANA->getPlugins()->{"guestbook:/my.floodfile"};
         $myFlood->setMax((int)$YANA->getVar("PROFILE.GUESTBOOK.FLOODING"));
         if ($myFlood->isBlocked()) {
-            Log::report('Possibly flooding attempt detected. User request rejected.');
+            \Yana\Log\LogManager::getLogger()->addLog('Possibly flooding attempt detected. User request rejected.');
             throw new FloodWarning();
         }
         assert('!isset($where); // Cannot redeclare var $where');
@@ -412,11 +412,11 @@ class plugin_guestbook extends StdClass implements IsPlugin
         }
         /* insert new entry into table */
         if (!$database->insert('guestbook.*', $entry)) {
-            Log::report('Failed to insert entry.', E_USER_NOTICE, $entry);
+            \Yana\Log\LogManager::getLogger()->addLog('Failed to insert entry.', E_USER_NOTICE, $entry);
             throw new InvalidInputWarning();
         }
         if (!$database->write()) {
-            Log::report('Unable to submit entry.', E_USER_NOTICE, $entry);
+            \Yana\Log\LogManager::getLogger()->addLog('Unable to submit entry.', E_USER_NOTICE, $entry);
             throw new Error();
         }
         /* send Mail */
@@ -549,12 +549,12 @@ class plugin_guestbook extends StdClass implements IsPlugin
         // If the update operation was not successful, issue an error message and abort.
         if (!$database->update("guestbook.${target}.guestbook_comment", $guestbook_comment)) {
             $message = "Unable to insert comment at 'guestbook.${target}.'";
-            Log::report($message, E_USER_WARNING, array('guestbook_comment' => $guestbook_comment));
+            \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_WARNING, array('guestbook_comment' => $guestbook_comment));
             throw new InvalidInputWarning();
         }
         if (!$database->write()) {
             $message = "Unable to commit changes to entry 'guestbook.${target}.'";
-            Log::report($message, E_USER_ERROR, array('guestbook_comment' => $guestbook_comment));
+            \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_ERROR, array('guestbook_comment' => $guestbook_comment));
             throw new Error();
         }
     }
@@ -674,7 +674,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         $dir = $YANA->getResource('system:/config/profiledir');
         $file = new FileReadonly($dir->getPath() . $id . '.cfg');
         if ($id !== 'default' && !$file->exists() && !$YANA->getVar("PROFILE.AUTO")) {
-            Log::report('Access restriction in effect. Access to undefined profile ' . $id . ' denied.');
+            \Yana\Log\LogManager::getLogger()->addLog("Access restriction in effect. Access to undefined profile {$id} denied.");
             throw new FileNotFoundError();
         }
     }

@@ -473,7 +473,8 @@ class SessionManager extends Singleton implements Serializable
         // if security settings are missing, auto-refresh them and issue a warning
         if ($database->isEmpty("securityactionrules")) {
             self::refreshPluginSecuritySettings();
-            Log::report("No security settings found. Trying to auto-refresh table 'securityactionrules'.");
+            $message = "No security settings found. Trying to auto-refresh table 'securityactionrules'.";
+            \Yana\Log\LogManager::getLogger()->addLog($message);
             return false;
         }
         // find out what the required permission level is to perform the current action

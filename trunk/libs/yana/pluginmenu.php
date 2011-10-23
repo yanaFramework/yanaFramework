@@ -105,7 +105,7 @@ class PluginMenu extends Singleton
                     if (!$menuEntry->getGroup()) {
                         $message = "Error in plugin configuration '" . $pluginConfiguration->getTitle() . "'. " .
                             "Menu definition is missing setting 'group'.";
-                        Log::report($message, E_USER_WARNING);
+                        \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_WARNING);
                         continue;
                     }
                     $title = $menuEntry->getTitle();

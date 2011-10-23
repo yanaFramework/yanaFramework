@@ -155,7 +155,7 @@ class XDDL extends File
             $ddl = DDLDatabase::unserializeFromXDDL($simpleXml, null, $path);
 
         } catch (\Exception $e) {
-            Log::report("Error in XDDL-file: '$path'.", E_USER_WARNING, $e->getMessage());
+            \Yana\Log\LogManager::getLogger()->addLog("Error in XDDL-file: '$path'.", E_USER_WARNING, $e->getMessage());
             throw new InvalidSyntaxException("Error in XDDL-file.", E_USER_WARNING, $e);
         }
         assert('$ddl instanceof DDLDatabase; // Invalid return value. DDLDatabase expected');

@@ -93,7 +93,7 @@ class plugin_sitemap extends StdClass implements IsPlugin
             } elseif (is_file($dir . $image)) {
                 $result .= "\t<li style=\"list-style-image: url('${dir}${image}')\">";
             } else {
-                Log::report("Sitemap icon not found: '${image}'.", E_USER_WARNING);
+                \Yana\Log\LogManager::getLogger()->addLog("Sitemap icon not found: '${image}'.", E_USER_WARNING);
                 $result .= "\t<li>";
             }
             $result .= "<a href=" . SmartUtility::href("action=${action}") . ">${title}</a></li>\n";

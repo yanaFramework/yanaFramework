@@ -129,13 +129,13 @@ class DbStructureGenerics extends \Yana\Core\Object
             $code = $constraint->getConstraint();
             // skip NULL values
             if (YANA_DB_STRICT && !preg_match(self::CONSTRAINT_SYNTAX, $code)) {
-                Log::report("Syntax error in constraint '$code' " .
+                \Yana\Log\LogManager::getLogger()->addLog("Syntax error in constraint '$code' " .
                     "on table '{$table->getName()}'.", E_USER_ERROR);
                 return false;
             }
             $function = create_function('$ROW', "return ($code) == true;");
             if ($function($row) === false) {
-                Log::report("Constraint '$code' failed " .
+                \Yana\Log\LogManager::getLogger()->addLog("Constraint '$code' failed " .
                     "on table '{$table->getName()}' with value '".print_r($row, true)."'.", E_USER_WARNING);
                 return false;
             }

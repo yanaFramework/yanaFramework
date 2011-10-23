@@ -46,7 +46,7 @@ class DbNotice extends Notice
     public function __construct($message = "", $code = E_USER_NOTICE, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
-        Log::report($message, $code);
+        \Yana\Log\LogManager::getLogger()->addLog($message, $code);
     }
 }
 

@@ -48,7 +48,7 @@ class DbAlert extends Alert
     public function __construct($message = "", $code = E_USER_NOTICE, \Exception $previous = null)
     {
         parent::__construct("DB: $message", $code, $previous);
-        Log::report($message, $code);
+        \Yana\Log\LogManager::getLogger()->addLog($message, $code);
     }
 }
 

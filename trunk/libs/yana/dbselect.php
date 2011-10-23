@@ -966,7 +966,7 @@ class DbSelect extends DbSelectCount
         $result = $this->sendQuery();
 
         if ($this->db->isError($result)) {
-            Log::report("Statement '$this' on database failed", E_USER_WARNING, $result);
+            \Yana\Log\LogManager::getLogger()->addLog("Statement '$this' on database failed", E_USER_WARNING, $result);
             return null;
         }
         $returnedType = $this->getExpectedResult();
@@ -988,7 +988,7 @@ class DbSelect extends DbSelectCount
             // Error: unexpected result
             if (!is_array($row)) {
 
-                Log::report("Returned data for statement '$this' must be an array. " .
+                \Yana\Log\LogManager::getLogger()->addLog("Returned data for statement '$this' must be an array. " .
                     "Instead database returned the following value '{$row}'. " .
                     "The result was considered to be an error.");
                 break;
@@ -1051,7 +1051,7 @@ class DbSelect extends DbSelectCount
                                 $message = "Your database has a column named '$columnName', " .
                                     "which should not exist according to your database schema file. " .
                                     "The unexpected column will be ignored.";
-                                Log::report($message, E_USER_NOTICE, $e->getMessage());
+                                \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_NOTICE, $e->getMessage());
                                 continue;
                             }
                         break;

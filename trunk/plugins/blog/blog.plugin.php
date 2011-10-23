@@ -231,7 +231,7 @@ class plugin_blog extends StdClass implements IsPlugin
         if (!is_int($permission) || $permission < 1) {
             if (PluginManager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
                 if ($YANA->callAction("security_check_image", $ARGS) === false) {
-                    Log::report('SPAM: CAPTCHA not solved, entry has not been created.');
+                    \Yana\Log\LogManager::getLogger()->addLog('SPAM: CAPTCHA not solved, entry has not been created.');
                     throw new SpamError();
                 }
             }

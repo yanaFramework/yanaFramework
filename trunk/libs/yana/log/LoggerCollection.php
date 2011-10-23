@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -60,12 +59,11 @@ class LoggerCollection extends \Yana\Core\AbstractCollection implements IsLogHan
     /**
      * This implements the logging behavior.
      *
-     * @param   int     $level        numeric level of severity
-     * @param   string  $description  brief description
-     * @param   string  $fileName     file where the problem occured
-     * @param   int     $lineNumber   line number where the problem occured
+     * @param   string  $message  the message that should be reported
+     * @param   int     $level    numeric level of severity
+     * @param   mixed   $data     any kind of data that might help to understand context in which the message was created
      */
-    public function addLog($level, $description, $fileName = "", $lineNumber = 0)
+    public function addLog($message, $level = IsLogger::INFO, $data = array())
     {
         foreach ($this as $logger)
         {

@@ -1858,7 +1858,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
                     /* Create a database event log entry for each
                      * file the was not found.
                      */
-                    Log::report("Error while trying to delete a row in table " .
+                    \Yana\Log\LogManager::getLogger()->addLog("Error while trying to delete a row in table " .
                         "'{$this->currentTable()->getName()}': {$e->getMessage()}");
                 }
             }
@@ -1874,7 +1874,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
         try {
             return $this->_toString();
         } catch (\Exception $e) {
-            Log::report($e->getMessage(), $e->getCode(), $e);
+            \Yana\Log\LogManager::getLogger()->addLog($e->getMessage(), $e->getCode(), $e);
             return "";
         }
     }

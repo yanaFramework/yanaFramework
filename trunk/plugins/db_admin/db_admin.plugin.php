@@ -165,7 +165,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
         $installDirectory = $YANA->getResource('system:/dbinstall/' . mb_strtolower($dbms));
         if ($installDirectory === false) {
             /* invalid option - the choosen dbms is unknown */
-            Log::report("Unable to install database. The choosen DBMS '${dbms}' is unknown.");
+            \Yana\Log\LogManager::getLogger()->addLog("Unable to install database. The choosen DBMS '${dbms}' is unknown.");
             if (!$silent) {
                 throw new InvalidInputWarning();
             }
@@ -232,7 +232,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                     $sqlStmts = $sqlFactory->$method_name();
                     /* ... execute */
                     if ($database->importSQL($sqlStmts) === false) {
-                        Log::report("Note: Unable to install database '$item'.");
+                        \Yana\Log\LogManager::getLogger()->addLog("Note: Unable to install database '$item'.");
                         continue;
                     }
                 } /* end if */
@@ -240,14 +240,14 @@ class plugin_db_admin extends StdClass implements IsPlugin
             /* If a SQL file is available, always prefer using the SQL file.
              */
             } elseif ($database->importSQL($installFile) === false) {
-                Log::report("Note: Unable to install database '$item'.");
+                \Yana\Log\LogManager::getLogger()->addLog("Note: Unable to install database '$item'.");
                 continue;
 
             /* If the SQL file has been imported successfully
              */
             } else {
 
-                Log::report("SQL file '$installFile' has been imported.");
+                \Yana\Log\LogManager::getLogger()->addLog("SQL file '$installFile' has been imported.");
 
             } /* end if */
 
@@ -384,7 +384,8 @@ class plugin_db_admin extends StdClass implements IsPlugin
                     $selectQuery->setRow($key);
                     if (!$fileDb->insert("$tableName.$key", $db->select($selectQuery))) {
                         if (!$silent) {
-                            Log::report("Unable to copy value $tableName.$key from database to FileDB");
+                            $message = "Unable to copy value $tableName.$key from database to FileDB";
+                            \Yana\Log\LogManager::getLogger()->addLog($message);
                         }
                         return false;
                     } else if ($i > 20) {
@@ -392,7 +393,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                             $i = 0;
                         } else {
                             if (!$silent) {
-                                Log::report("Failed to commit changes to FileDB.");
+                                \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to FileDB.");
                             }
                             return false;
                         }
@@ -402,7 +403,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                 }
                 if ($i > 0 && !$fileDb->write()) {
                     if (!$silent) {
-                        Log::report("Failed to commit changes to FileDB.");
+                        \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to FileDB.");
                     }
                     return false;
                 }
@@ -421,7 +422,8 @@ class plugin_db_admin extends StdClass implements IsPlugin
                     {
                         if (!$db->insert("$tableName.$key", $fileContent[$key])) {
                             if (!$silent) {
-                                Log::report("Unable to copy value $tableName.$key from FileDB to database");
+                                $message = "Unable to copy value $tableName.$key from FileDB to database";
+                                \Yana\Log\LogManager::getLogger()->addLog($message);
                             }
                             return false;
                         } else if ($i > 20) {
@@ -429,7 +431,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                                 $i = 0;
                             } else {
                                 if (!$silent) {
-                                    Log::report("Failed to commit changes to Database.");
+                                    \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to Database.");
                                 }
                                 return false;
                             }
@@ -442,7 +444,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                 unset($diff);
                 if ($i > 0 && !$db->write()) {
                     if (!$silent) {
-                        Log::report("Failed to commit changes to Database.");
+                        \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to Database.");
                     }
                     return false;
                 }
@@ -613,7 +615,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                 if ($autoinstall) {
                     $test = $this->db_install($ARGS);
                     if ($test !== true) {
-                        Log::report('Notice: installation of tables failed. " .
+                        \Yana\Log\LogManager::getLogger()->addLog('Notice: installation of tables failed. " .
                             "(May be tables already exist?)');
                         throw new Error('Installation of tables failed. " .
                             "(Do tables already exist?)');
@@ -629,7 +631,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
             if ($autosync) {
                 $test = $this->db_sync($ARGS);
                 if ($test !== true) {
-                    Log::report('Unable to install tables of plugin "user" with the " .
+                    \Yana\Log\LogManager::getLogger()->addLog('Unable to install tables of plugin "user" with the " .
                         "choosen dbms. Operation aborted.');
                     throw new Error();
                 } else {

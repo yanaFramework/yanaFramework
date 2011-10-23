@@ -2166,7 +2166,7 @@ class DDLColumn extends DDLNamedObject
                 return (int) $value;
             break;
             default:
-                DbNotice::report("Unknown column type '{$column->getType()}'.", "DbNotice");
+                \Yana\Log\LogManager::getLogger()->addLog("Unknown column type '{$column->getType()}'.");
                 return null;
             break;
         }
