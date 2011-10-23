@@ -227,7 +227,7 @@ class plugin_user extends StdClass implements IsPlugin
         // check captcha field
         if (PluginManager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
             if ($YANA->callAction("security_check_image", $ARGS) === false) {
-                Log::report('SPAM: CAPTCHA not solved, entry has not been created.');
+                \Yana\Log\LogManager::getLogger()->addLog('SPAM: CAPTCHA not solved, entry has not been created.');
                 return false;
             }
         }
@@ -500,7 +500,7 @@ class plugin_user extends StdClass implements IsPlugin
             }
 
             /* create a log for each failed login attempt */
-            Log::report("Login attempt failed for user '".mb_strtolower($user)."'. Invalid password.");
+            \Yana\Log\LogManager::getLogger()->addLog("Login attempt failed for user '{$user}'. Invalid password.");
 
             /* The sleep-command is introduced for security reasons,
              * to make brute-force attacks on password forms harder.

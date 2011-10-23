@@ -263,14 +263,13 @@ class DbUpdate extends DbInsert
         $profileId = array_pop($resultRow);
         $session = SessionManager::getInstance();
         if ($session->checkPermission($profileId) !== true) {
-            Message::report("", "InsufficientRightsWarning");
-            return false;
+            throw new InsufficientRightsWarning();
         }
         switch ($this->getExpectedResult())
         {
             case DbResultEnumeration::ROW:
                 if (isset($value['profile_id']) && $value['profile_id'] != $profileId) {
-                    Log::report("Security restriction. " .
+                    \Yana\Log\LogManager::getLogger()->addLog("Security restriction. " .
                         "The profile id of an entry may not be changed.", E_USER_WARNING);
                     return false;
                 } else {
@@ -279,7 +278,7 @@ class DbUpdate extends DbInsert
             break;
             case DbResultEnumeration::CELL:
                 if (strcasecmp($this->getColumn(), 'profile_id') === 0) {
-                    Log::report("Security restriction. " .
+                    \Yana\Log\LogManager::getLogger()->addLog("Security restriction. " .
                         "The profile id of an entry may not be changed.", E_USER_WARNING);
                     return false;
                 } else {
@@ -314,7 +313,7 @@ class DbUpdate extends DbInsert
     public function sendQuery()
     {
         $message = "Updating entry '{$this->tableName}.{$this->row}'.";
-        Log::report($message, E_USER_NOTICE, $this->getOldValues());
+        \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_NOTICE, $this->getOldValues());
 
         // send query
         return parent::sendQuery();

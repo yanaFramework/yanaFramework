@@ -25,30 +25,46 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Log;
+
 /**
- * Database warning
+ * <<Utility>> Stores loggers and allows to call them all at once.
  *
- * This class represents warnings passed to the user.
- * The error is automatically added to the log-files.
- *
- * @access      public
- * @package     yana
- * @subpackage  error_reporting
+ * @package    yana
+ * @subpackage log
  */
-class DbWarning extends Warning
+class LogManager extends \Yana\Core\AbstractUtility implements IsLogableClass
 {
+
     /**
-     * constructor
-     *
-     * @param  string      $message   the message that should be reported
-     * @param  int         $code      optional error code
-     * @param  \Exception  $previous  use this when you need to rethrow a catched exception
+     * @var \Yana\Log\LoggerCollection
      */
-    public function __construct($message = "", $code = E_USER_WARNING, \Exception $previous = null)
+    private static $_loggers = null;
+
+    /**
+     * Adds a logger to the class.
+     *
+     * @param  \Yana\Log\IsLogger  $logger  instance that will handle the logging
+     */
+    public static function attachLogger(\Yana\Log\IsLogger $logger)
     {
-        parent::__construct($message, $code, $previous);
-        \Yana\Log\LogManager::getLogger()->addLog($message, $code);
+        $loggers = self::getLogger();
+        $loggers[] = $logger;
     }
+
+    /**
+     * Returns the attached loggers.
+     *
+     * @return  \Yana\Log\IsLogHandler
+     */
+    public static function getLogger()
+    {
+        if (!isset(self::$_loggers)) {
+            self::$_loggers = new LoggerCollection();
+        }
+        return self::$_loggers;
+    }
+
 }
 
 ?>

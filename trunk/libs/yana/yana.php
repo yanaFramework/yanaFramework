@@ -936,7 +936,7 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable, \Yana\L
      * global $YANA;
      *
      * // print an error and go to start page
-     * Message::report('Error 404', E_USER_ERROR);
+     * new Message('Error 404', E_USER_ERROR);
      * $YANA->exitTo();
      *
      * // same as:
@@ -946,11 +946,11 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable, \Yana\L
      * // view the error message and exit the script
      * // without handling another event.
      * // ( You may translate this to: "exit to 'nowhere'" )
-     * Message::report('Error 500', E_USER_ERROR);
+     * new Message('Error 500', E_USER_ERROR);
      * $YANA->exitTo('null');
      *
      * // output message and route to 'login' page
-     * Message::report('Access denied', E_USER_ERROR);
+     * new Message('Access denied', E_USER_ERROR);
      * $YANA->exitTo('login');
      * </code>
      *

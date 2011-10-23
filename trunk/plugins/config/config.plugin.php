@@ -424,13 +424,13 @@ class plugin_config extends StdClass implements IsPlugin
 
         // error - update operation failed
         if (!$database->update("user.$userName.user_is_expert", $userMode)) {
-            Log::report("Unable to update user '$userName'.");
+            \Yana\Log\LogManager::getLogger()->addLog("Unable to update user '$userName'.");
             return false;
         }
 
         // error - unable to write changes
         if (!$database->write()) {
-            Log::report("Unable to commit update to user '$userName'.");
+            \Yana\Log\LogManager::getLogger()->addLog("Unable to commit update to user '$userName'.");
             return false;
         }
 

@@ -48,7 +48,7 @@ class DbError extends Error
     public function __construct($message = "", $code = E_USER_ERROR, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
-        Log::report($message, $code);
+        \Yana\Log\LogManager::getLogger()->addLog($message, $code);
     }
 
 }

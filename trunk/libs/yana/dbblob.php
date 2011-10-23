@@ -257,11 +257,11 @@ class DbBlob extends FileReadonly
         }
 
         if (!$overwrite && file_exists($destFile)) {
-            Log::report("Unable to copy to file '{$destFile}'. " .
+            \Yana\Log\LogManager::getLogger()->addLog("Unable to copy to file '{$destFile}'. " .
                 "Another file with the same name does already exist.");
             return false;
         } elseif ($overwrite && file_exists($destFile) && !is_writeable($destFile)) {
-            Log::report("Unable to copy file to '{$destFile}'. Permission denied.");
+            \Yana\Log\LogManager::getLogger()->addLog("Unable to copy file to '{$destFile}'. Permission denied.");
             return false;
         } else {
             $handle = fopen($destFile, "w+");
@@ -523,12 +523,12 @@ class DbBlob extends FileReadonly
                 break;
 
                 case UPLOAD_ERR_INVALID_TARGET:
-                    Log::report("Unable to write uploaded file '{$filename}'.");
+                    \Yana\Log\LogManager::getLogger()->addLog("Unable to write uploaded file '{$filename}'.");
                     throw new NotWriteableError("", UPLOAD_ERR_INVALID_TARGET);
                 break;
                 case UPLOAD_ERR_OTHER:
                 default:
-                    Log::report("Unable to write uploaded file '{$filename}'.");
+                    \Yana\Log\LogManager::getLogger()->addLog("Unable to write uploaded file '{$filename}'.");
                     throw new NotWriteableError("", $file['error']);
                 break;
             } // end switch (error code)

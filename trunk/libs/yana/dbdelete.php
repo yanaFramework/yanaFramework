@@ -184,7 +184,7 @@ class DbDelete extends DbQuery
     {
         // logging: backup entry before deleting it
         $message = "Deleting entry '{$this->tableName}.{$this->row}'.";
-        Log::report($message, E_USER_NOTICE, $this->getOldValues());
+        \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_NOTICE, $this->getOldValues());
 
         // send query
         $result = parent::sendQuery();

@@ -291,7 +291,7 @@ class File extends FileReadonly implements IsWritable
             throw new NotWriteableException($message, E_USER_WARNING);
         }
         if (chmod($destDir . $destFile, $mode) === false) {
-            Log::report("Unable to set mode (access level) for file '{$destDir}{$destFile}'.");
+            \Yana\Log\LogManager::getLogger()->addLog("Unable to set mode (access level) for file '{$destDir}{$destFile}'.");
         }
     }
 

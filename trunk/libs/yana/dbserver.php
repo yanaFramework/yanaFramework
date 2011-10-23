@@ -114,7 +114,8 @@ class DbServer extends \Yana\Core\Object
     {
         if (!class_exists("MDB2")) {
             /* error handling */
-            Log::report("Unable to open connection to database using PEAR-DB. Might not be installed.");
+            $message = "Unable to open connection to database using PEAR-DB. Might not be installed.";
+            \Yana\Log\LogManager::getLogger()->addLog($message);
             throw new PearDbError();
             $this->_database = null;
         }
@@ -237,7 +238,7 @@ class DbServer extends \Yana\Core\Object
                 $dsn['password'] = 'YES';
             }
             $data = $this->_database->getMessage() . "\nUsing DSN:\n" . print_r($dsn, true);
-            Log::report($err_msg, E_USER_NOTICE, $data);
+            \Yana\Log\LogManager::getLogger()->addLog($err_msg, E_USER_NOTICE, $data);
             throw new Warning($err_msg.': '.$data, E_USER_WARNING);
         }
     }

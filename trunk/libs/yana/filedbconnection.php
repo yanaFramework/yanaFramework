@@ -605,7 +605,7 @@ class FileDbConnection extends \Yana\Core\Object
                                     "rows with the same name have been found. " .
                                     "This conflict can not be solved automatically. " .
                                     "Please edit and update the affected table.";
-                                Log::report($log, E_USER_WARNING, array('affected rows:' => $tmp));
+                                \Yana\Log\LogManager::getLogger()->addLog($log, E_USER_WARNING, array('affected rows:' => $tmp));
                                 unset($log);
                             }
                             /*
@@ -735,7 +735,7 @@ class FileDbConnection extends \Yana\Core\Object
                                     "rows with the same name have been found. " .
                                     "This conflict can not be solved automatically. " .
                                     "Please edit and update the affected table.";
-                                Log::report($log, E_USER_WARNING, array('affected rows:' => $tmp));
+                                \Yana\Log\LogManager::getLogger()->addLog($log, E_USER_WARNING, array('affected rows:' => $tmp));
                                 unset($log);
                             }
                             /*

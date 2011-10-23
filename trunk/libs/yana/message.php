@@ -26,9 +26,8 @@
  */
 
 /**
- * Message
- *
  * This is a super class for all common messages.
+ *
  * It may be used to represent information, that
  * is not an error. E.g. reporting, that a certain
  * operation has been finished successfully.
@@ -71,31 +70,6 @@ class Message extends \Yana\Core\Exceptions\AbstractException
     }
 
     /**
-     * Report a new message
-     *
-     * This is an alias for calling the constructor and just report (but not use) the instance.
-     *
-     * @access  public
-     * @static
-     * @param   string  $message    the message that should be reported
-     * @param   scalar  $code       optional error number or class name
-     * @param   mixed   $data       any kind of data that might help to understand context
-     *                              in which the message was created
-     */
-    public static function report($message, $code = E_USER_NOTICE, $data = null)
-    {
-        $exception = null;
-        if (is_int($code)) {
-            $exception = new self($message, $code);
-        } else {
-            $exception = new $code($message);
-        }
-        if (!empty($data)) {
-            $exception->setData($data);
-        }
-    }
-
-    /**
      * get list of messages
      *
      * Returns the message queue as an array of objets of type Message.
@@ -126,6 +100,7 @@ class Message extends \Yana\Core\Exceptions\AbstractException
         assert('is_array(self::$queue); // Static member "queue" is expected to be an array.');
         return count(self::$queue);
     }
+
 }
 
 ?>

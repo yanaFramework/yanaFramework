@@ -355,7 +355,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
             }
 
             if (defined('YANA_ERROR_REPORTING') && YANA_ERROR_REPORTING === YANA_ERROR_LOG) {
-                Log::report("$dbQuery");
+                \Yana\Log\LogManager::getLogger()->addLog("$dbQuery");
             }
 
             /*
@@ -435,7 +435,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
              * 3.c) error - invalid argument type
              */
             } else {
-                Log::report("The value '$dbQuery' is not a valid query.", E_USER_WARNING);
+                \Yana\Log\LogManager::getLogger()->addLog("The value '$dbQuery' is not a valid query.", E_USER_WARNING);
                 return false;
             }
 
@@ -447,13 +447,13 @@ class DbStream extends \Yana\Core\Object implements Serializable
                 /*
                  * 4.1.2) rollback on error
                  */
-                Log::report("Failed: $dbQuery", E_USER_WARNING, $result->getMessage());
+                \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", E_USER_WARNING, $result->getMessage());
                 $result = $dbConnection->rollback();
                 /*
                  * 4.1.3) when rollback failed, create entry in logs
                  */
                 if ($this->isError($result)) {
-                    Log::report("Unable to rollback changes. Database might contain corrupt data.", E_USER_ERROR);
+                    \Yana\Log\LogManager::getLogger()->addLog("Unable to rollback changes. Database might contain corrupt data.", E_USER_ERROR);
                 }
                 return false;
             }
@@ -489,7 +489,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
          * 5.1) commit failed
          */
         if ($this->isError($result)) {
-            Log::report("Failed: $dbQuery", E_USER_WARNING, $result->getMessage());
+            \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", E_USER_WARNING, $result->getMessage());
             return false;
         }
         /*
@@ -610,7 +610,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
                     try {
                         $selectQuery->setInnerJoin($table2, $columns[0], $columns[1]);
                     } catch (\Exception $e) {
-                        Log::report("Unable to join tables '{$tableName}' and " .
+                        \Yana\Log\LogManager::getLogger()->addLog("Unable to join tables '{$tableName}' and " .
                             "'{$table2}'. Cause: " . $e->getMessage(), E_USER_WARNING);
                         return false;
                     }
@@ -719,7 +719,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
         if (YANA_DB_STRICT) {
             if (isset($_SESSION['transaction_isolation_created'])) {
                 if ($this->_getLastModified($tableName, $row) > $_SESSION['transaction_isolation_created']) {
-                    Log::report("The user was trying to save form data, which has changed " .
+                    \Yana\Log\LogManager::getLogger()->addLog("The user was trying to save form data, which has changed " .
                         "since he accessed the corrsponding form. The operation has been aborted, " .
                         "as updating this row would have overwritten changes made by another user.", E_USER_WARNING);
                     throw new FormTimeoutWarning();
@@ -780,7 +780,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
             $constraint = array($column => $value);
         }
         if (DbStructureGenerics::checkConstraint($table, $constraint) === false) {
-            Log::report("Cannot set values. Constraint check failed for: '$updateQuery'.");
+            \Yana\Log\LogManager::getLogger()->addLog("Cannot set values. Constraint check failed for: '$updateQuery'.");
             return false;
 
         } else {
@@ -1064,7 +1064,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
          * 3.2) error - constraint check failed
          */
         if (DbStructureGenerics::checkConstraint($table, $value) === false) {
-            Log::report("Insert on table '{$tableName}' failed. " .
+            \Yana\Log\LogManager::getLogger()->addLog("Insert on table '{$tableName}' failed. " .
                 "Constraint check failed.", E_USER_WARNING, $value);
             return false;
         }
@@ -1610,10 +1610,10 @@ class DbStream extends \Yana\Core\Object implements Serializable
                 $success = false;
             }
             if ($success !== false) {
-                Log::report("SQL import was successful.", E_USER_NOTICE, $sqlFile);
+                \Yana\Log\LogManager::getLogger()->addLog("SQL import was successful.", E_USER_NOTICE, $sqlFile);
                 return true;
             } else {
-                Log::report("SQL import failed.", E_USER_NOTICE, $sqlFile);
+                \Yana\Log\LogManager::getLogger()->addLog("SQL import failed.", E_USER_NOTICE, $sqlFile);
                 return false;
             }
 
@@ -1629,16 +1629,16 @@ class DbStream extends \Yana\Core\Object implements Serializable
             $raw_data = preg_replace("/;\s*\n\s*/i", "[NEXT_COMMAND]", $raw_data);
             $raw_data = preg_replace("/\s/", " ", $raw_data);
             if (empty($raw_data)) {
-                Log::report("SQL import canceled. File is empty.", E_USER_NOTICE, $sqlFile);
+                \Yana\Log\LogManager::getLogger()->addLog("SQL import canceled. File is empty.", E_USER_NOTICE, $sqlFile);
                 return false;
             }
             // add items
             $this->_queue = explode("[NEXT_COMMAND]", $raw_data);
             if ($this->write() !== false) {
-                Log::report("SQL import was successful.", E_USER_NOTICE, $raw_data);
+                \Yana\Log\LogManager::getLogger()->addLog("SQL import was successful.", E_USER_NOTICE, $raw_data);
                 return true;
             } else {
-                Log::report("SQL import failed.", E_USER_NOTICE, $raw_data);
+                \Yana\Log\LogManager::getLogger()->addLog("SQL import failed.", E_USER_NOTICE, $raw_data);
                 return false;
             }
         }
@@ -1796,7 +1796,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
     private function _isWriteable()
     {
         if (!$this->isWriteable()) {
-            Log::report("Database is not writeable. " .
+            \Yana\Log\LogManager::getLogger()->addLog("Database is not writeable. " .
                 "Check if attribute readonly is set to true in structure file: ".$this->getName(), E_USER_WARNING);
             return false;
         } else {
@@ -2075,7 +2075,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
                             return true;
                         }
                     } else {
-                        Log::report("Update on table '{$table->getName()}' failed. " .
+                        \Yana\Log\LogManager::getLogger()->addLog("Update on table '{$table->getName()}' failed. " .
                             "Foreign key constraint mismatch. " .
                             "The value '{$value[$sourceColumn]}' for attribute '{$sourceColumn}' " .
                             "refers to a non-existing entry in table '{$targetTable}'. ",

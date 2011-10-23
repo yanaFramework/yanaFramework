@@ -25,30 +25,34 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Log;
+
 /**
- * Database warning
+ * <<Interface>> Identifies classes the can accept a logger.
  *
- * This class represents warnings passed to the user.
- * The error is automatically added to the log-files.
+ * A class may have mutliple loggers.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  log
  */
-class DbWarning extends Warning
+interface IsLogableClass
 {
+
     /**
-     * constructor
+     * Adds a logger to the class.
      *
-     * @param  string      $message   the message that should be reported
-     * @param  int         $code      optional error code
-     * @param  \Exception  $previous  use this when you need to rethrow a catched exception
+     * @param  \Yana\Log\IsLogger  $logger  instance that will handle the logging
      */
-    public function __construct($message = "", $code = E_USER_WARNING, \Exception $previous = null)
-    {
-        parent::__construct($message, $code, $previous);
-        \Yana\Log\LogManager::getLogger()->addLog($message, $code);
-    }
+    public static function attachLogger(\Yana\Log\IsLogger $logger);
+
+    /**
+     * Returns the attached loggers.
+     *
+     * @return  \Yana\Log\IsLogHandler
+     */
+    public static function getLogger();
+
 }
 
 ?>

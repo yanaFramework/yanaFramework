@@ -224,7 +224,7 @@ class plugin_about_config extends StdClass implements IsPlugin
 
         /* write changes to disk, if it fails, issue an error and provide a log entry. */
         if (!$configFile->failSafeWrite()) {
-            Log::report("Unable to write file", E_USER_WARNING, $configFile->getPath());
+            \Yana\Log\LogManager::getLogger()->addLog("Unable to write file", E_USER_WARNING, $configFile->getPath());
             return false;
         } else {
             return true;
@@ -258,7 +258,7 @@ class plugin_about_config extends StdClass implements IsPlugin
         $YANA->clearCache();
 
         if (!$configFile->failSafeWrite()) {
-            Log::report("Unable to write file", E_USER_WARNING, $configFile->getPath());
+            \Yana\Log\LogManager::getLogger()->addLog("Unable to write file", E_USER_WARNING, $configFile->getPath());
             return false;
         } else {
             return true;

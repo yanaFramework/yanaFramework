@@ -257,7 +257,7 @@ class Image extends \Yana\Core\Object
         if (!function_exists('imagecreate')) {
             $message = "The GD library does not seem to be installed.\nWithout this library this framework will be ".
                 "unable to create images.\nPlease update your configuration!";
-            \Log::report($message);
+            \Yana\Log\LogManager::getLogger()->addLog($message);
 
         /* if no filename is provided, create an empty truecolor image */
         } elseif (is_null($filename)) {
@@ -272,7 +272,7 @@ class Image extends \Yana\Core\Object
             /* 1 check input */
             if (is_string($filename)) {
                 if (!file_exists($filename)) {
-                    \Log::report("The image '{$filename}' does not exist.");
+                    \Yana\Log\LogManager::getLogger()->addLog("The image '{$filename}' does not exist.");
                 } else {
                     $this->_path = $filename;
                     $this->_exists   = true;
@@ -356,7 +356,7 @@ class Image extends \Yana\Core\Object
                 if ($this->_image === false) {
                     $message = "The file '{$filename}' was not recognized as a valid ".
                         ((!empty($imageType))?$imageType." ":"")."image.";
-                    \Log::report($message);
+                    \Yana\Log\LogManager::getLogger()->addLog($message);
                     $this->_createErrorImage();
 
                 /* make image truecolor */
