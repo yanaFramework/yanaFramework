@@ -30,6 +30,16 @@ namespace Yana\Core\Exceptions;
 /**
  * <<exception>> Super class for all kinds of exceptions and messages.
  *
+ * This class is abstract, because some people have a tendency to throw unspecific
+ * instances of \Exception and identify the kind of exception thrown by the text
+ * of the error message. JUST DON'T!
+ *
+ * Error texts may change: don't rely on them!
+ *
+ * Thus you should NEVER trow an unspecific exception, because it beats the whole
+ * concept of having an exception in the first place: which is being able to catch
+ * thrown exceptions in the calling method and react on to them based on the class.
+ *
  * @package     yana
  * @subpackage  core
  */
