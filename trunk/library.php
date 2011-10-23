@@ -314,10 +314,6 @@ if (!defined('YANA_TPL_CACHE_DIR')) {
  *
  * @ignore
  */
-
-if (!defined('YANA_ERROR_WRONG_ARGUMENT')) {
-    define('YANA_ERROR_WRONG_ARGUMENT',  'Wrong argument type for argument %s. %s expected, found \'%s\' instead.');
-}
 if (!defined('E_USER_ASSERT')) {
     define('E_USER_ASSERT',              10);
 }

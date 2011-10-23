@@ -1132,6 +1132,8 @@ class SmartUtility extends \Yana\Core\AbstractUtility
      */
     public static function sizeOf(array $params, $smarty)
     {
+        assert('!isset($params["assign"]) || is_string($params["assign"]); // Invalid argument $assign: string expected');
+
         if (isset($params['value'])) {
             $value = $params['value'];
             if (is_scalar($value)) {
@@ -1147,13 +1149,7 @@ class SmartUtility extends \Yana\Core\AbstractUtility
             $result = 0;
         }
         if (isset($params['assign'])) {
-            if (is_string($params['assign'])) {
-                $smarty->assign($params['assign'], $result);
-            } else {
-                $message = sprintf(YANA_ERROR_WRONG_ARGUMENT, 'assign', 'String in function '.__FUNCTION__.
-                    '()', gettype($params['value']));
-                trigger_error($message, E_USER_WARNING);
-            }
+            $smarty->assign($params['assign'], $result);
         } else {
             return $result;
         }
@@ -1228,7 +1224,7 @@ class SmartUtility extends \Yana\Core\AbstractUtility
             $icon = $entry->getIcon();
 
             if (!is_file($icon)) {
-                Log::report("Sitemap icon not found: '" . $icon . "'.", E_USER_WARNING);
+                continue;
             }
             $result .= sprintf($template, $action, $icon, $title, $title);
         } // end foreach
@@ -1262,57 +1258,59 @@ class SmartUtility extends \Yana\Core\AbstractUtility
      */
     public static function slider(array $params)
     {
+        assert('is_string($params["inputName"]); // Invalid argument $params["inputName"]: string expected');
+
+        $htmlResult = "";
+
         /* create document */
-        $document = new SmartTemplate("id:gui_slider");
-        $sliderId = uniqid(__FUNCTION__ . '_');
-        $document->setVar('sliderId', $sliderId);
-        // check if the width is set, otherwise the min width will be set to default
-        if (isset($params['width'])) {
-            $width = (int) $params['width'];
-        } else {
-            $width = 0;
-        }
-        $document->setVar('width', $width);
-        // if the minimum value does not set, 0 will be choosen
-        if (isset($params['min'])) {
-            $min = (float) $params['min'];
-        } else {
-            $min = 0;
-        }
-        $document->setVar('min', $min);
-        // if the maximum value does not set, 1 will be choosen
-        if (isset($params['max'])) {
-            $max = (float) $params['max'];
-        } else {
-            $max = 1;
-        }
-        $document->setVar('max', $max);
-        if (isset($params['step'])) {
-            $step = (float) $params['step'];
-        } else {
-            $step = 1;
-        }
-        $document->setVar('step', $step);
-        if (isset($params['backgroundColor'])) {
-            $backgroundColor = (string) $params['backgroundColor'];
-        } else {
-            $backgroundColor = '';
-        }
-        $document->setVar('background', $backgroundColor);
-        if (isset($params['value'])) {
-            $value = (float) $params['value'];
-        } else {
-            $value = $min;
-        }
-        $document->setVar('value', $value);
         if (isset($params['inputName'])) {
+            $document = new SmartTemplate("id:gui_slider");
+            $sliderId = uniqid(__FUNCTION__ . '_');
+            $document->setVar('sliderId', $sliderId);
+            // check if the width is set, otherwise the min width will be set to default
+            if (isset($params['width'])) {
+                $width = (int) $params['width'];
+            } else {
+                $width = 0;
+            }
+            $document->setVar('width', $width);
+            // if the minimum value does not set, 0 will be choosen
+            if (isset($params['min'])) {
+                $min = (float) $params['min'];
+            } else {
+                $min = 0;
+            }
+            $document->setVar('min', $min);
+            // if the maximum value does not set, 1 will be choosen
+            if (isset($params['max'])) {
+                $max = (float) $params['max'];
+            } else {
+                $max = 1;
+            }
+            $document->setVar('max', $max);
+            if (isset($params['step'])) {
+                $step = (float) $params['step'];
+            } else {
+                $step = 1;
+            }
+            $document->setVar('step', $step);
+            if (isset($params['backgroundColor'])) {
+                $backgroundColor = (string) $params['backgroundColor'];
+            } else {
+                $backgroundColor = '';
+            }
+            $document->setVar('background', $backgroundColor);
+            if (isset($params['value'])) {
+                $value = (float) $params['value'];
+            } else {
+                $value = $min;
+            }
+            $document->setVar('value', $value);
             $inputName = (string) $params['inputName'];
-        } else {
-            Log::report("Missing argument 'inputName' in function " . __FUNCTION__ . "()", E_USER_WARNING);
-            return "";
+            $document->setVar('inputName', $inputName);
+            $htmlResult = (string) $document;
         }
-        $document->setVar('inputName', $inputName);
-        return (string) $document;
+        return $htmlResult;
     }
 
     /**
@@ -2011,32 +2009,24 @@ class SmartUtility extends \Yana\Core\AbstractUtility
      */
     public static function smlLoad(array $params, $smarty)
     {
+        assert('is_string($params["file"]); // Invalid argument $file: string expected');
+        assert('empty($params["section"]) || is_string($params["section"]); // Invalid argument $section: string expected');
+        assert('empty($params["scope"]) || is_string($params["scope"]); // Invalid argument $scope: string expected');
+
         /* input checking */
-        if (empty($params['file'])) {
-            trigger_error("Missing argument 'file' in function sml_load()", E_USER_WARNING);
-            return "";
-        } elseif (!is_string($params['file'])) {
-            $message = sprintf(YANA_ERROR_WRONG_ARGUMENT, 'file in sml_load()', 'String', gettype($params['file']));
-            trigger_error($message, E_USER_WARNING);
-            return "";
-        } elseif (!preg_match('/^[\w\d-_]+\.(?:sml|config)$/i', $params['file'])) {
+        if (!preg_match('/^[\w\d-_]+\.(?:sml|config)$/i', $params['file'])) {
             $message = "Argument 'file' contains illegal characters for function sml_load().";
             trigger_error($message, E_USER_WARNING);
             return "";
-        } elseif (!is_file($smarty->config_dir.$params['file'])) {
+        } elseif (!is_file($smarty->config_dir . $params['file'])) {
             trigger_error("Argument 'file' is not a valid file path in function sml_load().", E_USER_WARNING);
             return "";
         } else {
-            $in_file = $smarty->config_dir.$params['file'];
+            $in_file = $smarty->config_dir . $params['file'];
         } // end if
 
         if (empty($params['section']) || $params['section'] === '*') {
             $in_section = null;
-        } elseif (!is_string($params['section'])) {
-            $format = YANA_ERROR_WRONG_ARGUMENT;
-            $message = sprintf($format, 'section in sml_load()', 'String', gettype($params['section']));
-            trigger_error($message, E_USER_WARNING);
-            return "";
         } elseif (!preg_match('/^([\w\d-_\.]+)$/i', $params['section'])) {
             $message = "Argument 'section' contains illegal characters for function sml_load().";
             trigger_error($message, E_USER_WARNING);
@@ -2046,32 +2036,7 @@ class SmartUtility extends \Yana\Core\AbstractUtility
         } // end if
 
         if (empty($params['scope'])) {
-            if (empty($params['global'])) {
-                $in_scope = 'local';
-            } else {
-                if (!is_boolean($params['global'])) {
-                    $format = YANA_ERROR_WRONG_ARGUMENT;
-                    $message = sprintf($format, 'global in sml_load()', 'Boolean', gettype($params['global']));
-                    trigger_error($message, E_USER_WARNING);
-                    return "";
-                } else {
-                    $message = "Argument 'global' is deprecated in function sml_load(). You should consider ".
-                        "using scope='parent' (equals global=true) or scope='local' (equals global=false) instead.";
-                    trigger_error($message, E_USER_NOTICE);
-                    if ($params['global'] === true) {
-                        $in_scope = 'parent';
-                    } elseif ($params['global'] === false) {
-                        $in_scope = 'local';
-                    } else {
-                        $in_scope = 'local';
-                    } // end if
-                } // end if
-            } // end if
-        } elseif (!is_string($params['scope'])) {
-            $message = sprintf(YANA_ERROR_WRONG_ARGUMENT, 'scope in sml_load()', 'String', gettype($params['scope']));
-            trigger_error($message, E_USER_WARNING);
-            return "";
-
+            $in_scope = 'local';
         } else {
             switch(mb_strtolower($params['scope']))
             {
@@ -2233,41 +2198,39 @@ class SmartUtility extends \Yana\Core\AbstractUtility
      */
     public static function loadSmilies($user_dir = "./")
     {
-        assert('is_dir($user_dir); /* The value \''.$user_dir.'\' is not a directory */');
-        if (!is_string($user_dir)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'String', gettype($user_dir)), E_USER_WARNING);
+        assert('is_string($user_dir); // Invalid argument $user_dir: string expected');
+        assert('is_dir($user_dir); /* The value \'' . $user_dir . '\' is not a directory */');
+
+        global $YANA;
+        if (isset($YANA)) {
+            $smilies_dir = $YANA->getVar('PROFILE.SMILEYDIR');
         } else {
-            global $YANA;
-            if (isset($YANA)) {
-                $smilies_dir = $YANA->getVar('PROFILE.SMILEYDIR');
-            } else {
-                global $smilies, $smilies_dir;
-                $smilies_dir = $user_dir;
-            }
+            global $smilies, $smilies_dir;
+            $smilies_dir = $user_dir;
+        }
 
-            if (is_dir($smilies_dir)) {
-                if (empty($smilies) || is_null($smilies)) {
-                    $smilies = array();
+        if (is_dir($smilies_dir)) {
+            if (empty($smilies) || is_null($smilies)) {
+                $smilies = array();
 
-                    $dir = dir($smilies_dir);
-                    while ($txt = $dir->read())
-                    {
-                        if (preg_match("/\.gif$/i", $txt)) {
-                            $smilies[count($smilies)] = mb_substr($txt, 0, mb_strrpos($txt, "."));
-                        }
+                $dir = dir($smilies_dir);
+                while ($txt = $dir->read())
+                {
+                    if (preg_match("/\.gif$/i", $txt)) {
+                        $smilies[count($smilies)] = mb_substr($txt, 0, mb_strrpos($txt, "."));
                     }
-                    $dir->close();
-                    sort($smilies);
                 }
-
-                if (isset($YANA)) {
-                    $YANA->setVar('SMILIES', $smilies);
-                }
-            } else {
-                $message = "Unable to load smilies. The directory '{$smilies_dir}' does not exist.";
-                trigger_error($message, E_USER_WARNING);
+                $dir->close();
+                sort($smilies);
             }
-        } // end if
+
+            if (isset($YANA)) {
+                $YANA->setVar('SMILIES', $smilies);
+            }
+        } else {
+            $message = "Unable to load smilies. The directory '{$smilies_dir}' does not exist.";
+            trigger_error($message, E_USER_WARNING);
+        }
     }
 
     /**

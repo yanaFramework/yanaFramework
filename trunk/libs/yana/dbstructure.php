@@ -394,22 +394,12 @@ class DbStructure extends SML
      */
     public function renameColumn($table, $oldColumn, $newColumn)
     {
-        if (!is_string($table)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'String', gettype($table)), E_USER_WARNING);
-            return false;
-        }
-        if (!is_string($oldColumn)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 2, 'String', gettype($oldColumn)), E_USER_WARNING);
-            return false;
-        } else {
-            $oldColumn = mb_strtoupper($oldColumn);
-        }
-        if (!is_string($newColumn)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 3, 'String', gettype($newColumn)), E_USER_WARNING);
-            return false;
-        } else {
-            $newColumn = mb_strtoupper($newColumn);
-        }
+        assert('is_string($table); // Invalid argument $table: string expected');
+        assert('is_string($oldColumn); // Invalid argument $oldColumn: string expected');
+        assert('is_string($newColumn); // Invalid argument $newColumn: string expected');
+
+        $oldColumn = mb_strtoupper($oldColumn);
+        $newColumn = mb_strtoupper($newColumn);
 
         $tbl =& $this->_getTable($table);
         if (!is_array($tbl)) {
@@ -456,16 +446,10 @@ class DbStructure extends SML
      */
     public function dropColumn($table, $column)
     {
-        if (!is_string($table)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'String', gettype($table)), E_USER_WARNING);
-            return false;
-        }
-        if (!is_string($column)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 2, 'String', gettype($column)), E_USER_WARNING);
-            return false;
-        } else {
-            $column = mb_strtoupper($column);
-        }
+        assert('is_string($table); // Invalid argument $table: string expected');
+        assert('is_string($column); // Invalid argument $column: string expected');
+
+        $column = mb_strtoupper($column);
 
         $tbl =& $this->_getTable($table);
         if (!is_array($tbl)) {
@@ -2591,18 +2575,9 @@ class DbStructure extends SML
      */
     public function setConstraint($constraint, $table, $column = null)
     {
-        if (!is_string($constraint)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 1, 'String', gettype($constraint)), E_USER_WARNING);
-            return false;
-        }
-        if (!is_string($table)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 2, 'String', gettype($table)), E_USER_WARNING);
-            return false;
-        }
-        if (!is_string($column) && !is_null($column)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 3, 'String', gettype($column)), E_USER_WARNING);
-            return false;
-        }
+        assert('is_string($constraint); // Invalid argument $constraint: string expected');
+        assert('is_string($table); // Invalid argument $table: string expected');
+        assert('is_null($column) || is_string($column); // Invalid argument $column: string expected');
 
         if (!preg_match(DbStructureGenerics::CONSTRAINT_SYNTAX, $constraint)) {
             trigger_error("Syntax error in constraint: '".trim($constraint)."'.", E_USER_WARNING);
@@ -3101,45 +3076,32 @@ class DbStructure extends SML
          */
         if (!is_array($col)) {
             return false;
+        }
 
-        } else {
-
-            /*
-             * 2) set numeric array
-             */
-            if ($isNumeric === true) {
-                if (!$this->setType($table, $column, 'array')) {
-                    return false;
-                } else {
-                    if (!isset($col['DISPLAY'])) {
-                        $col['DISPLAY'] = array();
-                    }
-                    $col['DISPLAY']['NUMERIC'] = true;
-                    return true;
-                }
-
-            /*
-             * 3) unset numeric array
-             */
-            } elseif ($isNumeric === false) {
-                if (!isset($col['DISPLAY'])) {
-                    $col['DISPLAY'] = array();
-                }
-                $col['DISPLAY']['NUMERIC'] = true;
-                return true;
-
-            /*
-             * 4) error - invalid argument
-             */
-            } else {
-                trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 3, 'Boolean', gettype($isNumeric)), E_USER_WARNING);
+        /*
+         * 2) set numeric array
+         */
+        if ($isNumeric) {
+            if (!$this->setType($table, $column, 'array')) {
                 return false;
-
             }
+            if (!isset($col['DISPLAY'])) {
+                $col['DISPLAY'] = array();
+            }
+            $col['DISPLAY']['NUMERIC'] = true;
 
-            return false;
+        /*
+         * 3) unset numeric array
+         */
+        } else {
+            if (!isset($col['DISPLAY'])) {
+                $col['DISPLAY'] = array();
+            }
+            $col['DISPLAY']['NUMERIC'] = true;
 
         }
+
+        return true;
     }
 
     /**
@@ -3508,6 +3470,11 @@ class DbStructure extends SML
      */
     public function setAction($table, $column, $action = null, $namespace = 'DEFAULT', $linkText = '', $tooltip = '')
     {
+        assert('is_null($action) || is_string($action); // Invalid argument $action: string expected');
+        assert('is_string($namespace); // Invalid argument $namespace: string expected');
+        assert('is_string($linkText); // Invalid argument $linkText: string expected');
+        assert('is_string($tooltip); // Invalid argument $tooltip: string expected');
+
         $col =& $this->_getColumn($table, $column);
         $namespace = mb_strtoupper("$namespace");
         if (!is_null($action)) {
@@ -3515,95 +3482,64 @@ class DbStructure extends SML
         }
 
         /*
-         * 1.1) error: table or column not found
+         * 1) error: table or column not found
          */
         if (!is_array($col)) {
             trigger_error("No such column '$column' in table '$table'.", E_USER_WARNING);
             return false;
-
-        /*
-         * 1.2) error: invalid argument 3
-         */
-        } else if (!is_null($action) && !is_string($action)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 3, 'String', gettype($action)), E_USER_WARNING);
-            return false;
-
-        /*
-         * 1.3) error: invalid argument 4
-         */
-        } else if (!is_string($namespace)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 4, 'String', gettype($namespace)), E_USER_WARNING);
-            return false;
-
-        /*
-         * 1.4) error: invalid argument 5
-         */
-        } else if (!is_string($linkText)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 5, 'String', gettype($linkText)), E_USER_WARNING);
-            return false;
-
-        /*
-         * 1.5) error: invalid argument 6
-         */
-        } else if (!is_string($tooltip)) {
-            trigger_error(sprintf(YANA_ERROR_WRONG_ARGUMENT, 6, 'String', gettype($tooltip)), E_USER_WARNING);
-            return false;
-
-
+        }
         /*
          * 2) valid
          */
-        } else {
 
-            /*
-             * 2.1) init: action property
-             */
-            if (!isset($col['ACTION']) || !is_array($col['ACTION'])) {
-                $col['ACTION'] = array();
-            }
-            /*
-             * 2.2) init: namespace property
-             */
-            if (!isset($col['ACTION'][$namespace]) || !is_array($col['ACTION'][$namespace])) {
-                $col['ACTION'][$namespace] = array();
-            }
-
-            /*
-             * 2.3) set action
-             */
-
-            /*
-             * 2.3.1) unset property
-             *
-             * $action == NULL
-             */
-            if (is_null($action)) {
-                unset($col['ACTION'][$namespace]);
-                return true;
-
-            /*
-             * 2.3.2) set property
-             *
-             * $action != NULL
-             */
-            } else {
-                $col['ACTION'][$namespace]['ACTION'] = $action;
-            }
-
-            /*
-             * 2.4) set link text
-             */
-            if (!empty($linkText)) {
-                $col['ACTION'][$namespace]['TEXT'] = $linkText;
-            }
-            /*
-             * 2.5 set tooltip
-             */
-            if (!empty($tooltip)) {
-                $col['ACTION'][$namespace]['TITLE'] = $tooltip;
-            }
-            return true;
+        /*
+         * 2.1) init: action property
+         */
+        if (!isset($col['ACTION']) || !is_array($col['ACTION'])) {
+            $col['ACTION'] = array();
         }
+        /*
+         * 2.2) init: namespace property
+         */
+        if (!isset($col['ACTION'][$namespace]) || !is_array($col['ACTION'][$namespace])) {
+            $col['ACTION'][$namespace] = array();
+        }
+
+        /*
+         * 2.3) set action
+         */
+
+        /*
+         * 2.3.1) unset property
+         *
+         * $action == NULL
+         */
+        if (is_null($action)) {
+            unset($col['ACTION'][$namespace]);
+            return true;
+
+        /*
+         * 2.3.2) set property
+         *
+         * $action != NULL
+         */
+        } else {
+            $col['ACTION'][$namespace]['ACTION'] = $action;
+        }
+
+        /*
+         * 2.4) set link text
+         */
+        if (!empty($linkText)) {
+            $col['ACTION'][$namespace]['TEXT'] = $linkText;
+        }
+        /*
+         * 2.5 set tooltip
+         */
+        if (!empty($tooltip)) {
+            $col['ACTION'][$namespace]['TITLE'] = $tooltip;
+        }
+        return true;
     }
 
     /**

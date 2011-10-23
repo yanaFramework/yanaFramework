@@ -47,7 +47,7 @@
  * @package     yana
  * @subpackage  core
  */
-final class Yana extends Singleton implements \Yana\Report\IsReportable
+final class Yana extends Singleton implements \Yana\Report\IsReportable, \Yana\Log\IsLogable
 {
 
     /**
@@ -147,6 +147,14 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable
     private $_view = null;
 
     /**
+     * List of logger classes.
+     *
+     * @access  private
+     * @var     array()
+     */
+    private $_loggers = array();
+
+    /**
      * caches database connections
      *
      * @access  private
@@ -198,7 +206,7 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable
      */
     private function __construct()
     {
-        // intentionally left blank
+        $this->_loggers = new Yana\Log\LoggerCollection();
     }
 
     /**
@@ -1613,6 +1621,26 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable
                 $db->rollback();
             }
         }
+    }
+
+    /**
+     * Adds a logger to the class.
+     *
+     * @param  \Yana\Log\IsLogger  $logger  instance that will handle the logging
+     */
+    public function attachLogger(\Yana\Log\IsLogger $logger)
+    {
+        $this->_loggers[] = $logger;
+    }
+
+    /**
+     * Returns the attached loggers.
+     *
+     * @return  \Yana\Log\IsLogHandler
+     */
+    public function getLogger()
+    {
+        return $this->_loggers;
     }
 
 }
