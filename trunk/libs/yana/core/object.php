@@ -59,11 +59,11 @@ class Object extends \StdClass implements \Yana\Core\IsObject, \Yana\Core\IsClon
      *
      * @param string $name       method name
      * @param array  $arguments  method arguments
-     * @throws  \Yana\Core\UndefinedPropertyException  always!
+     * @throws  \Yana\Core\Exceptions\UndefinedMethodException  always!
      */
     public function __call($name, array $arguments)
     {
-        throw new \Yana\Core\UndefinedMethodException($name);
+        throw new \Yana\Core\Exceptions\UndefinedMethodException($name);
     }
 
     /**
@@ -71,12 +71,12 @@ class Object extends \StdClass implements \Yana\Core\IsObject, \Yana\Core\IsClon
      *
      * @param   string  $name  property name
      * @return  \Yana\Core\Object
-     * @throws  \Yana\Core\UndefinedPropertyException  always!
+     * @throws  \Yana\Core\Exceptions\UndefinedPropertyException  always!
      * @ignore
      */
     public function __get($name)
     {
-        throw new \Yana\Core\UndefinedPropertyException($name);
+        throw new \Yana\Core\Exceptions\UndefinedPropertyException($name);
     }
 
     /**
@@ -85,12 +85,12 @@ class Object extends \StdClass implements \Yana\Core\IsObject, \Yana\Core\IsClon
      * @param   string  $name   property name
      * @param   string  $value  nwe value
      * @return  \Yana\Core\Object
-     * @throws  \Yana\Core\UndefinedPropertyException  always!
+     * @throws  \Yana\Core\Exceptions\UndefinedPropertyException  always!
      * @ignore
      */
     public function __set($name, $value)
     {
-        throw new \Yana\Core\UndefinedPropertyException($name);
+        throw new \Yana\Core\Exceptions\UndefinedPropertyException($name);
     }
 
     /**
