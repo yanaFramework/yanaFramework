@@ -53,7 +53,8 @@ class DDLColumnCollection extends \Yana\Core\AbstractCollection
             }
             $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
-            $message = "Instance of DDLColumn expected. Found " . gettype($value) . "(" . get_class($value) . ") instead.";
+            $message = "Instance of DDLColumn expected. Found " . gettype($value) . "(" .
+                ((is_object($value)) ? get_class($value) : $value) . ") instead.";
             throw new \Yana\Core\InvalidArgumentException($message);
         }
     }
