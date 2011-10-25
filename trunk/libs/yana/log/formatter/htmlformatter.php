@@ -41,7 +41,7 @@ class HtmlFormatter extends \Yana\Core\Object implements \Yana\Log\Formatter\IsF
      * @var Message
      * @ignore
      */
-    protected $_message = null;
+    private static $_message = null;
 
     /**
      * Configuration setting.
@@ -82,11 +82,27 @@ class HtmlFormatter extends \Yana\Core\Object implements \Yana\Log\Formatter\IsF
     );
 
     /**
+     * Returns cached message.
+     *
      * @ignore
      */
-    public function __construct()
+    protected function _getMessage()
     {
-        $this->_message = new Message();
+        if (!isset(self::$_message)) {
+            self::$_message = new Message();
+        }
+        return self::$_message;
+    }
+
+    /**
+     * Renew the cache.
+     *
+     * @param  Message  $message  new cache instance
+     * @ignore
+     */
+    protected function _setMessage(Message $message)
+    {
+        self::$_message = $message;
     }
 
     /**
@@ -104,15 +120,13 @@ class HtmlFormatter extends \Yana\Core\Object implements \Yana\Log\Formatter\IsF
         $baseStyle = 'font-size: 13px; font-weight: normal; padding: 5px; border: 1px solid #888; text-align: left;';
         $showDetails = true;
         /* for readability do not report errors twice */
-        $laseErrNr = $this->_message->getLevel();
-        $laseErrFile = $this->_message->getFilename();
-        $laseErrLine = $this->_message->getLineNumber();
-        if ($laseErrNr === $level && $laseErrFile === $filename && $laseErrLine === $lineNumber) {
-            if ($this->_message->getDescription() === $description) {
-                if ($this->_message->hasMore() === true) {
+        $message = $this->_getMessage();
+        if ($message->getLevel() === $level && $message->getFilename() === $filename && $message->getLineNumber() === $lineNumber) {
+            if ($message->getDescription() === $description) {
+                if ($message->hasMore() === true) {
                     $errorMessage = '';
                 } else {
-                    $this->_message->setHasMore();
+                    $message->setHasMore();
                     if ($asHtml === true) {
                         $errorMessage = '<div style="' . $baseStyle . '"><pre>' . "\t" . '... the previous' .
                             ' error was reported multiple times.</pre></div>';
@@ -125,11 +139,12 @@ class HtmlFormatter extends \Yana\Core\Object implements \Yana\Log\Formatter\IsF
                 $showDetails = false;
             }
         } else {
-            $this->_message = new Message();
-            $this->_message->setLevel($level)
+            $message = new Message();
+            $message->setLevel($level)
                 ->setDescription($description)
                 ->setFilename($filename)
                 ->setLineNumber($lineNumber);
+            $this->_setMessage($message);
         }
 
         if (!isset(self::$_errortypeToColor[$level])) {
@@ -263,10 +278,6 @@ class HtmlFormatter extends \Yana\Core\Object implements \Yana\Log\Formatter\IsF
                 case E_UNKNOWN_ERROR:
                     $description = htmlspecialchars($description, ENT_NOQUOTES, 'UTF-8');
                     $description = preg_replace('/\'[^\'\"\s]+\'/', '<span style="color:#f00">$0</span>', $description);
-                    break;
-                default:
-                    /* intentionally left blank */
-                    break;
             }
             /**
              * create output
