@@ -1,4 +1,5 @@
 <?php
+
 /**
  * YANA library
  *
@@ -44,6 +45,16 @@ class ErrorUtility extends \Yana\Core\AbstractUtility
 {
 
     /**
+     * Temporary helper function until functionality is transfered to a logger class.
+     *
+     * @return \Yana\Log\Formatter\HtmlFormatter 
+     */
+    private static function _getFormatter()
+    {
+        return new \Yana\Log\Formatter\HtmlFormatter();
+    }
+
+    /**
      * custom error handler
      *
      * This function creates colorfull error messages that should provide
@@ -67,19 +78,20 @@ class ErrorUtility extends \Yana\Core\AbstractUtility
         {
             case E_USER_ASSERT:
                 $errorLevel = E_USER_ERROR;
-            break;
+                break;
             case E_UNKNOWN_ERROR:
                 $errorLevel = E_NOTICE;
-            break;
+                break;
             default:
                 $errorLevel = $errorNumber;
-            break;
+                break;
         }
 
         $errorReporting = error_reporting();
         /* print an error only if the current error reporting level is high enough */
         if (($errorReporting & ~$errorLevel) !== $errorReporting) {
-            print ErrorUtility::_formatError($errorNumber, $description, $file, $lineNumber, true);
+            $formatter = self::_getFormatter();
+            print $formatter($errorNumber, $description, $file, $lineNumber, true);
 
             /* exit on error */
             if (ob_get_length() !== false) {
@@ -116,25 +128,25 @@ class ErrorUtility extends \Yana\Core\AbstractUtility
          */
         if (!is_int($error_nr)) {
             $message = "Error: Illegal argument type for argument 1 in " . __METHOD__ .
-                "(). Integer expected, found '".gettype($error_nr)."' instead.";
+                "(). Integer expected, found '" . gettype($error_nr) . "' instead.";
             print $message;
             exit(1);
         }
         if (!is_string($description)) {
             $message = "Error: Illegal argument type for argument 2 in " . __METHOD__ .
-                "(). String expected, found '".gettype($description)."' instead.";
+                "(). String expected, found '" . gettype($description) . "' instead.";
             print $message;
             exit(1);
         }
         if (!is_string($file)) {
             $message = "Error: Illegal argument type for argument 3 in " . __METHOD__ .
-                "(). String expected, found '".gettype($file)."' instead.";
+                "(). String expected, found '" . gettype($file) . "' instead.";
             print $message;
             exit(1);
         }
         if (!is_int($line_nr)) {
             $message = "Error: Illegal argument type for argument 4 in " . __METHOD__ .
-                "(). Integer expected, found '".gettype($line_nr)."' instead.";
+                "(). Integer expected, found '" . gettype($line_nr) . "' instead.";
             print $message;
             exit(1);
         }
@@ -154,9 +166,10 @@ class ErrorUtility extends \Yana\Core\AbstractUtility
         if (($error_reporting & ~$error_level) !== $error_reporting) {
 
             assert('!isset($error_log); // Cannot redeclare var $error_log');
-            $error_log = ErrorUtility::_formatError($error_nr, $description, $file, $line_nr, false);
+            $formatter = self::_getFormatter();
+            $error_log = $formatter($error_nr, $description, $file, $line_nr, false);
             $filename = 'cache/error.log';
-            $log =  Log::getLogFromMessage($error_log);
+            $log = Log::getLogFromMessage($error_log);
             unset($error_log);
 
             $errorMessage = "";
@@ -166,11 +179,11 @@ class ErrorUtility extends \Yana\Core\AbstractUtility
 
                 $errorMessage = (string) $log;
 
-            /*
-             * The result is an array, possibly containing a message
-             * and additional information describing the circumstances
-             * in which the error occured.
-             */
+                /*
+                 * The result is an array, possibly containing a message
+                 * and additional information describing the circumstances
+                 * in which the error occured.
+                 */
             } elseif (is_array($log)) {
 
                 $log['TIME'] = date('r');
@@ -181,22 +194,20 @@ class ErrorUtility extends \Yana\Core\AbstractUtility
                     {
                         $errorMessage .= ' ';
                     }
-                    $errorMessage .= $value."\n";
+                    $errorMessage .= $value . "\n";
                 }
 
-            /* If the result is something unexpected output a default message. */
+                /* If the result is something unexpected output a default message. */
             } else {
 
                 $errorMessage = "The program encountered an unknown error.";
-
             }
 
             /* output the error message to a log file */
-            if (error_log($errorMessage."\n", 3, $filename) === false) {
+            if (error_log($errorMessage . "\n", 3, $filename) === false) {
                 print "Cannot write to file '$filename'.";
                 exit(1);
             }
-
         }
     }
 
@@ -215,19 +226,19 @@ class ErrorUtility extends \Yana\Core\AbstractUtility
     {
         if (!is_string($file)) {
             $message = "Error: Illegal argument type for argument 1 in " . __METHOD__ .
-                "(). String expected, found '".gettype($file)."' instead.";
+                "(). String expected, found '" . gettype($file) . "' instead.";
             print $message;
             exit(1);
         }
         if (!is_int($line_nr)) {
             $message = "Error: Illegal argument type for argument 2 in " . __METHOD__ .
-                "(). Integer expected, found '".gettype($line_nr)."' instead.";
+                "(). Integer expected, found '" . gettype($line_nr) . "' instead.";
             print $message;
             exit(1);
         }
         if (!is_string($description)) {
             $message = "Error: Illegal argument type for argument 3 in " . __METHOD__ .
-                "(). String expected, found '".gettype($description)."' instead.";
+                "(). String expected, found '" . gettype($description) . "' instead.";
             print $message;
             exit(1);
         }
@@ -244,7 +255,8 @@ class ErrorUtility extends \Yana\Core\AbstractUtility
      */
     public static function printAssertion($file, $line_nr, $description)
     {
-        print ErrorUtility::_formatError(E_USER_ASSERT, $description, $file, $line_nr, true);
+        $formatter = self::_getFormatter();
+        print $formatter(E_USER_ASSERT, $description, $file, $line_nr, true);
     }
 
     /**
@@ -337,256 +349,6 @@ class ErrorUtility extends \Yana\Core\AbstractUtility
             define('YANA_ERROR_REPORTING', $errorLevel);
         }
         return YANA_ERROR_REPORTING;
-    }
-
-    /**
-     * format error messages
-     *
-     * @param   int     $error_nr       error number
-     * @param   string  $description    description
-     * @param   string  $file           file
-     * @param   int     $line_nr        line number
-     * @param   bool    $as_html        as_html (set true if the message should be writen in html)
-     * @return  string
-     */
-    private static function _formatError($error_nr, $description, $file, $line_nr, $as_html)
-    {
-        $base_style = 'font-size: 13px; font-weight: normal; padding: 5px; border: 1px solid #888; text-align: left;';
-        $show_details = true;
-        /* for readability do not report errors twice */
-        $registry = \Yana\VDrive\Registry::getGlobalInstance();
-        if ($registry instanceof \Yana\VDrive\Registry) {
-            $laseErrNr = $registry->getVar('lasterror.nr');
-            $laseErrFile = $registry->getVar('lasterror.file');
-            $laseErrLine = $registry->getVar('lasterror.line');
-            if ($laseErrNr === $error_nr && $laseErrFile === $file && $laseErrLine === $line_nr) {
-                if ($registry->getVar('lasterror.description') === $description) {
-                    if ($registry->getVar('lasterror.hasmore') === true) {
-                        $error_message = '';
-                    } else {
-                        $registry->setVar('lasterror.hasmore', true);
-                        if ($as_html === true) {
-                            $error_message = '<div style="'.$base_style.'"><pre>'."\t".'... the previous'.
-                                ' error was reported multiple times.</pre></div>';
-                        } else {
-                            $error_message = "\t... the previous error was reported multiple times.";
-                        }
-                    }
-                    return $error_message;
-                } else {
-                    $show_details = false;
-                }
-            } else {
-                $registry->setVar('lasterror.hasmore',     false);
-                $registry->setVar('lasterror.nr',          $error_nr);
-                $registry->setVar('lasterror.description', $description);
-                $registry->setVar('lasterror.file',        $file);
-                $registry->setVar('lasterror.line',        $line_nr);
-            }
-        }
-
-        $colors    = array (
-            'critical' => array('color' => '#f00', 'background' => '#fee'),
-            'compiler' => array('color' => '#000', 'background' => '#fff'),
-            'error'    => array('color' => '#a00', 'background' => '#fff'),
-            'warning'  => array('color' => '#d60', 'background' => '#fff'),
-            'notice'   => array('color' => '#038', 'background' => '#fff'),
-            'assert'   => array('color' => '#000', 'background' => '#ff8')
-        );
-        if (!defined('E_DEPRECATED')) {
-            /**
-             * introduced in PHP 5.3
-             * @ignore
-             */
-            define('E_DEPRECATED', -1);
-        }
-        if (!defined('E_RECOVERABLE_ERROR')) {
-            /**
-             * introduced in PHP 5.2
-             * @ignore
-             */
-            define('E_RECOVERABLE_ERROR', -1);
-        }
-        $errortype = array (
-            E_CORE_ERROR        => array('Core Error',             $colors['critical']),
-            E_CORE_WARNING      => array('Core Warning',           $colors['critical']),
-            E_COMPILE_ERROR     => array('Compile Error',          $colors['compiler']),
-            E_COMPILE_WARNING   => array('Compile Warning',        $colors['compiler']),
-            E_PARSE             => array('Parsing Error',          $colors['compiler']),
-            E_ERROR             => array('Error',                  $colors['error']),
-            E_USER_ERROR        => array('Yana Error',             $colors['error']),
-            E_WARNING           => array('Warning',                $colors['warning']),
-            E_USER_WARNING      => array('Yana Warning',           $colors['warning']),
-            E_RECOVERABLE_ERROR => array('Catchable Fatal Error',  $colors['error']),
-            E_NOTICE            => array('Notice',                 $colors['notice']),
-            E_USER_NOTICE       => array('Yana Notice',            $colors['notice']),
-            E_USER_ASSERT       => array('Assertion failed',       $colors['assert']),
-            E_DEPRECATED        => array('Deprecated',             $colors['notice']),
-            E_STRICT            => array("Runtime Notice",         $colors['notice']),
-            E_UNKNOWN_ERROR     => array('Unknown Error',          $colors['notice'])
-        );
-
-        if (!isset($errortype[$error_nr])) {
-            $error_nr = E_UNKNOWN_ERROR;
-        }
-        assert('isset($errortype[$error_nr]);');
-
-        /* Note: for readability assertions can have a description in form of a comment.
-         * Example: assert('some_test; // comment');
-         *
-         * Where a comment is provided, this function will show the comment rather than
-         * the assert code.
-         *
-         * Example of usage:
-         * assert('$input >= 3 and $input <= 15; // argument '$input' is out of range [3..15]');
-         */
-        if ($error_nr === E_USER_ASSERT) {
-            $description = preg_replace('/^.*;\s*(?:\/\/|\/\*|#)\s*(\S+.*)\s*(?:\*\/)?\s*$/Us', '$1', $description);
-            if ($as_html !== true) {
-                $description = "Assertion $description failed";
-            }
-        }
-        assert('!isset($shortenFilepath); /* Cannot redeclare variable $backtrace */');
-        $shortenFilepath = '/^'.preg_quote(getcwd(), '/').'/';
-
-        /* Backtracing */
-        /* @var $isTraceableError bool */
-        assert('!isset($isTraceableError); // Cannot redeclare var $isTraceableError');
-        $isTraceableError = ($error_nr === E_USER_ASSERT || $error_nr === E_USER_ERROR ||
-            $error_nr === E_ERROR || $error_nr === E_USER_WARNING || $error_nr === E_WARNING ||
-            $error_nr === E_RECOVERABLE_ERROR);
-        if ($show_details === true && function_exists('debug_backtrace') && $isTraceableError) {
-            /* Note: debug_backtrace became available in PHP 4.3 */
-            assert('!isset($temp); /* Cannot redeclare variable $temp */');
-            assert('!isset($backtrace); /* Cannot redeclare variable $backtrace */');
-            $temp = debug_backtrace();
-            /* Format backtrace */
-            $backtrace = array();
-            assert('!isset($i); /* Cannot redeclare variable $i */');
-            for ($i = 0; $i < (count($temp) -3); $i++)
-            {
-                if (isset($temp[$i]['class']) && (strcasecmp($temp[$i]['class'], __CLASS__) === 0)) {
-                    continue;
-                } elseif ($i === count($temp) -3) {
-                    $strcasecmp = strcasecmp($temp[$i]['class'], 'PluginManager');
-                    if ($strcasecmp === 0 && strcasecmp($temp[$i]['function'], 'handle') === 0) {
-                        continue;
-                    }
-                } elseif ($i === count($temp) -2) {
-                    $strcasecmp = strcasecmp($temp[$i]['class'], 'Yana');
-                    if ($strcasecmp === 0 && strcasecmp($temp[$i]['function'], 'handle') === 0) {
-                        continue;
-                    }
-                } elseif ($i === count($temp) -1) {
-                    $strcasecmp = strcasecmp($temp[$i]['class'], 'Index');
-                    if ($strcasecmp === 0 && strcasecmp($temp[$i]['function'], 'main') === 0) {
-                        continue;
-                    }
-                } elseif ($error_nr === E_USER_ASSERT && $temp[$i]['function'] === 'assert') {
-                    continue;
-                }
-
-                /* initialize vars */
-                $i1 = count($backtrace);
-                $backtrace[$i1] = "";
-
-                /* shorten file path for readability */
-                if (isset($temp[$i]['file'])) {
-                    assert('!isset($temp_file); /* Cannot redeclare variable $temp_file */');
-                    assert('isset($shortenFilepath);');
-                    $temp_file = preg_replace($shortenFilepath, '.', $temp[$i]['file']);
-                }
-
-                if (isset($temp[$i]['class'])) {
-                    $backtrace[$i1] .= $temp[$i]['class'];
-                    if (isset($temp[$i]['type'])) {
-                        $backtrace[$i1] .= $temp[$i]['type'];
-                    }
-                }
-                if (isset($temp[$i]['function'])) {
-                    if (preg_match('/^(?:trigger_error|user_error)$/i', $temp[$i]['function'])) {
-                        if (isset($temp_file)) {
-                            $backtrace[$i1] = "Error was raised in file '".$temp_file."'";
-                            if (isset($temp[$i]['line'])) {
-                                $backtrace[$i1] .= " on line ".$temp[$i]['line'];
-                            }
-                            unset($temp_file);
-                        }
-                        continue;
-                    } else {
-                        $backtrace[$i1] .= $temp[$i]['function'];
-                        $backtrace[$i1] .= '(';
-                        if (isset($temp[$i]['args']) && is_array($temp[$i]['args'])) {
-                            assert('!isset($j); /* Cannot redeclare variable $j */');
-                            for ($j = 0; $j < count($temp[$i]['args']); $j++)
-                            {
-                                if ($j > 0) {
-                                    $backtrace[$i1] .= ', ';
-                                }
-                                $backtrace[$i1] .= gettype($temp[$i]['args'][$j]);
-                            }
-                            unset($j);
-                        }
-                        $backtrace[$i1] .= ')';
-                    }
-                }
-                unset($temp_file);
-            } // end for
-            unset($i);
-            unset($temp);
-        } else {
-            $backtrace = null;
-        }
-        unset($isTraceableError);
-
-        /* shorten file path for readability */
-        assert('isset($shortenFilepath);');
-        $file = preg_replace($shortenFilepath, '.', $file);
-
-        if ($as_html === true) {
-            $style = 'overflow: auto; color: '.$errortype[$error_nr][1]['color'].'; background: '.
-                $errortype[$error_nr][1]['background'].';';
-            $error_message  = '<div style="'.$base_style.$style.'"><pre>';
-            /**
-             * encode description depending on type of error
-             */
-            switch ($error_nr)
-            {
-                case E_USER_ERROR:
-                case E_USER_WARNING:
-                case E_USER_NOTICE:
-                case E_USER_ASSERT:
-                case E_UNKNOWN_ERROR:
-                    $description = htmlspecialchars($description, ENT_NOQUOTES, 'UTF-8');
-                    $description = preg_replace('/\'[^\'\"\s]+\'/', '<span style="color:#f00">$0</span>', $description);
-                break;
-                default:
-                    /* intentionally left blank */
-                break;
-            }
-            /**
-             * create output
-             */
-            if ($show_details) {
-                $error_message .= '<span style="font-weight: bold; text-decoration: underline;">'.
-                    $errortype[$error_nr][0]."</span>\n";
-                $error_message .= "  description:\t$description\n";
-                $error_message .= "  file:\t\t$file\n";
-                $error_message .= "  line:\t\t$line_nr</pre>";
-                if (!is_null($backtrace)) {
-                    $error_message .= '<div><pre><span style="font-weight: bold; font-style: italic;">Backtrace</span>';
-                    $error_message .= "\n\t" . implode("\n\t", $backtrace);
-                    $error_message .= '</pre></div>';
-                }
-            } else {
-                $error_message .= ((mb_strpos($description, "\t\t")) ? "\t\t" : "") . $description;
-            }
-            $error_message .= "</div>";
-        } else {
-            $error_message = $errortype[$error_nr][0].': '.$description." in file '$file' on line $line_nr.";
-        }
-
-        return $error_message;
     }
 
 }
