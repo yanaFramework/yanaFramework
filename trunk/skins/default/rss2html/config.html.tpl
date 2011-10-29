@@ -37,7 +37,7 @@
 
           <label class="optionitem">
             <span class="label">{lang id="RSS_CONFIG.OPTIONS.0"}:</span>
-            <input name="RSS/FILE" type="text" value="{if $PROFILE.RSS.FILE}{$PROFILE.RSS.FILE}{else}plugins/rss/test.rss{/if}"/>
+            <input name="RSS/FILE" type="text" value="{if !empty($PROFILE.RSS.FILE)}{$PROFILE.RSS.FILE}{else}plugins/rss/test.rss{/if}"/>
           </label>
 
           <label class="optionitem">

@@ -13,19 +13,19 @@
 <div id="config_about" class="config_form">
 
   <div class="config_head">
-      <!-- {if $INFO.UPDATE} -->
+      <!-- {if !empty($INFO.UPDATE)} -->
       <a class="buttonize" href="'{$INFO.UPDATE}'">{lang id="ADMIN.8"}</a>
       <!-- {/if} -->
       <div id="exp1" class="config_title">{$INFO.NAME}</div>
   </div>
-<!-- {if $INFO.VERSION || $INFO.LAST_CHANGE} -->
+<!-- {if !empty($INFO.VERSION) || !empty($INFO.LAST_CHANGE)} -->
   <div class="help">
       <div class="help_text" style="height: 30px;">
         {lang id="ADMIN.7"}:
-        <!-- {if $INFO.LAST_CHANGE} -->
+        <!-- {if !empty($INFO.LAST_CHANGE)} -->
         &nbsp;
         {$INFO.LAST_CHANGE|date}
-        <!-- {elseif $INFO.VERSION} -->
+        <!-- {elseif !empty($INFO.VERSION)} -->
         {$INFO.VERSION}
         <!-- {else} -->
         1.0
@@ -38,20 +38,20 @@
 
       <div class="optionbody">
 
-<!-- {if $INFO.LOGO} -->
+<!-- {if !empty($INFO.LOGO)} -->
           <div class="white_box" style="float: right;">
             <img src="{$INFO.LOGO}" alt=""/>
           </div>
 <!-- {/if} -->
 
-<!-- {if $INFO.AUTHOR} -->
+<!-- {if !empty($INFO.AUTHOR)} -->
           <div class="optionitem">
             <span class="label">{lang id="ADMIN.34"}:</span>
             {$INFO.AUTHOR}
           </div>
 <!-- {/if} -->
 
-<!-- {if $INFO.CONTACT} -->
+<!-- {if !empty($INFO.CONTACT)} -->
           <div class="optionitem">
             <span class="label">{lang id="ADMIN.35"}:</span>
             {$INFO.CONTACT}

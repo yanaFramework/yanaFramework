@@ -36,7 +36,7 @@
           </tr>
           <tr>
             <td align="center">
-{if $PROFILE.LOGO}
+{if !empty($PROFILE.LOGO)}
         <div><img border="0" alt="" src={$PROFILE.LOGO}/></div>
 {/if}
 {import id="STDOUT" STDOUT=$STDOUT}

@@ -20,16 +20,16 @@
     <div style="border: 3px double #DDD; background: #EEE; width: 50%; margin: 10px; padding: 10px;">
 
         <p style="font-size: large; font-weight: 800;">
-            {if $ENTRY.LINK}<a href={$ENTRY.LINK}>{/if}
+            {if !empty($ENTRY.LINK)}<a href={$ENTRY.LINK}>{/if}
             {$ENTRY.TITLE}
-            {if $ENTRY.LINK}</a>{/if}
+            {if !empty($ENTRY.LINK)}</a>{/if}
         </p>
 
         <p align="justify">{$ENTRY.DESCRIPTION}</p>
 
         <p style="font-size: x-small; font-style: italic; text-align: left;">
-            {if $ENTRY.AUTHOR}({$ENTRY.AUTHOR}){/if}
-            {if $ENTRY.PUBDATE}{$ENTRY.PUBDATE}{/if}
+            {if !empty($ENTRY.AUTHOR)}({$ENTRY.AUTHOR}){/if}
+            {if !empty($ENTRY.PUBDATE)}{$ENTRY.PUBDATE}{/if}
         </p>
 
     </div>

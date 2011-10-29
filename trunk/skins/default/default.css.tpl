@@ -1,37 +1,39 @@
 /* Profile Settings */
 body
-{ldelim}
-{if $PROFILE.BGCOLOR}
+{
+{if !empty($PROFILE.BGCOLOR)}
     background-color: {$PROFILE.BGCOLOR};{/if}
-{if $PROFILE.BGIMAGE}
+{if !empty($PROFILE.BGIMAGE)}
     background-image: url("{$PROFILE.BGIMAGE}");
 {/if}
-{rdelim}
+}
 body, p
-{ldelim}
-{if $PROFILE.PSIZE}
+{
+{if !empty($PROFILE.PSIZE)}
     font-size: {$PROFILE.PSIZE};{/if}
-{if $PROFILE.PCOLOR}
+{if !empty($PROFILE.PCOLOR)}
     color: {$PROFILE.PCOLOR};{/if}
-{if $PROFILE.PFONT}
+{if !empty($PROFILE.PFONT)}
     font-family: {$PROFILE.PFONT};{/if}
-{rdelim}
+}
+{if !empty($PROFILE.PFONT)}
 .label,
 .description,
 .comment
-{ldelim}
-{if $PROFILE.PFONT}
-    font-family: {$PROFILE.PFONT};{/if}
-{rdelim}
+{
+    font-family: {$PROFILE.PFONT};
+}
+{/if}
 h1, h2, h3, .header
-{ldelim}
-{if $PROFILE.HSIZE}
+{
+{if !empty($PROFILE.HSIZE)}
     font-size: {$PROFILE.HSIZE};{/if}
-{if $PROFILE.HFONT}
+{if !empty($PROFILE.HFONT)}
     font-family: {$PROFILE.HFONT};{/if}
-{rdelim}
+}
+{if !empty($PROFILE.HCOLOR)}
 h1, h3
-{ldelim}
-{if $PROFILE.HCOLOR}
-    color: {$PROFILE.HCOLOR};{/if}
-{rdelim}
+{
+    color: {$PROFILE.HCOLOR};
+}
+{/if}

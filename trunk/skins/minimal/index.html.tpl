@@ -11,7 +11,7 @@
     </head>
 
 <body>
-        {if $PROFILE.LOGO}
+        {if !empty($PROFILE.LOGO)}
             <div id="index_logo"><img border="0" alt="" src='{$PROFILE.LOGO}'/></div>
         {/if}
         {applicationBar}

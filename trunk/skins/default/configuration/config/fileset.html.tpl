@@ -85,7 +85,7 @@
         <div class="optionbody" style="padding: 30px;">
 
             <label class="optionitem">
-              <input type="radio" size="20" name="auto" value="true" {if $PROFILE.AUTO} checked="checked" {/if}/>
+              <input type="radio" size="20" name="auto" value="true" {if !empty($PROFILE.AUTO)} checked="checked" {/if}/>
               {lang id="ADMIN.63"}{* Community *}
             </label>
 
@@ -97,7 +97,7 @@
             <br />
 
             <label class="optionitem">
-              <input type="radio" size="20" name="auto" value="false" {if !$PROFILE.AUTO}checked="checked"{/if}/>
+              <input type="radio" size="20" name="auto" value="false" {if empty($PROFILE.AUTO)}checked="checked"{/if}/>
               {lang id="ADMIN.64"}{* Default Website *}
             </label>
 
@@ -119,8 +119,8 @@
 
           <div class="optionitem" align="center">
             <span class="label">{lang id="ADMIN.73"}:</span>
-            <label>{lang id="YES"}<input type="radio" name="logging" value="true" {if $PROFILE.LOGGING} checked="checked" {/if}/></label>
-            <label>{lang id="NO"}<input type="radio" name="logging" value="false" {if !$PROFILE.LOGGING}checked="checked"{/if}/></label>
+            <label>{lang id="YES"}<input type="radio" name="logging" value="true" {if !empty($PROFILE.LOGGING)} checked="checked" {/if}/></label>
+            <label>{lang id="NO"}<input type="radio" name="logging" value="false" {if empty($PROFILE.LOGGING)}checked="checked"{/if}/></label>
           </div>
 
 <!-- {if $ID == 'default'} -->
@@ -145,8 +145,8 @@
 
           <div class="optionitem" align="center">
               <span class="label">{lang id="ADMIN.86"}:</span>
-              <label>{lang id="YES"}<input type="radio" name="log/use_mail" value="true" {if $PROFILE.LOG.USE_MAIL} checked="checked" {/if}/></label>
-              <label>{lang id="NO"}<input type="radio" name="log/use_mail" value="false" {if !$PROFILE.LOG.USE_MAIL}checked="checked"{/if}/></label>
+              <label>{lang id="YES"}<input type="radio" name="log/use_mail" value="true" {if !empty($PROFILE.LOG.USE_MAIL)} checked="checked" {/if}/></label>
+              <label>{lang id="NO"}<input type="radio" name="log/use_mail" value="false" {if empty($PROFILE.LOG.USE_MAIL)}checked="checked"{/if}/></label>
           </div>
 
           <div class="help" style="margin: 0px 30px;">
@@ -160,7 +160,7 @@
           </label>
 
 
-<!-- {if $PROFILE.LOGGING} -->
+<!-- {if !empty($PROFILE.LOGGING)} -->
           <p align="center"><input type="button" onclick="document.location.href='{"action=config_read_log"|url}';" value="{lang id="ADMIN.62"}"/></p>
 <!-- {/if} -->
 

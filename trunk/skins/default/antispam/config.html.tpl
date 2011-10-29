@@ -112,43 +112,43 @@
             </div>
             <label>
               {lang id="YES"}
-              <input type="radio" name="spam/captcha" {if $PROFILE.SPAM.CAPTCHA}checked="checked"{/if} value="true"/>
+              <input type="radio" name="spam/captcha" {if !empty($PROFILE.SPAM.CAPTCHA)}checked="checked"{/if} value="true"/>
             </label>
             <label>
               {lang id="NO"}
-            <input type="radio" name="spam/captcha" {if !$PROFILE.SPAM.CAPTCHA} checked="checked" {/if} value="false"/>
+            <input type="radio" name="spam/captcha" {if empty($PROFILE.SPAM.CAPTCHA)} checked="checked" {/if} value="false"/>
             </label>
     
             <br />
         
-            <div class="label">{lang id="SPAM.3"}{* Sollen auch angemeldete Benutzer geprüft werden? *}</div>
+            <div class="label">{lang id="SPAM.3"}{* Sollen auch angemeldete Benutzer geprÃ¼ft werden? *}</div>
             <div class="help">
               {lang id="HELP.0"}
               {lang id="HELP.4"}
             </div>
             <label>
               {lang id="YES"}
-              <input type="radio" name="spam/permission" {if $PROFILE.SPAM.PERMISSION}checked="checked"{/if} value="true"/>
+              <input type="radio" name="spam/permission" {if !empty($PROFILE.SPAM.PERMISSION)}checked="checked"{/if} value="true"/>
             </label>
             <label>
               {lang id="NO"}
-            <input type="radio" name="spam/permission" {if !$PROFILE.SPAM.PERMISSION} checked="checked" {/if} value="false"/>
+            <input type="radio" name="spam/permission" {if empty($PROFILE.SPAM.PERMISSION)} checked="checked" {/if} value="false"/>
             </label>
     
             <br />
 
-            <div class="label">{lang id="SPAM.4"}{* Sollen abgewiesene Einträge (Spam) protkolliert werden? *}</div>
+            <div class="label">{lang id="SPAM.4"}{* Sollen abgewiesene EintrÃ¤ge (Spam) protkolliert werden? *}</div>
             <div class="help">
               {lang id="HELP.0"}
               {lang id="HELP.5"}
             </div>
             <label>
               {lang id="YES"}
-              <input type="radio" name="spam/log" {if !$PROFILE.LOGGING}disabled="disabled"{/if} {if $PROFILE.SPAM.LOG}checked="checked"{/if} value="true"/>
+              <input type="radio" name="spam/log" {if empty($PROFILE.LOGGING)}disabled="disabled"{/if} {if !empty($PROFILE.SPAM.LOG)}checked="checked"{/if} value="true"/>
             </label>
             <label>
               {lang id="NO"}
-            <input type="radio" name="spam/log" {if !$PROFILE.LOGGING}disabled="disabled"{/if} {if !$PROFILE.SPAM.LOG} checked="checked" {/if} value="false"/>
+            <input type="radio" name="spam/log" {if empty($PROFILE.LOGGING)}disabled="disabled"{/if} {if empty($PROFILE.SPAM.LOG)} checked="checked" {/if} value="false"/>
             </label>
     
             <br />
@@ -160,43 +160,43 @@
             </div>
             <label>
               {lang id="YES"}
-              <input type="radio" name="spam/form_id" {if $PROFILE.SPAM.FORM_ID}checked="checked"{/if} value="true"/>
+              <input type="radio" name="spam/form_id" {if !empty($PROFILE.SPAM.FORM_ID)}checked="checked"{/if} value="true"/>
             </label>
             <label>
               {lang id="NO"}
-            <input type="radio" name="spam/form_id" {if !$PROFILE.SPAM.FORM_ID} checked="checked" {/if} value="false"/>
+            <input type="radio" name="spam/form_id" {if empty($PROFILE.SPAM.FORM_ID)} checked="checked" {/if} value="false"/>
             </label>
         
             <br />
         
-            <div class="label">{lang id="SPAM.6"}{* Soll der vom Browser gesendete Header geprüft werden? *}</div>
+            <div class="label">{lang id="SPAM.6"}{* Soll der vom Browser gesendete Header geprÃ¼ft werden? *}</div>
             <div class="help">
               {lang id="HELP.0"}
               {lang id="HELP.7"}              
             </div>
             <label>
               {lang id="YES"}
-              <input type="radio" name="spam/header" {if $PROFILE.SPAM.HEADER}checked="checked"{/if} value="true"/>
+              <input type="radio" name="spam/header" {if !empty($PROFILE.SPAM.HEADER)}checked="checked"{/if} value="true"/>
             </label>
             <label>
               {lang id="NO"}
-            <input type="radio" name="spam/header" {if !$PROFILE.SPAM.HEADER} checked="checked" {/if} value="false"/>
+            <input type="radio" name="spam/header" {if empty($PROFILE.SPAM.HEADER)} checked="checked" {/if} value="false"/>
             </label>
         
             <br />
         
-            <div class="label">{lang id="SPAM.7"}{* Soll nach verdächtigen Wörtern durchsucht werden? *}</div>
+            <div class="label">{lang id="SPAM.7"}{* Soll nach verdÃ¤chtigen WÃ¶rtern durchsucht werden? *}</div>
             <div class="help">
               {lang id="HELP.0"}
               {lang id="HELP.8"}
             </div>
             <label>
               {lang id="YES"}
-              <input type="radio" name="spam/word_filter" {if $PROFILE.SPAM.WORD_FILTER}checked="checked"{/if} value="true" id="input_word_filter" onclick="wordFilterSettings(true);"/>
+              <input type="radio" name="spam/word_filter" {if !empty($PROFILE.SPAM.WORD_FILTER)}checked="checked"{/if} value="true" id="input_word_filter" onclick="wordFilterSettings(true);"/>
             </label>
             <label>
               {lang id="NO"}
-            <input type="radio" name="spam/word_filter" {if !$PROFILE.SPAM.WORD_FILTER} checked="checked" {/if} value="false" onclick="wordFilterSettings(false);"/>
+            <input type="radio" name="spam/word_filter" {if empty($PROFILE.SPAM.WORD_FILTER)} checked="checked" {/if} value="false" onclick="wordFilterSettings(false);"/>
             </label>
         </div>
     </div>
@@ -204,9 +204,9 @@
 
     <!-- BEGIN: section -->
     <div id="antispam_words">
-        <div class="optionhead">{lang id="SPAM.8"}{* Liste geblockter Wörter *}</div>
+        <div class="optionhead">{lang id="SPAM.8"}{* Liste geblockter WÃ¶rter *}</div>
         <div class="optionbody">
-          <div class="label">{lang id="SPAM.9"}{* Wörter, welche nicht enthalten sein dürfen *}:</div>
+          <div class="label">{lang id="SPAM.9"}{* WÃ¶rter, welche nicht enthalten sein dÃ¼rfen *}:</div>
           <ol id="antispam_list">
               <li id="antispam_reference">
                 <input type="text" name="spam/words[]"/>
@@ -236,11 +236,11 @@
             </div>
             <label>
               {lang id="YES"}
-              <input type="radio" name="spam/reg_exp" {if $PROFILE.SPAM.REG_EXP}checked="checked"{/if} value="true" id="input_word_filter"/>
+              <input type="radio" name="spam/reg_exp" {if !empty($PROFILE.SPAM.REG_EXP)}checked="checked"{/if} value="true" id="input_word_filter"/>
             </label>
             <label>
               {lang id="NO"}
-            <input type="radio" name="spam/reg_exp" {if !$PROFILE.SPAM.REG_EXP} checked="checked" {/if} value="false"/>
+            <input type="radio" name="spam/reg_exp" {if empty($PROFILE.SPAM.REG_EXP)} checked="checked" {/if} value="false"/>
             </label>
           </div>
         </div>

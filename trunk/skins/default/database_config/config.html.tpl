@@ -43,11 +43,11 @@
             <span class="label">{lang id="DATABASE.10"}:</span>
             <label>
               {lang id="YES"}
-              <input type="radio" name="active" {if $DATABASE_ACTIVE}checked="checked"{/if} value="true" {if $PROFILE.USERMODE} onclick="document.getElementById('autoinstall').style.display='block';document.getElementById('autosync').style.display='block';" {/if}/>
+              <input type="radio" name="active" {if $DATABASE_ACTIVE}checked="checked"{/if} value="true" {if !empty($PROFILE.USERMODE)} onclick="document.getElementById('autoinstall').style.display='block';document.getElementById('autosync').style.display='block';" {/if}/>
             </label>
             <label>
               {lang id="NO"}
-              <input type="radio" name="active" {if !$DATABASE_ACTIVE} checked="checked" {/if} value="false" {if $PROFILE.USERMODE} onclick="document.getElementById('autoinstall').style.display='none';document.getElementById('autosync').style.display='block';" {/if}/>
+              <input type="radio" name="active" {if !$DATABASE_ACTIVE} checked="checked" {/if} value="false" {if !empty($PROFILE.USERMODE)} onclick="document.getElementById('autoinstall').style.display='none';document.getElementById('autosync').style.display='block';" {/if}/>
             </label>
           </div>
 
@@ -121,12 +121,12 @@
             <input type="text" name="name" value="{$DATABASE_NAME}"/>
           </label>
 
-          <label class="optionitem" id="autoinstall" {if !$PROFILE.USERMODE} style="display: none" {/if}>
+          <label class="optionitem" id="autoinstall" {if empty($PROFILE.USERMODE)} style="display: none" {/if}>
             <span class="label">{lang id="DATABASE.21"}:</span>{* Tabellen automatisch anlegen *}
             <input type="checkbox" name="autoinstall" value="true" checked="checked"/>
           </label>
 
-          <label class="optionitem" id="autosync" {if !$PROFILE.USERMODE} style="display: none" {/if}>
+          <label class="optionitem" id="autosync" {if empty($PROFILE.USERMODE)} style="display: none" {/if}>
             <span class="label">{lang id="DATABASE.22"}:</span>{* Datensätze kopieren *}
             <input type="checkbox" name="autosync" value="true" checked="checked"/>
           </label>
