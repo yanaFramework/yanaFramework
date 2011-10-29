@@ -73,10 +73,7 @@ class TextFile extends File implements \Yana\File\IsTextFile
     }
 
     /**
-     * insert new content
-     *
-     * This appends the scalar value $content as a new line to the end of the
-     * file.
+     * Appends the value as a new line to the end of the file.
      *
      * @access  public
      * @param   scalar  $content    content
@@ -92,14 +89,12 @@ class TextFile extends File implements \Yana\File\IsTextFile
     }
 
     /**
-     * set new content
-     *
-     * This sets the text of the given line to the given content.
-     * If the line does not exist, an OutOfBoundsException is thrown.
+     * Sets the text of the given line to the given content.
      *
      * @access  public
      * @param   int     $lineNr     line number
      * @param   string  $content    content
+     * @thros   \Yana\Core\Exceptions\OutOfBoundsException  if the line does not exist
      */
     public function setLine($lineNr, $content)
     {
@@ -110,22 +105,21 @@ class TextFile extends File implements \Yana\File\IsTextFile
             $this->content[$lineNr] = (string) $content;
         } else {
             $message = "Line '$lineNr' does not exist in file '{$this->getPath()}'.";
-            throw new OutOfBoundsException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\OutOfBoundsException($message, E_USER_WARNING);
         }
     }
 
     /**
-     * remove an entry from the file
+     * Remove an entry from the file.
      *
      * If no argument is given the function removes all entries.
      * Else the function removes the entry at line of the given number, if the
      * key is numeric. Note: The array index shifts after you remove a line, so
      * line numbers may change.
      *
-     * If the line does not exist, an OutOfBoundsException is thrown.
-     *
      * @access  public
      * @param   int  $lineNr  line to remove
+     * @thros   \Yana\Core\Exceptions\OutOfBoundsException  if the line does not exist
      */
     public function removeLine($lineNr = null)
     {
@@ -137,14 +131,13 @@ class TextFile extends File implements \Yana\File\IsTextFile
             array_splice($this->content, $lineNr, 1);
         } else {
             $message = "Line '$lineNr' does not exist in file '{$this->getPath()}'.";
-            throw new OutOfBoundsException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\OutOfBoundsException($message, E_USER_WARNING);
         }
     }
 
     /**
-     * get the number of lines in the file
-     *
      * Returns the number of lines in the currently opened file.
+     *
      * Note that the number raises if you append new lines.
      * If the file is empty, doesn't exist or is not loaded, the function will
      * return 0.
