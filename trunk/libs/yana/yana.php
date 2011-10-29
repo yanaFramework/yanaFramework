@@ -907,7 +907,7 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable, \Yana\L
      *
      * @access  public
      * @param   string  $path  virtual file path
-     * @return  FileSystemResource
+     * @return  \Yana\File\AbstractResource
      */
     public function getResource($path)
     {
@@ -1163,7 +1163,7 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable, \Yana\L
         $this->_prepareMessages();
 
         /* print the page to the client */
-        print (string) $view;
+        print $view->__toString();
     }
 
     /**

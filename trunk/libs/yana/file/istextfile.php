@@ -1,4 +1,5 @@
 <?php
+
 /**
  * YANA library
  *
@@ -40,46 +41,78 @@ interface IsTextFile extends \Yana\File\IsWritable
 {
 
     /**
-     * create the current file if it does not exist
+     * set file content
      *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * @access  public
-     * @return  bool
-     */
-    public function create();
-
-    /**
-     * write file to system
-     *
-     * Returns bool(true) on success and bool(false) on error.
+     * Replace the content of the file with the value of argument $content.
      *
      * @access  public
-     * @return  bool
+     * @param   string  $content    content
      */
-    public function write();
+    public function setContent($content);
 
     /**
-     * delete this file
+     * get line from file
      *
-     * Returns bool(true) on success and bool(false) on error.
+     * The content of the given line is returned.
+     * If the line does not exist, the function returns false.
      *
      * @access  public
-     * @return  bool
+     * @param   int  $lineNr    line number
+     * @return  string
      */
-    public function delete();
+    public function getLine($lineNr);
 
     /**
-     * copy the file to some destination
+     * insert new content
      *
-     * This will create a copy of this file on the filesystem.
-     * Returns bool(true) on success and bool(false) on error.
+     * This appends the scalar value $content as a new line to the end of the
+     * file.
      *
-     * @access   public
-     * @param    string   $destFile     destination to copy the file to
-     * @return   bool
+     * @access  public
+     * @param   scalar  $content    content
      */
-    public function copy($destFile);
+    public function appendLine($content);
+
+    /**
+     * set new content
+     *
+     * This sets the text of the given line to the given content.
+     * If the line does not exist, an OutOfBoundsException is thrown.
+     *
+     * @access  public
+     * @param   int     $lineNr     line number
+     * @param   string  $content    content
+     */
+    public function setLine($lineNr, $content);
+
+    /**
+     * remove an entry from the file
+     *
+     * If no argument is given the function removes all entries.
+     * Else the function removes the entry at line of the given number, if the
+     * key is numeric. Note: The array index shifts after you remove a line, so
+     * line numbers may change.
+     *
+     * If the line does not exist, an OutOfBoundsException is thrown.
+     *
+     * @access  public
+     * @param   int  $lineNr  line to remove
+     */
+    public function removeLine($lineNr = null);
+
+    /**
+     * get the number of lines in the file
+     *
+     * Returns the number of lines in the currently opened file.
+     * Note that the number raises if you append new lines.
+     * If the file is empty, doesn't exist or is not loaded, the function will
+     * return 0.
+     *
+     * @access  public
+     * @return  int
+     */
+    public function length();
+
 }
 
 ?>

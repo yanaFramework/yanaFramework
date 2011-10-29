@@ -38,7 +38,7 @@ require_once dirname(__FILE__) . '/include.php';
  * @package test
  * @ignore
  */
-class MountpointImplementationTest extends Mountpoint
+class MountpointImplementationTest extends AbstractMountpoint
 {
     /**
      * constructor
@@ -56,11 +56,11 @@ class MountpointImplementationTest extends Mountpoint
 }
 
 /**
- * Test class for Mountpoint
+ * Test class for AbstractResource
  *
  * @package  test
  */
-class MountpointTest extends \PHPUnit_Framework_TestCase
+class AbstractMountpointTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -161,26 +161,6 @@ class MountpointTest extends \PHPUnit_Framework_TestCase
         $this->object->mount();
         $isMounted = $this->object->isMounted();
         $this->assertTrue($isMounted, 'the vDrive already mounted');
-
-    }
-
-    /**
-     * equals
-     *
-     * @test
-     */
-    public function testEquals()
-    {
-        // change to an other source
-        $anotherVDrive = new MountpointImplementationTest(CWD . 'resources/file.txt');
-        $anotherVDrive->mount();
-        $anotherVDrive->setRequirements(true,true,true);
-        $vdrive =  new MountpointImplementationTest(CWD . 'resources/file.txt');
-        $vdrive->mount();
-        $vdrive->setRequirements(true,true,true);
-        $equal = $vdrive->equals($anotherVDrive);
-        //check
-        $this->assertFalse($equal, 'the objects should be equal');
     }
 
     /**

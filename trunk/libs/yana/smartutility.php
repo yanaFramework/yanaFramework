@@ -2262,7 +2262,6 @@ class SmartUtility extends \Yana\Core\AbstractUtility
             $filename = 'id:' . $params['id'];
 
         } else {
-
             trigger_error("Missing argument. You need to provide either the argument 'file' or 'id'.", E_USER_WARNING);
             return false;
 
@@ -2275,7 +2274,13 @@ class SmartUtility extends \Yana\Core\AbstractUtility
         }
         $document->setVar('FILE_IS_INCLUDE', true);
 
-        return (string) $document;
+        try
+        {
+            return $document->__toString();
+        } catch (\Exception $e)
+        {
+            var_dump($e);exit((string) __LINE__);
+        }
     }
 
     /**

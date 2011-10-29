@@ -38,7 +38,7 @@ namespace Yana\VDrive;
  *
  * @ignore
  */
-class File extends Mountpoint
+class File extends AbstractMountpoint
 {
 
     /**

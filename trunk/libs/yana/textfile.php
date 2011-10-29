@@ -34,7 +34,7 @@
  * @package     yana
  * @subpackage  file_system
  */
-class TextFile extends File
+class TextFile extends File implements \Yana\File\IsTextFile
 {
 
     /**

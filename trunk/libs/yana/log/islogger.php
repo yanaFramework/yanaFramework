@@ -53,6 +53,10 @@ interface IsLogger extends IsLogHandler
      */
     const ERROR = E_USER_ERROR;
     /**
+     * Failed assertion
+     */
+    const ASSERT = E_ALL;
+    /**
      * Any mesage
      */
     const ALL = E_ALL;

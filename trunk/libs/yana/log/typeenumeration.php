@@ -26,31 +26,48 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Log\Formatter;
+namespace Yana\Log;
 
 /**
- * Formatting error messages for plain text output.
+ * <<Enumeration>> Contains supported log types.
  *
  * @package    yana
  * @subpackage log
  */
-class HtmlFormatter extends \Yana\Log\Formatter\AbstractFormatter
+class TypeEnumeration extends \Yana\Core\AbstractEnumeration
 {
-
     /**
-     * Format error messages.
-     *
-     * @param   int     $level        error level
-     * @param   string  $description  description
-     * @param   string  $filename     file
-     * @param   int     $lineNumber   line number
-     * @param   array   $trace        the error backtrace as returned by debug_backtrace()
-     * @return  string
+     * Not classifyable
      */
-    public function format($level, $description, $filename = "", $lineNumber = 0, array $trace = array())
-    {
-        return $this->_format($level, $description, $filename, $lineNumber, $trace, true);
-    }
+    const UNKNOWN = -1;
+    /**
+     * Suggested level for debugging messages.
+     */
+    const DEBUG = E_STRICT;
+    /**
+     * Suggested level for noticed messages.
+     */
+    const INFO = E_USER_NOTICE;
+    /**
+     * Debugging
+     */
+    const WARNING = E_USER_WARNING;
+    /**
+     * Debugging
+     */
+    const ERROR = E_USER_ERROR;
+    /**
+     * Failed assertion
+     */
+    const EXCEPTION = E_RECOVERABLE_ERROR;
+    /**
+     * Failed assertion
+     */
+    const ASSERT = 10;
+    /**
+     * Any mesage
+     */
+    const ALL = E_ALL;
 
 }
 

@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\File;
+
 /**
  * <<abstract>> filesystem resource
  *
@@ -38,9 +40,9 @@
  * @abstract
  * @access      public
  * @package     yana
- * @subpackage  file_system
+ * @subpackage  file
  */
-abstract class FileSystemResource extends \Yana\Core\Object
+abstract class AbstractResource extends \Yana\Core\Object
 {
     /**#@+
      * @access  protected

@@ -80,7 +80,7 @@ namespace Yana\VDrive;
  * @subpackage vdrive
  * @name       VDrive
  */
-class VDrive extends \FileSystemResource implements \Yana\Report\IsReportable, \Serializable
+class VDrive extends \Yana\File\AbstractResource implements \Yana\Report\IsReportable, \Serializable
 {
 
     /**#@+
@@ -494,7 +494,7 @@ class VDrive extends \FileSystemResource implements \Yana\Report\IsReportable, \
      * @access  public
      * @name    VDrive::getResource()
      * @param   string  $path  virtual file path
-     * @return  FileSystemResource
+     * @return  \Yana\File\AbstractResource
      * @throws  NotFoundException       when virtual file or directory does not exist.
      * @throws  NotReadableException    when source file is not readable
      * @throws  InvalidSyntaxException  when the file could not be read or contains invalid syntax
