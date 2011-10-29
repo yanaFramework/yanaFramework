@@ -189,7 +189,7 @@ class TextFileTest extends PHPUnit_Framework_TestCase
      *
      * remove a nonexisting key
      *
-     * @expectedException OutOfBoundsException
+     * @expectedException \Yana\Core\Exceptions\OutOfBoundsException
      * @test
      */
     public function testRemoveLineOutOfBounds()
