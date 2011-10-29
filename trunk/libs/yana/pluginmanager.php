@@ -543,7 +543,7 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
      * @access  public
      * @param   string  $pluginName  identifier for the plugin
      * @param   string  $key         identifier for the file to get
-     * @return  FileSystemResource
+     * @return  \Yana\File\AbstractResource
      * @throws  \Yana\Core\InvalidArgumentException  when the plugin name is invalid
      */
     public function get($pluginName, $key)

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * YANA library
  *
@@ -25,13 +26,14 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana;
+
 /**
- * <<utility>> controller
+ * Frontcontroller.
  *
- * this implements the main program
+ * This implements the main program.
  *
- * Note that as of version 2.8.6 the framework also accepts calls
- * from the PHP command line interface.
+ * The framework also accepts calls from the PHP command line interface.
  * This is intended to be used for cronjobs and maintenance.
  *
  * Example of usage (Windows):
@@ -53,52 +55,113 @@
  *
  * See the PHP manual for more details.
  *
- * @static
- * @access      public
  * @name        Index
  * @package     yana
- * @subpackage  core
  */
-class Index extends \Yana\Core\AbstractUtility
+class ApplicationBuilder extends \Yana\Core\Object
 {
 
     /**
-     * YANA controller
-     *
-     * The static function "main" is an YANA controller,
-     * used to untaint user data and operate an YANA-instance.
-     *
-     * @static
-     * @access  public
+     * @var \Yana\Log\Errors\Handler
      */
-    public static function main()
-    {
-        /* Set error reporting to 'off' by default */
-        if (!defined('YANA_ERROR_REPORTING')) {
-            ErrorUtility::setErrorReporting(YANA_ERROR_OFF);
-        }
+    private $_errorHandler = null;
 
-        /* differentiate between web interface and command line calls */
-        if (defined('STDIN') && !isset($_SERVER['REQUEST_METHOD'])) {
-            self::_runOnCommandLine();
-        } else {
-            self::_runOnline();
+    /**
+     * Set error reporting level.
+     *
+     * You may use the following constants:
+     * <ol>
+     * <li>  YANA_ERROR_ON = catch all errors and print to screen  </li>
+     * <li>  YANA_ERROR_OFF = do not report any errors or messages  </li>
+     * <li>  YANA_ERROR_LOG = write errors and messages to a log file  </li>
+     * </ol>
+     *
+     * When logging is active, will set error reporting to E_ALL (default) and catch all errors.
+     * When logging is inactive, will set error reporting to 0 (default) and restore all error handlers.
+     *
+     * @param  string  $logging  examples: YANA_ERROR_OFF, YANA_ERROR_LOG,
+     *                           YANA_ERROR_ON or E_ALL, E_ALL & ~E_NOTICE
+     * @return ApplicationBuilder 
+     */
+    public function setErrorReporting($logging)
+    {
+        if (!defined('YANA_ERROR_REPORTING')) {
+            /**
+             * what to do with errors and system messages
+             *
+             * This constant reflects the way how errors and other messages are treated.
+             * It can be one of the following: 'on', 'off' or 'log'.
+             *
+             * Meaning:
+             * <ol>
+             * <li>  on = catch all errors and print to screen  </li>
+             * <li>  off = do not report any errors or messages  </li>
+             * <li>  log = write errors and messages to a log file  </li>
+             * </ol>
+             */
+            define('YANA_ERROR_REPORTING', $logging);
         }
+        $logger = null;
+        $formatter = null;
+        switch ($logging)
+        {
+            case YANA_ERROR_ON:
+                error_reporting(E_ALL);
+                $formatter = new \Yana\Log\Formatter\HtmlFormatter();
+                $logger = new \Yana\Log\ScreenLogger();
+                $logger->setLogLevel(E_ALL);
+                $isActive = true;
+                break;
+            case YANA_ERROR_LOG:
+                error_reporting(E_ALL);
+                $formatter = new \Yana\Log\Formatter\TextFormatter();
+                $logger = new \Yana\Log\FileLogger(new TextFile('cache/error.log'));
+                $logger->setLogLevel(E_ALL & ~E_STRICT);
+                $isActive = true;
+                break;
+            /**
+             * Prevent PHP from showing error messages to avoid information leak to hackers.
+             * Do no evaluate assertions for better performance.
+             */
+            default:
+                error_reporting(0);
+                $formatter = new \Yana\Log\Formatter\NullFormatter();
+                $logger = new \Yana\Log\NullLogger();
+                $isActive = false;
+                break;
+        }
+        $this->_errorHandler = new \Yana\Log\Errors\Handler($formatter, $logger);
+        $this->_errorHandler->setActivate($isActive);
+        //throw new NotFoundException("test");
+        return $this;
     }
 
     /**
-     * command line interface
+     * This builds and runs a Yana application.
+     *
+     * @return ApplicationBuilder 
+     */
+    public function execute()
+    {
+        /* differentiate between web interface and command line calls */
+        if (defined('STDIN') && !isset($_SERVER['REQUEST_METHOD'])) {
+            $this->_runOnCommandLine();
+        } else {
+            $this->_runOnline();
+        }
+        return $this;
+    }
+
+    /**
+     * Handles calls from command line interface.
      *
      * The CLI is for maintenance tasks - e.g. database backups aso.
      * triggered by cronjobs.
-     *
-     * @access  private
-     * @static
      */
-    private static function _runOnCommandLine()
+    private function _runOnCommandLine()
     {
         global $YANA;
-        $YANA = Yana::getInstance();
+        $YANA = \Yana::getInstance();
         // Handle the request
         $YANA->callAction();
 
@@ -110,12 +173,9 @@ class Index extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * run online
-     *
-     * @access  private
-     * @static
+     * Handles calls from a web-client.
      */
-    private static function _runOnline()
+    private function _runOnline()
     {
         global $YANA;
 
@@ -188,7 +248,7 @@ class Index extends \Yana\Core\AbstractUtility
                 $outputCompressionActive = true;
             }
         }
-        $YANA = Yana::getInstance(); // Get a yana-instance
+        $YANA = \Yana::getInstance(); // Get a yana-instance
         $YANA->callAction();         // Handle the request
         $YANA->outputResults();      // Create the output
         // flush the output buffer (GZ-compression)

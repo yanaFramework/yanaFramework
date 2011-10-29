@@ -39,28 +39,47 @@ namespace Yana\VDrive;
  *
  * @ignore
  */
-abstract class Mountpoint extends \Yana\Core\Object implements \Yana\Report\IsReportable
+abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Report\IsReportable
 {
-    /**#@+
+
+    /**
+     * @var \Yana\File\IsReadable
      * @ignore
-     * @access  protected
      */
+    protected $mountpoint = null;
 
-    /** @var \IsReadable */ protected $mountpoint = null;
-    /** @var bool        */ protected $isMounted = false;
-    /** @var string      */ protected $type = "";
-    /** @var string      */ protected $path = "";
-
-    /**#@-*/
-    /**#@+
+    /**
+     * @var bool
      * @ignore
-     * @access  private
      */
-    /** @var bool   */ private $_requiresReadable = false;
-    /** @var bool   */ private $_requiresWriteable = false;
-    /** @var bool   */ private $_requiresExecutable = false;
-    /**#@-*/
+    protected $isMounted = false;
 
+    /**
+     * @var string
+     * @ignore
+     */
+    protected $type = "";
+
+    /**
+     * @var string
+     * @ignore
+     */
+    protected $path = "";
+
+    /**
+     * @var bool
+     */
+    private $_requiresReadable = false;
+
+    /**
+     * @var bool
+     */
+    private $_requiresWriteable = false;
+
+    /**
+     * @var bool
+     */
+    private $_requiresExecutable = false;
 
     /**
      * constructor
@@ -97,7 +116,7 @@ abstract class Mountpoint extends \Yana\Core\Object implements \Yana\Report\IsRe
             return true;
         }
         // check if resource is valid
-        if (!($this->mountpoint instanceof \IsReadable)) {
+        if (!($this->mountpoint instanceof \Yana\File\IsReadable)) {
             return false;
         }
         if ($this->mountpoint->exists()) {
@@ -230,37 +249,6 @@ abstract class Mountpoint extends \Yana\Core\Object implements \Yana\Report\IsRe
     {
         assert('is_bool($this->isMounted); // Unexpected member type for $this->isMounted. Boolean expected.');
         return (bool) $this->isMounted;
-    }
-
-    /**
-     * compare with another object
-     *
-     * Returns bool(true) if this object and $anotherObject
-     * are equal and bool(false) otherwise.
-     *
-     * Two instances are considered equal if and only if
-     * they are both objects of the same class and they both
-     * refer to the same filesystem resource.
-     *
-     * @access  public
-     * @param   \Yana\Core\IsObject  $anotherObject  another object to compare
-     * @return  string
-     */
-    public function equals(\Yana\Core\IsObject $anotherObject)
-    {
-        if ($anotherObject instanceof $this && $this->getType() === $anotherObject->getType()) {
-            if (isset($this->mountpoint) && isset($anotherObject->mountpoint)) {
-                if ($this->mountpoint instanceof \IsObject) {
-                    return $this->mountpoint->equals($anotherObject);
-                } else {
-                    return $this->mountpoint == $anotherObject->mountpoint;
-                }
-            } else {
-                return isset($this->mountpoint) === isset($anotherObject->mountpoint);
-            }
-        } else {
-            return false;
-        }
     }
 
     /**

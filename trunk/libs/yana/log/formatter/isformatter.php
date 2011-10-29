@@ -44,9 +44,10 @@ interface IsFormatter
      * @param   string  $description  description
      * @param   string  $file         file
      * @param   int     $lineNumber   line number
+     * @param   array   $trace        the error backtrace as returned by debug_backtrace()
      * @return  string
      */
-    public function __invoke($level, $description, $file = "", $lineNumber = 0);
+    public function format($level, $description, $file = "", $lineNumber = 0, array $trace = array());
 
 }
 

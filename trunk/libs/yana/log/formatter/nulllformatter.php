@@ -29,12 +29,12 @@
 namespace Yana\Log\Formatter;
 
 /**
- * Formatting error messages for plain text output.
+ * This does not format anything - use it for your test cases.
  *
  * @package    yana
  * @subpackage log
  */
-class HtmlFormatter extends \Yana\Log\Formatter\AbstractFormatter
+class NullFormatter extends \Yana\Log\Formatter\AbstractFormatter
 {
 
     /**
@@ -49,7 +49,7 @@ class HtmlFormatter extends \Yana\Log\Formatter\AbstractFormatter
      */
     public function format($level, $description, $filename = "", $lineNumber = 0, array $trace = array())
     {
-        return $this->_format($level, $description, $filename, $lineNumber, $trace, true);
+        // intentionally left blank
     }
 
 }

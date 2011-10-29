@@ -37,13 +37,13 @@ namespace Yana\Log;
  * @package    yana
  * @subpackage log
  */
-class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
+class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
 {
 
     /**
-     * @var \DbStream
+     * @var \Yana\File\IsTextFile
      */
-    private $_database = null;
+    private $_file = null;
 
     /**
      * @var array
@@ -61,11 +61,11 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
     private $_mailRecipient = "";
 
     /**
-     * @param  \DbStream  $database  connection object
+     * @param  \Yana\File\IsTextFile  $database  connection object
      */
-    public function __construct(\DbStream $database)
+    public function __construct(\Yana\File\IsTextFile $file)
     {
-        $this->_database = $database;
+        $this->_file = $file;
     }
 
     /**
@@ -78,11 +78,33 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
     public function addLog($message, $level = IsLogger::INFO, $data = array())
     {
         if ($this->_isAcceptable($level)) {
-            $this->_messages[] = array(
-                'log_action' => \PluginManager::getLastEvent(),
-                'log_message' => $message,
-                'log_data' => (array) $data
-            );
+            $filename = 'cache/error.log';
+            $log = \Log::getLogFromMessage($message);
+
+            $errorMessage = "";
+
+            /**
+             * The result is an array, possibly containing a message
+             * and additional information describing the circumstances
+             * in which the error occured.
+             */
+            $log['TIME'] = date('r');
+            foreach ($log as $label => $value)
+            {
+                $errorMessage .= $label;
+                for ($i = mb_strlen($label); $i < 15; $i++)
+                {
+                    $errorMessage .= ' ';
+                }
+                $errorMessage .= $value . "\n";
+            }
+
+            /* output the error message to a log file */
+            if (!$this->_file->exists()) {
+                $this->_file->create();
+            }
+            $this->_file->appendLine($errorMessage);
+            $this->_file->write();
         }
     }
 
@@ -137,73 +159,24 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
     }
 
     /**
-     * This writes all messages to the database and flushes the cache.
-     *
-     * @ignore
-     */
-    protected function _flushToDatabase()
-    {
-        // skip if message-queue is empty
-        if (empty($this->_messages)) {
-            return;
-        }
-
-        $this->_database;
-        $logChanged = false;
-        $messageCount = 0;
-
-        $previousLog = '';
-
-        assert('!isset($message); /* cannot redeclare variable $message */');
-        assert('!isset($newLog); // Cannot redeclare var $newLog');
-        foreach ($this->_messages as $message)
-        {
-            assert('$message instanceof Log; // unexpected result: Entry is not a subclass of Log');
-            $newLog = Log::getLog($message, "log_");
-            assert('is_array($newLog); // unexpected result: Log entry is expected to be an array');
-
-            // check if new log entry is valid
-            if (empty($newLog)) {
-                continue;
-            }
-
-            // do not create duplicate entries
-            if ($newLog == $previousLog) {
-                continue;
-            }
-
-            // abort if insert failed
-            $this->_database->insert("log", $newLog);
-
-            $previousLog = $newLog;
-            $logChanged = true;
-            $messageCount++;
-        } // end foreach ($message)
-        unset($message);
-
-        // skip if nothing has changed
-        if ($logChanged !== true) {
-            return;
-        }
-
-        // abort if database commit failed
-        $this->_database->commit();
-        $this->_messages = array();
-    }
-
-    /**
      * Checks if the database is full and if so, removes the oldest entries.
      *
      * @param  int  $maxLogLength  maximum number of entries that will remain in the logs
      */
-    protected function _cleanUpDatabase($maxLogLength)
+    protected function _cleanUp($maxLogLength)
     {
-        $oldLogEntry = $this->_database->select("log.*.log_id", array(), array('LOG_ID'), $maxLogLength, 1, true);
-        $oldId = array_pop($oldLogEntry);
+        assert('is_int($maxLogLength); // Invalid argument $maxLogLength: int expected');
 
-        if ($this->_database->remove("log", array('LOG_ID', '<=', $oldId), 0)) {
-            $this->_database->commit();
+        // finished, if number of log entries is still smaller than maximum
+        if ($this->_file->length() <= $maxLogLength) {
+            return;
         }
+
+        $content = $this->_file->getContent();
+        // remove all but the maximum number of latest entries (giving a negative number makes PHP sort descending)
+        $content = array_slice($content, -$maxLogLength);
+        $this->_file->setContent($content);
+        $this->_file->write();
     }
 
     /**
@@ -211,11 +184,11 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      *
      * @param  string  $recipient  valid e-mail address
      */
-    protected function _flushDatabaseToMail($recipient)
+    protected function _flushToMail($recipient)
     {
         assert('is_string($recipient); // Invalid argument $recipient: string expected');
 
-        $oldLogEntries = $this->_database->select("log", array(), array('LOG_ID'));
+        $oldLogEntries = $this->_file->getContent();
 
         // send e-mail
         $mail = new FormMailer();
@@ -223,10 +196,9 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
             ->setSubject('JOURNAL')
             ->send($logMail);
 
-        // truncate table log
-        if ($this->_database->remove("log", array(), 0) === false) {
-            $this->_database->commit();
-        }
+        // truncate file
+        $this->_file->setContent(array());
+        $this->_file->write();
     }
 
     /**
@@ -234,13 +206,11 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      */
     public function __destruct()
     {
-        $this->_flushToDatabase();
-        // finished, if number of log entries is still smaller than maximum
-        if ($this->getMaxNumerOfEntries() > 0 && $this->_database->length('log') > $this->getMaxNumerOfEntries()) {
+        if ($this->getMaxNumerOfEntries() > 0 && $this->_file->length() > $this->getMaxNumerOfEntries()) {
             if ($this->getMailRecipient()) {
-                $this->_flushDatabaseToMail($recipient);
+                $this->_flushToMail($recipient);
             } else {
-                $this->_cleanUpDatabase($this->getMaxNumerOfEntries());
+                $this->_cleanUp($this->getMaxNumerOfEntries());
             }
         }
     }

@@ -29,12 +29,12 @@
 namespace Yana\Log\Formatter;
 
 /**
- * Formatting error messages for plain text output.
+ * Formatting error messages for HTML output
  *
  * @package    yana
  * @subpackage log
  */
-class HtmlFormatter extends \Yana\Log\Formatter\AbstractFormatter
+class TextFormatter extends \Yana\Log\Formatter\AbstractFormatter
 {
 
     /**
@@ -49,7 +49,7 @@ class HtmlFormatter extends \Yana\Log\Formatter\AbstractFormatter
      */
     public function format($level, $description, $filename = "", $lineNumber = 0, array $trace = array())
     {
-        return $this->_format($level, $description, $filename, $lineNumber, $trace, true);
+        return $this->_format($level, $description, $filename, $lineNumber, $trace, false);
     }
 
 }

@@ -26,30 +26,32 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Log\Formatter;
+namespace Yana\Log;
 
 /**
- * Formatting error messages for plain text output.
+ * Database logger that writes messages to the "log" table.
+ *
+ * You may decide to set a maximum number of log entries,
+ * and optionally have log entries send to your mail-address.
  *
  * @package    yana
  * @subpackage log
  */
-class HtmlFormatter extends \Yana\Log\Formatter\AbstractFormatter
+class ScreenLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
 {
 
     /**
-     * Format error messages.
+     * This implements the logging behavior.
      *
-     * @param   int     $level        error level
-     * @param   string  $description  description
-     * @param   string  $filename     file
-     * @param   int     $lineNumber   line number
-     * @param   array   $trace        the error backtrace as returned by debug_backtrace()
-     * @return  string
+     * @param   string  $message  the message that should be reported
+     * @param   int     $level    numeric level of severity
+     * @param   mixed   $data     any kind of data that might help to understand context in which the message was created
      */
-    public function format($level, $description, $filename = "", $lineNumber = 0, array $trace = array())
+    public function addLog($message, $level = IsLogger::INFO, $data = array())
     {
-        return $this->_format($level, $description, $filename, $lineNumber, $trace, true);
+        if ($this->_isAcceptable($level)) {
+            print $message;
+        }
     }
 
 }

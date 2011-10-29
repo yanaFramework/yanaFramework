@@ -109,7 +109,7 @@ class DebugUtility extends \Yana\Core\AbstractUtility
             print "<li><pre>";
             // add params
             $params = array('value' => &$element);
-            print SmartUtility::printArray($params, $smarty);
+            print_r($params);
             print "</pre></li>";
         } /* end foreach */
         unset($element);
