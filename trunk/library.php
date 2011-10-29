@@ -109,8 +109,6 @@ if (!defined('YANA_IS_STABLE')) {
 
 /**#@+
  * error reporting
- *
- * @see  ErrorUtility::setErrorReporting()
  */
 if (!defined('YANA_ERROR_OFF')) {
     /**
@@ -306,19 +304,6 @@ if (!defined('YANA_TPL_CACHE')) {
 }
 if (!defined('YANA_TPL_CACHE_DIR')) {
     define('YANA_TPL_CACHE_DIR',         true);
-}
-
-/**#@-*/
-/**#@+
- * constants required for error handling
- *
- * @ignore
- */
-if (!defined('E_USER_ASSERT')) {
-    define('E_USER_ASSERT',              10);
-}
-if (!defined('E_UNKNOWN_ERROR')) {
-    define('E_UNKNOWN_ERROR',            -1);
 }
 
 /**#@-*/

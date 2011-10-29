@@ -2274,13 +2274,7 @@ class SmartUtility extends \Yana\Core\AbstractUtility
         }
         $document->setVar('FILE_IS_INCLUDE', true);
 
-        try
-        {
-            return $document->__toString();
-        } catch (\Exception $e)
-        {
-            var_dump($e);exit((string) __LINE__);
-        }
+        return $document->__toString();
     }
 
     /**
