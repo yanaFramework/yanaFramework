@@ -105,7 +105,7 @@
 
           <label class="optionitem">
             <span class="label">{lang id="INDEXER.RECURSE"}</span>
-            <input type="checkbox" name="recurse" value="1" {if $PROFILE.SEARCH.RECURSE}checked="checked"{/if}/>
+            <input type="checkbox" name="recurse" value="1" {if !empty($PROFILE.SEARCH.RECURSE)}checked="checked"{/if}/>
           </label>
 
           <div class="help">
@@ -115,7 +115,7 @@
 
           <label class="optionitem">
             <span class="label">{lang id="INDEXER.META"}</span>
-            <input type="checkbox" name="meta" value="1" {if $PROFILE.SEARCH.META}checked="checked"{/if}/>
+            <input type="checkbox" name="meta" value="1" {if !empty($PROFILE.SEARCH.META)}checked="checked"{/if}/>
           </label>
 
         </div>

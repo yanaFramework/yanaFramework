@@ -23,7 +23,7 @@
     <table align="center" summary="" id="message_pane">
       <tr>
         <td align="center" valign="middle">
-<!-- {if $PROFILE.LOGO} -->
+<!-- {if !empty($PROFILE.LOGO)} -->
         <img id="message_pane_logo" border="0" alt="Logo" src='{$PROFILE.LOGO}'/>
 <!-- {/if} -->
         <div id="message_pane_section">

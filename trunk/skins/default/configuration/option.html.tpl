@@ -15,7 +15,7 @@
 <body>
   <li {if $PLUGIN.ACTIVE == 1}title="{lang id="ADMIN.23"}" class="plugin_setup selected_option"{elseif $PLUGIN.ACTIVE == 2}title="{lang id="ADMIN.41"}" class="plugin_setup default_selected_option"{else}title="{lang id="ADMIN.26"}" class="plugin_setup unselected_option"{/if}>
   <!-- BEGIN OPTION -->
-{if $PLUGIN.ACTIVE}
+{if !empty($PLUGIN.ACTIVE)}
   <div onmouseover="this.className='plugin_hover'" onmouseout="this.className=''">
       <img alt="&bull;" border="0" src="data/icon_plugins.gif" class="plugin_icon"/>
 {/if}
@@ -29,7 +29,7 @@
           &nbsp;
 {/if}
 {else}
-{if $PLUGIN.ACTIVE}
+{if !empty($PLUGIN.ACTIVE)}
           <img src="{$DATADIR}boolean_true.gif" alt="[x]"/>
 {else}
           <img src="{$DATADIR}boolean_false.gif" alt="[-]"/>
@@ -38,7 +38,7 @@
       </div>
 
       <div class="plugin_description">
-          <a target="about" href={"action=about&type=plugin&target="|cat:$PLUGIN.ID|href}>{if $PLUGIN.PARENT}<img src="arrow.gif" alt="=&gt;" border="0"/>{/if}{$PLUGIN.NAME|truncate:37:"..."}</a><br />
+          <a target="about" href={"action=about&type=plugin&target="|cat:$PLUGIN.ID|href}>{if !empty($PLUGIN.PARENT)}<img src="arrow.gif" alt="=&gt;" border="0"/>{/if}{$PLUGIN.NAME|truncate:37:"..."}</a><br />
           {$PLUGIN.DESCRIPTION|truncate:53:"..."}
       </div>
 
@@ -48,7 +48,7 @@
           <input style="margin-left: 5px;" type="button" onclick="window.open('{$INFO.UPDATE}','_blank')" title="{lang id="ADMIN.8"}" value="Update"/>
 {/if}
       </div>
-{if $PLUGIN.ACTIVE}
+{if !empty($PLUGIN.ACTIVE)}
   </div>
 {/if}
   <!-- END OPTION -->

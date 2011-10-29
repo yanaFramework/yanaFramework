@@ -17,7 +17,7 @@
             <span class="config_is_expert" style="{$isExpertStyle}">
               {if $PERMISSION == 100 && (($PLUGIN.ACTIVE > -1 && $PLUGIN.ACTIVE < 2) || !$PLUGIN.ACTIVE)}
                 <input type="hidden" value="{$PLUGIN.ID}" name="pluginlist[]"/>
-                <input type="checkbox" value="{$PLUGIN.ID}" {if $PLUGIN.ACTIVE} checked="checked" {/if} name="plugins[]" title="{lang id="ADMIN.22"}"/>
+                <input type="checkbox" value="{$PLUGIN.ID}" {if !empty($PLUGIN.ACTIVE)} checked="checked" {/if} name="plugins[]" title="{lang id="ADMIN.22"}"/>
                 &nbsp;
               {else}
                 <span style="margin-right: 20px;">&nbsp;</span>

@@ -60,7 +60,7 @@
           <label class="optionitem">
             <span class="label">{lang id="ADMIN.79"}:</span>
             <select name="hsize">
-                <option value="" {if !$PROFILE.HSIZE} selected="selected" {/if}>{lang id="ADMIN.46"}</option>
+                <option value="" {if empty($PROFILE.HSIZE)} selected="selected" {/if}>{lang id="ADMIN.46"}</option>
                 <option value="12pt" {if $PROFILE.HSIZE=="12pt"} selected="selected" {/if}>12pt</option>
                 <option value="13pt" {if $PROFILE.HSIZE=="13pt"} selected="selected" {/if}>13pt</option>
                 <option value="14pt" {if $PROFILE.HSIZE=="14pt"} selected="selected" {/if}>14pt</option>
@@ -87,7 +87,7 @@
             <span class="label">{lang id="ADMIN.68"}:</span>
             <select name="hfont">
                 <optgroup label="{lang id="ADMIN.11"}">
-                  <option value="{$PROFILE.HFONT}" selected="selected">{if $PROFILE.HFONT}{$PROFILE.HFONT}{else}{lang id="ADMIN.46"}{/if}</option>
+                  <option value="{$PROFILE.HFONT}" selected="selected">{if !empty($PROFILE.HFONT)}{$PROFILE.HFONT}{else}{lang id="ADMIN.46"}{/if}</option>
                 </optgroup>
                 <optgroup label="{lang id="ADMIN.12"}">
                   <option value="">{lang id="ADMIN.46"}</option>
@@ -113,7 +113,7 @@
           <label class="optionitem">
             <span class="label">{lang id="ADMIN.79"}:</span>
             <select name="psize">
-                <option value="" {if !$PROFILE.PSIZE} selected="selected" {/if}>{lang id="ADMIN.46"}</option>
+                <option value="" {if empty($PROFILE.PSIZE)} selected="selected" {/if}>{lang id="ADMIN.46"}</option>
                 <option value="7pt" {if $PROFILE.PSIZE=="7pt"} selected="selected" {/if}>7pt</option>
                 <option value="8pt" {if $PROFILE.PSIZE=="8pt"} selected="selected" {/if}>8pt</option>
                 <option value="9pt" {if $PROFILE.PSIZE=="9pt"} selected="selected" {/if}>9pt</option>
@@ -139,7 +139,7 @@
             <span class="label">{lang id="ADMIN.68"}:</span>
             <select name="pfont">
                 <optgroup label="{lang id="ADMIN.11"}">
-                  <option value="{$PROFILE.PFONT}" selected="selected">{if $PROFILE.PFONT}{$PROFILE.PFONT}{else}{lang id="ADMIN.46"}{/if}</option>
+                  <option value="{$PROFILE.PFONT}" selected="selected">{if !empty($PROFILE.PFONT)}{$PROFILE.PFONT}{else}{lang id="ADMIN.46"}{/if}</option>
                 </optgroup>
                 <optgroup label="{lang id="ADMIN.12"}">
                   <option value="">{lang id="ADMIN.46"}</option>
