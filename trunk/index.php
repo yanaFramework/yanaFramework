@@ -25,21 +25,20 @@
  * @package    yana
  * @copyright  2011 Thomas Meyer
  */
-/**#@+
- * @ignore
- */
 
-/* Hide internal system messages from users */
 //error_reporting(0);
 require_once 'library.php';
 
+$application = new \Yana\ApplicationBuilder();
 /* Uncomment this to print all error messages to screen */
-ErrorUtility::setErrorReporting(YANA_ERROR_ON);
+$errorReporting = YANA_ERROR_ON;
 
-/* Uncomment this to send all error messages to a log file 'cache/error.log' */
-//ErrorUtility::setErrorReporting(YANA_ERROR_LOG);
+/* Uncomment this to send all error messages to a log file or database */
+//$errorReporting = YANA_ERROR_LOG;
 
-Index::main();
+/* Hide error messages from users */
+//$errorReporting = YANA_ERROR_OFF;
 
-/**#@-*/
+$application->setErrorReporting($errorReporting)
+    ->execute();
 ?>

@@ -41,35 +41,22 @@
  */
 require_once 'library.php';
 
-/* prepare input arguments */
-$argv = Request::getVars();
-
-if (!isset($argv['action'])) {
-    trigger_error("Missing argument: \"action\". This argument is mandatory. Syntax: \"action=foo\"", E_USER_ERROR);
-    exit(1);
-}
-
-/* Initialize the framework */
-ErrorUtility::setErrorReporting(YANA_ERROR_LOG);
-$YANA = Yana::getInstance();
-
 /* Output a standard header */
 print "
 ---------------------------------
 | Yana - command line interface |
 ---------------------------------
 
-Running:  ".$_SERVER['argv'][0]."
-Time:     ".date('r')."
+Running:  " . $_SERVER['argv'][0] . "
+Time:     " . date('r') . "
 Arguments:
-".print_r($argv, true)."\n";
+" . print_r($_SERVER['argv'], true) . "\n";
 
-try
-{
-    $YANA->callAction($argv['action'], $argv);
-}
-catch (Exception $log)
-{
+try {
+    $application = new \Yana\ApplicationBuilder();
+    $application->setErrorReporting(YANA_ERROR_LOG)
+        ->execute();
+} catch (Exception $log) {
     $message = (string) $log;
     switch (mb_strtolower(get_class($log)))
     {
@@ -77,16 +64,16 @@ catch (Exception $log)
         case 'message':
         case 'alert':
             trigger_error($message, E_USER_NOTICE);
-        break;
+            break;
         case 'warning':
             trigger_error($message, E_USER_WARNING);
-        break;
+            break;
         case 'error':
             trigger_error($message, E_USER_ERROR);
-        break;
+            break;
         default:
             trigger_error($message, E_USER_WARNING);
-        break;
+            break;
     }
 }
 
@@ -98,4 +85,5 @@ if (PluginManager::getLastResult() === true) {
     trigger_error('Execution finished with errors.', E_USER_WARNING);
     exit(2);
 }
+
 ?>
