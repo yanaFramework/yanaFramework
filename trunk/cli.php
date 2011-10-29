@@ -52,38 +52,11 @@ Time:     " . date('r') . "
 Arguments:
 " . print_r($_SERVER['argv'], true) . "\n";
 
-try {
-    $application = new \Yana\ApplicationBuilder();
-    $application->setErrorReporting(YANA_ERROR_LOG)
-        ->execute();
-} catch (Exception $log) {
-    $message = (string) $log;
-    switch (mb_strtolower(get_class($log)))
-    {
-        case 'log':
-        case 'message':
-        case 'alert':
-            trigger_error($message, E_USER_NOTICE);
-            break;
-        case 'warning':
-            trigger_error($message, E_USER_WARNING);
-            break;
-        case 'error':
-            trigger_error($message, E_USER_ERROR);
-            break;
-        default:
-            trigger_error($message, E_USER_WARNING);
-            break;
-    }
-}
+$application = new \Yana\ApplicationBuilder();
+$application->setErrorReporting(YANA_ERROR_ON)
+    ->execute();
 
-if (PluginManager::getLastResult() === true) {
-    print 'Execution finished successfully.';
-    exit(0);
-} else {
-    print 'Execution finished with errors. See the error log for details. (default output path is: cache/error.log)';
-    trigger_error('Execution finished with errors.', E_USER_WARNING);
-    exit(2);
-}
+print 'Execution finished successfully.';
+exit(0);
 
 ?>

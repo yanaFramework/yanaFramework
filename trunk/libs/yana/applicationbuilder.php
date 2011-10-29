@@ -107,7 +107,11 @@ class ApplicationBuilder extends \Yana\Core\Object
         {
             case YANA_ERROR_ON:
                 error_reporting(E_ALL);
-                $formatter = new \Yana\Log\Formatter\HtmlFormatter();
+                if ($this->_isCommandLineCall()) {
+                    $formatter = new \Yana\Log\Formatter\TextFormatter();
+                } else {
+                    $formatter = new \Yana\Log\Formatter\HtmlFormatter();
+                }
                 $logger = new \Yana\Log\ScreenLogger();
                 $logger->setLogLevel(E_ALL);
                 $isActive = true;
@@ -137,6 +141,16 @@ class ApplicationBuilder extends \Yana\Core\Object
     }
 
     /**
+     * Returns TRUE if application was called from the command line.
+     *
+     * @return bool 
+     */
+    private function _isCommandLineCall()
+    {
+        return defined('STDIN') && !isset($_SERVER['REQUEST_METHOD']);
+    }
+
+    /**
      * This builds and runs a Yana application.
      *
      * @return ApplicationBuilder 
@@ -144,7 +158,7 @@ class ApplicationBuilder extends \Yana\Core\Object
     public function execute()
     {
         /* differentiate between web interface and command line calls */
-        if (defined('STDIN') && !isset($_SERVER['REQUEST_METHOD'])) {
+        if ($this->_isCommandLineCall()) {
             $this->_runOnCommandLine();
         } else {
             $this->_runOnline();
