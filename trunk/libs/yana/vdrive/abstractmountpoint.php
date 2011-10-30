@@ -130,7 +130,7 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
      * Returns the mounted file resource or bool(false) if none is present.
      *
      * @access  public
-     * @return  object|bool(false)
+     * @return  AbstractObject|bool(false)
      */
     public function getMountpoint()
     {

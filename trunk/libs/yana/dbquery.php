@@ -53,7 +53,7 @@
  * cookbook in the manual.
  *
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  * @since       2.9 RC1
  */
 abstract class DbQuery extends \Yana\Core\Object implements Serializable
@@ -87,7 +87,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
     /** @var bool     */ protected $isSubQuery     = false;
     /** @var array    */ protected $parentTables   = array();
     /** @var array    */ protected $tableByColumn  = array();
-    /** @var DDLTable */ protected $table          = null;
+    /** @var \Yana\Db\Ddl\Table */ protected $table          = null;
     /** @var array    */ protected $oldValues      = null;
 
     /**#@-*/
@@ -338,12 +338,12 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
      * The query builder will set this automatically, to indicate,
      * that one table inherits from another.
      *
-     * @param   DDLTable  $table          table definition
-     * @param   DDLTable  $parentTable    parent table
+     * @param   \Yana\Db\Ddl\Table  $table          table definition
+     * @param   \Yana\Db\Ddl\Table  $parentTable    parent table
      * @since   2.9.6
      * @return  DbQuery 
      */
-    private function _setParentTable(DDLTable $table, DDLTable $parentTable)
+    private function _setParentTable(\Yana\Db\Ddl\Table $table, \Yana\Db\Ddl\Table $parentTable)
     {
         /**
          * add columns
@@ -426,7 +426,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
      * you may use this function to get the source table for a certain row.
      *
      * @param   string  $columnName  name of a column
-     * @return  DDLTable
+     * @return  \Yana\Db\Ddl\Table
      * @throws  \Yana\Core\Exceptions\NotFoundException  if no column with the given name has been found
      */
     public function getTableByColumn($columnName)
@@ -455,7 +455,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
             unset($tableName, $joinedTable);
         }
 
-        if (! $table instanceof DDLTable) {
+        if (! $table instanceof \Yana\Db\Ddl\Table) {
             throw new \Yana\Core\Exceptions\NotFoundException("Column '$columnName' is undefined.", E_USER_WARNING);
         } else {
             return $table;
@@ -499,12 +499,12 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
     /**
      * recursively detect the parent of a table
      *
-     * @param   DDLTable  $table    table
+     * @param   \Yana\Db\Ddl\Table  $table    table
      * @since   2.9.6
      * @return  DbQuery
      * @ignore
      */
-    protected function detectInheritance(DDLTable $table)
+    protected function detectInheritance(\Yana\Db\Ddl\Table $table)
     {
         $tableName = $table->getName();
         $parents = array($tableName); /* to detect circular refrences */
@@ -517,14 +517,14 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
          */
         $primaryKey = mb_strtoupper($table->getPrimaryKey());
         $primaryKeyColumn = $table->getColumn($primaryKey);
-        assert('$primaryKeyColumn instanceof DDLColumn; // Misspelled primary key column: ' . $primaryKey);
+        assert('$primaryKeyColumn instanceof \Yana\Db\Ddl\Column; // Misspelled primary key column: ' . $primaryKey);
         while ($primaryKeyColumn->isForeignKey())
         {
             $fTableKey = mb_strtoupper($table->getTableByForeignKey($primaryKey));
             // detect circular reference (when table is already in parent list)
             if (!in_array($fTableKey, $parents)) {
                 $foreignTable = $dbSchema->getTable($fTableKey);
-                assert('$foreignTable instanceof DDLTable; // Misspelled foreign key in table: ' . $tableName);
+                assert('$foreignTable instanceof \Yana\Db\Ddl\Table; // Misspelled foreign key in table: ' . $tableName);
                 $foreignKey = mb_strtoupper($foreignTable->getPrimaryKey());
                 $this->setJoin($fTableKey, $primaryKey, $foreignKey);
                 $this->_setParentTable($table, $foreignTable);
@@ -573,7 +573,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
         $table = $this->db->getSchema()->getTable($tableName);
         $sourceTable = $this->currentTable();
 
-        if (! $table instanceof DDLTable) {
+        if (! $table instanceof \Yana\Db\Ddl\Table) {
             throw new \Yana\Core\Exceptions\NotFoundException("Table not found '$tableName'.");
         }
 
@@ -628,13 +628,13 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
      * Note: Detects foreign keys $source -> $target but NOT $source <- $target.
      * To detect both ($source <-> $target), call this function twice and swap the arguments.
      *
-     * @param   DDLTable  $sourceTable  source table definition
-     * @param   DDLTable  $targetTable  target table definition
+     * @param   \Yana\Db\Ddl\Table  $sourceTable  source table definition
+     * @param   \Yana\Db\Ddl\Table  $targetTable  target table definition
      * @param   string    &$key1        source column
      * @param   string    &$key2        target column
      * @return  bool
      */
-    private static function _findForeignKey(DDLTable $sourceTable, DDLTable $targetTable, &$key1 = null, &$key2 = null)
+    private static function _findForeignKey(\Yana\Db\Ddl\Table $sourceTable, \Yana\Db\Ddl\Table $targetTable, &$key1 = null, &$key2 = null)
     {
         $tableName = $targetTable->getName();
         if (is_null($key1)) {
@@ -652,7 +652,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
             assert('!isset($foreignPrimaryKey); // Cannot redeclare variable $foreignPrimaryKey');
             assert('!isset($baseColumn); // Cannot redeclare variable $baseColumn');
             assert('!isset($foreignColumn); // Cannot redeclare variable $foreignColumn');
-            /* @var $foreignKey DDLForeignKey */
+            /* @var $foreignKey \Yana\Db\Ddl\ForeignKey */
             foreach ($foreignKeys as $foreignKey)
             {
                 $foreignTable = $foreignKey->getTargetTable();
@@ -710,7 +710,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
         $tableName = mb_strtolower($table);
         $table = $this->db->getSchema()->getTable($tableName);
 
-        if (!($table instanceof DDLTable)) {
+        if (!($table instanceof \Yana\Db\Ddl\Table)) {
             throw new \Yana\Core\Exceptions\NotFoundException("The table '$tableName' is unknown.", E_USER_WARNING);
         }
 
@@ -764,7 +764,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
     /**
      * get current table
      *
-     * @return  DDLTable
+     * @return  \Yana\Db\Ddl\Table
      */
     protected function currentTable()
     {
@@ -1135,7 +1135,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
         // get table definition
         assert('!isset($table); /* cannot redeclare variable $table */');
         $table = $dbSchema->getTable($array[0]);
-        if (! $table instanceof DDLTable) {
+        if (! $table instanceof \Yana\Db\Ddl\Table) {
             $message = "Table not found '{$array[0]}' in schema '{$dbSchema->getName()}'.";
             throw new DbErrorLog($message, E_USER_WARNING);
         }
@@ -1148,7 +1148,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
         if (count($array) > 3) {
             assert('!isset($column); /* cannot redeclare variable $column */');
             $column = $table->getColumn($array[2]);
-            if (! $column instanceof DDLColumn) {
+            if (! $column instanceof \Yana\Db\Ddl\Column) {
                 throw new DbErrorLog("Column not found '{$array[2]}'", E_USER_WARNING);
             }
             assert('!isset($isArray); /* cannot redeclare variable $isArray */');
@@ -1172,9 +1172,9 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
                 array_unshift($array, $a);
                 array_unshift($array, $foreignTable);
                 $table = $dbSchema->getTable($array[0]);
-                assert('$table instanceof DDLTable; // Table not found');
+                assert('$table instanceof \Yana\Db\Ddl\Table; // Table not found');
                 $column = $table->getColumn($array[2]);
-                assert('$column instanceof DDLColumn; // Column not found');
+                assert('$column instanceof \Yana\Db\Ddl\Column; // Column not found');
                 $isArray = ($column->getType() === 'array');
             }
             unset($a, $foreignTable, $column);
@@ -1248,7 +1248,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
             $tableName = $this->tableName;
         }
         $table = $this->db->getSchema()->getTable($tableName);
-        if (!($table instanceof DDLTable)) {
+        if (!($table instanceof \Yana\Db\Ddl\Table)) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such table '" . $tableName . "'.", E_USER_WARNING);
         }
 
@@ -1468,7 +1468,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
             $table = $this->db->getSchema()->getTable($tableName);
             assert('is_string($column); // Unexpected result: $column. String expected.');
 
-            if (! $table instanceof DDLTable) {
+            if (! $table instanceof \Yana\Db\Ddl\Table) {
                 throw new \Yana\Core\Exceptions\NotFoundException("Invalid where clause. " .
                     "The name '{$tableName}' is not a table.", E_USER_WARNING);
 
@@ -1526,7 +1526,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
                  */
                 if (YANA_DB_STRICT) {
                     $table = $this->db->getSchema()->getTable($tableName);
-                    if (! $table instanceof DDLTable) {
+                    if (! $table instanceof \Yana\Db\Ddl\Table) {
                         throw new \Yana\Core\Exceptions\NotFoundException("Invalid where clause. " .
                             "The name '{$tableName}' is not a table.", E_USER_WARNING);
 
@@ -1846,10 +1846,10 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
             if (is_array($column) && !empty($column['error'])) {
                 continue;
             }
-            if (!$column instanceof DDLColumn) {
+            if (!$column instanceof \Yana\Db\Ddl\Column) {
                 $column = $column['column'];
             }
-            assert('$column instanceof DDLColumn;');
+            assert('$column instanceof \Yana\Db\Ddl\Column;');
             $columnName = mb_strtoupper($column->getName());
             // delete old files
             if (isset($values[$columnName])) {

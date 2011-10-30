@@ -71,7 +71,7 @@ class DbStructureGenericsTest extends PHPUnit_Framework_TestCase
      */
     public function testCheckConstraint()
     {
-        $table = new DDLTable('foo');
+        $table = new \Yana\Db\Ddl\Table('foo');
         $table->addColumn('bar', 'string');
         $table->addColumn('foid', 'integer');
         $row = array('bar');
@@ -80,7 +80,7 @@ class DbStructureGenericsTest extends PHPUnit_Framework_TestCase
         $check = DbStructureGenerics::checkConstraint($table, $row);
         $this->assertTrue($check, 'assert failed, check constraint is valid');
 
-        $table = new DDLTable('bar');
+        $table = new \Yana\Db\Ddl\Table('bar');
         $table->addColumn('foo', 'string');
         $table->addColumn('barid', 'integer');
         $row = array('foo', 'barid');
@@ -89,7 +89,7 @@ class DbStructureGenericsTest extends PHPUnit_Framework_TestCase
         $check = DbStructureGenerics::checkConstraint($table, $row);
         $this->assertFalse($check, 'assert failed,  check constraint is not valid');
 
-        $table = new DDLTable('bar');
+        $table = new \Yana\Db\Ddl\Table('bar');
         $table->addColumn('foo', 'string');
         $table->addColumn('barid', 'integer');
         $row = array('foo', 'barid');
@@ -106,7 +106,7 @@ class DbStructureGenericsTest extends PHPUnit_Framework_TestCase
      */
     public function testOnBeforeInsert()
     {   
-        $table = new DDLTable('foo');
+        $table = new \Yana\Db\Ddl\Table('foo');
         $table->addColumn('bar', 'string');
         $table->addColumn('foid', 'integer');
         $table->setTriggerBeforeInsert('checktrigger::write');
@@ -123,7 +123,7 @@ class DbStructureGenericsTest extends PHPUnit_Framework_TestCase
      */
     public function testOnAfterInsert()
     {   
-        $table = new DDLTable('foo');
+        $table = new \Yana\Db\Ddl\Table('foo');
         $table->addColumn('bar', 'string');
         $table->addColumn('foid', 'integer');
         $table->setTriggerAfterInsert('checktrigger::write');
@@ -139,7 +139,7 @@ class DbStructureGenericsTest extends PHPUnit_Framework_TestCase
      */
     public function testOnBeforeUpdate()
     {
-        $table = new DDLTable('foo');
+        $table = new \Yana\Db\Ddl\Table('foo');
         $table->addColumn('bar', 'string');
         $table->addColumn('foid', 'integer');
         $table->setTriggerBeforeUpdate('checktrigger::write');
@@ -155,7 +155,7 @@ class DbStructureGenericsTest extends PHPUnit_Framework_TestCase
      */
     public function testOnAfterUpdate()
     {
-        $table = new DDLTable('foo');
+        $table = new \Yana\Db\Ddl\Table('foo');
         $table->addColumn('bar', 'string');
         $table->addColumn('foid', 'integer');
         $table->setTriggerAfterUpdate('checktrigger::write');
@@ -171,7 +171,7 @@ class DbStructureGenericsTest extends PHPUnit_Framework_TestCase
      */
     public function testOnBeforeDelete()
     {
-        $table = new DDLTable('foo');
+        $table = new \Yana\Db\Ddl\Table('foo');
         $table->addColumn('bar', 'string');
         $table->addColumn('foid', 'integer');
         $table->setTriggerBeforeDelete('checktrigger::write');
@@ -187,7 +187,7 @@ class DbStructureGenericsTest extends PHPUnit_Framework_TestCase
      */
     public function testOnAfterDelete()
     {
-        $table = new DDLTable('foo');
+        $table = new \Yana\Db\Ddl\Table('foo');
         $table->addColumn('bar', 'string');
         $table->addColumn('foid', 'integer');
         $table->setTriggerAfterDelete('checktrigger::write');

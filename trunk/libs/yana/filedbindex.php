@@ -35,7 +35,7 @@
  *
  * @access      public
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  * @since       2.8.6
  * @ignore
  */
@@ -47,7 +47,7 @@ class FileDbIndex extends \Yana\Core\Object
      * @access  private
      */
 
-    /** @var DDLTable */ private $_table = "";
+    /** @var \Yana\Db\Ddl\Table */ private $_table = "";
     /** @var SML      */ private $_data = null;
     /** @var string   */ private $_filename = "";
     /** @var array    */ private $_indexes = null;
@@ -57,11 +57,11 @@ class FileDbIndex extends \Yana\Core\Object
     /**
      * constructor
      *
-     * @param  DDLTable  $table         table (DDL object)
+     * @param  \Yana\Db\Ddl\Table  $table         table (DDL object)
      * @param  SML       $data          data (SML object)
      * @param  string    $filename      filename
      */
-    public function __construct(DDLTable $table, SML $data, $filename)
+    public function __construct(\Yana\Db\Ddl\Table $table, SML $data, $filename)
     {
         assert('is_string($filename); // Wrong type for argument 3. String expected');
 
@@ -234,10 +234,10 @@ class FileDbIndex extends \Yana\Core\Object
      * Find all indexed columns in a given table.
      *
      * @access  private
-     * @param   DDLTable $table database table to search for indexes in
+     * @param   \Yana\Db\Ddl\Table $table database table to search for indexes in
      * @return  array
      */
-    private function _findIndexes(DDLTable $table)
+    private function _findIndexes(\Yana\Db\Ddl\Table $table)
     {
         $indexes = array();
         // get indexed columns

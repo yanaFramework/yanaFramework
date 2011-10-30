@@ -53,7 +53,7 @@
  * cookbook in the manual.
  *
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  */
 class DbSelect extends DbSelectCount
 {
@@ -780,10 +780,10 @@ class DbSelect extends DbSelectCount
                         $tableA = $dbSchema->getTable($tableNameA);
                         $tableB = $dbSchema->getTable($tableNameB);
                         // error: table not found
-                        if (! $tableA instanceof DDLTable) {
+                        if (! $tableA instanceof \Yana\Db\Ddl\Table) {
                             throw new \Yana\Core\Exceptions\NotFoundException("Table '{$tableNameA}' not found.");
                         }
-                        if (! $tableB instanceof DDLTable) {
+                        if (! $tableB instanceof \Yana\Db\Ddl\Table) {
                             throw new \Yana\Core\Exceptions\NotFoundException("Table '{$tableNameB}' not found.");
                         }
                         assert('!isset($columnsB); // Cannot redeclare variable $columnsB');
@@ -973,7 +973,7 @@ class DbSelect extends DbSelectCount
         }
         $returnedType = $this->getExpectedResult();
         $table = $this->db->getSchema()->getTable($this->getTable());
-        assert('$table instanceof DDLTable;');
+        assert('$table instanceof \Yana\Db\Ddl\Table;');
 
         assert('!isset($output); // Cannot redeclare var $output');
         $output = array();
@@ -1045,7 +1045,7 @@ class DbSelect extends DbSelectCount
                             try {
                                 assert('!isset($currentTable); // Cannot redeclare var $currentTable');
                                 $currentTable = $this->getTableByColumn($columnName);
-                                assert('$currentTable instanceof DDLTable;');
+                                assert('$currentTable instanceof \Yana\Db\Ddl\Table;');
                                 // get column definition
                                 $column = $currentTable->getColumn($columnName);
                                 unset($currentTable);
@@ -1072,7 +1072,7 @@ class DbSelect extends DbSelectCount
                         break;
                     } // end switch
                     // decode cell
-                    assert('$column instanceof DDLColumn;');
+                    assert('$column instanceof \Yana\Db\Ddl\Column;');
                     $value = $column->interpretValue($value, $arrayAddress, $this->db->getDBMS());
                     unset($arrayAddress);
                 }

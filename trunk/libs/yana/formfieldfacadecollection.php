@@ -53,7 +53,7 @@ class FormFieldFacadeCollection extends \Yana\Core\AbstractCollection
             }
             $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
-            $message = "Instance of DDLField expected. Found " . gettype($value) . "(" .
+            $message = "Instance of \Yana\Db\Ddl\Field expected. Found " . gettype($value) . "(" .
                 ((is_object($value)) ? get_class($value) : $value) . ") instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }

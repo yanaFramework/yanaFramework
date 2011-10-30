@@ -32,7 +32,7 @@
  *
  * @access      public
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  * @deprecated  since 3.1.0
  */
 class DbStructure extends SML
@@ -4172,7 +4172,7 @@ class DbStructure extends SML
      */
     public static function getDirectory()
     {
-        return DDL::getDirectory();
+        return \Yana\Db\Ddl\DDL::getDirectory();
     }
 
     /**

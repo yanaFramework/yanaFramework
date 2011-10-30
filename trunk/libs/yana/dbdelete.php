@@ -32,7 +32,7 @@
  * row in a database-table.
  *
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  */
 class DbDelete extends DbQuery
 {

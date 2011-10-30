@@ -34,7 +34,7 @@
  *
  * @access      public
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  *
  * @ignore
  */

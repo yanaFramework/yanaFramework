@@ -121,7 +121,7 @@ class FormSetup extends \Yana\Core\Object
      * Defined list of auto-replaced references.
      *
      * @access  private
-     * @var     DDLReference[]
+     * @var     \Yana\Db\Ddl\Reference[]
      */
     private $_foreignKeyRefrences = array();
 
@@ -224,7 +224,7 @@ class FormSetup extends \Yana\Core\Object
      * This returns an array of foreign-key reference settings.
      *
      * @access  public
-     * @return  DDLReference[]
+     * @return  \Yana\Db\Ddl\Reference[]
      */
     public function getForeignKeys()
     {
@@ -240,10 +240,10 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   string       $columnName  name of source column
-     * @param   DDLReference $foreignKey  settings of source reference
+     * @param   \Yana\Db\Ddl\Reference $foreignKey  settings of source reference
      * @return  FormSetup 
      */
-    public function addForeignKeyReference($columnName, DDLReference $foreignKey)
+    public function addForeignKeyReference($columnName, \Yana\Db\Ddl\Reference $foreignKey)
     {
         assert('is_string($columnName); // Invalid argument $columnName: string expected');
         $this->_foreignKeyRefrences[$columnName] = $foreignKey;

@@ -41,7 +41,7 @@ namespace Yana\Db\FileDb;
  *
  * @access      public
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  */
 class Counter extends \Yana\Db\FileDb\Sequence
 {

@@ -47,7 +47,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      * DDL definition object of selected table
      *
      * @access  private
-     * @var     DDLTable
+     * @var     \Yana\Db\Ddl\Table
      */
     private $_table = null;
 
@@ -55,7 +55,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      * DDL definition object of selected table
      *
      * @access  private
-     * @var     DDLForm
+     * @var     \Yana\Db\Ddl\Form
      */
     private $_form = null;
 
@@ -79,9 +79,9 @@ class FormSetupBuilder extends \Yana\Core\Object
      * Initialize instance.
      *
      * @access  public
-     * @param   DDLForm  $form  base form defintion that the setup will apply to
+     * @param   \Yana\Db\Ddl\Form  $form  base form defintion that the setup will apply to
      */
-    public function __construct(DDLForm $form)
+    public function __construct(\Yana\Db\Ddl\Form $form)
     {
         $this->_form = $form;
         $this->object = new FormSetup();
@@ -116,7 +116,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      * Get form object.
      *
      * @access  public
-     * @return  DDLForm
+     * @return  \Yana\Db\Ddl\Form
      */
     public function getForm()
     {
@@ -127,10 +127,10 @@ class FormSetupBuilder extends \Yana\Core\Object
      * Set form object.
      *
      * @access  public
-     * @param   DDLForm  $form  configuring the contents of the form
+     * @param   \Yana\Db\Ddl\Form  $form  configuring the contents of the form
      * @return  FormSetupBuilder
      */
-    public function setForm(DDLForm $form)
+    public function setForm(\Yana\Db\Ddl\Form $form)
     {
         $this->_form = $form;
         return $this;
@@ -426,7 +426,7 @@ class FormSetupBuilder extends \Yana\Core\Object
         $action = $this->object->$function();
         if (empty($action)) {
             $event = $this->getForm()->getEvent($name);
-            if ($event instanceof DDLEvent) {
+            if ($event instanceof \Yana\Db\Ddl\Event) {
                 $action = $event->getAction();
             }
         }
@@ -443,7 +443,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      * This function looks it up and returns this definition.
      *
      * @access  protected
-     * @return  DDLTable
+     * @return  \Yana\Db\Ddl\Table
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the database, or table was not found
      */
     protected function _getTable()
@@ -452,12 +452,12 @@ class FormSetupBuilder extends \Yana\Core\Object
             $form = $this->getForm();
             $name = $form->getTable();
             $database = $form->getDatabase();
-            if (!($database instanceof DDLDatabase)) {
+            if (!($database instanceof \Yana\Db\Ddl\Database)) {
                 $message = "Error in form '" . $form->getName() . "'. No parent database defined.";
                 throw new \Yana\Core\Exceptions\NotFoundException($message);
             }
             $tableDefinition = $database->getTable($name);
-            if (!($tableDefinition instanceof DDLTable)) {
+            if (!($tableDefinition instanceof \Yana\Db\Ddl\Table)) {
                 $message = "Error in form '" . $form->getName() . "'. Parent table '$name' not found.";
                 throw new \Yana\Core\Exceptions\NotFoundException($message);
             }
@@ -480,25 +480,25 @@ class FormSetupBuilder extends \Yana\Core\Object
     {
         $form = $this->getForm();
         $table = $this->_getTable();
-        $readCollection = new DDLColumnCollection();
-        $updateCollection = new DDLColumnCollection();
-        $insertCollection = new DDLColumnCollection();
-        $searchCollection = new DDLColumnCollection();
+        $readCollection = new \Yana\Db\Ddl\ColumnCollection();
+        $updateCollection = new \Yana\Db\Ddl\ColumnCollection();
+        $insertCollection = new \Yana\Db\Ddl\ColumnCollection();
+        $searchCollection = new \Yana\Db\Ddl\ColumnCollection();
         if ($form->hasAllInput()) {
             $columnNames = $table->getColumnNames();
         } else {
             $columnNames = array_keys($form->getFields());
         }
-        /** @var $column DDLColumn */
+        /** @var $column \Yana\Db\Ddl\Column */
         foreach ($columnNames as $columnName)
         {
             if ($form->isField($columnName)) {
                 $field = $form->getField($columnName);
             } else {
-                $field = new DDLField($columnName);
+                $field = new \Yana\Db\Ddl\Field($columnName);
             }
             $column = $field->getColumn();
-            if (!$column instanceof DDLColumn) {
+            if (!$column instanceof \Yana\Db\Ddl\Column) {
                 if ($table->isColumn($columnName)) {
                     $column = $table->getColumn($columnName);
                 } else {
@@ -552,11 +552,11 @@ class FormSetupBuilder extends \Yana\Core\Object
      * This returns an array of foreign-key reference settings.
      *
      * @access  private
-     * @return  DDLReference[]
+     * @return  \Yana\Db\Ddl\Reference[]
      */
-    private function _buildForeignKeyReferences(DDLColumnCollection $collection)
+    private function _buildForeignKeyReferences(\Yana\Db\Ddl\ColumnCollection $collection)
     {
-        /* @var $column DDLColumn */
+        /* @var $column \Yana\Db\Ddl\Column */
         foreach ($collection as $columnName => $column)
         {
             if ($column->getType() !== 'reference') {

@@ -94,7 +94,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
     {
 
         // create a da tabase with tables (columns)
-        $db = new \DDLDatabase('foobar');
+        $db = new \Yana\Db\Ddl\Database('foobar');
 
         /* create table "foo_department" and columns */
         $table = $db->addTable('foo_department');
@@ -203,7 +203,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
         $producer_id->setNullable(false);
         $fk = $table->addForeignKey('foo_producer');
         $fk->setColumn('producer_id');
-        $fk->setOnDelete(DDLKeyUpdateStrategyEnumeration::CASCADE);
+        $fk->setOnDelete(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::CASCADE);
 
         /* create table "foo_car" and columns */
         $table = $db->addTable('foo_car');
@@ -245,10 +245,10 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
         $payment->setDefault(50);
         $fk = $table->addForeignKey('foo_car_typ');
         $fk->setColumn('car_typ_id');
-        $fk->setOnDelete(DDLKeyUpdateStrategyEnumeration::RESTRICT);
+        $fk->setOnDelete(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::RESTRICT);
         $newfk = $table->addForeignKey('foo_employee', 'test_foreign');
         $newfk->setColumn('employee_id');
-        $newfk->setOnUpdate(DDLKeyUpdateStrategyEnumeration::CASCADE);
+        $newfk->setOnUpdate(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::CASCADE);
 
         $this->_object = new \Yana\Db\Export\SqlFactory($db);
         $result = $this->_object->createMySQL();
@@ -264,7 +264,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function test3()
     {
-        $db = new DDLDatabase('test');
+        $db = new \Yana\Db\Ddl\Database('test');
 
         $table = $db->addTable('foo_bar');
         $id = $table->addColumn('id', 'integer');
@@ -282,7 +282,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
         $foo_bar_id = $table->addColumn('foo_bar_id', 'integer');
         $fk = $table->addForeignKey('foo_bar');
         $fk->setColumn('foo_bar_id');
-        $fk->setOnUpdate(DDLKeyUpdateStrategyEnumeration::RESTRICT);
+        $fk->setOnUpdate(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::RESTRICT);
 
         $table = $db->addTable('bar_test');
         $id = $table->addColumn('id', 'integer');
@@ -292,12 +292,12 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
         $fk->setSize(11);
         $add = $table->addForeignKey('foo_test');
         $add->setColumn('foo_id');
-        $add->setOnUpdate(DDLKeyUpdateStrategyEnumeration::SETNULL);
+        $add->setOnUpdate(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::SETNULL);
         $table->setPrimaryKey('id');
         $foo_bar_id = $table->addColumn('foo_test_id', 'integer');
         $fk = $table->addForeignKey('foo_test');
         $fk->setColumn('foo_test_id');
-        $fk->setOnDelete(DDLKeyUpdateStrategyEnumeration::SETNULL);
+        $fk->setOnDelete(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::SETNULL);
 
         $obj = new \Yana\Db\Export\SqlFactory($db);
         $result = $obj->createMySQL();

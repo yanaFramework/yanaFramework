@@ -575,7 +575,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         $database = self::getDatabase();
         /* check if $table really is a table */
         $table = $database->getSchema()->getTable("guestbook");
-        assert('$table instanceof DDLTable;');
+        assert('$table instanceof \Yana\Db\Ddl\Table;');
 
         /* get the name of the primary key */
         $primary_key = $table->getPrimaryKey();

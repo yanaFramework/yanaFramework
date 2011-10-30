@@ -34,7 +34,7 @@
  * @access      public
  * @name        DbServer
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  */
 class DbServer extends \Yana\Core\Object
 {

@@ -44,7 +44,7 @@
  *
  * @access      public
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  * @since       2.9.2
  */
 class DbBlob extends FileReadonly
@@ -287,15 +287,15 @@ class DbBlob extends FileReadonly
      *
      * @access  public
      * @static
-     * @param   DDLColumn  $column  column definition
+     * @param   \Yana\Db\Ddl\Column  $column  column definition
      * @return  string
      * @ignore
      */
-    public static function getNewFileId(DDLColumn $column)
+    public static function getNewFileId(\Yana\Db\Ddl\Column $column)
     {
         $table = $column->getParent();
         $tableName = "";
-        if ($table instanceof DDLTable) {
+        if ($table instanceof \Yana\Db\Ddl\Table) {
             $tableName = $table->getName();
         }
         $columnName = $column->getName();

@@ -1237,8 +1237,8 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable, \Yana\L
      *
      * @access  public
      * @static
-     * @param   string|DDLDatabase  $schema  name of the database schema file (see config/db/*.xml),
-     *                                       or instance of DDLDatabase
+     * @param   string|\Yana\Db\Ddl\Database  $schema  name of the database schema file (see config/db/*.xml),
+     *                                                 or instance of \Yana\Db\Ddl\Database
      * @return  DbStream
      */
     public static function connect($schema)

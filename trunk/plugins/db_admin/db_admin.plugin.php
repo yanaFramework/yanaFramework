@@ -88,7 +88,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
         $yana->setVar("DATABASE_PREFIX",      YANA_DATABASE_PREFIX);
         $yana->setVar("DATABASE_NAME",        YANA_DATABASE_NAME);
         $yana->setVar("YANA_DATABASE_ACTIVE", YANA_DATABASE_ACTIVE);
-        $DATABASE_LIST = DDL::getListOfFiles();
+        $DATABASE_LIST = \Yana\Db\Ddl\DDL::getListOfFiles();
         $yana->setVar("DATABASE_LIST", $DATABASE_LIST);
     }
 
@@ -336,7 +336,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
             $fileSelectQuery = new DbSelect($fileDb);
             $fileSelectQuery->useInheritance(false);
 
-            /* @var $table DDLTable */
+            /* @var $table \Yana\Db\Ddl\Table */
             foreach ($dbSchema->getTables() as $table)
             {
                 $tableName = $table->getName();
@@ -349,7 +349,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                  * treat columns of types 'image' and 'file' as string
                  */
                 $files = $table->getFileColumns();
-                /* @var $column DDLColumn */
+                /* @var $column \Yana\Db\Ddl\Column */
                 foreach ($files as $column)
                 {
                     $column->setType('string');

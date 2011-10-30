@@ -109,7 +109,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
         global $YANA;
         $YANA->setVar('SELECTED_DBMS', YANA_DATABASE_DBMS);
         $YANA->setVar('LIST_OF_EXPORTABLE_DBMS', $this->listOfExportableDBMS);
-        $YANA->setVar("DATABASE_LIST", DDL::getListOfFiles());
+        $YANA->setVar("DATABASE_LIST", \Yana\Db\Ddl\DDL::getListOfFiles());
         // Just views template - no further business logic required.
     }
 
@@ -129,7 +129,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
         $errorReporting = error_reporting(E_ERROR | E_WARNING); // suppress MDB2 Notices
         $db = new DbServer();
         error_reporting($errorReporting);
-        $xml = (string) DDLDatabaseFactory::createDatabase($db->getConnection());
+        $xml = (string) \Yana\Db\Ddl\DatabaseFactory::createDatabase($db->getConnection());
         $filename = 'database.db.xml';
         if (empty($xml)) {
             $error = new FileNotCreatedError();

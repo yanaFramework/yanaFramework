@@ -38,38 +38,136 @@ require_once dirname(__FILE__) . '/include.php';
  */
 class DDLAllTest extends PHPUnit_Framework_TestCase
 {
-    /**#@+
-     * @access  protected
+
+    /**
+     * @var \Yana\Db\Ddl\Column
      */
+    protected $column;
 
-    /** @var DDLColumn                 */ protected $ddlcolumn;
-    /** @var DDLDatabase               */ protected $ddldatabase;
-    /** @var DDLField                  */ protected $ddlfield;
-    /** @var DDLForeignKey             */ protected $ddlforeignkey;
-    /** @var DDLForm                   */ protected $ddlform;
-    /** @var DDLFunction               */ protected $ddlfunction;
-    /** @var DDLFunctionImplementation */ protected $ddlfunctionimplementation;
-    /** @var DDLFunctionParameter      */ protected $ddlfunctionparameter;
-    /** @var DDLIndex                  */ protected $ddlindex;
-    /** @var DDLLogCreate              */ protected $ddllogcreate;
-    /** @var DDLLogDrop                */ protected $ddllogdrop;
-    /** @var DDLLogRename              */ protected $ddllogrename;
-    /** @var DDLLogSql                 */ protected $ddllogsql;
-    /** @var DDLLogUpdate              */ protected $ddllogupdate;
-    /** @var DDLLogChange              */ protected $ddllogchange;
-    /** @var DDLSequence               */ protected $ddlsequence;
-    /** @var DDLTable                  */ protected $ddltable;
-    /** @var DDLView                   */ protected $ddlview;
-    /** @var DDLGrant                  */ protected $ddlgrant;
-    /** @var DDLIndexColumn            */ protected $ddlindexcolumn;
-    /** @var DDLViewField              */ protected $ddlviewfield;
-    /** @var DDLEvent                  */ protected $ddlevent;
-    /** @var DDLChangeLog              */ protected $ddlchangelog;
-    /** @var DDLDatabaseInit           */ protected $ddldatabaseinit;
-    /** @var DDLTrigger                */ protected $ddltrigger;
-    /** @var DDLConstraint             */ protected $ddlconstraint;
+    /**
+     * @var \Yana\Db\Ddl\Database
+     */
+    protected $database;
 
-    /**#@-*/
+    /**
+     * @var \Yana\Db\Ddl\Field
+     */
+    protected $field;
+
+    /**
+     * @var \Yana\Db\Ddl\ForeignKey
+     */
+    protected $foreignkey;
+
+    /**
+     * @var \Yana\Db\Ddl\Form
+     */
+    protected $form;
+
+    /**
+     * @var \Yana\Db\Ddl\Functions\Object
+     */
+    protected $function;
+
+    /**
+     * @var \Yana\Db\Ddl\Functions\Implementation
+     */
+    protected $functionimplementation;
+
+    /**
+     * @var \Yana\Db\Ddl\Functions\Parameter
+     */
+    protected $functionparameter;
+
+    /**
+     * @var \Yana\Db\Ddl\Index
+     */
+    protected $index;
+
+    /**
+     * @var \Yana\Db\Ddl\Logs\Create
+     */
+    protected $logcreate;
+
+    /**
+     * @var \Yana\Db\Ddl\Logs\Drop
+     */
+    protected $logdrop;
+
+    /**
+     * @var \Yana\Db\Ddl\Logs\Rename
+     */
+    protected $logrename;
+
+    /**
+     * @var \Yana\Db\Ddl\Logs\Sql
+     */
+    protected $logsql;
+
+    /**
+     * @var \Yana\Db\Ddl\Logs\Update
+     */
+    protected $logupdate;
+
+    /**
+     * @var \Yana\Db\Ddl\Logs\Change
+     */
+    protected $logchange;
+
+    /**
+     * @var \Yana\Db\Ddl\Sequence
+     */
+    protected $sequence;
+
+    /**
+     * @var \Yana\Db\Ddl\Table
+     */
+    protected $table;
+
+    /**
+     * @var \Yana\Db\Ddl\Views\View
+     */
+    protected $view;
+
+    /**
+     * @var \Yana\Db\Ddl\Grant
+     */
+    protected $grant;
+
+    /**
+     * @var \Yana\Db\Ddl\IndexColumn
+     */
+    protected $indexcolumn;
+
+    /**
+     * @var \Yana\Db\Ddl\Views\Field
+     */
+    protected $viewfield;
+
+    /**
+     * @var \Yana\Db\Ddl\Event
+     */
+    protected $event;
+
+    /**
+     * @var \Yana\Db\Ddl\ChangeLog
+     */
+    protected $changelog;
+
+    /**
+     * @var \Yana\Db\Ddl\DatabaseInit
+     */
+    protected $init;
+
+    /**
+     * @var \Yana\Db\Ddl\Trigger
+     */
+    protected $trigger;
+
+    /**
+     * @var \Yana\Db\Ddl\Constraint
+     */
+    protected $constraint;
 
     /**
      * sets up the fixture, for example, opens a network connection.
@@ -81,32 +179,32 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
         chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
 
-        $this->ddldatabase = new DDLDatabase();
-        $this->ddltable = new DDLTable('table');
-        $this->ddlcolumn = new DDLColumn('column');
-        $this->ddlfield = new DDLField('field');
-        $this->ddlforeignkey = new DDLForeignKey('foreignkey');
-        $this->ddlform = new DDLForm('form');
-        $this->ddlfunction = new DDLFunction('function');
-        $this->ddlfunctionimplementation = new DDLFunctionImplementation;
-        $this->ddlfunctionparameter = new DDLFunctionParameter('param');
-        $this->ddlindex = new DDLIndex('index', $this->ddltable);
-        $this->ddllogcreate = new DDLLogCreate('logcreate');
-        $this->ddllogdrop = new DDLLogDrop('logdrop');
-        $this->ddllogrename = new DDLLogRename('logrename');
-        $this->ddllogsql = new DDLLogSql();
-        $this->ddllogupdate = new DDLLogUpdate('logupdate');
-        $this->ddllogchange = new DDLLogChange();
-        $this->ddlsequence = new DDLSequence('sequence');
-        $this->ddlview = new DDLView('view');
-        $this->ddlgrant = new DDLGrant();
-        $this->ddlchangelog = new DDLChangeLog();
-        $this->ddlindexcolumn = new DDLIndexColumn('indexColumn');
-        $this->ddlviewfield = new DDLViewField('viewfield');
-        $this->ddlevent = new DDLEvent('action');
-        $this->ddldatabaseinit = new DDLDatabaseInit();
-        $this->ddltrigger = new DDLTrigger();
-        $this->ddlconstraint = new DDLConstraint();
+        $this->database = new \Yana\Db\Ddl\Database();
+        $this->table = new \Yana\Db\Ddl\Table('table');
+        $this->column = new \Yana\Db\Ddl\Column('column');
+        $this->field = new \Yana\Db\Ddl\Field('field');
+        $this->foreignkey = new \Yana\Db\Ddl\ForeignKey('foreignkey');
+        $this->form = new \Yana\Db\Ddl\Form('form');
+        $this->function = new \Yana\Db\Ddl\Functions\Object('function');
+        $this->functionimplementation = new \Yana\Db\Ddl\Functions\Implementation;
+        $this->functionparameter = new \Yana\Db\Ddl\Functions\Parameter('param');
+        $this->index = new \Yana\Db\Ddl\Index('index', $this->table);
+        $this->logcreate = new \Yana\Db\Ddl\Logs\Create('logcreate');
+        $this->logdrop = new \Yana\Db\Ddl\Logs\Drop('logdrop');
+        $this->logrename = new \Yana\Db\Ddl\Logs\Rename('logrename');
+        $this->logsql = new \Yana\Db\Ddl\Logs\Sql();
+        $this->logupdate = new \Yana\Db\Ddl\Logs\Update('logupdate');
+        $this->logchange = new \Yana\Db\Ddl\Logs\Change();
+        $this->sequence = new \Yana\Db\Ddl\Sequence('sequence');
+        $this->view = new \Yana\Db\Ddl\Views\View('view');
+        $this->grant = new \Yana\Db\Ddl\Grant();
+        $this->changelog = new \Yana\Db\Ddl\ChangeLog();
+        $this->indexcolumn = new \Yana\Db\Ddl\IndexColumn('indexColumn');
+        $this->viewfield = new \Yana\Db\Ddl\Views\Field('viewfield');
+        $this->event = new \Yana\Db\Ddl\Event('action');
+        $this->init = new \Yana\Db\Ddl\DatabaseInit();
+        $this->trigger = new \Yana\Db\Ddl\Trigger();
+        $this->constraint = new \Yana\Db\Ddl\Constraint();
     }
 
     /**
@@ -117,30 +215,30 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        unset($this->ddlcolumn);
-        unset($this->ddldatabase);
-        unset($this->ddlfield);
-        unset($this->ddlforeignkey);
-        unset($this->ddlform);
-        unset($this->ddlfunction);
-        unset($this->ddlfunctionimplementation);
-        unset($this->ddlfunctionparameter);
-        unset($this->ddlindex);
-        unset($this->ddllogcreate);
-        unset($this->ddllogdrop);
-        unset($this->ddllogrename);
-        unset($this->ddllogsql);
-        unset($this->ddllogupdate);
-        unset($this->ddlsequence);
-        unset($this->ddltable);
-        unset($this->ddlview);
-        unset($this->ddlchangelog);
-        unset($this->ddlindexcolumn);
-        unset($this->ddlviewfield);
-        unset($this->ddlevent);
-        unset($this->ddldatabaseinit);
-        unset($this->ddltrigger);
-        unset($this->ddlconstraint);
+        unset($this->column);
+        unset($this->database);
+        unset($this->field);
+        unset($this->foreignkey);
+        unset($this->form);
+        unset($this->function);
+        unset($this->functionimplementation);
+        unset($this->functionparameter);
+        unset($this->index);
+        unset($this->logcreate);
+        unset($this->logdrop);
+        unset($this->logrename);
+        unset($this->logsql);
+        unset($this->logupdate);
+        unset($this->sequence);
+        unset($this->table);
+        unset($this->view);
+        unset($this->changelog);
+        unset($this->indexcolumn);
+        unset($this->viewfield);
+        unset($this->event);
+        unset($this->init);
+        unset($this->trigger);
+        unset($this->constraint);
         chdir(CWD);
     }
 
@@ -150,14 +248,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function dataTitle()
     {
         return array(
-            array('ddlcolumn'),
-            array('ddldatabase'),
-            array('ddlform'),
-            array('ddlfunction'),
-            array('ddlindex'),
-            array('ddltable'),
-            array('ddlview'),
-            array('ddlevent')
+            array('column'),
+            array('database'),
+            array('form'),
+            array('function'),
+            array('index'),
+            array('table'),
+            array('view'),
+            array('event')
         );
     }
 
@@ -188,14 +286,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testRange()
     {
-        $this->assertNull($this->ddlcolumn->getRangeMin(), "Min must default to null.");
-        $this->assertNull($this->ddlcolumn->getRangeMax(), "Max must default to null.");
-        $this->assertNull($this->ddlcolumn->getRangeStep(), "Step must default to null.");
+        $this->assertNull($this->column->getRangeMin(), "Min must default to null.");
+        $this->assertNull($this->column->getRangeMax(), "Max must default to null.");
+        $this->assertNull($this->column->getRangeStep(), "Step must default to null.");
 
-        $this->ddlcolumn->setRange(0.0, 100.0, 0.5);
-        $rangeMin = $this->ddlcolumn->getRangeMin();
-        $rangeMax = $this->ddlcolumn->getRangeMax();
-        $rangeStep = $this->ddlcolumn->getRangeStep();
+        $this->column->setRange(0.0, 100.0, 0.5);
+        $rangeMin = $this->column->getRangeMin();
+        $rangeMax = $this->column->getRangeMax();
+        $rangeStep = $this->column->getRangeStep();
         $this->assertEquals(0.0, $rangeMin, "Unable to set min attribute.");
         $this->assertEquals(100.0, $rangeMax, "Unable to set max attribute.");
         $this->assertEquals(0.5, $rangeStep, "Unable to set step attribute.");
@@ -208,29 +306,29 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testGetType()
     {
-        // DDLLogCreate
-        $get = $this->ddlcolumn->getType();
-        $this->assertNull($get, 'DDLColumn should return Null, if not defined');
+        // \Yana\Db\Ddl\Logs\Create
+        $get = $this->column->getType();
+        $this->assertNull($get, '\Yana\Db\Ddl\Column should return Null, if not defined');
 
-        // DDLLogCreate
-        $get = $this->ddllogcreate->getType();
-        $this->assertEquals('create', $get, 'assert failed, "DDLLogCreate" : expected value "create" - the values should be equal.');
+        // \Yana\Db\Ddl\Logs\Create
+        $get = $this->logcreate->getType();
+        $this->assertEquals('create', $get, 'assert failed, "\Yana\Db\Ddl\Logs\Create" : expected value "create" - the values should be equal.');
 
-        // DDLLogRename
-        $get = $this->ddllogrename->getType();
-        $this->assertEquals('rename', $get, 'assert failed, "DDLLogRename" : expected value "rename" - the values should be equal.');
+        // \Yana\Db\Ddl\Logs\Rename
+        $get = $this->logrename->getType();
+        $this->assertEquals('rename', $get, 'assert failed, "\Yana\Db\Ddl\Logs\Rename" : expected value "rename" - the values should be equal.');
 
-        // DDLLogSql
-        $get = $this->ddllogsql->getType();
-        $this->assertEquals('sql', $get, 'assert failed, "DDLLogSql" : expected value "sql" - the values should be equal.');
+        // \Yana\Db\Ddl\Logs\Sql
+        $get = $this->logsql->getType();
+        $this->assertEquals('sql', $get, 'assert failed, "\Yana\Db\Ddl\Logs\Sql" : expected value "sql" - the values should be equal.');
 
-         // DDLLogUpdate
-        $get = $this->ddllogupdate->getType();
-        $this->assertEquals('update', $get, 'assert failed, "DDLLogUpdate" : expected value "update" - the values should be equal.');
+         // \Yana\Db\Ddl\Logs\Update
+        $get = $this->logupdate->getType();
+        $this->assertEquals('update', $get, 'assert failed, "\Yana\Db\Ddl\Logs\Update" : expected value "update" - the values should be equal.');
 
-        // DDLLogDrop
-        $get = $this->ddllogdrop->getType();
-        $this->assertEquals('drop', $get, 'assert failed, "DDLLogDrop" : expected value "drop" - the values should be equal.');
+        // \Yana\Db\Ddl\Logs\Drop
+        $get = $this->logdrop->getType();
+        $this->assertEquals('drop', $get, 'assert failed, "\Yana\Db\Ddl\Logs\Drop" : expected value "drop" - the values should be equal.');
     }
 
     /**
@@ -240,44 +338,44 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testTypesAndParams()
     {
-        $type = $this->ddllogchange->getType();
+        $type = $this->logchange->getType();
         $this->assertNull($type, "Undefined type should be null.");
 
-        $this->ddllogchange->setType();
-        $type = $this->ddllogchange->getType();
-        $message = "Attribute DDLLogChange::type should default to 'default'.";
+        $this->logchange->setType();
+        $type = $this->logchange->getType();
+        $message = "Attribute \Yana\Db\Ddl\ChangeLog::type should default to 'default'.";
         $this->assertEquals('default', $type, $message);
 
-        $this->ddllogchange->setType('Test');
-        $type = $this->ddllogchange->getType();
-        $message = "DDLLogChange::getType should return same value as previously set by setType().";
+        $this->logchange->setType('Test');
+        $type = $this->logchange->getType();
+        $message = "\Yana\Db\Ddl\ChangeLog::getType should return same value as previously set by setType().";
         $this->assertEquals('Test', $type, $message);
 
         $expectedParams = array();
-        $parameters = $this->ddllogchange->getParameters();
+        $parameters = $this->logchange->getParameters();
         $message = "Empty parameter list should be returned as empty array.";
         $this->assertEquals($expectedParams, $parameters, $message);
 
         $expectedParams[] = 'test';
-        $this->ddllogchange->addParameter('test');
-        $parameters = $this->ddllogchange->getParameters();
+        $this->logchange->addParameter('test');
+        $parameters = $this->logchange->getParameters();
         $message = "Unnamed parameter 'test' must be added.";
         $this->assertEquals($expectedParams, $parameters, $message);
 
         $expectedParams['Foo'] = 'bar';
-        $this->ddllogchange->addParameter('bar', 'Foo');
-        $parameters = $this->ddllogchange->getParameters();
+        $this->logchange->addParameter('bar', 'Foo');
+        $parameters = $this->logchange->getParameters();
         $message = "Named parameter 'Foo'='bar' must be added.";
         $this->assertEquals($expectedParams, $parameters, $message);
 
-        $this->ddllogchange->dropParameters();
+        $this->logchange->dropParameters();
         $expectedParams = array();
-        $parameters = $this->ddllogchange->getParameters();
+        $parameters = $this->logchange->getParameters();
         $message = "After calling dropParameters, getParameters must return an empty array.";
         $this->assertEquals($expectedParams, $parameters, $message);
 
-        $this->ddllogchange->setType("");
-        $type = $this->ddllogchange->getType();
+        $this->logchange->setType("");
+        $type = $this->logchange->getType();
         $this->assertNull($type, "Unable to unset type.");
     }
 
@@ -288,7 +386,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function getSupportedTypes()
     {
-        $getSupported = $this->ddlcolumn->getSupportedTypes();
+        $getSupported = $this->column->getSupportedTypes();
         $this->assertContains("bool", $getSupported, "supported types should at least contain bool, integer and text");
         $this->assertContains("integer", $getSupported, "supported types should at least contain bool, integer and text");
         $this->assertContains("text", $getSupported, "supported types should at least contain bool, integer and text");
@@ -302,18 +400,18 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testSetType()
     {
         // DDL Column
-        $this->ddlcolumn->setType('string');
-        $validate = $this->ddlcolumn->getType();
-        $this->assertEquals('string', $validate, 'DDLColumn : the expecting value of getType should be "string" - the values should be equal');
+        $this->column->setType('string');
+        $validate = $this->column->getType();
+        $this->assertEquals('string', $validate, '\Yana\Db\Ddl\Column : the expecting value of getType should be "string" - the values should be equal');
 
         // DDL FunctionParameter
-        $this->ddlfunctionparameter->setType('integer');
-        $result = $this->ddlfunctionparameter->getType();
-        $this->assertEquals('integer', $result, 'assert failed, DDLFunctionParameter : the expecting value of getType should be "integer" - the values should be equal');
+        $this->functionparameter->setType('integer');
+        $result = $this->functionparameter->getType();
+        $this->assertEquals('integer', $result, 'assert failed, \Yana\Db\Ddl\Functions\Parameter : the expecting value of getType should be "integer" - the values should be equal');
 
-        $this->ddlfunctionparameter->setType('');
-        $result = $this->ddlfunctionparameter->getType();
-        $this->assertEquals('', $result, 'assert failed, DDLFunctionParameter : the expecting value of getType should be an empty result - the values should be equal');
+        $this->functionparameter->setType('');
+        $result = $this->functionparameter->getType();
+        $this->assertEquals('', $result, 'assert failed, \Yana\Db\Ddl\Functions\Parameter : the expecting value of getType should be an empty result - the values should be equal');
     }
 
     /**
@@ -324,21 +422,21 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testMode()
     {
         // DDL FunctionParameter
-        $this->ddlfunctionparameter->setMode(0);
-        $result = $this->ddlfunctionparameter->getMode();
-        $this->assertEquals(0, $result, 'assert failed, DDLFunctionParameter : the value should be match the number 0');
+        $this->functionparameter->setMode(0);
+        $result = $this->functionparameter->getMode();
+        $this->assertEquals(0, $result, 'assert failed, \Yana\Db\Ddl\Functions\Parameter : the value should be match the number 0');
 
-        $this->ddlfunctionparameter->setMode(2);
-        $result = $this->ddlfunctionparameter->getMode();
-        $this->assertEquals(2, $result, 'assert failed, DDLFunctionParameter : the value should be match the number 2');
+        $this->functionparameter->setMode(2);
+        $result = $this->functionparameter->getMode();
+        $this->assertEquals(2, $result, 'assert failed, \Yana\Db\Ddl\Functions\Parameter : the value should be match the number 2');
 
-        $this->ddlfunctionparameter->setMode(1);
-        $result = $this->ddlfunctionparameter->getMode();
-        $this->assertEquals(1, $result, 'assert failed, DDLFunctionParameter : the value should be match the number 1');
+        $this->functionparameter->setMode(1);
+        $result = $this->functionparameter->getMode();
+        $this->assertEquals(1, $result, 'assert failed, \Yana\Db\Ddl\Functions\Parameter : the value should be match the number 1');
 
-        $this->ddlfunctionparameter->setMode(20);
-        $result = $this->ddlfunctionparameter->getMode();
-        $this->assertEquals(0, $result, 'assert failed, DDLFunctionParameter : expected value is the default number 0 - only 0, 1, 2 numbers can be used in setMode by setting an other number the default must be choosen');
+        $this->functionparameter->setMode(20);
+        $result = $this->functionparameter->getMode();
+        $this->assertEquals(0, $result, 'assert failed, \Yana\Db\Ddl\Functions\Parameter : expected value is the default number 0 - only 0, 1, 2 numbers can be used in setMode by setting an other number the default must be choosen');
     }
 
     /**
@@ -347,18 +445,18 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function dataDescription()
     {
         return array(
-            array('ddlcolumn'),
-            array('ddlfield'),
-            array('ddldatabase'),
-            array('ddlform'),
-            array('ddlfunction'),
-            array('ddlview'),
-            array('ddltable'),
-            array('ddlsequence'),
-            array('ddllogcreate'),
-            array('ddlindex'),
-            array('ddllogchange'),
-            array('ddllogsql')
+            array('column'),
+            array('field'),
+            array('database'),
+            array('form'),
+            array('function'),
+            array('view'),
+            array('table'),
+            array('sequence'),
+            array('logcreate'),
+            array('index'),
+            array('logchange'),
+            array('logsql')
         );
     }
 
@@ -374,11 +472,11 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $object = $this->$propertyName;
         $object->setDescription('description');
         $result = $object->getDescription();
-        $this->assertEquals('description', $result, 'assert failed, DDLColumn : expected value is "description"  - the values should be equal');
+        $this->assertEquals('description', $result, 'assert failed, \Yana\Db\Ddl\Column : expected value is "description"  - the values should be equal');
 
         $object->setDescription('');
         $result = $object->getDescription();
-        $this->assertNull($result, 'assert failed, DDLColumn : the description is expected null');
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Column : the description is expected null');
     }
 
     /**
@@ -389,13 +487,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testWhere()
     {
         // DDL View
-        $this->ddlview->setWhere('where');
-        $result = $this->ddlview->getWhere();
-        $this->assertEquals('where', $result, 'assert failed, DDLView : "setWhere" expected "where" as value - the values should be equal');
+        $this->view->setWhere('where');
+        $result = $this->view->getWhere();
+        $this->assertEquals('where', $result, 'assert failed, \Yana\Db\Ddl\Views\View : "setWhere" expected "where" as value - the values should be equal');
 
-        $this->ddlview->setWhere('');
-        $result = $this->ddlview->getWhere();
-        $this->assertNull($result, 'assert failed, DDLView : "setWhere" is expected null');
+        $this->view->setWhere('');
+        $result = $this->view->getWhere();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Views\View : "setWhere" is expected null');
     }
 
     /**
@@ -406,27 +504,27 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testCheckOption()
     {
         // DDL View
-        $hasChecked = $this->ddlview->hasCheckOption();
-        $this->assertFalse($hasChecked, 'assert failed, "DDLView" : false expected - no checkOption is set');
+        $hasChecked = $this->view->hasCheckOption();
+        $this->assertFalse($hasChecked, 'assert failed, "\Yana\Db\Ddl\Views\View" : false expected - no checkOption is set');
 
-        $this->ddlview->setCheckOption(DDLViewConstraintEnumeration::CASCADED);
-        $result = $this->ddlview->getCheckOption();
-        $this->assertEquals(DDLViewConstraintEnumeration::CASCADED, $result, 'assert failed, DDLColumn : expected "1" as value - the values should be equal');
+        $this->view->setCheckOption(\Yana\Db\Ddl\Views\ConstraintEnumeration::CASCADED);
+        $result = $this->view->getCheckOption();
+        $this->assertEquals(\Yana\Db\Ddl\Views\ConstraintEnumeration::CASCADED, $result, 'assert failed, \Yana\Db\Ddl\Column : expected "1" as value - the values should be equal');
 
-        $hasChecked = $this->ddlview->hasCheckOption();
-        $this->assertTrue($hasChecked, 'assert failed, "DDLView" : true expected - checkOption is set ');
+        $hasChecked = $this->view->hasCheckOption();
+        $this->assertTrue($hasChecked, 'assert failed, "\Yana\Db\Ddl\Views\View" : true expected - checkOption is set ');
 
-        $this->ddlview->setCheckOption(DDLViewConstraintEnumeration::LOCAL);
-        $result = $this->ddlview->getCheckOption();
-        $this->assertEquals(DDLViewConstraintEnumeration::LOCAL, $result, 'assert failed, DDLColumn : expected "2" as value - the values should be equal');
+        $this->view->setCheckOption(\Yana\Db\Ddl\Views\ConstraintEnumeration::LOCAL);
+        $result = $this->view->getCheckOption();
+        $this->assertEquals(\Yana\Db\Ddl\Views\ConstraintEnumeration::LOCAL, $result, 'assert failed, \Yana\Db\Ddl\Column : expected "2" as value - the values should be equal');
 
-        $this->ddlview->setCheckOption(DDLViewConstraintEnumeration::NONE);
-        $result = $this->ddlview->getCheckOption();
-        $this->assertEquals(DDLViewConstraintEnumeration::NONE, $result, 'assert failed, DDLColumn : expected "0" as value - the values should be equal');
+        $this->view->setCheckOption(\Yana\Db\Ddl\Views\ConstraintEnumeration::NONE);
+        $result = $this->view->getCheckOption();
+        $this->assertEquals(\Yana\Db\Ddl\Views\ConstraintEnumeration::NONE, $result, 'assert failed, \Yana\Db\Ddl\Column : expected "0" as value - the values should be equal');
 
-        $this->ddlview->setCheckOption(20);
-        $result = $this->ddlview->getCheckOption();
-        $this->assertEquals(0, $result, 'assert failed, DDLColumn : expected value is the default number 0 - only 0, 1, 2 numbers can be used in setCheckOption by setting an other number the default must be choosen');
+        $this->view->setCheckOption(20);
+        $result = $this->view->getCheckOption();
+        $this->assertEquals(0, $result, 'assert failed, \Yana\Db\Ddl\Column : expected value is the default number 0 - only 0, 1, 2 numbers can be used in setCheckOption by setting an other number the default must be choosen');
     }
 
     /**
@@ -437,12 +535,12 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testGetSourceTable()
     {
         // DDL INDEX
-        $ddlindex = new DDLIndex('index');
-        $sourceTable = $ddlindex->getSourceTable();
+        $index = new \Yana\Db\Ddl\Index('index');
+        $sourceTable = $index->getSourceTable();
         $this->assertNull($sourceTable, 'assert failed, the value expected null');
 
         // DDL ForeignKey
-        $sourceTable = $this->ddlforeignkey->getSourceTable();
+        $sourceTable = $this->foreignkey->getSourceTable();
         $this->assertNull($sourceTable, 'assert failed, the value expected null');
     }
 
@@ -454,9 +552,9 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testSubject()
     {
         // DDL LogCreate
-        $this->ddllogcreate->setSubject('column');
-        $result = $this->ddllogcreate->getSubject();
-        $this->assertEquals('column', $result, 'assert failed, DDLLogCreate : the expected result should be the value "column" - the values should be equal');
+        $this->logcreate->setSubject('column');
+        $result = $this->logcreate->getSubject();
+        $this->assertEquals('column', $result, 'assert failed, \Yana\Db\Ddl\Logs\Create : the expected result should be the value "column" - the values should be equal');
     }
 
     /**
@@ -467,22 +565,22 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testSQL()
     {
         // DDL LogSql
-        $this->ddllogsql->setSQL('sql');
-        $result = $this->ddllogsql->getSQL();
-        $this->assertEquals('sql', $result, 'assert failed, DDLLogSql : the expected result should be the value "sql" - the values should be equal');
+        $this->logsql->setSQL('sql');
+        $result = $this->logsql->getSQL();
+        $this->assertEquals('sql', $result, 'assert failed, \Yana\Db\Ddl\Logs\Sql : the expected result should be the value "sql" - the values should be equal');
 
-        $this->ddllogsql->setSQL('');
-        $result = $this->ddllogsql->getSQL();
-        $this->assertNull($result, 'assert failed, DDLLogSql : the value is expected null');
+        $this->logsql->setSQL('');
+        $result = $this->logsql->getSQL();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Logs\Sql : the value is expected null');
 
         // DDL DatabaseInit
-        $this->ddldatabaseinit->setSQL('sql');
-        $result = $this->ddldatabaseinit->getSQL();
-        $this->assertEquals('sql', $result, 'assert failed, DDLDatabaseInit : the expected result should be the value "sql" - the values should be equal');
+        $this->init->setSQL('sql');
+        $result = $this->init->getSQL();
+        $this->assertEquals('sql', $result, 'assert failed, \Yana\Db\Ddl\DatabaseInit : the expected result should be the value "sql" - the values should be equal');
 
-        $this->ddldatabaseinit->setSQL('');
-        $result = $this->ddldatabaseinit->getSQL();
-        $this->assertNull($result, 'assert failed, DDLDatabaseInit : the value is expected null');
+        $this->init->setSQL('');
+        $result = $this->init->getSQL();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\DatabaseInit : the value is expected null');
     }
 
     /**
@@ -493,49 +591,49 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testReadonly()
     {
        //ddl column
-       $this->ddlcolumn->setReadonly(true);
-       $result = $this->ddlcolumn->isReadonly();
-       $this->assertTrue($result, 'assert failed, DDLColumn : expected true - setReadonly was set with true');
+       $this->column->setReadonly(true);
+       $result = $this->column->isReadonly();
+       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setReadonly was set with true');
 
-       $this->ddlcolumn->setReadonly(false);
-       $result = $this->ddlcolumn->isReadonly();
-       $this->assertFalse($result, 'assert failed, DDLColumn : expected false - setReadonly was set with false');
+       $this->column->setReadonly(false);
+       $result = $this->column->isReadonly();
+       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Column : expected false - setReadonly was set with false');
 
        // ddl database
-       $this->ddldatabase->setReadonly(true);
-       $result = $this->ddldatabase->isReadonly();
-       $this->assertTrue($result, 'assert failed, DDLDatabase : expected true - setReadonly was set with true');
+       $this->database->setReadonly(true);
+       $result = $this->database->isReadonly();
+       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Database : expected true - setReadonly was set with true');
 
-       $this->ddldatabase->setReadonly(false);
-       $result = $this->ddldatabase->isReadonly();
-       $this->assertFalse($result, 'assert failed, DDLDatabase : expected false - setReadonly was set with false');
+       $this->database->setReadonly(false);
+       $result = $this->database->isReadonly();
+       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Database : expected false - setReadonly was set with false');
 
        // ddl field
-       $this->ddlfield->setReadonly(true);
-       $result = $this->ddlfield->isReadonly();
-       $this->assertTrue($result, 'assert failed, DDLField : expected true - setReadonly was set with true');
+       $this->field->setReadonly(true);
+       $result = $this->field->isReadonly();
+       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Field : expected true - setReadonly was set with true');
 
-       $this->ddlfield->setReadonly(false);
-       $result = $this->ddlfield->isReadonly();
-       $this->assertFalse($result, 'assert failed, DDLField : expected false - setReadonly was set with false');
+       $this->field->setReadonly(false);
+       $result = $this->field->isReadonly();
+       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Field : expected false - setReadonly was set with false');
 
        // DDL View
-       $this->ddlview->setReadonly(true);
-       $result = $this->ddlview->isReadonly();
-       $this->assertTrue($result, 'assert failed, DDLView : expected true - setReadonly was set with true');
+       $this->view->setReadonly(true);
+       $result = $this->view->isReadonly();
+       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Views\View : expected true - setReadonly was set with true');
 
-       $this->ddlview->setReadonly(false);
-       $result = $this->ddlview->isReadonly();
-       $this->assertFalse($result, 'assert failed, DDLView : expected false - setReadonly was set with false');
+       $this->view->setReadonly(false);
+       $result = $this->view->isReadonly();
+       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Views\View : expected false - setReadonly was set with false');
 
        // DDL Table
-       $this->ddltable->setReadonly(true);
-       $result = $this->ddltable->isReadonly();
-       $this->assertTrue($result, 'assert failed, DDLTable : expected true - setReadonly was set with true');
+       $this->table->setReadonly(true);
+       $result = $this->table->isReadonly();
+       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Table : expected true - setReadonly was set with true');
 
-       $this->ddltable->setReadonly(false);
-       $result = $this->ddltable->isReadonly();
-       $this->assertFalse($result, 'assert failed, DDLTable : expected false - setReadonly was set with false');
+       $this->table->setReadonly(false);
+       $result = $this->table->isReadonly();
+       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Table : expected false - setReadonly was set with false');
     }
 
     /**
@@ -546,13 +644,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testVisible()
     {
        // ddl field
-       $this->ddlfield->setVisible(true);
-       $result = $this->ddlfield->isVisible();
-       $this->assertTrue($result, 'assert failed, DDLField : expected true - setVisible was set with true');
+       $this->field->setVisible(true);
+       $result = $this->field->isVisible();
+       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Field : expected true - setVisible was set with true');
 
-       $this->ddlfield->setVisible(false);
-       $result = $this->ddlfield->isVisible();
-       $this->assertFalse($result, 'assert failed, DDLField : expected false - setVisible was set with false');
+       $this->field->setVisible(false);
+       $result = $this->field->isVisible();
+       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Field : expected false - setVisible was set with false');
     }
 
     /**
@@ -563,13 +661,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testClustered()
     {
        // DDL Index
-       $this->ddlindex->setClustered(true);
-       $result = $this->ddlindex->isClustered();
-       $this->assertTrue($result, 'assert failed, DDLIndex : expected true - setClustered was set with true');
+       $this->index->setClustered(true);
+       $result = $this->index->isClustered();
+       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Index : expected true - setClustered was set with true');
 
-       $this->ddlindex->setClustered(false);
-       $result = $this->ddlindex->isClustered();
-       $this->assertFalse($result, 'assert failed, DDLIndex : expected false - setClustered was set with false');
+       $this->index->setClustered(false);
+       $result = $this->index->isClustered();
+       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Index : expected false - setClustered was set with false');
     }
 
     /**
@@ -580,13 +678,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testCycle()
     {
        // DDL Sequence
-       $this->ddlsequence->setCycle(true);
-       $result = $this->ddlsequence->isCycle();
-       $this->assertTrue($result, 'assert failed, DDLSequence : expected true - setCycle was set with true');
+       $this->sequence->setCycle(true);
+       $result = $this->sequence->isCycle();
+       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Sequence : expected true - setCycle was set with true');
 
-       $this->ddlsequence->setCycle(false);
-       $result = $this->ddlsequence->isCycle();
-       $this->assertFalse($result, 'assert failed, DDLSequence : expected false - setCycle was set with false');
+       $this->sequence->setCycle(false);
+       $result = $this->sequence->isCycle();
+       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Sequence : expected false - setCycle was set with false');
     }
 
     /**
@@ -597,13 +695,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testDeferrable()
     {
        // ddl field
-       $this->ddlforeignkey->setDeferrable(true);
-       $result = $this->ddlforeignkey->isDeferrable();
-       $this->assertTrue($result, 'assert failed, DDLForeignKey : expected true - setDeferrable was set with true');
+       $this->foreignkey->setDeferrable(true);
+       $result = $this->foreignkey->isDeferrable();
+       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\ForeignKey : expected true - setDeferrable was set with true');
 
-       $this->ddlforeignkey->setDeferrable(false);
-       $result = $this->ddlforeignkey->isDeferrable();
-       $this->assertFalse($result, 'assert failed, DDLForeignKey : expected false - setDeferrable was set with false');
+       $this->foreignkey->setDeferrable(false);
+       $result = $this->foreignkey->isDeferrable();
+       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\ForeignKey : expected false - setDeferrable was set with false');
     }
 
     /**
@@ -614,14 +712,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testNullable()
     {
        // expected value is true
-       $this->ddlcolumn->setNullable(true);
-       $result = $this->ddlcolumn->isNullable();
-       $this->assertTrue($result, 'assert failed, DDLColumn : expected true - setNullable was set with true');
+       $this->column->setNullable(true);
+       $result = $this->column->isNullable();
+       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setNullable was set with true');
 
        // expected value is false
-       $this->ddlcolumn->setNullable(false);
-       $result = $this->ddlcolumn->isNullable();
-       $this->assertFalse($result, 'assert failed, DDLColumn : expected false - setNullable was set with false');
+       $this->column->setNullable(false);
+       $result = $this->column->isNullable();
+       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Column : expected false - setNullable was set with false');
     }
 
     /**
@@ -632,22 +730,22 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testUnique()
     {
        // DDL Column
-       $this->ddlcolumn->setUnique(true);
-       $result = $this->ddlcolumn->isUnique();
-       $this->assertTrue($result, 'assert failed, DDLColumn : expected true - setUnique was set with true');
+       $this->column->setUnique(true);
+       $result = $this->column->isUnique();
+       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setUnique was set with true');
 
-       $this->ddlcolumn->setUnique(false);
-       $result = $this->ddlcolumn->isUnique();
-       $this->assertFalse($result, 'assert failed, DDLColumn : expected false - setUnique was set with false');
+       $this->column->setUnique(false);
+       $result = $this->column->isUnique();
+       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Column : expected false - setUnique was set with false');
 
        // DDL Index
-       $this->ddlindex->setUnique(true);
-       $result = $this->ddlindex->isUnique();
-       $this->assertTrue($result, 'assert failed, DDLIndex : expected true - setUnique was set with true');
+       $this->index->setUnique(true);
+       $result = $this->index->isUnique();
+       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Index : expected true - setUnique was set with true');
 
-       $this->ddlindex->setUnique(false);
-       $result = $this->ddlindex->isUnique();
-       $this->assertFalse($result, 'assert failed, DDLIndex : expected false - setUnique was set with false');
+       $this->index->setUnique(false);
+       $result = $this->index->isUnique();
+       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Index : expected false - setUnique was set with false');
     }
 
     /**
@@ -658,15 +756,15 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testUnsigned()
     {
        // expected value is true
-       $this->ddlcolumn->setType('integer');
-       $this->ddlcolumn->setUnsigned(true);
-       $result = $this->ddlcolumn->isUnsigned();
-       $this->assertTrue($result, 'assert failed, DDLColumn : expected true - setUnsigned was set with true');
+       $this->column->setType('integer');
+       $this->column->setUnsigned(true);
+       $result = $this->column->isUnsigned();
+       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setUnsigned was set with true');
 
        // expected value is false
-       $this->ddlcolumn->setUnsigned(false);
-       $result = $this->ddlcolumn->isUnsigned();
-       $this->assertFalse($result, 'assert failed, DDLColumn : expected false - setUnsigned was set with false');
+       $this->column->setUnsigned(false);
+       $result = $this->column->isUnsigned();
+       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Column : expected false - setUnsigned was set with false');
     }
 
     /**
@@ -677,14 +775,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testFixed()
     {
        // expected value is true
-       $this->ddlcolumn->setFixed(true);
-       $result = $this->ddlcolumn->isFixed();
-       $this->assertTrue($result, 'assert failed, DDLColumn : expected true - setFixed was set with true');
+       $this->column->setFixed(true);
+       $result = $this->column->isFixed();
+       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setFixed was set with true');
 
        // expected value is false
-       $this->ddlcolumn->setFixed(false);
-       $result = $this->ddlcolumn->isFixed();
-       $this->assertFalse($result, 'assert failed, DDLColumn : expected false - setFixed was set with false');
+       $this->column->setFixed(false);
+       $result = $this->column->isFixed();
+       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Column : expected false - setFixed was set with false');
     }
 
     /**
@@ -695,15 +793,15 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testAutoIncrement()
     {
        // expected value is true
-       $this->ddlcolumn->setType('integer');
-       $this->ddlcolumn->setAutoIncrement(true);
-       $result = $this->ddlcolumn->isAutoIncrement();
-       $this->assertTrue($result, 'assert failed, DDLColumn : expected true - setAutoIncrement was set with true');
+       $this->column->setType('integer');
+       $this->column->setAutoIncrement(true);
+       $result = $this->column->isAutoIncrement();
+       $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setAutoIncrement was set with true');
 
        // expected value is false
-       $this->ddlcolumn->setAutoIncrement(false);
-       $result = $this->ddlcolumn->isAutoIncrement();
-       $this->assertFalse($result, 'assert failed, DDLColumn : expected false - setAutoIncrement was set with false');
+       $this->column->setAutoIncrement(false);
+       $result = $this->column->isAutoIncrement();
+       $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Column : expected false - setAutoIncrement was set with false');
     }
 
     /**
@@ -714,36 +812,36 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testSetAutoFill()
     {
         // expected value is true
-        $this->ddlcolumn->setType('integer');
-        $this->ddlcolumn->setAutoFill(true);
-        $result = $this->ddlcolumn->isAutoFill();
-        $this->assertTrue($result, 'assert failed, DDLColumn : expected true - setAutoFill was set with true');
+        $this->column->setType('integer');
+        $this->column->setAutoFill(true);
+        $result = $this->column->isAutoFill();
+        $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setAutoFill was set with true');
 
         // expected value is true
-        $this->ddlcolumn->setType('inet');
-        $this->ddlcolumn->setDefault('REMOTE_ADDR');
-        $this->ddlcolumn->setAutoFill(true);
-        $result = $this->ddlcolumn->isAutoFill();
-        $this->assertTrue($result, 'assert failed, DDLColumn : expected true - setAutoFill was set with true');
+        $this->column->setType('inet');
+        $this->column->setDefault('REMOTE_ADDR');
+        $this->column->setAutoFill(true);
+        $result = $this->column->isAutoFill();
+        $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setAutoFill was set with true');
 
         // expected value is true
-        $this->ddlcolumn->setType('time');
-        $this->ddlcolumn->setDefault('CURRENT_TIMESTAMP');
-        $this->ddlcolumn->setAutoFill(true);
-        $result = $this->ddlcolumn->isAutoFill();
-        $this->assertTrue($result, 'assert failed, DDLColumn : expected true - setAutoFill was set with true');
+        $this->column->setType('time');
+        $this->column->setDefault('CURRENT_TIMESTAMP');
+        $this->column->setAutoFill(true);
+        $result = $this->column->isAutoFill();
+        $this->assertTrue($result, 'assert failed, \Yana\Db\Ddl\Column : expected true - setAutoFill was set with true');
 
         // expected value is true
-        $this->ddlcolumn->setAutoFill(true);
-        $this->ddlcolumn->setDefault('Fake');
-        $this->ddlcolumn->setType('image');
-        $result = $this->ddlcolumn->isAutoFill();
-        $this->assertFalse($result, 'assert failed, DDLColumn : expected false - setAutoFill was set with true');
+        $this->column->setAutoFill(true);
+        $this->column->setDefault('Fake');
+        $this->column->setType('image');
+        $result = $this->column->isAutoFill();
+        $this->assertFalse($result, 'assert failed, \Yana\Db\Ddl\Column : expected false - setAutoFill was set with true');
 
         // expect an Exception, image has no autofill
         try {
-            $this->ddlcolumn->setAutoFill(false);
-            $this->fail("DDLColumn::setAutoFill for an image-column should raise an exception");
+            $this->column->setAutoFill(false);
+            $this->fail("\Yana\Db\Ddl\Column::setAutoFill for an image-column should raise an exception");
         } catch (\Exception $e) {
             //success
         }
@@ -758,9 +856,9 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testSetAutoFillInvalidArgumentException()
     {
-        // DDLColumn
-        $this->ddlcolumn->setType('string');
-        $this->ddlcolumn->setAutoFill(true);
+        // \Yana\Db\Ddl\Column
+        $this->column->setType('string');
+        $this->column->setAutoFill(true);
     }
 
     /**
@@ -771,12 +869,12 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testIsForeignKey()
     {
         // DDL Column
-        $valid = $this->ddlcolumn->isForeignKey();
-        $this->assertFalse($valid, 'assert false, "DDLColumn" : expected "false" - no foreign key found');
+        $valid = $this->column->isForeignKey();
+        $this->assertFalse($valid, 'assert false, "\Yana\Db\Ddl\Column" : expected "false" - no foreign key found');
 
         // create a target-table
-        $newTableA = $this->ddldatabase->addTable("someTable");
-        $newTableB = $this->ddldatabase->addTable("otherTable");
+        $newTableA = $this->database->addTable("someTable");
+        $newTableB = $this->database->addTable("otherTable");
         $ColumnA = $newTableA->addColumn("firstCol", "integer");
         $ColumnB = $newTableB->addColumn("someCol", "integer");
         $ColumnC = $newTableB->addColumn("someMoreCol", "integer");
@@ -784,9 +882,9 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $foreign = $newTableB->addForeignKey("someTable");
         $foreign->setColumn("someCol");
         $valid = $ColumnB->isForeignKey();
-        $this->assertTrue($valid, 'DDLColumn::isForeignKey - key expected ');
+        $this->assertTrue($valid, '\Yana\Db\Ddl\Column::isForeignKey - key expected ');
         $valid = $ColumnC->isForeignKey();
-        $this->assertFalse($valid, 'DDLColumn::isForeignKey - key expected ');
+        $this->assertFalse($valid, '\Yana\Db\Ddl\Column::isForeignKey - key expected ');
 
     }
 
@@ -798,8 +896,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testIsPrimaryKey()
     {
         // DDL Column
-        $valid = $this->ddlcolumn->isPrimaryKey();
-        $this->assertFalse($valid, 'assert false, "DDLColumn" : expected "false" - no primary key found');
+        $valid = $this->column->isPrimaryKey();
+        $this->assertFalse($valid, 'assert false, "\Yana\Db\Ddl\Column" : expected "false" - no primary key found');
     }
 
     /**
@@ -810,12 +908,12 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testIsNumber()
     {
         // DDL Column
-        $this->ddlcolumn->setType('string');
-        $valid = $this->ddlcolumn->isNumber();
+        $this->column->setType('string');
+        $valid = $this->column->isNumber();
         $this->assertFalse($valid, 'expecting column of type string not to be a number');
         // DDL Column
-        $this->ddlcolumn->setType('integer');
-        $valid = $this->ddlcolumn->isNumber();
+        $this->column->setType('integer');
+        $valid = $this->column->isNumber();
         $this->assertTrue($valid, 'expecting column of type int to be a number');
     }
 
@@ -826,14 +924,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testGetLength()
     {
-        // DDLIndexColumn
-        $this->ddlindexcolumn->setLength(20);
-        $length = $this->ddlindexcolumn->getLength();
-        $this->assertEquals(20, $length, 'assert failed, DDLIndexColumn: set und get do not match');
+        // \Yana\Db\Ddl\IndexColumn
+        $this->indexcolumn->setLength(20);
+        $length = $this->indexcolumn->getLength();
+        $this->assertEquals(20, $length, 'assert failed, \Yana\Db\Ddl\IndexColumn: set und get do not match');
 
-        $this->ddlindexcolumn->setLength(0);
-        $length = $this->ddlindexcolumn->getLength();
-        $this->assertNull($length, 'DDLIndexColumn:setLength should return Null, if not set');
+        $this->indexcolumn->setLength(0);
+        $length = $this->indexcolumn->getLength();
+        $this->assertNull($length, '\Yana\Db\Ddl\IndexColumn:setLength should return Null, if not set');
     }
 
     /**
@@ -844,17 +942,17 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testSetSize()
     {
         // DDL Column
-        $this->ddlcolumn->setSize(5);
-        $precision = $this->ddlcolumn->getPrecision();
-        $this->assertNull($precision, 'assert faield, "DDLColumn" : expected "-1"');
-        $get = $this->ddlcolumn->getSize();
-        $this->assertEquals(5, $get, 'assert faield, "DDLColumn" : expected "5"');
+        $this->column->setSize(5);
+        $precision = $this->column->getPrecision();
+        $this->assertNull($precision, 'assert faield, "\Yana\Db\Ddl\Column" : expected "-1"');
+        $get = $this->column->getSize();
+        $this->assertEquals(5, $get, 'assert faield, "\Yana\Db\Ddl\Column" : expected "5"');
 
-        $this->ddlcolumn->setLength(10, 2);
-        $get = $this->ddlcolumn->getLength();
-        $this->assertEquals(10, $get, 'assert faield, "DDLColumn" : expected "10"');
-        $precision = $this->ddlcolumn->getPrecision();
-        $this->assertEquals(2, $precision, 'assert faield, "DDLColumn" : expected "2"');
+        $this->column->setLength(10, 2);
+        $get = $this->column->getLength();
+        $this->assertEquals(10, $get, 'assert faield, "\Yana\Db\Ddl\Column" : expected "10"');
+        $precision = $this->column->getPrecision();
+        $this->assertEquals(2, $precision, 'assert faield, "\Yana\Db\Ddl\Column" : expected "2"');
     }
 
     /**
@@ -866,8 +964,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testSetSizeInvalidArgumentException()
     {
-        // DDLColumn
-        $this->ddlcolumn->setLength(1, 2);
+        // \Yana\Db\Ddl\Column
+        $this->column->setLength(1, 2);
     }
 
     /**
@@ -883,18 +981,18 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $ratio = true;
         $background = 'description';
         $expected = array('width' => $width, 'height' => $height, 'ratio' => $ratio, 'background' => $background);
-        $this->ddlcolumn->setImageSettings($width, $height, $ratio, $background);
-        $get = $this->ddlcolumn->getImageSettings();
+        $this->column->setImageSettings($width, $height, $ratio, $background);
+        $get = $this->column->getImageSettings();
 
         $expected = array('width' => $width, 'height' => $height, 'ratio' => $ratio, 'background' => $background);
-        $this->assertType('array', $get, 'assert failed, DDLColumn : the value is not from type Array');
-        $this->assertEquals($expected, $get, 'assert failed, DDLColumn : the image settings are not set');
+        $this->assertType('array', $get, 'assert failed, \Yana\Db\Ddl\Column : the value is not from type Array');
+        $this->assertEquals($expected, $get, 'assert failed, \Yana\Db\Ddl\Column : the image settings are not set');
 
         $expected = array('width' => '', 'height' => '', 'ratio' => '', 'background' => '');
-        $this->ddlcolumn->setImageSettings();
-        $get = $this->ddlcolumn->getImageSettings();
-        $this->assertType('array', $get, 'assert failed, DDLColumn : the value is not from type Array');
-        $this->assertEquals($expected, $get, 'assert failed, DDLColumn : the image settings are not set');
+        $this->column->setImageSettings();
+        $get = $this->column->getImageSettings();
+        $this->assertType('array', $get, 'assert failed, \Yana\Db\Ddl\Column : the value is not from type Array');
+        $this->assertEquals($expected, $get, 'assert failed, \Yana\Db\Ddl\Column : the image settings are not set');
     }
 
     /**
@@ -909,11 +1007,11 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $column = 'somecolumn';
         $label = 'somelabel';
 
-        $expected = new DDLReference($table, $column, $label);
-        $this->ddlcolumn->setReferenceSettings($table, $column, $label);
-        $get = $this->ddlcolumn->getReferenceSettings();
-        $this->assertTrue($get instanceof DDLReference, 'Instance of DDLReference expected');
-        $this->assertEquals($expected, $get, 'Expected values not found in returned DDLReference');
+        $expected = new \Yana\Db\Ddl\Reference($table, $column, $label);
+        $this->column->setReferenceSettings($table, $column, $label);
+        $get = $this->column->getReferenceSettings();
+        $this->assertTrue($get instanceof \Yana\Db\Ddl\Reference, 'Instance of \Yana\Db\Ddl\Reference expected');
+        $this->assertEquals($expected, $get, 'Expected values not found in returned \Yana\Db\Ddl\Reference');
     }
 
     /**
@@ -923,21 +1021,21 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testSetDefault()
     {
-        // DDLColumn
-        $this->ddlcolumn->setDefault('a');
-        $this->ddlcolumn->setDefault('b', 'mysql');
-        $getAll = $this->ddlcolumn->getDefaults();
-        $this->assertType('array', $getAll, 'assert failed, DDLColumn : the value is not from type array');
-        $this->assertEquals(2, count($getAll), 'assert failed, DDLColumn :the values should be equal - expected number 2');
-        $get = $this->ddlcolumn->getDefault('mysql');
-        $this->assertType('string', $get, 'assert failed, DDLColumn : the value is not from type string');
-        $this->assertEquals('b', $get, 'assert failed, DDLColumn : the variables should be equal - expected key of value "mysql"');
+        // \Yana\Db\Ddl\Column
+        $this->column->setDefault('a');
+        $this->column->setDefault('b', 'mysql');
+        $getAll = $this->column->getDefaults();
+        $this->assertType('array', $getAll, 'assert failed, \Yana\Db\Ddl\Column : the value is not from type array');
+        $this->assertEquals(2, count($getAll), 'assert failed, \Yana\Db\Ddl\Column :the values should be equal - expected number 2');
+        $get = $this->column->getDefault('mysql');
+        $this->assertType('string', $get, 'assert failed, \Yana\Db\Ddl\Column : the value is not from type string');
+        $this->assertEquals('b', $get, 'assert failed, \Yana\Db\Ddl\Column : the variables should be equal - expected key of value "mysql"');
 
-        $get = $this->ddlcolumn->getDefault('oracle');
+        $get = $this->column->getDefault('oracle');
         $this->assertEquals('a', $get, 'Function getDefault() must fall back to "generic" if setting is not found.');
-        $this->ddlcolumn->setDefault('');
-        $get = $this->ddlcolumn->getDefault('oracle');
-        $this->assertEquals(0, strlen($get), 'assert failed, DDLColumn : the values should be equal - 0 expected when value does not exist in array');
+        $this->column->setDefault('');
+        $get = $this->column->getDefault('oracle');
+        $this->assertEquals(0, strlen($get), 'assert failed, \Yana\Db\Ddl\Column : the values should be equal - 0 expected when value does not exist in array');
     }
 
     /**
@@ -949,34 +1047,34 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
         // DDL Column
         $array = array('aa' => '20', 'bb' => '30', 'cc' => '50');
-        $this->ddlcolumn->setEnumerationItems($array);
-        $get = $this->ddlcolumn->getEnumerationItems();
-        $this->assertEquals($array, $get, 'assert failed, DDLColumn : the values should be equal - expected the same array which is set');
+        $this->column->setEnumerationItems($array);
+        $get = $this->column->getEnumerationItems();
+        $this->assertEquals($array, $get, 'assert failed, \Yana\Db\Ddl\Column : the values should be equal - expected the same array which is set');
 
-        $this->ddlcolumn->setEnumerationItem('cc', '90');
-        $get = $this->ddlcolumn->getEnumerationItems();
-        $this->assertNotEquals($array, $get, 'assert failed, DDLColumn : the values should not be equal, the key "cc" was manipulate with other value');
+        $this->column->setEnumerationItem('cc', '90');
+        $get = $this->column->getEnumerationItems();
+        $this->assertNotEquals($array, $get, 'assert failed, \Yana\Db\Ddl\Column : the values should not be equal, the key "cc" was manipulate with other value');
 
         $validate = array('aa' => '20', 'bb' => '30', 'cc' => '90');
-        $this->assertEquals($validate, $get, 'assert failed, DDLColumn : the values should be equal, expected the same array which is set with the manipulated value');
+        $this->assertEquals($validate, $get, 'assert failed, \Yana\Db\Ddl\Column : the values should be equal, expected the same array which is set with the manipulated value');
 
-        $getItemNames = $this->ddlcolumn->getEnumerationItemNames();
+        $getItemNames = $this->column->getEnumerationItemNames();
         $valid = array('aa', 'bb', 'cc');
         $this->assertEquals($valid, $getItemNames, 'assert failed, the values should be equal, expected the keys from array');
 
-        $this->ddlcolumn->dropEnumerationItem('bb');
-        $get = $this->ddlcolumn->getEnumerationItems();
-        $this->assertNotEquals($validate, $get, 'assert failed, DDLColumn : the values should not be equal, the key "bb" is dropt');
-        $get = $this->ddlcolumn->getEnumerationItem('bb');
-        $this->assertNull($get, 'assert failed, DDLColumn : the enumeration item should not be exist, key "bb" was dropt before');
+        $this->column->dropEnumerationItem('bb');
+        $get = $this->column->getEnumerationItems();
+        $this->assertNotEquals($validate, $get, 'assert failed, \Yana\Db\Ddl\Column : the values should not be equal, the key "bb" is dropt');
+        $get = $this->column->getEnumerationItem('bb');
+        $this->assertNull($get, 'assert failed, \Yana\Db\Ddl\Column : the enumeration item should not be exist, key "bb" was dropt before');
 
-        $get = $this->ddlcolumn->getEnumerationItem('cc');
-        $this->assertEquals(90, (int) $get, 'assert failed, DDLColumn : the enumeration item should be match the expected value');
+        $get = $this->column->getEnumerationItem('cc');
+        $this->assertEquals(90, (int) $get, 'assert failed, \Yana\Db\Ddl\Column : the enumeration item should be match the expected value');
 
-        $this->ddlcolumn->dropEnumerationItems();
-        $get = $this->ddlcolumn->getEnumerationItems();
-        $this->assertType('array', $get, 'assert failed, DDLColumn : the value should be from type array');
-        $this->assertEquals(0, count($get), 'assert failed, DDLColumn : the values should be equal, all entries are removed before');
+        $this->column->dropEnumerationItems();
+        $get = $this->column->getEnumerationItems();
+        $this->assertType('array', $get, 'assert failed, \Yana\Db\Ddl\Column : the value should be from type array');
+        $this->assertEquals(0, count($get), 'assert failed, \Yana\Db\Ddl\Column : the values should be equal, all entries are removed before');
     }
 
     /**
@@ -988,10 +1086,10 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testDropEnumerationItemNotFoundException()
     {
-        // DDLColumn
+        // \Yana\Db\Ddl\Column
         $array = array('1' => '2');
-        $this->ddlcolumn->setEnumerationItems($array);
-        $this->ddlcolumn->dropEnumerationItem('no_item');
+        $this->column->setEnumerationItems($array);
+        $this->column->dropEnumerationItem('no_item');
     }
 
     /**
@@ -1001,116 +1099,116 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testConstraint()
     {
-        // DDLColumn::addConstraint parameter constraint
+        // \Yana\Db\Ddl\Column::addConstraint parameter constraint
         $result = true;
         try {
-            $this->ddlcolumn->addConstraint(4711, "someName", "mysql");
+            $this->column->addConstraint(4711, "someName", "mysql");
         } catch (\Exception $e) {
             $result = false;
         }
-        $this->assertFalse($result, "DDLColumn::addConstraint should not accept an Integer as Constraint");
+        $this->assertFalse($result, "\Yana\Db\Ddl\Column::addConstraint should not accept an Integer as Constraint");
 
-        // DDLColumn::addConstraint parameter name
+        // \Yana\Db\Ddl\Column::addConstraint parameter name
         $result = true;
         try {
-            $this->ddlcolumn->addConstraint("someConstraints", 4711, "mysql");
+            $this->column->addConstraint("someConstraints", 4711, "mysql");
         } catch (\Exception $e) {
             $result = false;
         }
-        $this->assertFalse($result, "DDLColumn::addConstraint should not accept an Integer as Name");
+        $this->assertFalse($result, "\Yana\Db\Ddl\Column::addConstraint should not accept an Integer as Name");
 
-        // DDLColumn::getConstraint parameter name
+        // \Yana\Db\Ddl\Column::getConstraint parameter name
         $result = true;
         try {
-            $this->ddlcolumn->addConstraint(4711, "mysql");
+            $this->column->addConstraint(4711, "mysql");
         } catch (\Exception $e) {
             $result = false;
         }
-        $this->assertFalse($result, "DDLColumn::getConstraint should not accept an Integer as Name");
+        $this->assertFalse($result, "\Yana\Db\Ddl\Column::getConstraint should not accept an Integer as Name");
 
-        // DDLColumn::getConstraint default
-        $constraint1 = new DDLConstraint();
+        // \Yana\Db\Ddl\Column::getConstraint default
+        $constraint1 = new \Yana\Db\Ddl\Constraint();
         $constraint1->setConstraint("1");
-        $constraint2 = new DDLConstraint();
+        $constraint2 = new \Yana\Db\Ddl\Constraint();
         $constraint2->setConstraint("2");
-        $constraint3 = new DDLConstraint();
+        $constraint3 = new \Yana\Db\Ddl\Constraint();
         $constraint3->setConstraint("3");
         $testArray1 = array($constraint1, $constraint2, $constraint3);
-        $this->ddlcolumn->addConstraint("1");
-        $this->ddlcolumn->addConstraint("2");
-        $this->ddlcolumn->addConstraint("3");
-        $result1 = $this->ddlcolumn->getConstraints();
-        $this->assertEquals($result1, $testArray1, 'DDLColumn::getConstraints failed');
+        $this->column->addConstraint("1");
+        $this->column->addConstraint("2");
+        $this->column->addConstraint("3");
+        $result1 = $this->column->getConstraints();
+        $this->assertEquals($result1, $testArray1, '\Yana\Db\Ddl\Column::getConstraints failed');
 
-        $this->ddlcolumn->dropConstraints();
-        $result1 = $this->ddlcolumn->getConstraints();
-        $this->assertEquals(count($result1), 0, 'DDLColumn::dropConstraints failed');
+        $this->column->dropConstraints();
+        $result1 = $this->column->getConstraints();
+        $this->assertEquals(count($result1), 0, '\Yana\Db\Ddl\Column::dropConstraints failed');
 
         $constraint1->setDBMS("mysql");
         $constraint2->setDBMS("mysql");
         $constraint3->setDBMS("mysql");
-        $this->ddlcolumn->addConstraint("1", "", "mysql");
-        $this->ddlcolumn->addConstraint("2", "", "mysql");
-        $this->ddlcolumn->addConstraint("3", "", "mysql");
-        $result1 = $this->ddlcolumn->getConstraints("mysql");
-        $this->assertEquals($result1, $testArray1, 'DDLColumn::getConstraints failed');
+        $this->column->addConstraint("1", "", "mysql");
+        $this->column->addConstraint("2", "", "mysql");
+        $this->column->addConstraint("3", "", "mysql");
+        $result1 = $this->column->getConstraints("mysql");
+        $this->assertEquals($result1, $testArray1, '\Yana\Db\Ddl\Column::getConstraints failed');
 
-        $result1 = $this->ddlcolumn->getConstraint("name2", "mysql");
-        $this->assertNull($result1, 'DDLColumn::getConstraints failed');
+        $result1 = $this->column->getConstraint("name2", "mysql");
+        $this->assertNull($result1, '\Yana\Db\Ddl\Column::getConstraints failed');
 
-        $get = $this->ddlcolumn->getConstraints('odbc');
+        $get = $this->column->getConstraints('odbc');
         $this->assertType('array', $get, 'assert failed, the value should be from type array');
 
         // DDL Table
         $testArray1 = array("someConstraints 1", "someConstraints 2", "someConstraints 3");
-        $this->ddltable->addConstraint($testArray1[0]);
-        $this->ddltable->addConstraint($testArray1[1]);
-        $this->ddltable->addConstraint($testArray1[2]);
-        $result1 = $this->ddltable->getConstraints();
+        $this->table->addConstraint($testArray1[0]);
+        $this->table->addConstraint($testArray1[1]);
+        $this->table->addConstraint($testArray1[2]);
+        $result1 = $this->table->getConstraints();
 
-        $this->assertEquals($result1[0]->getConstraint(), $testArray1[0], 'DDLTable::getConstraints failed, both arrays should be equal');
+        $this->assertEquals($result1[0]->getConstraint(), $testArray1[0], '\Yana\Db\Ddl\Table::getConstraints failed, both arrays should be equal');
 
         $testArray2 = array("someMoreConstraints 1", "someMoreConstraints 2", "someMoreConstraints 3");
-        $this->ddltable->addConstraint($testArray2[0], "", "mysql");
-        $this->ddltable->addConstraint($testArray2[1], "", "mysql");
-        $this->ddltable->addConstraint($testArray2[2], "", "mysql");
-        $result1 = $this->ddltable->getConstraints("mysql");
-        $this->assertEquals($result1[1]->getConstraint(), $testArray2[1], 'DDLTable::getConstraints failed, both arrays should be equal');
-        //$this->ddltable->dropConstraints();
-        $this->ddltable->addConstraint("someDifferentConstraints 1", "name", "mysql");
-        $this->ddltable->addConstraint("someDifferentConstraints 2", "name", "mysql");
-        $result1 = $this->ddltable->getConstraint("name", "mysql");
-        $this->assertEquals($result1->getConstraint(), "someDifferentConstraints 1", 'DDLTable::getConstraints failed');
+        $this->table->addConstraint($testArray2[0], "", "mysql");
+        $this->table->addConstraint($testArray2[1], "", "mysql");
+        $this->table->addConstraint($testArray2[2], "", "mysql");
+        $result1 = $this->table->getConstraints("mysql");
+        $this->assertEquals($result1[1]->getConstraint(), $testArray2[1], '\Yana\Db\Ddl\Table::getConstraints failed, both arrays should be equal');
+        //$this->table->dropConstraints();
+        $this->table->addConstraint("someDifferentConstraints 1", "name", "mysql");
+        $this->table->addConstraint("someDifferentConstraints 2", "name", "mysql");
+        $result1 = $this->table->getConstraint("name", "mysql");
+        $this->assertEquals($result1->getConstraint(), "someDifferentConstraints 1", '\Yana\Db\Ddl\Table::getConstraints failed');
 
-        $result1 = $this->ddltable->getConstraint("name2", "mysql");
-        $this->assertNull($result1, 'DDLTable::getConstraints failed');
+        $result1 = $this->table->getConstraint("name2", "mysql");
+        $this->assertNull($result1, '\Yana\Db\Ddl\Table::getConstraints failed');
 
-        $get = $this->ddltable->getConstraints("oracle");
-        $this->assertEquals(array(), $get, 'DDLTable::getConstraints - "oracle" doesnt exist in array');
+        $get = $this->table->getConstraints("oracle");
+        $this->assertEquals(array(), $get, '\Yana\Db\Ddl\Table::getConstraints - "oracle" doesnt exist in array');
 
-        $this->ddltable->dropConstraints();
-        $get = $this->ddltable->getConstraints();
-        $this->assertEquals(array(), $get, 'DDLTable::getConstraints list should be empty after droping constraints.');
+        $this->table->dropConstraints();
+        $get = $this->table->getConstraints();
+        $this->assertEquals(array(), $get, '\Yana\Db\Ddl\Table::getConstraints list should be empty after droping constraints.');
 
         // get Unique-Constraints
-        $result1 = $this->ddltable->getUniqueConstraints();
-        $uniqueCol = $this->ddltable->addColumn('unique','integer');
+        $result1 = $this->table->getUniqueConstraints();
+        $uniqueCol = $this->table->addColumn('unique','integer');
         $uniqueCol->setUnique();
-        $result2 = $this->ddltable->getUniqueConstraints();
-        $this->assertType('array',$result1, 'DDLTable::');
-        $this->assertType('array',$result2, 'DDLTable::');
-        $this->assertTrue(empty($result1), 'DDLTable::');
-        $this->assertFalse(empty($result2), 'DDLTable::');
+        $result2 = $this->table->getUniqueConstraints();
+        $this->assertType('array',$result1, '\Yana\Db\Ddl\Table::');
+        $this->assertType('array',$result2, '\Yana\Db\Ddl\Table::');
+        $this->assertTrue(empty($result1), '\Yana\Db\Ddl\Table::');
+        $this->assertFalse(empty($result2), '\Yana\Db\Ddl\Table::');
 
-        // DDLConstraint
+        // \Yana\Db\Ddl\Constraint
         $testArray1 = array("someConstraints 1", "someConstraints 2", "someConstraints 3");
-        $this->ddlconstraint->setConstraint($testArray1[0]);
-        $result1 = $this->ddlconstraint->getConstraint();
-        $this->assertEquals($testArray1[0], $result1, 'DDLConstraint::getConstraint failed');
+        $this->constraint->setConstraint($testArray1[0]);
+        $result1 = $this->constraint->getConstraint();
+        $this->assertEquals($testArray1[0], $result1, '\Yana\Db\Ddl\Constraint::getConstraint failed');
 
-        $this->ddlconstraint->setConstraint();
-        $result1 = $this->ddlconstraint->getConstraint();
-        $this->assertNull($result1, 'DDLConstraint::getConstrain failed');
+        $this->constraint->setConstraint();
+        $result1 = $this->constraint->getConstraint();
+        $this->assertNull($result1, '\Yana\Db\Ddl\Constraint::getConstrain failed');
     }
 
     /**
@@ -1122,13 +1220,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
         $array = array('first');
         // ddl database
-        $this->ddldatabase->setIncludes($array);
-        $result = $this->ddldatabase->getIncludes();
-        $this->assertEquals($array, $result, 'assert failed, DDLDatabase : expected an array with one entire "first", values should be equal');
+        $this->database->setIncludes($array);
+        $result = $this->database->getIncludes();
+        $this->assertEquals($array, $result, 'assert failed, \Yana\Db\Ddl\Database : expected an array with one entire "first", values should be equal');
         $next = 'second';
-        $add = $this->ddldatabase->addInclude($next);
-        $result = $this->ddldatabase->getIncludes();
-        $this->assertEquals('second', $result[1], 'assert failed, DDLDatabase : the value "second" should be match a value in array, values should be equal');
+        $add = $this->database->addInclude($next);
+        $result = $this->database->getIncludes();
+        $this->assertEquals('second', $result[1], 'assert failed, \Yana\Db\Ddl\Database : the value "second" should be match a value in array, values should be equal');
     }
 
     /**
@@ -1139,13 +1237,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testCharset()
     {
         // ddl database
-        $this->ddldatabase->setCharset('charset');
-        $result = $this->ddldatabase->getCharset();
-        $this->assertEquals('charset', $result, 'assert failed, DDLDatabase : expected "charset" as value');
+        $this->database->setCharset('charset');
+        $result = $this->database->getCharset();
+        $this->assertEquals('charset', $result, 'assert failed, \Yana\Db\Ddl\Database : expected "charset" as value');
 
-        $this->ddldatabase->setCharset();
-        $result = $this->ddldatabase->getCharset();
-        $this->assertNull($result, 'assert failed, DDLDatabase : expected null, the charset is empty');
+        $this->database->setCharset();
+        $result = $this->database->getCharset();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Database : expected null, the charset is empty');
     }
 
     /**
@@ -1156,13 +1254,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testDataSource()
     {
         // ddl database
-        $this->ddldatabase->setDataSource('dataSource');
-        $result = $this->ddldatabase->getDataSource();
-        $this->assertEquals('dataSource', $result, 'assert failed, DDLDatabase : expected "dataSource" as value');
+        $this->database->setDataSource('dataSource');
+        $result = $this->database->getDataSource();
+        $this->assertEquals('dataSource', $result, 'assert failed, \Yana\Db\Ddl\Database : expected "dataSource" as value');
 
-        $this->ddldatabase->setDataSource();
-        $result = $this->ddldatabase->getDataSource();
-        $this->assertNull($result, 'assert failed, DDLDatabase : expected null, the DataSource is empty');
+        $this->database->setDataSource();
+        $result = $this->database->getDataSource();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Database : expected null, the DataSource is empty');
     }
 
     /**
@@ -1173,50 +1271,50 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testSetTable()
     {
         // DDL Form
-        $this->ddlform->setTable('abcd');
-        $result = $this->ddlform->getTable();
-        $this->assertEquals('abcd', $result, 'assert failed, DDLForm : expected "abcd" as value');
+        $this->form->setTable('abcd');
+        $result = $this->form->getTable();
+        $this->assertEquals('abcd', $result, 'assert failed, \Yana\Db\Ddl\Form : expected "abcd" as value');
 
-        $this->ddlform->setTable('');
-        $result = $this->ddlform->getTable();
-        $this->assertNull($result, 'assert failed, DDLForm : expected null, non table is set');
+        $this->form->setTable('');
+        $result = $this->form->getTable();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Form : expected null, non table is set');
 
-        // DDLViewField
-        $this->ddlviewfield->setTable('abcd');
-        $result = $this->ddlviewfield->getTable();
-        $this->assertEquals('abcd', $result, 'assert failed, DDLViewField : expected "abcd" as value');
+        // \Yana\Db\Ddl\Views\Field
+        $this->viewfield->setTable('abcd');
+        $result = $this->viewfield->getTable();
+        $this->assertEquals('abcd', $result, 'assert failed, \Yana\Db\Ddl\Views\Field : expected "abcd" as value');
 
-        $this->ddlviewfield->setTable('');
-        $result = $this->ddlviewfield->getTable();
-        $this->assertNull($result, 'assert failed, DDLViewField : expected null, non table is set');
+        $this->viewfield->setTable('');
+        $result = $this->viewfield->getTable();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Views\Field : expected null, non table is set');
 
-        // DDLDatabase
-        $valid = $this->ddldatabase->isTable('newtable');
+        // \Yana\Db\Ddl\Database
+        $valid = $this->database->isTable('newtable');
         $this->assertFalse($valid, 'assert failed, expected false, the value "newtable" is not a table');
 
-        $add = $this->ddldatabase->addTable('newtable');
-        $this->assertTrue($add instanceof DDLTable, 'assert failed, the value should be an instanceof DDLTable');
-        $getAll = $this->ddldatabase->getTables();
+        $add = $this->database->addTable('newtable');
+        $this->assertTrue($add instanceof \Yana\Db\Ddl\Table, 'assert failed, the value should be an instanceof \Yana\Db\Ddl\Table');
+        $getAll = $this->database->getTables();
         $this->assertArrayHasKey('newtable', $getAll, 'assert failed, the value should be match a key in array');
-        $result = $this->ddldatabase->getTable('newtable');
+        $result = $this->database->getTable('newtable');
         $this->assertType('object', $result, 'assert failed, the value should be from type object');
 
-        $valid = $this->ddldatabase->isTable('newtable');
+        $valid = $this->database->isTable('newtable');
         $this->assertTrue($valid, 'assert failed, expected true, the value "newtable" is a Table');
 
-        $newTable = $this->ddldatabase->addTable("someTable");
-        $retTable = $this->ddldatabase->getTable("someTable");
+        $newTable = $this->database->addTable("someTable");
+        $retTable = $this->database->getTable("someTable");
         $this->assertNotNull($retTable, 'getTable : expected null, non table is set');
-        $retTable = $this->ddldatabase->getTable("otherTable");
+        $retTable = $this->database->getTable("otherTable");
         $this->assertNull($retTable, 'getTable : expected null, non table is set');
 
-        $tables = $this->ddldatabase->getTableNames();
+        $tables = $this->database->getTableNames();
         $this->assertContains('newtable', $tables, 'assert failed, the value should be match a key in array');
         $this->assertContains('sometable', $tables, 'assert failed, the value should be match a key in array');
 
         // null expected
-        $drop = $this->ddldatabase->dropTable('newtable');
-        $get = $this->ddldatabase->getTable('newtable');
+        $drop = $this->database->dropTable('newtable');
+        $get = $this->database->getTable('newtable');
         $this->assertNull($get, 'assert failed, expected null - table was dropt before');
     }
 
@@ -1229,34 +1327,34 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testMagicGet()
     {
         // magic Database
-        $this->ddldatabase->addTable('myTable');
-        $result = $this->ddldatabase->myTable;
-        $this->assertTrue($result instanceof DDLTable, 'assert failed, expected null - table was dropt before');
+        $this->database->addTable('myTable');
+        $result = $this->database->myTable;
+        $this->assertTrue($result instanceof \Yana\Db\Ddl\Table, 'assert failed, expected null - table was dropt before');
 
         // magic Table
-        $this->ddldatabase->myTable->addColumn('magic', 'integer');
-        $result = $this->ddldatabase->myTable->magic;
-        $this->assertTrue($result instanceof DDLColumn, 'assert failed, expected null - column was dropt before');
+        $this->database->myTable->addColumn('magic', 'integer');
+        $result = $this->database->myTable->magic;
+        $this->assertTrue($result instanceof \Yana\Db\Ddl\Column, 'assert failed, expected null - column was dropt before');
 
         // magic Form
-        $this->ddldatabase->addForm('magicForm');
-        $result = $this->ddldatabase->magicForm;
-        $this->assertTrue($result instanceof DDLForm, 'assert failed, expected null - form was dropt before');
+        $this->database->addForm('magicForm');
+        $result = $this->database->magicForm;
+        $this->assertTrue($result instanceof \Yana\Db\Ddl\Form, 'assert failed, expected null - form was dropt before');
 
         // magic Field
-        $this->ddlform->addField('magicField');
-        $result = $this->ddlform->magicField;
-        $this->assertTrue($result instanceof DDLField, 'assert failed, expected null - field was dropt before');
+        $this->form->addField('magicField');
+        $result = $this->form->magicField;
+        $this->assertTrue($result instanceof \Yana\Db\Ddl\Field, 'assert failed, expected null - field was dropt before');
 
         // magic View
-        $this->ddlview->addField('magicViewfield');
-        $result = $this->ddlview->magicViewfield;
-        $this->assertTrue($result instanceof DDLViewField, 'assert failed, expected null - view field was dropt before');
+        $this->view->addField('magicViewfield');
+        $result = $this->view->magicViewfield;
+        $this->assertTrue($result instanceof \Yana\Db\Ddl\Views\Field, 'assert failed, expected null - view field was dropt before');
 
         // magic View
-        $this->ddldatabase->addView('magicView');
-        $result = $this->ddldatabase->magicView;
-        $this->assertTrue($result instanceof DDLView, 'assert failed, expected null - view was dropt before');
+        $this->database->addView('magicView');
+        $result = $this->database->magicView;
+        $this->assertTrue($result instanceof \Yana\Db\Ddl\Views\View, 'assert failed, expected null - view was dropt before');
 
     }
 
@@ -1271,12 +1369,12 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
         try {
             // supposed to succeed
-            $this->ddldatabase->addTable('table');
+            $this->database->addTable('table');
         } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
-        $this->ddldatabase->addTable('table');
+        $this->database->addTable('table');
     }
 
     /**
@@ -1288,8 +1386,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testDropTableNotFoundException()
     {
-        // DDLDatabase
-        $this->ddldatabase->dropTable('no_table');
+        // \Yana\Db\Ddl\Database
+        $this->database->dropTable('no_table');
     }
 
     /**
@@ -1301,9 +1399,9 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
         // DDL View
         $array = array('one', 'two');
-        $this->ddlview->setTables($array);
-        $get = $this->ddlview->getTables($array);
-        $this->assertEquals($array, $get, 'assert failed, "DDLView" : expected the same table as which was set with setTable, values should be equal');
+        $this->view->setTables($array);
+        $get = $this->view->getTables($array);
+        $this->assertEquals($array, $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected the same table as which was set with setTable, values should be equal');
     }
 
     /**
@@ -1316,7 +1414,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testSetTablesInvalidArgumentException()
     {
         // DDL View
-        $this->ddlview->setTables(array());
+        $this->view->setTables(array());
     }
 
     /**
@@ -1327,36 +1425,36 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testView()
     {
         // DDL Database
-        $valid = $this->ddldatabase->isView('qwerty');
+        $valid = $this->database->isView('qwerty');
         $this->assertFalse($valid, 'assert failed, the value should be false, "qwerty" is not a view');
 
-        $add = $this->ddldatabase->addView('qwerty');
+        $add = $this->database->addView('qwerty');
         $this->assertType('object', $add, 'assert failed, the value should be from type object');
         $this->assertEquals('qwerty', $add->getName(), 'assert failed, the values should be equal, "qwerty" is a view');
 
-        $add = $this->ddldatabase->addView('trewq');
+        $add = $this->database->addView('trewq');
         $this->assertType('object', $add, 'assert failed, the value should be from type object');
         $this->assertEquals('trewq', $add->getName(), 'assert failed, the values should be equal, "trewq" is a view');
 
-        $get = $this->ddldatabase->getView('qwerty');
+        $get = $this->database->getView('qwerty');
         $this->assertType('object', $get, 'assert failed, the value should be from type object');
         $this->assertEquals('qwerty', $get->getName(), 'assert failed, the values should be equal, the name of the view should be the same as expected');
 
-        $getAll = $this->ddldatabase->getViews();
+        $getAll = $this->database->getViews();
         $this->assertType('array', $getAll, 'assert failed, the value should be from type array');
         $this->assertArrayHasKey('qwerty', $getAll, 'assert failed, the value should be match a entry in array');
         $this->assertArrayHasKey('trewq', $getAll, 'assert failed, the value should be match a entry in array');
 
-        $getNames = $this->ddldatabase->getViewNames();
+        $getNames = $this->database->getViewNames();
         $this->assertType('array', $getNames, 'assert failed, the values should be from type array');
         $this->assertTrue(in_array('qwerty', $getNames), 'assert failed, the value should be match a entry in array');
         $this->assertTrue(in_array('trewq', $getNames), 'assert failed, the value should be match a entry in array');
 
-        $valid = $this->ddldatabase->isView('qwerty');
+        $valid = $this->database->isView('qwerty');
         $this->assertTrue($valid, 'assert failed, the value should be true');
 
-        $drop = $this->ddldatabase->dropView('qwerty');
-        $nonexist = $this->ddldatabase->getView('qwerty');
+        $drop = $this->database->dropView('qwerty');
+        $nonexist = $this->database->getView('qwerty');
         $this->assertNull($nonexist, 'assert failed, the value should be null, the view was dropt before');
     }
 
@@ -1371,12 +1469,12 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
         try {
             // supposed to succeed
-            $this->ddldatabase->addView('view');
+            $this->database->addView('view');
         } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
-        $this->ddldatabase->addView('view');
+        $this->database->addView('view');
     }
 
     /**
@@ -1388,8 +1486,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testDropViewNotFoundException()
     {
-        // DDLDatabase
-        $this->ddldatabase->dropView('a');
+        // \Yana\Db\Ddl\Database
+        $this->database->dropView('a');
     }
 
     /**
@@ -1400,37 +1498,37 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testSetFunction()
     {
         // DDL Database
-        $valid = $this->ddldatabase->isFunction('qwerty');
-        $this->assertFalse($valid, 'assert failed, "DDLDatabase" the value should be false, "qwerty" is not a function');
+        $valid = $this->database->isFunction('qwerty');
+        $this->assertFalse($valid, 'assert failed, "\Yana\Db\Ddl\Database" the value should be false, "qwerty" is not a function');
 
-        $add = $this->ddldatabase->addFunction('qwerty');
-        $this->assertType('object', $add, 'assert failed, "DDLDatabase" the value should be from type object');
-        $this->assertEquals('qwerty', $add->getName(), 'assert failed, "DDLDatabase" the values should be equal, "qwerty" is a function');
+        $add = $this->database->addFunction('qwerty');
+        $this->assertType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertEquals('qwerty', $add->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, "qwerty" is a function');
 
-        $add = $this->ddldatabase->addFunction('trewq');
-        $this->assertType('object', $add, 'assert failed, "DDLDatabase" the value should be from type object');
-        $this->assertEquals('trewq', $add->getName(), 'assert failed, "DDLDatabase" the values should be equal, the name of the view should be the same as expected');
+        $add = $this->database->addFunction('trewq');
+        $this->assertType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertEquals('trewq', $add->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, the name of the view should be the same as expected');
 
-        $get = $this->ddldatabase->getFunction('qwerty');
-        $this->assertType('object', $get, 'assert failed, "DDLDatabase" the value should be from type object');
-        $this->assertEquals('qwerty', $get->getName(), 'assert failed, "DDLDatabase" the values should be equal, the name of the view should be the same as expected');
+        $get = $this->database->getFunction('qwerty');
+        $this->assertType('object', $get, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertEquals('qwerty', $get->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, the name of the view should be the same as expected');
 
-        $getAll = $this->ddldatabase->getFunctions();
-        $this->assertType('array', $getAll, 'assert failed, "DDLDatabase" the value should be from type array');
-        $this->assertArrayHasKey('qwerty', $getAll, 'assert failed, "DDLDatabase" the value should be match a entry in array');
-        $this->assertArrayHasKey('trewq', $getAll, 'assert failed, "DDLDatabase" the value should be match a entry in array');
+        $getAll = $this->database->getFunctions();
+        $this->assertType('array', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type array');
+        $this->assertArrayHasKey('qwerty', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
+        $this->assertArrayHasKey('trewq', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
 
-        $getNames = $this->ddldatabase->getFunctionNames();
-        $this->assertType('array', $getNames, 'assert failed, "DDLDatabase" the values should be from type array');
-        $this->assertTrue(in_array('qwerty', $getNames), 'assert failed, "DDLDatabase" the value should be match a entry in array');
-        $this->assertTrue(in_array('trewq', $getNames), 'assert failed, "DDLDatabase" the value should be match a entry in array');
+        $getNames = $this->database->getFunctionNames();
+        $this->assertType('array', $getNames, 'assert failed, "\Yana\Db\Ddl\Database" the values should be from type array');
+        $this->assertTrue(in_array('qwerty', $getNames), 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
+        $this->assertTrue(in_array('trewq', $getNames), 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
 
-        $valid = $this->ddldatabase->isFunction('qwerty');
-        $this->assertTrue($valid, 'assert failed, "DDLDatabase" the value should be true, "qwerty" is a function');
+        $valid = $this->database->isFunction('qwerty');
+        $this->assertTrue($valid, 'assert failed, "\Yana\Db\Ddl\Database" the value should be true, "qwerty" is a function');
 
-        $drop = $this->ddldatabase->dropFunction('qwerty');
-        $nonexist = $this->ddldatabase->getFunction('qwerty');
-        $this->assertNull($nonexist, 'assert failed, "DDLDatabase" the value should be null, "qwerty" was dropt before');
+        $drop = $this->database->dropFunction('qwerty');
+        $nonexist = $this->database->getFunction('qwerty');
+        $this->assertNull($nonexist, 'assert failed, "\Yana\Db\Ddl\Database" the value should be null, "qwerty" was dropt before');
     }
 
     /**
@@ -1444,12 +1542,12 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
         try {
             // supposed to succeed
-            $this->ddldatabase->addFunction('function');
+            $this->database->addFunction('function');
         } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
-        $this->ddldatabase->addFunction('function');
+        $this->database->addFunction('function');
     }
 
     /**
@@ -1461,8 +1559,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testDropFunctionNotFoundException()
     {
-        // DDLDatabase
-        $this->ddldatabase->dropFunction('gert');
+        // \Yana\Db\Ddl\Database
+        $this->database->dropFunction('gert');
     }
 
     /**
@@ -1472,27 +1570,27 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testQuery()
     {
-       // DDLView
-       $set = $this->ddlview->setQuery('');
+       // \Yana\Db\Ddl\Views\View
+       $set = $this->view->setQuery('');
        $this->assertType('array', $set, 'assert failed, the value is not from type array');
        $this->assertEquals(0, count($set), 'assert failed, expected an array with 0 entries , no query is set');
 
-       $get = $this->ddlview->getQueries();
+       $get = $this->view->getQueries();
        $this->assertType('array', $get, 'assert failed, the value is not from type array');
        $this->assertEquals(0, count($get), 'assert failed, expected an array with 0 entries , no query is set');
 
-       $get = $this->ddlview->getQuery('mysql');
+       $get = $this->view->getQuery('mysql');
        $this->assertNull($get, 'assert failed, expected null , the key doesnt exist in array');
 
-       $set = $this->ddlview->setQuery('query', 'mysql');
-       $this->assertArrayHasKey('mysql', $set, 'assert failed, "DDLView" : the key "mysql" should be match the array key');
-       $set = $this->ddlview->setQuery('query', 'generic');
-       $get = $this->ddlview->getQuery('mysql');
-       $this->assertEquals('query', $get, 'assert failed, "DDLView" : the values should be equal');
+       $set = $this->view->setQuery('query', 'mysql');
+       $this->assertArrayHasKey('mysql', $set, 'assert failed, "\Yana\Db\Ddl\Views\View" : the key "mysql" should be match the array key');
+       $set = $this->view->setQuery('query', 'generic');
+       $get = $this->view->getQuery('mysql');
+       $this->assertEquals('query', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the values should be equal');
 
-       $get = $this->ddlview->getQueries();
-       $this->assertArrayHasKey('mysql', $get, 'assert failed, "DDLView" : the key "mysql" should be match the array key');
-       $this->assertArrayHasKey('generic', $get, 'assert failed, "DDLView" : the key "generic" should be match the array key');
+       $get = $this->view->getQueries();
+       $this->assertArrayHasKey('mysql', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the key "mysql" should be match the array key');
+       $this->assertArrayHasKey('generic', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the key "generic" should be match the array key');
     }
 
     /**
@@ -1505,16 +1603,16 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         for ($i = 1; $i <10; $i++)
         {
             $nr = sprintf("%04d",$i);
-            $log = new DDLLogCreate('logcreate');
+            $log = new \Yana\Db\Ddl\Logs\Create('logcreate');
             $log->setName("name_" . $nr);
             $log->setVersion($nr);
-            $this->ddlchangelog->addEntry($log);
+            $this->changelog->addEntry($log);
         }
 
-        $countAll = count($this->ddlchangelog->getEntries());
-        $countV1 = count($this->ddlchangelog->getEntries("0004"));
+        $countAll = count($this->changelog->getEntries());
+        $countV1 = count($this->changelog->getEntries("0004"));
 
-        $this->assertEquals($countAll , 9, 'DDLChangeLog, adding Logs or retrieving them failed');
+        $this->assertEquals($countAll , 9, '\Yana\Db\Ddl\ChangeLog, adding Logs or retrieving them failed');
         $this->assertEquals($countV1, 5, 'assert failed, adding Logs with a Version number or retrieving them failed');
     }
 
@@ -1528,17 +1626,17 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         for ($i = 1; $i <10; $i++)
         {
             $nr = sprintf("%04d",$i);
-            $log = new DDLLogCreate('logcreate');
+            $log = new \Yana\Db\Ddl\Logs\Create('logcreate');
             $log->setName("name_" . $nr);
             $log->setVersion($nr);
-            $this->ddlchangelog->addEntry($log);
+            $this->changelog->addEntry($log);
         }
 
         // let's be bad guys, dan drop everything again
-        $this->ddlchangelog->dropEntries();
-        $countAll = count($this->ddlchangelog->getEntries());
+        $this->changelog->dropEntries();
+        $countAll = count($this->changelog->getEntries());
 
-        $this->assertEquals($countAll , 0, 'DDLChangeLog, dropping the entries has failed');
+        $this->assertEquals($countAll , 0, '\Yana\Db\Ddl\ChangeLog, dropping the entries has failed');
     }
 
     /**
@@ -1554,10 +1652,10 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         {
             $nr = sprintf("%04d",$i);
             if ($i % 3 == 0) {
-                $log = new DDLLogCreate('logcreate');
+                $log = new \Yana\Db\Ddl\Logs\Create('logcreate');
                 $log->setName("name_" . $nr);
             } else {
-                $log = new DDLLogSql();
+                $log = new \Yana\Db\Ddl\Logs\Sql();
             }
             $log->setVersion($nr);
             switch ($i % 3)
@@ -1569,22 +1667,22 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
                     $log->setDBMS('oracle');
                 break;
             }
-            $this->ddlchangelog->addEntry($log);
+            $this->changelog->addEntry($log);
         }
 
-        $countAll = count($this->ddlchangelog->getEntries(null));
-        $this->assertEquals($countAll , 9, 'DDLChangeLog, dropping the entries has failed');
+        $countAll = count($this->changelog->getEntries(null));
+        $this->assertEquals($countAll , 9, '\Yana\Db\Ddl\ChangeLog, dropping the entries has failed');
 
-        $countAll = count($this->ddlchangelog->getEntries(null, 'mysql'));
-        $this->assertEquals($countAll , 19, 'DDLChangeLog, dropping the entries has failed');
+        $countAll = count($this->changelog->getEntries(null, 'mysql'));
+        $this->assertEquals($countAll , 19, '\Yana\Db\Ddl\ChangeLog, dropping the entries has failed');
 
-        $countAll = count($this->ddlchangelog->getEntries(null, 'oracle'));
-        $this->assertEquals($countAll , 19, 'DDLChangeLog, dropping the entries has failed');
+        $countAll = count($this->changelog->getEntries(null, 'oracle'));
+        $this->assertEquals($countAll , 19, '\Yana\Db\Ddl\ChangeLog, dropping the entries has failed');
 
         // truncate list of changes
-        $this->ddlchangelog->dropEntries();
-        $countAll = count($this->ddlchangelog->getEntries());
-        $this->assertEquals($countAll , 0, 'DDLChangeLog, dropping the entries has failed');
+        $this->changelog->dropEntries();
+        $countAll = count($this->changelog->getEntries());
+        $this->assertEquals($countAll , 0, '\Yana\Db\Ddl\ChangeLog, dropping the entries has failed');
     }
 
     /**
@@ -1595,28 +1693,28 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testAddViewField()
     {
         // DDL View
-        $get = $this->ddlview->getFields();
+        $get = $this->view->getFields();
         $this->assertEquals(0, count($get), 'assert failed, the values should be equal, no fields found - "0" expected');
 
-        $this->ddlview->addField('name');
-        $this->ddlview->addField('abcd');
-        $this->ddlview->addField('qwerty');
+        $this->view->addField('name');
+        $this->view->addField('abcd');
+        $this->view->addField('qwerty');
 
-        $get = $this->ddlview->getFields();
-        $this->assertType('array', $get, 'assert failed, "DDLView" : the value is not from type array');
+        $get = $this->view->getFields();
+        $this->assertType('array', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value is not from type array');
 
-        $this->assertArrayHasKey('name', $get, 'assert failed, "DDLView" : expected true - the value should be match a key in array');
-        $this->assertArrayHasKey('abcd', $get, 'assert failed, "DDLView" : expected true - the value should be match a key in array');
-        $this->assertArrayHasKey('qwerty', $get, 'assert failed, "DDLView" : expected true - the value should be match a key in array');
+        $this->assertArrayHasKey('name', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
+        $this->assertArrayHasKey('abcd', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
+        $this->assertArrayHasKey('qwerty', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
 
-        $get = $this->ddlview->getField('abcd');
-        $this->assertType('object', $get, 'assert failed, "DDLView" : the value is not from type object');
-        $this->assertTrue($get instanceof DDLViewField, 'assert failed, "DDLView" : the value should be an instance of DDLViewField');
+        $get = $this->view->getField('abcd');
+        $this->assertType('object', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value is not from type object');
+        $this->assertTrue($get instanceof \Yana\Db\Ddl\Views\Field, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value should be an instance of \Yana\Db\Ddl\Views\Field');
 
-        $this->ddlview->dropField('abcd');
+        $this->view->dropField('abcd');
         try {
-            $get = $this->ddlview->getField('abcd');
-            $this->fail("DDLView::dropField didn't drop the Column");
+            $get = $this->view->getField('abcd');
+            $this->fail("\Yana\Db\Ddl\Views\View::dropField didn't drop the Column");
         } catch (\Exception $e) {
             //success
         }
@@ -1629,27 +1727,27 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testAddFormField()
     {
-        $get = $this->ddlform->getFields();
+        $get = $this->form->getFields();
         $this->assertEquals(0, count($get), 'assert failed, the values should be equal "0" expected');
 
-        $this->ddlform->addField('name');
-        $this->ddlform->addField('abcd');
-        $this->ddlform->addField('qwerty');
+        $this->form->addField('name');
+        $this->form->addField('abcd');
+        $this->form->addField('qwerty');
 
-        $get = $this->ddlform->getFields();
-        $this->assertType('array', $get, 'assert failed, "DDLView" : the value is not from type array');
+        $get = $this->form->getFields();
+        $this->assertType('array', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value is not from type array');
 
-        $this->assertArrayHasKey('name', $get, 'assert failed, "DDLView" : expected true - the value should be match a key in array');
-        $this->assertArrayHasKey('abcd', $get, 'assert failed, "DDLView" : expected true - the value should be match a key in array');
-        $this->assertArrayHasKey('qwerty', $get, 'assert failed, "DDLView" : expected true - the value should be match a key in array');
+        $this->assertArrayHasKey('name', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
+        $this->assertArrayHasKey('abcd', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
+        $this->assertArrayHasKey('qwerty', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
 
-        $get = $this->ddlform->getField('abcd');
-        $this->assertType('object', $get, 'assert failed, "DDLView" : the value is not from type object');
-        $this->assertTrue($get instanceof DDLField, 'assert failed, "DDLView" : the value should be an instance of DDLField');
+        $get = $this->form->getField('abcd');
+        $this->assertType('object', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value is not from type object');
+        $this->assertTrue($get instanceof \Yana\Db\Ddl\Field, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value should be an instance of \Yana\Db\Ddl\Field');
 
-        $this->ddlform->dropField('abcd');
+        $this->form->dropField('abcd');
         try {
-            $this->ddlform->dropField('abcd');
+            $this->form->dropField('abcd');
             $this->fail('Field was not deleted');
         } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             // success
@@ -1667,7 +1765,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testAddFieldInvalidArgumentException()
     {
         // DDL View
-        $this->ddlview->addField('');
+        $this->view->addField('');
     }
 
     /**
@@ -1679,8 +1777,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testGetFieldNotFoundException()
     {
-        //DDLView
-        $this->ddlview->getField('nonexist');
+        //\Yana\Db\Ddl\Views\View
+        $this->view->getField('nonexist');
     }
 
     /**
@@ -1694,12 +1792,12 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
         try {
             // supposed to succeed
-            $this->ddlform->addField('field');
+            $this->form->addField('field');
         } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
-        $this->ddlform->addField('field');
+        $this->form->addField('field');
     }
 
     /**
@@ -1707,7 +1805,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testIsForm()
     {
-        $this->assertFalse($this->ddlform->isForm('non-existing-form'));
+        $this->assertFalse($this->form->isForm('non-existing-form'));
     }
 
     /**
@@ -1719,7 +1817,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testGetFormInvalidArgumentException()
     {
-        $this->ddlform->getForm('non-existing-form');
+        $this->form->getForm('non-existing-form');
     }
 
     /**
@@ -1729,21 +1827,21 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testgetQuery()
     {
-        $result = $this->ddlview->getQueries();
-        $this->assertTrue(empty($result), 'DDLView::getQueries queries should be void in the beginning');
+        $result = $this->view->getQueries();
+        $this->assertTrue(empty($result), '\Yana\Db\Ddl\Views\View::getQueries queries should be void in the beginning');
 
-        $this->ddlview->setQuery("genericQuery");
-        $this->ddlview->setQuery("mysqlQuery", "mysql");
-        $result = $this->ddlview->getQueries();
-        $this->assertTrue(count($result) == 2, 'DDLView::getQueries should return two different Query-Types');
-        $result = $this->ddlview->getQuery();
-        $this->assertTrue(count($result) == 1, 'DDLView::getQueries should return the generic Query');
-        $result = $this->ddlview->getQuery('oracle');
-        $this->assertNull($result, 'DDLView::getQueries should return no query because for this dbms there had been no query set');
+        $this->view->setQuery("genericQuery");
+        $this->view->setQuery("mysqlQuery", "mysql");
+        $result = $this->view->getQueries();
+        $this->assertTrue(count($result) == 2, '\Yana\Db\Ddl\Views\View::getQueries should return two different Query-Types');
+        $result = $this->view->getQuery();
+        $this->assertTrue(count($result) == 1, '\Yana\Db\Ddl\Views\View::getQueries should return the generic Query');
+        $result = $this->view->getQuery('oracle');
+        $this->assertNull($result, '\Yana\Db\Ddl\Views\View::getQueries should return no query because for this dbms there had been no query set');
 
-        $this->ddlview->dropQuery('mysql');
-        $result = $this->ddlview->getQueries();
-        $this->assertTrue(count($result) == 1, 'DDLView::dropQueries should have dropped one of the Query-Types');
+        $this->view->dropQuery('mysql');
+        $result = $this->view->getQueries();
+        $this->assertTrue(count($result) == 1, '\Yana\Db\Ddl\Views\View::dropQueries should have dropped one of the Query-Types');
     }
 
     /**
@@ -1754,37 +1852,37 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testSequence()
     {
         // DDL Database
-        $valid = $this->ddldatabase->isSequence('qwerty');
-        $this->assertFalse($valid, 'assert failed, "DDLDatabase" the value should be false, "qwerty" is not a sequence');
+        $valid = $this->database->isSequence('qwerty');
+        $this->assertFalse($valid, 'assert failed, "\Yana\Db\Ddl\Database" the value should be false, "qwerty" is not a sequence');
 
-        $add = $this->ddldatabase->addSequence('qwerty');
-        $this->assertType('object', $add, 'assert failed, "DDLDatabase" the value should be from type object');
-        $this->assertEquals('qwerty', $add->getName(), 'assert failed, "DDLDatabase" the values should be equal, the name of the view should be the same as expected');
+        $add = $this->database->addSequence('qwerty');
+        $this->assertType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertEquals('qwerty', $add->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, the name of the view should be the same as expected');
 
-        $add = $this->ddldatabase->addSequence('trewq');
-        $this->assertType('object', $add, 'assert failed, "DDLDatabase" the value should be from type object');
-        $this->assertEquals('trewq', $add->getName(), 'assert failed, "DDLDatabase" the values should be equal, the name of the view should be the same as expected');
+        $add = $this->database->addSequence('trewq');
+        $this->assertType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertEquals('trewq', $add->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, the name of the view should be the same as expected');
 
-        $get = $this->ddldatabase->getSequence('qwerty');
-        $this->assertType('object', $get, 'assert failed, "DDLDatabase" the value should be from type object');
-        $this->assertEquals('qwerty', $get->getName(), 'assert failed, "DDLDatabase" the values should be equal, the name of the view should be the same as expected');
+        $get = $this->database->getSequence('qwerty');
+        $this->assertType('object', $get, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertEquals('qwerty', $get->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, the name of the view should be the same as expected');
 
-        $getAll = $this->ddldatabase->getSequences();
-        $this->assertType('array', $getAll, 'assert failed, "DDLDatabase" the value should be from type array');
-        $this->assertArrayHasKey('qwerty', $getAll, 'assert failed, "DDLDatabase" the value should be match a entry in array');
-        $this->assertArrayHasKey('trewq', $getAll, 'assert failed, "DDLDatabase" the value should be match a entry in array');
+        $getAll = $this->database->getSequences();
+        $this->assertType('array', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type array');
+        $this->assertArrayHasKey('qwerty', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
+        $this->assertArrayHasKey('trewq', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
 
-        $getNames = $this->ddldatabase->getSequenceNames();
-        $this->assertType('array', $getNames, 'assert failed, "DDLDatabase" the values should be from type array');
-        $this->assertTrue(in_array('qwerty', $getNames), 'assert failed, "DDLDatabase" the value should be match a entry in array');
-        $this->assertTrue(in_array('trewq', $getNames), 'assert failed, "DDLDatabase" the value should be match a entry in array');
+        $getNames = $this->database->getSequenceNames();
+        $this->assertType('array', $getNames, 'assert failed, "\Yana\Db\Ddl\Database" the values should be from type array');
+        $this->assertTrue(in_array('qwerty', $getNames), 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
+        $this->assertTrue(in_array('trewq', $getNames), 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
 
-        $valid = $this->ddldatabase->isSequence('qwerty');
-        $this->assertTrue($valid, 'assert failed, "DDLDatabase" the value should be true, "qwerty" is a sequence');
+        $valid = $this->database->isSequence('qwerty');
+        $this->assertTrue($valid, 'assert failed, "\Yana\Db\Ddl\Database" the value should be true, "qwerty" is a sequence');
 
-        $drop = $this->ddldatabase->dropSequence('qwerty');
-        $nonexist = $this->ddldatabase->getSequence('qwerty');
-        $this->assertNull($nonexist, 'assert failed, "DDLDatabase" the value should be null, "qwerty" was removed before');
+        $drop = $this->database->dropSequence('qwerty');
+        $nonexist = $this->database->getSequence('qwerty');
+        $this->assertNull($nonexist, 'assert failed, "\Yana\Db\Ddl\Database" the value should be null, "qwerty" was removed before');
     }
 
     /**
@@ -1798,12 +1896,12 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
         try {
             // supposed to succeed
-            $this->ddldatabase->addSequence('sequence');
+            $this->database->addSequence('sequence');
         } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
-        $this->ddldatabase->addSequence('sequence');
+        $this->database->addSequence('sequence');
     }
 
     /**
@@ -1815,8 +1913,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testDropSequenceNotFoundException()
     {
-        // DDLDatabase
-        $this->ddldatabase->dropSequence('no_sequence');
+        // \Yana\Db\Ddl\Database
+        $this->database->dropSequence('no_sequence');
     }
 
     /**
@@ -1828,23 +1926,23 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
         $result = true;
         try {
-            $this->ddlindexcolumn->setSorting(4711);
+            $this->indexcolumn->setSorting(4711);
         } catch (\Exception $e) {
             $result = false;
         }
-        $this->assertFalse($result, "DDLIndexColumn::setSorting should not accept anything but Boolean");
+        $this->assertFalse($result, "\Yana\Db\Ddl\IndexColumn::setSorting should not accept anything but Boolean");
 
-        $this->ddlindexcolumn->setSorting();
-        $descending = $this->ddlindexcolumn->isDescendingOrder();
-        $ascending = $this->ddlindexcolumn->isAscendingOrder();
-        $this->assertFalse($descending, 'DDLIndexColumn::isDescendingOrder setting or retrieving the sorting is misaligned');
-        $this->assertTrue($ascending, 'DDLIndexColumn::isAscendingOrder setting or retrieving the sorting is misaligned');
+        $this->indexcolumn->setSorting();
+        $descending = $this->indexcolumn->isDescendingOrder();
+        $ascending = $this->indexcolumn->isAscendingOrder();
+        $this->assertFalse($descending, '\Yana\Db\Ddl\IndexColumn::isDescendingOrder setting or retrieving the sorting is misaligned');
+        $this->assertTrue($ascending, '\Yana\Db\Ddl\IndexColumn::isAscendingOrder setting or retrieving the sorting is misaligned');
 
-        $this->ddlindexcolumn->setSorting(false);
-        $descending = $this->ddlindexcolumn->isDescendingOrder();
-        $ascending = $this->ddlindexcolumn->isAscendingOrder();
-        $this->assertTrue($descending, 'DDLIndexColumn::isDescendingOrder setting or retrieving the sorting is misaligned');
-        $this->assertFalse($ascending, 'DDLIndexColumn::isAscendingOrder setting or retrieving the sorting is misaligned');
+        $this->indexcolumn->setSorting(false);
+        $descending = $this->indexcolumn->isDescendingOrder();
+        $ascending = $this->indexcolumn->isAscendingOrder();
+        $this->assertTrue($descending, '\Yana\Db\Ddl\IndexColumn::isDescendingOrder setting or retrieving the sorting is misaligned');
+        $this->assertFalse($ascending, '\Yana\Db\Ddl\IndexColumn::isAscendingOrder setting or retrieving the sorting is misaligned');
     }
 
     /**
@@ -1855,8 +1953,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testDropInit()
     {
         // ddl database
-        $this->ddldatabase->dropInit();
-        $init = $this->ddldatabase->getInit();
+        $this->database->dropInit();
+        $init = $this->database->getInit();
         $this->assertTrue(empty($init), 'Initialization list should be empty after droping contents');
     }
 
@@ -1867,17 +1965,17 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testAddInit()
     {
-        $get = $this->ddldatabase->getInit('oracle');
+        $get = $this->database->getInit('oracle');
         $this->assertType('array', $get, 'assert failed, the value should be from type array');
         $this->assertEquals(0, count($get), 'assert failed, the values should be equal');
 
         $dbms = 'mysql';
         $sql = 'select * from users';
-        $this->ddldatabase->addInit($sql, $dbms);
-        $get = $this->ddldatabase->getInit($dbms);
+        $this->database->addInit($sql, $dbms);
+        $get = $this->database->getInit($dbms);
         $this->assertEquals($sql, $get[0], 'assert failed, the values should be equal');
 
-        $get = $this->ddldatabase->getInit('oracle');
+        $get = $this->database->getInit('oracle');
         $this->assertType('array', $get, 'assert failed, the value should be from type array');
         $this->assertEquals(0, count($get), 'assert failed, the values should be equal');
     }
@@ -1889,12 +1987,12 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testGetListOfFiles()
     {
-        $get = DDL::getListOfFiles();
+        $get = \Yana\Db\Ddl\DDL::getListOfFiles();
         $this->assertFalse(in_array('config/db/user.db.xml', $get), 'assert failed, the value can not be exist in array');
         $this->assertTrue(in_array('user', $get), 'assert failed, the value must be exist in array');
         $this->assertType('array', $get, 'assert failed, the value should be from type array');
 
-        $get = DDL::getListOfFiles(true);
+        $get = \Yana\Db\Ddl\DDL::getListOfFiles(true);
         $this->assertTrue(count($get) > 0, 'assert failed, the value must be exist in array');
         foreach ($get as $file)
         {
@@ -1912,37 +2010,37 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testSetForm()
     {
          // DDL Database
-        $valid = $this->ddldatabase->isForm('qwerty');
-        $this->assertFalse($valid, 'assert failed, "DDLDatabase" the value should be false, "qwerty" is not a form');
+        $valid = $this->database->isForm('qwerty');
+        $this->assertFalse($valid, 'assert failed, "\Yana\Db\Ddl\Database" the value should be false, "qwerty" is not a form');
 
-        $add = $this->ddldatabase->addForm('qwerty');
-        $this->assertType('object', $add, 'assert failed, "DDLDatabase" the value should be from type object');
-        $this->assertEquals('qwerty', $add->getName(), 'assert failed, "DDLDatabase" the values should be equal, the name of the view should be the same as expected');
+        $add = $this->database->addForm('qwerty');
+        $this->assertType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertEquals('qwerty', $add->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, the name of the view should be the same as expected');
 
-        $add = $this->ddldatabase->addForm('trewq');
-        $this->assertType('object', $add, 'assert failed, "DDLDatabase" the value should be from type object');
-        $this->assertEquals('trewq', $add->getName(), 'assert failed, "DDLDatabase" the values should be equal, the name of the view should be the same as expected');
+        $add = $this->database->addForm('trewq');
+        $this->assertType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertEquals('trewq', $add->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, the name of the view should be the same as expected');
 
-        $get = $this->ddldatabase->getForm('qwerty');
-        $this->assertType('object', $get, 'assert failed, "DDLDatabase" the value should be from type object');
-        $this->assertEquals('qwerty', $get->getName(), 'assert failed, "DDLDatabase" the values should be equal, the name of the view should be the same as expected');
+        $get = $this->database->getForm('qwerty');
+        $this->assertType('object', $get, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertEquals('qwerty', $get->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, the name of the view should be the same as expected');
 
-        $getAll = $this->ddldatabase->getForms();
-        $this->assertType('array', $getAll, 'assert failed, "DDLDatabase" the value should be from type array');
-        $this->assertArrayHasKey('qwerty', $getAll, 'assert failed, "DDLDatabase" the value should be match a entry in array');
-        $this->assertArrayHasKey('trewq', $getAll, 'assert failed, "DDLDatabase" the value should be match a entry in array');
+        $getAll = $this->database->getForms();
+        $this->assertType('array', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type array');
+        $this->assertArrayHasKey('qwerty', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
+        $this->assertArrayHasKey('trewq', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
 
-        $getNames = $this->ddldatabase->getFormNames();
-        $this->assertType('array', $getNames, 'assert failed, "DDLDatabase" the values should be from type array');
-        $this->assertTrue(in_array('qwerty', $getNames), 'assert failed, "DDLDatabase" the value should be match a entry in array');
-        $this->assertTrue(in_array('trewq', $getNames), 'assert failed, "DDLDatabase" the value should be match a entry in array');
+        $getNames = $this->database->getFormNames();
+        $this->assertType('array', $getNames, 'assert failed, "\Yana\Db\Ddl\Database" the values should be from type array');
+        $this->assertTrue(in_array('qwerty', $getNames), 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
+        $this->assertTrue(in_array('trewq', $getNames), 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
 
-        $valid = $this->ddldatabase->isForm('qwerty');
-        $this->assertTrue($valid, 'assert failed, "DDLDatabase" the value should be true, "qwerty" is a form');
+        $valid = $this->database->isForm('qwerty');
+        $this->assertTrue($valid, 'assert failed, "\Yana\Db\Ddl\Database" the value should be true, "qwerty" is a form');
 
-        $drop = $this->ddldatabase->dropForm('qwerty');
-        $nonexist = $this->ddldatabase->getForm('qwerty');
-        $this->assertNull($nonexist, 'assert failed, "DDLDatabase" the value should be null, "qwerty" was dropt before');
+        $drop = $this->database->dropForm('qwerty');
+        $nonexist = $this->database->getForm('qwerty');
+        $this->assertNull($nonexist, 'assert failed, "\Yana\Db\Ddl\Database" the value should be null, "qwerty" was dropt before');
     }
 
     /**
@@ -1956,12 +2054,12 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
         try {
             // supposed to succeed
-            $this->ddldatabase->addForm('form');
+            $this->database->addForm('form');
         } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
-        $this->ddldatabase->addForm('form');
+        $this->database->addForm('form');
     }
 
     /**
@@ -1973,8 +2071,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testDropFormInvalidArgumentException1()
     {
-        // DDLDatabase
-        $this->ddldatabase->dropForm('gert');
+        // \Yana\Db\Ddl\Database
+        $this->database->dropForm('gert');
     }
 
     /**
@@ -1985,13 +2083,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testSetColumn()
     {
         // DDL ForeignKey
-        $this->ddlforeignkey->setColumn('test', 'qwertz');
-        $get = $this->ddlforeignkey->getColumns();
+        $this->foreignkey->setColumn('test', 'qwertz');
+        $get = $this->foreignkey->getColumns();
         $this->assertArrayHasKey('test', $get, 'assert failed, the values should be equal,  the value should be match a key in array');
 
         // the appending test can not be done with the attributes of the class,
         // because the lack the parents
-        $tableTest = $this->ddldatabase->addTable('testSetColumn');
+        $tableTest = $this->database->addTable('testSetColumn');
     }
 
     /**
@@ -2003,49 +2101,49 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
         $array = array('column1', 'column2', 'column3');
         // DDL ForeignKey
-        $this->ddlforeignkey->setColumns($array);
-        $result = $this->ddlforeignkey->getColumns();
-        $this->assertEquals($array, $result, 'assert failed, DDLForeignKey : the values shoud be equal, expected the same array which was set at the begining');
+        $this->foreignkey->setColumns($array);
+        $result = $this->foreignkey->getColumns();
+        $this->assertEquals($array, $result, 'assert failed, \Yana\Db\Ddl\ForeignKey : the values shoud be equal, expected the same array which was set at the begining');
 
-        $testTable = new DDLTable('testTable');
-        $testForeignKey = new DDLForeignkey('testKey', $testTable);
+        $testTable = new \Yana\Db\Ddl\Table('testTable');
+        $testForeignKey = new \Yana\Db\Ddl\ForeignKey('testKey', $testTable);
 
         // negativer Test
         try {
             $testForeignKey->setColumns($array);
-            $this->fail("DDLForeignKey::setCoLumns should fail, if one of the Columns in the Targettable does not exists");
+            $this->fail("\Yana\Db\Ddl\ForeignKey::setCoLumns should fail, if one of the Columns in the Targettable does not exists");
         } catch (\Exception $e) {
             //success
         }
 
         // DDL Index
         try {
-            $this->ddlindex->addColumn("noColumn");
-            $this->fail("DDLIndex::not existing column should raise an exception");
+            $this->index->addColumn("noColumn");
+            $this->fail("\Yana\Db\Ddl\Index::not existing column should raise an exception");
         } catch (\Exception $e) {
             // success
         }
 
         $someNames = array("someName_1", "someName_2", "someName_3");
-        $this->ddltable->addColumn($someNames[0], 'integer');
-        $this->ddltable->addColumn($someNames[1], 'integer');
-        $this->ddltable->addColumn($someNames[2], 'integer');
+        $this->table->addColumn($someNames[0], 'integer');
+        $this->table->addColumn($someNames[1], 'integer');
+        $this->table->addColumn($someNames[2], 'integer');
 
-        $result = $this->ddlindex->addColumn($someNames[0]);
-        $this->assertType('DDLIndexColumn', $result, "unexpectet Returntype from addcolumn");
+        $result = $this->index->addColumn($someNames[0]);
+        $this->assertType('\Yana\Db\Ddl\IndexColumn', $result, "unexpectet Returntype from addcolumn");
 
-        $result = $this->ddlindex->addColumn($someNames[1]);
-        $result = $this->ddlindex->addColumn($someNames[2]);
+        $result = $this->index->addColumn($someNames[1]);
+        $result = $this->index->addColumn($someNames[2]);
         try {
-            $this->ddlindex->addColumn($someNames[0]);
-            $this->fail("DDLIndex::redefining column should rise an exception");
+            $this->index->addColumn($someNames[0]);
+            $this->fail("\Yana\Db\Ddl\Index::redefining column should rise an exception");
         } catch (\Exception $e) {
             // success
         }
 
-        $this->ddlindex->dropColumn($someNames[1]);
-        $columns = $this->ddlindex->getColumns();
-        $this->assertEquals(count($columns), 2, 'DDLIndex: either the Dropping of a column or the getting has failed');
+        $this->index->dropColumn($someNames[1]);
+        $columns = $this->index->getColumns();
+        $this->assertEquals(count($columns), 2, '\Yana\Db\Ddl\Index: either the Dropping of a column or the getting has failed');
     }
 
     /**
@@ -2056,7 +2154,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     function testSetColumnNotFoundException()
     {
-         $this->ddlindex->addColumn('');
+         $this->index->addColumn('');
     }
 
     /**
@@ -2064,16 +2162,16 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      *
      * @test
      */
-    public function testTitleDDLField()
+    public function testTitleField()
     {
         // ddl field
-        $this->ddlfield->setTitle('abcd');
-        $result = $this->ddlfield->getTitle();
-        $this->assertEquals('abcd', $result, 'assert failed, DDLFiled : expected "abcd" as value, the values should be equal');
+        $this->field->setTitle('abcd');
+        $result = $this->field->getTitle();
+        $this->assertEquals('abcd', $result, 'assert failed, \Yana\Db\Ddl\Field : expected "abcd" as value, the values should be equal');
 
-        $this->ddlfield->setTitle('');
-        $result = $this->ddlfield->getTitle();
-        $this->assertNull($result, 'assert failed, DDLFiled : expected null, no label is set');
+        $this->field->setTitle('');
+        $result = $this->field->getTitle();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Field : expected null, no label is set');
     }
 
     /**
@@ -2083,19 +2181,19 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testSetName()
     {
-        // DDLLogCreate
-        $this->ddllogcreate->setName('name');
-        $get = $this->ddllogcreate->getName();
-        $this->assertEquals('name', $get, 'assert failed, the values should be equal, "DDLLogCreate" :expected "name" as value, the values should be equal');
+        // \Yana\Db\Ddl\Logs\Create
+        $this->logcreate->setName('name');
+        $get = $this->logcreate->getName();
+        $this->assertEquals('name', $get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Logs\Create" :expected "name" as value, the values should be equal');
 
         // DDL Index
-        $this->ddlindex->setName('name');
-        $get = $this->ddlindex->getName();
-        $this->assertEquals('name', $get, 'assert failed, the values should be equal, "DDLIndex" :expected "name" as value, the values should be equal');
+        $this->index->setName('name');
+        $get = $this->index->getName();
+        $this->assertEquals('name', $get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Index" :expected "name" as value, the values should be equal');
 
-        $this->ddlindex->setName('');
-        $get = $this->ddlindex->getName();
-        $this->assertNull($get, 'assert failed, the values should be equal, "DDLIndex" :expected null, the name is not set');
+        $this->index->setName('');
+        $get = $this->index->getName();
+        $this->assertNull($get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Index" :expected null, the name is not set');
     }
 
     /**
@@ -2107,7 +2205,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     function testSetNameInvalidArgument()
     {
         // DDL Object exception
-        $new = new DDLIndex(' 123df');
+        $new = new \Yana\Db\Ddl\Index(' 123df');
     }
 
     /**
@@ -2118,7 +2216,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     function testSetNameInvalidArgument1()
     {
-        $this->ddllogcreate->setName('');
+        $this->logcreate->setName('');
     }
 
     /**
@@ -2128,14 +2226,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testOldName()
     {
-        // DDLLogRename
-        $this->ddllogrename->setOldName('name');
-        $get = $this->ddllogrename->getOldName();
-        $this->assertEquals('name', $get, 'assert failed, the values should be equal, "DDLLogRename" :expected "name" as value, the values should be equal');
+        // \Yana\Db\Ddl\Logs\Rename
+        $this->logrename->setOldName('name');
+        $get = $this->logrename->getOldName();
+        $this->assertEquals('name', $get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Logs\Rename" :expected "name" as value, the values should be equal');
 
-        $this->ddllogrename->setOldName('');
-        $get = $this->ddllogrename->getOldName();
-        $this->assertNull($get, 'assert failed, "DDLLogRename" : expected null, the OldName is not set');
+        $this->logrename->setOldName('');
+        $get = $this->logrename->getOldName();
+        $this->assertNull($get, 'assert failed, "\Yana\Db\Ddl\Logs\Rename" : expected null, the OldName is not set');
     }
 
     /**
@@ -2147,17 +2245,17 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
         $array = array();
         // DDL View
-        $this->ddlview->setOrderBy(array('qwerty'));
-        $get = $this->ddlview->getOrderBy();
-        $this->assertEquals(array('qwerty'), $get, 'assert failed, the values should be equal, "DDLView" :the arrays should be match each other');
-        $isDesc = $this->ddlview->isDescendingOrder();
-        $this->assertFalse($isDesc, 'assert failed, "DDLView" : expected false, no descendingOrder is set');
+        $this->view->setOrderBy(array('qwerty'));
+        $get = $this->view->getOrderBy();
+        $this->assertEquals(array('qwerty'), $get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Views\View" :the arrays should be match each other');
+        $isDesc = $this->view->isDescendingOrder();
+        $this->assertFalse($isDesc, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected false, no descendingOrder is set');
 
-        $this->ddlview->setOrderBy($array, true);
-        $get = $this->ddlview->getOrderBy();
-        $this->assertEquals(0, count($get), 'assert failed, the values should be equal, "DDLView" :the array should be match each other');
-        $isDesc = $this->ddlview->isDescendingOrder();
-        $this->assertTrue($isDesc, 'assert failed, "DDLView" : expected true, descendingOrder is set');
+        $this->view->setOrderBy($array, true);
+        $get = $this->view->getOrderBy();
+        $this->assertEquals(0, count($get), 'assert failed, the values should be equal, "\Yana\Db\Ddl\Views\View" :the array should be match each other');
+        $isDesc = $this->view->isDescendingOrder();
+        $this->assertTrue($isDesc, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true, descendingOrder is set');
     }
 
     /**
@@ -2167,14 +2265,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testPropertyName()
     {
-        // DDLLogUpdate
-        $this->ddllogupdate->setPropertyName('property');
-        $get = $this->ddllogupdate->getPropertyName();
-        $this->assertEquals('property', $get, 'assert failed, the values should be equal, "DDLLogUpdate" :expected value "property" ');
+        // \Yana\Db\Ddl\Logs\Update
+        $this->logupdate->setPropertyName('property');
+        $get = $this->logupdate->getPropertyName();
+        $this->assertEquals('property', $get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Logs\Update" :expected value "property" ');
 
-        $this->ddllogupdate->setPropertyName('');
-        $get = $this->ddllogupdate->getPropertyName();
-        $this->assertNull($get, 'assert failed, "DDLLogUpdate" : expected null, PropertyName is not set');
+        $this->logupdate->setPropertyName('');
+        $get = $this->logupdate->getPropertyName();
+        $this->assertNull($get, 'assert failed, "\Yana\Db\Ddl\Logs\Update" : expected null, PropertyName is not set');
     }
 
     /**
@@ -2184,14 +2282,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testSetPropertyValue()
     {
-        // DDLLogUpdate
-        $this->ddllogupdate->setPropertyValue('propertyValue');
-        $get = $this->ddllogupdate->getPropertyValue();
-        $this->assertEquals('propertyValue', $get, 'assert failed, the values should be equal, "DDLLogUpdate" : expected "propertyValue" as value');
+        // \Yana\Db\Ddl\Logs\Update
+        $this->logupdate->setPropertyValue('propertyValue');
+        $get = $this->logupdate->getPropertyValue();
+        $this->assertEquals('propertyValue', $get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Logs\Update" : expected "propertyValue" as value');
 
-        $this->ddllogupdate->setPropertyValue('');
-        $get = $this->ddllogupdate->getPropertyValue();
-        $this->assertNull($get, 'assert failed, "DDLLogUpdate" : expected null, the PropertyValue is not set');
+        $this->logupdate->setPropertyValue('');
+        $get = $this->logupdate->getPropertyValue();
+        $this->assertNull($get, 'assert failed, "\Yana\Db\Ddl\Logs\Update" : expected null, the PropertyValue is not set');
     }
 
     /**
@@ -2201,13 +2299,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testStart()
     {
-        $this->ddlsequence->setStart(1);
-        $get = $this->ddlsequence->getStart();
-        $this->assertEquals(1, $get, 'assert failed, DDLSequence : expected "1" as number');
+        $this->sequence->setStart(1);
+        $get = $this->sequence->getStart();
+        $this->assertEquals(1, $get, 'assert failed, \Yana\Db\Ddl\Sequence : expected "1" as number');
 
-        $this->ddlsequence->setStart(0);
-        $get = $this->ddlsequence->getStart();
-        $this->assertNull($get, 'assert failed, DDLSequence : expected null, start is not set');
+        $this->sequence->setStart(0);
+        $get = $this->sequence->getStart();
+        $this->assertNull($get, 'assert failed, \Yana\Db\Ddl\Sequence : expected null, start is not set');
     }
 
     /**
@@ -2218,8 +2316,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testSetStartInvalidArgument1()
     {
-        $this->ddlsequence->setMin(6);
-        $this->ddlsequence->setStart(5);
+        $this->sequence->setMin(6);
+        $this->sequence->setStart(5);
     }
 
     /**
@@ -2230,15 +2328,15 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testIncrement()
     {
 
-        $get = $this->ddlsequence->getIncrement();
+        $get = $this->sequence->getIncrement();
         $this->assertEquals(1, $get, 'if not defined otherwise, Sequenz should iterate with 1-Steps');
 
-        $this->ddlsequence->setIncrement(2);
-        $get = $this->ddlsequence->getIncrement();
-        $this->assertEquals(2, $get, 'assert failed, DDLSequence : the values should be equal');
+        $this->sequence->setIncrement(2);
+        $get = $this->sequence->getIncrement();
+        $this->assertEquals(2, $get, 'assert failed, \Yana\Db\Ddl\Sequence : the values should be equal');
 
         try {
-            $this->ddlsequence->setIncrement(0);
+            $this->sequence->setIncrement(0);
             $this->fail("Increment value may not be set to '0'.");
         } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
             // success
@@ -2252,17 +2350,17 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testImplementation()
     {
-       $test3 = $this->ddlfunction->getImplementation("mysql");
-       $this->assertNull($test3, "DDLFunction, no test implementations are set");
+       $test3 = $this->function->getImplementation("mysql");
+       $this->assertNull($test3, "\Yana\Db\Ddl\Functions\Object, no test implementations are set");
 
-       $f1 = $this->ddlfunction->addImplementation('mysql');
-       $f2 = $this->ddlfunction->addImplementation('oracle');
+       $f1 = $this->function->addImplementation('mysql');
+       $f2 = $this->function->addImplementation('oracle');
 
-       $test1 = $this->ddlfunction->getImplementations();
-       $this->assertEquals(count($test1), 2, "DDLFunction, a problem with reading/writing implementations has occured");
+       $test1 = $this->function->getImplementations();
+       $this->assertEquals(count($test1), 2, "\Yana\Db\Ddl\Functions\Object, a problem with reading/writing implementations has occured");
 
-       $test2 = $this->ddlfunction->getImplementation("mysql");
-       $this->assertEquals(count($test2), 1, "DDLFunction, a problem with reading specified implementations has occured");
+       $test2 = $this->function->getImplementation("mysql");
+       $this->assertEquals(count($test2), 1, "\Yana\Db\Ddl\Functions\Object, a problem with reading specified implementations has occured");
     }
 
     /**
@@ -2276,12 +2374,12 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
         try {
             // supposed to succeed
-            $this->ddlfunction->addImplementation();
+            $this->function->addImplementation();
         } catch (\Yana\Core\Exceptions\AlreadyExistsException $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
-        $this->ddlfunction->addImplementation();
+        $this->function->addImplementation();
     }
 
     /**
@@ -2292,7 +2390,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     function testSetIncrementInvalidArgument()
     {
-         $this->ddlsequence->setIncrement(0);
+         $this->sequence->setIncrement(0);
     }
 
     /**
@@ -2302,20 +2400,20 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testMin()
     {
-        $this->ddlsequence->setMin();
-        $get = $this->ddlsequence->getMin();
+        $this->sequence->setMin();
+        $get = $this->sequence->getMin();
         $this->assertEquals(null, $get, 'setMin() without arguments should reset the property.');
 
-        $this->ddlsequence->setMin(1);
-        $get = $this->ddlsequence->getMin();
+        $this->sequence->setMin(1);
+        $get = $this->sequence->getMin();
         $this->assertEquals(1, $get, 'getMin() should return the same value as previously set by setMin().');
 
-        $this->ddlsequence->setStart(2);
-        $this->ddlsequence->setMin(2); // should succeed
-        $get = $this->ddlsequence->getMin();
+        $this->sequence->setStart(2);
+        $this->sequence->setMin(2); // should succeed
+        $get = $this->sequence->getMin();
         $this->assertEquals(2, $get, 'setMin() to lower boundary must succeed.');
         try {
-            $this->ddlsequence->setMin(3);
+            $this->sequence->setMin(3);
             $this->fail("Should not be able to set minimum higher than start value.");
         } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
             // success
@@ -2329,20 +2427,20 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testMax()
     {
-        $this->ddlsequence->setMax();
-        $get = $this->ddlsequence->getMax();
+        $this->sequence->setMax();
+        $get = $this->sequence->getMax();
         $this->assertEquals(null, $get, 'setMax() without arguments should reset the property.');
 
-        $this->ddlsequence->setMax(3);
-        $get = $this->ddlsequence->getMax();
+        $this->sequence->setMax(3);
+        $get = $this->sequence->getMax();
         $this->assertEquals(3, $get, 'getMax() should return the same value as previously set by setMax().');
 
-        $this->ddlsequence->setStart(2);
-        $this->ddlsequence->setMax(2); // should succeed
-        $get = $this->ddlsequence->getMax();
+        $this->sequence->setStart(2);
+        $this->sequence->setMax(2); // should succeed
+        $get = $this->sequence->getMax();
         $this->assertEquals(2, $get, 'setMax() to lower boundary must succeed.');
         try {
-            $this->ddlsequence->setMax(1);
+            $this->sequence->setMax(1);
             $this->fail("Should not be able to set maximum lower than start value.");
         } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
             // success
@@ -2357,12 +2455,12 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testTargetTable()
     {
         // DDL ForeignKey
-        $this->ddlforeignkey->setTargetTable('targetTable');
-        $result = $this->ddlforeignkey->getTargetTable();
+        $this->foreignkey->setTargetTable('targetTable');
+        $result = $this->foreignkey->getTargetTable();
         $this->assertEquals('targettable', $result, 'getTargetTable() did not return expected value');
 
-        $this->ddlforeignkey->setTargetTable('');
-        $result = $this->ddlforeignkey->getTargetTable();
+        $this->foreignkey->setTargetTable('');
+        $result = $this->foreignkey->getTargetTable();
         $this->assertNull($result, 'reset of target table failed');
     }
 
@@ -2374,17 +2472,17 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testMatch()
     {
         // DDL ForeignKey
-        $this->ddlforeignkey->setMatch(2);
-        $result = $this->ddlforeignkey->getMatch();
-        $message = 'assert failed, DDLForeignKey : expected value is the number 2';
-        $this->assertEquals(DDLKeyMatchStrategyEnumeration::SIMPLE, $result, $message);
+        $this->foreignkey->setMatch(2);
+        $result = $this->foreignkey->getMatch();
+        $message = 'assert failed, \Yana\Db\Ddl\ForeignKey : expected value is the number 2';
+        $this->assertEquals(\Yana\Db\Ddl\KeyMatchStrategyEnumeration::SIMPLE, $result, $message);
 
-        $this->ddlforeignkey->setMatch(12);
-        $result = $this->ddlforeignkey->getMatch();
+        $this->foreignkey->setMatch(12);
+        $result = $this->foreignkey->getMatch();
         // expected default 0
-        $message = 'assert failed, DDLForeignKey : expected 0 as value, the 0 number will be choosen when the number ' .
+        $message = 'assert failed, \Yana\Db\Ddl\ForeignKey : expected 0 as value, the 0 number will be choosen when the number ' .
             'by setMatch does not match the numbers 0, 1, 2';
-        $this->assertEquals(DDLKeyMatchStrategyEnumeration::SIMPLE, $result, $message);
+        $this->assertEquals(\Yana\Db\Ddl\KeyMatchStrategyEnumeration::SIMPLE, $result, $message);
     }
 
     /**
@@ -2395,13 +2493,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testTemplate()
     {
         // DDL Form
-        $this->ddlform->setTemplate('template');
-        $result = $this->ddlform->getTemplate();
-        $this->assertEquals('template', $result, 'assert failed, DDLForm : expected value is "template"');
+        $this->form->setTemplate('template');
+        $result = $this->form->getTemplate();
+        $this->assertEquals('template', $result, 'assert failed, \Yana\Db\Ddl\Form : expected value is "template"');
 
-        $this->ddlform->setTemplate('');
-        $result = $this->ddlform->getTemplate();
-        $this->assertNull($result, 'assert failed, DDLForm : expected null, non template is set');
+        $this->form->setTemplate('');
+        $result = $this->form->getTemplate();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Form : expected null, non template is set');
     }
 
     /**
@@ -2412,9 +2510,9 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testLanguage()
     {
         // DDL FunctionImplementation
-        $this->ddlfunctionimplementation->setLanguage('language');
-        $validate = $this->ddlfunctionimplementation->getLanguage();
-        $this->assertEquals('language', $validate, 'DDLFunctionImplementation : expected value is "language"');
+        $this->functionimplementation->setLanguage('language');
+        $validate = $this->functionimplementation->getLanguage();
+        $this->assertEquals('language', $validate, '\Yana\Db\Ddl\Functions\Implementation : expected value is "language"');
     }
 
     /**
@@ -2425,9 +2523,9 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testCode()
     {
         // DDL FunctionImplementation
-        $this->ddlfunctionimplementation->setCode('code');
-        $validate = $this->ddlfunctionimplementation->getCode();
-        $this->assertEquals('code', $validate, 'DDLFunctionImplementation : expected value is "code"');
+        $this->functionimplementation->setCode('code');
+        $validate = $this->functionimplementation->getCode();
+        $this->assertEquals('code', $validate, '\Yana\Db\Ddl\Functions\Implementation : expected value is "code"');
     }
 
     /**
@@ -2438,13 +2536,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testReturn()
     {
         // DDL FunctionImplementation
-        $this->ddlfunctionimplementation->setReturn('return');
-        $validate = $this->ddlfunctionimplementation->getReturn();
-        $this->assertEquals('return', $validate, 'DDLFunctionImplementation : expected "return" as value');
+        $this->functionimplementation->setReturn('return');
+        $validate = $this->functionimplementation->getReturn();
+        $this->assertEquals('return', $validate, '\Yana\Db\Ddl\Functions\Implementation : expected "return" as value');
 
-        $this->ddlfunctionimplementation->setReturn('');
-        $result = $this->ddlfunctionimplementation->getReturn();
-        $this->assertNull($result, 'assert failed, DDLFunctionImplementation : expected null, the return is not set');
+        $this->functionimplementation->setReturn('');
+        $result = $this->functionimplementation->getReturn();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : expected null, the return is not set');
     }
 
     /**
@@ -2455,32 +2553,32 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testParameter()
     {
         // DDL FunctionImplementation
-        $this->ddlfunctionimplementation->addParameter('control');
-        $valid = $this->ddlfunctionimplementation->getParameters();
-        $this->assertArrayHasKey('control', $valid, 'assert failed, DDLFunctionImplementation : expected "control" as value');
+        $this->functionimplementation->addParameter('control');
+        $valid = $this->functionimplementation->getParameters();
+        $this->assertArrayHasKey('control', $valid, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : expected "control" as value');
 
-        $valid = $this->ddlfunctionimplementation->getParameterNames();
-        $this->assertEquals('control', $valid[0], 'assert failed, DDLFunctionImplementation : expected "control" as value');
+        $valid = $this->functionimplementation->getParameterNames();
+        $this->assertEquals('control', $valid[0], 'assert failed, \Yana\Db\Ddl\Functions\Implementation : expected "control" as value');
 
-        $this->ddlfunctionimplementation->getParameter('control');
-        $this->ddlfunctionimplementation->addParameter('test');
-        $this->ddlfunctionimplementation->addParameter('new');
+        $this->functionimplementation->getParameter('control');
+        $this->functionimplementation->addParameter('test');
+        $this->functionimplementation->addParameter('new');
 
-        $valid = $this->ddlfunctionimplementation->getParameters();
-        $this->assertArrayHasKey('control', $valid, 'assert failed, DDLFunctionImplementation : the value "control" should be match a key in array');
-        $this->assertArrayHasKey('test', $valid, 'assert failed, DDLFunctionImplementation : the value "test" should be match a key in array');
-        $this->assertArrayHasKey('new', $valid, 'assert failed, DDLFunctionImplementation : the value "new" should be match a key in array');
+        $valid = $this->functionimplementation->getParameters();
+        $this->assertArrayHasKey('control', $valid, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : the value "control" should be match a key in array');
+        $this->assertArrayHasKey('test', $valid, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : the value "test" should be match a key in array');
+        $this->assertArrayHasKey('new', $valid, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : the value "new" should be match a key in array');
 
-        $this->ddlfunctionimplementation->dropParameter('test');
-        $valid = $this->ddlfunctionimplementation->getParameters();
-        $this->assertArrayNotHasKey('test', $valid, 'assert failed, DDLFunctionImplementation : the value "test" should not be match a key in array');
+        $this->functionimplementation->dropParameter('test');
+        $valid = $this->functionimplementation->getParameters();
+        $this->assertArrayNotHasKey('test', $valid, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : the value "test" should not be match a key in array');
 
         $name = 'a';
-        $newParam = $this->ddlfunctionimplementation->addParameter($name);
-        $valid = $this->ddlfunctionimplementation->getParameters();
-        $this->assertArrayHasKey($name, $valid, 'assert failed, DDLFunctionImplementation : the value "name" should be match a key in array');
+        $newParam = $this->functionimplementation->addParameter($name);
+        $valid = $this->functionimplementation->getParameters();
+        $this->assertArrayHasKey($name, $valid, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : the value "name" should be match a key in array');
 
-        $parameter = $this->ddlfunctionimplementation->getParameter('b');
+        $parameter = $this->functionimplementation->getParameter('b');
         $this->assertNull($parameter, 'function must return NULL for undefined parameter "b"');
     }
 
@@ -2495,12 +2593,12 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
         try {
             // supposed to succeed
-            $this->ddlfunctionimplementation->addParameter('parameter');
+            $this->functionimplementation->addParameter('parameter');
         } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
-        $this->ddlfunctionimplementation->addParameter('parameter');
+        $this->functionimplementation->addParameter('parameter');
     }
 
     /**
@@ -2511,14 +2609,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testFunctionDBMS()
     {
         // DDL FunctionImplementation
-        $implementation = $this->ddlfunction->addImplementation('MsSqL');
+        $implementation = $this->function->addImplementation('MsSqL');
         $validate = $implementation->getDBMS();
-        $this->assertEquals('mssql', $validate, 'assert failed, DDLFunctionImplementation : expected "mssql", the values should be equal');
+        $this->assertEquals('mssql', $validate, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : expected "mssql", the values should be equal');
 
-        $implementation = $this->ddlfunction->addImplementation();
+        $implementation = $this->function->addImplementation();
         $validate = $implementation->getDBMS();
         // expected generic
-        $this->assertEquals('generic', $validate, 'assert failed, DDLFunctionImplementation : expected "generic", the values should be equal');
+        $this->assertEquals('generic', $validate, 'assert failed, \Yana\Db\Ddl\Functions\Implementation : expected "generic", the values should be equal');
     }
 
     /**
@@ -2527,11 +2625,11 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function dataDBMS()
     {
         return array(
-            array('ddllogsql'),
-            array('ddllogchange'),
-            array('ddldatabaseinit'),
-            array('ddltrigger'),
-            array('ddlconstraint')
+            array('logsql'),
+            array('logchange'),
+            array('init'),
+            array('trigger'),
+            array('constraint')
         );
     }
 
@@ -2568,13 +2666,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testRole()
     {
         // setter and getter
-        $this->ddlgrant->setRole("test");
-        $role = $this->ddlgrant->getRole();
+        $this->grant->setRole("test");
+        $role = $this->grant->getRole();
         $this->assertEquals("test", $role, 'getRole() should return the same value as set with setRole().');
 
         // default value
-        $this->ddlgrant->setRole();
-        $role = $this->ddlgrant->getRole();
+        $this->grant->setRole();
+        $role = $this->grant->getRole();
         $this->assertEquals(null, $role, 'User role should default to null.');
     }
 
@@ -2586,13 +2684,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testUser()
     {
         // setter and getter
-        $this->ddlgrant->setUser("test");
-        $user = $this->ddlgrant->getUser();
+        $this->grant->setUser("test");
+        $user = $this->grant->getUser();
         $this->assertEquals("test", $user, 'getUser() should return the same value as set with setUser().');
 
         // default value
-        $this->ddlgrant->setUser();
-        $user = $this->ddlgrant->getUser();
+        $this->grant->setUser();
+        $user = $this->grant->getUser();
         $this->assertEquals(null, $user, 'User group should default to null.');
     }
 
@@ -2604,16 +2702,16 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testLevel()
     {
         // setter and getter
-        $this->ddlgrant->setLevel(0);
-        $level = $this->ddlgrant->getLevel();
+        $this->grant->setLevel(0);
+        $level = $this->grant->getLevel();
         $this->assertEquals(0, $level, 'getLevel() should return the same value as set with setLevel().');
-        $this->ddlgrant->setLevel(100);
-        $level = $this->ddlgrant->getLevel();
+        $this->grant->setLevel(100);
+        $level = $this->grant->getLevel();
         $this->assertEquals(100, $level, 'getLevel() should return the same value as set with setLevel().');
 
         // default value
-        $this->ddlgrant->setLevel();
-        $level = $this->ddlgrant->getLevel();
+        $this->grant->setLevel();
+        $level = $this->grant->getLevel();
         $this->assertEquals(null, $level, 'Security level should default to null.');
     }
 
@@ -2625,7 +2723,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testLevelInvalidArgument1()
     {
-        $this->ddlgrant->setLevel(-1);
+        $this->grant->setLevel(-1);
     }
 
     /**
@@ -2636,7 +2734,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testLevelInvalidArgument2()
     {
-        $this->ddlgrant->setLevel(101);
+        $this->grant->setLevel(101);
     }
 
     /**
@@ -2647,13 +2745,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testSelect()
     {
         // set to false
-        $this->ddlgrant->setSelect(false);
-        $isSelectable = $this->ddlgrant->isSelectable();
+        $this->grant->setSelect(false);
+        $isSelectable = $this->grant->isSelectable();
         $this->assertFalse($isSelectable, 'isSelectable() should return the same value as set with setSelect().');
 
         // default value
-        $this->ddlgrant->setSelect();
-        $isSelectable = $this->ddlgrant->isSelectable();
+        $this->grant->setSelect();
+        $isSelectable = $this->grant->isSelectable();
         $this->assertTrue($isSelectable, 'Selectable should default to true.');
     }
 
@@ -2665,13 +2763,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testInsert()
     {
         // set to false
-        $this->ddlgrant->setInsert(false);
-        $isInsertable = $this->ddlgrant->isInsertable();
+        $this->grant->setInsert(false);
+        $isInsertable = $this->grant->isInsertable();
         $this->assertFalse($isInsertable, 'isInsertable() should return the same value as set with setInsert().');
 
         // default value
-        $this->ddlgrant->setInsert();
-        $isInsertable = $this->ddlgrant->isInsertable();
+        $this->grant->setInsert();
+        $isInsertable = $this->grant->isInsertable();
         $this->assertTrue($isInsertable, 'Insertable should default to true.');
     }
 
@@ -2683,13 +2781,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testUpdate()
     {
         // set to false
-        $this->ddlgrant->setUpdate(false);
-        $isUpdatable = $this->ddlgrant->isUpdatable();
+        $this->grant->setUpdate(false);
+        $isUpdatable = $this->grant->isUpdatable();
         $this->assertFalse($isUpdatable, 'isUpdatable() should return the same value as set with setUpdate().');
 
         // default value
-        $this->ddlgrant->setUpdate();
-        $isUpdatable = $this->ddlgrant->isUpdatable();
+        $this->grant->setUpdate();
+        $isUpdatable = $this->grant->isUpdatable();
         $this->assertTrue($isUpdatable, 'Updatable should default to true.');
     }
 
@@ -2701,13 +2799,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testDelete()
     {
         // set to false
-        $this->ddlgrant->setDelete(false);
-        $isDeletable = $this->ddlgrant->isDeletable();
+        $this->grant->setDelete(false);
+        $isDeletable = $this->grant->isDeletable();
         $this->assertFalse($isDeletable, 'isDeletable() should return the same value as set with setDelete().');
 
         // default value
-        $this->ddlgrant->setDelete();
-        $isDeletable = $this->ddlgrant->isDeletable();
+        $this->grant->setDelete();
+        $isDeletable = $this->grant->isDeletable();
         $this->assertTrue($isDeletable, 'Deletable should default to true.');
     }
 
@@ -2719,13 +2817,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testGrantable()
     {
         // set to false
-        $this->ddlgrant->setGrantOption(false);
-        $isGrantable = $this->ddlgrant->isGrantable();
+        $this->grant->setGrantOption(false);
+        $isGrantable = $this->grant->isGrantable();
         $this->assertFalse($isGrantable, 'isGrantable() should return the same value as set with setGrantOption().');
 
         // default value
-        $this->ddlgrant->setGrantOption();
-        $isGrantable = $this->ddlgrant->isGrantable();
+        $this->grant->setGrantOption();
+        $isGrantable = $this->grant->isGrantable();
         $this->assertTrue($isGrantable, 'Grantable should default to true.');
     }
 
@@ -2736,22 +2834,22 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testSetEvent()
     {
-        $event = $this->ddlform->addEvent('test');
+        $event = $this->form->addEvent('test');
         $event->setAction('bla');
-        $getAll = $this->ddlform->getEvents();
+        $getAll = $this->form->getEvents();
         $this->assertType('array', $getAll, 'assert failed, the value is not from type array');
         $this->assertArrayHasKey('test', $getAll, 'assert failed, the value "test" should be match a key in array');
 
-        $get = $this->ddlform->getEvent('test');
+        $get = $this->form->getEvent('test');
         $this->assertEquals('bla', $get->getAction(), 'assert failed, expected value "bla"');
 
-        $get = $this->ddlform->dropEvent('test');
+        $get = $this->form->dropEvent('test');
         $this->assertTrue($get, 'assert failed, event is not droped');
 
-        $get = $this->ddlform->dropEvent('test_foo_bar');
+        $get = $this->form->dropEvent('test_foo_bar');
         $this->assertFalse($get, 'assert failed, event does not exist and can\'t be droped');
 
-         $get = $this->ddlform->getEvent('non-existing-event');
+         $get = $this->form->getEvent('non-existing-event');
          $this->assertNull($get, 'assert failed, expected null for non-exist event');
     }
 
@@ -2764,7 +2862,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testAddEventInvalidArgumentException()
     {
-        $this->ddlform->addEvent('');
+        $this->form->addEvent('');
     }
 
     /**
@@ -2776,7 +2874,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testAddFieldEventInvalidArgumentException()
     {
-        $this->ddlfield->addEvent('');
+        $this->field->addEvent('');
     }
 
     /**
@@ -2785,11 +2883,11 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function dataSetGrants()
     {
         return array(
-            array('ddlform'),
-            array('ddlfield'),
-            array('ddlcolumn'),
-            array('ddlview'),
-            array('ddltable')
+            array('form'),
+            array('field'),
+            array('column'),
+            array('view'),
+            array('table')
         );
     }
 
@@ -2803,10 +2901,10 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testGrants($propertyName)
     {
         $object = $this->$propertyName;
-        $grant = new DDLGrant();
-        $grant2 = new DDLGrant();
-        $grant3 = new DDLGrant();
-        $grant4 = new DDLGrant();
+        $grant = new \Yana\Db\Ddl\Grant();
+        $grant2 = new \Yana\Db\Ddl\Grant();
+        $grant3 = new \Yana\Db\Ddl\Grant();
+        $grant4 = new \Yana\Db\Ddl\Grant();
 
         $grants = array($grant, $grant2);
 
@@ -2815,10 +2913,10 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
         $get = $object->getGrants();
         $this->assertEquals($grants, $get, 'assert failed, the values should be equal, expected the same arrays');
-        $this->assertEquals($grants[0] instanceof DDLGrant, 'assert failed, the value should be an instance of DDLGrant');
+        $this->assertEquals($grants[0] instanceof \Yana\Db\Ddl\Grant, 'assert failed, the value should be an instance of \Yana\Db\Ddl\Grant');
 
         $add = $object->addGrant('user', 'role', 10);
-        $this->assertTrue($add instanceof DDLGrant, 'Function addGrant() should return instance of DDLGrant.');
+        $this->assertTrue($add instanceof \Yana\Db\Ddl\Grant, 'Function addGrant() should return instance of \Yana\Db\Ddl\Grant.');
 
         $object->dropGrants();
 
@@ -2833,62 +2931,62 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testParent()
     {
-        $get = $this->ddlforeignkey->getParent();
+        $get = $this->foreignkey->getParent();
         $this->assertNull($get, 'assert failed, expected null - no parent is set');
 
-        $database = new DDLDatabase();
-        $parentTable = new DDLTable('table');
-        $parentColumn = new DDLColumn('Column_Parent');
-        $parentForm = new DDLForm('someform');
+        $database = new \Yana\Db\Ddl\Database();
+        $parentTable = new \Yana\Db\Ddl\Table('table');
+        $parentColumn = new \Yana\Db\Ddl\Column('Column_Parent');
+        $parentForm = new \Yana\Db\Ddl\Form('someform');
 
-        // DDLChangeLog
-        $childLog = new DDLChangeLog($database);
+        // \Yana\Db\Ddl\ChangeLog
+        $childLog = new \Yana\Db\Ddl\ChangeLog($database);
         $parentLog = $childLog->getParent();
-        $this->assertEquals($database, $parentLog, 'DDLChangeLog::getParent, the values should be equal');
+        $this->assertEquals($database, $parentLog, '\Yana\Db\Ddl\ChangeLog::getParent, the values should be equal');
 
-        // DDLColumn
-        $childColumn = new DDLColumn('column', $parentTable);
+        // \Yana\Db\Ddl\Column
+        $childColumn = new \Yana\Db\Ddl\Column('column', $parentTable);
         $parentColumn = $childColumn->getParent();
-        $this->assertEquals($parentTable, $parentColumn, 'DDLColumn::getParent, the values should be equal');
+        $this->assertEquals($parentTable, $parentColumn, '\Yana\Db\Ddl\Column::getParent, the values should be equal');
 
-        // DDLForeignKey
-        $childForeignkey = new DDLForeignKey('column', $parentTable);
+        // \Yana\Db\Ddl\ForeignKey
+        $childForeignkey = new \Yana\Db\Ddl\ForeignKey('column', $parentTable);
         $parentForeignkey = $childForeignkey->getParent();
-        $this->assertEquals($parentTable, $parentForeignkey, 'DDLForeignKey::getParent, the values should be equal');
+        $this->assertEquals($parentTable, $parentForeignkey, '\Yana\Db\Ddl\ForeignKey::getParent, the values should be equal');
 
-        // DDLForm
-        $childForm = new DDLForm('form', $database);
+        // \Yana\Db\Ddl\Form
+        $childForm = new \Yana\Db\Ddl\Form('form', $database);
         $parentForm = $childForm->getParent();
-        $this->assertEquals($database, $parentForm, 'DDLForm::getParent, the values should be equal');
+        $this->assertEquals($database, $parentForm, '\Yana\Db\Ddl\Form::getParent, the values should be equal');
         $parentForm = $childForm->getDatabase();
-        $this->assertEquals($database, $parentForm, 'DDLForm::getParent, the values should be equal');
+        $this->assertEquals($database, $parentForm, '\Yana\Db\Ddl\Form::getParent, the values should be equal');
 
-        // DDLForm sub-form
+        // \Yana\Db\Ddl\Form sub-form
         $subForm = $childForm->addForm('subform');
         $parentForm = $subForm->getParent();
-        $this->assertEquals($parentForm, $childForm, 'DDLForm::getParent, the values should be equal');
+        $this->assertEquals($parentForm, $childForm, '\Yana\Db\Ddl\Form::getParent, the values should be equal');
         $parentDatabase = $subForm->getDatabase();
-        $this->assertEquals($database, $parentDatabase, 'DDLForm::getDatabase, the values should be equal');
+        $this->assertEquals($database, $parentDatabase, '\Yana\Db\Ddl\Form::getDatabase, the values should be equal');
 
-        // DDLFunction
-        $childFunction = new DDLFunction('function', $database);
+        // \Yana\Db\Ddl\Functions\Object
+        $childFunction = new \Yana\Db\Ddl\Functions\Object('function', $database);
         $parentFunction = $childFunction->getParent();
-        $this->assertEquals($database, $parentFunction, 'DDLFunction::getParent, the values should be equal');
+        $this->assertEquals($database, $parentFunction, '\Yana\Db\Ddl\Functions\Object::getParent, the values should be equal');
 
-        // DDLIndex
-        $childIndex = new DDLIndex('index', $parentTable);
+        // \Yana\Db\Ddl\Index
+        $childIndex = new \Yana\Db\Ddl\Index('index', $parentTable);
         $parentIndex = $childIndex->getParent();
-        $this->assertEquals($parentTable, $parentIndex, 'DDLIndex::getParent, the values should be equal');
+        $this->assertEquals($parentTable, $parentIndex, '\Yana\Db\Ddl\Index::getParent, the values should be equal');
 
-        // DDLView
-        $childView = new DDLView('view', $database);
+        // \Yana\Db\Ddl\Views\View
+        $childView = new \Yana\Db\Ddl\Views\View('view', $database);
         $parentView = $childView->getParent();
-        $this->assertEquals($database, $parentView, 'DDLView::getParent, the values should be equal');
+        $this->assertEquals($database, $parentView, '\Yana\Db\Ddl\Views\View::getParent, the values should be equal');
 
-        // DDLTable
-        $childTable = new DDLTable('table', $database);
+        // \Yana\Db\Ddl\Table
+        $childTable = new \Yana\Db\Ddl\Table('table', $database);
         $parentTable = $childTable->getParent();
-        $this->assertEquals($database, $parentTable, 'DDLTable::getParent, the values should be equal');
+        $this->assertEquals($database, $parentTable, '\Yana\Db\Ddl\Table::getParent, the values should be equal');
     }
 
     /**
@@ -2898,36 +2996,36 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testOnDelete()
     {
-        $this->ddlforeignkey->setOnDelete(DDLKeyUpdateStrategyEnumeration::NOACTION);
-        $get = $this->ddlforeignkey->getOnDelete();
+        $this->foreignkey->setOnDelete(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION);
+        $get = $this->foreignkey->getOnDelete();
         $message = 'assert failed, expected value is "0" - the values should be equal';
-        $this->assertEquals(DDLKeyUpdateStrategyEnumeration::NOACTION, $get, $message);
+        $this->assertEquals(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION, $get, $message);
 
-        $this->ddlforeignkey->setOnDelete(DDLKeyUpdateStrategyEnumeration::RESTRICT);
-        $get = $this->ddlforeignkey->getOnDelete();
+        $this->foreignkey->setOnDelete(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::RESTRICT);
+        $get = $this->foreignkey->getOnDelete();
         $message ='assert failed, expected value is "1" - the values should be equal';
-        $this->assertEquals(DDLKeyUpdateStrategyEnumeration::RESTRICT, $get, $message);
+        $this->assertEquals(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::RESTRICT, $get, $message);
 
-        $this->ddlforeignkey->setOnDelete(DDLKeyUpdateStrategyEnumeration::CASCADE);
-        $get = $this->ddlforeignkey->getOnDelete();
+        $this->foreignkey->setOnDelete(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::CASCADE);
+        $get = $this->foreignkey->getOnDelete();
         $message = 'assert failed, expected value is "2" - the values should be equal';
-        $this->assertEquals(DDLKeyUpdateStrategyEnumeration::CASCADE, $get, $message);
+        $this->assertEquals(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::CASCADE, $get, $message);
 
-        $this->ddlforeignkey->setOnDelete(DDLKeyUpdateStrategyEnumeration::SETNULL);
-        $get = $this->ddlforeignkey->getOnDelete();
+        $this->foreignkey->setOnDelete(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::SETNULL);
+        $get = $this->foreignkey->getOnDelete();
         $message = 'assert failed, expected value is "3" - the values should be equal';
-        $this->assertEquals(DDLKeyUpdateStrategyEnumeration::SETNULL, $get, $message);
+        $this->assertEquals(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::SETNULL, $get, $message);
 
-        $this->ddlforeignkey->setOnDelete(DDLKeyUpdateStrategyEnumeration::SETDEFAULT);
-        $get = $this->ddlforeignkey->getOnDelete();
+        $this->foreignkey->setOnDelete(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::SETDEFAULT);
+        $get = $this->foreignkey->getOnDelete();
         $message = 'assert failed, expected value is "4" - the values should be equal';
-        $this->assertEquals(DDLKeyUpdateStrategyEnumeration::SETDEFAULT, $get, $message);
+        $this->assertEquals(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::SETDEFAULT, $get, $message);
 
-        $this->ddlforeignkey->setOnDelete(14);
-        $get = $this->ddlforeignkey->getOnDelete();
+        $this->foreignkey->setOnDelete(14);
+        $get = $this->foreignkey->getOnDelete();
         $message = 'assert failed, expected value is "0" - only numbers between 0-4 can be set ' .
             'otherwise the default value "0" will be set';
-        $this->assertEquals(DDLKeyUpdateStrategyEnumeration::NOACTION, $get, $message);
+        $this->assertEquals(\Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION, $get, $message);
     }
 
     /**
@@ -2937,28 +3035,28 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testOnUpdate()
     {
-        $this->ddlforeignkey->setOnUpdate(0);
-        $get = $this->ddlforeignkey->getOnUpdate();
+        $this->foreignkey->setOnUpdate(0);
+        $get = $this->foreignkey->getOnUpdate();
         $this->assertEquals(0, $get, 'assert failed, expected value is "0" - the values should be equal');
 
-        $this->ddlforeignkey->setOnUpdate(1);
-        $get = $this->ddlforeignkey->getOnUpdate();
+        $this->foreignkey->setOnUpdate(1);
+        $get = $this->foreignkey->getOnUpdate();
         $this->assertEquals(1, $get, 'assert failed, expected value is "1" - the values should be equal');
 
-        $this->ddlforeignkey->setOnUpdate(2);
-        $get = $this->ddlforeignkey->getOnUpdate();
+        $this->foreignkey->setOnUpdate(2);
+        $get = $this->foreignkey->getOnUpdate();
         $this->assertEquals(2, $get, 'assert failed, expected value is "2" - the values should be equal');
 
-        $this->ddlforeignkey->setOnUpdate(3);
-        $get = $this->ddlforeignkey->getOnUpdate();
+        $this->foreignkey->setOnUpdate(3);
+        $get = $this->foreignkey->getOnUpdate();
         $this->assertEquals(3, $get, 'assert failed, expected value is "3" - the values should be equal');
 
-        $this->ddlforeignkey->setOnUpdate(4);
-        $get = $this->ddlforeignkey->getOnUpdate();
+        $this->foreignkey->setOnUpdate(4);
+        $get = $this->foreignkey->getOnUpdate();
         $this->assertEquals(4, $get, 'assert failed, expected value is "4" - the values should be equal');
 
-        $this->ddlforeignkey->setOnUpdate(14);
-        $get = $this->ddlforeignkey->getOnUpdate();
+        $this->foreignkey->setOnUpdate(14);
+        $get = $this->foreignkey->getOnUpdate();
         $this->assertEquals(0, $get, 'assert failed, expected value is "0" - only numbers between 0-4 can be set otherwise the default value "0" will be set');
     }
 
@@ -2969,14 +3067,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testOldPropertyValue()
     {
-        // DDLLogUpdate
-        $this->ddllogupdate->setOldPropertyValue('name');
-        $get = $this->ddllogupdate->getOldPropertyValue();
-        $this->assertEquals('name', $get, 'assert failed, the values should be equal, "DDLLogRename" :expected value is "name"');
+        // \Yana\Db\Ddl\Logs\Update
+        $this->logupdate->setOldPropertyValue('name');
+        $get = $this->logupdate->getOldPropertyValue();
+        $this->assertEquals('name', $get, 'assert failed, the values should be equal, "\Yana\Db\Ddl\Logs\Rename" :expected value is "name"');
 
-        $this->ddllogupdate->setOldPropertyValue('');
-        $get = $this->ddllogupdate->getOldPropertyValue();
-        $this->assertNull($get, 'assert failed, "DDLLogRename" :expected null - OldPropertyValue is not set or empty');
+        $this->logupdate->setOldPropertyValue('');
+        $get = $this->logupdate->getOldPropertyValue();
+        $this->assertNull($get, 'assert failed, "\Yana\Db\Ddl\Logs\Rename" :expected null - OldPropertyValue is not set or empty');
     }
 
     /**
@@ -2987,41 +3085,41 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testSetHandler()
     {
 
-        $result = $this->ddllogsql->commitUpdate();
-        $this->assertFalse($result, 'DDLLogSQL::commitUpdate should return False, if no handler is defined');
-        $result = $this->ddllogupdate->commitUpdate();
-        $this->assertFalse($result, 'DDLLogUpdate::commitUpdate should return False, if no handler is defined');
+        $result = $this->logsql->commitUpdate();
+        $this->assertFalse($result, '\Yana\Db\Ddl\Logs\Sql::commitUpdate should return False, if no handler is defined');
+        $result = $this->logupdate->commitUpdate();
+        $this->assertFalse($result, '\Yana\Db\Ddl\Logs\Update::commitUpdate should return False, if no handler is defined');
 
 
         $function = create_function('', '');
 
         // DDL LogUpdate
-        DDLLogUpdate::setHandler($function);
-        $this->ddllogupdate->commitUpdate();
+        \Yana\Db\Ddl\Logs\Update::setHandler($function);
+        $this->logupdate->commitUpdate();
 
         // DDL LogSql
-         DDLLogSql::setHandler($function);
-         $this->ddllogsql->commitUpdate();
+         \Yana\Db\Ddl\Logs\Sql::setHandler($function);
+         $this->logsql->commitUpdate();
 
         // DDL LogRename
-        DDLLogRename::setHandler($function);
-        $this->ddllogrename->commitUpdate();
+        \Yana\Db\Ddl\Logs\Rename::setHandler($function);
+        $this->logrename->commitUpdate();
 
-        // DDLLogCreate
-        DDLLogCreate::setHandler($function);
-        $this->ddllogcreate->commitUpdate();
+        // \Yana\Db\Ddl\Logs\Create
+        \Yana\Db\Ddl\Logs\Create::setHandler($function);
+        $this->logcreate->commitUpdate();
 
-        // DDLLogDrop
-        DDLLogDrop::setHandler($function);
-        $this->ddllogdrop->commitUpdate();
+        // \Yana\Db\Ddl\Logs\Drop
+        \Yana\Db\Ddl\Logs\Drop::setHandler($function);
+        $this->logdrop->commitUpdate();
 
-        // DDLLogChange
-        DDLLogChange::setHandler($function);
-        $this->ddllogchange->commitUpdate();
+        // \Yana\Db\Ddl\Logs\Change
+        \Yana\Db\Ddl\Logs\Change::setHandler($function);
+        $this->logchange->commitUpdate();
 
-        DDLLogChange::setHandler($function, 'test');
-        $this->ddllogchange->setType('test');
-        $this->ddllogchange->commitUpdate();
+        \Yana\Db\Ddl\Logs\Change::setHandler($function, 'test');
+        $this->logchange->setType('test');
+        $this->logchange->commitUpdate();
     }
 
     /**
@@ -3033,8 +3131,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testSetHandlerInvalidArgumentException()
     {
-        // DDLLogSql
-        DDLLogSql::setHandler('dummy');
+        // \Yana\Db\Ddl\Logs\Sql
+        \Yana\Db\Ddl\Logs\Sql::setHandler('dummy');
     }
 
     /**
@@ -3046,8 +3144,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testSetHandlerInvalidArgumentException1()
     {
-        // DDLLogUpdate
-        DDLLogUpdate::setHandler('dummy');
+        // \Yana\Db\Ddl\Logs\Update
+        \Yana\Db\Ddl\Logs\Update::setHandler('dummy');
     }
 
     /**
@@ -3059,8 +3157,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testSetHandlerInvalidArgumentException2()
     {
-        // DDLLogRename
-        DDLLogRename::setHandler('dummy');
+        // \Yana\Db\Ddl\Logs\Rename
+        \Yana\Db\Ddl\Logs\Rename::setHandler('dummy');
     }
 
     /**
@@ -3072,8 +3170,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testSetHandlerInvalidArgumentException3()
     {
-        // DDLLogCreate
-        DDLLogCreate::setHandler('dummy');
+        // \Yana\Db\Ddl\Logs\Create
+        \Yana\Db\Ddl\Logs\Create::setHandler('dummy');
     }
 
     /**
@@ -3085,8 +3183,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testSetHandlerInvalidArgumentException4()
     {
-        // DDLLogDrop
-        DDLLogDrop::setHandler('dummy');
+        // \Yana\Db\Ddl\Logs\Drop
+        \Yana\Db\Ddl\Logs\Drop::setHandler('dummy');
     }
 
     /**
@@ -3096,93 +3194,93 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testaddColumn()
     {
-        // DDLTable
+        // \Yana\Db\Ddl\Table
         $newColumns = array('description', 'number', 'image');
-        $add = $this->ddltable->addColumn($newColumns[0], 'string');
-        $add2 = $this->ddltable->addColumn($newColumns[1], 'integer');
-        $this->assertTrue($add instanceof DDLColumn, 'assert failed, the value should be an instance of DDLColumn');
+        $add = $this->table->addColumn($newColumns[0], 'string');
+        $add2 = $this->table->addColumn($newColumns[1], 'integer');
+        $this->assertTrue($add instanceof \Yana\Db\Ddl\Column, 'assert failed, the value should be an instance of \Yana\Db\Ddl\Column');
 
-        $result1 = $this->ddltable->getColumn('number');
-        $this->assertTrue($result1 instanceof DDLColumn, 'assert failed, the value should be an instace of DDLColumn');
-        $result1 = $this->ddltable->getColumn('gibbsganich');
-        $this->assertNull($result1, 'DDLTable if you try to get a notexisting column, you should get null as result');
+        $result1 = $this->table->getColumn('number');
+        $this->assertTrue($result1 instanceof \Yana\Db\Ddl\Column, 'assert failed, the value should be an instace of \Yana\Db\Ddl\Column');
+        $result1 = $this->table->getColumn('gibbsganich');
+        $this->assertNull($result1, '\Yana\Db\Ddl\Table if you try to get a notexisting column, you should get null as result');
 
-        $result1 = $this->ddltable->getColumnsByType('integer');
-        $this->assertEquals(count($result1), 1, 'DDLTable::getColumnsByType does not match');
+        $result1 = $this->table->getColumnsByType('integer');
+        $this->assertEquals(count($result1), 1, '\Yana\Db\Ddl\Table::getColumnsByType does not match');
 
-        $result1 = $this->ddltable->getColumns();
-        $this->assertEquals(count($result1), 2, 'DDLTable::getColumns does not match');
+        $result1 = $this->table->getColumns();
+        $this->assertEquals(count($result1), 2, '\Yana\Db\Ddl\Table::getColumns does not match');
 
-        $result1 = $this->ddltable->getColumnNames();
-        $this->assertTrue(in_array($newColumns[0],$result1), 'DDLTable::getColumns does not match');
-        $this->assertTrue(in_array($newColumns[1],$result1), 'DDLTable::getColumns does not match');
+        $result1 = $this->table->getColumnNames();
+        $this->assertTrue(in_array($newColumns[0],$result1), '\Yana\Db\Ddl\Table::getColumns does not match');
+        $this->assertTrue(in_array($newColumns[1],$result1), '\Yana\Db\Ddl\Table::getColumns does not match');
 
-        $add3 = $this->ddltable->addColumn($newColumns[2], 'image');
-        $result1 = $this->ddltable->getFileColumns();
+        $add3 = $this->table->addColumn($newColumns[2], 'image');
+        $result1 = $this->table->getFileColumns();
         $result2 = array();
         foreach ($result1 as $s)
         {
             $result2[] = $s->getName();
         }
-        $this->assertFalse(in_array($newColumns[0],$result2), 'DDLTable::getFileColumns does not match');
-        $this->assertTrue(in_array($newColumns[2],$result2), 'DDLTable::getFileColumns does not match');
+        $this->assertFalse(in_array($newColumns[0],$result2), '\Yana\Db\Ddl\Table::getFileColumns does not match');
+        $this->assertTrue(in_array($newColumns[2],$result2), '\Yana\Db\Ddl\Table::getFileColumns does not match');
 
-        $checkprofile = $this->ddltable->hasProfile();
+        $checkprofile = $this->table->hasProfile();
         $this->assertFalse($checkprofile, 'assert failed, the tables doesnt have a profile');
 
-        $set = $this->ddltable->setProfile(true);
-        $get = $this->ddltable->getColumns();
+        $set = $this->table->setProfile(true);
+        $get = $this->table->getColumns();
         $this->assertArrayHasKey('profile_id', $get, 'assert failed, the "profile_id" should be exist in array');
-        $valid2 = $this->ddltable->hasProfile();
+        $valid2 = $this->table->hasProfile();
         $this->assertTrue($valid2, 'assert failed, the tables allready have a profile');
 
-        $set = $this->ddltable->setProfile(false);
-        $get = $this->ddltable->getColumns();
+        $set = $this->table->setProfile(false);
+        $get = $this->table->getColumns();
         $this->assertArrayNotHasKey('profile_id', $get, 'assert failed, the "profile_id" should not be exist in array');
 
-        $authorLog = $this->ddltable->hasAuthorLog();
+        $authorLog = $this->table->hasAuthorLog();
         $this->assertFalse($authorLog, 'assert failed, the tables doesnt have a authorLog');
 
-        $get1 = $this->ddltable->hasAuthorLog();
-        $get2 = $this->ddltable->hasAuthorLog(false);
-        $this->assertFalse($get1, 'DDLTable::setVersionCheck Versioncheck should be False');
-        $this->assertFalse($get2, 'DDLTable::setVersionCheck Versioncheck should be False');
+        $get1 = $this->table->hasAuthorLog();
+        $get2 = $this->table->hasAuthorLog(false);
+        $this->assertFalse($get1, '\Yana\Db\Ddl\Table::setVersionCheck Versioncheck should be False');
+        $this->assertFalse($get2, '\Yana\Db\Ddl\Table::setVersionCheck Versioncheck should be False');
 
         // check if column time_modified exist - expected false
-        $this->ddltable->setAuthorLog(true, false);
-        $get1 = $this->ddltable->hasAuthorLog();
-        $get2 = $this->ddltable->hasAuthorLog(false);
-        $result1 = $this->ddltable->getColumn('user_created');
-        $result2 = $this->ddltable->getColumn('user_modified');
-        $this->assertNotNull($result1, 'DDLTable::setVersionCheck time_created should be NULL');
-        $this->assertNull($result2, 'DDLTable::setVersionCheck time_modified should not be NULL');
-        $this->assertFalse($get1, 'DDLTable::setVersionCheck Versioncheck should be False');
-        $this->assertTrue($get2, 'DDLTable::setVersionCheck Versioncheck should be False');
+        $this->table->setAuthorLog(true, false);
+        $get1 = $this->table->hasAuthorLog();
+        $get2 = $this->table->hasAuthorLog(false);
+        $result1 = $this->table->getColumn('user_created');
+        $result2 = $this->table->getColumn('user_modified');
+        $this->assertNotNull($result1, '\Yana\Db\Ddl\Table::setVersionCheck time_created should be NULL');
+        $this->assertNull($result2, '\Yana\Db\Ddl\Table::setVersionCheck time_modified should not be NULL');
+        $this->assertFalse($get1, '\Yana\Db\Ddl\Table::setVersionCheck Versioncheck should be False');
+        $this->assertTrue($get2, '\Yana\Db\Ddl\Table::setVersionCheck Versioncheck should be False');
 
         // check if column time_created exist - expected true
-        $this->ddltable->setAuthorLog(true, true);
-        $get1 = $this->ddltable->hasAuthorLog();
-        $get2 = $this->ddltable->hasAuthorLog(false);
-        $result1 = $this->ddltable->getColumn('user_created');
-        $result2 = $this->ddltable->getColumn('user_modified');
-        $this->assertNotNull($result1, 'DDLTable::setVersionCheck time_created should be NULL');
-        $this->assertNotNull($result2, 'DDLTable::setVersionCheck time_modified should not be NULL');
-        $this->assertTrue($get1, 'DDLTable::setVersionCheck Versioncheck should be False');
-        $this->assertTrue($get2, 'DDLTable::setVersionCheck Versioncheck should be False');
+        $this->table->setAuthorLog(true, true);
+        $get1 = $this->table->hasAuthorLog();
+        $get2 = $this->table->hasAuthorLog(false);
+        $result1 = $this->table->getColumn('user_created');
+        $result2 = $this->table->getColumn('user_modified');
+        $this->assertNotNull($result1, '\Yana\Db\Ddl\Table::setVersionCheck time_created should be NULL');
+        $this->assertNotNull($result2, '\Yana\Db\Ddl\Table::setVersionCheck time_modified should not be NULL');
+        $this->assertTrue($get1, '\Yana\Db\Ddl\Table::setVersionCheck Versioncheck should be False');
+        $this->assertTrue($get2, '\Yana\Db\Ddl\Table::setVersionCheck Versioncheck should be False');
 
         // check if column time_created exist - expected true
-        $this->ddltable->setAuthorLog(false, true);
-        $result1 = $this->ddltable->getColumn('user_created');
-        $result2 = $this->ddltable->getColumn('user_modified');
-        $this->assertNotNull($result1, 'DDLTable::setVersionCheck time_created should be NULL');
-        $this->assertNull($result2, 'DDLTable::setVersionCheck time_modified should not be NULL');
+        $this->table->setAuthorLog(false, true);
+        $result1 = $this->table->getColumn('user_created');
+        $result2 = $this->table->getColumn('user_modified');
+        $this->assertNotNull($result1, '\Yana\Db\Ddl\Table::setVersionCheck time_created should be NULL');
+        $this->assertNull($result2, '\Yana\Db\Ddl\Table::setVersionCheck time_modified should not be NULL');
 
         // check if column time_created exist - expected true
-        $this->ddltable->setAuthorLog(false, false);
-        $result1 = $this->ddltable->getColumn('user_created');
-        $result2 = $this->ddltable->getColumn('user_modified');
-        $this->assertNull($result1, 'DDLTable::setVersionCheck time_created should be NULL');
-        $this->assertNull($result2, 'DDLTable::setVersionCheck time_modified should not be NULL');
+        $this->table->setAuthorLog(false, false);
+        $result1 = $this->table->getColumn('user_created');
+        $result2 = $this->table->getColumn('user_modified');
+        $this->assertNull($result1, '\Yana\Db\Ddl\Table::setVersionCheck time_created should be NULL');
+        $this->assertNull($result2, '\Yana\Db\Ddl\Table::setVersionCheck time_modified should not be NULL');
     }
 
     /**
@@ -3192,8 +3290,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testGetSchemaName()
     {
-        // DDLTable
-        $get = $this->ddltable->getSchemaName();
+        // \Yana\Db\Ddl\Table
+        $get = $this->table->getSchemaName();
         $this->assertNull($get, 'assert failed, expected null');
     }
 
@@ -3205,48 +3303,48 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testSetVersionCheck()
     {
-        // DDLTable
+        // \Yana\Db\Ddl\Table
 
-        $get1 = $this->ddltable->hasVersionCheck();
-        $get2 = $this->ddltable->hasVersionCheck(false);
-        $this->assertFalse($get1, 'DDLTable::setVersionCheck Versioncheck should be False');
-        $this->assertFalse($get2, 'DDLTable::setVersionCheck Versioncheck should be False');
+        $get1 = $this->table->hasVersionCheck();
+        $get2 = $this->table->hasVersionCheck(false);
+        $this->assertFalse($get1, '\Yana\Db\Ddl\Table::setVersionCheck Versioncheck should be False');
+        $this->assertFalse($get2, '\Yana\Db\Ddl\Table::setVersionCheck Versioncheck should be False');
 
         // check if column time_modified exist - expected false
-        $this->ddltable->setVersionCheck(true, false);
-        $get1 = $this->ddltable->hasVersionCheck();
-        $get2 = $this->ddltable->hasVersionCheck(false);
-        $result1 = $this->ddltable->getColumn('time_created');
-        $result2 = $this->ddltable->getColumn('time_modified');
-        $this->assertNotNull($result1, 'DDLTable::setVersionCheck time_created should be NULL');
-        $this->assertNull($result2, 'DDLTable::setVersionCheck time_modified should not be NULL');
-        $this->assertFalse($get1, 'DDLTable::setVersionCheck Versioncheck should be False');
-        $this->assertTrue($get2, 'DDLTable::setVersionCheck Versioncheck should be False');
+        $this->table->setVersionCheck(true, false);
+        $get1 = $this->table->hasVersionCheck();
+        $get2 = $this->table->hasVersionCheck(false);
+        $result1 = $this->table->getColumn('time_created');
+        $result2 = $this->table->getColumn('time_modified');
+        $this->assertNotNull($result1, '\Yana\Db\Ddl\Table::setVersionCheck time_created should be NULL');
+        $this->assertNull($result2, '\Yana\Db\Ddl\Table::setVersionCheck time_modified should not be NULL');
+        $this->assertFalse($get1, '\Yana\Db\Ddl\Table::setVersionCheck Versioncheck should be False');
+        $this->assertTrue($get2, '\Yana\Db\Ddl\Table::setVersionCheck Versioncheck should be False');
 
         // check if column time_created exist - expected true
-        $this->ddltable->setVersionCheck(true, true);
-        $get1 = $this->ddltable->hasVersionCheck();
-        $get2 = $this->ddltable->hasVersionCheck(false);
-        $result1 = $this->ddltable->getColumn('time_created');
-        $result2 = $this->ddltable->getColumn('time_modified');
-        $this->assertNotNull($result1, 'DDLTable::setVersionCheck time_created should be NULL');
-        $this->assertNotNull($result2, 'DDLTable::setVersionCheck time_modified should not be NULL');
-        $this->assertTrue($get1, 'DDLTable::setVersionCheck Versioncheck should be False');
-        $this->assertTrue($get2, 'DDLTable::setVersionCheck Versioncheck should be False');
+        $this->table->setVersionCheck(true, true);
+        $get1 = $this->table->hasVersionCheck();
+        $get2 = $this->table->hasVersionCheck(false);
+        $result1 = $this->table->getColumn('time_created');
+        $result2 = $this->table->getColumn('time_modified');
+        $this->assertNotNull($result1, '\Yana\Db\Ddl\Table::setVersionCheck time_created should be NULL');
+        $this->assertNotNull($result2, '\Yana\Db\Ddl\Table::setVersionCheck time_modified should not be NULL');
+        $this->assertTrue($get1, '\Yana\Db\Ddl\Table::setVersionCheck Versioncheck should be False');
+        $this->assertTrue($get2, '\Yana\Db\Ddl\Table::setVersionCheck Versioncheck should be False');
 
         // check if column time_created exist - expected true
-        $this->ddltable->setVersionCheck(false, true);
-        $result1 = $this->ddltable->getColumn('time_created');
-        $result2 = $this->ddltable->getColumn('time_modified');
-        $this->assertNotNull($result1, 'DDLTable::setVersionCheck time_created should be NULL');
-        $this->assertNull($result2, 'DDLTable::setVersionCheck time_modified should not be NULL');
+        $this->table->setVersionCheck(false, true);
+        $result1 = $this->table->getColumn('time_created');
+        $result2 = $this->table->getColumn('time_modified');
+        $this->assertNotNull($result1, '\Yana\Db\Ddl\Table::setVersionCheck time_created should be NULL');
+        $this->assertNull($result2, '\Yana\Db\Ddl\Table::setVersionCheck time_modified should not be NULL');
 
         // check if column time_created exist - expected true
-        $this->ddltable->setVersionCheck(false, false);
-        $result1 = $this->ddltable->getColumn('time_created');
-        $result2 = $this->ddltable->getColumn('time_modified');
-        $this->assertNull($result1, 'DDLTable::setVersionCheck time_created should be NULL');
-        $this->assertNull($result2, 'DDLTable::setVersionCheck time_modified should not be NULL');
+        $this->table->setVersionCheck(false, false);
+        $result1 = $this->table->getColumn('time_created');
+        $result2 = $this->table->getColumn('time_modified');
+        $this->assertNull($result1, '\Yana\Db\Ddl\Table::setVersionCheck time_created should be NULL');
+        $this->assertNull($result2, '\Yana\Db\Ddl\Table::setVersionCheck time_modified should not be NULL');
     }
 
     /**
@@ -3258,8 +3356,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testdropColumnNotFoundException()
     {
-        // DDLTable
-        $this->ddltable->dropColumn('test');
+        // \Yana\Db\Ddl\Table
+        $this->table->dropColumn('test');
     }
 
     /**
@@ -3269,23 +3367,23 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testAddForeignKey()
     {
-        // DDLTable
-        $ddltable = $this->ddldatabase->addTable('table');
-        $ddltable_target = $this->ddldatabase->addTable('table_target');
-        $ddltable_target->addColumn('testcolumn_target','integer');
-        $ddltable_target->setPrimaryKey('testcolumn_target');
-        $ddltable->addColumn('testcolumn','integer');
-        $fk = $ddltable->addForeignKey('table_target', 'cfkey');
+        // \Yana\Db\Ddl\Table
+        $table = $this->database->addTable('table');
+        $table_target = $this->database->addTable('table_target');
+        $table_target->addColumn('testcolumn_target','integer');
+        $table_target->setPrimaryKey('testcolumn_target');
+        $table->addColumn('testcolumn','integer');
+        $fk = $table->addForeignKey('table_target', 'cfkey');
         $fk->setColumn('testcolumn');
-        $getAll = $ddltable->getForeignKeys();
+        $getAll = $table->getForeignKeys();
         $this->assertType('array', $getAll, 'assert failed the values is not an array');
 
         foreach($getAll as $key =>$value)
         {
-            $this->assertTrue($value instanceof DDLForeignKey, 'assert failed, the value should be an instance of DDLForeignKey');
+            $this->assertTrue($value instanceof \Yana\Db\Ddl\ForeignKey, 'assert failed, the value should be an instance of \Yana\Db\Ddl\ForeignKey');
         }
 
-        $cfkey = $ddltable->getForeignKey('cfkey');
+        $cfkey = $table->getForeignKey('cfkey');
 
         $this->assertNotNull($cfkey, 'ForeignKey was not retrieved by constraint Name');
     }
@@ -3298,7 +3396,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testPrimaryKey()
     {
-        $get = $this->ddltable->getPrimaryKey();
+        $get = $this->table->getPrimaryKey();
     }
 
     /**
@@ -3310,8 +3408,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testSetPrimaryKeyNotFoundException()
     {
-        // DDLTable
-        $this->ddltable->setPrimaryKey('no_column');
+        // \Yana\Db\Ddl\Table
+        $this->table->setPrimaryKey('no_column');
     }
 
     /**
@@ -3321,12 +3419,12 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testInheritance()
     {
-        // DDLTable
-        $this->ddltable->setInheritance('inheritance');
-        $get = $this->ddltable->getInheritance();
+        // \Yana\Db\Ddl\Table
+        $this->table->setInheritance('inheritance');
+        $get = $this->table->getInheritance();
         $this->assertEquals('inheritance', $get, 'assert failed, the values should be equal');
-        $this->ddltable->setInheritance('');
-        $get = $this->ddltable->getInheritance();
+        $this->table->setInheritance('');
+        $get = $this->table->getInheritance();
         $this->assertNull($get, 'assert failed, expected null');
     }
 
@@ -3337,21 +3435,21 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testAddIndex()
     {
-        $this->ddltable->addIndex('test');
-        $index = $this->ddltable->getIndex('test');
-        $this->assertTrue($index instanceof DDLIndex, 'Method getIndex() should return DDLIndex objects.');
-        $index = $this->ddltable->getIndex('non-existing-index');
+        $this->table->addIndex('test');
+        $index = $this->table->getIndex('test');
+        $this->assertTrue($index instanceof \Yana\Db\Ddl\Index, 'Method getIndex() should return \Yana\Db\Ddl\Index objects.');
+        $index = $this->table->getIndex('non-existing-index');
         $this->assertNull($index, 'Search for non-existing index must return NULL.');
 
-        $this->ddltable->addIndex('othertest');
-        $index = $this->ddltable->getIndex('othertest');
-        $this->assertTrue($index instanceof DDLIndex, 'Method getIndex() should return DDLIndex objects.');
+        $this->table->addIndex('othertest');
+        $index = $this->table->getIndex('othertest');
+        $this->assertTrue($index instanceof \Yana\Db\Ddl\Index, 'Method getIndex() should return \Yana\Db\Ddl\Index objects.');
 
         // add two more anonymous indexes
-        $this->ddltable->addIndex();
-        $this->ddltable->addIndex();
+        $this->table->addIndex();
+        $this->table->addIndex();
 
-        $indexes = $this->ddltable->getIndexes();
+        $indexes = $this->table->getIndexes();
         $this->assertArrayHasKey('test', $indexes, 'Expected index "test" not found.');
         $this->assertArrayHasKey('othertest', $indexes, 'Expected index "othertest" not found.');
         $this->assertArrayHasKey(0, $indexes, 'Anonymous index "0" not found.');
@@ -3366,15 +3464,15 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testAddIndexAlreadyExistsException()
     {
-        $this->ddltable->addColumn('column', 'string');
+        $this->table->addColumn('column', 'string');
         try {
             // supposed to succeed
-            $this->ddltable->addIndex('column', 'index');
+            $this->table->addIndex('column', 'index');
         } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
-        $this->ddltable->addIndex('column', 'index');
+        $this->table->addIndex('column', 'index');
     }
 
     /**
@@ -3386,12 +3484,12 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
         try {
             // supposed to succeed
-            $this->ddltable->addColumn('column', 'string');
+            $this->table->addColumn('column', 'string');
         } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
-        $this->ddltable->addColumn('column', 'string');
+        $this->table->addColumn('column', 'string');
     }
 
     /**
@@ -3403,239 +3501,239 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     {
 
         $testArray1 = array("sometrigger 1", "sometrigger 2", "sometrigger 3");
-        // DDLTable
+        // \Yana\Db\Ddl\Table
 
-        // DDLTable::setTriggerBeforeInsert
-        $trigger = $this->ddltable->setTriggerBeforeInsert($testArray1[0]);
-        $this->assertTrue($trigger->isBefore(), "DDLTrigger::isBefore returns wrong value");
-        $this->assertFalse($trigger->isAfter(), "DDLTrigger::isAfter returns wrong value");
-        $this->assertFalse($trigger->isInstead(), "DDLTrigger::isInstead returns wrong value");
-        $this->assertTrue($trigger->isInsert(), "DDLTrigger::isInsert returns wrong value");
-        $this->assertFalse($trigger->isUpdate(), "DDLTrigger::isUpdate returns wrong value");
-        $this->assertFalse($trigger->isDelete(), "DDLTrigger::isDelete returns wrong value");
-        $this->ddltable->setTriggerBeforeInsert($testArray1[1]);
-        $this->ddltable->setTriggerBeforeInsert($testArray1[2]);
-        $get = $this->ddltable->getTriggerBeforeInsert();
-        $this->assertEquals($get, $testArray1[0], 'DDLTable::setTriggerBeforeInsert, the arrays should be equal');
-        $get = $this->ddltable->getTriggerBeforeInsert('mysql');
-        $this->assertNull($get, 'DDLTable::setTriggerBeforeInsert, expected null - trigger "mysql" does not exist');
-        unset ($this->ddltable);
-        $this->ddltable = new DDLTable('table');
+        // \Yana\Db\Ddl\Table::setTriggerBeforeInsert
+        $trigger = $this->table->setTriggerBeforeInsert($testArray1[0]);
+        $this->assertTrue($trigger->isBefore(), "\Yana\Db\Ddl\Trigger::isBefore returns wrong value");
+        $this->assertFalse($trigger->isAfter(), "\Yana\Db\Ddl\Trigger::isAfter returns wrong value");
+        $this->assertFalse($trigger->isInstead(), "\Yana\Db\Ddl\Trigger::isInstead returns wrong value");
+        $this->assertTrue($trigger->isInsert(), "\Yana\Db\Ddl\Trigger::isInsert returns wrong value");
+        $this->assertFalse($trigger->isUpdate(), "\Yana\Db\Ddl\Trigger::isUpdate returns wrong value");
+        $this->assertFalse($trigger->isDelete(), "\Yana\Db\Ddl\Trigger::isDelete returns wrong value");
+        $this->table->setTriggerBeforeInsert($testArray1[1]);
+        $this->table->setTriggerBeforeInsert($testArray1[2]);
+        $get = $this->table->getTriggerBeforeInsert();
+        $this->assertEquals($get, $testArray1[0], '\Yana\Db\Ddl\Table::setTriggerBeforeInsert, the arrays should be equal');
+        $get = $this->table->getTriggerBeforeInsert('mysql');
+        $this->assertNull($get, '\Yana\Db\Ddl\Table::setTriggerBeforeInsert, expected null - trigger "mysql" does not exist');
+        unset ($this->table);
+        $this->table = new \Yana\Db\Ddl\Table('table');
 
-        // DDLTable::setTriggerBeforeUpdate
-        $this->ddltable->setTriggerBeforeUpdate($testArray1[0]);
-        $trigger = $this->ddltable->setTriggerBeforeUpdate($testArray1[1]);
-        $this->ddltable->setTriggerBeforeUpdate($testArray1[2]);
-        $get = $this->ddltable->getTriggerBeforeUpdate();
-        $this->assertEquals($get, $testArray1[0], 'DDLTable::setTriggerBeforeUpdate, the arrays should be equal');
-        $get = $this->ddltable->getTriggerBeforeUpdate('mysql');
-        $this->assertNull($get, 'DDLTable::setTriggerBeforeInsert, expected null - trigger "mysql" does not exist');
-        unset ($this->ddltable);
-        $this->ddltable = new DDLTable('table');
+        // \Yana\Db\Ddl\Table::setTriggerBeforeUpdate
+        $this->table->setTriggerBeforeUpdate($testArray1[0]);
+        $trigger = $this->table->setTriggerBeforeUpdate($testArray1[1]);
+        $this->table->setTriggerBeforeUpdate($testArray1[2]);
+        $get = $this->table->getTriggerBeforeUpdate();
+        $this->assertEquals($get, $testArray1[0], '\Yana\Db\Ddl\Table::setTriggerBeforeUpdate, the arrays should be equal');
+        $get = $this->table->getTriggerBeforeUpdate('mysql');
+        $this->assertNull($get, '\Yana\Db\Ddl\Table::setTriggerBeforeInsert, expected null - trigger "mysql" does not exist');
+        unset ($this->table);
+        $this->table = new \Yana\Db\Ddl\Table('table');
 
-        // DDLTable::setTriggerBeforeDelete
-        $this->ddltable->setTriggerBeforeDelete($testArray1[0]);
-        $this->ddltable->setTriggerBeforeDelete($testArray1[1]);
-        $this->ddltable->setTriggerBeforeDelete($testArray1[2]);
-        $get = $this->ddltable->getTriggerBeforeDelete();
-        $this->assertEquals($get, $testArray1[0], 'DDLTable::setTriggerBeforeDelete, the arrays should be equal');
-        $get = $this->ddltable->getTriggerBeforeDelete('mysql');
-        $this->assertNull($get, 'DDLTable::setTriggerBeforeInsert, expected null - trigger "mysql" does not exist');
-        unset ($this->ddltable);
-        $this->ddltable = new DDLTable('table');
+        // \Yana\Db\Ddl\Table::setTriggerBeforeDelete
+        $this->table->setTriggerBeforeDelete($testArray1[0]);
+        $this->table->setTriggerBeforeDelete($testArray1[1]);
+        $this->table->setTriggerBeforeDelete($testArray1[2]);
+        $get = $this->table->getTriggerBeforeDelete();
+        $this->assertEquals($get, $testArray1[0], '\Yana\Db\Ddl\Table::setTriggerBeforeDelete, the arrays should be equal');
+        $get = $this->table->getTriggerBeforeDelete('mysql');
+        $this->assertNull($get, '\Yana\Db\Ddl\Table::setTriggerBeforeInsert, expected null - trigger "mysql" does not exist');
+        unset ($this->table);
+        $this->table = new \Yana\Db\Ddl\Table('table');
 
-        // DDLTable::setTriggerAfterInsert
-        $this->ddltable->setTriggerAfterInsert($testArray1[0]);
-        $this->ddltable->setTriggerAfterInsert($testArray1[1]);
-        $this->ddltable->setTriggerAfterInsert($testArray1[2]);
-        $get = $this->ddltable->getTriggerAfterInsert();
-        $this->assertEquals($get, $testArray1[0], 'DDLTable::setTriggerAfterInsert, the arrays should be equal');
-        $get = $this->ddltable->getTriggerAfterInsert('mysql');
-        $this->assertNull($get, 'DDLTable::setTriggerBeforeInsert, expected null - trigger "mysql" does not exist');
-        unset ($this->ddltable);
-        $this->ddltable = new DDLTable('table');
+        // \Yana\Db\Ddl\Table::setTriggerAfterInsert
+        $this->table->setTriggerAfterInsert($testArray1[0]);
+        $this->table->setTriggerAfterInsert($testArray1[1]);
+        $this->table->setTriggerAfterInsert($testArray1[2]);
+        $get = $this->table->getTriggerAfterInsert();
+        $this->assertEquals($get, $testArray1[0], '\Yana\Db\Ddl\Table::setTriggerAfterInsert, the arrays should be equal');
+        $get = $this->table->getTriggerAfterInsert('mysql');
+        $this->assertNull($get, '\Yana\Db\Ddl\Table::setTriggerBeforeInsert, expected null - trigger "mysql" does not exist');
+        unset ($this->table);
+        $this->table = new \Yana\Db\Ddl\Table('table');
 
-        // DDLTable::setTriggerAfterUpdate
-        $this->ddltable->setTriggerAfterUpdate($testArray1[0]);
-        $trigger = $this->ddltable->setTriggerAfterUpdate($testArray1[1]);
-        $this->assertFalse($trigger->isBefore(), "DDLTrigger::isBefore returns wrong value");
-        $this->assertTrue($trigger->isAfter(), "DDLTrigger::isAfter returns wrong value");
-        $this->assertFalse($trigger->isInstead(), "DDLTrigger::isInstead returns wrong value");
-        $this->assertFalse($trigger->isInsert(), "DDLTrigger::isInsert returns wrong value");
-        $this->assertTrue($trigger->isUpdate(), "DDLTrigger::isUpdate returns wrong value");
-        $this->assertFalse($trigger->isDelete(), "DDLTrigger::isDelete returns wrong value");
-        $this->ddltable->setTriggerAfterUpdate($testArray1[2]);
-        $get = $this->ddltable->getTriggerAfterUpdate();
-        $this->assertEquals($get, $testArray1[0], 'DDLTable::setTriggerAfterUpdate, the arrays should be equal');
-        $get = $this->ddltable->getTriggerAfterUpdate('mysql');
-        $this->assertNull($get, 'DDLTable::setTriggerBeforeInsert, expected null - trigger "mysql" does not exist');
-        unset ($this->ddltable);
-        $this->ddltable = new DDLTable('table');
+        // \Yana\Db\Ddl\Table::setTriggerAfterUpdate
+        $this->table->setTriggerAfterUpdate($testArray1[0]);
+        $trigger = $this->table->setTriggerAfterUpdate($testArray1[1]);
+        $this->assertFalse($trigger->isBefore(), "\Yana\Db\Ddl\Trigger::isBefore returns wrong value");
+        $this->assertTrue($trigger->isAfter(), "\Yana\Db\Ddl\Trigger::isAfter returns wrong value");
+        $this->assertFalse($trigger->isInstead(), "\Yana\Db\Ddl\Trigger::isInstead returns wrong value");
+        $this->assertFalse($trigger->isInsert(), "\Yana\Db\Ddl\Trigger::isInsert returns wrong value");
+        $this->assertTrue($trigger->isUpdate(), "\Yana\Db\Ddl\Trigger::isUpdate returns wrong value");
+        $this->assertFalse($trigger->isDelete(), "\Yana\Db\Ddl\Trigger::isDelete returns wrong value");
+        $this->table->setTriggerAfterUpdate($testArray1[2]);
+        $get = $this->table->getTriggerAfterUpdate();
+        $this->assertEquals($get, $testArray1[0], '\Yana\Db\Ddl\Table::setTriggerAfterUpdate, the arrays should be equal');
+        $get = $this->table->getTriggerAfterUpdate('mysql');
+        $this->assertNull($get, '\Yana\Db\Ddl\Table::setTriggerBeforeInsert, expected null - trigger "mysql" does not exist');
+        unset ($this->table);
+        $this->table = new \Yana\Db\Ddl\Table('table');
 
-        // DDLTable::setTriggerAfterDelete
-        $this->ddltable->setTriggerAfterDelete($testArray1[0]);
-        $this->ddltable->setTriggerAfterDelete($testArray1[1]);
-        $this->ddltable->setTriggerAfterDelete($testArray1[2]);
-        $get = $this->ddltable->getTriggerAfterDelete();
-        $this->assertEquals($get, $testArray1[0], 'DDLTable::setTriggerAfterDelete, the arrays should be equal');
-        $get = $this->ddltable->getTriggerAfterDelete('mysql');
-        $this->assertNull($get, 'DDLTable::setTriggerBeforeInsert, expected null - trigger "mysql" does not exist');
-        unset ($this->ddltable);
-        $this->ddltable = new DDLTable('table');
+        // \Yana\Db\Ddl\Table::setTriggerAfterDelete
+        $this->table->setTriggerAfterDelete($testArray1[0]);
+        $this->table->setTriggerAfterDelete($testArray1[1]);
+        $this->table->setTriggerAfterDelete($testArray1[2]);
+        $get = $this->table->getTriggerAfterDelete();
+        $this->assertEquals($get, $testArray1[0], '\Yana\Db\Ddl\Table::setTriggerAfterDelete, the arrays should be equal');
+        $get = $this->table->getTriggerAfterDelete('mysql');
+        $this->assertNull($get, '\Yana\Db\Ddl\Table::setTriggerBeforeInsert, expected null - trigger "mysql" does not exist');
+        unset ($this->table);
+        $this->table = new \Yana\Db\Ddl\Table('table');
 
-        // DDLTable::setTriggerInsteadInsert
-        $this->ddltable->setTriggerInsteadInsert($testArray1[0]);
-        $this->ddltable->setTriggerInsteadInsert($testArray1[1]);
-        $this->ddltable->setTriggerInsteadInsert($testArray1[2]);
-        $get = $this->ddltable->getTriggerInsteadInsert();
-        $this->assertEquals($get, $testArray1[0], 'DDLTable::setTriggerInsteadInsert, the arrays should be equal');
-        $get = $this->ddltable->getTriggerInsteadInsert('mysql');
-        $this->assertNull($get, 'DDLTable::setTriggerInsteadInsert, expected null - trigger "mysql" does not exist');
-        unset ($this->ddltable);
-        $this->ddltable = new DDLTable('table');
+        // \Yana\Db\Ddl\Table::setTriggerInsteadInsert
+        $this->table->setTriggerInsteadInsert($testArray1[0]);
+        $this->table->setTriggerInsteadInsert($testArray1[1]);
+        $this->table->setTriggerInsteadInsert($testArray1[2]);
+        $get = $this->table->getTriggerInsteadInsert();
+        $this->assertEquals($get, $testArray1[0], '\Yana\Db\Ddl\Table::setTriggerInsteadInsert, the arrays should be equal');
+        $get = $this->table->getTriggerInsteadInsert('mysql');
+        $this->assertNull($get, '\Yana\Db\Ddl\Table::setTriggerInsteadInsert, expected null - trigger "mysql" does not exist');
+        unset ($this->table);
+        $this->table = new \Yana\Db\Ddl\Table('table');
 
-        // DDLTable::setTriggerInsteadUpdate
-        $this->ddltable->setTriggerInsteadUpdate($testArray1[0]);
-        $this->ddltable->setTriggerInsteadUpdate($testArray1[1]);
-        $this->ddltable->setTriggerInsteadUpdate($testArray1[2]);
-        $get = $this->ddltable->getTriggerInsteadUpdate();
-        $this->assertEquals($get, $testArray1[0], 'DDLTable::setTriggerInsteadUpdate, the arrays should be equal');
-        $get = $this->ddltable->getTriggerInsteadUpdate('mysql');
-        $this->assertNull($get, 'DDLTable::setTriggerInsteadUpdate, expected null - trigger "mysql" does not exist');
-        unset ($this->ddltable);
-        $this->ddltable = new DDLTable('table');
+        // \Yana\Db\Ddl\Table::setTriggerInsteadUpdate
+        $this->table->setTriggerInsteadUpdate($testArray1[0]);
+        $this->table->setTriggerInsteadUpdate($testArray1[1]);
+        $this->table->setTriggerInsteadUpdate($testArray1[2]);
+        $get = $this->table->getTriggerInsteadUpdate();
+        $this->assertEquals($get, $testArray1[0], '\Yana\Db\Ddl\Table::setTriggerInsteadUpdate, the arrays should be equal');
+        $get = $this->table->getTriggerInsteadUpdate('mysql');
+        $this->assertNull($get, '\Yana\Db\Ddl\Table::setTriggerInsteadUpdate, expected null - trigger "mysql" does not exist');
+        unset ($this->table);
+        $this->table = new \Yana\Db\Ddl\Table('table');
 
-        // DDLTable::setTriggerInsteadDelete
-        $this->ddltable->setTriggerInsteadDelete($testArray1[0]);
-        $this->ddltable->setTriggerInsteadDelete($testArray1[1]);
-        $this->ddltable->setTriggerInsteadDelete($testArray1[2]);
-        $get = $this->ddltable->getTriggerInsteadDelete();
-        $this->assertEquals($get, $testArray1[0], 'DDLTable::setTriggerInsteadDelete, the arrays should be equal');
-        $get = $this->ddltable->getTriggerInsteadDelete('mysql');
-        $this->assertNull($get, 'DDLTable::setTriggerInsteadDelete, expected null - trigger "mysql" does not exist');
-        unset ($this->ddltable);
-        $this->ddltable = new DDLTable('table');
+        // \Yana\Db\Ddl\Table::setTriggerInsteadDelete
+        $this->table->setTriggerInsteadDelete($testArray1[0]);
+        $this->table->setTriggerInsteadDelete($testArray1[1]);
+        $this->table->setTriggerInsteadDelete($testArray1[2]);
+        $get = $this->table->getTriggerInsteadDelete();
+        $this->assertEquals($get, $testArray1[0], '\Yana\Db\Ddl\Table::setTriggerInsteadDelete, the arrays should be equal');
+        $get = $this->table->getTriggerInsteadDelete('mysql');
+        $this->assertNull($get, '\Yana\Db\Ddl\Table::setTriggerInsteadDelete, expected null - trigger "mysql" does not exist');
+        unset ($this->table);
+        $this->table = new \Yana\Db\Ddl\Table('table');
 
 
         // set the same with name
 
-//        // DDLTable::setTriggerBeforeInsert
-//        $this->ddltable->setTriggerBeforeInsert($testArray1[0], 'generic', 'test1');
-//        $this->ddltable->setTriggerBeforeInsert($testArray1[1], 'generic', 'test2');
-//        $this->ddltable->setTriggerBeforeInsert($testArray1[2], 'generic', 'test3');
-//        $get = $this->ddltable->getTriggerBeforeInsert();
-//        $this->assertEquals('sometrigger 1', $testArray1[0], 'DDLTable::setTriggerBeforeInsert, the value "sometrigger 1" must be in array');
-//        $this->assertEquals('sometrigger 2', $testArray1[1], 'DDLTable::setTriggerBeforeInsert, the value "sometrigger 2" must be in array');
-//        $this->assertEquals('sometrigger 3', $testArray1[2], 'DDLTable::setTriggerBeforeInsert , the value "sometrigger 3" must be in array');
-//        unset ($this->ddltable);
-//        $this->ddltable = new DDLTable('table');
+//        // \Yana\Db\Ddl\Table::setTriggerBeforeInsert
+//        $this->table->setTriggerBeforeInsert($testArray1[0], 'generic', 'test1');
+//        $this->table->setTriggerBeforeInsert($testArray1[1], 'generic', 'test2');
+//        $this->table->setTriggerBeforeInsert($testArray1[2], 'generic', 'test3');
+//        $get = $this->table->getTriggerBeforeInsert();
+//        $this->assertEquals('sometrigger 1', $testArray1[0], '\Yana\Db\Ddl\Table::setTriggerBeforeInsert, the value "sometrigger 1" must be in array');
+//        $this->assertEquals('sometrigger 2', $testArray1[1], '\Yana\Db\Ddl\Table::setTriggerBeforeInsert, the value "sometrigger 2" must be in array');
+//        $this->assertEquals('sometrigger 3', $testArray1[2], '\Yana\Db\Ddl\Table::setTriggerBeforeInsert , the value "sometrigger 3" must be in array');
+//        unset ($this->table);
+//        $this->table = new \Yana\Db\Ddl\Table('table');
 //
-//        // DDLTable::setTriggerBeforeUpdate
-//        $this->ddltable->setTriggerBeforeUpdate($testArray1[0], 'generic', 'test1');
-//        $this->ddltable->setTriggerBeforeUpdate($testArray1[1], 'generic', 'test2');
-//        $this->ddltable->setTriggerBeforeUpdate($testArray1[2], 'generic', 'test3');
-//        $get = $this->ddltable->getTriggerBeforeUpdate();
-//        $this->assertEquals('sometrigger 1', $testArray1[0], 'DDLTable::setTriggerBeforeUpdate, the value "sometrigger 1" must be in array');
-//        $this->assertEquals('sometrigger 2', $testArray1[1], 'DDLTable::setTriggerBeforeUpdate, the value "sometrigger 2" must be in array');
-//        $this->assertEquals('sometrigger 3', $testArray1[2], 'DDLTable::setTriggerBeforeUpdate, the value "sometrigger 3" must be in array');
-//        unset ($this->ddltable);
-//        $this->ddltable = new DDLTable('table');
+//        // \Yana\Db\Ddl\Table::setTriggerBeforeUpdate
+//        $this->table->setTriggerBeforeUpdate($testArray1[0], 'generic', 'test1');
+//        $this->table->setTriggerBeforeUpdate($testArray1[1], 'generic', 'test2');
+//        $this->table->setTriggerBeforeUpdate($testArray1[2], 'generic', 'test3');
+//        $get = $this->table->getTriggerBeforeUpdate();
+//        $this->assertEquals('sometrigger 1', $testArray1[0], '\Yana\Db\Ddl\Table::setTriggerBeforeUpdate, the value "sometrigger 1" must be in array');
+//        $this->assertEquals('sometrigger 2', $testArray1[1], '\Yana\Db\Ddl\Table::setTriggerBeforeUpdate, the value "sometrigger 2" must be in array');
+//        $this->assertEquals('sometrigger 3', $testArray1[2], '\Yana\Db\Ddl\Table::setTriggerBeforeUpdate, the value "sometrigger 3" must be in array');
+//        unset ($this->table);
+//        $this->table = new \Yana\Db\Ddl\Table('table');
 //
-//        // DDLTable::setTriggerBeforeDelete
-//        $this->ddltable->setTriggerBeforeDelete($testArray1[0], 'generic', 'test1');
-//        $this->ddltable->setTriggerBeforeDelete($testArray1[1], 'generic', 'test2');
-//        $this->ddltable->setTriggerBeforeDelete($testArray1[2], 'generic', 'test3');
-//        $get = $this->ddltable->getTriggerBeforeDelete();
-//        $this->assertEquals('sometrigger 1', $testArray1[0], 'DDLTable::setTriggerBeforeDelete, the value "sometrigger 1" must be in array');
-//        $this->assertEquals('sometrigger 2', $testArray1[1], 'DDLTable::setTriggerBeforeDelete, the value "sometrigger 2" must be in array');
-//        $this->assertEquals('sometrigger 3', $testArray1[2], 'DDLTable::setTriggerBeforeDelete, the value "sometrigger 3" must be in array');
-//        unset ($this->ddltable);
-//        $this->ddltable = new DDLTable('table');
+//        // \Yana\Db\Ddl\Table::setTriggerBeforeDelete
+//        $this->table->setTriggerBeforeDelete($testArray1[0], 'generic', 'test1');
+//        $this->table->setTriggerBeforeDelete($testArray1[1], 'generic', 'test2');
+//        $this->table->setTriggerBeforeDelete($testArray1[2], 'generic', 'test3');
+//        $get = $this->table->getTriggerBeforeDelete();
+//        $this->assertEquals('sometrigger 1', $testArray1[0], '\Yana\Db\Ddl\Table::setTriggerBeforeDelete, the value "sometrigger 1" must be in array');
+//        $this->assertEquals('sometrigger 2', $testArray1[1], '\Yana\Db\Ddl\Table::setTriggerBeforeDelete, the value "sometrigger 2" must be in array');
+//        $this->assertEquals('sometrigger 3', $testArray1[2], '\Yana\Db\Ddl\Table::setTriggerBeforeDelete, the value "sometrigger 3" must be in array');
+//        unset ($this->table);
+//        $this->table = new \Yana\Db\Ddl\Table('table');
 //
-//        // DDLTable::setTriggerAfterInsert
-//        $this->ddltable->setTriggerAfterInsert($testArray1[0], 'generic', 'test1');
-//        $this->ddltable->setTriggerAfterInsert($testArray1[1], 'generic', 'test2');
-//        $this->ddltable->setTriggerAfterInsert($testArray1[2], 'generic', 'test3');
-//        $get = $this->ddltable->getTriggerAfterInsert();
-//        $this->assertEquals('sometrigger 1', $testArray1[0], 'DDLTable::setTriggerAfterInsert, the value "sometrigger 1" must be in array');
-//        $this->assertEquals('sometrigger 2', $testArray1[1], 'DDLTable::setTriggerAfterInsert, the value "sometrigger 2" must be in array');
-//        $this->assertEquals('sometrigger 3', $testArray1[2], 'DDLTable::setTriggerAfterInsert, the value "sometrigger 3" must be in array');
-//        unset ($this->ddltable);
-//        $this->ddltable = new DDLTable('table');
+//        // \Yana\Db\Ddl\Table::setTriggerAfterInsert
+//        $this->table->setTriggerAfterInsert($testArray1[0], 'generic', 'test1');
+//        $this->table->setTriggerAfterInsert($testArray1[1], 'generic', 'test2');
+//        $this->table->setTriggerAfterInsert($testArray1[2], 'generic', 'test3');
+//        $get = $this->table->getTriggerAfterInsert();
+//        $this->assertEquals('sometrigger 1', $testArray1[0], '\Yana\Db\Ddl\Table::setTriggerAfterInsert, the value "sometrigger 1" must be in array');
+//        $this->assertEquals('sometrigger 2', $testArray1[1], '\Yana\Db\Ddl\Table::setTriggerAfterInsert, the value "sometrigger 2" must be in array');
+//        $this->assertEquals('sometrigger 3', $testArray1[2], '\Yana\Db\Ddl\Table::setTriggerAfterInsert, the value "sometrigger 3" must be in array');
+//        unset ($this->table);
+//        $this->table = new \Yana\Db\Ddl\Table('table');
 //
-//        // DDLTable::setTriggerAfterUpdate
-//        $this->ddltable->setTriggerAfterUpdate($testArray1[0], 'generic', 'test1');
-//        $this->ddltable->setTriggerAfterUpdate($testArray1[1], 'generic', 'test2');
-//        $this->ddltable->setTriggerAfterUpdate($testArray1[2], 'generic', 'test3');
-//        $get = $this->ddltable->getTriggerAfterUpdate();
-//        $this->assertEquals('sometrigger 1', $testArray1[0], 'DDLTable::setTriggerAfterUpdate, the value "sometrigger 1" must be in array');
-//        $this->assertEquals('sometrigger 2', $testArray1[1], 'DDLTable::setTriggerAfterUpdate, the value "sometrigger 2" must be in array');
-//        $this->assertEquals('sometrigger 3', $testArray1[2], 'DDLTable::setTriggerAfterUpdate, the value "sometrigger 3" must be in array');
-//        unset ($this->ddltable);
-//        $this->ddltable = new DDLTable('table');
+//        // \Yana\Db\Ddl\Table::setTriggerAfterUpdate
+//        $this->table->setTriggerAfterUpdate($testArray1[0], 'generic', 'test1');
+//        $this->table->setTriggerAfterUpdate($testArray1[1], 'generic', 'test2');
+//        $this->table->setTriggerAfterUpdate($testArray1[2], 'generic', 'test3');
+//        $get = $this->table->getTriggerAfterUpdate();
+//        $this->assertEquals('sometrigger 1', $testArray1[0], '\Yana\Db\Ddl\Table::setTriggerAfterUpdate, the value "sometrigger 1" must be in array');
+//        $this->assertEquals('sometrigger 2', $testArray1[1], '\Yana\Db\Ddl\Table::setTriggerAfterUpdate, the value "sometrigger 2" must be in array');
+//        $this->assertEquals('sometrigger 3', $testArray1[2], '\Yana\Db\Ddl\Table::setTriggerAfterUpdate, the value "sometrigger 3" must be in array');
+//        unset ($this->table);
+//        $this->table = new \Yana\Db\Ddl\Table('table');
 //
-//        // DDLTable::setTriggerAfterDelete
-//        $this->ddltable->setTriggerAfterDelete($testArray1[0], 'generic', 'test1');
-//        $this->ddltable->setTriggerAfterDelete($testArray1[1], 'generic', 'test2');
-//        $this->ddltable->setTriggerAfterDelete($testArray1[2], 'generic', 'test3');
-//        $get = $this->ddltable->getTriggerAfterDelete();
-//        $this->assertEquals('sometrigger 1', $testArray1[0], 'DDLTable::setTriggerAfterDelete, the value "sometrigger 1" must be in array');
-//        $this->assertEquals('sometrigger 2', $testArray1[1], 'DDLTable::setTriggerAfterDelete, the value "sometrigger 2" must be in array');
-//        $this->assertEquals('sometrigger 3', $testArray1[2], 'DDLTable::setTriggerAfterDelete, the value "sometrigger 3" must be in array');
+//        // \Yana\Db\Ddl\Table::setTriggerAfterDelete
+//        $this->table->setTriggerAfterDelete($testArray1[0], 'generic', 'test1');
+//        $this->table->setTriggerAfterDelete($testArray1[1], 'generic', 'test2');
+//        $this->table->setTriggerAfterDelete($testArray1[2], 'generic', 'test3');
+//        $get = $this->table->getTriggerAfterDelete();
+//        $this->assertEquals('sometrigger 1', $testArray1[0], '\Yana\Db\Ddl\Table::setTriggerAfterDelete, the value "sometrigger 1" must be in array');
+//        $this->assertEquals('sometrigger 2', $testArray1[1], '\Yana\Db\Ddl\Table::setTriggerAfterDelete, the value "sometrigger 2" must be in array');
+//        $this->assertEquals('sometrigger 3', $testArray1[2], '\Yana\Db\Ddl\Table::setTriggerAfterDelete, the value "sometrigger 3" must be in array');
 //
-//         // DDLTrigger::setTriggerBeforeInsert
-//        $this->ddltrigger->setTriggerBeforeInsert($testArray1[0]);
-//        $get = $this->ddltrigger->getTriggerBeforeInsert();
-//        $this->assertEquals($testArray1[0], $get, 'DDLTrigger::setTriggerBeforeInsert, the values must be equal');
+//         // \Yana\Db\Ddl\Trigger::setTriggerBeforeInsert
+//        $this->trigger->setTriggerBeforeInsert($testArray1[0]);
+//        $get = $this->trigger->getTriggerBeforeInsert();
+//        $this->assertEquals($testArray1[0], $get, '\Yana\Db\Ddl\Trigger::setTriggerBeforeInsert, the values must be equal');
 //
-//        $this->ddltrigger->setTriggerBeforeInsert();
-//        $get = $this->ddltrigger->getTriggerBeforeInsert();
-//        $this->assertNull($get, 'DDLTrigger::setTriggerBeforeInsert, expected null - trigger is not set');
+//        $this->trigger->setTriggerBeforeInsert();
+//        $get = $this->trigger->getTriggerBeforeInsert();
+//        $this->assertNull($get, '\Yana\Db\Ddl\Trigger::setTriggerBeforeInsert, expected null - trigger is not set');
 //
-//        // DDLTrigger::setTriggerBeforeUpdate
-//        $this->ddltrigger->setTriggerBeforeUpdate($testArray1[0], 'generic', 'test1');
-//        $get = $this->ddltrigger->getTriggerBeforeUpdate();
-//        $this->assertEquals($testArray1[0], $get, 'DDLTrigger::setTriggerBeforeUpdate the values must be equal');
+//        // \Yana\Db\Ddl\Trigger::setTriggerBeforeUpdate
+//        $this->trigger->setTriggerBeforeUpdate($testArray1[0], 'generic', 'test1');
+//        $get = $this->trigger->getTriggerBeforeUpdate();
+//        $this->assertEquals($testArray1[0], $get, '\Yana\Db\Ddl\Trigger::setTriggerBeforeUpdate the values must be equal');
 //
-//        $this->ddltrigger->setTriggerBeforeUpdate();
-//        $get = $this->ddltrigger->getTriggerBeforeUpdate();
-//        $this->assertNull($get, 'DDLTrigger::setTriggerBeforeUpdate, expected null - trigger is not set');
+//        $this->trigger->setTriggerBeforeUpdate();
+//        $get = $this->trigger->getTriggerBeforeUpdate();
+//        $this->assertNull($get, '\Yana\Db\Ddl\Trigger::setTriggerBeforeUpdate, expected null - trigger is not set');
 //
-//        // DDLTrigger::setTriggerBeforeDelete
-//        $this->ddltrigger->setTriggerBeforeDelete($testArray1[0], 'generic', 'test1');
-//        $get = $this->ddltrigger->getTriggerBeforeDelete();
-//        $this->assertEquals($testArray1[0], $get, 'DDLTrigger::setTriggerBeforeDelete the values must be equal');
+//        // \Yana\Db\Ddl\Trigger::setTriggerBeforeDelete
+//        $this->trigger->setTriggerBeforeDelete($testArray1[0], 'generic', 'test1');
+//        $get = $this->trigger->getTriggerBeforeDelete();
+//        $this->assertEquals($testArray1[0], $get, '\Yana\Db\Ddl\Trigger::setTriggerBeforeDelete the values must be equal');
 //
-//        $this->ddltrigger->setTriggerBeforeDelete();
-//        $get = $this->ddltrigger->getTriggerBeforeDelete();
-//        $this->assertNull($get, 'DDLTrigger::setTriggerBeforeDelete, expected null - trigger is not set');
+//        $this->trigger->setTriggerBeforeDelete();
+//        $get = $this->trigger->getTriggerBeforeDelete();
+//        $this->assertNull($get, '\Yana\Db\Ddl\Trigger::setTriggerBeforeDelete, expected null - trigger is not set');
 //
-//        // DDLTrigger::setTriggerAfterInsert
-//        $this->ddltrigger->setTriggerAfterInsert($testArray1[0], 'generic', 'test1');
-//        $get = $this->ddltrigger->getTriggerAfterInsert();
-//        $this->assertEquals($testArray1[0], $get, 'DDLTrigger::setTriggerAfterInsert the values must be equal');
+//        // \Yana\Db\Ddl\Trigger::setTriggerAfterInsert
+//        $this->trigger->setTriggerAfterInsert($testArray1[0], 'generic', 'test1');
+//        $get = $this->trigger->getTriggerAfterInsert();
+//        $this->assertEquals($testArray1[0], $get, '\Yana\Db\Ddl\Trigger::setTriggerAfterInsert the values must be equal');
 //
-//        $this->ddltrigger->setTriggerAfterInsert();
-//        $get = $this->ddltrigger->getTriggerAfterInsert();
-//        $this->assertNull($get, 'DDLTrigger::setTriggerAfterInsert, expected null - trigger is not set');
+//        $this->trigger->setTriggerAfterInsert();
+//        $get = $this->trigger->getTriggerAfterInsert();
+//        $this->assertNull($get, '\Yana\Db\Ddl\Trigger::setTriggerAfterInsert, expected null - trigger is not set');
 //
-//        // DDLTrigger::setTriggerAfterUpdate
-//        $this->ddltrigger->setTriggerAfterUpdate($testArray1[0], 'generic', 'test1');
-//        $get = $this->ddltrigger->getTriggerAfterUpdate();
-//        $this->assertEquals($testArray1[0], $get, 'DDLTrigger::setTriggerAfterUpdate the values must be equal');
+//        // \Yana\Db\Ddl\Trigger::setTriggerAfterUpdate
+//        $this->trigger->setTriggerAfterUpdate($testArray1[0], 'generic', 'test1');
+//        $get = $this->trigger->getTriggerAfterUpdate();
+//        $this->assertEquals($testArray1[0], $get, '\Yana\Db\Ddl\Trigger::setTriggerAfterUpdate the values must be equal');
 //
-//        $this->ddltrigger->setTriggerAfterUpdate();
-//        $get = $this->ddltrigger->getTriggerAfterUpdate();
-//        $this->assertNull($get, 'DDLTrigger::setTriggerAfterUpdate, expected null - trigger is not set');
+//        $this->trigger->setTriggerAfterUpdate();
+//        $get = $this->trigger->getTriggerAfterUpdate();
+//        $this->assertNull($get, '\Yana\Db\Ddl\Trigger::setTriggerAfterUpdate, expected null - trigger is not set');
 //
-//        // DDLTrigger::setTriggerAfterDelete
-//        $this->ddltrigger->setTriggerAfterDelete($testArray1[0], 'generic', 'test1');
-//        $get = $this->ddltrigger->getTriggerAfterDelete();
-//        $this->assertEquals($testArray1[0], $get, 'DDLTrigger::setTriggerAfterDelete the values must be equal');
+//        // \Yana\Db\Ddl\Trigger::setTriggerAfterDelete
+//        $this->trigger->setTriggerAfterDelete($testArray1[0], 'generic', 'test1');
+//        $get = $this->trigger->getTriggerAfterDelete();
+//        $this->assertEquals($testArray1[0], $get, '\Yana\Db\Ddl\Trigger::setTriggerAfterDelete the values must be equal');
 //
-//        $this->ddltrigger->setTriggerAfterDelete();
-//        $get = $this->ddltrigger->getTriggerAfterDelete();
-//        $this->assertNull($get, 'DDLTrigger::setTriggerAfterDelete, expected null - trigger is not set');
+//        $this->trigger->setTriggerAfterDelete();
+//        $get = $this->trigger->getTriggerAfterDelete();
+//        $this->assertNull($get, '\Yana\Db\Ddl\Trigger::setTriggerAfterDelete, expected null - trigger is not set');
     }
 
     /**
@@ -3645,14 +3743,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testSetAlias()
     {
-        // DDLViewField
-        $this->ddlviewfield->setAlias('abcd');
-        $result = $this->ddlviewfield->getAlias();
-        $this->assertEquals('abcd', $result, 'assert failed, DDLViewField : alias is not set, values should be equal');
+        // \Yana\Db\Ddl\Views\Field
+        $this->viewfield->setAlias('abcd');
+        $result = $this->viewfield->getAlias();
+        $this->assertEquals('abcd', $result, 'assert failed, \Yana\Db\Ddl\Views\Field : alias is not set, values should be equal');
 
-        $this->ddlviewfield->setAlias('');
-        $result = $this->ddlviewfield->getAlias();
-        $this->assertNull($result, 'assert failed, DDLViewField : expected null - alis is not set');
+        $this->viewfield->setAlias('');
+        $result = $this->viewfield->getAlias();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Views\Field : expected null - alis is not set');
     }
 
     /**
@@ -3662,8 +3760,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testChangeLog()
     {
-        $result = $this->ddldatabase->getChangeLog();
-        $this->assertTrue($result instanceof DDLChangeLog, 'assert failed, DDLDatabase : the value should be an instance of DDLChangeLog');
+        $result = $this->database->getChangeLog();
+        $this->assertTrue($result instanceof \Yana\Db\Ddl\ChangeLog, 'assert failed, \Yana\Db\Ddl\Database : the value should be an instance of \Yana\Db\Ddl\ChangeLog');
     }
 
     /**
@@ -3673,14 +3771,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testCssClass()
     {
-        // DDLField
-        $this->ddlfield->setCssClass('cssclass');
-        $result = $this->ddlfield->getCssClass();
-        $this->assertEquals('cssclass', $result , 'assert failed, DDLField : the value "cssclass" should be equal with the expecting value');
+        // \Yana\Db\Ddl\Field
+        $this->field->setCssClass('cssclass');
+        $result = $this->field->getCssClass();
+        $this->assertEquals('cssclass', $result , 'assert failed, \Yana\Db\Ddl\Field : the value "cssclass" should be equal with the expecting value');
 
-        $this->ddlfield->setCssClass('');
-        $result = $this->ddlfield->getCssClass();
-        $this->assertNull($result, 'assert failed, DDLField : expected null - cssclass is not set');
+        $this->field->setCssClass('');
+        $result = $this->field->getCssClass();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Field : expected null - cssclass is not set');
     }
 
     /**
@@ -3690,14 +3788,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testTabIndex()
     {
-        // DDLField
-        $this->ddlfield->setTabIndex(4);
-        $result = $this->ddlfield->getTabIndex();
-        $this->assertEquals(4, $result , 'assert failed, DDLField : the value "4" should be the same as the expected value');
+        // \Yana\Db\Ddl\Field
+        $this->field->setTabIndex(4);
+        $result = $this->field->getTabIndex();
+        $this->assertEquals(4, $result , 'assert failed, \Yana\Db\Ddl\Field : the value "4" should be the same as the expected value');
 
-        $this->ddlfield->setTabIndex();
-        $result = $this->ddlfield->getTabIndex();
-        $this->assertNull($result, 'assert failed, DDLField : expected null - tabIndex is not set');
+        $this->field->setTabIndex();
+        $result = $this->field->getTabIndex();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Field : expected null - tabIndex is not set');
     }
 
     /**
@@ -3707,14 +3805,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testAction()
     {
-        // DDLEvent
-        $this->ddlevent->setAction('action');
-        $result = $this->ddlevent->getAction();
-        $this->assertEquals('action', $result , 'assert failed, DDLEvent : the value "action" should be the same as the expected value');
+        // \Yana\Db\Ddl\Event
+        $this->event->setAction('action');
+        $result = $this->event->getAction();
+        $this->assertEquals('action', $result , 'assert failed, \Yana\Db\Ddl\Event : the value "action" should be the same as the expected value');
 
-        $this->ddlevent->setAction();
-        $result = $this->ddlevent->getAction();
-        $this->assertNull($result, 'assert failed, DDLEvent : expected null - action is not set');
+        $this->event->setAction();
+        $result = $this->event->getAction();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Event : expected null - action is not set');
     }
 
     /**
@@ -3724,14 +3822,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testLanguageFormAction()
     {
-        // DDLEvent
-        $this->ddlevent->setLanguage('language');
-        $result = $this->ddlevent->getLanguage();
-        $this->assertEquals('language', $result , 'assert failed, DDLEvent : the value "language" should be the same as the expected value');
+        // \Yana\Db\Ddl\Event
+        $this->event->setLanguage('language');
+        $result = $this->event->getLanguage();
+        $this->assertEquals('language', $result , 'assert failed, \Yana\Db\Ddl\Event : the value "language" should be the same as the expected value');
 
-        $this->ddlevent->setLanguage();
-        $result = $this->ddlevent->getLanguage();
-        $this->assertNull($result, 'assert failed, DDLEvent : expected null - language is not set');
+        $this->event->setLanguage();
+        $result = $this->event->getLanguage();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Event : expected null - language is not set');
     }
 
     /**
@@ -3741,14 +3839,14 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testLabelFormAction()
     {
-        // DDLEvent
-        $this->ddlevent->setLabel('label');
-        $result = $this->ddlevent->getLabel();
-        $this->assertEquals('label', $result , 'assert failed, DDLEvent :the value "label" should be the same as the expected value');
+        // \Yana\Db\Ddl\Event
+        $this->event->setLabel('label');
+        $result = $this->event->getLabel();
+        $this->assertEquals('label', $result , 'assert failed, \Yana\Db\Ddl\Event :the value "label" should be the same as the expected value');
 
-        $this->ddlevent->setLabel();
-        $result = $this->ddlevent->getLabel();
-        $this->assertNull($result, 'assert failed, DDLEvent : expected null - label is not set');
+        $this->event->setLabel();
+        $result = $this->event->getLabel();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Event : expected null - label is not set');
     }
 
     /**
@@ -3758,16 +3856,16 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testIcon()
     {
-        // DDLEvent
+        // \Yana\Db\Ddl\Event
         $icon = CWD.'resources/image/logo.png';
-        $this->ddlevent->setIcon($icon);
-        $get = $this->ddlevent->getIcon();
-        $this->assertType('string', $get, 'assert failed, "DDLEvent:getIcon" the value should be from type string');
-        $this->assertEquals($icon, $get, 'assert failed, "DDLEvent:getIcon" the values should be equal - expected the same path to a file');
+        $this->event->setIcon($icon);
+        $get = $this->event->getIcon();
+        $this->assertType('string', $get, 'assert failed, "\Yana\Db\Ddl\Event:getIcon" the value should be from type string');
+        $this->assertEquals($icon, $get, 'assert failed, "\Yana\Db\Ddl\Event:getIcon" the values should be equal - expected the same path to a file');
 
-        $this->ddlevent->setIcon('');
-        $result = $this->ddlevent->getIcon();
-        $this->assertNull($result, 'assert failed, DDLEvent : expected null - icon is not set');
+        $this->event->setIcon('');
+        $result = $this->event->getIcon();
+        $this->assertNull($result, 'assert failed, \Yana\Db\Ddl\Event : expected null - icon is not set');
     }
 
     /**
@@ -3777,11 +3875,11 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTableByForeignKey()
     {
-        // DDLTable
+        // \Yana\Db\Ddl\Table
 
         // create a target-table
-        $newTableA = $this->ddldatabase->addTable("someTable");
-        $newTableB = $this->ddldatabase->addTable("otherTable");
+        $newTableA = $this->database->addTable("someTable");
+        $newTableB = $this->database->addTable("otherTable");
         $ColumnA = $newTableA->addColumn("firstCol", "integer");
         $ColumnB = $newTableB->addColumn("someCol", "integer");
         $ColumnC = $newTableB->addColumn("someMoreCol", "integer");
@@ -3801,8 +3899,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTableByForeignKeyInvalidArgumentException()
     {
-        // DDLTable
-        $this->ddltable->getTableByForeignKey('nonexist');
+        // \Yana\Db\Ddl\Table
+        $this->table->getTableByForeignKey('nonexist');
     }
 
     /**
@@ -3812,11 +3910,11 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testHasAllInput()
     {
-        $this->assertFalse($this->ddlform->hasAllInput(), 'Setting "allinput" must default to false.');
-        $this->ddlform->setAllInput(true);
-        $this->assertTrue($this->ddlform->hasAllInput(), 'Setting "allinput" should allow value true.');
-        $this->ddlform->setAllInput(false);
-        $this->assertFalse($this->ddlform->hasAllInput(), 'Setting "allinput" should be reversible.');
+        $this->assertFalse($this->form->hasAllInput(), 'Setting "allinput" must default to false.');
+        $this->form->setAllInput(true);
+        $this->assertTrue($this->form->hasAllInput(), 'Setting "allinput" should allow value true.');
+        $this->form->setAllInput(false);
+        $this->assertFalse($this->form->hasAllInput(), 'Setting "allinput" should be reversible.');
     }
 
     /**
@@ -3826,9 +3924,9 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testdropField()
     {
-        $this->ddlform->addField('foo');
-        $get = $this->ddlform->getField('foo');
-        $get = $this->ddlform->dropField('foo');
+        $this->form->addField('foo');
+        $get = $this->form->getField('foo');
+        $get = $this->form->dropField('foo');
         $this->assertNull($get, 'assert failed, field is not droped"');
     }
 
@@ -3839,7 +3937,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testdropFieldInvalidArgumentException()
     {
-        $this->ddlform->dropField('non-existing-field');
+        $this->form->dropField('non-existing-field');
     }
 
     /**
@@ -3849,8 +3947,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      */
     public function testgetColumnByForeignKeyInvalidArgumentException()
     {
-        // DDLTable
-        $this->ddltable->getColumnByForeignKey('foo_bar');
+        // \Yana\Db\Ddl\Table
+        $this->table->getColumnByForeignKey('foo_bar');
     }
 
     /**
@@ -3859,7 +3957,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     public function testgetColumnByForeignKey()
     {
          // create a da tabase with tables (columns)
-        $db = new DDLDatabase('foobar');
+        $db = new \Yana\Db\Ddl\Database('foobar');
 
         /* create table "foo_department" and columns */
         $table = $db->addTable('foo_department');
@@ -3877,9 +3975,9 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $fk = $table->addForeignKey('foo_department');
         $fk->setColumn('foo_department_id');
 
-        // DDLTable
+        // \Yana\Db\Ddl\Table
         $result = $table->getColumnByForeignKey('foo_department_id');
-        $this->assertTrue($result instanceof DDLColumn, 'assert failed, the expected value should be an instance of DDLColumn');
+        $this->assertTrue($result instanceof \Yana\Db\Ddl\Column, 'assert failed, the expected value should be an instance of \Yana\Db\Ddl\Column');
     }
 
 }

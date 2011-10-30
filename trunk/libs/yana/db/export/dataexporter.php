@@ -280,7 +280,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
             @set_time_limit(500);
             foreach ($this->schema->getTable() as $table)
             {
-                /* @var $table DDLTable */
+                /* @var $table \Yana\Db\Ddl\Table */
                 /* quote table */
                 $tableName = YANA_DATABASE_PREFIX . $table->getName();
                 if (\Yana\Util\Hashtable::quickSearch($sqlKeywords, $tableName) !== false) {
@@ -470,7 +470,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
                 $ddlFiles = array_values($ddlFile);
             break;
             default:
-                $ddlFiles = \DDL::getListOfFiles(true);
+                $ddlFiles = \Yana\Db\Ddl\DDL::getListOfFiles(true);
             break;
         }
         unset($ddlFile);
@@ -575,7 +575,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
                         assert('!isset($column); // Cannot redeclare var $column');
                         foreach ($table->getForeignKeys() as $column)
                         {
-                            /* @var $column DDLForeignKey */
+                            /* @var $column \Yana\Db\Ddl\ForeignKey */
                             assert('!isset($_fKeys); // Cannot redeclare var $_fKeys');
                             $_fKeys = $column->getColumns();
                             $fTableName = $column->getTargetTable();

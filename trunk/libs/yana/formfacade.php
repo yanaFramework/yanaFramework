@@ -72,7 +72,7 @@ class FormFacade extends \Yana\Core\Object
      * Base table.
      *
      * @access  private
-     * @var     DDLTable
+     * @var     \Yana\Db\Ddl\Table
      */
     private $_table = null;
 
@@ -80,7 +80,7 @@ class FormFacade extends \Yana\Core\Object
      * Form definition
      *
      * @access  private
-     * @var     DDLForm
+     * @var     \Yana\Db\Ddl\Form
      */
     private $_form = null;
 
@@ -137,7 +137,7 @@ class FormFacade extends \Yana\Core\Object
      * Add a form element.
      *
      * @access  public
-     * @param   DDLForm  $form  new form that will be wrapped
+     * @param   \Yana\Db\Ddl\Form  $form  new form that will be wrapped
      * @return  FormFacade
      */
     public function addForm(FormFacade $form)
@@ -165,7 +165,7 @@ class FormFacade extends \Yana\Core\Object
      * This allows to access the underlying form directly, instead of using the facade.
      *
      * @access  public
-     * @return  DDLForm
+     * @return  \Yana\Db\Ddl\Form
      */
     public function getBaseForm()
     {
@@ -176,10 +176,10 @@ class FormFacade extends \Yana\Core\Object
      * Set form object.
      *
      * @access  public
-     * @param   DDLForm  $form  configuring the contents of the form
+     * @param   \Yana\Db\Ddl\Form  $form  configuring the contents of the form
      * @return  FormFacade
      */
-    public function setBaseForm(DDLForm $form)
+    public function setBaseForm(\Yana\Db\Ddl\Form $form)
     {
         $this->_form = $form;
         return $this;
@@ -264,7 +264,7 @@ class FormFacade extends \Yana\Core\Object
      */
     public function hasInsertableChildren()
     {
-        /* @var $form DDLForm */
+        /* @var $form \Yana\Db\Ddl\Form */
         foreach ($this->_form->getForms() as $form)
         {
             if ($form->getEvent('insert')) {
@@ -285,7 +285,7 @@ class FormFacade extends \Yana\Core\Object
      */
     public function hasUpdatableChildren()
     {
-        /* @var $form DDLForm */
+        /* @var $form \Yana\Db\Ddl\Form */
         foreach ($this->_form->getForms() as $form)
         {
             if ($form->getEvent('update')) {
@@ -306,7 +306,7 @@ class FormFacade extends \Yana\Core\Object
      */
     public function hasSearchableChildren()
     {
-        /* @var $form DDLDefaultForm */
+        /* @var $form \Yana\Db\Ddl\Form */
         foreach ($this->_form->getForms() as $form)
         {
             if ($form->getEvent('search')) {
@@ -407,7 +407,7 @@ class FormFacade extends \Yana\Core\Object
      * This function looks it up and returns this definition.
      *
      * @access  public
-     * @return  DDLTable
+     * @return  \Yana\Db\Ddl\Table
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the database, or table was not found
      */
     public function getTable()
@@ -418,12 +418,12 @@ class FormFacade extends \Yana\Core\Object
             }
             $tableName = $this->_form->getTable();
             $database = $this->_form->getDatabase();
-            if (!($database instanceof DDLDatabase)) {
+            if (!($database instanceof \Yana\Db\Ddl\Database)) {
                 $message = "Error in form '" . $this->_form->getName() . "'. No parent database defined.";
                 throw new \Yana\Core\Exceptions\NotFoundException($message);
             }
             $table = $database->getTable($tableName);
-            if (!($table instanceof DDLTable)) {
+            if (!($table instanceof \Yana\Db\Ddl\Table)) {
                 $message = "Error in form '" . $this->_form->getName() . "'. Parent table '" . $tableName . "' not found.";
                 throw new \Yana\Core\Exceptions\NotFoundException($message);
             }

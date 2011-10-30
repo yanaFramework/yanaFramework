@@ -118,7 +118,7 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
      */
     function testQueryInvalidArgument()
     {
-        $new = new DDLTable('as');
+        $new = new \Yana\Db\Ddl\Table('as');
         $this->dbsobj->query($new);
     }
 
