@@ -2,8 +2,6 @@
 /**
  * YANA library
  *
- * Primary controller class
- *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
  * License:   GNU GPL  http://www.gnu.org/licenses/
@@ -27,31 +25,36 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Forms;
+
 /**
- * <<manager>> Cache manager class.
+ * <<iterator>> for table rows.
  *
- * This base class is meant to 
+ * An outer iterator, that allows to iterate over the rows of a table layout
  *
  * @access      public
  * @package     yana
- * @subpackage  cache
+ * @subpackage  form
  */
-class FormSetupCacheManager extends CacheSessionManager
+class RowIterator extends \Yana\Core\AbstractCollection
 {
 
     /**
-     * <<magic>> Set cache item.
-     *
-     * This adds or replaces an item of the cache at the given index with whatever object $value contains.
+     * Insert or replace a row.
      *
      * @access  public
-     * @param   string     $name   index of cached object
-     * @param   FormSetup  $value  new value of cached instance
+     * @param   string  $offset  index of item to replace
+     * @param   array   $row     new value of item
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not an array
      */
-    public function __set($name, $value)
+    public function offsetSet($offset, $value)
     {
-        assert('$value instanceof FormSetup; // Invalid argument $value: instance of FormSetup expected');
-        parent::__set($name, $value);
+        if (is_array($value)) {
+            $this->_offsetSet($offset, $value);
+        } else {
+            $message = "Array expected. Found " . gettype($value) . " instead.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
+        }
     }
 
 }

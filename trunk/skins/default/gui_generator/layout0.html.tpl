@@ -98,7 +98,7 @@
                     {foreach from=$form item="field"}
                         {if $field->isSingleline()}
                             <td title="{$field->getTitle()}" class="{$field->getCssClass()}">
-                                {$field->toString()}
+                                {$field}
                             </td>
                         {/if}
                     {/foreach}

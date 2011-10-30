@@ -64,7 +64,7 @@ class plugin_blog extends StdClass implements IsPlugin
      */
     protected static function getBlogForm()
     {
-        $builder = new FormBuilder('blog');
+        $builder = new \Yana\Forms\Builder('blog');
         return $builder->setId('blog')->__invoke();
     }
 
@@ -150,7 +150,7 @@ class plugin_blog extends StdClass implements IsPlugin
     public function blog_edit_blog()
     {
         $form = self::getBlogForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->update();
     }
 
@@ -174,7 +174,7 @@ class plugin_blog extends StdClass implements IsPlugin
     public function blog_delete_blog(array $selected_entries)
     {
         $form = self::getBlogForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->delete($selected_entries);
     }
 
@@ -197,7 +197,7 @@ class plugin_blog extends StdClass implements IsPlugin
     public function blog_new_blog()
     {
         $form = self::getBlogForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         if ($worker->create()) {
             Microsummary::setText(__CLASS__, 'Blog, update '.date('d M y G:s', time()));
             return true;
@@ -237,7 +237,7 @@ class plugin_blog extends StdClass implements IsPlugin
             }
         }
         $form = self::getCommentForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->create();
     }
 
@@ -260,7 +260,7 @@ class plugin_blog extends StdClass implements IsPlugin
     public function blog_edit_blogcmt()
     {
         $form = self::getCommentForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->update();
     }
 
@@ -284,7 +284,7 @@ class plugin_blog extends StdClass implements IsPlugin
     public function blog_delete_blogcmt (array $selected_entries)
     {
         $form = self::getCommentForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->delete($selected_entries);
     }
 

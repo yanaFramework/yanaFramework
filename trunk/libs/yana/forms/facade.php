@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Forms;
+
 /**
  * <<facade>> Form wrapper base class.
  *
@@ -33,7 +35,7 @@
  * @subpackage  form
  * @ignore
  */
-class FormFacade extends \Yana\Core\Object
+class Facade extends \Yana\Core\Object
 {
 
     /**
@@ -48,7 +50,7 @@ class FormFacade extends \Yana\Core\Object
      * List of searchable fields.
      *
      * @access  private
-     * @var     FormFieldFacadeCollection
+     * @var     \Yana\Forms\Fields\FacadeCollection
      */
     private $_searchForm = null;
 
@@ -56,7 +58,7 @@ class FormFacade extends \Yana\Core\Object
      * List of updatable fields.
      *
      * @access  private
-     * @var     FormFieldFacadeCollection
+     * @var     \Yana\Forms\Fields\FacadeCollection
      */
     private $_updateForm = null;
 
@@ -64,7 +66,7 @@ class FormFacade extends \Yana\Core\Object
      * List of insertable fields.
      *
      * @access  private
-     * @var     FormFieldFacadeCollection 
+     * @var     \Yana\Forms\Fields\FacadeCollection
      */
     private $_insertForm = null;
 
@@ -88,7 +90,7 @@ class FormFacade extends \Yana\Core\Object
      * Form setup
      *
      * @access  private
-     * @var     FormSetup
+     * @var     \Yana\Forms\Setup
      */
     private $_setup = null;
 
@@ -98,7 +100,7 @@ class FormFacade extends \Yana\Core\Object
      * Leave blank if it is a root element.
      *
      * @access  private
-     * @var     FormFacade
+     * @var     \Yana\Forms\Facade
      */
     private $_parent = null;
 
@@ -109,7 +111,7 @@ class FormFacade extends \Yana\Core\Object
      */
     public function __construct()
     {
-        $this->_setup = new FormSetup();
+        $this->_setup = new \Yana\Forms\Setup();
     }
 
     /**
@@ -138,9 +140,9 @@ class FormFacade extends \Yana\Core\Object
      *
      * @access  public
      * @param   \Yana\Db\Ddl\Form  $form  new form that will be wrapped
-     * @return  FormFacade
+     * @return  \Yana\Forms\Facade
      */
-    public function addForm(FormFacade $form)
+    public function addForm(\Yana\Forms\Facade $form)
     {
         $name = $form->getName();
         $this->_forms[$name] = $form;
@@ -152,7 +154,7 @@ class FormFacade extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $name  name of requested sub-form.
-     * @return  FormFacade
+     * @return  \Yana\Forms\Facade
      */
     public function getForm($name)
     {
@@ -177,7 +179,7 @@ class FormFacade extends \Yana\Core\Object
      *
      * @access  public
      * @param   \Yana\Db\Ddl\Form  $form  configuring the contents of the form
-     * @return  FormFacade
+     * @return  \Yana\Forms\Facade
      */
     public function setBaseForm(\Yana\Db\Ddl\Form $form)
     {
@@ -195,7 +197,7 @@ class FormFacade extends \Yana\Core\Object
      * Check the result object!
      *
      * @access  public
-     * @return  FormFacade
+     * @return  \Yana\Forms\Facade
      */
     public function getParent()
     {
@@ -209,10 +211,10 @@ class FormFacade extends \Yana\Core\Object
      * Set to NULL if it is a root element and there is no parent.
      *
      * @access  public
-     * @param   FormFacade  $parentForm  configuring the contents of the parent form
-     * @return  FormFacade
+     * @param   \Yana\Forms\Facade  $parentForm  configuring the contents of the parent form
+     * @return  \Yana\Forms\Facade
      */
-    public function setParent(FormFacade $parentForm = null)
+    public function setParent(\Yana\Forms\Facade $parentForm = null)
     {
         $this->_parent = $parentForm;
         return $this;
@@ -222,7 +224,7 @@ class FormFacade extends \Yana\Core\Object
      * Get the setup configuration of this form.
      *
      * @access  public
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function getSetup()
     {
@@ -233,10 +235,10 @@ class FormFacade extends \Yana\Core\Object
      * Set form setup.
      *
      * @access  public
-     * @param   FormSetup  $setup  configuring the behavior of the form
-     * @return  FormFacade
+     * @param   \Yana\Forms\Setup  $setup  configuring the behavior of the form
+     * @return  \Yana\Forms\Facade
      */
-    public function setSetup(FormSetup $setup)
+    public function setSetup(\Yana\Forms\Setup $setup)
     {
         $this->_setup = $setup;
         return $this;
@@ -320,13 +322,13 @@ class FormFacade extends \Yana\Core\Object
      * Get searchable form.
      *
      * @access  public
-     * @return  FormContextSensitiveWrapper
+     * @return  \Yana\Forms\ContextSensitiveWrapper
      */
     public function getSearchForm()
     {
         if (!isset($this->_searchForm)) {
             $context = $this->_setup->getContext('search');
-            $this->_searchForm = new FormContextSensitiveWrapper($this, $context);
+            $this->_searchForm = new \Yana\Forms\ContextSensitiveWrapper($this, $context);
         }
         return $this->_searchForm;
     }
@@ -335,13 +337,13 @@ class FormFacade extends \Yana\Core\Object
      * Get updatable form.
      *
      * @access  public
-     * @return  FormContextSensitiveWrapper
+     * @return  \Yana\Forms\ContextSensitiveWrapper
      */
     public function getUpdateForm()
     {
         if (!isset($this->_updateForm)) {
             $context = $this->_setup->getContext('update');
-            $this->_updateForm = new FormContextSensitiveWrapper($this, $context);
+            $this->_updateForm = new \Yana\Forms\ContextSensitiveWrapper($this, $context);
         }
         return $this->_updateForm;
     }
@@ -350,13 +352,13 @@ class FormFacade extends \Yana\Core\Object
      * Get insertable form.
      *
      * @access  public
-     * @return  FormContextSensitiveWrapper
+     * @return  \Yana\Forms\ContextSensitiveWrapper
      */
     public function getInsertForm()
     {
         if (!isset($this->_insertForm)) {
             $context = $this->_setup->getContext('insert');
-            $this->_insertForm = new FormContextSensitiveWrapper($this, $context);
+            $this->_insertForm = new \Yana\Forms\ContextSensitiveWrapper($this, $context);
         }
         return $this->_insertForm;
     }
@@ -463,7 +465,7 @@ class FormFacade extends \Yana\Core\Object
      */
     public function __toString()
     {
-        $htmlBuilder = new FormHtmlBuilder($this);
+        $htmlBuilder = new \Yana\Forms\HtmlBuilder($this);
         return $htmlBuilder->__invoke();
     }
 

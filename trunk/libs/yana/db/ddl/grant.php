@@ -471,7 +471,9 @@ class Grant extends \Yana\Db\Ddl\DDL
         foreach ($grants as $grant)
         {
             assert('$grant instanceof \Yana\Db\Ddl\Grant;');
-            $hasPermission = $grant->checkPermission($select, $insert, $update, $delete, $grant);
+            $hasPermission = $grant->checkPermission(
+                $grant->isSelectable(), $grant->isInsertable(), $grant->isUpdatable(), $grant->isDeletable(), $grant->isGrantable()
+            );
             if ($hasPermission) {
                  break;
             }

@@ -24,7 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
-
+namespace Yana\Forms;
 /**
  * <<builder>> Build a queries based on a given form.
  *
@@ -32,14 +32,14 @@
  * @package     yana
  * @subpackage  form
  */
-class FormQueryBuilder extends \Yana\Core\Object
+class QueryBuilder extends \Yana\Core\Object
 {
 
     /**
      * Database connection used to create the querys.
      *
      * @access  protected
-     * @var     DbStream
+     * @var     \DbStream
      */
     protected $_db = null;
 
@@ -47,7 +47,7 @@ class FormQueryBuilder extends \Yana\Core\Object
      * Definition of form.
      *
      * @access  protected
-     * @var     FormFacade
+     * @var     \Yana\Forms\Facade
      */
     protected $_form = null;
 
@@ -63,9 +63,9 @@ class FormQueryBuilder extends \Yana\Core\Object
      * Initialize instance.
      *
      * @access  public
-     * @param   DbStream  $db  database connection used to create the querys
+     * @param   \DbStream  $db  database connection used to create the querys
      */
-    public function __construct(DbStream $db)
+    public function __construct(\DbStream $db)
     {
         $this->_db = $db;
     }
@@ -74,10 +74,10 @@ class FormQueryBuilder extends \Yana\Core\Object
      * Set form object.
      *
      * @access  public
-     * @param   FormFacade  $form  configuring the contents of the form
-     * @return  FormQueryBuilder
+     * @param   \Yana\Forms\Facade  $form  configuring the contents of the form
+     * @return  \Yana\Forms\QueryBuilder
      */
-    public function setForm(FormFacade $form)
+    public function setForm(\Yana\Forms\Facade $form)
     {
         $this->_form = $form;
         $this->_cache = array();
@@ -88,7 +88,7 @@ class FormQueryBuilder extends \Yana\Core\Object
      * Get form object.
      *
      * @access  public
-     * @return  FormFacade
+     * @return  \Yana\Forms\Facade
      */
     public function getForm()
     {
@@ -99,7 +99,7 @@ class FormQueryBuilder extends \Yana\Core\Object
      * Get database connection
      *
      * @access  public
-     * @return  DbStream
+     * @return  \DbStream
      */
     public function getDatabase()
     {
@@ -113,13 +113,13 @@ class FormQueryBuilder extends \Yana\Core\Object
      * You can modify this to filter the visible results.
      *
      * @access  public
-     * @return  DbSelect
+     * @return  \DbSelect
      * @throws  \Yana\Core\Exceptions\NotFoundException  if the selected table or one of the selected columns is not found
      */
     public function buildSelectQuery()
     {
         if (!isset($this->_cache[__FUNCTION__])) {
-            $query = new DbSelect($this->_db);
+            $query = new \DbSelect($this->_db);
             if ($this->_form) {
                 $setup = $this->_form->getSetup();
                 $query->setTable($this->_form->getBaseForm()->getTable());
@@ -164,14 +164,14 @@ class FormQueryBuilder extends \Yana\Core\Object
      * @param   \Yana\Db\Ddl\Reference  $targetReference  defining the target table and columns
      * @param   string        $searchTerm       find all entries that start with ...
      * @param   int           $limit            maximum number of hits, set to 0 to get all
-     * @return  DbSelect
+     * @return  \DbSelect
      */
     public function buildAutocompleteQuery(\Yana\Db\Ddl\Reference $targetReference, $searchTerm, $limit)
     {
         assert('is_string($searchTerm); // Invalid argument $searchTerm: string expected');
         assert('is_int($limit); // Invalid argument $limit: int expected');
 
-        $query = new DbSelect($this->_db);
+        $query = new \DbSelect($this->_db);
         $query->setTable($targetReference->getTable());
         $query->setLimit((int) $limit);
         $query->setOrderBy((array) $targetReference->getLabel());
@@ -187,9 +187,9 @@ class FormQueryBuilder extends \Yana\Core\Object
      * The new clause will use fuzzy-search with wildcards and be appended using the "OR" operator.
      *
      * @access  protected
-     * @param   DbSelect  $select  query that is to be modified
+     * @param   \DbSelect  $select  query that is to be modified
      */
-    protected function _processSearchTerm(DbSelect $select)
+    protected function _processSearchTerm(\DbSelect $select)
     {
         $setup = $this->_form->getSetup();
         $searchTerm = $setup->getSearchTerm();
@@ -221,9 +221,9 @@ class FormQueryBuilder extends \Yana\Core\Object
      * The new clause will be appended using the "AND" operator.
      *
      * @access  protected
-     * @param   DbSelect  $select  query that is to be modified
+     * @param   \DbSelect  $select  query that is to be modified
      */
-    protected function _processSearchValues(DbSelect $select)
+    protected function _processSearchValues(\DbSelect $select)
     {
         if ($this->_form->getSetup()->getContext('search')->getValues()) {
             $clause = $select->getWhere();
@@ -253,9 +253,9 @@ class FormQueryBuilder extends \Yana\Core\Object
      * The new clause will be appended using the "AND" operator.
      *
      * @access  protected
-     * @param   DbSelect  $select  query that is to be modified
+     * @param   \DbSelect  $select  query that is to be modified
      */
-    protected function _processFilters(DbSelect $select)
+    protected function _processFilters(\DbSelect $select)
     {
         $setup = $this->_form->getSetup();
         if ($setup->hasFilter()) {
@@ -278,14 +278,14 @@ class FormQueryBuilder extends \Yana\Core\Object
      * Checks if a parent form exists and modifies the query accordingly.
      *
      * @access  private
-     * @param   DbSelect  $select  base query for current form
-     * @return  DbSelect
+     * @param   \DbSelect  $select  base query for current form
+     * @return  \DbSelect
      */
-    private function _buildSelectForSubForm(DbSelect $select)
+    private function _buildSelectForSubForm(\DbSelect $select)
     {
         $parentForm = $this->_form->getParent();
         // copy foreign key from parent query
-        if ($parentForm instanceof FormFacade) {
+        if ($parentForm instanceof \Yana\Forms\Facade) {
 
             $parentResults = $parentForm->getSetup()->getContext('update')->getRows();
             if ($parentForm->getBaseForm()->getTable() === $this->_form->getBaseForm()->getTable()) {
@@ -320,13 +320,13 @@ class FormQueryBuilder extends \Yana\Core\Object
      * This returns a query object bound to the form, that can be used to count the pages.
      *
      * @access  protected
-     * @return  DbSelectCount
+     * @return  \DbSelectCount
      */
     public function buildCountQuery()
     {
         if (!isset($this->_cache[__FUNCTION__])) {
             $query = clone $this->buildSelectQuery();
-            assert('$query instanceof DbSelectCount;');
+            assert('$query instanceof \DbSelectCount;');
             $query->setLimit(0);
             $query->setOffset(0);
             $this->_cache[__FUNCTION__] = $query;
@@ -351,7 +351,7 @@ class FormQueryBuilder extends \Yana\Core\Object
      */
     protected function getForeignKey()
     {
-        assert('$this->_form instanceof FormFacade;');
+        assert('$this->_form instanceof \Yana\Forms\Facade;');
         $form = $this->_form->getBaseForm();
         $parentForm = $form->getParent();
         if (!$parentForm instanceof \Yana\Db\Ddl\Form) {
@@ -391,7 +391,7 @@ class FormQueryBuilder extends \Yana\Core\Object
         }
         if (empty($keyName) || empty($columnName)) {
             $message = "No suitable foreign-key found in form '" . $form->getName() . "'.";
-            throw new DbWarning($message, E_USER_ERROR);
+            throw new \DbWarning($message, E_USER_ERROR);
         }
         return array($keyName, $columnName);
     }

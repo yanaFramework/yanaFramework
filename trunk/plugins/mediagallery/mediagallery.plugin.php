@@ -110,7 +110,7 @@ class plugin_mediagallery extends StdClass implements IsPlugin
      */
     public function mediagallery()
     {
-        $builder = new FormBuilder('mediagallery');
+        $builder = new \Yana\Forms\Builder('mediagallery');
         $builder->setId('mediagallery');
         $builder->setEntries(25);
         $builder->setLayout(6);

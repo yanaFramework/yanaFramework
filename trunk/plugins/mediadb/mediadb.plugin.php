@@ -94,7 +94,7 @@ class plugin_mediadb extends StdClass implements IsPlugin
      */
     protected static function getMediafolderForm()
     {
-        $builder = new FormBuilder('mediadb');
+        $builder = new \Yana\Forms\Builder('mediadb');
         return $builder->setId('mediafolder')->setWhere(self::_getWhere())->__invoke();
     }
 
@@ -130,7 +130,7 @@ class plugin_mediadb extends StdClass implements IsPlugin
     public function mediadb_edit_media()
     {
         $form = self::getMediaForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->update();
     }
 
@@ -153,7 +153,7 @@ class plugin_mediadb extends StdClass implements IsPlugin
     public function mediadb_delete_media(array $selected_entries)
     {
         $form = self::getMediaForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->delete($selected_entries);
     }
 
@@ -175,7 +175,7 @@ class plugin_mediadb extends StdClass implements IsPlugin
     public function mediadb_new_media()
     {
         $form = self::getMediaForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->create();
     }
 
@@ -238,7 +238,7 @@ class plugin_mediadb extends StdClass implements IsPlugin
     public function mediadb_update_mediafolder()
     {
         $form = self::getMediafolderForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->update();
     }
 
@@ -261,7 +261,7 @@ class plugin_mediadb extends StdClass implements IsPlugin
     public function mediadb_delete_mediafolder(array $selected_entries)
     {
         $form = self::getMediafolderForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->delete($selected_entries);
     }
 
@@ -283,7 +283,7 @@ class plugin_mediadb extends StdClass implements IsPlugin
     public function mediadb_insert_mediafolder()
     {
         $form = self::getMediafolderForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->create();
     }
 

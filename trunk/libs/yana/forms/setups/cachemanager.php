@@ -2,6 +2,8 @@
 /**
  * YANA library
  *
+ * Primary controller class
+ *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
  * License:   GNU GPL  http://www.gnu.org/licenses/
@@ -25,38 +27,33 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Forms\Setups;
+
 /**
- * <<collection>> of form fields.
+ * <<manager>> Cache manager class.
  *
- * A field represents an UI input-element inside a form.
+ * This base class is meant to 
  *
  * @access      public
  * @package     yana
- * @subpackage  form
+ * @subpackage  cache
  */
-class FormFieldFacadeCollection extends \Yana\Core\AbstractCollection
+class CacheManager extends \CacheSessionManager
 {
 
     /**
-     * Insert or replace item.
+     * <<magic>> Set cache item.
+     *
+     * This adds or replaces an item of the cache at the given index with whatever object $value contains.
      *
      * @access  public
-     * @param   string           $offset  index of item to replace
-     * @param   FormFieldFacade  $value   new value of item
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given value is not valid
+     * @param   string             $name   index of cached object
+     * @param   \Yana\Forms\Setup  $value  new value of cached instance
      */
-    public function offsetSet($offset, $value)
+    public function __set($name, $value)
     {
-        if ($value instanceof FormFieldFacade) {
-            if (!is_string($offset)) {
-                $offset = $value->getName();
-            }
-            $this->_offsetSet(mb_strtolower($offset), $value);
-        } else {
-            $message = "Instance of \Yana\Db\Ddl\Field expected. Found " . gettype($value) . "(" .
-                ((is_object($value)) ? get_class($value) : $value) . ") instead.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
-        }
+        assert('$value instanceof \Yana\Forms\Setup; // Invalid argument $value: instance of \Yana\Forms\Setup expected');
+        parent::__set($name, $value);
     }
 
 }

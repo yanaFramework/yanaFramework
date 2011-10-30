@@ -34,7 +34,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class FormSuspendedWarning extends Warning
+class FormSuspendedWarning extends \Warning
 {
     /* intentionally left blank */
 }

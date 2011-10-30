@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Forms\Setups;
+
 /**
  * <<builder>> Build a form using a form object and settings.
  *
@@ -32,14 +34,14 @@
  * @package     yana
  * @subpackage  form
  */
-class FormSetupBuilder extends \Yana\Core\Object
+class Builder extends \Yana\Core\Object
 {
 
     /**
      * Builder product.
      *
      * @access  protected
-     * @var     FormSetup
+     * @var     \Yana\Forms\Setup
      */
     protected $object = null;
 
@@ -84,7 +86,7 @@ class FormSetupBuilder extends \Yana\Core\Object
     public function __construct(\Yana\Db\Ddl\Form $form)
     {
         $this->_form = $form;
-        $this->object = new FormSetup();
+        $this->object = new \Yana\Forms\Setup();
     }
 
     /**
@@ -93,9 +95,9 @@ class FormSetupBuilder extends \Yana\Core\Object
      * Set your own predefined setup, to modify it.
      *
      * @access  public
-     * @param   FormSetup  $setup  basic setup to modify
+     * @param   \Yana\Forms\Setup  $setup  basic setup to modify
      */
-    public function setSetup(FormSetup $setup)
+    public function setSetup(\Yana\Forms\Setup $setup)
     {
         $this->object = $setup;
     }
@@ -104,7 +106,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      * Build facade object.
      * 
      * @access  public
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function __invoke()
     {
@@ -128,7 +130,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      *
      * @access  public
      * @param   \Yana\Db\Ddl\Form  $form  configuring the contents of the form
-     * @return  FormSetupBuilder
+     * @return  \Yana\Forms\Setups\Builder
      */
     public function setForm(\Yana\Db\Ddl\Form $form)
     {
@@ -141,7 +143,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $request  initial values (e.g. Request array)
-     * @return  FormSetupBuilder
+     * @return  \Yana\Forms\Setups\Builder
      */
     public function updateSetup(array $request = array())
     {
@@ -183,7 +185,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $request  initial values (e.g. Request array)
-     * @return  FormSetupBuilder
+     * @return  \Yana\Forms\Setups\Builder
      */
     public function updateValues(array $request = array())
     {
@@ -230,7 +232,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $rows  initial values
-     * @return  FormSetupBuilder
+     * @return  \Yana\Forms\Setups\Builder
      */
     public function setRows(array $rows = array())
     {
@@ -244,7 +246,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      * Create info on visible entries.
      *
      * @access  protected
-     * @return  FormSetupBuilder
+     * @return  \Yana\Forms\Setups\Builder
      */
     private function _buildHeader()
     {
@@ -260,9 +262,9 @@ class FormSetupBuilder extends \Yana\Core\Object
             'OFFSET_PAGE' => $offsetPage,
             'LAST_PAGE' => $lastPage
         );
-        $lang = Language::getInstance();
+        $lang = \Language::getInstance();
         $header = $lang->getVar("DESCR_SHOW");
-        $header = SmartUtility::replaceToken($header, $params);
+        $header = \SmartUtility::replaceToken($header, $params);
         $this->object->getContext('update')->setHeader($header);
         return $this;
     }
@@ -271,7 +273,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      * Create links to other pages.
      *
      * @access  protected
-     * @return  FormSetupBuilder
+     * @return  \Yana\Forms\Setups\Builder
      */
     private function _buildFooter()
     {
@@ -285,11 +287,11 @@ class FormSetupBuilder extends \Yana\Core\Object
         $currentPage = $this->object->getPage();
         $listOfEntries = "";
         assert('!isset($pluginManager); // Cannot redeclare var $pluginManager');
-        $pluginManager = PluginManager::getInstance();
+        $pluginManager = \PluginManager::getInstance();
         $action = $pluginManager->getFirstEvent();
-        $lang = Language::getInstance();
+        $lang = \Language::getInstance();
         $linkTemplate = '<a class="gui_generator_%s" href=' .
-            SmartUtility::href("action=$action&" . $this->getForm()->getName() . "[page]=%s") .
+            \SmartUtility::href("action=$action&" . $this->getForm()->getName() . "[page]=%s") .
             ' title="%s">%s</a>';
         // previous page
         if ($currentPage > 0) { // is not first page
@@ -369,7 +371,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      * Scans the actions and removes those to whom the current user has no access.
      *
      * @access  private
-     * @return  FormSetupBuilder
+     * @return  \Yana\Forms\Setups\Builder
      */
     private function _buildActions()
     {
@@ -430,7 +432,7 @@ class FormSetupBuilder extends \Yana\Core\Object
                 $action = $event->getAction();
             }
         }
-        if (!empty($action) && !SessionManager::getInstance()->checkPermission(null, $action)) {
+        if (!empty($action) && !\SessionManager::getInstance()->checkPermission(null, $action)) {
             $action = "";
         }
         return $action;
@@ -474,7 +476,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      * and form settings.
      *
      * @access  private
-     * @return  FormSetupBuilder
+     * @return  \Yana\Forms\Setups\Builder
      */
     private function _buildSetupContext()
     {
@@ -583,7 +585,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $columnNames  whitelist
-     * @return  FormSetupBuilder
+     * @return  \Yana\Forms\Setups\Builder
      */
     public function setColumnsWhitelist(array $columnNames)
     {
@@ -599,7 +601,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $columnNames  whitelist
-     * @return  FormSetupBuilder
+     * @return  \Yana\Forms\Setups\Builder
      */
     public function setColumnsBlacklist(array $columnNames)
     {
@@ -614,7 +616,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      * This function filters out all columns not apparent in the whitelist on all contexts.
      *
      * @access  private
-     * @return  FormSetupBuilder
+     * @return  \Yana\Forms\Setups\Builder
      */
     private function _applyWhitelistColumnNames()
     {
