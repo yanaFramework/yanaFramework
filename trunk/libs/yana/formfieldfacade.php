@@ -530,7 +530,7 @@ class FormFieldFacade extends \Yana\Core\Object
      *
      * @access  public
      * @return  bool
-     * @throws  NotFoundException  when column definition was not found (unable to validate)
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when column definition was not found (unable to validate)
      */
     public function isValid()
     {

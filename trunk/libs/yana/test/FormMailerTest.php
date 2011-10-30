@@ -136,7 +136,7 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
 
         // wrong Element Type 'Object'
         $exception = false;
-        $this->object->setContent(array("test" => new Object()));
+        $this->object->setContent(array("test" => new \Yana\Core\Object()));
         try {
             $this->object->send("mail@domain.tld");
             $this->fail("FormMailer should only accept scalar values or arrays as content-elements.");

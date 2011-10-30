@@ -41,6 +41,7 @@ class LoggerCollection extends \Yana\Core\AbstractCollection implements IsLogHan
      *
      * @param scalar    $offset  where to place the value (may also be empty)
      * @param IsLogger  $value   new value to store
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not valid
      */
     public function offsetSet($offset, $value)
     {
@@ -52,7 +53,7 @@ class LoggerCollection extends \Yana\Core\AbstractCollection implements IsLogHan
         } else {
             $message = "Instance of IsLogger expected. Found " . gettype($value) . "(" .
                 ((is_object($value)) ? get_class($value) : $value) . ") instead.";
-            throw new \Yana\Core\InvalidArgumentException($message);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
     }
 

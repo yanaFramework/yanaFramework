@@ -76,7 +76,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
      * Reads all counter information from the database and initializes a new instance.
      *
      * @param   string    $name  counter name
-     * @throws  NotFoundException  if the counter does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if the counter does not exist
      */
     public function __construct($name)
     {
@@ -90,7 +90,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
         parent::__construct($name);
         $row = parent::$db->select("counter.$name");
         if (empty($row)) {
-            throw new NotFoundException("No such counter '$name'.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("No such counter '$name'.", E_USER_WARNING);
         }
 
         if (isset($row['USEIP'])) {

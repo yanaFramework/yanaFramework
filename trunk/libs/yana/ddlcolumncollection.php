@@ -43,7 +43,7 @@ class DDLColumnCollection extends \Yana\Core\AbstractCollection
      * @access  public
      * @param   string     $offset  index of item to replace
      * @param   DDLColumn  $value   new value of item
-     * @throws  \Yana\Core\InvalidArgumentException  if the given value is not valid
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the given value is not valid
      */
     public function offsetSet($offset, $value)
     {
@@ -55,7 +55,7 @@ class DDLColumnCollection extends \Yana\Core\AbstractCollection
         } else {
             $message = "Instance of DDLColumn expected. Found " . gettype($value) . "(" .
                 ((is_object($value)) ? get_class($value) : $value) . ") instead.";
-            throw new \Yana\Core\InvalidArgumentException($message);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
     }
 

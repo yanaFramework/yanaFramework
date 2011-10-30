@@ -85,8 +85,8 @@ class SequenceTest extends PHPUnit_Framework_TestCase
         FileDbConnection::setBaseDirectory(CWD . '/resources/db/');
         try {
 
-            Sequence::create($this->ascendingId, +1, null, null, +3, false);
-            Sequence::create($this->descendingId, -1, null, -3, null, true);
+            \Yana\Db\FileDb\Sequence::create($this->ascendingId, +1, null, null, +3, false);
+            \Yana\Db\FileDb\Sequence::create($this->descendingId, -1, null, -3, null, true);
             $this->ascendingSequence = new Sequence($this->ascendingId);
             $this->descendingSequence = new Sequence($this->descendingId);
 
@@ -106,8 +106,8 @@ class SequenceTest extends PHPUnit_Framework_TestCase
     {
         unset($this->ascendingSequence);
         unset($this->descendingSequence);
-        Sequence::drop($this->ascendingId);
-        Sequence::drop($this->descendingId);
+        \Yana\Db\FileDb\Sequence::drop($this->ascendingId);
+        \Yana\Db\FileDb\Sequence::drop($this->descendingId);
         chdir(CWD);
     }
 
@@ -115,8 +115,8 @@ class SequenceTest extends PHPUnit_Framework_TestCase
      * increment getter and setter
      *
      * @test
-     * @covers  Sequence::getIncrement()
-     * @covers  Sequence::setIncrement()
+     * @covers  \Yana\Db\FileDb\Sequence::getIncrement()
+     * @covers  \Yana\Db\FileDb\Sequence::setIncrement()
      */
     public function testIncrement()
     {
@@ -129,8 +129,8 @@ class SequenceTest extends PHPUnit_Framework_TestCase
      * max getter and setter
      *
      * @test
-     * @covers  Sequence::getMax()
-     * @covers  Sequence::setMax()
+     * @covers  \Yana\Db\FileDb\Sequence::getMax()
+     * @covers  \Yana\Db\FileDb\Sequence::setMax()
      */
     public function testMax()
     {
@@ -143,9 +143,9 @@ class SequenceTest extends PHPUnit_Framework_TestCase
      * max getter and setter
      *
      * @test
-     * @covers  Sequence::getMax()
-     * @covers  Sequence::setMax()
-     * @expectedException  \Yana\Core\InvalidArgumentException
+     * @covers  \Yana\Db\FileDb\Sequence::getMax()
+     * @covers  \Yana\Db\FileDb\Sequence::setMax()
+     * @expectedException  \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function testMaxInvalidArgumentException()
     {
@@ -158,8 +158,8 @@ class SequenceTest extends PHPUnit_Framework_TestCase
      * min getter and setter
      *
      * @test
-     * @covers  Sequence::getMin()
-     * @covers  Sequence::setMin()
+     * @covers  \Yana\Db\FileDb\Sequence::getMin()
+     * @covers  \Yana\Db\FileDb\Sequence::setMin()
      */
     public function testMin()
     {
@@ -172,9 +172,9 @@ class SequenceTest extends PHPUnit_Framework_TestCase
      * min getter and setter
      *
      * @test
-     * @covers  Sequence::getMin()
-     * @covers  Sequence::setMin()
-     * @expectedException  \Yana\Core\InvalidArgumentException
+     * @covers  \Yana\Db\FileDb\Sequence::getMin()
+     * @covers  \Yana\Db\FileDb\Sequence::setMin()
+     * @expectedException  \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function testMinInvalidArgumentException()
     {
@@ -187,8 +187,8 @@ class SequenceTest extends PHPUnit_Framework_TestCase
      * cycle getter and setter
      *
      * @test
-     * @covers  Sequence::isCycle()
-     * @covers  Sequence::setCycle()
+     * @covers  \Yana\Db\FileDb\Sequence::isCycle()
+     * @covers  \Yana\Db\FileDb\Sequence::setCycle()
      */
     public function testCycle()
     {
@@ -201,8 +201,8 @@ class SequenceTest extends PHPUnit_Framework_TestCase
      * test value-getter (ascending non-cyclic sequence)
      *
      * @test
-     * @covers  Sequence::getNextValue()
-     * @covers  Sequence::getCurrentValue()
+     * @covers  \Yana\Db\FileDb\Sequence::getNextValue()
+     * @covers  \Yana\Db\FileDb\Sequence::getCurrentValue()
      */
     public function testGetValueForAscendingSequence()
     {
@@ -225,7 +225,7 @@ class SequenceTest extends PHPUnit_Framework_TestCase
             $this->ascendingSequence->getNextValue();
             $this->fail("Non-cyclic sequence should throw an OutOfBoundsException, when reaching max-value.");
 
-        } catch (OutOfBoundsException $e) {
+        } catch (\Yana\Core\Exceptions\OutOfBoundsException $e) {
             // success
         } catch (\Exception $e) {
             $this->fail("Unexpected exception: " . $e->getMessage());
@@ -237,8 +237,8 @@ class SequenceTest extends PHPUnit_Framework_TestCase
      * test value-getter (descending sequence)
      *
      * @test
-     * @covers  Sequence::getNextValue()
-     * @covers  Sequence::getCurrentValue()
+     * @covers  \Yana\Db\FileDb\Sequence::getNextValue()
+     * @covers  \Yana\Db\FileDb\Sequence::getCurrentValue()
      */
     public function testGetValueForDescendingSequence()
     {
@@ -280,7 +280,7 @@ class SequenceTest extends PHPUnit_Framework_TestCase
      * set current value
      *
      * @test
-     * @expectedException  OutOfBoundsException
+     * @expectedException \Yana\Core\Exceptions\OutOfBoundsException
      */
     public function testSetCurrentValueOutOfBoundsException()
     {

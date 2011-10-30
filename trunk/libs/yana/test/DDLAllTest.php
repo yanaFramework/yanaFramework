@@ -113,31 +113,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      *
-     * @covers DDLColumn
-     * @covers DDLDatabase
-     * @covers DDLField
-     * @covers DDLForeignKey
-     * @covers DDLForm
-     * @covers DDLFunction
-     * @covers DDLFunctionImplementation
-     * @covers DDLFunctionParameter
-     * @covers DDLIndex
-     * @covers DDLLogCreate
-     * @covers DDLLogDrop
-     * @covers DDLLogRename
-     * @covers DDLLogSql
-     * @covers DDLLogUpdate
-     * @covers DDLSequence
-     * @covers DDLTable
-     * @covers DDLView
-     * @covers DDLChangeLog
-     * @covers DDLIndexColumn
-     * @covers DDLViewField
-     * @covers DDLEvent
-     * @covers DDLDatabaseInit
-     * @covers DDLTrigger
-     * @covers DDLConstraint
-     *
      * @access protected
      */
     protected function tearDown()
@@ -189,23 +164,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * title
      *
-     * @covers DDLColumn::getTitle
-     * @covers DDLColumn::setTitle
-     * @covers DDLDatabase::getTitle
-     * @covers DDLDatabase::setTitle
-     * @covers DDLForm::getTitle
-     * @covers DDLForm::setTitle
-     * @covers DDLFunction::getTitle
-     * @covers DDLFunction::setTitle
-     * @covers DDLIndex::getTitle
-     * @covers DDLIndex::setTitle
-     * @covers DDLTable::getTitle
-     * @covers DDLTable::setTitle
-     * @covers DDLView::getTitle
-     * @covers DDLView::setTitle
-     * @covers DDLEvent::getTitle
-     * @covers DDLEvent::setTitle
-     *
      * @dataProvider dataTitle
      * @param  string  $propertyName
      * @test
@@ -226,11 +184,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * range
      *
-     * @covers DDLColumn::getMin
-     * @covers DDLColumn::getMax
-     * @covers DDLColumn::getStep
-     * @covers DDLColumn::setRange
-     *
      * @test
      */
     public function testRange()
@@ -250,13 +203,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * get type
-     *
-     * @covers DDLLogColumn::getType
-     * @covers DDLLogCreate::getType
-     * @covers DDLLogRename::getType
-     * @covers DDLLogSql::getType
-     * @covers DDLLogUpdate::getType
-     * @covers DDLLogDrop::getType
      *
      * @test
      */
@@ -289,12 +235,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * check types and params
-     *
-     * @covers DDLLogChange::getType
-     * @covers DDLLogChange::setType
-     * @covers DDLLogChange::addParameter
-     * @covers DDLLogChange::getParameters
-     * @covers DDLLogChange::dropParameters
      *
      * @test
      */
@@ -344,7 +284,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * get supported type
      *
-     * @covers DDLColumn::getSupportedTypes
      * @test
      */
     public function getSupportedTypes()
@@ -357,11 +296,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * set type
-     *
-     * @covers DDLColumn::getType
-     * @covers DDLColumn::setType
-     * @covers DDLFunctionParameter::getType
-     * @covers DDLFunctionParameter::setType
      *
      * @test
      */
@@ -384,9 +318,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Mode
-     *
-     * @covers DDLFunctionParameter::getMode
-     * @covers DDLFunctionParameter::setMode
      *
      * @test
      */
@@ -432,32 +363,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     *  description
-     *
-     * @covers DDLColumn::getDescription
-     * @covers DDLColumn::setDescription
-     * @covers DDLField::getDescription
-     * @covers DDLField::setDescription
-     * @covers DDLDatabase::getDescription
-     * @covers DDLDatabase::setDescription
-     * @covers DDLForm::getDescription
-     * @covers DDLForm::setDescription
-     * @covers DDLFunction::getDescription
-     * @covers DDLFunction::setDescription
-     * @covers DDLView::getDescription
-     * @covers DDLView::setDescription
-     * @covers DDLTable::getDescription
-     * @covers DDLTable::setDescription
-     * @covers DDLSequence::getDescription
-     * @covers DDLSequence::setDescription
-     * @covers DDLLogCreate::getDescription
-     * @covers DDLLogCreate::setDescription
-     * @covers DDLLogChange::getDescription
-     * @covers DDLLogChange::setDescription
-     * @covers DDLLogSql::getDescription
-     * @covers DDLLogSql::setDescription
-     * @covers DDLIndex::getDescription
-     * @covers DDLIndex::setDescription
+     * description
      *
      * @dataProvider dataDescription
      * @test
@@ -478,9 +384,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Where
      *
-     * @covers DDLView::getWhere
-     * @covers DDLView::setWhere
-     *
      * @test
      */
     public function testWhere()
@@ -498,9 +401,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * check option
      *
-     * @covers DDLView::getCheckOption
-     * @covers DDLView::setCheckOption
-     * @covers DDLView::hasCheckOption
      * @test
      */
     public function testCheckOption()
@@ -532,9 +432,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * source-table
      *
-     * @covers DDLINDEX::getSourceTable
-     * @covers DDLForeignKey::getSourceTable
-     *
      * @test
      */
     public function testGetSourceTable()
@@ -552,9 +449,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * subject
      *
-     * @covers DDLLogCreate::getSubject
-     * @covers DDLLogCreate::setSubject
-     *
      * @test
      */
     public function testSubject()
@@ -567,11 +461,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * SQL
-     *
-     * @covers DDLLogSql::getSQL
-     * @covers DDLLogSql::setSQL
-     * @covers DDLDatabaseInit::getSQL
-     * @covers DDLDatabaseInit::setSQL
      *
      * @test
      */
@@ -598,17 +487,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * readonly
-     *
-     * @covers DDLColumn::isReadonly
-     * @covers DDLColumn::setReadonly
-     * @covers DDLDatabase::isReadonly
-     * @covers DDLDatabase::setReadonly
-     * @covers DDLField::isReadonly
-     * @covers DDLField::setReadonly
-     * @covers DDLView::isReadonly
-     * @covers DDLView::setReadonly
-     * @covers DDLTable::isReadonly
-     * @covers DDLTable::setReadonly
      *
      * @test
      */
@@ -663,9 +541,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      *  Visible
      *
-     * @covers DDLField::isVisible
-     * @covers DDLField::setVisible
-     *
      * @test
      */
     public function testVisible()
@@ -682,9 +557,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Clustered
-     *
-     * @covers DDLIndex::isClustered
-     * @covers DDLIndex::setClustered
      *
      * @test
      */
@@ -703,9 +575,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Cycle
      *
-     * @covers DDLSequence::isCycle
-     * @covers DDLSequence::setCycle
-     *
      * @test
      */
     public function testCycle()
@@ -722,9 +591,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Deferrable
-     *
-     * @covers DDLForeignKey::isDeferrable
-     * @covers DDLForeignKey::setDeferrable
      *
      * @test
      */
@@ -743,9 +609,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * nullable
      *
-     * @covers DDLColumn::isNullable
-     * @covers DDLColumn::setNullable
-     *
      * @test
      */
     public function testNullable()
@@ -763,11 +626,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * unique
-     *
-     * @covers DDLColumn::isUnique
-     * @covers DDLColumn::setUnique
-     * @covers DDLIndex::isUnique
-     * @covers DDLIndex::setUnique
      *
      * @test
      */
@@ -795,9 +653,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * unsigned
      *
-     * @covers DDLColumn::isUnsigned
-     * @covers DDLColumn::setUnsigned
-     *
      * @test
      */
     public function testUnsigned()
@@ -817,9 +672,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * fixed
      *
-     * @covers DDLColumn::isFixed
-     * @covers DDLColumn::setFixed
-     *
      * @test
      */
     public function testFixed()
@@ -837,9 +689,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Auto-increment
-     *
-     * @covers DDLColumn::isAutoIncrement
-     * @covers DDLColumn::setAutoIncrement
      *
      * @test
      */
@@ -859,9 +708,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Auto-fill
-     *
-     * @covers DDLColumn::isAutoFill
-     * @covers DDLColumn::setAutoFill
      *
      * @test
      */
@@ -906,8 +752,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Auto-fill with invalid argument
      *
-     * @covers DDLColumn::setAutoFill
-     * @expectedException NotImplementedException
+     * @expectedException \Yana\Core\Exceptions\NotImplementedException
      *
      * @test
      */
@@ -920,8 +765,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * is foreign-key
-     *
-     * @covers DDLColumn::isForeignKey
      *
      * @test
      */
@@ -950,8 +793,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * isPrimaryKey
      *
-     * @covers DDLColumn::isPrimaryKey
-     *
      * @test
      */
     public function testIsPrimaryKey()
@@ -963,8 +804,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * is number
-     *
-     * @covers DDLColumn::isNumber
      *
      * @test
      */
@@ -983,8 +822,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Length
      *
-     * @covers DDLIndexColumn::getLength
-     * @covers DDLIndexColumn::setLength
      * @test
      */
     public function testGetLength()
@@ -1001,12 +838,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Size and precision
-     *
-     * @covers DDLColumn:getLength
-     * @covers DDLColumn:setLength
-     * @covers DDLColumn:getSize
-     * @covers DDLColumn:getPrecision
-     * @covers DDLColumn:setSize
      *
      * @test
      */
@@ -1029,8 +860,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Size and precision with invalid argument
      *
-     * @covers DDLColumn:setLength
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      *
      * @test
      */
@@ -1042,9 +872,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Image-settings
-     *
-     * @covers DDLColumn::getImageSettings
-     * @covers DDLColumn::setImageSettings
      *
      * @test
      */
@@ -1073,9 +900,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Reference-settings
      *
-     * @covers DDLColumn::getReferenceSettings
-     * @covers DDLColumn::setReferenceSettings
-     *
      * @test
      */
     public function testSetReferenceSettings()
@@ -1094,10 +918,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Default
-     *
-     * @covers DDLColumn::getDefaults
-     * @covers DDLColumn::getDefault
-     * @covers DDLColumn::setDefault
      *
      * @test
      */
@@ -1122,14 +942,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Enumeration-items
-     *
-     * @covers DDLColumn::getEnumerationItems
-     * @covers DDLColumn::setEnumerationItem
-     * @covers DDLColumn::setEnumerationItems
-     * @covers DDLColumn::dropEnumerationItems
-     * @covers DDLColumn::dropEnumerationItem
-     * @covers DDLColumn::getEnumerationItem
-     * @covers DDLColumn::getEnumerationItemNames
      *
      * @test
      */
@@ -1170,8 +982,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * drop non-existing enumeration item
      *
-     * @covers DDLColumn::dropEnumerationItem
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      *
      * @test
      */
@@ -1185,17 +996,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * getConstraint
-     *
-     * @covers DDLColumn::getConstraint
-     * @covers DDLColumn::getConstraints
-     * @covers DDLColumn::addConstraint
-     * @covers DDLTable::getConstraint
-     * @covers DDLTable::getConstraints
-     * @covers DDLTable::addConstraint
-     * @covers DDLTable::dropConstraint
-     * @covers DDLTable::getUniqueConstraints
-     * @covers DDLConstraint::getConstraints
-     * @covers DDLConstraint::setConstraint
      *
      * @test
      */
@@ -1316,10 +1116,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Includes
      *
-     * @covers DDLDatabase::getIncludes
-     * @covers DDLDatabase::setIncludes
-     * @covers DDLDatabase::addIncludes
-     *
      * @test
      */
     public function testIncludes()
@@ -1338,9 +1134,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Charset
      *
-     * @covers DDLDatabase::getCharset
-     * @covers DDLDatabase::setCharset
-     *
      * @test
      */
     public function testCharset()
@@ -1358,9 +1151,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * DataSource
      *
-     * @covers DDLDatabase::getDataSource
-     * @covers DDLDatabase::setDataSource
-     *
      * @test
      */
     public function testDataSource()
@@ -1377,18 +1167,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Table
-     *
-     * @covers DDLForm::getTable
-     * @covers DDLForm::setTable
-     * @covers DDLViewField::setTable
-     * @covers DDLViewField::getTable
-     * @covers DDLDatabase::getTable
-     * @covers DDLDatabase::addTable
-     * @covers DDLDatabase::getTableNames
-     * @covers DDLDatabase::getTables
-     * @covers DDLDatabase::getTable
-     * @covers DDLDatabase::isTable
-     * @covers DDLDatabase::dropTable
      *
      * @test
      */
@@ -1446,11 +1224,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Magic Getter
      *
-     * @covers DDLDatabase::__get
-     * @covers DDLTable::__get
-     * @covers DDLForm::__get
-     * @covers DDLView::__get
-     *
      * @test
      */
     public function testMagicGet()
@@ -1490,8 +1263,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * add already existing table
      *
-     * @covers DDLDatabase::addTable
-     * @expectedException AlreadyExistsException
+     * @expectedException \Yana\Core\Exceptions\AlreadyExistsException
      *
      * @test
      */
@@ -1510,8 +1282,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * drop non-existing table
      *
-     * @covers DDLDatabase::dropTable
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      *
      * @test
      */
@@ -1523,9 +1294,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Tables
-     *
-     * @covers DDLView::getTables
-     * @covers DDLView::setTables
      *
      * @test
      */
@@ -1541,8 +1309,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * TablesInvalidArgumentException
      *
-     * @covers DDLView::setTables
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      *
      * @test
      */
@@ -1554,13 +1321,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * View
-     *
-     * @covers DDLDatabase::getView
-     * @covers DDLDatabase::addView
-     * @covers DDLDatabase::getViews
-     * @covers DDLDatabase::getViewNames
-     * @covers DDLDatabase::isView
-     * @covers DDLDatabase::dropView
      *
      * @test
      */
@@ -1603,8 +1363,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * addViewAlreadyExistsException
      *
-     * @covers DDLDatabase::addView
-     * @expectedException AlreadyExistsException
+     * @expectedException \Yana\Core\Exceptions\AlreadyExistsException
      *
      * @test
      */
@@ -1623,8 +1382,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * drop non-existing view
      *
-     * @covers DDLDatabase::dropView
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      *
      * @test
      */
@@ -1636,13 +1394,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Function
-     *
-     * @covers DDLDatabase::getFunction
-     * @covers DDLDatabase::addFunction
-     * @covers DDLDatabase::getFunctions
-     * @covers DDLDatabase::getFunctionNames
-     * @covers DDLDatabase::isFunction
-     * @covers DDLDatabase::dropFunction
      *
      * @test
      */
@@ -1685,8 +1436,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * addFunctionAlreadyExistsException
      *
-     * @covers DDLDatabase::addFunction
-     * @expectedException AlreadyExistsException
+     * @expectedException \Yana\Core\Exceptions\AlreadyExistsException
      *
      * @test
      */
@@ -1705,8 +1455,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * drop non-existing function
      *
-     * @covers DDLDatabase::dropFunction
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      *
      * @test
      */
@@ -1718,10 +1467,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Query
-     *
-     * @covers DDLView::getQuery
-     * @covers DDLView::setQuery
-     * @covers DDLView::getQueries
      *
      * @test
      */
@@ -1753,7 +1498,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * addEntry
      *
-     * @covers DDLChangeLog::addEntry
      * @test
      */
     public function testAddEntry()
@@ -1777,7 +1521,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * dropEntries
      *
-     * @covers DDLChangeLog::dropEntries
      * @test
      */
     public function testDropEntries()
@@ -1801,7 +1544,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * getEntries
      *
-     * @covers DDLChangeLog::getEntries
      * @test
      */
     public function testGetEntries()
@@ -1848,7 +1590,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * add field to view
      *
-     * @covers DDLView
      * @test
      */
     public function testAddViewField()
@@ -1884,7 +1625,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * add field to form
      *
-     * @covers DDLForm
      * @test
      */
     public function testAddFormField()
@@ -1911,7 +1651,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             $this->ddlform->dropField('abcd');
             $this->fail('Field was not deleted');
-        } catch (NotFoundException $e) {
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             // success
         }
 
@@ -1920,8 +1660,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * addFieldInvalidArgumentException
      *
-     * @covers DDLView::addField
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      *
      * @test
      */
@@ -1934,12 +1673,11 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * getFieldInvalidArgumentException4
      *
-     * @covers DDLView::getField
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      *
      * @test
      */
-    public function testGetFieldInvalidArgumentException()
+    public function testGetFieldNotFoundException()
     {
         //DDLView
         $this->ddlview->getField('nonexist');
@@ -1948,8 +1686,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * FieldAlreadyExistsException
      *
-     * @covers DDLForm::addField
-     * @expectedException AlreadyExistsException
+     * @expectedException \Yana\Core\Exceptions\AlreadyExistsException
      *
      * @test
      */
@@ -1976,8 +1713,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * getFormInvalidArgumentException
      *
-     * @covers DDLForm::getFrom
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      *
      * @test
      */
@@ -1989,9 +1725,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * get Query
      *
-     * @covers DDLView::getQuery
-     * @covers DDLView::getQueries
-     * @covers DDLView::dropQuery
      * @test
      */
     public function testgetQuery()
@@ -2015,13 +1748,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Sequence
-     *
-     * @covers DDLDatabase::getSequence
-     * @covers DDLDatabase::addSequence
-     * @covers DDLDatabase::getSequences
-     * @covers DDLDatabase::getSequenceNames
-     * @covers DDLDatabase::isSequence
-     * @covers DDLDatabase::dropSequence
      *
      * @test
      */
@@ -2064,8 +1790,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * addSequenceAlreadyExistsException
      *
-     * @covers DDLDatabase::addSequence
-     * @expectedException AlreadyExistsException
+     * @expectedException \Yana\Core\Exceptions\AlreadyExistsException
      *
      * @test
      */
@@ -2084,8 +1809,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * drop non-existing sequence
      *
-     * @covers DDLDatabase::dropSequence
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      *
      * @test
      */
@@ -2098,9 +1822,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Sorting
      *
-     * @covers DDLIndexColumn::setSorting
-     * @covers DDLIndexColumn::isDescendingOrder
-     * @covers DDLIndexColumn::isAscendingOrder
      * @test
      */
     public function testSorting()
@@ -2129,8 +1850,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * dropInit
      *
-     * @covers DDLDatabase::dropInit
-     *
      * @test
      */
     public function testDropInit()
@@ -2143,9 +1862,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * addInit
-     *
-     * @covers DDLDatabase::addInit
-     * @covers DDLDatabase::getInit
      *
      * @test
      */
@@ -2169,7 +1885,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * getListOfFiles
      *
-     * @covers DDLDatabase::getListOfFiles
      * @test
      */
     public function testGetListOfFiles()
@@ -2191,13 +1906,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Form
-     *
-     * @covers DDLDatabase::getForm
-     * @covers DDLDatabase::addForm
-     * @covers DDLDatabase::getForms
-     * @covers DDLDatabase::getFormNames
-     * @covers DDLDatabase::isForm
-     * @covers DDLDatabase::dropForm
      *
      * @test
      */
@@ -2240,8 +1948,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * addFormAlreadyExistsException
      *
-     * @covers DDLDatabase::addForm
-     * @expectedException AlreadyExistsException
+     * @expectedException \Yana\Core\Exceptions\AlreadyExistsException
      *
      * @test
      */
@@ -2260,8 +1967,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * dropFormInvalidArgumentException
      *
-     * @covers DDLDatabase::dropForm
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      *
      * @test
      */
@@ -2274,8 +1980,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Column
      *
-     * @covers DDLForeignKey::setColumn
-     * @covers DDLForeignKey::getColumns
      * @test
      */
     public function testSetColumn()
@@ -2292,12 +1996,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Columns
-     *
-     * @covers DDLForeignKey::getColumns
-     * @covers DDLForeignKey::setColumns
-     * @covers DDLIndex::getColumns
-     * @covers DDLIndex::addColumn
-     * @covers DDLIndex::dropColumn
      *
      * @test
      */
@@ -2353,9 +2051,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Column
      *
-     * @covers DDLIndex::setColumn
-     *
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      * @test
      */
     function testSetColumnNotFoundException()
@@ -2365,9 +2061,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Title
-     *
-     * @covers DDLField::getTitle
-     * @covers DDLField::setTitle
      *
      * @test
      */
@@ -2385,11 +2078,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Name
-     *
-     * @covers DDLLogCreate::setName
-     * @covers DDLLogCreate::getName
-     * @covers DDLIndex::setName
-     * @covers DDLIndex::getName
      *
      * @test
      */
@@ -2413,9 +2101,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Name
      *
-     * @covers DDLObject::setName
-     *
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
     function testSetNameInvalidArgument()
@@ -2427,9 +2113,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Name
      *
-     * @covers DDLLogCreate::setName
-     *
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
     function testSetNameInvalidArgument1()
@@ -2439,9 +2123,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * OldName
-     *
-     * @covers DDLLogRename::setOldName
-     * @covers DDLLogRename::getOldName
      *
      * @test
      */
@@ -2459,10 +2140,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Order by
-     *
-     * @covers DDLView::setOrderBy
-     * @covers DDLView::getOrderBy
-     * @covers DDLView::isDescendingOrder
      *
      * @test
      */
@@ -2486,9 +2163,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Property name
      *
-     * @covers DDLLogUpdate::setPropertyName
-     * @covers DDLLogUpdate::getPropertyName
-     *
      * @test
      */
     public function testPropertyName()
@@ -2505,9 +2179,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Property value
-     *
-     * @covers DDLLogUpdate::setPropertyValue
-     * @covers DDLLogUpdate::getPropertyValue
      *
      * @test
      */
@@ -2526,9 +2197,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Start
      *
-     * @covers DDLSequence::getStart
-     * @covers DDLSequence::setStart
-     *
      * @test
      */
     public function testStart()
@@ -2545,9 +2213,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Start
      *
-     * @covers DDLSequence::setStart
-     *
-     * @expectedException OutOfBoundsException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
     public function testSetStartInvalidArgument1()
@@ -2558,9 +2224,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Increment
-     *
-     * @covers DDLSequence::getIncrement
-     * @covers DDLSequence::setIncrement
      *
      * @test
      */
@@ -2577,17 +2240,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             $this->ddlsequence->setIncrement(0);
             $this->fail("Increment value may not be set to '0'.");
-        } catch (\Yana\Core\InvalidArgumentException $e) {
+        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
             // success
         }
     }
 
     /**
      * Implementation
-     *
-     * @covers DDLFunction::getImplementation
-     * @covers DDLFunction::getImplementations
-     * @covers DDLFunction::setImplementation
      *
      * @test
      */
@@ -2609,8 +2268,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * ImplementationAlreadyExistsException
      *
-     * @covers DDLFunction::addImplementation
-     * @expectedException AlreadyExistsException
+     * @expectedException \Yana\Core\Exceptions\AlreadyExistsException
      *
      * @test
      */
@@ -2619,7 +2277,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             // supposed to succeed
             $this->ddlfunction->addImplementation();
-        } catch (AlreadyExistsException $e) {
+        } catch (\Yana\Core\Exceptions\AlreadyExistsException $e) {
             $this->fail($e->getMessage());
         }
         // supposed to fail
@@ -2629,10 +2287,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Increment
      *
-     * @covers DDLSequence::getIncrement
-     * @covers DDLSequence::setIncrement
-     *
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
     function testSetIncrementInvalidArgument()
@@ -2642,9 +2297,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Min
-     *
-     * @covers DDLSequence::getMin
-     * @covers DDLSequence::setMin
      *
      * @test
      */
@@ -2665,16 +2317,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             $this->ddlsequence->setMin(3);
             $this->fail("Should not be able to set minimum higher than start value.");
-        } catch (OutOfBoundsException $e) {
+        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
             // success
         }
     }
 
     /**
      * Max
-     *
-     * @covers DDLSequence::getMax
-     * @covers DDLSequence::setMax
      *
      * @test
      */
@@ -2695,16 +2344,13 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         try {
             $this->ddlsequence->setMax(1);
             $this->fail("Should not be able to set maximum lower than start value.");
-        } catch (OutOfBoundsException $e) {
+        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
             // success
         }
     }
 
     /**
      * TargetTable
-     *
-     * @covers DDLForeignKey::getTargetTable
-     * @covers DDLForeignKey::setTargetTable
      *
      * @test
      */
@@ -2722,9 +2368,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Match
-     *
-     * @covers DDLForeignKey::getMatch
-     * @covers DDLForeignKey::setMatch
      *
      * @test
      */
@@ -2747,8 +2390,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Template
      *
-     * @covers DDLForm::getTemplate
-     * @covers DDLForm::setTemplate
      * @test
      */
     public function testTemplate()
@@ -2766,9 +2407,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Language
      *
-     * @covers DDLFunctionImplementation::getLanguage
-     * @covers DDLFunctionImplementation::setLanguage
-     *
      * @test
      */
     public function testLanguage()
@@ -2782,9 +2420,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Code
      *
-     * @covers DDLFunctionImplementation::getCode
-     * @covers DDLFunctionImplementation::setCode
-     *
      * @test
      */
     public function testCode()
@@ -2797,9 +2432,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Return
-     *
-     * @covers DDLFunctionImplementation::getReturn
-     * @covers DDLFunctionImplementation::setReturn
      *
      * @test
      */
@@ -2817,13 +2449,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * parameter definition
-     *
-     * @covers DDLFunctionImplementation::getParameter
-     * @covers DDLFunctionImplementation::getParameters
-     * @covers DDLFunctionImplementation::getParameterNames
-     * @covers DDLFunctionImplementation::addParameter
-     * @covers DDLFunctionImplementation::setParameter
-     * @covers DDLFunctionImplementation::dropParameter
      *
      * @test
      */
@@ -2863,9 +2488,8 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * addParameterAlreadyExistsException
      *
      * @test
-     * @covers DDLFunctionImplementation::addParameter
      *
-     * @expectedException AlreadyExistsException
+     * @expectedException \Yana\Core\Exceptions\AlreadyExistsException
      */
     public function testAddParameterAlreadyExistsException()
     {
@@ -2914,17 +2538,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * DBMS
      *
-     * @covers DDLLogSql::setDBMS
-     * @covers DDLLogSql::getDBMS
-     * @covers DDLLogChange::setDBMS
-     * @covers DDLLogChange::getDBMS
-     * @covers DDLDatabaseInit::setDBMS
-     * @covers DDLDatabaseInit::getDBMS
-     * @covers DDLTrigger::setDBMS
-     * @covers DDLTrigger::getDBMS
-     * @covers DDLConstraint::setDBMS
-     * @covers DDLConstraint::getDBMS
-     *
      * @dataProvider dataDBMS
      * @param  string  $propertyName
      * @test
@@ -2951,8 +2564,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * user role
      *
      * @test
-     * @covers  DDLGrant::getRole()
-     * @covers  DDLGrant::setRole()
      */
     public function testRole()
     {
@@ -2971,8 +2582,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * user group
      *
      * @test
-     * @covers  DDLGrant::getUser()
-     * @covers  DDLGrant::setUser()
      */
     public function testUser()
     {
@@ -2991,8 +2600,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * security level
      *
      * @test
-     * @covers  DDLGrant::getLevel()
-     * @covers  DDLGrant::setLevel()
      */
     public function testLevel()
     {
@@ -3014,8 +2621,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * security level exceeding lower bounds
      *
      * @test
-     * @covers  DDLGrant::setLevel()
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function testLevelInvalidArgument1()
     {
@@ -3026,8 +2632,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * security level exceeding upper bounds
      *
      * @test
-     * @covers  DDLGrant::setLevel()
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function testLevelInvalidArgument2()
     {
@@ -3038,8 +2643,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * select statements
      *
      * @test
-     * @covers  DDLGrant::isSelectable()
-     * @covers  DDLGrant::setSelect()
      */
     public function testSelect()
     {
@@ -3058,8 +2661,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * insert statements
      *
      * @test
-     * @covers  DDLGrant::isInsertable()
-     * @covers  DDLGrant::setInsert()
      */
     public function testInsert()
     {
@@ -3078,8 +2679,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * update statements
      *
      * @test
-     * @covers  DDLGrant::isUpdatable()
-     * @covers  DDLGrant::setUpdate()
      */
     public function testUpdate()
     {
@@ -3098,8 +2697,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * delete statements
      *
      * @test
-     * @covers  DDLGrant::isDeletable()
-     * @covers  DDLGrant::setDelete()
      */
     public function testDelete()
     {
@@ -3118,8 +2715,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
      * grant option
      *
      * @test
-     * @covers  DDLGrant::isGrantable()
-     * @covers  DDLGrant::setGrantOption()
      */
     public function testGrantable()
     {
@@ -3163,7 +2758,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * EventInvalidArgumentException
      *
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      *
      * @test
      */
@@ -3175,7 +2770,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * EventInvalidArgumentException
      *
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      *
      * @test
      */
@@ -3200,23 +2795,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Grants
-     *
-     * @covers DDLForm::getGrants
-     * @covers DDLForm::setGrants
-     * @covers DDLForm::addGrants
-     * @covers DDLField::getGrants
-     * @covers DDLField::setGrants
-     * @covers DDLField::addGrants
-     * @covers DDLField::setGrant
-     * @covers DDLColumn::getGrants
-     * @covers DDLColumn::setGrants
-     * @covers DDLColumn::addGrants
-     * @covers DDLView::getGrants
-     * @covers DDLView::setGrants
-     * @covers DDLView::addGrants
-     * @covers DDLTable::getGrants
-     * @covers DDLTable::setGrants
-     * @covers DDLTable::addGrants
      *
      * @dataProvider dataSetGrants
      * @param  string  $propertyName
@@ -3250,16 +2828,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * parent
-     *
-     * @covers DDLChangeLog::getParent
-     * @covers DDLColumn::getParent
-     * @covers DDLForeignKey::getParent
-     * @covers DDLForm::getParent
-     * @covers DDLForm::getDatabase
-     * @covers DDLFunction::getParent
-     * @covers DDLIndex::getParent
-     * @covers DDLView::getParent
-     * @covers DDLTable::getParent
      *
      * @test
      */
@@ -3324,10 +2892,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     *  on-delete action
-     *
-     * @covers DDLForeignKey::getOnDelete
-     * @covers DDLForeignKey::setOnDelete
+     * on-delete action
      *
      * @test
      */
@@ -3366,10 +2931,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     *  on-delete action
-     *
-     * @covers DDLForeignKey::getOnUpdate
-     * @covers DDLForeignKey::setOnUpdate
+     * on-delete action
      *
      * @test
      */
@@ -3403,9 +2965,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Old property value
      *
-     * @covers DDLLogUpdate::setOldPropertyValue
-     * @covers DDLLogUpdate::getOldPropertyValue
-     *
      * @test
      */
     public function testOldPropertyValue()
@@ -3422,19 +2981,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Handler
-     *
-     * @covers DDLLogUpdate::setHandler
-     * @covers DDLLogUpdate::commitUpdate
-     * @covers DDLLogSql::setHandler
-     * @covers DDLLogSql::commitUpdate
-     * @covers DDLLogRename::setHandler
-     * @covers DDLLogRename::commitUpdate
-     * @covers DDLLogCreate::setHandler
-     * @covers DDLLogCreate::commitUpdate
-     * @covers DDLLogDrop::setHandler
-     * @covers DDLLogDrop::commitUpdate
-     * @covers DDLLogChange::setHandler
-     * @covers DDLLogChange::commitUpdate
      *
      * @test
      */
@@ -3481,8 +3027,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * HandlerInvalidArgumentException
      *
-     * @covers DDLLogSql::setHandler
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      *
      * @test
      */
@@ -3495,8 +3040,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * HandlerInvalidArgumentException1
      *
-     * @covers DDLLogUpdate::setHandler
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      *
      * @test
      */
@@ -3509,8 +3053,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * HandlerInvalidArgumentException2
      *
-     * @covers DDLLogRename::setHandler
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      *
      * @test
      */
@@ -3523,8 +3066,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * HandlerInvalidArgumentException3
      *
-     * @covers DDLLogCreate::setHandler
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      *
      * @test
      */
@@ -3537,8 +3079,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * HandlerInvalidArgumentException4
      *
-     * @covers DDLLogDrop::setHandler
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      *
      * @test
      */
@@ -3550,19 +3091,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * addColumn
-     *
-     * @covers DDLTable::addColumn
-     * @covers DDLTable::isColumn
-     * @covers DDLTable::getFileColumns
-     * @covers DDLTable::getColumnNames
-     * @covers DDLTable::getColumnsByType
-     * @covers DDLTable::getColumns
-     * @covers DDLTable::getColumn
-     * @covers DDLTable::dropColumn
-     * @covers DDLTable::setProfile
-     * @covers DDLTable::hasProfile
-     * @covers DDLTable::hasAuthorLog
-     * @covers DDLTable::setAuthorLog
      *
      * @test
      */
@@ -3660,8 +3188,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * getSchemaName
      *
-     * @covers DDLTable::getSchemaName
-     *
      * @test
      */
     public function testGetSchemaName()
@@ -3673,9 +3199,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * VersionCheck
-     *
-     * @covers DDLTable::hasVersionCheck
-     * @covers DDLTable::setVersionCheck
      *
      *
      * @test
@@ -3729,8 +3252,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * drop non-existing column
      *
-     * @covers DDLTable::dropColumn
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      *
      * @test
      */
@@ -3782,8 +3304,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Primary-key with non-existing column
      *
-     * @covers DDLTable::setPrimaryKey
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      *
      * @test
      */
@@ -3795,9 +3316,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Inheritance
-     *
-     * @covers DDLTable::getInheritance
-     * @covers DDLTable::setInheritance
      *
      * @test
      */
@@ -3814,11 +3332,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * addIndex
-     *
-     * @covers DDLTable::getIndexes
-     * @covers DDLTable::getIndex
-     * @covers DDLTable::addIndex
-     * @covers DDLTable::setIndex
      *
      * @test
      */
@@ -3849,9 +3362,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * IndexAlreadyExistsException
      * @test
-     *
-     * @covers  DDLTable
-     * @expectedException AlreadyExistsException
+     * @expectedException \Yana\Core\Exceptions\AlreadyExistsException
      */
     public function testAddIndexAlreadyExistsException()
     {
@@ -3869,9 +3380,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * ColumnAlreadyExistsException
      * @test
-     *
-     * @covers  DDLTable
-     * @expectedException AlreadyExistsException
+     * @expectedException \Yana\Core\Exceptions\AlreadyExistsException
      */
     public function testAddColumnAlreadyExistsException()
     {
@@ -3887,37 +3396,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Trigger
-     *
-     * @covers DDLTable::getTriggerBeforeInsert
-     * @covers DDLTable::getTriggerBeforeUpdate
-     * @covers DDLTable::getTriggerBeforeDelete
-     * @covers DDLTable::getTriggerAfterInsert
-     * @covers DDLTable::getTriggerAfterUpdate
-     * @covers DDLTable::getTriggerAfterDelete
-     * @covers DDLTable::getTriggerInsteadInsert
-     * @covers DDLTable::getTriggerInsteadUpdate
-     * @covers DDLTable::getTriggerInsteadDelete
-     * @covers DDLTable::setTriggerBeforeInsert
-     * @covers DDLTable::setTriggerBeforeUpdate
-     * @covers DDLTable::setTriggerBeforeDelete
-     * @covers DDLTable::setTriggerAfterInsert
-     * @covers DDLTable::setTriggerAfterUpdate
-     * @covers DDLTable::setTriggerAfterDelete
-     * @covers DDLTable::setTriggerInsteadInsert
-     * @covers DDLTable::setTriggerInsteadUpdate
-     * @covers DDLTable::setTriggerInsteadDelete
-     * @covers DDLTrigger::getTriggerBeforeInsert
-     * @covers DDLTrigger::setTriggerBeforeInsert
-     * @covers DDLTrigger::getTriggerBeforeUpdate
-     * @covers DDLTrigger::setTriggerBeforeUpdate
-     * @covers DDLTrigger::getTriggerBeforeDelete
-     * @covers DDLTrigger::setTriggerBeforeDelete
-     * @covers DDLTrigger::getTriggerAfterInsert
-     * @covers DDLTrigger::setTriggerAfterInsert
-     * @covers DDLTrigger::getTriggerAfterUpdate
-     * @covers DDLTrigger::setTriggerAfterUpdate
-     * @covers DDLTrigger::getTriggerAfterDelete
-     * @covers DDLTrigger::setTriggerAfterDelete
      *
      * @test
      */
@@ -4163,9 +3641,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Alias
      *
-     * @covers DDLViewField::getAlias
-     * @covers DDLViewField::setAlias
-     *
      * @test
      */
     public function testSetAlias()
@@ -4183,8 +3658,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * ChangeLog
      *
-     * @covers DDLDatabase::getChangeLog
-     *
      * @test
      */
     public function testChangeLog()
@@ -4195,9 +3668,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Css class
-     *
-     * @covers DDLField::getCssClass
-     * @covers DDLField::setCssClass
      *
      * @test
      */
@@ -4216,9 +3686,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * TabIndex
      *
-     * @covers DDLField::getTabIndex
-     * @covers DDLField::setTabIndex
-     *
      * @test
      */
     public function testTabIndex()
@@ -4235,9 +3702,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Action
-     *
-     * @covers DDLEvent::getAction
-     * @covers DDLEvent::setAction
      *
      * @test
      */
@@ -4256,9 +3720,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Language
      *
-     * @covers DDLEvent::getLanguage
-     * @covers DDLEvent::setLanguage
-     *
      * @test
      */
     public function testLanguageFormAction()
@@ -4276,9 +3737,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Label
      *
-     * @covers DDLEvent::getLabel
-     * @covers DDLEvent::setLabel
-     *
      * @test
      */
     public function testLabelFormAction()
@@ -4295,9 +3753,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * Icon
-     *
-     * @covers DDLEvent::getIcon
-     * @covers DDLEvent::setIcon
      *
      * @test
      */
@@ -4317,8 +3772,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * getTableByForeignKey
-     *
-     * @covers DDLTable::getTableByForeignKey
      *
      * @test
      */
@@ -4342,8 +3795,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * getTableByForeignKeyInvalidArgumentException
      *
-     * @covers DDLTable::getTableByForeignKey
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      *
      * @test
      */
@@ -4355,8 +3807,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
 
     /**
      * hasAllInput
-     *
-     * @covers DDLForm
      *
      * @test
      */
@@ -4372,8 +3822,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     /**
      * Old property value
      *
-     * @covers DDLForm::dropField
-     *
      * @test
      */
     public function testdropField()
@@ -4385,8 +3833,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers DDLForm::dropField
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      *
      * @test
      */
@@ -4396,8 +3843,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers DDLTable::getColumnByForeignKey
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      *
      * @test
      */
@@ -4408,8 +3854,6 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers DDLTable::getColumnByForeignKey
-     *
      * @test
      */
     public function testgetColumnByForeignKey()

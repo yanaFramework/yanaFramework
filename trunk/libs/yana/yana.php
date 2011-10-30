@@ -526,8 +526,8 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable, \Yana\L
      *
      * @access  public
      * @return  \Yana\VDrive\Registry
-     * @throws  NotReadableException    when Registry file is not readable
-     * @throws  InvalidSyntaxException  when Registry file could not be read or contains invalid syntax
+     * @throws  \Yana\Core\Exceptions\NotReadableException    when Registry file is not readable
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when Registry file could not be read or contains invalid syntax
      */
     public function getRegistry()
     {
@@ -651,7 +651,7 @@ final class Yana extends Singleton implements \Yana\Report\IsReportable, \Yana\L
             if (isset($_SESSION['language'])) {
                 try {
                     $this->_language->setLocale($_SESSION['language']);
-                } catch (\Yana\Core\InvalidArgumentException $e){
+                } catch (\Yana\Core\Exceptions\InvalidArgumentException $e){
                     unset($_SESSION['language']);
                 }
             }

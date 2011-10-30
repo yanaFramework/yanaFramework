@@ -809,8 +809,8 @@ class FormBuilder extends \Yana\Core\Object
      *
      * @access  private
      * @return  DDLForm
-     * @throws  \Yana\Core\Exceptions\BadMethodCallException   when a parameter is missing
-     * @throws  \Yana\Core\InvalidArgumentException            when a paraemter is not valid
+     * @throws  \Yana\Core\Exceptions\BadMethodCallException    when a parameter is missing
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when a paraemter is not valid
      */
     private function _buildForm()
     {
@@ -822,7 +822,8 @@ class FormBuilder extends \Yana\Core\Object
                 foreach (explode('.', $ids) as $id)
                 {
                     if (!$form->isForm($id)) {
-                        throw new \Yana\Core\InvalidArgumentException("The form with name '" . $ids . "' was not found.");
+                        $message = "The form with name '" . $ids . "' was not found.";
+                        throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
                     }
                     $form = $form->getForm($id);
                 }
@@ -830,7 +831,8 @@ class FormBuilder extends \Yana\Core\Object
             } elseif ($this->getTable()) {
                     $table = $this->_schema->getTable($this->getTable());
                     if (! $table instanceof DDLTable) {
-                        throw new \Yana\Core\InvalidArgumentException("The table with name '" . $this->getTable() . "' was not found.");
+                        $message = "The table with name '" . $this->getTable() . "' was not found.";
+                        throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
                     }
                     $this->_form = $this->_buildFormFromTable($table);
             } else {
@@ -892,7 +894,7 @@ class FormBuilder extends \Yana\Core\Object
         $field = null;
         try {
             $field = $form->addField($column->getName());
-        } catch (AlreadyExistsException $e) {
+        } catch (\Yana\Core\Exceptions\AlreadyExistsException $e) {
             return; // field already exists - nothing to do!
         }
 
@@ -923,8 +925,8 @@ class FormBuilder extends \Yana\Core\Object
      *
      * @access  private
      * @param   FormFacade  $form  parent form
-     * @throws  \Yana\Core\Exceptions\BadMethodCallException  when a parameter is missing
-     * @throws  \Yana\Core\InvalidArgumentException          when a paraemter is not valid
+     * @throws  \Yana\Core\Exceptions\BadMethodCallException    when a parameter is missing
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when a paraemter is not valid
      */
     private function _buildSubForms(FormFacade $form)
     {
@@ -952,7 +954,7 @@ class FormBuilder extends \Yana\Core\Object
      * @access  private
      * @param   DDLForm  $form  base form
      * @return  FormSetup
-     * @throws  NotFoundException  when a paraemter is not valid
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when a paraemter is not valid
      */
     private function _buildSetup(DDLForm $form)
     {

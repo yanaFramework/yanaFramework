@@ -218,7 +218,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
      * Returns bool(true) on success and bool(false) on error.
      *
      * @param   int  $type  set the kind of statement
-     * @throws  \Yana\Core\InvalidArgumentException  when argument is not a valid constant
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when argument is not a valid constant
      * @return  DbQuery
      * @ignore
      */
@@ -240,7 +240,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
 
             case DbQueryTypeEnumeration::COUNT:
                 if (is_array($this->column) && count($this->column) > 1) {
-                    throw new \Yana\Core\InvalidArgumentException("Cannot use query type 'length' " .
+                    throw new \Yana\Core\Exceptions\InvalidArgumentException("Cannot use query type 'length' " .
                         "with multiple columns.", E_USER_WARNING);
                 }
             case DbQueryTypeEnumeration::UNKNOWN:
@@ -256,7 +256,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
             break;
 
             default:
-                throw new \Yana\Core\InvalidArgumentException("Argument 1 is invalid. " .
+                throw new \Yana\Core\Exceptions\InvalidArgumentException("Argument 1 is invalid. " .
                     "The selected statement type is unknown.", E_USER_WARNING);
             break;
         }
@@ -427,7 +427,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
      *
      * @param   string  $columnName  name of a column
      * @return  DDLTable
-     * @throws  NotFoundException  if no column with the given name has been found
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if no column with the given name has been found
      */
     public function getTableByColumn($columnName)
     {
@@ -456,7 +456,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
         }
 
         if (! $table instanceof DDLTable) {
-            throw new NotFoundException("Column '$columnName' is undefined.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("Column '$columnName' is undefined.", E_USER_WARNING);
         } else {
             return $table;
         }
@@ -557,7 +557,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
      * @param   string $key2        name of the key in foreign table that is referenced
      *                              (may be omitted if it is the primary key)
      * @param   bool   $isLeftJoin  use left join instead of inner join
-     * @throws  NotFoundException  if a provided table or column is not found
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if a provided table or column is not found
      * @return  DbQuery
      * @ignore
      */
@@ -574,7 +574,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
         $sourceTable = $this->currentTable();
 
         if (! $table instanceof DDLTable) {
-            throw new NotFoundException("Table not found '$tableName'.");
+            throw new \Yana\Core\Exceptions\NotFoundException("Table not found '$tableName'.");
         }
 
         // error - no such column in current table
@@ -591,8 +591,10 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
 
             if (!self::_findForeignKey($sourceTable, $table, $key1, $key2)) {
                 if (!self::_findForeignKey($table, $sourceTable, $key2, $key1)) {
-                    throw new NotFoundException("Cannot join tables '".$this->tableName."' and '{$tableName}'. " .
-                        "No foreign key constraint has been found.");
+                    throw new \Yana\Core\Exceptions\NotFoundException(
+                        "Cannot join tables '" . $this->tableName . "' and '" . $tableName . "'. " .
+                        "No foreign key constraint has been found."
+                    );
                 }
             }
         }
@@ -697,7 +699,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
      * Returns bool(true) on success and bool(false) on error.
      *
      * @param   string  $table  table name for create
-     * @throws  NotFoundException  when table does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when table does not exist
      * @return  DbQuery
      */
     public function setTable($table)
@@ -709,7 +711,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
         $table = $this->db->getSchema()->getTable($tableName);
 
         if (!($table instanceof DDLTable)) {
-            throw new NotFoundException("The table '$tableName' is unknown.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("The table '$tableName' is unknown.", E_USER_WARNING);
         }
 
         // Auto-attach profile check to where clause if profile constraint is present.
@@ -780,9 +782,9 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
      *
      * @param   string  $column  column name or '*' for "all"
      * @name    DbQuery::setColumn()
-     * @throws  DbEventLog                           if table has not been initialized
-     * @throws  \Yana\Core\InvalidArgumentException  if a given argument is invalid
-     * @throws  DbErrorLog                           if the given column is not found in the table
+     * @throws  DbEventLog                                      if table has not been initialized
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if a given argument is invalid
+     * @throws  DbErrorLog                                      if the given column is not found in the table
      * @return  DbQuery
      * @ignore
      */
@@ -877,7 +879,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
      *
      * @param   string  $arrayAddress   array address
      * @name    DbQuery::setArrayAddress()
-     * @throws  \Yana\Core\InvalidArgumentException  if a given argument is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if a given argument is invalid
      * @return  DbQuery
      * @ignore
      */
@@ -890,7 +892,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
              * error - cannot set array address on a table
              */
             if ($this->expectedResult !== DbResultEnumeration::CELL && $this->expectedResult !== DbResultEnumeration::COLUMN) {
-                throw new \Yana\Core\InvalidArgumentException("Array address may only be used on cells, " .
+                throw new \Yana\Core\Exceptions\InvalidArgumentException("Array address may only be used on cells, " .
                         "not rows or tables.", E_USER_WARNING);
             }
             /*
@@ -899,7 +901,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
             $columnName = $this->getColumn();
             $column = $this->currentTable()->getColumn($columnName);
             if ($column->getType() !== 'array') {
-                throw new \Yana\Core\InvalidArgumentException("Array address can only be used on columns " .
+                throw new \Yana\Core\Exceptions\InvalidArgumentException("Array address can only be used on columns " .
                     "of type array. Found column of type '" . $column->getType() .
                     "' instead.", E_USER_WARNING);
             }
@@ -1228,7 +1230,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
      *
      * @param   string  $column  column name
      * @param   bool    $desc    sort descending (true=yes, false=no)
-     * @throws  NotFoundException  when a column or table does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when a column or table does not exist
      * @return  DbQuery
      * @ignore
      */
@@ -1247,7 +1249,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
         }
         $table = $this->db->getSchema()->getTable($tableName);
         if (!($table instanceof DDLTable)) {
-            throw new NotFoundException("No such table '" . $tableName . "'.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("No such table '" . $tableName . "'.", E_USER_WARNING);
         }
 
         /*
@@ -1255,7 +1257,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
          */
         if (!$table->isColumn($column)) {
             $message = "Column '$column' not found in table '" . $tableName . "'.";
-            throw new NotFoundException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
         }
         $this->orderBy[] = array($tableName, mb_strtolower($column));
         $this->desc[] = $desc;
@@ -1267,7 +1269,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
      *
      * @param   array  $orderBy  list of column names
      * @param   array  $desc     list of sort order (true=desc, false=asc)
-     * @throws  NotFoundException  when a column or table does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when a column or table does not exist
      * @return  DbQuery
      * @ignore
      */
@@ -1412,8 +1414,8 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
      *
      * @param   array  $where  where clausel as an array
      * @return  array
-     * @throws  NotFoundException                    when a column is not found
-     * @throws  \Yana\Core\InvalidArgumentException  when the clause contains invalid values
+     * @throws  \Yana\Core\Exceptions\NotFoundException         when a column is not found
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the clause contains invalid values
      * @ignore
      */
     protected function parseWhereArray(array $where)
@@ -1422,7 +1424,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
             return array();
         }
         if (count($where) !== 3) {
-            throw new \Yana\Core\InvalidArgumentException("Invalid where clause.\n\t\t" .
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause.\n\t\t" .
                 "Malformed argument '" . print_r($where, true) . "'.", E_USER_WARNING);
         }
         $leftOperand = $where[0];
@@ -1456,7 +1458,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
             $column = mb_strtolower($leftOperand);
 
         } else {
-            throw new \Yana\Core\InvalidArgumentException("Missing column name in where clause.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing column name in where clause.", E_USER_WARNING);
         }
 
         /**
@@ -1467,12 +1469,12 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
             assert('is_string($column); // Unexpected result: $column. String expected.');
 
             if (! $table instanceof DDLTable) {
-                throw new NotFoundException("Invalid where clause. " .
+                throw new \Yana\Core\Exceptions\NotFoundException("Invalid where clause. " .
                     "The name '{$tableName}' is not a table.", E_USER_WARNING);
 
             }
             if (!$table->isColumn($column)) {
-                throw new NotFoundException("Invalid where clause. " .
+                throw new \Yana\Core\Exceptions\NotFoundException("Invalid where clause. " .
                     "The name '{$column}' is not a column in table '{$tableName}'.",
                     E_USER_WARNING);
             }
@@ -1488,7 +1490,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
                 $isTableScan = false;
             }
             if (!$isTableScan && $table->getColumn($column)->isPrimaryKey()) {
-                throw new \Yana\Core\InvalidArgumentException("Invalid where clause. " .
+                throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause. " .
                     "You are trying to search for a primary key.\n\t\t" .
                     "This is not allowed, since it might cause results wether to be ambigious or empty.\n\t\t" .
                     "Turn strict checks off if you wish to continue without checking.", E_USER_WARNING);
@@ -1525,11 +1527,11 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
                 if (YANA_DB_STRICT) {
                     $table = $this->db->getSchema()->getTable($tableName);
                     if (! $table instanceof DDLTable) {
-                        throw new NotFoundException("Invalid where clause. " .
+                        throw new \Yana\Core\Exceptions\NotFoundException("Invalid where clause. " .
                             "The name '{$tableName}' is not a table.", E_USER_WARNING);
 
                     } elseif (!$table->isColumn($column)) {
-                        throw new NotFoundException("Invalid where clause. " .
+                        throw new \Yana\Core\Exceptions\NotFoundException("Invalid where clause. " .
                             "The name '{$column}' is not a column in table '{$tableName}'.",
                             E_USER_WARNING);
                     }
@@ -1564,7 +1566,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
             case 'exists':
             case 'not exists':
                 if (!($rightOperand instanceof DbSelectExist)) {
-                    throw new \Yana\Core\InvalidArgumentException("Invalid where clause.\n\t\t" .
+                    throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause.\n\t\t" .
                         "The operator '{$operator}' requires the right operand " .
                         "to be an instance of DbSelectExist.", E_USER_WARNING);
                 }
@@ -1574,7 +1576,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
             case 'not in':
                 if (!is_array($rightOperand)) {
                     if (!($rightOperand instanceof DbSelect)) {
-                        throw new \Yana\Core\InvalidArgumentException("Invalid where clause.\n\t\t" .
+                        throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause.\n\t\t" .
                             "The operator '{$operator}' requires the right operand " .
                             "to be an array.", E_USER_WARNING);
                     } else {
@@ -1589,13 +1591,13 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
             case '<=':
             case '>=':
                 if (is_null($rightOperand)) {
-                    throw new \Yana\Core\InvalidArgumentException("Invalid where clause.\n\t\t" .
+                    throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause.\n\t\t" .
                         "The operator '{$operator}' is not supported " .
                         "when comparing a column with NULL.", E_USER_WARNING);
                 }
             break;
             default:
-                throw new \Yana\Core\InvalidArgumentException("Invalid where clause.\n\t\t" .
+                throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause.\n\t\t" .
                     "The operator '{$operator}' is not supported.", E_USER_WARNING);
             break;
         }
@@ -1642,8 +1644,8 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
      * providing a parameter.
      *
      * @param   array  $where  where clause
-     * @throws  NotFoundException                    when a column is not found
-     * @throws  \Yana\Core\InvalidArgumentException  when the where-clause contains invalid values
+     * @throws  \Yana\Core\Exceptions\NotFoundException         when a column is not found
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the where-clause contains invalid values
      * @ignore
      * @return  DbQuery
      */
@@ -1751,7 +1753,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
      * {link DbQuery::sendQuery()}.
      *
      * @param   int  $limit  limit for this query
-     * @throws  \Yana\Core\InvalidArgumentException  when limit is not positive
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when limit is not positive
      * @return  DbQuery
      */
     protected function setLimit($limit)
@@ -1760,7 +1762,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
         $this->id = null;
         if ($limit < 0) {
             $message = "Limit must not be negative: '$limit'";
-            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
         $this->limit = (int) $limit;
         return $this;
@@ -1854,7 +1856,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
                 assert('is_string($values[$columnName]);');
                 try {
                     DbBlob::removeFile($values[$columnName]);
-                } catch (NotFoundException $e) {
+                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                     /* Create a database event log entry for each
                      * file the was not found.
                      */
@@ -1967,7 +1969,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
      * @param   string    $sqlStmt   SQL statement
      * @param   DbStream  $database  database connection
      * @return  DbQuery
-     * @throws  \Yana\Core\InvalidArgumentException  if the query is invalid or could not be parsed
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the query is invalid or could not be parsed
      */
     public static function parseSQL($sqlStmt, DbStream $database)
     {
@@ -2003,7 +2005,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
                 break;
             }
         }
-        throw new \Yana\Core\InvalidArgumentException("Invalid or unknown SQL statement: $sqlStmt.", E_USER_WARNING);
+        throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid or unknown SQL statement: $sqlStmt.", E_USER_WARNING);
     }
 
     /**
@@ -2127,7 +2129,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
             break;
             // other operators are currently not supported
             default:
-                throw new \Yana\Core\InvalidArgumentException("Invalid where clause '$where'.");
+                throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause '$where'.");
             break;
         }
 
@@ -2140,7 +2142,7 @@ abstract class DbQuery extends \Yana\Core\Object implements Serializable
         }
         // left operand must be identifier
         if ($leftOperand['type'] !== 'ident') {
-            throw new \Yana\Core\InvalidArgumentException("Invalid where clause '$where'.");
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause '$where'.");
         }
         $leftOperand = $leftOperand['value'];
         if (strpos($leftOperand, '.') !== false) {

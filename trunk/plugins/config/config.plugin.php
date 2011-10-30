@@ -309,7 +309,7 @@ class plugin_config extends StdClass implements IsPlugin
                 } else {
                     $pluginManager->setActive($plugin, PluginActivityEnumeration::INACTIVE);
                 }
-            } catch (NotFoundException $e) {
+            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                 throw new InvalidInputWarning();
             }
         }

@@ -519,7 +519,7 @@ class Language extends Singleton implements Serializable
      *
      * @access  public
      * @param   string  $directory  base directory
-     * @throws  NotFoundException   when the chosen directory does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException   when the chosen directory does not exist
      *
      * @ignore
      */
@@ -527,7 +527,7 @@ class Language extends Singleton implements Serializable
     {
         assert('is_string($directory); // Wrong type for argument 1. String expected');
         if (!is_dir($directory)) {
-            throw new NotFoundException("Directory '$directory' does not exist.");
+            throw new \Yana\Core\Exceptions\NotFoundException("Directory '$directory' does not exist.");
         }
         if (!in_array($directory, $this->_directories)) {
             $this->_directories[] = "$directory/";
@@ -543,7 +543,7 @@ class Language extends Singleton implements Serializable
      * @access  public
      * @param   string  $selectedLanguage  current language
      * @param   string  $selectedCountry   current country (optional)
-     * @throws  \Yana\Core\InvalidArgumentException  when the provided locale is not valid
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the provided locale is not valid
      *
      * @ignore
      */
@@ -564,7 +564,7 @@ class Language extends Singleton implements Serializable
         // check if locale is valid
         if (!preg_match('/^[a-z]{2}(-[A-Z]{2})?$/s', $locale)) {
             $message = "Invalid locale setting '$selectedLanguage'.";
-            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
 
         // set system locale
@@ -617,7 +617,7 @@ class Language extends Singleton implements Serializable
      * @access  public
      * @param   string  $languageName  name of language pack
      * @return  array
-     * @throws  NotFoundException  when requested file is not found
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when requested file is not found
      *
      * @ignore
      */
@@ -629,7 +629,7 @@ class Language extends Singleton implements Serializable
             // get path to definition file
             $file = $this->getDefaultDirectory() . "$languageName.language.xml";
             if (!is_file($file)) {
-                throw new NotFoundException("Language definition not found: '$languageName'.");
+                throw new \Yana\Core\Exceptions\NotFoundException("Language definition not found: '$languageName'.");
             }
             // load definition
             $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);

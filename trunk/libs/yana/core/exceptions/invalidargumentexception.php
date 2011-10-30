@@ -25,19 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions;
+
 /**
- * Item not found
+ * <<exception>> An argument does not match with the expected value. 
  *
- * Thrown when you try to add access a named item, but no item with the given
- * name is found.
- *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class NotFoundException extends \Yana\Core\Exceptions\DataException
+class InvalidArgumentException extends \Yana\Core\Exceptions\LogicException
 {
-    /* intentionally left blank */
+    // intentionally left blank
 }
 
 ?>

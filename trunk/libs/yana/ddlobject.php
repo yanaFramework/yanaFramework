@@ -50,7 +50,7 @@ abstract class DDLObject extends DDL
      *
      * @access  public
      * @param   string  $name  a valid, unique database object identifier
-     * @throws  \Yana\Core\InvalidArgumentException  when given name is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given name is invalid
      */
     public function __construct($name = "")
     {
@@ -77,7 +77,7 @@ abstract class DDLObject extends DDL
      *
      * @access  public
      * @param   string  $name   object name
-     * @throws  \Yana\Core\InvalidArgumentException  when given name is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given name is invalid
      * @return  DDLObject 
      */
     public function setName($name = "")
@@ -89,7 +89,7 @@ abstract class DDLObject extends DDL
         } elseif (!preg_match('/^[a-z]\w+$/is', $name)) {
             $message = "Not a valid object name: '$name'. Must start with a letter and may only contain: " .
                 "a-z, 0-9, '-' and '_'.";
-            throw new \Yana\Core\InvalidArgumentException($message);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
 
         } else {
             $this->name = mb_strtolower($name);

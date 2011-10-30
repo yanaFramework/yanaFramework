@@ -136,7 +136,6 @@ class ApplicationBuilder extends \Yana\Core\Object
         }
         $this->_errorHandler = new \Yana\Log\Errors\Handler($formatter, $logger);
         $this->_errorHandler->setActivate($isActive);
-        //throw new NotFoundException("test");
         return $this;
     }
 

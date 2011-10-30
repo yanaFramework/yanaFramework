@@ -243,7 +243,7 @@ class DDLFunction extends DDLNamedObject implements IsIncludableDDL
      * @access  public
      * @param   string $dbms    target DBMS, defaults to "generic"
      * @return  DDLFunctionImplementation
-     * @throws  AlreadyExistsException  when an implementation for the chosen DBMS already exists
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException  when an implementation for the chosen DBMS already exists
      */
     public function addImplementation($dbms = "generic")
     {
@@ -253,7 +253,7 @@ class DDLFunction extends DDLNamedObject implements IsIncludableDDL
             $this->implementations[$dbms] = $implementation;
             return $implementation;
         } else {
-            throw new AlreadyExistsException("Implementation for DBMS '$dbms' is already defined.");
+            throw new \Yana\Core\Exceptions\AlreadyExistsException("Implementation for DBMS '$dbms' is already defined.");
         }
     }
 
@@ -265,13 +265,13 @@ class DDLFunction extends DDLNamedObject implements IsIncludableDDL
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  DDLFunction
-     * @throws   \Yana\Core\InvalidArgumentException  when the name attribute is missing
+     * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
-            throw new \Yana\Core\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
         }
         $ddl = new self((string) $attributes['name'], $parent);
         $ddl->_unserializeFromXDDL($node);

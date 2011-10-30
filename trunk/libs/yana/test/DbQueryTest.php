@@ -252,7 +252,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase
      *
      * This is supposed to fail (due to cross join).
      *
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
     public function testSelectCrossJoin()

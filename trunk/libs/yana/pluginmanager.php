@@ -214,7 +214,7 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
      * @static
      * @param   string  $configurationFile  path to plugin configuration file (plugins.cfg)
      * @param   string  $pluginDirectory    path to plugin base directory
-     * @throws  NotFoundException           when on of the given paths is invalid
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when on of the given paths is invalid
      * @ignore
      */
     public static function setPath($configurationFile, $pluginDirectory)
@@ -224,7 +224,7 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
         assert('is_dir($pluginDirectory); // Invalid argument 2. Directory expected');
 
         if (!is_dir($pluginDirectory)) {
-            throw new NotFoundException("No such directory: '$pluginDirectory'.", E_USER_ERROR);
+            throw new \Yana\Core\Exceptions\NotFoundException("No such directory: '$pluginDirectory'.", E_USER_ERROR);
         }
 
         self::$_path = $configurationFile;
@@ -310,8 +310,8 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
      * @param   string  $event  identifier of the occured event
      * @param   array   $args   list of arguments
      * @return  mixed
-     * @throws  NotReadableException  when an existing VDrive definition is not readable
-     * @throws  InvalidActionError    when the event is undefined
+     * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
+     * @throws  InvalidActionError                          when the event is undefined
      */
     public function broadcastEvent($event, array $args)
     {
@@ -436,7 +436,7 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
      *
      * @access  public
      * @return  bool
-     * @throws  NotReadableException  when an existing VDrive definition is not readable
+     * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      *
      * @ignore
      */
@@ -512,8 +512,8 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
      * @access  public
      * @param   string  $pluginName   identifier for the plugin to be de-/activated
      * @param   int     $state        PluginActivityEnumeration::INACTIVE = off, PluginActivityEnumeration::ACTIVE = on
-     * @throws  NotFoundException     when no plugin with the given name is found
-     * @throws  InvalidValueException when trying to change a default plugin
+     * @throws  \Yana\Core\Exceptions\NotFoundException     when no plugin with the given name is found
+     * @throws  \Yana\Core\Exceptions\InvalidValueException when trying to change a default plugin
      */
     public function setActive($pluginName, $state = PluginActivityEnumeration::ACTIVE)
     {
@@ -522,11 +522,11 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
             $plugin = $plugins->offsetGet($pluginName);
             if ($plugin->getActive() === PluginActivityEnumeration::DEFAULT_ACTIVE) {
                 $message = "Changing activity state of plugin '$pluginName' with setting: 'always active' is not allowed.";
-                throw new InvalidValueException($message);
+                throw new \Yana\Core\Exceptions\InvalidValueException($message);
             }
             $plugin->setActive($state);
         } else {
-            throw new NotFoundException("No such plugin: '$pluginName'.");
+            throw new \Yana\Core\Exceptions\NotFoundException("No such plugin: '$pluginName'.");
         }
     }
 
@@ -544,7 +544,7 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
      * @param   string  $pluginName  identifier for the plugin
      * @param   string  $key         identifier for the file to get
      * @return  \Yana\File\AbstractResource
-     * @throws  \Yana\Core\InvalidArgumentException  when the plugin name is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the plugin name is invalid
      */
     public function get($pluginName, $key)
     {
@@ -557,7 +557,8 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
         if (isset($this->_drive[$pluginName])) {
             return $this->_drive[$pluginName]->getResource($key);
         } else {
-            throw new \Yana\Core\InvalidArgumentException("There is no plugin named '" . $pluginName . "'.", E_USER_WARNING);
+            $message = "There is no plugin named '" . $pluginName . "'.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
     }
 
@@ -659,7 +660,7 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
      * @param   string  $pluginName   plugin name
      * @return  PluginConfigurationClass
      * @since   3.1.0
-     * @throws  NotReadableException  when an existing VDrive definition is not readable
+     * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      */
     public function getPluginConfiguration($pluginName)
     {
@@ -814,7 +815,7 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
      *
      * @access  private
      * @param   array  $plugins list of plugin names
-     * @throws  NotReadableException  when an existing VDrive definition is not readable
+     * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      * @ignore
      */
     private function _loadPlugins(array $plugins)
@@ -833,7 +834,7 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
      *
      * @access  private
      * @param   string  $name  Must be valid identifier. Consists of chars, numbers and underscores.
-     * @throws  NotReadableException  when an existing VDrive definition is not readable
+     * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      * @ignore
      */
     private function _loadPlugin($name)
@@ -959,7 +960,7 @@ class PluginManager extends Singleton implements \Yana\Report\IsReportable
                         } else {
                             $subReport->addText("Template: $filename");
                         }
-                    } catch (NotFoundException $e) {
+                    } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                         $subReport->addError("The definition of template '" . $template . "' contains errors: " .
                             $e->getMessage());
                     }

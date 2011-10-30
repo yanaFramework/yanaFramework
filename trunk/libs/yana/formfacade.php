@@ -119,7 +119,7 @@ class FormFacade extends \Yana\Core\Object
      * @param   string  $name       method name
      * @param   array   $arguments  list of arguments to pass to function
      * @return  mixed
-     * @throws  NotImplementedException  when the function is not found
+     * @throws  \Yana\Core\Exceptions\NotImplementedException  when the function is not found
      */
     public function __call($name, array $arguments)
     {
@@ -128,7 +128,8 @@ class FormFacade extends \Yana\Core\Object
         } elseif (method_exists($this->_setup, $name)) {
             return call_user_func_array(array($this->_setup, $name), $arguments);
         } else {
-            throw new NotImplementedException("Call to undefined function: '$name' in class " . __CLASS__ . ".");
+            $message = "Call to undefined function: '$name' in class " . __CLASS__ . ".";
+            throw new \Yana\Core\Exceptions\NotImplementedException($message);
         }
     }
 
@@ -407,24 +408,24 @@ class FormFacade extends \Yana\Core\Object
      *
      * @access  public
      * @return  DDLTable
-     * @throws  NotFoundException  when the database, or table was not found
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the database, or table was not found
      */
     public function getTable()
     {
         if (!isset($this->_table)) {
             if (!isset($this->_form)) {
-                throw new NotFoundException("No base form defined for table.");
+                throw new \Yana\Core\Exceptions\NotFoundException("No base form defined for table.");
             }
             $tableName = $this->_form->getTable();
             $database = $this->_form->getDatabase();
             if (!($database instanceof DDLDatabase)) {
                 $message = "Error in form '" . $this->_form->getName() . "'. No parent database defined.";
-                throw new NotFoundException($message);
+                throw new \Yana\Core\Exceptions\NotFoundException($message);
             }
             $table = $database->getTable($tableName);
             if (!($table instanceof DDLTable)) {
                 $message = "Error in form '" . $this->_form->getName() . "'. Parent table '" . $tableName . "' not found.";
-                throw new NotFoundException($message);
+                throw new \Yana\Core\Exceptions\NotFoundException($message);
             }
             $this->_table = $table;
         }

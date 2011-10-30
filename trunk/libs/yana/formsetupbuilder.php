@@ -444,7 +444,7 @@ class FormSetupBuilder extends \Yana\Core\Object
      *
      * @access  protected
      * @return  DDLTable
-     * @throws  NotFoundException  when the database, or table was not found
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the database, or table was not found
      */
     protected function _getTable()
     {
@@ -454,12 +454,12 @@ class FormSetupBuilder extends \Yana\Core\Object
             $database = $form->getDatabase();
             if (!($database instanceof DDLDatabase)) {
                 $message = "Error in form '" . $form->getName() . "'. No parent database defined.";
-                throw new NotFoundException($message);
+                throw new \Yana\Core\Exceptions\NotFoundException($message);
             }
             $tableDefinition = $database->getTable($name);
             if (!($tableDefinition instanceof DDLTable)) {
                 $message = "Error in form '" . $form->getName() . "'. Parent table '$name' not found.";
-                throw new NotFoundException($message);
+                throw new \Yana\Core\Exceptions\NotFoundException($message);
             }
             $this->_table = $tableDefinition;
         }

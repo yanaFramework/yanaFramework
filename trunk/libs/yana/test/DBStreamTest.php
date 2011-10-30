@@ -161,7 +161,7 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
     /**
      * importSQL Invalid Argument Exception2
      *
-     * @expectedException NotReadableException
+     * @expectedException \Yana\Core\Exceptions\NotReadableException
      * @test
      */
     function testImportSQLInvalidArgument2()
@@ -244,7 +244,7 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
 
         try {
             $test = $this->dbsobj->insert('t.foo', array('tvalue' => 1));
-        } catch (InvalidValueException $e) {
+        } catch (\Yana\Core\Exceptions\InvalidValueException $e) {
             // insert t.foo test" failed row with key already exist
         }
 
@@ -381,7 +381,7 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
         try{
             $this->dbsobj->update('t.foo.tf', -1);
             /* "unsigned" test failed */
-        } catch (InvalidValueException $e) {
+        } catch (\Yana\Core\Exceptions\InvalidValueException $e) {
             $this->assertTrue(true);
         }
 

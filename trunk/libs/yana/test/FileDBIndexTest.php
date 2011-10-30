@@ -170,7 +170,7 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
      * get
      *
      * @test
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      */
     public function testGetNotFoundException()
     {
@@ -192,7 +192,7 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
      * get
      *
      * @test
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      */
     public function testGetForNonExistingValue()
     {
@@ -204,7 +204,7 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
      * get
      *
      * @test
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      */
     public function testGetForNonExistingIndex()
     {
@@ -213,7 +213,7 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      */
     public function testGetValueNotFoundException()
     {
@@ -222,7 +222,7 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      */
     public function testGetIndexNotFoundException()
     {

@@ -25,17 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions;
+
 /**
- * Syntax error
+ * <<exception>> Item already exists
  *
- * Thrown when a certain syntax is expected for a given value or resource and the input
- * does not satisfy this constraint.
+ * Thrown when you try to add an item, but another item of the same name does
+ * already exist.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class InvalidSyntaxException extends InvalidValueException
+class AlreadyExistsException extends \Yana\Core\Exceptions\DataException
 {
     /* intentionally left blank */
 }

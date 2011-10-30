@@ -130,7 +130,7 @@ class DDLDatabase extends DDLObject
      * @access  public
      * @param   string  $name  database name
      * @param   string  $path  file path
-     * @throws  \Yana\Core\InvalidArgumentException  when given name is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given name is invalid
      */
     public function __construct($name = "", $path = "")
     {
@@ -158,12 +158,12 @@ class DDLDatabase extends DDLObject
      * Get the path to the directory, where the database's source file is stored.
      *
      * @return string
-     * @throws NotFoundException if the source file is not defined (e.g. the file is unsaved)
+     * @throws \Yana\Core\Exceptions\NotFoundException  if the source file is not defined (e.g. the file is unsaved)
      */
     private function _getDirectory()
     {
         if (empty($this->path)) {
-            throw new NotFoundException('No directory defined for this database');
+            throw new \Yana\Core\Exceptions\NotFoundException('No directory defined for this database');
         }
         $directory = dirname($this->path) . '/';
         assert('is_dir($directory); // Database base-directory not found');
@@ -327,14 +327,14 @@ class DDLDatabase extends DDLObject
      * </code>
      *
      * @access  public
-     * @throws  NotFoundException  when an included file was not found
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when an included file was not found
      * @name    DDLDatabase::loadIncludes()
      */
     public function loadIncludes()
     {
         try {
             $baseDirectory = $this->_getDirectory();
-        } catch (NotFoundException $e) {
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             return; // if the base-directory is not defined, we just skip the loading process
         }
         // load each file
@@ -356,7 +356,7 @@ class DDLDatabase extends DDLObject
                 if (!is_file($path)) {
                     $message = "Included XDDL file '{$databaseName}' not found. " .
                         "Defined in file '" . $this->getName() . "'.";
-                    throw new NotFoundException($message, E_USER_ERROR);
+                    throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_ERROR);
                 }
                 $xddl = new XDDL($path);
                 self::$instances[$path] = $xddl->toDatabase();
@@ -685,15 +685,15 @@ class DDLDatabase extends DDLObject
      * @access  public
      * @param   string  $name   set name for table
      * @return  DDLTable
-     * @throws  AlreadyExistsException               if another table with the same name is already defined
-     * @throws  \Yana\Core\InvalidArgumentException  if given an invalid table name
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException    if another table with the same name is already defined
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if given an invalid table name
      */
     public function addTable($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->tables[$name])) {
-            throw new AlreadyExistsException("Another table with the name '$name' is already defined.");
+            throw new \Yana\Core\Exceptions\AlreadyExistsException("Another table with the name '$name' is already defined.");
 
         } else {
             $this->tables[$name] = new DDLTable($name, $this);
@@ -769,15 +769,15 @@ class DDLDatabase extends DDLObject
      * @access  public
      * @param   string  $name   name for view
      * @return  DDLView
-     * @throws  AlreadyExistsException               if another view with the same name is already defined
-     * @throws  \Yana\Core\InvalidArgumentException  if given an invalid view name
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException    if another view with the same name is already defined
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if given an invalid view name
      */
     public function addView($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->views[$name])) {
-            throw new AlreadyExistsException("Another view with the name '$name' is already defined.");
+            throw new \Yana\Core\Exceptions\AlreadyExistsException("Another view with the name '$name' is already defined.");
 
         } else {
             $this->views[$name] = new DDLView($name, $this);
@@ -851,15 +851,15 @@ class DDLDatabase extends DDLObject
      * @access  public
      * @param   string  $name  name for the new function
      * @return  DDLFunction
-     * @throws  AlreadyExistsException               if another function with the same name is already defined
-     * @throws  \Yana\Core\InvalidArgumentException  if given an invalid name
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException    if another function with the same name is already defined
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if given an invalid name
      */
     public function addFunction($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->functions[$name])) {
-            throw new AlreadyExistsException("Another function with the name '$name' is already defined.");
+            throw new \Yana\Core\Exceptions\AlreadyExistsException("Another function with the name '$name' is already defined.");
 
         } else {
             $this->functions[$name] = new DDLFunction($name);
@@ -934,15 +934,15 @@ class DDLDatabase extends DDLObject
      * @access  public
      * @param   string  $name   name for the new sequence
      * @return  DDLSequence
-     * @throws  AlreadyExistsException               if another sequence with the same name is already defined
-     * @throws  \Yana\Core\InvalidArgumentException  if given an invalid name
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException    if another sequence with the same name is already defined
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if given an invalid name
      */
     public function addSequence($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->sequences[$name])) {
-            throw new AlreadyExistsException("Another sequence with the name '$name' is already defined.");
+            throw new \Yana\Core\Exceptions\AlreadyExistsException("Another sequence with the name '$name' is already defined.");
 
         } else {
             $this->sequences[$name] = new DDLSequence($name);
@@ -1036,8 +1036,8 @@ class DDLDatabase extends DDLObject
      * Note: the object is NOT deleted. Only the definition is lost.
      *
      * @access  public
-     * @param   string  $name   table name
-     * @throws  NotFoundException
+     * @param   string  $name  table name
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the table is not found
      */
     public function dropTable($name)
     {
@@ -1046,7 +1046,7 @@ class DDLDatabase extends DDLObject
         if (isset($this->tables[$name])) {
             $this->tables[$name] = null;
         } else {
-            throw new NotFoundException("No such table '$name'.");
+            throw new \Yana\Core\Exceptions\NotFoundException("No such table '$name'.");
         }
     }
 
@@ -1056,8 +1056,8 @@ class DDLDatabase extends DDLObject
      * Note: the object is NOT deleted. Only the definition is lost.
      *
      * @access  public
-     * @param   string  $name   view name
-     * @throws  NotFoundException
+     * @param   string  $name  view name
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the view is not found
      */
     public function dropView($name)
     {
@@ -1066,7 +1066,7 @@ class DDLDatabase extends DDLObject
         if (isset($this->views[$name])) {
             $this->views[$name] = null;
         } else {
-            throw new NotFoundException("No such view '$name'.");
+            throw new \Yana\Core\Exceptions\NotFoundException("No such view '$name'.");
         }
     }
 
@@ -1076,8 +1076,8 @@ class DDLDatabase extends DDLObject
      * Note: the object is NOT deleted. Only the definition is lost.
      *
      * @access  public
-     * @param   string  $name   form name
-     * @throws  NotFoundException
+     * @param   string  $name  form name
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the form is not found
      */
     public function dropForm($name)
     {
@@ -1086,7 +1086,7 @@ class DDLDatabase extends DDLObject
         if (isset($this->forms[$name])) {
             $this->forms[$name] = null;
         } else {
-            throw new NotFoundException("No such form '$name'.");
+            throw new \Yana\Core\Exceptions\NotFoundException("No such form '$name'.");
         }
     }
 
@@ -1096,8 +1096,8 @@ class DDLDatabase extends DDLObject
      * Note: the object is NOT deleted. Only the definition is lost.
      *
      * @access  public
-     * @param   string  $name   function name
-     * @throws  NotFoundException
+     * @param   string  $name  function name
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the function is not found
      */
     public function dropFunction($name)
     {
@@ -1106,7 +1106,7 @@ class DDLDatabase extends DDLObject
         if (isset($this->functions[$name])) {
             $this->functions[$name] = null;
         } else {
-            throw new NotFoundException("No such function '$name'.");
+            throw new \Yana\Core\Exceptions\NotFoundException("No such function '$name'.");
         }
     }
 
@@ -1116,8 +1116,8 @@ class DDLDatabase extends DDLObject
      * Note: the object is NOT deleted. Only the definition is lost.
      *
      * @access  public
-     * @param   string  $name   sequence name
-     * @throws  NotFoundException
+     * @param   string  $name  sequence name
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the sequence is not found
      */
     public function dropSequence($name)
     {
@@ -1126,7 +1126,7 @@ class DDLDatabase extends DDLObject
         if (isset($this->sequences[$name])) {
             $this->sequences[$name] = null;
         } else {
-            throw new NotFoundException("No such sequence '$name'.");
+            throw new \Yana\Core\Exceptions\NotFoundException("No such sequence '$name'.");
         }
     }
 
@@ -1276,7 +1276,7 @@ class DDLDatabase extends DDLObject
      * @access  public
      * @param   string  $name  new Form name
      * @return  DDLForm
-     * @throws  AlreadyExistsException  if another form with the same name is already defined
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException  if another form with the same name is already defined
      */
     public function addForm($name)
     {
@@ -1284,7 +1284,7 @@ class DDLDatabase extends DDLObject
         $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             $message = "Another form with the name '$name' already exists in database '{$this->getName()}'.";
-            throw new AlreadyExistsException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_WARNING);
         }
         // add element to list of defined forms
         $this->forms[$name] = new DDLForm($name, $this);

@@ -102,8 +102,8 @@ class XDDL extends File
      *
      * @access  public
      * @return  DDLDatabase
-     * @throws  NotFoundException     when file does not exist
-     * @throws  InvalidSyntaxException  when file is invalid
+     * @throws  \Yana\Core\Exceptions\NotFoundException       when file does not exist
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when file is invalid
      */
     public function toDatabase()
     {
@@ -122,8 +122,8 @@ class XDDL extends File
      * @static
      * @param   string  $databaseName  database name
      * @return  DDLDatabase
-     * @throws  NotFoundException     when file does not exist
-     * @throws  InvalidSyntaxException  when file is invalid
+     * @throws  \Yana\Core\Exceptions\NotFoundException       when file does not exist
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when file is invalid
      */
     public static function getDatabase($databaseName)
     {
@@ -137,13 +137,13 @@ class XDDL extends File
      *
      * @param   string  $path  file path
      * @return  DDLDatabase
-     * @throws  NotFoundException     when file does not exist
-     * @throws  InvalidSyntaxException  when file is invalid
+     * @throws  \Yana\Core\Exceptions\NotFoundException       when file does not exist
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when file is invalid
      */
     private static function _getDatabaseFromPath($path)
     {
         if (!is_file($path)) {
-            throw new NotFoundException("No such database definition '$path'.");
+            throw new \Yana\Core\Exceptions\NotFoundException("No such database definition '$path'.");
         }
 
         $ddl = null;
@@ -156,7 +156,7 @@ class XDDL extends File
 
         } catch (\Exception $e) {
             \Yana\Log\LogManager::getLogger()->addLog("Error in XDDL-file: '$path'.", E_USER_WARNING, $e->getMessage());
-            throw new InvalidSyntaxException("Error in XDDL-file.", E_USER_WARNING, $e);
+            throw new \Yana\Core\Exceptions\InvalidSyntaxException("Error in XDDL-file.", E_USER_WARNING, $e);
         }
         assert('$ddl instanceof DDLDatabase; // Invalid return value. DDLDatabase expected');
         return $ddl;

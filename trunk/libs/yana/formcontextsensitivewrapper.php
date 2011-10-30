@@ -76,7 +76,7 @@ class FormContextSensitiveWrapper extends FormFieldFacadeCollection implements I
      * @param   string  $name       method name
      * @param   array   $arguments  list of arguments to pass to function
      * @return  mixed
-     * @throws  NotImplementedException  when the function is not found
+     * @throws  \Yana\Core\Exceptions\NotImplementedException  when the function is not found
      */
     public function __call($name, array $arguments)
     {
@@ -125,7 +125,7 @@ class FormContextSensitiveWrapper extends FormFieldFacadeCollection implements I
             {
                 try {
                     $column = $table->getColumn($columnName);
-                } catch (NotFoundException $e) {
+                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                     continue; // skip invalid column definition
                 }
                 $field = null;
@@ -135,7 +135,7 @@ class FormContextSensitiveWrapper extends FormFieldFacadeCollection implements I
                 $facade = new FormFieldFacade($this, $column, $field);
                 $this->offsetSet($columnName, $facade);
             }
-        } catch (NotFoundException $e) {
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             // Collection will be empty
         }
     }

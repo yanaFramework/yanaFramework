@@ -83,12 +83,12 @@ class SessionAdapter extends \Yana\Core\Object implements IsDataAdapter
      * @access  public
      * @param   string  $id  instance id
      * @return  array
-     * @throws  NotFoundException  if the instance does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if the instance does not exist
      */
     public function getInstance($id)
     {
         if (!$this->isValid($id)) {
-            throw new NotFoundException("There is no session data on instance: '$id'.");
+            throw new \Yana\Core\Exceptions\NotFoundException("There is no session data on instance: '$id'.");
         }
         return unserialize($_SESSION[$this->index][$id]);
     }

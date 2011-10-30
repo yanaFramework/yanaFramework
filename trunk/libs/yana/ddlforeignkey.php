@@ -206,7 +206,7 @@ class DDLForeignKey extends DDLObject
      * @access  public
      * @param   array  $columns list of columns in current table
      * @return  DDLForeignKey
-     * @throws  NotFoundException  if any of the targets does not exists
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if any of the targets does not exists
      */
     public function setColumns(array $columns)
     {
@@ -215,7 +215,7 @@ class DDLForeignKey extends DDLObject
             {
                 if (!$this->parent->isColumn($column)) {
                     $message = "No such column '$column' in table '{$this->getSourceTable()}'.";
-                    throw new NotFoundException($message, E_USER_WARNING);
+                    throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
                 }
             }
         }
@@ -234,7 +234,7 @@ class DDLForeignKey extends DDLObject
      * @param   string  $source  name of source column in current table
      * @param   string  $target  name of target column in referenced table
      * @return  DDLForeignKey
-     * @throws  NotFoundException  if any of the targets does not exists
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if any of the targets does not exists
      */
     public function setColumn($source, $target = "")
     {
@@ -246,28 +246,28 @@ class DDLForeignKey extends DDLObject
         if (isset($this->parent) && (empty($target) || YANA_DB_STRICT)) {
             if (!$this->parent->isColumn($source)) {
                 $message = "No such column '$source' in table '{$this->getSourceTable()}'.";
-                throw new NotFoundException($message, E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
             }
             $database = $this->parent->getParent();
             $targetTable = $this->getTargetTable();
             if (!is_string($targetTable)) {
                 $message = "Target table is undefined.";
-                throw new NotFoundException($message, E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
             }
             $table = $database->getTable($targetTable);
             if (! $table instanceof DDLTable) {
                 $message = "No such table '$targetTable' in Database.";
-                throw new NotFoundException($message, E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
             }
             if (empty($target)) {
                 $target = $table->getPrimaryKey();
             }
             if (is_null($target)) {
                 $message = "No suitable target column in table '$targetTable'.";
-                throw new NotFoundException($message, E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
             } elseif (YANA_DB_STRICT && !$table->isColumn($target)) {
                 $message = "No such column '$target' in table '$targetTable'.";
-                throw new NotFoundException($message, E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
             }
         }
 

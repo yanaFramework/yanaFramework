@@ -167,7 +167,7 @@ class plugin_user_admin extends StdClass implements IsPlugin
         $userName = (string) $target['user_id'];
         try {
             $user = YanaUser::getInstance($userName);
-        } catch (NotFoundException $e) { // user not found
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) { // user not found
             return false;
         }
         $password = $user->setPassword();
@@ -318,11 +318,11 @@ class plugin_user_admin extends StdClass implements IsPlugin
             }
             return $this->set_user_pwd(array('target' => array('user_id' => $userName)));
 
-        } catch (\Yana\Core\InvalidArgumentException $e) {
+        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
             throw new InvalidInputWarning();
-        } catch (AlreadyExistsException $e) {
+        } catch (\Yana\Core\Exceptions\AlreadyExistsException $e) {
             throw new UserAllreadyExistsWarning();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new Error();
         }
     }

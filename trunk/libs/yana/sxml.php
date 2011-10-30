@@ -128,7 +128,7 @@ class SXML extends SML
      * @param   int           $caseSensitive  CASE_UPPER|CASE_LOWER|CASE_MIXED
      * @param   string        &$rootNode      (optional)
      * @return  array
-     * @throws  \Yana\Core\InvalidArgumentException  when the input is not a filename or content-array
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the input is not a filename or content-array
      *
      * @see     SXML::encode()
      */
@@ -161,7 +161,7 @@ class SXML extends SML
             $message = "Argument 1 is expected to be a filename or an array " .
                 "created with file().\n\t\tInstead found " . gettype($input) .
                 " '" . print_r($input, true) . "'.";
-            throw new \Yana\Core\InvalidArgumentException($message);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
 
         if (empty($sxml)) {

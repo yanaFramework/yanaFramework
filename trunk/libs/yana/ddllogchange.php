@@ -234,7 +234,7 @@ class DDLLogChange extends DDLLog
      * @access  public
      * @param   string|array  $functionName     name of the function which is called
      * @param   string        $functionType     function type
-     * @throws  \Yana\Core\InvalidArgumentException  when the given function is not callable
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given function is not callable
      */
     public static function setHandler($functionName, $functionType = "default")
     {
@@ -242,7 +242,8 @@ class DDLLogChange extends DDLLog
         if (is_callable($functionName)) {
             self::$handlers["$functionType"] = $functionName;
         } else {
-            throw new \Yana\Core\InvalidArgumentException("The function name '$functionName' is not callable.", E_USER_WARNING);
+            $message = "The function name '$functionName' is not callable.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
     }
 

@@ -45,8 +45,8 @@ interface IsReadable
      * Returns bool(true) on success and bool(false) on error.
      *
      * @access  public
-     * @throws  NotFoundException     when the file is not found
-     * @throws  NotReadableException  when the file is not readable
+     * @throws  \Yana\Core\Exceptions\NotFoundException     when the file is not found
+     * @throws  \Yana\Core\Exceptions\NotReadableException  when the file is not readable
      */
     public function read();
 

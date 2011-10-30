@@ -183,7 +183,8 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
      * To reset the value, leave the argument $start empty.
      *
      * @access  public
-     * @param   int  $start   start value
+     * @param   int  $start  start value
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the start value is not within the min and max values
      */
     public function setStart($start = null)
     {
@@ -194,7 +195,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
         } elseif ((!is_null($this->min) && $start < $this->min) || (!is_null($this->max) && $start > $this->max)) {
             $message = "Start value '{$start}' must be within range [{$this->min},{$this->max}] " .
                 "in sequence '{$this->name}'.";
-            throw new OutOfBoundsException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
 
         } else {
             $this->start = (int) $start;
@@ -237,7 +238,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
      * @access  public
      * @param   int  $increment  increment value
      * @return  DDLSequence
-     * @throws  \Yana\Core\InvalidArgumentException  when the increment value equals 0.
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the increment value equals 0.
      */
     public function setIncrement($increment = 1)
     {
@@ -247,7 +248,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
 
         } else {
             $message = "Increment value must not be 0 in sequence '{$this->name}'.";
-            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
         return $this;
     }
@@ -281,6 +282,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
      * @access  public
      * @param   int  $min  minimum value
      * @return  DDLSequence
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the min value is greater than the current max value
      */
     public function setMin($min = null)
     {
@@ -291,7 +293,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
         } elseif ((!is_null($this->start) && $this->start < $min) || (!is_null($this->max) && $min > $this->max)) {
             $message = "Minimum value '{$min}' must be < {$this->start} and < {$this->max} " .
                 "in sequence '{$this->name}'.";
-            throw new OutOfBoundsException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
 
         } else {
             $this->min = (int) $min;
@@ -328,6 +330,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
      * @access  public
      * @param   int  $max  maximum value
      * @return  DDLSequence
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the max value is smaller than the current min value
      */
     public function setMax($max = null)
     {
@@ -338,7 +341,7 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
         } elseif ((!is_null($this->start) && $this->start > $max) || (!is_null($this->min) && $max < $this->min)) {
             $message = "Maximum value '{$max}' must be > {$this->min} and > {$this->start} " .
                 "in sequence '{$this->name}'.";
-            throw new OutOfBoundsException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
 
         } else {
             $this->max = (int) $max;
@@ -389,13 +392,13 @@ class DDLSequence extends DDLNamedObject implements IsIncludableDDL
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed             $parent  parent node (if any)
      * @return  DDLSequence
-     * @throws  \Yana\Core\InvalidArgumentException  when the name attribute is missing
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
-            throw new \Yana\Core\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
         }
         $ddl = new self((string) $attributes['name'], $parent);
         $ddl->_unserializeFromXDDL($node);

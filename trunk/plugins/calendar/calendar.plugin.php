@@ -1162,6 +1162,8 @@ class plugin_calendar extends StdClass implements IsPlugin
      * @access      public
      * @return      bool
      * @param       string  $calendar_name  calender name
+     * @throws      \Yana\Core\Exceptions\NotFoundException
+     * @throws      \Yana\Core\Exceptions\NotReadableException
      */
     public function set_xcal($calendar_name)
     {
@@ -1176,18 +1178,18 @@ class plugin_calendar extends StdClass implements IsPlugin
 
         $file = $_FILES['file'];
         if (empty($file)) {
-            throw new NotFoundException('File not found', E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\NotFoundException('File not found', E_USER_NOTICE);
         }
         $fileName = explode('.', $file['name']);
         $type = $fileName[1];
         $fileName = $fileName[0];
         $filePath = $file['tmp_name'];
         if (!file_exists($filePath)) {
-            throw new NotFoundException('The expected File: '.$fileName.' does not exist', E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\NotFoundException('The expected File: '.$fileName.' does not exist', E_USER_NOTICE);
             return false;
         }
         if (!isset($type) || $type != 'ics') {
-            throw new NotReadableException('The expected File:'.$file['name'].' is not supported');
+            throw new \Yana\Core\Exceptions\NotReadableException('The expected File:'.$file['name'].' is not supported');
             return false;
         }
 

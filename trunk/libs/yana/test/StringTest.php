@@ -301,7 +301,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     /**
      * Generated from @assert ("Test", -1)
      *
-     * @expectedException OutOfBoundsException
+     * @expectedException \Yana\Core\Exceptions\OutOfBoundsException
      * @test
      */
     public function testCharAt2()
@@ -315,7 +315,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     /**
      * Generated from @assert ("Test", 4)
      *
-     * @expectedException OutOfBoundsException
+     * @expectedException \Yana\Core\Exceptions\OutOfBoundsException
      * @test
      */
     public function testCharAt3()

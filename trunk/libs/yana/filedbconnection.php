@@ -317,7 +317,7 @@ class FileDbConnection extends \Yana\Core\Object
      * @param   DbQuery  &$dbQuery  query object
      * @return  FileDbResult
      * @since   2.9.3
-     * @throws  \Yana\Core\InvalidArgumentException  when given query is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given query is invalid
      */
     public function dbQuery(&$dbQuery)
     {
@@ -351,7 +351,7 @@ class FileDbConnection extends \Yana\Core\Object
                  */
                 try {
                     $this->_select($this->_query->getTable());
-                } catch (NotFoundException $e) {
+                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                     return new FileDbResult(null, "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.");
                 }
                 /*
@@ -459,7 +459,7 @@ class FileDbConnection extends \Yana\Core\Object
                  */
                 try {
                     $this->_select($this->_query->getTable());
-                } catch (NotFoundException $e) {
+                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                     $message = "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.";
                     return new FileDbResult(null, $message);
                 }
@@ -507,7 +507,7 @@ class FileDbConnection extends \Yana\Core\Object
                  */
                 try {
                     $this->_select($this->_query->getTable());
-                } catch (NotFoundException $e) {
+                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                     $message = "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.";
                     return new FileDbResult(null, $message);
                 }
@@ -538,7 +538,7 @@ class FileDbConnection extends \Yana\Core\Object
             case $dbQuery instanceof DbUpdate:
                 try {
                     $this->_select($this->_query->getTable());
-                } catch (NotFoundException $e) {
+                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                     $message = "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.";
                     return new FileDbResult(null, $message);
                 }
@@ -675,7 +675,7 @@ class FileDbConnection extends \Yana\Core\Object
             case $dbQuery instanceof DbInsert:
                 try {
                     $this->_select($this->_query->getTable());
-                } catch (NotFoundException $e) {
+                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                     $message = "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.";
                     return new FileDbResult(null, $message);
                 }
@@ -778,7 +778,7 @@ class FileDbConnection extends \Yana\Core\Object
             case $dbQuery instanceof DbDelete:
                 try {
                     $this->_select($this->_query->getTable());
-                } catch (NotFoundException $e) {
+                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                     $message = "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.";
                     return new FileDbResult(null, $message);
                 }
@@ -825,7 +825,7 @@ class FileDbConnection extends \Yana\Core\Object
              */
             default:
                 $message = "Invalid or unknown SQL statement: {$this->_query}.";
-                throw new \Yana\Core\InvalidArgumentException($message, E_USER_ERROR);
+                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_ERROR);
             break;
         }
 
@@ -971,7 +971,7 @@ class FileDbConnection extends \Yana\Core\Object
      *
      * @access  private
      * @param   string  $tableName  teble name
-     * @throws  NotFoundException  if selected table does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if selected table does not exist
      * @ignore
      */
     private function _select($tableName)
@@ -994,7 +994,7 @@ class FileDbConnection extends \Yana\Core\Object
         $table = $this->_schema->getTable($tableName);
 
         if (!$table instanceof DDLTable) {
-            throw new NotFoundException("No such table '$tableName'.");
+            throw new \Yana\Core\Exceptions\NotFoundException("No such table '$tableName'.");
         }
         assert('!isset($parent); // Cannot redeclare $parent');
         $parent = $table->getParent();
@@ -1046,7 +1046,7 @@ class FileDbConnection extends \Yana\Core\Object
             try {
                 $name = __CLASS__ . '\\' . $this->_database . '\\' . $this->_tableName;
                 $this->_autoIncrement = new \Yana\Db\FileDb\Sequence($name);
-            } catch (NotFoundException $e) {
+            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                 \Yana\Db\FileDb\Sequence::create($name);
                 $this->_autoIncrement = new \Yana\Db\FileDb\Sequence($name);
                 unset($e);
@@ -1421,7 +1421,7 @@ class FileDbConnection extends \Yana\Core\Object
             $columnADef = $tableADef->getColumn($columnA);
             $aIsPk = $columnADef->isPrimaryKey();
             $pkA = mb_strtoupper($tableADef->getPrimaryKey());
-        } catch (NotFoundException $e) {
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             return array();
         }
         $SMLA =& $this->_getSmlFile();
@@ -1437,7 +1437,7 @@ class FileDbConnection extends \Yana\Core\Object
             $columnBDef = $tableBDef->getColumn($columnB);
             $bIsPk = $columnBDef->isPrimaryKey();
             $pkB = mb_strtoupper($tableBDef->getPrimaryKey());
-        } catch (NotFoundException $e) {
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             return array();
         }
         $SMLB =& $this->_getSmlFile();
@@ -1842,7 +1842,7 @@ class FileDbConnection extends \Yana\Core\Object
      *
      * @access  private
      * @param   string  $database  database name
-     * @throws  NotReadableException  when the SML source file could not be read
+     * @throws  \Yana\Core\Exceptions\NotReadableException  when the SML source file could not be read
      * @ignore
      */
     private function _setSmlFile($database)

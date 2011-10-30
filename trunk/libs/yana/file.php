@@ -44,8 +44,8 @@ class File extends FileReadonly implements \Yana\File\IsWritable
      * Additionaly reads and caches the file attributes.
      *
      * @access  public
-     * @throws  NotReadableException  if the file is not readable
-     * @throws  NotFoundException     if the file does not exist
+     * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
+     * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
      */
     public function read()
     {
@@ -62,7 +62,7 @@ class File extends FileReadonly implements \Yana\File\IsWritable
      *
      * @access  public
      * @return  bool
-     * @throws  NotWriteableException  when file does not exist or is not writeable
+     * @throws  \Yana\Core\Exceptions\NotWriteableException  when file does not exist or is not writeable
      */
     public function write()
     {
@@ -71,7 +71,7 @@ class File extends FileReadonly implements \Yana\File\IsWritable
 
         if (!$this->isWriteable()) {
             $message = "Unable to write to file '".$this->getPath()."'. The file is not writeable.";
-            throw new NotWriteableException($message, E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\NotWriteableException($message, E_USER_NOTICE);
         }
         clearstatcache(); // clear cache - otherwise we won't recognize if file was modified
         if ($this->getLastModified() != filemtime($this->getPath())) {
@@ -139,19 +139,19 @@ class File extends FileReadonly implements \Yana\File\IsWritable
      * create the current file if it does not exist
      *
      * @access  public
-     * @throws  AlreadyExistsException  when target does already exist
-     * @throws  NotWriteableException   when unable to create file
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException  when target does already exist
+     * @throws  \Yana\Core\Exceptions\NotWriteableException   when unable to create file
      */
     public function create()
     {
         if ($this->exists()) {
             $message = "Unable to create directory '{$this->getPath()}'. " .
                 "Another directory with the same name already exists.";
-            throw new AlreadyExistsException($message, E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_NOTICE);
         }
         if (!touch($this->getPath())) {
             $message = "Unable to create file '{$this->getPath()}'. Target not writeable.";
-            throw new NotWriteableException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotWriteableException($message, E_USER_WARNING);
         }
         chmod($this->path, 0777);
         $this->resetStats();
@@ -165,13 +165,13 @@ class File extends FileReadonly implements \Yana\File\IsWritable
      * reseting its current state.
      *
      * @access  public
-     * @throws  NotReadableException  if the file is not readable
+     * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      */
     public function reset()
     {
         try {
             $this->read();
-        } catch (NotFoundException $e) {
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             // ignore if file does not exist
         }
         // does not catch NotReadableException
@@ -219,10 +219,10 @@ class File extends FileReadonly implements \Yana\File\IsWritable
      * @param    bool     $isRecursive  setting this to true will automatically, recursively create directories
      *                                  in the $destFile string, if required
      * @param    int      $mode         the access restriction that applies to the copied file, defaults to 0766
-     * @throws   \Yana\Core\InvalidArgumentException  when one input argument is invalid
-     * @throws   AlreadyExistsException               if the target file already exists
-     * @throws   NotWriteableException                if the target location is not writeable
-     * @throws   NotFoundException                    if the target directory does not exist
+     * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when one input argument is invalid
+     * @throws   \Yana\Core\Exceptions\AlreadyExistsException    if the target file already exists
+     * @throws   \Yana\Core\Exceptions\NotWriteableException     if the target location is not writeable
+     * @throws   \Yana\Core\Exceptions\NotFoundException         if the target directory does not exist
      */
     public function copy($destFile, $overwrite = true, $isRecursive = false, $mode = 0766)
     {
@@ -233,13 +233,13 @@ class File extends FileReadonly implements \Yana\File\IsWritable
 
         if ($mode > 0777 || $mode < 1) {
             $message = "Argument mode must be an octal number in range: [1,0777].";
-            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
 
         /* validity checking */
         if (empty($destFile) || mb_strlen($destFile) > 512) {
             $message = "Invalid filename '$destFile'.";
-            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
 
         $destDir  = dirname($destFile) . '/';
@@ -254,12 +254,12 @@ class File extends FileReadonly implements \Yana\File\IsWritable
         if ($overwrite === false && $fileExist === true) {
             $message = "Unable to copy file '{$destDir}{$destFile}'. " .
                 "Another file with the same name does already exist.";
-            throw new AlreadyExistsException($message, E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_NOTICE);
         }
         if ($overwrite === true && $fileExist === true && is_writeable($destDir . $destFile) === false) {
             $message = "Unable to copy to file '{$destDir}{$destFile}'. ".
                 "The file does already exist and is not writeable.";
-            throw new NotWriteableException($message, E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\NotWriteableException($message, E_USER_NOTICE);
         }
 
         assert('is_string($destDir); // Unexpected result: $destDir. String expected.');
@@ -269,7 +269,7 @@ class File extends FileReadonly implements \Yana\File\IsWritable
         if (!empty($destDir) && !is_dir($destDir)) {
             if (!$isRecursive) {
                 $message = "Unable to copy file '{$destFile}'. The directory '{$destDir}' does not exist.";
-                throw new NotFoundException($message, E_USER_NOTICE);
+                throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_NOTICE);
             }
             assert('!isset($currentDir); // cannot redeclare variable $currentDir');
             $currentDir = '';
@@ -288,7 +288,7 @@ class File extends FileReadonly implements \Yana\File\IsWritable
 
         if (!copy($this->getPath(), $destDir . $destFile)) {
             $message = "Unable to copy file. The target '$destDir$destFile' is not writeable.";
-            throw new NotWriteableException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotWriteableException($message, E_USER_WARNING);
         }
         if (chmod($destDir . $destFile, $mode) === false) {
             \Yana\Log\LogManager::getLogger()->addLog("Unable to set mode (access level) for file '{$destDir}{$destFile}'.");

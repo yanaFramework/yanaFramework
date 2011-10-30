@@ -49,7 +49,7 @@ class NullFormatter extends \Yana\Log\Formatter\AbstractFormatter
      */
     public function format($level, $description, $filename = "", $lineNumber = 0, array $trace = array())
     {
-        // intentionally left blank
+        return $description;
     }
 
 }

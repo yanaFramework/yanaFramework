@@ -65,13 +65,13 @@ class FileReadonly extends \Yana\File\AbstractResource implements \Yana\File\IsR
      * Tries to read the file contents and throws an exception on error.
      *
      * @access  public
-     * @throws  NotReadableException  if the file is not readable
-     * @throws  NotFoundException     if the file does not exist
+     * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
+     * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
      */
     public function read()
     {
         if (!$this->exists()) {
-            throw new NotFoundException("No such file: '{$this->getPath()}'.", E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\NotFoundException("No such file: '{$this->getPath()}'.", E_USER_NOTICE);
         }
         $content = file_get_contents($this->getPath());
         /**
@@ -83,7 +83,7 @@ class FileReadonly extends \Yana\File\AbstractResource implements \Yana\File\IsR
          */
         if ($content === false || $this->getFilesize() !== strlen($content)) {
             $message = "File '{$this->getPath()}' is currently not readable.";
-            throw new NotReadableException($message, E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\NotReadableException($message, E_USER_NOTICE);
         }
         $this->content = explode("\n", $content);
     }
@@ -97,8 +97,8 @@ class FileReadonly extends \Yana\File\AbstractResource implements \Yana\File\IsR
      * The process is aborted if it fails 3 times.
      *
      * @access  public
-     * @throws  NotReadableException  if the file is not readable
-     * @throws  NotFoundException     if the file does not exist
+     * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
+     * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
      */
     public function failSafeRead()
     {
@@ -107,12 +107,12 @@ class FileReadonly extends \Yana\File\AbstractResource implements \Yana\File\IsR
             try {
                 $this->read();
                 return;
-            } catch (NotReadableException $e) { // file may be locked temporarily
+            } catch (\Yana\Core\Exceptions\NotReadableException $e) { // file may be locked temporarily
                 sleep(1); // sleep for n seconds (must be an integer >= 1)
             }
         }
         $message = "File '{$this->getPath()}' is currently not readable.";
-        throw new NotReadableException($message, E_USER_NOTICE);
+        throw new \Yana\Core\Exceptions\NotReadableException($message, E_USER_NOTICE);
     }
 
     /**

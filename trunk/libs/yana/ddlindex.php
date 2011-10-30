@@ -237,9 +237,9 @@ class DDLIndex extends DDLObject
      * @param   string  $name             name of indexed column
      * @param   bool    $isAscending      optional sorting argument
      * @return  DDLIndexColumn
-     * @throws  NotFoundException                    when column does not exists
-     * @throws  \Yana\Core\InvalidArgumentException  when name is invalid
-     * @throws  AlreadyExistsException               if the column is part of the index
+     * @throws  \Yana\Core\Exceptions\NotFoundException         when column does not exists
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when name is invalid
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException    if the column is part of the index
      */
     public function addColumn($name, $isAscending = true)
     {
@@ -248,7 +248,7 @@ class DDLIndex extends DDLObject
 
         if (isset($this->parent) && !$this->parent->isColumn($name)) {
             $message = "No such column '$name' in table '{$this->parent->getName()}'.";
-            throw new NotFoundException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
         }
 
         $indexColumn = new DDLIndexColumn($name);
@@ -258,7 +258,7 @@ class DDLIndex extends DDLObject
 
         if (isset($this->columns[$name])) {
             $message = "Column '$name' already defined in index.";
-            throw new AlreadyExistsException($message, E_USER_WARNING);;
+            throw new Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_WARNING);;
         }
 
         $this->columns[$name] = $indexColumn;

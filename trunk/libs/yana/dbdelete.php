@@ -48,7 +48,7 @@ class DbDelete extends DbQuery
      *
      * @param   array  $orderBy  column name / list of column names
      * @param   array  $desc     sort descending (true=yes, false=no)
-     * @throws  NotFoundException  when a column or table does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when a column or table does not exist
      * @return  DbDelete 
      */
     public function setOrderBy($orderBy, $desc = array())
@@ -123,8 +123,8 @@ class DbDelete extends DbQuery
      * providing a parameter.
      *
      * @param   array  $where  where clause
-     * @throws  NotFoundException         when a column is not found
-     * @throws  \Yana\Core\InvalidArgumentException  when the where-clause contains invalid values
+     * @throws  \Yana\Core\Exceptions\NotFoundException         when a column is not found
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the where-clause contains invalid values
      * @return  DbDelete 
      */
     public function setWhere(array $where = array())
@@ -154,7 +154,7 @@ class DbDelete extends DbQuery
      *
      * @param   int  $limit  limit for this query
      * @return  bool
-     * @throws  \Yana\Core\InvalidArgumentException  when limit is not positive
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when limit is not positive
      * @return  DbDelete 
      */
     public function setLimit($limit)
@@ -225,7 +225,7 @@ class DbDelete extends DbQuery
      * @param   string    $sqlStmt   SQL statement
      * @param   DbStream  $database  database connection
      * @return  DbDelete
-     * @throws  \Yana\Core\InvalidArgumentException  if the query is invalid or could not be parsed
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the query is invalid or could not be parsed
      */
     public static function parseSQL($sqlStmt, DbStream $database)
     {

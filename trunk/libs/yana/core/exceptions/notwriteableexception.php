@@ -25,17 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions;
+
 /**
- * Resource not readable
+ * <<exception>> Resource not writeable.
  *
- * Thrown when you try to read from a resource, but fail: due to missing privileges, resource is
- * busy, or locked, or simply does not exist.
+ * Thrown when you try to modify a resource, but you are denied permission to do so.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class NotReadableException extends \Yana\Core\Exceptions\DataException
+class NotWriteableException extends \Yana\Core\Exceptions\DataException
 {
     /* intentionally left blank */
 }

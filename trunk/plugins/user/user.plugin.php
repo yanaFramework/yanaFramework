@@ -342,7 +342,7 @@ class plugin_user extends StdClass implements IsPlugin
             $user = YanaUser::getInstance($userName);
             return $this->_setPwd($user, $new_pwd, $repeat_pwd);
 
-        } catch (NotFoundException $e) {
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             return false;
         }
     }
@@ -382,7 +382,7 @@ class plugin_user extends StdClass implements IsPlugin
             }
             return true;
 
-        } catch (NotFoundException $e) {
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             return false;
         }
     }
@@ -478,7 +478,7 @@ class plugin_user extends StdClass implements IsPlugin
         // get user instance
         try {
             $userData = YanaUser::getInstance($user);
-        } catch (NotFoundException $e) {
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             /* delay output if attempt failed to make brute-force attacks more difficult to commit */
             sleep(2);
             throw new InvalidLoginError();

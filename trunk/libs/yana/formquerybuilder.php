@@ -114,7 +114,7 @@ class FormQueryBuilder extends \Yana\Core\Object
      *
      * @access  public
      * @return  DbSelect
-     * @throws  NotFoundException  if the selected table or one of the selected columns is not found
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if the selected table or one of the selected columns is not found
      */
     public function buildSelectQuery()
     {

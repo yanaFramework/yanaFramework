@@ -25,15 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Core;
+namespace Yana\Core\Exceptions;
 
 /**
- * <<exception>> An argument does not match with the expected value. 
+ * <<exception>> Value is invalid.
  *
+ * Thrown when a user-generated value is validated and found to be invalid.
+ *
+ * @access      public
  * @package     yana
  * @subpackage  core
  */
-class InvalidArgumentException extends \Yana\Core\Exceptions\LogicException
+class InvalidValueException extends \Yana\Core\Exceptions\DomainException
 {
     // intentionally left blank
 }

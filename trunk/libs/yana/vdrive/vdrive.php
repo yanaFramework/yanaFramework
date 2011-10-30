@@ -269,8 +269,8 @@ class VDrive extends \Yana\File\AbstractResource implements \Yana\Report\IsRepor
      *
      * @access  public
      * @name    VDrive::read()
-     * @throws  NotReadableException    when source file is not readable
-     * @throws  InvalidSyntaxException  when the file could not be read or contains invalid syntax
+     * @throws  \Yana\Core\Exceptions\NotReadableException    when source file is not readable
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the file could not be read or contains invalid syntax
      */
     public function read()
     {
@@ -281,7 +281,7 @@ class VDrive extends \Yana\File\AbstractResource implements \Yana\Report\IsRepor
         $content = file_get_contents($this->path);
         if (empty($content)) {
             $message = "VDrive configuration file is empty or not readable: '{$this->getPath()}'.";
-            throw new \NotReadableException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotReadableException($message, E_USER_WARNING);
         }
         /* apply default settings */
         $content = \SmartUtility::replaceToken($content, self::$defaultSettings);
@@ -290,7 +290,7 @@ class VDrive extends \Yana\File\AbstractResource implements \Yana\Report\IsRepor
         /* read XML */
         if (!($this->content instanceOf Configuration)) {
             $message = "Not a valid VDrive configuration file: '{$this->getPath()}'";
-            throw new \InvalidSyntaxException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidSyntaxException($message, E_USER_WARNING);
         }
         $this->_readXML($this->content);
     }
@@ -495,9 +495,9 @@ class VDrive extends \Yana\File\AbstractResource implements \Yana\Report\IsRepor
      * @name    VDrive::getResource()
      * @param   string  $path  virtual file path
      * @return  \Yana\File\AbstractResource
-     * @throws  NotFoundException       when virtual file or directory does not exist.
-     * @throws  NotReadableException    when source file is not readable
-     * @throws  InvalidSyntaxException  when the file could not be read or contains invalid syntax
+     * @throws  \Yana\Core\Exceptions\NotFoundException       when virtual file or directory does not exist.
+     * @throws  \Yana\Core\Exceptions\NotReadableException    when source file is not readable
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the file could not be read or contains invalid syntax
      */
     public function getResource($path)
     {
@@ -506,7 +506,7 @@ class VDrive extends \Yana\File\AbstractResource implements \Yana\Report\IsRepor
         $this->read();
         if (!isset($this->drive[$path])) {
             $message = "No such virtual file or directory '$path'.";
-            throw new \NotFoundException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
         }
         return $this->drive[$path]->getMountpoint();
     }
@@ -519,9 +519,9 @@ class VDrive extends \Yana\File\AbstractResource implements \Yana\Report\IsRepor
      * @access  public
      * @param   string  $virtualPath    virtual path that should be converted to real path
      * @return  string
-     * @throws  NotFoundException       when virtual file or directory does not exist.
-     * @throws  NotReadableException    when the vDrive is not readable
-     * @throws  InvalidSyntaxException  when the vDrive could not be read or contains invalid syntax
+     * @throws  \Yana\Core\Exceptions\NotFoundException       when virtual file or directory does not exist.
+     * @throws  \Yana\Core\Exceptions\NotReadableException    when the vDrive is not readable
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the vDrive could not be read or contains invalid syntax
      */
     public function getResourcePath($virtualPath)
     {

@@ -147,7 +147,7 @@ class DDLLogCreate extends DDLLog
      *
      * @access  public
      * @param   string  $name   name of changed object
-     * @throws  \Yana\Core\InvalidArgumentException  when name is empty or invalid
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when name is empty or invalid
      * @return  DDLLogCreate
      */
     public function setName($name)
@@ -156,7 +156,7 @@ class DDLLogCreate extends DDLLog
         if (!preg_match('/^[a-z]\w+$/is', $name)) {
             $message = "Not a valid object name: '$name'. " .
                 "Must start with a letter and may only contain: a-z, 0-9, '-' and '_'.";
-            throw new \Yana\Core\InvalidArgumentException($message);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
 
         } else {
             $this->name = mb_strtolower($name);
@@ -190,13 +190,13 @@ class DDLLogCreate extends DDLLog
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  DDLLogCreate
-     * @throws   \Yana\Core\InvalidArgumentException  when the name attribute is missing
+     * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
-            throw new \Yana\Core\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
         }
         $ddl = new self((string) $attributes['name'], $parent);
         $ddl->_unserializeFromXDDL($node);

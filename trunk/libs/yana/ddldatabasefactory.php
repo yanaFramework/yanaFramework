@@ -291,6 +291,8 @@ class DDLDatabaseFactory extends DDLDatabase
      * @param   DDLTable  $table  table to add constraint to
      * @param   array     $info   constraint information
      * @param   string    $name   constraint name
+     * @throws  \Yana\Core\Exceptions\NotImplementedException  when trying to use a compound primary key
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException   when number of source and target columns in constraint is different
      * @ignore
      */
     protected static function createConstraint(DDLTable $table, array $info, $name)
@@ -300,7 +302,7 @@ class DDLDatabaseFactory extends DDLDatabase
             // add primary key
             case !empty($info['primary']):
                 if (count($info['fields']) > 1) {
-                    throw new NotImplementedException("Compound primary keys are not supported.");
+                    throw new \Yana\Core\Exceptions\NotImplementedException("Compound primary keys are not supported.");
                 }
                 reset($info['fields']);
                 $field = key($info['fields']);
@@ -329,7 +331,7 @@ class DDLDatabaseFactory extends DDLDatabase
                 if (count($info['fields']) !== count($info['references']['fields'])) {
                     $message = "Number of source fields in foreign key constraint " .
                         "must match number of target fields.";
-                    throw new NotImplementedException($message);
+                    throw new \Yana\Core\Exceptions\InvalidSyntaxException($message);
                 }
                 $targetTable = $info['references']['table'];
                 $foreign = $table->addForeignKey($targetTable, $name);
@@ -399,9 +401,9 @@ class DDLDatabaseFactory extends DDLDatabase
                 }
             break;
             default:
-                throw new NotImplementedException();
+                throw new \Yana\Core\Exceptions\NotImplementedException();
             break;
-        }
+        } // end switch(true)
     }
 
 
@@ -426,6 +428,7 @@ class DDLDatabaseFactory extends DDLDatabase
      * @param   DDLTable  $table  table to add column to
      * @param   array     $info   column information
      * @param   string    $name   column name
+     * @throws  \Yana\Core\Exceptions\NotImplementedException  when the given 'type' of column is unknwon
      * @ignore
      */
     protected static function createColumn(DDLTable $table, array $info, $name)
@@ -485,7 +488,7 @@ class DDLDatabaseFactory extends DDLDatabase
 
             /* more ? */
             default:
-                throw new NotImplementedException();
+                throw new \Yana\Core\Exceptions\NotImplementedException();
             break;
 
         } // end switch

@@ -234,15 +234,15 @@ class DDLFunctionImplementation extends DDL
      * @access  public
      * @param   string  $name   name of a new parameter
      * @return  DDLFunctionParameter
-     * @throws  AlreadyExistsException  when a parameter with the same name already exists
-     * @throws  \Yana\Core\InvalidArgumentException  on invalid name
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when a parameter with the same name already exists
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  on invalid name
      */
     public function addParameter($name)
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
         $name = mb_strtolower($name);
         if (isset($this->parameters[$name])) {
-            throw new AlreadyExistsException("Another parameter with the name '$name' is already defined.");
+            throw new \Yana\Core\Exceptions\AlreadyExistsException("Another parameter with the name '$name' is already defined.");
 
         } else {
             $this->parameters[$name] = new DDLFunctionParameter($name);

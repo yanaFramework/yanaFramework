@@ -126,7 +126,7 @@ class SmartView extends SmartTemplate
      * @static
      * @param   string  $id  template id
      * @return  string
-     * @throws  NotFoundException  when id is not found
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when id is not found
      */
     private static function _getFilename($id)
     {

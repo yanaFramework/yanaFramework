@@ -245,7 +245,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      */
     public function createMSSQL()
     {
-        throw new NotImplementedException();
+        throw new \Yana\Core\Exceptions\NotImplementedException();
         /* this is the result var that will be returned when finished */
         $SQL = array();
 
@@ -487,7 +487,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      */
     public function createDB2()
     {
-        throw new NotImplementedException();
+        throw new \Yana\Core\Exceptions\NotImplementedException();
         /* this is the result var that will be returned when finished */
         $SQL = array();
 
@@ -787,7 +787,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      */
     public function createOracleDB()
     {
-        throw new NotImplementedException();
+        throw new \Yana\Core\Exceptions\NotImplementedException();
         /* this is the result var that will be returned when finished */
         $SQL = array();
 

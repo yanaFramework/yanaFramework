@@ -103,8 +103,8 @@ class DbSelectExist extends DbQuery
      * providing a parameter.
      *
      * @param   array  $where  here clause
-     * @throws  NotFoundException                    when a column is not found
-     * @throws  \Yana\Core\InvalidArgumentException  when the where-clause contains invalid values
+     * @throws  \Yana\Core\Exceptions\NotFoundException         when a column is not found
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the where-clause contains invalid values
      * @return  DbSelectExist 
      */
     public function setWhere(array $where = array())
@@ -122,8 +122,8 @@ class DbSelectExist extends DbQuery
      * '=', 'REGEXP', 'LIKE', '<', '>', '!=', '<=', '>='
      *
      * @param   array  $where  where clause
-     * @throws  NotFoundException                    when a column is not found
-     * @throws  \Yana\Core\InvalidArgumentException  when the having-clause contains invalid values
+     * @throws  \Yana\Core\Exceptions\NotFoundException         when a column is not found
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the having-clause contains invalid values
      * @return  DbSelectExist 
      */
     public function addWhere(array $where)
@@ -159,7 +159,7 @@ class DbSelectExist extends DbQuery
      *                              (when omitted the API will look up the key in the structure file)
      * @param   string $key2        name of the key in foreign table that is referenced
      *                              (may be omitted if it is the primary key)
-     * @throws  NotFoundException  if a provided table or column is not found
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if a provided table or column is not found
      * @return  DbSelectExist
      */
     public function setInnerJoin($tableName, $key1 = null, $key2 = null)
@@ -178,7 +178,7 @@ class DbSelectExist extends DbQuery
      *
      * @param   string  $table  name of table to remove
      * @return  DbSelectExist
-     * @throws  NotFoundException  if the table does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if the table does not exist
      */
     public function unsetJoin($table)
     {
@@ -186,7 +186,7 @@ class DbSelectExist extends DbQuery
         $table = mb_strtolower($table);
 
         if (YANA_DB_STRICT && !$this->db->getSchema()->isTable($table)) {
-            throw new NotFoundException("The table '$table' is unknown.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("The table '$table' is unknown.", E_USER_WARNING);
         }
 
         unset($this->joins[$table]);
@@ -202,7 +202,7 @@ class DbSelectExist extends DbQuery
      *
      * @param   string  $table target table
      * @return  array
-     * @throws  NotFoundException  when the target table does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the target table does not exist
      */
     public function getJoin($table)
     {
@@ -210,7 +210,7 @@ class DbSelectExist extends DbQuery
         $table = mb_strtolower($table);
 
         if (YANA_DB_STRICT && !$this->db->getSchema()->isTable($table)) {
-            throw new NotFoundException("The table '$table' is unknown.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("The table '$table' is unknown.", E_USER_WARNING);
         }
 
         if (!isset($this->joins[$table])) {
@@ -350,7 +350,7 @@ class DbSelectExist extends DbQuery
      * @param   string    $sqlStmt   SQL statement
      * @param   DbStream  $database  database connection
      * @return  DbSelectExist
-     * @throws  \Yana\Core\InvalidArgumentException  if the query is invalid or could not be parsed
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the query is invalid or could not be parsed
      */
     public static function parseSQL($sqlStmt, DbStream $database)
     {
@@ -366,10 +366,11 @@ class DbSelectExist extends DbQuery
         // retrieve table
         $tables = $sqlStmt['tables'];
         if (empty($tables)) {
-            return new \Yana\Core\InvalidArgumentException("SQL-statement has no table names: $sqlStmt.", E_USER_WARNING);
+            $message = "SQL-statement has no table names: $sqlStmt.";
+            return new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         } elseif (count($tables) > 1) {
             $message = "Checks for existence are not supported on joined tables.";
-            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
         $query->setTable(current($tables));
 

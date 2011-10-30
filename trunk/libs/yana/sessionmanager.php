@@ -250,14 +250,14 @@ class SessionManager extends Singleton implements Serializable
      * @static
      * @param   string  $rule  must be a valid callback
      * @see     SessionManager::checkPermission()
-     * @throws  \Yana\Core\InvalidArgumentException when the function is not callable
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException when the function is not callable
      */
     public static function addSecurityRule($rule)
     {
         if (is_callable($rule)) {
             self::$rules[] = $rule;
         } else {
-            throw new \Yana\Core\InvalidArgumentException("The argument is not a valid callback function.");
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("The argument is not a valid callback function.");
         }
     }
 
@@ -563,8 +563,8 @@ class SessionManager extends Singleton implements Serializable
      * @param   int     $level      new security level [0,100]
      * @param   string  $userName   user to update
      * @param   string  $profileId  profile to update
-     * @throws  Error               on database error
-     * @throws  NotFoundException   when user not found
+     * @throws  Error                                    on database error
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when user not found
      */
     public function setSecurityLevel($level, $userName = '', $profileId = '')
     {
@@ -604,7 +604,7 @@ class SessionManager extends Singleton implements Serializable
         }
 
         if (empty($userName) || !YanaUser::isUser($userName)) {
-            throw new NotFoundException("No such user '$userName'.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("No such user '$userName'.", E_USER_WARNING);
         }
 
         $database = self::getDatasource();

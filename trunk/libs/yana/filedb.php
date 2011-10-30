@@ -104,7 +104,7 @@ class FileDb extends DbStream
      * @return  mixed
      * @since   2.8.8
      * @ignore
-     * @throws  \Yana\Core\InvalidArgumentException  when the SQL statement is not valid
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the SQL statement is not valid
      */
     public function query($sqlStmt, $offset = 0, $limit = 0)
     {
@@ -115,7 +115,7 @@ class FileDb extends DbStream
         if ($sqlStmt instanceof DbQuery) {
             return $this->getConnection()->dbQuery($sqlStmt);
         } elseif (!is_string($sqlStmt)) {
-            throw new \Yana\Core\InvalidArgumentException('Argument $sqlStmt is expected to be a string.');
+            throw new \Yana\Core\Exceptions\InvalidArgumentException('Argument $sqlStmt is expected to be a string.');
         }
 
         $reg = "/;.*(?:select|insert|delete|update|create|alter|grant|revoke).*$/is";
@@ -123,7 +123,7 @@ class FileDb extends DbStream
             $message = "A semicolon has been found in the current input '{$sqlStmt}', " .
                 "indicating multiple queries.\n\t\t As this might be the result of a hacking attempt " .
                 "it is prohibited for security reasons and the queries won't be executed.";
-            throw new \Yana\Core\InvalidArgumentException($message);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
 
         // send query to database
@@ -140,8 +140,8 @@ class FileDb extends DbStream
      *
      * @access public
      * @return DDLDatabase
-     * @throws NotFoundException     if database definition is not found
-     * @throws NotReadableException  if database definition is not readable
+     * @throws  \Yana\Core\Exceptions\NotFoundException     if database definition is not found
+     * @throws  \Yana\Core\Exceptions\NotReadableException  if database definition is not readable
      */
     public function getSchema()
     {

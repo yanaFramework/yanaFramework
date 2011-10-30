@@ -89,21 +89,21 @@ class CounterTest extends PHPUnit_Framework_TestCase
         chdir(CWD . '../../../');
         FileDbConnection::setBaseDirectory(CWD . '/resources/db/');
         try {
-            Counter::create($this->_counterId, 1, null, null, null, true);
-            Counter::create($this->_counterNoIPId, 1, null, null, null, true, false);
+            \Yana\Db\FileDb\Counter::create($this->_counterId, 1, null, null, null, true);
+            \Yana\Db\FileDb\Counter::create($this->_counterNoIPId, 1, null, null, null, true, false);
         } catch (\Exception $e) {
             $this->fail($e->getMessage());
             chdir(CWD);
         }
 
-        $this->_object = new Counter($this->_counterId);
-        $this->_objectNoIP = new Counter($this->_counterNoIPId);
+        $this->_object = new \Yana\Db\FileDb\Counter($this->_counterId);
+        $this->_objectNoIP = new \Yana\Db\FileDb\Counter($this->_counterNoIPId);
 
         // check if counter exist - expected true
-        $counter = Counter::exists($this->_counterNoIPId);
+        $counter = \Yana\Db\FileDb\Counter::exists($this->_counterNoIPId);
         $this->assertTrue($counter, 'assert failed, the counter should be exist');
         // expected false for a non existing counter name
-        $counter = Counter::exists('nonIP');
+        $counter = \Yana\Db\FileDb\Counter::exists('nonIP');
         $this->assertFalse($counter, 'assert failed, the counter does not exist');
     }
 
@@ -117,8 +117,8 @@ class CounterTest extends PHPUnit_Framework_TestCase
     {
         unset($this->_object);
         unset($this->_objectNoIP);
-        Counter::drop($this->_counterId);
-        Counter::drop($this->_counterNoIPId);
+        \Yana\Db\FileDb\Counter::drop($this->_counterId);
+        \Yana\Db\FileDb\Counter::drop($this->_counterNoIPId);
         chdir(CWD);
     }
 
@@ -190,7 +190,7 @@ class CounterTest extends PHPUnit_Framework_TestCase
      */
     public function testInstance()
     {
-        $counterInstance = Counter::getInstance($this->_counterId);
+        $counterInstance = \Yana\Db\FileDb\Counter::getInstance($this->_counterId);
         $compareResult = $this->_object->equals($counterInstance);
         $this->assertTrue($compareResult, 'assert failed, objects need too be equal - true expected');
     }
@@ -198,12 +198,12 @@ class CounterTest extends PHPUnit_Framework_TestCase
     /**
      * Counter NotFoundException
      *
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      * @test
      */
     function testCounterNotFoundException()
     {
-        $newInstance = Counter::getInstance('new_counter');
+        $newInstance = \Yana\Db\FileDb\Counter::getInstance('new_counter');
     }
 
 }

@@ -70,12 +70,12 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
      * read contents and put results in cache (filter settings will be applied)
      *
      * @access  public
-     * @throws  NotFoundException  when directory is not found
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when directory is not found
      */
     public function read()
     {
         if (!$this->exists()) {
-            throw new NotFoundException("No such directory: '{$this->getPath()}'.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("No such directory: '{$this->getPath()}'.", E_USER_WARNING);
         }
         $this->content = dirlist($this->getPath(), $this->filter);
         sort($this->content);
@@ -109,7 +109,7 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
                 assert('is_array($this->content); // Unexpected return type. Array expected');
                 return $this->content;
 
-            } catch (NotFoundException $e) { // directory does not exist
+            } catch (\Yana\Core\Exceptions\NotFoundException $e) { // directory does not exist
                 return array();
             }
         } else {
@@ -126,7 +126,7 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
                     return null;
                 }
 
-            } catch (NotFoundException $e) { // directory does not exist
+            } catch (\Yana\Core\Exceptions\NotFoundException $e) { // directory does not exist
                 return null;
             }
         }
@@ -179,9 +179,9 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
      * @access  public
      * @param   int  $mode  access mode, an octal number of 1 through 0777.
      * @name    Dir::create()
-     * @throws  \Yana\Core\InvalidArgumentException  when argument $mode is not an integer or out of range
-     * @throws  AlreadyExistsException               when the directory already exists
-     * @throws  NotWriteableException                when target location is not writeable
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when argument $mode is not an integer or out of range
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when the directory already exists
+     * @throws  \Yana\Core\Exceptions\NotWriteableException     when target location is not writeable
      */
     public function create($mode = 0777)
     {
@@ -189,19 +189,19 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
 
         if ($mode > 0777 || $mode < 1) {
             $message = "Argument mode must be an octal number in range: [1,0777].";
-            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
 
         if ($this->exists()) {
             $message = "Unable to create directory '{$this->getPath()}'. " .
                 "Another directory with the same name already exists.";
-            throw new AlreadyExistsException($message, E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_NOTICE);
         }
 
         $path = $this->getPath();
         if (empty($path) || !@mkdir($path)) {
             $message = "Unable to create directory '$path'. Target not writeable.";
-            throw new NotWriteableException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotWriteableException($message, E_USER_WARNING);
         }
 
         chmod($path, $mode);
@@ -220,7 +220,7 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
      * @access  public
      * @param   bool  $isRecursive  triggers wether to remove directories even if they are not empty, default = false
      * @return  bool
-     * @throws  NotWriteableException  when directory cannot be deleted
+     * @throws  \Yana\Core\Exceptions\NotWriteableException  when directory cannot be deleted
      */
     public function delete($isRecursive = false)
     {
@@ -249,7 +249,7 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
         }
         if (@rmdir($this->getPath()) === false) {
             $message = "Unable to delete directory '" . $this->getPath() . "'.";
-            throw new NotWriteableException($message, E_USER_ERROR);
+            throw new \Yana\Core\Exceptions\NotWriteableException($message, E_USER_ERROR);
         }
         return true;
     }
@@ -509,9 +509,9 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
      * @param    string   $fileFilter   use this to limit the copied files to a specific extension
      * @param    string   $dirFilter    use this to limit the copied directories to those matching the filter
      * @param    bool     $useRegExp    set this to bool(true) if you want filters to be treated as a regular expression
-     * @throws   \Yana\Core\InvalidArgumentException  when one input argument is invalid
-     * @throws   AlreadyExistsException               if the target directory already exists
-     * @throws   NotWriteableException                if the target location is not writeable
+     * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when one input argument is invalid
+     * @throws   \Yana\Core\Exceptions\AlreadyExistsException    if the target directory already exists
+     * @throws   \Yana\Core\Exceptions\NotWriteableException     if the target location is not writeable
      */
     public function copy($destDir, $overwrite = true, $mode = 0766, $copySubDirs = false, $fileFilter = null, $dirFilter = null, $useRegExp = false)
     {
@@ -525,24 +525,24 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
 
         if ($mode > 0777 || $mode < 1) {
             $message = "Argument mode must be an octal number in range: [1,0777].";
-            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
 
         /* validity checking */
         if (empty($destDir) || mb_strlen($destDir) > 512) {
             $message = "Invalid directory name '{$destDir}'.";
-            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
 
         /* check if directory already exists */
         if ($overwrite === false && file_exists($destDir) === true) {
             $message = "Unable to copy directory '{$destDir}'. " .
                 "Another directory with the same name does already exist.";
-            throw new AlreadyExistsException($message, E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_NOTICE);
         }
         if ($overwrite === true && file_exists($destDir) === true && is_writeable($destDir) === false) {
             $message = "Unable to copydirectory '{$destDir}'. The directory does already exist and is not writeable.";
-            throw new NotWriteableException($message, E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\NotWriteableException($message, E_USER_NOTICE);
         }
 
         /* argument $fileFilter */
