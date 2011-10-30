@@ -136,7 +136,7 @@ class MailerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
     public function testsetGlobalMailHandlerException()
@@ -145,7 +145,7 @@ class MailerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
     public function testsetMailHandlerException()

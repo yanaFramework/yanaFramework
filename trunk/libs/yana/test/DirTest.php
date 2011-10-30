@@ -86,7 +86,7 @@ class DirTest extends PHPUnit_Framework_TestCase
      * read from path that does'nt exist
      *
      * @test
-     * @expectedException  NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      */
     public function testReadNotFoundException()
     {
@@ -159,7 +159,7 @@ class DirTest extends PHPUnit_Framework_TestCase
     /**
      * Create Invalid Argument
      *
-     * @expectedException  \Yana\Core\InvalidArgumentException
+     * @expectedException  \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
     function testCreateInvalidArgumentLowerBounds()
@@ -171,7 +171,7 @@ class DirTest extends PHPUnit_Framework_TestCase
     /**
      * Create Invalid Argument
      *
-     * @expectedException  \Yana\Core\InvalidArgumentException
+     * @expectedException  \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
     function testCreateInvalidArgumentUpperBounds()
@@ -369,7 +369,7 @@ class DirTest extends PHPUnit_Framework_TestCase
     /**
      * Copy Invalid Argument
      *
-     * @expectedException  \Yana\Core\InvalidArgumentException
+     * @expectedException  \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
     function testCopyInvalidArgumentUpper()
@@ -381,7 +381,7 @@ class DirTest extends PHPUnit_Framework_TestCase
     /**
      * Copy Invalid Argument
      *
-     * @expectedException  \Yana\Core\InvalidArgumentException
+     * @expectedException  \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
     function testCopyInvalidArgumentLower()
@@ -393,7 +393,7 @@ class DirTest extends PHPUnit_Framework_TestCase
     /**
      * Copy Invalid Argument 2
      *
-     * @expectedException  AlreadyExistsException
+     * @expectedException \Yana\Core\Exceptions\AlreadyExistsException
      * @test
      */
     function testCopyAlreadyExists()

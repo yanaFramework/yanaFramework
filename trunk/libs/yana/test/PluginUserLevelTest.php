@@ -53,7 +53,7 @@ class PluginUserLevelTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function testSetRoleInvalidArgumentException()
     {
@@ -79,7 +79,7 @@ class PluginUserLevelTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function testSetGroupInvalidArgumentException()
     {
@@ -107,7 +107,7 @@ class PluginUserLevelTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function testSetLevelLowerBoundary()
     {
@@ -116,7 +116,7 @@ class PluginUserLevelTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function testSetLevelUpperBoundary()
     {

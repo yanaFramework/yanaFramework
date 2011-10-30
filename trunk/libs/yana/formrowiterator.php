@@ -43,7 +43,7 @@ class FormRowIterator extends \Yana\Core\AbstractCollection
      * @access  public
      * @param   string  $offset  index of item to replace
      * @param   array   $row     new value of item
-     * @throws  \Yana\Core\InvalidArgumentException
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not an array
      */
     public function offsetSet($offset, $value)
     {
@@ -51,7 +51,7 @@ class FormRowIterator extends \Yana\Core\AbstractCollection
             $this->_offsetSet($offset, $value);
         } else {
             $message = "Array expected. Found " . gettype($value) . " instead.";
-            throw new \Yana\Core\InvalidArgumentException($message);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
     }
 

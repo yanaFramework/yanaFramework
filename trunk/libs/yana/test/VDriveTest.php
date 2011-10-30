@@ -100,7 +100,7 @@ class VDriveTest extends \PHPUnit_Framework_TestCase
     /**
      * get invalid Argument
      *
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      * @test
      */
     function testGetInvalidArgument()

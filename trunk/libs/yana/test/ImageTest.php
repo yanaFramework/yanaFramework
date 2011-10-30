@@ -43,7 +43,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @var    Image
      * @access protected
      */
-    protected $image;
+    private $image;
 
      /**
      * @var    Image
@@ -750,7 +750,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Replace Index Color Invalid Argument
      *
-     * @expectedException OutOfBoundsException
+     * @expectedException \Yana\Core\Exceptions\OutOfBoundsException
      * @test
      */
     public function testReplaceIndexColorInvalidArgument()

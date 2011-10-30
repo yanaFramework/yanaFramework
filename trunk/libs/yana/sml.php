@@ -91,14 +91,14 @@ class SML extends File
      *
      * @access  public
      * @return  mixed
-     * @throws  NotReadableException  if the file is not readable
+     * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      */
     public function getContent()
     {
         /* auto-load */
         try {
             $this->read();
-        } catch (NotFoundException $e) { // file does not exist
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) { // file does not exist
             return "";
         }
 
@@ -124,7 +124,7 @@ class SML extends File
      * @access  public
      * @param   string  $filename         filename
      * @param   int     $caseSensitive    one of: CASE_MIXED, CASE_LOWER, CASE_UPPER
-     * @throws  \Yana\Core\InvalidArgumentException  when argument $caseSensitive is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when argument $caseSensitive is invalid
      */
     public function __construct($filename, $caseSensitive = CASE_MIXED)
     {
@@ -143,7 +143,7 @@ class SML extends File
             default:
                 $message = "Invalid argument 2. Expected one of CASE_MIXED, CASE_UPPER, CASE_LOWER, found '" .
                     print_r($caseSensitive, true) . "' instead.";
-                throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
             break;
         }
         $this->decoder = $this;
@@ -181,7 +181,7 @@ class SML extends File
      *
      * @name    SML::getByReference()
      * @see     SML::getVarByReference()
-     * @throws  NotReadableException  if the file is not readable
+     * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      * @ignore
      */
     public function &getByReference($key = "*")
@@ -193,7 +193,7 @@ class SML extends File
         /* auto-load */
         try {
             $this->read();
-        } catch (NotFoundException $e) {
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             return $this->content;
         }
 
@@ -359,8 +359,8 @@ class SML extends File
      * Returns the file content on success and bool(false) on error.
      *
      * @access  public
-     * @throws  NotReadableException  if the file is not readable
-     * @throws  NotFoundException     if the file does not exist
+     * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
+     * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
      *
      * @name    SML::read()
      */
@@ -388,7 +388,7 @@ class SML extends File
      * @access  public
      * @param   string  $key  (optional)
      * @return  int
-     * @throws  NotReadableException  if the file is not readable
+     * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      *
      * @name    SML::length()
      */
@@ -400,7 +400,7 @@ class SML extends File
         /* auto-load */
         try {
             $this->read();
-        } catch (NotFoundException $e) {
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             return 0; // file does not exist
         }
 
@@ -437,7 +437,7 @@ class SML extends File
      * @access  public
      * @param   string  $key  (optional)
      * @return  bool
-     * @throws  NotReadableException  if the file is not readable
+     * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      *
      * @name    SML::remove()
      */
@@ -454,7 +454,7 @@ class SML extends File
         /* auto-load */
         try {
             $this->read();
-        } catch (NotFoundException $e) { // file does not exist
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) { // file does not exist
             return false;
         }
 
@@ -523,7 +523,7 @@ class SML extends File
      * @param   array|string  $input          filename or file content
      * @param   int           $caseSensitive  CASE_UPPER|CASE_LOWER|CASE_MIXED
      * @return  array
-     * @throws  \Yana\Core\InvalidArgumentException  when the input is not a filename or content-array
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the input is not a filename or content-array
      *
      * @see     SML::encode()
      */
@@ -555,7 +555,7 @@ class SML extends File
             $message = "Argument 1 is expected to be a filename or an array " .
                 "created with file().\n\t\tInstead found " . gettype($input) .
                 " '" . print_r($input, true) . "'.";
-            throw new \Yana\Core\InvalidArgumentException($message);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
 
         while (true)
@@ -928,14 +928,14 @@ class SML extends File
      *
      * @access  public
      * @return  string
-     * @throws  NotReadableException  if the file is not readable
+     * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      */
     public function getFileContent()
     {
         /* auto-load */
         try {
             $this->read();
-        } catch (NotFoundException $e) { // file does not exist
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) { // file does not exist
             return "";
         }
 

@@ -286,7 +286,7 @@ class DDLColumn extends DDLNamedObject
      * @access  public
      * @param   string  $value  new value of this property
      * @return  DDLColumn 
-     * @throws   \Yana\Core\InvalidArgumentException  if the parameter is empty
+     * @throws   \Yana\Core\Exceptions\InvalidArgumentException  if the parameter is empty
      */
     public function setType($value)
     {
@@ -296,7 +296,7 @@ class DDLColumn extends DDLNamedObject
         if (!empty($value)) {
             $this->type = "$value";
         } else {
-            throw new \Yana\Core\InvalidArgumentException("Type cannot be empty.");
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Type cannot be empty.");
         }
         return $this;
     }
@@ -512,7 +512,7 @@ class DDLColumn extends DDLNamedObject
      * @param   string  $role   user role
      * @param   int     $level  security level
      * @return  DDLGrant
-     * @throws  \Yana\Core\InvalidArgumentException  when $level is out of range [0,100]
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when $level is out of range [0,100]
      */
     public function addGrant($user = null, $role = null, $level = null)
     {
@@ -526,7 +526,7 @@ class DDLColumn extends DDLNamedObject
         if (!empty($role)) {
             $grant->setRole($role);
         }
-        // may throw an \Yana\Core\InvalidArgumentException
+        // may throw an \Yana\Core\Exceptions\InvalidArgumentException
         if (!is_null($level)) {
             $grant->setLevel($level);
         }
@@ -713,14 +713,14 @@ class DDLColumn extends DDLNamedObject
      * @access  public
      * @param   bool    $isUnsigned      true: unsigned number, false: signed number
      * @return  DDLColumn
-     * @throws  NotImplementedException  if column is not a number
+     * @throws  \Yana\Core\Exceptions\NotImplementedException  if column is not a number
      */
     public function setUnsigned($isUnsigned)
     {
         assert('is_bool($isUnsigned); // Wrong type for argument 1. Boolean expected');
         if (!$this->isNumber()) {
             $message = "Property 'unsigned' not implemented for type '{$this->type}'.";
-            throw new NotImplementedException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotImplementedException($message, E_USER_WARNING);
         }
 
         $this->unsigned = (bool) $isUnsigned;
@@ -813,14 +813,14 @@ class DDLColumn extends DDLNamedObject
      * @access  public
      * @param   bool   $isAutoIncrement  new value of this property
      * @return  DDLColumn
-     * @throws  NotImplementedException  if column is not a number
+     * @throws  \Yana\Core\Exceptions\NotImplementedException  if column is not a number
      */
     public function setAutoIncrement($isAutoIncrement)
     {
         assert('is_bool($isAutoIncrement); // Wrong type for argument 1. Boolean expected');
         if (!$this->isNumber()) {
             $message = "Property 'autoincrement' not implemented for type '{$this->type}'.";
-            throw new NotImplementedException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotImplementedException($message, E_USER_WARNING);
         }
 
         $this->autoincrement = (bool) $isAutoIncrement;
@@ -883,7 +883,7 @@ class DDLColumn extends DDLNamedObject
      * @access  public
      * @param   bool  $isAutoFill        new value of this property
      * @return  DDLColumn
-     * @throws  NotImplementedException  when auto-fill is not available for this column type
+     * @throws  \Yana\Core\Exceptions\NotImplementedException  when auto-fill is not available for this column type
      */
     public function setAutoFill($isAutoFill)
     {
@@ -915,7 +915,7 @@ class DDLColumn extends DDLNamedObject
             break;
             default:
                 $message = "Auto-fill is not implemented for columns of type '{$this->type}'.";
-                throw new NotImplementedException($message, E_USER_NOTICE);
+                throw new \Yana\Core\Exceptions\NotImplementedException($message, E_USER_NOTICE);
             break;
         } // end switch
         return $this;
@@ -1043,7 +1043,7 @@ class DDLColumn extends DDLNamedObject
         assert('is_int($precision); // Wrong type for argument 2. Integer expected');
         if ($precision > $length) {
             $message = "The precission '$precision' may not exceed the maximum length of '$length'.";
-            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
 
         $this->setSize($length);
@@ -1262,7 +1262,7 @@ class DDLColumn extends DDLNamedObject
      * @access  public
      * @param   mixed   $value  new value of this property
      * @param   string  $dbms   target DBMS, defaults to "generic"
-     * @throws  \Yana\Core\InvalidArgumentException  when parameter is empty
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when parameter is empty
      * @return  DDLColumn
      */
     public function setDefault($value = null, $dbms = "generic")
@@ -1275,7 +1275,7 @@ class DDLColumn extends DDLNamedObject
         } elseif (!empty($dbms)) {
             $this->default[$dbms] = $value;
         } else {
-            throw new \Yana\Core\InvalidArgumentException("Parameter with the name '\$dbms' can not be empty.");
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Parameter with the name '\$dbms' can not be empty.");
         }
         return $this;
     }
@@ -1486,8 +1486,8 @@ class DDLColumn extends DDLNamedObject
      * Note that a value may contain a language reference as well.
      *
      * @access  public
-     * @param   scalar  $id     id of a enumeration item which would be droped
-     * @throws  NotFoundException  when no option with the given name exists
+     * @param   scalar  $id  id of a enumeration item which would be droped
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when no option with the given name exists
      */
     public function dropEnumerationItem($id)
     {
@@ -1497,7 +1497,7 @@ class DDLColumn extends DDLNamedObject
             $this->_enumValues = null; // reset cache
         } else {
             $message = "No such option '$id' in Enumeration '{$this->getName()}'.";
-            throw new NotFoundException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
         }
     }
 
@@ -1759,9 +1759,9 @@ class DDLColumn extends DDLNamedObject
      * @param   string  $dbms      target DBMS (e.g. mysql, mssql, ..., generic)
      * @param   array   &$files    list of modified or inserted columns of type file or image
      * @return  bool
-     * @throws  NotFoundException        if the column definition is invalid
-     * @throws  InvalidValueWarning      if an invalid value is encountered, that could not be sanitized
-     * @throws  NotImplementedException  when the column has an unknown datatype
+     * @throws  \Yana\Core\Exceptions\NotFoundException        if the column definition is invalid
+     * @throws  InvalidValueWarning                            if an invalid value is encountered, that could not be sanitized
+     * @throws  \Yana\Core\Exceptions\NotImplementedException  when the column has an unknown datatype
      */
     public function sanitizeValue($value, $dbms = "generic", array &$files = array())
     {
@@ -1976,7 +1976,7 @@ class DDLColumn extends DDLNamedObject
             break;
             default:
                 assert('!in_array($value, self::getSupportedTypes()); // Unhandled column type. ');
-                throw new NotImplementedException("Type '$type' not implemented.", E_USER_ERROR);
+                throw new \Yana\Core\Exceptions\NotImplementedException("Type '$type' not implemented.", E_USER_ERROR);
             break;
         }
         $error = new InvalidValueWarning();
@@ -1988,6 +1988,7 @@ class DDLColumn extends DDLNamedObject
      *
      * @access  public
      * @return  DDLColumn
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the database definition is not found
      */
     public function getReferenceColumn()
     {
@@ -2014,7 +2015,7 @@ class DDLColumn extends DDLNamedObject
                     $refrenceColumn = $refrenceColumn->getReferenceColumn();
                 }
             } catch (\Exception $e) {
-                throw new NotFoundException("Database definition not found: " . $e->getMessage());
+                throw new \Yana\Core\Exceptions\NotFoundException("Database definition not found: " . $e->getMessage());
             }
             unset($tableName, $columnName);
         }
@@ -2271,7 +2272,7 @@ class DDLColumn extends DDLNamedObject
         if ($node->getName() !== 'declaration') {
             $attributes = $node->attributes();
             if (!isset($attributes['name'])) {
-                throw new \Yana\Core\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+                throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
             }
             $ddl = new self((string) $attributes['name'], $parent);
             $ddl->_unserializeFromXDDL($node);

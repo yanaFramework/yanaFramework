@@ -284,7 +284,7 @@ class FileDbIndex extends \Yana\Core\Object
      * @param   string  $column column name
      * @param   scalar  $value  value
      * @return  array
-     * @throws  NotFoundException  when the requested column or value does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the requested column or value does not exist
      */
     public function get($column, $value = null)
     {
@@ -295,7 +295,7 @@ class FileDbIndex extends \Yana\Core\Object
         assert('!isset($index); // Cannot redeclare var $index');
         $index = $this->getColumnValues($column);
         if (!is_array($index)) {
-            throw new NotFoundException("SQL syntax error. ".
+            throw new \Yana\Core\Exceptions\NotFoundException("SQL syntax error. ".
                 "No such index '$column' in table '" . $this->_table->getName() . "'.", E_USER_WARNING);
         }
         if (is_null($value)) {
@@ -305,7 +305,7 @@ class FileDbIndex extends \Yana\Core\Object
             if (isset($index[$value])) {
                 return $index[$value];
             } else {
-                throw new NotFoundException("SQL syntax error. ".
+                throw new \Yana\Core\Exceptions\NotFoundException("SQL syntax error. ".
                     "No such index '$column' in table '" . $this->_table->getName() . "'.", E_USER_WARNING);
             }
         }

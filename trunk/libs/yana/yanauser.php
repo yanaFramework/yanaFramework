@@ -143,14 +143,14 @@ class YanaUser extends \Yana\Core\Object
      * @static
      * @param   string  $userName  name of instance to get
      * @return  YanaUser
-     * @throws  NotFoundException  if the requested user does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if the requested user does not exist
      */
     public static function &getInstance($userName = null)
     {
         if (empty($userName)) {
             $userName = self::getUserName();
             if (empty($userName)) {
-                throw new NotFoundException();
+                throw new \Yana\Core\Exceptions\NotFoundException();
             }
         } else {
             $userName = mb_strtoupper($userName);
@@ -229,7 +229,7 @@ class YanaUser extends \Yana\Core\Object
      *
      * @access  private
      * @param   string  $userName  current user name
-     * @throws  NotFoundException  if the requested user does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if the requested user does not exist
      */
     private function __construct($userName)
     {
@@ -238,7 +238,7 @@ class YanaUser extends \Yana\Core\Object
         $db = self::getDatasource();
         $userInfo = $db->select("user.$userName");
         if (empty($userInfo)) {
-            throw new NotFoundException("User '$userName' not found.");
+            throw new \Yana\Core\Exceptions\NotFoundException("User '$userName' not found.");
         }
 
         $this->_name = "$userName";
@@ -424,7 +424,7 @@ class YanaUser extends \Yana\Core\Object
             }
             try {
                 $user = self::getInstance();
-            } catch (NotFoundException $e) { // user was recently deleted
+            } catch (\Yana\Core\Exceptions\NotFoundException $e) { // user was recently deleted
                 return false;
             }
             switch (true)
@@ -559,7 +559,7 @@ class YanaUser extends \Yana\Core\Object
                 $languageManager->setLocale($this->_language);
                 $_SESSION['language'] = $this->_language;
 
-            } catch (\Yana\Core\InvalidArgumentException $e) {
+            } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
                 // ignore
             }
             unset($languageManager);
@@ -913,9 +913,10 @@ class YanaUser extends \Yana\Core\Object
      * @static
      * @param   string  $userName  user name
      * @param   string  $mail      e-mail address
-     * @throws  AlreadyExistsException               if another user with the same name already exists
-     * @throws  DbError                              when the database entry could not be created
-     * @throws  \Yana\Core\InvalidArgumentException  when no user name is given
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException    if another user with the same name already exists
+     * @throws  DbError                                         when the database entry could not be created
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when no user name is given
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException    if another user with the same name already exists
      */
     public static function createUser($userName, $mail)
     {
@@ -925,10 +926,10 @@ class YanaUser extends \Yana\Core\Object
         $userName = mb_strtoupper("$userName");
 
         if (empty($userName)) {
-            throw new \Yana\Core\InvalidArgumentException("No user name given.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("No user name given.", E_USER_WARNING);
         }
         if (YanaUser::isUser($userName)) {
-            throw new AlreadyExistsException("A user with the name '$userName' already exists.");
+            throw new \Yana\Core\Exceptions\AlreadyExistsException("A user with the name '$userName' already exists.");
         }
         switch (false)
         {
@@ -945,25 +946,23 @@ class YanaUser extends \Yana\Core\Object
     }
 
     /**
-     * remove user
-     *
-     * This function removes the chosen user from the database.
+     * Remove the chosen user from the database.
      *
      * @access  public
      * @static
-     * @param   string  $userName   user name
+     * @param   string  $userName  user name
      * @return  bool
-     * @throws  \Yana\Core\InvalidArgumentException  when no valid user name given
-     * @throws  NotFoundException                    when the given user does not exist
-     * @throws  DbError                              when a query on the database failed
-     * @throws  Error                                when the user may not be deleted for other reasons
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when no valid user name given
+     * @throws  \Yana\Core\Exceptions\NotFoundException         when the given user does not exist
+     * @throws  DbError                                         when a query on the database failed
+     * @throws  Error                                           when the user may not be deleted for other reasons
      */
     public static function removeUser($userName)
     {
         assert('is_string($userName); // Wrong type for argument 1. String expected');
 
         if (empty($userName)) {
-            throw new \Yana\Core\InvalidArgumentException("No user name given.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("No user name given.", E_USER_WARNING);
         }
         $userName = mb_strtoupper($userName);
 
@@ -974,7 +973,7 @@ class YanaUser extends \Yana\Core\Object
 
         // user does not exist
         if (!YanaUser::isUser($userName)) {
-            throw new NotFoundException("No such user: '$userName'.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("No such user: '$userName'.", E_USER_WARNING);
         }
 
         $userName = mb_strtoupper("$userName");

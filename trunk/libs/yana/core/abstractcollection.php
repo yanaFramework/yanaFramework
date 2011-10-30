@@ -60,14 +60,14 @@ abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Cor
      * Get current item.
      *
      * @return  mixed
-     * @throws  OutOfBoundsException  if the iterator is out of bounds
+     * @throws  \Yana\Core\Exceptions\OutOfBoundsException  if the iterator is out of bounds
      */
     public function current()
     {
         if ($this->valid()) {
             return current($this->_items);
         } else {
-            throw new OutOfBoundsException("Iterator index out of bounds");
+            throw new \Yana\Core\Exceptions\OutOfBoundsException("Iterator index out of bounds");
         }
     }
 
@@ -175,7 +175,7 @@ abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Cor
      * if ($yourTypeCheckHere) {
      *     $this->_offsetSet($offset, $item);
      * } else {
-     *     throw new \Yana\Core\InvalidArgumentException();
+     *     throw new \Yana\Core\Exceptions\InvalidArgumentException();
      * }
      * </code>
      * 
@@ -188,7 +188,7 @@ abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Cor
      *
      * @param   scalar  $offset  index of item to replace
      * @param   mixed   $value   new value of item
-     * @throws  \Yana\Core\InvalidArgumentException  if the value is not a valid collection item
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the value is not a valid collection item
      */
     protected function _offsetSet($offset, $value)
     {

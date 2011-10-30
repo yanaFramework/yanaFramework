@@ -73,9 +73,9 @@ class DbSelectCount extends DbSelectExist
      * @param   string  $column           column name
      * @name    DbQuery::setColumn()
      * @see     DbQuery::setColumns()
-     * @throws  DbEventLog                           if table has not been initialized
-     * @throws  \Yana\Core\InvalidArgumentException  if a given argument is invalid
-     * @throws  NotFoundException                    if the given column is not found in the table
+     * @throws  DbEventLog                                      if table has not been initialized
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if a given argument is invalid
+     * @throws  \Yana\Core\Exceptions\NotFoundException         if the given column is not found in the table
      * @return  DbSelectCount 
      */
     public function setColumn($column = '*')
@@ -99,7 +99,7 @@ class DbSelectCount extends DbSelectExist
      *
      * @param   string  $arrayAddress   array address
      * @name    DbQuery::setArrayAddress()
-     * @throws  \Yana\Core\InvalidArgumentException  if a given argument is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if a given argument is invalid
      * @return  DbSelectCount 
      * @ignore
      */
@@ -228,8 +228,8 @@ class DbSelectCount extends DbSelectExist
      * @param   string    $sqlStmt   SQL statement
      * @param   DbStream  $database  database connection
      * @return  DbSelectCount
-     * @throws  \Yana\Core\InvalidArgumentException  if the query is invalid or could not be parsed
-     * @throws  ParserError                          when the SQL statement is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the query is invalid or could not be parsed
+     * @throws  ParserError                                     when the SQL statement is invalid
      */
     public static function parseSQL($sqlStmt, DbStream $database)
     {
@@ -245,10 +245,10 @@ class DbSelectCount extends DbSelectExist
         // retrieve table
         $tables = $sqlStmt['tables'];
         if (empty($tables)) {
-            return new \Yana\Core\InvalidArgumentException("SQL-statement has no table names: $sqlStmt.", E_USER_WARNING);
+            return new \Yana\Core\Exceptions\InvalidArgumentException("SQL-statement has no table names: $sqlStmt.", E_USER_WARNING);
         } elseif (count($tables) > 1) {
             $message = "Row-Counts are not supported on joined tables.";
-            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
         $query->setTable(current($tables));
 
@@ -257,7 +257,7 @@ class DbSelectCount extends DbSelectExist
         if ($function['name'] !== 'count') {
             $message = "Funktion 'count' expected for 'Select count(foo) ...'-statement. " .
                 "Found '{$function['name']}' instead.";
-            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
         $column = current($function['arg']);
         if ($column != '*') {

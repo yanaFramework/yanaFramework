@@ -44,7 +44,7 @@ class DDLFieldCollection extends \Yana\Core\AbstractCollection
      * @access  public
      * @param   string    $offset  index of item to replace
      * @param   DDLField  $value   new value of item
-     * @throws  \Yana\Core\InvalidArgumentException  when the given value is not valid
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given value is not valid
      */
     public function offsetSet($offset, $value)
     {
@@ -55,7 +55,7 @@ class DDLFieldCollection extends \Yana\Core\AbstractCollection
             $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
             $message = "Instance of DDLField expected. Found " . gettype($value) . "(" . get_class($value) . ") instead.";
-            throw new \Yana\Core\InvalidArgumentException($message);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
     }
 

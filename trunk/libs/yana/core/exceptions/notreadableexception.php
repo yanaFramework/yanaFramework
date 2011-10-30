@@ -25,18 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions;
+
 /**
- * Value is invalid
+ * <<exception>> Resource not readable.
  *
- * Thrown when a user-generated value is validated and found to be invalid.
+ * Thrown when you try to read from a resource, but fail: due to missing privileges, resource is
+ * busy, or locked, or simply does not exist.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class InvalidValueException extends \Yana\Core\Exceptions\DomainException
+class NotReadableException extends \Yana\Core\Exceptions\DataException
 {
-    // intentionally left blank
+    /* intentionally left blank */
 }
 
 ?>

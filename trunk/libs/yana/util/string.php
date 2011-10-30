@@ -234,7 +234,7 @@ class String extends \Yana\Core\AbstractUtility
         /* check if $index is in bounds */
         /* If the input is no integer at all, issue an E_USER_ERROR and abort. */
         if ($index < 0 || $index >= mb_strlen($string)) {
-            throw new \OutOfBoundsException("String index '".$index."' out of bounds.");
+            throw new \Yana\Core\Exceptions\OutOfBoundsException("String index '".$index."' out of bounds.");
         } else {
             /* all fine, proceed */
             return $string[$index];
@@ -347,7 +347,7 @@ class String extends \Yana\Core\AbstractUtility
      * @assert ("test", "soundex") == "T230"
      * @assert ("test", "metaphone") == "TST"
      * @assert ("aaaa", "xor", "    ") == "AAAA"
-     * @throws NotImplementedException when the requested encryption method is not available
+     * @throws  \Yana\Core\Exceptions\NotImplementedException  when the requested encryption method is not available
      */
     public static function encrypt($string, $encryption = "md5", $salt = "")
     {
@@ -362,7 +362,7 @@ class String extends \Yana\Core\AbstractUtility
                     return crc32($string);
                 } else {
                     $message = "Unsupported encryption method: '$encryption'.";
-                    throw new \NotImplementedException($message);
+                    throw new \Yana\Core\Exceptions\NotImplementedException($message);
                 }
             break;
             case 'md5':
@@ -378,7 +378,7 @@ class String extends \Yana\Core\AbstractUtility
                     return sha1($string);
                 } else {
                     $message = "Unsupported encryption method: '$encryption'.";
-                    throw new \NotImplementedException($message);
+                    throw new \Yana\Core\Exceptions\NotImplementedException($message);
                 }
             break;
             case 'crypt':
@@ -416,7 +416,7 @@ class String extends \Yana\Core\AbstractUtility
 
                 } else {
                     $message = "Unsupported encryption method: '$encryption'.";
-                    throw new \NotImplementedException($message);
+                    throw new \Yana\Core\Exceptions\NotImplementedException($message);
                 }
             break;
             case 'metaphone':
@@ -430,7 +430,7 @@ class String extends \Yana\Core\AbstractUtility
                     }
                 } else {
                     $message = "Unsupported encryption method: '$encryption'.";
-                    throw new \NotImplementedException($message);
+                    throw new \Yana\Core\Exceptions\NotImplementedException($message);
                 }
             break;
             case 'xor':
@@ -443,7 +443,7 @@ class String extends \Yana\Core\AbstractUtility
             break;
             default:
                 $message = "Unsupported encryption method: '$encryption'.";
-                throw new \NotImplementedException($message);
+                throw new \Yana\Core\Exceptions\NotImplementedException($message);
             break;
         }
     }

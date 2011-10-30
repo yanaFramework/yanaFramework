@@ -57,14 +57,14 @@ class DatabaseAdapter extends \Yana\Core\Object implements IsDataAdapter
      *
      * @access  public
      * @param   string  $index  where to store session data $_SESSION[$index]
-     * @throws  NotFoundException  when the table is not registered in the database
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the table is not registered in the database
      */
     public function __construct(DbStream $db, $table)
     {
         assert('is_string($table); // Wrong argument type argument 1. String expected');
         if (!$db->getSchema()->isTable($table)) {
             $message = "Table not found: '$table' in database '{$db->schema->getName()}'.";
-            throw new NotFoundException($message);
+            throw new \Yana\Core\Exceptions\NotFoundException($message);
         }
         $this->db = $db;
         $this->table = strtolower("$table");
@@ -95,13 +95,13 @@ class DatabaseAdapter extends \Yana\Core\Object implements IsDataAdapter
      * @access  public
      * @param   string  $id  instance id
      * @return  array
-     * @throws  NotFoundException  if the instance does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if the instance does not exist
      */
     public function getInstance($id)
     {
         $data = $this->db->select($this->table . ".$id");
         if (empty($data)) {
-            throw new NotFoundException("There is no session data on instance: '$id'.");
+            throw new \Yana\Core\Exceptions\NotFoundException("There is no session data on instance: '$id'.");
         }
         return $data;
     }

@@ -253,15 +253,15 @@ class DDLField extends DDLNamedObject
      * @access  public
      * @param   string  $name   event name
      * @return  DDLEvent
-     * @throws  AlreadyExistsException               when an event with the same name already exists
-     * @throws  \Yana\Core\InvalidArgumentException  on invalid name
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when an event with the same name already exists
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  on invalid name
      */
     public function addEvent($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->events[$name])) {
-            throw new AlreadyExistsException("Another action with the name '$name' is already defined.");
+            throw new \Yana\Core\Exceptions\AlreadyExistsException("Another action with the name '$name' is already defined.");
 
         } else {
             $this->events[$name] = new DDLEvent($name);
@@ -594,7 +594,7 @@ class DDLField extends DDLNamedObject
      * @param   string  $role   user role
      * @param   int     $level  security level
      * @return  DDLGrant
-     * @throws  \Yana\Core\InvalidArgumentException  when $level is out of range [0,100]
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when $level is out of range [0,100]
      */
     public function addGrant($user = null, $role = null, $level = null)
     {
@@ -612,7 +612,7 @@ class DDLField extends DDLNamedObject
         if (!empty($role)) {
             $grant->setRole($role);
         }
-        // may throw an \Yana\Core\InvalidArgumentException
+        // may throw an \Yana\Core\Exceptions\InvalidArgumentException
         if (!is_null($level)) {
             $grant->setLevel($level);
         }
@@ -666,13 +666,13 @@ class DDLField extends DDLNamedObject
      * @static
      * @param   \SimpleXMLElement  $node  XML node
      * @return  DDLField
-     * @throws  \Yana\Core\InvalidArgumentException  when the name attribute is missing
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node)
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
-            throw new \Yana\Core\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
         }
         $ddl = new self((string) $attributes['name']);
         /* @var $child \SimpleXMLElement */

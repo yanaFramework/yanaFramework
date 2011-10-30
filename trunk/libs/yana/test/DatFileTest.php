@@ -205,7 +205,7 @@ class DatFileTest extends PHPUnit_Framework_TestCase
     /**
      * remove
      *
-     * @expectedException  OutOfBoundsException
+     * @expectedException \Yana\Core\Exceptions\OutOfBoundsException
      * @test
      */
     public function testRemoveLineInvalidArgument()

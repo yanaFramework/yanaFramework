@@ -90,7 +90,7 @@ class Sequence extends \Yana\Core\Object
      * Reads all sequence information from the database and initializes a new instance.
      *
      * @param   string  $name  name of sequence
-     * @throws  NotFoundException  if the sequence does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if the sequence does not exist
      */
     public function __construct($name)
     {
@@ -102,7 +102,7 @@ class Sequence extends \Yana\Core\Object
         }
         $row = self::$db->select("sequences.$name");
         if (empty($row)) {
-            throw new NotFoundException("No such sequence '$name'.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("No such sequence '$name'.", E_USER_WARNING);
         }
 
         $this->name = (string) $name;
@@ -135,7 +135,7 @@ class Sequence extends \Yana\Core\Object
         if (!is_null($db)) {
             self::$db = $db;
         } else {
-            self::$db = Yana::connect('sequences');
+            self::$db = \Yana::connect('sequences');
         }
     }
 
@@ -199,7 +199,7 @@ class Sequence extends \Yana\Core\Object
      *
      * @access  public
      * @param   int  $max   maximal value
-     * @throws  \Yana\Core\InvalidArgumentException  when $max is smaller then minimum value
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when $max is smaller then minimum value
      */
     public function setMax($max)
     {
@@ -209,7 +209,7 @@ class Sequence extends \Yana\Core\Object
         } else {
             $message = "Maximum value '{$max}' must be bigger then minimum value '{$this->min}' in sequence '".
                 "{$this->name}'.";
-            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
     }
 
@@ -229,7 +229,7 @@ class Sequence extends \Yana\Core\Object
      *
      * @access  public
      * @param   int  $min   minimal value
-     * @throws  \Yana\Core\InvalidArgumentException  when $min is bigger then maximum value
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when $min is bigger then maximum value
      */
     public function setMin($min)
     {
@@ -239,7 +239,7 @@ class Sequence extends \Yana\Core\Object
         } else {
             $message = "Minimum value '{$min}' must be smaller then maximum value '{$this->max}' in sequence '".
                 "{$this->name}'.";
-            throw new \Yana\Core\InvalidArgumentException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
     }
 
@@ -375,7 +375,7 @@ class Sequence extends \Yana\Core\Object
      *
      * @access  public
      * @return  int
-     * @throws  OutOfBoundsException  when new value is < minimum or > maximum
+     * @throws  \Yana\Core\Exceptions\OutOfBoundsException  when new value is < minimum or > maximum
      */
     public function getNextValue()
     {
@@ -399,7 +399,7 @@ class Sequence extends \Yana\Core\Object
         // outside range for non-cyclic sequence
         } else {
             $message = "Sequence '{$this->name}' has reached it's boundary.";
-            throw new OutOfBoundsException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\OutOfBoundsException($message, E_USER_WARNING);
         }
         return $this->value;
     }
@@ -442,7 +442,7 @@ class Sequence extends \Yana\Core\Object
      *
      * @access  public
      * @param   int  $value     current sequence value
-     * @throws  OutOfBoundsException  when $value < minimum or $value > maximum
+     * @throws  \Yana\Core\Exceptions\OutOfBoundsException  when $value < minimum or $value > maximum
      */
     public function setCurrentValue($value)
     {
@@ -451,7 +451,7 @@ class Sequence extends \Yana\Core\Object
             $this->value = $value;
         } else {
             $message = "Value '{$value}' must be within range [{$this->min},{$this->max}] in sequence '{$this->name}'.";
-            throw new OutOfBoundsException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\OutOfBoundsException($message, E_USER_WARNING);
         }
     }
 

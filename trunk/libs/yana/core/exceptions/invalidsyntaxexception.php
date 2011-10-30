@@ -25,17 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions;
+
 /**
- * Function not found
+ * <<exception>> Syntax error.
  *
- * Thrown when you try to use a function in a context, where it is not intended to be used, or if
- * you try to use a functionality, which is (intentionally) not there.
+ * Thrown when a certain syntax is expected for a given value or resource and the input
+ * does not satisfy this constraint.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class NotImplementedException extends \Yana\Core\Exceptions\BadMethodCallException
+class InvalidSyntaxException extends InvalidValueException
 {
     /* intentionally left blank */
 }

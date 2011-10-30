@@ -25,16 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions;
+
 /**
- * Resource not writeable
+ * <<exception>> Item not found.
  *
- * Thrown when you try to modify a resource, but you are denied permission to do so.
+ * Thrown when you try to add access a named item, but no item with the given
+ * name is found.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class NotWriteableException extends \Yana\Core\Exceptions\DataException
+class NotFoundException extends \Yana\Core\Exceptions\DataException
 {
     /* intentionally left blank */
 }

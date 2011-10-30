@@ -83,7 +83,7 @@ class PluginClassCollection extends \Yana\Core\AbstractCollection
      * @access  public
      * @param   string                    $offset  ignored
      * @param   PluginConfigurationClass  $value   newly added instance
-     * @throws \Yana\Core\InvalidArgumentException
+     * @throws \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function offsetSet($offset, $value)
     {
@@ -95,7 +95,7 @@ class PluginClassCollection extends \Yana\Core\AbstractCollection
         } else {
             $message = "Instance of PluginConfigurationClass expected. " .
                 "Found " . gettype($value) . "(" . ((is_object($value)) ? get_class($value) : $value) . ") instead.";
-            throw new \Yana\Core\InvalidArgumentException($message);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
     }
 

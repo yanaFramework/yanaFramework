@@ -25,17 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions;
+
 /**
- * Item already exists
+ * <<exception>> Function not found.
  *
- * Thrown when you try to add an item, but another item of the same name does
- * already exist.
+ * Thrown when you try to use a function in a context, where it is not intended to be used, or if
+ * you try to use a functionality, which is (intentionally) not there.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class AlreadyExistsException extends \Yana\Core\Exceptions\DataException
+class NotImplementedException extends \Yana\Core\Exceptions\BadMethodCallException
 {
     /* intentionally left blank */
 }

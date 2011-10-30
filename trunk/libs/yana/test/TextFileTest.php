@@ -39,14 +39,12 @@ class TextFileTest extends PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var     FileReadonly
-     * @access  protected
+     * @var  FileReadonly
      */
     protected $_object;
 
     /**
-     * @var     string
-     * @access  protected
+     * @var  string
      */
     protected $_path = 'resources/fileread.txt';
 
@@ -63,8 +61,6 @@ class TextFileTest extends PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     *
-     * @access protected
      */
     protected function setUp()
     {
@@ -75,8 +71,6 @@ class TextFileTest extends PHPUnit_Framework_TestCase
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
-     *
-     * @access protected
      */
     protected function tearDown()
     {
@@ -84,7 +78,7 @@ class TextFileTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testSetContent().
+     * @test
      */
     public function testSetContent()
     {
@@ -99,8 +93,6 @@ class TextFileTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * get line
-     *
      * @test
      */
     public function testGetLine()
@@ -119,8 +111,6 @@ class TextFileTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * append line
-     *
      * @test
      */
     public function testAppendLine()
@@ -139,7 +129,7 @@ class TextFileTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * set line content
+     * Set line content.
      *
      * @test
      */
@@ -152,9 +142,7 @@ class TextFileTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * remove line error handling
-     *
-     * remove a nonexisting key
+     * Check that a correct error is thrown.
      *
      * @expectedException \Yana\Core\Exceptions\OutOfBoundsException
      * @test
@@ -165,8 +153,6 @@ class TextFileTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * write
-     *
      * @test
      */
     public function testWrite()
@@ -185,8 +171,6 @@ class TextFileTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * remove line
-     *
      * @test
      */
     public function testRemoveLine()
@@ -198,9 +182,7 @@ class TextFileTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * remove line error handling
-     *
-     * remove a nonexisting key
+     * Check that a correct error is thrown.
      *
      * @expectedException \Yana\Core\Exceptions\OutOfBoundsException
      * @test
@@ -211,8 +193,6 @@ class TextFileTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Length
-     *
      * @test
      */
     public function testLength()

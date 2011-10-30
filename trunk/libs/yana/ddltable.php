@@ -339,12 +339,12 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * @access  public
      * @param   string  $columnName  name of column containing the foreign key
      * @return  string
-     * @throws  NotFoundException  when column does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when column does not exist
      */
     public function getTableByForeignKey($columnName)
     {
         if (!$this->isColumn($columnName)) {
-            throw new NotFoundException("No such column '$columnName'.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("No such column '$columnName'.", E_USER_WARNING);
         }
 
         $columnName = mb_strtolower($columnName);
@@ -368,16 +368,16 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * @access  public
      * @param   string  $columnName  name of column containing the foreign key
      * @return  DDLColumn
-     * @throws  NotFoundException  when column does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when column does not exist
      * @ignore
      */
     public function getColumnByForeignKey($columnName)
     {
         if (!$this->isColumn($columnName)) {
-            throw new NotFoundException("No such column '$columnName'.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("No such column '$columnName'.", E_USER_WARNING);
         }
         if (! $this->parent instanceof DDLDatabase) {
-            throw new NotFoundException("Target table is undefined.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("Target table is undefined.", E_USER_WARNING);
         }
 
         $columnName = mb_strtolower($columnName);
@@ -428,8 +428,8 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * @param   string  $columnName  name of column
      * @param   string  $type        data-type
      * @return  DDLColumn
-     * @throws  AlreadyExistsException              when another column with the same name already exists
-     * @throws  \Yana\Core\InvalidArgumentException if the name is not valid
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException   when another column with the same name already exists
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException if the name is not valid
      */
     public function addColumn($columnName, $type)
     {
@@ -438,9 +438,9 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
         $columnName = mb_strtolower($columnName);
         if (isset($this->columns[$columnName])) {
             $message = "Another column with the name '$columnName' already exists in table '{$this->getName()}'.";
-            throw new AlreadyExistsException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_WARNING);
         } else {
-            // may throw \Yana\Core\InvalidArgumentException
+            // may throw \Yana\Core\Exceptions\InvalidArgumentException
             $column = new DDLColumn($columnName, $this);
             $column->setType("$type");
             $this->columns[$columnName] = $column;
@@ -498,7 +498,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      *
      * @access  public
      * @param   string  $columnName   column name
-     * @throws  NotFoundException  when column does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when column does not exist
      */
     public function dropColumn($columnName)
     {
@@ -508,7 +508,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
             unset($this->columns[$columnName]);
         } else {
             $message = "No such column '$columnName' in table '{$this->getName()}'.";
-            throw new NotFoundException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
         }
     }
 
@@ -691,8 +691,8 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * @param   string  $table            name of target table
      * @param   string  $constraintName   optional name of foreign-key constraint
      * @return  DDLForeignKey
-     * @throws  NotFoundException                    if target table does not exist
-     * @throws  \Yana\Core\InvalidArgumentException  if constraint name is not valid or column
+     * @throws  \Yana\Core\Exceptions\NotFoundException         if target table does not exist
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if constraint name is not valid or column
      */
     public function addForeignKey($table, $constraintName = "")
     {
@@ -701,7 +701,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
 
         if (isset($this->parent)) {
             if (!$this->parent->isTable($table)) {
-                throw new NotFoundException("No such table '$table'.");
+                throw new \Yana\Core\Exceptions\NotFoundException("No such table '$table'.");
             }
         }
 
@@ -744,7 +744,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      *
      * @access  public
      * @param   string  $columnName  name of column
-     * @throws  NotFoundException    if column does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if column does not exist
      * @return  DDLTable 
      */
     public function setPrimaryKey($columnName)
@@ -755,7 +755,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
             $this->primaryKey = $name;
         } else {
             $message = "No such column '$columnName' in table '{$this->getName()}'.";
-            throw new NotFoundException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
         }
         return $this;
     }
@@ -840,7 +840,8 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * @access  public
      * @param   string  $indexName  optional name of index
      * @return  DDLIndex
-     * @throws  InvalidArgumenException  if index name is not valid
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException   if another index with the same name already exists
+     * @throws  \Yana\Core\Exceptions\InvalidArgumenException  if index name is not valid
      */
     public function addIndex($indexName = "")
     {
@@ -852,7 +853,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
         } elseif (!isset($this->indexes[$indexName])) {
             $this->indexes[$indexName] = $newDDLIndex;
         } else {
-            throw new AlreadyExistsException("Another index by the name '$indexName' already exists.");
+            throw new \Yana\Core\Exceptions\AlreadyExistsException("Another index by the name '$indexName' already exists.");
         }
 
         return $newDDLIndex;
@@ -1390,7 +1391,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * @param   string  $role   user role
      * @param   int     $level  security level
      * @return  DDLGrant
-     * @throws  \Yana\Core\InvalidArgumentException  when $level is out of range [0,100]
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when $level is out of range [0,100]
      */
     public function addGrant($user = null, $role = null, $level = null)
     {
@@ -1404,7 +1405,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
         if (!empty($role)) {
             $grant->setRole($role);
         }
-        // may throw an \Yana\Core\InvalidArgumentException
+        // may throw an \Yana\Core\Exceptions\InvalidArgumentException
         if (!is_null($level)) {
             $grant->setLevel($level);
         }
@@ -1444,8 +1445,8 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * @param   bool    $isInsert  type of operation (true = insert, false = update)
      * @param   array   &$files    list of modified or inserted columns of type file or image
      * @return  array
-     * @throws  NotWriteableException  if a target column or table is not writeable
-     * @throws  InvalidValueWarning    if a given value is missing or not valid
+     * @throws  \Yana\Core\Exceptions\NotWriteableException  if a target column or table is not writeable
+     * @throws  InvalidValueWarning                          if a given value is missing or not valid
      */
     public function sanitizeRow(array $row, $dbms = "generic", $isInsert = true, array &$files = array())
     {
@@ -1458,7 +1459,7 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
              * error - not writeable
              */
             if (!$isInsert && $column->isReadonly() && isset($row[$columnName])) {
-                throw new NotWriteableException("Database is readonly. " .
+                throw new \Yana\Core\Exceptions\NotWriteableException("Database is readonly. " .
                     "Update operation on table '{$this->getName()}' aborted.");
             }
             /*
@@ -1558,13 +1559,13 @@ class DDLTable extends DDLNamedObject implements IsIncludableDDL
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed             $parent  parent node (if any)
      * @return  DDLTable
-     * @throws  \Yana\Core\InvalidArgumentException  when the name attribute is missing
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
-            throw new \Yana\Core\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
         }
         $ddl = new self((string) $attributes['name'], $parent);
         $ddl->_unserializeFromXDDL($node);

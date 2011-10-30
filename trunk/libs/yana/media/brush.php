@@ -93,8 +93,8 @@ class Brush extends \Yana\Core\Object
      * </ul>
      *
      * @param  string  $brushname  see list
-     * @throws \NotImplementedException  if the GD-library is not available
-     * @throws \Yana\Core\InvalidArgumentException when the requested brush is not found
+     * @throws \Yana\Core\Exceptions\NotImplementedException  if the GD-library is not available
+     * @throws \Yana\Core\Exceptions\InvalidArgumentException when the requested brush is not found
      */
     public function __construct($brushname = 'point')
     {
@@ -102,21 +102,21 @@ class Brush extends \Yana\Core\Object
 
         // Check if GD-libary is available and able to handle PNG images.
         if (!function_exists('imagecreate') || !function_exists('imagecreatefrompng')) {
-            throw new \NotImplementedException("Cannot create brush. This server is unable to handle PNG images.");
+            throw new \Yana\Core\Exceptions\NotImplementedException("Cannot create brush. This server is unable to handle PNG images.");
         }
 
         $brushFile = self::getDirectory() . str_replace(' ', '-', $brushname) . '.png';
 
         // check if file exists
         if (!file_exists($brushFile)) {
-            throw new \Yana\Core\InvalidArgumentException("Invalid brush file. File '$brushname' not found.");
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid brush file. File '$brushname' not found.");
         }
         $this->_brushname = $brushname;
         $this->_image = imagecreatefrompng($brushFile);
 
         // check if file is a valid image
         if (!is_resource($this->_image)) {
-            throw new \Yana\Core\InvalidArgumentException("The brush '{$brushname}' is not a valid image-file.");
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("The brush '{$brushname}' is not a valid image-file.");
         }
         /* Set background transparent.
          *

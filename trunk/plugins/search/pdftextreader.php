@@ -41,7 +41,7 @@ class PdfTextReader extends BufferedReader
      * Reads and decodes the contents of the PDF file
      *
      * @access  public
-     * @throws  NotFoundException  if the file does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if the file does not exist
      */
     public function read()
     {

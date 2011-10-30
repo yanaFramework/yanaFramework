@@ -247,7 +247,7 @@ class Image extends \Yana\Core\Object
      *
      * @param   string  $filename    name of the source file
      * @param   string  $imageType   type of the image
-     * @throws  \Yana\Core\InvalidArgumentException
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function __construct($filename = null, $imageType = null)
     {
@@ -403,25 +403,18 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * return true, if the image exists
+     * Returns bool(true), if the image exists.
      *
      * @access public
      * @return bool
      */
     public function exists()
     {
-        if (is_bool($this->_exists)) {
-            return $this->_exists;
-        } else {
-            return false;
-        }
+        return (bool) $this->_exists;
     }
 
     /**
-     * return true, if the image is broken
-     *
      * Returns bool(true) if the image type was not recognized.
-     * Returns bool(false) otherwise.
      *
      * @access public
      * @return bool
@@ -1762,7 +1755,7 @@ class Image extends \Yana\Core\Object
      * @param   int    $b        blue value
      * @param   float  $opacity  alpha value
      * @return  int|bool(false)
-     * @throws  \Yana\Core\InvalidArgumentException
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function getColor($r, $g, $b, $opacity = null)
     {
@@ -1967,7 +1960,7 @@ class Image extends \Yana\Core\Object
      * @param   int        $replacedColor   index of replaced color
      * @param   array|int  $newColor        the color that should be assigned
      * @return  bool
-     * @throws  OutOfBoundsException        when replaced color is not in image palette
+     * @throws  \Yana\Core\Exceptions\OutOfBoundsException  when replaced color is not in image palette
      */
     public function replaceIndexColor($replacedColor, $newColor)
     {
@@ -1990,7 +1983,7 @@ class Image extends \Yana\Core\Object
          *  argument 1 - index out of bounds
          */
         } elseif ($replacedColor < 0 || $replacedColor > imagecolorstotal($this->_image)) {
-            throw new \OutOfBoundsException("Replaced color is not in image palette.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\OutOfBoundsException("Replaced color is not in image palette.", E_USER_WARNING);
 
         } else {
 

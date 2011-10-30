@@ -73,7 +73,7 @@ class PluginClassCollectionTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function testOffsetSetInvalidArgumentException()
     {

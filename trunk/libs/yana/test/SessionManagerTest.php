@@ -610,7 +610,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     /**
      * removeUser with non-existing user
      *
-     * @expectedException NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      * @test
      */
     function testRemoveUserInvalidArgument()
@@ -622,7 +622,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     /**
      * removeUser with empty user name
      *
-     * @expectedException \Yana\Core\InvalidArgumentException
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      * @test
      */
     function testRemoveUserInvalidArgument1()

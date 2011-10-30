@@ -110,7 +110,7 @@ class FloodFile extends File
      *
      * @access  public
      * @return  bool
-     * @throws  NotReadableException  if the source file is not readable
+     * @throws  \Yana\Core\Exceptions\NotReadableException  if the source file is not readable
      */
     public function isBlocked()
     {

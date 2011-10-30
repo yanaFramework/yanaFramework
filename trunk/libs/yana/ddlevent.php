@@ -274,13 +274,13 @@ class DDLEvent extends DDLNamedObject
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  DDLEvent
-     * @throws   \Yana\Core\InvalidArgumentException  if the name attribute is missing
+     * @throws   \Yana\Core\Exceptions\InvalidArgumentException  if the name attribute is missing
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null)
     {
         $attributes = $node->attributes();
         if (!isset($attributes['name'])) {
-            throw new \Yana\Core\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Missing name attribute.", E_USER_WARNING);
         }
         $ddl = new self((string) $attributes['name'], $parent);
         $ddl->_unserializeFromXDDL($node);

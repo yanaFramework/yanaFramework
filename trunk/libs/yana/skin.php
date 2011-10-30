@@ -222,14 +222,14 @@ class Skin implements \Yana\Report\IsReportable
      *
      * @access  private
      * @param   string  $skinName  name of skin definition that should be loaded
-     *
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the skin definition file is not found
      * @ignore
      */
     private function _loadTemplates($skinName)
     {
         $file = self::getSkinPath($skinName);
         if (!is_file($file)) {
-            throw new \NotFoundException("Skin definition not found: '$skinName'.");
+            throw new \Yana\Core\Exceptions\NotFoundException("Skin definition not found: '$skinName'.");
         }
         // load definition
         $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
@@ -312,7 +312,7 @@ class Skin implements \Yana\Report\IsReportable
      * @access  public
      * @param   string  $key  template id
      * @return  string
-     * @throws  NotFoundException  when the given template id does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the given template id does not exist
      */
     public function getFile($key)
     {
@@ -327,7 +327,7 @@ class Skin implements \Yana\Report\IsReportable
 
             // cache the name of the file
             if (!isset($this->_value[$key]['FILE'])) {
-                throw new \NotFoundException("Missing file attribute for template with id '$key'.");
+                throw new \Yana\Core\Exceptions\NotFoundException("Missing file attribute for template with id '$key'.");
             }
             self::$_filePaths[$key] = $this->_value[$key]['FILE'];
 
@@ -344,7 +344,7 @@ class Skin implements \Yana\Report\IsReportable
      *
      * @access  public
      * @param   string  $key  template id
-     * @throws  NotFoundException when the given template id does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException when the given template id does not exist
      */
     public function loadDependencies($key)
     {
@@ -352,7 +352,7 @@ class Skin implements \Yana\Report\IsReportable
         $key = mb_strtoupper("$key");
 
         if (!isset($this->_value[$key])) {
-            throw new \NotFoundException("Template '$key' not found.");
+            throw new \Yana\Core\Exceptions\NotFoundException("Template '$key' not found.");
         }
 
         // load language files associated with the template
@@ -542,7 +542,7 @@ class Skin implements \Yana\Report\IsReportable
      * @param   string  $name           name
      * @return  bool
      * @since   2.9.8
-     * @throws  \Yana\Core\InvalidArgumentException  when the key is empty
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the key is empty
      */
     private function _setProperty($key, $propertyName, $file = '', $name = '')
     {
@@ -553,7 +553,7 @@ class Skin implements \Yana\Report\IsReportable
         assert('is_string($name); // Wrong type for argument 4. String expected');
 
         if (empty($key)) {
-            throw new \Yana\Core\InvalidArgumentException("Template name may not be empty.");
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Template name may not be empty.");
         } else {
             $key = mb_strtoupper("$key");
         }
@@ -630,7 +630,7 @@ class Skin implements \Yana\Report\IsReportable
      * @param   string  $key            key
      * @param   string  $propertyName   property name
      * @return  array
-     * @throws  \Yana\Core\InvalidArgumentException  when the given key is empty
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given key is empty
      */
     private function _getProperty($key, $propertyName)
     {
@@ -638,7 +638,7 @@ class Skin implements \Yana\Report\IsReportable
         assert('is_string($propertyName); // Wrong type for argument 2. String expected');
         assert('$propertyName === strtoupper($propertyName); // Argument 2 must be upper-cased');
         if (empty($key)) {
-            throw new \Yana\Core\InvalidArgumentException("Template name may not be empty.");
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Template name may not be empty.");
         } else {
             $key = mb_strtoupper("$key");
         }
@@ -942,7 +942,7 @@ class Skin implements \Yana\Report\IsReportable
                     } else {
                         $subReport->addText("File: $filename");
                     }
-                } catch (NotFoundException $e) {
+                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                     $subReport->addWarning($e->getMessage());
                 }
 

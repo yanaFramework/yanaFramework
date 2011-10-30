@@ -61,7 +61,7 @@ interface IsDataAdapter
      * @access  public
      * @param   string  $id  instance id
      * @return  array
-     * @throws  NotFoundException  if the instance does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if the instance does not exist
      */
     public function getInstance($id);
 

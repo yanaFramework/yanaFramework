@@ -85,7 +85,7 @@ class FileReadonlyTest extends PHPUnit_Framework_TestCase
      * read
      *
      * @test
-     * @expectedException  NotFoundException
+     * @expectedException \Yana\Core\Exceptions\NotFoundException
      */
     public function testReadNotFoundException()
     {
@@ -109,7 +109,7 @@ class FileReadonlyTest extends PHPUnit_Framework_TestCase
      * read
      *
      * @test
-     * @expectedException  NotReadableException
+     * @expectedException \Yana\Core\Exceptions\NotReadableException
      */
     public function testReadLockedFile()
     {
@@ -137,7 +137,7 @@ class FileReadonlyTest extends PHPUnit_Framework_TestCase
      * read
      *
      * @test
-     * @expectedException  NotReadableException
+     * @expectedException \Yana\Core\Exceptions\NotReadableException
      */
     public function testFailSafeReadLockedFile()
     {

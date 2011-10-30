@@ -85,8 +85,8 @@ class BlockFile extends File
      *
      * @access  public
      * @return  bool
-     * @throws  NotReadableException  if the file is not readable
-     * @throws  NotFoundException     if the file does not exist
+     * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
+     * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
      */
     public function read()
     {

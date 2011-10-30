@@ -219,7 +219,7 @@ class DDLGrant extends DDL
      *
      * @access  public
      * @param   string  $level  new value of this property
-     * @throws  \Yana\Core\InvalidArgumentException  when the given security level is outside range [0,100]
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given security level is outside range [0,100]
      * @return  DDLGrant 
      */
     public function setLevel($level = null)
@@ -228,7 +228,8 @@ class DDLGrant extends DDL
         if (is_null($level)) {
             $this->level = null;
         } elseif ($level < 0 || $level > 100) {
-            throw new \Yana\Core\InvalidArgumentException("Security level '$level' outside range [0,100].", E_USER_WARNING);
+            $message = "Security level '$level' outside range [0,100].";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         } else {
             $this->level = (int) $level;
         }

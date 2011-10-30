@@ -35,7 +35,7 @@
  * <code>
  * try {
  *   $container = AbstractDataContainer::getInstance("foo");
- * } catch (NotFoundException $e) {
+ * } catch (\Yana\Core\Exceptions\NotFoundException $e) {
  *   $container = AbstractDataContainer::createInstance("foo");
  * }
  * // do something
@@ -165,12 +165,12 @@ abstract class DataContainerAbstract extends \Yana\Core\Object
      * @access  protected
      * @static
      * @return  IsDataAdapter
-     * @throws  NotImplementedException  if no data adapter has been registered
+     * @throws  \Yana\Core\Exceptions\NotImplementedException  if no data adapter has been registered
      */
     protected static function getDataAdapter()
     {
         if (!isset(self::$_dataAdapter)) {
-            throw new NotImplementedException("No data adapter registered.");
+            throw new \Yana\Core\Exceptions\NotImplementedException("No data adapter registered.");
         }
         return self::$_dataAdapter;
     }
@@ -198,7 +198,7 @@ abstract class DataContainerAbstract extends \Yana\Core\Object
      * This factory method calls the datasource to retrieve and initialize the instance.
      *
      * @param   string  $id  instance id
-     * @throws  AlreadyExistsException  if the instance already exists
+     * @throws  \Yana\Core\Exceptions\AlreadyExistsException  if the instance already exists
      * @return  DataContainerAbstract
      */
     public static function createInstance($id)
@@ -219,7 +219,7 @@ abstract class DataContainerAbstract extends \Yana\Core\Object
      * This factory method calls the datasource to retrieve and initialize the instance.
      *
      * @param   string  $id  instance id
-     * @throws  NotFoundException  if the instance does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if the instance does not exist
      * @return  DataContainerAbstract
      */
     public static function getInstance($id)

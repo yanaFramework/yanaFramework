@@ -75,8 +75,8 @@ class DbBlob extends FileReadonly
      * An message is issued
      *
      * @access  public
-     * @throws  NotReadableException  if the blob is not valid
-     * @throws  NotFoundException     if the blob does not exist
+     * @throws  \Yana\Core\Exceptions\NotReadableException  if the blob is not valid
+     * @throws  \Yana\Core\Exceptions\NotFoundException     if the blob does not exist
      */
     public function read()
     {
@@ -84,13 +84,13 @@ class DbBlob extends FileReadonly
 
         if (!is_file($source)) {
             $message = "The file '{$source}' does not exist (database: blob not found).";
-            throw new NotFoundException($message, E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_NOTICE);
         }
         $this->content = array();
 
         if (!preg_match('/\.gz$/', $source)) {
             $message = "The source '{$source}' is not a valid database blob.";
-            throw new NotReadableException($message, E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotReadableException($message, E_USER_WARNING);
         }
         $i = 0;
         $gz = gzopen($source, 'r');
@@ -182,8 +182,8 @@ class DbBlob extends FileReadonly
      * @param   bool  $fullsize  show full size or thumb-nail (images only)
      * @static
      * @return  string
-     * @throws  \Yana\Core\InvalidArgumentException  if file with index $id does not exist
-     * @throws  FileNotFoundError         if the requested file no longer exists
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if file with index $id does not exist
+     * @throws  FileNotFoundError                               if the requested file no longer exists
      */
     public static function getFilenameFromSession($id, $fullsize = false)
     {
@@ -194,7 +194,8 @@ class DbBlob extends FileReadonly
 
         /* check arguments */
         if (!isset($_SESSION[__CLASS__][$id])) {
-            throw new \Yana\Core\InvalidArgumentException("Invalid argument. File '$id' is undefined.", E_USER_WARNING);
+            $message = "Invalid argument. File '$id' is undefined.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
 
         $file = $_SESSION[__CLASS__][$id];
@@ -244,7 +245,7 @@ class DbBlob extends FileReadonly
      * @param    bool    $overwrite  setting this to false will prevent
      *                               existing files from getting overwritten
      * @return   bool
-     * @throws   \Yana\Core\InvalidArgumentException  on invalid filename
+     * @throws   \Yana\Core\Exceptions\InvalidArgumentException  on invalid filename
      */
     public function copy($destFile, $overwrite = true)
     {
@@ -253,7 +254,7 @@ class DbBlob extends FileReadonly
 
         /* validity checking */
         if (mb_strlen($destFile) > 512 || !preg_match('/^[\w\d-_\.][\w\d-_\/\.]*$/', $destFile)) {
-            throw new \Yana\Core\InvalidArgumentException("Invalid filename '".$destFile."'.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid filename '".$destFile."'.", E_USER_WARNING);
         }
 
         if (!$overwrite && file_exists($destFile)) {
@@ -382,7 +383,7 @@ class DbBlob extends FileReadonly
      *
      * @access  public
      * @param   string    $fileToDelete  filename which would be removed
-     * @throws  NotFoundException        when the given file was not found
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the given file was not found
      * @since   3.1.0
      * @ignore
      */
@@ -399,7 +400,7 @@ class DbBlob extends FileReadonly
 
         // error - file does not exist
         if (!is_file($fileToDelete)) {
-            throw new NotFoundException("File not found: $fileToDelete");
+            throw new \Yana\Core\Exceptions\NotFoundException("File not found: $fileToDelete");
         }
 
         // delete file

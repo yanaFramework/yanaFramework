@@ -259,7 +259,7 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   int  $page  number of start page
-     * @throws  \Yana\Core\InvalidArgumentException if $page is < 0
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if $page is < 0
      * @return  FormSetup
      */
     public function setPage($page = 0)
@@ -268,7 +268,7 @@ class FormSetup extends \Yana\Core\Object
 
         /* default values */
         if ($page < 0) {
-            throw new \Yana\Core\InvalidArgumentException("Page number must be a positive integer.");
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Page number must be a positive integer.");
         }
         $this->_page = (int) $page;
         return $this;
@@ -295,7 +295,7 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   int  $entryCount  number of entry
-     * @throws  \Yana\Core\InvalidArgumentException if $entryCount is < 0
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if $entryCount is < 0
      * @return  FormSetup
      */
     public function setEntryCount($entryCount)
@@ -304,7 +304,7 @@ class FormSetup extends \Yana\Core\Object
 
         /* default values */
         if ($entryCount < 0) {
-            throw new \Yana\Core\InvalidArgumentException("Entry count must be a positive integer.");
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Entry count must be a positive integer.");
         }
         $this->_entryCount = (int) $entryCount;
         $this->_pageCount = (int) ceil($this->_entryCount / $this->getEntriesPerPage());
@@ -345,7 +345,7 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   int  $entries  number of entries per page, must be >= 1
-     * @throws  \Yana\Core\InvalidArgumentException if $entries is < 1
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if $entries is < 1
      * @return  FormSetup
      */
     public function setEntriesPerPage($entries = 5)
@@ -353,7 +353,7 @@ class FormSetup extends \Yana\Core\Object
         assert('is_int($entries); // Wrong type for argument 1. Integer expected');
 
         if ($entries < 1) {
-            throw new \Yana\Core\InvalidArgumentException("Number of entries per page must be an integer > 0.");
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Number of entries per page must be an integer > 0.");
         }
         $this->_entriesPerPage = (int) $entries;
         return $this;
