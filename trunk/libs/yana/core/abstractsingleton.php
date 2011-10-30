@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core;
+
 /**
  * <<abstract>> Singleton
  *
@@ -63,27 +65,20 @@
  * Note! If you wish to serialize a singleton, be aware that you MUST
  * set the self::$_instance var when you unserialize the object.
  * 
- * @abstract
- * @access      public
  * @package     yana
  * @subpackage  core
  */
-abstract class Singleton extends \Yana\Core\Object implements IsSingleton
+abstract class AbstractSingleton extends \Yana\Core\Object implements \Yana\Core\IsSingleton
 {
     /**
      * This is a place-holder for the singleton's instance
-     *
-     * @access  private
-     * @static
      */
     private static $_instance = null;
 
     /**
-     * constructor
+     * Private constructor.
      *
-     * To prevent the constructor from being called directly
-     *
-     * @access private
+     * To prevent the constructor from being called directly.
      */
     private function __construct()
     {
@@ -91,9 +86,8 @@ abstract class Singleton extends \Yana\Core\Object implements IsSingleton
     }
 
     /**
-     * get instance of this class
-     *
      * Creates an instance if there is none.
+     *
      * Then it returns a reference to this (single) instance.
      *
      * Note: There is a weakness in this pattern, if you wish
@@ -107,8 +101,7 @@ abstract class Singleton extends \Yana\Core\Object implements IsSingleton
      * a static attribute of a sub-class. This works for the
      * current and it's parent classes only.
      *
-     * @access public
-     * @static
+     * @return  \Yana\Core\AbstractSingleton
      */
     public static function &getInstance()
     {

@@ -36,7 +36,7 @@
  *
  * @ignore
  */
-class PluginMenu extends Singleton
+class PluginMenu extends \Yana\Core\AbstractSingleton
 {
 
     /**

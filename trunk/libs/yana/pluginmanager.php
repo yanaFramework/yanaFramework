@@ -65,7 +65,7 @@
  * @package     yana
  * @subpackage  core
  */
-class PluginManager extends Singleton implements \Yana\Report\IsReportable
+class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsReportable
 {
 
     /**#@+

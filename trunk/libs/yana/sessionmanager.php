@@ -40,7 +40,7 @@
  *
  * @ignore
  */
-class SessionManager extends Singleton implements Serializable
+class SessionManager extends \Yana\Core\AbstractSingleton implements Serializable
 {
     /**
      * This is a place-holder for the singleton's instance
