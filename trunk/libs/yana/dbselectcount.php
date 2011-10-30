@@ -53,7 +53,7 @@
  * cookbook in the manual.
  *
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  */
 class DbSelectCount extends DbSelectExist
 {

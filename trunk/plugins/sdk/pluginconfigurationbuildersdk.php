@@ -82,7 +82,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
      * database schema
      *
      * @access  private
-     * @var     DDLDatabase
+     * @var     \Yana\Db\Ddl\Database
      */
     private $_schema = null;
 
@@ -207,10 +207,10 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
      * add an HTML template file
      *
      * @access  protected
-     * @param   DDLForm $form  form object the template is based on
+     * @param   \Yana\Db\Ddl\Form $form  form object the template is based on
      * @return  PluginConfigurationBuilderSdk
      */
-    protected function addTemplate(DDLForm $form)
+    protected function addTemplate(\Yana\Db\Ddl\Form $form)
     {
         $yana = Yana::getInstance();
         $name = $form->getTable();
@@ -233,11 +233,11 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
      */
     public function setSchemaXml(\SimpleXMLElement $node)
     {
-        $this->_schema = DDLDatabase::unserializeFromXDDL($node);
+        $this->_schema = \Yana\Db\Ddl\Database::unserializeFromXDDL($node);
         $this->findTranslations($this->_schema);
         $this->buildForms($this->_schema);
 
-        $directory = DDL::getDirectory() . '/';
+        $directory = \Yana\Db\Ddl\DDL::getDirectory() . '/';
         $dom = \dom_import_simplexml($this->_schema->serializeToXDDL())->ownerDocument;
         $dom->formatOutput = true;
         $this->_filesToCopy[] = array(
@@ -251,11 +251,11 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
      * auto-create forms
      *
      * @access  protected
-     * @param   DDLDatabase  $schema  schema definition
+     * @param   \Yana\Db\Ddl\Database  $schema  schema definition
      */
-    protected function buildForms(DDLDatabase $schema)
+    protected function buildForms(\Yana\Db\Ddl\Database $schema)
     {
-        /* @var $table DDLTable */
+        /* @var $table \Yana\Db\Ddl\Table */
         assert('!isset($table); // Cannot redeclare var $table');
         foreach ($schema->getTables() as $table)
         {
@@ -269,7 +269,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
             }
 
             $form = $schema->addForm($tableName);
-            /* @var $form DDLDefaultForm */
+            /* @var $form \Yana\Db\Ddl\Form */
             $form->setTable($tableName);
 
             foreach (array('search', 'insert', 'update', 'delete', 'export') as $actionId)
@@ -288,7 +288,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
             }
 
             // auto-generate links between tables along existing foreign keys
-            /* @var $foreign DDLForeignKey */
+            /* @var $foreign \Yana\Db\Ddl\ForeignKey */
             assert('!isset($foreign); // Cannot redeclare var $foreign');
             foreach ($table->getForeignKeys() as $foreign)
             {
@@ -298,7 +298,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
                 if (empty($fieldName)) {
                     $fieldName = $schema->getTable($targetTable)->getPrimaryKey();
                 }
-                /* @var $field DDLField */
+                /* @var $field \Yana\Db\Ddl\Field */
                 $field = null;
                 if (!$form->isField($fieldName)) {
                     $field = $form->addField($fieldName);
@@ -500,10 +500,10 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
      * find translation strings in database schema
      *
      * @access  protected
-     * @param   DDLDatabase  $schema  database schema
+     * @param   \Yana\Db\Ddl\Database  $schema  database schema
      * @ignore
      */
-    protected function findTranslations(DDLDatabase $schema)
+    protected function findTranslations(\Yana\Db\Ddl\Database $schema)
     {
         $text = $this->addTranslation($schema->getName(), $schema->getTitle());
         $schema->setTitle($text);
@@ -516,7 +516,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
             assert('!isset($column); // Cannot redeclare var $column');
             foreach ($table->getColumns() as $column)
             {
-                /* @var $column DDLColumn */
+                /* @var $column \Yana\Db\Ddl\Column */
                 $text = $this->addTranslation($column->getName(), $column->getTitle());
                 $column->setTitle($text);
                 unset($text);

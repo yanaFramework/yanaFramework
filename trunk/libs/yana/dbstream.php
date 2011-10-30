@@ -32,7 +32,7 @@
  *
  * @access      public
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  */
 class DbStream extends \Yana\Core\Object implements Serializable
 {
@@ -69,7 +69,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * Please note that you should not change this schema unless
      * you REALLY know what you are doing.
      *
-     * @var     DDLDatabase
+     * @var     \Yana\Db\Ddl\Database
      * @access  protected
      * @ignore
      */
@@ -81,7 +81,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * Each database connection depends on a schema file describing the database.
      * These files are to be found in config/db/*.db.xml
      *
-     * @param   string|DDLDatabase  $schema  schema name or schema in database definition language
+     * @param   string|\Yana\Db\Ddl\Database  $schema  schema name or schema in database definition language
      * @param   DbServer            $server  Connection to a database server
      * @throws  DbConnectionError                           when connection to database failed
      * @throws  \Yana\Core\Exceptions\NotFoundException     when structure file is not found
@@ -104,7 +104,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
             throw new DbConnectionError();
         }
 
-        if ($schema instanceof DDLDatabase) {
+        if ($schema instanceof \Yana\Db\Ddl\Database) {
             $this->schema = $schema;
         } else {
             assert('is_string($schema); // Wrong argument type $schema. String expected');
@@ -151,7 +151,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * reverse engineer the database at runtime.
      *
      * @access public
-     * @return DDLDatabase
+     * @return \Yana\Db\Ddl\Database
      * @throws DBError when reverse-engineering failed
      */
     public function getSchema()
@@ -164,7 +164,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
                 $schema = XDDL::getDatabase($source);
             } else {
                 // auto-discover / reverse engineering
-                $schema = DDLDatabaseFactory::createDatabase($this->database); // may throw DBError
+                $schema = \Yana\Db\Ddl\DatabaseFactory::createDatabase($this->database); // may throw DBError
             }
             $this->schema = $schema;
         }
@@ -398,10 +398,10 @@ class DbStream extends \Yana\Core\Object implements Serializable
                             $tableName = $dbQuery->getTable();
                             assert('!isset($table); // Cannot redeclare var $table');
                             $table = $dbSchema->getTable($tableName);
-                            assert('$table instanceof DDLTable; // No such table');
+                            assert('$table instanceof \Yana\Db\Ddl\Table; // No such table');
                             assert('!isset($column); // Cannot redeclare var $column');
                             $column = $table->getColumn($table->getPrimaryKey());
-                            assert('$column instanceof DDLColumn; // No such column');
+                            assert('$column instanceof \Yana\Db\Ddl\Column; // No such column');
                             /* test if is identity table */
                             if ($column->isAutoIncrement()) {
                                 /* set identity restriction off */
@@ -2006,13 +2006,13 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * bool(false) otherwise.
      *
      * @access   protected
-     * @param    DDLTable $table       table definition
+     * @param    \Yana\Db\Ddl\Table $table       table definition
      * @param    mixed    $value       row or cell value
      * @param    string   $columnName  name of updated column (when updating a cell)
      * @return   bool
      * @ignore
      */
-    protected function checkForeignKeys(DDLTable $table, $value, $columnName = null)
+    protected function checkForeignKeys(\Yana\Db\Ddl\Table $table, $value, $columnName = null)
     {
         // ignore when strict checks are turned off
         if (!YANA_DB_STRICT) {
@@ -2022,12 +2022,12 @@ class DbStream extends \Yana\Core\Object implements Serializable
             $value = array($columnName => $value);
         }
         $dbSchema = $this->getSchema();
-        /* @var $foreign DDLForeignKey */
+        /* @var $foreign \Yana\Db\Ddl\ForeignKey */
         assert('!isset($foreign); /* Cannot redeclare var $fkey */');
         foreach ($table->getForeignKeys() as $foreign)
         {
-            $isPartialMatch = !is_null($columnName) || $foreign->getMatch() === DDLKeyMatchStrategyEnumeration::PARTIAL;
-            $isFullMatch = is_null($columnName) && $foreign->getMatch() === DDLKeyMatchStrategyEnumeration::FULL;
+            $isPartialMatch = !is_null($columnName) || $foreign->getMatch() === \Yana\Db\Ddl\KeyMatchStrategyEnumeration::PARTIAL;
+            $isFullMatch = is_null($columnName) && $foreign->getMatch() === \Yana\Db\Ddl\KeyMatchStrategyEnumeration::FULL;
             $targetTable = mb_strtolower($foreign->getTargetTable());
             $fTable = $dbSchema->getTable($targetTable);
             foreach ($foreign->getColumns() as $sourceColumn => $targetColumn)

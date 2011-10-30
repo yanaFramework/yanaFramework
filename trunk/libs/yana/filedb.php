@@ -42,7 +42,7 @@
  *
  * @access      public
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  */
 class FileDb extends DbStream
 {
@@ -70,11 +70,11 @@ class FileDb extends DbStream
      *
      * Create a new instance of this class.
      *
-     * @param  string|DDLDatabase  $schema  schema name or schema in database definition language
+     * @param  string|\Yana\Db\Ddl\Database  $schema  schema name or schema in database definition language
      */
     public function __construct($schema = null)
     {
-        if ($schema instanceof DDLDatabase) {
+        if ($schema instanceof \Yana\Db\Ddl\Database) {
             $this->schema = $schema;
         } else {
             assert('is_string($schema); // Wrong argument type $schema. String expected');
@@ -139,7 +139,7 @@ class FileDb extends DbStream
      * reverse engineer the database at runtime.
      *
      * @access public
-     * @return DDLDatabase
+     * @return \Yana\Db\Ddl\Database
      * @throws  \Yana\Core\Exceptions\NotFoundException     if database definition is not found
      * @throws  \Yana\Core\Exceptions\NotReadableException  if database definition is not readable
      */
@@ -153,7 +153,7 @@ class FileDb extends DbStream
                 $this->schema = XDDL::getDatabase($source);
             } else {
                 // auto-load all schema files to mock auto-discover function
-                foreach (DDL::getListOfFiles() as $db)
+                foreach (\Yana\Db\Ddl\DDL::getListOfFiles() as $db)
                 {
                     if (empty($this->schema)) {
                         $this->schema = XDDL::getDatabase($db);

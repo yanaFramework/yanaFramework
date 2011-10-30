@@ -48,7 +48,7 @@ class FormFieldFacade extends \Yana\Core\Object
      * Structure definition of base column.
      *
      * @access  private
-     * @var     DDLColumn
+     * @var     \Yana\Db\Ddl\Column
      */
     private $_column = null;
 
@@ -56,7 +56,7 @@ class FormFieldFacade extends \Yana\Core\Object
      * Field to operate on
      *
      * @access  private
-     * @var     DDLField
+     * @var     \Yana\Db\Ddl\Field
      */
     private $_field = null;
 
@@ -91,10 +91,10 @@ class FormFieldFacade extends \Yana\Core\Object
      *
      * @access  public
      * @param   FormContextSensitiveWrapper  $parentForm  form structure of configuration
-     * @param   DDLField                     $field       wrapped field instance
-     * @param   DDLColumn                    $column      base column definition
+     * @param   \Yana\Db\Ddl\Field                     $field       wrapped field instance
+     * @param   \Yana\Db\Ddl\Column                    $column      base column definition
      */
-    public function __construct(FormContextSensitiveWrapper $parentForm, DDLColumn $column, DDLField $field = null)
+    public function __construct(FormContextSensitiveWrapper $parentForm, \Yana\Db\Ddl\Column $column, \Yana\Db\Ddl\Field $field = null)
     {
         $this->_form = $parentForm;
         $this->_column = $column;
@@ -124,7 +124,7 @@ class FormFieldFacade extends \Yana\Core\Object
      * Get column definition.
      *
      * @access  public
-     * @return  DDLColumn
+     * @return  \Yana\Db\Ddl\Column
      */
     public function getColumn()
     {
@@ -135,7 +135,7 @@ class FormFieldFacade extends \Yana\Core\Object
      * Get field definition.
      *
      * @access  public
-     * @return  DDLField
+     * @return  \Yana\Db\Ddl\Field
      */
     public function getField()
     {
@@ -259,7 +259,7 @@ class FormFieldFacade extends \Yana\Core\Object
      */
     public function refersToTable()
     {
-        return !($this->_field instanceof DDLField && $this->_field->getColumn() instanceof DDLColumn);
+        return !($this->_field instanceof \Yana\Db\Ddl\Field && $this->_field->getColumn() instanceof \Yana\Db\Ddl\Column);
     }
 
     /**
@@ -442,7 +442,7 @@ class FormFieldFacade extends \Yana\Core\Object
             return null;
         }
         $column = $this->current()->getColumn();
-        if (!$column instanceof DDLColumn) {
+        if (!$column instanceof \Yana\Db\Ddl\Column) {
             return null;
         }
         $leftOperand = array($this->_form->getBaseForm()->getTable(), $column->getName());

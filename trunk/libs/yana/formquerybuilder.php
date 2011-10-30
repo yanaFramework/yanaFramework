@@ -141,7 +141,7 @@ class FormQueryBuilder extends \Yana\Core\Object
                     $query->addColumn($this->_form->getTable()->getPrimaryKey());
                 }
                 $query = $this->_buildSelectForSubForm($query);
-                /* @var $reference DDLReference */
+                /* @var $reference \Yana\Db\Ddl\Reference */
                 foreach ($this->_form->getSetup()->getForeignKeys() as $columnName => $reference)
                 {
                     $query->setLeftJoin($reference->getTable(), $columnName, $reference->getColumn());
@@ -161,12 +161,12 @@ class FormQueryBuilder extends \Yana\Core\Object
      * The returned query uses the aliases "VALUE" and "LABEL" for the target value-column and target label-column.
      *
      * @access  public
-     * @param   DDLReference  $targetReference  defining the target table and columns
+     * @param   \Yana\Db\Ddl\Reference  $targetReference  defining the target table and columns
      * @param   string        $searchTerm       find all entries that start with ...
      * @param   int           $limit            maximum number of hits, set to 0 to get all
      * @return  DbSelect
      */
-    public function buildAutocompleteQuery(DDLReference $targetReference, $searchTerm, $limit)
+    public function buildAutocompleteQuery(\Yana\Db\Ddl\Reference $targetReference, $searchTerm, $limit)
     {
         assert('is_string($searchTerm); // Invalid argument $searchTerm: string expected');
         assert('is_int($limit); // Invalid argument $limit: int expected');
@@ -354,7 +354,7 @@ class FormQueryBuilder extends \Yana\Core\Object
         assert('$this->_form instanceof FormFacade;');
         $form = $this->_form->getBaseForm();
         $parentForm = $form->getParent();
-        if (!$parentForm instanceof DDLForm) {
+        if (!$parentForm instanceof \Yana\Db\Ddl\Form) {
             return null;
         }
         $db = $form->getDatabase();
@@ -363,7 +363,7 @@ class FormQueryBuilder extends \Yana\Core\Object
         $sourceTable = $this->_form->getTable();
         $keyName = $form->getKey();
         $columnName = "";
-        /* @var $foreign DDLForeignKey */
+        /* @var $foreign \Yana\Db\Ddl\ForeignKey */
         foreach ($sourceTable->getForeignKeys() as $foreign)
         {
             if ($targetTable !== $foreign->getTargetTable()) {

@@ -41,7 +41,7 @@ namespace Yana\Db\FileDb;
  *
  * @access      public
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  */
 class Sequence extends \Yana\Core\Object
 {

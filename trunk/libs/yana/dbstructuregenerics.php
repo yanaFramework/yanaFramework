@@ -33,7 +33,7 @@
  *
  * @access      public
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  * @ignore
  */
 class DbStructureGenerics extends \Yana\Core\Object
@@ -49,7 +49,7 @@ class DbStructureGenerics extends \Yana\Core\Object
      * current table
      *
      * @access  public
-     * @var     DDLTable
+     * @var     \Yana\Db\Ddl\Table
      */
     public $table = null;
     /**
@@ -96,7 +96,7 @@ class DbStructureGenerics extends \Yana\Core\Object
      * @param   mixed        &$value     value of column
      * @param   string       $field      name of column
      */
-    private function __construct($operation, DDLTable $table, &$value, $field = "")
+    private function __construct($operation, \Yana\Db\Ddl\Table $table, &$value, $field = "")
     {
         assert('is_string($operation); // Wrong type for argument 1. String expected.');
         assert('is_string($field); // Wrong type for argument 4. String expected.');
@@ -117,11 +117,11 @@ class DbStructureGenerics extends \Yana\Core\Object
      *
      * @access  public
      * @static
-     * @param   DDLTable  $table  expected an DDLTable object as input
+     * @param   \Yana\Db\Ddl\Table  $table  expected an \Yana\Db\Ddl\Table object as input
      * @param   array     $row    row
      * @return  bool
      */
-    public static function checkConstraint(DDLTable $table, array $row)
+    public static function checkConstraint(\Yana\Db\Ddl\Table $table, array $row)
     {
         // evaluate constraint
         foreach ($table->getConstraints() as $constraint)
@@ -152,11 +152,11 @@ class DbStructureGenerics extends \Yana\Core\Object
      *
      * @access  public
      * @static
-     * @param   DDLTable  $table    expected an DDLTable object as input
+     * @param   \Yana\Db\Ddl\Table  $table    expected an \Yana\Db\Ddl\Table object as input
      * @param   array     &$value   value
      * @param   mixed     $rowId    value of primary key
      */
-    public static function onBeforeInsert(DDLTable $table, array &$value, $rowId = null)
+    public static function onBeforeInsert(\Yana\Db\Ddl\Table $table, array &$value, $rowId = null)
     {
         $functionName = $table->getTriggerBeforeInsert();
         if (!is_null($functionName)) {
@@ -173,11 +173,11 @@ class DbStructureGenerics extends \Yana\Core\Object
      *
      * @access  public
      * @static
-     * @param   DDLTable  $table    expected an DDLTable object as input
+     * @param   \Yana\Db\Ddl\Table  $table    expected an \Yana\Db\Ddl\Table object as input
      * @param   array     $value    value
      * @param   mixed     $rowId    value of primary key
      */
-    public static function onAfterInsert(DDLTable $table, array $value, $rowId = null)
+    public static function onAfterInsert(\Yana\Db\Ddl\Table $table, array $value, $rowId = null)
     {
         $functionName = $table->getTriggerAfterInsert();
         if (!is_null($functionName)) {
@@ -194,12 +194,12 @@ class DbStructureGenerics extends \Yana\Core\Object
      *
      * @access  public
      * @static
-     * @param   DDLTable  $table    expected an DDLTable object as input
+     * @param   \Yana\Db\Ddl\Table  $table    expected an \Yana\Db\Ddl\Table object as input
      * @param   string    $field    field
      * @param   mixed     &$value   value
      * @param   mixed     $rowId    value of primary key
      */
-    public static function onBeforeUpdate(DDLTable $table, $field, &$value, $rowId = null)
+    public static function onBeforeUpdate(\Yana\Db\Ddl\Table $table, $field, &$value, $rowId = null)
     {
         $functionName = $table->getTriggerBeforeUpdate();
         if (!is_null($functionName)) {
@@ -216,12 +216,12 @@ class DbStructureGenerics extends \Yana\Core\Object
      *
      * @access  public
      * @static
-     * @param   DDLTable  $table    expected an DDLTable object as input
+     * @param   \Yana\Db\Ddl\Table  $table    expected an \Yana\Db\Ddl\Table object as input
      * @param   string    $field    field
      * @param   mixed     $value    value
      * @param   mixed     $rowId    value of primary key
      */
-    public static function onAfterUpdate(DDLTable $table, $field, $value, $rowId = null)
+    public static function onAfterUpdate(\Yana\Db\Ddl\Table $table, $field, $value, $rowId = null)
     {
         $functionName = $table->getTriggerAfterUpdate();
         if (!is_null($functionName)) {
@@ -238,11 +238,11 @@ class DbStructureGenerics extends \Yana\Core\Object
      *
      * @access  public
      * @static
-     * @param   DDLTable  $table    expected an DDLTable object as input
+     * @param   \Yana\Db\Ddl\Table  $table    expected an \Yana\Db\Ddl\Table object as input
      * @param   array     $value    value
      * @param   mixed     $rowId    value of primary key
      */
-    public static function onBeforeDelete(DDLTable $table, array $value, $rowId = null)
+    public static function onBeforeDelete(\Yana\Db\Ddl\Table $table, array $value, $rowId = null)
     {
         $functionName = $table->getTriggerBeforeDelete();
         if (!is_null($functionName)) {
@@ -259,11 +259,11 @@ class DbStructureGenerics extends \Yana\Core\Object
      *
      * @access  public
      * @static
-     * @param   DDLTable  $table    expected an DDLTable object as input
+     * @param   \Yana\Db\Ddl\Table  $table    expected an \Yana\Db\Ddl\Table object as input
      * @param   array     $value    value
      * @param   mixed     $rowId    value of primary key
      */
-    public static function onAfterDelete(DDLTable $table, array $value, $rowId = null)
+    public static function onAfterDelete(\Yana\Db\Ddl\Table $table, array $value, $rowId = null)
     {
         $functionName = $table->getTriggerAfterDelete();
         if (!is_null($functionName)) {

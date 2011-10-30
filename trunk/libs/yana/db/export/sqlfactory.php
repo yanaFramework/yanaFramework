@@ -43,7 +43,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
 {
 
     /**
-     * @var \DDLDatabase
+     * @var \Yana\Db\Ddl\Database
      * @ignore
      */
     protected $schema = null;
@@ -73,9 +73,9 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      * }
      * </code>
      *
-     * @param  \DDLDatabase  $schema  expected DDLDatabase object
+     * @param  \Yana\Db\Ddl\Database  $schema  expected \Yana\Db\Ddl\Database object
      */
-    public function __construct(\DDLDatabase $schema)
+    public function __construct(\Yana\Db\Ddl\Database $schema)
     {
         $this->schema = $schema;
     }
@@ -144,7 +144,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      */
     private function _createPostgreSQL()
     {
-        $xslFilename = \DDL::getDirectory() . '/.xsl/dbcreator_postgresql.xsl'; // Stylesheet
+        $xslFilename = \Yana\Db\Ddl\DDL::getDirectory() . '/.xsl/dbcreator_postgresql.xsl'; // Stylesheet
         $xmlString = (string) $this->schema; // Source file
         return self::_transformToSql($xmlString, $xslFilename);
 
@@ -159,7 +159,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
             assert('!isset($i); /* cannot redeclare variable $i */');
             for ($i = 0; $i < count($listOfColumns); $i++)
             {
-                /* @var $column DDLColumn */
+                /* @var $column \Yana\Db\Ddl\Column */
                 $column = $listOfColumns[$i];
 
                 $columnName = $column->getName();

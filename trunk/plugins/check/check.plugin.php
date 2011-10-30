@@ -115,7 +115,7 @@ class plugin_check extends StdClass implements IsPlugin
         '<input type="hidden" name="' . session_name() . '" value="' . session_id() . '">' .
         '<input type="hidden" name="action" value="' . __FUNCTION__ . '">' .
         '<label>Database: <select name="db">';
-        foreach (DDL::getListOfFiles() as $database)
+        foreach (\Yana\Db\Ddl\DDL::getListOfFiles() as $database)
         {
             print '<option value="' . $database . '"' . (($database === $db) ? ' selected>' : '>') . $database .
                 '</option>';

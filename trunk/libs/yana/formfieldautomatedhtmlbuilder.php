@@ -516,7 +516,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
     protected function createLink(FormFieldFacade $field)
     {
         $result = "";
-        if ($field->getField() instanceof DDLField) {
+        if ($field->getField() instanceof \Yana\Db\Ddl\Field) {
             $value = $field->getValue();
             if (empty($value) && $value !== false) {
                 return '';
@@ -528,7 +528,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
             $id = 'id="' . $form->getName() . '-' . $table->getPrimaryKey() . '-' .
                 $form->getPrimaryKey() . '-' . $field->getName() . '"';
             $class = 'class="gui_generator_int_link"';
-            /* @var $event DDLEvent */
+            /* @var $event \Yana\Db\Ddl\Event */
             foreach ($field->getField()->getEvents() as $event)
             {
                 $code = $event->getAction();
@@ -588,7 +588,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
     {
         $eventsAsHtml = "";
         if ($field->getField()) {
-            /* @var $event DDLEvent */
+            /* @var $event \Yana\Db\Ddl\Event */
             foreach ($field->getField()->getEvents() as $event)
             {
                 if (strtolower($event->getLanguage()) !== 'javascript') {

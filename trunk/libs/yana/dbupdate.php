@@ -34,7 +34,7 @@
  * Note: this class does NOT untaint input data for you.
  *
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  */
 class DbUpdate extends DbInsert
 {

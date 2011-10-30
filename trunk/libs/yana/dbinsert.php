@@ -34,7 +34,7 @@
  * Note: this class does NOT untaint input data for you.
  *
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  */
 class DbInsert extends DbQuery
 {
@@ -244,7 +244,7 @@ class DbInsert extends DbQuery
                 assert('$table->isColumn($this->column[0][1]);');
                 assert('!isset($column); // Cannot redeclare var $column');
                 $column = $table->getColumn($this->column[0][1]);
-                assert('$column instanceof DDLColumn;');
+                assert('$column instanceof \Yana\Db\Ddl\Column;');
                 $values = $column->sanitizeValue($values, $this->db->getDBMS(), $this->files);
                 unset($column);
             }
@@ -407,7 +407,7 @@ class DbInsert extends DbQuery
     {
         foreach ($files as $file)
         {
-            /* @var $column DDLColumn */
+            /* @var $column \Yana\Db\Ddl\Column */
             $column = $file['column'];
             $columnName = $column->getName();
             $fileId = $this->values[$columnName];
@@ -576,7 +576,7 @@ class DbInsert extends DbQuery
         for ($i = 0; $i < count($keys); $i++)
         {
             $column = $table->getColumn($keys[$i]);
-            if (! $column instanceof DDLColumn) {
+            if (! $column instanceof \Yana\Db\Ddl\Column) {
                 throw new \Yana\Core\Exceptions\InvalidArgumentException("Column '".$keys[$i]."' does not exist " .
                     "in table '" .$this->tableName."'.", E_USER_WARNING);
             }

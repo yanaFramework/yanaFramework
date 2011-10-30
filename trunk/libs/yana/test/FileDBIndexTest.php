@@ -104,7 +104,7 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
         file_put_contents($this->_indexFilePath, $this->_indexFileConents);
 
         $data = new SML($this->_smlFilePath, CASE_UPPER);
-        $table = new DDLTable('FOO');
+        $table = new \Yana\Db\Ddl\Table('FOO');
         $table->addColumn('FOOID', 'integer');
         $table->addColumn('FVALUE', 'string');
         $table->addColumn('FNUMBER', 'integer');

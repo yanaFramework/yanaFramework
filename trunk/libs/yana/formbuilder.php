@@ -53,7 +53,7 @@ class FormBuilder extends \Yana\Core\Object
      * Database schema.
      *
      * @access  private
-     * @var     DDLDatabase
+     * @var     \Yana\Db\Ddl\Database
      */
     private $_schema;
 
@@ -221,7 +221,7 @@ class FormBuilder extends \Yana\Core\Object
      * base form
      *
      * @access  private
-     * @var     DDLForm
+     * @var     \Yana\Db\Ddl\Form
      */
     private $_form = null;
 
@@ -687,13 +687,13 @@ class FormBuilder extends \Yana\Core\Object
     }
 
     /**
-     * Set bsae DDLForm.
+     * Set bsae \Yana\Db\Ddl\Form.
      *
      * @access  protected
-     * @param   DDLForm $form  base form definition
+     * @param   \Yana\Db\Ddl\Form $form  base form definition
      * @return  SmartFormUtility 
      */
-    protected function setForm(DDLForm $form, FormFacade $parentForm = null)
+    protected function setForm(\Yana\Db\Ddl\Form $form, FormFacade $parentForm = null)
     {
         $this->_form = $form;
         $this->_facade->setBaseForm($this->_form);
@@ -805,10 +805,10 @@ class FormBuilder extends \Yana\Core\Object
     }
 
     /**
-     * Build DDLForm object.
+     * Build \Yana\Db\Ddl\Form object.
      *
      * @access  private
-     * @return  DDLForm
+     * @return  \Yana\Db\Ddl\Form
      * @throws  \Yana\Core\Exceptions\BadMethodCallException    when a parameter is missing
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when a paraemter is not valid
      */
@@ -830,7 +830,7 @@ class FormBuilder extends \Yana\Core\Object
                 $this->_form = $form;
             } elseif ($this->getTable()) {
                     $table = $this->_schema->getTable($this->getTable());
-                    if (! $table instanceof DDLTable) {
+                    if (! $table instanceof \Yana\Db\Ddl\Table) {
                         $message = "The table with name '" . $this->getTable() . "' was not found.";
                         throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
                     }
@@ -849,13 +849,13 @@ class FormBuilder extends \Yana\Core\Object
      * This function takes a table and initializes the form based on it's structure and columns.
      *
      * @access  protected
-     * @return  DDLForm
+     * @return  \Yana\Db\Ddl\Form
      */
-    protected function _buildFormFromTable(DDLTable $table)
+    protected function _buildFormFromTable(\Yana\Db\Ddl\Table $table)
     {
         $genericName = $this->_database->getName() . '-' . $table->getName();
 
-        $form = new DDLForm($genericName, $this->_schema); // from scratch
+        $form = new \Yana\Db\Ddl\Form($genericName, $this->_schema); // from scratch
         $form->setTable($table->getName());
 
         $title = $table->getTitle();
@@ -886,10 +886,10 @@ class FormBuilder extends \Yana\Core\Object
      * Add field by column definition.
      *
      * @access  private
-     * @param   DDLForm    $form    form definition
-     * @param   DDLColumn  $column  column definition
+     * @param   \Yana\Db\Ddl\Form    $form    form definition
+     * @param   \Yana\Db\Ddl\Column  $column  column definition
      */
-    private function _addFieldByColumn(DDLForm $form, DDLColumn $column)
+    private function _addFieldByColumn(\Yana\Db\Ddl\Form $form, \Yana\Db\Ddl\Column $column)
     {
         $field = null;
         try {
@@ -921,7 +921,7 @@ class FormBuilder extends \Yana\Core\Object
     }
 
     /**
-     * Build DDLForm object.
+     * Build \Yana\Db\Ddl\Form object.
      *
      * @access  private
      * @param   FormFacade  $form  parent form
@@ -952,11 +952,11 @@ class FormBuilder extends \Yana\Core\Object
      * Build FormSetup object.
      *
      * @access  private
-     * @param   DDLForm  $form  base form
+     * @param   \Yana\Db\Ddl\Form  $form  base form
      * @return  FormSetup
      * @throws  \Yana\Core\Exceptions\NotFoundException  when a paraemter is not valid
      */
-    private function _buildSetup(DDLForm $form)
+    private function _buildSetup(\Yana\Db\Ddl\Form $form)
     {
         $formSetup = new FormSetup();
         $formSetup->setPage($this->getPage());

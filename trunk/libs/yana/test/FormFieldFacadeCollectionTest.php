@@ -40,7 +40,7 @@ class FormFieldFacadeCollectionTest extends PHPUnit_Framework_TestCase
     public function testOffsetSet()
     {
         $item = new FormFieldFacade(new FormContextSensitiveWrapper(new FormFacade(), new FormSetupContext('test')),
-            new DDLColumn('test'), new DDLField('test'));
+            new \Yana\Db\Ddl\Column('test'), new \Yana\Db\Ddl\Field('test'));
         $this->object['test'] = $item;
         $this->assertEquals($item, $this->object['test']);
     }

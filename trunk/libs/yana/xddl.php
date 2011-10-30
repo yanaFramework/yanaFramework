@@ -32,14 +32,14 @@
  *
  * @access      public
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  */
 class XDDL extends File
 {
     /**
      * Data Description Language object
      *
-     * @var  DDLDatabase  database defintion
+     * @var  \Yana\Db\Ddl\Database  database defintion
      * @ignore
      */
     protected $ddl = null;
@@ -101,7 +101,7 @@ class XDDL extends File
      * get database definition
      *
      * @access  public
-     * @return  DDLDatabase
+     * @return  \Yana\Db\Ddl\Database
      * @throws  \Yana\Core\Exceptions\NotFoundException       when file does not exist
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when file is invalid
      */
@@ -121,14 +121,14 @@ class XDDL extends File
      * @access  public
      * @static
      * @param   string  $databaseName  database name
-     * @return  DDLDatabase
+     * @return  \Yana\Db\Ddl\Database
      * @throws  \Yana\Core\Exceptions\NotFoundException       when file does not exist
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when file is invalid
      */
     public static function getDatabase($databaseName)
     {
         assert('is_string($databaseName); // Wrong type for argument 1. String expected');
-        $path = DDL::getPath($databaseName);
+        $path = \Yana\Db\Ddl\DDL::getPath($databaseName);
         return self::_getDatabaseFromPath($path);
     }
 
@@ -136,7 +136,7 @@ class XDDL extends File
      * get database definition from file path
      *
      * @param   string  $path  file path
-     * @return  DDLDatabase
+     * @return  \Yana\Db\Ddl\Database
      * @throws  \Yana\Core\Exceptions\NotFoundException       when file does not exist
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when file is invalid
      */
@@ -152,13 +152,12 @@ class XDDL extends File
         try {
 
             $simpleXml = simplexml_load_file($path);
-            $ddl = DDLDatabase::unserializeFromXDDL($simpleXml, null, $path);
+            $ddl = \Yana\Db\Ddl\Database::unserializeFromXDDL($simpleXml, null, $path);
 
         } catch (\Exception $e) {
-            \Yana\Log\LogManager::getLogger()->addLog("Error in XDDL-file: '$path'.", E_USER_WARNING, $e->getMessage());
             throw new \Yana\Core\Exceptions\InvalidSyntaxException("Error in XDDL-file.", E_USER_WARNING, $e);
         }
-        assert('$ddl instanceof DDLDatabase; // Invalid return value. DDLDatabase expected');
+        assert('$ddl instanceof \Yana\Db\Ddl\Database; // Invalid return value. \Yana\Db\Ddl\Database expected');
         return $ddl;
     }
 }

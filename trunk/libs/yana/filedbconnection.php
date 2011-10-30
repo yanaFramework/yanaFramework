@@ -36,7 +36,7 @@
  *
  * @access      public
  * @package     yana
- * @subpackage  database
+ * @subpackage  db
  *
  * @ignore
  */
@@ -49,9 +49,9 @@ class FileDbConnection extends \Yana\Core\Object
      */
 
     /** @var Counter     */ private $_autoIncrement = null;
-    /** @var DDLDatabase */ private $_schema = null;
+    /** @var \Yana\Db\Ddl\Database */ private $_schema = null;
     /** @var string      */ private $_database = "";
-    /** @var DDLTable    */ private $_table = null;
+    /** @var \Yana\Db\Ddl\Table    */ private $_table = null;
     /** @var string      */ private $_tableName = "";
     /** @var array       */ private $_src = array();
     /** @var array       */ private $_idx = array();
@@ -75,9 +75,9 @@ class FileDbConnection extends \Yana\Core\Object
     /**
      * constructor
      *
-     * @param  DDLDatabase  $schema  database schema
+     * @param  \Yana\Db\Ddl\Database  $schema  database schema
      */
-    public function __construct(DDLDatabase $schema)
+    public function __construct(\Yana\Db\Ddl\Database $schema)
     {
         if (!isset(self::$_baseDir)) {
             self::setBaseDirectory();
@@ -113,7 +113,7 @@ class FileDbConnection extends \Yana\Core\Object
     {
         // if no directory given load default directory from config
         if (empty($directory)) {
-            $directory = DDL::getDirectory();
+            $directory = \Yana\Db\Ddl\DDL::getDirectory();
         }
         assert('is_dir($directory); // Wrong type for argument 1. Directory expected');
         self::$_baseDir = "$directory";
@@ -233,7 +233,7 @@ class FileDbConnection extends \Yana\Core\Object
      */
     public function listDatabases()
     {
-        return DDL::getListOfFiles();
+        return \Yana\Db\Ddl\DDL::getListOfFiles();
     }
 
     /**
@@ -282,7 +282,7 @@ class FileDbConnection extends \Yana\Core\Object
     {
         $table = $this->_schema->getTable($table);
         $columns = array();
-        if ($table instanceof DDLTable) {
+        if ($table instanceof \Yana\Db\Ddl\Table) {
             $columns = $table->getColumnNames();
         }
         return $columns;
@@ -299,7 +299,7 @@ class FileDbConnection extends \Yana\Core\Object
     {
         $table = $this->_schema->getTable($table);
         $indexes = array();
-        if ($table instanceof DDLTable) {
+        if ($table instanceof \Yana\Db\Ddl\Table) {
             foreach ($table->getIndexes() as $name)
             {
                 if (is_string($name)) {
@@ -993,14 +993,14 @@ class FileDbConnection extends \Yana\Core\Object
         assert('!isset($table); // Cannot redeclare $table');
         $table = $this->_schema->getTable($tableName);
 
-        if (!$table instanceof DDLTable) {
+        if (!$table instanceof \Yana\Db\Ddl\Table) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such table '$tableName'.");
         }
         assert('!isset($parent); // Cannot redeclare $parent');
         $parent = $table->getParent();
         assert('!isset($database); // Cannot redeclare $database');
         // get data source from parent (if it exists)
-        if (!$parent instanceof DDLDatabase) {
+        if (!$parent instanceof \Yana\Db\Ddl\Database) {
             $database = $this->_schema->getName();
         } else {
             $database = $parent->getName();
@@ -1023,7 +1023,7 @@ class FileDbConnection extends \Yana\Core\Object
         $this->_setSmlFile($database);
         $this->_setIndexFile($database);
 
-        assert('$this->_table instanceof DDLTable; // Table not found in Schema');
+        assert('$this->_table instanceof \Yana\Db\Ddl\Table; // Table not found in Schema');
         assert('is_string($this->_tableName); // Unexpected result: $this->_tableName must be a string');
         assert('$this->_tableName !== ""; // Unexpected result: $this->_tableName must not be empty');
     }
@@ -1664,11 +1664,11 @@ class FileDbConnection extends \Yana\Core\Object
      * @access  private
      * @param   array     $current      dataset that is to be checked
      * @param   array     $where        where clause (left operand, right, operand, operator)
-     * @param   DDLTable  $ignoreTable  used to set an overwrite for tables during outer joins
+     * @param   \Yana\Db\Ddl\Table  $ignoreTable  used to set an overwrite for tables during outer joins
      * @return  bool
      * @ignore
      */
-    private function _doWhere(array $current, array $where, DDLTable $ignoreTable = null)
+    private function _doWhere(array $current, array $where, \Yana\Db\Ddl\Table $ignoreTable = null)
     {
         if (empty($where)) {
             return true;
@@ -1700,7 +1700,7 @@ class FileDbConnection extends \Yana\Core\Object
             $tableName = array_shift($leftOperand); // get table name
             $leftOperand = array_shift($leftOperand); // get just the column
             $table = $this->_schema->getTable($tableName);
-            assert('$table instanceof DDLTable; // Table not found: ' . $tableName);
+            assert('$table instanceof \Yana\Db\Ddl\Table; // Table not found: ' . $tableName);
             unset($tableName);
         } else {
             $table = $this->_table;
@@ -1724,7 +1724,7 @@ class FileDbConnection extends \Yana\Core\Object
             case '!=':
             case '=':
                 $column = $table->getColumn($leftOperand);
-                assert('$column instanceof DDLColumn; // Column not found: ' . $leftOperand);
+                assert('$column instanceof \Yana\Db\Ddl\Column; // Column not found: ' . $leftOperand);
                 if (is_null($rightOperand)) {
                     return is_null($value) xor $operator === '!=';
                 }

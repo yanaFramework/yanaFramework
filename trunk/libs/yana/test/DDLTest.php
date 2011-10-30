@@ -44,7 +44,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     private $_file;
 
     /**
-     * @var    DDLDatabase
+     * @var    \Yana\Db\Ddl\Database
      * @access protected
      */
     private $_object;
@@ -329,7 +329,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testGetTable()
     {
         $table = $this->_object->getTable('tesT');
-        $this->assertTrue($table instanceof DDLTable, "Unable to deserialize table.");
+        $this->assertTrue($table instanceof \Yana\Db\Ddl\Table, "Unable to deserialize table.");
         $name = $table->getName();
         $this->assertEquals('test', $name, "Expecting returned table to have same name as requested.");
     }
@@ -343,7 +343,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     {
         $name = "new_table";
         $table = $this->_object->addTable($name);
-        $this->assertType('DDLTable', $table, "Expected addTable() to return an instance of DDLTable.");
+        $this->assertType('\Yana\Db\Ddl\Table', $table, "Expected addTable() to return an instance of \Yana\Db\Ddl\Table.");
         $this->assertEquals($name, $table->getName(), "Expected returned table to have given name.");
     }
 
@@ -358,7 +358,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(empty($array), "Returned list of tables should not be empty");
         foreach ($array as $item)
         {
-            $this->assertType('DDLTable', $item, "Every returned table is expected to be an instance of DDLTable.");
+            $this->assertType('\Yana\Db\Ddl\Table', $item, "Every returned table is expected to be an instance of \Yana\Db\Ddl\Table.");
         }
     }
 
@@ -387,7 +387,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     {
         $name = "test_view";
         $view = $this->_object->getView($name);
-        $this->assertType('DDLView', $view, "Expected getView() to return an instance of DDLView.");
+        $this->assertType('\Yana\Db\Ddl\Views\View', $view, "Expected getView() to return an instance of \Yana\Db\Ddl\Views\View.");
         $this->assertEquals($name, $view->getName(), "Expected returned view to have given name.");
     }
 
@@ -400,7 +400,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     {
         $name = "new_view";
         $view = $this->_object->addView($name);
-        $this->assertType('DDLView', $view, "Expected addView() to return an instance of DDLView.");
+        $this->assertType('\Yana\Db\Ddl\Views\View', $view, "Expected addView() to return an instance of \Yana\Db\Ddl\Views\View.");
         $this->assertEquals($name, $view->getName(), "Expected returned view to have given name.");
     }
 
@@ -415,7 +415,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(empty($array), "Returned list of views should not be empty");
         foreach ($array as $item)
         {
-            $this->assertType('DDLView', $item, "Every returned view is expected to be an instance of DDLView.");
+            $this->assertType('\Yana\Db\Ddl\Views\View', $item, "Every returned view is expected to be an instance of \Yana\Db\Ddl\Views\View.");
         }
     }
 
@@ -444,7 +444,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     {
         $name = "test_function";
         $function = $this->_object->getFunction($name);
-        $this->assertType('DDLFunction', $function, "Expected getFunction() to return an instance of DDLFunction.");
+        $this->assertType('\Yana\Db\Ddl\Functions\Object', $function, "Expected getFunction() to return an instance of \Yana\Db\Ddl\Functions\Object.");
         $this->assertEquals($name, $function->getName(), "Expected returned function to have given name.");
     }
 
@@ -457,7 +457,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     {
         $name = "new_function";
         $function = $this->_object->addFunction($name);
-        $this->assertType('DDLFunction', $function, "Expected addFunction() to return an instance of DDLFunction.");
+        $this->assertType('\Yana\Db\Ddl\Functions\Object', $function, "Expected addFunction() to return an instance of \Yana\Db\Ddl\Functions\Object.");
         $this->assertEquals($name, $function->getName(), "Expected returned function to have given name.");
     }
 
@@ -472,7 +472,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(empty($array), "Returned list of functions should not be empty");
         foreach ($array as $item)
         {
-            $this->assertType('DDLFunction', $item, "Every returned function is expected to be an instance of DDLFunction.");
+            $this->assertType('\Yana\Db\Ddl\Functions\Object', $item, "Every returned function is expected to be an instance of \Yana\Db\Ddl\Functions\Object.");
         }
     }
 
@@ -501,7 +501,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     {
         $name = "test_sequence";
         $view = $this->_object->getSequence($name);
-        $this->assertType('DDLSequence', $view, "Expected getSequence() to return an instance of DDLSequence.");
+        $this->assertType('\Yana\Db\Ddl\Sequence', $view, "Expected getSequence() to return an instance of \Yana\Db\Ddl\Sequence.");
         $this->assertEquals($name, $view->getName(), "Expected returned sequence to have given name.");
     }
 
@@ -514,7 +514,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     {
         $name = "new_sequence";
         $sequence = $this->_object->addSequence($name);
-        $this->assertType('DDLSequence', $sequence, "Expected addSequence() to return an instance of DDLSequence.");
+        $this->assertType('\Yana\Db\Ddl\Sequence', $sequence, "Expected addSequence() to return an instance of \Yana\Db\Ddl\Sequence.");
         $this->assertEquals($name, $sequence->getName(), "Expected returned sequence to have given name.");
     }
 
@@ -529,7 +529,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(empty($array), "Returned list of sequences should not be empty");
         foreach ($array as $item)
         {
-            $this->assertType('DDLSequence', $item, "Every returned sequence is expected to be an instance of DDLSequence.");
+            $this->assertType('\Yana\Db\Ddl\Sequence', $item, "Every returned sequence is expected to be an instance of \Yana\Db\Ddl\Sequence.");
         }
     }
 
@@ -690,7 +690,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     {
         $name = "test_new";
         $form = $this->_object->getForm($name);
-        $this->assertType('DDLForm', $form, "Expected getForm() to return an instance of DDLForm.");
+        $this->assertType('\Yana\Db\Ddl\Form', $form, "Expected getForm() to return an instance of \Yana\Db\Ddl\Form.");
         $this->assertEquals($name, $form->getName(), "Expected returned form to have given name.");
     }
 
@@ -705,7 +705,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(empty($array), "Returned list of forms should not be empty");
         foreach ($array as $item)
         {
-            $this->assertType('DDLForm', $item, "Every returned form is expected to be an instance of DDLForm.");
+            $this->assertType('\Yana\Db\Ddl\Form', $item, "Every returned form is expected to be an instance of \Yana\Db\Ddl\Form.");
         }
     }
 
@@ -734,7 +734,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     {
         $name = "new_form";
         $form = $this->_object->addForm($name);
-        $this->assertType('DDLForm', $form, "Expected addForm() to return an instance of DDLForm.");
+        $this->assertType('\Yana\Db\Ddl\Form', $form, "Expected addForm() to return an instance of \Yana\Db\Ddl\Form.");
         $this->assertEquals($name, $form->getName(), "Expected returned form to have given name.");
     }
 
@@ -816,7 +816,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
         $nameTable = "test";
         $viewQueryMysqlGoal = "Select Test_title as bar, Test_id as id from Test where Test_id > 5";
         $view = $this->_object->getView($name);
-        $this->assertTrue($view instanceof DDLView, "Unable to deserialize view.");
+        $this->assertTrue($view instanceof \Yana\Db\Ddl\Views\View, "Unable to deserialize view.");
         $viewQueryMysql = $view->getQuery("mysql");
         $viewField = $view->getField($nameColumn);
         $viewFieldName = $viewField->getName();
@@ -840,7 +840,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     public function testGetFormElements()
     {
         $form = $this->_object->getForm("test_edit");
-        $this->assertTrue($form instanceof DDLForm, "Expected returned className does not match.");
+        $this->assertTrue($form instanceof \Yana\Db\Ddl\Form, "Expected returned className does not match.");
 
         $formName = $form->getName();
         $this->assertEquals($formName, "test_edit", "Expected returned form to have given value.");
@@ -859,7 +859,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
         $name = "testcmt";
         $nameEvent = "onedit";
         $table = $this->_object->getTable($name);
-        $this->assertTrue($table instanceof DDLTable, "Unable to deserialize table '$name'.");
+        $this->assertTrue($table instanceof \Yana\Db\Ddl\Table, "Unable to deserialize table '$name'.");
 
         $tableColumn1 = $table->getColumn("test_author");
         $tableColumn2 = $table->getColumn("Testcmt_created");
