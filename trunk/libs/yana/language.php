@@ -35,7 +35,7 @@
  * @package     yana
  * @subpackage  core
  */
-class Language extends Singleton implements Serializable
+class Language extends \Yana\Core\AbstractSingleton implements Serializable
 {
     /**
      * This is a place-holder for the singleton's instance
