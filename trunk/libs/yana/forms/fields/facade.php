@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Forms\Fields;
+
 /**
  * <<facade>> Transparent field wrapper base class.
  *
@@ -33,14 +35,14 @@
  * @subpackage  form
  * @ignore
  */
-class FormFieldFacade extends \Yana\Core\Object
+class Facade extends \Yana\Core\Object
 {
 
     /**
      * Form in which the field is defined.
      *
      * @access  private
-     * @var     FormContextSensitiveWrapper
+     * @var     \Yana\Forms\ContextSensitiveWrapper
      */
     private $_form = null;
 
@@ -90,11 +92,11 @@ class FormFieldFacade extends \Yana\Core\Object
      * Create new instance.
      *
      * @access  public
-     * @param   FormContextSensitiveWrapper  $parentForm  form structure of configuration
+     * @param   \Yana\Forms\ContextSensitiveWrapper  $parentForm  form structure of configuration
      * @param   \Yana\Db\Ddl\Field                     $field       wrapped field instance
      * @param   \Yana\Db\Ddl\Column                    $column      base column definition
      */
-    public function __construct(FormContextSensitiveWrapper $parentForm, \Yana\Db\Ddl\Column $column, \Yana\Db\Ddl\Field $field = null)
+    public function __construct(\Yana\Forms\ContextSensitiveWrapper $parentForm, \Yana\Db\Ddl\Column $column, \Yana\Db\Ddl\Field $field = null)
     {
         $this->_form = $parentForm;
         $this->_column = $column;
@@ -557,7 +559,7 @@ class FormFieldFacade extends \Yana\Core\Object
      */
     public function __toString()
     {
-        $builder = new FormFieldAutomatedHtmlBuilder();
+        $builder = new \Yana\Forms\Fields\AutomatedHtmlBuilder();
         return $builder->__invoke($this);
     }
 

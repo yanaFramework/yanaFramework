@@ -27,6 +27,8 @@
  * @ignore
  */
 
+namespace Yana\Forms;
+
 /**
  * <<builder>> HTML Form builder.
  *
@@ -37,14 +39,14 @@
  * @package     yana
  * @subpackage  form
  */
-class FormHtmlBuilder extends \Yana\Core\Object
+class HtmlBuilder extends \Yana\Core\Object
 {
 
     /**
      * Form facade.
      *
      * @access  private
-     * @var     FormFacade
+     * @var     \Yana\Forms\Facade
      */
     private $_facade = null;
 
@@ -52,9 +54,9 @@ class FormHtmlBuilder extends \Yana\Core\Object
      * Initialize new instance.
      *
      * @access  public
-     * @param   FormFacade  $facade  the form that is used for building HTML
+     * @param   \Yana\Forms\Facade  $facade  the form that is used for building HTML
      */
-    public function __construct(FormFacade $facade)
+    public function __construct(\Yana\Forms\Facade $facade)
     {
         $this->_facade = $facade;
     }
@@ -70,13 +72,13 @@ class FormHtmlBuilder extends \Yana\Core\Object
     public function __invoke()
     {
         // setting up template
-        $file = Yana::getInstance()->getSkin()->getFile('gui_form');
+        $file = \Yana::getInstance()->getSkin()->getFile('gui_form');
         assert('is_file($file); // Template file not found');
-        $template = new SmartView($file);
+        $template = new \SmartView($file);
         unset($file);
 
         $template->setVar('form', $this->_facade);
-        return (string) $template;
+        return $template->__toString();
     }
 
 }

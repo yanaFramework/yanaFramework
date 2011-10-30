@@ -24,7 +24,7 @@
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
-
+namespace Yana\Forms;
 /**
  * Abstract form settings
  *
@@ -32,7 +32,7 @@
  * @package     yana
  * @subpackage  form
  */
-class FormSetup extends \Yana\Core\Object
+class Setup extends \Yana\Core\Object
 {
 
     /**
@@ -113,7 +113,7 @@ class FormSetup extends \Yana\Core\Object
      * Context setups.
      *
      * @access  private
-     * @var     FormSetupContext[]
+     * @var     \Yana\Forms\Setups\Context[]
      */
     private $_contexts = array();
 
@@ -175,13 +175,13 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $name  context name
-     * @return  FormSetupContext
+     * @return  \Yana\Forms\Setups\Context
      */
     public function getContext($name)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         if (!isset($this->_contexts[$name])) {
-            $this->_contexts[$name] = new FormSetupContext($name);
+            $this->_contexts[$name] = new \Yana\Forms\Setups\Context($name);
         }
         return $this->_contexts[$name];
     }
@@ -208,14 +208,14 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   string            $name     context name
-     * @param   FormSetupContext  $context  context settings
-     * @return  FormSetup 
+     * @param   \Yana\Forms\Setups\Context  $context  context settings
+     * @return  \Yana\Forms\Setup 
      */
-    public function setContext($name, FormSetupContext $context)
+    public function setContext($name, \Yana\Forms\Setups\Context $context)
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         if (!isset($this->_contexts[$name])) {
-            $this->_contexts[$name] = new FormSetupContext($name);
+            $this->_contexts[$name] = new \Yana\Forms\Setups\Context($name);
         }
         return $this;
     }
@@ -241,7 +241,7 @@ class FormSetup extends \Yana\Core\Object
      * @access  public
      * @param   string       $columnName  name of source column
      * @param   \Yana\Db\Ddl\Reference $foreignKey  settings of source reference
-     * @return  FormSetup 
+     * @return  \Yana\Forms\Setup 
      */
     public function addForeignKeyReference($columnName, \Yana\Db\Ddl\Reference $foreignKey)
     {
@@ -260,7 +260,7 @@ class FormSetup extends \Yana\Core\Object
      * @access  public
      * @param   int  $page  number of start page
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if $page is < 0
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function setPage($page = 0)
     {
@@ -296,7 +296,7 @@ class FormSetup extends \Yana\Core\Object
      * @access  public
      * @param   int  $entryCount  number of entry
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if $entryCount is < 0
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function setEntryCount($entryCount)
     {
@@ -346,7 +346,7 @@ class FormSetup extends \Yana\Core\Object
      * @access  public
      * @param   int  $entries  number of entries per page, must be >= 1
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if $entries is < 1
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function setEntriesPerPage($entries = 5)
     {
@@ -424,7 +424,7 @@ class FormSetup extends \Yana\Core\Object
      * @access  public
      * @param   string  $columnName  where to apply the filter on
      * @param   string  $value       new filter value
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function setFilter($columnName, $value = "")
     {
@@ -447,7 +447,7 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $filters  associative array, where keys are the colum names and values are the filter strings
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function setFilters(array $filters = array())
     {
@@ -464,7 +464,7 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $values  associative array, where keys are the colum names and values rows
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function setReferenceValues(array $values)
     {
@@ -500,7 +500,7 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   int  $layout  template settings (int 0...n)
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function setLayout($layout = 0)
     {
@@ -547,7 +547,7 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $fieldName  name of field to order by
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function setOrderByField($fieldName = "")
     {
@@ -561,7 +561,7 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   bool $isDescending  True = descending, False = ascending order
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function setSortOrder($isDescending = false)
     {
@@ -594,7 +594,7 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $searchTerm  term entered in global search box
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function setSearchTerm($searchTerm = "")
     {
@@ -621,7 +621,7 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $action action name
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function setDownloadAction($action)
     {
@@ -650,7 +650,7 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $action  action name
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function setSearchAction($action)
     {
@@ -675,7 +675,7 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $action  action name
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function setInsertAction($action)
     {
@@ -700,7 +700,7 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $action  action name
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function setUpdateAction($action)
     {
@@ -725,7 +725,7 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $action action name
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function setDeleteAction($action)
     {
@@ -750,7 +750,7 @@ class FormSetup extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $action action name
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      */
     public function setExportAction($action)
     {

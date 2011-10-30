@@ -65,7 +65,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
      */
     protected static function getProfileForm()
     {
-        $builder = new FormBuilder('user_admin');
+        $builder = new \Yana\Forms\Builder('user_admin');
         return $builder->setId('userprofile')->__invoke();
     }
 
@@ -78,7 +78,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
      */
     protected static function getDetailForm()
     {
-        $builder = new FormBuilder('user_admin');
+        $builder = new \Yana\Forms\Builder('user_admin');
         return $builder->setId('userdetails')->__invoke();
     }
 
@@ -114,7 +114,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
         global $YANA;
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_USER_EDIT"));
         $YANA->setVar("USERNAME", YanaUser::getUserName());
-        $builder = new FormBuilder('user_admin');
+        $builder = new \Yana\Forms\Builder('user_admin');
         $builder->setId('userdetails')
             ->setEntries(1)
             ->setLayout(1)
@@ -142,7 +142,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
             throw new InvalidInputWarning();
         }
 
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         $worker->beforeCreate(
             function (&$id)
             {
@@ -172,7 +172,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
             throw new InvalidInputWarning();
         }
 
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->update();
     }
 

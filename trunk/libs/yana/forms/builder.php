@@ -27,6 +27,8 @@
  * @ignore
  */
 
+namespace Yana\Forms;
+
 /**
  * <<command>> Form builder.
  *
@@ -38,7 +40,7 @@
  * @subpackage  form
  * @ignore
  */
-class FormBuilder extends \Yana\Core\Object
+class Builder extends \Yana\Core\Object
 {
 
     /**
@@ -61,7 +63,7 @@ class FormBuilder extends \Yana\Core\Object
      * Form facade.
      *
      * @access  private
-     * @var     FormFacade
+     * @var     \Yana\Forms\Facade
      */
     private $_facade;
 
@@ -69,7 +71,7 @@ class FormBuilder extends \Yana\Core\Object
      * Query builder class.
      *
      * @access  private
-     * @var     FormWorker
+     * @var     \Yana\Forms\Worker
      */
     private $_queryBuilder;
 
@@ -77,7 +79,7 @@ class FormBuilder extends \Yana\Core\Object
      * Included builder.
      *
      * @access  protected
-     * @var     FormSetupBuilder
+     * @var     \Yana\Forms\Setups\Builder
      */
     private $_setupBuilder = null;
 
@@ -229,7 +231,7 @@ class FormBuilder extends \Yana\Core\Object
      * Get setup-builder.
      *
      * @access  protected
-     * @return  FormSetupBuilder
+     * @return  \Yana\Forms\Setups\Builder
      */
     protected function _getSetupBuilder()
     {
@@ -240,7 +242,7 @@ class FormBuilder extends \Yana\Core\Object
      * Get query-builder.
      *
      * @access  protected
-     * @return  FormWorker
+     * @return  \Yana\Forms\Worker
      */
     protected function _getQueryBuilder()
     {
@@ -693,14 +695,14 @@ class FormBuilder extends \Yana\Core\Object
      * @param   \Yana\Db\Ddl\Form $form  base form definition
      * @return  SmartFormUtility 
      */
-    protected function setForm(\Yana\Db\Ddl\Form $form, FormFacade $parentForm = null)
+    protected function setForm(\Yana\Db\Ddl\Form $form, \Yana\Forms\Facade $parentForm = null)
     {
         $this->_form = $form;
         $this->_facade->setBaseForm($this->_form);
         if ($this->_setupBuilder) {
             $this->_setupBuilder->setForm($this->_form);
         } else {
-            $this->_setupBuilder = new FormSetupBuilder($this->_form);
+            $this->_setupBuilder = new \Yana\Forms\Setups\Builder($this->_form);
         }
         if ($parentForm) {
             $this->_facade->setParent($parentForm);
@@ -717,10 +719,10 @@ class FormBuilder extends \Yana\Core\Object
     public function __construct($file)
     {
         $this->_file = (string) $file;
-        $this->_database = Yana::connect($this->_file);
+        $this->_database = \Yana::connect($this->_file);
         $this->_schema = $this->_database->getSchema();
-        $this->_facade = new FormFacade();
-        $this->_queryBuilder = new FormWorker($this->_database, $this->_facade);
+        $this->_facade = new \Yana\Forms\Facade();
+        $this->_queryBuilder = new \Yana\Forms\Worker($this->_database, $this->_facade);
     }
 
     /**
@@ -740,14 +742,14 @@ class FormBuilder extends \Yana\Core\Object
      * <<magic>> Invoke the function.
      *
      * @access  public
-     * @return  FormFacade
+     * @return  \Yana\Forms\Facade
      */
     public function __invoke()
     {
         $form = $this->_buildForm();
         $formSetup = null;
 
-        $cache = new FormSetupCacheManager();
+        $cache = new \Yana\Forms\Setups\CacheManager();
         if (isset($cache->{$form->getName()})) {
             $formSetup = $cache->{$form->getName()};
         } else {
@@ -761,8 +763,8 @@ class FormBuilder extends \Yana\Core\Object
             $formSetup->setSearchTerm($this->_facade->getParent()->getSetup()->getSearchTerm());
         }
 
-        $request = (array) Request::getVars($form->getName());
-        $files = (array) Request::getFiles($form->getName());
+        $request = (array) \Request::getVars($form->getName());
+        $files = (array) \Request::getFiles($form->getName());
         if (!empty($files)) {
             $request = \Yana\Util\Hashtable::merge($request, $files);
         }
@@ -924,11 +926,11 @@ class FormBuilder extends \Yana\Core\Object
      * Build \Yana\Db\Ddl\Form object.
      *
      * @access  private
-     * @param   FormFacade  $form  parent form
+     * @param   \Yana\Forms\Facade  $form  parent form
      * @throws  \Yana\Core\Exceptions\BadMethodCallException    when a parameter is missing
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when a paraemter is not valid
      */
-    private function _buildSubForms(FormFacade $form)
+    private function _buildSubForms(\Yana\Forms\Facade $form)
     {
         $baseForm = $form->getBaseForm();
         foreach ($baseForm->getForms() as $subForm)
@@ -938,7 +940,7 @@ class FormBuilder extends \Yana\Core\Object
             if (strcasecmp($subForm->getTable(), $baseForm->getTable()) === 0) {
                 $builder = clone $this;
             } else {
-                $builder = new FormBuilder($this->_file);
+                $builder = new \Yana\Forms\Builder($this->_file);
             }
             $builder->setForm($subForm, $form);
             // build sub-form
@@ -953,12 +955,12 @@ class FormBuilder extends \Yana\Core\Object
      *
      * @access  private
      * @param   \Yana\Db\Ddl\Form  $form  base form
-     * @return  FormSetup
+     * @return  \Yana\Forms\Setup
      * @throws  \Yana\Core\Exceptions\NotFoundException  when a paraemter is not valid
      */
     private function _buildSetup(\Yana\Db\Ddl\Form $form)
     {
-        $formSetup = new FormSetup();
+        $formSetup = new \Yana\Forms\Setup();
         $formSetup->setPage($this->getPage());
         $formSetup->setEntriesPerPage($this->getEntries());
         $layout = $this->getLayout();

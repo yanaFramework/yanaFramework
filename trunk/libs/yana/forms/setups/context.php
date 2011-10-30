@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Forms\Setups;
+
 /**
  * Form settings that depend on the type of form used.
  *
@@ -35,7 +37,7 @@
  * @package     yana
  * @subpackage  form
  */
-class FormSetupContext extends \Yana\Core\Object
+class Context extends \Yana\Core\Object
 {
 
     /**
@@ -74,7 +76,7 @@ class FormSetupContext extends \Yana\Core\Object
      * Rows with values.
      *
      * @access  private
-     * @var     FormRowIterator
+     * @var     \Yana\Forms\RowIterator
      */
     private $_rows = null;
 
@@ -106,7 +108,7 @@ class FormSetupContext extends \Yana\Core\Object
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         $this->_contextName = (string) $name;
-        $this->_rows = new FormRowIterator();
+        $this->_rows = new \Yana\Forms\RowIterator();
     }
 
     /**
@@ -223,7 +225,7 @@ class FormSetupContext extends \Yana\Core\Object
      * Get rows.
      *
      * @access  public
-     * @return  FormRowIterator
+     * @return  \Yana\Forms\RowIterator
      */
     public function getRows()
     {
@@ -246,7 +248,7 @@ class FormSetupContext extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $footer  any text or HTML
-     * @return  FormSetupContext
+     * @return  \Yana\Forms\Setups\Context
      */
     public function setFooter($footer)
     {
@@ -271,7 +273,7 @@ class FormSetupContext extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $header  any text or HTML
-     * @return  FormSetupContext
+     * @return  \Yana\Forms\Setups\Context
      */
     public function setHeader($header)
     {

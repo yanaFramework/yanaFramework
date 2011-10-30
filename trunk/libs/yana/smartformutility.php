@@ -119,7 +119,7 @@ class SmartFormUtility extends \Yana\Core\AbstractUtility
         }
 
         // create database query
-        $smartForm = new FormBuilder($params['file']);
+        $smartForm = new \Yana\Forms\Builder($params['file']);
 
         if (isset($params['id'])) {
             $smartForm->setId($params['id']);
@@ -176,11 +176,8 @@ class SmartFormUtility extends \Yana\Core\AbstractUtility
             $smartForm->setLayout($params['layout']);
         }
 
-        try {
-            return (string) $smartForm->__invoke();
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
+        $facade = $smartForm->__invoke();
+        return $facade->__toString();
     }
 
 }

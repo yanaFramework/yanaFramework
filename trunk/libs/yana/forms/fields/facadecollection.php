@@ -25,32 +25,38 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Forms\Fields;
+
 /**
- * <<iterator>> for table rows.
+ * <<collection>> of form fields.
  *
- * An outer iterator, that allows to iterate over the rows of a table layout
+ * A field represents an UI input-element inside a form.
  *
  * @access      public
  * @package     yana
  * @subpackage  form
  */
-class FormRowIterator extends \Yana\Core\AbstractCollection
+class FacadeCollection extends \Yana\Core\AbstractCollection
 {
 
     /**
-     * Insert or replace a row.
+     * Insert or replace item.
      *
      * @access  public
-     * @param   string  $offset  index of item to replace
-     * @param   array   $row     new value of item
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not an array
+     * @param   string           $offset  index of item to replace
+     * @param   FormFieldFacade  $value   new value of item
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given value is not valid
      */
     public function offsetSet($offset, $value)
     {
-        if (is_array($value)) {
-            $this->_offsetSet($offset, $value);
+        if ($value instanceof Facade) {
+            if (!is_string($offset)) {
+                $offset = $value->getName();
+            }
+            $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
-            $message = "Array expected. Found " . gettype($value) . " instead.";
+            $message = "Instance of Facade expected. Found " . gettype($value) . "(" .
+                ((is_object($value)) ? get_class($value) : $value) . ") instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
     }

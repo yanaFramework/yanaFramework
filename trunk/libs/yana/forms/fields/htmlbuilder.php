@@ -27,6 +27,8 @@
  * @ignore
  */
 
+namespace Yana\Forms\Fields;
+
 /**
  * <<builder>> HTML Form builder.
  *
@@ -37,7 +39,7 @@
  * @package     yana
  * @subpackage  form
  */
-class FormFieldHtmlBuilder extends \Yana\Core\Object
+class HtmlBuilder extends \Yana\Core\Object
 {
 
     /**
@@ -104,7 +106,7 @@ class FormFieldHtmlBuilder extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $id  must be valid unique identifier
-     * @return  FormFieldHtmlBuilder 
+     * @return  \Yana\Forms\Fields\HtmlBuilder 
      */
     public function setId($id)
     {
@@ -129,7 +131,7 @@ class FormFieldHtmlBuilder extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $name  must be valid unique identifier
-     * @return  FormFieldHtmlBuilder 
+     * @return  \Yana\Forms\Fields\HtmlBuilder 
      */
     public function setName($name)
     {
@@ -154,7 +156,7 @@ class FormFieldHtmlBuilder extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $class  must be valid CSS class name
-     * @return  FormFieldHtmlBuilder 
+     * @return  \Yana\Forms\Fields\HtmlBuilder 
      */
     public function setCssClass($class)
     {
@@ -179,7 +181,7 @@ class FormFieldHtmlBuilder extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $title  any text without HTML code
-     * @return  FormFieldHtmlBuilder 
+     * @return  \Yana\Forms\Fields\HtmlBuilder 
      */
     public function setTitle($title)
     {
@@ -208,7 +210,7 @@ class FormFieldHtmlBuilder extends \Yana\Core\Object
      *
      * @access  public
      * @param   int  $maxLength  must be a positive number
-     * @return  FormFieldHtmlBuilder 
+     * @return  \Yana\Forms\Fields\HtmlBuilder 
      */
     public function setMaxLength($maxLength)
     {
@@ -234,7 +236,7 @@ class FormFieldHtmlBuilder extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $attr  list of HTML attributes.
-     * @return  FormFieldHtmlBuilder 
+     * @return  \Yana\Forms\Fields\HtmlBuilder 
      */
     public function setAttr($attr)
     {
@@ -432,7 +434,7 @@ class FormFieldHtmlBuilder extends \Yana\Core\Object
      */
     public function buildList(array $values = array(), $isNumeric = false)
     {
-        $lang = Language::getInstance();
+        $lang = \Language::getInstance();
         $template = '';
 
         if (!$isNumeric) {
@@ -519,7 +521,7 @@ class FormFieldHtmlBuilder extends \Yana\Core\Object
             $this->getName() . '"/>';
 
         if ($hasDelete) {
-            $lang = Language::getInstance();
+            $lang = \Language::getInstance();
             $result .= '<label class="gui_generator_file_delete">' .
                 '<input title="' . $lang->getVar('button_delete_one') . '" type="checkbox" ' .
                 'id="' . $this->getId() . '_delete" name="' . $this->getName() . '" value="1"/>' .
@@ -566,10 +568,10 @@ class FormFieldHtmlBuilder extends \Yana\Core\Object
         } else {
             assert('is_string($filename); // Invalid argument $filename: string expected');
             assert('is_string($downloadAction); // Invalid argument $downloadAction: string expected');
-            $lang = Language::getInstance();
-            $fileId = DbBlob::storeFilenameInSession($filename);
+            $lang = \Language::getInstance();
+            $fileId = \DbBlob::storeFilenameInSession($filename);
             return '<a class="buttonize" title="' . $lang->getVar('title_download') . '" href=' .
-                SmartUtility::href("action={$downloadAction}&target={$fileId}") .
+                \SmartUtility::href("action={$downloadAction}&target={$fileId}") .
                 '><span class="icon_download">&nbsp;</span></a>';
         }
     }
@@ -589,11 +591,11 @@ class FormFieldHtmlBuilder extends \Yana\Core\Object
         } else {
             assert('is_string($filename); // Invalid argument $filename: string expected');
             assert('is_string($downloadAction); // Invalid argument $downloadAction: string expected');
-            $fileId = DbBlob::storeFilenameInSession($filename);
+            $fileId = \DbBlob::storeFilenameInSession($filename);
             return '<a href=' .
-                SmartUtility::href("action={$downloadAction}&target={$fileId}&fullsize=true") .
+                \SmartUtility::href("action={$downloadAction}&target={$fileId}&fullsize=true") .
                 '><img border="0" alt="" src=' .
-                SmartUtility::href("action={$downloadAction}&target={$fileId}") . '/></a>';
+                \SmartUtility::href("action={$downloadAction}&target={$fileId}") . '/></a>';
         }
     }
 
@@ -606,7 +608,7 @@ class FormFieldHtmlBuilder extends \Yana\Core\Object
      */
     public function buildColorpicker($value)
     {
-        return $this->buildTextfield($value) . SmartUtility::colorpicker(array('id' => $this->getId()));
+        return $this->buildTextfield($value) . \SmartUtility::colorpicker(array('id' => $this->getId()));
     }
 
     /**
@@ -644,7 +646,7 @@ class FormFieldHtmlBuilder extends \Yana\Core\Object
      */
     public function buildExternalLink($url)
     {
-        $lang = Language::getInstance();
+        $lang = \Language::getInstance();
 
         $class = ($this->getCssClass()) ? $this->getCssClass() : 'gui_generator_ext_link';
         $title = ($this->getTitle()) ? $this->getTitle() : $lang->getVar('ext_link');

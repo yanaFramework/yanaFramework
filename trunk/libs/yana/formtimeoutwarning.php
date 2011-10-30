@@ -34,7 +34,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class FormTimeoutWarning extends Warning
+class FormTimeoutWarning extends \Warning
 {
     /* intentionally left blank */
 }

@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Forms;
+
 /**
  * <<wrapper, facade>> A context-sensitive form wrapper.
  *
@@ -36,14 +38,14 @@
  * @subpackage  form
  * @ignore
  */
-class FormContextSensitiveWrapper extends FormFieldFacadeCollection implements Iterator
+class ContextSensitiveWrapper extends \Yana\Forms\Fields\FacadeCollection implements \Iterator
 {
 
     /**
      * Form structure and setup.
      *
      * @access  private
-     * @var     FormFacade
+     * @var     \Yana\Forms\Facade
      */
     private $_form;
 
@@ -51,7 +53,7 @@ class FormContextSensitiveWrapper extends FormFieldFacadeCollection implements I
      * Form context to take the field list from.
      *
      * @access  private
-     * @var     FormFieldFacadeCollection
+     * @var     \Yana\Forms\Fields\FacadeCollection
      */
     private $_context;
 
@@ -59,10 +61,10 @@ class FormContextSensitiveWrapper extends FormFieldFacadeCollection implements I
      * Initialize a field collection from a given context.
      *
      * @access  public
-     * @param   FormFacade        $form     form structure and setup
-     * @param   FormSetupContext  $context  form context to take the field list from
+     * @param   \Yana\Forms\Facade        $form     form structure and setup
+     * @param   \Yana\Forms\Setups\Context  $context  form context to take the field list from
      */
-    public function __construct(FormFacade $form, FormSetupContext $context)
+    public function __construct(\Yana\Forms\Facade $form, \Yana\Forms\Setups\Context $context)
     {
         $this->_form = $form;
         $this->_context = $context;
@@ -91,7 +93,7 @@ class FormContextSensitiveWrapper extends FormFieldFacadeCollection implements I
      * Get form context.
      *
      * @access  public
-     * @return  FormSetupContext
+     * @return  \Yana\Forms\Setups\Context
      */
     public function getContext()
     {
@@ -115,9 +117,9 @@ class FormContextSensitiveWrapper extends FormFieldFacadeCollection implements I
      * Build a field collection from a given context.
      *
      * @access  private
-     * @param   FormSetupContext  $context  form context to take the field list from
+     * @param   \Yana\Forms\Setups\Context  $context  form context to take the field list from
      */
-    private function _buildFormFieldCollection(FormSetupContext $context)
+    private function _buildFormFieldCollection(\Yana\Forms\Setups\Context $context)
     {
         try {
             $table = $this->_form->getTable();
@@ -132,7 +134,7 @@ class FormContextSensitiveWrapper extends FormFieldFacadeCollection implements I
                 if ($this->_form->isField($columnName)) {
                     $field = $this->_form->getField($columnName);
                 }
-                $facade = new FormFieldFacade($this, $column, $field);
+                $facade = new \Yana\Forms\Fields\Facade($this, $column, $field);
                 $this->offsetSet($columnName, $facade);
             }
         } catch (\Yana\Core\Exceptions\NotFoundException $e) {

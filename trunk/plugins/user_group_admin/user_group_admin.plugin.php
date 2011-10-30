@@ -64,7 +64,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      */
     protected static function getActionForm()
     {
-        $builder = new FormBuilder('user_admin');
+        $builder = new \Yana\Forms\Builder('user_admin');
         return $builder->setId('securityactionrules')->__invoke();
     }
 
@@ -77,7 +77,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      */
     protected static function getGroupForm()
     {
-        $builder = new FormBuilder('user_admin');
+        $builder = new \Yana\Forms\Builder('user_admin');
         return $builder->setId('securitygroup')->__invoke();
     }
 
@@ -90,7 +90,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      */
     protected static function getRoleForm()
     {
-        $builder = new FormBuilder('user_admin');
+        $builder = new \Yana\Forms\Builder('user_admin');
         return $builder->setId('securityrole')->__invoke();
     }
 
@@ -158,7 +158,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
     public function set_user_action_settings_edit()
     {
         $form = self::getActionForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         $worker->beforeUpdate(
             function (&$id, &$entry)
             {
@@ -220,7 +220,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
     public function set_user_action_settings_new()
     {
         $form = self::getActionForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         $worker->beforeCreate(
             function (&$newEntry)
             {
@@ -250,7 +250,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
     public function set_usergroup_edit()
     {
         $form = self::getGroupForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         $worker->beforeUpdate(
             function (&$id)
             {
@@ -276,7 +276,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
     public function set_usergroup_delete(array $selected_entries)
     {
         $form = self::getGroupForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->delete($selected_entries);
     }
 
@@ -295,7 +295,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
     public function set_usergroup_new()
     {
         $form = self::getGroupForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->create();
     }
 
@@ -330,7 +330,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
     public function set_userrole_edit()
     {
         $form = self::getRoleForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         $worker->beforeUpdate(
             function (&$id)
             {
@@ -356,7 +356,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
     public function set_userrole_delete(array $selected_entries)
     {
         $form = self::getRoleForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->delete($selected_entries);
     }
 
@@ -377,7 +377,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
     public function set_userrole_new()
     {
         $form = self::getRoleForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->create();
     }
 

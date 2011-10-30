@@ -65,7 +65,7 @@ class plugin_project extends StdClass implements IsPlugin
      */
     protected static function getProjectForm()
     {
-        $builder = new FormBuilder('project');
+        $builder = new \Yana\Forms\Builder('project');
         return $builder->setId('project')->__invoke();
     }
 
@@ -199,7 +199,7 @@ class plugin_project extends StdClass implements IsPlugin
     public function project_edit_project()
     {
         $form = self::getProjectForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->update();
     }
 
@@ -220,7 +220,7 @@ class plugin_project extends StdClass implements IsPlugin
     public function project_delete_project(array $selected_entries)
     {
         $form = self::getProjectForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->delete($selected_entries);
     }
 
@@ -240,7 +240,7 @@ class plugin_project extends StdClass implements IsPlugin
     public function project_new_project()
     {
         $form = self::getProjectForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->create();
     }
 
@@ -260,7 +260,7 @@ class plugin_project extends StdClass implements IsPlugin
     public function project_edit_effort()
     {
         $form = self::getEffortForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->update();
     }
 
@@ -281,7 +281,7 @@ class plugin_project extends StdClass implements IsPlugin
     public function project_delete_effort(array $selected_entries)
     {
         $form = self::getEffortForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->delete($selected_entries);
     }
 
@@ -301,7 +301,7 @@ class plugin_project extends StdClass implements IsPlugin
     public function project_new_effort()
     {
         $form = self::getEffortForm();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->create();
     }
 

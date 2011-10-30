@@ -27,6 +27,8 @@
  * @ignore
  */
 
+namespace Yana\Forms\Fields;
+
 /**
  * <<builder>> HTML Form builder.
  *
@@ -37,17 +39,17 @@
  * @package     yana
  * @subpackage  form
  */
-class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
+class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
 {
 
     /**
      * Set name attribute based on field settings.
      *
      * @access  protected
-     * @param   FormFieldFacade  $field  definition to create name from
-     * @return  FormFieldAutomatedHtmlBuilder
+     * @param   \Yana\Forms\Fields\Facade  $field  definition to create name from
+     * @return  \Yana\Forms\Fields\AutomatedHtmlBuilder
      */
-    private function _setName(FormFieldFacade $field)
+    private function _setName(\Yana\Forms\Fields\Facade $field)
     {
         $key = $field->getContext()->getRows()->key();
         $name = $field->getForm()->getName() . "[" . $field->getContext()->getContextName() . "]" .
@@ -59,10 +61,10 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      * Set id attribute based on field settings.
      *
      * @access  private
-     * @param   FormFieldFacade  $field  definition to create id from
-     * @return  FormFieldAutomatedHtmlBuilder
+     * @param   \Yana\Forms\Fields\Facade  $field  definition to create id from
+     * @return  \Yana\Forms\Fields\AutomatedHtmlBuilder
      */
-    private function _setId(FormFieldFacade $field)
+    private function _setId(\Yana\Forms\Fields\Facade $field)
     {
         $id = $field->getForm()->getName() . "-" . $field->getContext()->getContextName() . "-" . $field->getName();
         return $this->setId($id);
@@ -72,10 +74,10 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      * Set id attribute based on row number and field settings.
      *
      * @access  protected
-     * @param   FormFieldFacade  $field  definition to create name from
-     * @return  FormFieldAutomatedHtmlBuilder
+     * @param   \Yana\Forms\Fields\Facade  $field  definition to create name from
+     * @return  \Yana\Forms\Fields\AutomatedHtmlBuilder
      */
-    private function _setIdByRow(FormFieldFacade $field)
+    private function _setIdByRow(\Yana\Forms\Fields\Facade $field)
     {
         $key = $field->getContext()->getRows()->key();
         $id = $field->getForm()->getName() . "-" . $field->getContext()->getContextName() .
@@ -87,10 +89,10 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      * Set class attribute based on field settings.
      *
      * @access  private
-     * @param   FormFieldFacade  $field  definition to create id from
-     * @return  FormFieldAutomatedHtmlBuilder
+     * @param   \Yana\Forms\Fields\Facade  $field  definition to create id from
+     * @return  \Yana\Forms\Fields\AutomatedHtmlBuilder
      */
-    private function _setCssClass(FormFieldFacade $field)
+    private function _setCssClass(\Yana\Forms\Fields\Facade $field)
     {
         $class = $field->getForm()->getName() . "-" . $field->getContext()->getContextName() . "-" . $field->getName();
         return $this->setCssClass($class);
@@ -103,12 +105,12 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      * If the field has an action attached to it, an clickable icon or text-link is created next to it.
      *
      * @access  public
-     * @param   FormFieldFacade  $field  structure definition
+     * @param   \Yana\Forms\Fields\Facade  $field  structure definition
      * @return  string
      *
      * @ignore
      */
-    public function __invoke(FormFieldFacade $field)
+    public function __invoke(\Yana\Forms\Fields\Facade $field)
     {
         $this->_setName($field);
         $setup = $field->getForm()->getSetup();
@@ -140,17 +142,17 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      * Returns the HTML-code representing an input element for the current field.
      *
      * @access  protected
-     * @param   FormFieldFacade  $field  structure definition
-     * @param   FormSetup        $setup  information about how to treat the form
+     * @param   \Yana\Forms\Fields\Facade  $field  structure definition
+     * @param   \Yana\Forms\Setup        $setup  information about how to treat the form
      * @return  string
      *
      * @ignore
      */
-    protected function buildByTypeUpdatable(FormFieldFacade $field, FormSetup $setup)
+    protected function buildByTypeUpdatable(\Yana\Forms\Fields\Facade $field, \Yana\Forms\Setup $setup)
     {
         $column = $field->getColumn();
 
-        $lang = Language::getInstance();
+        $lang = \Language::getInstance();
 
         // retrieve search arguments
         $value = $field->getValue();
@@ -271,7 +273,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                 }
                 $this->setCssClass("gui_generator_date");
                 return $this->buildSpan(
-                    SmartUtility::selectDate(array(
+                    \SmartUtility::selectDate(array(
                         'time' => $value,
                         'attr' => $this->getAttr(),
                         'id' => $this->getId(),
@@ -288,13 +290,13 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                 }
                 $this->setCssClass("gui_generator_time");
                 return $this->buildSpan(
-                    SmartUtility::selectDate(array(
+                    \SmartUtility::selectDate(array(
                         'time' => $value,
                         'attr' => $this->getAttr(),
                         'id' => $this->getId(),
                         'name' => $this->getName())
                     ) .
-                    SmartUtility::selectTime(array(
+                    \SmartUtility::selectTime(array(
                         'time' => $value,
                         'attr' => $this->getAttr(),
                         'id' => $this->getId(),
@@ -314,13 +316,13 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      * Returns the HTML-code representing an input element for the current field.
      *
      * @access  protected
-     * @param   FormFieldFacade  $field  structure definition
-     * @param   FormSetup        $setup  information about how to treat the form
+     * @param   \Yana\Forms\Fields\Facade  $field  structure definition
+     * @param   \Yana\Forms\Setup        $setup  information about how to treat the form
      * @return  string
      *
      * @ignore
      */
-    protected function buildByTypeNonUpdatable(FormFieldFacade $field, FormSetup $setup)
+    protected function buildByTypeNonUpdatable(\Yana\Forms\Fields\Facade $field, \Yana\Forms\Setup $setup)
     {
         $column = $field->getColumn();
 
@@ -339,7 +341,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
         {
             case 'array':
                 $this->setCssClass("gui_generator_array");
-                return $this->buildDiv(SmartUtility::printUL1($value));
+                return $this->buildDiv(\SmartUtility::printUL1($value));
             case 'bool':
                 $value = ($value) ? "true" : "false";
                 $this->setCssClass("gui_generator_bool icon_" . $value);
@@ -348,7 +350,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                 $this->setAttr(' style="background-color: ' . $value . '"')->setCssClass("gui_generator_color");
                 return $this->buildSpan($value);
             case 'date':
-                return $this->buildSpan(SmartUtility::date($value));
+                return $this->buildSpan(\SmartUtility::date($value));
             case 'file':
                 $this->setCssClass('gui_generator_file_download');
                 if (!is_string($value)) {
@@ -356,7 +358,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                 }
                 return $this->buildSpan($this->buildFileDownload($value, $setup->getDownloadAction()));
             case 'text':
-                $value = SmartUtility::smilies(SmartUtility::embeddedTags($value));
+                $value = \SmartUtility::smilies(\SmartUtility::embeddedTags($value));
             // fall through
             case 'html':
                 if (mb_strlen($value) > 25) {
@@ -374,7 +376,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
             case 'list':
                 $this->setCssClass('gui_generator_array');
                 if (is_array($value)) {
-                    $value = SmartUtility::printUL1($value, 2);
+                    $value = \SmartUtility::printUL1($value, 2);
                 }
                 return $this->buildDiv((string) $value);
             case 'password':
@@ -389,7 +391,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                 return $this->buildSpan($value);
             case 'time':
             case 'timestamp':
-                return $this->buildSpan(SmartUtility::date($value));
+                return $this->buildSpan(\SmartUtility::date($value));
             case 'url':
                 return $this->buildExternalLink($value);
             default:
@@ -406,17 +408,17 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      * Returns the HTML-code representing an input element for the current field.
      *
      * @access  protected
-     * @param   FormFieldFacade  $field  structure definition
-     * @param   FormSetup        $setup  information about how to treat the form
+     * @param   \Yana\Forms\Fields\Facade  $field  structure definition
+     * @param   \Yana\Forms\Setup        $setup  information about how to treat the form
      * @return  string
      *
      * @ignore
      */
-    protected function buildByTypeSearchfield(FormFieldFacade $field, FormSetup $setup)
+    protected function buildByTypeSearchfield(\Yana\Forms\Fields\Facade $field, \Yana\Forms\Setup $setup)
     {
         $column = $field->getColumn();
 
-        $lang = Language::getInstance();
+        $lang = \Language::getInstance();
 
         // retrieve search arguments
         $value = $field->getValue();
@@ -473,13 +475,13 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                 $result = $this->buildBoolCheckbox($value['active'] === "true");
                 $this->setName($name);
                 $result .=
-                    SmartUtility::selectDate(array(
+                    \SmartUtility::selectDate(array(
                         'time' => $startTime,
                         'id' => $this->getId() . "_start",
                         'name' => $name . "[start]")
                     ) .
                     '&nbsp;&ndash;&nbsp;' .
-                    SmartUtility::selectDate(array(
+                    \SmartUtility::selectDate(array(
                         'time' => $endTime,
                         'id' => $this->getId() . "_end",
                         'name' => $name . "[end]")
@@ -509,11 +511,11 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      * Returns the HTML-code for this field.
      *
      * @access  protected
-     * @param   FormFieldFacade  $field  structure definition
+     * @param   \Yana\Forms\Fields\Facade  $field  structure definition
      * @return  string
      * @ignore
      */
-    protected function createLink(FormFieldFacade $field)
+    protected function createLink(\Yana\Forms\Fields\Facade $field)
     {
         $result = "";
         if ($field->getField() instanceof \Yana\Db\Ddl\Field) {
@@ -521,7 +523,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
             if (empty($value) && $value !== false) {
                 return '';
             }
-            $lang = Language::getInstance();
+            $lang = \Language::getInstance();
             $column = $field->getColumn();
             $form = $field->getForm();
             $table = $form->getTable();
@@ -549,7 +551,7 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
                         $actionParam = "action=" . $event->getName();
                         $targetParam = "target[" . $table->getPrimaryKey() . "]=" . $form->getPrimaryKey() .
                             "&target[" . $field->getName() . "]=" . $value;
-                        $href = 'href="' . SmartUtility::url("$actionParam&$targetParam") . '"';
+                        $href = 'href="' . \SmartUtility::url("$actionParam&$targetParam") . '"';
                         if (empty($title)) {
                             $title = $lang->getVar('DB_ENTITY_LINK');
                         }
@@ -580,11 +582,11 @@ class FormFieldAutomatedHtmlBuilder extends FormFieldHtmlBuilder
      * Note: the results are cached.
      *
      * @access  protected
-     * @param   FormFieldFacade  $field  input field
+     * @param   \Yana\Forms\Fields\Facade  $field  input field
      * @return  string
      * @ignore
      */
-    protected function createJavascriptEvents(FormFieldFacade $field)
+    protected function createJavascriptEvents(\Yana\Forms\Fields\Facade $field)
     {
         $eventsAsHtml = "";
         if ($field->getField()) {

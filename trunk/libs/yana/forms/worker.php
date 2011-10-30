@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Forms;
+
 /**
  * <<worker, facade>> Implements CRUD-functions for form elements.
  *
@@ -35,17 +37,17 @@
  * @package     yana
  * @subpackage  form
  */
-class FormWorker extends FormQueryBuilder
+class Worker extends \Yana\Forms\QueryBuilder
 {
 
     /**
      * Initialize instance.
      *
      * @access  public
-     * @param   DbStream    $db    database connection used to create the querys
-     * @param   FormFacade  $form  database connection used to create the querys
+     * @param   \DbStream    $db    database connection used to create the querys
+     * @param   \Yana\Forms\Facade  $form  database connection used to create the querys
      */
-    public function __construct(DbStream $db, FormFacade $form)
+    public function __construct(\DbStream $db, \Yana\Forms\Facade $form)
     {
         $this->_db = $db;
         $this->setForm($form);
@@ -151,7 +153,7 @@ class FormWorker extends FormQueryBuilder
      *
      * @access  public
      * @param   callable  $callback  some call-back function
-     * @return  FormWorker 
+     * @return  \Yana\Forms\Worker 
      */
     public function afterUpdate($callback = null)
     {
@@ -172,7 +174,7 @@ class FormWorker extends FormQueryBuilder
      *
      * @access  public
      * @param   callable  $callback  some call-back function
-     * @return  FormWorker 
+     * @return  \Yana\Forms\Worker 
      */
     public function beforeDelete($callback = null)
     {
@@ -193,7 +195,7 @@ class FormWorker extends FormQueryBuilder
      *
      * @access  public
      * @param   callable  $callback  some call-back function
-     * @return  FormWorker 
+     * @return  \Yana\Forms\Worker 
      */
     public function afterDelete($callback = null)
     {
@@ -238,7 +240,7 @@ class FormWorker extends FormQueryBuilder
             $tableName = $this->_form->getBaseForm()->getTable();
 
             if (empty($newEntry)) {
-                throw new MissinginputWarning('No data has been provided.');
+                throw new \MissinginputWarning('No data has been provided.');
             }
 
             // execute hooks
@@ -248,7 +250,7 @@ class FormWorker extends FormQueryBuilder
             }
 
             if (!$this->_db->insert($tableName, $newEntry)) {
-                throw new InvalidInputWarning('Unable to insert entry. Is database read-only or the sequence out of sync?');
+                throw new \InvalidInputWarning('Unable to insert entry. Is database read-only or the sequence out of sync?');
             }
 
             // execute hooks
@@ -337,7 +339,7 @@ class FormWorker extends FormQueryBuilder
             $tableName = $this->_form->getBaseForm()->getTable();
 
             if (empty($updatedEntries)) {
-                throw new MissinginputWarning('No data has been provided.');
+                throw new \MissinginputWarning('No data has been provided.');
             }
 
             foreach ($updatedEntries as $id => $entry)
@@ -346,7 +348,7 @@ class FormWorker extends FormQueryBuilder
 
                 /* before doing anything, check if entry exists */
                 if (!$this->_db->exists("{$tableName}.{$id}")) {
-                    throw new InvalidInputWarning('Entry not found');
+                    throw new \InvalidInputWarning('Entry not found');
                 }
 
                 // execute hooks
@@ -387,7 +389,7 @@ class FormWorker extends FormQueryBuilder
         $result = "";
         if ($this->_form) {
             if (empty($selectedEntries)) {
-                throw new MissinginputWarning('No row has been selected.');
+                throw new \MissinginputWarning('No row has been selected.');
             }
             $tableName = $this->_form->getBaseForm()->getTable();
             // remove entry from database
