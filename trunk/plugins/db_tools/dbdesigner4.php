@@ -117,9 +117,7 @@ class DbDesigner4 extends File implements IsDbImport
     }
 
     /**
-     * import DBDesigner 4 configuration file to Yana structure files
-     *
-     * The argument $dbDesignerConfig may either be a file name or XML file content.
+     * Import DBDesigner 4 configuration file to Yana structure files.
      *
      * This function will import the database structure from the given file and
      * transform it into a compatible structure file, that can be used to create
@@ -137,10 +135,10 @@ class DbDesigner4 extends File implements IsDbImport
     {
         assert('is_string($dbDesignerConfig); // Wrong argument type $dbDesignerConfig. String expected.');
         if (is_file($dbDesignerConfig)) {
-            $DbDesigner4 = new DbDesigner4($dbDesignerConfig);
+            $DbDesigner4 = new self($dbDesignerConfig);
             $DbDesigner4->read();
         } else {
-            $DbDesigner4 = new DbDesigner4('');
+            $DbDesigner4 = new self('');
             assert('empty($DbDesigner4->content);');
             $DbDesigner4->content = explode("\n", $dbDesignerConfig);
             assert('is_array($DbDesigner4->content);');
@@ -184,7 +182,7 @@ class DbDesigner4 extends File implements IsDbImport
      * @return  bool
      * @ignore
      */
-    function _startElement($parser, $name, array $attrs)
+    private function _startElement($parser, $name, array $attrs)
     {
         $name = mb_strtolower($name);
         switch ($name)
@@ -397,7 +395,7 @@ class DbDesigner4 extends File implements IsDbImport
      * @return  bool
      * @ignore
      */
-    function _endElement($parser, $name)
+    private function _endElement($parser, $name)
     {
         $name = mb_strtolower($name);
         switch ($name)
@@ -420,7 +418,7 @@ class DbDesigner4 extends File implements IsDbImport
                 $this->currentIndex = array();
             break;
             default:
-
+                // intentionally left blank
             break;
         }
     }
@@ -434,7 +432,7 @@ class DbDesigner4 extends File implements IsDbImport
      * @return  bool
      * @ignore
      */
-    function _characterData($parser, $data)
+    private function _characterData($parser, $data)
     {
         /* intentionally left blank */
     }
