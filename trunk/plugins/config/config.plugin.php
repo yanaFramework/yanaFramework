@@ -297,7 +297,7 @@ class plugin_config extends StdClass implements IsPlugin
      */
     public function save_pluginlist(array $pluginlist, array $plugins)
     {
-        $pluginManager = PluginManager::getInstance();
+        $pluginManager = \Yana\Plugins\Manager::getInstance();
         foreach($pluginlist as $plugin)
         {
             /* We don't mind, wether $plugin is a plugin or not, since
@@ -305,9 +305,9 @@ class plugin_config extends StdClass implements IsPlugin
              */
             try {
                 if (in_array($plugin, $plugins)) {
-                    $pluginManager->setActive($plugin, PluginActivityEnumeration::ACTIVE);
+                    $pluginManager->setActive($plugin, \Yana\Plugins\ActivityEnumeration::ACTIVE);
                 } else {
-                    $pluginManager->setActive($plugin, PluginActivityEnumeration::INACTIVE);
+                    $pluginManager->setActive($plugin, \Yana\Plugins\ActivityEnumeration::INACTIVE);
                 }
             } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                 throw new InvalidInputWarning();
@@ -336,10 +336,10 @@ class plugin_config extends StdClass implements IsPlugin
      */
     public function refresh_pluginlist()
     {
-        $pluginManager = PluginManager::getInstance();
+        $pluginManager = \Yana\Plugins\Manager::getInstance();
         if ($pluginManager->refreshPluginFile()) {
             SessionManager::refreshPluginSecuritySettings();
-            PluginMenu::clearCache();
+            \Yana\Plugins\Menu::clearCache();
             return true;
         } else {
             return false;

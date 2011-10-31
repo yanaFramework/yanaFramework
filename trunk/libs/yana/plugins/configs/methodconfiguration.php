@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins\Configs;
+
 /**
  * Plugin Method information
  *
@@ -34,11 +36,11 @@
  * @access      public
  * @name        PluginConfigurationMethod
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  *
  * @ignore
  */
-class PluginConfigurationMethod extends \Yana\Core\Object
+class MethodConfiguration extends \Yana\Core\Object
 {
     /**
      * @access  private
@@ -102,7 +104,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      * @access  private
      * @var     string
      */
-    private $_type = PluginTypeEnumeration::DEFAULT_SETTING;
+    private $_type = \Yana\Plugins\TypeEnumeration::DEFAULT_SETTING;
 
     /**
      * Template identifier.
@@ -128,19 +130,19 @@ class PluginConfigurationMethod extends \Yana\Core\Object
 
     /**
      * @access  private
-     * @var     PluginMenuEntry
+     * @var     \Yana\Plugins\MenuEntry
      */
     private $_menu = null;
 
     /**
      * @access  private
-     * @var     PluginEventRoute
+     * @var     \Yana\Plugins\Configs\EventRoute
      */
     private $_onError = null;
 
     /**
      * @access  private
-     * @var     PluginEventRoute
+     * @var     \Yana\Plugins\Configs\EventRoute
      */
     private $_onSuccess = null;
 
@@ -198,12 +200,12 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $type  valid method type
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setType($type)
     {
         assert('is_string($type); // Invalid argument $type: string expected');
-        $this->_type = PluginTypeEnumeration::fromString($type);
+        $this->_type = \Yana\Plugins\TypeEnumeration::fromString($type);
         return $this;
     }
 
@@ -251,11 +253,11 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      * get directory
      *
      * @access  public
-     * @param   PluginConfigurationMethod $subscriberConfig  configuration of subscribing method
-     * @return  PluginConfigurationMethod
+     * @param   \Yana\Plugins\Configs\MethodConfiguration $subscriberConfig  configuration of subscribing method
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      * @ignore
      */
-    public function addSubscription(PluginConfigurationMethod $subscriberConfig)
+    public function addSubscription(\Yana\Plugins\Configs\MethodConfiguration $subscriberConfig)
     {
         $this->addPath($subscriberConfig->getPath());
         $this->setScripts(array_merge($this->getScripts(), $subscriberConfig->getScripts()));
@@ -283,7 +285,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $scripts  list of paths to javascript files.
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setScripts(array $scripts)
     {
@@ -310,7 +312,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $styles  list of paths to CSS files.
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setStyles(array $styles)
     {
@@ -337,7 +339,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $languages  list of names of XLIFF files.
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setLanguages(array $languages)
     {
@@ -380,7 +382,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $params  keys are the param-names and the values are the param-types
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setParams(array $params)
     {
@@ -406,7 +408,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $return  valid PHP type - or empty string, if the function doesn't return a value
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setReturn($return)
     {
@@ -438,7 +440,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $group  unique name
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setGroup($group)
     {
@@ -457,7 +459,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      * Use this function to get the menu entry defined by the method (if any).
      *
      * @access  public
-     * @return  PluginMenuEntry
+     * @return  \Yana\Plugins\MenuEntry
      */
     public function getMenu()
     {
@@ -468,10 +470,10 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      * Set menu entry.
      *
      * @access  public
-     * @param   PluginMenuEntry  $menu  menu configuration
-     * @return  PluginConfigurationMethod
+     * @param   \Yana\Plugins\MenuEntry  $menu  menu configuration
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
-    public function setMenu(PluginMenuEntry $menu)
+    public function setMenu(\Yana\Plugins\MenuEntry $menu)
     {
         $this->_menu = $menu;
         return $this;
@@ -481,7 +483,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      * Get settings on how to react on success.
      *
      * @access  public
-     * @return  PluginEventRoute
+     * @return  \Yana\Plugins\Configs\EventRoute
      */
     public function getOnSuccess()
     {
@@ -492,12 +494,12 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      * Set settings on how to react on success.
      *
      * @access  public
-     * @param   PluginEventRoute  $onSuccess  event configuration
-     * @return  PluginConfigurationMethod
+     * @param   \Yana\Plugins\Configs\EventRoute  $onSuccess  event configuration
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
-    public function setOnSuccess(PluginEventRoute $onSuccess)
+    public function setOnSuccess(\Yana\Plugins\Configs\EventRoute $onSuccess)
     {
-        $onSuccess->setCode(PluginEventRoute::CODE_SUCCESS);
+        $onSuccess->setCode(\Yana\Plugins\Configs\EventRoute::CODE_SUCCESS);
         $this->_onSuccess = $onSuccess;
         return $this;
     }
@@ -506,7 +508,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      * Get settings on how to react on error.
      *
      * @access  public
-     * @return  PluginEventRoute
+     * @return  \Yana\Plugins\Configs\EventRoute
      */
     public function getOnError()
     {
@@ -517,12 +519,12 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      * Set settings on how to react on error.
      *
      * @access  public
-     * @param   PluginEventRoute  $onError  event configuration
-     * @return  PluginConfigurationMethod
+     * @param   \Yana\Plugins\Configs\EventRoute  $onError  event configuration
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
-    public function setOnError(PluginEventRoute $onError)
+    public function setOnError(\Yana\Plugins\Configs\EventRoute $onError)
     {
-        $onError->setCode(PluginEventRoute::CODE_ERROR);
+        $onError->setCode(\Yana\Plugins\Configs\EventRoute::CODE_ERROR);
         $this->_onError = $onError;
         return $this;
     }
@@ -545,7 +547,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $title  human readable name
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setTitle($title)
     {
@@ -583,7 +585,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   bool  $safeMode  true = requires safe-mode, false = disallows safe-mode, null = don't care
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setSafeMode($safeMode = null)
     {
@@ -624,7 +626,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $template  relative path to template file
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setTemplate($template)
     {
@@ -639,7 +641,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      * Returns a list of instances of PluginUserLevel.
      *
      * @access  public
-     * @return  PluginUserLevel[]
+     * @return  \Yana\Plugins\UserLevel[]
      */
     public function getUserLevels()
     {
@@ -652,8 +654,8 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      * All elements must be instances of PluginUserLevel.
      *
      * @access  public
-     * @param   PluginUserLevel[]  $users  list of user level definitions
-     * @return  PluginConfigurationMethod
+     * @param   \Yana\Plugins\UserLevel[]  $users  list of user level definitions
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setUserLevels(array $users)
     {
@@ -669,10 +671,10 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      * Add user user level rule.
      *
      * @access  public
-     * @param   PluginUserLevel  $user  user level definition
-     * @return  PluginConfigurationMethod
+     * @param   \Yana\Plugins\UserLevel  $user  user level definition
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
-    public function addUserLevel(PluginUserLevel $user)
+    public function addUserLevel(\Yana\Plugins\UserLevel $user)
     {
         $this->_users[] = $user;
         return $this;
@@ -702,7 +704,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   bool  $overwrite  true = overwrite parent declaration, false = default
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setOverwrite($overwrite)
     {
@@ -736,7 +738,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   bool  $subscribe  true = extend parent, false = implement yourself
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setSubscribe($subscribe)
     {
@@ -761,7 +763,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $className  case-sensitive identifier
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setClassName($className)
     {
@@ -786,7 +788,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $methodName  case-sensitive text
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setMethodName($methodName)
     {
@@ -800,7 +802,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $args  list of arguments
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      * @throws  Warning       when a provided argument is missing or not valid
      */
     public function setEventArguments(array $args)
@@ -876,7 +878,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $defaults  list of default arguments
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setDefaults(array $defaults)
     {
@@ -900,7 +902,7 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      *
      * @access  public
      * @param   bool  $hasGenericParams  true = parameter list is generic, false = parameter list explicitely given
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setHasGenericParams($hasGenericParams)
     {
@@ -926,10 +928,10 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      * Executes the event on the provided instance and returns the result.
      *
      * @access  public
-     * @param   IsPlugin  $instance  object to send event to
+     * @param   \IsPlugin  $instance  object to send event to
      * @return  mixed
      */
-    public function sendEvent(IsPlugin $instance)
+    public function sendEvent(\IsPlugin $instance)
     {
         if ($this->hasMethod($instance)) {
             $methodName = $this->_methodName;
@@ -949,10 +951,10 @@ class PluginConfigurationMethod extends \Yana\Core\Object
      * Returns bool(true) if the given plug-in implements this method and bool(false) otherwise.
      *
      * @access  public
-     * @param   IsPlugin  $instance  object to send event to
+     * @param   \IsPlugin  $instance  object to send event to
      * @return  bool
      */
-    public function hasMethod(IsPlugin $instance)
+    public function hasMethod(\IsPlugin $instance)
     {
         return method_exists($instance, $this->_methodName);
     }

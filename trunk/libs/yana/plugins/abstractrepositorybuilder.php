@@ -25,73 +25,55 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins;
+
 /**
- * <<abstract>> Plugin configuration builder
+ * <<abstract>> Plugin configuration repository builder.
  *
- * This class produces a configuration from a class reflection.
+ * This class produces a configuration repository by scanning a directory.
  *
- * @access      public
- * @name        PluginConfiguration
  * @package     yana
- * @subpackage  core
- *
- * @ignore
+ * @subpackage  plugins
  */
-abstract class PluginConfigurationAbstractBuilder extends \Yana\Core\Object
+abstract class AbstractRepositoryBuilder extends \Yana\Core\Object
 {
 
     /**
-     * Plugin configuration raw object.
+     * Plugin repository raw object.
      *
-     * @var PluginConfigurationClass
+     * @var  \Yana\Plugins\Repository
      */
     protected $object = null;
 
     /**
      * constructor
-     *
-     * @access  public
      */
     public function __construct()
     {
-        $this->createNewConfiguration();
+        $this->createNewRepository();
     }
 
     /**
      * Resets the instance that is currently build.
-     *
-     * @access  public
      */
-    public function createNewConfiguration()
+    public function createNewRepository()
     {
-        $this->object = new PluginConfigurationClass();
+        $this->object = new \Yana\Plugins\Repository();
     }
 
     /**
-     * Build class object.
-     *
-     * @access protected
-     * @abstract
+     * Build new repository.
      */
-    abstract protected function buildClass();
-
-    /**
-     * Build method object.
-     *
-     * @access protected
-     * @abstract
-     */
-    abstract protected function buildMethod();
+    abstract protected function buildRepository();
 
     /**
      * Returns the built object.
      *
-     * @access  public
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
-    public function getPluginConfigurationClass()
+    public function getRepository()
     {
-        $this->buildClass();
+        $this->buildRepository();
         return $this->object;
     }
 

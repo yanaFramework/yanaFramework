@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins\Configs;
+
 /**
  * Plugin event routing configuration.
  *
@@ -32,10 +34,10 @@
  *
  * @access      public
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  * @ignore
  */
-class PluginEventRoute
+class EventRoute
 {
 
     /**
@@ -104,8 +106,8 @@ class PluginEventRoute
      * Success code should be 0.
      *
      * @access  public
-     * @param   int  $code  unsigned small int, defaults: PluginEventRoute::CODE_SUCCESS, PluginEventRoute::CODE_ERROR
-     * @return  PluginEventRoute
+     * @param   int  $code  unsigned small int, defaults: CODE_SUCCESS, CODE_ERROR
+     * @return  \Yana\Plugins\Configs\EventRoute
      */
     public function setCode($code)
     {
@@ -130,7 +132,7 @@ class PluginEventRoute
      *
      * @access  public
      * @param   string  $target  PHP method name
-     * @return  PluginEventRoute
+     * @return  \Yana\Plugins\Configs\EventRoute
      */
     public function setTarget($target)
     {
@@ -158,8 +160,8 @@ class PluginEventRoute
      * These class names should be mapped to appropriate translations using the "message" translation files.
      *
      * @access  public
-     * @param   string  $message  default messages: PluginEventRoute::MSG_SUCCESS and PluginEventRoute::MSG_ERROR
-     * @return  PluginEventRoute
+     * @param   string  $message  default messages: MSG_SUCCESS and MSG_ERROR
+     * @return  \Yana\Plugins\Configs\EventRoute
      */
     public function setMessage($message)
     {

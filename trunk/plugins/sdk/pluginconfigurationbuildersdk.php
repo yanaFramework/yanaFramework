@@ -42,7 +42,7 @@ require_once 'pluginconfigurationclasssdk.php';
  * @package    yana
  * @subpackage plugins
  */
-class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
+class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilder
 {
 
     /**
@@ -126,7 +126,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
     protected function getPluginDir()
     {
         if (!isset($this->_pluginDir)) {
-            $dir = PluginManager::getPluginDirectoryPath();
+            $dir = \Yana\Plugins\Manager::getPluginDirectoryPath();
             $this->_pluginDir  = new Dir($dir . '/' . strtolower($this->object->getId()) . '/');
         }
         return $this->_pluginDir;
@@ -719,7 +719,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
             ->setType(array_shift($action))
             ->setTemplate(array_shift($action));
 
-        $user = new PluginUserLevel();
+        $user = new \Yana\Plugins\UserLevel();
         try {
             $user->setGroup(array_shift($action));
         } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
@@ -745,7 +745,7 @@ class PluginConfigurationBuilderSdk extends PluginConfigurationAbstractBuilder
 
         $group = array_shift($action);
         if (!empty($group)) {
-            $menu = new PluginMenuEntry();
+            $menu = new \Yana\Plugins\MenuEntry();
             $menu->setGroup($group);
             $method->setMenu($menu);
         }

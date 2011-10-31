@@ -25,64 +25,63 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins\Configs;
+
 /**
- * <<abstract>> Plugin configuration repository builder.
+ * <<abstract>> Plugin configuration builder
  *
- * This class produces a configuration repository by scanning a directory.
+ * This class produces a configuration from a class reflection.
  *
- * @access      public
- * @abstract
+ * @name        AbstractBuilder
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
+ *
+ * @ignore
  */
-abstract class PluginRepositoryAbstractBuilder extends \Yana\Core\Object
+abstract class AbstractBuilder extends \Yana\Core\Object
 {
 
     /**
-     * Plugin repository raw object.
+     * Plugin configuration raw object.
      *
-     * @access  protected
-     * @var     PluginRepository
+     * @var \Yana\Plugins\Configs\ClassConfiguration
      */
     protected $object = null;
 
     /**
      * constructor
-     *
-     * @access  public
      */
     public function __construct()
     {
-        $this->createNewRepository();
+        $this->createNewConfiguration();
     }
 
     /**
      * Resets the instance that is currently build.
-     *
-     * @access  public
      */
-    public function createNewRepository()
+    public function createNewConfiguration()
     {
-        $this->object = new PluginRepository();
+        $this->object = new \Yana\Plugins\Configs\ClassConfiguration();
     }
 
     /**
-     * Build new repository.
-     *
-     * @access  protected
-     * @abstract
+     * Build class object.
      */
-    abstract protected function buildRepository();
+    abstract protected function buildClass();
+
+    /**
+     * Build method object.
+     */
+    abstract protected function buildMethod();
 
     /**
      * Returns the built object.
      *
-     * @access  public
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
-    public function getRepository()
+    public function getPluginConfigurationClass()
     {
-        $this->buildRepository();
+        $this->buildClass();
         return $this->object;
     }
 

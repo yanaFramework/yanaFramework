@@ -98,7 +98,7 @@ class plugin_user_group extends StdClass implements IsPlugin
             return true;
         }
         // rule does not apply
-        if (!isset($required[PluginAnnotationEnumeration::ROLE]) && !isset($required[PluginAnnotationEnumeration::GROUP])) {
+        if (!isset($required[\Yana\Plugins\Annotations\Enumeration::ROLE]) && !isset($required[\Yana\Plugins\Annotations\Enumeration::GROUP])) {
             return null;
         }
 
@@ -160,8 +160,8 @@ class plugin_user_group extends StdClass implements IsPlugin
         }
 
         // check required role
-        if (isset($required[PluginAnnotationEnumeration::ROLE])) {
-            $requiredRole = strtoupper($required[PluginAnnotationEnumeration::ROLE]);
+        if (isset($required[\Yana\Plugins\Annotations\Enumeration::ROLE])) {
+            $requiredRole = strtoupper($required[\Yana\Plugins\Annotations\Enumeration::ROLE]);
 
             // if required role does not match
             if (!isset($userSettings['roles'][$requiredRole])) {
@@ -172,12 +172,12 @@ class plugin_user_group extends StdClass implements IsPlugin
             }
 
             // role matches and no group is required
-            if (!isset($required[PluginAnnotationEnumeration::GROUP])) {
+            if (!isset($required[\Yana\Plugins\Annotations\Enumeration::GROUP])) {
                 return true;
 
             // if role AND group are both required ...
             } else {
-                $requiredGroup = strtoupper($required[PluginAnnotationEnumeration::GROUP]);
+                $requiredGroup = strtoupper($required[\Yana\Plugins\Annotations\Enumeration::GROUP]);
             }
 
             // if required group does not match
@@ -204,8 +204,8 @@ class plugin_user_group extends StdClass implements IsPlugin
             return true;
         }
         // if required group does not match
-        if (isset($required[PluginAnnotationEnumeration::GROUP])) {
-            if (!isset($userSettings['groups'][strtoupper($required[PluginAnnotationEnumeration::GROUP])])) {
+        if (isset($required[\Yana\Plugins\Annotations\Enumeration::GROUP])) {
+            if (!isset($userSettings['groups'][strtoupper($required[\Yana\Plugins\Annotations\Enumeration::GROUP])])) {
                 return false;
             }
         }

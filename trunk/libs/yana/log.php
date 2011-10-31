@@ -139,7 +139,7 @@ class Log extends \Yana\Core\Exceptions\AbstractException implements Yana\Log\Is
         } else {
             $report[$prefix.'USER'] = '*GUEST';
         }
-        $report[$prefix.'ACTION'] = PluginManager::getLastEvent();
+        $report[$prefix.'ACTION'] = \Yana\Plugins\Manager::getLastEvent();
 
         assert('is_array($report); // Unexpected result: $report should be an array.');
         return $report;

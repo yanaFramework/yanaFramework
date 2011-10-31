@@ -430,12 +430,12 @@ class Grant extends \Yana\Db\Ddl\DDL
                     return true;
                 }
                 $required = array(
-                    \PluginAnnotationEnumeration::GROUP => $user,
-                    \PluginAnnotationEnumeration::ROLE => $role,
-                    \PluginAnnotationEnumeration::LEVEL => $level
+                    \Yana\Plugins\Annotations\Enumeration::GROUP => $user,
+                    \Yana\Plugins\Annotations\Enumeration::ROLE => $role,
+                    \Yana\Plugins\Annotations\Enumeration::LEVEL => $level
                 );
                 $profileId = \Yana::getId();
-                $action = \PluginManager::getLastEvent();
+                $action = \Yana\Plugins\Manager::getLastEvent();
                 $userName = (string) \YanaUser::getUserName();
                 return (bool) \SessionManager::checkRule($required, $profileId, $action, $userName);
             break;

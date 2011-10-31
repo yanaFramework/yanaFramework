@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins\Annotations;
+
 /**
  * <<Enumeration>> Plugin annotation
  *
@@ -34,14 +36,12 @@
  * For further info on how to use these see the corresponding chapter
  * in the manual.
  *
- * @access      public
- * @name        PluginConfiguration
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  *
  * @ignore
  */
-class PluginAnnotationEnumeration extends \Yana\Core\AbstractEnumeration
+class Enumeration extends \Yana\Core\AbstractEnumeration
 {
     /**#@+
      * class constants
@@ -88,5 +88,7 @@ class PluginAnnotationEnumeration extends \Yana\Core\AbstractEnumeration
     const VERSION = 'version';
 
     /**#@-*/
+
 }
+
 ?>

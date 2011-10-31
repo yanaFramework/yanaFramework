@@ -25,39 +25,39 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins;
+
+use Yana\Plugins\Configs;
+
 /**
  * Plugin Configuration Repository.
  *
  * This class is meant to hold the configuration for various aspects of the stored plugins.
  *
- * @access      public
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  */
-class PluginRepository extends \Yana\Core\Object
+class Repository extends \Yana\Core\Object
 {
 
     /**
-     * Collection of {@see PluginConfigurationMethod}s.
+     * Collection of {@see \Yana\Plugins\Configs\MethodConfiguration}s.
      *
-     * @access  private
-     * @var     PluginMethodCollection
+     * @var  \Yana\Plugins\Configs\MethodCollection
      */
     private $_methods = null;
 
     /**
-     * Collection of {@see PluginConfigurationClass}es.
+     * Collection of {@see \Yana\Plugins\ClassConfiguration}es.
      *
-     * @access  private
-     * @var     PluginClassCollection
+     * @var  \Yana\Plugins\Configs\ClassCollection
      */
     private $_plugins = null;
 
     /**
      * Priority list of methods.
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_implementations = array();
 
@@ -66,14 +66,13 @@ class PluginRepository extends \Yana\Core\Object
      */
     public function __construct()
     {
-        $this->_plugins = new PluginClassCollection();
-        $this->_methods = new PluginMethodCollection();
+        $this->_plugins = new \Yana\Plugins\Configs\ClassCollection();
+        $this->_methods = new \Yana\Plugins\Configs\MethodCollection();
     }
 
     /**
      * Check if a plugin with the given name exists.
      *
-     * @access  public
      * @param   string  $plugin  identifier
      * @return  bool
      */
@@ -85,9 +84,8 @@ class PluginRepository extends \Yana\Core\Object
     /**
      * Add plugin configuration.
      *
-     * @access  public
-     * @param   PluginConfigurationClass  $plugin  configuration to add
-     * @return  PluginRepository
+     * @param   \Yana\Plugins\Configs\ClassConfiguration  $plugin  configuration to add
+     * @return  \Yana\Plugins\Repository
      */
     public function addPlugin($plugin)
     {
@@ -100,8 +98,7 @@ class PluginRepository extends \Yana\Core\Object
      *
      * Returns a collection object that may be used as an array.
      *
-     * @access  public
-     * @return  PluginClassCollection
+     * @return  \Yana\Plugins\Configs\ClassCollection
      */
     public function getPlugins()
     {
@@ -111,7 +108,6 @@ class PluginRepository extends \Yana\Core\Object
     /**
      * Check if a method with the given name exists.
      *
-     * @access  public
      * @param   string  $method  identifier
      * @return  bool
      */
@@ -123,9 +119,8 @@ class PluginRepository extends \Yana\Core\Object
     /**
      * Add plugin-method configuration.
      *
-     * @access  public
-     * @param   PluginConfigurationMethod  $method  configuration to add
-     * @return  PluginRepository
+     * @param   \Yana\Plugins\Configs\MethodConfiguration  $method  configuration to add
+     * @return  \Yana\Plugins\Repository
      */
     public function addMethod($method)
     {
@@ -138,8 +133,7 @@ class PluginRepository extends \Yana\Core\Object
      *
      * Returns a collection object that may be used as an array.
      *
-     * @access  public
-     * @return  PluginMethodCollection
+     * @return  \Yana\Plugins\Configs\MethodCollection
      */
     public function getMethods()
     {
@@ -152,7 +146,6 @@ class PluginRepository extends \Yana\Core\Object
      * If the event is not registered, the function returns NULL.
      * Otherwise it returns a list of items of {@see PluginPriorityEnumeration}.
      *
-     * @access  public
      * @param   string $methodName  name of the event to check for
      * @return  array
      */
@@ -165,12 +158,11 @@ class PluginRepository extends \Yana\Core\Object
     /**
      * Register that the given class implements the given method.
      * 
-     * @access  public
-     * @param   PluginConfigurationClass  $class    implements the given method
-     * @param   PluginConfigurationMethod $method   implemented by the given class
-     * @return  PluginRepository 
+     * @param   \Yana\Plugins\Configs\ClassConfiguration  $class    implements the given method
+     * @param   \Yana\Plugins\Configs\MethodConfiguration $method   implemented by the given class
+     * @return  \Yana\Plugins\Repository 
      */
-    public function setImplementation(PluginConfigurationMethod $method, PluginConfigurationClass $class)
+    public function setImplementation(Configs\MethodConfiguration $method, Configs\ClassConfiguration $class)
     {
         $methodName = mb_strtolower($method->getMethodName());
         $this->_implementations[$methodName][$class->getId()] = $class->getPriority();
@@ -180,12 +172,11 @@ class PluginRepository extends \Yana\Core\Object
     /**
      * Unregister an implementing class for a method.
      * 
-     * @access  public
-     * @param   PluginConfigurationMethod $method   remove the implementation of this function
+     * @param   \Yana\Plugins\Configs\MethodConfiguration $method   remove the implementation of this function
      * @param   string                    $classId  plugin identifier
-     * @return  PluginRepository 
+     * @return  \Yana\Plugins\Repository 
      */
-    public function unsetImplementation(PluginConfigurationMethod $method, $classId)
+    public function unsetImplementation(Configs\MethodConfiguration $method, $classId)
     {
         $methodName = mb_strtolower($method->getMethodName());
         if (isset($this->_implementations[$methodName][$classId])) {

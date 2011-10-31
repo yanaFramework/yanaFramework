@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins\Configs;
+
 /**
  * <<Collection>> Plugin configuration method collection.
  *
@@ -32,11 +34,11 @@
  *
  * @access      public
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  *
  * @ignore
  */
-class PluginMethodCollection extends \Yana\Core\AbstractCollection
+class MethodCollection extends \Yana\Core\AbstractCollection
 {
 
     /**
@@ -80,20 +82,20 @@ class PluginMethodCollection extends \Yana\Core\AbstractCollection
      * Insert or replace item.
      *
      * @access  public
-     * @param   string                     $offset  ignored
-     * @param   PluginConfigurationMethod  $value   newly added instance
+     * @param   string               $offset  ignored
+     * @param   MethodConfiguration  $value   newly added instance
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not a valid item of the collection
      */
     public function offsetSet($offset, $value)
     {
-        if ($value instanceof PluginConfigurationMethod) {
+        if ($value instanceof MethodConfiguration) {
             if (!is_string($offset)) {
                 $offset = $value->getMethodName();
             }
             assert('is_string($offset); // Invalid argument $offset: string expected');
             $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
-            $message = "Instance of PluginConfigurationMethod expected. " .
+            $message = "Instance of MethodConfiguration expected. " .
                 "Found " . gettype($value) . "(" . ((is_object($value)) ? get_class($value) : $value) . ") instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }

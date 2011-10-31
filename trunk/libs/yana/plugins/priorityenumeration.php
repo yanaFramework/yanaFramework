@@ -25,17 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins;
+
 /**
  * <<Enumeration>> PluginPriority
  *
  * Values for plugin priority
  *
- * @access      public
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  * @ignore
  */
-class PluginPriorityEnumeration extends \Yana\Core\AbstractEnumeration
+class PriorityEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     const LOWEST = 0;
@@ -51,8 +52,6 @@ class PluginPriorityEnumeration extends \Yana\Core\AbstractEnumeration
      * annotation inside a PHP doc block.
      * This function associates them with their responsive integer values.
      *
-     * @access  public
-     * @static
      * @param   string  $string  text representation to convert
      * @return  int
      */

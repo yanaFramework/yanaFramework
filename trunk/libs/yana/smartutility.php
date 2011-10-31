@@ -1064,7 +1064,7 @@ class SmartUtility extends \Yana\Core\AbstractUtility
      */
     public static function toolbar()
     {
-        $menu = PluginMenu::getInstance();
+        $menu = \Yana\Plugins\Menu::getInstance();
         return self::printUL3($menu->getTextMenu(), true);
     }
 
@@ -1212,7 +1212,7 @@ class SmartUtility extends \Yana\Core\AbstractUtility
     public static function applicationBar()
     {
         $result = "";
-        $pluginMenu = PluginMenu::getInstance();
+        $pluginMenu = \Yana\Plugins\Menu::getInstance();
 
         $template = '<a class="applicationBar" href="' . self::url("action=", false, false) . '%s">' .
             '<img src="%s" title="%s" alt="%s"/></a>';

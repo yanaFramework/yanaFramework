@@ -25,40 +25,37 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins;
+
 /**
  * Menu information.
  *
  * This class configurates a menu entry
  *
- * @access      public
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  * @ignore
  */
-class PluginMenuEntry
+class MenuEntry
 {
 
     /**
-     * @access private
-     * @var    string
+     * @var  string
      */
     private $_group = "";
 
     /**
-     * @access private
-     * @var    string
+     * @var  string
      */
     private $_title = "";
 
     /**
-     * @access private
-     * @var    string
+     * @var  string
      */
     private $_icon = "";
 
     /**
-     * @access private
-     * @var    bool
+     * @var  bool
      */
     private $_safeMode = null;
 
@@ -67,7 +64,6 @@ class PluginMenuEntry
      *
      * Groups may have sub-groups, devided by '.'.
      *
-     * @access  public
      * @return  int
      */
     public function getGroup()
@@ -83,9 +79,8 @@ class PluginMenuEntry
      * Example: foo.bar
      * Meaning, foo is the top-menu, with bar as the second-level entry.
      *
-     * @access  public
      * @param   string  $group  
-     * @return  PluginMenuEntry
+     * @return  \Yana\Plugins\MenuEntry
      */
     public function setGroup($group)
     {
@@ -97,7 +92,6 @@ class PluginMenuEntry
     /**
      * Get title of the menu entry.
      *
-     * @access  public
      * @return  string
      */
     public function getTitle()
@@ -108,9 +102,8 @@ class PluginMenuEntry
     /**
      * Set title of the menu entry.
      *
-     * @access  public
      * @param   string  $title  a text or a translation token
-     * @return  PluginMenuEntry
+     * @return  \Yana\Plugins\MenuEntry
      */
     public function setTitle($title)
     {
@@ -122,7 +115,6 @@ class PluginMenuEntry
     /**
      * Get icon path.
      *
-     * @access  public
      * @return  string
      */
     public function getIcon()
@@ -133,9 +125,8 @@ class PluginMenuEntry
     /**
      * Set icon path.
      *
-     * @access  public
      * @param   string  $icon  path to image file
-     * @return  PluginMenuEntry
+     * @return  \Yana\Plugins\MenuEntry
      */
     public function setIcon($icon)
     {
@@ -147,7 +138,6 @@ class PluginMenuEntry
     /**
      * get value of safemode setting.
      *
-     * @access  public
      * @return  bool
      * @ignore
      */
@@ -159,9 +149,8 @@ class PluginMenuEntry
     /**
      * Set safemode setting.
      *
-     * @access  public
      * @param   bool  $safeMode  true = requires safe-mode, false = disallows safe-mode, null = don't care
-     * @return  PluginMenuEntry
+     * @return  \Yana\Plugins\MenuEntry
      * @ignore
      */
     public function setSafeMode($safeMode = null)

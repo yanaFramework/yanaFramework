@@ -25,43 +25,39 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins\Configs;
+
 /**
  * <<builder>> Plugin configuration builder
  *
  * This class produces a configuration from a class reflection.
  *
- * @access      public
  * @name        PluginConfiguration
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  *
  * @ignore
  */
-class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
+class Builder extends \Yana\Plugins\Configs\AbstractBuilder
 {
 
     /**
-     * @access  private
-     * @var     PluginReflectionClass
+     * @var  \Yana\Plugins\ReflectionClass
      */
     private $_class = null;
 
     /**
-     * @access  private
-     * @var     PluginReflectionMethod
+     * @var  \Yana\Plugins\ReflectionMethod
      */
     private $_method = null;
 
     /**
-     * @access  private
-     * @var     IsAnnotationParser
+     * @var  \Yana\Plugins\Annotations\IsParser
      */
     private $_parser = null;
 
     /**
      * Build class object.
-     *
-     * @access protected
      */
     protected function buildClass()
     {
@@ -79,31 +75,31 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             $this->object->setTitles($titles);
             $this->object->setTexts($texts);
             $this->object->setDirectory($this->_class->getDirectory());
-            $type = $parser->getTag(PluginAnnotationEnumeration::TYPE, PluginTypeEnumeration::DEFAULT_SETTING);
+            $type = $parser->getTag(\Yana\Plugins\Annotations\Enumeration::TYPE, \Yana\Plugins\TypeEnumeration::DEFAULT_SETTING);
             $this->object->setType($type);
-            $this->object->setAuthors($parser->getTags(PluginAnnotationEnumeration::AUTHOR));
-            $priorityString = $parser->getTag(PluginAnnotationEnumeration::PRIORITY);
-            $this->object->setPriority(PluginPriorityEnumeration::fromString($priorityString));
-            $this->object->setGroup(mb_strtolower($parser->getTag(PluginAnnotationEnumeration::GROUP)));
-            $this->object->setParent($parser->getTag(PluginAnnotationEnumeration::PARENT));
-            $this->object->setDependencies($parser->getTags(PluginAnnotationEnumeration::REQUIRES));
-            $this->object->setLicense($parser->getTag(PluginAnnotationEnumeration::LICENSE));
-            $this->object->setUrl($parser->getTag(PluginAnnotationEnumeration::URL));
-            $this->object->setVersion($parser->getTag(PluginAnnotationEnumeration::VERSION));
+            $this->object->setAuthors($parser->getTags(\Yana\Plugins\Annotations\Enumeration::AUTHOR));
+            $priorityString = $parser->getTag(\Yana\Plugins\Annotations\Enumeration::PRIORITY);
+            $this->object->setPriority(\Yana\Plugins\PriorityEnumeration::fromString($priorityString));
+            $this->object->setGroup(mb_strtolower($parser->getTag(\Yana\Plugins\Annotations\Enumeration::GROUP)));
+            $this->object->setParent($parser->getTag(\Yana\Plugins\Annotations\Enumeration::PARENT));
+            $this->object->setDependencies($parser->getTags(\Yana\Plugins\Annotations\Enumeration::REQUIRES));
+            $this->object->setLicense($parser->getTag(\Yana\Plugins\Annotations\Enumeration::LICENSE));
+            $this->object->setUrl($parser->getTag(\Yana\Plugins\Annotations\Enumeration::URL));
+            $this->object->setVersion($parser->getTag(\Yana\Plugins\Annotations\Enumeration::VERSION));
             $this->object->setLastModified($this->_class->getLastModified());
-            $activityString = $parser->getTag(PluginAnnotationEnumeration::ACTIVE, '0');
-            $this->object->setActive(PluginActivityEnumeration::getActiveState($activityString));
+            $activityString = $parser->getTag(\Yana\Plugins\Annotations\Enumeration::ACTIVE, '0');
+            $this->object->setActive(\Yana\Plugins\ActivityEnumeration::getActiveState($activityString));
             assert('!isset($tags); // Cannot redeclare var $tags');
             assert('!isset($tag); // Cannot redeclare var $tag');
-            $tags = $parser->getTags(PluginAnnotationEnumeration::MENU);
+            $tags = $parser->getTags(\Yana\Plugins\Annotations\Enumeration::MENU);
             foreach ($tags as $tag) {
                 assert('!isset($menu); // Cannot redeclare var $menu');
-                $menu = new PluginMenuEntry();
-                if (isset($tag[PluginAnnotationEnumeration::GROUP])) {
-                    $menu->setGroup($tag[PluginAnnotationEnumeration::GROUP]);
+                $menu = new \Yana\Plugins\MenuEntry();
+                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::GROUP])) {
+                    $menu->setGroup($tag[\Yana\Plugins\Annotations\Enumeration::GROUP]);
                 }
-                if (isset($tag[PluginAnnotationEnumeration::TITLE])) {
-                    $menu->setTitle($tag[PluginAnnotationEnumeration::TITLE]);
+                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::TITLE])) {
+                    $menu->setTitle($tag[\Yana\Plugins\Annotations\Enumeration::TITLE]);
                 }
                 $this->object->addMenu($menu);
                 unset($menu);
@@ -113,7 +109,7 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             foreach ($this->_class->getMethods(\ReflectionProperty::IS_PUBLIC) as $method)
             {
                 $parser->setText($method->getDocComment());
-                if (!$parser->getTag(PluginAnnotationEnumeration::IGNORE)) {
+                if (!$parser->getTag(\Yana\Plugins\Annotations\Enumeration::IGNORE)) {
                     $this->_method = $method;
                     $this->buildMethod();
                 }
@@ -124,12 +120,10 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
 
     /**
      * Build method object.
-     *
-     * @access protected
      */
     protected function buildMethod()
     {
-        $method = new PluginConfigurationMethod();
+        $method = new \Yana\Plugins\Configs\MethodConfiguration();
         if ($this->_method) {
             $parser = $this->getAnnotationParser();
 
@@ -139,84 +133,84 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             $method->setMethodName($this->_method->getName());
 
             $typeClassTag = $this->object->getType();
-            $method->setType(mb_strtolower($parser->getTag(PluginAnnotationEnumeration::TYPE, $typeClassTag)));
+            $method->setType(mb_strtolower($parser->getTag(\Yana\Plugins\Annotations\Enumeration::TYPE, $typeClassTag)));
             $method->addPath($classPath);
-            $method->setTitle($parser->getTag(PluginAnnotationEnumeration::TITLE));
-            $method->setReturn($parser->getTag(PluginAnnotationEnumeration::RETURN_VALUE));
-            $method->setTemplate(mb_strtolower($parser->getTag(PluginAnnotationEnumeration::TEMPLATE, 'null')));
+            $method->setTitle($parser->getTag(\Yana\Plugins\Annotations\Enumeration::TITLE));
+            $method->setReturn($parser->getTag(\Yana\Plugins\Annotations\Enumeration::RETURN_VALUE));
+            $method->setTemplate(mb_strtolower($parser->getTag(\Yana\Plugins\Annotations\Enumeration::TEMPLATE, 'null')));
             assert('!isset($users); // Cannot redeclare var $users');
             $users = array();
             assert('!isset($item); // Cannot redeclare var $item');
             assert('!isset($tag); // Cannot redeclare var $tag');
-            foreach ($parser->getTags(PluginAnnotationEnumeration::USER, array()) as $tag)
+            foreach ($parser->getTags(\Yana\Plugins\Annotations\Enumeration::USER, array()) as $tag)
             {
-                $user = new PluginUserLevel();
-                if (isset($tag[PluginAnnotationEnumeration::GROUP])) {
-                    $user->setGroup($tag[PluginAnnotationEnumeration::GROUP]);
+                $user = new \Yana\Plugins\UserLevel();
+                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::GROUP])) {
+                    $user->setGroup($tag[\Yana\Plugins\Annotations\Enumeration::GROUP]);
                 }
-                if (isset($tag[PluginAnnotationEnumeration::ROLE])) {
-                    $user->setRole($tag[PluginAnnotationEnumeration::ROLE]);
+                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::ROLE])) {
+                    $user->setRole($tag[\Yana\Plugins\Annotations\Enumeration::ROLE]);
                 }
-                if (isset($tag[PluginAnnotationEnumeration::LEVEL])) {
-                    $user->setLevel((int) $tag[PluginAnnotationEnumeration::LEVEL]);
+                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::LEVEL])) {
+                    $user->setLevel((int) $tag[\Yana\Plugins\Annotations\Enumeration::LEVEL]);
                 }
                 $users[] = $user;
             }
             unset($item, $tag);
             $method->setUserLevels($users);
             assert('!isset($tag); // Cannot redeclare var $tag');
-            $tag = $parser->getTag(PluginAnnotationEnumeration::MENU);
+            $tag = $parser->getTag(\Yana\Plugins\Annotations\Enumeration::MENU);
             if (!empty($tag)) {
                 assert('!isset($menu); // Cannot redeclare var $menu');
-                $menu = new PluginMenuEntry();
-                if (isset($tag[PluginAnnotationEnumeration::GROUP])) {
-                    $menu->setGroup($tag[PluginAnnotationEnumeration::GROUP]);
+                $menu = new \Yana\Plugins\MenuEntry();
+                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::GROUP])) {
+                    $menu->setGroup($tag[\Yana\Plugins\Annotations\Enumeration::GROUP]);
                 }
-                if (isset($tag[PluginAnnotationEnumeration::TITLE])) {
-                    $menu->setTitle($tag[PluginAnnotationEnumeration::TITLE]);
+                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::TITLE])) {
+                    $menu->setTitle($tag[\Yana\Plugins\Annotations\Enumeration::TITLE]);
                 }
                 $method->setMenu($menu);
                 unset($menu);
             }
-            $tag = $parser->getTag(PluginAnnotationEnumeration::ONERROR);
+            $tag = $parser->getTag(\Yana\Plugins\Annotations\Enumeration::ONERROR);
             if (!empty($tag)) {
                 assert('!isset($event); // Cannot redeclare var $event');
-                $event = new PluginEventRoute();
-                if (isset($tag[PluginAnnotationEnumeration::GO])) {
-                    $event->setTarget($tag[PluginAnnotationEnumeration::GO]);
+                $event = new \Yana\Plugins\Configs\EventRoute();
+                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::GO])) {
+                    $event->setTarget($tag[\Yana\Plugins\Annotations\Enumeration::GO]);
                 }
-                if (isset($tag[PluginAnnotationEnumeration::TEXT])) {
-                    $event->setMessage($tag[PluginAnnotationEnumeration::TEXT]);
+                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::TEXT])) {
+                    $event->setMessage($tag[\Yana\Plugins\Annotations\Enumeration::TEXT]);
                 }
                 $method->setOnError($event);
                 unset($event);
             }
-            $tag = $parser->getTag(PluginAnnotationEnumeration::ONSUCCESS);
+            $tag = $parser->getTag(\Yana\Plugins\Annotations\Enumeration::ONSUCCESS);
             if (!empty($tag)) {
                 assert('!isset($event); // Cannot redeclare var $event');
-                $event = new PluginEventRoute();
-                if (isset($tag[PluginAnnotationEnumeration::GO])) {
-                    $event->setTarget($tag[PluginAnnotationEnumeration::GO]);
+                $event = new \Yana\Plugins\Configs\EventRoute();
+                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::GO])) {
+                    $event->setTarget($tag[\Yana\Plugins\Annotations\Enumeration::GO]);
                 }
-                if (isset($tag[PluginAnnotationEnumeration::TEXT])) {
-                    $event->setMessage($tag[PluginAnnotationEnumeration::TEXT]);
+                if (isset($tag[\Yana\Plugins\Annotations\Enumeration::TEXT])) {
+                    $event->setMessage($tag[\Yana\Plugins\Annotations\Enumeration::TEXT]);
                 }
                 $method->setOnSuccess($event);
                 unset($event);
             }
             unset($tag);
-            $method->setSafeMode($parser->getTag(PluginAnnotationEnumeration::SAFEMODE));
+            $method->setSafeMode($parser->getTag(\Yana\Plugins\Annotations\Enumeration::SAFEMODE));
             if ($this->_class) {
                 $method->setGroup($this->object->getGroup());
             }
-            $method->setOverwrite((bool) $parser->getTag(PluginAnnotationEnumeration::OVERWRITE, '0'));
-            $method->setSubscribe((bool) $parser->getTag(PluginAnnotationEnumeration::SUBSCRIBE, '0'));
-            $method->setLanguages($parser->getTags(PluginAnnotationEnumeration::LANGUAGE));
+            $method->setOverwrite((bool) $parser->getTag(\Yana\Plugins\Annotations\Enumeration::OVERWRITE, '0'));
+            $method->setSubscribe((bool) $parser->getTag(\Yana\Plugins\Annotations\Enumeration::SUBSCRIBE, '0'));
+            $method->setLanguages($parser->getTags(\Yana\Plugins\Annotations\Enumeration::LANGUAGE));
             // process and add scripts
             assert('!isset($scripts); // Cannot redeclare var $scripts');
             $scripts = array();
             assert('!isset($script); // Cannot redeclare var $script');
-            foreach ($parser->getTags(PluginAnnotationEnumeration::SCRIPT, array()) as $script)
+            foreach ($parser->getTags(\Yana\Plugins\Annotations\Enumeration::SCRIPT, array()) as $script)
             {
                 if (!is_string($script)) {
                     $message = 'Syntax error in @script: ' . $this->className . '::' . $this->methodName . '()';
@@ -231,7 +225,7 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             assert('!isset($styles); // Cannot redeclare var $scripts');
             $styles = array();
             assert('!isset($style); // Cannot redeclare var $style');
-            foreach ($parser->getTags(PluginAnnotationEnumeration::STYLE, array()) as $style)
+            foreach ($parser->getTags(\Yana\Plugins\Annotations\Enumeration::STYLE, array()) as $style)
             {
                 if (!is_string($style)) {
                     $message = 'Syntax error in @style: ' .$this->className . '::' . $this->methodName . '()';
@@ -244,7 +238,7 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             unset($styles, $style);
             // process template
             assert('!isset($template); // Cannot redeclare var $template');
-            $template = $classPath . "/" . $parser->getTag(PluginAnnotationEnumeration::TEMPLATE);
+            $template = $classPath . "/" . $parser->getTag(\Yana\Plugins\Annotations\Enumeration::TEMPLATE);
             if (is_file($template)) {
                 $method->setTemplate($template);
             }
@@ -256,7 +250,7 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
             assert('!isset($match); // Cannot redeclare var $match');
             assert('!isset($name); // Cannot redeclare var $name');
             assert('!isset($type); // Cannot redeclare var $type');
-            foreach ($parser->getTags(PluginAnnotationEnumeration::PARAM, array()) as $param)
+            foreach ($parser->getTags(\Yana\Plugins\Annotations\Enumeration::PARAM, array()) as $param)
             {
                 if (!is_string($param)) {
                     $message = 'Syntax error in @param: ' .$this->className . '::' . $this->methodName . '()';
@@ -292,11 +286,10 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
     /**
      * Build from PHP reflection.
      *
-     * @access  public
-     * @param   PluginReflectionClass  $pluginClass  base class description
-     * @return  PluginConfigurationBuilder 
+     * @param   \Yana\Plugins\ReflectionClass  $pluginClass  base class description
+     * @return  \Yana\Plugins\Configs\Builder 
      */
-    public function setReflection(PluginReflectionClass $pluginClass)
+    public function setReflection(\Yana\Plugins\ReflectionClass $pluginClass)
     {
         $this->_class = $pluginClass;
         return $this;
@@ -307,11 +300,10 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
      *
      * Defaults to {@see PluginAnnotationParser}.
      *
-     * @access  public
-     * @param   IsAnnotationParser  $parser  used to parse the class for annotations.
-     * @return  PluginConfigurationBuilder 
+     * @param   \Yana\Plugins\Annotations\IsParser  $parser  used to parse the class for annotations.
+     * @return  \Yana\Plugins\Configs\Builder 
      */
-    public function setAnnotationParser(IsAnnotationParser $parser)
+    public function setAnnotationParser(\Yana\Plugins\Annotations\IsParser $parser)
     {
         $this->_parser = $parser;
         return $this;
@@ -320,15 +312,14 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
     /**
      * Get annotation parser to use.
      *
-     * Defaults to {@see PluginAnnotationParser}.
+     * Defaults to {@see \Yana\Plugins\Annotations\Parser}.
      *
-     * @access  protected
-     * @return  IsAnnotationParser 
+     * @return  \Yana\Plugins\Annotations\IsParser 
      */
     protected function getAnnotationParser()
     {
         if (!isset($this->_parser)) {
-            $this->_parser = new PluginAnnotationParser();
+            $this->_parser = new \Yana\Plugins\Annotations\Parser();
         }
         return $this->_parser;
     }
@@ -336,16 +327,15 @@ class PluginConfigurationBuilder extends PluginConfigurationAbstractBuilder
     /**
      * get title and text from translation tag
      *
-     * @access  private
-     * @param   PluginReflectionClass  $pluginClass      plugin configuration class
+     * @param   \Yana\Plugins\ReflectionClass  $pluginClass      plugin configuration class
      * @param   string                 &$title           output title var
      * @param   string                 &$text            output text var
      */
-    private function _getTranslation(PluginReflectionClass $pluginClass, array &$title, array &$text)
+    private function _getTranslation(\Yana\Plugins\ReflectionClass $pluginClass, array &$title, array &$text)
     {
         $parser = $this->getAnnotationParser();
         $parser->setText($pluginClass->getPageComment());
-        $translation = $parser->getTag(PluginAnnotationEnumeration::TRANSLATION);
+        $translation = $parser->getTag(\Yana\Plugins\Annotations\Enumeration::TRANSLATION);
         $title = array();
         $text = array();
 

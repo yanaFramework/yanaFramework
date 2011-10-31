@@ -292,8 +292,8 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
         $groups = array();
         $roles = array();
         $actions = array();
-        $pluginManager = PluginManager::getInstance();
-        /* @var $configuration PluginConfigurationMethod */
+        $pluginManager = \Yana\Plugins\Manager::getInstance();
+        /* @var $configuration \Yana\Plugins\Configs\MethodConfiguration */
         foreach ($pluginManager->getEventConfigurations() as $configuration)
         {
             $name = $configuration->getMethodName();
@@ -429,7 +429,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
 
         /* Argument 2 */
         if (empty($action)) {
-            $action = PluginManager::getLastEvent();
+            $action = \Yana\Plugins\Manager::getLastEvent();
             // security restriction on undefined event
             if (empty($action)) {
                 return false;

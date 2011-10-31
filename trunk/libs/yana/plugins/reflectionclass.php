@@ -25,38 +25,54 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins;
+
 /**
  * Plugin information
  *
  * This class represents a plugin's meta information.
  * This is it's interface, name and description plus and more.
  *
- * @access      public
  * @name        PluginReflectionClass
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  */
-class PluginReflectionClass extends \ReflectionClass
+class ReflectionClass extends \ReflectionClass
 {
 
-    /**#@+
-     * @ignore
-     * @access  private
+    /**
+     * @var string
      */
+    private $_className = "";
 
-    /** @var string */ private $_className = "";
-    /** @var string */ private $_classDoc = null;
-    /** @var string */ private $_pageDoc = null;
-    /** @var string */ private $_title = null;
-    /** @var string */ private $_text = null;
-    /** @var array  */ private $_methods = array();
+    /**
+     * @var string
+     */
+    private $_classDoc = null;
 
-    /**#@-*/
+    /**
+     * @var string
+     */
+    private $_pageDoc = null;
+
+    /**
+     * @var string
+     */
+    private $_title = null;
+
+    /**
+     * @var string
+     */
+    private $_text = null;
+
+    /**
+     * @var array
+     */
+    private $_methods = array();
 
     /**
      * Constructor
      *
-     * @access  public
      * @param   string  $className  class name
      */
     public function __construct($className)
@@ -68,7 +84,6 @@ class PluginReflectionClass extends \ReflectionClass
     /**
      * Get class name.
      *
-     * @access  public
      * @return  string
      */
     public function getClassName()
@@ -79,21 +94,19 @@ class PluginReflectionClass extends \ReflectionClass
     /**
      * Get method reflection.
      *
-     * @access  public
      * @param   string  $methodName   method name
-     * @return  PluginReflectionMethod
+     * @return  \Yana\Plugins\ReflectionMethod
      */
     public function getMethod($methodName)
     {
-        return new PluginReflectionMethod($this->_className, $methodName);
+        return new \Yana\Plugins\ReflectionMethod($this->_className, $methodName);
     }
 
     /**
      * Get methods as reflections.
      *
-     * @access  public
      * @param   int  $filter    filter
-     * @return  PluginReflectionMethod[]
+     * @return  \Yana\Plugins\ReflectionMethod[]
      */
     public function getMethods($filter = \ReflectionProperty::IS_PUBLIC)
     {
@@ -113,7 +126,6 @@ class PluginReflectionClass extends \ReflectionClass
      * The title is the first line or first sentence of a comment.
      * It should be followed by a blank line.
      *
-     * @access  public
      * @return  string
      */
     public function getTitle()
@@ -132,7 +144,6 @@ class PluginReflectionClass extends \ReflectionClass
      *
      * The description is the comment text without the title and possibly following annotations.
      *
-     * @access  public
      * @return  string
      */
     public function getText()
@@ -153,7 +164,6 @@ class PluginReflectionClass extends \ReflectionClass
     /**
      * Get page comment.
      *
-     * @access  public
      * @return  string
      */
     public function getPageComment()
@@ -177,7 +187,6 @@ class PluginReflectionClass extends \ReflectionClass
     /**
      * get document comment
      *
-     * @access  public
      * @return  string
      */
     public function getDocComment()
@@ -207,7 +216,6 @@ class PluginReflectionClass extends \ReflectionClass
     /**
      * get time when file was last modified
      *
-     * @access  public
      * @return  string
      */
     public function getLastModified()
@@ -220,7 +228,6 @@ class PluginReflectionClass extends \ReflectionClass
      *
      * Returns bool(false) on error.
      *
-     * @access  public
      * @return  string
      */
     public function getDirectory()
@@ -237,6 +244,7 @@ class PluginReflectionClass extends \ReflectionClass
         }
         return $directory;
     }
+
 }
 
 ?>

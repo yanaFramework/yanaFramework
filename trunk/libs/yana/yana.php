@@ -102,7 +102,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * to communicate with plugins
      *
      * @access  private
-     * @var     PluginManager
+     * @var     \Yana\Plugins\Manager
      */
     private $_plugins = null;
 
@@ -220,10 +220,10 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     {
         if (!isset($this->isSafemode)) {
             $eventConfiguration = $this->getPlugins()->getEventConfiguration($this->getAction());
-            if ($eventConfiguration instanceof PluginConfigurationMethod) {
+            if ($eventConfiguration instanceof \Yana\Plugins\Configs\MethodConfiguration) {
                 $this->_isSafeMode = ($eventConfiguration->getSafemode() === true);
             } else {
-                $this->_isSafeMode = !empty(self::$_config['DEFAULT']['EVENT'][PluginAnnotationEnumeration::SAFEMODE]);
+                $this->_isSafeMode = !empty(self::$_config['DEFAULT']['EVENT'][\Yana\Plugins\Annotations\Enumeration::SAFEMODE]);
             }
         }
         return $this->_isSafeMode;
@@ -312,7 +312,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
             Skin::setBaseDirectory(self::$_config['SKINDIR']);
         }
         if (isset(self::$_config['PLUGINFILE'])) {
-            PluginManager::setPath(self::$_config['PLUGINFILE'], self::$_config['PLUGINDIR']);
+            \Yana\Plugins\Manager::setPath(self::$_config['PLUGINFILE'], self::$_config['PLUGINDIR']);
         }
     }
 
@@ -363,7 +363,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
         assert('!isset($plugins); // Cannot redeclare var $plugins');
         $plugins = $this->getPlugins();
         $eventConfiguration = $plugins->getEventConfiguration($action);
-        if (!($eventConfiguration instanceof PluginConfigurationMethod)) {
+        if (!($eventConfiguration instanceof \Yana\Plugins\Configs\MethodConfiguration)) {
             $error = new InvalidActionError();
             $error->setAction($action);
             return false;
@@ -593,7 +593,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * The pluginManager holds repositories for interfaces and implementations of plugins.
      *
      * @access  public
-     * @return  PluginManager
+     * @return  \Yana\Plugins\Manager
      */
     public function getPlugins()
     {
@@ -605,8 +605,8 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
                 assert('$this->_plugins instanceof PluginManager;');
 
             } else {
-                $this->_plugins = PluginManager::getInstance();
-                if (!is_file(PluginManager::getConfigFilePath())) {
+                $this->_plugins = \Yana\Plugins\Manager::getInstance();
+                if (!is_file(\Yana\Plugins\Manager::getConfigFilePath())) {
                     $this->_plugins->refreshPluginFile();
                 }
                 file_put_contents($cacheFile, serialize($this->_plugins));
@@ -1021,7 +1021,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
         $event = $pluginManager->getFirstEvent();
         $result = $pluginManager->getLastResult();
         $eventConfiguration = $pluginManager->getEventConfiguration($event);
-        if (! $eventConfiguration instanceof PluginConfigurationMethod) {
+        if (! $eventConfiguration instanceof \Yana\Plugins\Configs\MethodConfiguration) {
             return; // error - unable to continue
         }
         $template = $eventConfiguration->getTemplate();
@@ -1109,16 +1109,16 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
         $target = "";
         $messageClass = "";
 
-        if ($route instanceof PluginEventRoute) {
+        if ($route instanceof \Yana\Plugins\Configs\EventRoute) {
             // create default message if there is none
             if (Message::countMessages() === 0) {
                 if ($route->getMessage()) {
                     $messageClass = $route->getMessage();
                 } else {
-                    if ($route->getCode() === PluginEventRoute::CODE_SUCCESS) {
-                        $messageClass = PluginEventRoute::MSG_SUCCESS;
+                    if ($route->getCode() === \Yana\Plugins\Configs\EventRoute::CODE_SUCCESS) {
+                        $messageClass = \Yana\Plugins\Configs\EventRoute::MSG_SUCCESS;
                     } else {
-                        $messageClass = PluginEventRoute::MSG_ERROR;
+                        $messageClass = \Yana\Plugins\Configs\EventRoute::MSG_ERROR;
                     }
                 }
 
@@ -1147,8 +1147,8 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     {
         assert('is_string($template); // Invalid argument $template: string expected');
         $view = $this->getView();
-        if (!empty(self::$_config['DEFAULT']['EVENT'][mb_strtoupper(PluginAnnotationEnumeration::TEMPLATE)])) {
-            $baseTemplate = self::$_config['DEFAULT']['EVENT'][mb_strtoupper(PluginAnnotationEnumeration::TEMPLATE)];
+        if (!empty(self::$_config['DEFAULT']['EVENT'][mb_strtoupper(\Yana\Plugins\Annotations\Enumeration::TEMPLATE)])) {
+            $baseTemplate = self::$_config['DEFAULT']['EVENT'][mb_strtoupper(\Yana\Plugins\Annotations\Enumeration::TEMPLATE)];
             $view->setPath($baseTemplate);
         }
         /* register templates with view sub-system */
@@ -1221,7 +1221,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     public static function clearCache()
     {
         SmartTemplate::clearCache();
-        PluginMenu::clearCache();
+        \Yana\Plugins\Menu::clearCache();
     }
 
     /**

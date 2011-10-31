@@ -25,30 +25,28 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins\Annotations;
+
 /**
  * <<abstract>> annotation parser.
  *
  * This is the base class for parsers to extract annotations from a comment text.
  *
- * @access      public
- * @abstract
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  */
-abstract class AbstractAnnotationParser extends \Yana\Core\Object implements IsAnnotationParser
+abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Plugins\Annotations\IsParser
 {
 
     /**
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_text = "";
 
     /**
      * Initialize instance.
      *
-     * @access  public
-     * @param   string  $text  some text to parse for annotations
+     * @param  string  $text  some text to parse for annotations
      */
     public function __construct($text = "")
     {
@@ -59,7 +57,6 @@ abstract class AbstractAnnotationParser extends \Yana\Core\Object implements IsA
     /**
      * Get comment text.
      *
-     * @access  public
      * @return  string
      */
     public function getText()
@@ -72,9 +69,8 @@ abstract class AbstractAnnotationParser extends \Yana\Core\Object implements IsA
      *
      * Enter some text to parse for annotations.
      *
-     * @access  public
      * @param   string  $text  comment text to parse
-     * @return  PluginAnnotationParser 
+     * @return  \Yana\Plugins\Annotations\AbstractParser 
      */
     public function setText($text)
     {
