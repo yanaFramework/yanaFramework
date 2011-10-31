@@ -117,15 +117,15 @@ class plugin_user extends StdClass implements IsPlugin
 
         if ($YANA->getSession()->checkPermission(null, $event)) {
             /* access granted */
-            $menu = PluginMenu::getInstance();
+            $menu = \Yana\Plugins\Menu::getInstance();
             if (YanaUser::isLoggedIn()) {
                 $action = "logout";
             } else {
                 $action = "login";
             }
-            $menuEntry = new PluginMenuEntry();
+            $menuEntry = new \Yana\Plugins\MenuEntry();
             $menuEntry->setTitle($YANA->getLanguage()->getVar($action));
-            PluginMenu::getInstance()->setMenuEntry($action, $menuEntry);
+            \Yana\Plugins\Menu::getInstance()->setMenuEntry($action, $menuEntry);
             return true;
         } else {
             if (!YanaUser::isLoggedIn()) {
@@ -155,15 +155,15 @@ class plugin_user extends StdClass implements IsPlugin
      */
     public static function checkSecurityLevel(DBStream $database, array $required, $profileId, $action, $userName)
     {
-        if (!isset($required[PluginAnnotationEnumeration::LEVEL])) {
+        if (!isset($required[\Yana\Plugins\Annotations\Enumeration::LEVEL])) {
             return null;
         }
         // skip if nothing to check
-        if (empty($required[PluginAnnotationEnumeration::LEVEL])) {
+        if (empty($required[\Yana\Plugins\Annotations\Enumeration::LEVEL])) {
             return true;
         }
 
-        $requiredLevel = (int) $required[PluginAnnotationEnumeration::LEVEL];
+        $requiredLevel = (int) $required[\Yana\Plugins\Annotations\Enumeration::LEVEL];
 
         if (!YanaUser::isLoggedIn()) {
             return false;
@@ -225,7 +225,7 @@ class plugin_user extends StdClass implements IsPlugin
         $sessionManager = SessionManager::getInstance();
         $database = SessionManager::getDatasource();
         // check captcha field
-        if (PluginManager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
+        if (\Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
             if ($YANA->callAction("security_check_image", $ARGS) === false) {
                 \Yana\Log\LogManager::getLogger()->addLog('SPAM: CAPTCHA not solved, entry has not been created.');
                 return false;

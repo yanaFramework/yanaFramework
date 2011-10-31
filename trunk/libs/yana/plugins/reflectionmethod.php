@@ -25,38 +25,46 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins;
+
 /**
  * Plugin information
  *
  * This class represents a plugin's meta information.
  * This is it's interface, name and description plus and more.
  *
- * @access      public
  * @name        PluginReflectionMethod
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  *
  * @ignore
  */
-class PluginReflectionMethod extends \ReflectionMethod
+class ReflectionMethod extends \ReflectionMethod
 {
 
-    /**#@+
-     * @ignore
-     * @access  private
+    /**
+     * @var string
      */
+    private $_className = "";
 
-    /** @var string */ private $_className = "";
-    /** @var string */ private $_title = null;
-    /** @var string */ private $_text = null;
-    /** @var string */ private $_docComment = null;
+    /**
+     * @var string
+     */
+    private $_title = null;
 
-    /**#@-*/
+    /**
+     * @var string
+     */
+    private $_text = null;
+
+    /**
+     * @var string
+     */
+    private $_docComment = null;
 
     /**
      * Constructor
      *
-     * @access  public
      * @param   string  $className   name of class
      * @param   string  $methodName  name of method
      */
@@ -69,7 +77,6 @@ class PluginReflectionMethod extends \ReflectionMethod
     /**
      * get title
      *
-     * @access  public
      * @return  string
      */
     public function getTitle()
@@ -87,7 +94,6 @@ class PluginReflectionMethod extends \ReflectionMethod
     /**
      * get text
      *
-     * @access  public
      * @return  string
      */
     public function getText()
@@ -108,7 +114,6 @@ class PluginReflectionMethod extends \ReflectionMethod
     /**
      * get class name
      *
-     * @access  public
      * @return  string
      */
     public function getClassName()
@@ -119,7 +124,6 @@ class PluginReflectionMethod extends \ReflectionMethod
     /**
      * get document comment
      *
-     * @access  public
      * @return  string
      */
     public function getDocComment()

@@ -31,7 +31,6 @@
  * This is an interface that all plugins must implement.
  * Each subclass should implement at least the default event handler.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */
@@ -43,8 +42,6 @@ interface IsPlugin
      * This is a dummy-implementation. Overwrite this in your
      * sub-classes as you see fit.
      *
-     * @access   public
-     * @abstract
      * @param    string  $event  identifier of the occured event
      * @param    array   $ARGS   list of arguments
      * @return   bool

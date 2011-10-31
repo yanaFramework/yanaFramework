@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins;
+
 /**
  * <<Singleton>> <<Mediator>> PluginManager
  *
@@ -44,7 +46,7 @@
  *
  * Code example for "broadcasting" an event to all plugins (= calling a function):
  * <code>
- * $manager = PluginManager::getInstance();
+ * $manager = \Yana\Plugins\Manager::getInstance();
  * try {
  *   $result = $manager->broadcastEvent('newState', $arguments);
  * } catch (\Exception $e) {
@@ -63,9 +65,9 @@
  * @access      public
  * @name        PluginManager
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  */
-class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsReportable
+class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsReportable
 {
 
     /**#@+
@@ -75,7 +77,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
     /**
      * This is a place-holder for the singleton's instance
      *
-     * @var PluginManager
+     * @var \Yana\Plugins\Manager
      * @static
      */
     private static $_instance = null;
@@ -122,7 +124,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
     /**
      * definition of next event in queue
      *
-     * @var PluginEventRoute
+     * @var \Yana\Plugins\Configs\EventRoute
      * @static
      */
     private static $_nextEvent = null;
@@ -149,7 +151,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
     private $_loadedPlugins = array();
 
     /**
-     * @var PluginRepository
+     * @var \Yana\Plugins\Repository
      */
     private $_repository = null;
 
@@ -172,14 +174,14 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
      *
      * @access  public
      * @static
-     * @return  PluginManager
+     * @return  \Yana\Plugins\Manager
      */
     public static function &getInstance()
     {
         assert('isset(self::$_pluginDir);');
         assert('isset(self::$_path);');
         if (!isset(self::$_instance)) {
-            self::$_instance = new PluginManager();
+            self::$_instance = new \Yana\Plugins\Manager();
         }
         return self::$_instance;
     }
@@ -189,10 +191,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
      *
      * Creates and initializes a new instance of this class.
      * Note: this constructor is private. You may want to
-     * call the static PluginManager::getInstance() method instead.
-     *
-     * @name    PluginManager::__construct()
-     * @ignore
+     * call the static \Yana\Plugins\Manager::getInstance() method instead.
      */
     private function __construct()
     {
@@ -207,7 +206,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
      *
      * Example:
      * <code>
-     * PluginManager::setPath("config/plugins.cfg", "plugins/");
+     *\Yana\Plugins\Manager::setPath("config/plugins.cfg", "plugins/");
      * </code>
      *
      * @access  public
@@ -250,7 +249,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
      * Get configuration manager.
      *
      * @access  private
-     * @return  PluginRepository
+     * @return  \Yana\Plugins\Repository
      */
     private function _getRepository()
     {
@@ -258,7 +257,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
             if (file_exists(self::$_path)) {
                 $this->_repository = unserialize(file_get_contents(self::$_path));
             } else {
-                $this->_repository = new PluginRepository();
+                $this->_repository = new \Yana\Plugins\Repository();
             }
         }
         return $this->_repository;
@@ -268,7 +267,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
      * Get list of plugin configurations.
      *
      * Returns an associative array, where the keys are the plugin-names and the values are instances
-     * of PluginConfigurationClass.
+     * of \Yana\Plugins\ClassConfiguration.
      *
      * @access  public
      * @return  PluginClassCollection
@@ -319,8 +318,8 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
 
         // event must be defined
         $config = $this->getEventConfiguration($event);
-        if (!($config instanceof PluginConfigurationMethod)) {
-            $error = new InvalidActionError();
+        if (!($config instanceof \Yana\Plugins\Configs\MethodConfiguration)) {
+            $error = new \InvalidActionError();
             $error->setAction($event);
             throw $error;
         }
@@ -408,7 +407,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
      * If there is no action, the function will return NULL.
      *
      * @access  public
-     * @return  PluginEventRoute
+     * @return  \Yana\Plugins\Configs\EventRoute
      */
     public function getNextEvent()
     {
@@ -416,7 +415,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
             $event = $this->getFirstEvent();
             $result = self::getLastResult();
             $methods = $this->getEventConfigurations();
-            /* @var $method PluginConfigurationMethod */
+            /* @var $method \Yana\Plugins\MethodConfiguration */
             $method = $methods[$event];
             if ($result !== false) {
                 self::$_nextEvent = $method->getOnSuccess();
@@ -442,7 +441,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
      */
     public function refreshPluginFile()
     {
-        $builder = new PluginRepositoryBuilder();
+        $builder = new \Yana\Plugins\RepositoryBuilder();
         $builder->addDirectory($this->getPluginDir());
         $builder->setBaseRepository($this->_getRepository());
         $repository = $builder->getRepository();
@@ -479,7 +478,8 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
         if ($plugins->offsetExists($pluginName)) {
             $active = $plugins->offsetGet($pluginName)->getActive();
         }
-        return $active === PluginActivityEnumeration::ACTIVE || $active === PluginActivityEnumeration::DEFAULT_ACTIVE;
+        return $active === \Yana\Plugins\ActivityEnumeration::ACTIVE ||
+            $active === \Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE;
     }
 
     /**
@@ -503,7 +503,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
         if ($plugins->offsetExists($pluginName)) {
             $active = $plugins->offsetGet($pluginName)->getActive();
         }
-        return $active === PluginActivityEnumeration::DEFAULT_ACTIVE;
+        return $active === \Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE;
     }
 
     /**
@@ -511,16 +511,16 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
      *
      * @access  public
      * @param   string  $pluginName   identifier for the plugin to be de-/activated
-     * @param   int     $state        PluginActivityEnumeration::INACTIVE = off, PluginActivityEnumeration::ACTIVE = on
+     * @param   int     $state        ActivityEnumeration::INACTIVE = off, ActivityEnumeration::ACTIVE = on
      * @throws  \Yana\Core\Exceptions\NotFoundException     when no plugin with the given name is found
      * @throws  \Yana\Core\Exceptions\InvalidValueException when trying to change a default plugin
      */
-    public function setActive($pluginName, $state = PluginActivityEnumeration::ACTIVE)
+    public function setActive($pluginName, $state = \Yana\Plugins\ActivityEnumeration::ACTIVE)
     {
         $plugins = $this->_getRepository()->getPlugins();
         if ($plugins->offsetExists($pluginName)) {
             $plugin = $plugins->offsetGet($pluginName);
-            if ($plugin->getActive() === PluginActivityEnumeration::DEFAULT_ACTIVE) {
+            if ($plugin->getActive() === \Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE) {
                 $message = "Changing activity state of plugin '$pluginName' with setting: 'always active' is not allowed.";
                 throw new \Yana\Core\Exceptions\InvalidValueException($message);
             }
@@ -600,11 +600,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
     public function isInstalled($pluginName)
     {
         assert('is_bool($this->_isLoaded);');
-        if ($this->_isLoaded && isset($this->_plugins[mb_strtolower("$pluginName")])) {
-            return true;
-        } else {
-            return false;
-        }
+        return (bool) ($this->_isLoaded && isset($this->_plugins[mb_strtolower("$pluginName")]));
     }
 
     /**
@@ -658,7 +654,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
      *
      * @access  public
      * @param   string  $pluginName   plugin name
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      * @since   3.1.0
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      */
@@ -671,7 +667,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
         if (isset($pluginConfig[$pluginName])) {
             return $pluginConfig[$pluginName];
         } else {
-            return new PluginConfigurationClass(self::PREFIX . $pluginName);
+            return new \Yana\Plugins\Configs\ClassConfiguration(self::PREFIX . $pluginName);
         }
     }
 
@@ -717,10 +713,10 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
             /* String */ $type = $methodsConfig[$eventName]->getType();
         } else {
             assert('!isset($defaultEvent); // Cannot redeclare var $defaultEvent');
-            /* array */ $defaultEvent = Yana::getDefault("EVENT");
+            /* array */ $defaultEvent = \Yana::getDefault("EVENT");
             assert('is_array($defaultEvent);');
-            if (is_array($defaultEvent) && isset($defaultEvent[PluginAnnotationEnumeration::TYPE])) {
-                /* string */ $type = $defaultEvent[PluginAnnotationEnumeration::TYPE];
+            if (is_array($defaultEvent) && isset($defaultEvent[\Yana\Plugins\Annotations\Enumeration::TYPE])) {
+                /* string */ $type = $defaultEvent[\Yana\Plugins\Annotations\Enumeration::TYPE];
             } else {
                 /* string */ $type = "default";
             }
@@ -735,7 +731,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
      *
      * @access  public
      * @param   string  $eventName  identifier of the wanted event
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\MethodConfiguration
      */
     public function getEventConfiguration($eventName)
     {
@@ -858,8 +854,8 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
             }
             unset($classFile);
             // instantiate class, if it exists
-            if (class_exists(PluginManager::PREFIX . $name)) {
-                $class = PluginManager::PREFIX . $name;
+            if (class_exists(\Yana\Plugins\Manager::PREFIX . $name)) {
+                $class = \Yana\Plugins\Manager::PREFIX . $name;
                 $this->_plugins[$name] = new $class();
             }
         } else {
@@ -890,7 +886,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
      * </code>
      *
      * <code>
-     * $manager = PluginManager::getInstance();
+     * $manager = \Yana\Plugins\Manager::getInstance();
      * $report = $manager->getReport();
      * $errors = $report->getErrors();
      * if (empty($errors)) {
@@ -903,7 +899,7 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
      * @access  public
      * @param   \Yana\Report\IsReport  $report  base report
      * @return  \Yana\Report\IsReport
-     * @name    PluginManager::getReport()
+     * @name    \Yana\Plugins\Manager::getReport()
      * @ignore
      */
     public function getReport(\Yana\Report\IsReport $report = null)
@@ -911,21 +907,21 @@ class PluginManager extends \Yana\Core\AbstractSingleton implements \Yana\Report
         if (is_null($report)) {
             $report = \Yana\Report\Xml::createReport(__CLASS__);
         }
-        $report->addText("Plugin directory: " . PluginManager::$_pluginDir);
+        $report->addText("Plugin directory: " . \Yana\Plugins\Manager::$_pluginDir);
         $methodsConfig = $this->getEventConfigurations();
 
         if (empty($methodsConfig)) {
             $report->addWarning("Cannot perform check! No interface definitions found.");
 
         } else {
-            $skin = Yana::getInstance()->getSkin();
+            $skin = \Yana::getInstance()->getSkin();
 
             /**
              * loop through interface definitions
              */
             foreach ($methodsConfig as $key => $element)
             {
-                // @todo  check if $element is really an array (and not a PluginConfigurationMethod)
+                // @todo  check if $element is really an array (and not a \Yana\Plugins\MethodConfiguration)
                 if (!is_array($element)) {
                     continue;
                 }

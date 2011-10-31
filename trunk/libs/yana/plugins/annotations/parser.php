@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins\Annotations;
+
 /**
  * Plugin annotation parser.
  *
@@ -72,11 +74,10 @@
  * If the same key is mentionend multiple times,
  * the value of the last occurence overwrites the previous.
  *
- * @access      public
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  */
-class PluginAnnotationParser extends AbstractAnnotationParser
+class Parser extends \Yana\Plugins\Annotations\AbstractParser
 {
 
     /**
@@ -85,7 +86,6 @@ class PluginAnnotationParser extends AbstractAnnotationParser
      * Returns a list of all matching annotations as an associative array.
      * It returns the default value (which defaults to an empty array), if no matching tag is found.
      *
-     * @access  public
      * @param   string  $tagName  name of doc-tag to extract
      * @param   array   $default  is returned if no tag is found
      * @return  array
@@ -106,14 +106,11 @@ class PluginAnnotationParser extends AbstractAnnotationParser
     }
 
     /**
-     * Get single doc-tag.
-     *
      * Returns the doc tag as a string.
      *
      * Use this function if you expect only one tag with a single value.
      * Otherwise the default value is returned (which defaults to an empty string).
      *
-     * @access  public
      * @param   string  $tagName  name of doc-tag to extract
      * @param   string  $default  returned if not matching tag is found
      * @return  string
@@ -139,7 +136,6 @@ class PluginAnnotationParser extends AbstractAnnotationParser
      * &#64;foo  value
      * </code>
      *
-     * @access  private
      * @param   string  $tagName  name of tag to parse
      * @param   array   &$result  result array to add values to
      * @return  array
@@ -202,7 +198,6 @@ class PluginAnnotationParser extends AbstractAnnotationParser
      * }
      * </code>
      *
-     * @access  private
      * @param   string  $tagName  name of tag to parse
      * @param   array   &$result  result array to add values to
      * @return  array

@@ -25,50 +25,46 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins;
+
 /**
  * <<builder>> Plugin configuration repository builder.
  *
  * This class produces a configuration repository by scanning a directory.
  *
- * @access      public
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  */
-class PluginRepositoryBuilder extends PluginRepositoryAbstractBuilder
+class RepositoryBuilder extends \Yana\Plugins\AbstractRepositoryBuilder
 {
 
     /**
      * List of found plugin directories.
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_plugins = array();
 
     /**
      * Holds old repository for comparison.
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_oldRepository = null;
 
     /**
      * Resets the instance that is currently build.
-     *
-     * @access  public
      */
     public function createNewRepository()
     {
-        $this->_oldRepository = new PluginRepository();
+        $this->_oldRepository = new \Yana\Plugins\Repository();
         parent::createNewRepository();
     }
 
     /**
      * Scan a directory for plugins.
      *
-     * @access  public
-     * @param   string  $directory  path to scan
+     * @param  string  $directory  path to scan
      */
     public function addDirectory($directory)
     {
@@ -78,7 +74,7 @@ class PluginRepositoryBuilder extends PluginRepositoryAbstractBuilder
                 if ($plugin[0] !== '.' && is_dir($directory . '/' . $plugin)) {
                     $classFile = $directory . $plugin . "/" . $plugin . ".plugin.php";
                     if (is_file($classFile)) {
-                        $this->_plugins[$plugin] = PluginManager::PREFIX . $plugin;
+                        $this->_plugins[$plugin] = \Yana\Plugins\Manager::PREFIX . $plugin;
                         include_once "$classFile";
                     }
                 }
@@ -89,18 +85,15 @@ class PluginRepositoryBuilder extends PluginRepositoryAbstractBuilder
     /**
      * Set base repository to compare the plugin list with.
      *
-     * @access  public
-     * @param   PluginRepository  $repository  old repository for comparison
+     * @param  \Yana\Plugins\Repository  $repository  old repository for comparison
      */
-    public function setBaseRepository(PluginRepository $repository)
+    public function setBaseRepository(\Yana\Plugins\Repository $repository)
     {
         $this->_oldRepository = $repository;
     }
 
     /**
      * Build new repository.
-     *
-     * @access  protected
      */
     protected function buildRepository()
     {
@@ -112,11 +105,11 @@ class PluginRepositoryBuilder extends PluginRepositoryAbstractBuilder
         $pluginGroups = array();
 
         // clear cache
-        SmartTemplate::clearCache();
+        \SmartTemplate::clearCache();
 
         // list of subscribing methods
         $subscribers = array();
-        $builder = new PluginConfigurationBuilder();
+        $builder = new \Yana\Plugins\Configs\Builder();
 
         /**
          * 1) build plugin repository
@@ -128,7 +121,7 @@ class PluginRepositoryBuilder extends PluginRepositoryAbstractBuilder
         foreach ($this->_plugins as $id => $className)
         {
             $builder->createNewConfiguration();
-            $builder->setReflection(new PluginReflectionClass($className));
+            $builder->setReflection(new \Yana\Plugins\ReflectionClass($className));
             $pluginId = preg_replace('/^plugin_/', '', strtolower($className));
             $config = $builder->getPluginConfigurationClass();
             $config->setId($id);
@@ -148,7 +141,7 @@ class PluginRepositoryBuilder extends PluginRepositoryAbstractBuilder
                 $config->setActive($oldPlugins->offsetGet($id)->getActive());
             }
             // ignore methods if plugin is not active
-            if ($config->getActive() === PluginActivityEnumeration::INACTIVE) {
+            if ($config->getActive() === \Yana\Plugins\ActivityEnumeration::INACTIVE) {
                 continue;
             }
             /**
@@ -156,7 +149,7 @@ class PluginRepositoryBuilder extends PluginRepositoryAbstractBuilder
              */
             foreach ($config->getMethods() as $methodName => $method)
             {
-                /* @var $method PluginConfigurationMethod */
+                /* @var $method \Yana\Plugins\MethodConfiguration */
                 // skip default event handlers (will be handled in step 3)
                 if ($methodName == 'catchAll') {
                     $pluginsWithDefaultMethods[$id] = $config;
@@ -201,7 +194,7 @@ class PluginRepositoryBuilder extends PluginRepositoryAbstractBuilder
         /**
          * plugin multicast-groups configuration
          */
-        $mulitcastGroups = Yana::getDefault("MULTICAST_GROUPS");
+        $mulitcastGroups = \Yana::getDefault("MULTICAST_GROUPS");
         // default value
         if (empty($mulitcastGroups)) {
             $mulitcastGroups = array

@@ -32,7 +32,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class PluginConfigurationMethodSdk extends PluginConfigurationMethod
+class PluginConfigurationMethodSdk extends \Yana\Plugins\Configs\MethodConfiguration
 {
 
     /**
@@ -97,39 +97,39 @@ class PluginConfigurationMethodSdk extends PluginConfigurationMethod
         $string .= $tab; // empty line after title
         // annotations
         if ($this->getSubscribe()) {
-            $string .= $tab . "@" . PluginAnnotationEnumeration::SUBSCRIBE;
+            $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::SUBSCRIBE;
         } else {
             if ($this->getOverwrite()) {
-                $string .= $tab . "@" . PluginAnnotationEnumeration::OVERWRITE;
+                $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::OVERWRITE;
             }
             if ($this->getType()) {
-                $string .= $tab . "@" . PluginAnnotationEnumeration::TYPE . "       " . $this->getType();
+                $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::TYPE . "       " . $this->getType();
             }
             if ($this->getTemplate()) {
-                $string .= $tab . "@" . PluginAnnotationEnumeration::TEMPLATE . "   " . $this->getTemplate();
+                $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::TEMPLATE . "   " . $this->getTemplate();
             }
             foreach ($this->getStyles() as $item)
             {
-                $string .= $tab . "@" . PluginAnnotationEnumeration::STYLE . "      " . $item;
+                $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::STYLE . "      " . $item;
             }
             unset($item);
             foreach ($this->getScripts() as $item)
             {
-                $string .= $tab . "@" . PluginAnnotationEnumeration::SCRIPT . "     " . $item;
+                $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::SCRIPT . "     " . $item;
             }
             unset($item);
             foreach ($this->getLanguages() as $item)
             {
-                $string .= $tab . "@" . PluginAnnotationEnumeration::LANGUAGE . "   " . $item;
+                $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::LANGUAGE . "   " . $item;
             }
             unset($item);
             if ($this->getMenu()) {
                 $item = $this->getMenu();
                 if ($item->getGroup()) {
-                    $string .= $tab . "@" . PluginAnnotationEnumeration::MENU . "       " .
-                        PluginAnnotationEnumeration::GROUP . ": " . $item->getGroup() .
+                    $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::MENU . "       " .
+                        \Yana\Plugins\Annotations\Enumeration::GROUP . ": " . $item->getGroup() .
                         (($item->getTitle()) ? ", " .
-                        PluginAnnotationEnumeration::TITLE .  ": ". $item->getTitle() : "");
+                        \Yana\Plugins\Annotations\Enumeration::TITLE .  ": ". $item->getTitle() : "");
                 }
             }
             assert('!isset($settings); // Cannot redeclare var $settings');
@@ -138,39 +138,39 @@ class PluginConfigurationMethodSdk extends PluginConfigurationMethod
                 /* @var $item PluginUserLevel */
                 $settings = array();
                 if ($item->getGroup()) {
-                    $settings[] = PluginAnnotationEnumeration::GROUP . ": " . $item->getGroup();
+                    $settings[] = \Yana\Plugins\Annotations\Enumeration::GROUP . ": " . $item->getGroup();
                 }
                 if ($item->getRole()) {
-                    $settings[] = PluginAnnotationEnumeration::ROLE . ": " . $item->getRole();
+                    $settings[] = \Yana\Plugins\Annotations\Enumeration::ROLE . ": " . $item->getRole();
                 }
                 if ($item->getLevel()) {
-                    $settings[] = PluginAnnotationEnumeration::LEVEL . ": " . $item->getLevel();
+                    $settings[] = \Yana\Plugins\Annotations\Enumeration::LEVEL . ": " . $item->getLevel();
                 }
                 if (!empty($settings)) {
-                    $string .= $tab . "@" . PluginAnnotationEnumeration::USER . "       "  . implode(', ', $settings);
+                    $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::USER . "       "  . implode(', ', $settings);
                 }
             }
             unset($item, $settings);
             if ($this->getOnError()) {
                 $item = $this->getOnError();
                 if ($item->getTarget()) {
-                    $string .= $tab . "@" . PluginAnnotationEnumeration::ONERROR . "    " .
-                        PluginAnnotationEnumeration::GO . ": " . $item->getTarget() .
+                    $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::ONERROR . "    " .
+                        \Yana\Plugins\Annotations\Enumeration::GO . ": " . $item->getTarget() .
                         (($item->getMessage()) ? ", " .
-                        PluginAnnotationEnumeration::TEXT .  ": ". $item->getType() : "");
+                        \Yana\Plugins\Annotations\Enumeration::TEXT .  ": ". $item->getType() : "");
                 }
             }
             if ($this->getOnSuccess()) {
                 $item = $this->getOnSuccess();
                 if ($item->getTarget()) {
-                    $string .= $tab . "@" . PluginAnnotationEnumeration::ONSUCCESS . "  " .
-                        PluginAnnotationEnumeration::GO . ": " . $item->getTarget() .
+                    $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::ONSUCCESS . "  " .
+                        \Yana\Plugins\Annotations\Enumeration::GO . ": " . $item->getTarget() .
                         (($item->getMessage()) ? ", " .
-                        PluginAnnotationEnumeration::TEXT .  ": ". $item->getType() : "");
+                        \Yana\Plugins\Annotations\Enumeration::TEXT .  ": ". $item->getType() : "");
                 }
             }
             if ($this->getSafeMode()) {
-                $string .= $tab . "@" . PluginAnnotationEnumeration::SAFEMODE . "    " . $this->getSafeMode();
+                $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::SAFEMODE . "    " . $this->getSafeMode();
             }
         }
         $string .= $tab . "@access   public";

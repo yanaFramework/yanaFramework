@@ -99,7 +99,7 @@ class plugin_counter extends StdClass implements IsPlugin
      */
     public function graphic_counter()
     {
-        $pluginManager = PluginManager::getInstance();
+        $pluginManager = \Yana\Plugins\Manager::getInstance();
         $background = $pluginManager->{'counter:/images/background.file'};
         $blank = $pluginManager->{'counter:/images/blank.file'};
         $dir = $pluginManager->{'counter:/images'};

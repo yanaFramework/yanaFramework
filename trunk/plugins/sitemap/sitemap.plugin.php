@@ -78,7 +78,7 @@ class plugin_sitemap extends StdClass implements IsPlugin
 
         $result = "<ul>\n";
         $dir = $YANA->getPlugins()->getPluginDir();
-        $pluginMenu = PluginMenu::getInstance();
+        $pluginMenu = \Yana\Plugins\Menu::getInstance();
 
         /* @var $entry PluginMenuEntry */
         foreach ($pluginMenu->getMenuEntries('start') as $action => $entry)

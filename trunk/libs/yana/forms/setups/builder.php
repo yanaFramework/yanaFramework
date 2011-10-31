@@ -287,7 +287,7 @@ class Builder extends \Yana\Core\Object
         $currentPage = $this->object->getPage();
         $listOfEntries = "";
         assert('!isset($pluginManager); // Cannot redeclare var $pluginManager');
-        $pluginManager = \PluginManager::getInstance();
+        $pluginManager = \Yana\Plugins\Manager::getInstance();
         $action = $pluginManager->getFirstEvent();
         $lang = \Language::getInstance();
         $linkTemplate = '<a class="gui_generator_%s" href=' .
@@ -386,7 +386,7 @@ class Builder extends \Yana\Core\Object
             $exportAction = $this->_resolveAction('export');
             $downloadAction = $this->_resolveAction('download');
             if (empty($downloadAction)) {
-                if (SessionManager::getInstance()->checkPermission(null, "download_file")) {
+                if (\SessionManager::getInstance()->checkPermission(null, "download_file")) {
                     $downloadAction = "download_file";
                 }
             }
@@ -418,7 +418,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get the handler-function name for the defined form-action.
      *
-     * @access  private
      * @param   string  $name  'download', 'insert', 'update', 'delete', 'export'
      * @return  string 
      */
@@ -444,7 +443,6 @@ class Builder extends \Yana\Core\Object
      * Each form definition must be linked to a table in the same database.
      * This function looks it up and returns this definition.
      *
-     * @access  protected
      * @return  \Yana\Db\Ddl\Table
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the database, or table was not found
      */
@@ -475,7 +473,6 @@ class Builder extends \Yana\Core\Object
      * and selects the visible columns for these contexts based on the table definition
      * and form settings.
      *
-     * @access  private
      * @return  \Yana\Forms\Setups\Builder
      */
     private function _buildSetupContext()
@@ -553,7 +550,6 @@ class Builder extends \Yana\Core\Object
     /**
      * This returns an array of foreign-key reference settings.
      *
-     * @access  private
      * @return  \Yana\Db\Ddl\Reference[]
      */
     private function _buildForeignKeyReferences(\Yana\Db\Ddl\ColumnCollection $collection)
@@ -583,7 +579,6 @@ class Builder extends \Yana\Core\Object
      *
      * Limits the visible columns to entries of this list.
      *
-     * @access  public
      * @param   array  $columnNames  whitelist
      * @return  \Yana\Forms\Setups\Builder
      */
@@ -599,7 +594,6 @@ class Builder extends \Yana\Core\Object
      *
      * Limits the visible columns to entries not on this list.
      *
-     * @access  public
      * @param   array  $columnNames  whitelist
      * @return  \Yana\Forms\Setups\Builder
      */
@@ -615,7 +609,6 @@ class Builder extends \Yana\Core\Object
      *
      * This function filters out all columns not apparent in the whitelist on all contexts.
      *
-     * @access  private
      * @return  \Yana\Forms\Setups\Builder
      */
     private function _applyWhitelistColumnNames()

@@ -37,7 +37,7 @@ require_once 'pluginconfigurationmethodsdk.php';
  * @package    yana
  * @subpackage plugins
  */
-class PluginConfigurationClassSdk extends PluginConfigurationClass
+class PluginConfigurationClassSdk extends \Yana\Plugins\Configs\ClassConfiguration
 {
 
     /**
@@ -67,47 +67,47 @@ class PluginConfigurationClassSdk extends PluginConfigurationClass
         }
         // annotations
         if ($this->getType()) {
-            $string .= $tab . "@" . PluginAnnotationEnumeration::TYPE . "       " . $this->getType();
+            $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::TYPE . "       " . $this->getType();
         }
         if ($this->getGroup()) {
-            $string .= $tab . "@" . PluginAnnotationEnumeration::GROUP . "      " . $this->getGroup();
+            $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::GROUP . "      " . $this->getGroup();
         }
         if ($this->getParent()) {
-            $string .= $tab . "@" . PluginAnnotationEnumeration::PARENT . "    " . $this->getParent();
+            $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::PARENT . "    " . $this->getParent();
         }
         foreach ($this->getDependencies() as $dependency)
         {
-            $string .= $tab . "@" . PluginAnnotationEnumeration::REQUIRES . "   " . $dependency;
+            $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::REQUIRES . "   " . $dependency;
         }
         if ($this->getPriority()) {
-            $string .= $tab . "@" . PluginAnnotationEnumeration::PRIORITY . "   " . $this->getPriority();
+            $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::PRIORITY . "   " . $this->getPriority();
         }
         foreach ($this->getMenuNames() as $menu)
         {
-            $string .= $tab . "@" . PluginAnnotationEnumeration::MENU . "       " .
-                PluginAnnotationEnumeration::GROUP . ": " . $menu->getGroup();
+            $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::MENU . "       " .
+                \Yana\Plugins\Annotations\Enumeration::GROUP . ": " . $menu->getGroup();
             if ($menu->getTitle()) {
-                $string .= ', ' . PluginAnnotationEnumeration::TITLE . ': ' . $menu->getTitle();
+                $string .= ', ' . \Yana\Plugins\Annotations\Enumeration::TITLE . ': ' . $menu->getTitle();
             }
         }
-        if ($this->getActive() === PluginActivityEnumeration::DEFAULT_ACTIVE) {
-            $string .= $tab . "@" . PluginAnnotationEnumeration::ACTIVE . "     always";
+        if ($this->getActive() === \Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE) {
+            $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::ACTIVE . "     always";
         }
         foreach ($this->getAuthors() as $author)
         {
-            $string .= $tab . "@" . PluginAnnotationEnumeration::AUTHOR . "     " . $author;
+            $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::AUTHOR . "     " . $author;
         }
         if ($this->getLicense()) {
-            $string .= $tab . "@" . PluginAnnotationEnumeration::LICENSE . "    " . $this->getLicense();
+            $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::LICENSE . "    " . $this->getLicense();
         }
         if ($this->getVersion()) {
-            $string .= $tab . "@" . PluginAnnotationEnumeration::VERSION . "    " . $this->getVersion();
+            $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::VERSION . "    " . $this->getVersion();
         }
         if ($this->getUrl()) {
-            $string .= $tab . "@" . PluginAnnotationEnumeration::URL . "        " . $this->getUrl();
+            $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::URL . "        " . $this->getUrl();
         }
-        $string .= $tab . "@" . PluginAnnotationEnumeration::PACKAGE . "    yana";
-        $string .= $tab . "@" . PluginAnnotationEnumeration::SUBPACKAGE . " plugins";
+        $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::PACKAGE . "    yana";
+        $string .= $tab . "@" . \Yana\Plugins\Annotations\Enumeration::SUBPACKAGE . " plugins";
 
         $string .= "\n */";
         return $string;

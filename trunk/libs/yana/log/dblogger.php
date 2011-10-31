@@ -79,7 +79,7 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
     {
         if ($this->_isAcceptable($level)) {
             $this->_messages[] = array(
-                'log_action' => \PluginManager::getLastEvent(),
+                'log_action' => \Yana\Plugins\Manager::getLastEvent(),
                 'log_message' => $message,
                 'log_data' => (array) $data
             );

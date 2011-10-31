@@ -25,23 +25,23 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins\Annotations;
+
 /**
  * <<Interface>> annotation parser.
  *
  * This class identifies classes that may be used to parse annotations.
  *
- * @access      public
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  */
-interface IsAnnotationParser
+interface IsParser
 {
 
     /**
      * Initialize instance.
      *
-     * @access  public
-     * @param   string  $text  some text to parse for annotations
+     * @param  string  $text  some text to parse for annotations
      */
     public function __construct($text = "");
 
@@ -51,7 +51,6 @@ interface IsAnnotationParser
      * Returns a list of all matching annotations as an associative array.
      * It returns the default value (which defaults to an empty array), if no matching tag is found.
      *
-     * @access  public
      * @param   string  $tagName  name of doc-tag to extract
      * @param   array   $default  is returned if no tag is found
      * @return  array
@@ -66,7 +65,6 @@ interface IsAnnotationParser
      * Use this function if you expect only one tag with a single value.
      * Otherwise the default value is returned (which defaults to an empty string).
      *
-     * @access  public
      * @param   string  $tagName  name of doc-tag to extract
      * @param   string  $default  returned if not matching tag is found
      * @return  string
@@ -77,7 +75,6 @@ interface IsAnnotationParser
     /**
      * Get comment text.
      *
-     * @access  public
      * @return  string
      */
     public function getText();
@@ -87,9 +84,8 @@ interface IsAnnotationParser
      *
      * Enter some text to parse for annotations.
      *
-     * @access  public
      * @param   string  $text  comment text to parse
-     * @return  IsAnnotationParser
+     * @return  \Yana\Plugins\Annotations\IsParser
      */
     public function setText($text);
 

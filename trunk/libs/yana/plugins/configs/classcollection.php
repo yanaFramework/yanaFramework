@@ -25,24 +25,24 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins\Configs;
+
 /**
  * <<Collection>> Plugin configuration class collection.
  *
- * This class is a type-safe collection of instances of {@see PluginConfigurationClass}.
+ * This class is a type-safe collection of instances of {@see \Yana\Plugins\Configs\ClassConfiguration}.
  *
- * @access      public
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  *
  * @ignore
  */
-class PluginClassCollection extends \Yana\Core\AbstractCollection
+class ClassCollection extends \Yana\Core\AbstractCollection
 {
 
     /**
      * Unset item.
      *
-     * @access  public
      * @param   string  $offset  lower-cased method-name
      */
     public function offsetUnset($offset)
@@ -54,9 +54,8 @@ class PluginClassCollection extends \Yana\Core\AbstractCollection
     /**
      * Get item.
      *
-     * @access  public
      * @param   string  $offset  lower-cased method-name
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function offsetGet($offset)
     {
@@ -67,7 +66,6 @@ class PluginClassCollection extends \Yana\Core\AbstractCollection
     /**
      * Check if item exists.
      *
-     * @access  public
      * @param   scalar  $offset  index of item to test
      * @return  bool
      */
@@ -80,20 +78,19 @@ class PluginClassCollection extends \Yana\Core\AbstractCollection
     /**
      * Insert or replace item.
      *
-     * @access  public
-     * @param   string                    $offset  ignored
-     * @param   PluginConfigurationClass  $value   newly added instance
-     * @throws \Yana\Core\Exceptions\InvalidArgumentException
+     * @param   string                                    $offset  ignored
+     * @param   \Yana\Plugins\Configs\ClassConfiguration  $value   newly added instance
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function offsetSet($offset, $value)
     {
-        if ($value instanceof PluginConfigurationClass) {
+        if ($value instanceof \Yana\Plugins\Configs\ClassConfiguration) {
             if (!is_string($offset)) {
                 $offset = preg_replace('/^Plugin_/i', '', $value->getClassName());
             }
             $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
-            $message = "Instance of PluginConfigurationClass expected. " .
+            $message = "Instance of \Yana\Plugins\Configs\ClassConfiguration expected. " .
                 "Found " . gettype($value) . "(" . ((is_object($value)) ? get_class($value) : $value) . ") instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }

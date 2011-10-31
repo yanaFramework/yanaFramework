@@ -25,20 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins\Configs;
+
 /**
  * Plugin information
  *
  * This class represents a plugin's meta information.
  * This is it's interface, name and description plus and more.
  *
- * @access      public
- * @name        PluginConfiguration
+ * @name        ClassConfiguration
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  *
  * @ignore
  */
-class PluginConfigurationClass extends \Yana\Core\Object
+class ClassConfiguration extends \Yana\Core\Object
 {
 
     /**
@@ -99,7 +100,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      * @access  private
      * @var     string
      */
-    private $_type = PluginTypeEnumeration::DEFAULT_SETTING;
+    private $_type = \Yana\Plugins\TypeEnumeration::DEFAULT_SETTING;
 
     /**
      * Authors.
@@ -115,7 +116,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      * @access  private
      * @var     int
      */
-    private $_priority = PluginPriorityEnumeration::NORMAL;
+    private $_priority = \Yana\Plugins\PriorityEnumeration::NORMAL;
 
     /**
      * Plugin application group.
@@ -150,7 +151,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
     private $_license = "";
 
     /**
-     * URL of plugin maker's website.
+     * URL
      *
      * @access  private
      * @var     string
@@ -189,7 +190,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      * @access  private
      * @var     int
      */
-    private $_active = PluginActivityEnumeration::INACTIVE;
+    private $_active = \Yana\Plugins\ActivityEnumeration::INACTIVE;
 
     /**
      * the plugin's identifier
@@ -213,7 +214,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $id  plugin unique identifier
-     * @return  PluginConfigurationClassSdk
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setId($id)
     {
@@ -238,7 +239,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $className  plugin's class name
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setClassName($className)
     {
@@ -252,7 +253,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $directory  absolute path
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setDirectory($directory)
     {
@@ -268,7 +269,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $titles  list of titles
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setTitles(array $titles)
     {
@@ -281,7 +282,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $defaultTitle  title using default locale.
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setDefaultTitle($defaultTitle)
     {
@@ -295,7 +296,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $texts  Keys are locales, values are texts.
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setTexts(array $texts)
     {
@@ -308,7 +309,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $defaultText  some user-defined text
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setDefaultText($defaultText)
     {
@@ -324,12 +325,12 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $type  valid type identifier
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setType($type)
     {
         assert('is_string($type); // Invalid argument $type: string expected');
-        $this->_type = PluginTypeEnumeration::fromString($type);
+        $this->_type = \Yana\Plugins\TypeEnumeration::fromString($type);
         return $this;
     }
 
@@ -338,7 +339,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $authors  list of author names and/or e-mails.
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setAuthors(array $authors)
     {
@@ -351,19 +352,19 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   int  $priority  element of PluginPriorityEnumeration
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setPriority($priority)
     {
         if (is_string($priority)) {
-            $priority = PluginPriorityEnumeration::fromString($priority);
+            $priority = \Yana\Plugins\PriorityEnumeration::fromString($priority);
         }
         assert('is_int($priority); // Invalid argument $priority: Integer expected');
-        if ($priority < PluginPriorityEnumeration::LOWEST) {
-            $priority = PluginPriorityEnumeration::LOWEST;
+        if ($priority < \Yana\Plugins\PriorityEnumeration::LOWEST) {
+            $priority = \Yana\Plugins\PriorityEnumeration::LOWEST;
         }
-        if ($priority > PluginPriorityEnumeration::HIGHEST) {
-            $priority = PluginPriorityEnumeration::HIGHEST;
+        if ($priority > \Yana\Plugins\PriorityEnumeration::HIGHEST) {
+            $priority = \Yana\Plugins\PriorityEnumeration::HIGHEST;
         }
         $this->_priority = $priority;
         return $this;
@@ -374,7 +375,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $group  unique identifier
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setGroup($group)
     {
@@ -388,7 +389,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $parent  class name
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setParent($parent)
     {
@@ -402,7 +403,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $dependencies  class names
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setDependencies(array $dependencies)
     {
@@ -415,7 +416,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $license  some text
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setLicense($license)
     {
@@ -429,7 +430,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $url  URL of plugin maker's website
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setUrl($url)
     {
@@ -443,7 +444,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $version  some information - e.g. a date string.
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setVersion($version)
     {
@@ -457,7 +458,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   int  $lastModified
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setLastModified($lastModified)
     {
@@ -470,9 +471,9 @@ class PluginConfigurationClass extends \Yana\Core\Object
      * Add menu definition.
      *
      * @access public
-     * @param  PluginMenuEntry  $menu  Keys are menu ids and values are descriptions or language tokens.
+     * @param  \Yana\Plugins\MenuEntry  $menu  Keys are menu ids and values are descriptions or language tokens.
      */
-    public function addMenu(PluginMenuEntry $menu)
+    public function addMenu(\Yana\Plugins\MenuEntry $menu)
     {
         $this->_menus[] = $menu;
         return $this;
@@ -483,7 +484,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   array  $menus  Keys are menu ids and values are descriptions or language tokens.
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setMenus(array $menus)
     {
@@ -499,7 +500,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   int  $active  element of PluginActivityEnumeration
-     * @return  PluginConfigurationClass
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function setActive($active)
     {
@@ -534,7 +535,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
 
         // get defaults
         if (is_null($language)) {
-            $languageManager = Language::getInstance();
+            $languageManager = \Language::getInstance();
             $language = $languageManager->getLanguage();
             $country = $languageManager->getCountry();
         }
@@ -563,7 +564,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
 
         // get defaults
         if (is_null($language) && class_exists('Language')) {
-            $languageManager = Language::getInstance();
+            $languageManager = \Language::getInstance();
             $language = $languageManager->getLanguage();
             $country = $languageManager->getCountry();
         }
@@ -636,9 +637,9 @@ class PluginConfigurationClass extends \Yana\Core\Object
         switch ($this->getType())
         {
             case 'library':
-                return $this->_priority + PluginPriorityEnumeration::HIGHEST;
+                return $this->_priority + \Yana\Plugins\PriorityEnumeration::HIGHEST;
             case 'security':
-                return $this->_priority + (PluginPriorityEnumeration::HIGHEST * 2);
+                return $this->_priority + (\Yana\Plugins\PriorityEnumeration::HIGHEST * 2);
             default:
                 return $this->_priority;
         }
@@ -780,7 +781,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
     {
         assert('is_null($group) || is_string($group); // Wrong type for argument 1. String expected');
         $menuEntries = array();
-        /* @var $method PluginConfigurationMethod */
+        /* @var $method \Yana\Plugins\Configs\MethodConfiguration */
         foreach ($this->methods as $name => $method)
         {
             $menu = $method->getMenu();
@@ -861,7 +862,7 @@ class PluginConfigurationClass extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $methodName  name of method
-     * @return  PluginConfigurationMethod
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function getMethod($methodName)
     {
@@ -888,9 +889,9 @@ class PluginConfigurationClass extends \Yana\Core\Object
      * Add a method configuration.
      *
      * @access  public
-     * @param   PluginConfigurationMethod  $method  configuration data
+     * @param   \Yana\Plugins\Configs\MethodConfiguration  $method  configuration data
      */
-    public function addMethod(PluginConfigurationMethod $method)
+    public function addMethod(\Yana\Plugins\Configs\MethodConfiguration $method)
     {
         $this->methods[$method->getMethodName()] = $method;
     }
@@ -910,4 +911,5 @@ class PluginConfigurationClass extends \Yana\Core\Object
     }
 
 }
+
 ?>

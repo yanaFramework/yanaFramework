@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins;
+
 /**
  * Grant structure
  *
@@ -39,10 +41,10 @@
  *
  * @access      public
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  * @ignore
  */
-class PluginUserLevel extends \Yana\Core\Object
+class UserLevel extends \Yana\Core\Object
 {
 
     /**
@@ -88,7 +90,7 @@ class PluginUserLevel extends \Yana\Core\Object
      * @access  public
      * @param   string  $role  new value of this property, allowed characters: 0-9, a-z, -, _
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when parameter is not alpha-numeric
-     * @return  PluginUserLevel
+     * @return  \Yana\Plugins\UserLevel
      */
     public function setRole($role)
     {
@@ -129,7 +131,7 @@ class PluginUserLevel extends \Yana\Core\Object
      * @access  public
      * @param   string  $group  new value of this property, allowed characters: 0-9, a-z, -, _
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when parameter is not alpha-numeric
-     * @return  PluginUserLevel
+     * @return  \Yana\Plugins\UserLevel
      */
     public function setGroup($group)
     {
@@ -165,7 +167,7 @@ class PluginUserLevel extends \Yana\Core\Object
      *
      * @access  public
      * @param   string  $level  new value of this property
-     * @return  PluginUserLevel
+     * @return  \Yana\Plugins\UserLevel
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given security level is outside range [0,100]
      */
     public function setLevel($level)

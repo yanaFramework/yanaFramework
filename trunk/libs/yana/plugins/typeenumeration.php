@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins;
+
 /**
  * <<Enumeration>> Plugin type.
  *
@@ -32,10 +34,10 @@
  *
  * @access      public
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  * @ignore
  */
-class PluginTypeEnumeration extends \Yana\Core\AbstractEnumeration
+class TypeEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     /**

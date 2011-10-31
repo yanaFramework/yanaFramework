@@ -25,19 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins;
+
 /**
- * <<Enumeration>> PluginActivity
+ * <<Enumeration>> Plugin activity status.
  *
- * Values for plugin activity status
- *
- * @access      public
  * @name        PluginActivity
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  *
  * @ignore
  */
-class PluginActivityEnumeration extends \Yana\Core\AbstractEnumeration
+class ActivityEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     /**
@@ -62,8 +61,6 @@ class PluginActivityEnumeration extends \Yana\Core\AbstractEnumeration
      * annotation inside a PHP doc block.
      * This function associates them with their responsive integer values.
      *
-     * @access  public
-     * @static
      * @param   string  $string  text representation to convert
      * @return  int
      */
@@ -75,11 +72,11 @@ class PluginActivityEnumeration extends \Yana\Core\AbstractEnumeration
         {
             case 'active':
             case '1':
-                return PluginActivityEnumeration::ACTIVE;
+                return self::ACTIVE;
             break;
             case 'inactive':
             case '0':
-                return PluginActivityEnumeration::INACTIVE;
+                return self::INACTIVE;
             break;
             case 'always':
             case 'always_active':
@@ -87,13 +84,14 @@ class PluginActivityEnumeration extends \Yana\Core\AbstractEnumeration
             case 'default_active':
             case 'default active':
             case '2':
-                return PluginActivityEnumeration::DEFAULT_ACTIVE;
+                return self::DEFAULT_ACTIVE;
             break;
             default:
-                return PluginActivityEnumeration::INACTIVE;
+                return self::INACTIVE;
             break;
         }
     }
+
 }
 
 ?>

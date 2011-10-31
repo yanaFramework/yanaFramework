@@ -26,55 +26,49 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Plugins;
+
 /**
  * <<Singleton>> Menu information
  *
- * @access      public
  * @name        PluginMenu
  * @package     yana
- * @subpackage  core
+ * @subpackage  plugins
  *
  * @ignore
  */
-class PluginMenu extends \Yana\Core\AbstractSingleton
+class Menu extends \Yana\Core\AbstractSingleton
 {
 
     /**
      * This is a place-holder for the singleton's instance
      *
-     * @access  private
-     * @static
-     * @var     PluginMenu
+     * @var  \Yana\Plugins\Menu
      */
     private static $_instance = null;
+
     /**
-     * @access  private
-     * @static
-     * @var     string
+     * @var  string
      */
     private static $_locale = null;
+
     /**
-     * @access  private
-     * @static
-     * @var     array
+     * @var  array
      */
     private $_names = array();
+
     /**
-     * @access  private
-     * @static
-     * @var     array
+     * @var  array
      */
     private $_plugins = array();
+
     /**
-     * @access  private
-     * @static
-     * @var     array
+     * @var  array
      */
     private $_entries = array();
+
     /**
-     * @access  private
-     * @static
-     * @var     array
+     * @var  array
      */
     private $_hasGroup = array();
 
@@ -82,15 +76,13 @@ class PluginMenu extends \Yana\Core\AbstractSingleton
      * constructor
      *
      * To prevent the constructor from being called directly
-     *
-     * @access private
      */
     private function __construct()
     {
         /**
          * initialize names
          */
-        $pluginManager = PluginManager::getInstance();
+        $pluginManager = \Yana\Plugins\Manager::getInstance();
         $plugins = $pluginManager->getPluginConfigurations()->toArray();
 
         /* @var $pluginConfiguration PluginConfigurationClass */
@@ -121,13 +113,13 @@ class PluginMenu extends \Yana\Core\AbstractSingleton
             } // end if
         } // end foreach
 
-        $sessionManager = SessionManager::getInstance();
+        $sessionManager = \SessionManager::getInstance();
         /**
          * initialize entries
          */
         foreach ($plugins as $pluginName => $pluginConfiguration)
         {
-            /* @var $menuEntry PluginMenuEntry */
+            /* @var $menuEntry \Yana\Plugins\MenuEntry */
             foreach ($pluginConfiguration->getMenuEntries() as $action => $menuEntry)
             {
                 if (!$sessionManager->checkPermission(null, $action)) {
@@ -169,9 +161,7 @@ class PluginMenu extends \Yana\Core\AbstractSingleton
      * Creates an instance if there is none.
      * Then it returns a reference to this (single) instance.
      *
-     * @access  public
-     * @static
-     * @return  PluginMenu
+     * @return  \Yana\Plugins\Menu
      */
     public static function &getInstance()
     {
@@ -189,7 +179,7 @@ class PluginMenu extends \Yana\Core\AbstractSingleton
                  * create cache
                  */
             } else {
-                self::$_instance = new PluginMenu();
+                self::$_instance = new \Yana\Plugins\Menu();
                 $_SESSION[__CLASS__][$id] = serialize(self::$_instance);
             }
         }
@@ -201,8 +191,6 @@ class PluginMenu extends \Yana\Core\AbstractSingleton
      *
      * Deletes all temporary instances in session cache.
      *
-     * @access  public
-     * @static
      * @ignore
      */
     public static function clearCache()
@@ -215,14 +203,12 @@ class PluginMenu extends \Yana\Core\AbstractSingleton
      *
      * Returns the current menu id depending on the current locale settings.
      *
-     * @access  private
-     * @static
      * @return  string
      */
     private static function _getLocale()
     {
         if (!isset(self::$_locale)) {
-            self::$_locale = Language::getInstance()->getLocale();
+            self::$_locale = \Language::getInstance()->getLocale();
         }
         return self::$_locale;
     }
@@ -232,11 +218,10 @@ class PluginMenu extends \Yana\Core\AbstractSingleton
      *
      * If no menu-group is specified, the entry is added to the root-level.
      *
-     * @access  public
-     * @param   string           $action    name of action
-     * @param   PluginMenuEntry  $title     
+     * @param   string  $action  name of action
+     * @param   \Yana\Plugins\MenuEntry  $title     
      */
-    public function setMenuEntry($action, PluginMenuEntry $menuEntry)
+    public function setMenuEntry($action, \Yana\Plugins\MenuEntry $menuEntry)
     {
         assert('is_string($action); // Invalid argument $action: string expected');
         \Yana\Util\Hashtable::set($this->_entries, $menuEntry->getGroup() . ".$action", $menuEntry);
@@ -247,7 +232,6 @@ class PluginMenu extends \Yana\Core\AbstractSingleton
      *
      * Returns bool(true) on success and bool(false) if the entry does not exist.
      *
-     * @access  public
      * @param   string  $action    name of action
      * @param   string  $menuName  set this entry is inside a menu
      * @return  bool
@@ -260,11 +244,8 @@ class PluginMenu extends \Yana\Core\AbstractSingleton
     }
 
     /**
-     * set menu name
-     *
      * Set a name for a menu of your choice.
      *
-     * @access  public
      * @param   string  $menu  menu where entry should be added, blank means root-level
      * @param   string  $name  name of your choice
      */
@@ -282,7 +263,6 @@ class PluginMenu extends \Yana\Core\AbstractSingleton
      * or all menus if none is specified, as a associative
      * array.
      *
-     * @access  public
      * @param   string  $menuName  filter by menu name
      * @return  array
      */
@@ -307,14 +287,13 @@ class PluginMenu extends \Yana\Core\AbstractSingleton
      * Returns the label of the given menu as a string.
      * If the menu is unknown the id is returned instead.
      *
-     * @access  public
      * @param   string  $menuId  menu id to look up
      * @return  string
      */
     public function getMenuName($menuId)
     {
         if (isset($this->_names[$menuId])) {
-            return Language::getInstance()->replaceToken($this->_names[$menuId]);
+            return \Language::getInstance()->replaceToken($this->_names[$menuId]);
         } else {
             return $menuId;
         }
@@ -327,14 +306,13 @@ class PluginMenu extends \Yana\Core\AbstractSingleton
      * Array Keys are menu names.
      * Value Keys are URLs, values are text labels.
      *
-     * @access  public
      * @return  array
      */
     public function getTextMenu()
     {
-        $pluginManager = PluginManager::getInstance();
-        $sessionManager = SessionManager::getInstance();
-        $isSafemode = Yana::getId() === Yana::getDefault('profile');
+        $pluginManager = \Yana\Plugins\Manager::getInstance();
+        $sessionManager = \SessionManager::getInstance();
+        $isSafemode = \Yana::getId() === \Yana::getDefault('profile');
         $menu = array();
 
         foreach ($this->getMenuEntries() as $menuId => $menuEntries)
@@ -354,28 +332,27 @@ class PluginMenu extends \Yana\Core\AbstractSingleton
     /**
      * get menu entries
      *
-     * @access  private
      * @param   array           &$menu          output
      * @param   string          $menuId         index of menu
      * @param   array           $menuEntries    list of instances of PluginMenuEntry or sub-menus
-     * @param   PluginManager   $pluginManager  plugin manager
+     * @param   \Yana\Plugins\Manager   $pluginManager  plugin manager
      * @param   bool            $isSafemode     for safemode set true , false otherweise
      */
-    private function _getMenu(array &$menu, $menuId, array $menuEntries, PluginManager $pluginManager, $isSafemode)
+    private function _getMenu(array &$menu, $menuId, array $menuEntries, \Yana\Plugins\Manager $pluginManager, $isSafemode)
     {
         $name = $this->getMenuName($menuId);
 
         foreach ($menuEntries as $action => $entry)
         {
-            if ($entry instanceof PluginMenuEntry) {
+            if ($entry instanceof \Yana\Plugins\MenuEntry) {
 
                 // is entry
                 $safemode = $entry->getSafeMode();
                 if (!is_null($safemode) && $isSafemode !== $safemode) {
                     continue;
                 }
-                $url = SmartUtility::url("action=$action", true);
-                $label = Language::getInstance()->replaceToken($entry->getTitle());
+                $url = \SmartUtility::url("action=$action", true);
+                $label = \Language::getInstance()->replaceToken($entry->getTitle());
                 if (!empty($name)) {
                     $menu[$name][$url] = $label;
                 } else {
