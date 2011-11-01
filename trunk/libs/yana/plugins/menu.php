@@ -173,7 +173,7 @@ class Menu extends \Yana\Core\AbstractSingleton
              */
             if (isset($_SESSION[__CLASS__][$id])) {
                 self::$_instance = unserialize($_SESSION[__CLASS__][$id]);
-                assert('self::$_instance instanceof PluginMenu;');
+                assert('self::$_instance instanceof self;');
 
                 /*
                  * create cache
