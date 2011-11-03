@@ -16,19 +16,242 @@
     <skindir>skins/</skindir>
     <pluginfile>config/plugins.cfg</pluginfile>
     <php_self>index.php</php_self>
+    <templates>
+        <leftdelimiter>{</leftdelimiter>
+        <!-- Smarty template right delimiter. -->
+        <rightdelimiter>}</rightdelimiter>
+        <!--
+            The template base-dir.
+
+            All template paths are calculated relative to that directory.
+        -->
+        <templatedir>skins/</templatedir>
+        <templatedir>plugins/</templatedir>
+        <!--
+            This is the name of the directory where template caches are stored.
+        -->
+        <cachedir>cache/</cachedir>
+        <!--
+            Set this to true to deactivate HTML-caching (requires you to implement an active caching strategy).
+        -->
+        <caching>false</caching>
+        <!--
+            This is the length of time in seconds that a template cache is valid.
+            Once this time has expired, the cache will be regenerated.
+            -1 = never expire
+            0 = no cache
+        -->
+        <cachelifetime></cachelifetime>
+        <!--
+            Name of the used caching handler.
+        -->
+        <cachingtype>file</cachingtype>
+        <!--
+            Setting this to 'true' will recompile the template when it has changed.
+            Setting this to 'false' will only recompile when there is no 
+        -->
+        <compilecheck>true</compilecheck>
+        <!--
+            Where compiled templates are stored
+        -->
+        <compiledir>cache/</compiledir>
+        <!--
+            You may enter custom compiler class here
+        -->
+        <compilerclass>\Smarty_Compiler</compilerclass>
+        <!--
+            Where Smarty will find configuration files that can be loaded in templates.
+        -->
+        <configdir>skins/.config/</configdir>
+        <!--
+            Enables the debugging console.
+        -->
+        <debugging>false</debugging>
+        <!--
+            A list of modifiers that will be applied to all vars.
+        -->
+        <defaultmodifier>replaceToken</defaultmodifier>
+        <!--
+            A list of classes to be used for resource loading.
+            They must implement \Yana\Templates\Resources\IsResource.
+            You may use resources like "protocols" when calling a template.
+            E.g. "template:path/to/template".
+            If no resource is specified, the default resource will be used.
+        -->
+        <resourcetype name="id">\Yana\Templates\Resources\IdResource</resourcetype>
+        <resourcetype name="template">\Yana\Templates\Resources\FileResource</resourcetype>
+        <resourcetype name="string">\Yana\Templates\Resources\StringResource</resourcetype>
+        <!--
+            List of modifiers to register.
+            They must implement \Yana\Templates\Helpers\Modifiers\IsModifier.
+        -->
+        <modifier name="embeddedTags" cacheable="true">\Yana\Templates\Helpers\Modifiers\EmbeddedTags</modifier>
+        <modifier name="replaceToken" cacheable="false">\Yana\Templates\Helpers\Modifiers\ReplaceToken</modifier>
+        <modifier name="css" cacheable="true">\Yana\Templates\Helpers\Modifiers\Css</modifier>
+        <modifier name="date" cacheable="true">\Yana\Templates\Helpers\Modifiers\Date</modifier>
+        <modifier name="entities" cacheable="true">\Yana\Templates\Helpers\Modifiers\Entities</modifier>
+        <modifier name="href" cacheable="false">\Yana\Templates\Helpers\Modifiers\Href</modifier>
+        <modifier name="scanForAt" cacheable="true">\Yana\Templates\Helpers\Modifiers\ScanForAt</modifier>
+        <modifier name="smilies" cacheable="true">\Yana\Templates\Helpers\Modifiers\Smilies</modifier>
+        <modifier name="url" cacheable="false">\Yana\Templates\Helpers\Modifiers\Url</modifier>
+        <modifier name="urlEncode" cacheable="true">\Yana\Templates\Helpers\Modifiers\UrlEncode</modifier>
+        <!--
+            List of functions to register.
+            They must implement \Yana\Templates\Helpers\Functions\IsFunction.
+        -->
+        <function name="printArray" cacheable="true">\Yana\Templates\Helpers\Functions\PrintArray</function>
+        <function name="printUnorderedList" cacheable="true">\Yana\Templates\Helpers\Functions\PrintUnorderedList</function>
+        <function name="rss" cacheable="true">\Yana\Templates\Helpers\Functions\Rss</function>
+        <function name="import" cacheable="false">\Yana\Templates\Helpers\Functions\Import</function>
+        <function name="smilies" cacheable="true">\Yana\Templates\Helpers\Functions\GuiSmilies</function>
+        <function name="embeddedTags" cacheable="true">\Yana\Templates\Helpers\Functions\GuiEmbeddedTags</function>
+        <function name="create" cacheable="false">\Yana\Templates\Helpers\Functions\CreateForm</function>
+        <function name="captcha" cacheable="true">\Yana\Templates\Helpers\Functions\Captcha</function>
+        <function name="slider" cacheable="true">\Yana\Templates\Helpers\Functions\Slider</function>
+        <function name="sizeOf" cacheable="true">\Yana\Templates\Helpers\Functions\SizeOf</function>
+        <function name="toolbar" cacheable="false">\Yana\Templates\Helpers\Functions\Toolbar</function>
+        <function name="preview" cacheable="true">\Yana\Templates\Helpers\Functions\Preview</function>
+        <function name="colorpicker" cacheable="true">\Yana\Templates\Helpers\Functions\Colorpicker</function>
+        <function name="sml_load" cacheable="true">\Yana\Templates\Helpers\Functions\SmlLoad</function>
+        <function name="smlLoad" cacheable="true">\Yana\Templates\Helpers\Functions\SmlLoad</function>
+        <function name="lang" cacheable="true">\Yana\Templates\Helpers\Functions\Lang</function>
+        <function name="visitorCount" cacheable="true">\Yana\Templates\Helpers\Functions\VisitorCount</function>
+        <function name="portlet" cacheable="true">\Yana\Templates\Helpers\Functions\Portlet</function>
+        <function name="applicationBar" cacheable="true">\Yana\Templates\Helpers\Functions\ApplicationBar</function>
+        <function name="selectDate" cacheable="true">\Yana\Templates\Helpers\Functions\SelectDate</function>
+        <function name="selectTime" cacheable="true">\Yana\Templates\Helpers\Functions\SelectTime</function>
+        <!--
+            List of blockfunctions to register.
+            They must implement \Yana\Templates\Helpers\IsBlockFunction.
+        -->
+        <blockfunction name="loop" cacheable="true">\Yana\Templates\Helpers\BlockFunctions\LoopArray</blockfunction>
+        <!--
+            List of pre-processors to register.
+            They must implement \Yana\Templates\Helpers\IsPreFilter.
+        -->
+        <prefilter>\Yana\Templates\Helpers\PreFilters\LanguageTokenFilter</prefilter>
+        <prefilter>\Yana\Templates\Helpers\PreFilters\IncludeFilter</prefilter>
+        <prefilter>\Yana\Templates\Helpers\PreFilters\AjaxBridgeFilter</prefilter>
+        <prefilter>\Yana\Templates\Helpers\PreFilters\RelativePathsFilter</prefilter>
+        <!--
+            List of post-processors to register.
+            They must implement \Yana\Templates\Helpers\IsPostFilter.
+        -->
+        <postfilter>\Yana\Templates\Helpers\PostFilters\SpamFilter</postfilter>
+        <!--
+            List of output-filters to register.
+            They must implement \Yana\Templates\Helpers\IsOutputFilter.
+        -->
+        <outputfilter>\Yana\Templates\Helpers\OutputFilters\RssFilter</outputfilter>
+        <outputfilter>\Yana\Templates\Helpers\OutputFilters\CssFilter</outputfilter>
+        <outputfilter>\Yana\Templates\Helpers\OutputFilters\MicrosummaryFilter</outputfilter>
+        <outputfilter>\Yana\Templates\Helpers\OutputFilters\JsFilter</outputfilter>
+        <outputfilter>\Yana\Templates\Helpers\OutputFilters\LanguageTokenFilter</outputfilter>
+        <!--
+            The default resource type to use.
+        -->
+        <defaultresourcetype>template</defaultresourcetype>
+        <!--
+            Allows Smarty to create directories in the cache-dir.
+            This may improve performance.
+        -->
+        <usesubdirs>true</usesubdirs>
+        <security>
+            <!--
+                Tells smarty what to do with PHP-code found in a template.
+                This does not affect {php}{/php} tags.
+
+                PASSTHRU - Smarty echos tags as-is.
+                QUOTE - Smarty quotes the tags as html entities.
+                REMOVE - Smarty removes the tags from the templates.
+                ALLOW - Smarty will execute the tags as PHP code.
+
+                It is highly recommended NOT to use \Smarty::PHP_ALLOW.
+            -->
+            <phphandling>remove</phphandling>
+            <!--
+                Template directories that are considered secure.
+            -->
+            <securedir></securedir>
+            <!--
+                 Trusted directories are where you keep php scripts that are executed directly from the templates with {includephp}.
+            -->
+            <trusteddir></trusteddir>
+            <!--
+                Trusted PHP-classes that may be called from within templates.
+            -->
+            <staticclass>false</staticclass>
+            <!--
+                Trusted PHP-functions that may be called from within templates as a function.
+            -->
+            <phpfunction>isset</phpfunction>
+            <phpfunction>empty</phpfunction>
+            <phpfunction>count</phpfunction>
+            <phpfunction>sizeof</phpfunction>
+            <phpfunction>in_array</phpfunction>
+            <phpfunction>is_array</phpfunction>
+            <phpfunction>time</phpfunction>
+            <phpfunction>nl2br</phpfunction>
+            <!--
+                Trusted PHP-functions that may be called from within templates as a modifier
+            -->
+            <phpmodifier>escape</phpmodifier>
+            <phpmodifier>count</phpmodifier>
+            <!--
+                streams that are considered trusted and can be used from within templates.
+            -->
+            <streams>false</streams>
+            <!--
+                white-list of modifiers that are allowed in a template (disallows any other).
+            -->
+            <allowedmodifier></allowedmodifier>
+            <!--
+                black-list of modifiers that are not allowed in a template (allows any other).
+            -->
+            <disabledmodifier></disabledmodifier>
+            <!--
+                white-list of functions that are allowed in a template (disallows any other).
+            -->
+            <allowedtag></allowedtag>
+            <!--
+                black-list of functions that are not allowed in a template (allows any other).
+            -->
+            <disabledtag></disabledtag>
+            <!--
+                controls if PHP constants can be accessed by the template.
+            -->
+            <allowconstants>false</allowconstants>
+            <!--
+                controls if the PHP super globals can be accessed by the template.
+            -->
+            <allowsuperglobals>false</allowsuperglobals>
+            <!--
+                controls if {php} and {include_php} tags can be used by the template.
+            -->
+            <allowphptag>false</allowphptag>
+        </security>
+    </templates>
+    <!-- DON'T change the default settings! -->
     <default>
+        <!-- The name of the default profile id -->
     	<profile>default</profile>
+        <!-- Default value of the "action" parameter -->
     	<homepage>sitemap</homepage>
+        <!-- Always show Message screens (true/false) -->
     	<message>false</message>
+        <!-- Default for new or undefined events -->
     	<event>
     		<type>default</type>
     		<safemode>0</safemode>
     		<template>index</template>
     	</event>
+        <!-- Directory of the default skin -->
     	<skin>
     		<directory>default/</directory>
     	</skin>
+        <!-- Default locale -->
     	<language>de</language>
+        <!-- Database driver information -->
     	<database>
     		<options>
     			<autofree>true</autofree>
@@ -38,12 +261,14 @@
     		<require_odbc>db2</require_odbc>
     		<require_odbc>access</require_odbc>
     	</database>
+        <!-- Default for newly created users -->
     	<user>
     		<group>REGISTERED</group>
     		<role>DEFAULT</role>
     		<level>0</level>
     		<user_active>true</user_active>
     	</user>
+        <!-- Information for the Dispatcher on what groups to inform on updates -->
     	<multicast_groups>
     		<read>
     			<security>true</security>
@@ -79,30 +304,42 @@
     			<default>true</default>
             </default>
     	</multicast_groups>
+        <!-- URL to the framework's update server -->
     	<update_server>http://yanaframework.net/pages/update.php?version={$VERSION}&#38;amp;stable={$IS_STABLE}&#38;amp;lang={$LANG}&#38;amp;asnumber={$AS_NUMBER}</update_server>
     </default>
+    <!--
+        A list of formats that can be used for date formatting.
+    -->
     <date>
+        <!-- 01-10-2020 -->
 		<js>date.getDate() +'-'+ (date.getMonth()+1) +'-'+ date.getFullYear()</js>
 		<php>j-n-Y</php>
     </date>
     <date>
+        <!-- 19:12:34 -->
 		<js>date.toLocaleTimeString()</js>
 		<php>G:i:s</php>
     </date>
     <date>
+        <!-- 01-10-2020 07:12:34 PM -->
 		<js>date.getDate() +'-'+ (date.getMonth()+1) +'-'+ date.getFullYear() +' '+ date.toLocaleTimeString()</js>
 		<php>j-n-Y G:i:s</php>
     </date>
     <date>
+        <!-- 01-10-2020 19:12:34 -->
 		<js>date.getDate() +'-'+ (date.getMonth()+1) +'-'+ date.getFullYear() +' '+ date.toTimeString()</js>
 		<php>j-n-Y G:i:s O</php>
     </date>
     <date>
+        <!-- Ask user's operating system for best format -->
 		<js>date.toLocaleDateString()</js>
+        <!-- Thursday, 01 October 2020 -->
 		<php>l, j F Y</php>
     </date>
     <date>
+        <!-- Ask user's operating system for best format -->
 		<js>date.toLocaleString()</js>
+        <!-- or use an international standard that should work on every locale -->
 		<php>r</php>
     </date>
 </system>
