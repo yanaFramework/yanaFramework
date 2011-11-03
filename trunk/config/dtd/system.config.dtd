@@ -1,22 +1,72 @@
 <!-- auto-generated DTD -->
-<!ELEMENT system (date|default|php_self|plugincache|tempdir|configdrive|configdir|plugindir|pluginfile)*>
+<!ELEMENT system (date|default|templates|php_self|pluginfile|skindir|plugindir|plugincache|tempdir|configdrive|configdir)*>
 <!ELEMENT configdir (#PCDATA)>
 <!ELEMENT configdrive (#PCDATA)>
 <!ELEMENT tempdir (#PCDATA)>
 <!ELEMENT plugincache (#PCDATA)>
 <!ELEMENT plugindir (#PCDATA)>
+<!ELEMENT skindir (#PCDATA)>
 <!ELEMENT pluginfile (#PCDATA)>
 <!ELEMENT php_self (#PCDATA)>
+<!ELEMENT templates (security|usesubdirs|defaultresourcetype|outputfilter|postfilter|prefilter|blockfunction|function|modifier|resourcetype|leftdelimiter|rightdelimiter|templatedir|cachedir|caching|cachelifetime|cachingtype|compilecheck|compiledir|compilerclass|configdir|debugging|defaultmodifier)*>
+<!ELEMENT leftdelimiter (#PCDATA)>
+<!ELEMENT rightdelimiter (#PCDATA)>
+<!-- Smarty template left delimiter. -->
+<!ELEMENT templatedir (#PCDATA)>
+<!ELEMENT cachedir (#PCDATA)>
+<!ELEMENT caching (#PCDATA)>
+<!ELEMENT cachelifetime EMPTY>
+<!ELEMENT cachingtype (#PCDATA)>
+<!ELEMENT compilecheck (#PCDATA)>
+<!ELEMENT compiledir (#PCDATA)>
+<!ELEMENT compilerclass (#PCDATA)>
+<!ELEMENT debugging (#PCDATA)>
+<!ELEMENT defaultmodifier (#PCDATA)>
+<!ELEMENT resourcetype (#PCDATA)>
+<!ATTLIST resourcetype
+    name CDATA #IMPLIED
+  >
+<!ELEMENT modifier (#PCDATA)>
+<!ATTLIST modifier
+    cacheable CDATA #IMPLIED
+    name CDATA #IMPLIED
+  >
+<!ELEMENT function (#PCDATA)>
+<!ATTLIST function
+    cacheable CDATA #IMPLIED
+    name CDATA #IMPLIED
+  >
+<!ELEMENT blockfunction (#PCDATA)>
+<!ATTLIST blockfunction
+    cacheable CDATA #IMPLIED
+    name CDATA #IMPLIED
+  >
+<!ELEMENT prefilter (#PCDATA)>
+<!ELEMENT postfilter (#PCDATA)>
+<!ELEMENT outputfilter (#PCDATA)>
+<!ELEMENT defaultresourcetype (#PCDATA)>
+<!ELEMENT usesubdirs (#PCDATA)><!ELEMENT security (#PCDATA|library|security|allowphptag|phphandling|securedir|trusteddir|staticclass|phpfunction|phpmodifier|streams|allowedmodifier|disabledmodifier|allowedtag|disabledtag|allowconstants|allowsuperglobals)*>
+<!ELEMENT phphandling (#PCDATA)>
+<!ELEMENT securedir EMPTY>
+<!ELEMENT trusteddir EMPTY>
+<!ELEMENT staticclass (#PCDATA)>
+<!ELEMENT phpfunction (#PCDATA)>
+<!ELEMENT phpmodifier (#PCDATA)>
+<!ELEMENT streams (#PCDATA)>
+<!ELEMENT allowedmodifier EMPTY>
+<!ELEMENT disabledmodifier EMPTY>
+<!ELEMENT allowedtag EMPTY>
+<!ELEMENT disabledtag EMPTY>
+<!ELEMENT allowconstants (#PCDATA)>
+<!ELEMENT allowsuperglobals (#PCDATA)>
+<!ELEMENT allowphptag (#PCDATA)>
 <!ELEMENT default (#PCDATA|profile|homepage|message|event|skin|language|database|user|multicast_groups|security|library|default|update_server)*>
 <!ELEMENT profile (#PCDATA)>
 <!ELEMENT homepage (#PCDATA)>
 <!ELEMENT message (#PCDATA)>
-<!ELEMENT event (template|group|role|level|safemode|type)*>
+<!ELEMENT event (template|safemode|type)*>
 <!ELEMENT type (#PCDATA)>
 <!ELEMENT safemode (#PCDATA)>
-<!ELEMENT group (#PCDATA)>
-<!ELEMENT role (#PCDATA)>
-<!ELEMENT level (#PCDATA)>
 <!ELEMENT template (#PCDATA)>
 <!ELEMENT skin (directory)*>
 <!ELEMENT directory (#PCDATA)>
@@ -27,14 +77,13 @@
 <!ELEMENT persistent (#PCDATA)>
 <!ELEMENT ssl (#PCDATA)>
 <!ELEMENT require_odbc (#PCDATA)>
-<!ELEMENT user (user_active|group|role|level)*>
-<!ELEMENT group_id (#PCDATA)>
-<!ELEMENT role_id (#PCDATA)>
-<!ELEMENT security_level (#PCDATA)>
+<!ELEMENT user (user_active|level|role|group)*>
+<!ELEMENT group (#PCDATA)>
+<!ELEMENT role (#PCDATA)>
+<!ELEMENT level (#PCDATA)>
 <!ELEMENT user_active (#PCDATA)>
 <!ELEMENT multicast_groups (default|primary|config|security|write|read)*>
 <!ELEMENT read (#PCDATA|default|primary|read|library|security)*>
-<!ELEMENT security (#PCDATA|library|security)*>
 <!ELEMENT library (#PCDATA)>
 <!ELEMENT primary (#PCDATA|primary|library|security)*>
 <!ELEMENT write (#PCDATA|default|primary|write|library|security)*>
