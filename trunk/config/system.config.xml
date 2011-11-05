@@ -56,10 +56,6 @@
         -->
         <compiledir>cache/</compiledir>
         <!--
-            You may enter custom compiler class here
-        -->
-        <compilerclass>\Smarty_Compiler</compilerclass>
-        <!--
             Where Smarty will find configuration files that can be loaded in templates.
         -->
         <configdir>skins/.config/</configdir>
@@ -138,6 +134,11 @@
             They must implement \Yana\Templates\Helpers\IsPostFilter.
         -->
         <postfilter>\Yana\Templates\Helpers\PostFilters\SpamFilter</postfilter>
+        <!--
+            List of var-processors to register.
+            They must implement \Yana\Templates\Helpers\IsVarFilter.
+        -->
+        <varfilter></varfilter>
         <!--
             List of output-filters to register.
             They must implement \Yana\Templates\Helpers\IsOutputFilter.
