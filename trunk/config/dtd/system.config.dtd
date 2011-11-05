@@ -8,7 +8,7 @@
 <!ELEMENT skindir (#PCDATA)>
 <!ELEMENT pluginfile (#PCDATA)>
 <!ELEMENT php_self (#PCDATA)>
-<!ELEMENT templates (security|usesubdirs|defaultresourcetype|outputfilter|postfilter|prefilter|blockfunction|function|modifier|resourcetype|leftdelimiter|rightdelimiter|templatedir|cachedir|caching|cachelifetime|cachingtype|compilecheck|compiledir|compilerclass|configdir|debugging|defaultmodifier)*>
+<!ELEMENT templates (security|usesubdirs|defaultresourcetype|outputfilter|postfilter|prefilter|varfilter|blockfunction|function|modifier|resourcetype|leftdelimiter|rightdelimiter|templatedir|cachedir|caching|cachelifetime|cachingtype|compilecheck|compiledir|configdir|debugging|defaultmodifier)*>
 <!ELEMENT leftdelimiter (#PCDATA)>
 <!ELEMENT rightdelimiter (#PCDATA)>
 <!-- Smarty template left delimiter. -->
@@ -19,7 +19,6 @@
 <!ELEMENT cachingtype (#PCDATA)>
 <!ELEMENT compilecheck (#PCDATA)>
 <!ELEMENT compiledir (#PCDATA)>
-<!ELEMENT compilerclass (#PCDATA)>
 <!ELEMENT debugging (#PCDATA)>
 <!ELEMENT defaultmodifier (#PCDATA)>
 <!ELEMENT resourcetype (#PCDATA)>
