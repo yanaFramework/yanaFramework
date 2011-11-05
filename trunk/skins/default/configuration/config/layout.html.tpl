@@ -38,8 +38,7 @@
 
           <label class="optionitem">
             <span class="label">{lang id="ADMIN.76"}:</span>
-            <input id="bgcolor" type="text" size="8" name="bgcolor" value="{$PROFILE.BGCOLOR}"/>
-            {colorpicker id="bgcolor"}
+            <input id="bgcolor" type="color" size="8" name="bgcolor" value="{$PROFILE.BGCOLOR}"/>
           </label>
 
           <label class="optionitem">
@@ -79,8 +78,7 @@
 
           <label class="optionitem">
             <span class="label">{lang id="ADMIN.80"}:</span>
-            <input id="hcolor" type="text" size="15" name="hcolor" value="{$PROFILE.HCOLOR}"/>
-            {colorpicker id="hcolor"}
+            <input id="hcolor" type="color" size="15" name="hcolor" value="{$PROFILE.HCOLOR}"/>
           </label>
 
           <label class="optionitem">
@@ -131,8 +129,7 @@
 
           <label class="optionitem">
             <span class="label">{lang id="ADMIN.80"}:</span>
-            <input id="pcolor" type="text" size="15" name="pcolor" value="{$PROFILE.PCOLOR}"/>
-            {colorpicker id="pcolor"}
+            <input id="pcolor" type="color" size="15" name="pcolor" value="{$PROFILE.PCOLOR}"/>
           </label>
 
           <label class="optionitem">

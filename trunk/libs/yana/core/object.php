@@ -83,7 +83,7 @@ class Object extends \StdClass implements \Yana\Core\IsObject, \Yana\Core\IsClon
      * <<magic>> Issues a warning when trying to access undefined property.
      *
      * @param   string  $name   property name
-     * @param   string  $value  nwe value
+     * @param   string  $value  new value
      * @return  \Yana\Core\Object
      * @throws  \Yana\Core\Exceptions\UndefinedPropertyException  always!
      * @ignore
