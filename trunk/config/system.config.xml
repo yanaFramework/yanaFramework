@@ -48,7 +48,7 @@
         <cachingtype>file</cachingtype>
         <!--
             Setting this to 'true' will recompile the template when it has changed.
-            Setting this to 'false' will only recompile when there is no 
+            Setting this to 'false' will only recompile when there is no
         -->
         <compilecheck>true</compilecheck>
         <!--
@@ -175,7 +175,8 @@
             -->
             <securedir></securedir>
             <!--
-                 Trusted directories are where you keep php scripts that are executed directly from the templates with {includephp}.
+                 Trusted directories are where you keep php scripts that are
+                 executed directly from the templates with {includephp}.
             -->
             <trusteddir></trusteddir>
             <!--
@@ -201,7 +202,8 @@
             <!--
                 streams that are considered trusted and can be used from within templates.
             -->
-            <streams>false</streams>
+            <stream>file</stream>
+            <stream>id</stream>
             <!--
                 white-list of modifiers that are allowed in a template (disallows any other).
             -->
@@ -217,7 +219,8 @@
             <!--
                 black-list of functions that are not allowed in a template (allows any other).
             -->
-            <disabledtag></disabledtag>
+            <disabledtag>php</disabledtag>
+            <disabledtag>include_php</disabledtag>
             <!--
                 controls if PHP constants can be accessed by the template.
             -->
@@ -226,10 +229,6 @@
                 controls if the PHP super globals can be accessed by the template.
             -->
             <allowsuperglobals>false</allowsuperglobals>
-            <!--
-                controls if {php} and {include_php} tags can be used by the template.
-            -->
-            <allowphptag>false</allowphptag>
         </security>
     </templates>
     <!-- DON'T change the default settings! -->
