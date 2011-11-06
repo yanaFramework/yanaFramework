@@ -29,7 +29,6 @@
 
 namespace Yana\Templates\Helpers\PostFilters;
 
-
 /**
  * Smarty-compatible HTML-processors
  *
@@ -38,7 +37,7 @@ namespace Yana\Templates\Helpers\PostFilters;
  * @package     yana
  * @subpackage  templates
  */
-class SpamFilter extends \Yana\Core\Object
+class SpamFilter extends \Yana\Core\Object implements \Yana\Templates\Helpers\IsPostFilter
 {
 
     /**
