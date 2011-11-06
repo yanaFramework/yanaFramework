@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -59,13 +58,13 @@ class EngineFactory extends \Yana\Core\Object
     private static $_instance = null;
 
     /**
-     * @var \SimpleXMLElement 
+     * @var \SimpleXMLElement
      */
     private $_config = null;
 
     /**
      *
-     * @param \SimpleXMLElement $configuration 
+     * @param \SimpleXMLElement $configuration
      */
     public function __construct(\SimpleXMLElement $configuration)
     {
@@ -73,7 +72,7 @@ class EngineFactory extends \Yana\Core\Object
     }
 
     /**
-     * @return \SimpleXMLElement 
+     * @return \SimpleXMLElement
      */
     protected function _getConfiguration()
     {
@@ -135,15 +134,29 @@ class EngineFactory extends \Yana\Core\Object
     }
 
     /**
-     * @param \Smarty $smarty
+     * Set up directories, debugging and caching.
+     *
+     * @param  \Smarty            $smarty  instance that will be configured
+     * @param  \SimpleXMLElement  $config  configuration settings
+     * @return  EngineFactory
      */
-    protected function _configure(\Smarty $smarty)
+    protected function _configureGeneralSettings(\Smarty $smarty, \SimpleXMLElement $config)
     {
-        $config = $this->_getConfiguration();
+        if ($config->leftdelimiter) {
+            $smarty->left_delimiter = (string) $config->leftdelimiter;
+        }
+        if ($config->rightdelimiter) {
+            $smarty->right_delimiter = (string) $config->rightdelimiter;
+        }
 
-        $smarty->left_delimiter = (string) $config->leftdelimiter;
-        $smarty->right_delimiter = (string) $config->leftdelimiter;
+        /**
+         * Set debugging
+         */
+        $smarty->debugging = strtolower((string) $config->debugging) === 'true';
 
+        /**
+         * Directory setup
+         */
         foreach ((array) $config->templatedir as $dir)
         {
             $smarty->addTemplateDir($dir);
@@ -159,14 +172,35 @@ class EngineFactory extends \Yana\Core\Object
         $smarty->setCompileDir((string) $config->compiledir);
         $smarty->setCacheDir((string) $config->cachedir);
 
+        /**
+         * Caching behavior
+         */
         $smarty->caching = strtolower((string) $config->caching) === 'true';
-        $smarty->cache_lifetime = (int) $config->cachelifetime;
-        $smarty->caching_type = (string) $config->cachingtype;
+        if (isset($config->cachelifetime)) {
+            $smarty->cache_lifetime = (int) $config->cachelifetime;
+        }
+        if ($config->cachingtype) {
+            $smarty->caching_type = (string) $config->cachingtype;
+        }
+        $smarty->use_sub_dirs = strtolower((string) $config->usesubdirs) !== 'false';
+        $smarty->compile_check = strtolower((string) $config->compilecheck) !== 'false';
 
-        $smarty->compile_check = strtolower((string) $config->compilecheck) === 'true';
+        $smarty->error_reporting = E_ALL & ~E_NOTICE;
+        return $this;
+    }
 
-        $smarty->debugging = strtolower((string) $config->debugging) === 'true';
-
+    /**
+     * Set up filters, modifiers and functions.
+     *
+     * @param  \Smarty            $smarty  instance that will be configured
+     * @param  \SimpleXMLElement  $config  configuration settings
+     * @return  EngineFactory
+     */
+    protected function _configurePlugins(\Smarty $smarty, \SimpleXMLElement $config)
+    {
+        /**
+         * Register plugins
+         */
         foreach ($config->modifier as $plugin)
         {
             $this->_registerPlugin($smarty, \Smarty::PLUGIN_MODIFIER, $plugin);
@@ -222,12 +256,22 @@ class EngineFactory extends \Yana\Core\Object
         unset($resource);
 
         $smarty->default_resource_type = (string) $config->defaultresourcetype;
+        return $this;
+    }
 
+    /**
+     * Set up filters, modifiers and functions.
+     *
+     * @param  \Smarty_Security   $security  instance that will be configured
+     * @param  \SimpleXMLElement  $config    configuration settings
+     * @return  EngineFactory
+     */
+    protected function _configureSecuritySettings(\Smarty_Security $security, \SimpleXMLElement $config)
+    {
         /**
          * Security settings
          */
-        $smarty->enableSecurity();
-        switch (strtolower((string) $config->security->phphandling))
+        switch (strtolower((string) $config->phphandling))
         {
             case 'passthru':
                 $phpHandling = \Smarty::PHP_PASSTHRU;
@@ -243,50 +287,131 @@ class EngineFactory extends \Yana\Core\Object
                 $phpHandling = \Smarty::PHP_REMOVE;
                 break;
         };
-        $smarty->security_policy->php_handling = $phpHandling;
-        /**
-         * PHP-tags
-         *
-         * If set to TRUE, {php}{/php}  tags are permitted in the templates.
-         */
-        $smarty->security_policy->allow_php_tag = strtolower((string) $config->allowphptag) === 'true';
+        $security->php_handling = $phpHandling;
+
         /**
          * PHP-constants
          *
          * If set to TRUE, constants via {$smarty.const.FOO} are allowed in
          * the templates.
          */
-        $smarty->security_policy->allow_constants = strtolower((string) $config->allowconstants) === 'true';
+        $security->allow_constants = strtolower((string) $config->allowconstants) === 'true';
         /**
          * PHP-super globals
          *
          * If set to TRUE, super-globals like $GLOBAL or $_COOKIE are allowed in the templates.
          */
-        $smarty->security_policy->allow_super_globals = strtolower((string) $config->allowsuperglobals) === 'true';
+        $security->allow_super_globals = strtolower((string) $config->allowsuperglobals) === 'true';
 
-        /*
-         * 1.4) caching behaviour
+        /**
+         * Template directories that are considered secure.
          */
-        $smarty->caching = strtolower((string) $config->caching) === 'true';
-        $smarty->use_sub_dirs = strtolower((string) $config->usesubdirs) === 'true';
+        $security->secure_dir = array();
+        foreach ($config->securedir as $item)
+        {
+            $security->secure_dir[] = (string) $item;
+        }
+        unset($item);
 
-        /*
-         * 1.4.1) default setting for compile check
+        /**
+         * Trusted directories are where you keep php scripts that are executed directly from
+         * the templates with {includephp}.
          */
-        $smarty->compile_check = strtolower((string) $config->compilecheck) !== 'false';
-        $smarty->error_reporting = E_ALL & ~E_NOTICE;
+        $security->trusted_dir = array();
+        foreach ($config->trusteddir as $item)
+        {
+            $security->trusted_dir[] = (string) $item;
+        }
+        unset($item);
+
+        /**
+         * Blacklist elements.
+         */
+        $security->disabled_modifiers = array();
+        foreach ($config->disabledmodifier as $item)
+        {
+            $security->disabled_modifiers[] = (string) $item;
+        }
+        unset($item);
+
+        $security->disabled_tags = array();
+        foreach ($config->disabledtag as $item)
+        {
+            $security->disabled_tags[] = (string) $item;
+        }
+        unset($item);
+
+        /**
+         * Whitelist elements.
+         */
+        foreach ($config->allowedtag as $item)
+        {
+            $security->allowed_tags[] = (string) $item;
+        }
+        unset($item);
+
+        foreach ($config->allowedmodifier as $item)
+        {
+            $security->allowed_modifiers[] = (string) $item;
+        }
+        unset($item);
+        if (!empty($config->phpfunction)) {
+            $security->php_functions = array();
+            foreach ($config->phpfunction as $item)
+            {
+                $security->php_functions[] = (string) $item;
+            }
+            unset($item);
+        }
+
+        if (!empty($config->phpmodifier)) {
+            $security->php_modifiers = array();
+            foreach ($config->phpmodifier as $item)
+            {
+                $security->php_modifiers[] = (string) $item;
+            }
+            unset($item);
+        }
+
+        $security->static_classes = 'none';
+        if (!empty($config->staticclass)) {
+            $security->static_classes = array();
+            foreach ($config->staticclass as $item)
+            {
+                $security->static_classes[] = (string) $item;
+            }
+            unset($item);
+        }
+
+        if (!empty($config->stream)) {
+            $security->streams = array();
+            foreach ($config->stream as $item)
+            {
+                $security->streams[] = (string) $item;
+            }
+            unset($item);
+        }
+
+        return $this;
     }
 
     /**
-     * Builds a new Smarty instance based on the given configuration. 
+     * Builds a new Smarty instance based on the given configuration.
      *
      * @return  Smarty
      */
     public function createInstance()
     {
         if (!self::$_instance instanceof \Smarty) {
-            self::$_instance = new \Smarty();
-            self::_configure(self::$_instance);
+            $smarty = new \Smarty();
+            $config = $this->_getConfiguration();
+            $this->_configureGeneralSettings($smarty, $config)
+                    ->_configurePlugins($smarty, $config);
+            if ($config->security) {
+                $smarty->enableSecurity();
+                $this->_configureSecuritySettings($smarty->security_policy, $config->security);
+            }
+            self::$_instance = $smarty;
         }
 
         return self::$_instance;
