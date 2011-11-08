@@ -41,16 +41,15 @@ namespace Yana\Util;
  *
  * Now: this renames all functions, giving you a clean interface for all.
  *
- * @access      public
  * @package     yana
  * @subpackage  util
  */
 class String extends \Yana\Core\AbstractUtility
 {
     /**#@+
-     * used as 2nd argument in method String::trim()
+     * used as 2nd argument in method self::trim()
      *
-     * @see String::trim()
+     * @see self::trim()
      */
     const BOTH = 0;
     const LEFT = 1;
@@ -58,14 +57,10 @@ class String extends \Yana\Core\AbstractUtility
     /**#@-*/
 
     /**
-     * return value as int
+     * Convert string to an integer.
      *
-     * Converts the string value to an integer and
-     * returns it. Returns bool(false) if the string
-     * is not numeric.
+     * Returns bool(false) if the string is not numeric.
      *
-     * @access  public
-     * @static
      * @param   string  $string  value to convert
      * @return  int|bool(false)
      *
@@ -86,14 +81,10 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * return value as float
+     * Convert string to a float.
      *
-     * Converts the string value to a float and
-     * returns it. Returns bool(false) if the string
-     * is not numeric.
+     * Returns bool(false) if the string is not numeric.
      *
-     * @access  public
-     * @static
      * @param   string  $string  value to convert
      * @return  float|bool(false)
      *
@@ -114,9 +105,8 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * return value as boolean
-     *
      * Returns a boolean value depending on the value of the string.
+     *
      * <ul>
      *     <li>    string("false") returns bool(false)    </li>
      *     <li>    string("true")  returns bool(true)     </li>
@@ -131,8 +121,6 @@ class String extends \Yana\Core\AbstractUtility
      * If you just want to check wether a string is empty
      * or not, use $string == "" instead.
      *
-     * @access  public
-     * @static
      * @param   string  $string  value to convert
      * @return  bool
      *
@@ -143,30 +131,18 @@ class String extends \Yana\Core\AbstractUtility
      * @assert ("0") == false
      * @assert ("1") == true
      * @assert ("") == false
-     * @assert ("a") == true
+     * @assert ("a") == false
      */
     public static function toBool($string)
     {
         assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        switch (mb_strtolower($string))
-        {
-            case 'false':
-                return false;
-            break;
-            case 'true':
-                return true;
-            break;
-            default:
-                return (bool) $string;
-            break;
-        }
+        
+        return filter_var($string, FILTER_VALIDATE_BOOLEAN);
     }
 
     /**
      * OO-Alias of: addslashes(), addcslashes()
      *
-     * @access  public
-     * @static
      * @param   string  $string    string
      * @param   string  $charlist  a string of characters that should be escaped
      * @return  string
@@ -191,8 +167,6 @@ class String extends \Yana\Core\AbstractUtility
     /**
      * OO-Alias of: stripslashes(), stripcslashes()
      *
-     * @access  public
-     * @static
      * @param   string  $string     string
      * @return  string
      *
@@ -217,8 +191,6 @@ class String extends \Yana\Core\AbstractUtility
      *
      * Note that indices are numbered starting with '0'.
      *
-     * @access  public
-     * @static
      * @param   string  $string string
      * @param   int     $index  position of the character (starting with 0)
      *
@@ -244,8 +216,6 @@ class String extends \Yana\Core\AbstractUtility
     /**
      * OO-Alias of: trim(), chop()
      *
-     * @access  public
-     * @static
      * @param   string  $string  string
      * @param   int     $type    may be one of
      * @return  string
@@ -256,16 +226,16 @@ class String extends \Yana\Core\AbstractUtility
      * @assert (" test ", String::LEFT) == "test "
      * @assert (" test ", String::RIGHT) == " test"
      */
-    public static function trim($string, $type = String::BOTH)
+    public static function trim($string, $type = self::BOTH)
     {
         assert('is_string($string); // Wrong argument type for argument 1. String expected.');
         assert('is_int($type); // Wrong argument type for argument 2. Integer expected.');
         switch ($type)
         {
-            case String::LEFT:
+            case self::LEFT:
                 return ltrim($string);
             break;
-            case String::RIGHT:
+            case self::RIGHT:
                 return rtrim($string);
             break;
             default:
@@ -327,8 +297,6 @@ class String extends \Yana\Core\AbstractUtility
      *
      * }}
      *
-     * @access  public
-     * @static
      * @param   string  $string      string
      * @param   string  $encryption  see the list of valid inputs for details
      * @param   string  $salt        only used for certain encryption types
@@ -486,8 +454,6 @@ class String extends \Yana\Core\AbstractUtility
      *
      * }}
      *
-     * @access  public
-     * @static
      * @param   string  $string    string
      * @param   string  $encoding  see the list of valid inputs for details
      * @param   int     $style     used for entity conversion
@@ -564,8 +530,6 @@ class String extends \Yana\Core\AbstractUtility
      * See "encode()" for details on the available types of
      * encoding.
      *
-     * @access  public
-     * @static
      * @param   string  $string    string
      * @param   string  $encoding  encoding name
      * @param   int     $style     (optional)
@@ -625,11 +589,9 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * return a lower-cased version of the string
+     * Return a lower-cased version of the string.
      *
-     * @access  public
-     * @static
-     * @param   string  $string     string
+     * @param   string  $string  text in mixed case
      * @return  string
      *
      * @name    String::toLowerCase()
@@ -644,11 +606,9 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * return a upper-cased version of the string
+     * Return a upper-cased version of the string.
      *
-     * @access  public
-     * @static
-     * @param   string  $string     string
+     * @param   string  $string  text in mixed case
      * @return  string
      *
      * @name    String::toUpperCase()
@@ -663,17 +623,15 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * extract a substring
+     * Extract a substring.
      *
      * Returns a substring beginning at character-offset $start with
      * $length characters.
      * See PHP-Manual "string functions" "mb_substr()" for details.
      *
-     * @access  public
-     * @static
-     * @param   string  $string  string
-     * @param   int     $start   start
-     * @param   int     $length  (optional)
+     * @param   string  $string  base string
+     * @param   int     $start   position of start character
+     * @param   int     $length  number of characters to return (0 = all)
      * @return  string
      *
      * @name    String::substring()
@@ -696,7 +654,7 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * compare two strings
+     * Compare two strings.
      *
      * Returns
      * <ul>
@@ -707,8 +665,6 @@ class String extends \Yana\Core\AbstractUtility
      *
      * Note: This function is case-sensitive.
      *
-     * @access  public
-     * @static
      * @param   string  $string         string
      * @param   string  $anotherString  some other string
      * @return  int(+1)|int(0)|int(-1)
@@ -729,7 +685,7 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * compare two strings (ignore case)
+     * Compare two strings (ignore case).
      *
      * Returns
      * <ul>
@@ -740,8 +696,6 @@ class String extends \Yana\Core\AbstractUtility
      *
      * Note: This function is NOT case-sensitive.
      *
-     * @access  public
-     * @static
      * @param   string  $string         string
      * @param   string  $anotherString  some other string
      * @return  int(+1)|int(0)|int(-1)
@@ -762,17 +716,14 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * match string against regular expression
+     * Match string against regular expression.
      *
-     * Matches this string against a given Perl-compatible regular expression.
      * Returns an array containing the FIRST set of matches or bool(false) if
      * the regular expression did not match at all.
      *
-     * @access  public
-     * @static
-     * @param   string  $string                 string
-     * @param   string  $regularExpression      regular expresion
-     * @param   int     &$count                 count
+     * @param   string  $string              haystack
+     * @param   string  $regularExpression   regular expresion
+     * @param   int     &$count              returns number of times the expression matches
      * @return  array|bool(false)
      *
      * @name    String::match()
@@ -795,17 +746,14 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * match string against regular expression (return all results)
+     * Match string against regular expression (return all results).
      *
-     * Matches this string against a given Perl-compatible regular expression.
      * Returns an array containing ALL the matches or bool(false) if
      * the regular expression did not match at all.
      *
-     * @access  public
-     * @static
-     * @param   string  $string                 string
-     * @param   string  $regularExpression      regular expresion
-     * @param   int     &$count                 count
+     * @param   string  $string              haystack
+     * @param   string  $regularExpression   regular expresion
+     * @param   int     &$count              returns number of times the expression matches
      * @return  array|bool(false)
      *
      * @name    String::matchAll()
@@ -828,17 +776,12 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * replace a needle with a substitute
+     * Replace a needle with a substitute.
      *
-     * This will replace all entities of $needle with $substitute.
-     * Returns the number of times $needle is replaced.
-     *
-     * @access  public
-     * @static
-     * @param   string  $string         string
-     * @param   string  $needle         needle
-     * @param   string  $substitute     (optional)
-     * @param   int     &$count         (optional)
+     * @param   string  $string      haystack
+     * @param   string  $needle      replaced string
+     * @param   string  $substitute  new string
+     * @param   int     &$count      number of times the string is replaced
      * @return  string
      *
      * @name    String::replace()
@@ -856,15 +799,11 @@ class String extends \Yana\Core\AbstractUtility
      *
      * This will replace all hits of the Perl-compatible $regularExpression with $substitute.
      *
-     * Returns the number of times $needle is replaced.
-     *
-     * @access  public
-     * @static
-     * @param   string  $string               string
-     * @param   string  $regularExpression    regular expression
-     * @param   string  $substitute           (optional)
-     * @param   int     $limit                (optional) must be a positive integer > 0, defaults to -1 (no limit)
-     * @param   int     &$count               (optional)
+     * @param   string  $string             haystack
+     * @param   string  $regularExpression  regular expression of replaced string
+     * @param   string  $substitute         new string, may return back-references
+     * @param   int     $limit              must be a positive integer > 0, defaults to -1 (no limit)
+     * @param   int     &$count             number of times the string is replaced
      * @return  int
      *
      * @name    String::replaceRegExp()
@@ -891,12 +830,10 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * get the length of the string
+     * Get the number of characters in the string.
      *
-     * Returns the number of characters in the string.
+     * This function is unicode-aware.
      *
-     * @access  public
-     * @static
      * @param   string  $string   string
      * @return  int
      *
@@ -912,13 +849,11 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * convert string to an array
+     * Convert string to an array.
      *
-     * @access  public
-     * @static
-     * @param   string  $string       string
-     * @param   string  $separator    seperator
-     * @param   int     $limit        limit
+     * @param   string  $string     text to split
+     * @param   string  $separator  delimiter
+     * @param   int     $limit      maximum number of chunks
      * @return  array
      *
      * @name    String::split()
@@ -941,13 +876,11 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * convert string to an array by using regular expression to find a speratator
+     * Convert string to an array by using regular expression to find a speratator.
      *
-     * @access  public
-     * @static
-     * @param   string  $string     string
-     * @param   string  $separator  seperator
-     * @param   int     $limit      limit
+     * @param   string  $string     text to split
+     * @param   string  $separator  regular expression of delimiter to search for
+     * @param   int     $limit      maximum number of chunks
      * @return  array
      *
      * @name    String::splitRegExp()
@@ -970,7 +903,7 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * get position of first occurence of a needle inside the string
+     * Get position of first occurence of a needle inside the string.
      *
      * Returns character-offset of first occurence of $needle within this string.
      * Indices starting with int(0).
@@ -983,11 +916,9 @@ class String extends \Yana\Core\AbstractUtility
      * will return false if $needle is not found and true if and only if $string
      * starts with the string $needle.
      *
-     * @access  public
-     * @static
-     * @param   string  $string     string
-     * @param   string  $needle     needle
-     * @param   int     $offset     offset
+     * @param   string  $string  haystack
+     * @param   string  $needle  text to search for
+     * @param   int     $offset  character position from which to start searching
      * @return  int
      *
      * @name    String::indexOf()
@@ -1015,17 +946,17 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * wrap a long text
+     * Wrap a long text.
      *
-     * @access  public
-     * @static
-     * @param   string  $string     string
-     * @param   int     $width      width
-     * @param   string  $break      break
-     * @param   bool    $cut        cut (DEFAULT false)
+     * @param   string  $string   text to wrap
+     * @param   int     $width    maximum number of characters per line
+     * @param   string  $break    character to use as line delimiter
+     * @param   bool    $cut      true = hard cut (cut through words), false = soft cut (keep last word intact)
      * @return  string
      *
      * @name    String::wrap()
+     * @assert  ("test abc", 3, ",", false) == "test,abc"
+     * @assert  ("test test", 3, ",", true) == "tes,t,abc"
      */
     public static function wrap($string, $width = 75, $break = "\n", $cut = false)
     {
@@ -1038,12 +969,10 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * shuffle the string's characters
+     * Shuffle the string's characters.
      *
      * This implementation is Unicode-aware.
      *
-     * @access  public
-     * @static
      * @param   string  $string     string
      * @return  string
      *
@@ -1062,13 +991,11 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * reverse the string value
+     * Reverse the string value.
      *
      * This implementation is Unicode-aware.
      *
-     * @access  public
-     * @static
-     * @param   string  $string     string
+     * @param   string  $string  text to reverse
      * @return  string
      *
      * @name    String::reverse()
@@ -1086,11 +1013,9 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * convert to html entities
+     * Convert text to html entities.
      *
-     * @access  public
-     * @static
-     * @param   string  $string     string
+     * @param   string  $string  text to convert
      * @return  string
      *
      * @name    String::htmlEntities()
@@ -1100,11 +1025,11 @@ class String extends \Yana\Core\AbstractUtility
     public static function htmlEntities($string)
     {
         assert('is_string($string); // Wrong argument type for argument 1. String expected.');
-        return String::encode($string, 'entities', ENT_FULL);
+        return self::encode($string, 'entities', ENT_FULL);
     }
 
     /**
-     * convert html special characters
+     * Convert html special characters.
      *
      * This function is much like the original htmlspecialchars().
      *
@@ -1113,17 +1038,13 @@ class String extends \Yana\Core\AbstractUtility
      *
      * Unlike the original function, the $charset argument defaults to UTF-8.
      *
-     * If $doubleEncode is set to false, the function will not encode existing HTML entities.
-     * This argument was introduced in PHP 5.2.3.
-     *
-     * @access  public
-     * @static
      * @param   string  $string        text to encode
      * @param   int     $quoteStyle    ENT_COMPAT, ENT_QUOTES, ENT_NOQUOTES
      * @param   string  $charset       e.g. UTF-8 or ISO-8859-1
      * @param   bool    $doubleEncode  set to true to avoid double encoded string
      * @return  string
      * @since   2.9.6
+     * @assert  ("<ä id=\"\" title=''>") == "&lt;ä id=&quot;&quot; title=''&gt;"
      */
     public static function htmlSpecialChars($string, $quoteStyle = ENT_COMPAT, $charset = 'UTF-8', $doubleEncode = true)
     {
@@ -1133,6 +1054,44 @@ class String extends \Yana\Core\AbstractUtility
         assert('is_bool($doubleEncode); // Wrong argument type for argument 4. Boolean expected.');
 
         return htmlspecialchars($string, $quoteStyle, $charset, $doubleEncode);
+    }
+
+    /**
+     * Returns bool(true) if the string starts with the given needle.
+     *
+     * @param   string  $string  text to search
+     * @param   string  $needle  should start with this string
+     * @return  bool
+     *
+     * @assert  ("test", "te") == true
+     * @assert  ("test", "T") == false
+     * @assert  ("test", "a") == false
+     */
+    public static function startsWith($string, $needle)
+    {
+        assert('is_string($string); // Invalid argument $string: string expected');
+        assert('is_string($needle); // Invalid argument $needle: string expected');
+
+        return strpos($string, $needle) === 0;
+    }
+
+    /**
+     * Returns bool(true) if the string ends with the given needle.
+     *
+     * @param   string  $string  text to search
+     * @param   string  $needle  should start with this string
+     * @return  bool
+     *
+     * @assert  ("test", "st") == true
+     * @assert  ("test", "T") == false
+     * @assert  ("test", "a") == false
+     */
+    public static function endsWith($string, $needle)
+    {
+        assert('is_string($string); // Invalid argument $string: string expected');
+        assert('is_string($needle); // Invalid argument $needle: string expected');
+
+        return strrpos($string, $needle, strlen($needle)) !== false;
     }
 
 }
