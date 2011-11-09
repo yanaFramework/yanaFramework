@@ -290,9 +290,10 @@ class Builder extends \Yana\Core\Object
         $pluginManager = \Yana\Plugins\Manager::getInstance();
         $action = $pluginManager->getFirstEvent();
         $lang = \Language::getInstance();
-        $linkTemplate = '<a class="gui_generator_%s" href=' .
-            \SmartUtility::href("action=$action&" . $this->getForm()->getName() . "[page]=%s") .
-            ' title="%s">%s</a>';
+        $formatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
+        $linkTemplate = '<a class="gui_generator_%s" href="' .
+            $formatter("action=$action&" . $this->getForm()->getName() . "[page]=%s", false, false) .
+            '" title="%s">%s</a>';
         // previous page
         if ($currentPage > 0) { // is not first page
             $page = $currentPage - 1;

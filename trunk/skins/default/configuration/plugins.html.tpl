@@ -7,7 +7,7 @@
 <input type="hidden" value="" name="plugins[]"/>
 <ul>
 {foreach item="PLUGIN" from=$PLUGINS}
-       {sizeOf value=$PLUGIN.SETUP assign="setupCount"}
+       {$setupCount=$PLUGIN.SETUP|count}
        {if ($PLUGIN.ACTIVE == 0 || $setupCount == 0)}{$pluginClass="config_is_expert"}{else}{$pluginClass=""}{/if}
     <li {if $pluginClass}style="{$isExpertStyle}"{/if}{if $PLUGIN.ACTIVE == 1}title="{lang id="ADMIN.23"}" class="selected_option {$pluginClass}"{elseif $PLUGIN.ACTIVE == 2}title="{lang id="ADMIN.41"}" class="default_selected_option {$pluginClass}"{else}title="{lang id="ADMIN.26"}" class="unselected_option {$pluginClass}"{/if}>
         <a href={"action=about&type=plugin&target="|cat:$PLUGIN.ID|href}>

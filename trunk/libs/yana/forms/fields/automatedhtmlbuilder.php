@@ -349,8 +349,6 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             case 'color':
                 $this->setAttr(' style="background-color: ' . $value . '"')->setCssClass("gui_generator_color");
                 return $this->buildSpan($value);
-            case 'date':
-                return $this->buildSpan(\SmartUtility::date($value));
             case 'file':
                 $this->setCssClass('gui_generator_file_download');
                 if (!is_string($value)) {
@@ -389,9 +387,11 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                     $value = $row[$label];
                 }
                 return $this->buildSpan($value);
+            case 'date':
             case 'time':
             case 'timestamp':
-                return $this->buildSpan(\SmartUtility::date($value));
+                $dateFormatter = new \Yana\Templates\Helpers\Formatters\DateFormatter();
+                return $this->buildSpan($dateFormatter($value));
             case 'url':
                 return $this->buildExternalLink($value);
             default:
@@ -530,6 +530,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             $id = 'id="' . $form->getName() . '-' . $table->getPrimaryKey() . '-' .
                 $form->getPrimaryKey() . '-' . $field->getName() . '"';
             $class = 'class="gui_generator_int_link"';
+            $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
             /* @var $event \Yana\Db\Ddl\Event */
             foreach ($field->getField()->getEvents() as $event)
             {
@@ -551,7 +552,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                         $actionParam = "action=" . $event->getName();
                         $targetParam = "target[" . $table->getPrimaryKey() . "]=" . $form->getPrimaryKey() .
                             "&target[" . $field->getName() . "]=" . $value;
-                        $href = 'href="' . \SmartUtility::url("$actionParam&$targetParam") . '"';
+                        $href = 'href="' . $urlFormatter("$actionParam&$targetParam") . '"';
                         if (empty($title)) {
                             $title = $lang->getVar('DB_ENTITY_LINK');
                         }

@@ -1005,7 +1005,8 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
             $_SESSION['STDOUT'] = $stdout;
         }
 
-        header("Location: " . SmartUtility::url("action=$event", true));
+        $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
+        header("Location: " . $urlFormatter("action=$event", true));
         exit(0);
     }
 

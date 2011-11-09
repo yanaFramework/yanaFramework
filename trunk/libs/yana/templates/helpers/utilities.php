@@ -28,41 +28,21 @@
  */
 
 /**
- * <<utility>> SmartUtility
+ * <<utility>> This utility class encapsulates extensions for HTML creation.
  *
- * This is a utility class. It encapsulates extensions to use with
- * the smarty temlate engine.
- *
- * This is also a global namespace for layout specific functions.
- * These functions implement recursive replacement of tokens.
- * This functionality is used for registry-files (sml/config)
- * of the framework.
- *
- * {@internal
- *
- * Additional smarty functions and modifiers are documented elsewhere.
- * These functions should be ignored in API-documentation.
- *
- * }}
- *
- * @static
- * @access      public
  * @package     yana
- * @subpackage  core
- * @ignore
+ * @subpackage  templates
  */
-class SmartUtility extends \Yana\Core\AbstractUtility
+class Utilities extends \Yana\Core\AbstractUtility
 {
     /**
      * replace each token within a text/template
      *
      * NOTE: this method is case-sensitive
      *
-     * @access  private
      * @param   string   &$template      template
      * @param   array    &$array         array
      * @return  string
-     * @static
      */
     private static function _replace(&$template, array &$array)
     {
@@ -627,7 +607,7 @@ class SmartUtility extends \Yana\Core\AbstractUtility
             '<script type="text/javascript">yanaAddCalendar("' . $icon . '", "' . $id . '", "' . $id . '_year", ' .
             $day . ', ' . ($month - 1) . ', ' . $year . ');</script>'.
             '<script type="text/javascript" src=\'' . Skin::getSkinDirectory('default') .
-            'scripts/calendar/' . Language::getInstance()->getVar('calendar.js') . "'></script>";
+            'scripts/calendar/' .Language::getInstance()->getVar('calendar.js') . "'></script>";
     }
 
     /**

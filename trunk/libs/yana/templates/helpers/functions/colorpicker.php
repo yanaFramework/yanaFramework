@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -28,38 +27,35 @@
  * @ignore
  */
 
-namespace Yana\Templates\Resources;
+namespace Yana\Templates\Helpers\Functions;
 
 /**
- * <<Interface>> Smarty resource
+ * Smarty-compatible function.
  *
- * This interface should be used for resource wrappers.
+ * This class is registered when instantiating the Smarty Engine.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  templates
  */
-interface IsResource
+class Slider extends \Yana\Core\Object implements \Yana\Templates\Helpers\IsFunction
 {
 
     /**
-     * Fetch template and its modification time from data source.
+     * <<smarty function>> Creates Javascript colorpicker.
      *
-     * @param string  $name    template name
-     * @param string  &$source template source
-     * @param integer &$mtime  template modification timestamp (epoch)
+     * @param   array                      $params  any list of arguments
+     * @param   \Smarty_Internal_Template  $smarty  reference to currently rendered template
+     * @return  scalar
      */
-    protected function fetch($name, &$source, &$mtime);
+    public function __invoke(array $params, \Smarty_Internal_Template $smarty)
+    {
+        $document = new \SmartTemplate("id:colorpicker");
+        if (isset($params['id'])) {
+            $document->setVar('target', $params['id']);
+        }
+        return $document->__toString();
+    }
 
-    /**
-     * Fetch template's modification timestamp from data source.
-     *
-     * {@internal implementing this method is optional.
-     *  Only implement it if modification times can be accessed faster than loading the complete template source.}}
-     *
-     * @param string $name template name
-     * @return integer|boolean timestamp (epoch) the template was modified, or false if not found
-     */
-    protected function fetchTimestamp($name);
 }
 
 ?>

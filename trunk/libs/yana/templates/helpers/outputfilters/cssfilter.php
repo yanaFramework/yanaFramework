@@ -60,7 +60,7 @@ class CssFilter extends \Yana\Core\Object implements \Yana\Templates\Helpers\IsO
             assert('!isset($stylesheet); /* cannot redeclare variable $stylesheet */');
             foreach ($styleList as $stylesheet)
             {
-                $htmlHead = "        " . \SmartUtility::css($stylesheet) . "\n" . $htmlHead;
+                $htmlHead = "        " . $this->_css($stylesheet) . "\n" . $htmlHead;
             }
             unset($stylesheet);
 
@@ -68,6 +68,21 @@ class CssFilter extends \Yana\Core\Object implements \Yana\Templates\Helpers\IsO
         }
 
         return $source;
+    }
+
+    /**
+     * Returns HTML link to CSS file.
+     *
+     * @param   string  $url  path to stylesheet
+     * @return  string
+     */
+    protected function _css($url)
+    {
+        $css = "";
+        if (preg_match("/^[\w-_\.\/]+\.css$/si", $url)) {
+            $css = '<link rel="stylesheet" type="text/css" href="' . $url . '"/>';
+        }
+        return $css;
     }
 
 }

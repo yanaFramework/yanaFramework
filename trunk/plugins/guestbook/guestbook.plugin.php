@@ -40,32 +40,47 @@ class plugin_guestbook extends StdClass implements IsPlugin
 {
 
     /**
-     * @access  private
-     * @static
-     * @var     mixed
+     * @var  mixed
      */
     private static $database = null;
 
-    /**#@+
-     * @access  private
-     * @ignore
+    /**
+     * @var string (readonly)
      */
+    private $actionEntry = "guestbook_entry";
 
-    /** @var string (readonly) */ private $actionEntry        = "guestbook_entry";
-    /** @var string (readonly) */ private $actionNewWrite     = "guestbook_write_new";
-    /** @var string (readonly) */ private $actionDelete       = "guestbook_write_delete";
-    /** @var string (readonly) */ private $actionEdit         = "guestbook_read_edit";
-    /** @var string (readonly) */ private $actionEditWrite    = "guestbook_write_edit";
-    /** @var string (readonly) */ private $actionComment      = "guestbook_default_comment";
-    /** @var string (readonly) */ private $actionCommentWrite = "guestbook_write_comment";
+    /**
+     * @var string (readonly)
+     */
+    private $actionNewWrite = "guestbook_write_new";
 
-    /**#@-*/
+    /**
+     * @var string (readonly)
+     */
+    private $actionDelete = "guestbook_write_delete";
+
+    /**
+     * @var string (readonly)
+     */
+    private $actionEdit = "guestbook_read_edit";
+
+    /**
+     * @var string (readonly)
+     */
+    private $actionEditWrite = "guestbook_write_edit";
+
+    /**
+     * @var string (readonly)
+     */
+    private $actionComment = "guestbook_default_comment";
+
+    /** @var string (readonly)
+     */
+    private $actionCommentWrite = "guestbook_write_comment";
 
     /**
      * get database connection
      *
-     * @access  protected
-     * @static
      * @return  DbStream
      */
     protected static function getDatabase()
@@ -79,7 +94,6 @@ class plugin_guestbook extends StdClass implements IsPlugin
     /**
      * Constructor
      *
-     * @access  public
      * @ignore
      */
     public function __construct()
@@ -100,7 +114,6 @@ class plugin_guestbook extends StdClass implements IsPlugin
     /**
      * Default event handler
      *
-     * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
@@ -301,12 +314,13 @@ class plugin_guestbook extends StdClass implements IsPlugin
             $rss->description = 'the 10 most recent guestbook entries';
         }
         SmartUtility::loadSmilies();
+        $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
         foreach ($rows as $row)
         {
             $item = new \Yana\RSS\Item($row['GUESTBOOK_NAME']);
             // process link
             $id = $row['GUESTBOOK_ID'];
-            $link = SmartUtility::url('action=guestbook_read&target=' . $id, true);
+            $link = $urlFormatter('action=guestbook_read&target=' . $id, true);
             /**
              * {@internal
              * Note: guid is ignored by some aggregators and link is used instead
@@ -447,7 +461,8 @@ class plugin_guestbook extends StdClass implements IsPlugin
 
         // create link to user profile (if profile viewer is installed)
         if ($YANA->getPlugins()->isActive('user_admin')) {
-            $YANA->setVar('GUESTBOOK_USER_LINK', SmartUtility::url("action=view_profile&target[user_id]="));
+            $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
+            $YANA->setVar('GUESTBOOK_USER_LINK', $urlFormatter("action=view_profile&target[user_id]="));
         } else {
             $YANA->setVar('GUESTBOOK_USER_LINK', false);
         }
@@ -493,7 +508,8 @@ class plugin_guestbook extends StdClass implements IsPlugin
 
         // create link to user profile (if profile viewer is installed)
         if ($YANA->getPlugins()->isActive('user_admin')) {
-            $YANA->setVar('GUESTBOOK_USER_LINK', SmartUtility::url("action=view_profile&target[user_id]="));
+            $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
+            $YANA->setVar('GUESTBOOK_USER_LINK', $urlFormatter("action=view_profile&target[user_id]="));
         } else {
             $YANA->setVar('GUESTBOOK_USER_LINK', false);
         }

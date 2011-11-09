@@ -84,7 +84,7 @@ class FileResource extends \Yana\Templates\Resources\AbstractResource
      * @param   string $filename template name
      * @return  int
      */
-    public static function fetchTimestamp($filename)
+    protected function fetchTimestamp($filename)
     {
         assert('is_string($filename); // Wrong argument type argument 1. String expected');
         if (is_file($filename)) {

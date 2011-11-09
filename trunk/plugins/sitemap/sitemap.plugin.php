@@ -79,6 +79,7 @@ class plugin_sitemap extends StdClass implements IsPlugin
         $result = "<ul>\n";
         $dir = $YANA->getPlugins()->getPluginDir();
         $pluginMenu = \Yana\Plugins\Menu::getInstance();
+        $formatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
 
         /* @var $entry PluginMenuEntry */
         foreach ($pluginMenu->getMenuEntries('start') as $action => $entry)
@@ -96,7 +97,7 @@ class plugin_sitemap extends StdClass implements IsPlugin
                 \Yana\Log\LogManager::getLogger()->addLog("Sitemap icon not found: '${image}'.", E_USER_WARNING);
                 $result .= "\t<li>";
             }
-            $result .= "<a href=" . SmartUtility::href("action=${action}") . ">${title}</a></li>\n";
+            $result .= '<a href="' . $formatter("action=${action}", false, false) . '">' . $title . "</a></li>\n";
         } // end foreach
 
         $result .= "</ul>\n";

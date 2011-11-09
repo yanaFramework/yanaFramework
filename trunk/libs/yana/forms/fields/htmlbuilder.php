@@ -570,9 +570,10 @@ class HtmlBuilder extends \Yana\Core\Object
             assert('is_string($downloadAction); // Invalid argument $downloadAction: string expected');
             $lang = \Language::getInstance();
             $fileId = \DbBlob::storeFilenameInSession($filename);
-            return '<a class="buttonize" title="' . $lang->getVar('title_download') . '" href=' .
-                \SmartUtility::href("action={$downloadAction}&target={$fileId}") .
-                '><span class="icon_download">&nbsp;</span></a>';
+            $formatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
+            return '<a class="buttonize" title="' . $lang->getVar('title_download') . '" href="' .
+                $formatter("action={$downloadAction}&target={$fileId}", false, false) .
+                '"><span class="icon_download">&nbsp;</span></a>';
         }
     }
 
@@ -592,10 +593,10 @@ class HtmlBuilder extends \Yana\Core\Object
             assert('is_string($filename); // Invalid argument $filename: string expected');
             assert('is_string($downloadAction); // Invalid argument $downloadAction: string expected');
             $fileId = \DbBlob::storeFilenameInSession($filename);
-            return '<a href=' .
-                \SmartUtility::href("action={$downloadAction}&target={$fileId}&fullsize=true") .
-                '><img border="0" alt="" src=' .
-                \SmartUtility::href("action={$downloadAction}&target={$fileId}") . '/></a>';
+            $formatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
+            return '<a href="' . $formatter("action={$downloadAction}&target={$fileId}&fullsize=true", false, false) . '">' .
+                '<img border="0" alt="" src="' . $formatter("action={$downloadAction}&target={$fileId}", false, false) . '"/>' .
+                '</a>';
         }
     }
 
