@@ -103,9 +103,10 @@ class plugin_diagnostics extends StdClass implements IsPlugin
             } else {
                 $xsl->setParameter("", "details", "0");
             }
-            $detailsUrl = SmartUtility::url('action=' . __FUNCTION__ . "&details=" . !$details, true);
+            $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
+            $detailsUrl = $urlFormatter('action=' . __FUNCTION__ . "&details=" . !$details, true);
             $xsl->setParameter("", "urlChooseDetails", $detailsUrl);
-            $xmlUrl = SmartUtility::url('action=' . __FUNCTION__ . "&xml=1", true);
+            $xmlUrl = $urlFormatter('action=' . __FUNCTION__ . "&xml=1", true);
             $xsl->setParameter("", "urlChooseXml", $xmlUrl);
 
             /* transform and output report */

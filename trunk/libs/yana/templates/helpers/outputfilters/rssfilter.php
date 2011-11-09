@@ -83,11 +83,12 @@ class RssFilter extends \Yana\Core\Object implements \Yana\Templates\Helpers\IsO
 
             $htmlHead = "";
 
+            $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
             $title = $this->_getFeedTitle();
             foreach (\Yana\RSS\Publisher::getFeeds() as $action)
             {
                 $htmlHead .= '        <link rel="alternate" type="application/rss+xml"' .
-                ' title="' . $title . '" href="' . \SmartUtility::url("action=$action") . "\"/>\n";
+                ' title="' . $title . '" href="' . $urlFormatter("action=$action") . "\"/>\n";
             }
             unset($action);
 

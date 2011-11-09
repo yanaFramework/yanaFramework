@@ -318,6 +318,7 @@ class plugin_blog extends StdClass implements IsPlugin
          */
         $rss = new \Yana\RSS\Feed();
         $rss->description = $YANA->getLanguage()->getVar('RSS_DESCRIPTION');
+        $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
         /*
          * add items to feed
          */
@@ -326,7 +327,7 @@ class plugin_blog extends StdClass implements IsPlugin
             $item = new \Yana\RSS\Item($row['BLOG_TITLE']);
             // process link
             $id = $row['BLOG_ID'];
-            $link = SmartUtility::url("action=blog_read_read_seperated_blog&blog_id=$id", true);
+            $link = $urlFormatter("action=blog_read_read_seperated_blog&blog_id=$id", true);
             $link = str_replace(session_name()."=".session_id(), '', $link);
             $item->setLink($link);
             // process description

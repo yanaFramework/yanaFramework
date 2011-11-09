@@ -81,16 +81,14 @@
             List of modifiers to register.
             They must implement \Yana\Templates\Helpers\Modifiers\IsModifier.
         -->
-        <modifier name="embeddedTags" cacheable="true">\Yana\Templates\Helpers\Modifiers\EmbeddedTags</modifier>
-        <modifier name="replaceToken" cacheable="false">\Yana\Templates\Helpers\Modifiers\ReplaceToken</modifier>
-        <modifier name="css" cacheable="true">\Yana\Templates\Helpers\Modifiers\Css</modifier>
-        <modifier name="date" cacheable="true">\Yana\Templates\Helpers\Modifiers\Date</modifier>
-        <modifier name="entities" cacheable="true">\Yana\Templates\Helpers\Modifiers\Entities</modifier>
-        <modifier name="href" cacheable="false">\Yana\Templates\Helpers\Modifiers\Href</modifier>
-        <modifier name="scanForAt" cacheable="true">\Yana\Templates\Helpers\Modifiers\ScanForAt</modifier>
-        <modifier name="smilies" cacheable="true">\Yana\Templates\Helpers\Modifiers\Smilies</modifier>
-        <modifier name="url" cacheable="false">\Yana\Templates\Helpers\Modifiers\Url</modifier>
-        <modifier name="urlEncode" cacheable="true">\Yana\Templates\Helpers\Modifiers\UrlEncode</modifier>
+        <modifier name="embeddedTags" cacheable="true">\Yana\Templates\Helpers\Modifiers\EmbeddedTagsModifier</modifier>
+        <modifier name="replaceToken" cacheable="false">\Yana\Templates\Helpers\Modifiers\ReplaceTokenModifier</modifier>
+        <modifier name="date" cacheable="true">\Yana\Templates\Helpers\Modifiers\DateModifier</modifier>
+        <modifier name="entities" cacheable="true">\Yana\Templates\Helpers\Modifiers\EntitiesModifier</modifier>
+        <modifier name="href" cacheable="false">\Yana\Templates\Helpers\Modifiers\HrefModifier</modifier>
+        <modifier name="scanForAt" cacheable="true">\Yana\Templates\Helpers\Modifiers\ScanForAtModifier</modifier>
+        <modifier name="smilies" cacheable="true">\Yana\Templates\Helpers\Modifiers\SmiliesModifier</modifier>
+        <modifier name="url" cacheable="false">\Yana\Templates\Helpers\Modifiers\UrlModifier</modifier>
         <!--
             List of functions to register.
             They must implement \Yana\Templates\Helpers\Functions\IsFunction.
@@ -108,8 +106,6 @@
         <function name="toolbar" cacheable="false">\Yana\Templates\Helpers\Functions\Toolbar</function>
         <function name="preview" cacheable="true">\Yana\Templates\Helpers\Functions\Preview</function>
         <function name="colorpicker" cacheable="true">\Yana\Templates\Helpers\Functions\Colorpicker</function>
-        <function name="sml_load" cacheable="true">\Yana\Templates\Helpers\Functions\SmlLoad</function>
-        <function name="smlLoad" cacheable="true">\Yana\Templates\Helpers\Functions\SmlLoad</function>
         <function name="lang" cacheable="true">\Yana\Templates\Helpers\Functions\Lang</function>
         <function name="visitorCount" cacheable="true">\Yana\Templates\Helpers\Functions\VisitorCount</function>
         <function name="portlet" cacheable="true">\Yana\Templates\Helpers\Functions\Portlet</function>
@@ -120,7 +116,7 @@
             List of blockfunctions to register.
             They must implement \Yana\Templates\Helpers\IsBlockFunction.
         -->
-        <blockfunction name="loop" cacheable="true">\Yana\Templates\Helpers\BlockFunctions\LoopArray</blockfunction>
+        <blockfunction name="loop" cacheable="true">\Yana\Templates\Helpers\BlockFunctions\LoopBlock</blockfunction>
         <!--
             List of pre-processors to register.
             They must implement \Yana\Templates\Helpers\IsPreFilter.
@@ -194,6 +190,7 @@
             <phpfunction>is_array</phpfunction>
             <phpfunction>time</phpfunction>
             <phpfunction>nl2br</phpfunction>
+            <phpfunction>urlencode</phpfunction>
             <!--
                 Trusted PHP-functions that may be called from within templates as a modifier
             -->

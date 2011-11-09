@@ -65,24 +65,22 @@
  *  </li>
  * </ol>
  *
- * @access      public
  * @package     yana
  * @subpackage  utilities
  */
 class Microsummary extends \Yana\Core\AbstractUtility
 {
+
     /**
      * list of published microsummary
      *
-     * @access  protected
-     * @static
-     * @var     array
+     * @var  array
      * @ignore
      */
     protected static $microsummaries = array();
 
     /**
-     * get a microsummary
+     * Get the text of a microsummary.
      *
      * Reads the microsummary string identified by $id and returns it.
      * This function returns bool(false) if no corresponding summary exists.
@@ -92,8 +90,6 @@ class Microsummary extends \Yana\Core\AbstractUtility
      * Retrieving a microsummary in a plugin:
      * <code>$microsummary = Microsummary::getText(__CLASS__);</code>
      *
-     * @access  public
-     * @static
      * @param   string  $id  identifies the summary to get
      * @return  bool
      */
@@ -116,7 +112,7 @@ class Microsummary extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * set a microsummary
+     * Set the text of a microsummary.
      *
      * Saves the microsummary string identified by $id for later use.
      * This function returns bool(false) if the input is invalid or
@@ -127,8 +123,6 @@ class Microsummary extends \Yana\Core\AbstractUtility
      * Retrieving a microsummary in a plugin:
      * <code>$microsummary = Microsummary::getText(__CLASS__);</code>
      *
-     * @access  public
-     * @static
      * @param   string  $id    identifies the summary to get
      * @param   string  $text  the text of the microsummary
      * @return  bool
@@ -159,7 +153,7 @@ class Microsummary extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * publish a microsummary
+     * Publish a microsummary.
      *
      * Adds the microsummary identified by $id to the list of
      * microsummaries to be printed to the browser.
@@ -171,8 +165,6 @@ class Microsummary extends \Yana\Core\AbstractUtility
      *
      * Returns bool(false) on error.
      *
-     * @access  public
-     * @static
      * @param   string  $id  identifies the summary to get
      * @return  bool
      */
@@ -181,7 +173,7 @@ class Microsummary extends \Yana\Core\AbstractUtility
         assert('is_string($id); // Wrong argument type argument 1. String expected');
 
         $id = mb_strtoupper("$id");
-        $db = Yana::connect('microsummary');
+        $db = \Yana::connect('microsummary');
         if (!empty($db)) {
             // unable to connect to database
             return false;
@@ -200,8 +192,6 @@ class Microsummary extends \Yana\Core\AbstractUtility
      *
      * Returns a list of all previously published microsummaries.
      *
-     * @access  public
-     * @static
      * @return  array
      */
     public static function getSummaries()
@@ -209,6 +199,7 @@ class Microsummary extends \Yana\Core\AbstractUtility
         assert('is_array(self::$microsummaries); // Member "microsummaries" should be an array.');
         return self::$microsummaries;
     }
+
 }
 
 ?>

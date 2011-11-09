@@ -56,10 +56,9 @@ class MicrosummaryFilter extends \Yana\Core\Object implements \Yana\Templates\He
 
             $htmlHead = "";
 
-            assert('!isset($summary); /* cannot redeclare variable $summary */');
             foreach (\Microsummary::getSummaries() as $summary)
             {
-                $htmlHead .= "        " . \SmartUtility::microsummary($summary) . "\n";
+                $htmlHead .= "        " . $this->_microsummary($summary) . "\n";
             }
             unset($summary);
 
@@ -67,6 +66,19 @@ class MicrosummaryFilter extends \Yana\Core\Object implements \Yana\Templates\He
         }
 
         return $source;
+    }
+
+    /**
+     * Create a link to a microsummary identified by the $id parameter.
+     *
+     * @param   string  $id  unique identifier for the microsummary
+     * @return  string
+     */
+    protected function _microsummary($id)
+    {
+        assert('preg_match("/^\w[\w\d-_]*$/si", $target);');
+        return '<link rel="microsummary" href="' . $_SERVER['PHP_SELF'] . '?action=get_microsummary&amp;target=' . $id .
+            '" type="text/plain"/>';
     }
 
 }

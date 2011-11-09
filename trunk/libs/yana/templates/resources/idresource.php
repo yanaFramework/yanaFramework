@@ -82,7 +82,7 @@ class IdResource extends \Yana\Templates\Resources\FileResource
      * @param   string  $id       the template id
      * @return  int
      */
-    public function fetchTimestamp($id)
+    protected function fetchTimestamp($id)
     {
         assert('is_string($id); // Wrong argument type argument 1. String expected');
         $filename = \Yana::getInstance()->getSkin()->getFile($id);

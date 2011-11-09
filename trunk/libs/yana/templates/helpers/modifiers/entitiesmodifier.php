@@ -27,30 +27,32 @@
  * @ignore
  */
 
-namespace Yana\Templates\Resources;
+namespace Yana\Templates\Helpers\Modifiers;
 
 /**
- * <<utility>> Smarty abstract resource.
+ * Smarty-compatible modifier.
  *
- * This is a resource wrapper class for use with the smarty template engine.
+ * This class is registered when instantiating the Smarty Engine.
  *
  * @package     yana
  * @subpackage  templates
  */
-abstract class AbstractResource extends \Smarty_Resource_Custom
+class EntitiesModifier extends \Yana\Core\Object implements \Yana\Templates\Helpers\IsModifier
 {
 
+
     /**
-     * Fetch template's modification timestamp from data source.
+     * <<smarty modifier>> entities
      *
-     * Returns the timestamp when the template was modified, or false if not found.
+     * Calls the PHP function htmlspecialchars().
+     * See the PHP manual for details.
      *
-     * @param   string $name template name
-     * @return  int
+     * @param   string  $string     string
+     * @return  string
      */
-    protected function fetchTimestamp($name)
+    public function __invoke($string)
     {
-        return null;
+        return htmlspecialchars($string, ENT_COMPAT, 'UTF-8');
     }
 
 }

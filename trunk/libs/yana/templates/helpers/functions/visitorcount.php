@@ -27,30 +27,29 @@
  * @ignore
  */
 
-namespace Yana\Templates\Resources;
+namespace Yana\Templates\Helpers\Functions;
 
 /**
- * <<utility>> Smarty abstract resource.
+ * Smarty-compatible function.
  *
- * This is a resource wrapper class for use with the smarty template engine.
+ * This class is registered when instantiating the Smarty Engine.
  *
  * @package     yana
  * @subpackage  templates
  */
-abstract class AbstractResource extends \Smarty_Resource_Custom
+class VisitorCount extends \Yana\Core\Object implements \Yana\Templates\Helpers\IsFunction
 {
 
     /**
-     * Fetch template's modification timestamp from data source.
+     * <<smarty function>> Dummy
      *
-     * Returns the timestamp when the template was modified, or false if not found.
-     *
-     * @param   string $name template name
-     * @return  int
+     * @param   array                      $params  any list of arguments
+     * @param   \Smarty_Internal_Template  $smarty  reference to currently rendered template
+     * @return  scalar
      */
-    protected function fetchTimestamp($name)
+    public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
-        return null;
+        return "";
     }
 
 }

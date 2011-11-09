@@ -795,6 +795,25 @@ class String extends \Yana\Core\AbstractUtility
     }
 
     /**
+     * Returns bool(true) if a string is contained in another.
+     *
+     * @param   string  $string  haystack
+     * @param   string  $needle  string to search for
+     * @return  bool
+     *
+     * @assert  ("abc", "a") == true
+     * @assert  ("abc", "A") == false
+     * @assert  ("abc", "d") == false
+     */
+    public static function contains($string, $needle)
+    {
+        assert('is_string($string); // Invalid argument $string: string expected');
+        assert('is_string($needle); // Invalid argument $needle: string expected');
+
+        return mb_strpos($string, $needle) !== false;
+    }
+
+    /**
      * replace a substring by using a regular expression
      *
      * This will replace all hits of the Perl-compatible $regularExpression with $substitute.

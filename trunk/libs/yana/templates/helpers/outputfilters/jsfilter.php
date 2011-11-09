@@ -57,13 +57,28 @@ class JsFilter extends \Yana\Core\Object implements \Yana\Templates\Helpers\IsOu
             $htmlHead = "";
             foreach (\SmartView::getScripts() as $script)
             {
-                $htmlHead .= "        " . \SmartUtility::script($script) . "\n";
+                $htmlHead .= "        " . $this->_script($script) . "\n";
             }
             unset($script);
             $source = preg_replace('/^\s*<\/head>/m', $htmlHead . "\$0", $source, 1);
         }
 
         return $source;
+    }
+
+    /**
+     * Returns HTML script-tag.
+     *
+     * @param   string  $string  path to JavaScript file
+     * @return  string
+     */
+    protected function _script($string)
+    {
+        $script = "";
+        if (preg_match("/^[\w-_\.\/]+\.js$/si", $string)) {
+            $script = '<script type="text/javascript" language="javascript" src="' . $string . '"></script>';
+        }
+        return $script;
     }
 
 }

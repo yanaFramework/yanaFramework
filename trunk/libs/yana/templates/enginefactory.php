@@ -90,12 +90,12 @@ class EngineFactory extends \Yana\Core\Object
     {
         $className = (string) $plugin;
         $instance = new $className();
-        $attributes = (array) $plugin->attributes();
+        $attributes = $plugin->attributes();
         $smarty->registerPlugin(
             $type,
-            (string) $attributes['name'],
+            (string) $attributes->name,
             array($instance, '__invoke'),
-            strtolower((string) @$attributes['cacheable']) !== 'false'
+            strtolower((string) $attributes->cacheable) !== 'false'
         );
     }
 
@@ -128,9 +128,8 @@ class EngineFactory extends \Yana\Core\Object
     {
         $className = (string) $resource;
         $instance = new $className();
-        assert($instance instanceof \Yana\Templates\Resources\IsResource);
-        $attributes = (array) $resource->attributes();
-        $smarty->registerResource((string) $attributes['name'], $instance);
+        $attributes = $resource->attributes();
+        $smarty->registerResource((string) $attributes->name, $instance);
     }
 
     /**

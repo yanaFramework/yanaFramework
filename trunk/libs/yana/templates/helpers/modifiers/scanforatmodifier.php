@@ -27,30 +27,36 @@
  * @ignore
  */
 
-namespace Yana\Templates\Resources;
+namespace Yana\Templates\Helpers\Modifiers;
 
 /**
- * <<utility>> Smarty abstract resource.
+ * Smarty-compatible modifier.
  *
- * This is a resource wrapper class for use with the smarty template engine.
+ * This class is registered when instantiating the Smarty Engine.
  *
  * @package     yana
  * @subpackage  templates
  */
-abstract class AbstractResource extends \Smarty_Resource_Custom
+class ScanForAtModifier extends \Yana\Core\Object implements \Yana\Templates\Helpers\IsModifier
 {
 
     /**
-     * Fetch template's modification timestamp from data source.
+     * <<smarty modifier>> Scan for at.
      *
-     * Returns the timestamp when the template was modified, or false if not found.
+     * Obfuscates e-mail addresses by converting all characters to entities.
      *
-     * @param   string $name template name
-     * @return  int
+     * @param   string  $source  possibly an e-mail address
+     * @return  string
      */
-    protected function fetchTimestamp($name)
+    public function __invoke($source)
     {
-        return null;
+        if (is_string($source) && preg_match_all("/[\w\.\-_]+@[\w\.\-_]+/", $source, $matches)) {
+            foreach ($matches[0] as $match)
+            {
+                $source = str_replace($match, htmlspecialchars($match, ENT_COMPAT, 'UTF-8'), $source);
+            }
+        }
+        return $source;
     }
 
 }

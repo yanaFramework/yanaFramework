@@ -30,7 +30,7 @@
               <!-- End: logo {/if} -->
               <div id="index_header_appbar">{applicationBar}</div>
 <!-- Begin: language block
- {sizeOf value=$INSTALLED_LANGUAGES assign="SIZE_OF_INSTALLED_LANGUAGES"}
+ {$SIZE_OF_INSTALLED_LANGUAGES=$INSTALLED_LANGUAGES|count}
  {if $SIZE_OF_INSTALLED_LANGUAGES > 1} -->
               <div id="index_language">{lang id="TITLE_LANG"}:
 <!-- Begin: language
