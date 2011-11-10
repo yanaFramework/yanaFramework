@@ -315,6 +315,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         }
         SmartUtility::loadSmilies();
         $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
+        $textFormatter = new \Yana\Templates\Helpers\Formatters\TextFormatterCollection();
         foreach ($rows as $row)
         {
             $item = new \Yana\RSS\Item($row['GUESTBOOK_NAME']);
@@ -331,8 +332,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
             $item->setLink($link);
             // process description
             $description = $row['GUESTBOOK_MESSAGE'];
-            $description = SmartUtility::embeddedTags($description);
-            $description = SmartUtility::smilies($description);
+            $description = $textFormatter($description);
             $description = strip_tags($description);
             if (mb_strlen($description) > 500) {
                 $description = mb_substr($description, 0, 496).' ...';

@@ -37,22 +37,22 @@ namespace Yana\Templates\Helpers\Modifiers;
  * @package     yana
  * @subpackage  templates
  */
-class EntitiesModifier extends \Yana\Core\Object implements \Yana\Templates\Helpers\IsModifier
+class EmbeddedTagsModifier extends \Yana\Templates\Helpers\Formatters\TextFormatter implements \Yana\Templates\Helpers\IsModifier
 {
 
 
     /**
-     * <<smarty modifier>> entities
+     * <<smarty modifier>> embeddedTags
      *
-     * Calls the PHP function htmlspecialchars().
-     * See the PHP manual for details.
-     *
-     * @param   string  $string     string
+     * @param   string  $string  any text containing emb.-tags
      * @return  string
      */
     public function __invoke($string)
     {
-        return \Yana\Util\String::htmlSpecialChars($string);
+        if (!is_string($string)) {
+            return $string;
+        }
+        return parent::__invoke($string);
     }
 
 }

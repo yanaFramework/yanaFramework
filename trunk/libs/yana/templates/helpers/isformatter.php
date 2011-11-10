@@ -27,33 +27,24 @@
  * @ignore
  */
 
-namespace Yana\Templates\Helpers\Modifiers;
+namespace Yana\Templates\Helpers;
 
 /**
- * Smarty-compatible modifier.
- *
- * This class is registered when instantiating the Smarty Engine.
+ * <<interface>> Callable classes formatting some input as text.
  *
  * @package     yana
  * @subpackage  templates
  */
-class EntitiesModifier extends \Yana\Core\Object implements \Yana\Templates\Helpers\IsModifier
+interface IsFormatter
 {
 
-
     /**
-     * <<smarty modifier>> entities
+     * Converting an input to text, using a preset format.
      *
-     * Calls the PHP function htmlspecialchars().
-     * See the PHP manual for details.
-     *
-     * @param   string  $string     string
-     * @return  string
+     * @param   mixed  $source  some source
+     * @return  scalar
      */
-    public function __invoke($string)
-    {
-        return \Yana\Util\String::htmlSpecialChars($string);
-    }
+    public function __invoke($source);
 
 }
 

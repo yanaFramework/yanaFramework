@@ -27,31 +27,17 @@
  * @ignore
  */
 
+namespace Yana\Templates\Helpers\Functions;
+
 /**
- * <<utility>> SmartUtility
+ * Smarty-compatible function.
  *
- * This is a utility class. It encapsulates extensions to use with
- * the smarty temlate engine.
+ * This class is registered when instantiating the Smarty Engine.
  *
- * This is also a global namespace for layout specific functions.
- * These functions implement recursive replacement of tokens.
- * This functionality is used for registry-files (sml/config)
- * of the framework.
- *
- * {@internal
- *
- * Additional smarty functions and modifiers are documented elsewhere.
- * These functions should be ignored in API-documentation.
- *
- * }}
- *
- * @static
- * @access      public
  * @package     yana
- * @subpackage  core
- * @ignore
+ * @subpackage  templates
  */
-class SmartFormUtility extends \Yana\Core\AbstractUtility
+class Form extends \Yana\Core\Object implements \Yana\Templates\Helpers\IsFunction
 {
 
     /**
@@ -105,13 +91,11 @@ class SmartFormUtility extends \Yana\Core\AbstractUtility
      * {create file="guestbook" table="guestbook" sort="guestbook_date" desc="true"}
      * </code>
      *
-     * @access  public
-     * @static
-     * @param   array   $params  see arguments list above
-     * @return  string
-     * @ignore
+     * @param   array                      $params  any list of arguments
+     * @param   \Smarty_Internal_Template  $smarty  reference to currently rendered template
+     * @return  scalar
      */
-    public static function createForm(array $params)
+    public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
         // parameter 'file' is mandatory.
         if (!isset($params['file']) || !is_string($params['file'])) {

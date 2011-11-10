@@ -356,7 +356,8 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 }
                 return $this->buildSpan($this->buildFileDownload($value, $setup->getDownloadAction()));
             case 'text':
-                $value = \SmartUtility::smilies(\SmartUtility::embeddedTags($value));
+                $textFormatter = new \Yana\Templates\Helpers\Formatters\TextFormatterCollection();
+                $value = $textFormatter($value);
             // fall through
             case 'html':
                 if (mb_strlen($value) > 25) {

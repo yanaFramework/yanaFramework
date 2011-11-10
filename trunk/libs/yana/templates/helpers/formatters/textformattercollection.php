@@ -1,4 +1,5 @@
 <?php
+
 /**
  * YANA library
  *
@@ -27,32 +28,26 @@
  * @ignore
  */
 
-namespace Yana\Templates\Helpers\Modifiers;
+namespace Yana\Templates\Helpers\Formatters;
 
 /**
- * Smarty-compatible modifier.
- *
- * This class is registered when instantiating the Smarty Engine.
+ * <<formatter>> This class combines the icon- and text-formatter for convenience.
  *
  * @package     yana
  * @subpackage  templates
  */
-class EntitiesModifier extends \Yana\Core\Object implements \Yana\Templates\Helpers\IsModifier
+class TextFormatterCollection extends FormatterCollection
 {
 
-
     /**
-     * <<smarty modifier>> entities
+     * Add default entries.
      *
-     * Calls the PHP function htmlspecialchars().
-     * See the PHP manual for details.
-     *
-     * @param   string  $string     string
-     * @return  string
+     * Presets the IconFormatter and TextFormatter as members of the collection.
      */
-    public function __invoke($string)
+    public function __construct()
     {
-        return \Yana\Util\String::htmlSpecialChars($string);
+        $this[] = new IconFormatter();
+        $this[] = new TextFormatter();
     }
 
 }
