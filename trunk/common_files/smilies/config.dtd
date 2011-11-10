@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!ELEMENT files (file)*>
+<!ELEMENT file EMPTY>
+<!ATTLIST file
+    regex CDATA #IMPLIED
+    name CDATA #IMPLIED
+  >

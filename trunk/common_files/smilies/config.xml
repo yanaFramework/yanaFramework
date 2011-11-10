@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE files SYSTEM "config.dtd">
 <files>
     <file name="smile.gif" regex=":[\-oO]?\)|smile"/>
     <file name="boese.gif" regex=":[\-oO]?\(|boese|angry"/>
