@@ -1413,15 +1413,11 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
         }
         unset($subreport);
 
-        /**
-         * 6) check icons
-         */
-        $subreport = $report->addReport("Check icons");
-        SmartUtility::loadSmilies();
-        $smilies = $this->getVar('SMILIES');
-        assert('!isset($dir); // Cannot redeclare var $dir');
         $registry = $this->getRegistry();
+        /* @var $dir \Dir */
+        assert('!isset($dir); // Cannot redeclare var $dir');
         $dir = $registry->getResource('system:/smile');
+        $smilies = $dir->dirlist();
         if (count($smilies)==0) {
             $message = "No Icons found. Please check if the given directory is correct: '" .
                 $dir->getPath() . "'.";

@@ -170,7 +170,6 @@ class SmartTemplate extends \Yana\Core\Object
              * 1.2) directories
              */
             if ($registry instanceof \Yana\VDrive\Registry) {
-                SmartUtility::loadSmilies($registry->getVar("PROFILE.SMILEYDIR"));
                 self::$smarty->template_dir = '.';
                 self::$smarty->config_dir = $registry->getVar('SKINCONFIGDIR');
                 self::$smarty->compile_dir = $registry->getVar('TEMPDIR');

@@ -97,7 +97,7 @@
         <function name="printUnorderedList" cacheable="true">\Yana\Templates\Helpers\Functions\PrintUnorderedList</function>
         <function name="rss" cacheable="true">\Yana\Templates\Helpers\Functions\Rss</function>
         <function name="import" cacheable="false">\Yana\Templates\Helpers\Functions\Import</function>
-        <function name="smilies" cacheable="true">\Yana\Templates\Helpers\Functions\GuiSmilies</function>
+        <function name="smilies" cacheable="true">\Yana\Templates\Helpers\Functions\Smilies</function>
         <function name="embeddedTags" cacheable="true">\Yana\Templates\Helpers\Functions\GuiEmbeddedTags</function>
         <function name="create" cacheable="false">\Yana\Templates\Helpers\Functions\Form</function>
         <function name="captcha" cacheable="true">\Yana\Templates\Helpers\Functions\Captcha</function>
@@ -106,7 +106,7 @@
         <function name="toolbar" cacheable="false">\Yana\Templates\Helpers\Functions\Toolbar</function>
         <function name="preview" cacheable="true">\Yana\Templates\Helpers\Functions\Preview</function>
         <function name="colorpicker" cacheable="true">\Yana\Templates\Helpers\Functions\Colorpicker</function>
-        <function name="lang" cacheable="true">\Yana\Templates\Helpers\Functions\Lang</function>
+        <function name="lang" cacheable="true">\Yana\Templates\Helpers\Functions\Language</function>
         <function name="visitorCount" cacheable="true">\Yana\Templates\Helpers\Functions\VisitorCount</function>
         <function name="portlet" cacheable="true">\Yana\Templates\Helpers\Functions\Portlet</function>
         <function name="applicationBar" cacheable="true">\Yana\Templates\Helpers\Functions\ApplicationBar</function>

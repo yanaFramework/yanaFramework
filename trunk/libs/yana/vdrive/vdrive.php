@@ -284,7 +284,7 @@ class VDrive extends \Yana\File\AbstractResource implements \Yana\Report\IsRepor
             throw new \Yana\Core\Exceptions\NotReadableException($message, E_USER_WARNING);
         }
         /* apply default settings */
-        $content = \SmartUtility::replaceToken($content, self::$defaultSettings);
+        $content = \Yana\Util\String::replaceToken($content, self::$defaultSettings);
         /* create configuration */
         $this->content = Configuration::loadString($content);
         /* read XML */
@@ -326,7 +326,7 @@ class VDrive extends \Yana\File\AbstractResource implements \Yana\Report\IsRepor
                 if (!isset($this->vars[$name])) {
                     // recursively replace vars
                     if (mb_strpos($value, YANA_LEFT_DELIMITER) !== false) {
-                        $value = \SmartUtility::replaceToken($value, $this->vars);
+                        $value = \Yana\Util\String::replaceToken($value, $this->vars);
                     }
                     // assign value
                     $this->vars[$name] = $value;
@@ -440,7 +440,7 @@ class VDrive extends \Yana\File\AbstractResource implements \Yana\Report\IsRepor
         {
             $source = (string) $source;
             if (mb_strpos($source, YANA_LEFT_DELIMITER) !== false) {
-                $source = \SmartUtility::replaceToken($source, self::$defaultSettings);
+                $source = \Yana\Util\String::replaceToken($source, self::$defaultSettings);
             } else {
                 /* intentionally left blank */
             }
