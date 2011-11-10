@@ -1113,6 +1113,61 @@ class String extends \Yana\Core\AbstractUtility
         return strrpos($string, $needle, strlen($needle)) !== false;
     }
 
+
+    /**
+     * Replace each token within a text/template.
+     *
+     * NOTE: this method is case-sensitive.
+     *
+     * @param   string  $string  haystack
+     * @param   array   $array   values to replace
+     * @param   string  $lDelim  left token delimiter (default = '{$')
+     * @param   string  $rDelim  right token delimiter (default = '}')
+     * @return  string
+     */
+    public static function replaceToken($string, array $array, $lDelim = null, $rDelim = null)
+    {
+        assert('is_string($string); // Wrong type for argument 1. String expected');
+
+        if (is_null($lDelim)) {
+            $lDelim = YANA_LEFT_DELIMITER . '$';
+        }
+        if (is_null($rDelim)) {
+            $rDelim = YANA_RIGHT_DELIMITER;
+        }
+        $ldimRegExp = preq_quote($lDelim, '/');
+        $rdimRegExp = preq_quote($rDelim, '/');
+
+        $match = array();
+        if (preg_match_all("/$ldimRegExp([\w_\.]+?)$rdimRegExp/", $string, $match) > 0) {
+            foreach ($match[1] as $currentMatch)
+            {
+                $tmp =& \Yana\Util\Hashtable::get($array, mb_strtoupper($currentMatch));
+                /* if $tmp is NULL, the reference $match is pointing to a non-existing value */
+                if (is_null($tmp) || !is_scalar($tmp)) {
+                    continue;
+                } else {
+                    $tmp = (string) $tmp;
+                    /**
+                     * if the content string we got from the reference array contains token as well,
+                     * we recursivle replace them.
+                     */
+                    if (mb_strpos($tmp, $lDelim) !== false) {
+                        assert('is_string($tmp); // Unexpected result: $tmp is supposed to be a string');
+                        self::_replace($tmp, $array);
+                    }
+                    assert('is_string($tmp); // Unexpected result: $tmp is supposed to be a string');
+                    $regExpMatch = preg_quote($currentMatch, '/');
+                    $string = preg_replace("/(<[^\!^>]+){$ldimRegExp}{$regExpMatch}{$rdimRegExp}([^>]+>)/Usi", '${1}'.
+                        addcslashes(htmlspecialchars($tmp, ENT_COMPAT, 'UTF-8'), '\\') . '${2}', $string);
+                    $string = str_replace($lDelim . $currentMatch . $rDelim, $tmp, $string);
+                } // end if
+            } // end for
+        } // end if
+        assert('is_string($string); // Unexpected result: $string is supposed to be a string');
+        return $string;
+    }
+
 }
 
 ?>

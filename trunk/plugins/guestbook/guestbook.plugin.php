@@ -313,7 +313,6 @@ class plugin_guestbook extends StdClass implements IsPlugin
         if (empty($rss->description)) {
             $rss->description = 'the 10 most recent guestbook entries';
         }
-        SmartUtility::loadSmilies();
         $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
         $textFormatter = new \Yana\Templates\Helpers\Formatters\TextFormatterCollection();
         foreach ($rows as $row)

@@ -52,6 +52,9 @@ class RelativePathsFilter extends \Yana\Core\Object implements \Yana\Templates\H
     {
         assert('is_string($source); // Wrong type for argument 1. String expected');
 
+        $lDelim = preg_quote($templateClass->smarty->left_delimiter, '/');
+        $rDelim = preg_quote($templateClass->smarty->right_delimiter, '/');
+
         $basedir = $templateClass->smarty->getTemplateVars('BASEDIR');
         if (empty($basedir)) {
             $basedir = (string) dirname($templateClass->buildTemplateFilepath());
@@ -61,8 +64,9 @@ class RelativePathsFilter extends \Yana\Core\Object implements \Yana\Templates\H
             if ($basedir[0] === '.') {
                 $basedir = preg_replace('/^\.[\/\\\]/', '' ,$basedir);
             }
-            $pattern = '/(' . YANA_LEFT_DELIMITER_REGEXP . ')import\s+(?:preparser(?:="true")?\s+|)file="(\S*)(".*' .
-                YANA_RIGHT_DELIMITER_REGEXP . ')/Ui';
+            $pattern = '/(' . $lDelim . ')import\s+(?:preparser(?:="true")?\s+|)file="(\S*)(".*' .
+                $rDelim . ')/Ui';
+            $match2 = array();
             preg_match_all($pattern, $source, $match2);
             for ($i = 0; $i < count($match2[0]); $i++)
             {
@@ -79,7 +83,7 @@ class RelativePathsFilter extends \Yana\Core\Object implements \Yana\Templates\H
                     $source = str_replace($match2[0][$i], $replace, $source);
                 }
             }
-            $pattern = '/(' . YANA_LEFT_DELIMITER_REGEXP . ')insert\s+file="(\S*)(".*' . YANA_RIGHT_DELIMITER_REGEXP .
+            $pattern = '/(' . $lDelim . ')insert\s+file="(\S*)(".*' . $rDelim .
                 ')/Ui';
             preg_match_all($pattern, $source, $match2);
             for ($i = 0; $i < count($match2[0]); $i++)
@@ -93,22 +97,22 @@ class RelativePathsFilter extends \Yana\Core\Object implements \Yana\Templates\H
             for ($i = 0; $i < count($match2[1]); $i++)
             {
                 $pattern = '/^https?:\/\/\S*/i';
-                $secondPattern = '/^' . YANA_LEFT_DELIMITER_REGEXP . '\$PHP_SELF' . YANA_RIGHT_DELIMITER_REGEXP . '/i';
+                $secondPattern = '/^' . $lDelim . '\$PHP_SELF' . $rDelim . '/i';
                 if (!preg_match($pattern, $match2[1][$i]) && !preg_match($secondPattern, $match2[1][$i])) {
                     $pattern = '/ background\s*=\s*"' . preg_quote($match2[1][$i], '/') . '"/i';
                     $source = preg_replace($pattern, ' background="' . $basedir . $match2[1][$i] . '"', $source);
                 }
             }
-            $pattern = '/ src\s*=\s*"((?!' . YANA_LEFT_DELIMITER_REGEXP . '|http:|https:)\S*)"/i';
+            $pattern = '/ src\s*=\s*"((?!' . $lDelim . '|http:|https:)\S*)"/i';
             $source = preg_replace($pattern, ' src="' . $basedir . '$1"', $source);
 
-            $pattern = '/\.src\s*=\s*\'((?!' . YANA_LEFT_DELIMITER_REGEXP . '|http:|https:)\S*)\'/i';
+            $pattern = '/\.src\s*=\s*\'((?!' . $lDelim . '|http:|https:)\S*)\'/i';
             $source = preg_replace($pattern, '.src=\'' . $basedir . '$1\'', $source);
 
-            $pattern = '/ url\(("|\')((?!' . YANA_LEFT_DELIMITER_REGEXP . '|http:|https:)[^\1]*?)\1\)/i';
+            $pattern = '/ url\(("|\')((?!' . $lDelim . '|http:|https:)[^\1]*?)\1\)/i';
             $source = preg_replace($pattern, ' url($1' . $basedir . '$2$1)', $source);
 
-            $pattern = '/ href\s*=\s*"((?!' . YANA_LEFT_DELIMITER_REGEXP . '|http:|https:|javascript:|\&\#109\;' .
+            $pattern = '/ href\s*=\s*"((?!' . $lDelim . '|http:|https:|javascript:|\&\#109\;' .
                 '\&\#97\;\&\#105\;\&\#108\;\&\#116\;\&\#111\;\&\#58\;|mailto:)\S*)"/i';
             $source = preg_replace($pattern, ' href="' . $basedir . '$1"', $source);
         } // end if

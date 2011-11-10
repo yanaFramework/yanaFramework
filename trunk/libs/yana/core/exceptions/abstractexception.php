@@ -237,7 +237,7 @@ abstract class AbstractException extends \Exception
             if ($language->isVar("$id.h")) {
                 $this->header = (string) $language->getVar("$id.h");
                 if (!empty($this->data)) {
-                    $this->header = \SmartUtility::replaceToken($this->header, $this->data);
+                    $this->header = \Yana\Util\String::replaceToken($this->header, $this->data);
                     $this->header = $language->replaceToken($this->header);
                 }
             } else {
@@ -266,7 +266,7 @@ abstract class AbstractException extends \Exception
             if ($language->isVar($id . ".p")) {
                 $this->text = (string) $language->getVar($id . ".p");
                 if (!empty($this->data)) {
-                    $this->text = \SmartUtility::replaceToken($this->text, $this->data);
+                    $this->text = \Yana\Util\String::replaceToken($this->text, $this->data);
                     $this->text = $language->replaceToken($this->text);
                 }
             } elseif (!empty($this->message)) {

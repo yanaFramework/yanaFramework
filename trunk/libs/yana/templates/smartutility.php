@@ -53,63 +53,6 @@
  */
 class SmartUtility extends \Yana\Core\AbstractUtility
 {
-    /**
-     * replace each token within a text/template
-     *
-     * NOTE: this method is case-sensitive
-     *
-     * @access  private
-     * @param   string   &$template      template
-     * @param   array    &$array         array
-     * @return  string
-     * @static
-     */
-    private static function _replace(&$template, array &$array)
-    {
-        assert('is_string($template); // Wrong type for argument 1. String expected');
-        if (!is_string($template)) {
-            return $template;
-        }
-
-        $ldimRegExp = YANA_LEFT_DELIMITER_REGEXP . '\$';
-        $rdimRegExp = YANA_RIGHT_DELIMITER_REGEXP;
-        $ldim = YANA_LEFT_DELIMITER . '$';
-        $rdim = YANA_RIGHT_DELIMITER;
-
-        $match = array();
-        if (preg_match_all("/$ldimRegExp([\w_\.]+?)$rdimRegExp/", $template, $match) > 0) {
-            $match = $match[1];
-            foreach ($match as $currentMatch)
-            {
-                $tmp =& \Yana\Util\Hashtable::get($array, mb_strtoupper($currentMatch));
-                /* if $tmp is NULL, the reference $match is pointing to a non-existing value */
-                if (is_null($tmp)) {
-                    continue;
-                } elseif (!is_scalar($tmp)) {
-                    $message = "The token '$currentMatch' refers to a non-scalar value inside a string contetx. ".
-                        "It's value will be converted to the string 'true'.";
-                    trigger_error($message, E_USER_NOTICE);
-                    continue;
-                } else {
-                    $tmp = (string) $tmp;
-                    /**
-                     * if the content string we got from the reference array contains token as well,
-                     * we recursivle replace them.
-                     */
-                    if (mb_strpos($tmp, $ldim) !== false) {
-                        assert('is_string($tmp); // Unexpected result: $tmp is supposed to be a string');
-                        self::_replace($tmp, $array);
-                    }
-                    assert('is_string($tmp); // Unexpected result: $tmp is supposed to be a string');
-                    $regExpMatch = preg_quote($currentMatch, '/');
-                    $template = preg_replace("/(<[^\!^>]+){$ldimRegExp}{$regExpMatch}{$rdimRegExp}([^>]+>)/Usi", '${1}'.
-                        addcslashes(htmlspecialchars($tmp, ENT_COMPAT, 'UTF-8'), '\\') . '${2}', $template);
-                    $template = str_replace($ldim . $currentMatch . $rdim, $tmp, $template);
-                } // end if
-            } // end for
-        } // end if
-        assert('is_string($template); // Unexpected result: $template is supposed to be a string');
-    }
 
     /**
      * <<smarty modifier>> replace token
@@ -173,7 +116,7 @@ class SmartUtility extends \Yana\Core\AbstractUtility
         /*
          * Replace all entities of array values in given string.
          */
-        self::_replace($string, $array);
+        \Yana\Util\String::replaceToken($string, $array);
         return $string;
     }
 
@@ -352,29 +295,6 @@ class SmartUtility extends \Yana\Core\AbstractUtility
     {
         $menu = \Yana\Plugins\Menu::getInstance();
         return self::printUL3($menu->getTextMenu(), true);
-    }
-
-    /**
-     * <<smarty function>> lang
-     *
-     * Replace language strings
-     *
-     * @static
-     * @access  public
-     * @param   array $params  parameters
-     * @return  string
-     * @since   3.1.0
-     */
-    public static function lang(array $params)
-    {
-        global $YANA;
-        if (isset($params['id'])) {
-            $id = (string) $params['id'];
-            return (string) Language::getInstance()->getVar($id);
-        } else {
-            trigger_error("Missing argument 'id' in function " . __FUNCTION__ . "()", E_USER_WARNING);
-            return "";
-        }
     }
 
     /**
@@ -746,118 +666,6 @@ class SmartUtility extends \Yana\Core\AbstractUtility
         }
         $ul .= '</ul>';
         return $ul;
-    }
-
-    /**
-     * <<smarty function>> guiSmilies
-     *
-     * @static
-     * @access  public
-     * @name    SmartUtility::guiSmilies()
-     * @param   array   $params  accepts optional parameter "width"
-     * @return  string
-     *
-     * @see     SmartUtility::loadSmilies()
-     */
-    public static function guiSmilies(array $params)
-    {
-        global $YANA;
-        $table   = '<table summary="smilies" class="gui_generator_smilies"><tr>';
-        if (isset($YANA)) {
-            $title = $YANA->getLanguage()->getVar("TITLE_SMILIES");
-            $smilies_dir = $YANA->getVar("PROFILE.SMILEYDIR");
-            $smilies = $YANA->getVar("SMILIES");
-        } else {
-            global $smilies, $smilies_dir;
-            $title = "EmotIcons";
-        }
-        $params['width'] = (int) $params['width'];
-        if ($params['width'] < 1) {
-            $params['width'] = 1;
-        }
-
-        if (empty($smilies)) {
-            self::loadSmilies();
-            if (isset($YANA)) {
-                $smilies = $YANA->getVar("SMILIES");
-            }
-        }
-
-        $dir = htmlspecialchars($smilies_dir, ENT_COMPAT, 'UTF-8');
-        for ($j = 0; $j < count($smilies); $j++)
-        {
-            $text = htmlspecialchars($smilies[$j], ENT_COMPAT, 'UTF-8');
-            $url = urlencode($smilies[$j]);
-            if ($j % $params['width'] == 0 && $j > 0) {
-                $table .= '</tr><tr>';
-            }
-            $table .= '<td><a title="'.$title.'" href="javascript://:'.$url.':"><img alt="'.$text.'" src="'.$dir.$text.
-                '.gif" onmousedown="yanaAddIcon(\':'.$text.':\',event)"/></a></td>'."\n";
-        }
-
-        return $table."</tr></table>";
-    }
-
-    /**
-     * load smilies
-     *
-     * Note: this function is called automatically by
-     * the framework on start-up.
-     * So there is no need to call it by yourself.
-     *
-     * @static
-     * @access  public
-     * @name    SmartUtility::loadSmilies()
-     * @param   string  $user_dir (optional)
-     *
-     * @see     SmartUtility::guiSmilies()
-     */
-    public static function loadSmilies($user_dir = "./")
-    {
-    }
-
-    /**
-     * <<smarty function>> import
-     *
-     * Import another template.
-     * This replaces Smarty's default import function 'include'.
-     *
-     * In opposite to 'include' this function allows the file parameter
-     * to use a relative path and does not force the template designer
-     * to work with absolute paths.
-     *
-     * @static
-     * @access  public
-     * @param   array   $params  parameters
-     * @return  string
-     */
-    public static function import(array $params)
-    {
-        $filename = '';
-        if (isset($params['file'])) {
-
-            assert('$params["file"]; // Wrong argument type argument 1. String expected');
-            $filename = $params['file'];
-
-        } elseif (isset($params['id'])) {
-
-            assert('is_string($params["id"]); // Wrong argument type argument 1. String expected');
-            $filename = 'id:' . $params['id'];
-
-        } else {
-            trigger_error("Missing argument. You need to provide either the argument 'file' or 'id'.", E_USER_WARNING);
-            return false;
-
-        }
-
-        $document = new SmartView($filename);
-        unset($params['file']);
-        if (count($params) > 0) {
-            $document->setVarByReference('*', $params);
-        }
-        $document->setVar('FILE_IS_INCLUDE', true);
-
-        return $document->__toString();
     }
 
 }

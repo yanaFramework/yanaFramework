@@ -150,7 +150,7 @@ class plugin_project extends StdClass implements IsPlugin
 
             $description = $language->getVar('PRJ.SUM.HOURS');
             $values = array('SUM' => 0, 'COUNT' => 0);
-            $description = SmartUtility::replaceToken($description, $values);
+            $description = \Yana\Util\String::replaceToken($description, $values);
 
             exit($description);
         }
@@ -170,14 +170,14 @@ class plugin_project extends StdClass implements IsPlugin
                             'COUNT' => count($rows),
                             'LOAN' => $loan,
                             'TOTAL' => ($sum * $loan));
-            $description = SmartUtility::replaceToken($description, $values);
+            $description = \Yana\Util\String::replaceToken($description, $values);
 
             exit($description);
         } else {
 
             $description = $language->getVar('PRJ.SUM.HOURS');
             $values = array('SUM' => $sum, 'COUNT' => count($rows));
-            $description = SmartUtility::replaceToken($description, $values);
+            $description = \Yana\Util\String::replaceToken($description, $values);
 
             exit($description);
         }

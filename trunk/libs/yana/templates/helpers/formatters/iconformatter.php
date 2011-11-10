@@ -42,12 +42,12 @@ class IconFormatter extends \Yana\Core\Object implements \Yana\Templates\Helpers
     /**
      * @var string
      */
-    private static $_dir = 'common_files/';
+    protected static $_dir = 'common_files/';
 
     /**
      * @var array
      */
-    private static $_icons = array();
+    protected static $_icons = array();
 
     /**
      * Create a new instance.
