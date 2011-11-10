@@ -99,7 +99,7 @@
         <function name="import" cacheable="false">\Yana\Templates\Helpers\Functions\Import</function>
         <function name="smilies" cacheable="true">\Yana\Templates\Helpers\Functions\GuiSmilies</function>
         <function name="embeddedTags" cacheable="true">\Yana\Templates\Helpers\Functions\GuiEmbeddedTags</function>
-        <function name="create" cacheable="false">\Yana\Templates\Helpers\Functions\CreateForm</function>
+        <function name="create" cacheable="false">\Yana\Templates\Helpers\Functions\Form</function>
         <function name="captcha" cacheable="true">\Yana\Templates\Helpers\Functions\Captcha</function>
         <function name="slider" cacheable="true">\Yana\Templates\Helpers\Functions\Slider</function>
         <function name="sizeOf" cacheable="true">\Yana\Templates\Helpers\Functions\SizeOf</function>
