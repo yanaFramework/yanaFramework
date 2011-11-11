@@ -28,21 +28,19 @@ function yanaApplyFilter(o, column, filter, txt)
         return true;
     }
 }
-function yanaAddCalendar(img, id, insertAfterId, day, month, year)
+function yanaAddCalendar(id, insertAfterId, day, month, year)
 {
     if (Calendar) {
         if (!document.getElementById(id + '_calendar_btn')) {
             var o = document.getElementById(insertAfterId);
             if (o) {
-                var imgNode = document.createElement('img');
-                imgNode.setAttribute('class', 'gui_generator_calendar');
-                imgNode.setAttribute('id', id + '_calendar_btn');
-                imgNode.setAttribute('src', img);
-                imgNode.setAttribute('alt', '');
+                var spanNode = document.createElement('span');
+                spanNode.setAttribute('class', 'gui_generator_calendar icon_calendar');
+                spanNode.setAttribute('id', id + '_calendar_btn');
                 if (o.nextSibling) {
-                    o.parentNode.insertBefore(imgNode, o.nextSibling);
+                    o.parentNode.insertBefore(spanNode, o.nextSibling);
                 } else {
-                    o.parentNode.appendChild(imgNode);
+                    o.parentNode.appendChild(spanNode);
                 }
             }
         }
