@@ -55,72 +55,6 @@ class SmartUtility extends \Yana\Core\AbstractUtility
 {
 
     /**
-     * <<smarty modifier>> replace token
-     *
-     * Replace a token within a provided text.
-     *
-     * Example:
-     * <code>
-     * // assume the token {$foo} is set to 'World'
-     * $text = 'Hello {$foo}.';
-     * // prints 'Hello World.'
-     * print SmartUtility::replaceToken($string);
-     * </code>
-     *
-     * NOTE: this method is case-insensitive
-     *
-     * This means if your reference array contains
-     * keys with the same name but different writing,
-     * e.g. 'a' and 'A', the keys that last of the both
-     * keys is used and the other is ignored.
-     *
-     * Also note that a non-existing value in the reference array will
-     * be left alone and not be replaced.
-     * So you can call this function multiple times with different arrays
-     * to implement a simple fallback behaviour.
-     *
-     * @static
-     * @access  public
-     * @param   string  $string   string
-     * @param   array   $array    array
-     * @return  string
-     */
-    public static function replaceToken($string, array $array = array())
-    {
-        /*
-         * This function may be used as a default modifier.
-         * If so, then the input may be anything and does not necessarily need
-         * to be a string value. We need to skip these values.
-         */
-        if (!is_string($string)) {
-            return $string;
-        }
-        /*
-         * For better performance we skip all values that do not need to be
-         * replaced.
-         */
-        if (mb_strpos("$string", YANA_LEFT_DELIMITER) === false) {
-            return $string;
-        }
-        /*
-         * If the input array is empty, we use the default
-         */
-        if (empty($array)) {
-
-            $registry = \Yana\VDrive\Registry::getGlobalInstance();
-            if ($registry instanceof \Yana\VDrive\Registry) {
-                $array = $registry->getVar();
-            }
-
-        }
-        /*
-         * Replace all entities of array values in given string.
-         */
-        \Yana\Util\String::replaceToken($string, $array);
-        return $string;
-    }
-
-    /**
      * <<smarty function>> select date
      *
      * <pre>
@@ -178,14 +112,11 @@ class SmartUtility extends \Yana\Core\AbstractUtility
             break;
         }
 
-        // calendar icon
-        $icon = $GLOBALS['YANA']->getVar('DATADIR') . 'calendar.gif';
-
         // returns "<select day><select month><select year><icon>"
         return self::_generateSelect("{$id}_day", $attr, "{$name}[day]", 1, 31, $day) .
             self::_generateSelect("{$id}_month", $attr, "{$name}[month]", 1, 12, $month) .
             self::_generateSelect("{$id}_year", $attr, "{$name}[year]", $year - 5, $year + 5, $year) .
-            '<script type="text/javascript">yanaAddCalendar("' . $icon . '", "' . $id . '", "' . $id . '_year", ' .
+            '<script type="text/javascript">yanaAddCalendar("' . $id . '", "' . $id . '_year", ' .
             $day . ', ' . ($month - 1) . ', ' . $year . ');</script>'.
             '<script type="text/javascript" src=\'' . Skin::getSkinDirectory('default') .
             'scripts/calendar/' . Language::getInstance()->getVar('calendar.js') . "'></script>";
