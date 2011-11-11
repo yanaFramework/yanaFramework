@@ -1,6 +1,7 @@
 .icon_arrowdown, .icon_arrowdown_hover,
 .icon_arrowup, .icon_arrowup_hover,
 .icon_blank, .icon_blank_hover,
+.icon_calendar, .icon_calendar_hover,
 .icon_change, .icon_change_hover,
 .icon_delete, .icon_delete_hover,
 .icon_dot, .icon_dot_hover,
@@ -95,6 +96,18 @@
 .icon_blank:hover, .icon_blank_hover
 {
     background-image: url(icons/blank.png);
+}
+.icon_calendar
+{
+    background-image: url(icons/nocalendar.png);
+}
+.li_calendar
+{
+    list-style-image: url(icons/calendar.png);
+}
+.icon_calendar:hover, .icon_calendar_hover
+{
+    background-image: url(icons/calendar.png);
 }
 .icon_change
 {
