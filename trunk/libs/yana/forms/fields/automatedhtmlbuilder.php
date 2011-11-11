@@ -324,8 +324,6 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      */
     protected function buildByTypeNonUpdatable(\Yana\Forms\Fields\Facade $field, \Yana\Forms\Setup $setup)
     {
-        $column = $field->getColumn();
-
         // retrieve search arguments
         $value = $field->getValue();
         if (empty($value) && $value !== false) {
@@ -492,7 +490,6 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             case 'integer':
             case 'float':
             case 'range':
-                $isNumeric = true;
                 $name = $this->getName();
                 $id = $this->getId();
                 $this->setId($id . '_start')->setName($name . '[start]');
@@ -525,7 +522,6 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 return '';
             }
             $lang = \Language::getInstance();
-            $column = $field->getColumn();
             $form = $field->getForm();
             $table = $form->getTable();
             $id = 'id="' . $form->getName() . '-' . $table->getPrimaryKey() . '-' .
@@ -535,7 +531,6 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             /* @var $event \Yana\Db\Ddl\Event */
             foreach ($field->getField()->getEvents() as $event)
             {
-                $code = $event->getAction();
                 $label = $event->getLabel();
                 $title = $event->getTitle();
                 $icon = $event->getIcon();
