@@ -331,7 +331,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
         {
             case 'array':
                 $this->setCssClass("gui_generator_array");
-                return $this->buildDiv(\SmartUtility::printUL1($value));
+                return $this->buildDiv(\Yana\Templates\Helpers\Html\MenuHelper::factory()->__invoke($value));
             case 'bool':
                 $value = ($value) ? "true" : "false";
                 $this->setCssClass("gui_generator_bool icon_" . $value);
@@ -365,7 +365,9 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             case 'list':
                 $this->setCssClass('gui_generator_array');
                 if (is_array($value)) {
-                    $value = \SmartUtility::printUL1($value, 2);
+                    $value = \Yana\Templates\Helpers\Html\MenuHelper::factory()
+                        ->setUseKeys(\Yana\Templates\Helpers\Html\MenuLayouts\KeyEnumeration::DONT_PRINT_KEYS)
+                        ->__invoke($value);
                 }
                 return $this->buildDiv((string) $value);
             case 'password':

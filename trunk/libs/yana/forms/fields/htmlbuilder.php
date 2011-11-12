@@ -37,7 +37,7 @@ namespace Yana\Forms\Fields;
  * @package     yana
  * @subpackage  form
  */
-class HtmlBuilder extends \Yana\Forms\Fields\AbstractHtmlElement
+class HtmlBuilder extends \Yana\Templates\Helpers\Html\AbstractHelper
 {
 
     /**
@@ -200,7 +200,7 @@ class HtmlBuilder extends \Yana\Forms\Fields\AbstractHtmlElement
         return '<select class="' . $this->getCssClass() . '" id="' . $this->getId() . '" name="' . $this->getName() .
             (($isMultiple) ? '[]" multiple="multiple"' : '" ') .
             $this->getAttr() . '>' . (($null) ? '<option value="">'. $null . '</option>' : '') .
-            self::_getOptions($values, (array) $selectedValues) .
+            $this->_getOptions($values, (array) $selectedValues) .
             '</select>';
     }
 
@@ -211,14 +211,14 @@ class HtmlBuilder extends \Yana\Forms\Fields\AbstractHtmlElement
      * @param   array  $selectedValues  selected values
      * @return  string
      */
-    private static function _getOptions(array $values, array $selectedValues)
+    private function _getOptions(array $values, array $selectedValues)
     {
         $result = "";
         foreach ($values as $key => $text)
         {
             if (is_array($text)) { // is optgroup
                 $result .= '<optgroup label="' . $key . '">' .
-                    self::_getOptions($text, $selectedValues) . '</optgroup>';
+                    $this->_getOptions($text, $selectedValues) . '</optgroup>';
             } else { // is option
                 $result .= '<option value="' . $key . '" ' .
                     ((in_array($key, $selectedValues)) ? 'selected="selected"' : '') . '>' . $text . '</option>';
@@ -271,7 +271,7 @@ class HtmlBuilder extends \Yana\Forms\Fields\AbstractHtmlElement
             ' type="checkbox" ' . 'name="' . $this->getName() . '[]"  ' .
             ' class="' . $class . '" value="%s"/>%s</label>' . "\n";
         $attributes = ' id="' . $this->getId() . '"'; // only first element
-        return self::_getCheckBoxes($template, $attributes, $values, $checked);
+        return $this->_getCheckBoxes($template, $attributes, $values, $checked);
     }
 
     /**
@@ -305,14 +305,14 @@ class HtmlBuilder extends \Yana\Forms\Fields\AbstractHtmlElement
      * @param   array   $checked   selected values
      * @return  string
      */
-    private static function _getCheckBoxes($template, &$attr, array $items, array $checked)
+    private function _getCheckBoxes($template, &$attr, array $items, array $checked)
     {
         $result = "";
         foreach ($items as $key => $text)
         {
             if (is_array($text)) { // is optgroup
                 $result .= '<fieldset><legend>' . $key . '</legend>' .
-                    self::_getCheckBoxes($template, $attr, $text, $checked) . '</fieldset>';
+                    $this->_getCheckBoxes($template, $attr, $text, $checked) . '</fieldset>';
             } else { // is option
                 if (in_array($key, $checked, true)) {
                     $attr .= ' checked="checked"';
