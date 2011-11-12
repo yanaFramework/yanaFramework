@@ -1135,8 +1135,8 @@ class String extends \Yana\Core\AbstractUtility
         if (is_null($rDelim)) {
             $rDelim = YANA_RIGHT_DELIMITER;
         }
-        $ldimRegExp = preq_quote($lDelim, '/');
-        $rdimRegExp = preq_quote($rDelim, '/');
+        $ldimRegExp = preg_quote($lDelim, '/');
+        $rdimRegExp = preg_quote($rDelim, '/');
 
         $match = array();
         if (preg_match_all("/$ldimRegExp([\w_\.]+?)$rdimRegExp/", $string, $match) > 0) {
