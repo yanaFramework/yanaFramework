@@ -94,11 +94,11 @@
             They must implement \Yana\Templates\Helpers\Functions\IsFunction.
         -->
         <function name="printArray" cacheable="true">\Yana\Templates\Helpers\Functions\PrintArray</function>
-        <function name="printUnorderedList" cacheable="true">\Yana\Templates\Helpers\Functions\PrintUnorderedList</function>
+        <function name="printUnorderedList" cacheable="true">\Yana\Templates\Helpers\Functions\UnorderedList</function>
         <function name="rss" cacheable="true">\Yana\Templates\Helpers\Functions\Rss</function>
         <function name="import" cacheable="false">\Yana\Templates\Helpers\Functions\Import</function>
         <function name="smilies" cacheable="true">\Yana\Templates\Helpers\Functions\Smilies</function>
-        <function name="embeddedTags" cacheable="true">\Yana\Templates\Helpers\Functions\GuiEmbeddedTags</function>
+        <function name="embeddedTags" cacheable="true">\Yana\Templates\Helpers\Functions\EmbeddedTags</function>
         <function name="create" cacheable="false">\Yana\Templates\Helpers\Functions\Form</function>
         <function name="captcha" cacheable="true">\Yana\Templates\Helpers\Functions\Captcha</function>
         <function name="slider" cacheable="true">\Yana\Templates\Helpers\Functions\Slider</function>
