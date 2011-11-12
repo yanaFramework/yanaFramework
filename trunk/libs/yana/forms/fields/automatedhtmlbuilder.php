@@ -34,8 +34,6 @@ namespace Yana\Forms\Fields;
  *
  * This class is meant to create HTML fields for forms.
  *
- * @static
- * @access      public
  * @package     yana
  * @subpackage  form
  */
@@ -45,7 +43,6 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
     /**
      * Set name attribute based on field settings.
      *
-     * @access  protected
      * @param   \Yana\Forms\Fields\Facade  $field  definition to create name from
      * @return  \Yana\Forms\Fields\AutomatedHtmlBuilder
      */
@@ -60,7 +57,6 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
     /**
      * Set id attribute based on field settings.
      *
-     * @access  private
      * @param   \Yana\Forms\Fields\Facade  $field  definition to create id from
      * @return  \Yana\Forms\Fields\AutomatedHtmlBuilder
      */
@@ -73,7 +69,6 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
     /**
      * Set id attribute based on row number and field settings.
      *
-     * @access  protected
      * @param   \Yana\Forms\Fields\Facade  $field  definition to create name from
      * @return  \Yana\Forms\Fields\AutomatedHtmlBuilder
      */
@@ -88,7 +83,6 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
     /**
      * Set class attribute based on field settings.
      *
-     * @access  private
      * @param   \Yana\Forms\Fields\Facade  $field  definition to create id from
      * @return  \Yana\Forms\Fields\AutomatedHtmlBuilder
      */
@@ -104,7 +98,6 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      * Returns the HTML-code representing an input element for the current field.
      * If the field has an action attached to it, an clickable icon or text-link is created next to it.
      *
-     * @access  public
      * @param   \Yana\Forms\Fields\Facade  $field  structure definition
      * @return  string
      *
@@ -137,11 +130,10 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
     }
 
     /**
-     * create HTML for current field
+     * Create HTML for an updatable field.
      *
      * Returns the HTML-code representing an input element for the current field.
      *
-     * @access  protected
      * @param   \Yana\Forms\Fields\Facade  $field  structure definition
      * @param   \Yana\Forms\Setup        $setup  information about how to treat the form
      * @return  string
@@ -268,40 +260,41 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 if (is_string($value)) {
                     $value = strtotime($value);
                 }
+                if (empty($value)) {
+                    $value = time();
+                }
                 if (is_int($value)) {
-                    $value = getdate($value);
+                    $value = array(
+                        'day' => (int) date('j', $value),
+                        'month' =>(int) date('n', $value),
+                        'year' => (int) date('Y', $value),
+                        'hour' => (int) date('H', $value),
+                        'minute' => (int) date('i', $value)
+                    );
                 }
                 $this->setCssClass("gui_generator_date");
-                return $this->buildSpan(
-                    \SmartUtility::selectDate(array(
-                        'time' => $value,
-                        'attr' => $this->getAttr(),
-                        'id' => $this->getId(),
-                        'name' => $this->getName())
-                    )
-                );
+                return $this->buildSpan($this->buildDateSelector($value));
             case 'time':
             case 'timestamp':
                 if (is_string($value)) {
                     $value = strtotime($value);
                 }
+                if (empty($value)) {
+                    $value = time();
+                }
                 if (is_int($value)) {
-                    $value = getdate($value);
+                    $value = array(
+                        'day' => (int) date('j', $value),
+                        'month' =>(int) date('n', $value),
+                        'year' => (int) date('Y', $value),
+                        'hour' => (int) date('H', $value),
+                        'minute' => (int) date('i', $value)
+                    );
                 }
                 $this->setCssClass("gui_generator_time");
                 return $this->buildSpan(
-                    \SmartUtility::selectDate(array(
-                        'time' => $value,
-                        'attr' => $this->getAttr(),
-                        'id' => $this->getId(),
-                        'name' => $this->getName())
-                    ) .
-                    \SmartUtility::selectTime(array(
-                        'time' => $value,
-                        'attr' => $this->getAttr(),
-                        'id' => $this->getId(),
-                        'name' => $this->getName())
-                    )
+                    $this->buildDateSelector($value) .
+                    $this->buildTimeSelector($value)
                 );
             case 'url':
                 return $this->buildTextfield($value);
@@ -311,11 +304,10 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
     }
 
     /**
-     * create HTML for non-updatable field
+     * Create HTML for non-updatable field.
      *
      * Returns the HTML-code representing an input element for the current field.
      *
-     * @access  protected
      * @param   \Yana\Forms\Fields\Facade  $field  structure definition
      * @param   \Yana\Forms\Setup        $setup  information about how to treat the form
      * @return  string
@@ -402,11 +394,10 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
     }
 
     /**
-     * create HTML for current field
+     * Create HTML for a searchable field.
      *
      * Returns the HTML-code representing an input element for the current field.
      *
-     * @access  protected
      * @param   \Yana\Forms\Fields\Facade  $field  structure definition
      * @param   \Yana\Forms\Setup        $setup  information about how to treat the form
      * @return  string
@@ -473,18 +464,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 $this->setName($name . '[active]');
                 $result = $this->buildBoolCheckbox($value['active'] === "true");
                 $this->setName($name);
-                $result .=
-                    \SmartUtility::selectDate(array(
-                        'time' => $startTime,
-                        'id' => $this->getId() . "_start",
-                        'name' => $name . "[start]")
-                    ) .
-                    '&nbsp;&ndash;&nbsp;' .
-                    \SmartUtility::selectDate(array(
-                        'time' => $endTime,
-                        'id' => $this->getId() . "_end",
-                        'name' => $name . "[end]")
-                    );
+                $result .= $this->buildDateSelector($startTime) . '&nbsp;&ndash;&nbsp;' . $this->buildDateSelector($endTime);
                 $this->setCssClass("gui_generator_date");
                 return $this->buildSpan($result);
             case 'integer':
@@ -508,7 +488,6 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      *
      * Returns the HTML-code for this field.
      *
-     * @access  protected
      * @param   \Yana\Forms\Fields\Facade  $field  structure definition
      * @return  string
      * @ignore
@@ -578,7 +557,6 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
      *
      * Note: the results are cached.
      *
-     * @access  protected
      * @param   \Yana\Forms\Fields\Facade  $field  input field
      * @return  string
      * @ignore
