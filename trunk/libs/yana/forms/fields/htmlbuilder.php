@@ -34,8 +34,6 @@ namespace Yana\Forms\Fields;
  *
  * This class is meant to create HTML fields for forms.
  *
- * @static
- * @access      public
  * @package     yana
  * @subpackage  form
  */
@@ -45,23 +43,20 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * HTML attribute "id".
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_id = "";
 
     /**
      * HTML attribute "name".
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_name = "";
 
     /**
      * HTML attribute "title".
      *
-     * @access  private
      * @var     string
      */
     private $_title = "";
@@ -69,32 +64,28 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * HTML attribute "class".
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_class = "";
 
     /**
      * HTML attribute "maxlength".
      *
-     * @access  private
-     * @var     int
+     * @var  int
      */
     private $_maxLength = 0;
 
     /**
      * Other HTML attributes.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_attr = "";
 
     /**
      * Get HTML attribute "id".
      *
-     * @access  public
-     * @return  string
+     * @var  string
      */
     public function getId()
     {
@@ -104,7 +95,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Set HTML attribute "id".
      *
-     * @access  public
      * @param   string  $id  must be valid unique identifier
      * @return  \Yana\Forms\Fields\HtmlBuilder 
      */
@@ -118,7 +108,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Get HTML attribute "name".
      *
-     * @access  public
      * @return  string
      */
     public function getName()
@@ -129,7 +118,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Set HTML attribute "name".
      *
-     * @access  public
      * @param   string  $name  must be valid unique identifier
      * @return  \Yana\Forms\Fields\HtmlBuilder 
      */
@@ -143,7 +131,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Get HTML attribute "class".
      *
-     * @access  public
      * @return  string
      */
     public function getCssClass()
@@ -154,7 +141,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Set HTML attribute "class".
      *
-     * @access  public
      * @param   string  $class  must be valid CSS class name
      * @return  \Yana\Forms\Fields\HtmlBuilder 
      */
@@ -168,7 +154,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Get HTML attribute "title".
      *
-     * @access  public
      * @return  string
      */
     public function getTitle()
@@ -179,7 +164,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Set HTML attribute "id".
      *
-     * @access  public
      * @param   string  $title  any text without HTML code
      * @return  \Yana\Forms\Fields\HtmlBuilder 
      */
@@ -195,7 +179,6 @@ class HtmlBuilder extends \Yana\Core\Object
      *
      * If the var has no maximum length at all, the function will return a number < 1.
      *
-     * @access  public
      * @return  int
      */
     public function getMaxLength()
@@ -208,7 +191,6 @@ class HtmlBuilder extends \Yana\Core\Object
      *
      * To reset the value, set it to 0.
      *
-     * @access  public
      * @param   int  $maxLength  must be a positive number
      * @return  \Yana\Forms\Fields\HtmlBuilder 
      */
@@ -223,7 +205,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Get other HTML attributes.
      *
-     * @access  public
      * @return  string
      */
     public function getAttr()
@@ -234,7 +215,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Set other HTML attributes as HTML code.
      *
-     * @access  public
      * @param   string  $attr  list of HTML attributes.
      * @return  \Yana\Forms\Fields\HtmlBuilder 
      */
@@ -251,7 +231,6 @@ class HtmlBuilder extends \Yana\Core\Object
      * If the item list is a multi-dimensional array, "optgroup" elements will be created to
      * group the items. Note that you should not use nested optgroups.
      *
-     * @access  public
      * @param   array   $values         item list
      * @param   string  $selectedValue  selected value
      * @param   string  $null           text for NULL item (may be empty if there is none)
@@ -268,7 +247,6 @@ class HtmlBuilder extends \Yana\Core\Object
      * If the item list is a multi-dimensional array, "optgroup" elements will be created to
      * group the items. Note that you should not use nested optgroups.
      *
-     * @access  public
      * @param   array   $values         item list
      * @param   array   $selectedValue  selected values
      * @return  string
@@ -279,19 +257,133 @@ class HtmlBuilder extends \Yana\Core\Object
     }
 
     /**
+     * Select date.
+     *
+     * Returns:
+     * <code>
+     *   <select name="foo_day"><option>01</option>...<option>31</option></select>
+     *   <select name="foo_month"><option>01</option>...<option>12</option></select>
+     *   <select name="foo_year"><option>1910</option>...<option>2035</option></select>
+     * </code>
+     *
+     * @param   array  $value  must have indexes: "day", "month" and "year, defaults to current timestamp
+     * @return  string
+     */
+    public function buildDateSelector(array $value = array())
+    {
+        // get timestamp
+        switch (true)
+        {
+            case empty($value) || !is_array($value):
+            case !isset($value['day']):
+            case !isset($value['month']):
+            case !isset($value['year']):
+                // use current timestamp if no value provided
+                $day = (int) date('j');
+                $month = (int) date('n');
+                $year = (int) date('Y');
+            break;
+            default:
+                $day = (int) $value['day'];
+                $month = (int) $value['month'];
+                $year = (int) $value['year'];
+            break;
+        }
+        $name = $this->getName();
+        $id = $this->getId();
+        $days = $this->_arrayFill(31);
+        $months = $this->_arrayFill(12);
+        $years = $this->_arrayFill($year + 20, $year - 100);
+
+        // returns "<select day><select month><select year><icon>"
+        $string = $this->setId($id . "_day")->setName($name . "[day]")->_getSelect($days, array($day))
+            . $this->setId($id . "_month")->setName($name . "[month]")->_getSelect($months, array($month))
+            . $this->setId($id . "_year")->setName($name . "[year]")->_getSelect($years, array($year))
+            . '<script type="text/javascript">yanaAddCalendar("' . $this->getId() . '", "' . $this->getId() . '_year", '
+            . $day . ', ' . ($month - 1) . ', ' . $year . ');</script>'.
+            '<script type="text/javascript" src=\'' . \Skin::getSkinDirectory('default')
+            . 'scripts/calendar/' . \Language::getInstance()->getVar('calendar.js') . "'></script>";
+        // Reset changed name and id.
+        $this->setId($id)->setName($name);
+        return $string;
+    }
+
+    /**
+     * Select time.
+     *
+     * Returns:
+     * <code>
+     *   <select name="foo_hour"><option>00</option>...<option>23</option></select>:
+     *   <select name="foo_minute"><option>00</option>...<option>59</option></select>
+     * </code>
+     *
+     * @param   array  $value  must have indexes: "hour" and "minute", defaults to current timestamp
+     * @return  string
+     */
+    public function buildTimeSelector(array $value = array())
+    {
+        // get timestamp
+        switch (true)
+        {
+            case empty($value):
+            case !isset($value['hour']):
+            case !isset($value['minute']):
+                // use current timestamp if no value provided
+                $hour = (int) date('H');
+                $minute = (int) date('i');
+            break;
+            default:
+                $hour = (int) $value['hour'];
+                $minute = (int) $value['minute'];
+            break;
+        }
+
+        $name = $this->getName();
+        $id = $this->getId();
+        $hours = $this->_arrayFill(23, 0);
+        $minutes = $this->_arrayFill(59, 0);
+
+        // returns "<select hour>:<select minute>"
+        $string = $this->setId($id . "_hour")->setName($name . "[hour]")->_getSelect($hours, array($hour)) . ':'
+            . $this->setId($id . "_minute")->setName($name . "[minute]")->_getSelect($minutes, array($minute));
+        // Reset changed name and id.
+        $this->setId($id)->setName($name);
+
+        return $string;
+    }
+
+    /**
+     * Used by date- and time-selectors.
+     *
+     * Creates an array of numbers 01,02,...,31 to create option-fields.
+     *
+     * @param  int  $maxInt  maximum index number to return: [1,x]
+     * @param  int  $minInt  minimum index number to return: [x,2050]
+     * @return array
+     */
+    private function _arrayFill($maxInt, $minInt = 1)
+    {
+        $array = array_keys(array_fill(1, $maxInt, 0));
+        for ($i = $minInt; $i < 10 && $i <= $maxInt; $i++)
+        {
+            $array[$i] = "0" . $i;
+        }
+        return $array;
+    }
+
+    /**
      * Generate HTML select element.
      *
-     * @access  public
      * @param   array   $values          item list
      * @param   array   $selectedValues  one or more selected values
-     * @param   bool    $multiple        allow to select multiple values
+     * @param   bool    $isMultiple      allow to select multiple values
      * @param   string  $null            text for NULL item (may be empty if there is none)
      * @return  string
      */
-    private function _getSelect(array $values, array $selectedValues, $multiple, $null = "")
+    private function _getSelect(array $values, array $selectedValues, $isMultiple = false, $null = "")
     {
         return '<select class="' . $this->getCssClass() . '" id="' . $this->getId() . '" name="' . $this->getName() .
-            (($multiple) ? '[]" multiple="multiple"' : '" ') .
+            (($isMultiple) ? '[]" multiple="multiple"' : '" ') .
             $this->getAttr() . '>' . (($null) ? '<option value="">'. $null . '</option>' : '') .
             self::_getOptions($values, (array) $selectedValues) .
             '</select>';
@@ -300,8 +392,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Create HTML option and optgroup elements.
      *
-     * @access  private
-     * @static
      * @param   array  $values          item list
      * @param   array  $selectedValues  selected values
      * @return  string
@@ -325,7 +415,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Create HTML radio element.
      *
-     * @access  public
      * @param   array   $values    item list
      * @param   string  $selected  selected value
      * @param   string  $null      text for NULL item (may be empty if there is none)
@@ -355,7 +444,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Create HTML checkbox element.
      *
-     * @access  public
      * @param   array   $values    item list
      * @param   array   $checked  selected values
      * @return  string
@@ -380,7 +468,6 @@ class HtmlBuilder extends \Yana\Core\Object
      * Adding a hidden field with value = "0" prior to a checkbox will ensure the form always returns a value.
      * "1" = checked, "0" = not checked.
      *
-     * @access  public
      * @param   bool    $isChecked  true = checkbox is checked, false = checkbox is not checked
      * @return  string
      */
@@ -396,8 +483,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Create HTML checkbox and fieldset elements.
      *
-     * @access  protected
-     * @static
      * @param   string  $template  checkbox template for sprintf
      * @param   string  &$attr     additional attributes (for first element only)
      * @param   array   $items     item list
@@ -427,7 +512,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Create list of HTML input fields for arrays.
      *
-     * @access  public
      * @param   mixed   $values     list of items  
      * @param   bool    $isNumeric  true = numeric list, false = associative array
      * @return  string 
@@ -481,7 +565,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Create HTML input field of type text.
      *
-     * @access  public
      * @param   string  $value      some text, must not contain line-breaks.
      * @param   string  $text       valid HTML type attribute.
      * @return  string
@@ -502,7 +585,6 @@ class HtmlBuilder extends \Yana\Core\Object
      *
      * This also adds a checkbox to delete existing files on demand.
      *
-     * @access  public
      * @param   bool  $hasDelete  true = add "delete" button for existing file, false = no "delete" button
      * @return  string 
      */
@@ -535,7 +617,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Create HTML textarea field.
      *
-     * @access  public
      * @param   string  $value  some text, must not contain line-breaks.
      * @return  string
      */
@@ -556,7 +637,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Create download link for file.
      *
-     * @access  public
      * @param   string  $filename        target file
      * @param   string  $downloadAction  name of function called to download the file
      * @return  string 
@@ -580,7 +660,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Create download link and preview for image file.
      *
-     * @access  public
      * @param   string  $filename        target file
      * @param   string  $downloadAction  name of function called to download the file
      * @return  string 
@@ -603,7 +682,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Create HTML input field of type color.
      *
-     * @access  public
      * @param   string  $value  some text, must not contain line-breaks.
      * @return  string
      */
@@ -615,7 +693,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Create span-tag.
      *
-     * @access  public
      * @param   string  $content  HTML content
      * @return  string
      */
@@ -628,7 +705,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Create div-tag.
      *
-     * @access  public
      * @param   string  $content  HTML content
      * @return  string
      */
@@ -641,7 +717,6 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Create a-tag with href to external website.
      *
-     * @access  public
      * @param   string  $url  target URL
      * @return  string 
      */
@@ -659,7 +734,7 @@ class HtmlBuilder extends \Yana\Core\Object
             $text = mb_substr($text, 0, 76) . ' ...';
         }
         return '<a' . $this->getAttr() . ' id="' . $this->getId() . '" class="' . $class . '" onclick="' . $onclick .
-            '" title="' . $this->getTitle() . '" href="' . $href . '">' . $text . '</a>';
+            '" title="' . $title . '" href="' . $href . '">' . $text . '</a>';
     }
 
 }
