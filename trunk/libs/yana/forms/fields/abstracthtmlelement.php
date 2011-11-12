@@ -30,9 +30,9 @@
 namespace Yana\Forms\Fields;
 
 /**
- * <<builder>> HTML Form builder.
+ * <<abstract>> HTML element.
  *
- * This class is meant to create HTML fields for forms.
+ * Allows to set standard HTML attributes: id, title aso.
  *
  * @package     yana
  * @subpackage  form
