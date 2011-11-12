@@ -110,8 +110,8 @@
         <function name="visitorCount" cacheable="true">\Yana\Templates\Helpers\Functions\VisitorCount</function>
         <function name="portlet" cacheable="true">\Yana\Templates\Helpers\Functions\Portlet</function>
         <function name="applicationBar" cacheable="true">\Yana\Templates\Helpers\Functions\ApplicationBar</function>
-        <function name="selectDate" cacheable="true">\Yana\Templates\Helpers\Functions\SelectDate</function>
-        <function name="selectTime" cacheable="true">\Yana\Templates\Helpers\Functions\SelectTime</function>
+        <function name="selectDate" cacheable="true">\Yana\Templates\Helpers\Functions\DateSelector</function>
+        <function name="selectTime" cacheable="true">\Yana\Templates\Helpers\Functions\TimeSelector</function>
         <!--
             List of blockfunctions to register.
             They must implement \Yana\Templates\Helpers\IsBlockFunction.
