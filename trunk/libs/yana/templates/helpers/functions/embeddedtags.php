@@ -37,7 +37,7 @@ namespace Yana\Templates\Helpers\Functions;
  * @package     yana
  * @subpackage  templates
  */
-class GuiEmbeddedTags extends \Yana\Core\Object implements \Yana\Templates\Helpers\IsFunction
+class EmbeddedTags extends \Yana\Core\Object implements \Yana\Templates\Helpers\IsFunction
 {
 
     /**
