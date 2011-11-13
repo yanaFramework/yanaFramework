@@ -137,6 +137,24 @@ if (!defined('YANA_ERROR_LOG')) {
     define('YANA_ERROR_LOG', 'log');
 }
 /**#@-*/
+
+/**#@+
+ * additional upload error states provided by the framework
+ */
+if (!defined('UPLOAD_ERR_SIZE')) {
+    define('UPLOAD_ERR_SIZE', -1);
+}
+if (!defined('UPLOAD_ERR_FILE_TYPE')) {
+    define('UPLOAD_ERR_FILE_TYPE', -2);
+}
+if (!defined('UPLOAD_ERR_INVALID_TARGET')) {
+    define('UPLOAD_ERR_INVALID_TARGET', -4);
+}
+if (!defined('UPLOAD_ERR_OTHER')) {
+    define('UPLOAD_ERR_OTHER', -5);
+}
+/**#@-*/
+
 if (!defined('ENT_FULL')) {
     /**
      * Constant ENT_FULL
