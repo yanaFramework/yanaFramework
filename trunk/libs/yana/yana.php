@@ -1151,8 +1151,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     }
 
     /**
-     * clear system cache
-     *
      * Deletes all temporary files in the 'cache/' directory.
      *
      * This includes templates and preinitialized instances of system objects.
@@ -1161,8 +1159,33 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      */
     public static function clearCache()
     {
-        SmartTemplate::clearCache();
+        // clear Menu Cache
         \Yana\Plugins\Menu::clearCache();
+
+        // Clear Template cache
+        $this->getView()->clearCache();
+
+        // Get name of cache directory
+        $dir = 'cache/';
+        $registry = $this->getRegistry();
+
+        if (isset($registry)) {
+            $dir = $registry->getVar('TEMPDIR');
+        }
+
+        // Clear application cache
+        foreach (glob($dir . '/*.tmp') as $filePath)
+        {
+            /* If file can't be deleted due to active write-protection
+              (e.g. when running under Windows), check wether this can be fixed. */
+            if (!is_writeable($filePath)) {
+                chmod($filePath, 0666);
+            }
+            // If the file writeable now: try again to delete it
+            if (is_writeable($filePath)) {
+                unlink($filePath);
+            }
+        } // end foreach
     }
 
     /**

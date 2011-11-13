@@ -102,10 +102,9 @@ class RepositoryBuilder extends \Yana\Plugins\AbstractRepositoryBuilder
 
         // initialize list for later use (see step 3)
         $pluginsWithDefaultMethods = array();
-        $pluginGroups = array();
 
         // clear cache
-        \SmartTemplate::clearCache();
+        Yana::clearCache();
 
         // list of subscribing methods
         $subscribers = array();
