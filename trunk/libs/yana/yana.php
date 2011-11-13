@@ -43,7 +43,6 @@
  * $YANA->outputResults();
  * </code>
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */
@@ -53,36 +52,28 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     /**
      * This is a place-holder for the singleton's instance
      *
-     * @access  private
-     * @static
-     * @var     Yana
+     * @var  Yana
      */
     private static $_instance = null;
 
     /**
      * Name of system configuration file
      *
-     * @access  private
-     * @static
-     * @var     array
+     * @var  array
      */
     private static $_config = array();
 
     /**
      * profile id
      *
-     * @access  private
-     * @static
-     * @var string
+     * @var  string
      */
     private static $_id = null;
 
     /**
      * action parameter
      *
-     * @access  private
-     * @static
-     * @var string
+     * @var  string
      */
     private static $_action = null;
 
@@ -92,8 +83,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * false = default-mode (use profile settings)
        true  = safe-mode    (use default profile)
      *
-     * @access  protected
-     * @var     bool
+     * @var  bool
      * @ignore
      */
     protected $_isSafeMode = null;
@@ -101,65 +91,56 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     /**
      * to communicate with plugins
      *
-     * @access  private
-     * @var     \Yana\Plugins\Manager
+     * @var  \Yana\Plugins\Manager
      */
     private $_plugins = null;
 
     /**
      * to load language strings
      *
-     * @access  private
-     * @var     Language
+     * @var  Language
      */
     private $_language = null;
 
     /**
      * to load skins and templates
      *
-     * @access  private
-     * @var     Skin
+     * @var  Skin
      */
     private $_skin = null;
 
     /**
      * to read and write data to the global registry
      *
-     * @access  private
-     * @var     \Yana\VDrive\Registry
+     * @var  \Yana\VDrive\Registry
      */
     private $_registry = null;
 
     /**
      * to read and write user data and permissions
      *
-     * @access  private
-     * @var     SessionManager
+     * @var  SessionManager
      */
     private $_session = null;
 
     /**
      * the currently selected template
      *
-     * @access  private
-     * @var     SmartView
+     * @var  SmartView
      */
     private $_view = null;
 
     /**
      * List of logger classes.
      *
-     * @access  private
-     * @var     array()
+     * @var  array
      */
     private $_loggers = array();
 
     /**
      * caches database connections
      *
-     * @access  private
-     * @static
-     * @var     DbStream[]
+     * @var  DbStream[]
      */
     private static $_connections = array();
 
@@ -180,8 +161,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * and only if you wish to use other then the default values.
      * Otherwise it's enough to use Yana::getInstance() without anything else.
      *
-     * @access  public
-     * @static
      * @return  Yana
      */
     public static function &getInstance()
@@ -201,8 +180,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      *
      * This function creates a new instance of the framework.
      * Note that you may only operate one instance at a time.
-     *
-     * @access  private
      */
     private function __construct()
     {
@@ -212,7 +189,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     /**
      * application is in safe-mode
      *
-     * @access  protected
      * @return  bool
      * @ignore
      */
@@ -234,9 +210,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      *
      * Sets the configuration to CD-ROM settings.
      * Configuration is expected to be loaded prior to calling this function.
-     *
-     * @access  private
-     * @static
      */
     private static function _activateCDApplication()
     {
@@ -262,9 +235,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     /**
      * set directory references to real paths
      *
-     * @access  private
-     * @static
-     * @param   string  $cwd  current working directory
+     * @param  string  $cwd  current working directory
      */
     private static function _setRealPaths($cwd)
     {
@@ -287,9 +258,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * Yana::setConfiguration("config/system.config");
      * </code>
      *
-     * @param   string  $filename  path to system.config
-     * @access  public
-     * @static
+     * @param  string  $filename  path to system.config
      */
     public static function setConfiguration($filename = null)
     {
@@ -337,7 +306,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * }
      * </code>
      *
-     * @access  public
      * @param   string  $action  script action parameter
      * @param   array   $args    array of passed arguments
      * @return  bool
@@ -467,7 +435,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * if ($a[1]) $a = 1;
      * </code>
      *
-     * @access  protected
      * @return  string
      * @ignore
      */
@@ -524,7 +491,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * This returns the registry. If none exists, a new instance is created.
      * These settings may be read later by using Yana::getVar().
      *
-     * @access  public
      * @return  \Yana\VDrive\Registry
      * @throws  \Yana\Core\Exceptions\NotReadableException    when Registry file is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when Registry file could not be read or contains invalid syntax
@@ -592,7 +558,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * This returns the plugin manager. If none exists, a new instance is created.
      * The pluginManager holds repositories for interfaces and implementations of plugins.
      *
-     * @access  public
      * @return  \Yana\Plugins\Manager
      */
     public function getPlugins()
@@ -621,7 +586,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * This returns the view component. If none exists, a new instance is created.
      * This is an auxiliary class that provides access to output-specific functions.
      *
-     * @access  public
      * @return  SmartView
      */
     public function getView()
@@ -638,7 +602,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      *
      * This returns the language component. If none exists, a new instance is created.
      *
-     * @access  public
      * @return  Language
      */
     public function getLanguage()
@@ -674,7 +637,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      *
      * This returns the skin component. If none exists, a new instance is created.
      *
-     * @access  public
      * @return  Skin
      */
     public function getSkin()
@@ -729,8 +691,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * You may want to decide for the behaviour you prefer
      * and choose either one or the other.
      *
-     * @access  public
-     * @static
      * @return  string
      */
     public static function getId()
@@ -762,7 +722,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * print $YANA->getVar('foo.bar');
      * </code>
      *
-     * @access  public
      * @param   string  $key  adress of data in memory (case insensitive)
      * @return  mixed
      * @name    Yana::getVar()
@@ -790,7 +749,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * print $YANA->getVar('foo.bar');
      * </code>
      *
-     * @access  public
      * @param   string  $key     adress of data in memory (case insensitive)
      * @param   mixed   &$value  new value (may be scalar value or array)
      * @return  bool
@@ -816,7 +774,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * print $YANA->getVar('foo.bar');
      * </code>
      *
-     * @access  public
      * @param   string  $key    adress of data in memory (case insensitive)
      * @param   mixed   $value  new value (may be scalar value or array)
      * @return  bool
@@ -832,7 +789,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     /**
      * sets the type of a var on registry (memory shared by all plugins)
      *
-     * @access  public
      * @param   string  $key   adress of data in memory (case insensitive)
      * @param   string  $type  new type of variable
      * @return  bool
@@ -845,9 +801,8 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     }
 
     /**
-     * remove var from registry
-     *
      * Removes var from registry (memory shared by all plugins).
+     *
      * Returns bool(true) on success and bool(false) on error.
      *
      * Example:
@@ -860,7 +815,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * var_dump($YANA->getVar('foo.bar'));
      * </code>
      *
-     * @access  public
      * @param   string  $key  adress of data in memory (case insensitive)
      * @return  bool
      */
@@ -871,9 +825,8 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     }
 
     /**
-     * merges value in registry
+     * Merges the array with the values at index $key.
      *
-     * Merges the value at adresse $key with the provided array data.
      * If a key already exists, it is replaced by the new data.
      *
      * Example:
@@ -884,7 +837,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * print $YANA->getVar('FOO.FOO');
      * </code>
      *
-     * @access  public
      * @param   string  $key    adress of data in memory (case insensitive)
      * @param   array   $array  associative array to merge
      * @return  bool
@@ -905,7 +857,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * If the mountpoint for the requested resource does not exist, or doesn't return any results,
      * the function returns bool(false) instead and issues a warning.
      *
-     * @access  public
      * @param   string  $path  virtual file path
      * @return  \Yana\File\AbstractResource
      */
@@ -957,9 +908,8 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * Please note: any code followed after a call to this function
      * will never be executed.
      *
-     * @access  public
-     * @param   string  $event  upcoming event to route to
-     * @since   2.9.0 RC2
+     * @param  string  $event  upcoming event to route to
+     * @since  2.9.0 RC2
      */
     public function exitTo($event = 'null')
     {
@@ -1012,8 +962,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
 
     /**
      * Provides GUI from current data.
-     *
-     * @access  public
      */
     public function outputResults()
     {
@@ -1076,8 +1024,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      *
      * If the function returned a result, it will be printed as a JSON string.
      *
-     * @access  private
-     * @param   mixed  $result  whatever the last called action returned
+     * @param  mixed  $result  whatever the last called action returned
      */
     private function _outputAsJson($result)
     {
@@ -1100,8 +1047,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     /**
      * Output a text message and relocate to next event.
      *
-     * @access  private
-     * @param   mixed  $result  whatever the last called action returned
+     * @param  mixed  $result  whatever the last called action returned
      */
     private function _outputAsMessage($result)
     {
@@ -1141,8 +1087,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     /**
      * Select the given template as output target and print the result page.
      *
-     * @access  private
-     * @param   string  $template  a valid template identifier
+     * @param  string  $template  a valid template identifier
      */
     private function _outputAsTemplate($template)
     {
@@ -1188,8 +1133,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * Note: system default values are typically defined in the
      * 'default' section of the 'config/system.config' configurations file.
      *
-     * @access  public
-     * @static
      * @param   string  $key  adress of data in memory (case insensitive)
      * @return  mixed
      */
@@ -1215,9 +1158,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * This includes templates and preinitialized instances of system objects.
      * Use this function where system settings or profile systems are changed,
      * to make sure changes are applied without delay.
-     *
-     * @access  public
-     * @static
      */
     public static function clearCache()
     {
@@ -1236,8 +1176,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * $db = Yana::connect('user');
      * </code>
      *
-     * @access  public
-     * @static
      * @param   string|\Yana\Db\Ddl\Database  $schema  name of the database schema file (see config/db/*.xml),
      *                                                 or instance of \Yana\Db\Ddl\Database
      * @return  DbStream
@@ -1299,7 +1237,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * </report>
      * </code>
      *
-     * @access  public
      * @param   \Yana\Report\IsReport  $report  base report
      * @return  \Yana\Report\IsReport
      * @name    Yana::getReport()
@@ -1434,9 +1371,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     /**
      * iterate through message queue
      *
-     * @access  private
      * @return  string
-     * @ignore
      */
     private function _prepareMessages()
     {
@@ -1491,9 +1426,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
 
     /**
      * flush events to log
-     *
-     * @access  private
-     * @ignore
      */
     private function _writeLog()
     {

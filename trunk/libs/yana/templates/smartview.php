@@ -43,17 +43,15 @@
  *
  * }}
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */
 class SmartView extends SmartTemplate
 {
+
     /**
      * list of stylesheets
      *
-     * @access  protected
-     * @static
      * @var     array
      * @ignore
      */
@@ -62,8 +60,6 @@ class SmartView extends SmartTemplate
     /**
      * list of stylesheets
      *
-     * @access  protected
-     * @static
      * @var     array
      * @ignore
      */
@@ -83,7 +79,6 @@ class SmartView extends SmartTemplate
      * Yana::getInstance()->getView()->setTemplate('index');
      * </code>
      *
-     * @access  public
      * @param   string  $template  id or path of template
      * @return  bool
      */
@@ -122,8 +117,6 @@ class SmartView extends SmartTemplate
     /**
      * Get template filename by id.
      *
-     * @access  private
-     * @static
      * @param   string  $id  template id
      * @return  string
      * @throws  \Yana\Core\Exceptions\NotFoundException  when id is not found
@@ -139,9 +132,7 @@ class SmartView extends SmartTemplate
     /**
      * add a CSS stylesheet file
      *
-     * @access  public
-     * @static
-     * @param   string  $file  path and file name
+     * @param  string  $file  path and file name
      */
     public static function addStyle($file)
     {
@@ -152,9 +143,7 @@ class SmartView extends SmartTemplate
     /**
      * add a javascript file
      *
-     * @access  public
-     * @static
-     * @param   string  $file  path and file name
+     * @param  string  $file  path and file name
      */
     public static function addScript($file)
     {
@@ -165,9 +154,7 @@ class SmartView extends SmartTemplate
     /**
      * add multiple CSS files
      *
-     * @access  public
-     * @static
-     * @param   array  $files  path and file names
+     * @param  array  $files  path and file names
      */
     public static function addStyles(array $files)
     {
@@ -178,9 +165,7 @@ class SmartView extends SmartTemplate
     /**
      * add multiple JavaScript files
      *
-     * @access  public
-     * @static
-     * @param   array  $files  path and file names
+     * @param  array  $files  path and file names
      */
     public static function addScripts(array $files)
     {
@@ -191,8 +176,6 @@ class SmartView extends SmartTemplate
     /**
      * get list of CSS stylesheets
      *
-     * @access  public
-     * @static
      * @return  array
      */
     public static function getStyles()
@@ -203,8 +186,6 @@ class SmartView extends SmartTemplate
     /**
      * get list of javascript files
      *
-     * @access  public
-     * @static
      * @return  array
      */
     public static function getScripts()
@@ -220,7 +201,6 @@ class SmartView extends SmartTemplate
      * This sets the base document.
      * This setting is shared amongst all views.
      *
-     * @access  public
      * @param   string  $filename  file name
      * @return  bool
      */
@@ -247,7 +227,6 @@ class SmartView extends SmartTemplate
      * Existing template vars will be replaced by vars of the same name
      * in the registry.
      *
-     * @access  public
      * @return  string
      */
     public function __toString()
@@ -264,10 +243,9 @@ class SmartView extends SmartTemplate
      *
      * NOTE: This function will terminate program execution
      *
-     * @access  public
-     * @param   string  $type      alert, error, aso.
-     * @param   string  $event     event to trigger, e.g. 'index'
-     * @param   string  $template  id of template to use
+     * @param  string  $type      alert, error, aso.
+     * @param  string  $event     event to trigger, e.g. 'index'
+     * @param  string  $template  id of template to use
      */
     public function showMessage($type, $event = "null", $template = "message")
     {
@@ -286,6 +264,7 @@ class SmartView extends SmartTemplate
 
         exit((string) $this);
     }
+
 }
 
 ?>
