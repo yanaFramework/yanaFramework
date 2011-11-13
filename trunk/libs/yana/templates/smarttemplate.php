@@ -41,7 +41,6 @@
  * in addition it does some more type checking and
  * automates the initialization process.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */
@@ -49,17 +48,14 @@ class SmartTemplate extends \Yana\Core\Object
 {
 
     /**
-     * @access  private
-     * @static
-     * @var     string
+     * @var  string
      */
     private static $cacheId = "";
 
     /**
      * local Smarty instance
      *
-     * @access  protected
-     * @var     Smarty_Internal_Template
+     * @var  \Smarty_Internal_Template
      * @ignore
      */
     protected $template = null;
@@ -67,9 +63,7 @@ class SmartTemplate extends \Yana\Core\Object
     /**
      * global Smarty instance
      *
-     * @access  protected
-     * @static
-     * @var     Smarty
+     * @var  \Smarty
      * @ignore
      */
     protected static $smarty = null;
@@ -103,7 +97,6 @@ class SmartTemplate extends \Yana\Core\Object
      * to the template.
      * Existing template vars will be replaced.
      *
-     * @access  public
      * @return  string
      */
     public function __toString()
@@ -123,7 +116,6 @@ class SmartTemplate extends \Yana\Core\Object
      * or an empty string '' it will return an associative array
      * containing all template vars.
      *
-     * @access  public
      * @param   string  $key  variable-name
      * @return  mixed
      */
@@ -144,9 +136,7 @@ class SmartTemplate extends \Yana\Core\Object
     /**
      * Initializes 
      *
-     * @access  protected
-     * @static
-     * @return  Smarty
+     * @return  \Smarty
      * @since   3.1.0
      * @ignore
      */
@@ -359,8 +349,7 @@ class SmartTemplate extends \Yana\Core\Object
      * It may be used to bypass the template class in caseswhere direct
      * access to the smarty template engine is necessary.
      *
-     * @access  public
-     * @return  Smarty
+     * @return  \Smarty
      * @since   2.8.9
      */
     public function getSmarty()
@@ -392,7 +381,6 @@ class SmartTemplate extends \Yana\Core\Object
      *
      * }}
      *
-     * @access  public
      * @param   string  $varName  address
      * @param   mixed   $var      some new value
      * @return  bool
@@ -442,7 +430,6 @@ class SmartTemplate extends \Yana\Core\Object
      *
      * }}
      *
-     * @access  public
      * @param   string  $varName  address
      * @param   mixed   &$var     some new value
      * @return  bool
@@ -497,7 +484,6 @@ class SmartTemplate extends \Yana\Core\Object
      *   <li>  Filenames are case-sensitive!  </li>
      * </ol>
      *
-     * @access  public
      * @param   string  $filename  name of the template file
      * @return  SmartTemplate
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the filename is invalid
@@ -514,12 +500,8 @@ class SmartTemplate extends \Yana\Core\Object
     }
 
     /**
-     * clear cache
+     * Delete all temporary files in 'cache/' directory.
      *
-     * Deletes all temporary files in the 'cache/' directory.
-     *
-     * @access  public
-     * @static
      * @ignore
      */
     public static function clearCache()
@@ -593,7 +575,6 @@ class SmartTemplate extends \Yana\Core\Object
      * chapter 16) "Extending smarty", sections: "template functions",
      * "modifiers" and "block functions".
      *
-     * @access  public
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
      * @return  SmartTemplate
@@ -618,7 +599,6 @@ class SmartTemplate extends \Yana\Core\Object
      * chapter 16) "Extending smarty", sections: "template functions",
      * "modifiers" and "block functions".
      *
-     * @access  public
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
      * @return  SmartTemplate
@@ -643,7 +623,6 @@ class SmartTemplate extends \Yana\Core\Object
      * chapter 16) "Extending smarty", sections: "template functions",
      * "modifiers" and "block functions".
      *
-     * @access  public
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
      * @return  SmartTemplate
@@ -666,7 +645,6 @@ class SmartTemplate extends \Yana\Core\Object
      * still used inside the template, this will issue a template error
      * and possibly cause your application to exit.
      *
-     * @access  public
      * @param   string  $name  name of the function
      * @return  bool
      */
@@ -687,7 +665,6 @@ class SmartTemplate extends \Yana\Core\Object
      * still used inside the template, this will issue a template error
      * and possibly cause your application to exit.
      *
-     * @access  public
      * @param   string  $name  name of the function
      * @return  bool
      */
@@ -708,7 +685,6 @@ class SmartTemplate extends \Yana\Core\Object
      * still used inside the template, this will issue a template error
      * and possibly cause your application to exit.
      *
-     * @access  public
      * @param   string  $name  name of the function
      * @return  bool
      */
@@ -726,7 +702,6 @@ class SmartTemplate extends \Yana\Core\Object
      *
      * Returns a string with the path and name of the current template.
      *
-     * @access  public
      * @return  string
      */
     public function getPath()
@@ -738,9 +713,7 @@ class SmartTemplate extends \Yana\Core\Object
     /**
      * get cache id
      *
-     * @access   private
-     * @static
-     * @return   string
+     * @return  string
      */
     private static function _getCacheId()
     {

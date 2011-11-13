@@ -397,7 +397,7 @@ class EngineFactory extends \Yana\Core\Object
     /**
      * Builds a new Smarty instance based on the given configuration.
      *
-     * @return  Smarty
+     * @return  \Smarty
      */
     public function createInstance()
     {
