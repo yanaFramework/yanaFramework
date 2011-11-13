@@ -30,9 +30,9 @@
 {/if}
 {else}
 {if !empty($PLUGIN.ACTIVE)}
-          <img src="{$DATADIR}boolean_true.gif" alt="[x]"/>
+          <span class="icon_true">&nbsp;</span>
 {else}
-          <img src="{$DATADIR}boolean_false.gif" alt="[-]"/>
+          <span class="icon_false">&nbsp;</span>
 {/if}
 {/if}
       </div>
