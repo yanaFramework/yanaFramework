@@ -103,7 +103,7 @@ class plugin_diagnostics extends StdClass implements IsPlugin
             } else {
                 $xsl->setParameter("", "details", "0");
             }
-            $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
+            $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
             $detailsUrl = $urlFormatter('action=' . __FUNCTION__ . "&details=" . !$details, true);
             $xsl->setParameter("", "urlChooseDetails", $detailsUrl);
             $xmlUrl = $urlFormatter('action=' . __FUNCTION__ . "&xml=1", true);

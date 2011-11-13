@@ -318,8 +318,8 @@ class plugin_blog extends StdClass implements IsPlugin
          */
         $rss = new \Yana\RSS\Feed();
         $rss->description = $YANA->getLanguage()->getVar('RSS_DESCRIPTION');
-        $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
-        $textFormatter = new \Yana\Templates\Helpers\Formatters\TextFormatterCollection();
+        $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
+        $textFormatter = new \Yana\Views\Helpers\Formatters\TextFormatterCollection();
         /*
          * add items to feed
          */

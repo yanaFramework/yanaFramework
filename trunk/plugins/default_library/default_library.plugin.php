@@ -84,7 +84,7 @@ class plugin_default_library extends StdClass implements IsPlugin
     public function preview($eintraege, $is_ajax_request = false)
     {
         $eintraege = \Yana\Io\StringValidator::sanitize($eintraege, 0, \Yana\Io\StringValidator::USERTEXT);
-        $formatter = new \Yana\Templates\Helpers\Formatters\TextFormatterCollection();
+        $formatter = new \Yana\Views\Helpers\Formatters\TextFormatterCollection();
         $eintraege = $formatter($eintraege);
         if ($is_ajax_request) {
             exit($eintraege);
