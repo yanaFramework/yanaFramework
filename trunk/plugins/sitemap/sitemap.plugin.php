@@ -79,7 +79,7 @@ class plugin_sitemap extends StdClass implements IsPlugin
         $result = "<ul>\n";
         $dir = $YANA->getPlugins()->getPluginDir();
         $pluginMenu = \Yana\Plugins\Menu::getInstance();
-        $formatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
+        $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
 
         /* @var $entry PluginMenuEntry */
         foreach ($pluginMenu->getMenuEntries('start') as $action => $entry)

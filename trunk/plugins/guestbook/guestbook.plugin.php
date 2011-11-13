@@ -313,8 +313,8 @@ class plugin_guestbook extends StdClass implements IsPlugin
         if (empty($rss->description)) {
             $rss->description = 'the 10 most recent guestbook entries';
         }
-        $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
-        $textFormatter = new \Yana\Templates\Helpers\Formatters\TextFormatterCollection();
+        $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
+        $textFormatter = new \Yana\Views\Helpers\Formatters\TextFormatterCollection();
         foreach ($rows as $row)
         {
             $item = new \Yana\RSS\Item($row['GUESTBOOK_NAME']);
@@ -460,7 +460,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
 
         // create link to user profile (if profile viewer is installed)
         if ($YANA->getPlugins()->isActive('user_admin')) {
-            $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
+            $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
             $YANA->setVar('GUESTBOOK_USER_LINK', $urlFormatter("action=view_profile&target[user_id]="));
         } else {
             $YANA->setVar('GUESTBOOK_USER_LINK', false);
@@ -507,7 +507,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
 
         // create link to user profile (if profile viewer is installed)
         if ($YANA->getPlugins()->isActive('user_admin')) {
-            $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
+            $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
             $YANA->setVar('GUESTBOOK_USER_LINK', $urlFormatter("action=view_profile&target[user_id]="));
         } else {
             $YANA->setVar('GUESTBOOK_USER_LINK', false);
