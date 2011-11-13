@@ -37,10 +37,26 @@ require_once dirname(__FILE__) . '/include.php';
  */
 class DirTest extends PHPUnit_Framework_TestCase
 {
-    /** @var   Dir   */ protected $existingDir;
-    /** @var   Dir   */ protected $nonExistingDir;
-    /** @var  string */ protected $existingPath = 'resources';
-    /** @var  string */ protected $nonExistingPath = 'newresource';
+
+    /**
+     * @var Dir
+     */
+    protected $existingDir;
+
+    /**
+     * @var Dir
+     */
+    protected $nonExistingDir;
+
+    /**
+     * @var string
+     */
+    protected $existingPath = 'resources';
+
+    /**
+     * @var string
+     */
+    protected $nonExistingPath = 'newresource';
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -254,7 +270,7 @@ class DirTest extends PHPUnit_Framework_TestCase
         //expected 0 
         $this->assertEquals(0, $length, 'assert failed, expecting result for length() need to be 0');
 
-        $get = $this->existingDir->getContent();
+        $this->existingDir->getContent();
         $testLength = $this->existingDir->length();
         $this->assertNotEquals($length, $testLength, 'assert failed, the two variables cant be valid');
 
@@ -268,28 +284,48 @@ class DirTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * dir list
+     * dirlist
      *
      * @test
      */
     public function testDirlist()
     {
-        $dirlist = $this->existingDir->dirlist();
-        $this->assertType('array', $dirlist, 'assert "$dirlist" failed, value is not from type array');
+        // read all txt entries
+        $dirList = $this->existingDir->dirlist('*.txt');
+        $expected = array();
+        foreach (glob($this->existingDir->getPath() . '/*.txt') as $path)
+        {
+            $expected[] = basename($path);
+        }
+        $this->assertType('array', $dirList);
+        $this->assertGreaterThanOrEqual(1, count($dirList));
+        $this->assertEquals($expected, $dirList, 'directory listing with filter *.txt should match directory contents');
 
-        $setFilter = $this->existingDir->setFilter('txt');
-        $filter = $this->existingDir->getFilter();
-        
-        $dirByFilter = $this->existingDir->dirlist($filter);
-        // expected all entries assert true
-        $this->assertType('array', $dirByFilter, 'assert "$dirByFilter" failed, value is not from type array');
+        // read without set a filter
+        $dirList = $this->existingDir->setFilter()->dirlist();
+        $expected = array();
+        foreach (scandir($this->existingDir->getPath()) as $path)
+        {
+            if (!is_dir($path)) {
+                $expected[] = $path;
+            }
+        }
+        $this->assertType('array', $dirList);
+        $this->assertGreaterThanOrEqual(1, count($dirList));
+        $this->assertEquals($expected, $dirList, 'directory listing should match directory contents');
 
-        $dirByOtherFilter = $this->existingDir->dirlist('dat');
-        //expected one entrie assert true
-        $this->assertType('array', $dirByOtherFilter, 'assert "$dirByOtherFilter" failed, value is not from type array');;
-        
-        // validate both
-        $this->assertNotEquals($dirByFilter, $dirByOtherFilter, 'assert failed - the two variables cant be equal');
+        // choose more file types
+        $dirList = $this->existingDir->dirlist('*.txt|*.xml|*.dat');
+        $expected = array();
+        foreach (glob($this->existingDir->getPath() . '/*.{txt,xml,dat}', GLOB_BRACE) as $path)
+        {
+            $expected[] = basename($path);
+        }
+        sort($expected);
+        $this->assertType('array', $dirList);
+        $this->assertGreaterThanOrEqual(1, count($dirList));
+        $this->assertEquals($expected, $dirList, 'directory listing with filter *.txt, *.xml, *.dat should match directory contents');
+
     }
 
     /**
