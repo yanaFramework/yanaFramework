@@ -504,41 +504,9 @@ class SmartTemplate extends \Yana\Core\Object
      *
      * @ignore
      */
-    public static function clearCache()
+    public function clearCache()
     {
-        $registry = \Yana\VDrive\Registry::getGlobalInstance();
-
-        /* 1) make sure .htaccess does'nt get deleted */
-        $dir = '';
-        if (isset($registry)) {
-            $dir = $registry->getVar('TEMPDIR');
-        } else {
-            $dir = 'cache/';
-        }
-        if (is_writeable($dir . '/.htaccess')) {
-            chmod($dir . '/.htaccess', 0550);
-        }
-        /* 2) clear Smarty cache */
-        $smarty = self::_getSmarty();
-        $smarty->clearAllCache();
-
-        /* 3) clear Yana cache */
-        $files = dirlist($dir, '.php|.cache|.tmp');
-        for ($i = 0; $i < count($files); $i++)
-        {
-            $current_file = $dir.$files[$i];
-            /* If file can't be deleted due to active write-protection
-              (e.g. when running under Windows), check wether this can be fixed. */
-            if (!is_writeable($current_file)) {
-                chmod($current_file, 0666);
-            }
-            if (is_writeable($current_file)) {
-                unlink($current_file);
-            } else {
-                $message = "Unable to delete file '{$current_file}', because the file is not writeable.";
-                trigger_error($message, E_USER_WARNING);
-            }
-        }
+        $this->getSmarty()->clearAllCache();
     }
 
     /**

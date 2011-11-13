@@ -77,8 +77,87 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
         if (!$this->exists()) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such directory: '{$this->getPath()}'.", E_USER_WARNING);
         }
-        $this->content = dirlist($this->getPath(), $this->filter);
+        $this->content = $this->_dirlist($this->getPath(), $this->filter);
         sort($this->content);
+    }
+
+    /**
+     * list contents of a directory
+     *
+     * The argument $filter may contain multiple file extension,
+     * use a pipe '|' sign to seperate them.
+     * Example: "*.xml|*.html" will find all xml- and html-files
+     *
+     * The argument $switch may be used to get only subdirectories (YANA_GET_DIRS),
+     * or only files (YANA_GET_FILES), or all contents (YANA_GET_ALL), which is the default.
+     *
+     * @return array
+     */
+    private function _dirlist()
+    {
+        assert('is_string($dir); /* Wrong argument type for argument 1. String expected. */');
+        assert('is_string($filter); /* Wrong argument type for argument 2. String expected. */');
+        assert('$switch === YANA_GET_ALL || $switch === YANA_GET_DIRS  || $switch === YANA_GET_FILES; /* '.
+            'Invalid value for argument 3. */');
+        $dir = $this->getPath();
+        $filter = $this->getFilter();
+
+        /* Input handling */
+        if ($filter == "") {
+            $filter = false;
+        } elseif (strpos($filter, '|') !== false) {
+            $filter = preg_replace("/[^\.\-\_\w\d\|]/", "", $filter);
+            assert('!isset($tok); /* cannot redeclare variable $tok */');
+            $tok = strtok($filter, "|");
+            $filter = "";
+            while ($tok !== false)
+            {
+                $filter .= preg_quote($tok, '/');
+                $tok = strtok("|");
+                if ($tok !== false) {
+                    $filter .= "|";
+                }
+            }
+            unset($tok);
+        } else {
+            $filter = preg_replace("/[^\.\-\_\w\d]/", "", $filter);
+            $filter = preg_quote($filter, '/');
+        }
+
+        /* read contents from directory */
+        $dirlist = array();
+        if (is_dir($dir)) {
+            $dirHandle = dir($dir);
+            while($entry = $dirHandle->read())
+            {
+                if ($entry[0] !== '.' && ($filter === false || preg_match("/(?:{$filter})$/i", $entry))) {
+                    assert('is_array($dirlist); /* Invariant condition failed: $dirlist is not an array. */');
+                    switch ($switch)
+                    {
+                        case YANA_GET_ALL:
+                            $dirlist[] = $entry;
+                        break;
+                        case YANA_GET_DIRS:
+                            if (is_dir($dir.$entry)) {
+                                $dirlist[] = $entry;
+                            }
+                        break;
+                        case YANA_GET_FILES:
+                            if (is_file($dir.$entry)) {
+                                $dirlist[] = $entry;
+                            }
+                        break;
+                    }
+                }
+            } // end while
+            unset($entry);
+            $dirHandle->close();
+            sort($dirlist);
+            assert('is_array($dirlist); /* Unexpected result: $dirlist is not an array. */');
+        } else {
+            trigger_error("The directory '{$dir}' does not exist.", E_USER_NOTICE);
+        }
+        return $dirlist;
     }
 
     /**
