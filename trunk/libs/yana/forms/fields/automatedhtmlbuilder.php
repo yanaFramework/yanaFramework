@@ -331,7 +331,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
         {
             case 'array':
                 $this->setCssClass("gui_generator_array");
-                return $this->buildDiv(\Yana\Templates\Helpers\Html\MenuHelper::factory()->__invoke($value));
+                return $this->buildDiv(\Yana\Views\Helpers\Html\MenuHelper::factory()->__invoke($value));
             case 'bool':
                 $value = ($value) ? "true" : "false";
                 $this->setCssClass("gui_generator_bool icon_" . $value);
@@ -346,7 +346,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 }
                 return $this->buildSpan($this->buildFileDownload($value, $setup->getDownloadAction()));
             case 'text':
-                $textFormatter = new \Yana\Templates\Helpers\Formatters\TextFormatterCollection();
+                $textFormatter = new \Yana\Views\Helpers\Formatters\TextFormatterCollection();
                 $value = $textFormatter($value);
             // fall through
             case 'html':
@@ -365,8 +365,8 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             case 'list':
                 $this->setCssClass('gui_generator_array');
                 if (is_array($value)) {
-                    $value = \Yana\Templates\Helpers\Html\MenuHelper::factory()
-                        ->setUseKeys(\Yana\Templates\Helpers\Html\MenuLayouts\KeyEnumeration::DONT_PRINT_KEYS)
+                    $value = \Yana\Views\Helpers\Html\MenuHelper::factory()
+                        ->setUseKeys(\Yana\Views\Helpers\Html\MenuLayouts\KeyEnumeration::DONT_PRINT_KEYS)
                         ->__invoke($value);
                 }
                 return $this->buildDiv((string) $value);
@@ -383,7 +383,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             case 'date':
             case 'time':
             case 'timestamp':
-                $dateFormatter = new \Yana\Templates\Helpers\Formatters\DateFormatter();
+                $dateFormatter = new \Yana\Views\Helpers\Formatters\DateFormatter();
                 return $this->buildSpan($dateFormatter($value));
             case 'url':
                 return $this->buildExternalLink($value);
@@ -508,7 +508,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             $id = 'id="' . $form->getName() . '-' . $table->getPrimaryKey() . '-' .
                 $form->getPrimaryKey() . '-' . $field->getName() . '"';
             $class = 'class="gui_generator_int_link"';
-            $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
+            $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
             /* @var $event \Yana\Db\Ddl\Event */
             foreach ($field->getField()->getEvents() as $event)
             {

@@ -290,7 +290,7 @@ class Builder extends \Yana\Core\Object
         $pluginManager = \Yana\Plugins\Manager::getInstance();
         $action = $pluginManager->getFirstEvent();
         $lang = \Language::getInstance();
-        $formatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
+        $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
         $linkTemplate = '<a class="gui_generator_%s" href="' .
             $formatter("action=$action&" . $this->getForm()->getName() . "[page]=%s", false, false) .
             '" title="%s">%s</a>';
