@@ -341,7 +341,7 @@ class Menu extends \Yana\Core\AbstractSingleton
     private function _getMenu(array &$menu, $menuId, array $menuEntries, \Yana\Plugins\Manager $pluginManager, $isSafemode)
     {
         $name = $this->getMenuName($menuId);
-        $urlFormatter = new \Yana\Templates\Helpers\Formatters\UrlFormatter();
+        $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
 
         foreach ($menuEntries as $action => $entry)
         {
