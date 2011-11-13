@@ -70,6 +70,7 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
      * read contents and put results in cache (filter settings will be applied)
      *
      * @access  public
+     * @return  Dir
      * @throws  \Yana\Core\Exceptions\NotFoundException  when directory is not found
      */
     public function read()
@@ -77,8 +78,9 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
         if (!$this->exists()) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such directory: '{$this->getPath()}'.", E_USER_WARNING);
         }
-        $this->content = $this->_dirlist($this->getPath(), $this->filter);
+        $this->content = $this->_dirlist();
         sort($this->content);
+        return $this;
     }
 
     /**
@@ -95,12 +97,9 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
      */
     private function _dirlist()
     {
-        assert('is_string($dir); /* Wrong argument type for argument 1. String expected. */');
-        assert('is_string($filter); /* Wrong argument type for argument 2. String expected. */');
-        assert('$switch === YANA_GET_ALL || $switch === YANA_GET_DIRS  || $switch === YANA_GET_FILES; /* '.
-            'Invalid value for argument 3. */');
         $dir = $this->getPath();
         $filter = $this->getFilter();
+        $switch = null;
 
         /* Input handling */
         if ($filter == "") {
@@ -143,6 +142,7 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
                             }
                         break;
                         case YANA_GET_FILES:
+                        default:
                             if (is_file($dir.$entry)) {
                                 $dirlist[] = $entry;
                             }
@@ -161,12 +161,9 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
     }
 
     /**
-     * return list of files within the directory
+     * Return list of files within the directory.
      *
-     * NOTE: will only return filenames with the path stripped
-     *
-     * Since version 3.1 you may also use the parameter $index to get
-     * a specific entry.
+     * This will only return filenames with the path stripped.
      *
      * @access  public
      * @param   int  $index  number of file to return
@@ -175,40 +172,31 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
     public function getContent($index = null)
     {
         assert('is_null($index) || is_int($index); // Wrong type for argument 1. Integer expected');
-        if (is_null($index)) {
-            // directory already read
-            if (!$this->isEmpty()) {
-                assert('is_array($this->content); // Unexpected return type. Array expected');
-                return $this->content;
-            }
-            // automatically read directory contents
-            try {
+        if ($this->isEmpty()) {
+
+            try { // automatically try to read directory contents
 
                 $this->read();
-                assert('is_array($this->content); // Unexpected return type. Array expected');
-                return $this->content;
 
             } catch (\Yana\Core\Exceptions\NotFoundException $e) { // directory does not exist
-                return array();
+                $this->content = array();
             }
-        } else {
-            try {
 
-                if ($this->isEmpty()) {
-                    return null;
-                }
-                $this->read(); // automatically read directory contents
-                if (isset($this->content[$index])) {
-                    assert('is_string($this->content[$index]); // Unexpected return type. String expected');
-                    return $this->content[$index];
-                } else {
-                    return null;
-                }
-
-            } catch (\Yana\Core\Exceptions\NotFoundException $e) { // directory does not exist
-                return null;
-            }
         }
+        assert('is_array($this->content); // Unexpected return type. Array expected');
+
+        // Retrieve directory contents
+        $content = null;
+        if (is_null($index)) {
+            assert('is_array($this->content); // Unexpected return type. Array expected');
+            $content = (array) $this->content;
+  
+        } elseif (isset($this->content[$index])) {
+            assert('is_string($this->content[$index]); // Unexpected return type. String expected');
+            $content = (string) $this->content[$index];
+        }
+
+        return $content;
     }
 
     /**
@@ -229,21 +217,21 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
     }
 
     /**
-     * set current file filter
-     *
-     * This sets up a file filter or resets it.
+     * This sets up a file filter.
      *
      * The default is an empty file filter (all files).
+     * To reset the filter, leave the setting empty.
      *
      * @access  public
      * @param   string  $filter   current file filter
-     * @return  string
+     * @return  Dir
      * @since   3.1.0
      */
     public function setFilter($filter = "")
     {
         assert('is_string($filter); // Wrong type for argument 1. String expected');
         $this->filter = (string) $filter;
+        return $this;
     }
 
     /**
@@ -257,6 +245,7 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
      *
      * @access  public
      * @param   int  $mode  access mode, an octal number of 1 through 0777.
+     * @return  Dir
      * @name    Dir::create()
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when argument $mode is not an integer or out of range
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when the directory already exists
@@ -284,6 +273,8 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
         }
 
         chmod($path, $mode);
+
+        return $this;
     }
 
     /**
@@ -306,7 +297,7 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
         assert('is_bool($isRecursive); // Wrong argument type argument 1. Boolean expected');
 
         if ($isRecursive === true) {
-            $content = dirlist($this->getPath(), '');
+            $content = $this->dirlist('');
             assert('!isset($element); /* cannot redeclare variable $element */');
             foreach ($content as $element)
             {
@@ -437,7 +428,7 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
      * @param   string    $directory      directory name
      * @param   bool      $countSubDirs   on / off
      * @param   bool      $useCache       on / off
-     * @return  int|bool(false)
+     * @return  int|bool
      * @since   2.8.8
      */
     public function getSize($directory = null, $countSubDirs = true, $useCache = true)
@@ -504,12 +495,14 @@ class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
      * Reset directory stats, e.g. after creating a file that did not exist.
      *
      * @access  protected
+     * @return  Dir
      * @ignore
      */
     protected function resetStats()
     {
         parent::resetStats();
         self::$size = null;
+        return $this;
     }
 
     /**

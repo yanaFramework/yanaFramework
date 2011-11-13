@@ -254,7 +254,7 @@ class plugin_search extends StdClass implements IsPlugin
          */
         assert('!isset($i); // Cannot redeclare var $i');
         assert('!isset($file); // Cannot redeclare var $file');
-        foreach (self::_getListOfFiles($dir, '*.htm|*.html|*.xml|*.shtml|*.pdf', $recurse) as $i =>  $file)
+        foreach (self::_getListOfFiles($dir, '*.htm,*.html,*.xml,*.shtml,*.pdf', $recurse) as $i =>  $file)
         {
             try {
                 if (preg_match('/\.pdf$/', $file)) {
@@ -721,7 +721,7 @@ class plugin_search extends StdClass implements IsPlugin
         if (empty($id)) {
             $id = "default";
         }
-        $cacheFile = $YANA->getVar('TEMPDIR')."$id.cache";
+        $cacheFile = $YANA->getVar('TEMPDIR') . __CLASS__ . "$id.tmp";
         if (sizeOf($this->cache)>30) {
             array_pop($this->cache);
         }
@@ -892,25 +892,29 @@ class plugin_search extends StdClass implements IsPlugin
         /* 1 recurse sub-directories */
         if ($recurse) {
             assert('!isset($subdir); // Cannot redeclare var $subdir');
-            foreach (dirlist($dir, "", YANA_GET_DIRS) as $subdir)
+            foreach (glob($dir . "*", \GLOB_ONLYDIR) as $subdir)
             {
-                /* ignore directories, which start with an underscore */
-                if (strpos($subdir, '_') === 0) {
+                // ignore directories, which start with an underscore (some
+                if (\Yana\Util\String::startsWith(basename($subdir), '_')) {
                     continue;
-                } else {
-                    $list = array_merge($list, self::_getListOfFiles($dir . $subdir, $filter, true));
                 }
+                $list = array_merge($list, self::_getListOfFiles($dir . $subdir, $filter, true));
             }
             unset($subdir);
         }
 
-        /* 2 get files in current directory */
-        assert('!isset($file); // Cannot redeclare var $subdir');
-        foreach (dirlist($dir, $filter, YANA_GET_FILES) as $file)
-        {
-            $list[] = $dir . $file;
+        // get files in current directory
+        if (\defined('GLOB_BRACE')) { // GLOB_BRACE is NOT defined on some OS like Solaris
+
+            $list = array_merge($list, glob($dir . "{" . $filter . "}", \GLOB_BRACE));
+
+        } else { // Workaround for Solaris
+            assert('!isset($_filter); // Cannot redeclare var $_filter');
+            foreach (explode(',', $filter) as $_filter) {
+                $list = array_merge($list, glob($dir . $_filter));
+            }
+            unset($_filter);
         }
-        unset($file);
 
         return $list;
     }
@@ -931,7 +935,7 @@ class plugin_search extends StdClass implements IsPlugin
         if (empty($id)) {
             $id = "default";
         }
-        $cacheFile = $YANA->getVar('TEMPDIR')."$id.cache";
+        $cacheFile = $YANA->getVar('TEMPDIR') . __CLASS__ . "$id.tmp";
         $hitlist = array();
 
         if (file_exists($cacheFile) && is_readable($cacheFile)) {

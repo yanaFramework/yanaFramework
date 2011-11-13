@@ -60,8 +60,7 @@ class plugin_default_library extends StdClass implements IsPlugin
      */
     public function clear_server_cache()
     {
-        SmartTemplate::clearCache();
-        \Yana\Plugins\Menu::clearCache();
+        Yana::clearCache();
     }
 
     /**
