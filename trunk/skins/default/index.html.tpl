@@ -70,7 +70,7 @@
           {import id="stdout" STDOUT=$STDOUT}
         </div>
         <div id="index_display">
-{import file=$SYSTEM_INSERT}
+{import id=$SYSTEM_INSERT}
         </div>
       </div>
 <!-- End: content -->
