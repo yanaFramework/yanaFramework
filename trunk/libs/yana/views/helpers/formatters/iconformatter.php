@@ -77,8 +77,7 @@ class IconFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
         if (is_file($configFile)) {
             foreach (simplexml_load_file($configFile) as $file)
             {
-                $file = (array) $file;
-                self::$_icons[$file['name']] = $file['regex'];
+                self::$_icons[(string) $file['name']] = (string) $file['regex'];
             }
         }
 

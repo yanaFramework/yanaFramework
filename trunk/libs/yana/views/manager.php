@@ -57,6 +57,11 @@ class Manager
     private $_styles = array();
 
     /**
+     * @var \Smarty_Internal_Template
+     */
+    private $_layoutTemplate = null;
+
+    /**
      * List of script files.
      *
      * @var  array
@@ -71,6 +76,13 @@ class Manager
     private $_smarty = null;
 
     /**
+     * Contains hash of current request URI + post vars.
+     *
+     * @var  string
+     */
+    private static $_cacheId = "";
+
+    /**
      * Initializes the manager class
      *
      * @param  \Smarty  $smarty  template engine
@@ -81,7 +93,137 @@ class Manager
     }
 
     /**
-     * add a CSS stylesheet file
+     * Create page layout document.
+     *
+     * A view always consists of at least two parts: a base document and an included document.
+     *
+     * @param   string  $filename             path to template file that hold the page layout (usually: index.tpl)
+     * @param   string  $mainContentTemplate  path to another template file that renders the page content
+     * @param   string  $mainContentTemplate  path to another template file that renders the page content
+     * @return  \Yana\Views\Template
+     */
+    public function createLayoutTemplate($filename, $mainContentTemplate, array $templateVars)
+    {
+        assert('is_string($filename); // Invalid argument $filename: string expected');
+        assert('is_string($mainContentTemplate); // Invalid argument $mainContentTemplate: string expected');
+
+        $isAjaxRequest = (bool) \Request::getVars('is_ajax_request');
+
+        /**
+         * If this is an AJAX request we should only output the content, leaving off the frame.
+         */
+        if ($isAjaxRequest) {
+            if (!empty($mainContentTemplate)) {
+                $filename = $mainContentTemplate; // We drop the layout and just use the content template
+                $mainContentTemplate = '';
+            }
+        }
+
+        $template = $this->_createTemplate($filename);
+        $template->assign($templateVars); // Initialize template variables
+
+        if ($isAjaxRequest) {
+            if (headers_sent() === false) {
+                header('Content-Type: text/html; charset=UTF-8');
+            }
+            /**
+             * For AJAX-Requests we leave off the layout and just output the template's body-tag (if any).
+             * This is done by the output post-processor that will look for the $FILE_IS_INCLUDE flag.
+             */
+            $template->assign('FILE_IS_INCLUDE', true);
+        }
+        $template->assign('SYSTEM_TEMPLATE', $filename);
+        $template->assign('SYSTEM_INSERT', $mainContentTemplate);
+
+        $this->_layoutTemplate = $template;
+        return new \Yana\Views\Template($this->_layoutTemplate);
+    }
+
+    /**
+     * Create a new template instance.
+     *
+     * This initializes a new template, also setting up cache- and compile-ids.
+     * If a base-layout is defined already, it will be set up as the parent template.
+     *
+     * @param   string  $filename  path to template file
+     * @return  \Yana\Views\Template 
+     */
+    public function createContentTemplate($filename)
+    {
+        assert('is_string($filename); // Invalid argument $filename: string expected');
+
+        $template = $this->_createTemplate($filename, $this->_layoutTemplate);
+        return new \Yana\Views\Template($template);
+    }
+
+    /**
+     * This calls Smarty to create a new template.
+     *
+     * @param   string                     &$filename  path to template file or template id (which will be resolved)
+     * @param   \Smarty_Internal_Template  $parent     parent template (if any)
+     * @return  \Smarty_Internal_Template
+     */
+    private function _createTemplate(&$filename, \Smarty_Internal_Template $parent = null)
+    {
+        if ($this->_smarty->caching) {
+            $cacheId = $this->_getCacheId();
+            $compileId = $cacheId;
+            return $this->_smarty->createTemplate($filename, $cacheId, $compileId, $parent);
+        } else {
+            return $this->_smarty->createTemplate($filename, null, null, $parent);
+        }
+    }
+
+    /**
+     * Calculate cache id.
+     *
+     * This helps the Smarty template engine to identify when to invalidate the cache,
+     * when it is active.
+     *
+     * @return  string
+     */
+    private function _getCacheId()
+    {
+        if (empty(self::$_cacheId)) {
+
+            // get query string (with session-id stripped)
+            $queryString = "";
+            if (isset($_SERVER['QUERY_STRING'])) {
+                $query = $_REQUEST;
+                ksort($query);
+                unset($query[YANA_SESSION_NAME]);
+                assert('is_array($query); /* Array expected: $query */');
+                $queryString = http_build_query($query);
+                unset($query);
+            }
+
+            // build id
+            $id = "";
+            if (!empty($queryString)) {
+                // get language
+                $language = "";
+                if (isset($GLOBALS['YANA'])) {
+                    $language = $GLOBALS['YANA']->getLanguage()->getLocale();
+                } else {
+                    $language = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+                }
+                $id = $language . '/' . $queryString;
+                unset($language);
+
+            } else {
+                $id = $_SERVER['PHP_SELF'];
+            }
+            unset($queryString);
+
+            // move id to cache;
+            self::$_cacheId = md5($id);
+            assert('is_string(self::$_cacheId) && !empty(self::$_cacheId); // failure calculating cache id');
+        }
+        return self::$_cacheId;
+    }
+
+    /**
+     * Add path to CSS stylesheet file.
      *
      * @param  string  $file  path and file name
      * @return \Yana\Views\Manager
@@ -94,7 +236,7 @@ class Manager
     }
 
     /**
-     * add a javascript file
+     * Add path to javascript file.
      *
      * @param  string  $file  path and file name
      * @return \Yana\Views\Manager
@@ -107,7 +249,7 @@ class Manager
     }
 
     /**
-     * add multiple CSS files
+     * Add multiple CSS files.
      *
      * @param  array  $files  path and file names
      * @return \Yana\Views\Manager
@@ -120,7 +262,7 @@ class Manager
     }
 
     /**
-     * add multiple JavaScript files
+     * Add multiple JavaScript files.
      *
      * @param  array  $files  path and file names
      * @return \Yana\Views\Manager
@@ -133,7 +275,7 @@ class Manager
     }
 
     /**
-     * get list of CSS stylesheets
+     * Returns list of paths to CSS stylesheets.
      *
      * @return  array
      */
@@ -143,7 +285,7 @@ class Manager
     }
 
     /**
-     * get list of javascript files
+     * Returns list of paths to javascript files.
      *
      * @return  array
      */

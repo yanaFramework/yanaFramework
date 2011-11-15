@@ -1154,7 +1154,7 @@ class String extends \Yana\Core\AbstractUtility
                      */
                     if (mb_strpos($tmp, $lDelim) !== false) {
                         assert('is_string($tmp); // Unexpected result: $tmp is supposed to be a string');
-                        self::_replace($tmp, $array);
+                        self::replaceToken($tmp, $array, $lDelim, $rDelim);
                     }
                     assert('is_string($tmp); // Unexpected result: $tmp is supposed to be a string');
                     $regExpMatch = preg_quote($currentMatch, '/');

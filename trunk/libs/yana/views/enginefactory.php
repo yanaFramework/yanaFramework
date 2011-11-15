@@ -397,11 +397,11 @@ class EngineFactory extends \Yana\Core\Object
     /**
      * Builds a new Smarty instance based on the given configuration.
      *
-     * @return  \Smarty
+     * @return  \Yana\Views\Manager
      */
     public function createInstance()
     {
-        if (!self::$_instance instanceof \Smarty) {
+        if (!self::$_instance instanceof \Yana\Views\Manager) {
             $smarty = new \Smarty();
             $config = $this->_getConfiguration();
             $this->_configureGeneralSettings($smarty, $config)
@@ -410,7 +410,7 @@ class EngineFactory extends \Yana\Core\Object
                 $smarty->enableSecurity();
                 $this->_configureSecuritySettings($smarty->security_policy, $config->security);
             }
-            self::$_instance = $smarty;
+            self::$_instance = new \Yana\Views\Manager($smarty);
         }
 
         return self::$_instance;
