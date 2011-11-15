@@ -33,7 +33,7 @@ namespace Yana\Views\Helpers\Formatters;
  * <<formatter>> This class encapsulates an extension for HTML creation.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFormatter
 {

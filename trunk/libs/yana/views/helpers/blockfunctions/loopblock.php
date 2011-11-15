@@ -35,7 +35,7 @@ namespace Yana\Views\Helpers\Blockfunctions;
  * This class is registered when instantiating the Smarty Engine.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 class LoopBlock extends \Yana\Core\Object implements \Yana\Views\Helpers\IsBlockFunction
 {

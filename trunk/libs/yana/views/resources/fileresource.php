@@ -56,7 +56,7 @@ namespace Yana\Views\Resources;
  * </code>
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 class FileResource extends \Yana\Views\Resources\AbstractResource
 {

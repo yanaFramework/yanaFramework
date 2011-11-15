@@ -33,7 +33,7 @@ namespace Yana\Views\Helpers;
  * <<interface>> Callable classes formatting some input as text.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 interface IsFormatter
 {

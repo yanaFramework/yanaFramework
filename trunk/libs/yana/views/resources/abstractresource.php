@@ -35,7 +35,7 @@ namespace Yana\Views\Resources;
  * This is a resource wrapper class for use with the smarty template engine.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 abstract class AbstractResource extends \Smarty_Resource_Custom
 {

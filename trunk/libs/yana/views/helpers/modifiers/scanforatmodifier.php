@@ -35,7 +35,7 @@ namespace Yana\Views\Helpers\Modifiers;
  * This class is registered when instantiating the Smarty Engine.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 class ScanForAtModifier extends \Yana\Core\Object implements \Yana\Views\Helpers\IsModifier
 {

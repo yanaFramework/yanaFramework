@@ -35,7 +35,7 @@ namespace Yana\Views\Helpers\Html;
  * Allows to set standard HTML attributes: id, title aso.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 abstract class AbstractHelper extends \Yana\Core\Object
 {

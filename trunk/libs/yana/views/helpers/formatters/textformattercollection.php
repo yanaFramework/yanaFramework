@@ -34,7 +34,7 @@ namespace Yana\Views\Helpers\Formatters;
  * <<formatter>> This class combines the icon- and text-formatter for convenience.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 class TextFormatterCollection extends FormatterCollection
 {

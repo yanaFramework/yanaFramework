@@ -44,7 +44,7 @@ namespace Yana\Views;
  * automates the initialization process.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 class Template extends \Yana\Core\Object
 {

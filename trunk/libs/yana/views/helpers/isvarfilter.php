@@ -37,7 +37,7 @@ namespace Yana\Views\Helpers;
  * Thus they can be more powerfull than a default modifier.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 interface IsVarFilter
 {

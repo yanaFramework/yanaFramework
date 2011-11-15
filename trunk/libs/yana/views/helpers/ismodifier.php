@@ -36,7 +36,7 @@ namespace Yana\Views\Helpers;
  * It must take at least one argument and must always return a scalar value.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 interface IsModifier
 {

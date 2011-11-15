@@ -35,7 +35,7 @@ namespace Yana\Views\Helpers\PreFilters;
  * This class is registered when instantiating the Smarty Engine in the {@see SmartTemplate} class.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 class IncludeFilter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsPreFilter
 {
