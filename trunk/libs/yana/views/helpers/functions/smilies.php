@@ -37,8 +37,26 @@ namespace Yana\Views\Helpers\Functions;
  * @package     yana
  * @subpackage  views
  */
-class Smilies extends \Yana\Views\Helpers\AbstractIconHelper implements \Yana\Views\Helpers\IsFunction
+class Smilies extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsFunction
 {
+
+    /**
+     * @var \Yana\Views\Helpers\Formatters\IconFormatter
+     */
+    private $_formatter = null;
+
+    /**
+     * Lazy loading for formatter class.
+     *
+     * @return \Yana\Views\Helpers\Formatters\IconFormatter 
+     */
+    protected function _getFormatter()
+    {
+        if (!isset($this->_formatter)) {
+            $this->_formatter = new \Yana\Views\Helpers\Formatters\IconFormatter();
+        }
+        return $this->_formatter;
+    }
 
     /**
      * <<smarty function>> guiSmilies.
@@ -57,16 +75,18 @@ class Smilies extends \Yana\Views\Helpers\AbstractIconHelper implements \Yana\Vi
         $lDelim = $smarty->smarty->left_delimiter;
         $rDelim = $smarty->smarty->right_delimiter;
 
-        foreach (array_keys(self::$_icons) as $count => $icon)
+        $iconLoader = new \Yana\Views\Helpers\IconLoader();
+        $count = 0;
+        foreach ($iconLoader->getIcons() as $text => $icon)
         {
-            $text = htmlspecialchars($icon, ENT_COMPAT, 'UTF-8');
-            $url = urlencode($icon);
+            $text = \Yana\Util\String::htmlSpecialChars($text);
             if ($count % $width == 0 && $count > 0) {
                 $table .= '</tr><tr>';
             }
-            $table .= '<td><a title="' . $lDelim . "lang id='TITLE_SMILIES'" . $rDelim . '" ' .
-                'href="javascript://:' . $url . ':"><img alt="' . $text . '" src="' . self::$_dir . $text .
-                '.gif" onmousedown="yanaAddIcon(\':' . $text . ':\',event)"/></a></td>' . "\n";
+            $table .= '<td title="' . $lDelim . "lang id='TITLE_SMILIES'" . $rDelim . '" ' .
+                'style="cursor: pointer"><img alt="' . $text . '" src="' . $icon .
+                '" onmousedown="yanaAddIcon(\':' . $text . ':\',event)"/></td>' . "\n";
+            $count++;
         }
 
         return $table . "</tr></table>";

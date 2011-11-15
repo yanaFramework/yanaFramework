@@ -28,20 +28,10 @@
 namespace Yana\Views;
 
 /**
- * <<decorator>> SmartTemplate
+ * <<decorator>> Template.
  *
- * This implements a decorator class for the smarty
- * template engine. The use of the "decorator" pattern
- * actually means it "implements an API" on top
- * of the original.
- *
- * Note that this does not touch or even change the
- * engine itself.
- *
- * This class provides two things: most obviously it
- * provides some features, that smarty does not have and
- * in addition it does some more type checking and
- * automates the initialization process.
+ * This implements a decorator class for Smarty templates.
+ * It provides a cleaned up, simple interface targeted for ease of use.
  *
  * @package     yana
  * @subpackage  views
@@ -87,14 +77,14 @@ class Template extends \Yana\Core\Object
     }
 
     /**
-     * get template var
+     * Get template var.
      *
      * There are two ways to call this function:
      *
-     * If you call $smartTemplate->getVar($varName) it will get the
+     * If you call $template->getVar($varName) it will get the
      * template var $varName and return it.
      *
-     * If you call $smartTemplate->getVar("*") with the wildcard '*'
+     * If you call $template->getVar("*") with the wildcard '*'
      * or an empty string '' it will return an associative array
      * containing all template vars.
      *
@@ -122,13 +112,13 @@ class Template extends \Yana\Core\Object
      * additional value for $varName:
      *
      * You may use the wildcard '*' to merge an associative array with the template vars.
-     * Example of usage: <code>$smartTemplate->setVar('*', array  $var) </code>
+     * Example of usage: <code>$template->setVar('*', array  $var) </code>
      *
      * Returns bool(true) on success and bool(false) on error.
      *
      * {@internal
      *
-     * The following synopsis: <code>$smartTemplate->setVar('*', string $var)</code>
+     * The following synopsis: <code>$template->setVar('*', string $var)</code>
      * has been dropped as of version 2.9.2.
      *
      * }}
@@ -164,12 +154,12 @@ class Template extends \Yana\Core\Object
      * with the template vars.
      *
      * Example of usage:
-     * <code>$smartTemplate->setVarByReference('*', array  $var) </code>
+     * <code>$template->setVarByReference('*', array  $var) </code>
      *
      * {@internal
      *
      * The following synopsis:
-     * <code>$smartTemplate->setVarByReference('*', string $var)</code>
+     * <code>$template->setVarByReference('*', string $var)</code>
      * has been dropped as of version 2.9.2.
      *
      * }}
@@ -217,7 +207,7 @@ class Template extends \Yana\Core\Object
      * </ol>
      *
      * @param   string  $filename  name of the template file
-     * @return  SmartTemplate
+     * @return  \Yana\Views\Template
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the filename is invalid
      */
     public function setPath($filename)

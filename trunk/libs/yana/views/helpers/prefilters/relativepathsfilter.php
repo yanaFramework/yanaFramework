@@ -33,7 +33,7 @@ namespace Yana\Views\Helpers\PreFilters;
 /**
  * Smarty-compatible HTML-processors
  *
- * This class is registered when instantiating the Smarty Engine in the {@see SmartTemplate} class.
+ * This class is registered when instantiating the Smarty Engine.
  *
  * @package     yana
  * @subpackage  views
@@ -55,10 +55,7 @@ class RelativePathsFilter extends \Yana\Views\Helpers\AbstractViewHelper impleme
         $lDelim = preg_quote($templateClass->smarty->left_delimiter, '/');
         $rDelim = preg_quote($templateClass->smarty->right_delimiter, '/');
 
-        $basedir = $templateClass->smarty->getTemplateVars('BASEDIR');
-        if (empty($basedir)) {
-            $basedir = (string) dirname($templateClass->buildTemplateFilepath());
-        }
+        $basedir = $templateClass->getTemplateVars('BASEDIR');
         if (!empty($basedir)) {
             $basedir .= '/';
             if ($basedir[0] === '.') {

@@ -72,7 +72,7 @@ class EmbeddedTags extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
         /* Argument 'hide' */
         if (!empty($params['hide']) && !preg_match('/^[\w,]+$/is', $params['hide'])) {
             $message = "Argument 'hide' contains illegal characters for function " . __FUNCTION__ . "().";
-            trigger_error($message, E_USER_WARNING);
+            \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_WARNING);
             return "";
         } elseif (empty($params['hide'])) {
             $hide = array();
@@ -89,10 +89,10 @@ class EmbeddedTags extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
 
         /* create document */
         $yana = \Yana::getInstance();
-        $document = new \SmartView("id:GUI_EMBEDDED_TAGS");
-        $document->setVar('TAGS', $tags);
-        $document->setVar('USER_DEFINED', $yana->getVar('PROFILE.EMBTAG'));
-        $document->setVar('LANGUAGE', $yana->getLanguage()->getVar());
+        $document = $smarty->smarty->createTemplate("id:GUI_EMBEDDED_TAGS", null, null, $smarty);
+        $document->assign('TAGS', $tags);
+        $document->assign('USER_DEFINED', $yana->getVar('PROFILE.EMBTAG'));
+        $document->assign('LANGUAGE', $yana->getLanguage()->getVar());
 
         return (string) $document;
     }

@@ -28,20 +28,10 @@
 namespace Yana\Views;
 
 /**
- * <<decorator>> SmartTemplate
+ * <<factory>> Smarty template engine factory.
  *
- * This implements a decorator class for the smarty
- * template engine. The use of the "decorator" pattern
- * actually means it "implements an API" on top
- * of the original.
- *
- * Note that this does not touch or even change the
- * engine itself.
- *
- * This class provides two things: most obviously it
- * provides some features, that smarty does not have and
- * in addition it does some more type checking and
- * automates the initialization process.
+ * This implements a configuration loader and factory class for the smarty template engine.
+ * Note that this class does not extend or change the engine itself.
  *
  * @access      public
  * @package     yana

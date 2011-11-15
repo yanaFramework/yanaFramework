@@ -60,6 +60,36 @@ namespace Yana\Views\Resources;
  */
 class FileResource extends \Yana\Views\Resources\AbstractResource
 {
+
+    /**
+     * @var \Skin
+     */
+    private $_skin = null;
+
+    /**
+     * Retrieves and returns the skin/themes repository.
+     *
+     * @return \Skin 
+     */
+    protected function _getSkin()
+    {
+        if (!isset($this->_skin)) {
+            $this->_skin = \Yana::getInstance()->getSkin();
+        }
+        return $this->_skin;
+    }
+
+    /**
+     * Create a new instance.
+     *
+     * This also loads the configuration.
+     */
+    public function __construct(\Yana\Views\Manager $manager)
+    {
+        parent::__construct($manager);
+        $manager->getSmarty()->addTemplateDir($this->_getSkin()->getDirectory());
+    }
+
     /**
      * Fetch template and its modification time from data source.
      *

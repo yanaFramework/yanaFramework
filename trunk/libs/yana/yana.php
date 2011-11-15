@@ -372,13 +372,13 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
         assert('!isset($styles); // Cannot redeclare var $styles');
         $styles = $eventConfiguration->getStyles();
         if ($styles) {
-            SmartView::addStyles($styles);
+            $this->getView()->addStyles($styles);
         }
         unset($styles);
         assert('!isset($scripts); // Cannot redeclare var $scripts');
         $scripts = $eventConfiguration->getScripts();
         if ($scripts) {
-            SmartView::addScripts($scripts);
+            $this->getView()->addScripts($scripts);
         }
         unset($scripts);
 
@@ -585,8 +585,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     {
         if (!isset($this->_view)) {
             $factory = new \Yana\Views\EngineFactory(self::$_config->templates);
-            $smarty = $factory->createInstance();
-            $this->_view = new \Yana\Views\Manager($smarty);
+            $this->_view = $factory->createInstance();
             $this->setVar("ACTION", $this->getAction());
         }
         return $this->_view;
@@ -1093,24 +1092,16 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     private function _outputAsTemplate($template)
     {
         assert('is_string($template); // Invalid argument $template: string expected');
-        $skin = $this->getSkin();
         $view = $this->getView();
 
-        $baseTemplate = 'INDEX';
+        $baseTemplate = 'id:INDEX';
 
         $_template = mb_strtoupper(\Yana\Plugins\Annotations\Enumeration::TEMPLATE);
         if (!empty(self::$_config->default->event->$_template)) {
             $baseTemplate = (string) self::$_config->default->event->$_template;
-            if (!is_file($baseTemplate)) {
-                $baseTemplate = $skin->getFile($baseTemplate); // may throw NotFoundException
-            }
         }
-        if (is_file($template)) {
-            if ($skin->isId($this->getAction())) { // If the action has a registered template of the same name, then load it
-                $skin->getFile($this->getAction());
-            }
-        } else {
-            $template = $skin->getFile($template); // may throw NotFoundException
+        if (!is_file($template) && !\Yana\Util\String::startsWith($template, 'id:')) {
+            $template = "id:$template";
         }
         /* register templates with view sub-system */
         $template = $view->createLayoutTemplate($baseTemplate, $template, $this->getVar());

@@ -56,7 +56,7 @@ class CssFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\
 
             $htmlHead = "";
 
-            $styleList = array_reverse((array) \SmartView::getStyles(), true);
+            $styleList = array_reverse((array) $this->_getViewManager()->getStyles(), true);
             assert('!isset($stylesheet); /* cannot redeclare variable $stylesheet */');
             foreach ($styleList as $stylesheet)
             {

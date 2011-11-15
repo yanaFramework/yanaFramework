@@ -36,7 +36,7 @@ namespace Yana\Views\Helpers;
  * @package     yana
  * @subpackage  views
  */
-abstract class AbstractViewHelper extends \Yana\Core\Object
+abstract class AbstractViewHelper extends \Yana\Core\Object implements \Yana\Views\IsManageable
 {
 
     /**

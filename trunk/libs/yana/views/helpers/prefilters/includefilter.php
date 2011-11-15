@@ -32,7 +32,7 @@ namespace Yana\Views\Helpers\PreFilters;
 /**
  * Smarty-compatible HTML-processors
  *
- * This class is registered when instantiating the Smarty Engine in the {@see SmartTemplate} class.
+ * This class is registered when instantiating the Smarty Engine.
  *
  * @package     yana
  * @subpackage  views
