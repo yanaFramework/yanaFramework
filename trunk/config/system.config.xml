@@ -167,13 +167,17 @@
             <phphandling>remove</phphandling>
             <!--
                 Template directories that are considered secure.
-            -->
+
             <securedir></securedir>
+
+            -->
             <!--
                  Trusted directories are where you keep php scripts that are
                  executed directly from the templates with {includephp}.
-            -->
+
             <trusteddir></trusteddir>
+
+            -->
             <!--
                 Trusted PHP-classes that may be called from within templates.
             -->
@@ -202,16 +206,22 @@
             <stream>id</stream>
             <!--
                 white-list of modifiers that are allowed in a template (disallows any other).
-            -->
+
             <allowedmodifier></allowedmodifier>
+
+            -->
             <!--
                 black-list of modifiers that are not allowed in a template (allows any other).
-            -->
+
             <disabledmodifier></disabledmodifier>
+
+            -->
             <!--
                 white-list of functions that are allowed in a template (disallows any other).
-            -->
+
             <allowedtag></allowedtag>
+
+            -->
             <!--
                 black-list of functions that are not allowed in a template (allows any other).
             -->
