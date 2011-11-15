@@ -28,35 +28,35 @@
 /**
  * create and send mails based on templates
  *
- * @access      public
  * @package     yana
  * @subpackage  mail
  */
-class Mailer extends SmartTemplate
+class Mailer extends \Yana\Core\Object
 {
+
+    /**
+     * @var \Yana\Views\Template
+     */
+    private $_template = null;
 
     /**
      * Handler function to send mail.
      *
-     * @access  private
-     * @var     mixed
+     * @var  mixed
      */
     private $_mailHandler = null;
 
     /**
      * Global handler function to send mail.
      *
-     * @access  private
-     * @static
-     * @var     mixed
+     * @var  mixed
      */
     private static $_globalMailHandler = "mb_send_mail";
 
     /**
      * Subject line of mail to be send.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_subject = "";
 
@@ -67,15 +67,23 @@ class Mailer extends SmartTemplate
      * if the address given here exists and will
      * not deliver any e-mail in case it doesn't.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
-    private $_sender  = "";
+    private $_sender = "";
+
+    /**
+     * This sets up the content of the E-Mail from a template of your choice.
+     *
+     * @param  \Yana\Views\Template  $template  E-Mail template
+     */
+    public function __construct(\Yana\Views\Template $template)
+    {
+        $this->_template = $template;
+    }
 
     /**
      * Get subject line.
      *
-     * @access  public
      * @return  string
      */
     public function getSubject()
@@ -86,7 +94,6 @@ class Mailer extends SmartTemplate
     /**
      * Set subject line.
      *
-     * @access  public
      * @param   string  $subject  single-line of text
      * @return  Mailer
      */
@@ -99,7 +106,6 @@ class Mailer extends SmartTemplate
     /**
      * Get sender of mail.
      *
-     * @access  public
      * @return  string
      */
     public function getSender()
@@ -114,7 +120,6 @@ class Mailer extends SmartTemplate
      * if the address given here exists and will
      * not deliver any e-mail in case it doesn't.
      *
-     * @access  public
      * @param   string  $sender  e-mail address
      * @return  Mailer
      */
@@ -132,7 +137,6 @@ class Mailer extends SmartTemplate
      *
      * @uses    $mailer->send('recipient@somewhere.tld');
      *
-     * @access  public
      * @param   string  $recipient  mail address
      * @return  bool
      * @since   2.8
@@ -143,15 +147,6 @@ class Mailer extends SmartTemplate
         assert('is_string($this->_sender); // Invalid property "sender". String expected');
         assert('is_string($recipient); // Wrong type for argument 1. String expected');
 
-        /* Why do we replace the default modifiers?
-         *
-         * Well - the original list may include html-specific filters
-         * that produce html entities, that are no good for an e-mail
-         * in text/plain format.
-         */
-        $smarty = $this->getSmarty();
-        $smarty->default_modifiers = array('replaceToken');
-
         /* prepare header */
         if (!empty($this->_sender)) {
             $header = array();
@@ -161,7 +156,7 @@ class Mailer extends SmartTemplate
             $header = array();
         }
         $content = preg_replace("/<br ?\/?>/", "\n", (string) $this);
-        return Mailer::mail($recipient, "[MAILFORM] " . $this->_subject, $content, $header, $this->_mailHandler);
+        return self::mail($recipient, "[MAILFORM] " . $this->_subject, $content, $header, $this->_mailHandler);
     }
 
     /**
@@ -175,8 +170,6 @@ class Mailer extends SmartTemplate
      * This is a global setting that is used as a default for all instances.
      * It may be overwritten for a particular instead where needed.
      *
-     * @access  public
-     * @static
      * @param   function  $function  callable handler function
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the function is not callable
      */
@@ -206,8 +199,6 @@ class Mailer extends SmartTemplate
      * This is a global setting that is used as a default for all instances.
      * It may be overwritten for a particular instead where needed.
      *
-     * @access  public
-     * @static
      * @return  mixed
      */
     public static function getGlobalMailHandler()
@@ -224,7 +215,6 @@ class Mailer extends SmartTemplate
      *
      * It is called when sending an e-mail.
      *
-     * @access  public
      * @param   function  $function  callable handler function
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the function is not callable
      */
@@ -254,7 +244,6 @@ class Mailer extends SmartTemplate
      * If no local mail handler function was set, the global mail handler is
      * returned instead.
      *
-     * @access  public
      * @return  mixed
      */
     public function getMailHandler()
@@ -346,8 +335,6 @@ class Mailer extends SmartTemplate
      *
      * @uses    Mailer::mail('recipient@somewhere.tld', 'My Subject', 'My Text', array('from' => 'myMail@domain.tld'));
      *
-     * @access  public
-     * @static
      * @param   string    $recipient    mail address
      * @param   string    $subject      short description
      * @param   string    $text         message text
@@ -527,40 +514,18 @@ class Mailer extends SmartTemplate
          * success - send mail
          */
         } else {
-            if (call_user_func($mailHandler, $recipient, $subject, $text, $result_header)) {
-                // mail send successfully
-                return true;
-            } else {
-                // mail was not send
-                return false;
-            }
+            return (bool) call_user_func($mailHandler, $recipient, $subject, $text, $result_header);
         }
     }
 
     /**
-     * fetch a template
+     * Fetches the template and returns it as a string.
      *
-     * This function will fetch the current template and return it
-     * as a string.
-     *
-     * Variables are imported from the global registry to the template.
-     * Existing template vars will not be replaced by vars of the same name
-     * in the registry.
-     *
-     * @access  public
      * @return  string
      */
     public function __toString()
     {
-        global $YANA;
-        /* 1.1) import vars from global registry */
-        if (isset($YANA)) {
-            /* import only non-existing vars */
-            $vars = $YANA->getVar('*');
-            $vars = \Yana\Util\Hashtable::merge($vars, $this->template->getTemplateVars());
-            $this->template->assign($vars);
-        }
-        return parent::__toString();
+        return $this->_template->__toString();
     }
 
 }

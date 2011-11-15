@@ -55,7 +55,7 @@ class JsFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\V
         if (mb_strpos($source, '</head>') > -1) {
 
             $htmlHead = "";
-            foreach (\SmartView::getScripts() as $script)
+            foreach ($this->_getViewManager()->getScripts() as $script)
             {
                 $htmlHead .= "        " . $this->_script($script) . "\n";
             }

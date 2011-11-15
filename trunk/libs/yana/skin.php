@@ -322,9 +322,6 @@ class Skin implements \Yana\Report\IsReportable
         // load file
         if (!isset(self::$_filePaths[$key])) {
 
-            // load language files, stylesheets and scripts
-            self::loadDependencies($key); // throws NotFoundException
-
             // cache the name of the file
             if (!isset($this->_value[$key]['FILE'])) {
                 throw new \Yana\Core\Exceptions\NotFoundException("Missing file attribute for template with id '$key'.");
@@ -334,42 +331,6 @@ class Skin implements \Yana\Report\IsReportable
         }
 
         return self::$_filePaths[$key];
-    }
-
-    /**
-     * load dependencies for template
-     *
-     * This function takes the name of a template, looks up any language files,
-     * scripts and stylesheets that the template depends on and loads them.
-     *
-     * @access  public
-     * @param   string  $key  template id
-     * @throws  \Yana\Core\Exceptions\NotFoundException when the given template id does not exist
-     */
-    public function loadDependencies($key)
-    {
-        assert('is_string($key); // Wrong type for argument 1. String expected');
-        $key = mb_strtoupper("$key");
-
-        if (!isset($this->_value[$key])) {
-            throw new \Yana\Core\Exceptions\NotFoundException("Template '$key' not found.");
-        }
-
-        // load language files associated with the template
-        $languageList = $this->getLanguage($key);
-        $language = Language::getInstance();
-        assert('!isset($languageFile); // Cannot redclare $languageFile');
-        foreach ($languageList as $languageFile)
-        {
-            $language->readFile($languageFile);
-        }
-        unset($languageFile);
-
-        // prepare a list of css styles associated with the template
-        SmartView::addStyles($this->getStyle($key));
-
-        // prepare a list of javascript files associated with the template
-        SmartView::addScripts($this->getScript($key));
     }
 
     /**

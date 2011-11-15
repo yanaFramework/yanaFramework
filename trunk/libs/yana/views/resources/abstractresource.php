@@ -37,8 +37,35 @@ namespace Yana\Views\Resources;
  * @package     yana
  * @subpackage  views
  */
-abstract class AbstractResource extends \Smarty_Resource_Custom
+abstract class AbstractResource extends \Smarty_Resource_Custom implements \Yana\Views\IsManageable
 {
+
+    /**
+     * @var \Yana\Views\Manager
+     */
+    private $_manager = null;
+
+    /**
+     * Create a new instance.
+     *
+     * This also loads the configuration.
+     */
+    public function __construct(\Yana\Views\Manager $manager)
+    {
+        $this->_manager = $manager;
+    }
+
+    /**
+     * Returns a reference to the registered view manager.
+     *
+     * You may use this to modify settings of the view layer and access the template engine.
+     *
+     * @return \Yana\Views\Manager
+     */
+    protected function _getViewManager()
+    {
+        return $this->_manager;
+    }
 
     /**
      * Fetch template's modification timestamp from data source.

@@ -70,7 +70,7 @@ class Slider extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
 
         /* create document */
         if (isset($params['inputName'])) {
-            $document = new SmartTemplate("id:gui_slider");
+            $document = $this->_getViewManager()->createContentTemplate("id:gui_slider");
             $sliderId = uniqid(__FUNCTION__ . '_');
             $document->setVar('sliderId', $sliderId);
             // check if the width is set, otherwise the min width will be set to default

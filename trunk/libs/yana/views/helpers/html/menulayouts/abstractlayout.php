@@ -40,36 +40,7 @@ namespace Yana\Views\Helpers\Html\MenuLayouts;
 abstract class AbstractLayout extends \Yana\Core\Object implements \Yana\Views\Helpers\Html\MenuLayouts\IsLayout
 {
 
-    /**
-     * Print an array using a tree menu.
-     *
-     * Example for $value:
-     * <code>
-     * $A = array(
-     *     '1.html' => 'Link',
-     *     'Menu 1' => array(
-     *         '2_1.html' => '1) Entry',
-     *         '2_2.html' => '2) Entry',
-     *         'Menü 2' => array(
-     *             '2_3_1.html' => '1) Entry',
-     *             '2_3_2.html' => '2) Entry'
-     *         ),
-     *     ),
-     *     'Menu 3' => array(
-     *         '3_1.html' => '1) Entry',
-     *         '3_2.html' => '2) Entry',
-     *         '3_2.html' => '3) Entry'
-     *     ),
-     * );
-     * </code>
-     *
-     * @param   array   $array      list contents (see example above)
-     * @param   int     $keys       convert URLs in keys to hyperlinks
-     * @param   bool    $allowHtml  allow HTML values
-     * @return  string
-     * @see     \Yana\Views\Helpers\Html\MenuLayouts\KeyEnumeration
-     */
-    public function __invoke(array $array, $keys = KeyEnumeration::DONT_CONVERT_HREF, $allowHtml = false);
+    // intentionally left blank
 
 }
 

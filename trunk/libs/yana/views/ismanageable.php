@@ -44,13 +44,6 @@ interface IsManageable
      */
     public function __construct(\Yana\Views\Manager $manager);
 
-    /**
-     * Returns a reference to the registered view manager.
-     *
-     * @return \Yana\Views\Manager
-     */
-    protected function _getViewManager();
-
 }
 
 ?>

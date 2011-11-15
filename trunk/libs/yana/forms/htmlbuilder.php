@@ -72,10 +72,8 @@ class HtmlBuilder extends \Yana\Core\Object
     public function __invoke()
     {
         // setting up template
-        $file = \Yana::getInstance()->getSkin()->getFile('gui_form');
-        assert('is_file($file); // Template file not found');
-        $template = new \SmartView($file);
-        unset($file);
+        $yana = \Yana::getInstance();
+        $template = $yana->getView()->createContentTemplate('id:gui_form');
 
         $template->setVar('form', $this->_facade);
         return $template->__toString();

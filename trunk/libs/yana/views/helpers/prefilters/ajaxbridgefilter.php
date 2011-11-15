@@ -59,7 +59,7 @@ class AjaxBridgeFilter extends \Yana\Views\Helpers\AbstractViewHelper implements
                 '        window.yanaProfileId="' . \Yana::getId() . '";' . "\n" .
                 '        window.yanaSessionName="{$SESSION_NAME}";' . "\n" .
                 '        window.yanaSessionId="{$SESSION_ID}";' . "\n" .
-                '        window.yanaLanguage="' . $language->getLanguage() . '";' . "\n" .
+                '        window.yanaLanguage="' . \Yana::getInstance()->getLanguage()->getLanguage() . '";' . "\n" .
                 '        var src="";' . "\n" .
                 '        var php_self="' . $templateClass->getTemplateVars('PHP_SELF') . '";' . "\n" .
                 '        //--></script>';

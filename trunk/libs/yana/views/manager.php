@@ -136,7 +136,9 @@ class Manager
         $template->assign('SYSTEM_INSERT', $mainContentTemplate);
 
         $this->_layoutTemplate = $template;
-        return new \Yana\Views\Template($this->_layoutTemplate);
+        $template = new \Yana\Views\Template($this->_layoutTemplate);
+        $template->setVar('BASEDIR', dirname($template->getPath()));
+        return $template;
     }
 
     /**
@@ -153,7 +155,9 @@ class Manager
         assert('is_string($filename); // Invalid argument $filename: string expected');
 
         $template = $this->_createTemplate($filename, $this->_layoutTemplate);
-        return new \Yana\Views\Template($template);
+        $template = new \Yana\Views\Template($template);
+        $template->setVar('BASEDIR', dirname($template->getPath()));
+        return $template;
     }
 
     /**
@@ -340,7 +344,7 @@ class Manager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  SmartTemplate
+     * @return  \Yana\Views\Manager
      */
     public function setFunction($name, $code)
     {
@@ -363,7 +367,7 @@ class Manager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  SmartTemplate
+     * @return  \Yana\Views\Manager
      */
     public function setModifier($name, $code)
     {
@@ -386,7 +390,7 @@ class Manager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  SmartTemplate
+     * @return  \Yana\Views\Manager
      */
     public function setBlockFunction($name, $code)
     {

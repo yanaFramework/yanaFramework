@@ -36,7 +36,7 @@ namespace Yana\Views\Helpers\Formatters;
  * @package     yana
  * @subpackage  views
  */
-class IconFormatter extends \Yana\Views\Helpers\AbstractIconHelper implements \Yana\Views\Helpers\IsFormatter
+class IconFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFormatter
 {
 
     /**
@@ -51,8 +51,9 @@ class IconFormatter extends \Yana\Views\Helpers\AbstractIconHelper implements \Y
 
         /* if not necessary -> skip the whole section for better performance */
         if (mb_strpos($string, ':') !== false) {
+            $iconLoader = new \Yana\Views\Helpers\IconLoader();
             /* Emot-Codes */
-            foreach (self::$_icons as $fileName => $regEx)
+            foreach ($iconLoader->getIcons() as $fileName => $regEx)
             {
                 while (preg_match("/:" . $regEx . ":(\s|\[wbr\]|\[br\]|<br \/>)*:" . $regEx . ":/i", $string))
                 {
@@ -60,7 +61,7 @@ class IconFormatter extends \Yana\Views\Helpers\AbstractIconHelper implements \Y
                     $string = preg_replace($pattern, ':' . $regEx . ':', $string);
                 }
                 $pattern = "/:" . addcslashes($regEx, "+()[]{}.?*/\\$^") . ":/";
-                $replacement = '<img alt="" border="0" hspace="2" src="' . self::$_dir . $fileName . '.gif"/>';
+                $replacement = '<img alt="" border="0" hspace="2" src="' . $fileName . '.gif"/>';
                 $string = preg_replace($pattern, $replacement, $string);
             }
         }

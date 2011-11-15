@@ -71,9 +71,12 @@ class IdResource extends \Yana\Views\Resources\FileResource
     protected function fetch($id, &$output, &$mtime)
     {
         assert('is_string($id); // Wrong argument type argument 1. String expected');
-        $filename = \Yana::getInstance()->getSkin()->getFile($id);
-        $smarty->assign('BASEDIR', dirname($filename));
-        parent::fetch($filename, $output, $mtime);
+
+        $skin = $this->_getSkin();
+        if ($skin->isId($id)) {
+            $id = $skin->getFile($id); // throws NotFoundException
+        }
+        parent::fetch($id, $output, $mtime);
     }
 
     /**
@@ -85,8 +88,45 @@ class IdResource extends \Yana\Views\Resources\FileResource
     protected function fetchTimestamp($id)
     {
         assert('is_string($id); // Wrong argument type argument 1. String expected');
-        $filename = \Yana::getInstance()->getSkin()->getFile($id);
-        return parent::fetchTimestamp($filename);
+        $skin = $this->_getSkin();
+        if ($skin->isId($id)) {
+            $this->_loadDependencies($id);
+            $id = $this->_getSkin()->getFile($id); // throws NotFoundException
+        }
+        return parent::fetchTimestamp($id);
+    }
+
+    /**
+     * load dependencies for template
+     *
+     * This function takes the name of a template, looks up any language files,
+     * scripts and stylesheets that the template depends on and loads them.
+     *
+     * @access  public
+     * @param   string  $key  template id
+     * @throws  \Yana\Core\Exceptions\NotFoundException when the given template id does not exist
+     */
+    private function _loadDependencies($key)
+    {
+        assert('is_string($key); // Wrong type for argument 1. String expected');
+        $key = mb_strtoupper("$key");
+
+        $skin = $this->_getSkin();
+
+        // load language files associated with the template
+        $language = \Language::getInstance();
+        foreach ($skin->getLanguage($key) as $languageFile)
+        {
+            $language->readFile($languageFile);
+        }
+
+        $manager = $this->_getViewManager();
+
+        // prepare a list of css styles associated with the template
+        $manager->addStyles($skin->getStyle($key));
+
+        // prepare a list of javascript files associated with the template
+        $manager->addScripts($skin->getScript($key));
     }
 
 }

@@ -59,13 +59,19 @@ class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
         $filename = '';
         if (isset($params['file'])) {
 
-            assert('$params["file"]; // Wrong argument type argument 1. String expected');
+            assert('is_string($params["file"]); // Wrong argument type: file. String expected');
             $filename = $params['file'];
+            if (!\Yana\Util\String::startsWith($filename, 'file:')) {
+                $filename = 'file:' . $filename;
+            }
 
         } elseif (isset($params['id'])) {
 
-            assert('is_string($params["id"]); // Wrong argument type argument 1. String expected');
-            $filename = 'id:' . $params['id'];
+            assert('is_string($params["id"]); // Wrong argument type: id. String expected');
+            $filename = $params['id'];
+            if (!\Yana\Util\String::startsWith($filename, 'id:')) {
+                $filename = 'id:' . $filename;
+            }
 
         } else {
             trigger_error("Missing argument. You need to provide either the argument 'file' or 'id'.", E_USER_WARNING);
@@ -73,7 +79,7 @@ class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
 
         }
 
-        $document = new \SmartView($filename);
+        $document = $this->_getViewManager()->createContentTemplate($filename);
         unset($params['file']);
         if (count($params) > 0) {
             $document->setVarByReference('*', $params);
