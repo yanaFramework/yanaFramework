@@ -69,81 +69,81 @@
         <defaultmodifier>replaceToken</defaultmodifier>
         <!--
             A list of classes to be used for resource loading.
-            They must implement \Yana\Templates\Resources\IsResource.
+            They must implement \Yana\Views\Resources\IsResource.
             You may use resources like "protocols" when calling a template.
             E.g. "template:path/to/template".
             If no resource is specified, the default resource will be used.
         -->
-        <resourcetype name="id">\Yana\Templates\Resources\IdResource</resourcetype>
-        <resourcetype name="template">\Yana\Templates\Resources\FileResource</resourcetype>
-        <resourcetype name="string">\Yana\Templates\Resources\StringResource</resourcetype>
+        <resourcetype name="id">\Yana\Views\Resources\IdResource</resourcetype>
+        <resourcetype name="template">\Yana\Views\Resources\FileResource</resourcetype>
+        <resourcetype name="string">\Yana\Views\Resources\StringResource</resourcetype>
         <!--
             List of modifiers to register.
-            They must implement \Yana\Templates\Helpers\Modifiers\IsModifier.
+            They must implement \Yana\Views\Helpers\Modifiers\IsModifier.
         -->
-        <modifier name="embeddedTags" cacheable="true">\Yana\Templates\Helpers\Modifiers\EmbeddedTagsModifier</modifier>
-        <modifier name="replaceToken" cacheable="false">\Yana\Templates\Helpers\Modifiers\ReplaceTokenModifier</modifier>
-        <modifier name="date" cacheable="true">\Yana\Templates\Helpers\Modifiers\DateModifier</modifier>
-        <modifier name="entities" cacheable="true">\Yana\Templates\Helpers\Modifiers\EntitiesModifier</modifier>
-        <modifier name="href" cacheable="false">\Yana\Templates\Helpers\Modifiers\HrefModifier</modifier>
-        <modifier name="scanForAt" cacheable="true">\Yana\Templates\Helpers\Modifiers\ScanForAtModifier</modifier>
-        <modifier name="smilies" cacheable="true">\Yana\Templates\Helpers\Modifiers\SmiliesModifier</modifier>
-        <modifier name="url" cacheable="false">\Yana\Templates\Helpers\Modifiers\UrlModifier</modifier>
+        <modifier name="embeddedTags" cacheable="true">\Yana\Views\Helpers\Modifiers\EmbeddedTagsModifier</modifier>
+        <modifier name="replaceToken" cacheable="false">\Yana\Views\Helpers\Modifiers\ReplaceTokenModifier</modifier>
+        <modifier name="date" cacheable="true">\Yana\Views\Helpers\Modifiers\DateModifier</modifier>
+        <modifier name="entities" cacheable="true">\Yana\Views\Helpers\Modifiers\EntitiesModifier</modifier>
+        <modifier name="href" cacheable="false">\Yana\Views\Helpers\Modifiers\HrefModifier</modifier>
+        <modifier name="scanForAt" cacheable="true">\Yana\Views\Helpers\Modifiers\ScanForAtModifier</modifier>
+        <modifier name="smilies" cacheable="true">\Yana\Views\Helpers\Modifiers\SmiliesModifier</modifier>
+        <modifier name="url" cacheable="false">\Yana\Views\Helpers\Modifiers\UrlModifier</modifier>
         <!--
             List of functions to register.
-            They must implement \Yana\Templates\Helpers\Functions\IsFunction.
+            They must implement \Yana\Views\Helpers\Functions\IsFunction.
         -->
-        <function name="printArray" cacheable="true">\Yana\Templates\Helpers\Functions\PrintArray</function>
-        <function name="printUnorderedList" cacheable="true">\Yana\Templates\Helpers\Functions\UnorderedList</function>
-        <function name="rss" cacheable="true">\Yana\Templates\Helpers\Functions\Rss</function>
-        <function name="import" cacheable="false">\Yana\Templates\Helpers\Functions\Import</function>
-        <function name="smilies" cacheable="true">\Yana\Templates\Helpers\Functions\Smilies</function>
-        <function name="embeddedTags" cacheable="true">\Yana\Templates\Helpers\Functions\EmbeddedTags</function>
-        <function name="create" cacheable="false">\Yana\Templates\Helpers\Functions\Form</function>
-        <function name="captcha" cacheable="true">\Yana\Templates\Helpers\Functions\Captcha</function>
-        <function name="slider" cacheable="true">\Yana\Templates\Helpers\Functions\Slider</function>
-        <function name="sizeOf" cacheable="true">\Yana\Templates\Helpers\Functions\SizeOf</function>
-        <function name="toolbar" cacheable="false">\Yana\Templates\Helpers\Functions\Toolbar</function>
-        <function name="preview" cacheable="true">\Yana\Templates\Helpers\Functions\Preview</function>
-        <function name="colorpicker" cacheable="true">\Yana\Templates\Helpers\Functions\Colorpicker</function>
-        <function name="lang" cacheable="true">\Yana\Templates\Helpers\Functions\Language</function>
-        <function name="visitorCount" cacheable="true">\Yana\Templates\Helpers\Functions\VisitorCount</function>
-        <function name="portlet" cacheable="true">\Yana\Templates\Helpers\Functions\Portlet</function>
-        <function name="applicationBar" cacheable="true">\Yana\Templates\Helpers\Functions\ApplicationBar</function>
-        <function name="selectDate" cacheable="true">\Yana\Templates\Helpers\Functions\DateSelector</function>
-        <function name="selectTime" cacheable="true">\Yana\Templates\Helpers\Functions\TimeSelector</function>
+        <function name="printArray" cacheable="true">\Yana\Views\Helpers\Functions\PrintArray</function>
+        <function name="printUnorderedList" cacheable="true">\Yana\Views\Helpers\Functions\UnorderedList</function>
+        <function name="rss" cacheable="true">\Yana\Views\Helpers\Functions\Rss</function>
+        <function name="import" cacheable="false">\Yana\Views\Helpers\Functions\Import</function>
+        <function name="smilies" cacheable="true">\Yana\Views\Helpers\Functions\Smilies</function>
+        <function name="embeddedTags" cacheable="true">\Yana\Views\Helpers\Functions\EmbeddedTags</function>
+        <function name="create" cacheable="false">\Yana\Views\Helpers\Functions\Form</function>
+        <function name="captcha" cacheable="true">\Yana\Views\Helpers\Functions\Captcha</function>
+        <function name="slider" cacheable="true">\Yana\Views\Helpers\Functions\Slider</function>
+        <function name="sizeOf" cacheable="true">\Yana\Views\Helpers\Functions\SizeOf</function>
+        <function name="toolbar" cacheable="false">\Yana\Views\Helpers\Functions\Toolbar</function>
+        <function name="preview" cacheable="true">\Yana\Views\Helpers\Functions\Preview</function>
+        <function name="colorpicker" cacheable="true">\Yana\Views\Helpers\Functions\Colorpicker</function>
+        <function name="lang" cacheable="true">\Yana\Views\Helpers\Functions\Language</function>
+        <function name="visitorCount" cacheable="true">\Yana\Views\Helpers\Functions\VisitorCount</function>
+        <function name="portlet" cacheable="true">\Yana\Views\Helpers\Functions\Portlet</function>
+        <function name="applicationBar" cacheable="true">\Yana\Views\Helpers\Functions\ApplicationBar</function>
+        <function name="selectDate" cacheable="true">\Yana\Views\Helpers\Functions\DateSelector</function>
+        <function name="selectTime" cacheable="true">\Yana\Views\Helpers\Functions\TimeSelector</function>
         <!--
             List of blockfunctions to register.
-            They must implement \Yana\Templates\Helpers\IsBlockFunction.
+            They must implement \Yana\Views\Helpers\IsBlockFunction.
         -->
-        <blockfunction name="loop" cacheable="true">\Yana\Templates\Helpers\BlockFunctions\LoopBlock</blockfunction>
+        <blockfunction name="loop" cacheable="true">\Yana\Views\Helpers\BlockFunctions\LoopBlock</blockfunction>
         <!--
             List of pre-processors to register.
-            They must implement \Yana\Templates\Helpers\IsPreFilter.
+            They must implement \Yana\Views\Helpers\IsPreFilter.
         -->
-        <prefilter>\Yana\Templates\Helpers\PreFilters\LanguageTokenFilter</prefilter>
-        <prefilter>\Yana\Templates\Helpers\PreFilters\IncludeFilter</prefilter>
-        <prefilter>\Yana\Templates\Helpers\PreFilters\AjaxBridgeFilter</prefilter>
-        <prefilter>\Yana\Templates\Helpers\PreFilters\RelativePathsFilter</prefilter>
+        <prefilter>\Yana\Views\Helpers\PreFilters\LanguageTokenFilter</prefilter>
+        <prefilter>\Yana\Views\Helpers\PreFilters\IncludeFilter</prefilter>
+        <prefilter>\Yana\Views\Helpers\PreFilters\AjaxBridgeFilter</prefilter>
+        <prefilter>\Yana\Views\Helpers\PreFilters\RelativePathsFilter</prefilter>
         <!--
             List of post-processors to register.
-            They must implement \Yana\Templates\Helpers\IsPostFilter.
+            They must implement \Yana\Views\Helpers\IsPostFilter.
         -->
-        <postfilter>\Yana\Templates\Helpers\PostFilters\SpamFilter</postfilter>
+        <postfilter>\Yana\Views\Helpers\PostFilters\SpamFilter</postfilter>
         <!--
             List of var-processors to register.
-            They must implement \Yana\Templates\Helpers\IsVarFilter.
+            They must implement \Yana\Views\Helpers\IsVarFilter.
         -->
         <varfilter></varfilter>
         <!--
             List of output-filters to register.
-            They must implement \Yana\Templates\Helpers\IsOutputFilter.
+            They must implement \Yana\Views\Helpers\IsOutputFilter.
         -->
-        <outputfilter>\Yana\Templates\Helpers\OutputFilters\RssFilter</outputfilter>
-        <outputfilter>\Yana\Templates\Helpers\OutputFilters\CssFilter</outputfilter>
-        <outputfilter>\Yana\Templates\Helpers\OutputFilters\MicrosummaryFilter</outputfilter>
-        <outputfilter>\Yana\Templates\Helpers\OutputFilters\JsFilter</outputfilter>
-        <outputfilter>\Yana\Templates\Helpers\OutputFilters\LanguageTokenFilter</outputfilter>
+        <outputfilter>\Yana\Views\Helpers\OutputFilters\RssFilter</outputfilter>
+        <outputfilter>\Yana\Views\Helpers\OutputFilters\CssFilter</outputfilter>
+        <outputfilter>\Yana\Views\Helpers\OutputFilters\MicrosummaryFilter</outputfilter>
+        <outputfilter>\Yana\Views\Helpers\OutputFilters\JsFilter</outputfilter>
+        <outputfilter>\Yana\Views\Helpers\OutputFilters\LanguageTokenFilter</outputfilter>
         <!--
             The default resource type to use.
         -->
