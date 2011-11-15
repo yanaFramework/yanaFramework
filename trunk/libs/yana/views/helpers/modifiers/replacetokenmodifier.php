@@ -37,7 +37,7 @@ namespace Yana\Views\Helpers\Modifiers;
  * @package     yana
  * @subpackage  views
  */
-class ReplaceTokenModifier implements \Yana\Views\Helpers\IsModifier
+class ReplaceTokenModifier extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsModifier
 {
 
     /**
@@ -51,7 +51,7 @@ class ReplaceTokenModifier implements \Yana\Views\Helpers\IsModifier
     public function __invoke($string, array $array = array())
     {
         if (empty($array)) {
-            $array = \Yana::getInstance()->getView()->getSmarty()->getTemplateVars();
+            $array = $this->_getViewManager()->getSmarty()->getTemplateVars();
         }
         return \Yana\Util\String::replaceToken($string, $array);
     }

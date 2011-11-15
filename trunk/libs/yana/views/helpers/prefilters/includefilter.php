@@ -37,7 +37,7 @@ namespace Yana\Views\Helpers\PreFilters;
  * @package     yana
  * @subpackage  views
  */
-class IncludeFilter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsPreFilter
+class IncludeFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsPreFilter
 {
 
     /**

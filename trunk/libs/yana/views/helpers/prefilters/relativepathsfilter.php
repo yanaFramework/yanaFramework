@@ -38,7 +38,7 @@ namespace Yana\Views\Helpers\PreFilters;
  * @package     yana
  * @subpackage  views
  */
-class RelativePathsFilter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsPreFilter
+class RelativePathsFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsPreFilter
 {
 
     /**

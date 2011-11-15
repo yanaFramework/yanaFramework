@@ -37,7 +37,7 @@ namespace Yana\Views\Helpers\Functions;
  * @package     yana
  * @subpackage  views
  */
-class Import extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFunction
+class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsFunction
 {
 
     /**

@@ -37,35 +37,8 @@ namespace Yana\Views\Helpers\OutputFilters;
  * @package     yana
  * @subpackage  views
  */
-class RssFilter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsOutputFilter
+class RssFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsOutputFilter
 {
-
-    /**
-     * @var string
-     */
-    private $_feedTitle = "";
-
-    /**
-     * @return string
-     */
-    protected function _getFeedTitle()
-    {
-        return $this->_feedTitle;
-    }
-
-    /**
-     * Create a new instance.
-     *
-     * @param  string  $feedTitle  Some text (without HTML-Tags) that serves the title of the link to the RSS feed
-     */
-    public function __construct($feedTitle = "")
-    {
-        assert('is_string($feedTitle); // Invalid argument $feedTitle: string expected');
-        if (empty($feedTitle)) {
-            $feedTitle = \Language::getInstance()->getVar("PROGRAM_TITLE");
-        }
-        $this->_feedTitle = $feedTitle;
-    }
 
     /**
      * <<smarty outputfilter>> outputfilter
@@ -82,9 +55,12 @@ class RssFilter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsOutpu
         if (mb_strpos($source, '</head>') > -1) {
 
             $htmlHead = "";
+            $smarty = $this->_getViewManager()->getSmarty();
+            $lDelim = $smarty->left_delimiter;
+            $rDelim = $smarty->right_delimiter;
 
             $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
-            $title = $this->_getFeedTitle();
+            $title = "{$lDelim}lang id='PROGRAM_TITLE'{$rDelim}";
             foreach (\Yana\RSS\Publisher::getFeeds() as $action)
             {
                 $htmlHead .= '        <link rel="alternate" type="application/rss+xml"' .

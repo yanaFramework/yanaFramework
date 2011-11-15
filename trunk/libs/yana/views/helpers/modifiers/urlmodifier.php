@@ -41,6 +41,24 @@ class UrlModifier extends \Yana\Views\Helpers\Formatters\UrlFormatter implements
 {
 
     /**
+     * @var \Yana\Views\Helpers\Formatters\UrlFormatter
+     */
+    private $_formatter = null;
+
+    /**
+     * Lazy loading for formatter class.
+     *
+     * @return \Yana\Views\Helpers\Formatters\UrlFormatter 
+     */
+    protected function _getFormatter()
+    {
+        if (!isset($this->_formatter)) {
+            $this->_formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
+        }
+        return $this->_formatter;
+    }
+
+    /**
      * <<smarty modifier>> URL.
      *
      * Creates an URL to the script itself from a search-string fragment.
@@ -52,7 +70,8 @@ class UrlModifier extends \Yana\Views\Helpers\Formatters\UrlFormatter implements
      */
     public function __invoke($string, $asString = false, $asAbsolutePath = true)
     {
-        return parent::__invoke($string, $asString, $asAbsolutePath);
+        $formatter = $this->_getFormatter();
+        return $formatter($string, $asString, $asAbsolutePath);
     }
 
 }

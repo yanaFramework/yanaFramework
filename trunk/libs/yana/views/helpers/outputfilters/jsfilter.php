@@ -37,7 +37,7 @@ namespace Yana\Views\Helpers\OutputFilters;
  * @package     yana
  * @subpackage  views
  */
-class JsFilter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsOutputFilter
+class JsFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsOutputFilter
 {
 
     /**

@@ -37,8 +37,26 @@ namespace Yana\Views\Helpers\Modifiers;
  * @package     yana
  * @subpackage  views
  */
-class DateModifier extends \Yana\Views\Helpers\Formatters\DateFormatter implements \Yana\Views\Helpers\IsModifier
+class DateModifier extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsModifier
 {
+
+    /**
+     * @var \Yana\Views\Helpers\Formatters\DateFormatter
+     */
+    private $_formatter = null;
+
+    /**
+     * Lazy loading for formatter class.
+     *
+     * @return \Yana\Views\Helpers\Formatters\DateFormatter 
+     */
+    protected function _getFormatter()
+    {
+        if (!isset($this->_formatter)) {
+            $this->_formatter = new \Yana\Views\Helpers\Formatters\DateFormatter();
+        }
+        return $this->_formatter;
+    }
 
     /**
      * <<smarty modifier>> Date.
@@ -51,8 +69,8 @@ class DateModifier extends \Yana\Views\Helpers\Formatters\DateFormatter implemen
     public function __invoke($time)
     {
         $time = (empty($time)) ? time() : (int) $time;
-
-        return parent::__invoke($time);
+        $formatter = $this->_getFormatter();
+        return $formatter($time);
     }
 
 }

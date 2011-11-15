@@ -37,7 +37,7 @@ namespace Yana\Views\Helpers\Functions;
  * @package     yana
  * @subpackage  views
  */
-class PrintArray extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFunction
+class PrintArray extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsFunction
 {
 
     /**
