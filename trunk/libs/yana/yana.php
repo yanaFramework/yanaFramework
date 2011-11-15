@@ -57,11 +57,11 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     private static $_instance = null;
 
     /**
-     * Name of system configuration file
+     * System configuration file
      *
-     * @var  array
+     * @var  \XmlArray
      */
-    private static $_config = array();
+    private static $_config = null;
 
     /**
      * profile id
@@ -126,7 +126,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     /**
      * the currently selected template
      *
-     * @var  SmartView
+     * @var  \Yana\Views\Manager
      */
     private $_view = null;
 
@@ -199,7 +199,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
             if ($eventConfiguration instanceof \Yana\Plugins\Configs\MethodConfiguration) {
                 $this->_isSafeMode = ($eventConfiguration->getSafemode() === true);
             } else {
-                $this->_isSafeMode = !empty(self::$_config['DEFAULT']['EVENT'][\Yana\Plugins\Annotations\Enumeration::SAFEMODE]);
+                $this->_isSafeMode = !empty(self::$_config->default->event->{\Yana\Plugins\Annotations\Enumeration::SAFEMODE});
             }
         }
         return $this->_isSafeMode;
@@ -218,15 +218,16 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
             mkdir(YANA_CDROM_DIR);
             chmod(YANA_CDROM_DIR, 0777);
         }
-        $configDir = self::$_config['CONFIGDIR'];
+        $configDir = (string) self::$_config->configdir;
         self::_setRealPaths(YANA_CDROM_DIR);
-        if (!file_exists(self::$_config['TEMPDIR'])) {
-            mkdir(self::$_config['TEMPDIR']);
-            chmod(self::$_config['TEMPDIR'], 0777);
+        $tempDir = (string) self::$_config->tempdir;
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir);
+            chmod($tempDir, 0777);
         }
-        if (!file_exists(self::$_config['CONFIGDIR'])) {
+        if (!file_exists($configDir)) {
             $configSrc = new Dir($configDir);
-            $configSrc->copy(self::$_config['CONFIGDIR'], true, 0777, true, null, '/^(?!\.blob$)/i', true);
+            $configSrc->copy($configDir, true, 0777, true, null, '/^(?!\.blob$)/i', true);
             unset($configSrc);
         }
         unset($configDir);
@@ -240,11 +241,11 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     private static function _setRealPaths($cwd)
     {
         $cwd .= '/';
-        self::$_config['TEMPDIR'] = $cwd . self::$_config['TEMPDIR'];
-        self::$_config['CONFIGDIR'] = $cwd . self::$_config['CONFIGDIR'];
-        self::$_config['CONFIGDRIVE'] = $cwd . self::$_config['CONFIGDRIVE'];
-        self::$_config['PLUGINFILE'] = $cwd . self::$_config['PLUGINFILE'];
-        DbStream::setTempDir(self::$_config['TEMPDIR']);
+        self::$_config->tempdir = $cwd . (string) self::$_config->tempdir;
+        self::$_config->configdir = $cwd . (string) self::$_config->configdir;
+        self::$_config->configdrive = $cwd . (string) self::$_config->configdrive;
+        self::$_config->pluginfile = $cwd . (string) self::$_config->pluginfile;
+        DbStream::setTempDir((string) self::$_config->tempdir);
     }
 
     /**
@@ -263,13 +264,13 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     public static function setConfiguration($filename = null)
     {
         if ($filename === null) {
-            $filename = dirname(__FILE__) . "/../../config/system.config.xml";
+            $filename = __DIR__ . "/../../config/system.config.xml";
         }
         assert('is_string($filename);   // Wrong type for argument 1. String expected');
         assert('is_file($filename);     // Invalid argument 1. Input is not a file.');
         assert('is_readable($filename); // Invalid argument 1. Configuration file is not readable.');
         // get System Config file
-        self::$_config = SXML::getFile($filename, CASE_UPPER);
+        self::$_config = simplexml_load_file($filename, '\XmlArray');
         // load CD-ROM application settings on demand
         if (YANA_CDROM === true) {
             self::_activateCDApplication();
@@ -277,11 +278,11 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
             self::_setRealPaths(getcwd());
         }
         // initialize directories
-        if (isset(self::$_config['SKINDIR'])) {
-            Skin::setBaseDirectory(self::$_config['SKINDIR']);
+        if (!empty(self::$_config->skindir)) {
+            Skin::setBaseDirectory((string) self::$_config->skindir);
         }
-        if (isset(self::$_config['PLUGINFILE'])) {
-            \Yana\Plugins\Manager::setPath(self::$_config['PLUGINFILE'], self::$_config['PLUGINDIR']);
+        if (isset(self::$_config->pluginfile)) {
+            \Yana\Plugins\Manager::setPath((string) self::$_config->pluginfile, (string) self::$_config->plugindir);
         }
     }
 
@@ -381,14 +382,6 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
         }
         unset($scripts);
 
-        assert('!isset($template); // Cannot redeclare var $template');
-        $template = $eventConfiguration->getTemplate();
-        if (is_file($template)) {
-            $this->getSkin()->setFile($action, $template);
-            $this->getView()->setTemplate($action);
-        }
-        unset($template, $eventConfiguration);
-
         /**
          * 3) handle event
          *
@@ -459,8 +452,8 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
                     $error->setAction($action);
                 // fall through
                 case empty($action):
-                    assert('!empty(self::$_config["DEFAULT"]["HOMEPAGE"]); // Configuration missing default homepage.');
-                    $action = self::$_config['DEFAULT']['HOMEPAGE'];
+                    assert('!empty(self::$_config->default->homepage); // Configuration missing default homepage.');
+                    $action = (string) self::$_config->default->homepage;
                 // fall through
                 default:
                     $action = mb_strtolower($action);
@@ -499,7 +492,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     {
         if (!isset($this->_registry)) {
             // path to cache file
-            $cacheFile = self::$_config['TEMPDIR'] . 'registry_' . self::getId() . '.tmp';
+            $cacheFile = (string) self::$_config->tempdir . 'registry_' . self::getId() . '.tmp';
 
             // get configuration mode
             \Yana\VDrive\Registry::useDefaults($this->isSafemode());
@@ -508,9 +501,9 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
                 $this->_registry = unserialize(file_get_contents($cacheFile));
                 assert('$this->_registry instanceof \Yana\VDrive\Registry;');
             } else {
-                $this->_registry = new \Yana\VDrive\Registry(self::$_config['CONFIGDRIVE'], "");
+                $this->_registry = new \Yana\VDrive\Registry((string) self::$_config->configdrive, "");
                 $this->_registry->setVar("ID", self::getId());
-                $this->_registry->mergeVars('*', self::$_config);
+                $this->_registry->mergeVars('*', \Yana\Util\Hashtable::changeCase(self::$_config->toArray(), \CASE_UPPER));
             }
             $request = Request::getVars();
             $this->_registry->mergeVars('*', $request);
@@ -563,7 +556,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     public function getPlugins()
     {
         if (!isset($this->_plugins)) {
-            $cacheFile = self::$_config['PLUGINCACHE'];
+            $cacheFile = (string) self::$_config->plugincache;
 
             if (YANA_CACHE_ACTIVE === true && file_exists($cacheFile)) {
                 $this->_plugins = unserialize(file_get_contents($cacheFile));
@@ -586,12 +579,14 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * This returns the view component. If none exists, a new instance is created.
      * This is an auxiliary class that provides access to output-specific functions.
      *
-     * @return  SmartView
+     * @return  \Yana\Views\Manager
      */
     public function getView()
     {
         if (!isset($this->_view)) {
-            $this->_view = new SmartView();
+            $factory = new \Yana\Views\EngineFactory(self::$_config->templates);
+            $smarty = $factory->createInstance();
+            $this->_view = new \Yana\Views\Manager($smarty);
             $this->setVar("ACTION", $this->getAction());
         }
         return $this->_view;
@@ -610,7 +605,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
             $languageDir = $this->getVar('LANGUAGEDIR');
             $this->_language = Language::getInstance();
             $this->_language->addDirectory($languageDir);
-            $this->_language->setLocale(self::$_config['DEFAULT']['LANGUAGE']);
+            $this->_language->setLocale((string) self::$_config->default->language);
             if (isset($_SESSION['language'])) {
                 try {
                     $this->_language->setLocale($_SESSION['language']);
@@ -699,8 +694,8 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
             $id = Request::getVars('id');
             if (!empty($id)) {
                 self::$_id = mb_strtolower($id);
-            } elseif (!empty(self::$_config['DEFAULT']['PROFILE'])) {
-                self::$_id = self::$_config['DEFAULT']['PROFILE'];
+            } elseif (!empty(self::$_config->default->profile)) {
+                self::$_id = (string) self::$_config->default->profile;
             } elseif (!empty($_REQUEST['id'])) {
                 self::$_id = mb_strtolower($_REQUEST['id']);
             } else {
@@ -916,7 +911,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
         assert('is_string($event); // Invalid argument $event: string expected');
         $event = mb_strtolower("$event");
 
-        /*
+        /**
          * save log-files (if any)
          *
          * By default this will output any messages to a table of the database named 'log'.
@@ -925,15 +920,18 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
         $level = $this->_prepareMessages();
         $view = $this->getView();
 
-        /*
+        assert('!isset($template); // Cannot redeclare var $template');
+        $templateName = "MESSAGE";
+
+        /**
          * is an AJAX request
          */
-        if (Request::getVars('is_ajax_request')) {
-            $view->showMessage($level, 'null', 'STDOUT');
-            exit(0);
+        if (\Request::getVars('is_ajax_request')) {
+            $event = 'null';
+            $templateName = 'STDOUT';
         }
 
-        /*
+        /**
          * output a message and DO NOT RELOCATE, when
          *   1) headers are already sent, OR
          *   2) the template explicitely requests a message, OR
@@ -941,11 +939,14 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
          */
         if ($event === 'null' || self::getDefault('MESSAGE') === true || headers_sent() === true) {
 
-            $view->showMessage($level, $event);
-            exit(0);
+            $template = $view->createLayoutTemplate($templateName, '', $this->getVar());
+            $template->setVar('ACTION', mb_strtolower("$event"));
+            $template->setVar('STDOUT.LEVEL', mb_strtolower("$level"));
+
+            exit((string) $template);
         }
 
-        /*
+        /**
          * save message and relocate.
          */
         $stdout = $this->getVar('STDOUT');
@@ -1092,13 +1093,27 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     private function _outputAsTemplate($template)
     {
         assert('is_string($template); // Invalid argument $template: string expected');
+        $skin = $this->getSkin();
         $view = $this->getView();
-        if (!empty(self::$_config['DEFAULT']['EVENT'][mb_strtoupper(\Yana\Plugins\Annotations\Enumeration::TEMPLATE)])) {
-            $baseTemplate = self::$_config['DEFAULT']['EVENT'][mb_strtoupper(\Yana\Plugins\Annotations\Enumeration::TEMPLATE)];
-            $view->setPath($baseTemplate);
+
+        $baseTemplate = 'INDEX';
+
+        $_template = mb_strtoupper(\Yana\Plugins\Annotations\Enumeration::TEMPLATE);
+        if (!empty(self::$_config->default->event->$_template)) {
+            $baseTemplate = (string) self::$_config->default->event->$_template;
+            if (!is_file($baseTemplate)) {
+                $baseTemplate = $skin->getFile($baseTemplate); // may throw NotFoundException
+            }
+        }
+        if (is_file($template)) {
+            if ($skin->isId($this->getAction())) { // If the action has a registered template of the same name, then load it
+                $skin->getFile($this->getAction());
+            }
+        } else {
+            $template = $skin->getFile($template); // may throw NotFoundException
         }
         /* register templates with view sub-system */
-        $view->setTemplate($template);
+        $template = $view->createLayoutTemplate($baseTemplate, $template, $this->getVar());
         /* there is a special var called 'STDOUT' that is used to output messages */
         if (!empty($_SESSION['STDOUT']['MESSAGES']) && is_array($_SESSION['STDOUT']['MESSAGES'])) {
             $this->setVar('STDOUT', $_SESSION['STDOUT']);
@@ -1109,7 +1124,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
         $this->_prepareMessages();
 
         /* print the page to the client */
-        print $view->__toString();
+        print $template->__toString();
     }
 
     /**
@@ -1139,15 +1154,28 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     public static function getDefault($key)
     {
         assert('is_scalar($key); // Invalid argument $key: scalar expected');
-        if (!isset(self::$_config['DEFAULT'])) {
-            return null;
+        $result = null;
+        if (isset(self::$_config->default)) {
+            $key = mb_strtoupper("$key");
+            if (isset(self::$_config->default->$key)) {
+                $result = self::$_config->default->$key;
+            } else {
+                $values = self::$_config->default;
+                foreach (explode('.', $key) as $i)
+                {
+                    if (!isset($values->$i)) {
+                        return null;
+                    }
+                    $values = $values->$i;
+                }
+                unset($i);
+                $result = $values;
+            }
         }
-        $key = mb_strtoupper("$key");
-        if (isset(self::$_config['DEFAULT'][$key])) {
-            return self::$_config['DEFAULT'][$key];
-        } else {
-            return \Yana\Util\Hashtable::get(self::$_config['DEFAULT'], $key);
+        if ($result instanceof \SimpleXMLElement) {
+            $result = ($result->count() > 1) ? (array) $result : (string) $result;
         }
+        return $result;
     }
 
     /**
@@ -1214,7 +1242,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
                 return self::$_connections[$schemaName];
             }
             if (YANA_CACHE_ACTIVE === true) {
-                $cacheFile = self::$_config['TEMPDIR'] . 'ddl_' . $schemaName . '.tmp';
+                $cacheFile = (string) self::$_config->tempdir . 'ddl_' . $schemaName . '.tmp';
                 if (is_file($cacheFile)) {
                     $schema = unserialize(file_get_contents($cacheFile));
                 } else {

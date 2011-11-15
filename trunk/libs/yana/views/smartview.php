@@ -44,26 +44,10 @@
  * }}
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  templates
  */
 class SmartView extends SmartTemplate
 {
-
-    /**
-     * list of stylesheets
-     *
-     * @var     array
-     * @ignore
-     */
-    protected static $styles = array();
-
-    /**
-     * list of stylesheets
-     *
-     * @var     array
-     * @ignore
-     */
-    protected static $scripts = array();
 
     /**
      * select template by template id
@@ -97,7 +81,7 @@ class SmartView extends SmartTemplate
          * restrict the output to the template's body-tag (if any).
          * This is done by the output post-processor, thus causing minimum side-effects.
          */
-        if (Request::getVars('is_ajax_request')) {
+        if (\Request::getVars('is_ajax_request')) {
             $this->setVar('FILE_IS_INCLUDE', true);
             if (headers_sent() === false) {
                 header('Content-Type: text/html; charset=UTF-8');
@@ -127,70 +111,6 @@ class SmartView extends SmartTemplate
             $id = \Yana::getInstance()->getSkin()->getFile($id); // throws NotFoundException
         }
         return $id;
-    }
-
-    /**
-     * add a CSS stylesheet file
-     *
-     * @param  string  $file  path and file name
-     */
-    public static function addStyle($file)
-    {
-        assert('is_string($file); // Wrong argument type argument 1. String expected');
-        self::$styles[] = "$file";
-    }
-
-    /**
-     * add a javascript file
-     *
-     * @param  string  $file  path and file name
-     */
-    public static function addScript($file)
-    {
-        assert('is_string($file); // Wrong argument type argument 1. String expected');
-        self::$scripts[] = "$file";
-    }
-
-    /**
-     * add multiple CSS files
-     *
-     * @param  array  $files  path and file names
-     */
-    public static function addStyles(array $files)
-    {
-        self::$styles = array_merge(self::$styles, $files);
-        self::$styles = array_unique(self::$styles);
-    }
-
-    /**
-     * add multiple JavaScript files
-     *
-     * @param  array  $files  path and file names
-     */
-    public static function addScripts(array $files)
-    {
-        self::$scripts = array_merge($files, self::$scripts);
-        self::$scripts = array_unique(self::$scripts);
-    }
-
-    /**
-     * get list of CSS stylesheets
-     *
-     * @return  array
-     */
-    public static function getStyles()
-    {
-        return self::$styles;
-    }
-
-    /**
-     * get list of javascript files
-     *
-     * @return  array
-     */
-    public static function getScripts()
-    {
-        return self::$scripts;
     }
 
     /**
@@ -256,11 +176,8 @@ class SmartView extends SmartTemplate
         $event = mb_strtolower("$event");
         $this->setPath($template);
 
-        global $YANA;
-        if (isset($YANA)) {
-            $YANA->setVar('ACTION', $event);
-            $YANA->setVar('STDOUT.LEVEL', mb_strtolower("$type"));
-        }
+        $this->setVar('ACTION', $event);
+        $this->setVar('STDOUT.LEVEL', mb_strtolower("$type"));
 
         exit((string) $this);
     }
