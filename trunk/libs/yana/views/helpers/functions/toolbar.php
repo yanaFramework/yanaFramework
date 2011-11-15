@@ -50,7 +50,9 @@ class Toolbar extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
         $menuHelper = \Yana\Views\Helpers\Html\MenuHelper::factory(3);
-        $menuHelper->setAllowHtml(true);
+        /* @var $menuHelper \Yana\Views\Helpers\Html\MenuHelper */
+        $menuHelper->setAllowHtml(true)
+            ->setUseKeys(\Yana\Views\Helpers\Html\MenuLayouts\KeyEnumeration::CONVERT_HREF);
         $contents = \Yana\Plugins\Menu::getInstance()->getTextMenu();
         return $menuHelper($contents);
     }
