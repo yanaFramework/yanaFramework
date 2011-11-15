@@ -27,6 +27,8 @@
  * @ignore
  */
 
+namespace Yana\Views\Helpers\Functions;
+
 /**
  * Smarty-compatible function.
  *
@@ -45,7 +47,7 @@ class Toolbar extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFunctio
      * @param   \Smarty_Internal_Template  $smarty  reference to currently rendered template
      * @return  scalar
      */
-    public static function __invoke(array $params, \Smarty_Internal_Template $smarty)
+    public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
         $menuHelper = \Yana\Views\Helpers\Html\MenuHelper::factory(3);
         $menuHelper->setAllowHtml(true);
