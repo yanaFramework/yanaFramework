@@ -168,7 +168,7 @@ class MenuHelper extends \Yana\Core\Object
      * true = don't escape HTML special chars
      *
      * @param   bool $allowHtml
-     * @return  MenuHelper 
+     * @return  \Yana\Views\Helpers\Html\MenuHelper
      */
     public function setAllowHtml($allowHtml)
     {
