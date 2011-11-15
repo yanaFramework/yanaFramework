@@ -368,6 +368,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
      */
     public function guestbook_write_new($name, $message, $msgtyp, $messenger = "", $mail = "", $hometown = "", $homepage = "", $opinion = "")
     {
+        /* @var $YANA \Yana */
         global $YANA;
         self::_securityCheck(); // throws FileNotFoundError
 
@@ -434,8 +435,9 @@ class plugin_guestbook extends StdClass implements IsPlugin
         }
         /* send Mail */
         if ($YANA->getVar("PROFILE.GUESTBOOK.MAIL") && $YANA->getVar("PROFILE.GUESTBOOK.NOTIFICATION")) {
-            $mailer = $YANA->getPlugins()->{"guestbook:/notification.mailer"};
-            self::_sendMail($mailer, $entry);
+            $templateFile = $YANA->getPlugins()->{"guestbook:/notification.file"};
+            $template = $YANA->getView()->createContentTemplate($templateFile->getPath());
+            self::_sendMail(new Mailer($template), $entry);
         }
         Microsummary::setText(__CLASS__, 'Guestbook, update ' . date('d M y G:s', time()));
     }
