@@ -35,7 +35,7 @@ namespace Yana\Views\Helpers\Modifiers;
  * This class is registered when instantiating the Smarty Engine.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 class DateModifier extends \Yana\Views\Helpers\Formatters\DateFormatter implements \Yana\Views\Helpers\IsModifier
 {

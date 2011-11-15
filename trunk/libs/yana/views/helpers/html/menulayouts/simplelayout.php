@@ -48,7 +48,7 @@ namespace Yana\Views\Helpers\Html\MenuLayouts;
  * </ul>
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 class SimpleLayout extends \Yana\Views\Helpers\Html\MenuLayouts\AbstractLayout
 {

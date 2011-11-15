@@ -35,7 +35,7 @@ namespace Yana\Views\Helpers\OutputFilters;
  * This class is registered when instantiating the Smarty Engine.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 class MicrosummaryFilter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsOutputFilter
 {

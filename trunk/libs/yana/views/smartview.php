@@ -44,7 +44,7 @@
  * }}
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 class SmartView extends SmartTemplate
 {

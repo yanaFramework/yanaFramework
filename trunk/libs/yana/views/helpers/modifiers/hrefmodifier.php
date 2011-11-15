@@ -35,7 +35,7 @@ namespace Yana\Views\Helpers\Modifiers;
  * This class is registered when instantiating the Smarty Engine.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 class HrefModifier extends \Yana\Views\Helpers\Formatters\UrlFormatter implements \Yana\Views\Helpers\IsModifier
 {

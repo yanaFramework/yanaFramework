@@ -35,7 +35,7 @@ namespace Yana\Views\Helpers;
  * This class tells you what a Smarty outputfilter should look like.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 interface IsOutputFilter
 {

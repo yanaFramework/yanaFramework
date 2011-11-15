@@ -34,7 +34,7 @@ namespace Yana\Views\Helpers\Formatters;
  * <<collection>> Type-safe collection of formatters.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 class FormatterCollection extends \Yana\Core\AbstractCollection implements \Yana\Views\Helpers\IsFormatter
 {

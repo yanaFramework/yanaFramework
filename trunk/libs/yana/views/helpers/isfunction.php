@@ -38,7 +38,7 @@ namespace Yana\Views\Helpers;
  * and may apply changes to it.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 interface IsFunction
 {

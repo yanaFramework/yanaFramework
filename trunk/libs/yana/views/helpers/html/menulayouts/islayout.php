@@ -33,7 +33,7 @@ namespace Yana\Views\Helpers\Html\MenuLayouts;
  * <<interface, strategy>> For menu layout helpers.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 interface IsLayout
 {

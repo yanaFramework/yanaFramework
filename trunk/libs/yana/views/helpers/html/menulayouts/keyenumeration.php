@@ -33,7 +33,7 @@ namespace Yana\Views\Helpers\Html\MenuLayouts;
  * <<enumeration>> Helps to select correct values for the $key parameter.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  * @see         \Yana\Views\Helpers\Html\MenuLayouts\IsLayout
  */
 class KeyEnumeration extends \Yana\Core\AbstractEnumeration

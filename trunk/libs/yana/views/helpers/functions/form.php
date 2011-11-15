@@ -35,7 +35,7 @@ namespace Yana\Views\Helpers\Functions;
  * This class is registered when instantiating the Smarty Engine.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 class Form extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFunction
 {

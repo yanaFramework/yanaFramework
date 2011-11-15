@@ -49,7 +49,7 @@ namespace Yana\Views\Helpers\Html;
  * </ul>
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 class MenuHelper extends \Yana\Core\Object
 {

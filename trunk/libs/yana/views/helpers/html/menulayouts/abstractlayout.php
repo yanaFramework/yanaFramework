@@ -35,7 +35,7 @@ namespace Yana\Views\Helpers\Html\MenuLayouts;
  * This implements a strategy pattern.
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 abstract class AbstractLayout extends \Yana\Core\Object implements \Yana\Views\Helpers\Html\MenuLayouts\IsLayout
 {

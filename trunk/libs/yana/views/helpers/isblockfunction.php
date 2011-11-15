@@ -59,7 +59,7 @@ namespace Yana\Views\Helpers;
  * </code>
  *
  * @package     yana
- * @subpackage  templates
+ * @subpackage  views
  */
 interface IsBlockFunction
 {
