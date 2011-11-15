@@ -71,7 +71,7 @@ class plugin_ipblock extends StdClass implements IsPlugin
 
         if ($blacklist->isBlocked() && !($whitelist->exists() && $whitelist->isBlocked())) {
             new PermissionDeniedError();
-            $YANA->exitTo(null); // die
+            $YANA->exitTo(); // die
             return false;
         }
 
