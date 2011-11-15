@@ -102,7 +102,6 @@
         <function name="create" cacheable="false">\Yana\Views\Helpers\Functions\Form</function>
         <function name="captcha" cacheable="true">\Yana\Views\Helpers\Functions\Captcha</function>
         <function name="slider" cacheable="true">\Yana\Views\Helpers\Functions\Slider</function>
-        <function name="sizeOf" cacheable="true">\Yana\Views\Helpers\Functions\SizeOf</function>
         <function name="toolbar" cacheable="false">\Yana\Views\Helpers\Functions\Toolbar</function>
         <function name="preview" cacheable="true">\Yana\Views\Helpers\Functions\Preview</function>
         <function name="colorpicker" cacheable="true">\Yana\Views\Helpers\Functions\Colorpicker</function>
