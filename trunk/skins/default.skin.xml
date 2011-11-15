@@ -288,10 +288,10 @@
             <style>default/styles/admin.css</style>
         </template>
         <template id="COLORPICKER" file="default/color/colorpicker.html.tpl">
-            <script>default/scripts/colorpicker/javascripts/mColorPicker.min.js</script>
+            <script>default/color/colorpicker.js</script>
         </template>
         <template id="COLORPICKER_CONTENT" file="default/color/index.html.tpl">
-            <script>default/scripts/colorpicker/javascripts/mColorPicker.min.js</script>
+            <script>default/color/colorpicker.js</script>
         </template>
         <template id="ABOUT_TEMPLATE" file="default/configuration/about.html.tpl">
             <language>admin</language>
@@ -312,7 +312,7 @@
             <script id="default">default/scripts/default.js</script>
             <script>default/styles/dynamic-styles.js</script>
             <script id="jquery">default/scripts/jquery/jquery-1.6.1.min.js</script>
-            <script>default/scripts/colorpicker/javascripts/mColorPicker.min.js</script>
+            <script>default/color/colorpicker.js</script>
         </template>
         <template id="DB_CONFIGURATION" file="default/database_config/config.html.tpl">
             <language>admin</language>
