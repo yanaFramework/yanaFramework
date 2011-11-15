@@ -36,53 +36,8 @@ namespace Yana\Views\Helpers\Formatters;
  * @package     yana
  * @subpackage  views
  */
-class IconFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFormatter
+class IconFormatter extends \Yana\Views\Helpers\AbstractIconHelper implements \Yana\Views\Helpers\IsFormatter
 {
-
-    /**
-     * @var string
-     */
-    protected static $_dir = 'common_files/';
-
-    /**
-     * @var array
-     */
-    protected static $_icons = array();
-
-    /**
-     * Create a new instance.
-     *
-     * This also loads the configuration.
-     */
-    public function __construct()
-    {
-        global $YANA;
-        if (isset($YANA)) {
-            self::$_dir = $YANA->getVar('PROFILE.SMILEYDIR');
-        }
-
-        if (!is_dir(self::$_dir)) {
-            $message = "Unable to load smilies. The directory '" . self::$_dir . "' does not exist.";
-            throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
-        }
-
-        self::$_icons = array();
-        foreach (glob(self::$_dir . '/*.gif') as $file)
-        {
-            self::$_icons[$file] = basename($file, '.gif');
-        }
-        unset($file);
-
-        $configFile = self::$_dir . '/config.xml';
-        if (is_file($configFile)) {
-            foreach (simplexml_load_file($configFile) as $file)
-            {
-                self::$_icons[(string) $file['name']] = (string) $file['regex'];
-            }
-        }
-
-        sort(self::$_icons);
-    }
 
     /**
      * Create HTML from a unix timestamp.

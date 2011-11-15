@@ -37,20 +37,8 @@ namespace Yana\Views\Helpers\Functions;
  * @package     yana
  * @subpackage  views
  */
-class Smilies extends \Yana\Views\Helpers\Formatters\IconFormatter implements \Yana\Views\Helpers\IsFunction
+class Smilies extends \Yana\Views\Helpers\AbstractIconHelper implements \Yana\Views\Helpers\IsFunction
 {
-
-    /**
-     * Create a new instance.
-     *
-     * This also loads the configuration.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        
-        global $YANA;
-    }
 
     /**
      * <<smarty function>> guiSmilies.
