@@ -37,7 +37,7 @@ namespace Yana\Views\Helpers\Blockfunctions;
  * @package     yana
  * @subpackage  views
  */
-class LoopBlock extends \Yana\Core\Object implements \Yana\Views\Helpers\IsBlockFunction
+class LoopBlock extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsBlockFunction
 {
 
     /**

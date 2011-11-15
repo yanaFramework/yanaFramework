@@ -1,4 +1,5 @@
 <?php
+
 /**
  * YANA library
  *
@@ -27,31 +28,42 @@
  * @ignore
  */
 
-namespace Yana\Views\Helpers\PreFilters;
+namespace Yana\Views\Helpers;
 
 /**
- * Smarty-compatible HTML-processors
- *
- * This class is registered when instantiating the Smarty Engine in the {@see SmartTemplate} class.
+ * <<abstract>> Basic Helper class.
  *
  * @package     yana
  * @subpackage  views
  */
-class LanguageTokenFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsPreFilter
+abstract class AbstractViewHelper extends \Yana\Core\Object
 {
 
     /**
-     * <<smarty processor>> htmlPreProcessor
-     *
-     * @param   string                     $source         HTML source
-     * @param   \Smarty_Internal_Template  $templateClass  template class
-     * @return  string
+     * @var \Yana\Views\Manager
      */
-    public function __invoke($source, \Smarty_Internal_Template $templateClass)
+    private $_manager = null;
+
+    /**
+     * Create a new instance.
+     *
+     * This also loads the configuration.
+     */
+    public function __construct(\Yana\Views\Manager $manager)
     {
-        $language = \Language::getInstance();
-        $source = $language->replaceToken($source);
-        return $source;
+        $this->_manager = $manager;
+    }
+
+    /**
+     * Returns a reference to the registered view manager.
+     *
+     * You may use this to modify settings of the view layer and access the template engine.
+     *
+     * @return \Yana\Views\Manager
+     */
+    protected function _getViewManager()
+    {
+        return $this->_manager;
     }
 
 }

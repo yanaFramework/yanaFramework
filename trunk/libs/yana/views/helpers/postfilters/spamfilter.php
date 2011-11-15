@@ -37,7 +37,7 @@ namespace Yana\Views\Helpers\PostFilters;
  * @package     yana
  * @subpackage  views
  */
-class SpamFilter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsPostFilter
+class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsPostFilter
 {
 
     /**

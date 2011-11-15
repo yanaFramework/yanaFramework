@@ -37,8 +37,26 @@ namespace Yana\Views\Helpers\Modifiers;
  * @package     yana
  * @subpackage  views
  */
-class HrefModifier extends \Yana\Views\Helpers\Formatters\UrlFormatter implements \Yana\Views\Helpers\IsModifier
+class HrefModifier extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsModifier
 {
+
+    /**
+     * @var \Yana\Views\Helpers\Formatters\UrlFormatter
+     */
+    private $_formatter = null;
+
+    /**
+     * Lazy loading for formatter class.
+     *
+     * @return \Yana\Views\Helpers\Formatters\UrlFormatter 
+     */
+    protected function _getFormatter()
+    {
+        if (!isset($this->_formatter)) {
+            $this->_formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
+        }
+        return $this->_formatter;
+    }
 
     /**
      * <<smarty modifier>> HREF.
@@ -50,7 +68,8 @@ class HrefModifier extends \Yana\Views\Helpers\Formatters\UrlFormatter implement
      */
     public function __invoke($string)
     {
-        return '"' . parent::__invoke($string, false, false) . '"';
+        $formatter = $this->_getFormatter();
+        return '"' . $formatter($string, false, false) . '"';
     }
 
 }

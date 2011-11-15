@@ -37,9 +37,26 @@ namespace Yana\Views\Helpers\Modifiers;
  * @package     yana
  * @subpackage  views
  */
-class EmbeddedTagsModifier extends \Yana\Views\Helpers\Formatters\TextFormatter implements \Yana\Views\Helpers\IsModifier
+class EmbeddedTagsModifier extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsModifier
 {
 
+    /**
+     * @var \Yana\Views\Helpers\Formatters\TextFormatter
+     */
+    private $_formatter = null;
+
+    /**
+     * Lazy loading for formatter class.
+     *
+     * @return \Yana\Views\Helpers\Formatters\TextFormatter 
+     */
+    protected function _getFormatter()
+    {
+        if (!isset($this->_formatter)) {
+            $this->_formatter = new \Yana\Views\Helpers\Formatters\TextFormatter();
+        }
+        return $this->_formatter;
+    }
 
     /**
      * <<smarty modifier>> embeddedTags
@@ -52,7 +69,8 @@ class EmbeddedTagsModifier extends \Yana\Views\Helpers\Formatters\TextFormatter 
         if (!is_string($string)) {
             return $string;
         }
-        return parent::__invoke($string);
+        $formatter = $this->_getFormatter();
+        return $formatter($string);
     }
 
 }

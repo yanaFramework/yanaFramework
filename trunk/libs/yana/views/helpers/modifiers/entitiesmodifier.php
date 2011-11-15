@@ -37,7 +37,7 @@ namespace Yana\Views\Helpers\Modifiers;
  * @package     yana
  * @subpackage  views
  */
-class EntitiesModifier extends \Yana\Core\Object implements \Yana\Views\Helpers\IsModifier
+class EntitiesModifier extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsModifier
 {
 
 

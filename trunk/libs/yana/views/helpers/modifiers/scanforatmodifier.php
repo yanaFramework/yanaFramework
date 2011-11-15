@@ -37,7 +37,7 @@ namespace Yana\Views\Helpers\Modifiers;
  * @package     yana
  * @subpackage  views
  */
-class ScanForAtModifier extends \Yana\Core\Object implements \Yana\Views\Helpers\IsModifier
+class ScanForAtModifier extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsModifier
 {
 
     /**

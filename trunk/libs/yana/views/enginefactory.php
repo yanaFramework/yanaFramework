@@ -89,7 +89,7 @@ class EngineFactory extends \Yana\Core\Object
     private function _registerPlugin(\Smarty $smarty, $type, \SimpleXMLElement $plugin)
     {
         $className = (string) $plugin;
-        $instance = new $className();
+        $instance = new $className(self::$_instance);
         $attributes = $plugin->attributes();
         $smarty->registerPlugin(
             $type,
@@ -110,7 +110,7 @@ class EngineFactory extends \Yana\Core\Object
     {
         $className = (string) $filter;
         if ($className) {
-            $instance = new $className();
+            $instance = new $className(self::$_instance);
             $smarty->registerFilter(
                 $type,
                 array($instance, '__invoke')
@@ -127,7 +127,7 @@ class EngineFactory extends \Yana\Core\Object
     private function _registerResource(\Smarty $smarty, \SimpleXMLElement $resource)
     {
         $className = (string) $resource;
-        $instance = new $className();
+        $instance = new $className(self::$_instance);
         $attributes = $resource->attributes();
         $smarty->registerResource((string) $attributes->name, $instance);
     }
@@ -403,6 +403,7 @@ class EngineFactory extends \Yana\Core\Object
     {
         if (!self::$_instance instanceof \Yana\Views\Manager) {
             $smarty = new \Smarty();
+            self::$_instance = new \Yana\Views\Manager($smarty);
             $config = $this->_getConfiguration();
             $this->_configureGeneralSettings($smarty, $config)
                     ->_configurePlugins($smarty, $config);
@@ -410,7 +411,6 @@ class EngineFactory extends \Yana\Core\Object
                 $smarty->enableSecurity();
                 $this->_configureSecuritySettings($smarty->security_policy, $config->security);
             }
-            self::$_instance = new \Yana\Views\Manager($smarty);
         }
 
         return self::$_instance;

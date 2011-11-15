@@ -37,8 +37,26 @@ namespace Yana\Views\Helpers\Modifiers;
  * @package     yana
  * @subpackage  views
  */
-class SmiliesModifier extends \Yana\Views\Helpers\Formatters\IconFormatter implements \Yana\Views\Helpers\IsModifier
+class SmiliesModifier extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsModifier
 {
+
+    /**
+     * @var \Yana\Views\Helpers\Formatters\IconFormatter
+     */
+    private $_formatter = null;
+
+    /**
+     * Lazy loading for formatter class.
+     *
+     * @return \Yana\Views\Helpers\Formatters\IconFormatter 
+     */
+    protected function _getFormatter()
+    {
+        if (!isset($this->_formatter)) {
+            $this->_formatter = new \Yana\Views\Helpers\Formatters\IconFormatter();
+        }
+        return $this->_formatter;
+    }
 
     /**
      * <<smarty modifier>> smilies
@@ -51,7 +69,8 @@ class SmiliesModifier extends \Yana\Views\Helpers\Formatters\IconFormatter imple
         if (!is_string($string)) {
             return $string;
         }
-        return parent::__invoke($string);
+        $formatter = $this->_getFormatter();
+        return $formatter($string);
     }
 
 }

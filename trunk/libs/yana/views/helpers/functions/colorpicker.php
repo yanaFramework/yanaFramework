@@ -37,7 +37,7 @@ namespace Yana\Views\Helpers\Functions;
  * @package     yana
  * @subpackage  views
  */
-class ColorPicker extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFunction
+class ColorPicker extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsFunction
 {
 
     /**
@@ -49,9 +49,9 @@ class ColorPicker extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFun
      */
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
-        $document = new \SmartTemplate("id:colorpicker");
+        $document = new $smarty->smarty->createTemplate("id:colorpicker", null, null, $smarty);
         if (isset($params['id'])) {
-            $document->setVar('target', $params['id']);
+            $document->assign('target', $params['id']);
         }
         return $document->__toString();
     }

@@ -32,12 +32,12 @@ namespace Yana\Views\Helpers\PreFilters;
 /**
  * Smarty-compatible HTML-processors
  *
- * This class is registered when instantiating the Smarty Engine in the {@see SmartTemplate} class.
+ * This class is registered when instantiating the Smarty Engine.
  *
  * @package     yana
  * @subpackage  views
  */
-class AjaxBridgeFilter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsPreFilter
+class AjaxBridgeFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsPreFilter
 {
 
     /**
@@ -52,9 +52,8 @@ class AjaxBridgeFilter extends \Yana\Core\Object implements \Yana\Views\Helpers\
     public function __invoke($source, \Smarty_Internal_Template $templateClass)
     {
         assert('is_string($source); // Wrong type for argument 1. String expected');
-        global $YANA;
 
-        if (isset($YANA) && mb_strpos($source, '<head') > -1) {
+        if (mb_strpos($source, '<head') > -1) {
             assert('!isset($script); // Cannot redeclare var $script');
             $script = "\n        " . '<script type="text/javascript" language="javascript"><!--' . "\n" .
                 '        window.yanaProfileId="' . \Yana::getId() . '";' . "\n" .
@@ -62,7 +61,7 @@ class AjaxBridgeFilter extends \Yana\Core\Object implements \Yana\Views\Helpers\
                 '        window.yanaSessionId="{$SESSION_ID}";' . "\n" .
                 '        window.yanaLanguage="' . $language->getLanguage() . '";' . "\n" .
                 '        var src="";' . "\n" .
-                '        var php_self="' . $YANA->getVar('PHP_SELF') . '";' . "\n" .
+                '        var php_self="' . $templateClass->getTemplateVars('PHP_SELF') . '";' . "\n" .
                 '        //--></script>';
             $source = preg_replace('/<head(>| [^\/>]*>)/', '${0}' . $script, $source);
             unset($script);
