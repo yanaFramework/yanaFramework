@@ -216,8 +216,9 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
         $name = $form->getTable();
 
         // create HTML page
-        /* @var $html SmartTemplate */;
-        $html = $yana->getPlugins()->{'sdk:/templates/html.smarttemplate'};
+        /* @var $html \File */
+        $html = $yana->getPlugins()->{'sdk:/templates/html.file'};
+        $html = $yana->getView()->createContentTemplate($html->getPath());
         $html->setVar('form', $form);
         $html->setVar('database', $form->getDatabase());
         $this->_templates["$name.html.tpl"] = (string) $html;
@@ -341,8 +342,9 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
         assert('is_string($target); // Wrong argument type argument 2. String expected');
 
         $yana = Yana::getInstance();
-        /* @var $xliffTemplate SmartTemplate */
-        $xliffTemplate = $yana->getPlugins()->{'sdk:/templates/language.smarttemplate'};
+        /* @var $xliffTemplate \File */
+        $xliffTemplate = $yana->getPlugins()->{'sdk:/templates/language.file'};
+        $xliffTemplate = $yana->getView()->createContentTemplate($xliffTemplate->getPath());
         $xliffTemplate->setVar('source', $source);
         $xliffTemplate->setVar('target', $target);
         $xliffTemplate->setVar('translations', $this->_translations);
@@ -585,8 +587,9 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     protected function getJsApi()
     {
         $yana = Yana::getInstance();
-        /* @var $apiTemplate SmartTemplate */
-        $apiTemplate = $yana->getPlugins()->{'sdk:/templates/jsapi.smarttemplate'};
+        /* @var $apiTemplate \File */
+        $apiTemplate = $yana->getPlugins()->{'sdk:/templates/jsapi.file'};
+        $apiTemplate = $yana->getView()->createContentTemplate($apiTemplate->getPath());
         $apiTemplate->setVar('plugin', $this->object);
         $apiTemplate->setVar('class', 'Api' .
                 str_replace(' ', '', ucwords(preg_replace('/_/', ' ', $this->object->getId()))));
@@ -603,8 +606,9 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     protected function getClassSkeleton()
     {
         $yana = Yana::getInstance();
-        /* @var $phpTemplate SmartTemplate */
-        $phpTemplate = $yana->getPlugins()->{'sdk:/templates/class.smarttemplate'};
+        /* @var $phpTemplate \File */
+        $phpTemplate = $yana->getPlugins()->{'sdk:/templates/class.file'};
+        $phpTemplate = $yana->getView()->createContentTemplate($phpTemplate->getPath());
         $phpTemplate->setVar('plugin', $this->object);
         if (isset($this->_schema)) {
             $phpTemplate->setVar('schema', $this->_schema);

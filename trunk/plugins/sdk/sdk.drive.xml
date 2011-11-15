@@ -22,19 +22,19 @@
 	<dir name="templates">
 		<requirements readable="yes"/>
 		<source>templates/plugin/</source>
-		<file name="class.smarttemplate">
+		<file name="class.file">
 			<requirements readable="yes"/>
 			<source>templates/plugin/plugin.tpl</source>
 		</file>
-		<file name="html.smarttemplate">
+		<file name="html.file">
 			<requirements readable="yes"/>
 			<source>templates/plugin/template.html.tpl</source>
 		</file>
-		<file name="jsapi.smarttemplate">
+		<file name="jsapi.file">
 			<requirements readable="yes"/>
 			<source>templates/plugin/api.js.tpl</source>
 		</file>
-		<file name="language.smarttemplate">
+		<file name="language.file">
 			<requirements readable="yes"/>
 			<source>templates/plugin/language.xlf.tpl</source>
 		</file>
