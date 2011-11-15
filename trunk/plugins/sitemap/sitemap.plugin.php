@@ -58,9 +58,7 @@ class plugin_sitemap extends StdClass implements IsPlugin
      */
     public function sitemap()
     {
-        /* this function expects no arguments */
-        global $YANA;
-        $YANA->getView()->setFunction('sitemap', array(__CLASS__, 'createSitemap'));
+        Yana::getInstance()->getView()->setFunction('sitemap', array(__CLASS__, 'createSitemap'));
     }
 
     /**
