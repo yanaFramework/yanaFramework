@@ -89,7 +89,7 @@ class plugin_default_library extends StdClass implements IsPlugin
         if ($is_ajax_request) {
             exit($eintraege);
         } else {
-            $doc = new SmartTemplate('id:blank');
+            $doc = Yana::getInstance()->getView()->createContentTemplate('id:blank');
             $content = '<div style="overflow: hidden; height: 100%;">' . $eintraege . '</div>';
             $doc->setVar('INSERT_CONTENT_HERE', $content);
             exit("$doc");

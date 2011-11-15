@@ -282,13 +282,13 @@ class plugin_user extends StdClass implements IsPlugin
         assert('filter_var($sender, FILTER_VALIDATE_EMAIL); // $sender not a valid e-mail');
 
         // get the mail template
-        $skinManager = Yana::getInstance()->getSkin();
-        $fileName = $skinManager->getFile('USER_LOST_PWD');
+        $viewManager = Yana::getInstance()->getView();
+        $template = $viewManager->createContentTemplate('id:USER_LOST_PWD');
         $website = 'http://' . $_SERVER['SERVER_ADDR'] . $_SERVER['PHP_SELF'] .
             '?action=set_reset_pwd&key=' . $uniqueKey;
 
         // set the mail values
-        $mailer = new Mailer($fileName);
+        $mailer = new Mailer($template);
         $mailer->setSubject($subject);
         $mailer->setSender($sender);
         $mailer->setVar('NAME', $userName);
