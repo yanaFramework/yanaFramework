@@ -91,22 +91,12 @@ interface IsTemplate
     /**
      * Assign a variable to a key by reference.
      *
-     * Unlike Smarty's "assign()" this function takes an
-     * additional value for $varName:
+     * Unlike Smarty's "assign()" this function takes an additional value for $varName:
      *
-     * You may use the wildcard '*' to merge an associative array
-     * with the template vars.
+     * You may use the wildcard '*' to merge an associative array with the template vars.
      *
      * Example of usage:
      * <code>$template->setVarByReference('*', array  $var) </code>
-     *
-     * {@internal
-     *
-     * The following synopsis:
-     * <code>$template->setVarByReference('*', string $var)</code>
-     * has been dropped as of version 2.9.2.
-     *
-     * }}
      *
      * @param   string  $varName  address
      * @param   mixed   &$var     some new value
