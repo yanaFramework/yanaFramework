@@ -51,9 +51,9 @@ class ColorPicker extends \Yana\Views\Helpers\AbstractViewHelper implements \Yan
     {
         $document = new $smarty->smarty->createTemplate("id:colorpicker", null, null, $smarty);
         if (isset($params['id'])) {
-            $document->assign('target', $params['id']);
+            $document->setVar('target', $params['id']);
         }
-        return $document->__toString();
+        return $document->fetch();
     }
 
 }
