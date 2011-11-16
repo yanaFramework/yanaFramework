@@ -435,7 +435,7 @@ class plugin_config extends StdClass implements IsPlugin
         }
 
         // success
-        Yana::clearCache();
+        Yana::getInstance()->clearCache();
         return true;
     }
 
