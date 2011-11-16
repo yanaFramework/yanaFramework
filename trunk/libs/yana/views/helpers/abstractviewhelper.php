@@ -40,7 +40,7 @@ abstract class AbstractViewHelper extends \Yana\Core\Object implements \Yana\Vie
 {
 
     /**
-     * @var \Yana\Views\Manager
+     * @var \Yana\Views\IsManager
      */
     private $_manager = null;
 
@@ -49,7 +49,7 @@ abstract class AbstractViewHelper extends \Yana\Core\Object implements \Yana\Vie
      *
      * This also loads the configuration.
      */
-    public function __construct(\Yana\Views\Manager $manager)
+    public function __construct(\Yana\Views\IsManager $manager)
     {
         $this->_manager = $manager;
     }
@@ -59,7 +59,7 @@ abstract class AbstractViewHelper extends \Yana\Core\Object implements \Yana\Vie
      *
      * You may use this to modify settings of the view layer and access the template engine.
      *
-     * @return \Yana\Views\Manager
+     * @return \Yana\Views\IsManager
      */
     protected function _getViewManager()
     {
