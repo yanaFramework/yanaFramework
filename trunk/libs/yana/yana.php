@@ -1163,8 +1163,8 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
                 $result = $values;
             }
         }
-        if ($result instanceof \SimpleXMLElement) {
-            $result = ($result->count() > 1) ? (array) $result : (string) $result;
+        if ($result instanceof \XmlArray) {
+            $result = $result->toArray();
         }
         return $result;
     }
