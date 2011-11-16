@@ -920,14 +920,14 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
         $view = $this->getView();
 
         assert('!isset($template); // Cannot redeclare var $template');
-        $templateName = "MESSAGE";
+        $templateName = 'id:MESSAGE';
 
         /**
          * is an AJAX request
          */
         if (\Request::getVars('is_ajax_request')) {
             $event = 'null';
-            $templateName = 'STDOUT';
+            $templateName = 'id:STDOUT';
         }
 
         /**
@@ -996,14 +996,14 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
              * depending on the user's prefered language setting.
              */
             case 'message':
-                $this->_outputAsMessage($result);
+                $this->_outputAsMessage();
                 break;
             /**
              * 3) all other template settings go here
              */
             default:
                 if ($result === false && \Yana\Core\Exceptions\AbstractException::countMessages() === 0) {
-                    $this->_outputAsMessage($result);
+                    $this->_outputAsMessage();
                     return;
                 }
                 $this->_outputAsTemplate($template);
@@ -1046,10 +1046,8 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
 
     /**
      * Output a text message and relocate to next event.
-     *
-     * @param  mixed  $result  whatever the last called action returned
      */
-    private function _outputAsMessage($result)
+    private function _outputAsMessage()
     {
         $route = $this->getPlugins()->getNextEvent();
         $target = "";
@@ -1079,6 +1077,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
             // if no other destination is defined, route back to default homepage
             $target = self::getDefault("homepage");
             assert('!empty($target); // Configuration error: No default homepage set.');
+            assert('is_string($target); // Configuration error: Default homepage invalid.');
         }
 
         $this->exitTo($target);
@@ -1115,7 +1114,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
         $this->_prepareMessages();
 
         /* print the page to the client */
-        print $template->__toString();
+        print $template->fetch();
     }
 
     /**

@@ -76,7 +76,7 @@ class HtmlBuilder extends \Yana\Core\Object
         $template = $yana->getView()->createContentTemplate('id:gui_form');
 
         $template->setVar('form', $this->_facade);
-        return $template->__toString();
+        return $template->fetch();
     }
 
 }

@@ -86,7 +86,7 @@ class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
         }
         $document->setVar('FILE_IS_INCLUDE', true);
 
-        return $document->__toString();
+        return $document->fetch();
     }
 
 }

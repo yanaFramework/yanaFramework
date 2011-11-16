@@ -71,9 +71,30 @@ class Template extends \Yana\Core\Object
      *
      * @return  string
      */
-    public function __toString()
+    public function fetch()
     {
         return $this->template->fetch();
+    }
+
+    /**
+     * fetch a template
+     *
+     * This function will fetch the current template and return it
+     * as a string.
+     *
+     * Predefined variables may be imported from the global registry
+     * to the template.
+     * Existing template vars will be replaced.
+     *
+     * @return  string
+     */
+    public function __toString()
+    {
+        try {
+            return $this->fetch();
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     /**
