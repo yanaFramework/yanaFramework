@@ -193,7 +193,8 @@ class RepositoryBuilder extends \Yana\Plugins\AbstractRepositoryBuilder
         /**
          * plugin multicast-groups configuration
          */
-        $mulitcastGroups = \Yana::getDefault("MULTICAST_GROUPS");
+        $mulitcastGroups = \Yana::getDefault("multicast_groups");
+        assert('is_array($mulitcastGroups);');
         // default value
         if (empty($mulitcastGroups)) {
             $mulitcastGroups = array
@@ -241,8 +242,6 @@ class RepositoryBuilder extends \Yana\Plugins\AbstractRepositoryBuilder
                 (
                 )
             );
-        } else {
-            $mulitcastGroups = \Yana\Util\Hashtable::changeCase($mulitcastGroups, CASE_LOWER);
         } // end if
 
         // load configuration settings for each method and build list of implementing classes
