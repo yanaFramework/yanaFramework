@@ -46,7 +46,7 @@ namespace Yana\Views;
  * @package     yana
  * @subpackage  core
  */
-class Manager
+class Manager extends \Yana\Core\Object implements \Yana\Views\IsManager
 {
 
     /**

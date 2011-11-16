@@ -41,7 +41,7 @@ abstract class AbstractResource extends \Smarty_Resource_Custom implements \Yana
 {
 
     /**
-     * @var \Yana\Views\Manager
+     * @var  \Yana\Views\IsManager
      */
     private $_manager = null;
 
@@ -49,8 +49,10 @@ abstract class AbstractResource extends \Smarty_Resource_Custom implements \Yana
      * Create a new instance.
      *
      * This also loads the configuration.
+     *
+     * @param  \Yana\Views\IsManager  $manager  View manager instance
      */
-    public function __construct(\Yana\Views\Manager $manager)
+    public function __construct(\Yana\Views\IsManager $manager)
     {
         $this->_manager = $manager;
     }
@@ -60,7 +62,7 @@ abstract class AbstractResource extends \Smarty_Resource_Custom implements \Yana
      *
      * You may use this to modify settings of the view layer and access the template engine.
      *
-     * @return \Yana\Views\Manager
+     * @return  \Yana\Views\IsManager
      */
     protected function _getViewManager()
     {
@@ -72,7 +74,7 @@ abstract class AbstractResource extends \Smarty_Resource_Custom implements \Yana
      *
      * Returns the timestamp when the template was modified, or false if not found.
      *
-     * @param   string $name template name
+     * @param   string  $name  template name
      * @return  int
      */
     protected function fetchTimestamp($name)

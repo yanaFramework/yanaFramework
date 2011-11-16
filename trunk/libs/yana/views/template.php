@@ -36,7 +36,7 @@ namespace Yana\Views;
  * @package     yana
  * @subpackage  views
  */
-class Template extends \Yana\Core\Object
+class Template extends \Yana\Core\Object implements \Yana\Views\IsTemplate
 {
 
     /**

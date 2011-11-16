@@ -41,8 +41,10 @@ interface IsManageable
 
     /**
      * Assign the view manager.
+     *
+     * @param  \Yana\Views\IsManager  $manager  View manager instance
      */
-    public function __construct(\Yana\Views\Manager $manager);
+    public function __construct(\Yana\Views\IsManager $manager);
 
 }
 
