@@ -60,7 +60,7 @@ class plugin_default_library extends StdClass implements IsPlugin
      */
     public function clear_server_cache()
     {
-        Yana::clearCache();
+        Yana::getInstance()->clearCache();
     }
 
     /**

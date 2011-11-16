@@ -1051,8 +1051,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      */
     private function _outputAsMessage($result)
     {
-        $pluginManager = $this->getPlugins();
-        $route = $pluginManager->getNextEvent();
+        $route = $this->getPlugins()->getNextEvent();
         $target = "";
         $messageClass = "";
 
@@ -1079,6 +1078,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
         if (empty($target)) {
             // if no other destination is defined, route back to default homepage
             $target = self::getDefault("homepage");
+            assert('!empty($target); // Configuration error: No default homepage set.');
         }
 
         $this->exitTo($target);
@@ -1147,7 +1147,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
         assert('is_scalar($key); // Invalid argument $key: scalar expected');
         $result = null;
         if (isset(self::$_config->default)) {
-            $key = mb_strtoupper("$key");
+            $key = mb_strtolower("$key");
             if (isset(self::$_config->default->$key)) {
                 $result = self::$_config->default->$key;
             } else {
@@ -1176,7 +1176,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * Use this function where system settings or profile systems are changed,
      * to make sure changes are applied without delay.
      */
-    public static function clearCache()
+    public function clearCache()
     {
         // clear Menu Cache
         \Yana\Plugins\Menu::clearCache();
