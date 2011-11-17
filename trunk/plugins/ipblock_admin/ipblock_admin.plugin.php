@@ -132,10 +132,10 @@ class plugin_ipblock_admin extends StdClass implements IsPlugin
         $whitelist = self::_getWhitelist();
         $blacklist = self::_getBlacklist();
         if ($whitelist->exists()) {
-            $YANA->setVar("WHITELIST", $whitelistFile->get());
+            $YANA->setVar("WHITELIST", $whitelist->get());
         }
         if ($blacklist->exists()) {
-            $YANA->setVar("BLACKLIST", $blacklistFile->get());
+            $YANA->setVar("BLACKLIST", $blacklist->get());
         }
     }
 
