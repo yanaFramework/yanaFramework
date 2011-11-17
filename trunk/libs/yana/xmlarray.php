@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana;
+
 /**
  * SimpleXML implementation with array conversion
  *
@@ -36,11 +38,12 @@
  *
  * @access     public
  * @package    yana
- * @subpackage file_system
+ * @subpackage core
  * @name       XmlArray
  */
 class XmlArray extends \SimpleXMLElement
 {
+
     /**
      * get XML content as array
      *
@@ -171,21 +174,21 @@ class XmlArray extends \SimpleXMLElement
                 } // end foreach
                 unset($name, $node);
 
-            // has no children (is text-node)
+                // has no children (is text-node)
             } else {
                 $textNode = trim((string) $this);
                 // non-empty text node
                 if ($textNode !== '') {
                     $array['#pcdata'] = $textNode;
 
-                // empty text-node
-                } else {
+                } else { // empty text-node
                     // ignore
                 }
             } // end if
             return $array;
         }
     }
+
 }
 
 ?>
