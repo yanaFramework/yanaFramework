@@ -77,13 +77,9 @@ class Template extends \Yana\Core\Object implements \Yana\Views\IsTemplate
     }
 
     /**
-     * fetch a template
+     * Fetch the current template and return it as a string.
      *
-     * This function will fetch the current template and return it
-     * as a string.
-     *
-     * Predefined variables may be imported from the global registry
-     * to the template.
+     * Predefined variables may be imported from the global registry to the template.
      * Existing template vars will be replaced.
      *
      * @return  string
@@ -98,30 +94,28 @@ class Template extends \Yana\Core\Object implements \Yana\Views\IsTemplate
     }
 
     /**
+     * Get template vars.
+     *
+     * @return  array
+     */
+    public function getVars()
+    {
+        return $this->template->getTemplateVars();
+    }
+
+    /**
      * Get template var.
      *
-     * There are two ways to call this function:
-     *
-     * If you call $template->getVar($varName) it will get the
-     * template var $varName and return it.
-     *
-     * If you call $template->getVar("*") with the wildcard '*'
-     * or an empty string '' it will return an associative array
-     * containing all template vars.
+     * If you call $template->getVar($varName) it will get the template var $varName and return it.
      *
      * @param   string  $key  variable-name
      * @return  mixed
      */
-    public function getVar($key = '*')
+    public function getVar($key)
     {
         assert('is_string($key); // Wrong argument type for argument 1. String expected.');
-        /* 1) get all template vars */
-        if (empty($key) || $key === '*') {
-            return $this->template->getTemplateVars();
-        }
 
-        /* 2) get one template var, identified by $key */
-        $resource = $this->template->getTemplateVars();
+        $resource = $this->getVars();
         assert('is_array($resource); /* unexpected result: $resource should be an array */');
         return \Yana\Util\Hashtable::get($resource, "$key");
     }
@@ -129,85 +123,66 @@ class Template extends \Yana\Core\Object implements \Yana\Views\IsTemplate
     /**
      * Assign a variable to a key by value.
      *
-     * Unlike Smarty's "assign()" this function takes an
-     * additional value for $varName:
-     *
-     * You may use the wildcard '*' to merge an associative array with the template vars.
-     * Example of usage: <code>$template->setVar('*', array  $var) </code>
-     *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * {@internal
-     *
-     * The following synopsis: <code>$template->setVar('*', string $var)</code>
-     * has been dropped as of version 2.9.2.
-     *
-     * }}
-     *
      * @param   string  $varName  address
      * @param   mixed   $var      some new value
-     * @return  bool
+     * @return  \Yana\Views\Template
      */
     public function setVar($varName, $var)
     {
         assert('is_string($varName); // Wrong argument type for argument 1. String expected.');
+        $this->template->assign($varName, $var);
+        return $this;
+    }
 
-        /* 1) assign to global namespace */
-        if ($varName == '*') {
-
-            assert('is_array($var); // Invalid argument $var: array expected');
-            $this->template->assign((array) $var);
-
-        /* 2) assign to var identified by $varName */
-        } else {
-            $this->template->assign($varName, $var);
-        }
-        return true;
+    /**
+     * Assign a new set of variables.
+     *
+     * This replaces all template vars with new ones.
+     *
+     * @param   array  $vars  associative array containg new set of template vars
+     * @return  \Yana\Views\Template
+     */
+    public function setVars(array $vars)
+    {
+        $this->template->assign((array) $vars);
+        return $this;
     }
 
     /**
      * Assign a variable to a key by reference.
      *
-     * Unlike Smarty's "assign()" this function takes an
-     * additional value for $varName:
-     *
-     * You may use the wildcard '*' to merge an associative array
-     * with the template vars.
-     *
      * Example of usage:
-     * <code>$template->setVarByReference('*', array  $var) </code>
-     *
-     * {@internal
-     *
-     * The following synopsis:
-     * <code>$template->setVarByReference('*', string $var)</code>
-     * has been dropped as of version 2.9.2.
-     *
-     * }}
+     * <code>$template->setVarByReference('foo', array  $var) </code>
      *
      * @param   string  $varName  address
      * @param   mixed   &$var     some new value
-     * @return  bool
+     * @return  \Yana\Views\Template
      */
     public function setVarByReference($varName, &$var)
     {
         assert('is_string($varName); // Invalid argument $varName: string expected');
 
-        /* 1) assign to global namespace */
-        if ($varName === '*') {
+        $this->template->assignByRef($varName, $var);
+        return $this;
+    }
 
-            assert('is_array($var); // Invalid argument $var: array expected');
-
-            foreach (array_keys((array) $var) as $key)
-            {
-                $this->template->assignByRef($key, $var[$key]); // assign contents to global namespace
-            }
-
-        /* 2) assign to var identified by $varName */
-        } else {
-            $this->template->assignByRef($varName, $var);
+    /**
+     * Assign a new set of variables by reference.
+     *
+     * Example of usage:
+     * <code>$template->setVarByReference($array) </code>
+     *
+     * @param   string  $varName  address
+     * @param   mixed   &$var     some new value
+     * @return  \Yana\Views\Template
+     */
+    public function setVarsByReference(array &$vars)
+    {
+        foreach (array_keys((array) $vars) as $key)
+        {
+            $this->template->assignByRef($key, $vars[$key]); // assign contents to global namespace
         }
-        return true;
+        return $this;
     }
 
     /**
@@ -243,7 +218,7 @@ class Template extends \Yana\Core\Object implements \Yana\Views\IsTemplate
     }
 
     /**
-     * eturns a string with the path and name of the current template.
+     * Returns a string with the path and name of the current template.
      *
      * @return  string
      */

@@ -82,7 +82,7 @@ class FileDbIndex extends \Yana\Core\Object
     protected function getColumnValues($column)
     {
         assert('is_string($column); // Wrong argument type argument 1. String expected');
-        $indexes = $this->getValues();
+        $indexes = $this->getVars();
         if (isset($indexes[$column])) {
             return $indexes[$column];
         } else {
@@ -97,7 +97,7 @@ class FileDbIndex extends \Yana\Core\Object
      * @access  protected
      * @return  array
      */
-    protected function getValues()
+    protected function getVars()
     {
         if (!isset($this->_indexes)) {
             $this->rollback();
@@ -276,7 +276,7 @@ class FileDbIndex extends \Yana\Core\Object
      *
      * Handle this request as follows:
      * <code>
-     * $primaryKeys = $this->get('indexedRow','test');
+     * $primaryKeys = $this->getVar('indexedRow','test');
      * </code>
      * }}
      *
@@ -286,7 +286,7 @@ class FileDbIndex extends \Yana\Core\Object
      * @return  array
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the requested column or value does not exist
      */
-    public function get($column, $value = null)
+    public function getVar($column, $value = null)
     {
         assert('is_string($column); // Wrong argument type for argument 1. String expected.');
         assert('is_null($value) || is_scalar($value); // Wrong argument type for argument 2. Scalar expected.');
@@ -322,7 +322,7 @@ class FileDbIndex extends \Yana\Core\Object
      */
     public function commit()
     {
-        return file_put_contents($this->_filename, serialize($this->getValues())) !== false;
+        return file_put_contents($this->_filename, serialize($this->getVars())) !== false;
     }
 
     /**

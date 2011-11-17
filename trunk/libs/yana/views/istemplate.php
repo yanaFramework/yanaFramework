@@ -33,7 +33,7 @@ namespace Yana\Views;
  * @package     yana
  * @subpackage  views
  */
-interface IsTemplate
+interface IsTemplate extends \Yana\IsVarContainer
 {
 
     /**
@@ -46,63 +46,6 @@ interface IsTemplate
      * @return  string
      */
     public function fetch();
-
-    /**
-     * Get template var.
-     *
-     * There are two ways to call this function:
-     *
-     * If you call $template->getVar($varName) it will get the
-     * template var $varName and return it.
-     *
-     * If you call $template->getVar("*") with the wildcard '*'
-     * or an empty string '' it will return an associative array
-     * containing all template vars.
-     *
-     * @param   string  $key  variable-name
-     * @return  mixed
-     */
-    public function getVar($key = '*');
-
-    /**
-     * Assign a variable to a key by value.
-     *
-     * Unlike Smarty's "assign()" this function takes an
-     * additional value for $varName:
-     *
-     * You may use the wildcard '*' to merge an associative array with the template vars.
-     * Example of usage: <code>$template->setVar('*', array  $var) </code>
-     *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * {@internal
-     *
-     * The following synopsis: <code>$template->setVar('*', string $var)</code>
-     * has been dropped as of version 2.9.2.
-     *
-     * }}
-     *
-     * @param   string  $varName  address
-     * @param   mixed   $var      some new value
-     * @return  bool
-     */
-    public function setVar($varName, $var);
-
-    /**
-     * Assign a variable to a key by reference.
-     *
-     * Unlike Smarty's "assign()" this function takes an additional value for $varName:
-     *
-     * You may use the wildcard '*' to merge an associative array with the template vars.
-     *
-     * Example of usage:
-     * <code>$template->setVarByReference('*', array  $var) </code>
-     *
-     * @param   string  $varName  address
-     * @param   mixed   &$var     some new value
-     * @return  bool
-     */
-    public function setVarByReference($varName, &$var);
 
     /**
      * Set filename to fetch.

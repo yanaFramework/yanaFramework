@@ -591,7 +591,7 @@ class FileDbConnection extends \Yana\Core\Object
                          */
                         if ($column->isUnique() === true) {
                             assert('!isset($tmp); // Cannot redeclare var $tmp');
-                            $tmp = $idxfile->get($column, $set[$column]);
+                            $tmp = $idxfile->getVar($column, $set[$column]);
                             /*
                              * Error - unique constraint has already been breached by some
                              * previous operation.
@@ -721,7 +721,7 @@ class FileDbConnection extends \Yana\Core\Object
                          */
                         if ($column->isUnique() === true) {
                             assert('!isset($tmp); /* Cannot redeclare var $tmp */');
-                            $tmp = $idxfile->get($column, $set[$column]);
+                            $tmp = $idxfile->getVar($column, $set[$column]);
                             /*
                              * Error - unique constraint has already been breached by some
                              * previous operation.
@@ -1425,7 +1425,7 @@ class FileDbConnection extends \Yana\Core\Object
             return array();
         }
         $SMLA =& $this->_getSmlFile();
-        $cursorA = $SMLA->getByReference($pkA);
+        $cursorA = $SMLA->getVarByReference($pkA);
         if (is_null($cursorA)) {
             return array(); // table A has no entries -> resultset is empty
         }
@@ -1441,7 +1441,7 @@ class FileDbConnection extends \Yana\Core\Object
             return array();
         }
         $SMLB =& $this->_getSmlFile();
-        $cursorB = $SMLB->getByReference($pkB);
+        $cursorB = $SMLB->getVarByReference($pkB);
 
         /* notify me if results are not valid */
         assert('is_bool($aIsPk); // unexpected result $aIsPk must be a boolean');
@@ -1454,6 +1454,7 @@ class FileDbConnection extends \Yana\Core\Object
 
         /* this information is needed to optimize performance */
         $indexA =  null;
+        /* @var $indexB \FileDbIndex */
         $indexB =  null;
         if ($columnADef->hasIndex()) {
             $indexA =& $this->_idx[$this->_database][$this->_tableName];
@@ -1539,7 +1540,7 @@ class FileDbConnection extends \Yana\Core\Object
                 }
             /* case 2: $columnB has an index */
             } elseif (!is_null($indexB)) {
-                $keyA = $indexB->get($columnB, $keyA);
+                $keyA = $indexB->getVar($columnB, $keyA);
                 if (is_scalar($keyA) && isset($cursorB[$keyA])) {
                     $joinedValueExists = true;
                     $value             = array($cursorB[$keyA]);

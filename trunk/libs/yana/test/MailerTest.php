@@ -73,9 +73,10 @@ class MailerTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
-        $this->mailer = new Mailer(CWD . 'resources/mail.tpl');
-        $this->mailer->setSender('qwerty@domain.tld');
-        $this->mailer->setSubject('unit test');
+        $this->mailer = new Mailer(new \Yana\Views\NullTemplate());
+        $this->mailer->setPath(CWD . 'resources/mail.tpl')
+            ->setSender('qwerty@domain.tld')
+            ->setSubject('unit test');
         $this->backupMailHandler = Mailer::getGlobalMailHandler();
         Mailer::setGlobalMailHandler(array($this, 'sendMail'));
     }

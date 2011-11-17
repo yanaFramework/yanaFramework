@@ -41,21 +41,18 @@ if (!defined('CASE_MIXED')) {
  * are as easy to read and understand, but they stick with XML-style markup,
  * which is widely used and understood by most people.
  *
- * @access      public
  * @package     yana
  * @subpackage  file_system
  * @since       2.8.5
  * @name        SML
  */
-class SML extends File
+class SML extends File implements \Yana\IsVarContainer
 {
 
     /**
      * is file already loaded
      *
-     * @access  private
-     * @var     bool
-     * @ignore
+     * @var  bool
      */
     private $_isReady = false;
 
@@ -66,8 +63,7 @@ class SML extends File
      * CASE_UPPER = convert to upper case
      * CASE_LOWER = convert to lower case
      *
-     * @access  protected
-     * @var     int
+     * @var  int
      * @ignore
      */
     protected $caseSensitive = CASE_MIXED;
@@ -77,8 +73,7 @@ class SML extends File
      *
      * To simulate virtual static references.
      *
-     * @access  protected
-     * @var     SML
+     * @var  SML
      * @ignore
      */
     protected $decoder = null;
@@ -89,7 +84,6 @@ class SML extends File
      * Note: The type returned depends on the resource.
      * The default is a string, containing the file's contents as a text.
      *
-     * @access  public
      * @return  mixed
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      */
@@ -121,7 +115,6 @@ class SML extends File
      *     <li>  CASE_MIXED  leave keys in mixed case  </li>
      * </ul>
      *
-     * @access  public
      * @param   string  $filename         filename
      * @param   int     $caseSensitive    one of: CASE_MIXED, CASE_LOWER, CASE_UPPER
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when argument $caseSensitive is invalid
@@ -150,83 +143,33 @@ class SML extends File
     }
 
     /**
-     * Alias of SML->getVar(string $key)
-     *
      * Get a value from the file.
      *
-     * @access  public
-     * @param   string  $key  address of the var to get (use wildcard '*' to get all)
-     * @return  mixed
-     * @deprec  since 3.5
-     *
-     * @name    SML::get()
-     * @see     SML::getVar()
-     */
-    public function get($key = "*")
-    {
-        assert('is_string($key); /* Wrong argument type for argument 1. String expected. */');
-        return $this->getByReference($key);
-    }
-
-    /**
-     * Alias of SML->getVarByReference(string $key)
-     *
      * Returns the value at the position specified by $key.
-     * The value is returned by reference.
-     *
-     * @access  public
-     * @param   string  $key  address of the var to get (use wildcard '*' to get all)
-     * @return  mixed
-     * @deprec  since 3.5
-     *
-     * @name    SML::getByReference()
-     * @see     SML::getVarByReference()
-     * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
-     * @ignore
-     */
-    public function &getByReference($key = "*")
-    {
-        assert('is_string($key); /* Wrong argument type for argument 1. String expected. */');
-
-        $key = $this->_convertKey($key);
-
-        /* auto-load */
-        try {
-            $this->read();
-        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-            return $this->content;
-        }
-
-        /* return result */
-        if ($key === "*") {
-            return $this->content;
-        } else {
-            $result =& \Yana\Util\Hashtable::get($this->content, $key);
-            return $result;
-        }
-    }
-
-    /**
-     * get a value from the file
-     *
-     * Returns the value at the position specified by $key.
-     * If key is the character '*' or empty, than the whole
-     * document is returned.
      *
      * Example: use "foo1.foo2" to get the contents of the "foo2"
      * child tag inside the "foo1" root tag.
      * Or, more technical speaking, to get the "foo2" element
      * of the "foo1" array.
      *
-     * @access  public
-     * @param   string  $key  address of the var to get (use wildcard '*' to get all)
+     * @param   string  $key  address of the var to get
      * @return  mixed
      * @name    SML::getVar()
      * @since   2.9.4
      */
-    public function getVar($key = "*")
+    public function getVar($key)
     {
-        return $this->getByReference($key);
+        return $this->getVarByReference($key);
+    }
+
+    /**
+     * Returns all contained vars.
+     *
+     * @return  array
+     */
+    public function getVars()
+    {
+        return $this->getVarsByReference();
     }
 
     /**
@@ -235,7 +178,6 @@ class SML extends File
      * Returns the value at the position specified by $key.
      * The value is returned by reference.
      *
-     * @access  public
      * @param   string  $key  address of the var to get (use wildcard '*' to get all)
      * @return  mixed
      * @name    SML::getVarByReference()
@@ -243,7 +185,35 @@ class SML extends File
      */
     public function &getVarByReference($key = "*")
     {
-        return $this->getByReference($key);
+        assert('is_string($key); /* Wrong argument type for argument 1. String expected. */');
+
+        $key = $this->_convertKey($key);
+
+        $content =& $this->getVarsByReference();
+
+        /* return result */
+        if ($key === "*") {
+            return $content;
+        } else {
+            $result =& \Yana\Util\Hashtable::get($content, $key);
+            return $result;
+        }
+    }
+
+    /**
+     * Get a reference to all entries of the file.
+     *
+     * @return  array
+     */
+    public function &getVarsByReference()
+    {
+        /* auto-load */
+        try {
+            $this->read();
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
+            // ignored
+        }
+        return $this->content;
     }
 
     /**
@@ -252,7 +222,6 @@ class SML extends File
      * This function sets a new value at the address provided in $key to $value.
      * If the key already exists, it's value gets updated.
      *
-     * @access  public
      * @param   string  $key    adress of old data
      * @param   mixed   $value  new data
      * @name    SML::setVar()
@@ -273,7 +242,6 @@ class SML extends File
      *
      * Create or update new key / value pair by reference.
      *
-     * @access  public
      * @param   string  $key     adress of old data
      * @param   mixed   &$value  new data
      * @return  bool
@@ -298,24 +266,19 @@ class SML extends File
     }
 
     /**
-     * set the content of the file
+     * Replaces all content of the file with the provided array.
      *
-     * Replaces the file content with the provided array.
-     *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * @access  public
      * @param   array  $array  new file content
-     * @return  bool
+     * @return  \SML
      *
      * @name    SML::set()
      */
-    public function set(array $array)
+    public function setVars(array $array)
     {
         $this->_setKeyCase($array);
         $this->content = $array;
         $this->_isReady = true;
-        return true;
+        return $this;
     }
 
     /**
@@ -325,8 +288,6 @@ class SML extends File
      * explicitely call $configFile->write().
      * So if you want or need to revert your changes just call
      * $configFile->reset() and all will be fine.
-     *
-     * @access  public
      *
      * @name    SML::reset()
      */
@@ -340,7 +301,6 @@ class SML extends File
      *
      * If the file is empty, does not exist or is not readable, an empty string is returned.
      *
-     * @access  public
      * @return  string
      */
     public function __toString()
@@ -358,7 +318,6 @@ class SML extends File
      * You should always call this before anything else.
      * Returns the file content on success and bool(false) on error.
      *
-     * @access  public
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
      *
@@ -385,7 +344,6 @@ class SML extends File
      * $key. If $key points to a non-existing value,
      * or an empty array, the function returns 0.
      *
-     * @access  public
      * @param   string  $key  (optional)
      * @return  int
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
@@ -434,7 +392,6 @@ class SML extends File
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   string  $key  (optional)
      * @return  bool
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
@@ -482,7 +439,6 @@ class SML extends File
      *   <li>  returns bool(false) otherwise.  </li>
      * </ul>
      *
-     * @access  public
      * @param   string $key (optional)
      * @return  bool
      *
@@ -517,8 +473,6 @@ class SML extends File
      *     <li>  CASE_MIXED  leave keys in mixed case  </li>
      * </ul>
      *
-     * @access  public
-     * @static
      * @name    SML::getFile()
      * @param   array|string  $input          filename or file content
      * @param   int           $caseSensitive  CASE_UPPER|CASE_LOWER|CASE_MIXED
@@ -676,8 +630,6 @@ class SML extends File
      *     <li>  CASE_MIXED  leave keys in mixed case  </li>
      * </ul>
      *
-     * @access  public
-     * @static
      * @name    SML::encode()
      * @param   scalar|array|object  $data           data to encode
      * @param   string               $name           name of root-tag
@@ -843,8 +795,6 @@ class SML extends File
      * The obvious advantage of doing so is: you can rely on the writing of keys with no need to care
      * for case-sensitivity.
      *
-     * @access  public
-     * @static
      * @name    SML::decode()
      * @param   string    $input            input
      * @param   int       $caseSensitive    caseSensitive
@@ -865,10 +815,8 @@ class SML extends File
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  private
      * @param   string  $key  the input argument to be checked
      * @return  bool
-     * @ignore
      */
     private function _convertKey($key)
     {
@@ -902,9 +850,7 @@ class SML extends File
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  private
-     * @param   array   &$array  the input argument to be checked
-     * @ignore
+     * @param  array  &$array  the input argument to be checked
      */
     private function _setKeyCase(array &$array)
     {
@@ -924,9 +870,8 @@ class SML extends File
     }
 
     /**
-     * return file contents as string
+     * Return file contents as string.
      *
-     * @access  public
      * @return  string
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      */
@@ -948,6 +893,11 @@ class SML extends File
         }
     }
 
+    public function setVarsByReference(array &$value)
+    {
+        
+    }
+
     /**
      * Proxy for static function _decode
      *
@@ -955,9 +905,8 @@ class SML extends File
      * It is meant to simulate the behavior of virtual static
      * references.
      *
-     * @access  protected
-     * @param   string    $input            input
-     * @param   int       $caseSensitive    caseSensitive
+     * @param   string  $input          input
+     * @param   int     $caseSensitive  caseSensitive
      * @return  array
      * @ignore
      */
@@ -973,7 +922,6 @@ class SML extends File
      * It is meant to simulate the behavior of virtual static
      * references.
      *
-     * @access  protected
      * @param   scalar|array|object  $data           data to encode
      * @param   string               $name           name of root-tag
      * @param   int                  $caseSensitive  one of: CASE_UPPER, CASE_LOWER, CASE_MIXED
@@ -992,7 +940,6 @@ class SML extends File
      * It is meant to simulate the behavior of virtual static
      * references.
      *
-     * @access  protected
      * @param   array|string  $input          filename or file content
      * @param   int           $caseSensitive  CASE_UPPER|CASE_LOWER|CASE_MIXED
      * @return  array

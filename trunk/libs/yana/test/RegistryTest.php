@@ -90,7 +90,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetVar()
     {
-       $var = $this->registry->getVar();
+       $var = $this->registry->getVars();
        $this->assertType('array', $var, 'assert failed, the value should be of type array');
     }
 
@@ -104,6 +104,17 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
         // check only if the element is set
         $this->registry->setVar('RULES', 'skin/rules/');
         $this->assertEquals('skin/rules/', $this->registry->getVar('RULES'));
+    }
+
+    /**
+     * sets var on registry
+     *
+     * @test
+     */
+    public function testSetVars()
+    {
+        // check only if the element is set
+        $this->assertEquals('skin/rules/', $this->registry->setVars(array('RULES' => 'skin/rules/'))->getVar('RULES'));
     }
 
     /**
@@ -129,7 +140,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
     public function test()
     {
         // get all elements of the registry path
-        $getAll = $this->registry->getVar();
+        $getAll = $this->registry->getVars();
         $this->assertType('array', $getAll, 'assert failed, the value is not of type array');
         $this->assertNotEquals(0, count($getAll), 'assert failed , the array can not be empty');
 
@@ -180,9 +191,8 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(in_array('bar/', $getVar), 'assert failed, expected the "bar/" value in given array');
 
         // unset the NEW_YANA value
-        $unset = $this->registry->unsetVar($key);
-        $this->assertTrue($unset, 'assert failed, unset var "NEW_YANA" has failed');
-        $this->assertArrayNotHasKey('NEW_YANA', $this->registry->getVar(), 'assert failed, the "NEW_YANA" value does not exist');
+        $this->registry->unsetVar($key);
+        $this->assertArrayNotHasKey('NEW_YANA', $this->registry->getVars(), 'assert failed, the "NEW_YANA" value does not exist');
 
         //check if the unseted key still exist
         $getVar = $this->registry->getVar($key);
@@ -198,8 +208,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
     {
         // set a new key and value of type integer
         $this->registry->setVar('bar', '150');
-        $setType = $this->registry->setType('bar', 'integer');
-        $this->assertTrue($setType, 'assert failed, the variable type is not set');
+        $this->registry->setType('bar', 'integer');
         $getVarRef = $this->registry->getVarByReference('bar');
         $this->assertEquals(150, $getVarRef, 'assert failed, the given value should be an integer "150"');
 
@@ -210,10 +219,9 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->registry, $getInstance, 'assert failed, sdfsd');
 
         // unset all
-        $unset = $this->registry->unsetVar('*');
-        $this->assertTrue($unset, 'assert failed, unset has failed');
+        $this->registry->unsetVars();
         // check if all entries all removed
-        $get = $this->registry->getVar();
+        $get = $this->registry->getVars();
         $this->assertEquals(0, count($get), 'assert failed, expected an empty array');
 
         // set a new key
