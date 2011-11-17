@@ -363,7 +363,7 @@ class plugin_config extends StdClass implements IsPlugin
     {
         global $YANA;
         $configFile = $YANA->getResource('system:/config/profiledir/default_config.sml');
-        $REF = $configFile->getVar("*");
+        $REF = $configFile->getVars();
         $profileDir = $YANA->getResource("system:/config/profiledir");
         $profileDir = $profileDir->getPath();
         $newProfile = new SML("{$profileDir}{$id}.cfg", CASE_MIXED);
@@ -377,7 +377,7 @@ class plugin_config extends StdClass implements IsPlugin
             $error = new FileNotCreatedError();
             throw $error->setFilename($newProfile->getPath());
         }
-        if (!$newProfile->set($REF)) {
+        if (!$newProfile->setVars($REF)) {
             throw new Error();
         }
         if (!$newProfile->write()) {

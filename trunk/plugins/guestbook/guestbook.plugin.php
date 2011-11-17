@@ -714,7 +714,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
             $now = getdate();
             $mail->setSubject($YANA->getLanguage()->getVar("MAIL_SUBJECT"));
             $mail->setSender($sender);
-            $mail->setVar('*', $INPUT);
+            $mail->setVars($INPUT);
             $mail->setVar('DATE', $now['mday'] . '.' . $now['mon'] . '.' . $now['year']);
             $mail->send($recipient);
         }
