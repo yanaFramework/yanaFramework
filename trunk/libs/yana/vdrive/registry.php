@@ -48,27 +48,23 @@ namespace Yana\VDrive;
  * The wildcard '*' may be used to refer to the array
  * as a whole.
  *
- * @access     public
  * @package    yana
  * @subpackage vdrive
  */
-class Registry extends VDrive
+class Registry extends \Yana\VDrive\VDrive implements \Yana\IsVarContainer
 {
 
     /**
      * An index of references to improve performance when accessing values
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $cache = array();
 
     /**
      * This is a place-holder for the singleton's instance
      *
-     * @access  private
-     * @static
-     * @var     Registry
+     * @var  \Yana\VDrive\Registry
      */
     private static $instance = null;
 
@@ -91,7 +87,6 @@ class Registry extends VDrive
      * But be adviced: you should always do this BEFORE creating the object,
      * or otherwise it will have no effect.
      *
-     * @access  public
      * @ignore
      */
     public function setAsGlobal()
@@ -119,9 +114,7 @@ class Registry extends VDrive
      * $myRegistry = Registry::getGlobalInstance();
      * </code>
      *
-     * @access  public
-     * @static
-     * @return  Registry
+     * @return  \Yana\VDrive\Registry
      */
     public static function &getGlobalInstance()
     {
@@ -129,29 +122,20 @@ class Registry extends VDrive
     }
 
     /**
-     * retrieves var from registry
+     * Retrieve a var from registry.
      *
      * This returns the var identified by $key.
      * Returns bool(false) on error.
      *
-     * @access  public
      * @param   string  $key  (optional)
      * @return  mixed
      */
-    public function getVar($key = "*")
+    public function getVar($key)
     {
         assert('is_string($key); // Wrong type for argument 1. String expected');
         assert('is_array($this->vars); // Unexpected type for instance property "vars". Array expected');
-        /*
-         * 1) return whole registry
-         */
-        if (empty($key) || $key === "*") {
-            return $this->vars;
 
-        /*
-         * 2) return value from index
-         */
-        } elseif (isset($this->vars[$key])) {
+        if (isset($this->vars[$key])) {
             return $this->vars[$key];
 
         } elseif (isset($this->cache[$key])) {
@@ -161,10 +145,7 @@ class Registry extends VDrive
                 return $this->cache[$key];
             }
 
-        /*
-         * 3) return value specified by key
-         */
-        } else {
+        } else { // return value specified by key
             
             $this->cache[$key] =& \Yana\Util\Hashtable::get($this->vars, $key);
             if (is_null($this->cache[$key])) {
@@ -172,9 +153,18 @@ class Registry extends VDrive
             } else {
                 return $this->cache[$key];
             }
-        } // end if
+        }
+    }
 
-    } /* end getVar */
+    /**
+     * Retrieves all vars from registry.
+     *
+     * @return  array
+     */
+    public function getVars()
+    {
+        return $this->vars;
+    }
 
     /**
      * retrieves var from registry and returns it by reference
@@ -187,34 +177,27 @@ class Registry extends VDrive
      * To check for an error use: is_null($result).
      * To check for bool(false) use: $result === false.
      *
-     * @access  public
      * @param   string  $key  (optional)
      * @return  mixed
      * @since   2.9.5
      */
-    public function &getVarByReference($key = "*")
+    public function &getVarByReference($key)
     {
-        /*
-         * 1) return all
-         */
-        if (empty($key) || $key === "*") {
-            return $this->vars;
-
-        /*
-         * 2) return value from index
-         */
-        } elseif (isset($this->cache[$key])) {
-            return $this->cache[$key];
-
-        /*
-         * 3) return value by key
-         */
-        } else {
-            /* returns NULL on error */
-            $this->cache[$key] =& \Yana\Util\Hashtable::get($this->vars, $key);
-            return $this->cache[$key];
-
+        // return value from index
+        if (!isset($this->cache[$key])) {
+            $this->cache[$key] =& \Yana\Util\Hashtable::get($this->vars, $key); // returns NULL on error
         }
+        return $this->cache[$key];
+    }
+
+    /**
+     * Retrieves all vars from registry and returns them by reference.
+     *
+     * @return  array
+     */
+    public function &getVarsByReference()
+    {
+        return $this->vars;
     }
 
     /**
@@ -225,16 +208,9 @@ class Registry extends VDrive
      * If the value does not exist it gets inserted.
      * If a previous value existed the value gets updated.
      *
-     * This function returns bool(false) if $key = '*'
-     * and $value is not an array - which is: trying
-     * overwrite the complete registry with a non-array value.
-     * It returns bool(true) otherwise.
-     *
-     * @access  public
      * @param   string  $key        key of updated element
      * @param   mixed   &$value     new value
-     * @return  bool
-     * @since   2.8.5
+     * @return  \Yana\VDrive\Registry
      */
     public function setVarByReference($key, &$value)
     {
@@ -244,34 +220,54 @@ class Registry extends VDrive
 
         if (isset($this->vars[$key])) {
             $this->vars[$key] =& $value;
-            return true;
+            return $this;
         }
 
         \Yana\Util\Hashtable::setByReference($this->vars, $key, $value);
         $this->cache[$key] =& $value;
+        return $this;
     }
 
     /**
-     * sets var on registry
+     * Replace all vars on registry.
+     *
+     * @param   array  &$value  new set of values
+     * @return  \Yana\VDrive\Registry
+     */
+    public function setVarsByReference(array &$value)
+    {
+        $this->vars =& $value;
+        return $this;
+    }
+
+    /**
+     * Sets var on registry.
      *
      * Sets the element identified by $key  to $value.
      * If the value does not exist it gets inserted.
      * If a previous value existed the value gets updated.
      *
-     * This function returns bool(false) if $key = '*'
-     * and $value is not an array - which is: trying to
-     * overwrite the complete registry with a non-array value.
-     * It returns bool(true) otherwise.
-     *
-     * @access  public
      * @param   string  $key        key of updated element
      * @param   mixed   $value      new value
-     * @return  bool
+     * @return  \Yana\VDrive\Registry
      */
     public function setVar($key, $value)
     {
         assert('is_string($key); // Wrong argument type for argument 1. String expected');
-        return $this->setVarByReference($key, $value);
+        $this->setVarByReference($key, $value);
+        return $this;
+    }
+
+    /**
+     * Replace all vars in the registry.
+     *
+     * @param   array  $value  new set of values
+     * @return  \Yana\VDrive\Registry
+     */
+    public function setVars(array $value)
+    {
+        $this->setVarsByReference($value);
+        return $this;
     }
 
     /**
@@ -280,10 +276,10 @@ class Registry extends VDrive
      * If $overwrite is set to false, then the values of keys that already exist are ignored.
      * Otherwise these values get updated to the new ones.
      *
-     * @access  public
      * @param   string  $key        key of updated element
      * @param   array   $array      new value
      * @param   bool    $overwrite  true = update, false = ignore
+     * @return  \Yana\VDrive\Registry
      */
     public function mergeVars($key, array $array, $overwrite = true)
     {
@@ -312,6 +308,18 @@ class Registry extends VDrive
             }
 
         } // end if
+        return  $this;
+    }
+
+    /**
+     * Removes all vars from registry.
+     *
+     * @return  \Yana\VDrive\Registry
+     */
+    public function unsetVars()
+    {
+        $this->vars = array();
+        return $this;
     }
 
     /**
@@ -322,25 +330,19 @@ class Registry extends VDrive
      * does not exist or the key is invalid.
      * Returns bool(true) otherwise.
      *
-     * @access  public
-     * @param   string  $key    key of element for delete
-     * @return  bool
+     * @param   string  $key  key of element for delete
+     * @return  \Yana\VDrive\Registry
      */
     public function unsetVar($key)
     {
         assert('is_string($key);   // wrong argument type for argument 1, string expected');
         $key = (string) $key;
 
-        if ($key == "" || $key == "*") {
-            $this->vars = array();
-            return true;
-        } else {
-            if (isset($this->cache[$key])) {
-                unset($this->cache[$key]);
-            }
-            return \Yana\Util\Hashtable::remove($this->vars, $key);
+        if (isset($this->cache[$key])) {
+            unset($this->cache[$key]);
         }
-
+        \Yana\Util\Hashtable::remove($this->vars, $key);
+        return $this;
     }
 
     /**
@@ -349,16 +351,16 @@ class Registry extends VDrive
      * Returns bool(false) if the element is NULL or does not exist,
      * or the $type parameter is invalid. Returns bool(true) otherwise.
      *
-     * @access  public
-     * @param   string  $key    key
-     * @param   string  $type   type
-     * @return  bool
+     * @param   string  $key   target index
+     * @param   string  $type  name of scalar data type
+     * @return  \Yana\VDrive\Registry
      */
     public function setType($key, $type)
     {
         assert('is_string($key);   // wrong argument type for argument 1, string expected');
         assert('is_string($type);  // wrong argument type for argument 2, string expected');
-        return \Yana\Util\Hashtable::setType($this->vars, "$key", "$type");
+        \Yana\Util\Hashtable::setType($this->vars, "$key", "$type");
+        return $this;
     }
 
 }

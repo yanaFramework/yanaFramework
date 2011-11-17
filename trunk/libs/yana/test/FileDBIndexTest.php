@@ -28,7 +28,7 @@
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __DIR__ . '/include.php';
 
 /**
  * Test class for FileDbIndex
@@ -138,7 +138,7 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->_object->commit(), 'no changes are written in the target file');
         $this->_object->rollback();
 
-        $get = $this->_object->get('FVALUE');
+        $get = $this->_object->getVar('FVALUE');
         $this->assertType('array', $get, 'the value is not of type array');
         $this->assertArrayHasKey('FVALUE', $get, 'index is missing key after create');
         $this->assertEquals('FOO', $get['FVALUE'], 'index is missing value after create');
@@ -152,8 +152,8 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
     public function testCreateForColumnWithoutIndex()
     {
         $this->assertTrue($this->_object->create('FNUMBER'));
-        $this->assertEquals(array(1 => 1, 3 => 2, 6 => 3), $this->_object->get('FNUMBER'));
-        $this->assertEquals(2, $this->_object->get('FNUMBER', 3));
+        $this->assertEquals(array(1 => 1, 3 => 2, 6 => 3), $this->_object->getVar('FNUMBER'));
+        $this->assertEquals(2, $this->_object->getVar('FNUMBER', 3));
     }
 
     /**
@@ -174,7 +174,7 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
      */
     public function testGetNotFoundException()
     {
-        $this->_object->get('non-existing-column');
+        $this->_object->getVar('non-existing-column');
     }
 
     /**
@@ -184,7 +184,7 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
      */
     public function testGet()
     {
-        $get = $this->_object->get('FVALUE', 44);
+        $get = $this->_object->getVar('FVALUE', 44);
         $this->assertEquals(2, (int) $get, 'expected primary key 2 where the expected FVALUE has the entry 44');
     }
 
@@ -196,8 +196,8 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
      */
     public function testGetForNonExistingValue()
     {
-        $this->assertEquals(array(12 => 3, 28 => 1, 44 => 2), $this->_object->get('FVALUE'));
-        $this->_object->get('FVALUE', -1);
+        $this->assertEquals(array(12 => 3, 28 => 1, 44 => 2), $this->_object->getVar('FVALUE'));
+        $this->_object->getVar('FVALUE', -1);
     }
 
     /**
@@ -208,7 +208,7 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
      */
     public function testGetForNonExistingIndex()
     {
-        $this->_object->get('FNUMBER');
+        $this->_object->getVar('FNUMBER');
     }
 
     /**
@@ -217,7 +217,7 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
      */
     public function testGetValueNotFoundException()
     {
-        $get = $this->_object->get('FVALUE', 325);
+        $get = $this->_object->getVar('FVALUE', 325);
     }
 
     /**
@@ -226,7 +226,7 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
      */
     public function testGetIndexNotFoundException()
     {
-        $get = $this->_object->get('FVALUES', 325);
+        $get = $this->_object->getVar('FVALUES', 325);
     }
 
 }

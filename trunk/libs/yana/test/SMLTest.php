@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PHPUnit test-case: SML
  *
@@ -24,11 +25,10 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
-
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __DIR__ . '/include.php';
 
 /**
  *  SML test-case
@@ -37,6 +37,7 @@ require_once dirname(__FILE__) . '/include.php';
  */
 class SMLTest extends PHPUnit_Framework_TestCase
 {
+
     /**
      * SML instance to test
      *
@@ -73,18 +74,6 @@ class SMLTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * get
-     *
-     * @test
-     * @expectedException  PHPUnit_Framework_Error
-     */
-    public function testGetInvalidArgument()
-    {
-        // this is supposed to procude an E_USER_WARNING and return bool(false)
-        $this->instance->get(1);
-    }
-
-    /**
      * get var
      *
      * @test
@@ -97,28 +86,16 @@ class SMLTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * get by reference
-     *
-     * @test
-     */
-    public function testGetByReference()
-    {
-        // supposed to return the whole array by reference
-        $test = & $this->instance->getByReference ();
-        $this->assertType('array', $test, '"get by reference" test failed');
-    }
-
-    /**
      * get var by reference
      *
      * @test
      */
     public function testGetVarByReference()
     {
-        $test = $this->instance->getVarByReference ();
+        $test = $this->instance->getVarByReference();
         $this->assertType('array', $test, '"assert failed , value is not from type array');
 
-        $test = $this->instance->getVarByReference ('array');
+        $test = $this->instance->getVarByReference('array');
         $this->assertEquals(count($test), 2, 'assert failed , expected array with 2 values');
     }
 
@@ -129,14 +106,10 @@ class SMLTest extends PHPUnit_Framework_TestCase
      */
     public function testGetVar()
     {
-        $test = & $this->instance->getByReference ();
-        $test ['FOO'] = 'bar';
-        $test ['foo'] = 'error';
-        unset ( $test );
-
-        // result should be 'bar' (not 'error')
-        $test = $this->instance->get ( 'foo' );
-        $this->assertEquals($test, 'bar', '"set on reference" test failed.');
+        $test = & $this->instance->getVarsByReference();
+        $test['FOO'] = 'bar';
+        $test['foo'] = 'error';
+        unset($test);
 
         $test = $this->instance->getVar('foo');
         $this->assertEquals($test, 'bar', '"set on reference" test failed.');
@@ -149,14 +122,14 @@ class SMLTest extends PHPUnit_Framework_TestCase
      */
     public function testExistAfterReset()
     {
-        $test = & $this->instance->getByReference ();
-        $test ['FOO'] = 'bar';
-        $test ['foo'] = 'error';
-        unset ( $test );
+        $test = & $this->instance->getVarsByReference();
+        $test['FOO'] = 'bar';
+        $test['foo'] = 'error';
+        unset($test);
 
         // result should be false
-        $this->instance->reset ();
-        $test = $this->instance->exists ( 'foo' );
+        $this->instance->reset();
+        $test = $this->instance->exists('foo');
         $this->assertFalse($test, '"reset" test failed.');
     }
 
@@ -168,8 +141,8 @@ class SMLTest extends PHPUnit_Framework_TestCase
     public function testdecode()
     {
         // the following returns true
-        $input_bool = true;
-        $encoded = $this->instance->encode($input_bool, 'MY_VAR');
+        $inputBool = true;
+        $encoded = $this->instance->encode($inputBool, 'MY_VAR');
         $decode = $this->instance->decode($encoded);
         $this->assertEquals($encoded, $decode['MY_VAR'], 'assert failed, the two variables are equal');
     }
@@ -193,7 +166,7 @@ class SMLTest extends PHPUnit_Framework_TestCase
      */
     public function testGetFileContent()
     {
-        $set = $this->instance->set ( array ('fo' => 'bar', 'FOO' => 'FOO', 'TEST' => 'description'));
+        $this->instance->setVars(array('fo' => 'bar', 'FOO' => 'FOO', 'TEST' => 'description'));
         $valid = mb_strlen((string) $this->instance);
         $getFileContent = $this->instance->getFileContent();
         $this->assertType('string', $getFileContent, 'assert failed, value is not from type string');
@@ -207,16 +180,16 @@ class SMLTest extends PHPUnit_Framework_TestCase
      */
     public function testLength()
     {
-        $this->instance->reset ();
-        $this->instance->set ( array ('foo' => 'bar' ) );
-        $test = $this->instance->length ();
+        $this->instance->reset();
+        $this->instance->setVars(array('foo' => 'bar'));
+        $test = $this->instance->length();
 
         // result should be 1
         $this->assertEquals($test, 1, '"length" test failed.');
 
         $this->instance->reset();
         $lenght = $this->instance->length('foo');
-        $this->assertEquals($lenght, 0 , 'assert failed , the content is empty');
+        $this->assertEquals($lenght, 0, 'assert failed , the content is empty');
     }
 
     /**
@@ -226,17 +199,17 @@ class SMLTest extends PHPUnit_Framework_TestCase
      */
     public function testremove()
     {
-        $get = $this->instance->getVar();
+        $get = $this->instance->getVars();
         $remove = $this->instance->remove();
         $this->assertTrue($remove, 'assert failed, content removed failed');
-        $valid = $this->instance->getVar();
+        $valid = $this->instance->getVars();
         $this->assertNotEquals($remove, $valid, 'assert failed, the 2 variables are not equal - remove funcion failed');
 
-        $set = $this->instance->set ( array ('fo' => 'bar', 'FOO' => 'FOO', 'TEST' => 'description'));
-        $get = $this->instance->getVar();
+        $set = $this->instance->setVars(array('fo' => 'bar', 'FOO' => 'FOO', 'TEST' => 'description'));
+        $get = $this->instance->getVars();
         $remove = $this->instance->remove('FOO');
         $this->assertTrue($remove, 'assert failed, removed entry by "key" failed');
-        $valid = $this->instance->getVar();
+        $valid = $this->instance->getVars();
         $this->assertNotEquals($get, $valid, 'assert failed, the two variables are not equal - removed entry by "key" failed');
     }
 
@@ -262,8 +235,8 @@ class SMLTest extends PHPUnit_Framework_TestCase
         $test[1] = 2;
         $get = $this->instance->getVar('FOO');
         $this->assertEquals($get, $test, 'assert failed, value is not set');
-        
-        $modified = array('foo'=>'yana');
+
+        $modified = array('foo' => 'yana');
         $this->instance->setVarByReference('FOO', $modified);
         $other = $this->instance->getVar('foo');
         $this->assertNotEquals($other, $get, 'assert failed, value is not set');
@@ -291,13 +264,13 @@ class SMLTest extends PHPUnit_Framework_TestCase
      *  @test
      */
     public function test1()
-    {  
-        $sml  = new SML(CWD . 'resources/test.sml', CASE_UPPER);
+    {
+        $sml = new SML(CWD . 'resources/test.sml', CASE_UPPER);
 
         // supposed to return the whole array by reference
-        $test =& $sml->getByReference();
+        $test = & $sml->getVarByReference();
         $this->assertType('array', $test, 'assert failed, get by reference" test failed');
-        
+
         $test['FOO'] = 'bar';
         $test['foo'] = 'error';
         unset($test);
@@ -314,12 +287,14 @@ class SMLTest extends PHPUnit_Framework_TestCase
         $sml->reset();
         $test = $sml->exists('foo');
         $this->assertFalse($test, 'assert failed, "reset" test failed.');
-        
-        $sml->set(array('foo' => 'bar'));
+
+        $sml->setVars(array('foo' => 'bar'));
         $test = $sml->length();
 
         // result should be 1
         $this->assertEquals($test, 1, 'assert faield, "length" test failed.');
     }
+
 }
+
 ?>

@@ -245,10 +245,10 @@ class VDrive extends \Yana\File\AbstractResource implements \Yana\Report\IsRepor
         $file = $this->files["$name"] = $this->drive["$name"]->getMountpoint();
 
         /* if it is a SML file, load the configuration */
-        if ($file instanceOf \SML && $file->exists()) {
-            /* @var $file SML */
+        if ($file instanceOf \Yana\IsVarContainer && $file->exists()) {
             assert('!isset($array); // Cannot redeclare var $array');
-            $array =& $file->getByReference();
+            /* @var $file \Yana\IsVarContainer */
+            $array = $file->getVars();
             assert('is_null($array) || is_array($array); /* unexpected result: $array */');
             if (is_array($array)) {
                 $this->vars = \Yana\Util\Hashtable::merge($this->vars, $array);

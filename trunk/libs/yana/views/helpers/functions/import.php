@@ -64,6 +64,7 @@ class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
             if (!\Yana\Util\String::startsWith($filename, 'file:')) {
                 $filename = 'file:' . $filename;
             }
+            unset($params['file']);
 
         } elseif (isset($params['id'])) {
 
@@ -72,6 +73,7 @@ class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
             if (!\Yana\Util\String::startsWith($filename, 'id:')) {
                 $filename = 'id:' . $filename;
             }
+            unset($params['id']);
 
         } else {
             trigger_error("Missing argument. You need to provide either the argument 'file' or 'id'.", E_USER_WARNING);
@@ -80,9 +82,8 @@ class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
         }
 
         $document = $this->_getViewManager()->createContentTemplate($filename);
-        unset($params['file']);
         if (count($params) > 0) {
-            $document->setVarByReference('*', $params);
+            $document->setVarsByReference($params);
         }
         $document->setVar('FILE_IS_INCLUDE', true);
 

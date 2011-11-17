@@ -31,11 +31,11 @@
  * @package     yana
  * @subpackage  mail
  */
-class Mailer extends \Yana\Core\Object
+class Mailer extends \Yana\Core\Object implements \Yana\IsVarContainer, \Yana\Views\IsTemplate
 {
 
     /**
-     * @var \Yana\Views\Template
+     * @var \Yana\Views\IsTemplate
      */
     private $_template = null;
 
@@ -74,9 +74,9 @@ class Mailer extends \Yana\Core\Object
     /**
      * This sets up the content of the E-Mail from a template of your choice.
      *
-     * @param  \Yana\Views\Template  $template  E-Mail template
+     * @param  \Yana\Views\IsTemplate  $template  E-Mail template
      */
-    public function __construct(\Yana\Views\Template $template)
+    public function __construct(\Yana\Views\IsTemplate $template)
     {
         $this->_template = $template;
     }
@@ -99,6 +99,8 @@ class Mailer extends \Yana\Core\Object
      */
     public function setSubject($subject)
     {
+        assert('is_string($subject); // Invalid argument $subject: string expected');
+
         $this->_subject = $subject;
         return $this;
     }
@@ -125,6 +127,8 @@ class Mailer extends \Yana\Core\Object
      */
     public function setSender($sender)
     {
+        assert('is_string($sender); // Invalid argument $sender: string expected');
+
         $this->_sender = $sender;
         return $this;
     }
@@ -516,6 +520,123 @@ class Mailer extends \Yana\Core\Object
         } else {
             return (bool) call_user_func($mailHandler, $recipient, $subject, $text, $result_header);
         }
+    }
+
+    /**
+     * Get registered vars.
+     *
+     * @return  array
+     */
+    public function getVars()
+    {
+        return $this->_template->getVars();
+    }
+
+    /**
+     * Get registered var.
+     *
+     * @param   string  $key  variable-name
+     * @return  mixed
+     */
+    public function getVar($key)
+    {
+        assert('is_string($key); // Wrong argument type for argument 1. String expected.');
+
+        return $this->_template->getVar($key);
+    }
+
+    /**
+     * Assign a variable to a key by value.
+     *
+     * @param   string  $varName  address
+     * @param   mixed   $var      some new value
+     * @return  \Mailer
+     */
+    public function setVar($varName, $var)
+    {
+        assert('is_string($varName); // Wrong argument type for argument 1. String expected.');
+        $this->_template->setVar($varName, $var);
+        return $this;
+    }
+
+    /**
+     * Assign a new set of variables.
+     *
+     * This replaces all template vars with new ones.
+     *
+     * @param   array  $vars  associative array containg new set of template vars
+     * @return  \Mailer
+     */
+    public function setVars(array $vars)
+    {
+        $this->_template->setVars($vars);
+        return $this;
+    }
+
+    /**
+     * Assign a variable to a key by reference.
+     *
+     * Example of usage:
+     * <code>$template->setVarByReference('foo', array  $var) </code>
+     *
+     * @param   string  $varName  address
+     * @param   mixed   &$var     some new value
+     * @return  \Mailer
+     */
+    public function setVarByReference($varName, &$var)
+    {
+        assert('is_string($varName); // Invalid argument $varName: string expected');
+
+        $this->_template->setVarByReference($varName, $var);
+        return $this;
+    }
+
+    /**
+     * Assign a new set of variables by reference.
+     *
+     * Example of usage:
+     * <code>$template->setVarByReference($array) </code>
+     *
+     * @param   string  $varName  address
+     * @param   mixed   &$var     some new value
+     * @return  \Mailer
+     */
+    public function setVarsByReference(array &$vars)
+    {
+        $this->_template->setVarsByReference($vars);
+        return $this;
+    }
+
+    /**
+     * Returns path to mail template.
+     *
+     * @return  string
+     */
+    public function getPath()
+    {
+        return $this->_template->getPath();
+    }
+
+    /**
+     * Set path to mail template.
+     *
+     * @param   string  $filename  path to mail template
+     * @return  Mailer
+     */
+    public function setPath($filename)
+    {
+        $this->_template->setPath($filename);
+        return $this;
+    }
+
+    /**
+     * Fetches the template and returns it as a string.
+     *
+     * @return  string
+     */
+    public function fetch()
+    {
+        return $this->_template->fetch();
     }
 
     /**

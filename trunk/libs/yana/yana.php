@@ -46,7 +46,8 @@
  * @package     yana
  * @subpackage  core
  */
-final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsReportable, \Yana\Log\IsLogable
+final class Yana extends \Yana\Core\AbstractSingleton
+    implements \Yana\Report\IsReportable, \Yana\Log\IsLogable, \Yana\IsVarContainer
 {
 
     /**
@@ -722,11 +723,22 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      * @see     Yana::setVarByReference()
      * @see     Yana::setVar()
      */
-    public function getVar($key = '*')
+    public function getVar($key)
     {
         assert('is_scalar($key); // Invalid argument $key: scalar expected');
         $registry = $this->getRegistry();
         return $registry->getVar("$key");
+    }
+
+    /**
+     * Returns all vars from the registry (memory shared by all plugins).
+     *
+     * @param   string  $key  adress of data in memory (case insensitive)
+     * @return  array
+     */
+    public function getVars()
+    {
+        return $this->getRegistry()->getVars();
     }
 
     /**
@@ -745,7 +757,7 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      *
      * @param   string  $key     adress of data in memory (case insensitive)
      * @param   mixed   &$value  new value (may be scalar value or array)
-     * @return  bool
+     * @return  \Yana
      * @name    Yana::setVarByReference()
      * @see     Yana::setVar()
      * @see     Yana::getVar()
@@ -753,7 +765,20 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
     public function setVarByReference($key, &$value)
     {
         assert('is_scalar($key); // Invalid argument $key: scalar expected');
-        return $this->getRegistry()->setVarByReference((string) $key, $value);
+        $this->getRegistry()->setVarByReference((string) $key, $value);
+        return $this;
+    }
+
+    /**
+     * Replace all vars in the global registry by reference.
+     *
+     * @param   array  &$values  new set of values
+     * @return  \Yana
+     */
+    public function setVarsByReference(array &$values)
+    {
+        $this->getRegistry()->setVarsByReference($values);
+        return $this;
     }
 
     /**
@@ -770,75 +795,27 @@ final class Yana extends \Yana\Core\AbstractSingleton implements \Yana\Report\Is
      *
      * @param   string  $key    adress of data in memory (case insensitive)
      * @param   mixed   $value  new value (may be scalar value or array)
-     * @return  bool
+     * @return  \Yana
      * @name    Yana::setVar()
      * @see     Yana::setVarByReference()
      * @see     Yana::getVar()
      */
     public function setVar($key, $value)
     {
-        return $this->setVarByReference($key, $value);
+        $this->getRegistry()->setVar($key, $value);
+        return $this;
     }
 
     /**
-     * sets the type of a var on registry (memory shared by all plugins)
+     * Replace all vars in the global registry.
      *
-     * @param   string  $key   adress of data in memory (case insensitive)
-     * @param   string  $type  new type of variable
-     * @return  bool
+     * @param   array  $value  set of new values
+     * @return  \Yana
      */
-    public function setType($key, $type)
+    public function setVars(array $value)
     {
-        assert('is_scalar($key); // Invalid argument $key: scalar expected');
-        assert('is_string($type); // Invalid argument $type: string expected');
-        return $this->getRegistry()->setType((string) $key, (string) $type);
-    }
-
-    /**
-     * Removes var from registry (memory shared by all plugins).
-     *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * Example:
-     * <code>
-     * // set foo.bar
-     * $YANA->setVar('foo.bar', 'Hello World');
-     * // remove foo.bar
-     * $YANA->unsetVar('foo.bar');
-     * // foo.bar now is false
-     * var_dump($YANA->getVar('foo.bar'));
-     * </code>
-     *
-     * @param   string  $key  adress of data in memory (case insensitive)
-     * @return  bool
-     */
-    public function unsetVar($key)
-    {
-        assert('is_scalar($key); // Invalid argument $key: scalar expected');
-        return $this->getRegistry()->unsetVar((string) $key);
-    }
-
-    /**
-     * Merges the array with the values at index $key.
-     *
-     * If a key already exists, it is replaced by the new data.
-     *
-     * Example:
-     * <code>
-     * $bar = array('foo' => 'bar');
-     * $YANA->mergeVars('FOO', $bar);
-     * // outputs 'bar'
-     * print $YANA->getVar('FOO.FOO');
-     * </code>
-     *
-     * @param   string  $key    adress of data in memory (case insensitive)
-     * @param   array   $array  associative array to merge
-     * @return  bool
-     */
-    public function mergeVars($key, array $array)
-    {
-        assert('is_scalar($key); // Invalid argument $key: scalar expected');
-        return $this->getRegistry()->mergeVars((string) $key, $array);
+        $this->getRegistry()->setVars($value);
+        return $this;
     }
 
     /**
