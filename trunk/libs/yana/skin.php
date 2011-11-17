@@ -30,11 +30,8 @@
 /**
  * <<Singleton>> Skin
  *
- * @access      public
  * @package     yana
  * @subpackage  core
- *
- * @ignore
  */
 class Skin implements \Yana\Report\IsReportable
 {
@@ -42,69 +39,72 @@ class Skin implements \Yana\Report\IsReportable
     /**
      * Name of currently selected main skin
      *
-     * @access  private
-     * @static
-     * @var     string
+     * @var  string
      */
     private static $_selectedSkin = "default";
 
     /**
      * List of existing instances
      *
-     * @access  private
-     * @static
-     * @var     array
+     * @var  array
      */
     private static $_instances = array();
 
     /**
      * a list of all skins installed
      *
-     * @access  private
-     * @static
-     * @var     array
+     * @var  array
      */
     private static $_skins;
 
     /**
      * file extension for language definition files
      *
-     * @access  private
-     * @static
-     * @var     string
+     * @var  string
      */
     private static $_fileExtension = ".skin.xml";
 
-    /**#@+
-     * @ignore
-     * @access  private
+    /**
+     * @var string
      */
+    private $_name = "default";
 
-    /** @var string */ private $_name = "default";
-    /** @var array  */ private $_value = array();
-    /** @var string */ private $_title = "";
-    /** @var string */ private $_author = "";
-    /** @var string */ private $_url = "";
-    /** @var array  */ private $_descriptions = array();
+    /**
+     * @var array
+     */
+    private $_value = array();
 
-    /**#@-*/
+    /**
+     * @var string
+     */
+    private $_title = "";
+
+    /**
+     * @var string
+     */
+    private $_author = "";
+
+    /**
+     * @var string
+     */
+    private $_url = "";
+
+    /**
+     * @var array
+     */
+    private $_descriptions = array();
 
     /**
      * file path cache
      *
-     * @access  private
-     * @static
-     * @var array
-     * @ignore
+     * @var  array
      */
     private static $_filePaths = array();
 
     /**
      * base directory
      *
-     * @access  private
-     * @static
-     * @var     string
+     * @var  string
      */
     private static $_baseDirectory = "";
 
@@ -115,8 +115,6 @@ class Skin implements \Yana\Report\IsReportable
      *
      * If no parameter is given the function will return the currently selected main skin instead.
      *
-     * @access  public
-     * @static
      * @param   string  $skinName  name of instance to get
      * @return  Skin
      */
@@ -132,13 +130,11 @@ class Skin implements \Yana\Report\IsReportable
     }
 
     /**
-     * Constructor
-     *
      * Creates a skin by name.
+     *
      * Sets the directory from where to read skin files.
      *
-     * @access  private
-     * @param   string  $skinName  current skin directory
+     * @param  string  $skinName  current skin directory
      */
     private function __construct($skinName)
     {
@@ -162,11 +158,7 @@ class Skin implements \Yana\Report\IsReportable
     }
 
     /**
-     * select as main skin
-     *
      * Selects the current instance as the main skin for the application.
-     *
-     * @access  public
      */
     public function selectMainSkin()
     {
@@ -176,10 +168,8 @@ class Skin implements \Yana\Report\IsReportable
     /**
      * is selected main skin
      *
-     * Returns bool(true) if the skin is the currently selected main skin
-     * and bool(false) otherwise.
+     * Returns bool(true) if the skin is the currently selected main skin and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isSelected()
@@ -192,9 +182,7 @@ class Skin implements \Yana\Report\IsReportable
      *
      * Set the base directory from where to read skin files.
      *
-     * @access  public
-     * @static
-     * @param   string $baseDirectory  base directory
+     * @param  string $baseDirectory  base directory
      *
      * @ignore
      */
@@ -220,7 +208,6 @@ class Skin implements \Yana\Report\IsReportable
      * So in a derived template the user may decide for himself what element to take and what to
      * drop.
      *
-     * @access  private
      * @param   string  $skinName  name of skin definition that should be loaded
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the skin definition file is not found
      * @ignore
@@ -309,7 +296,6 @@ class Skin implements \Yana\Report\IsReportable
      *
      * Note: This function does not check if the defined file actually does exist.
      *
-     * @access  public
      * @param   string  $key  template id
      * @return  string
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the given template id does not exist
@@ -338,7 +324,6 @@ class Skin implements \Yana\Report\IsReportable
      *
      * This function set the path to a template file for the given id.
      *
-     * @access  public
      * @param   string  $key       id of template file
      * @param   string  $filename  path and name of template file
      */
@@ -360,7 +345,6 @@ class Skin implements \Yana\Report\IsReportable
      * Returns bool(true) if a template named $key is currently registered
      * and bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $key    key
      * @return  bool
      */
@@ -379,7 +363,6 @@ class Skin implements \Yana\Report\IsReportable
     /**
      * get language
      *
-     * @access  public
      * @param   string  $key    key
      * @return  array
      */
@@ -408,7 +391,6 @@ class Skin implements \Yana\Report\IsReportable
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   string  $key    key
      * @param   string  $file   file
      * @param   string  $name   name
@@ -440,7 +422,6 @@ class Skin implements \Yana\Report\IsReportable
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   string  $key    key
      * @param   string  $file   file
      * @param   string  $name   name
@@ -474,7 +455,6 @@ class Skin implements \Yana\Report\IsReportable
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   string  $key    key
      * @param   string  $file   file
      * @param   string  $name   name
@@ -496,7 +476,6 @@ class Skin implements \Yana\Report\IsReportable
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  private
      * @param   string  $key            key
      * @param   string  $propertyName   property name
      * @param   string  $file           file
@@ -583,11 +562,8 @@ class Skin implements \Yana\Report\IsReportable
 
 
     /**
-     * get property
+     * Gets a property for a template $key.
      *
-     * This gets a property for a template $key.
-     *
-     * @access  private
      * @param   string  $key            key
      * @param   string  $propertyName   property name
      * @return  array
@@ -616,11 +592,8 @@ class Skin implements \Yana\Report\IsReportable
     }
 
     /**
-     * get style
-     *
      * Returns the definition of the identified stylesheet.
      *
-     * @access  public
      * @param   string  $key    key
      * @return  array
      */
@@ -633,7 +606,6 @@ class Skin implements \Yana\Report\IsReportable
     /**
      * get script
      *
-     * @access  public
      * @param   string  $key    key
      * @return  array
      */
@@ -648,8 +620,6 @@ class Skin implements \Yana\Report\IsReportable
      *
      * Returns an associative array with a list of ids and names for all installed skins.
      *
-     * @access  public
-     * @static
      * @return  array
      * @since   3.1.0
      */
@@ -684,7 +654,6 @@ class Skin implements \Yana\Report\IsReportable
      * Returns the name of the skin as a string.
      * The default is 'default'.
      *
-     * @access  public
      * @return  string
      */
     public function getName()
@@ -696,7 +665,6 @@ class Skin implements \Yana\Report\IsReportable
     /**
      * get path of skin's configuration file
      *
-     * @access  public
      * @return  string
      */
     public function getPath()
@@ -707,7 +675,6 @@ class Skin implements \Yana\Report\IsReportable
     /**
      * get this skin's directory path
      *
-     * @access  public
      * @return  string
      */
     public function getDirectory()
@@ -718,8 +685,6 @@ class Skin implements \Yana\Report\IsReportable
     /**
      * get a skin's directory path
      *
-     * @access  public
-     * @static
      * @param   string  $skinName  identifier for the skin
      * @return  string
      *
@@ -734,8 +699,6 @@ class Skin implements \Yana\Report\IsReportable
     /**
      * get name and path of skin's configuration file
      *
-     * @access  public
-     * @static
      * @param   string  $skinName  identifier for the skin
      * @return  string
      *
@@ -753,7 +716,6 @@ class Skin implements \Yana\Report\IsReportable
      * This returns the skin description as a translated string.
      * If no description is given, it returns an empty string.
      *
-     * @access  public
      * @return  string
      */
     public function getText()
@@ -776,7 +738,6 @@ class Skin implements \Yana\Report\IsReportable
     /**
      * get time when file was last modified
      *
-     * @access  public
      * @return  int
      */
     public function getLastModified()
@@ -785,11 +746,8 @@ class Skin implements \Yana\Report\IsReportable
     }
 
     /**
-     * get title
+     * Returns the skin title.
      *
-     * This returns the skin title.
-     *
-     * @access  public
      * @return  string
      */
     public function getTitle()
@@ -798,13 +756,11 @@ class Skin implements \Yana\Report\IsReportable
     }
 
     /**
-     * get URL
+     * Returns the skin URL.
      *
-     * This returns the skin URL.
      * The URL is meant to point to a website where the user may find additional
      * information about the auhtor or the skin itself.
      *
-     * @access  public
      * @return  string
      */
     public function getUrl()
@@ -813,12 +769,10 @@ class Skin implements \Yana\Report\IsReportable
     }
 
     /**
-     * get author
+     * Returns the name of the author(s) as a string.
      *
-     * This returns the name of the author(s) as a string.
      * If none are given, it returns an empty string.
      *
-     * @access  public
      * @return  string
      */
     public function getAuthor()
@@ -827,12 +781,10 @@ class Skin implements \Yana\Report\IsReportable
     }
 
     /**
-     * get path to preview image
+     * Returns the path to a preview image.
      *
-     * This returns the path to a preview image.
      * Note that this function does not check, whether the image does exist.
      *
-     * @access  public
      * @return  string
      */
     public function getPreviewImage()
@@ -863,7 +815,6 @@ class Skin implements \Yana\Report\IsReportable
      * </report>
      * </code>
      *
-     * @access  public
      * @param   \Yana\Report\IsReport  $report  base report
      * @return  \Yana\Report\IsReport
      * @name    Skin::getReport()
@@ -968,8 +919,6 @@ class Skin implements \Yana\Report\IsReportable
 
     /**
      * Reinitialize instance.
-     *
-     * @access  public
      */
     public function __wakeup()
     {
