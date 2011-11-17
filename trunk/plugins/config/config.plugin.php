@@ -77,7 +77,7 @@ class plugin_config extends StdClass implements IsPlugin
 
         // create options for select-boxes
         $YANA->setVar('LANGUAGEFILES', $YANA->getLanguage()->getLanguages());
-        $YANA->setVar('SKINFILES', Skin::getSkins());
+        $YANA->setVar('SKINFILES', \Yana\Views\Skin::getSkins());
         // create a list of profiles
         assert('!isset($profiles); // Cannot redeclare var $profiles');
         $profiles = array();
