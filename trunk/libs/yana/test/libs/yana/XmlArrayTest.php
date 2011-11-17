@@ -25,10 +25,12 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana;
+
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __Dir__ . '/../../include.php';
 
 
 /**
@@ -36,7 +38,7 @@ require_once dirname(__FILE__) . '/include.php';
  *
  * @package  test
  */
-class XmlArrayTest extends PHPUnit_Framework_TestCase
+class XmlArrayTest extends \PHPUnit_Framework_TestCase
 {
 
     /** @var  string */ protected $xmlfile = 'resources/test.db.xml';
@@ -80,7 +82,7 @@ class XmlArrayTest extends PHPUnit_Framework_TestCase
      */
     public function testToArray()
     {
-        $xml = simplexml_load_file(CWD . $this->xmlfile, 'XmlArray');
+        $xml = simplexml_load_file(CWD . $this->xmlfile, '\Yana\XmlArray');
         $array = $xml->toArray(true);
         $this->assertType('array', $array, 'assert failed, value is not from type array');
         $array = $xml->toArray(false);

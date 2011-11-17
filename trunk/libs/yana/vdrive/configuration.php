@@ -86,7 +86,7 @@ namespace Yana\VDrive;
  *
  * @ignore
  */
-class Configuration extends \XmlArray
+class Configuration extends \Yana\XmlArray
 {
     /**
      * <<factory>> load a file
