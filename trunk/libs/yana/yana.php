@@ -647,7 +647,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
                 assert('$this->_skin instanceof Skin;');
 
             } else {
-                $this->_skin = \Yana\Views\Skin::getInstance($this->getVar('PROFILE.SKIN'));
+                $this->_skin = new \Yana\Views\Skin($this->getVar('PROFILE.SKIN'));
                 $this->_skin->selectMainSkin();
 
                 if (YANA_CACHE_ACTIVE === true) {

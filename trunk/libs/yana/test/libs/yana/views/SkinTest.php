@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Views;
+
 /**
  * @ignore
  */
@@ -35,7 +37,7 @@ require_once dirname(__FILE__) . '/include.php';
  *
  * @package  test
  */
-class SkinTest extends PHPUnit_Framework_TestCase
+class SkinTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -62,12 +64,12 @@ class SkinTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_defaultDir = new Dir(CWD . '/resources/skin/default');
+        $this->_defaultDir = new \Dir(CWD . '/resources/skin/default');
         $this->_defaultDir->setFilter('*.skin.xml');
-        $this->_testDir = new Dir(CWD . '/resources/skin/test');
+        $this->_testDir = new \Dir(CWD . '/resources/skin/test');
         $this->_testDir->setFilter('*.skin.xml');
-        Skin::setBaseDirectory(CWD . '/resources/skin/');
-        $this->_object = Skin::getInstance('test');
+        \Yana\Views\Skin::setBaseDirectory(CWD . '/resources/skin/');
+        $this->_object = new \Yana\Views\Skin('test');
     }
 
     /**

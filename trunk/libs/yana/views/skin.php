@@ -35,7 +35,7 @@ namespace Yana\Views;
  * @package     yana
  * @subpackage  views
  */
-class Skin implements \Yana\Report\IsReportable
+class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
 {
 
     /**
@@ -44,13 +44,6 @@ class Skin implements \Yana\Report\IsReportable
      * @var  string
      */
     private static $_selectedSkin = "default";
-
-    /**
-     * List of existing instances
-     *
-     * @var  array
-     */
-    private static $_instances = array();
 
     /**
      * a list of all skins installed
@@ -111,34 +104,13 @@ class Skin implements \Yana\Report\IsReportable
     private static $_baseDirectory = "";
 
     /**
-     * Looks up and returns the instance by the given name.
-     *
-     * If there is none, it creates a new one.
-     *
-     * If no parameter is given the function will return the currently selected main skin instead.
-     *
-     * @param   string  $skinName  name of instance to get
-     * @return  \Yana\Views\Skin
-     */
-    public static function &getInstance($skinName = null)
-    {
-        if (empty($skinName)) {
-            $skinName = self::$_selectedSkin;
-        }
-        if (!isset(self::$_instances[$skinName])) {
-            self::$_instances[$skinName] = new self($skinName);
-        }
-        return self::$_instances[$skinName];
-    }
-
-    /**
      * Creates a skin by name.
      *
      * Sets the directory from where to read skin files.
      *
      * @param  string  $skinName  current skin directory
      */
-    private function __construct($skinName)
+    public function __construct($skinName)
     {
         assert('is_string($skinName); // Wrong type for argument 1. String expected');
 
@@ -924,7 +896,6 @@ class Skin implements \Yana\Report\IsReportable
      */
     public function __wakeup()
     {
-        self::$_instances[$this->getName()] = $this;
         if (!isset(self::$_selectedSkin)) {
             self::selectSkin($this);
         }
