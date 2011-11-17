@@ -106,7 +106,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
     /**
      * to load skins and templates
      *
-     * @var  Skin
+     * @var  \Yana\Views\Skin
      */
     private $_skin = null;
 
@@ -280,7 +280,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
         }
         // initialize directories
         if (!empty(self::$_config->skindir)) {
-            Skin::setBaseDirectory((string) self::$_config->skindir);
+            \Yana\Views\Skin::setBaseDirectory((string) self::$_config->skindir);
         }
         if (isset(self::$_config->pluginfile)) {
             \Yana\Plugins\Manager::setPath((string) self::$_config->pluginfile, (string) self::$_config->plugindir);
@@ -632,7 +632,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
      *
      * This returns the skin component. If none exists, a new instance is created.
      *
-     * @return  Skin
+     * @return  \Yana\Views\Skin
      */
     public function getSkin()
     {
@@ -647,7 +647,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
                 assert('$this->_skin instanceof Skin;');
 
             } else {
-                $this->_skin = Skin::getInstance($this->getVar('PROFILE.SKIN'));
+                $this->_skin = \Yana\Views\Skin::getInstance($this->getVar('PROFILE.SKIN'));
                 $this->_skin->selectMainSkin();
 
                 if (YANA_CACHE_ACTIVE === true) {
