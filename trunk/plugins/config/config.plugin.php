@@ -480,7 +480,7 @@ class plugin_config extends StdClass implements IsPlugin
                 );
             break;
             case "skin":
-                $skin = Skin::getInstance($target);
+                $skin = new \Yana\Views\Skin($target);
                 $info = array
                 (
                     'NAME' => $skin->getTitle(),
