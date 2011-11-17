@@ -27,11 +27,13 @@
  * @ignore
  */
 
+namespace Yana\Views;
+
 /**
  * <<Singleton>> Skin
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  views
  */
 class Skin implements \Yana\Report\IsReportable
 {
@@ -116,7 +118,7 @@ class Skin implements \Yana\Report\IsReportable
      * If no parameter is given the function will return the currently selected main skin instead.
      *
      * @param   string  $skinName  name of instance to get
-     * @return  Skin
+     * @return  \Yana\Views\Skin
      */
     public static function &getInstance($skinName = null)
     {
