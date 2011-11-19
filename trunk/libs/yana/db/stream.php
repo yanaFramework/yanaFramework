@@ -82,17 +82,17 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * These files are to be found in config/db/*.db.xml
      *
      * @param   string|\Yana\Db\Ddl\Database  $schema  schema name or schema in database definition language
-     * @param   DbServer            $server  Connection to a database server
+     * @param   \Yana\Db\ConnectionFactory    $server  Connection to a database server
      * @throws  DbConnectionError                           when connection to database failed
      * @throws  \Yana\Core\Exceptions\NotFoundException     when structure file is not found
      * @throws  \Yana\Core\Exceptions\NotReadableException  when trying to reverse-engineer database structure,
      *                                                      but the database's schema is unknown or not readable
      */
-    public function __construct($schema = null, DbServer $server = null)
+    public function __construct($schema = null, \Yana\Db\ConnectionFactory $server = null)
     {
         // fall back to default connection
         if (is_null($server)) {
-            $server = new DbServer();
+            $server = new \Yana\Db\ConnectionFactory();
         }
 
         // open database connection
@@ -221,26 +221,22 @@ class DbStream extends \Yana\Core\Object implements Serializable
     }
 
     /**
-     * get the DSN
+     * Get the DSN.
      *
      * This function returns an associative array containing
      * information on the current connection or bool(false) on error.
      *
-     * See {@link DbServer::getDsn()} for more details.
-     *
      * @access  public
-     * @name    DbStream::getDsn()
      * @return  array
-     * @since   2.9.8
+     * @see     \Yana\Db\ConnectionFactory::getDsn()
      */
     public function getDsn()
     {
+        $dsn = false;
         if (is_array($this->dsn)) {
-            return $this->dsn;
-
-        } else {
-            return false;
+            $dsn = $this->dsn;
         }
+        return $dsn;
     }
 
     /**
@@ -2162,7 +2158,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
     protected function getConnection()
     {
         if (!isset($this->database)) {
-            $dbServer = new DbServer($this->dsn);
+            $dbServer = new \Yana\Db\ConnectionFactory($this->dsn);
             $this->database = $dbServer->getConnection();
         }
         return $this->database;

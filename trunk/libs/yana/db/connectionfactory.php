@@ -25,30 +25,34 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Db;
+
 /**
  * Connection to a database server
  *
  * This class provides methods to establish or test
  * connections with database servers.
  *
- * @access      public
- * @name        DbServer
  * @package     yana
  * @subpackage  db
  */
-class DbServer extends \Yana\Core\Object
+class ConnectionFactory extends \Yana\Core\Object
 {
 
-    /**#@+
-     * @ignore
-     * @access  private
+    /**
+     * @var mixed
      */
+    private $_database = null;
 
-    /** @var mixed */ private $_database = null;
-    /** @var array */ private $_dsn      = array();
-    /** @var array */ private $_options  = array();
+    /**
+     * @var array
+     */
+    private $_dsn = array();
 
-    /**#@-*/
+    /**
+     * @var array
+     */
+    private $_options = array();
 
     /**
      * create a new instance
@@ -106,7 +110,6 @@ class DbServer extends \Yana\Core\Object
      *
      * }}
      *
-     * @name   DbServer::__consruct()
      * @param  array  $dsn  for a description of the $dsn parameter see the text above
      * @throws PearDbError  when Pear MDB2 is not available
      */
@@ -125,7 +128,7 @@ class DbServer extends \Yana\Core\Object
          */
 
         // get list of ODBC-settings
-        $require_odbc = Yana::getDefault('database.require_odbc');
+        $require_odbc = \Yana::getDefault('database.require_odbc');
         if (!is_array($require_odbc)) {
             // no ODBC-settings available
             $require_odbc = array();
@@ -133,7 +136,7 @@ class DbServer extends \Yana\Core\Object
         assert('is_array($require_odbc);');
 
         // get list of default connection options
-        $this->_options = Yana::getDefault('database.options');
+        $this->_options = \Yana::getDefault('database.options');
         if (!is_array($this->_options)) {
             // no default options available
             $this->_options = array();
@@ -141,17 +144,19 @@ class DbServer extends \Yana\Core\Object
         assert('is_array($this->_options);');
 
         // get connection settings
-        $this->_dsn = array('DBMS'     => YANA_DATABASE_DBMS,
-                           'HOST'     => YANA_DATABASE_HOST,
-                           'PORT'     => YANA_DATABASE_PORT,
-                           'USERNAME' => YANA_DATABASE_USER,
-                           'PASSWORD' => YANA_DATABASE_PASSWORD,
-                           'DATABASE' => YANA_DATABASE_NAME);
+        $this->_dsn = array(
+            'DBMS' => YANA_DATABASE_DBMS,
+            'HOST' => YANA_DATABASE_HOST,
+            'PORT' => YANA_DATABASE_PORT,
+            'USERNAME' => YANA_DATABASE_USER,
+            'PASSWORD' => YANA_DATABASE_PASSWORD,
+            'DATABASE' => YANA_DATABASE_NAME
+        );
 
         /*
          * 1.2 auto-detect MySQL port for Server2Go application
          */
-        $dbms = strpos(YANA_DATABASE_DBMS, 'mysql');
+        $dbms = strpos(\YANA_DATABASE_DBMS, 'mysql');
         if (isset($_ENV["S2G_MYSQL_PORT"]) && empty($this->_dsn["PORT"]) && $dbms !== false) {
             $this->_dsn["PORT"] = $_ENV["S2G_MYSQL_PORT"];
         }
@@ -159,7 +164,7 @@ class DbServer extends \Yana\Core\Object
         /*
          * 1.3 there are some static options that always have to be there and can't be changed
          */
-        $this->_options['portability'] = MDB2_PORTABILITY_ALL;
+        $this->_options['portability'] = \MDB2_PORTABILITY_ALL;
 
         /*
          * 2 process settings provided by the user
@@ -244,39 +249,21 @@ class DbServer extends \Yana\Core\Object
     }
 
     /**
-     * alias of DbServer::getConnection()
+     * Returns an open database connection via PEAR-DB.
      *
-     * See {@link DbServer::getConnection()} for details.
-     *
-     * @access  public
-     * @name    DbServer::get()
-     * @return  mixed
-     * @deprec  since 3.5
-     */
-    public function &get()
-    {
-        return $this->getConnection();
-    }
-
-    /**
-     * get a PEAR-DB connection object
-     *
-     * This function returns an open database connection via PEAR-DB.
      * The returned values are:
      *
      * <ul>
      *   <li><pre> null               = if PEAR-MDB2 was not found </pre></li>
-     *   <li><pre> MDB2_Error         = if the connection failed </pre></li>
-     *   <li><pre> MDB2_Driver_Common = if the connection was established successfully </pre></li>
+     *   <li><pre> \MDB2_Error         = if the connection failed </pre></li>
+     *   <li><pre> \MDB2_Driver_Common = if the connection was established successfully </pre></li>
      * </ul>
      *
-     * @access  public
-     * @name    DbServer::getConnection()
      * @return  MDB2_Driver_Common
      */
     public function getConnection()
     {
-        if (!class_exists("MDB2")) {
+        if (!class_exists('\MDB2')) {
             return null;
         } else {
             return $this->_database;
@@ -284,10 +271,9 @@ class DbServer extends \Yana\Core\Object
     }
 
     /**
-     * get the DSN
+     * Get the DSN record.
      *
-     * This function returns an associative array containing
-     * information on the current connection:
+     * Returns an associative array containing information on the current connection:
      *
      * <ul>
      *   <li>USE_ODBC: true, if ODBC is used to connect to the database</li>
@@ -301,10 +287,7 @@ class DbServer extends \Yana\Core\Object
      *
      * Returns bool(false) on error.
      *
-     * @access  public
-     * @name    DbServer::getDsn()
      * @return  array
-     * @since   2.9.8
      */
     public function getDsn()
     {
@@ -317,18 +300,13 @@ class DbServer extends \Yana\Core\Object
     }
 
     /**
-     * test if a connection is available
+     * Test if a connection is available.
      *
      * Returns bool(true) if a connection to a db-server could be established via the provided parameters,
      * and bool(false) otherwise. See the constructor method for details on the $dsn parameter
      *
-     * @access  public
-     * @static
-     * @name    DbServer::isAvailable()
      * @param   array  $dsn   dns (info data for connection)
      * @return  bool
-     *
-     * @see     DbServer::__consruct()
      */
     public static function isAvailable(array $dsn)
     {
@@ -337,12 +315,12 @@ class DbServer extends \Yana\Core\Object
         if (!class_exists("MDB2")) {
             return false;
         }
-        $db = new DbServer($dsn);
+        $db = new self($dsn);
         /*
          * NOTE: the constructor already created a log-entry if the connection failed,
          * so there's no need to do this again
          */
-        return MDB2::isConnection($db->_database);
+        return \MDB2::isConnection($db->_database);
     }
 
 }
