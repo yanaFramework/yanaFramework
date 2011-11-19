@@ -326,12 +326,12 @@
                     <target><bpt id="b1">&lt;b&gt;</bpt>Sehr geehrter Besucher:<ept id="b1">&lt;/b&gt;</ept> die Suchmaschine ist zur Zeit nicht verfügbar. Bitte wenden Sie sich an den Webmaster dieser Seite.<it id="br1" pos="open">&lt;br /&gt;</it> <it id="br2" pos="open">&lt;br /&gt;</it><bpt id="b2">&lt;b&gt;</bpt>Administrator:<ept id="b2">&lt;/b&gt;</ept> Bevor Sie diese Suchmaschine das erste Mal benutzen müssen Sie mit dem beigelegten Tool "suchindexErstellen" einen Index für Ihre Webseite erstellen. Der Suchindex muss in den Dateien "keywords.dat" und "documents.dat" im Verzeichnis "plugins/search" gespeichert werden. Details dazu finden Sie in der Online-Hilfe!</target>
                 </trans-unit>
             </group>
-            <group id="PearDbError">
-                <trans-unit id="PearDbError.h">
+            <group id="PearDbException">
+                <trans-unit id="PearDbException.h">
                     <source>PHP configuration error</source>
                     <target>Fehler in PHP-Konfiguration</target>
                 </trans-unit>
-                <trans-unit id="PearDbError.p">
+                <trans-unit id="PearDbException.p">
                     <source>This database application requires PEAR-MDB2. Since it could not be found on your server, this plugin was unable to start. <bpt id="h1">&lt;span class="embtag_tag_h"&gt;</bpt>Administrators:<ept id="h1">&lt;/span</ept> Check the server configuration and make sure the variable "include_path"    in file "php.ini" refers to the PEAR installation path.<bpt id="h2">&lt;span class="embtag_tag_h"&gt;</bpt>Administrator:<ept id="h2">&lt;/span</ept> Inform your admin on this problem. In case you are not allowed to use PEAR-MDB2 on your server, I am afraid you won't be able to run database applications on this server.</source>
                     <target>Diese Datenbankanwendung benötigt PEAR-MDB2. Leider konnte diese auf Ihrem Server nicht gefunden werden. Deshalb konnte dieses Plugin nicht gestartet werden.<bpt id="h1">&lt;span class="embtag_tag_h"&gt;</bpt>Administratoren:<ept id="h1">&lt;/span</ept> Überprüfen Sie die Serverkonfiguration und stellen Sie sicher, dass in der Datei "php.ini" der Installationspfad von PEAR in der Variable "include_path" genannt wird.<bpt id="h2">&lt;span class="embtag_tag_h"&gt;</bpt>Administrator:<ept id="h2">&lt;/span</ept> Melden Sie dieses Problem Ihrem Administrator. Sollten Sie PEAR-MDB2 auf Ihrem Server nicht nutzen dürfen, müssen Sie auf die Datenbankunterstützung leider verzichten.</target>
                 </trans-unit>
