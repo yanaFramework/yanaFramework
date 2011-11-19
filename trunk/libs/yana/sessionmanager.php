@@ -669,7 +669,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
         if (!empty($userName)) {
             $database = self::getDatasource();
             // 1) get security level for current profile
-            $query = new DbSelect($database);
+            $query = new \Yana\Db\Queries\Select($database);
             $query->setKey('securitylevel.*.security_level');
             $query->setWhere(array(
                 array('user_id', '=', $userName),

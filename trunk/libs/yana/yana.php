@@ -892,7 +892,6 @@ final class Yana extends \Yana\Core\AbstractSingleton
          *
          * By default this will output any messages to a table of the database named 'log'.
          */
-        $this->_writeLog();
         $level = $this->_prepareMessages();
         $view = $this->getView();
 
@@ -984,13 +983,6 @@ final class Yana extends \Yana\Core\AbstractSingleton
                     return;
                 }
                 $this->_outputAsTemplate($template);
-                /**
-                 * save log-files (if any)
-                 *
-                 * By default this will output any messages
-                 * to a table of the database named 'log'.
-                 */
-                $this->_writeLog();
                 break;
         }
 
@@ -1440,134 +1432,6 @@ final class Yana extends \Yana\Core\AbstractSingleton
             $this->setVar('STDOUT.LEVEL', $messageClass);
         }
         return $messageClass;
-    }
-
-    /**
-     * flush events to log
-     */
-    private function _writeLog()
-    {
-        // skip if logging is turned off
-        if (!$this->getVar('PROFILE.LOGGING')) {
-            return;
-        }
-
-        // get message-queue
-        $messages = Log::getMessages();
-        assert('is_array($messages); // unexpected result: List of messages is not an array');
-
-        // skip if message-queue is empty
-        if (empty($messages)) {
-            return;
-        }
-
-        $db = self::connect('log');
-        $logChanged = false;
-        $messageCount = 0;
-
-        assert('!isset($previousLog); /* cannot redeclare variable $previousLog */');
-        $previousLog = $db->select("log.?");
-
-        assert('!isset($message); /* cannot redeclare variable $message */');
-        assert('!isset($newLog); // Cannot redeclare var $newLog');
-        foreach ($messages as $message)
-        {
-            assert('$message instanceof Log; // unexpected result: Entry is not a subclass of Log');
-            $newLog = Log::getLog($message, "log_");
-            assert('is_array($newLog); // unexpected result: Log entry is expected to be an array');
-
-            // check if new log entry is valid
-            if (empty($newLog)) {
-                continue;
-            }
-
-            // do not create duplicate entries
-            if (Log::logEquals($newLog, $previousLog, "log_") === true) {
-                continue;
-            }
-
-            // abort if insert failed
-            if ($db->insert("log", $newLog) === false) {
-                trigger_error("Unable to insert log. Insert on table 'log' failed.", E_USER_NOTICE);
-                continue;
-            }
-
-            $previousLog = $newLog;
-            $logChanged = true;
-            $messageCount++;
-        } // end foreach ($message)
-        unset($message);
-
-        // skip if nothing has changed
-        if ($logChanged !== true) {
-            return;
-        }
-
-        // abort if database commit failed
-        if ($db->commit() === false) {
-            trigger_error("Unable to write log. Commit on table 'log' failed.", E_USER_WARNING);
-            return;
-        }
-
-        // get profile settings
-        assert('!isset($logLength); // Cannot redeclare var $logLength');
-        $maxLogLength = (int) $this->getVar('PROFILE.LOG_LENGTH');
-        if ($maxLogLength < 1) {
-            $maxLogLength = 50;
-        }
-
-        // finished, if number of log entries is still smaller than maximum
-        if ($db->length('log') <= $maxLogLength) {
-            return;
-        }
-
-        // get profile settings
-        assert('!isset($useMail); // Cannot redeclare var $useMail');
-        $useMail = (bool) $this->getVar('PROFILE.LOG.USE_MAIL');
-        assert('!isset($logMail); // Cannot redeclare var $logMail');
-        $logMail = $this->getVar('PROFILE.LOG.MAIL');
-
-        // remove old entries
-        if ($useMail && $logMail) {
-
-            if (!empty($logMail)) {
-                $mail = new FormMailer();
-                $mail->setContent($db->select('log', array(), array('LOG_ID')))
-                    ->setSubject('JOURNAL')
-                    ->send($logMail);
-                unset($mail);
-            }
-            unset($logMail);
-
-            // truncate table log
-            if ($db->remove("log", array(), 0) === false) {
-                trigger_error("Unable to remove entry from table 'log'.", E_USER_WARNING);
-                return;
-            }
-
-            // commit changes
-            if ($db->commit() === false) {
-                trigger_error("Unable to commit changes to table 'log'.", E_USER_WARNING);
-                return;
-            }
-
-        } else {
-            $logIds = $db->select("log.*.log_id", array(), "", $maxLogLength, $db->length('log') + $messageCount, true);
-            if (is_array($logIds)) {
-                foreach ($logIds as $id)
-                {
-                    if (is_scalar($id) && !empty($id)) {
-                        if ($db->remove("log.{$id}") === false) {
-                            trigger_error("Unable to remove entry from table 'log'.", E_USER_WARNING);
-                            return null;
-                        }
-                    }
-                } // end for
-                $db->commit();
-            } else {
-                $db->rollback();
-            }
-        }
     }
 
     /**

@@ -59,7 +59,7 @@ class FileDbConnection extends \Yana\Core\Object
     /** @var bool        */ private $_desc = false;
     /** @var bool        */ private $_autoCommit = true;
     /** @var array       */ private $_cache = array();
-    /** @var DbQuery     */ private $_query = null;
+    /** @var \Yana\Db\Queries\AbstractQuery     */ private $_query = null;
     /** @var int         */ private $_limit = 0;
     /** @var int         */ private $_offset = 0;
 
@@ -554,7 +554,7 @@ class FileDbConnection extends \Yana\Core\Object
                 }
 
                 /* update cell */
-                if ($this->_query->getExpectedResult() === DbResultEnumeration::CELL) {
+                if ($this->_query->getExpectedResult() === \Yana\Db\ResultEnumeration::CELL) {
                     $column = mb_strtoupper($this->_query->getColumn());
                     if ($column !== '*') {
                         $set = array($column => $set);
@@ -672,7 +672,7 @@ class FileDbConnection extends \Yana\Core\Object
             /*
              * 5) INSERT INTO statement
              */
-            case $dbQuery instanceof DbInsert:
+            case $dbQuery instanceof \Yana\Db\Queries\Insert:
                 try {
                     $this->_select($this->_query->getTable());
                 } catch (\Yana\Core\Exceptions\NotFoundException $e) {
@@ -775,7 +775,7 @@ class FileDbConnection extends \Yana\Core\Object
             /*
              * 6) DELETE statement
              */
-            case $dbQuery instanceof DbDelete:
+            case $dbQuery instanceof \Yana\Db\Queries\Delete:
                 try {
                     $this->_select($this->_query->getTable());
                 } catch (\Yana\Core\Exceptions\NotFoundException $e) {
@@ -797,7 +797,7 @@ class FileDbConnection extends \Yana\Core\Object
                 if (empty($rows)) {
                     /* error */
 
-                    if ($dbQuery->getExpectedResult() === DbResultEnumeration::ROW) {
+                    if ($dbQuery->getExpectedResult() === \Yana\Db\ResultEnumeration::ROW) {
                         return new FileDbResult(null, "SQL-ERROR: unable to delete; entry does not exist");
                     } else {
                         return new FileDbResult(array());
@@ -1149,8 +1149,8 @@ class FileDbConnection extends \Yana\Core\Object
         // 3) apply where clause
         switch ($this->_query->getExpectedResult())
         {
-            case DbResultEnumeration::TABLE:
-            case DbResultEnumeration::COLUMN:
+            case \Yana\Db\ResultEnumeration::TABLE:
+            case \Yana\Db\ResultEnumeration::COLUMN:
                 $doCollapse = count($columns) > 1;
             break;
             default:

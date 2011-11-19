@@ -214,7 +214,7 @@ class YanaUser extends \Yana\Core\Object
     {
         if (!isset(self::$_userNames)) {
             $db = self::getDatasource();
-            $query = new DbSelect($db);
+            $query = new \Yana\Db\Queries\Select($db);
             $query->setTable('user');
             $query->setColumn('user_id');
             self::$_userNames = $query->getResults();
