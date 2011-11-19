@@ -274,7 +274,7 @@ class Parser extends \Yana\Core\Object
         $set = $this->_parseSet($query, $keys, $values);
         if (empty($set)) {
             $message = 'SQL syntax error. The statement contains illegal values.';
-            throw new \Yana\Db\Queries\InvalidSyntaxException($message);
+            throw new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($message);
         }
         unset($keys, $values);
 
@@ -417,10 +417,10 @@ class Parser extends \Yana\Core\Object
                         $tableB = $dbSchema->getTable($tableNameB);
                         // error: table not found
                         if (! $tableA instanceof \Yana\Db\Ddl\Table) {
-                            throw new \Yana\Db\Queries\TableNotFoundException("Table '{$tableNameA}' not found.");
+                            throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Table '{$tableNameA}' not found.");
                         }
                         if (! $tableB instanceof \Yana\Db\Ddl\Table) {
-                            throw new \Yana\Db\Queries\TableNotFoundException("Table '{$tableNameB}' not found.");
+                            throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Table '{$tableNameB}' not found.");
                         }
                         assert('!isset($columnsB); // Cannot redeclare variable $columnsB');
                         $columnsB = $tableB->getColumnNames();
@@ -557,7 +557,7 @@ class Parser extends \Yana\Core\Object
                     $query->setInnerJoin($tableB, $columnA, $columnB);
                 }
                 return true; // found
-            } catch (\Yana\Db\Queries\QueryException $e) {
+            } catch (\Yana\Db\Queries\Exceptions\QueryException $e) {
                 $message = "Unable to join tables '$tableA' and '$tableB'. Cause: " . $e->getMessage();
                 throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
             }
