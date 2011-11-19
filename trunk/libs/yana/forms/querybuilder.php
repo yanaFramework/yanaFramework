@@ -113,13 +113,12 @@ class QueryBuilder extends \Yana\Core\Object
      * You can modify this to filter the visible results.
      *
      * @access  public
-     * @return  \DbSelect
-     * @throws  \Yana\Core\Exceptions\NotFoundException  if the selected table or one of the selected columns is not found
+     * @return  \D\Yana\Db\Queries\Select     * @throws  \Yana\Core\Exceptions\NotFoundException  if the selected table or one of the selected columns is not found
      */
     public function buildSelectQuery()
     {
         if (!isset($this->_cache[__FUNCTION__])) {
-            $query = new \DbSelect($this->_db);
+            $query = new \Yana\Db\Queries\Select($this->_db);
             if ($this->_form) {
                 $setup = $this->_form->getSetup();
                 $query->setTable($this->_form->getBaseForm()->getTable());
@@ -164,14 +163,13 @@ class QueryBuilder extends \Yana\Core\Object
      * @param   \Yana\Db\Ddl\Reference  $targetReference  defining the target table and columns
      * @param   string        $searchTerm       find all entries that start with ...
      * @param   int           $limit            maximum number of hits, set to 0 to get all
-     * @return  \DbSelect
-     */
+     * @return  \D\Yana\Db\Queries\Select     */
     public function buildAutocompleteQuery(\Yana\Db\Ddl\Reference $targetReference, $searchTerm, $limit)
     {
         assert('is_string($searchTerm); // Invalid argument $searchTerm: string expected');
         assert('is_int($limit); // Invalid argument $limit: int expected');
 
-        $query = new \DbSelect($this->_db);
+        $query = new \Yana\Db\Queries\Select($this->_db);
         $query->setTable($targetReference->getTable());
         $query->setLimit((int) $limit);
         $query->setOrderBy((array) $targetReference->getLabel());
@@ -187,9 +185,9 @@ class QueryBuilder extends \Yana\Core\Object
      * The new clause will use fuzzy-search with wildcards and be appended using the "OR" operator.
      *
      * @access  protected
-     * @param   \DbSelect  $select  query that is to be modified
+     * @param   \D\Yana\Db\Queries\Select $select  query that is to be modified
      */
-    protected function _processSearchTerm(\DbSelect $select)
+    protected function _processSearchTerm(\Yana\Db\Queries\Select $select)
     {
         $setup = $this->_form->getSetup();
         $searchTerm = $setup->getSearchTerm();
@@ -221,9 +219,9 @@ class QueryBuilder extends \Yana\Core\Object
      * The new clause will be appended using the "AND" operator.
      *
      * @access  protected
-     * @param   \DbSelect  $select  query that is to be modified
+     * @param   \D\Yana\Db\Queries\Select $select  query that is to be modified
      */
-    protected function _processSearchValues(\DbSelect $select)
+    protected function _processSearchValues(\Yana\Db\Queries\Select $select)
     {
         if ($this->_form->getSetup()->getContext('search')->getValues()) {
             $clause = $select->getWhere();
@@ -253,9 +251,9 @@ class QueryBuilder extends \Yana\Core\Object
      * The new clause will be appended using the "AND" operator.
      *
      * @access  protected
-     * @param   \DbSelect  $select  query that is to be modified
+     * @param   \D\Yana\Db\Queries\Select $select  query that is to be modified
      */
-    protected function _processFilters(\DbSelect $select)
+    protected function _processFilters(\Yana\Db\Queries\Select $select)
     {
         $setup = $this->_form->getSetup();
         if ($setup->hasFilter()) {
@@ -278,10 +276,9 @@ class QueryBuilder extends \Yana\Core\Object
      * Checks if a parent form exists and modifies the query accordingly.
      *
      * @access  private
-     * @param   \DbSelect  $select  base query for current form
-     * @return  \DbSelect
-     */
-    private function _buildSelectForSubForm(\DbSelect $select)
+     * @param   \D\Yana\Db\Queries\Select $select  base query for current form
+     * @return  \D\Yana\Db\Queries\Select     */
+    private function _buildSelectForSubForm(\Yana\Db\Queries\Select $select)
     {
         $parentForm = $this->_form->getParent();
         // copy foreign key from parent query
