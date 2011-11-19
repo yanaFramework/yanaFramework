@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\Queries;
+namespace Yana\Db\Queries\Exceptions;
 
 /**
  * <<exception>> When a trying to set a value twice for a row.
@@ -33,7 +33,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-class DuplicateValueException extends \Yana\Db\Queries\QueryException
+class DuplicateValueException extends \Yana\Db\Queries\Exceptions\QueryException
 {
 
     // intentionally left blank

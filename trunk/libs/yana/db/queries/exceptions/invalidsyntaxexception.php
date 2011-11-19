@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\Queries;
+namespace Yana\Db\Queries\Exceptions;
 
 /**
  * <<exception>> When a query is missing a component or a set component is invalid.
@@ -33,7 +33,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-class InvalidSyntaxException extends \Yana\Db\Queries\QueryException
+class InvalidSyntaxException extends \Yana\Db\Queries\Exceptions\QueryException
 {
 
     // intentionally left blank

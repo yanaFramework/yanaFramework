@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\Queries;
+namespace Yana\Db\Queries\Exceptions;
 
 /**
  * <<exception>> Thrown when a table name was used in a query but does not exist.
@@ -33,7 +33,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-class TableNotFoundException extends \Yana\Db\Queries\QueryException
+class TableNotFoundException extends \Yana\Db\Queries\Exceptions\QueryException
 {
 
     // intentionally left blank

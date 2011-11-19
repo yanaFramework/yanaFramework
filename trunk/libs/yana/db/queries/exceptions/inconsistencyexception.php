@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\Queries;
+namespace Yana\Db\Queries\Exceptions;
 
 /**
  * <<exception>> When the query encounters inconsistent data in the database.
@@ -33,7 +33,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-class InconsistencyException extends \Yana\Db\Queries\QueryException
+class InconsistencyException extends \Yana\Db\Queries\Exceptions\QueryException
 {
 
     // intentionally left blank

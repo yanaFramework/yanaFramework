@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\Queries;
+namespace Yana\Db\Queries\Exceptions;
 
 /**
  * <<exception>> When a query encounters a problem with using a non-unique or otherwise invalid primary key.
@@ -33,7 +33,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-class InvalidPrimaryKeyException extends \Yana\Db\Queries\QueryException
+class InvalidPrimaryKeyException extends \Yana\Db\Queries\Exceptions\QueryException
 {
 
     // intentionally left blank
