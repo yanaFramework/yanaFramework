@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\Queries;
+namespace Yana\Db\Queries\Exceptions;
 
 /**
  * <<exception>> When a query detects that a statement does not comply with an existing constraint.
@@ -38,7 +38,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-class ConstraintException extends \Yana\Db\Queries\QueryException
+class ConstraintException extends \Yana\Db\Queries\Exceptions\QueryException
 {
 
     // intentionally left blank
