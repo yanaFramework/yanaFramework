@@ -442,7 +442,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
             /*
              * 4.1) error - query failed
              */
-            assert('!isset($success); // Cannot redeclare var $success');
             if ($this->isError($result)) {
                 /*
                  * 4.1.2) rollback on error
@@ -470,9 +469,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
             if (is_array($args)) {
                 $this->_executeTrigger($args);
             }
-            unset($args);
-
-            unset($success, $tableName, $column);
+            unset($args, $tableName, $column);
         } // end foreach (query)
         unset($i);
 
@@ -1096,7 +1093,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
          * 5) move values to cache
          */
         $this->_cache[$tableName][$row] = $value;
-        unset($arrayAddress);
 
         /*
          * 6) add SQL statement to queue
@@ -2050,7 +2046,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
                     } else {
                         // scan cache first
                         if (isset($this->_cache[$targetTable])) {
-                            foreach ($this->_cache[$targetTable] as $id => $row)
+                            foreach ($this->_cache[$targetTable] as $row)
                             {
                                 if (!isset($row[$targetColumn])) {
                                     continue;
@@ -2087,8 +2083,8 @@ class DbStream extends \Yana\Core\Object implements Serializable
                     return false;
                 }
             }
+            unset($targetTable, $fkey, $ufkey);
         } // end foreach
-        unset($targetTable, $fkey, $ufkey);
         return true;
     }
 
@@ -2160,7 +2156,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * get database connection
      *
      * @access  protected
-     * @return  MDB2_Driver_Common
+     * @return  \MDB2_Driver_Common
      * @ignore
      */
     protected function getConnection()
