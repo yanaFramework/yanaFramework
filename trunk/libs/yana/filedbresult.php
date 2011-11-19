@@ -32,7 +32,6 @@
  *
  * This class represents a FileDB resultset.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  *
@@ -41,15 +40,15 @@
 class FileDbResult extends \Yana\Core\Object
 {
 
-    /**#@+
-     * @ignore
-     * @access  private
+    /**
+     * @var array
      */
+    private $result = array();
 
-    /** @var array */  private $result = array();
-    /** @var string */ private $message = '';
-
-    /**#@-*/
+    /**
+     * @var string
+     */
+    private $message = '';
 
     /**
      * constructor
@@ -77,7 +76,6 @@ class FileDbResult extends \Yana\Core\Object
      *
      * returns the number of rows in the result set
      *
-     * @access  public
      * @return  int
      */
     public function numRows()
@@ -90,7 +88,6 @@ class FileDbResult extends \Yana\Core\Object
      *
      * returns an associatvie array of the row at index $i in the result set
      *
-     * @access  public
      * @param   mixed  $dummy  (ignored) this is here for compatibility reasons
      * @param   int    $i      row number
      * @return  array
@@ -118,7 +115,6 @@ class FileDbResult extends \Yana\Core\Object
      * Use FileDbResult::isError() to check,
      * if the result is in an error state.
      *
-     * @access  public
      * @return  string
      */
     public function getMessage()
@@ -137,7 +133,6 @@ class FileDbResult extends \Yana\Core\Object
      * is not set. This means, $this->result is NULL.
      * }}
      *
-     * @access  public
      * @return  bool
      */
     public function isError()
@@ -155,7 +150,6 @@ class FileDbResult extends \Yana\Core\Object
      * they are both objects of the same class and their
      * attributes are equal.
      *
-     * @access   public
      * @param    \Yana\Core\IsObject  $anotherObject     another object too compare
      * @return   string
      */

@@ -112,7 +112,7 @@ class FileDb extends DbStream
         assert('is_int($limit) && $limit >= 0; // Invalid argument $limit. Must be a positive integer.');
 
         // check input
-        if ($sqlStmt instanceof DbQuery) {
+        if ($sqlStmt instanceof \Yana\Db\Queries\AbstractQuery) {
             return $this->getConnection()->dbQuery($sqlStmt);
         } elseif (!is_string($sqlStmt)) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException('Argument $sqlStmt is expected to be a string.');

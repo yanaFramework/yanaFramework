@@ -33,35 +33,41 @@
  * This implements index files for table indexes,
  * for the FileDB database.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  * @since       2.8.6
- * @ignore
  */
 class FileDbIndex extends \Yana\Core\Object
 {
 
-    /**#@+
-     * @ignore
-     * @access  private
+    /**
+     * @var \Yana\Db\Ddl\Table
      */
+    private $_table = "";
 
-    /** @var \Yana\Db\Ddl\Table */ private $_table = "";
-    /** @var SML      */ private $_data = null;
-    /** @var string   */ private $_filename = "";
-    /** @var array    */ private $_indexes = null;
+    /**
+     * @var \SML
+     */
+    private $_data = null;
 
-    /**#@-*/
+    /**
+     * @var string
+     */
+    private $_filename = "";
+
+    /**
+     * @var array
+     */
+    private $_indexes = null;
 
     /**
      * constructor
      *
-     * @param  \Yana\Db\Ddl\Table  $table         table (DDL object)
-     * @param  SML       $data          data (SML object)
-     * @param  string    $filename      filename
+     * @param  \Yana\Db\Ddl\Table  $table     table (DDL object)
+     * @param  \SML                $data      data (SML object)
+     * @param  string              $filename  filename
      */
-    public function __construct(\Yana\Db\Ddl\Table $table, SML $data, $filename)
+    public function __construct(\Yana\Db\Ddl\Table $table, \SML $data, $filename)
     {
         assert('is_string($filename); // Wrong type for argument 3. String expected');
 
@@ -75,7 +81,6 @@ class FileDbIndex extends \Yana\Core\Object
      *
      * Returns NULL if the column is not stored.
      *
-     * @access  protected
      * @param   string $column name
      * @return  array
      */
@@ -94,7 +99,6 @@ class FileDbIndex extends \Yana\Core\Object
     /**
      * Get all cached indexes.
      *
-     * @access  protected
      * @return  array
      */
     protected function getVars()
@@ -109,9 +113,8 @@ class FileDbIndex extends \Yana\Core\Object
     /**
      * Set index entry.
      *
-     * @access  protected
-     * @param   string $column name
-     * @param   scalar $values indexed values
+     * @param  string $column name
+     * @param  scalar $values indexed values
      */
     protected function setColumnIndex($column, array $values)
     {
@@ -124,8 +127,7 @@ class FileDbIndex extends \Yana\Core\Object
     /**
      * Remove index entry.
      *
-     * @access  protected
-     * @param   string $column name
+     * @param  string $column name
      */
     protected function unsetColumnIndex($column)
     {
@@ -142,7 +144,6 @@ class FileDbIndex extends \Yana\Core\Object
      *
      * Note: This will commit any uncommitted data.
      *
-     * @access  public
      * @param   string  $column     column
      * @param   array   $update     update data for index
      * @return  bool
@@ -233,7 +234,6 @@ class FileDbIndex extends \Yana\Core\Object
     /**
      * Find all indexed columns in a given table.
      *
-     * @access  private
      * @param   \Yana\Db\Ddl\Table $table database table to search for indexes in
      * @return  array
      */
@@ -280,7 +280,6 @@ class FileDbIndex extends \Yana\Core\Object
      * </code>
      * }}
      *
-     * @access  public
      * @param   string  $column column name
      * @param   scalar  $value  value
      * @return  array
@@ -317,7 +316,6 @@ class FileDbIndex extends \Yana\Core\Object
      * Returns bool(true) on success,
      * returns bool(false) on error.
      *
-     * @access  public
      * @return  bool
      */
     public function commit()
@@ -327,8 +325,6 @@ class FileDbIndex extends \Yana\Core\Object
 
     /**
      * Autosave file on destruct.
-     *
-     * @access  public
      */
     public function  __destruct()
     {
@@ -348,8 +344,6 @@ class FileDbIndex extends \Yana\Core\Object
      * data and possibly cause inconsistent data to be written
      * to the database.
      * }}
-     *
-     * @access  public
      */
     public function rollback()
     {
