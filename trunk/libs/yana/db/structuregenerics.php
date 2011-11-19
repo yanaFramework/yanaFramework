@@ -138,8 +138,9 @@ class DbStructureGenerics extends \Yana\Core\Object
                     "on table '{$table->getName()}' with value '".print_r($row, true)."'.", E_USER_WARNING);
                 return false;
             }
+            unset($code);
         } // end foreach ($constraint)
-        unset($code, $constraint);
+        unset($constraint);
 
         return true;
     }
