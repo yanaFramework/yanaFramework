@@ -326,12 +326,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="PearDbError">
-                <trans-unit id="PearDbError.h">
+            <group id="PearDbException">
+                <trans-unit id="PearDbException.h">
                     <target>PHP configuration error</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="PearDbError.p">
+                <trans-unit id="PearDbException.p">
                     <target>This database application requires PEAR-MDB2. Since it could not be found on your server, this plugin was unable to start. <bpt id="h1">&lt;span class="embtag_tag_h"&gt;</bpt>Administrators:<ept id="h1">&lt;/span</ept> Check the server configuration and make sure the variable "include_path"    in file "php.ini" refers to the PEAR installation path.<bpt id="h2">&lt;span class="embtag_tag_h"&gt;</bpt>Administrator:<ept id="h2">&lt;/span</ept> Inform your admin on this problem. In case you are not allowed to use PEAR-MDB2 on your server, I am afraid you won't be able to run database applications on this server.</target>
                     <source/>
                 </trans-unit>
