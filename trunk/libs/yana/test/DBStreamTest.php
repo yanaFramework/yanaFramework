@@ -91,7 +91,7 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
     /**
      * Update Invalid Argument Exception  
      *
-     * @expectedException DbErrorLog
+     * @expectedException DbError
      * @test
      */
     function testUpdateInvalidArgument()
