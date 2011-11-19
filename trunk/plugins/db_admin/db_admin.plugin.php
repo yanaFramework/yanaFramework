@@ -331,9 +331,9 @@ class plugin_db_admin extends StdClass implements IsPlugin
             /**
              * prepare queries
              */
-            $selectQuery = new DbSelect($db);
+            $selectQuery = new \Yana\Db\Queries\Select($db);
             $selectQuery->useInheritance(false);
-            $fileSelectQuery = new DbSelect($fileDb);
+            $fileSelectQuery = new \Yana\Db\Queries\Select($fileDb);
             $fileSelectQuery->useInheritance(false);
 
             /* @var $table \Yana\Db\Ddl\Table */
@@ -582,7 +582,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                 'DATABASE' => stripslashes($name)
             );
 
-            $test = dbServer::isAvailable($dsn);
+            $test = \Yana\Db\ConnectionFactory::isAvailable($dsn);
             if ($test !== true) {
                 throw new Error('Unable to establish connection to database server. " .
                     "Check your input please!');

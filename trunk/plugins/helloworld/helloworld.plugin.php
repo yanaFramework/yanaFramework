@@ -121,7 +121,7 @@ class Plugin_HelloWorld extends StdClass implements IsPlugin
         $rows = $connection->select('log');
 
         // Another way to write a query:
-        $select = new DbSelect($connection);
+        $select = new \Yana\Db\Queries\Select($connection);
         $select->setTable('log');
         $select->setLimit(50);
         $rows = $select->getResults();

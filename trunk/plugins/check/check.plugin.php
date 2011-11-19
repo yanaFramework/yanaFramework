@@ -75,33 +75,34 @@ class plugin_check extends StdClass implements IsPlugin
             $query = null;
             try {
 
-                $query = DbQuery::parseSQL($sql, $fileDb);
+                $parser = new \Yana\Db\Queries\Parser($fileDb);
+                $query = $parser->parseSQL($sql);
 
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $result = "Invalid query. " . $e->getMessage();
             }
             if (strcasecmp($db, 'user') === 0) {
                 $result = "Access denied.";
-            } elseif ($query instanceof DbQuery) {
+            } elseif ($query instanceof \Yana\Db\Queries\AbstractQuery) {
                 $result = (string) $query . "\n\n";
                 switch ($query->getType())
                 {
-                    case DbQueryTypeEnumeration::SELECT:
+                    case \Yana\Db\Queries\TypeEnumeration::SELECT:
                         $result .= print_r($query->getResults(), true);
                     break;
-                    case DbQueryTypeEnumeration::COUNT:
+                    case \Yana\Db\Queries\TypeEnumeration::COUNT:
                         $result .= print_r($query->doesExist(), true);
                     break;
-                    case DbQueryTypeEnumeration::EXISTS:
+                    case \Yana\Db\Queries\TypeEnumeration::EXISTS:
                         $result .= print_r($query->countResults(), true);
                     break;
-                    case DbQueryTypeEnumeration::UPDATE:
+                    case \Yana\Db\Queries\TypeEnumeration::UPDATE:
                         $result .= print_r($fileDb->update($query), true);
                     break;
-                    case DbQueryTypeEnumeration::INSERT:
+                    case \Yana\Db\Queries\TypeEnumeration::INSERT:
                         $result .= print_r($fileDb->insert($query), true);
                     break;
-                    case DbQueryTypeEnumeration::DELETE:
+                    case \Yana\Db\Queries\TypeEnumeration::DELETE:
                         $result .= print_r($fileDb->remove($query), true);
                     break;
                 }

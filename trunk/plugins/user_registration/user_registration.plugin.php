@@ -189,7 +189,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
             throw new InvalidInputWarning();
         }
 
-        $select = new DbSelect($database);
+        $select = new \Yana\Db\Queries\Select($database);
         $select->setTable("newuser");
         $select->setWhere(array('newuser_key', '=', $target));
         $select->setLimit(1);
