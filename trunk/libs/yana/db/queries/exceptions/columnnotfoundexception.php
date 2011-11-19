@@ -25,31 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Db\Queries;
+
 /**
- * Database alert
+ * <<exception>> Thrown when a column was used in a query but does not exist.
  *
- * This class represents alerts passed to the user.
- *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  db
  */
-class DbAlert extends Alert
+class ColumnNotFoundException extends \Yana\Db\Queries\QueryException
 {
-    /**
-     * constructor
-     *
-     * This function creates a new log message.
-     *
-     * @param  string      $message   the message that should be reported
-     * @param  int         $code      optional error code
-     * @param  \Exception  $previous  use this when you need to rethrow a catched exception
-     */
-    public function __construct($message = "", $code = E_USER_NOTICE, \Exception $previous = null)
-    {
-        parent::__construct("DB: $message", $code, $previous);
-        \Yana\Log\LogManager::getLogger()->addLog($message, $code);
-    }
+
+    // intentionally left blank
+
 }
 
 ?>
