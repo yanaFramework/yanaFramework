@@ -1,0 +1,500 @@
+<?php
+/**
+ * YANA library
+ *
+ * Software:  Yana PHP-Framework
+ * Version:   {VERSION} - {DATE}
+ * License:   GNU GPL  http://www.gnu.org/licenses/
+ *
+ * This program: can be redistributed and/or modified under the
+ * terms of the GNU General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/.
+ *
+ * This notice MAY NOT be removed.
+ *
+ * @package  yana
+ * @license  http://www.gnu.org/licenses/gpl.txt
+ */
+
+namespace Yana\Db\Queries;
+
+/**
+ * Database query builder
+ *
+ * This class is a query builder that can be used to build SQL statements to insert new rows
+ * in a database-table. The inserted row must not exist.
+ *
+ * Note: this class does NOT untaint input data for you.
+ *
+ * @package     yana
+ * @subpackage  db
+ */
+class Insert extends \Yana\Db\Queries\AbstractQuery
+{
+
+    /**
+     * @var int
+     * @ignore
+     */
+    protected $type = \Yana\Db\Queries\TypeEnumeration::INSERT;
+
+    /**
+     * @var array
+     * @ignore
+     */
+    protected $column = array();
+
+    /**
+     * @var array
+     */
+    protected $profile = array();
+
+    /**
+     * @var array
+     * @ignore
+     */
+    protected $values = null;
+
+    /**
+     * @var array
+     * @ignore
+     */
+    protected $queue = array();
+
+    /**
+     * @var array
+     * @ignore
+     */
+    protected $files = array();
+
+    /**
+     * <<magic>> Called to create copies of the object when using the "clone" keyword.
+     *
+     * It will empty the query queue for the cloned object.
+     * Note: the cloned object will use the same database connection, since
+     * connection are resources, which may not be cloned.
+     *
+     */
+    public function __clone()
+    {
+        $this->queue = array();
+    }
+
+    /**
+     * Reset query.
+     *
+     * Resets all properties of the query object, except
+     * for the database connection and the properties
+     * "table", "type", "useInheritance".
+     *
+     * This function allows you to "recycle" a query object
+     * and reuse it without creating another one. This can
+     * help to improve the performance of your application.
+     *
+     * @return  \Yana\Db\Queries\Insert 
+     */
+    public function resetQuery()
+    {
+        parent::resetQuery();
+        $this->profile = array();
+        $this->values  = null;
+        $this->queue   = array();
+        $this->files   = array();
+        return $this;
+    }
+
+    /**
+     * set value(s) for current query
+     *
+     * This takes an associative array, where the keys are column names.
+     * When updating a single column, it may also be a scalar value.
+     *
+     * @param   mixed  $values  value(s) for current query
+     * @return  \Yana\Db\Queries\Insert
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if a given argument is invalid
+     * @throws  \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException     when the primary key is invalid or ambigious
+     * @throws  \Yana\Db\Queries\Exceptions\ConstraintException            when a constraint violation is detected
+     */
+    public function setValues($values)
+    {
+        $this->id = null;
+        /*
+         * 1.a) lowercase array keys
+         */
+        if (is_array($values)) {
+            $values = \Yana\Util\Hashtable::changeCase($values, CASE_LOWER);
+
+        } elseif ($this->type === \Yana\Db\Queries\TypeEnumeration::INSERT) {
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid type. " .
+                "Database values must be an array for insert-statements.");
+
+        /*
+         * 1.b) error - wrong argument type
+         */
+        } elseif (!is_scalar($values)) {
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid type. " .
+                "Database values must be an array or scalar.");
+        }
+        assert('isset($this->tableName); // Cannot set values - need to set table first!');
+
+        /*
+         * 1.d) handle table inheritance
+         */
+        if ($this->getParent()) {
+            assert('!isset($columns); // Cannot redeclare var $columns');
+            $columns = $this->getColumns();
+            if (empty($columns)) {
+                assert('!isset($columnName); // Cannot redeclare var $columnName');
+                assert('!isset($parent); // Cannot redeclare var $parent');
+                foreach (array_keys($values) as $columnName)
+                {
+                    $parent = $this->getParentByColumn($columnName);
+                    if (false !== $parent) {
+                        $this->_appendValue($parent, $columnName, $values[$columnName]);
+                        unset($values[$columnName]);
+                    }
+                    unset($parent);
+                }
+                unset($columnName);
+            } else {
+                assert('!isset($column); // Cannot redeclare var $column');
+                foreach ($columns as $column)
+                {
+                    assert('is_array($column); // Invalid property "column". Two-dimensional array expected.');
+                    assert('!isset($parent); // Cannot redeclare var $parent');
+                    $parent = $this->getParentByColumn($column[1]);
+                    if (false !== $parent) {
+                        $this->_appendValue($parent, $column[1], $values);
+                        return;
+                    }
+                    unset($parent);
+                }
+                unset($column);
+            }
+            unset($columns);
+        }
+
+        $table = $this->currentTable();
+
+        /*
+         * 2.a) inserting a row
+         */
+        assert('!isset($primaryKey); /* Cannot redeclare var $primaryKey */');
+        $primaryKey = $table->getPrimaryKey();
+
+        // copy primary key to row property
+        if ($this->expectedResult === \Yana\Db\ResultEnumeration::TABLE && isset($values[$primaryKey])) {
+            $this->setRow($values[$primaryKey]);
+        }
+
+        assert('!isset($isInsert); // Cannot redeclare var $isInsert');
+        $isInsert = false;
+        if ($this->type === \Yana\Db\Queries\TypeEnumeration::INSERT) {
+            $isInsert = true;
+            assert('is_array($values);');
+
+            /*
+             * 2.a.1) copy primary key from row property or vice versa
+             */
+            if (!isset($values[$primaryKey])) {
+                assert('!isset($column);');
+                $column = $table->getColumn($primaryKey);
+                if ($column->isAutoIncrement()) {
+                    /* ignore - is to be inserted automatically by database */
+                } elseif ($this->row !== '*') {
+                    $values[$primaryKey] = $column->sanitizeValue($this->row, $this->db->getDBMS(), $this->files);
+                } else {
+                    $message = "Cannot insert a row without a primary key. Operation aborted.";
+                    throw new \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException($message);
+                }
+            } elseif ($this->row !== '*' && strcasecmp($this->row, $values[$primaryKey]) !== 0) {
+                $message = "Cannot set values. The primary key is ambigious.\n\t\t" .
+                    "The primary key has been set via " . __CLASS__ . "->setRow() or " .
+                    __CLASS__ . "->setKey() to '" . $this->row . "'.\n\t\t" .
+                    "However, the primary key provided with " . __CLASS__ . "->setValues() is '" .
+                    $values[$primaryKey] . "'.";
+                throw new \Yana\Db\Queries\Exceptions\ConstraintException($message, E_USER_WARNING);
+            }
+
+        }
+
+        if ($this->expectedResult === \Yana\Db\ResultEnumeration::ROW) {
+            assert('is_array($values); // Row must be an array');
+            // upper-case primary key
+            if (isset($values[$primaryKey])) {
+                $values[$primaryKey] = mb_strtoupper($values[$primaryKey]);
+            }
+            // check if row is valid
+            $values = $table->sanitizeRow($values, $this->db->getDBMS(), $isInsert, $this->files);
+        } else {
+            assert('!$isInsert; // May only insert rows, not tables, cells or columns');
+            assert('$this->expectedResult === DbResultEnumeration::CELL || ' .
+                '$this->expectedResult ===  DbResultEnumeration::COLUMN;');
+            if (empty($this->arrayAddress) && isset($this->column[0]) && is_array($this->column[0])) {
+                assert('count($this->column) === 1;');
+                assert('count($this->column[0]) === 2;');
+                assert('isset($this->column[0][1]);');
+                assert('$this->tableName === $this->column[0][0];');
+                assert('$table->isColumn($this->column[0][1]);');
+                assert('!isset($column); // Cannot redeclare var $column');
+                $column = $table->getColumn($this->column[0][1]);
+                assert('$column instanceof \Yana\Db\Ddl\Column;');
+                $values = $column->sanitizeValue($values, $this->db->getDBMS(), $this->files);
+                unset($column);
+            }
+        }
+        unset($primaryKey);
+
+        /*
+         * 3) error - access denied
+         */
+        if (!$this->checkProfile($values)) {
+            $message = "Cannot set values. Profile constraint mismatch.";
+            throw new \Yana\Db\Queries\Exceptions\ConstraintException($message, E_USER_WARNING);
+        }
+
+        /*
+         * 4) input is valid - update values
+         */
+        $this->values =& $values;
+        return $this;
+    }
+
+    /**
+     * Get the list of values.
+     *
+     * If none are available, NULL (not bool(false)!) is returned.
+     *
+     * @return  mixed
+     */
+    public function &getValues()
+    {
+        return $this->values;
+    }
+
+    /**
+     * Append value to query queue.
+     *
+     * @param   string  $table   table name
+     * @param   string  $column  column name
+     * @param   mixed   $value   value
+     * @throws  \Yana\Db\Queries\Exceptions\DuplicateValueException  value cannot be appended because another value is already
+     *                                                    set for the given table and column
+     */
+    private function _appendValue($table, $column, $value)
+    {
+        assert('is_string($table); // Wrong type for argument 1. String expected');
+        assert('is_string($column); // Wrong type for argument 2. String expected');
+
+        if (!isset($this->queue[$table])) {
+            $this->queue[$table] = array();
+        }
+
+        // error - duplicate value
+        if (isset($this->queue[$table][$column])) {
+            throw new \Yana\Db\Queries\Exceptions\DuplicateValueException($column, \E_USER_WARNING);
+        }
+        // append value to queue
+        $this->queue[$table][$column] = $value;
+    }
+
+    /**
+     * Check profile constraint.
+     *
+     * @param   mixed   &$value value
+     * @return  bool
+     * @since   2.9.3
+     * @ignore
+     */
+    protected function checkProfile(&$value)
+    {
+        // table has no profile constraint
+        if (!$this->currentTable()->hasProfile()) {
+            return true;
+        }
+
+        $session = SessionManager::getInstance();
+        switch (true)
+        {
+            case isset($value['profile_id']) && $session->checkPermission($value['profile_id']) !== true:
+            case $session->checkPermission() !== true:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    /**
+     * Sends the query to the database server and returns a result-object.
+     *
+     * Note: This function may throw a number of exception.
+     * If you wish to handle them all at once, catch a {@see \Yana\Db\Queries\Exceptions\QueryException}.
+     *
+     * @return  FileDbResult
+     * @throws  DbError  when a query fails
+     * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException      when the table does not exist
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException          if a given argument is invalid
+     * @throws  \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException  when the primary key is invalid or ambigious
+     * @throws  \Yana\Db\Queries\Exceptions\ConstraintException         when a constraint violation is detected
+     * @ignore
+     */
+    public function sendQuery()
+    {
+        // send query
+        $result = parent::sendQuery();
+
+        // query failed
+        if ($this->db->isError($result)) {
+            return $result;
+        }
+
+        // execute queue
+        if (!empty($this->queue)) {
+            // retrieve and submit queries in queue
+            $row = $this->getRow();
+            // deactivate table-inhertitance (will be reverted later)
+            $prevSetting = $this->useInheritance;
+            $this->useInheritance(false);
+            $result = null;
+            assert('!isset($table); // Cannot redeclare var $table');
+            assert('!isset($values); // Cannot redeclare var $values');
+            foreach ($this->queue as $table => $values)
+            {
+                // Table not found
+                $this->setTable($table);
+                // Row-definition is invalid
+                $this->setRow($row);
+                // Values are invalid
+                $this->setValues($values);
+                // submit query
+                $result = $this->db->query($this);
+                // break on error
+                if ($this->db->isError($result)) {
+                    break;
+                }
+            }
+            unset($table, $values);
+            // re-activate inheritance
+            $this->useInheritance($prevSetting);
+            $this->queue = array();
+        }
+
+        // upload new files
+        if (!$this->db->isError($result)) {
+            $this->deleteFiles($this->files);
+            $this->uploadFiles($this->files);
+        }
+
+        // return result object
+        return $result;
+    }
+
+    /**
+     * upload new files
+     *
+     * When a row is updated, blobs associated with it old values need to be removed.
+     *
+     * A list of these files was created before the row was updated.
+     * Now we need to remove the old files and upload the new ones.
+     *
+     * @param   array  $files  list of files to upload
+     * @return  \Yana\Db\Queries\Insert
+     * @ignore
+     */
+    protected function uploadFiles(array $files = array())
+    {
+        foreach ($files as $file)
+        {
+            /* @var $column \Yana\Db\Ddl\Column */
+            $column = $file['column'];
+            $columnName = $column->getName();
+            $fileId = $this->values[$columnName];
+            if (!empty($fileId)) {
+                if ($column->getType() === 'image') {
+                    \Yana\Db\Blob::uploadImage($file, $fileId, $column->getImageSettings());
+                } else {
+                    \Yana\Db\Blob::uploadFile($file, $fileId);
+                }
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Get unique id.
+     *
+     * @return  string
+     * @ignore
+     */
+    public function toId()
+    {
+        if (!isset($this->id)) {
+            $this->id = serialize(array($this->type, $this->tableName, $this->column, $this->row,
+            $this->where, $this->orderBy, $this->desc, $this->values));
+        }
+        return $this->id;
+    }
+
+    /**
+     * Build a SQL-query.
+     *
+     * @param   string $stmt sql statement
+     * @return  string
+     */
+    protected function toString($stmt = "INSERT INTO %TABLE% (%KEYS%) VALUES (%VALUES%)")
+    {
+        /*
+         * replace %KEYS% and %VALUES%
+         *
+         * Note: this is done here, since all other types
+         * of statements do not have these token.
+         */
+        if (strpos($stmt, '%KEYS%') !== false) {
+            if (!is_array($this->values) || count($this->values) === 0) {
+                return "";
+            }
+            assert('!isset($keys);   // Cannot redeclare $keys');
+            assert('!isset($values); // Cannot redeclare $values');
+            $keys = "";
+            // quote id's to avoid conflicts with reserved keywords
+            assert('!isset($value); // Cannot redeclare var $value');
+            foreach (array_keys($this->values) as $value)
+            {
+                if ($keys != "") {
+                    $keys .= ", ";
+                }
+                $keys .= $this->db->quoteId($value);
+            }
+            unset($value);
+            $values = '';
+            assert('!isset($value); // Cannot redeclare $values');
+            foreach ($this->values as $value)
+            {
+                $values .= (($values !== '') ? ', ' : '' );
+                if (is_array($value)) {
+                    $values .= $this->db->quote(json_encode($value));
+                } else {
+                    $values .= $this->db->quote($value);
+                }
+            }
+            unset($value);
+            $stmt = str_replace('%KEYS%', $keys, $stmt);
+            $stmt = str_replace('%VALUES%', $values, $stmt);
+            unset($keys, $values);
+        }
+
+        return parent::toString($stmt);
+    }
+
+}
+
+?>
