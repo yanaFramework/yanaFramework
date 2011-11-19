@@ -1765,7 +1765,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 /* Files and images are both treated in the same way.
                  * They are just displayed differently by the GUI and
                  * use different code for upload and download in the
-                 * DbBlob class, which handles all database artifacts.
+                 * \Yana\Db\Blob class, which handles all database artifacts.
                  */
                 if (is_array($value)) {
                     /* Value is the uploaded file as if taken from $_FILES[$columnName].
@@ -1777,11 +1777,11 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                          * Note: the size value is given in 'byte'
                          */
                         $maxSize = (int) $column->getSize();
-                        if ($maxSize > 0 && $file['size'] > $maxSize) {
+                        if ($maxSize > 0 && $value['size'] > $maxSize) {
                             $alert = new \FilesizeError("", UPLOAD_ERR_SIZE);
-                            throw $alert->setFilename($filename)->setMaxSize($maxSize);
+                            throw $alert->setFilename($value['name'])->setMaxSize($maxSize);
                         }
-                        $id = \DbBlob::getNewFileId($this);
+                        $id = \Yana\Db\Blob::getNewFileId($this);
                         $value['column'] = $column;
                         $files[] = $value;
                         return $id;
@@ -1793,7 +1793,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                     $files[] = array('column' => $column);
                     return "";
                 } else {
-                    return \DbBlob::getFileIdFromFilename($value);
+                    return \Yana\Db\Blob::getFileIdFromFilename($value);
                 }
             break;
             case 'range':
@@ -2027,7 +2027,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 if (empty($value)) {
                     return null;
                 }
-                return \DbBlob::getFilenameFromFileId($value, $type);
+                return \Yana\Db\Blob::getFilenameFromFileId($value, $type);
             break;
             case 'range':
             case 'float':
