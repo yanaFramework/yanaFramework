@@ -116,7 +116,7 @@ class plugin_user_group extends StdClass implements IsPlugin
 
             // get user default settings
             if (!empty($userName)) {
-                $query = new DbSelect($database);
+                $query = new \Yana\Db\Queries\Select($database);
                 // get list of user settings
                 $query->setTable('securityrules');
                 $query->setWhere(array('USER_ID', '=', strtoupper($userName)));

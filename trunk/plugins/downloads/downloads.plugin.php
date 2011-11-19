@@ -62,7 +62,7 @@ class plugin_downloads extends StdClass implements IsPlugin
      */
     public function download_file($target, $fullsize = false)
     {
-        $source = DbBlob::getFilenameFromSession($target, $fullsize);
+        $source = \Yana\Db\Blob::getFilenameFromSession($target, $fullsize);
 
         if ($source === false) {
             throw new FileNotFoundError();
