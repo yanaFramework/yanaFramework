@@ -76,7 +76,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
         $yana = Yana::getInstance();
 
         if (!class_exists("MDB2")) {
-            throw new PearDbError();
+            throw new \Yana\Db\PearDbException();
         }
 
         $yana->setVar("DATABASE_ACTIVE",      YANA_DATABASE_ACTIVE);
@@ -113,7 +113,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
         global $YANA;
 
         if (!class_exists("MDB2") && !$silent) {
-            throw new PearDbError();
+            throw new \Yana\Db\PearDbException();
         }
 
         if (empty($dbms) || empty($list)) {
@@ -310,7 +310,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
 
         if (!class_exists("MDB2")) {
             if (!$silent) {
-                throw new PearDbError();
+                throw new \Yana\Db\PearDbException();
             }
             return false;
         }
