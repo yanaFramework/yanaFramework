@@ -64,7 +64,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         try {
-            \FileDbConnection::setBaseDirectory(CWD. 'resources/');
+            \Yana\Db\FileDb\Driver::setBaseDirectory(CWD. 'resources/');
             chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
             if (!isset($this->db)) {
                 \Yana\Db\DDl\DDL::setDirectory(CWD. 'resources/');

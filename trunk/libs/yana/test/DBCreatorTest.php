@@ -54,8 +54,8 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function __construct()
     {
-        FileDbConnection::setBaseDirectory(CWD. 'resources/db/');
-        DDL::setDirectory(CWD. 'resources/db/');
+        \Yana\Db\FileDb\Driver::setBaseDirectory(CWD. 'resources/db/');
+        \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/db/');
     }
 
     /**

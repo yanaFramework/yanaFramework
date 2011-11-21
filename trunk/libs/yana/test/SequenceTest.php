@@ -82,7 +82,7 @@ class SequenceTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
-        FileDbConnection::setBaseDirectory(CWD . '/resources/db/');
+        \Yana\Db\FileDb\Driver::setBaseDirectory(CWD . '/resources/db/');
         try {
 
             \Yana\Db\FileDb\Sequence::create($this->ascendingId, +1, null, null, +3, false);

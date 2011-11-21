@@ -51,9 +51,9 @@ class FileDbTest extends PHPUnit_Framework_TestCase
     {
         try {
 
-            FileDbConnection::setBaseDirectory(CWD. 'resources/db/');
-            DDL::setDirectory(CWD. 'resources/');
-            $schema = XDDL::getDatabase('check');
+            \Yana\Db\FileDb\Driver::setBaseDirectory(CWD. 'resources/db/');
+            \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
+            $schema = \XDDL::getDatabase('check');
             $this->dbsobj = new FileDb($schema);
             restore_error_handler();
 
