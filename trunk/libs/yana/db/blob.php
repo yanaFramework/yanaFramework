@@ -28,7 +28,7 @@
 namespace Yana\Db;
 
 /**
- * read binary large objects (blobs) from database
+ * Read binary large objects (blobs) from database.
  *
  * Example of usage:
  * <code>
@@ -44,39 +44,34 @@ namespace Yana\Db;
  * $file->copy('foo/bar.dat');
  * </code>
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  * @since       2.9.2
  */
 class Blob extends \FileReadonly
 {
-    /**#@+
-     * @access  private
-     */
-
-    /** @var int    */ private $_size = 0;
-    /** @var string */ private $_type = 'application/unknown';
-
-    /**#@-*/
 
     /**
-     * @var     string
-     * @access  protected
-     * @static
+     * @var int
+     */
+    private $_size = 0;
+    /**
+     * @var string
+     */
+    private $_type = 'application/unknown';
+
+    /**
+     * @var  string
      * @ignore
      */
     protected static $blobDir = null;
 
     /**
-     * read file contents
+     * Read file contents.
      *
      * Tries to read the blob contents, decompresses it and caches the file attributes like
      * type, size and original filename.
      *
-     * An message is issued
-     *
-     * @access  public
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the blob is not valid
      * @throws  \Yana\Core\Exceptions\NotFoundException     if the blob does not exist
      */
@@ -139,11 +134,10 @@ class Blob extends \FileReadonly
     }
 
     /**
-     * get mime-type of this file
+     * Get mime-type of this file.
      *
      * Returns bool(false) on error.
      *
-     * @access  public
      * @return  string|bool(false)
      */
     public function getMimeType()
@@ -156,12 +150,11 @@ class Blob extends \FileReadonly
     }
 
     /**
-     * get size of this file
+     * Get size of this file in bytes.
      *
-     * Returns the size of the file in bytes (from cached value).
+     * Note: this function may return a cached value.
      * If an error occurs, bool(false) is returned.
      *
-     * @access  public
      * @return  int
      */
     public function getFilesize()
@@ -179,10 +172,8 @@ class Blob extends \FileReadonly
      * Returns the path of a file as stored in the session.
      * Throws an exception if the id is invalid or the file is not found.
      *
-     * @access  public
      * @param   int   $id        index in files list, of the file to get
      * @param   bool  $fullsize  show full size or thumb-nail (images only)
-     * @static
      * @return  string
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if file with index $id does not exist
      * @throws  FileNotFoundError                               if the requested file no longer exists
@@ -213,10 +204,8 @@ class Blob extends \FileReadonly
     }
 
     /**
-     * Store filename as session var and return an ID
+     * Store filename as session var and return an ID.
      *
-     * @access  public
-     * @static
      * @param   string  $file
      * @return  string
      * @throws  FileNotFoundError  if the given $file does not exist
@@ -242,10 +231,8 @@ class Blob extends \FileReadonly
     /**
      * copy the file to some destination
      *
-     * @access   public
      * @param    string  $destFile   destination to copy the file to
-     * @param    bool    $overwrite  setting this to false will prevent
-     *                               existing files from getting overwritten
+     * @param    bool    $overwrite  setting this to false will prevent existing files from getting overwritten
      * @return   bool
      * @throws   \Yana\Core\Exceptions\InvalidArgumentException  on invalid filename
      */
@@ -285,10 +272,8 @@ class Blob extends \FileReadonly
     }
 
     /**
-     * create unique id to identify a file
+     * Create unique id to identify a file.
      *
-     * @access  public
-     * @static
      * @param   \Yana\Db\Ddl\Column  $column  column definition
      * @return  string
      * @ignore
@@ -305,10 +290,8 @@ class Blob extends \FileReadonly
     }
 
     /**
-     * extract unique file-id from a database value
+     * Extract unique file-id from a database value.
      *
-     * @access  public
-     * @static
      * @param   string  $filename filename
      * @return  string
      * @ignore
@@ -322,8 +305,6 @@ class Blob extends \FileReadonly
     /**
      * Get matching filename for a given id.
      *
-     * @access  public
-     * @static
      * @param   string  $id    file id
      * @param   bool    $type  file type (image or file, leave blank for auto-detect)
      * @return  string
@@ -358,9 +339,9 @@ class Blob extends \FileReadonly
     }
 
     /**
-     * get filename by id
+     * Returns the path to the file with the given id.
      *
-     * Searches for a matching filename for a given id.
+     * Note: this does not check if the file exists.
      *
      * @param   string  $id  file id
      * @return  string
@@ -372,9 +353,8 @@ class Blob extends \FileReadonly
     }
 
     /**
-     * remove a binary large object from database
+     * Remove a binary large object from the database.
      *
-     * This removes a files (blob) from the database.
      * The type of the column must be "file" or "image".
      *
      * IMPORTANT NOTE: This is a low-level function that DOES NOT
@@ -383,7 +363,6 @@ class Blob extends \FileReadonly
      *
      * Returns bool(true) on success and bool(false) if the file does not exist.
      *
-     * @access  public
      * @param   string    $fileToDelete  filename which would be removed
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the given file was not found
      * @since   3.1.0
@@ -445,7 +424,7 @@ class Blob extends \FileReadonly
     }
 
     /**
-     * sanitize file id
+     * Sanitize file id.
      *
      * For file upload error handling see the following example:
      * <code>
@@ -488,8 +467,6 @@ class Blob extends \FileReadonly
      *
      * See the PHP manual for more details on these codes.
      *
-     * @access  private
-     * @static
      * @param   array  $file  item taken from $_FILES array
      * @return  string
      */
@@ -539,8 +516,6 @@ class Blob extends \FileReadonly
     /**
      * Get original filename.
      *
-     * @access  private
-     * @static
      * @param   array  $file  item taken from $_FILES array
      * @return  string
      */
@@ -582,10 +557,8 @@ class Blob extends \FileReadonly
      *
      * For images use {@see \Yana\Db\Blob::uploadImage()}.
      *
-     * @access  public
-     * @static
-     * @param   array      $file    item taken from array $_FILES
-     * @param   string     $fileId  name of target file
+     * @param   array   $file    item taken from array $_FILES
+     * @param   string  $fileId  name of target file
      * @return  string
      * @ignore
      */
@@ -671,14 +644,12 @@ class Blob extends \FileReadonly
      *
      * For other types of files use {@see \Yana\Db\Blob::uploadFile()}.
      *
-     * @access  public
-     * @static
-     * @param   array      $file      item taken from array $_FILES
-     * @param   string     $fileId    name of target file
-     * @param   array      $settings  int    width       image width in pixel,
-     *                                int    height      image height in pixel,
-     *                                bool   ratio       keep aspect ratio when resizing?,
-     *                                string background  RGB color as hex-value (e.g. #ffffff)
+     * @param   array   $file      item taken from array $_FILES
+     * @param   string  $fileId    name of target file
+     * @param   array   $settings  int    width       image width in pixel,
+     *                             int    height      image height in pixel,
+     *                             bool   ratio       keep aspect ratio when resizing?,
+     *                             string background  RGB color as hex-value (e.g. #ffffff)
      * @return  string
      * @ignore
      */
@@ -751,6 +722,7 @@ class Blob extends \FileReadonly
         $image->outputToFile($thumbnailPath, 'png');
         return $path;
     }
+
 }
 
 ?>

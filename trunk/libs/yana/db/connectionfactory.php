@@ -111,7 +111,7 @@ class ConnectionFactory extends \Yana\Core\Object
      * }}
      *
      * @param  array  $dsn  for a description of the $dsn parameter see the text above
-     * @throws PearDbError  when Pear MDB2 is not available
+     * @throws \Yana\Db\PearDbException  when Pear MDB2 is not available
      */
     public function __construct(array $dsn = null)
     {
@@ -119,7 +119,7 @@ class ConnectionFactory extends \Yana\Core\Object
             /* error handling */
             $message = "Unable to open connection to database using PEAR-DB. Might not be installed.";
             \Yana\Log\LogManager::getLogger()->addLog($message);
-            throw new PearDbError();
+            throw new \Yana\Db\PearDbException();
             $this->_database = null;
         }
 
@@ -128,12 +128,11 @@ class ConnectionFactory extends \Yana\Core\Object
          */
 
         // get list of ODBC-settings
-        $require_odbc = \Yana::getDefault('database.require_odbc');
-        if (!is_array($require_odbc)) {
+        $requireOdbc = \Yana::getDefault('database.require_odbc');
+        if (!is_array($requireOdbc)) {
             // no ODBC-settings available
-            $require_odbc = array();
+            $requireOdbc = array();
         }
-        assert('is_array($require_odbc);');
 
         // get list of default connection options
         $this->_options = \Yana::getDefault('database.options');
@@ -181,7 +180,7 @@ class ConnectionFactory extends \Yana\Core\Object
          */
         /* 3.1 determine if odbc is required to connect to this dbms */
         if (!empty($this->_dsn['DBMS'])) {
-            if (@$this->_dsn['USE_ODBC'] == true || in_array(mb_strtolower($this->_dsn['DBMS']), $require_odbc)) {
+            if (@$this->_dsn['USE_ODBC'] == true || in_array(mb_strtolower($this->_dsn['DBMS']), $requireOdbc)) {
                 $dsn['phptype']  = 'ODBC';
                 $dsn['dbsyntax'] = $this->_dsn['DBMS'];
             } else {
