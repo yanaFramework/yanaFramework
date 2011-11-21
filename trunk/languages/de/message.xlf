@@ -422,12 +422,12 @@
                     <target>Bitte wählen Sie für diese Operation mindestens einen Eintrag aus.</target>
                 </trans-unit>
             </group>
-            <group id="DbConnectionError">
-                <trans-unit id="DbConnectionError.h">
+            <group id="ConnectionException">
+                <trans-unit id="ConnectionException.h">
                     <source>An error occurred</source>
                     <target>Es ist ein Fehler aufgetreten</target>
                 </trans-unit>
-                <trans-unit id="DbConnectionError.p">
+                <trans-unit id="ConnectionException.p">
                     <source>Unable to establish database connection.<it id="br3" pos="open">&lt;br /&gt;</it>The service may be temporarily unavailable. Please try again later. If you continue to get this message, please report this issue to your administrator.<it id="br4" pos="open">&lt;br /&gt;</it>Administrator: Please check your connection settings on your administration panel. Check if your database server is running and reachable.</source>
                     <target>Verbindung zur Datenbank konnte nicht hergestellt werden.<it id="br3" pos="open">&lt;br /&gt;</it>Dieser Dienst ist möglicherweise vorübergehend nicht verfügbar. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut. Sollten Sie weiterhin diese Meldung erhalten, informieren Sie bitte den Administrator über dieses Problem.<it id="br4" pos="open">&lt;br /&gt;</it>Administrator: bitte prüfen Sie im Administrationsmenü, ob die Einstellungen der Datenbankverbindung korrekt sind. Stellen Sie sicher, dass der Datenbankserver aktiviert und erreichbar ist.</target>
                 </trans-unit>
