@@ -101,10 +101,10 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     public function __construct()
     {
-        DDL::setDirectory(CWD . '/../../../config/db/');
-        FileDbConnection::setBaseDirectory(CWD . '/resources/db/');
+        \Yana\Db\Ddl\DDL::setDirectory(CWD . '/../../../config/db/');
+        \Yana\Db\FileDb\Driver::setBaseDirectory(CWD . '/resources/db/');
         // path to plugins configuration file
-        PluginManager::setPath(CWD . '/resources/db/user/plugins.cfg', CWD . '/../../../plugins/');
+        \Yana\Plugins\Manager::setPath(CWD . '/resources/db/user/plugins.cfg', CWD . '/../../../plugins/');
     }
 
     /**
@@ -116,8 +116,8 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         chdir(CWD . '/../../../');
-        DDL::setDirectory('config/db/');
-        $schema = XDDL::getDatabase('user');
+        \Yana\Db\Ddl\DDL::setDirectory('config/db/');
+        $schema = \XDDL::getDatabase('user');
         $this->_database = new FileDb($schema);
         SessionManager::setDatasource($this->_database);
         YanaUser::setDatasource($this->_database);

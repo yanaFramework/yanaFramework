@@ -87,7 +87,7 @@ class CounterTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         chdir(CWD . '../../../');
-        FileDbConnection::setBaseDirectory(CWD . '/resources/db/');
+        \Yana\Db\FileDb\Driver::setBaseDirectory(CWD . '/resources/db/');
         try {
             \Yana\Db\FileDb\Counter::create($this->_counterId, 1, null, null, null, true);
             \Yana\Db\FileDb\Counter::create($this->_counterNoIPId, 1, null, null, null, true, false);
