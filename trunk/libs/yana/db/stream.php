@@ -30,7 +30,6 @@
  *
  * this class is a database abstraction api, that uses pear db
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
@@ -38,28 +37,59 @@ class DbStream extends \Yana\Core\Object implements Serializable
 {
     /**#@+
      * @ignore
-     * @access  protected
      */
 
-    /** @var  MDB2_Driver_Common */  protected $database = null;
-    /** @var  string */  protected $name = "";
-    /** @var  array  */  protected $dsn = array();
-
-    /**#@-*/
-    /**#@+
-     * @ignore
-     * @access  private
+    /**
+     * @var  \MDB2_Driver_Common
      */
+    protected $database = null;
 
-    /** @var  array  */  private $_queue = array();
-    /** @var  array  */  private $_cache = array();
-    /** @var  array  */  private $_joins = array();
-    /** @var  array  */  private $_reservedSqlKeywords = null;
-    /** @var  array  */  private $_lastModified = array();
-    /** @var  string */  private $_lastModifiedPath = "db_last_modified.tmp";
-    /** @var  string */  private static $_tempDir = "cache/";
+    /**
+     * @var  string
+     */
+    protected $name = "";
 
-    /**#@-*/
+    /**
+     * @var  array
+     */
+    protected $dsn = array();
+
+    /** #@- */
+
+    /**
+     * @var  array
+     */
+    private $_queue = array();
+
+    /**
+     * @var  array
+     */
+    private $_cache = array();
+
+    /**
+     * @var  array
+     */
+    private $_joins = array();
+
+    /**
+     * @var  array
+     */
+    private $_reservedSqlKeywords = null;
+
+    /**
+     * @var  array
+     */
+    private $_lastModified = array();
+
+    /**
+     * @var  string
+     */
+    private $_lastModifiedPath = "db_last_modified.tmp";
+
+    /**
+     * @var  string
+     */
+    private static $_tempDir = "cache/";
 
     /**
      * database schema
@@ -69,21 +99,20 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * Please note that you should not change this schema unless
      * you REALLY know what you are doing.
      *
-     * @var     \Yana\Db\Ddl\Database
-     * @access  protected
+     * @var  \Yana\Db\Ddl\Database
      * @ignore
      */
     protected $schema  = null;
 
     /**
-     * create a new instance
+     * Create a new instance.
      *
      * Each database connection depends on a schema file describing the database.
      * These files are to be found in config/db/*.db.xml
      *
      * @param   string|\Yana\Db\Ddl\Database  $schema  schema name or schema in database definition language
      * @param   \Yana\Db\ConnectionFactory    $server  Connection to a database server
-     * @throws  DbConnectionError                           when connection to database failed
+     * @throws  \Yana\Db\ConnectionException                when connection to database failed
      * @throws  \Yana\Core\Exceptions\NotFoundException     when structure file is not found
      * @throws  \Yana\Core\Exceptions\NotReadableException  when trying to reverse-engineer database structure,
      *                                                      but the database's schema is unknown or not readable
@@ -100,8 +129,8 @@ class DbStream extends \Yana\Core\Object implements Serializable
         $this->dsn = $server->getDsn();
 
         // Error: Unable to connect to database
-        if (!MDB2::isConnection($this->database)) {
-            throw new DbConnectionError();
+        if (!\MDB2::isConnection($this->database)) {
+            throw new \Yana\Db\ConnectionException();
         }
 
         if ($schema instanceof \Yana\Db\Ddl\Database) {
@@ -117,9 +146,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
      *
      * The target directory must be read- and writable.
      *
-     * @access  public
-     * @static
-     * @param   string  $dir  absolute path to temp-directory
+     * @param  string  $dir  absolute path to temp-directory
      */
     public static function setTempDir($dir)
     {
@@ -133,8 +160,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * The returned path always ends with a slash.
      * Note that this function does not check if the given path is valid.
      *
-     * @access  public
-     * @static
      * @return  string
      */
     public static function getTempDir()
@@ -150,9 +175,8 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * If no schema file is available, this framework has the ability to
      * reverse engineer the database at runtime.
      *
-     * @access public
-     * @return \Yana\Db\Ddl\Database
-     * @throws DBError when reverse-engineering failed
+     * @return  \Yana\Db\Ddl\Database
+     * @throws  DBError when reverse-engineering failed
      */
     public function getSchema()
     {
@@ -161,7 +185,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
                 $source = $this->name;
                 assert('is_string($source); // Invalid member type. Name is supposed to be a string.');
                 // load file
-                $schema = XDDL::getDatabase($source);
+                $schema = \XDDL::getDatabase($source);
             } else {
                 // auto-discover / reverse engineering
                 $schema = \Yana\Db\Ddl\DatabaseFactory::createDatabase($this->database); // may throw DBError
@@ -180,9 +204,8 @@ class DbStream extends \Yana\Core\Object implements Serializable
      *
      * Note that you can't get an unnamed database object via this function.
      *
-     * @access  public
      * @param   string  $name  name of a database object
-     * @return  DDL
+     * @return  \Yana\Db\Ddl\DDL
      */
     public function __get($name)
     {
@@ -191,11 +214,8 @@ class DbStream extends \Yana\Core\Object implements Serializable
     }
 
     /**
-     * magic function call
-     *
      * Calls a function on the selected database schema and returns the result.
      *
-     * @access  public
      * @param   string  $name       name
      * @param   array   $arguments  arguments
      * @return  mixed
@@ -207,11 +227,8 @@ class DbStream extends \Yana\Core\Object implements Serializable
     }
 
     /**
-     * magic is set
-     *
      * Returns true if a named object with the given name exists in the database schema.
      *
-     * @access  public
      * @param   string  $name  name of a database object
      * @return  bool
      */
@@ -226,7 +243,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * This function returns an associative array containing
      * information on the current connection or bool(false) on error.
      *
-     * @access  public
      * @return  array
      * @see     \Yana\Db\ConnectionFactory::getDsn()
      */
@@ -240,11 +256,8 @@ class DbStream extends \Yana\Core\Object implements Serializable
     }
 
     /**
-     * get name of database management system
-     *
      * Returns the name of the chosen DBMS as a lower-cased string.
      *
-     * @access  public
      * @return  string
      */
     public function getDBMS()
@@ -286,11 +299,9 @@ class DbStream extends \Yana\Core\Object implements Serializable
     }
 
     /**
-     * Alias of DbStream::write()
+     * Alias of write()
      *
-     * @access  public
      * @return  bool
-     * @see     DbStream::write()
      */
     public function commit()
     {
@@ -298,13 +309,9 @@ class DbStream extends \Yana\Core\Object implements Serializable
     }
 
     /**
-     * Commit current transaction
+     * Commit current transaction and write all changes to the database.
      *
-     * This writes all changes to the database
-     *
-     * @access  public
      * @return  bool
-     * @name    DbStream::write()
      * @throws  \Yana\Core\Exceptions\NotWriteableException  when the database or table is locked
      */
     public function write()
@@ -319,8 +326,8 @@ class DbStream extends \Yana\Core\Object implements Serializable
         }
 
         // start transaction
-        $dbConnection = $this->getConnection();
-        $dbConnection->beginTransaction();
+        $connection = $this->getConnection();
+        $connection->beginTransaction();
         $dbSchema = $this->getSchema();
 
         assert('!isset($i); /* Cannot redeclare $i */');
@@ -443,7 +450,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
                  * 4.1.2) rollback on error
                  */
                 \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", E_USER_WARNING, $result->getMessage());
-                $result = $dbConnection->rollback();
+                $result = $connection->rollback();
                 /*
                  * 4.1.3) when rollback failed, create entry in logs
                  */
@@ -477,7 +484,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
          * conditions where two transaction try to modify
          * the same data.
          */
-        $result = $dbConnection->commit();
+        $result = $connection->commit();
         /*
          * 5.1) commit failed
          */
@@ -556,7 +563,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * )
      * </code>
      *
-     * @access  public
      * @param   string|\Yana\Db\Queries\Select  $key      the address of the value(s) to retrieve
      * @param   array            $where    where clause
      * @param   array            $orderBy  a list of columns to order the resultset by
@@ -645,7 +651,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * This is a shortcut, which e.g. allows you to prepare
      * a query as an object and reuse it with multiple arguments.
      *
-     * @access  public
      * @param   string|\Yana\Db\Queries\Update  $key    the address of the row that should be updated
      * @param   mixed            $value  value
      * @return  bool
@@ -772,12 +777,12 @@ class DbStream extends \Yana\Core\Object implements Serializable
         } else {
             $constraint = array($column => $value);
         }
-        if (DbStructureGenerics::checkConstraint($table, $constraint) === false) {
+        if (\Yana\Db\StructureGenerics::checkConstraint($table, $constraint) === false) {
             \Yana\Log\LogManager::getLogger()->addLog("Cannot set values. Constraint check failed for: '$updateQuery'.");
             return false;
 
         } else {
-            DbStructureGenerics::onBeforeUpdate($table, $column, $value, $updateQuery->getRow());
+            \Yana\Db\StructureGenerics::onBeforeUpdate($table, $column, $value, $updateQuery->getRow());
             $triggerArgs[] = array(
                 \Yana\Db\Queries\TypeEnumeration::UPDATE,
                 $table,
@@ -833,7 +838,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
     /**
      * alias of DbStream::insertOrUpdate()
      *
-     * @access  public
      * @param   string|\Yana\Db\Queries\Insert  $key    the address of the row that should be updated|inserted
      * @param   mixed            $value  value
      * @return  bool
@@ -877,7 +881,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * This is a shortcut, which e.g. allows you to prepare
      * a query as an object and reuse it with multiple arguments.
      *
-     * @access  public
      * @param   string|\Yana\Db\Queries\Insert  $key    the address of the row that should be inserted|updated
      * @param   mixed            $value  value
      * @return  bool
@@ -966,8 +969,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
     }
 
     /**
-     * insert row
-     *
      * Insert $value at position $key.
      *
      * This function returns bool(true) on success
@@ -983,7 +984,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * This is a shortcut, which e.g. allows you to prepare
      * a query as an object and reuse it with multiple arguments.
      *
-     * @access  public
      * @param   string|\Yana\Db\Queries\Insert  $key    the address of the row that should be inserted
      * @param   mixed            $value  value
      * @return  bool
@@ -1056,7 +1056,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
         /*
          * 3.2) error - constraint check failed
          */
-        if (DbStructureGenerics::checkConstraint($table, $value) === false) {
+        if (\Yana\Db\StructureGenerics::checkConstraint($table, $value) === false) {
             \Yana\Log\LogManager::getLogger()->addLog("Insert on table '{$tableName}' failed. " .
                 "Constraint check failed.", E_USER_WARNING, $value);
             return false;
@@ -1064,7 +1064,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
         /*
          * 3.3) fire trigger
          */
-        DbStructureGenerics::onBeforeInsert($table, $value, $insertQuery->getRow());
+        \Yana\Db\StructureGenerics::onBeforeInsert($table, $value, $insertQuery->getRow());
         $triggerArgs[] = array(
             \Yana\Db\Queries\TypeEnumeration::INSERT,
             $table,
@@ -1140,7 +1140,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * present. This is a shortcut, which e.g. allows you to prepare
      * a query as an object and reuse it with multiple arguments.
      *
-     * @access  public
      * @param   string|\Yana\Db\Queries\Delete  $key    the address of the row that should be removed
      * @param   array            $where  where clause
      * @param   int              $limit  maximum number of rows to remove
@@ -1211,7 +1210,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
         foreach ($oldRows as $oldRow)
         {
             // fire trigger
-            DbStructureGenerics::onBeforeDelete($table, $oldRow, $deleteQuery->getRow());
+            \Yana\Db\StructureGenerics::onBeforeDelete($table, $oldRow, $deleteQuery->getRow());
             // save trigger settings for onAfterDelete
             $triggerArgs[] = array(
                 \Yana\Db\Queries\TypeEnumeration::DELETE,
@@ -1256,7 +1255,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * Also note, that the wildcard '*' may be used to refer to the "least recently used" table.
      * This is a shortcut that you may use in your scripts.
      *
-     * @access  public
      * @param   string $table1  name of the table to join another one with
      * @param   string $table2  name of another table to join table1 with
      *          (when omitted will remove all previously set joins from table1)
@@ -1364,7 +1362,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * Note that when providing the DbQuery object, the $limit and $offset arguments are
      * ignored.
      *
-     * @access  public
      * @param   string|\Yana\Db\Queries\AbstractQuery  $sqlStmt  one SQL statement (or a query object) to execute
      * @param   int             $offset   the row to start from
      * @param   int             $limit    the maximum numbers of rows in the resultset
@@ -1399,14 +1396,14 @@ class DbStream extends \Yana\Core\Object implements Serializable
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
 
-        $dbConnection = $this->getConnection();
+        $connection = $this->getConnection();
         /*
          * 3) send query to database
          */
         if ($offset > 0 || $limit > 0) {
-            $dbConnection->setLimit($limit, $offset);
+            $connection->setLimit($limit, $offset);
         }
-        return $dbConnection->query($sqlStmt);
+        return $connection->query($sqlStmt);
     }
 
     /**
@@ -1420,7 +1417,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      *
      * Returns 0 if the table is empty or does not exist.
      *
-     * @access  public
      * @param   string|\Yana\Db\Queries\SelectCount  $table  name of a table
      * @param   array                 $where  optional where clause
      * @return  int
@@ -1461,7 +1457,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * Note: if no table is provided, the most recently used
      * table will be tested instead.
      *
-     * @access  public
      * @param   string  $table  name of a table
      * @return  bool
      */
@@ -1482,7 +1477,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      *
      * @uses    $DbStream->exists('table.5')
      *
-     * @access  public
      * @param   string|\Yana\Db\Queries\SelectExist  $key    adress to check
      * @param   array                 $where  optional where clause
      * @return  bool
@@ -1528,7 +1522,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      *
      * @uses $DbStream->isWriteable()
      *
-     * @access  public
      * @return  bool
      */
     public function isWriteable()
@@ -1558,7 +1551,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      *
      * @uses $DbStream->importSQL('some_file.sql')
      *
-     * @access  public
      * @param   string|array  $sqlFile filename which contain the SQL statments or an nummeric array of SQL statments.
      * @return  bool
      * @name    DbStream::importsql()
@@ -1641,7 +1633,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      *
      * This function returns the name of the database as a string.
      *
-     * @access  public
      * @return  string
      * @ignore
      */
@@ -1657,7 +1648,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
     /**
      * get name of current database definition
      *
-     * @access  protected
      * @return  string
      * @ignore
      */
@@ -1672,17 +1662,16 @@ class DbStream extends \Yana\Core\Object implements Serializable
     /**
      * isError
      *
-     * @access  public
      * @param   mixed   $result  result
      * @return  bool
      * @ignore
      */
     public function isError($result)
     {
-        if ($result instanceof FileDbResult) {
+        if ($result instanceof \Yana\Db\FileDb\Result) {
             return $result->isError();
         } else {
-            return MDB2::isError($result);
+            return \MDB2::isError($result);
         }
     }
 
@@ -1693,7 +1682,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * surrounded by delimiters, depending on
      * the DBMS selected.
      *
-     * @access  public
      * @param   mixed  $value  value too quote
      * @return  string
      * @ignore
@@ -1722,8 +1710,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * This will only quote such ids, which are a known
      * SQL keyword.
      *
-     * @access  public
-     * @param   mixed  $value   value
+     * @param   mixed  $value  value
      * @return  string
      * @ignore
      */
@@ -1781,9 +1768,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
     /**
      * check if database is writeable
      *
-     * @access  private
      * @return  bool
-     * @ignore
      */
     private function _isWriteable()
     {
@@ -1805,10 +1790,8 @@ class DbStream extends \Yana\Core\Object implements Serializable
      *
      * this algorithm has O(log(n)) running time
      *
-     * @access  private
      * @param   string  $name  SQL keyword
      * @return  bool
-     * @ignore
      */
     private function _isSqlKeyword($name)
     {
@@ -1831,11 +1814,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
         }
 
         $name = mb_strtoupper($name);
-        if (\Yana\Util\Hashtable::quickSearch($this->_reservedSqlKeywords, $name) === false) {
-            return false;
-        } else {
-            return true;
-        }
+        return (bool) (\Yana\Util\Hashtable::quickSearch($this->_reservedSqlKeywords, $name) !== false);
     }
 
     /**
@@ -1854,11 +1833,9 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * data is no longer valid and ensure, the "dirty" data is not written to the
      * database.
      *
-     * @access  private
      * @param   string  $table  table
      * @param   string  $row    row
      * @return  int
-     * @ignore
      */
     private function _getLastModified($table, $row)
     {
@@ -1936,8 +1913,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * resets the queue of pending SQL statements and
      * resets the database cache.
      *
-     * @access  public
-     * @name    DbStream::reset()
+     * @name  DbStream::reset()
      */
     public function reset()
     {
@@ -1948,8 +1924,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
     /**
      * Alias of DbStream::reset()
      *
-     * @access  public
-     * @see     DbStream::reset()
+     * @see  DbStream::reset()
      */
     public function rollback()
     {
@@ -1966,7 +1941,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * they are both objects of the same class and they both
      * refer to the same structure file and use equal database connections.
      *
-     * @access   public
      * @param    \Yana\Core\IsObject $anotherObject  another object to compare
      * @return   string
      */
@@ -1997,10 +1971,9 @@ class DbStream extends \Yana\Core\Object implements Serializable
      * Returns bool(true) if all foreign key constraints are satisfied and
      * bool(false) otherwise.
      *
-     * @access   protected
-     * @param    \Yana\Db\Ddl\Table $table       table definition
-     * @param    mixed    $value       row or cell value
-     * @param    string   $columnName  name of updated column (when updating a cell)
+     * @param    \Yana\Db\Ddl\Table  $table       table definition
+     * @param    mixed               $value       row or cell value
+     * @param    string              $columnName  name of updated column (when updating a cell)
      * @return   bool
      * @ignore
      */
@@ -2087,8 +2060,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
     /**
      * execute trigger after commit
      *
-     * @access  private
-     * @param   array  $list    arguments
+     * @param  array  $list  arguments
      */
     private function _executeTrigger(array $list)
     {
@@ -2101,16 +2073,16 @@ class DbStream extends \Yana\Core\Object implements Serializable
                 case \Yana\Db\Queries\TypeEnumeration::INSERT:
                     assert('count($args) === 4;');
                     assert('is_array($args[2]);');
-                    DbStructureGenerics::onAfterInsert($args[1], $args[2], $args[3]);
+                    \Yana\Db\StructureGenerics::onAfterInsert($args[1], $args[2], $args[3]);
                 break;
                 case \Yana\Db\Queries\TypeEnumeration::UPDATE:
                     assert('count($args) === 5;');
-                    DbStructureGenerics::onAfterUpdate($args[1], $args[2], $args[3], $args[4]);
+                    \Yana\Db\StructureGenerics::onAfterUpdate($args[1], $args[2], $args[3], $args[4]);
                 break;
                 case \Yana\Db\Queries\TypeEnumeration::DELETE:
                     assert('count($args) === 4;');
                     assert('is_array($args[2]);');
-                    DbStructureGenerics::onAfterDelete($args[1], $args[2], $args[3]);
+                    \Yana\Db\StructureGenerics::onAfterDelete($args[1], $args[2], $args[3]);
                 break;
             }
         }
@@ -2121,7 +2093,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
      *
      * Returns the serialized object as a string.
      *
-     * @access  public
      * @return  string
      */
     public function serialize()
@@ -2137,8 +2108,7 @@ class DbStream extends \Yana\Core\Object implements Serializable
     /**
      * Reinitializes the object.
      *
-     * @access  public
-     * @param   string  $string  string to unserialize
+     * @param  string  $string  string to unserialize
      */
     public function unserialize($string)
     {
@@ -2151,7 +2121,6 @@ class DbStream extends \Yana\Core\Object implements Serializable
     /**
      * get database connection
      *
-     * @access  protected
      * @return  \MDB2_Driver_Common
      * @ignore
      */

@@ -896,7 +896,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * Note that this operation is not case sensitive.
      *
-     * FOR INTERNAL USE BY {@see FileDbConnection} ONLY.
+     * FOR INTERNAL USE BY {@see \Yana\Db\FileDb\Driver} ONLY.
      *
      * @return  bool
      * @ignore
@@ -1585,7 +1585,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * Returns bool(true) if there is an index in the parent table, that has an index on this
      * column.
      *
-     * FOR INTERNAL USE BY {@see FileDbConnection} ONLY.
+     * FOR INTERNAL USE BY {@see \Yana\Db\FileDb\Driver} ONLY.
      *
      * @return  float
      * @ignore
