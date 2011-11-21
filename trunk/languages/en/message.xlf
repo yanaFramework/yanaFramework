@@ -422,12 +422,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="DbConnectionError">
-                <trans-unit id="DbConnectionError.h">
+            <group id="ConnectionException">
+                <trans-unit id="ConnectionException.h">
                     <target>An error occurred</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="DbConnectionError.p">
+                <trans-unit id="ConnectionException.p">
                     <target>Unable to establish database connection.<it id="br3" pos="open">&lt;br /&gt;</it>The service may be temporarily unavailable. Please try again later. If you continue to get this message, please report this issue to your administrator.<it id="br4" pos="open">&lt;br /&gt;</it>Administrator: Please check your connection settings on your administration panel. Check if your database server is running and reachable.</target>
                     <source/>
                 </trans-unit>
