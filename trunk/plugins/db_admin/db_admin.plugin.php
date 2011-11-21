@@ -326,7 +326,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
              */
             $dbSchema = XDDL::getDatabase($item);
             $db = new DbStream($dbSchema);
-            $fileDb = new FileDb($dbSchema);
+            $fileDb = new \Yana\Db\FileDb($dbSchema);
 
             /**
              * prepare queries
