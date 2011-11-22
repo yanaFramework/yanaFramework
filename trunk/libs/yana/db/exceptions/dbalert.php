@@ -26,17 +26,30 @@
  */
 
 /**
- * Error
+ * Database alert
  *
- * This class represents errors passed to the user.
+ * This class represents alerts passed to the user.
  *
  * @access      public
  * @package     yana
  * @subpackage  error_reporting
  */
-class PearDbError extends Error
+class DbAlert extends Alert
 {
-    /* intentionally left blank */
+    /**
+     * constructor
+     *
+     * This function creates a new log message.
+     *
+     * @param  string      $message   the message that should be reported
+     * @param  int         $code      optional error code
+     * @param  \Exception  $previous  use this when you need to rethrow a catched exception
+     */
+    public function __construct($message = "", $code = E_USER_NOTICE, \Exception $previous = null)
+    {
+        parent::__construct("DB: $message", $code, $previous);
+        \Yana\Log\LogManager::getLogger()->addLog($message, $code);
+    }
 }
 
 ?>
