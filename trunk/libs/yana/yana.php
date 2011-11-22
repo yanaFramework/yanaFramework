@@ -1213,7 +1213,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
         if (YANA_DATABASE_ACTIVE) {
             $connection = new DbStream($schema);
         } else {
-            $connection = new FileDb($schema);
+            $connection = new \Yana\Db\FileDb($schema);
         }
         if (!empty($schemaName)) {
             self::$_connections[$schemaName] = $connection;
