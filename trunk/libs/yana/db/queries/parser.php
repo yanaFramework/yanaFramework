@@ -53,7 +53,7 @@ class Parser extends \Yana\Core\Object
     /**
      * Set up the database to build the queries upon.
      *
-     * @param  \DbStream  $database  database connection
+     * @param  \DbStream  $database 
      */
     public function __construct(\DbStream $database)
     {
