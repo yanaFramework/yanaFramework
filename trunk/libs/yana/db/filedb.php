@@ -28,9 +28,7 @@
 namespace Yana\Db;
 
 /**
- * simulate a database
- *
- * this class simulates a sql-database on a flat-file
+ * <<decorator>> Simulates a sql-database on a flat-file.
  *
  * Example:
  * <code>
@@ -45,42 +43,53 @@ namespace Yana\Db;
  * @package     yana
  * @subpackage  db
  */
-class FileDb extends \DbStream
+class FileDb extends \Yana\Db\AbstractConnection
 {
-    /**
-     * database connection information
-     *
-     * Note: only "database" name is used.
-     * All other entries are static.
-     *
-     * @var  array
-     */
-    protected $dsn = array(
-        'USE_ODBC' => false,
-        'DBMS'     => '',
-        'HOST'     => false,
-        'PORT'     => false,
-        'USERNAME' => false,
-        'PASSWORD' => false,
-        'DATABASE' => 'yana'
-    );
 
     /**
-     * constructor
+     * Creates a new instance of this class.
      *
-     * Create a new instance of this class.
-     *
-     * @param  string|\Yana\Db\Ddl\Database  $schema  schema name or schema in database definition language
+     * @param  \Yana\Db\Ddl\Database  $schema  schema in database definition language
      */
-    public function __construct($schema = null)
+    public function __construct(\Yana\Db\Ddl\Database $schema)
     {
-        if ($schema instanceof \Yana\Db\Ddl\Database) {
-            $this->schema = $schema;
-        } else {
-            assert('is_string($schema); // Wrong argument type $schema. String expected');
-            $this->name = (string) $schema;
-        }
-        $this->dsn['DATABASE'] = $this->getName();
+        parent::__construct($schema);
+        $this->dsn = array(
+            'USE_ODBC' => false,
+            'DBMS'     => '',
+            'HOST'     => false,
+            'PORT'     => false,
+            'USERNAME' => false,
+            'PASSWORD' => false,
+            'DATABASE' => $this->getName()
+        );
+    }
+
+    /**
+     * Import SQL from a file.
+     *
+     * Not implemented for FileDb-Drivers.
+     *
+     * @param   string|array  $sqlFile filename which contain the SQL statments or an nummeric array of SQL statments.
+     * @return  bool
+     */
+    public function importSQL($sqlFile)
+    {
+        return true;
+    }
+
+    /**
+     * Smart id quoting.
+     *
+     * No quoting needed for FileDb drivers.
+     *
+     * @param   mixed  $value  name of database object
+     * @return  string
+     * @ignore
+     */
+    public function quoteId($value)
+    {
+        return (string) $value;
     }
 
     /**
@@ -130,44 +139,7 @@ class FileDb extends \DbStream
     }
 
     /**
-     * Get database schema.
-     *
-     * Returns the schema of the database, containing info about tables, columns, forms aso.
-     *
-     * If no schema file is available, this framework has the ability to
-     * reverse engineer the database at runtime.
-     *
-     * @return \Yana\Db\Ddl\Database
-     * @throws  \Yana\Core\Exceptions\NotFoundException     if database definition is not found
-     * @throws  \Yana\Core\Exceptions\NotReadableException  if database definition is not readable
-     */
-    public function getSchema()
-    {
-        if (!isset($this->schema)) {
-            if ($this->name) {
-                $source = $this->name;
-                assert('is_string($source); // Invalid member type. Name is supposed to be a string.');
-                // load file
-                $this->schema = \XDDL::getDatabase($source);
-            } else {
-                // auto-load all schema files to mock auto-discover function
-                foreach (\Yana\Db\Ddl\DDL::getListOfFiles() as $db)
-                {
-                    if (empty($this->schema)) {
-                        $this->schema = \XDDL::getDatabase($db);
-                        $this->path = $db;
-                    } else {
-                        $this->schema->addInclude($db);
-                    }
-                }
-                $this->schema->loadIncludes();
-            }
-        }
-        return $this->schema;
-    }
-
-    /**
-     * isError
+     * Returns bool(true) if the object is an error result.
      *
      * @param   mixed  $result  result
      * @return  bool
@@ -176,7 +148,7 @@ class FileDb extends \DbStream
     public function isError($result)
     {
         /* @var $result FileDbResult */
-        if ($result instanceof FileDbResult) {
+        if ($result instanceof \Yana\Db\FileDb\Result) {
             return $result->isError();
         } else {
             return false;
