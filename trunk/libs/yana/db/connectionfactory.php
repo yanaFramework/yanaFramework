@@ -120,7 +120,6 @@ class ConnectionFactory extends \Yana\Core\Object
             $message = "Unable to open connection to database using PEAR-DB. Might not be installed.";
             \Yana\Log\LogManager::getLogger()->addLog($message);
             throw new \Yana\Db\PearDbException();
-            $this->_database = null;
         }
 
         /*
@@ -155,8 +154,7 @@ class ConnectionFactory extends \Yana\Core\Object
         /*
          * 1.2 auto-detect MySQL port for Server2Go application
          */
-        $dbms = strpos(\YANA_DATABASE_DBMS, 'mysql');
-        if (isset($_ENV["S2G_MYSQL_PORT"]) && empty($this->_dsn["PORT"]) && $dbms !== false) {
+        if (isset($_ENV["S2G_MYSQL_PORT"]) && empty($this->_dsn["PORT"]) && strpos(\YANA_DATABASE_DBMS, 'mysql') !== false) {
             $this->_dsn["PORT"] = $_ENV["S2G_MYSQL_PORT"];
         }
 
@@ -226,7 +224,7 @@ class ConnectionFactory extends \Yana\Core\Object
         if (defined('YANA_ERROR_REPORTING')) {
             restore_error_handler();
         }
-        $this->_database = MDB2::connect($dsn);
+        $this->_database = \MDB2::connect($dsn);
         if (defined('YANA_ERROR_REPORTING')) {
             ErrorUtility::setErrorReporting(YANA_ERROR_REPORTING);
         }
@@ -253,20 +251,15 @@ class ConnectionFactory extends \Yana\Core\Object
      * The returned values are:
      *
      * <ul>
-     *   <li><pre> null               = if PEAR-MDB2 was not found </pre></li>
      *   <li><pre> \MDB2_Error         = if the connection failed </pre></li>
      *   <li><pre> \MDB2_Driver_Common = if the connection was established successfully </pre></li>
      * </ul>
      *
-     * @return  MDB2_Driver_Common
+     * @return  \MDB2_Driver_Common
      */
     public function getConnection()
     {
-        if (!class_exists('\MDB2')) {
-            return null;
-        } else {
-            return $this->_database;
-        }
+        return $this->_database;
     }
 
     /**
