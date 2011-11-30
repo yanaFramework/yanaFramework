@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Db;
+
 /**
  * database structure file
  *
@@ -35,7 +37,7 @@
  * @subpackage  db
  * @deprecated  since 3.1.0
  */
-class DbStructure extends SML
+class Structure extends \SML
 {
     /**
      * File extensions
@@ -78,7 +80,7 @@ class DbStructure extends SML
     public function __construct($filename)
     {
         assert('is_string($filename); // Wrong type for argument 1. String expected');
-        $filename = DbStructure::_getFilename($filename);
+        $filename = \Yana\Db\Structure::_getFilename($filename);
         parent::__construct($filename, CASE_UPPER);
 
         $this->resetStats();
@@ -2579,7 +2581,7 @@ class DbStructure extends SML
         assert('is_string($table); // Invalid argument $table: string expected');
         assert('is_null($column) || is_string($column); // Invalid argument $column: string expected');
 
-        if (!preg_match(DbStructureGenerics::CONSTRAINT_SYNTAX, $constraint)) {
+        if (!preg_match(\Yana\Db\StructureGenerics::CONSTRAINT_SYNTAX, $constraint)) {
             trigger_error("Syntax error in constraint: '".trim($constraint)."'.", E_USER_WARNING);
             return false;
         }
@@ -3785,7 +3787,7 @@ class DbStructure extends SML
     public function includeFile($filename)
     {
         assert('is_string($filename); // Wrong argument type argument 1. String expected');
-        $file = new DbStructure($filename);
+        $file = new \Yana\Db\Structure($filename);
         $file->read();
         assert('!isset($current_list); // cannot redeclare $current_list');
         assert('!isset($import_list); // cannot redeclare $import_list');
@@ -4197,7 +4199,7 @@ class DbStructure extends SML
     public static function getListOfFiles($fullFilename = false)
     {
         $directory = self::getDirectory();
-        $dir = new Dir($directory);
+        $dir = new \Dir($directory);
         $list = array();
         $dirList = $dir->dirlist('*' . self::$_extension);
         if (is_array($dirList)) {

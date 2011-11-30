@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Db;
+
 /**
  * Database Generics
  *
@@ -36,7 +38,7 @@
  * @subpackage  db
  * @ignore
  */
-class DbStructureGenerics extends \Yana\Core\Object
+class StructureGenerics extends \Yana\Core\Object
 {
     /**
      * current operation
