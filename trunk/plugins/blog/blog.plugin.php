@@ -36,7 +36,7 @@ class plugin_blog extends StdClass implements IsPlugin
      *
      * @access  private
      * @static
-     * @var     \Yana\Db\Connection
+     * @var     \Yana\Db\IsConnection
      */
     private static $database = null;
 
@@ -45,7 +45,7 @@ class plugin_blog extends StdClass implements IsPlugin
      *
      * @access  protected
      * @static
-     * @return  \Yana\Db\Connection
+     * @return  \Yana\Db\IsConnection
      */
     protected static function getDatabase()
     {

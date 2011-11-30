@@ -40,7 +40,7 @@ class DatabaseAdapter extends \Yana\Core\Object implements IsDataAdapter
      * database connection
      *
      * @access  protected
-     * @var     \Yana\Db\Connection
+     * @var     \Yana\Db\IsConnection
      */
     protected $db = null;
 
@@ -59,7 +59,7 @@ class DatabaseAdapter extends \Yana\Core\Object implements IsDataAdapter
      * @param   string  $index  where to store session data $_SESSION[$index]
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the table is not registered in the database
      */
-    public function __construct(\Yana\Db\Connection $db, $table)
+    public function __construct(\Yana\Db\IsConnection $db, $table)
     {
         assert('is_string($table); // Wrong argument type argument 1. String expected');
         if (!$db->getSchema()->isTable($table)) {
