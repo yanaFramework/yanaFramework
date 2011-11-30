@@ -129,7 +129,7 @@ class DbDesigner4 extends File implements IsDbImport
      * @access  public
      * @static
      * @param   string   $dbDesignerConfig  file name or XML file content
-     * @return  DbStructure
+     * @return  \Yana\Db\Structure
      */
     public static function getStructureFromString($dbDesignerConfig)
     {
@@ -157,14 +157,14 @@ class DbDesigner4 extends File implements IsDbImport
      *
      * @access  public
      * @param   string  $filename  name of newly created structure file
-     * @return  DbStructure
+     * @return  \Yana\Db\Structure
      */
     public function &getStructure($filename = "")
     {
         if (empty($filename)) {
             $filename = $this->path . ".config";
         }
-        $structure = new DbStructure($filename);
+        $structure = new \Yana\Db\Structure($filename);
         foreach ($this->getTableInfo() as $tableInfo)
         {
             $structure->addStructure($tableInfo['name'], $tableInfo);

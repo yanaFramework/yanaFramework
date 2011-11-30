@@ -146,7 +146,7 @@ class DbMDB2 extends File implements IsDbImport
      * @access  public
      * @static
      * @param   string   $mdb2Schema    file name or XML file content
-     * @return  DbStructure
+     * @return  \Yana\Db\Structure
      */
     public static function getStructureFromString($mdb2Schema)
     {
@@ -173,11 +173,11 @@ class DbMDB2 extends File implements IsDbImport
      * Return database structure for current data
      *
      * @access  public
-     * @return  DbStructure
+     * @return  \Yana\Db\Structure
      */
     public function &getStructure()
     {
-        $structure = new DbStructure("");
+        $structure = new \Yana\Db\Structure("");
         foreach ($this->getTableInfo() as $tableInfo)
         {
             $structure->addStructure($tableInfo['name'], $tableInfo);
