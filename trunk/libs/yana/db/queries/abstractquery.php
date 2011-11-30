@@ -1971,7 +1971,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     public function __toString()
     {
         try {
-            return $this->_toString();
+            return $this->toString();
         } catch (\Exception $e) {
             \Yana\Log\LogManager::getLogger()->addLog($e->getMessage(), $e->getCode(), $e);
             return "";
@@ -1984,7 +1984,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      * @param   string  $stmt  sql statement template
      * @return  string
      */
-    protected function _toString($stmt = "")
+    protected function toString($stmt = "")
     {
         /* 1. replace %TABLE% */
         if (strpos($stmt, '%TABLE%') !== false) {
