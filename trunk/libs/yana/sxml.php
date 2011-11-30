@@ -55,7 +55,7 @@
  *     print $category['@id'] . '=' . $category['#pcdata'];
  * }
  * // or ...
- * $array = $config->getVar();
+ * $array = $config->getVars();
  * foreach ($array['categories']['item'] as $category)
  * {
  *     print $category['@id'] . '=' . $category['#pcdata'];

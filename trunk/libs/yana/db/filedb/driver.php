@@ -358,7 +358,7 @@ class Driver extends \Yana\Core\Object
             /*
              * 1) SELECT statement
              */
-            case $dbQuery instanceof DbSelect:
+            case $dbQuery instanceof \Yana\Db\Queries\Select:
                 $id = $this->_query->toId();
                 /*
                  * 1.1) result is cached
@@ -467,7 +467,7 @@ class Driver extends \Yana\Core\Object
             /*
              * 2) SELECT count(*) statement
              */
-            case $dbQuery instanceof DbSelectCount:
+            case $dbQuery instanceof \Yana\Db\Queries\SelectCount:
                 $id = $this->_query->toId();
                 /*
                  * 1.1) result is cached
@@ -515,7 +515,7 @@ class Driver extends \Yana\Core\Object
             /*
              * 3) SELECT 1 statement
              */
-            case $dbQuery instanceof DbSelectExist:
+            case $dbQuery instanceof \Yana\Db\Queries\SelectExist:
                 $id = $this->_query->toId();
                 /*
                  * 1.1) result is cached
@@ -559,7 +559,7 @@ class Driver extends \Yana\Core\Object
             /*
              * 4) UPDATE statement
              */
-            case $dbQuery instanceof DbUpdate:
+            case $dbQuery instanceof \Yana\Db\Queries\Update:
                 try {
                     $this->_select($this->_query->getTable());
                 } catch (\Yana\Core\Exceptions\NotFoundException $e) {
@@ -873,7 +873,7 @@ class Driver extends \Yana\Core\Object
         /*
          * 1) parse SQL
          */
-        $dbQuery = new DbQueryParser(Yana::connect($this->_database));
+        $dbQuery = new \Yana\Db\Queries\Parser(\Yana::connect($this->_database));
         /*
          * 2) error - throw a line if invalid or (possibly) hazardous statement is encountered
          */
@@ -1680,7 +1680,7 @@ class Driver extends \Yana\Core\Object
         }
         /* handle non-scalar values */
         if (!is_scalar($value)) {
-            $value = SML::encode($value);
+            $value = \SML::encode($value);
         }
         /* switch by operator */
         switch ($operator)
@@ -1807,12 +1807,12 @@ class Driver extends \Yana\Core\Object
     {
         if (!isset($this->_src[$this->_database][$this->_tableName])) {
             $filename = $this->_getFilename($database, 'sml');
-            $smlfile = new SML($filename, CASE_UPPER);
+            $smlfile = new \SML($filename, CASE_UPPER);
             if (!$smlfile->exists()) {
                 $smlfile->create();
                 if ($database != $this->_database) {
                     $filename = $this->_getFilename($this->_database, 'sml');
-                    $smlfile = new SML($filename, CASE_UPPER);
+                    $smlfile = new \SML($filename, CASE_UPPER);
                     if (!$smlfile->exists()) {
                         $smlfile->create();
                     }
