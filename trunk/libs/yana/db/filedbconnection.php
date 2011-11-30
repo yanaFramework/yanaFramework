@@ -147,12 +147,7 @@ class FileDbConnection extends \Yana\Db\AbstractConnection
      */
     public function isError($result)
     {
-        /* @var $result FileDbResult */
-        if ($result instanceof \Yana\Db\FileDb\Result) {
-            return $result->isError();
-        } else {
-            return false;
-        }
+        return ($result instanceof \Yana\Db\FileDb\Result && $result->isError());
     }
 
     /**

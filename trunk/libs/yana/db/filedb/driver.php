@@ -335,21 +335,21 @@ class Driver extends \Yana\Core\Object
     }
 
     /**
-     * execute a single query
+     * Execute a single query.
      *
-     * @param   DbQuery  &$dbQuery  query object
+     * @param   \Yana\Db\Queries\AbstractQuery  $dbQuery  query object
      * @return  \Yana\Db\FileDb\Result
      * @since   2.9.3
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given query is invalid
      */
-    public function dbQuery(&$dbQuery)
+    public function dbQuery(\Yana\Db\Queries\AbstractQuery $dbQuery)
     {
         /**
          * Add this line for debugging purposes
          *
          * error_log((string) $dbQuery . "\n", 3, 'test.log');
          */
-        $this->_query =& $dbQuery;
+        $this->_query = $dbQuery;
         $offset = $this->_query->getOffset();
         $limit  = $this->_query->getLimit();
 
