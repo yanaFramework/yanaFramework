@@ -82,16 +82,16 @@ class plugin_user_group extends StdClass implements IsPlugin
      *
      * @access  public
      * @static
-     * @param   \Yana\Db\Connection   $database    database
-     * @param   array      $required    required
-     * @param   string     $profileId   profile id
-     * @param   string     $action      action
-     * @param   string     $userName    user Name
+     * @param   \Yana\Db\IsConnection   $database    database
+     * @param   array                   $required    required
+     * @param   string                  $profileId   profile id
+     * @param   string                  $action      action
+     * @param   string                  $userName    user Name
      * @return  bool
      *
      * @ignore
      */
-    public static function checkGroupsAndRoles(\Yana\Db\Connection $database, array $required, $profileId, $action, $userName)
+    public static function checkGroupsAndRoles(\Yana\Db\IsConnection $database, array $required, $profileId, $action, $userName)
     {
         // skip if not required
         if (empty($required)) {

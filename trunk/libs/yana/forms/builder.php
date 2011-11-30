@@ -47,7 +47,7 @@ class Builder extends \Yana\Core\Object
      * Database connection.
      *
      * @access  private
-     * @var     \Yana\Db\Connection
+     * @var     \Yana\Db\IsConnection
      */
     private $_database;
 

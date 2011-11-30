@@ -39,7 +39,7 @@ class QueryBuilder extends \Yana\Core\Object
      * Database connection used to create the querys.
      *
      * @access  protected
-     * @var     \Yana\Db\Connection
+     * @var     \Yana\Db\IsConnection
      */
     protected $_db = null;
 
@@ -63,9 +63,9 @@ class QueryBuilder extends \Yana\Core\Object
      * Initialize instance.
      *
      * @access  public
-     * @param   \Yana\Db\Connection  $db  database connection used to create the querys
+     * @param   \Yana\Db\IsConnection  $db  database connection used to create the querys
      */
-    public function __construct(\Yana\Db\Connection $db)
+    public function __construct(\Yana\Db\IsConnection $db)
     {
         $this->_db = $db;
     }
@@ -99,7 +99,7 @@ class QueryBuilder extends \Yana\Core\Object
      * Get database connection
      *
      * @access  public
-     * @return  \Yana\Db\Connection
+     * @return  \Yana\Db\IsConnection
      */
     public function getDatabase()
     {

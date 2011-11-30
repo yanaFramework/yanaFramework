@@ -141,7 +141,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
     /**
      * caches database connections
      *
-     * @var  \Yana\Db\Connection[]
+     * @var  \Yana\Db\IsConnection[]
      */
     private static $_connections = array();
 
@@ -246,7 +246,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
         self::$_config->configdir = $cwd . (string) self::$_config->configdir;
         self::$_config->configdrive = $cwd . (string) self::$_config->configdrive;
         self::$_config->pluginfile = $cwd . (string) self::$_config->pluginfile;
-        \Yana\Db\Connection::setTempDir((string) self::$_config->tempdir);
+        \Yana\Db\AbstractConnection::setTempDir((string) self::$_config->tempdir);
     }
 
     /**
@@ -1188,7 +1188,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
      *
      * @param   string|\Yana\Db\Ddl\Database  $schema  name of the database schema file (see config/db/*.xml),
      *                                                 or instance of \Yana\Db\Ddl\Database
-     * @return  \Yana\Db\Connection
+     * @return  \Yana\Db\IsConnection
      */
     public static function connect($schema)
     {
@@ -1200,14 +1200,12 @@ final class Yana extends \Yana\Core\AbstractSingleton
             if (isset(self::$_connections[$schemaName])) {
                 return self::$_connections[$schemaName];
             }
-            if (YANA_CACHE_ACTIVE === true) {
-                $cacheFile = (string) self::$_config->tempdir . 'ddl_' . $schemaName . '.tmp';
-                if (is_file($cacheFile)) {
-                    $schema = unserialize(file_get_contents($cacheFile));
-                } else {
-                    $schema = XDDL::getDatabase($schema);
-                    file_put_contents($cacheFile, serialize($schema));
-                }
+            $cacheFile = (string) self::$_config->tempdir . 'ddl_' . $schemaName . '.tmp';
+            if (YANA_CACHE_ACTIVE === true && is_file($cacheFile)) {
+                $schema = unserialize(file_get_contents($cacheFile));
+            } else {
+                $schema = \XDDL::getDatabase($schema);
+                file_put_contents($cacheFile, serialize($schema));
             }
         }
         if (YANA_DATABASE_ACTIVE) {

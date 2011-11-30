@@ -38,22 +38,22 @@ abstract class AbstractParser extends \Yana\Core\Object implements \Yana\Db\Quer
 {
 
     /**
-     * @var \Yana\Db\Connection 
+     * @var \Yana\Db\IsConnection 
      */
     private $_database = null;
 
     /**
      * Set up the database to build the queries upon.
      *
-     * @param  \Yana\Db\Connection  $database 
+     * @param  \Yana\Db\IsConnection  $database 
      */
-    public function __construct(\Yana\Db\Connection $database)
+    public function __construct(\Yana\Db\IsConnection $database)
     {
         $this->_database = $database;
     }
 
     /**
-     * @return \Yana\Db\Connection
+     * @return \Yana\Db\IsConnection
      */
     protected function _getDatabase()
     {

@@ -58,7 +58,7 @@ namespace Yana\Db\Queries;
  * @subpackage  db
  * @since       2.9 RC1
  */
-abstract class AbstractQuery extends \Yana\Core\Object implements Serializable
+abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
 {
 
     /**#@+
@@ -131,7 +131,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements Serializable
     protected $offset = 0;
 
     /**
-     * @var \Yana\Db\Connection
+     * @var \Yana\Db\IsConnection
      */
     protected $db = null;
 
@@ -185,9 +185,9 @@ abstract class AbstractQuery extends \Yana\Core\Object implements Serializable
      * The argument $database can be an instance of class Connection or
      * any derived sub-class (e.g. FileDb).
      *
-     * @param  \Yana\Db\Connection  $database  a database resource
+     * @param  \Yana\Db\IsConnection  $database  a database resource
      */
-    public function __construct(\Yana\Db\Connection $database)
+    public function __construct(\Yana\Db\IsConnection $database)
     {
         $this->db = $database;
     }
@@ -1083,7 +1083,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements Serializable
     /**
      * Returns the query's database connection object.
      *
-     * @return \Yana\Db\Connection
+     * @return \Yana\Db\IsConnection
      */
     public function getDatabase()
     {
