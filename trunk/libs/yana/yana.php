@@ -914,7 +914,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
          */
         if ($event === 'null' || self::getDefault('MESSAGE') === true || headers_sent() === true) {
 
-            $template = $view->createLayoutTemplate($templateName, '', $this->getVar());
+            $template = $view->createLayoutTemplate($templateName, '', $this->getVars());
             $template->setVar('ACTION', mb_strtolower("$event"));
             $template->setVar('STDOUT.LEVEL', mb_strtolower("$level"));
 
@@ -1072,7 +1072,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
             $template = "id:$template";
         }
         /* register templates with view sub-system */
-        $template = $view->createLayoutTemplate($baseTemplate, $template, $this->getVar());
+        $template = $view->createLayoutTemplate($baseTemplate, $template, $this->getVars());
         /* there is a special var called 'STDOUT' that is used to output messages */
         if (!empty($_SESSION['STDOUT']['MESSAGES']) && is_array($_SESSION['STDOUT']['MESSAGES'])) {
             $this->setVar('STDOUT', $_SESSION['STDOUT']);

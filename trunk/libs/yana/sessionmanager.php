@@ -364,8 +364,9 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
                 $database->rollback();
                 throw new DbAlert("Unable to insert new group.");
             }
+            unset($group);
         }
-        unset($groupId, $group, $groups);
+        unset($groupId, $groups);
         // insert new roles
         assert('!isset($roleId); // Cannot redeclare var $roleId');
         assert('!isset($role); // Cannot redeclare var $role');
@@ -379,8 +380,9 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
                 $database->rollback();
                 throw new DbAlert("Unable to insert new role.");
             }
+            unset($role);
         }
-        unset($roleId, $role, $roles);
+        unset($roleId, $roles);
         // insert new security settings
         assert('!isset($row); // Cannot redeclare var $row');
         foreach ($rows as $row)
@@ -418,7 +420,6 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
         assert('is_null($profileId) || is_string($profileId); // Wrong type for argument 1. String expected');
         assert('is_null($action) || is_string($action); // Wrong type for argument 2. String expected');
         assert('is_null($userName) || is_string($userName); // Wrong type for argument 3. String expected');
-        global $YANA;
 
         /* Argument 1 */
         if (empty($profileId)) {

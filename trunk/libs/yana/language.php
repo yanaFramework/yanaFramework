@@ -419,14 +419,12 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
      * @name    Language::getVar()
      * @see     Language::setVar()
      */
-    public function getVar($key = '*')
+    public function getVar($key)
     {
         assert('is_string($key); /* Wrong argument type for argument 1. String expected. */');
-        /* settype to STRING */
-        $key = mb_strtolower("$key");
-        if ($key == '*') {
-            return $this->_strings;
-        }
+
+        $key = mb_strtolower((string) $key);
+
         if (isset($this->_strings[$key])) {
             return $this->_strings[$key];
         }
@@ -443,6 +441,18 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
             \Yana\Log\LogManager::getLogger()->addLog("No text found for key '$key'.");
             return "$key";
         }
+    }
+
+    /**
+     * Returns all strings from language file.
+     *
+     * @access  public
+     * @param   string  $key  translation key (case insensitive)
+     * @return  array
+     */
+    public function getVars()
+    {
+        return $this->_strings;
     }
 
     /**
@@ -478,9 +488,9 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
     {
         assert('is_string($key); // Wrong argument type for argument 1. String expected.');
         assert('is_string($value); // Wrong argument type for argument 2. String expected.');
-        $key = mb_strtolower("$key");
+        $key = mb_strtolower((string) $key);
 
-        $this->_strings[$key] = "$value";
+        $this->_strings[$key] = (string) $value;
     }
 
     /**
