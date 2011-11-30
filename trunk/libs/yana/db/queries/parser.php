@@ -46,22 +46,22 @@ class Parser extends \Yana\Core\Object
 {
 
     /**
-     * @var \DbStream 
+     * @var \Yana\Db\Connection 
      */
     private $_database = null;
 
     /**
      * Set up the database to build the queries upon.
      *
-     * @param  \DbStream  $database 
+     * @param  \Yana\Db\Connection  $database 
      */
-    public function __construct(\DbStream $database)
+    public function __construct(\Yana\Db\Connection $database)
     {
         $this->_database = $database;
     }
 
     /**
-     * @return \DbStream
+     * @return \Yana\Db\Connection
      */
     protected function _getDatabase()
     {

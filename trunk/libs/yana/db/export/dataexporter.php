@@ -60,7 +60,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
 {
 
     /**
-     * @var \DbStream
+     * @var \Yana\Db\Connection
      */
     private $_db = null;
 
@@ -74,9 +74,9 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      *
      * This class requires a database resource as input.
      *
-     * @param  \DbStream  $db  a database resource
+     * @param  \Yana\Db\Connection  $db  a database resource
      */
-    public function __construct(\DbStream $db)
+    public function __construct(\Yana\Db\Connection $db)
     {
         $this->_db = $db;
         parent::__construct($this->_db->getSchema());

@@ -35,7 +35,7 @@ namespace Yana\Db;
  * @package     yana
  * @subpackage  db
  */
-abstract class AbstractConnection extends \Yana\Core\Object implements \Serializable
+abstract class AbstractConnection extends \Yana\Core\Object implements \Serializable, \Yana\Db\IsConnection
 {
 
     /**
@@ -59,7 +59,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     /**
      * @var  array
      */
-    private $_queue = array();
+    protected $_queue = array();
 
     /**
      * @var  array
@@ -70,11 +70,6 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * @var  array
      */
     private $_joins = array();
-
-    /**
-     * @var  array
-     */
-    private $_reservedSqlKeywords = null;
 
     /**
      * @var  array
@@ -606,7 +601,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      *
      * Note, that this function does not auto-commit.
      * This means, changes to the database will NOT be saved
-     * until you call $DbStream->write().
+     * until you call $AbstractConnection->write().
      *
      * The argument $key may also be an object of type DbUpdate.
      * If so, no additional parameters need to be present.
@@ -616,9 +611,9 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * @param   string|\Yana\Db\Queries\Update  $key    the address of the row that should be updated
      * @param   mixed            $value  value
      * @return  bool
-     * @name    DbStream::update()
-     * @see     DbStream::insertOrUpdate()
-     * @see     DbStream::insert()
+     * @name    AbstractConnection::update()
+     * @see     AbstractConnection::insertOrUpdate()
+     * @see     AbstractConnection::insert()
      * @since   2.9.5
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when either the given $key or $value is invalid
      */
@@ -798,15 +793,15 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     }
 
     /**
-     * alias of DbStream::insertOrUpdate()
+     * alias of AbstractConnection::insertOrUpdate()
      *
      * @param   string|\Yana\Db\Queries\Insert  $key    the address of the row that should be updated|inserted
      * @param   mixed            $value  value
      * @return  bool
-     * @name    DbStream::updateOrInsert()
-     * @see     DbStream::insertOrUpdate()
-     * @see     DbStream::insert()
-     * @see     DbStream::update()
+     * @name    AbstractConnection::updateOrInsert()
+     * @see     AbstractConnection::insertOrUpdate()
+     * @see     AbstractConnection::insert()
+     * @see     AbstractConnection::update()
      * @since   2.9.5
      * @ignore
      */
@@ -823,8 +818,8 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * If $key already exists, the previous value
      * gets updated, else the value is created.
      * If you do not like this behaviour, take a look
-     * at the functions {@link DbStream::update() update()}
-     * and {@link DbStream::insert() insert()} instead,
+     * at the functions {@link AbstractConnection::update() update()}
+     * and {@link AbstractConnection::insert() insert()} instead,
      * which let you set the operation you want.
      *
      * Note that, as this function has to determine which
@@ -836,7 +831,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * and bool(false) on error. Note, that this
      * function does not auto-commit. This means,
      * changes to the database will NOT be saved
-     * unless you call $DbStream->write().
+     * unless you call $AbstractConnection->write().
      *
      * The argument $key may also be an object of type {@see \Yana\Db\Queries\Insert}.
      * If so, no additional parameters need to be present.
@@ -846,9 +841,9 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * @param   string|\Yana\Db\Queries\Insert  $key    the address of the row that should be inserted|updated
      * @param   mixed            $value  value
      * @return  bool
-     * @name    DbStream::insertOrUpdate()
-     * @see     DbStream::insert()
-     * @see     DbStream::update()
+     * @name    AbstractConnection::insertOrUpdate()
+     * @see     AbstractConnection::insert()
+     * @see     AbstractConnection::update()
      * @since   2.9.5
      */
     public function insertOrUpdate($key, $value = array())
@@ -939,7 +934,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      *
      * Note, that this function does not auto-commit.
      * This means, changes to the database will NOT be saved
-     * unless you call $DbStream->write().
+     * unless you call $AbstractConnection->write().
      *
      * The argument $key may also be an object of type {@see \Yana\Db\Queries\Insert}.
      * If so, no additional parameters need to be present.
@@ -949,9 +944,9 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * @param   string|\Yana\Db\Queries\Insert  $key    the address of the row that should be inserted
      * @param   mixed            $value  value
      * @return  bool
-     * @name    DbStream::insert()
-     * @see     DbStream::insertOrUpdate()
-     * @see     DbStream::update()
+     * @name    AbstractConnection::insert()
+     * @see     AbstractConnection::insertOrUpdate()
+     * @see     AbstractConnection::update()
      * @since   2.9.5
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when either $key or $value is invalid
      * @throws  \Yana\Core\Exceptions\NotWriteableException     when the table or database is locked
@@ -1210,7 +1205,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * be used each time you query the table until you explicitly remove it.
      *
      * To remove all perviously set joins from a table, use the following function call:
-     * <code> $dbStream->join('myTable'); </code>
+     * <code> $AbstractConnection->join('myTable'); </code>
      * As you can see above, if the second argument ($table2) is ommited, all joins bound
      * to 'myTable' are released.
      *
@@ -1331,10 +1326,9 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     }
 
     /**
-     * check wether a certain table has no entries
+     * Check wether a certain table has no entries.
      *
-     * Note: if no table is provided, the most recently used
-     * table will be tested instead.
+     * Returns bool(true) if $connection->length() == 0.
      *
      * @param   string  $table  name of a table
      * @return  bool
@@ -1354,7 +1348,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      *
      * You may also provide the parameter $key as an object of type DbSelectExist.
      *
-     * @uses    $DbStream->exists('table.5')
+     * @uses    $AbstractConnection->exists('table.5')
      *
      * @param   string|\Yana\Db\Queries\SelectExist  $key    adress to check
      * @param   array                 $where  optional where clause
@@ -1399,7 +1393,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * to bool(true) in the database's structure file.
      * Otherwise the function returns bool(true).
      *
-     * @uses $DbStream->isWriteable()
+     * @uses $AbstractConnection->isWriteable()
      *
      * @return  bool
      */
@@ -1575,7 +1569,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * resets the queue of pending SQL statements and
      * resets the database cache.
      *
-     * @name  DbStream::reset()
+     * @name  AbstractConnection::reset()
      */
     public function reset()
     {
@@ -1584,9 +1578,9 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     }
 
     /**
-     * Alias of DbStream::reset()
+     * Alias of AbstractConnection::reset()
      *
-     * @see  DbStream::reset()
+     * @see  AbstractConnection::reset()
      */
     public function rollback()
     {

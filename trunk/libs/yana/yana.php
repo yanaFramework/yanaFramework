@@ -141,7 +141,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
     /**
      * caches database connections
      *
-     * @var  DbStream[]
+     * @var  \Yana\Db\Connection[]
      */
     private static $_connections = array();
 
@@ -246,7 +246,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
         self::$_config->configdir = $cwd . (string) self::$_config->configdir;
         self::$_config->configdrive = $cwd . (string) self::$_config->configdrive;
         self::$_config->pluginfile = $cwd . (string) self::$_config->pluginfile;
-        DbStream::setTempDir((string) self::$_config->tempdir);
+        \Yana\Db\Connection::setTempDir((string) self::$_config->tempdir);
     }
 
     /**
@@ -1188,7 +1188,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
      *
      * @param   string|\Yana\Db\Ddl\Database  $schema  name of the database schema file (see config/db/*.xml),
      *                                                 or instance of \Yana\Db\Ddl\Database
-     * @return  DbStream
+     * @return  \Yana\Db\Connection
      */
     public static function connect($schema)
     {
@@ -1211,9 +1211,9 @@ final class Yana extends \Yana\Core\AbstractSingleton
             }
         }
         if (YANA_DATABASE_ACTIVE) {
-            $connection = new DbStream($schema);
+            $connection = new \Yana\Db\Connection($schema);
         } else {
-            $connection = new \Yana\Db\FileDb($schema);
+            $connection = new \Yana\Db\FileDbConnection($schema);
         }
         if (!empty($schemaName)) {
             self::$_connections[$schemaName] = $connection;

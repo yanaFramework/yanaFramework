@@ -65,7 +65,7 @@ class YanaUser extends \Yana\Core\Object
      *
      * @ignore
      * @access  private
-     * @var     DBStream
+     * @var     \Yana\Db\Connection
      */
     private static $_database = null;
 
@@ -286,10 +286,10 @@ class YanaUser extends \Yana\Core\Object
      *
      * @access  public
      * @static
-     * @param   DbStream  $database     datasource
+     * @param   \Yana\Db\Connection  $database     datasource
      * @ignore
      */
-    public static function setDatasource(DbStream $database)
+    public static function setDatasource(\Yana\Db\Connection $database)
     {
         self::$_database = $database;
     }
@@ -299,7 +299,7 @@ class YanaUser extends \Yana\Core\Object
      *
      * @access  public
      * @static
-     * @return  DbStream
+     * @return  \Yana\Db\Connection
      * @ignore
      */
     public static function getDatasource()

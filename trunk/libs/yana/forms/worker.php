@@ -44,10 +44,10 @@ class Worker extends \Yana\Forms\QueryBuilder
      * Initialize instance.
      *
      * @access  public
-     * @param   \DbStream    $db    database connection used to create the querys
+     * @param   \Yana\Db\Connection    $db    database connection used to create the querys
      * @param   \Yana\Forms\Facade  $form  database connection used to create the querys
      */
-    public function __construct(\DbStream $db, \Yana\Forms\Facade $form)
+    public function __construct(\Yana\Db\Connection $db, \Yana\Forms\Facade $form)
     {
         $this->_db = $db;
         $this->setForm($form);

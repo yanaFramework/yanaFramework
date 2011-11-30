@@ -144,7 +144,7 @@ class plugin_user extends StdClass implements IsPlugin
      *
      * @access  public
      * @static
-     * @param   DBStream   $database    database
+     * @param   \Yana\Db\Connection   $database    database
      * @param   array      $required    required level
      * @param   string     $profileId   profile id
      * @param   string     $action      action
@@ -153,7 +153,7 @@ class plugin_user extends StdClass implements IsPlugin
      *
      * @ignore
      */
-    public static function checkSecurityLevel(DBStream $database, array $required, $profileId, $action, $userName)
+    public static function checkSecurityLevel(\Yana\Db\Connection $database, array $required, $profileId, $action, $userName)
     {
         if (!isset($required[\Yana\Plugins\Annotations\Enumeration::LEVEL])) {
             return null;

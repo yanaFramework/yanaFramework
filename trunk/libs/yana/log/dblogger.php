@@ -41,7 +41,7 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
 {
 
     /**
-     * @var \DbStream
+     * @var \Yana\Db\Connection
      */
     private $_database = null;
 
@@ -61,9 +61,9 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
     private $_mailRecipient = "";
 
     /**
-     * @param  \DbStream  $database  connection object
+     * @param  \Yana\Db\Connection  $database  connection object
      */
-    public function __construct(\DbStream $database)
+    public function __construct(\Yana\Db\Connection $database)
     {
         $this->_database = $database;
     }

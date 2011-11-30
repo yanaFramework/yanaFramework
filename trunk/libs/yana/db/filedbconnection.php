@@ -43,7 +43,7 @@ namespace Yana\Db;
  * @package     yana
  * @subpackage  db
  */
-class FileDb extends \Yana\Db\AbstractConnection
+class FileDbConnection extends \Yana\Db\AbstractConnection
 {
 
     /**
