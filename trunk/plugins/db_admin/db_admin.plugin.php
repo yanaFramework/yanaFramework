@@ -201,7 +201,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
 
             $installFile = $installDirectory . $item . '.sql';
             $dbSchema = XDDL::getDatabase($item);
-            $database = new DbStream($dbSchema);
+            $database = new \Yana\Db\Connection($dbSchema);
 
             /* If no SQL file for the current $item does exist,
              * we need to call the appropriate \Yana\Db\Export\SqlFactory method
@@ -325,8 +325,8 @@ class plugin_db_admin extends StdClass implements IsPlugin
              * read database content
              */
             $dbSchema = XDDL::getDatabase($item);
-            $db = new DbStream($dbSchema);
-            $fileDb = new \Yana\Db\FileDb($dbSchema);
+            $db = new \Yana\Db\Connection($dbSchema);
+            $fileDb = new \Yana\Db\FileDbConnection($dbSchema);
 
             /**
              * prepare queries

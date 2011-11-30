@@ -80,7 +80,7 @@ class Sequence extends \Yana\Core\Object
     protected $cycle = false;
 
     /**
-     * @var DBStream
+     * @var \Yana\Db\Connection
      */
     protected static $db = null;
 
@@ -127,10 +127,10 @@ class Sequence extends \Yana\Core\Object
      * establish database connection
      *
      * @access  protected
-     * @param   DbStream $db database connection
+     * @param   \Yana\Db\Connection $db database connection
      * @ignore
      */
-    protected static function _connect(DbStream $db = null)
+    protected static function _connect(\Yana\Db\Connection $db = null)
     {
         if (!is_null($db)) {
             self::$db = $db;

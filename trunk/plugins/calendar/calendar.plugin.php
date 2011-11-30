@@ -41,7 +41,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     /**
      * @access  private
      * @static
-     * @var     DBStream
+     * @var     \Yana\Db\Connection
      */
     private static $database = null;
 
@@ -69,7 +69,7 @@ class plugin_calendar extends StdClass implements IsPlugin
      *
      * @access  private
      * @static
-     * @return  DbStream
+     * @return  \Yana\Db\Connection
      */
     private static function _getDatabase()
     {

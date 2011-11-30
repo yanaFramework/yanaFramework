@@ -25,14 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Db;
+
 /**
  * <<decorator>> A database abstraction api, that uses PEAR MDB2.
  *
  * @package     yana
  * @subpackage  db
  */
-class DbStream extends \Yana\Db\AbstractConnection
+class Connection extends \Yana\Db\AbstractConnection
 {
+
+    /**
+     * @var  array
+     */
+    private $_reservedSqlKeywords = null;
 
     /**
      * Create a new instance.
@@ -92,9 +99,9 @@ class DbStream extends \Yana\Db\AbstractConnection
      * You may provide a DbQuery object instead of the SQL statement.
      *
      * <code>
-     * $dbStream->query($sqlStmt, $offset, $limit);
+     * $connection->query($sqlStmt, $offset, $limit);
      * // 2nd synopsis
-     * $dbStream->query($dbQuery);
+     * $connection->query($dbQuery);
      * </code>
      *
      * Note that when providing the DbQuery object, the $limit and $offset arguments are
@@ -164,26 +171,21 @@ class DbStream extends \Yana\Db\AbstractConnection
      * <li> there are uncommited statements in the queue </li>
      * </ul>
      *
-     * @uses $DbStream->importSQL('some_file.sql')
-     *
      * @param   string|array  $sqlFile filename which contain the SQL statments or an nummeric array of SQL statments.
      * @return  bool
-     * @name    DbStream::importsql()
-     * @throws  DbWarning                                       when database has pending transaction
+     * @throws  \Yana\Db\DatabaseException                      when database has pending transaction
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when argument $sqlFile has an invalid value
      * @throws  \Yana\Core\Exceptions\NotReadableException      when SQL file does not exist or is not readable
      * @throws  \Yana\Core\Exceptions\NotWriteableException     when database is not writeable
      */
     public function importSQL($sqlFile)
     {
-        assert('is_string($sqlFile) || is_array($sqlFile); //'.
-               'Wrong argument type argument 1. String or array expected');
-        assert('!empty($sqlFile); //'.
-               'Argument \$sqlFile must not be empty.');
+        assert('is_string($sqlFile) || is_array($sqlFile); // Wrong argument type: $sqlFile. String or array expected');
+        assert('!empty($sqlFile); // Argument \$sqlFile must not be empty.');
         if (!empty($this->_queue)) {
-            $message = "Cannot import SQL statements in " . __METHOD__ . "().\n\t\tThere is a pending transaction" .
-                "that needs to be committed before proceeding.";
-            throw new DbWarning($message, E_USER_NOTICE);
+            $message = "Cannot import SQL statements.\n\t\tThere is a pending transaction that needs to be committed " .
+                "before proceeding.";
+            throw new \Yana\Db\DatabaseException($message, E_USER_NOTICE);
         }
         if ($this->_isWriteable() !== true) {
             $message = "Database connection is not available. Check your connection settings.";
