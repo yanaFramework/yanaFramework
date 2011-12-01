@@ -1091,6 +1091,7 @@ class String extends \Yana\Core\AbstractUtility
         assert('is_string($string); // Invalid argument $string: string expected');
         assert('is_string($needle); // Invalid argument $needle: string expected');
 
+        // We don't care for UTF-8 here, since 0 equals 0 - Unicode or not.
         return strpos($string, $needle) === 0;
     }
 
@@ -1110,6 +1111,7 @@ class String extends \Yana\Core\AbstractUtility
         assert('is_string($string); // Invalid argument $string: string expected');
         assert('is_string($needle); // Invalid argument $needle: string expected');
 
+        // No need to check for Unicode here, binary comparison will be fine.
         return strrpos($string, $needle, strlen($needle)) !== false;
     }
 
