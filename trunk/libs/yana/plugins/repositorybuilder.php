@@ -148,7 +148,7 @@ class RepositoryBuilder extends \Yana\Plugins\AbstractRepositoryBuilder
              */
             foreach ($config->getMethods() as $methodName => $method)
             {
-                /* @var $method \Yana\Plugins\MethodConfiguration */
+                /* @var $method \Yana\Plugins\Configs\MethodConfiguration */
                 // skip default event handlers (will be handled in step 3)
                 if ($methodName == 'catchAll') {
                     $pluginsWithDefaultMethods[$id] = $config;

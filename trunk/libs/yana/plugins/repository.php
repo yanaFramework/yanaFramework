@@ -48,7 +48,7 @@ class Repository extends \Yana\Core\Object
     private $_methods = null;
 
     /**
-     * Collection of {@see \Yana\Plugins\ClassConfiguration}es.
+     * Collection of {@see \Yana\Plugins\Configs\ClassConfiguration}s.
      *
      * @var  \Yana\Plugins\Configs\ClassCollection
      */
