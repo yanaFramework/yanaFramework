@@ -37,19 +37,19 @@ if (error_reporting() > 0) {
 /**
  * Set encoding to UTF-8
  */
-iconv_set_encoding("input_encoding", "UTF-8");
-iconv_set_encoding("internal_encoding", "UTF-8");
-iconv_set_encoding("output_encoding", "UTF-8");
+if (\function_exists('iconv')) {
+    iconv_set_encoding("input_encoding", "UTF-8");
+    iconv_set_encoding("internal_encoding", "UTF-8");
+    iconv_set_encoding("output_encoding", "UTF-8");
+}
+mb_http_input("UTF-8");
 mb_internal_encoding("UTF-8");
+mb_http_outut("UTF-8");
 mb_language('uni');
 
 /**
- * Note: to make PHP produce clickable PHP error messages,
- * the ini values docref_root and docref_ext need to be set.
- * These are not set by default.
- * In case they have not been set previously, the following
- * passage will set them to point to the online version
- * of the PHP manual.
+ * Note: to make PHP produce clickable PHP error messages, the ini vars docref_root and docref_ext need to be set.
+ * In case they have not been set, the following passage will point them to the PHP manual.
  */
 
 $docrefRoot = ini_get('docref_root');
