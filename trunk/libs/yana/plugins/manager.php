@@ -267,10 +267,10 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * Get list of plugin configurations.
      *
      * Returns an associative array, where the keys are the plugin-names and the values are instances
-     * of \Yana\Plugins\ClassConfiguration.
+     * of \Yana\Plugins\Configs\ClassConfiguration.
      *
      * @access  public
-     * @return  PluginClassCollection
+     * @return  \Yana\Plugins\Configs\ClassCollection
      */
     public function getPluginConfigurations()
     {
@@ -415,7 +415,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
             $event = $this->getFirstEvent();
             $result = self::getLastResult();
             $methods = $this->getEventConfigurations();
-            /* @var $method \Yana\Plugins\MethodConfiguration */
+            /* @var $method \Yana\Plugins\Configs\MethodConfiguration */
             $method = $methods[$event];
             if ($result !== false) {
                 self::$_nextEvent = $method->getOnSuccess();
@@ -731,7 +731,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      *
      * @access  public
      * @param   string  $eventName  identifier of the wanted event
-     * @return  \Yana\Plugins\MethodConfiguration
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function getEventConfiguration($eventName)
     {
@@ -921,7 +921,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
              */
             foreach ($methodsConfig as $key => $element)
             {
-                // @todo  check if $element is really an array (and not a \Yana\Plugins\MethodConfiguration)
+                // @todo  check if $element is really an array (and not a \Yana\Plugins\Configs\MethodConfiguration)
                 if (!is_array($element)) {
                     continue;
                 }
