@@ -346,6 +346,7 @@ class plugin_antispam extends StdClass implements IsPlugin
     {
         global $YANA;
         $imagesrc = dirname(__FILE__) . "captchas/security_image" . rand(0, 9) . ".png";
+        /* @var $file \DatFile */
         $file = $YANA->getPlugins()->default_library->getResource('antispam:/security.datfile');
         $contents = array();
 

@@ -199,7 +199,7 @@ class Connection extends \Yana\Db\AbstractConnection
         if (is_array($sqlFile)) {
             $this->_queue = $sqlFile;
             try {
-                $success = $this->write();
+                $success = $this->commit();
             } catch (\Exception $e) {
                 $success = false;
             }
@@ -228,7 +228,7 @@ class Connection extends \Yana\Db\AbstractConnection
             }
             // add items
             $this->_queue = explode("[NEXT_COMMAND]", $raw_data);
-            if ($this->write() !== false) {
+            if ($this->commit() !== false) {
                 \Yana\Log\LogManager::getLogger()->addLog("SQL import was successful.", E_USER_NOTICE, $raw_data);
                 return true;
             } else {

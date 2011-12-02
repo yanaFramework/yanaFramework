@@ -34,18 +34,14 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
     /**
      * Connection to data source (API)
      *
-     * @access  private
-     * @static
-     * @var     DbStream
+     * @var  \Yana\Db\IsConnection
      */
     private static $database = null;
 
     /**
      * get database connection
      *
-     * @access  protected
-     * @static
-     * @return  DbStream
+     * @return  \Yana\Db\IsConnection
      */
     protected static function getDatabase()
     {

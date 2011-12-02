@@ -1335,6 +1335,7 @@ class Driver extends \Yana\Core\Object
         /* commit */
         foreach ($this->_src[$this->_database] as $table)
         {
+            /* @var $table \SML */
             if (!$table->exists()) {
                 // auto-create missing file
                 $table->create();
@@ -1790,7 +1791,7 @@ class Driver extends \Yana\Core\Object
     /**
      * initialize and return current SML file by reference
      *
-     * @return  SML
+     * @return  \SML
      */
     private function &_getSmlFile()
     {

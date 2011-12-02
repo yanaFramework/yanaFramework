@@ -363,11 +363,7 @@ class Sequence extends \Yana\Core\Object
         }
 
         // remove datbase entry
-        if (self::$db->remove("sequences.$name") && self::$db->write()) {
-            return true;
-        } else {
-            return false;
-        }
+        return (bool) (self::$db->remove("sequences.$name") && self::$db->commit());
     }
 
     /**

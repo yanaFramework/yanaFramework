@@ -40,7 +40,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
 {
 
     /**
-     * @var  mixed
+     * @var \Yana\Db\IsConnection
      */
     private static $database = null;
 
@@ -81,7 +81,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
     /**
      * get database connection
      *
-     * @return  DbStream
+     * @return  \Yana\Db\IsConnection
      */
     protected static function getDatabase()
     {
@@ -224,7 +224,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         }
 
         /* don't forget to save your recent changes ;-) */
-        return $database->write();
+        return $database->commit();
     }
 
     /**
@@ -283,7 +283,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
             }
         } /* end foreach */
         /* now delete those entries */
-        return $database->write();
+        return $database->commit();
     }
 
     /**
@@ -429,7 +429,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
             \Yana\Log\LogManager::getLogger()->addLog('Failed to insert entry.', E_USER_NOTICE, $entry);
             throw new InvalidInputWarning();
         }
-        if (!$database->write()) {
+        if (!$database->commit()) {
             \Yana\Log\LogManager::getLogger()->addLog('Unable to submit entry.', E_USER_NOTICE, $entry);
             throw new Error();
         }
@@ -569,7 +569,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
             \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_WARNING, array('guestbook_comment' => $guestbook_comment));
             throw new InvalidInputWarning();
         }
-        if (!$database->write()) {
+        if (!$database->commit()) {
             $message = "Unable to commit changes to entry 'guestbook.${target}.'";
             \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_ERROR, array('guestbook_comment' => $guestbook_comment));
             throw new Error();

@@ -279,7 +279,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                 trigger_error($stmt->db->getMessage(), E_USER_WARNING);
                 return false;
             } else {
-                $stmt->db->write();
+                $stmt->db->commit();
             }
         }
 
@@ -389,7 +389,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                         }
                         return false;
                     } else if ($i > 20) {
-                        if ($fileDb->write()) {
+                        if ($fileDb->commit()) {
                             $i = 0;
                         } else {
                             if (!$silent) {
@@ -401,7 +401,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                         $i++;
                     }
                 }
-                if ($i > 0 && !$fileDb->write()) {
+                if ($i > 0 && !$fileDb->commit()) {
                     if (!$silent) {
                         \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to FileDB.");
                     }
@@ -427,7 +427,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                             }
                             return false;
                         } else if ($i > 20) {
-                            if ($db->write()) {
+                            if ($db->commit()) {
                                 $i = 0;
                             } else {
                                 if (!$silent) {
@@ -442,7 +442,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                     }
                 }
                 unset($diff);
-                if ($i > 0 && !$db->write()) {
+                if ($i > 0 && !$db->commit()) {
                     if (!$silent) {
                         \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to Database.");
                     }
