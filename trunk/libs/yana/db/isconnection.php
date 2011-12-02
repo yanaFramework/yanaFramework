@@ -122,19 +122,6 @@ interface IsConnection
     public function remove($key, array $where = array(), $limit = 1);
 
     /**
-     * Join the resultsets for two tables.
-     *
-     * @param   string $table1  name of the table to join another one with
-     * @param   string $table2  name of another table to join table1 with
-     *          (when omitted will remove all previously set joins from table1)
-     * @param   string $key1    name of the foreign key in table1 that references table2
-     *          (when omitted the API will look up the key in the structure file)
-     * @param   string $key2    name of the key in table2 that is referenced from table1
-     *          (may be omitted if it is the primary key)
-     */
-    public function join($table1, $table2 = "", $key1 = "", $key2 = "");
-
-    /**
      * Get the number of entries inside a table
      *
      * Returns 0 if the table is empty or does not exist.

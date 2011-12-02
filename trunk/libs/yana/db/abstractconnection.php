@@ -69,11 +69,6 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     /**
      * @var  array
      */
-    private $_joins = array();
-
-    /**
-     * @var  array
-     */
     private $_lastModified = array();
 
     /**
@@ -543,25 +538,6 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             }
             if (!empty($orderBy) || $desc === true) {
                 $selectQuery->setOrderBy($orderBy, $desc);
-            }
-
-            /*
-             * 2.1) resolve joined tables
-             */
-            if (isset($this->_joins[$tableName]) && is_array($this->_joins[$tableName])) {
-                assert('!isset($table2);  // Cannot redeclare var $table2');
-                assert('!isset($columns); // Cannot redeclare var $columns');
-                foreach ($this->_joins[$tableName] as $table2 => $columns)
-                {
-                    try {
-                        $selectQuery->setInnerJoin($table2, $columns[0], $columns[1]);
-                    } catch (\Exception $e) {
-                        \Yana\Log\LogManager::getLogger()->addLog("Unable to join tables '{$tableName}' and " .
-                            "'{$table2}'. Cause: " . $e->getMessage(), E_USER_WARNING);
-                        return false;
-                    }
-                }
-                unset($table2, $columns);
             }
 
             /*
@@ -1153,99 +1129,6 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
 
         /* return true to indicate the request was successfull */
         return true;
-    }
-
-    /**
-     * join the resultsets for two tables
-     *
-     * Results in an INNER JOIN $table1, $table2 WHERE $table1.$key1 = $table2.$key2 .
-     *
-     * Note that if you ommit the parameters $key1 and $key2, the API will try to determine
-     * the foreign key and target key itself by looking up the foreign key in the database's
-     * structure file. The first foreign key association that matches will be used.
-     *
-     * Also note that two tables may only be joined via one pair of columns - not two or more.
-     * Instead if you may add additional rules to the where clause as you see fit.
-     *
-     * Note that joins are permanent. So in opposition to what you might have learned from
-     * common SQL statements and other APIs, you do not need to repeat joins for each query.
-     * Instead, this API "remembers" what it was told and once set your joins will automatically
-     * be used each time you query the table until you explicitly remove it.
-     *
-     * To remove all perviously set joins from a table, use the following function call:
-     * <code> $AbstractConnection->join('myTable'); </code>
-     * As you can see above, if the second argument ($table2) is ommited, all joins bound
-     * to 'myTable' are released.
-     *
-     * Also note, that the wildcard '*' may be used to refer to the "least recently used" table.
-     * This is a shortcut that you may use in your scripts.
-     *
-     * @param   string $table1  name of the table to join another one with
-     * @param   string $table2  name of another table to join table1 with
-     *          (when omitted will remove all previously set joins from table1)
-     * @param   string $key1    name of the foreign key in table1 that references table2
-     *          (when omitted the API will look up the key in the structure file)
-     * @param   string $key2    name of the key in table2 that is referenced from table1
-     *          (may be omitted if it is the primary key)
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when a required argument is missing
-     */
-    public function join($table1, $table2 = "", $key1 = "", $key2 = "")
-    {
-        assert('is_string($table1); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($table2); // Wrong argument type for argument 2. String expected.');
-        assert('is_string($key1); // Wrong argument type for argument 3. String expected.');
-        assert('is_string($key2); // Wrong argument type for argument 4. String expected.');
-
-        /*
-         * base table
-         */
-        if (empty($table1) || $table1 === "*") {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Wrong parameter count in " . __METHOD__ . "(). " .
-                "Unable to join tables, since no table has been selected for function join.");
-        }
-        $table1 = mb_strtolower($table1);
-
-        /*
-         * target table
-         */
-        if (empty($table2)) {
-            /* if second argument is omitted, release association */
-            if (isset($this->_joins[$table1])) {
-                $this->_joins[$table1] = array();
-            }
-            return;
-        }
-        $table2 = mb_strtolower($table2);
-
-        /*
-         * source column
-         */
-        if (empty($key1)) {
-            $key1 = null;
-        } else {
-            $key1 = mb_strtolower($key1);
-        }
-
-        /*
-         * target column
-         */
-        if (empty($key2)) {
-            $key2 = null;
-        } else {
-            $key2 = mb_strtolower($key2);
-        }
-
-        /*
-         * 3) reset old association
-         */
-        if (isset($this->_joins[$table1][$table2])) {
-            unset($this->_joins[$table1][$table2]);
-        }
-
-        /*
-         * 4) create new association
-         */
-        $this->_joins[$table1][$table2] = array($key1, $key2);
     }
 
     /**
