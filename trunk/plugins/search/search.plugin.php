@@ -149,7 +149,7 @@ class plugin_search extends StdClass implements IsPlugin
                     }
                     unset($mostWanted);
                 }
-                $db->updateOrInsert("searchstats.$counterId", $statistics);
+                $db->insertOrUpdate("searchstats.$counterId", $statistics);
                 $db->commit();
                 unset($counterId, $counterInfo, $counterValue, $statistics);
             } // end for

@@ -783,24 +783,6 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     }
 
     /**
-     * alias of AbstractConnection::insertOrUpdate()
-     *
-     * @param   string|\Yana\Db\Queries\Insert  $key    the address of the row that should be updated|inserted
-     * @param   mixed            $value  value
-     * @return  bool
-     * @name    AbstractConnection::updateOrInsert()
-     * @see     AbstractConnection::insertOrUpdate()
-     * @see     AbstractConnection::insert()
-     * @see     AbstractConnection::update()
-     * @since   2.9.5
-     * @ignore
-     */
-    public function updateOrInsert($key, $value = array())
-    {
-        return $this->insertOrUpdate($key, $value);
-    }
-
-    /**
      * update or insert row
      *
      * insert $value at position $key
