@@ -104,7 +104,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
             }
         }
         unset($duplicates);
-        $database->write();
+        $database->commit();
 
         /*
          * 2) Remove timed out entries
@@ -122,7 +122,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
             }
         }
         unset($old_entries);
-        $database->write();
+        $database->commit();
 
         /*
          * 4) add row to table
@@ -131,7 +131,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
         if (!$database->insert("newuser.*", $row)) {
             throw new InvalidInputWarning();
 
-        } elseif (!$database->write()) {
+        } elseif (!$database->commit()) {
             throw new Error();
         }
 

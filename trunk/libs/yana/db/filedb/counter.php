@@ -228,16 +228,10 @@ class Counter extends \Yana\Db\FileDb\Sequence
         }
 
         // remove database entry
-        if (!parent::$db->remove("counter.$name")) {
-            return false;
-        }
-        if (!parent::$db->write()) {
-            return false;
-        }
-        if (!parent::drop($name)) {
-            return false;
-        }
-        return true;
+        return (bool)
+            parent::$db->remove("counter.$name") &&
+            parent::$db->commit() &&
+            parent::drop($name);
     }
 
     /**
@@ -248,11 +242,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
      */
     public function hasIp()
     {
-        if ($this->useIp) {
-            return true;
-        } else {
-            return false;
-        }
+        return (bool) $this->useIp;
     }
 
     /**
@@ -264,11 +254,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
     public function useIp($useIp = true)
     {
         assert('is_bool($useIp); // Invalid argument type argument 1. Boolean expected.');
-        if (!empty($useIp)) {
-            $this->useIp = true;
-        } else {
-            $this->useIp = false;
-        }
+        $this->useIp = (bool) $useIp;
     }
 
     /**

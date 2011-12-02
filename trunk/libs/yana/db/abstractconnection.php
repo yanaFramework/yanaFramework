@@ -256,22 +256,12 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     }
 
     /**
-     * Alias of write()
-     *
-     * @return  bool
-     */
-    public function commit()
-    {
-        return $this->write();
-    }
-
-    /**
      * Commit current transaction and write all changes to the database.
      *
      * @return  bool
      * @throws  \Yana\Core\Exceptions\NotWriteableException  when the database or table is locked
      */
-    public function write()
+    public function commit()
     {
         if (!$this->_isWriteable()) {
             throw new \Yana\Core\Exceptions\NotWriteableException('Operation aborted, not writeable.', E_USER_NOTICE);
