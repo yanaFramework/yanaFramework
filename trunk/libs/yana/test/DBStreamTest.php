@@ -57,7 +57,7 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
         try {
             chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
             $schema = XDDL::getDatabase('check');
-            $this->dbsobj = new DbStream($schema);
+            $this->dbsobj = new \Yana\Db\Connection($schema);
         } catch (\Exception $e) {
             $this->markTestSkipped("Unable to connect to database");
         }
@@ -202,7 +202,7 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($test, 'expected insert of t.foo2 to fail, due to a foreign-key constraint');
 
         // supposed to fail
-        $test = @$this->dbsobj->updateOrInsert('t.foo2', array('tvalue' => 1, 'ftid' => 2 ));
+        $test = @$this->dbsobj->insertOrUpdate('t.foo2', array('tvalue' => 1, 'ftid' => 2 ));
         $this->assertFalse($test, 'expected insert of t.foo2 to fail, due to a foreign-key constraint');
 
         $test = $this->dbsobj->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true ));
@@ -222,7 +222,7 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
         $test = $this->dbsobj->update('i.foo.ta.1.a', 2);
         $this->assertTrue($test, '"set array content" failed');
 
-        $this->assertTrue($this->dbsobj->write(), 'write to database failed');
+        $this->assertTrue($this->dbsobj->commit(), 'commit() to database failed');
 
         $test = new DbSelect($this->dbsobj);
         $test->setTable('ft');
@@ -231,11 +231,11 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $test, 'assert failed, the values should be equal');
 
         // supposed to fail
-        $test = @$this->dbsobj->insert('i.foo', array('ta' => array('1' => '1'))) && @$this->dbsobj->write();
+        $test = @$this->dbsobj->insert('i.foo', array('ta' => array('1' => '1'))) && @$this->dbsobj->commit();
         $this->assertFalse($test, 'duplicate key test (1) failed');
 
         // supposed to fail
-        $test = @$this->dbsobj->insert('i', array('iid' => 'foo', 'ta' => array('1' => '1'))) && @$this->dbsobj->write();
+        $test = @$this->dbsobj->insert('i', array('iid' => 'foo', 'ta' => array('1' => '1'))) && @$this->dbsobj->commit();
         $this->assertFalse($test, 'duplicate key test (2) failed');
 
         // exists table
@@ -346,7 +346,7 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
         $test['ta'] = $temp1 ;
         $test['tvalue'] = $temp2;
         $this->assertTrue($this->dbsobj->update('i.foo', $test), '"update inheritance 1" test failed');
-        $this->assertTrue($this->dbsobj->write(), '"update inheritance 1" test failed');
+        $this->assertTrue($this->dbsobj->commit(), '"update inheritance 1" test failed');
 
         $this->assertEquals($this->dbsobj->select('i.foo.ta'), $temp1, '"update inheritance 2" test failed');
         $this->assertEquals($this->dbsobj->select('t.foo.tvalue'), $temp2, '"update inheritance 2" test failed');
@@ -388,7 +388,7 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
         // test for property "zerofill"
         // column t.ti is a zerofilled integer with length 4
         $this->assertTrue($this->dbsobj->update('t.foo.ti', 1), '"set zerofill" test failed');
-        $this->assertTrue($this->dbsobj->write(), '"set zerofill" test failed');
+        $this->assertTrue($this->dbsobj->commit(), '"set zerofill" test failed');
 
         $this->assertEquals($this->dbsobj->select('t.foo.ti'), '0001', '"get zerofill" test failed');
 
