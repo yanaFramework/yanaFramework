@@ -580,18 +580,14 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     }
 
     /**
-     * update a row or cell
+     * Update a row or cell.
      *
-     * update $value at position $key
-     *
-     * If $key does not exist, bool(false) is returned.
-     *
-     * This function returns bool(true) on success
-     * and bool(false) on error.
+     * Update $value at position $key. If $key does not exist, bool(false) is returned.
+     * This function returns bool(true) on success and bool(false) on error.
      *
      * Note, that this function does not auto-commit.
      * This means, changes to the database will NOT be saved
-     * until you call $AbstractConnection->write().
+     * until you call $AbstractConnection->commit().
      *
      * The argument $key may also be an object of type DbUpdate.
      * If so, no additional parameters need to be present.
@@ -803,7 +799,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * and bool(false) on error. Note, that this
      * function does not auto-commit. This means,
      * changes to the database will NOT be saved
-     * unless you call $AbstractConnection->write().
+     * unless you call $AbstractConnection->commit().
      *
      * The argument $key may also be an object of type {@see \Yana\Db\Queries\Insert}.
      * If so, no additional parameters need to be present.
@@ -906,7 +902,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      *
      * Note, that this function does not auto-commit.
      * This means, changes to the database will NOT be saved
-     * unless you call $AbstractConnection->write().
+     * unless you call $AbstractConnection->commit().
      *
      * The argument $key may also be an object of type {@see \Yana\Db\Queries\Insert}.
      * If so, no additional parameters need to be present.
