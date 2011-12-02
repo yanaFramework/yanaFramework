@@ -2581,7 +2581,7 @@ class Structure extends \SML
         assert('is_string($table); // Invalid argument $table: string expected');
         assert('is_null($column) || is_string($column); // Invalid argument $column: string expected');
 
-        if (!preg_match(\Yana\Db\StructureGenerics::CONSTRAINT_SYNTAX, $constraint)) {
+        if (!preg_match(\Yana\Db\Helpers\StructureGenerics::CONSTRAINT_SYNTAX, $constraint)) {
             trigger_error("Syntax error in constraint: '".trim($constraint)."'.", E_USER_WARNING);
             return false;
         }
