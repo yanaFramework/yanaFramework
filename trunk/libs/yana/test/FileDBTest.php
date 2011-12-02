@@ -232,12 +232,6 @@ class FileDbTest extends PHPUnit_Framework_TestCase
         $length = $this->dbsobj->length( 'T' );
         $this->assertEquals($length, 2, '"get length" test failed');
 
-        $this->dbsobj->join( 't', 'ft' );
-
-        $row = $this->dbsobj->select( 't.fOo' );
-        $this->assertArrayHasKey('FTVALUE', $row, '"join t+ft" test failed');
-        $this->assertEquals($row['FTVALUE'], 1, '"join t+ft" test failed');
-
         // rollback
         $this->dbsobj->rollback();
 

@@ -331,12 +331,6 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
         $test = $this->dbsobj->isEmpty('T');
         $this->assertFalse($test, '"isEmpty" test failed, the expected result is false - 2 entries are inside the table');
 
-        $this->dbsobj->join('t', 'ft');
-
-        $test = $this->dbsobj->select('t.fOo');
-        $this->assertTrue(in_array('FTVALUE', array_keys($test)), '"join t+ft" test failed');
-        $this->assertEquals($test['FTVALUE'], 1, '"join t+ft" test failed');
-
         // rollback
         $this->dbsobj->reset();
 
