@@ -26,7 +26,7 @@
  * @ignore
  */
 
-namespace Yana\Db;
+namespace Yana\Db\Queries;
 
 /**
  * <<builder>> Query builder.
