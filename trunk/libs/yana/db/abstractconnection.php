@@ -696,12 +696,12 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
         } else {
             $constraint = array($column => $value);
         }
-        if (\Yana\Db\StructureGenerics::checkConstraint($table, $constraint) === false) {
+        if (\Yana\Db\Helpers\StructureGenerics::checkConstraint($table, $constraint) === false) {
             \Yana\Log\LogManager::getLogger()->addLog("Cannot set values. Constraint check failed for: '$updateQuery'.");
             return false;
 
         } else {
-            \Yana\Db\StructureGenerics::onBeforeUpdate($table, $column, $value, $updateQuery->getRow());
+            \Yana\Db\Helpers\StructureGenerics::onBeforeUpdate($table, $column, $value, $updateQuery->getRow());
             $triggerArgs[] = array(
                 \Yana\Db\Queries\TypeEnumeration::UPDATE,
                 $table,
@@ -957,7 +957,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
         /*
          * 3.2) error - constraint check failed
          */
-        if (\Yana\Db\StructureGenerics::checkConstraint($table, $value) === false) {
+        if (\Yana\Db\Helpers\StructureGenerics::checkConstraint($table, $value) === false) {
             \Yana\Log\LogManager::getLogger()->addLog("Insert on table '{$tableName}' failed. " .
                 "Constraint check failed.", E_USER_WARNING, $value);
             return false;
@@ -965,7 +965,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
         /*
          * 3.3) fire trigger
          */
-        \Yana\Db\StructureGenerics::onBeforeInsert($table, $value, $insertQuery->getRow());
+        \Yana\Db\Helpers\StructureGenerics::onBeforeInsert($table, $value, $insertQuery->getRow());
         $triggerArgs[] = array(
             \Yana\Db\Queries\TypeEnumeration::INSERT,
             $table,
@@ -1111,7 +1111,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
         foreach ($oldRows as $oldRow)
         {
             // fire trigger
-            \Yana\Db\StructureGenerics::onBeforeDelete($table, $oldRow, $deleteQuery->getRow());
+            \Yana\Db\Helpers\StructureGenerics::onBeforeDelete($table, $oldRow, $deleteQuery->getRow());
             // save trigger settings for onAfterDelete
             $triggerArgs[] = array(
                 \Yana\Db\Queries\TypeEnumeration::DELETE,
@@ -1580,16 +1580,16 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
                 case \Yana\Db\Queries\TypeEnumeration::INSERT:
                     assert('count($args) === 4;');
                     assert('is_array($args[2]);');
-                    \Yana\Db\StructureGenerics::onAfterInsert($args[1], $args[2], $args[3]);
+                    \Yana\Db\Helpers\StructureGenerics::onAfterInsert($args[1], $args[2], $args[3]);
                 break;
                 case \Yana\Db\Queries\TypeEnumeration::UPDATE:
                     assert('count($args) === 5;');
-                    \Yana\Db\StructureGenerics::onAfterUpdate($args[1], $args[2], $args[3], $args[4]);
+                    \Yana\Db\Helpers\StructureGenerics::onAfterUpdate($args[1], $args[2], $args[3], $args[4]);
                 break;
                 case \Yana\Db\Queries\TypeEnumeration::DELETE:
                     assert('count($args) === 4;');
                     assert('is_array($args[2]);');
-                    \Yana\Db\StructureGenerics::onAfterDelete($args[1], $args[2], $args[3]);
+                    \Yana\Db\Helpers\StructureGenerics::onAfterDelete($args[1], $args[2], $args[3]);
                 break;
             }
         }
