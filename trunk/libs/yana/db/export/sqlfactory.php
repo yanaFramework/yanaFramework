@@ -252,6 +252,14 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
         /* this is for statements, which have to come last */
         $lastSQL = array();
 
+        // Auto-Increment example:
+        //CREATE TABLE new_employees
+        //(
+        // id_num int IDENTITY(1,1),
+        // fname varchar (20),
+        // minit char(1),
+        // lname varchar(30)
+        //)
         /*
          *  Create Table
          */
