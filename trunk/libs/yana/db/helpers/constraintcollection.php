@@ -1,0 +1,110 @@
+<?php
+/**
+ * YANA library
+ *
+ * Software:  Yana PHP-Framework
+ * Version:   {VERSION} - {DATE}
+ * License:   GNU GPL  http://www.gnu.org/licenses/
+ *
+ * This program: can be redistributed and/or modified under the
+ * terms of the GNU General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/.
+ *
+ * This notice MAY NOT be removed.
+ *
+ * @package  yana
+ * @license  http://www.gnu.org/licenses/gpl.txt
+ * @ignore
+ */
+
+namespace Yana\Db\Helpers;
+
+/**
+ * <<strategy>> This class is meant to be used to evaluate PHP-style row-level constraints.
+ *
+ * @package     yana
+ * @subpackage  db
+ */
+class ConstraintCollection extends \Yana\Core\AbstractCollection
+{
+
+    /**
+     * @var  array
+     */
+    private $_row = array();
+
+    /**
+     * Constraint syntax
+     *
+     * @ignore
+     */
+    const CONSTRAINT_SYNTAX = "/^\s*(?:(?:(?:-| |\!)?\\\$[\w\d_]+(?:\[[\"'][\w\d_]+[\"']\])? ?|true|false|null|-?\d+|\&\&?|(?:empty|isset|preg_match|ereg|eregi)\((?:'[^']*'|\"[^\"]*\"),\s*\\\$[\w\d_]+(?:\[[\"'][\w\d_]+[\"']\])?\)|[\&\|\!\~\-\*\/\%\+\<\>]|\[\"[^\"\]\[]+\"\]|\[\'[^\'\]\[]+\'\]|\"[^\"]*\"|\'[^\']*\'|\d+(?:\.\d*)?|(?:\=|\!|\<|\>)\={1,2})(?:\s+|$))*\s*$/i";
+
+    /**
+     * Evaluates a constraint.
+     *
+     * Returns bool(true) on success or bool(false) on error, or if the constraint fails.
+     *
+     * @param   \Yana\Db\Ddl\Table  $table  expected an \Yana\Db\Ddl\Table object as input
+     * @param   array               $row    row
+     * @return  bool
+     */
+    public function __construct(array $items = array(), array $row = array())
+    {
+        parent::__construct($items);
+        $this->_row = $row;
+    }
+
+    /**
+     * @param  scalar                   $key   offset
+     * @param  \Yana\Db\Ddl\Constraint  $item  constraint to add to the collection
+     * @throws \Yana\Core\Exceptions\InvalidArgumentException 
+     */
+    public function offsetSet($key, $item)
+    {
+        if (!$item instanceof \Yana\Db\Ddl\Constraint) {
+            $message = "Item must be instance of \Yana\Db\Ddl\Constraint.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message. \E_USER_ERROR);
+        }
+        $code = $item->getConstraint();
+        if (YANA_DB_STRICT && !preg_match(self::CONSTRAINT_SYNTAX, $code)) {
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("Syntax error in constraint '$code' .", E_USER_ERROR);
+        }
+        parent::offsetSet($key, $code);
+    }
+
+    /**
+     * Evaluates a constraint.
+     *
+     * Returns bool(true) if the row is acceptable and bool(false) if a constraint check fails.
+     *
+     * @return  bool
+     */
+    public function __invoke()
+    {
+        foreach ($this->toArray() as $code)
+        {
+            $function = create_function('$ROW', "return ($code) == true;");
+            if ($function($row) === false) {
+                \Yana\Log\LogManager::getLogger()->addLog("Constraint '$code' failed " .
+                    "on table '{$table->getName()}' with value '".print_r($row, true)."'.", E_USER_WARNING);
+                return false;
+            }
+        }
+        unset($code);
+
+        return true;
+    }
+
+}
+
+?>
