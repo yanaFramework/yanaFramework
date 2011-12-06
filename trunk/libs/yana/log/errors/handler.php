@@ -58,7 +58,7 @@ class Handler extends \Yana\Core\Object
     /**
      * @var bool
      */
-    private $_isActive = null;
+    private $_isActive = false;
 
     /**
      * Temporary helper function until functionality is transfered to a logger class.
@@ -95,11 +95,7 @@ class Handler extends \Yana\Core\Object
             $message = $this->_formatter->format($errorNumber, $description, $file, $lineNumber);
             $this->_logger->addLog($message, $errorNumber);
 
-            /* exit on error */
-            if (ob_get_length() !== false) {
-                ob_end_flush();
-            }
-            exit(1);
+            $this->_exit();
         }
     }
 
@@ -122,11 +118,7 @@ class Handler extends \Yana\Core\Object
         $message = $this->_formatter->format(\Yana\Log\TypeEnumeration::ASSERT, $description, $pathToFile, $lineNumber);
         $this->_logger->addLog($message, \Yana\Log\TypeEnumeration::ASSERT);
 
-        /* exit on error */
-        if (ob_get_length() !== false) {
-            ob_end_flush();
-        }
-        exit(1);
+        $this->_exit();
     }
 
     /**
@@ -150,7 +142,14 @@ class Handler extends \Yana\Core\Object
         } while ($e);
         $this->_logger->addLog($message, \Yana\Log\TypeEnumeration::EXCEPTION);
 
-        /* exit on error */
+        $this->_exit();
+    }
+
+    /**
+     * Exit the application on error.
+     */
+    protected function _exit()
+    {
         if (ob_get_length() !== false) {
             ob_end_flush();
         }
