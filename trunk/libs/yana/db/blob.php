@@ -323,17 +323,15 @@ class Blob extends \FileReadonly
             case 'file':
                 $file .= '.gz';
             break;
-            case 'file':
-                $file .= '.*';
-            break;
         }
         if (is_file($file)) {
             return $file;
         } else {
-            foreach (glob(self::_getBlobDirectory() . $id) as $filename)
+            foreach (glob(self::_getBlobDirectory() . $id . '.*') as $filename)
             {
                 return $filename;
             }
+            \Yana\Log\LogManager::getLogger()->addLog('Invalid database entry. File not found: ' . $id);
             return "";
         }
     }
