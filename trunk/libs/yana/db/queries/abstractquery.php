@@ -784,11 +784,12 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * set source table
+     * Set source table.
      *
-     * Returns bool(true) on success and bool(false) on error.
+     * For statements like "Select * from [table]" this is the table name.
+     * If your query uses multiple tables (via a join) this is the name of the base-table (the first table in the list).
      *
-     * @param   string  $table  table name for create
+     * @param   string  $table  table name to use in query
      * @throws  \Yana\Db\Exceptions\TableNotFoundException  when the table does not exist
      * @return  \Yana\Db\Queries\AbstractQuery
      */
@@ -833,11 +834,9 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * get the currently selected table
+     * Get the name of the currently selected table.
      *
-     * Returns the lower-cased name of the currently
-     * selected table, or bool(false) if none has been
-     * selected yet.
+     * Returns the lower-cased name of the currently selected table, or bool(false) if none has been selected yet.
      *
      * @return  bool(false)|string
      */
@@ -852,7 +851,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * get current table
+     * Get current table.
      *
      * @return  \Yana\Db\Ddl\Table
      */
@@ -865,10 +864,9 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * set source column
+     * Set source column.
      *
-     * Checks if the column exists and sets the source column
-     * of the query to the given value.
+     * Checks if the column exists and sets the source column of the query to the given value.
      *
      * @param   string  $column  column name or '*' for "all"
      * @throws  \Yana\Db\Queries\Exceptions\InvalidSyntaxException   if table has not been initialized
@@ -954,7 +952,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * set array address
+     * Set array address.
      *
      * Applies to columns of type 'array' only.
      *
@@ -1002,10 +1000,9 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * get the currently selected column
+     * Get the currently selected column.
      *
-     * Returns the lower-cased name of the currently
-     * selected column.
+     * Returns the lower-cased name of the currently selected column.
      *
      * If none has been selected, '*' is returned.
      *
@@ -1052,11 +1049,9 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * get the list of all selected columns
+     * Get the list of all selected columns.
      *
-     * Returns the lower-cased names of the currently
-     * selected columns as a numeric array of strings.
-     *
+     * Returns the lower-cased names of the currently selected columns as a numeric array of strings.
      * If none has been selected, an empty array is returned.
      *
      * @return  array
@@ -1064,21 +1059,20 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     protected function getColumns()
     {
+        $columns = array();
         if (is_array($this->column)) {
-            return $this->column;
+            $columns = $this->column;
 
         /*
          * catchable error: column is string (can be converted to array)
          */
         } elseif (is_string($this->column)) {
-            return array(array($this->tableName, $this->column));
+            $columns = array(array($this->tableName, $this->column));
 
-        /*
-         * uncatchable error: column has unexpected type
-         */
-        } else {
-            return array();
         }
+        // else: column has unexpected type
+
+        return $columns;
     }
 
     /**
@@ -1176,7 +1170,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * get the currently selected row
+     * Get the currently selected row.
      *
      * Returns the lower-cased name of the currently
      * selected column, or bool(false) if none has been
@@ -1197,9 +1191,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * resolve key address to determine table, column and row
-     *
-     * Returns bool(true) on success and bool(false) on error.
+     * Resolve key address to determine table, column and row.
      *
      * @param   string  $key  resolve key address to determine table, column and row
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException   if the given table is not found
@@ -1313,7 +1305,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * add column to "order by"-clause
+     * Add column to "order by"-clause.
      *
      * @param   string  $column  column name
      * @param   bool    $desc    sort descending (true=yes, false=no)
@@ -1353,7 +1345,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * set column to sort the resultset by
+     * Set column to sort the resultset by.
      *
      * @param   array  $orderBy  list of column names
      * @param   array  $desc     list of sort order (true=desc, false=asc)
@@ -1383,7 +1375,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * get the list of columns the resultset is ordered by
+     * Get the list of columns the resultset is ordered by.
      *
      * Returns a lower-cased list of column names.
      * If none has been set yet, then the list is empty.
@@ -1398,7 +1390,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * check if resultset is sorted in descending order
+     * Check if resultset is sorted in descending order.
      *
      * Returns an array of boolean values: true = descending, false = ascending.
      *
@@ -1412,7 +1404,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * Convert where clause to string
+     * Convert where clause to string.
      *
      * Returns the where condition clause as a string for printing.
      *
@@ -1497,7 +1489,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * Check contents of where clause
+     * Check contents of where clause.
      *
      * Returns the parsed and checked array.
      *
@@ -1705,7 +1697,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * set where clause
+     * Set where clause.
      *
      * The syntax is as follows:
      * <ol>
@@ -1883,7 +1875,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * Get old values
+     * Get old values.
      *
      * For update and delete queries this function will retrieve and return the unmodified values.
      *
@@ -1903,11 +1895,11 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * send query to server
+     * Send query to database-server.
      *
-     * This sends the query to the database and returns a result-object.
+     * Returns a result-object.
      *
-     * @return  FileDbResult
+     * @return  \Yana\Db\FileDb\Result
      * @since   2.9.3
      * @ignore
      */
@@ -1917,7 +1909,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * delete old files
+     * Delete old files.
      *
      * When a row is deleted or updated, blobs associated with it old values need to be removed.
      *
@@ -2055,8 +2047,6 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     }
 
     /**
-     * serialize this object to a string
-     *
      * Returns the serialized object as a string.
      *
      * @return  string
