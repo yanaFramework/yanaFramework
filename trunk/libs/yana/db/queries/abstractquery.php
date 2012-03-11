@@ -504,6 +504,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         }
         return mb_strtoupper($columnName);
     }
+
     /**
      * get table by column name
      *
