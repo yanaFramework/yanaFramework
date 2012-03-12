@@ -34,7 +34,7 @@ namespace Yana\Db\Helpers\Triggers;
  * @package     yana
  * @subpackage  db
  */
-abstract class AbstractTrigger extends \Yana\Core\Object
+abstract class AbstractTrigger extends \Yana\Core\Object implements \Yana\Db\Helpers\Triggers\IsTrigger
 {
 
     /**
