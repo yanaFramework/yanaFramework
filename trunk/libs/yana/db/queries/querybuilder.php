@@ -164,7 +164,7 @@ class QueryBuilder extends \Yana\Core\Object
         $insertQuery = new \Yana\Db\Queries\Insert($this->_connection);
         $insertQuery->setKey($key);
         $insertQuery->setValues($value);
-        return \Yana\Db\Queries\Insert;
+        return $insertQuery;
     }
 
     /**
