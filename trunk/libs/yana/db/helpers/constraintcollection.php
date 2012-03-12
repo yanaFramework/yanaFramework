@@ -50,21 +50,29 @@ class ConstraintCollection extends \Yana\Core\AbstractCollection
     const CONSTRAINT_SYNTAX = "/^\s*(?:(?:(?:-| |\!)?\\\$[\w\d_]+(?:\[[\"'][\w\d_]+[\"']\])? ?|true|false|null|-?\d+|\&\&?|(?:empty|isset|preg_match|ereg|eregi)\((?:'[^']*'|\"[^\"]*\"),\s*\\\$[\w\d_]+(?:\[[\"'][\w\d_]+[\"']\])?\)|[\&\|\!\~\-\*\/\%\+\<\>]|\[\"[^\"\]\[]+\"\]|\[\'[^\'\]\[]+\'\]|\"[^\"]*\"|\'[^\']*\'|\d+(?:\.\d*)?|(?:\=|\!|\<|\>)\={1,2})(?:\s+|$))*\s*$/i";
 
     /**
-     * Evaluates a constraint.
+     * Initializes the collection.
      *
-     * Returns bool(true) on success or bool(false) on error, or if the constraint fails.
-     *
-     * @param   \Yana\Db\Ddl\Table  $table  expected an \Yana\Db\Ddl\Table object as input
-     * @param   array               $row    row
-     * @return  bool
+     * @param   \Yana\Db\Ddl\Constraint[]  $items  expects a list of constraints
+     * @param   array                      $row    database row to evaluate
      */
     public function __construct(array $items = array(), array $row = array())
     {
-        parent::__construct($items);
+        foreach ($items as $key => $item)
+        {
+            $this->offsetSet($key, $item);
+        }
         $this->_row = $row;
     }
 
     /**
+     * Insert or replace item.
+     *
+     * Examples of usage:
+     * <code>
+     * $collection[$offset] = $item;
+     * $collection->_offsetSet($offset, $item);
+     * </code>
+     *
      * @param  scalar                   $key   offset
      * @param  \Yana\Db\Ddl\Constraint  $item  constraint to add to the collection
      * @throws \Yana\Core\Exceptions\InvalidArgumentException 
@@ -94,9 +102,9 @@ class ConstraintCollection extends \Yana\Core\AbstractCollection
         foreach ($this->toArray() as $code)
         {
             $function = create_function('$ROW', "return ($code) == true;");
-            if ($function($row) === false) {
+            if ($function($this->_row) === false) {
                 \Yana\Log\LogManager::getLogger()->addLog("Constraint '$code' failed " .
-                    "on table '{$table->getName()}' with value '".print_r($row, true)."'.", E_USER_WARNING);
+                    "on table '{$table->getName()}' with value '" . print_r($this->_row, true) . "'.", E_USER_WARNING);
                 return false;
             }
         }
