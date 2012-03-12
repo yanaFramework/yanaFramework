@@ -208,8 +208,12 @@ class Driver extends \Yana\Core\Object
     public function rollback()
     {
         $this->_cache = array();
-        $this->_src[$this->_database][$this->_tableName]->reset();
-        $this->_idx[$this->_database][$this->_tableName]->rollback();
+        if (isset($this->_src[$this->_database][$this->_tableName])) {
+            $this->_src[$this->_database][$this->_tableName]->reset();
+        }
+        if (isset($this->_idx[$this->_database][$this->_tableName])) {
+            $this->_idx[$this->_database][$this->_tableName]->rollback();
+        }
         return 1;
     }
 
