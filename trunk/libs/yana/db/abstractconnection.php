@@ -845,7 +845,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     {
         if (!$this->isWriteable()) {
             \Yana\Log\LogManager::getLogger()->addLog("Database is not writeable. " .
-                "Check if attribute readonly is set to true in structure file: ".$this->getName(), E_USER_WARNING);
+                "Check if attribute readonly is set to true in structure file: " . $this->getName(), E_USER_WARNING);
             return false;
         } else {
             return true;
