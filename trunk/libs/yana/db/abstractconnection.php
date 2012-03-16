@@ -59,11 +59,6 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     /**
      * @var  array
      */
-    protected $_queue = array();
-
-    /**
-     * @var  array
-     */
     private $_cache = array();
 
     /**
@@ -80,6 +75,11 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * @var  string
      */
     private static $_tempDir = "cache/";
+
+    /**
+     * @var \Yana\Db\Transaction
+     */
+    protected $_transaction = null;
 
     /**
      * database schema
@@ -105,6 +105,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     public function __construct(\Yana\Db\Ddl\Database $schema)
     {
         $this->schema = $schema;
+        $this->reset();
     }
 
     /**
@@ -258,190 +259,9 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function commit()
     {
-        if (!$this->_isWriteable()) {
-            throw new \Yana\Core\Exceptions\NotWriteableException('Operation aborted, not writeable.', E_USER_NOTICE);
-        }
-
-        /* Buffer empty */
-        if (count($this->_queue) == 0) {
-            return true;
-        }
-
-        // start transaction
-        $connection = $this->getConnection();
-        $connection->beginTransaction();
-        $dbSchema = $this->getSchema();
-
-        assert('!isset($i); /* Cannot redeclare $i */');
-        for ($i = 0; $i < count($this->_queue); $i++)
-        {
-            /*
-             * 1) get query object
-             */
-            /* @var $dbQuery \Yana\Db\Queries\AbstractQuery */
-            if (is_array($this->_queue[$i]) && isset($this->_queue[$i][0])) {
-                $dbQuery =& $this->_queue[$i][0];
-            } else {
-                $dbQuery =& $this->_queue[$i];
-            }
-
-            // skip empty queries
-            if (empty($dbQuery)) {
-                continue;
-            }
-
-            /*
-             * 2) get arguments for trigger
-             */
-            if (is_array($this->_queue[$i]) && isset($this->_queue[$i][1]) && is_array($this->_queue[$i][1])) {
-                $args = $this->_queue[$i][1];
-            } else {
-                $args = null;
-            }
-
-            if (defined('YANA_ERROR_REPORTING') && YANA_ERROR_REPORTING === YANA_ERROR_LOG) {
-                \Yana\Log\LogManager::getLogger()->addLog("$dbQuery");
-            }
-
-            /*
-             * 3.a) handle query object
-             */
-            if (is_object($dbQuery)) {
-                switch ($dbQuery->getType())
-                {
-                    /*
-                     * 3.1) delete a row
-                     */
-                    case \Yana\Db\Queries\TypeEnumeration::DELETE:
-                        /* send request to database */
-                        $result = $dbQuery->sendQuery();
-                    break;
-                    /*
-                     * 3.2) update a row
-                     */
-                    case \Yana\Db\Queries\TypeEnumeration::UPDATE:
-                        /* send request to database */
-                        $result = $dbQuery->sendQuery();
-                    break;
-                    /*
-                     * 3.3) insert a row
-                     */
-                    case \Yana\Db\Queries\TypeEnumeration::INSERT:
-                        if ($this->getDBMS() === 'mssql' && $dbQuery->getRow() !== '*') {
-                            /**
-                             * MSSQL compatibility
-                             *
-                             * {@internal
-                             * MSSQL does not allow entries of identity
-                             * tables to be inserted with a certain primary
-                             * key unless explicitely told to do so.
-                             * This exotic behavior does not apply to any
-                             * other DBMS.
-                             * }}
-                             */
-                            assert('!isset($tableName); // Cannot redeclare var $tableName');
-                            $tableName = $dbQuery->getTable();
-                            assert('!isset($table); // Cannot redeclare var $table');
-                            $table = $dbSchema->getTable($tableName);
-                            assert('$table instanceof \Yana\Db\Ddl\Table; // No such table');
-                            assert('!isset($column); // Cannot redeclare var $column');
-                            $column = $table->getColumn($table->getPrimaryKey());
-                            assert('$column instanceof \Yana\Db\Ddl\Column; // No such column');
-                            /* test if is identity table */
-                            if ($column->isAutoIncrement()) {
-                                /* set identity restriction off */
-                                $this->query('SET IDENTITY_INSERT [' . YANA_DATABASE_PREFIX.$tableName . '] ON;');
-                                $result = $dbQuery->sendQuery();
-                                /* reset identity restriction */
-                                $this->query('SET IDENTITY_INSERT [' . YANA_DATABASE_PREFIX.$tableName . '] OFF;');
-                            } else {
-                                $result = $dbQuery->sendQuery();
-                            }
-                            unset($tableName, $table, $column);
-                        } else {
-                            /* send request to database */
-                            $result = $dbQuery->sendQuery();
-                        }
-                    break;
-                    default:
-                        /* send request to database */
-                        $result = $dbQuery->sendQuery();
-                    break;
-                } // end switch (type)
-
-
-            /*
-             * 3.b) handle query string
-             */
-            } elseif (is_string($dbQuery)) {
-                $result = $this->query($dbQuery);
-
-            /*
-             * 3.c) error - invalid argument type
-             */
-            } else {
-                \Yana\Log\LogManager::getLogger()->addLog("The value '$dbQuery' is not a valid query.", E_USER_WARNING);
-                return false;
-            }
-
-            /*
-             * 4.1) error - query failed
-             */
-            if ($this->isError($result)) {
-                /*
-                 * 4.1.2) rollback on error
-                 */
-                \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", E_USER_WARNING, $result->getMessage());
-                $result = $connection->rollback();
-                /*
-                 * 4.1.3) when rollback failed, create entry in logs
-                 */
-                if ($this->isError($result)) {
-                    \Yana\Log\LogManager::getLogger()->addLog("Unable to rollback changes. Database might contain corrupt data.", E_USER_ERROR);
-                }
-                return false;
-            }
-            /*
-             * 4.2) query was successfull
-             */
-
-
-            /*
-             * 4.2.2) fire trigger(s)
-             */
-            assert('(is_array($args) && isset($args[0])) || is_null($args); ' .
-                    '// Expecting $args[][] to be an array');
-            if (is_array($args)) {
-                $this->_executeTrigger($args);
-            }
-            unset($args, $tableName, $column);
-        } // end foreach (query)
-        unset($i);
-
-        /*
-         * 5) commit changes
-         *
-         * The time when the database was last modified
-         * is updated, to provide protection from race
-         * conditions where two transaction try to modify
-         * the same data.
-         */
-        $result = $connection->commit();
-        /*
-         * 5.1) commit failed
-         */
-        if ($this->isError($result)) {
-            \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", E_USER_WARNING, $result->getMessage());
-            return false;
-        }
-        /*
-         * 5.2) commit successful
-         */
-        if (YANA_DB_STRICT && !empty($this->_lastModified)) {
-            file_put_contents(self::getTempDir() . $this->_lastModifiedPath, serialize($this->_lastModified));
-        }
-        $this->_queue = array();
-        return true;
+        $return = $this->_transaction->commit();
+        $this->_transaction = new \Yana\Db\Transaction($this->schema);
+        return $return;
     }
 
     /**
@@ -517,40 +337,16 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function select($key, array $where = array(), $orderBy = array(), $offset = 0, $limit = 0, $desc = false)
     {
-        /* 1) handle $key array */
         if (is_object($key) && $key instanceof \Yana\Db\Queries\Select) {
+
             assert('func_num_args() === 1; // Too many arguments. Only 1 argument expected.');
             $selectQuery =& $key;
-        } // end if
 
-        /*
-         * 2) build query
-         */
-        if (!isset($selectQuery)) {
-            $selectQuery = new \Yana\Db\Queries\Select($this);
-            assert('is_string($key); // Wrong argument type for argument 1. String expected.');
+        } else {
 
-            $selectQuery->setKey($key);
-            $tableName = $selectQuery->getTable();
-
-            if (!empty($where)) {
-                $selectQuery->setWhere($where);
-            }
-            if (!empty($orderBy) || $desc === true) {
-                $selectQuery->setOrderBy($orderBy, $desc);
-            }
-
-            /*
-             * 2.2) set limit and offset
-             */
-            if ($offset > 0) {
-                $selectQuery->setOffset($offset);
-            }
-            if ($limit > 0) {
-                $selectQuery->setLimit($limit);
-            }
-
-        } // end if
+            $queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
+            $selectQuery = $queryBuilder->select($key, $where, $orderBy, $offset, $limit, $desc);
+        }
 
         return $selectQuery->getResults();
     }
@@ -586,18 +382,12 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             return false;
         }
 
-        /*
-         * 1) input is query object
-         */
-        if (is_object($key) && $key instanceof \Yana\Db\Queries\Update) {
+        if (is_object($key) && $key instanceof \Yana\Db\Queries\Update) { // input is query object
 
             assert('func_num_args() === 1; // Too many arguments in ' . __METHOD__ . '(). Only 1 argument expected.');
-            $updateQuery =& $key;
+            $updateQuery = $key;
 
-        /*
-         * 2) input is key address
-         */
-        } else {
+        } else { // input is key address
 
             /*
              * 2.1) check input
@@ -611,12 +401,8 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
                 $key = mb_strtolower("$key");
             }
 
-            /*
-             * 2.2) build query
-             */
-            $updateQuery = new \Yana\Db\Queries\Update($this);
-            $updateQuery->setKey($key);
-            $updateQuery->setValues($value);
+            $queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
+            $updateQuery = $queryBuilder->update($key, $value);
 
         } // end if
 
@@ -627,21 +413,13 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
         $column = $updateQuery->getColumn();
         $value = $updateQuery->getValues(); // get values by reference
 
-        assert('!isset($table); /* Cannot redeclare var $table */');
-        $table = $this->getSchema()->getTable($tableName);
-
-        /*
-         * 2) check whether the row has been modified since last access
-         */
-        if (YANA_DB_STRICT) {
-            if (isset($_SESSION['transaction_isolation_created'])) {
-                if ($this->_getLastModified($tableName, $row) > $_SESSION['transaction_isolation_created']) {
-                    \Yana\Log\LogManager::getLogger()->addLog("The user was trying to save form data, which has changed " .
-                        "since he accessed the corrsponding form. The operation has been aborted, " .
-                        "as updating this row would have overwritten changes made by another user.", E_USER_WARNING);
-                    throw new FormTimeoutWarning();
-                }
-            }
+        // check whether the row has been modified since last access
+        if (YANA_DB_STRICT && isset($_SESSION['transaction_isolation_created']) &&
+            $this->_getLastModified($tableName, $row) > $_SESSION['transaction_isolation_created']) {
+            \Yana\Log\LogManager::getLogger()->addLog("The user was trying to save form data, which has changed " .
+                "since he accessed the corrsponding form. The operation has been aborted, " .
+                "as updating this row would have overwritten changes made by another user.", E_USER_WARNING);
+            throw new FormTimeoutWarning();
         }
 
         /*
@@ -661,6 +439,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
                 } else {
                     $_value = $this->select("$tableName.$row.$column");
                 }
+                unset($_col);
                 if (!is_array($_value)) {
                     $_value = array();
                 }
@@ -672,70 +451,6 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             unset($arrayAddress);
         }
 
-        // get values by reference
-        $value = $updateQuery->getValues();
-
-        /*
-         * 3.4) error - updating table / column is illegal
-         */
-        assert('!isset($expectedResult); /* Cannot redeclare var $expectedResult */');
-        $expectedResult = $updateQuery->getExpectedResult();
-        if ($expectedResult !== \Yana\Db\ResultEnumeration::ROW && $expectedResult !== \Yana\Db\ResultEnumeration::CELL) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Query is invalid. " .
-                "Updating a table or column is illegal. Operation aborted.");
-        }
-
-        /*
-         * 3.4) before update: check constraints and triggers
-         */
-        assert('!isset($constraint); // Cannot redeclare var $constraint');
-        assert('!isset($triggerArgs); /* Cannot redeclare var $triggerArgs */');
-        $triggerArgs = array();
-        if ($column == '*') {
-            $constraint = $value;
-        } else {
-            $constraint = array($column => $value);
-        }
-        if (\Yana\Db\Helpers\StructureGenerics::checkConstraint($table, $constraint) === false) {
-            \Yana\Log\LogManager::getLogger()->addLog("Cannot set values. Constraint check failed for: '$updateQuery'.");
-            return false;
-
-        } else {
-            \Yana\Db\Helpers\StructureGenerics::onBeforeUpdate($table, $column, $value, $updateQuery->getRow());
-            $triggerArgs[] = array(
-                \Yana\Db\Queries\TypeEnumeration::UPDATE,
-                $table,
-                $column,
-                $value,
-                $updateQuery->getRow()
-            );
-
-        }
-
-        /*
-         * 4) untaint input
-         */
-        switch ($updateQuery->getExpectedResult())
-        {
-            case \Yana\Db\ResultEnumeration::ROW:
-                $value = $table->sanitizeRow($value, $this->getDBMS(), false);
-            break;
-            case \Yana\Db\ResultEnumeration::CELL:
-                if ($table->getColumn($column)->getType() !== 'array') {
-                    assert('$table->isColumn($column);');
-                    $value = $table->getColumn($column)->sanitizeValue($value, $this->getDBMS());
-                }
-            break;
-            default:
-                // error - may only update or insert rows and cells
-                return false;
-            break;
-        }
-
-        if (!$this->checkForeignKeys($table, $value, $column)) {
-            return false;
-        }
-
         /*
          * 5) move values to cache
          */
@@ -744,14 +459,8 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
         } else {
             $this->_cache[$tableName][$row][$column] = $value;
         }
-        unset($arrayAddress);
 
-        /*
-         * 6) add SQL statement to queue
-         */
-        $this->_queue[] = array($updateQuery, $triggerArgs);
-
-        return true;
+        return $this->_transaction->update($updateQuery);
     }
 
     /**
@@ -792,34 +501,23 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function insertOrUpdate($key, $value = array())
     {
-        $isInsert = null;
-
-        /*
-         * 1) input is query object
-         */
-        if (is_object($key)) {
+        if (is_object($key)) { // input is query object
 
             assert('func_num_args() === 1; // Too many arguments in ' .__METHOD__ . '(). Only 1 argument expected.');
             $dbQuery =& $key;
             if ($dbQuery instanceof \Yana\Db\Queries\Update) {
-                $isInsert = false;
+                return $this->update($dbQuery);
 
             } elseif ($dbQuery instanceof \Yana\Db\Queries\Insert) {
-                $isInsert = true;
+                return $this->insert($dbQuery);
 
             } else {
                 trigger_error("Unable to insert or update row. Invalid query.", E_USER_WARNING);
                 return false;
             }
 
-        /*
-         * 2) input is key address
-         */
-        } else {
+        } else { // input is key address
 
-            /*
-             * 2.1) check input
-             */
             assert('is_string($key); // wrong argument type for argument 1, string expected');
 
             if ($key == '') {
@@ -829,9 +527,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
                 $key = mb_strtolower("$key");
             }
 
-            /*
-             * 2.2) build query
-             */
+            // extract primary key portion of $key
             $_key = explode('.', $key);
             assert('!isset($table); /* Cannot redeclare var $table */');
             $table = $_key[0];
@@ -841,30 +537,16 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
                 $row = $_key[1];
             }
             unset($_key);
+
+            $queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
             if ($row !== '*' && (isset($this->_cache[$table][$row]) || $this->exists("$table.$row"))) {
-                $dbQuery = new \Yana\Db\Queries\Update($this);
-                $isInsert = false;
+                $dbQuery = $queryBuilder->update($key, $value);
+                return $this->update($dbQuery);
 
             } else {
-                $dbQuery = new \Yana\Db\Queries\Insert($this);
-                $isInsert = true;
+                $dbQuery = $queryBuilder->insert($key, $value);
+                return $this->insert($dbQuery);
             }
-            unset($table, $row);
-
-            // assign target-table, -row and values
-            $dbQuery->setKey($key);
-            $dbQuery->setValues($value);
-
-        } // end if
-
-        /*
-         * 3) call function
-         */
-        if ($isInsert === true) {
-            return $this->insert($dbQuery);
-
-        } else {
-            return $this->update($dbQuery);
 
         }
     }
@@ -901,102 +583,19 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             throw new \Yana\Core\Exceptions\NotWriteableException('Operation aborted, not writeable.', E_USER_NOTICE);
         }
 
-        /*
-         * 1) input is query object
-         */
-        if (is_object($key) && $key instanceof \Yana\Db\Queries\Insert) {
+        if (is_object($key) && $key instanceof \Yana\Db\Queries\Insert) { // input is query object
 
             assert('func_num_args() === 1; // Too many arguments. Only 1 argument expected.');
-            $insertQuery =& $key;
+            $insertQuery = $key;
 
-        /*
-         * 2) input is key address
-         */
-        } else {
+        } else { // input is key address
 
-            /*
-             * 2.1) check input
-             */
-            assert('is_string($key); // wrong argument type for argument 1, string expected');
+            $queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
+            $insertQuery = $queryBuilder->insert($key, $value);
 
-            if ($key == '') {
-                return false;
-            }
-
-            $key = mb_strtolower($key);
-
-            /*
-             * 2.2) build query
-             */
-            $insertQuery = new \Yana\Db\Queries\Insert($this);
-            $insertQuery->setKey($key);
-            $insertQuery->setValues($value);
-
-
-        } // end if
-
-        // get properties
-        $tableName = $insertQuery->getTable();
-        $row = $insertQuery->getRow();
-        $value = $insertQuery->getValues(); // get values by reference
-
-        assert('!isset($table); /* Cannot redeclare var $table */');
-        $table = $this->getSchema()->getTable($tableName);
-
-        /*
-         * 3.1) error - inserting updating table / column is illegal
-         */
-        assert('!isset($triggerArgs); /* Cannot redeclare var $triggerArgs */');
-        $triggerArgs = array();
-        $expectedResult = $insertQuery->getExpectedResult();
-        if ($expectedResult !== \Yana\Db\ResultEnumeration::ROW) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Query is invalid. " .
-                "Can only insert a row, not a table, cell or column.");
         }
 
-        /*
-         * 3.2) error - constraint check failed
-         */
-        if (\Yana\Db\Helpers\StructureGenerics::checkConstraint($table, $value) === false) {
-            \Yana\Log\LogManager::getLogger()->addLog("Insert on table '{$tableName}' failed. " .
-                "Constraint check failed.", E_USER_WARNING, $value);
-            return false;
-        }
-        /*
-         * 3.3) fire trigger
-         */
-        \Yana\Db\Helpers\StructureGenerics::onBeforeInsert($table, $value, $insertQuery->getRow());
-        $triggerArgs[] = array(
-            \Yana\Db\Queries\TypeEnumeration::INSERT,
-            $table,
-            $value,
-            $insertQuery->getRow()
-        );
-
-        /*
-         * 4) check input
-         */
-
-        /*
-         * 4.1) untaint input
-         */
-        $value = $table->sanitizeRow($value, $this->getDBMS(), true);
-
-        if (!$this->checkForeignKeys($table, $value)) {
-            return false;
-        }
-
-        /*
-         * 5) move values to cache
-         */
-        $this->_cache[$tableName][$row] = $value;
-
-        /*
-         * 6) add SQL statement to queue
-         */
-        $this->_queue[] = array($insertQuery, $triggerArgs);
-
-        return true;
+        return $this->_transaction->insert($insertQuery);
     }
 
     /**
@@ -1056,84 +655,21 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             return false;
         }
 
-        /*
-         * 1) input is query object
-         */
-        if (is_object($key) && $key instanceof \Yana\Db\Queries\Delete) {
+        if (is_object($key) && $key instanceof \Yana\Db\Queries\Delete) { // input is query object
 
             assert('func_num_args() === 1; // Too many arguments in ' . __METHOD__ . '(). Only 1 argument expected.');
-            $deleteQuery =& $key;
-            $tableName = $deleteQuery->getTable();
+            $deleteQuery = $key;
 
-        /*
-         * 2) input is key address
-         */
-        } else {
+        } else { // input is key address
 
-            // Build query
-            assert('is_string($key); // Wrong argument type $key. String expected.');
-            assert('!isset($deleteQuery); // Cannot redeclare var $deleteQuery');
-            $deleteQuery = new \Yana\Db\Queries\Delete($this);
-            $deleteQuery->setLimit($limit);
-            $deleteQuery->setKey($key);
-            $tableName = $deleteQuery->getTable();
-            $deleteQuery->setWhere($where);
+            $queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
+            $deleteQuery = $queryBuilder->remove($key, $where, $limit);
 
-        } // end if
-        /*  @var $deleteQuery \Yana\Db\Queries\Delete */
-
-        assert('!isset($table); // Cannot redeclare var $table');
-        $table = $this->getSchema()->getTable($tableName);
-
-        /*
-         * get old row for logging an generic triggers
-         */
-        assert('!isset($oldRows); /* Cannot redeclare var $oldRows */');
-        $oldRows = $deleteQuery->getOldValues();
-
-        /*
-         * abort: nothing to delete
-         */
-        if (empty($oldRows)) {
-            return true;
         }
-
-        if ($limit === 1) {
-            $oldRows = array($oldRows);
-        }
-
-        /*
-         * loop through deleted rows
-         */
-        assert('!isset($triggerArgs); /* Cannot redeclare var $triggerArgs */');
-        $triggerArgs = array();
-        assert('!isset($oldRow); /* Cannot redeclare var $oldRow */');
-        foreach ($oldRows as $oldRow)
-        {
-            // fire trigger
-            \Yana\Db\Helpers\StructureGenerics::onBeforeDelete($table, $oldRow, $deleteQuery->getRow());
-            // save trigger settings for onAfterDelete
-            $triggerArgs[] = array(
-                \Yana\Db\Queries\TypeEnumeration::DELETE,
-                $table,
-                $oldRow,
-                $deleteQuery->getRow()
-            );
-        }
-        unset($oldRow);
-
-        /*
-         * 5) add query to queue
-         */
-        $this->_queue[] = array($deleteQuery, $triggerArgs);
-
-        /* return true to indicate the request was successfull */
-        return true;
+        return $this->_transaction->remove($deleteQuery);
     }
 
     /**
-     * get the number of entries inside a table
-     *
      * Counts and returns the rows of $table.
      *
      * You may also provide the parameter $table as an object of type DbSelectCount.
@@ -1148,26 +684,21 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function length($table, array $where = array())
     {
-        /*
-         * 1) input is query object
-         */
-        if (is_object($table) && $table instanceof \Yana\Db\Queries\SelectCount) {
+        if (is_object($table) && $table instanceof \Yana\Db\Queries\SelectCount) { // input is query object
 
             assert('func_num_args() === 1; // Too many arguments in ' . __METHOD__ . '(). Only 1 argument expected.');
             $countQuery =& $table;
 
-        /*
-         * 2) input is table name
-         */
-        } else {
+        } else { // input is table name
 
             assert('is_string($table); // Wrong argument type $table. String expected.');
 
             // build query
             try {
-                $countQuery = new \Yana\Db\Queries\SelectCount($this);
-                $countQuery->setTable($table); // throws NotFoundException
-                $countQuery->setWhere($where);
+
+                $queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
+                $countQuery = $queryBuilder->length($table, $where);
+
             } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                 return 0;
             }
@@ -1226,11 +757,8 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             return $this->getSchema()->isTable($key);
         }
         // build query to check key
-        $existQuery = new \Yana\Db\Queries\SelectExist($this);
-        $existQuery->setKey($key);
-        if (!empty($where)) {
-            $existQuery->setWhere($where);
-        }
+        $queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
+        $existQuery = $queryBuilder->exists($key, $where);
 
         // check if address exists
         return $existQuery->doesExist();
@@ -1424,7 +952,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function reset()
     {
-        $this->_queue = array();
+        $this->_transaction = new \Yana\Db\Transaction($this->schema);
         $this->_cache = array();
     }
 
@@ -1453,19 +981,12 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function equals(\Yana\Core\IsObject $anotherObject)
     {
-        if ($anotherObject instanceof $this) {
-            if ($this->getName()->equals($anotherObject->getName()) && $this->database == $anotherObject->database) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
+        return (bool) ($anotherObject instanceof $this) && $this->getName()->equals($anotherObject->getName()) &&
+            $this->database == $anotherObject->database;
     }
 
     /**
-     * Check foreign keys constraints
+     * Check foreign keys constraints.
      *
      * This should be called before updating or inserting a row or a cell.
      *
@@ -1484,7 +1005,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * @return   bool
      * @ignore
      */
-    protected function checkForeignKeys(\Yana\Db\Ddl\Table $table, $value, $columnName = null)
+    private function _checkForeignKeys(\Yana\Db\Ddl\Table $table, $value, $columnName = null)
     {
         // ignore when strict checks are turned off
         if (!YANA_DB_STRICT) {
@@ -1562,37 +1083,6 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             unset($targetTable, $fkey, $ufkey);
         } // end foreach
         return true;
-    }
-
-    /**
-     * execute trigger after commit
-     *
-     * @param  array  $list  arguments
-     */
-    private function _executeTrigger(array $list)
-    {
-        foreach ($list as $args)
-        {
-            assert('is_array($args); // Expecting $triggerArgs to array of trigger arugments');
-            assert('!empty($args); // List of arguments may not be empty');
-            switch ($args[0])
-            {
-                case \Yana\Db\Queries\TypeEnumeration::INSERT:
-                    assert('count($args) === 4;');
-                    assert('is_array($args[2]);');
-                    \Yana\Db\Helpers\StructureGenerics::onAfterInsert($args[1], $args[2], $args[3]);
-                break;
-                case \Yana\Db\Queries\TypeEnumeration::UPDATE:
-                    assert('count($args) === 5;');
-                    \Yana\Db\Helpers\StructureGenerics::onAfterUpdate($args[1], $args[2], $args[3], $args[4]);
-                break;
-                case \Yana\Db\Queries\TypeEnumeration::DELETE:
-                    assert('count($args) === 4;');
-                    assert('is_array($args[2]);');
-                    \Yana\Db\Helpers\StructureGenerics::onAfterDelete($args[1], $args[2], $args[3]);
-                break;
-            }
-        }
     }
 
     /**

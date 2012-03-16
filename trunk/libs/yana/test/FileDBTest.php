@@ -54,7 +54,7 @@ class FileDbTest extends PHPUnit_Framework_TestCase
             \Yana\Db\FileDb\Driver::setBaseDirectory(CWD. 'resources/db/');
             \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
             $schema = \XDDL::getDatabase('check');
-            $this->dbsobj = new FileDb($schema);
+            $this->dbsobj = new \Yana\Db\FileDbConnection($schema);
             restore_error_handler();
 
         } catch (\Exception $e) {
@@ -83,7 +83,7 @@ class FileDbTest extends PHPUnit_Framework_TestCase
      */
     public function __construct()
     {
-        DDL::setDirectory(CWD. 'resources/');
+        \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
         // just in case
         $this->setUp(); 
         $this->tearDown();

@@ -75,20 +75,17 @@ class Container extends \Yana\Core\Object
     /**
      * Create new instance
      *
-     * @param  string  $operation  current operation, e.g. "BEFORE_UPDATE", "AFTER_INSERT" aso.
      * @param  string  $table      name of table
      * @param  mixed   &$value     value of column
      * @param  string  $field      name of column
      * @param  mixed   $rowId      value of primary key
      */
-    public function __construct($operation, \Yana\Db\Ddl\Table $table, &$value, $field = "", $rowId = null)
+    public function __construct(\Yana\Db\Ddl\Table $table, &$value, $field = "", $rowId = null)
     {
-        assert('is_string($operation); // Wrong type for argument 1. String expected.');
         assert('is_string($field); // Wrong type for argument 4. String expected.');
         if (is_string($value)) {
             $value = stripslashes($value);
         }
-        $this->operation = (string) $operation;
         $this->table = $table;
         $this->value =& $value;
         $this->field = mb_strtoupper((string) $field);
