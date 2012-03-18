@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -218,7 +217,7 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
         $oldLogEntries = $this->_database->select("log", array(), array('LOG_ID'));
 
         // send e-mail
-        $mail = new FormMailer();
+        $mail = new \FormMailer();
         $mail->setContent($oldLogEntries)
             ->setSubject('JOURNAL')
             ->send($logMail);
