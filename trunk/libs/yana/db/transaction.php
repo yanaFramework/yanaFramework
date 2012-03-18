@@ -109,77 +109,16 @@ class Transaction extends \Yana\Core\Object
             }
 
             /*
-             * 2) get arguments for trigger
+             * 2) query log
              */
-
             if (defined('YANA_ERROR_REPORTING') && YANA_ERROR_REPORTING === YANA_ERROR_LOG) {
-                \Yana\Log\LogManager::getLogger()->addLog("$dbQuery");
+                \Yana\Log\LogManager::getLogger()->addLog("$dbQuery", \Yana\Log\TypeEnumeration::DEBUG);
             }
 
             /*
-             * 3.a) handle query object
+             * 3 send request to database
              */
-            switch ($dbQuery->getType())
-            {
-                /*
-                    * 3.1) delete a row
-                    */
-                case \Yana\Db\Queries\TypeEnumeration::DELETE:
-                    /* send request to database */
-                    $result = $dbQuery->sendQuery();
-                break;
-                /*
-                    * 3.2) update a row
-                    */
-                case \Yana\Db\Queries\TypeEnumeration::UPDATE:
-                    /* send request to database */
-                    $result = $dbQuery->sendQuery();
-                break;
-                /*
-                    * 3.3) insert a row
-                    */
-                case \Yana\Db\Queries\TypeEnumeration::INSERT:
-                    if ($this->getDBMS() === 'mssql' && $dbQuery->getRow() !== '*') {
-                        /**
-                            * MSSQL compatibility
-                            *
-                            * {@internal
-                            * MSSQL does not allow entries of identity
-                            * tables to be inserted with a certain primary
-                            * key unless explicitely told to do so.
-                            * This exotic behavior does not apply to any
-                            * other DBMS.
-                            * }}
-                            */
-                        assert('!isset($tableName); // Cannot redeclare var $tableName');
-                        $tableName = $dbQuery->getTable();
-                        assert('!isset($table); // Cannot redeclare var $table');
-                        $table = $dbSchema->getTable($tableName);
-                        assert('$table instanceof \Yana\Db\Ddl\Table; // No such table');
-                        assert('!isset($column); // Cannot redeclare var $column');
-                        $column = $table->getColumn($table->getPrimaryKey());
-                        assert('$column instanceof \Yana\Db\Ddl\Column; // No such column');
-                        /* test if is identity table */
-                        if ($column->isAutoIncrement()) {
-                            /* set identity restriction off */
-                            $this->query('SET IDENTITY_INSERT [' . YANA_DATABASE_PREFIX.$tableName . '] ON;');
-                            $result = $dbQuery->sendQuery();
-                            /* reset identity restriction */
-                            $this->query('SET IDENTITY_INSERT [' . YANA_DATABASE_PREFIX.$tableName . '] OFF;');
-                        } else {
-                            $result = $dbQuery->sendQuery();
-                        }
-                        unset($tableName, $table, $column);
-                    } else {
-                        /* send request to database */
-                        $result = $dbQuery->sendQuery();
-                    }
-                break;
-                default:
-                    /* send request to database */
-                    $result = $dbQuery->sendQuery();
-                break;
-            } // end switch (type)
+            $result = $dbQuery->sendQuery();
 
             /*
              * 4.1) error - query failed
@@ -188,13 +127,17 @@ class Transaction extends \Yana\Core\Object
                 /*
                  * 4.1.2) rollback on error
                  */
-                \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", E_USER_WARNING, $result->getMessage());
+                \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", \Yana\Log\TypeEnumeration::WARNING,
+                    $result->getMessage());
                 $result = $connection->rollback();
                 /*
                  * 4.1.3) when rollback failed, create entry in logs
                  */
                 if ($this->isError($result)) {
-                    \Yana\Log\LogManager::getLogger()->addLog("Unable to rollback changes. Database might contain corrupt data.", E_USER_ERROR);
+                    assert('!isset($message); // Cannot redefine var $message');
+                    $message = "Unable to rollback changes. Database might contain corrupt data.";
+                    \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::ERROR);
+                    unset($message);
                 }
                 return false;
             }
@@ -218,7 +161,8 @@ class Transaction extends \Yana\Core\Object
          * 5.1) commit failed
          */
         if ($this->isError($result)) {
-            \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", E_USER_WARNING, $result->getMessage());
+            \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", \Yana\Log\TypeEnumeration::WARNING,
+                $result->getMessage());
             return false;
         }
         $this->_queue = array();
