@@ -68,7 +68,6 @@ class BlockFileTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->_object = new BlockFile(CWD . $this->_source);
-        $this->_object->reset();
     }
 
     /**
@@ -83,40 +82,25 @@ class BlockFileTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * test
-     *
-     *
      * @test
      */
-    function test()
+    public function testSetContent()
     {
         $input = 'qwertyTest';
-        $set = $this->_object->setContent($input);
-        $this->assertTrue($set, 'assert failed, expected true for set content');
 
-        $this->assertTrue($this->_object->write(), 'assert failed, write has failed');
+        $this->assertTrue($this->_object->setContent($input)->write(), 'assert failed, write has failed');
 
         $this->_object->read();
 
         $this->assertEquals($input, $this->_object->getContent(), 'assert failed, the given content should be match the expected');
-        $this->assertFalse($this->_object->isBlocked(), 'assert failed, the users premissions are too low');
-
-        $input2 = 'ytrewq';
-        $this->assertTrue($this->_object->set($input2), 'assert failed, set content has failed');
-
-        $this->assertTrue($this->_object->write(), 'assert failed, write has failed');
-
-        $get = $this->_object->getContent();
-        $this->assertEquals($input2."\n", $get, 'assert failed, the given content should be match the expected');
-        $this->assertEquals($input2."\n", $this->_object->__toString(), 'assert failed, the given string should be match the expected');
     }
 
     /**
-     * @test 
+     * @test
      */
-    public function testGetRemoteAddress()
+    public function testIsBlocked()
     {
-        $this->assertEquals('', $this->_object->getRemoteAddress());
+        $this->assertFalse($this->_object->isBlocked('::1'));
     }
 
     /**
@@ -124,9 +108,10 @@ class BlockFileTest extends PHPUnit_Framework_TestCase
      *
      * @test 
      */
-    public function testSetRemoteAddressWithIpv4()
+    public function testWithIpv4()
     {
-        $this->assertEquals('127.0.0.1', $this->_object->setRemoteAddress('127.0.0.1')->getRemoteAddress());
+        $this->_object->setContent(array('127.*.*.*', '::1'));
+        $this->assertTrue($this->_object->isBlocked('127.0.0.1'));
     }
 
     /**
@@ -134,9 +119,10 @@ class BlockFileTest extends PHPUnit_Framework_TestCase
      *
      * @test 
      */
-    public function testSetRemoteAddressWithIpv6()
+    public function testWithIpv6()
     {
-        $this->assertEquals('::1', $this->_object->setRemoteAddress('::1')->getRemoteAddress());
+        $this->_object->setContent(array('127.*.*.*', '::1'));
+        $this->assertTrue($this->_object->isBlocked('::1'));
     }
 
 }
