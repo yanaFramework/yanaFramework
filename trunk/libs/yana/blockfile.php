@@ -39,73 +39,29 @@ class BlockFile extends File
 {
 
     /**
-     * User's IP-adress.
-     *
-     * @var string
-     */
-    private $_remoteAddress = "";
-
-    /**
-     * Returns the registered IP-address.
-     *
-     * @return string
-     */
-    public function getRemoteAddress()
-    {
-        return $this->_remoteAddress;
-    }
-
-    /**
-     * Set IP-address.
-     *
-     * @param string $remoteAddress
-     * @return \BlockFile 
-     */
-    public function setRemoteAddress($remoteAddress)
-    {
-        assert('is_string($remoteAddress); // Invalid argument $remoteAddress: string expected');
-        assert('filter_var($remoteAddress, FILTER_VALIDATE_IP); // Not a valid IP-address');
-        $this->_remoteAddress = $remoteAddress;
-        return $this;
-    }
-
-    /**
      * Replace file contents by $input.
      *
      * Note that changes are buffered and will
-     * not be written to the file unless you explicitely
-     * call write().
+     * not be written to the file unless you explicitely call write().
      *
-     * @param   string  $input new file contents
-     * @return  bool
+     * @param   string|array  $input new file contents
+     * @return  BlockFile
      * @name    BlockFile::setContent()
      */
     public function setContent($input)
     {
-        assert('is_string($input); // Wrong type for argument 1. String expected');
-
-        $input = preg_replace("/[;,\s]+/s", "\n", "$input");
-        $input = explode("\n", $input);
+        if (!is_array($input)) {
+            assert('is_string($input); // Wrong type for argument 1. String expected');
+            $input = preg_replace("/[;,\s]+/s", "\n", "$input");
+            $input = explode("\n", $input);
+        }
         assert('is_array($input);');
         $this->content = $input;
         for ($i = 0; $i < count($this->content); $i++)
         {
             $this->content[$i] .= "\n";
         }
-        return true;
-    }
-
-    /**
-     * Alias of BlockFile::setContent()
-     *
-     * @param   string  $input  new file contents
-     * @return  bool
-     * @see     BlockFile::setContent()
-     * @deprec  since 3.5
-     */
-    public function set($input)
-    {
-        return $this->setContent($input);
+        return $this;
     }
 
     /**
@@ -134,41 +90,37 @@ class BlockFile extends File
     }
 
     /**
-     * Check if the current user has been blocked.
+     * Check if the current user has been listed.
      *
-     * Returns bool(true) if the visitor's IP
-     * has been black-listed and bool(false) otherwise.
+     * Returns bool(true) if the user's IP has been listed and bool(false) otherwise.
      *
+     * @param   string  $remoteAddress  the user's IP address (IPv4 and IPv6 supported)  
      * @return  bool
      */
-    public function isBlocked()
+    public function isBlocked($remoteAddress)
     {
+        assert('is_string($remoteAddress); // Invalid argument $remoteAddress: string expected');
+        assert('filter_var($remoteAddress, FILTER_VALIDATE_IP); // Not a valid IP-address');
+
         assert('is_array($this->content);');
 
-        $this->read(); // read file contents
-        $this->content = (array) $this->content;
-
-        $_remoteAddress = $this->getRemoteAddress(); // get remote address
-        if (empty($_remoteAddress)) {
-            return false;
+        if (empty($this->content)) { // read file contents
+            $this->read();
         }
 
-        /* check if remote address is black-listed */
         assert('!isset($line); /* cannot redeclare variable $line */');
-        foreach ($this->content as $line)
+        foreach ((array) $this->content as $line)
         {
-            $remoteAddress = filter_var((string) $line, FILTER_VALIDATE_IP);
-            if ($remoteAddress) {
-                $remoteAddress = str_replace('.', '\.', $remoteAddress);
-                $remoteAddress = str_replace('*', '[a-fA-F0-9]{,4}', $remoteAddress);
-                if (preg_match("/".$remoteAddress."/", $_remoteAddress)) {
-                    // match found, return bool(true) (and abort loop)
-                    return true;
-                } else {
-                    // entry does not match (continue with next)
-                }
+            // convert to regular expression
+            $line = str_replace("\n", '', $line);
+            $line = preg_quote($line, '/');
+            $line = str_replace('\\*', '[a-f0-9]{0,4}', $line);
+
+            if (preg_match("/" . $line . "/i", (string) $remoteAddress)) {
+                // match found, return bool(true) (and abort loop)
+                return true;
             } else {
-                // not an IP-address - treat as comment
+                // entry does not match (continue with next)
             }
         }
         unset($line);
