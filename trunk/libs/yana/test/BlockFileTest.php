@@ -58,7 +58,6 @@ class BlockFileTest extends PHPUnit_Framework_TestCase
     {
         $this->_source = tempnam(sys_get_temp_dir(), __CLASS__);
         file_put_contents($this->_source, '::1');
-        // intentionally left blank
     }
 
     /**
