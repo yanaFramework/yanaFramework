@@ -111,6 +111,34 @@ class BlockFileTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($input2."\n", $this->_object->__toString(), 'assert failed, the given string should be match the expected');
     }
 
+    /**
+     * @test 
+     */
+    public function testGetRemoteAddress()
+    {
+        $this->assertEquals('', $this->_object->getRemoteAddress());
+    }
+
+    /**
+     * Test IPv4
+     *
+     * @test 
+     */
+    public function testSetRemoteAddressWithIpv4()
+    {
+        $this->assertEquals('127.0.0.1', $this->_object->setRemoteAddress('127.0.0.1')->getRemoteAddress());
+    }
+
+    /**
+     * Test IPv6
+     *
+     * @test 
+     */
+    public function testSetRemoteAddressWithIpv6()
+    {
+        $this->assertEquals('::1', $this->_object->setRemoteAddress('::1')->getRemoteAddress());
+    }
+
 }
 
 ?>
