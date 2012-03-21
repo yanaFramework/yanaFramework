@@ -26,11 +26,10 @@
  */
 
 /**
- * Alert
+ * Alert.
  *
  * This class represents alerts passed to the user.
  *
- * @access      public
  * @package     yana
  * @subpackage  error_reporting
  */
