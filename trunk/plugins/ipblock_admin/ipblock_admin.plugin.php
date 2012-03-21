@@ -214,10 +214,10 @@ class plugin_ipblock_admin extends StdClass implements IsPlugin
             $blacklistFile->read();
         }
 
-        if (!$blacklistFile->setContent($blacklist) || !$blacklistFile->write()) {
+        if (!$blacklistFile->setContent($blacklist)->write()) {
             return false;
         }
-        if (!$whitelistFile->setContent($whitelist) || !$whitelistFile->write()) {
+        if (!$whitelistFile->setContent($whitelist)->write()) {
             return false;
         }
         return true;

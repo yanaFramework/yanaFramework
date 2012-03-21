@@ -51,7 +51,9 @@ class plugin_ipblock extends StdClass implements IsPlugin
         global $YANA;
         $plugins = $YANA->getPlugins();
         $whitelist = $plugins->{"ipblock:/dir/whitelist.blockfile"};
+        /** @var $whitelist \BlockFile */
         $blacklist = $plugins->{"ipblock:/dir/blacklist.blockfile"};
+        /** @var $blacklist \BlockFile */
         $dir = $plugins->{"ipblock:/dir"};
 
         if (!$dir->exists()) {
@@ -69,7 +71,9 @@ class plugin_ipblock extends StdClass implements IsPlugin
             $blacklist->read();
         }
 
-        if ($blacklist->isBlocked() && !($whitelist->exists() && $whitelist->isBlocked())) {
+        $remoteAddress = $YANA->getVar('REMOTE_ADDR');
+
+        if ($blacklist->isBlocked($remoteAddress) && !($whitelist->exists() && $whitelist->isBlocked())) {
             new PermissionDeniedError();
             $YANA->exitTo(); // die
             return false;
