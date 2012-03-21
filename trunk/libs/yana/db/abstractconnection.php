@@ -765,14 +765,12 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     }
 
     /**
-     * check wether the current database is readonly
+     * Check wether the current database is readonly.
      *
      * This returns bool(false) if the database does not
      * exist, or the database property "readonly" is set
      * to bool(true) in the database's structure file.
      * Otherwise the function returns bool(true).
-     *
-     * @uses $AbstractConnection->isWriteable()
      *
      * @return  bool
      */
@@ -782,9 +780,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     }
 
     /**
-     * get database name
-     *
-     * This function returns the name of the database as a string.
+     * Returns the name of the database as a string.
      *
      * @return  string
      * @ignore
@@ -792,14 +788,14 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     public function __toString()
     {
         try {
-            return $this->getSchema()->getName();
+            return $this->getName();
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
 
     /**
-     * get name of current database definition
+     * Get name of current database definition.
      *
      * @return  string
      * @ignore
@@ -813,11 +809,10 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     }
 
     /**
-     * quote a value
+     * Quote a value.
      *
-     * Returns the quoted values as a string
-     * surrounded by delimiters, depending on
-     * the DBMS selected.
+     * Returns the quoted values as a string surrounded by delimiters,
+     * depending on the DBMS selected.
      *
      * @param   mixed  $value  value too quote
      * @return  string
@@ -900,10 +895,9 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
         /*
          * 2) get IP to identify user
          */
+        $userId = '*';
         if (isset($_SERVER['REMOTE_ADDR'])) {
             $userId = $_SERVER['REMOTE_ADDR'];
-        } else {
-            $userId = '*';
         }
 
         /*
@@ -967,7 +961,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     }
 
     /**
-     * compare with another object
+     * Compare with another object.
      *
      * Returns bool(true) if this object and $anotherObject
      * are equal and bool(false) otherwise.
