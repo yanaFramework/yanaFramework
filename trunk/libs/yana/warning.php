@@ -30,12 +30,12 @@
  *
  * This class represents warnings passed to the user.
  *
- * @access      public
  * @package     yana
  * @subpackage  error_reporting
  */
 class Warning extends Message
 {
+
     /**
      * constructor
      *
@@ -47,6 +47,7 @@ class Warning extends Message
     {
         parent::__construct($message, $code, $previous);
     }
+
 }
 
 ?>
