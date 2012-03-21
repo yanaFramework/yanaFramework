@@ -30,12 +30,12 @@
  *
  * This wrapper class represents the structure of a database
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class XDDL extends File
 {
+
     /**
      * Data Description Language object
      *
@@ -54,7 +54,6 @@ class XDDL extends File
      *
      * Note: Reserved column names are reverted to macros. Changes to these columns will be lost.
      *
-     * @access  public
      * @return  string
      */
     public function toXML()
@@ -82,12 +81,10 @@ class XDDL extends File
     }
 
     /**
-     * get XML content as simple XML Element
+     * Get XML content as simple XML Element.
      *
-     * Returns an instance of \SimpleXMLElement.
-     * If the file is empty or does not exist, the returned element will be empty as well.
+     * Note: If the file is empty or does not exist, the returned element will be empty as well.
      *
-     * @access  public
      * @return  \SimpleXMLElement
      */
     public function toSimpleXML()
@@ -98,9 +95,8 @@ class XDDL extends File
     }
 
     /**
-     * get database definition
+     * Get database definition.
      *
-     * @access  public
      * @return  \Yana\Db\Ddl\Database
      * @throws  \Yana\Core\Exceptions\NotFoundException       when file does not exist
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when file is invalid
@@ -114,12 +110,10 @@ class XDDL extends File
     }
 
     /**
-     * get database definition by database name
+     * Get database definition by database name.
      *
      * Resolves the database name to a file path and retrieves the file.
      *
-     * @access  public
-     * @static
      * @param   string  $databaseName  database name
      * @return  \Yana\Db\Ddl\Database
      * @throws  \Yana\Core\Exceptions\NotFoundException       when file does not exist
@@ -133,7 +127,7 @@ class XDDL extends File
     }
 
     /**
-     * get database definition from file path
+     * Get database definition from file path.
      *
      * @param   string  $path  file path
      * @return  \Yana\Db\Ddl\Database
@@ -160,6 +154,7 @@ class XDDL extends File
         assert('$ddl instanceof \Yana\Db\Ddl\Database; // Invalid return value. \Yana\Db\Ddl\Database expected');
         return $ddl;
     }
+
 }
 
 ?>
