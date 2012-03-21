@@ -65,7 +65,6 @@
  * Note: If you prefer to work with objects instead of arrays, give SimpleXML a try instead.
  * See the PHP manual for details.
  *
- * @access      public
  * @package     yana
  * @subpackage  file_system
  * @since       3.1.0
@@ -73,18 +72,18 @@
  */
 class SXML extends SML
 {
+
     /**
-     * name of root element
+     * Name of root element.
      *
-     * @access  protected
-     * @var     string
+     * @var  string
+     * @ignore
      */
     protected $rootNode = "";
 
     /**
-     * constructor
-     *
      * Create a new instance of this class.
+     *
      * This extends the super class constructor.
      *
      * Note the additional parameter $caseSensitive.
@@ -107,7 +106,7 @@ class SXML extends SML
     }
 
     /**
-     * Read a file in XML syntax and return its contents
+     * Read a file in XML syntax and return its contents.
      *
      * The argument $input can wether be a filename or a numeric array
      * of strings created by file($filename).
@@ -121,8 +120,6 @@ class SXML extends SML
      *     <li>  CASE_MIXED  leave keys in mixed case  </li>
      * </ul>
      *
-     * @access  public
-     * @static
      * @name    SXML::getFile()
      * @param   array|string  $input          filename or file content
      * @param   int           $caseSensitive  CASE_UPPER|CASE_LOWER|CASE_MIXED
@@ -180,7 +177,7 @@ class SXML extends SML
     }
 
     /**
-     * Create a XML-string from an array of data
+     * Create a XML-string from an array of data.
      *
      * The argument $name can be used to specify the name of the root node.
      * If $name is omitted, no root node is created.
@@ -201,8 +198,6 @@ class SXML extends SML
      *     <li>  CASE_MIXED  leave keys in mixed case  </li>
      * </ul>
      *
-     * @access  public
-     * @static
      * @name    SXML::encode()
      * @param   array   $data           data to encode
      * @param   string  $name           name of root-tag
@@ -235,13 +230,17 @@ class SXML extends SML
 
         // keep current node name
         } else {
-            $name = "$name";
+            $name = (string) $name;
         }
 
-        if ($caseSensitive === CASE_UPPER) {
-            $name = mb_strtoupper($name);
-        } elseif ($caseSensitive === CASE_LOWER) {
-            $name = mb_strtolower($name);
+        switch ($caseSensitive)
+        {
+            case CASE_UPPER:
+                $name = \mb_strtoupper($name);
+                break;
+            case CASE_LOWER:
+                $name = \mb_strtolower($name);
+                break;
         }
 
         // indent tag
@@ -287,13 +286,11 @@ class SXML extends SML
     }
 
     /**
-     * Read variables from an encoded string
+     * Read variables from an encoded string.
      *
      * This function is pretty much the same as SXML::getFile() except
      * for the fact that it is working on strings rather than files.
      *
-     * @access  public
-     * @static
      * @name    SXML::decode()
      * @param   string    $input            input
      * @param   int       $caseSensitive    one of: CASE_UPPER, CASE_LOWER, CASE_MIXED
@@ -307,12 +304,11 @@ class SXML extends SML
     }
 
     /**
-     * Proxy for static function _decode
+     * Proxy for static function _decode.
      *
      * This function should be overwritten by any subclass.
      * It is meant to simulate the behavior of virtual static references.
      *
-     * @access  protected
      * @param   string    $input            input
      * @param   int       $caseSensitive    one of: CASE_UPPER, CASE_LOWER, CASE_MIXED
      * @return  array
@@ -324,13 +320,12 @@ class SXML extends SML
     }
 
     /**
-     * Proxy for static function _encode
+     * Proxy for static function _encode.
      *
      * This function should be overwritten by any subclass.
      * It is meant to simulate the behavior of virtual static
      * references.
      *
-     * @access  protected
      * @param   scalar|array|object  $data           data to encode
      * @param   string               $name           name of root-tag
      * @param   int                  $caseSensitive  one of: CASE_UPPER, CASE_LOWER, CASE_MIXED
@@ -346,13 +341,12 @@ class SXML extends SML
     }
 
     /**
-     * Proxy for static function _getFile
+     * Proxy for static function _getFile.
      *
      * This function should be overwritten by any subclass.
      * It is meant to simulate the behavior of virtual static
      * references.
      *
-     * @access  protected
      * @param   array|string  $input          filename or file content
      * @param   int           $caseSensitive  CASE_UPPER|CASE_LOWER|CASE_MIXED
      * @return  array
