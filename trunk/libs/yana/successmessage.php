@@ -28,14 +28,14 @@
 /**
  * Success message
  *
- * @access      public
  * @package     yana
  * @subpackage  error_reporting
  */
 class SuccessMessage extends Notice
 {
+
     /**
-     * constructor
+     * Constructor.
      *
      * @param  string      $message   the message that should be reported
      * @param  int         $code      optional error code
@@ -45,6 +45,7 @@ class SuccessMessage extends Notice
     {
         parent::__construct($message, $code, $previous);
     }
+
 }
 
 ?>
