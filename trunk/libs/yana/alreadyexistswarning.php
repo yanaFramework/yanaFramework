@@ -26,11 +26,10 @@
  */
 
 /**
- * Warning
+ * Marks that an element cannot be added because it already exists.
  *
- * This class represents warnings passed to the user.
+ * This class represents a warning passed to the user.
  *
- * @access      public
  * @package     yana
  * @subpackage  error_reporting
  */
@@ -40,7 +39,6 @@ class AlreadyExistsWarning extends Warning
     /**
      * Set id of duplicate entry.
      *
-     * @access  public
      * @param   scalar  $id  identifier of duplicate entry
      * @return  AlreadyExistsWarning
      */
