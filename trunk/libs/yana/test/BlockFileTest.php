@@ -47,7 +47,7 @@ class BlockFileTest extends PHPUnit_Framework_TestCase
     /**
      * @var  string
      */
-    protected $_source = 'resources/blockFile.txt';
+    protected $_source = '';
 
     /**
      * Constructor
@@ -56,6 +56,8 @@ class BlockFileTest extends PHPUnit_Framework_TestCase
      */
     public function __construct()
     {
+        $this->_source = tempnam(sys_get_temp_dir(), __CLASS__);
+        file_put_contents($this->_source, '::1');
         // intentionally left blank
     }
 
@@ -67,7 +69,7 @@ class BlockFileTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_object = new BlockFile(CWD . $this->_source);
+        $this->_object = new BlockFile($this->_source);
     }
 
     /**
@@ -100,7 +102,7 @@ class BlockFileTest extends PHPUnit_Framework_TestCase
      */
     public function testIsBlocked()
     {
-        $this->assertFalse($this->_object->isBlocked('::1'));
+        $this->assertTrue($this->_object->isBlocked('::1'));
     }
 
     /**
