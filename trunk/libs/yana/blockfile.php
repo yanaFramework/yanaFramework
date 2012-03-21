@@ -30,7 +30,6 @@
 /**
  * BlockFile
  *
- * @access      public
  * @package     yana
  * @subpackage  file_system
  *
@@ -38,15 +37,45 @@
  */
 class BlockFile extends File
 {
+
     /**
-     * set file contents
+     * User's IP-adress.
      *
+     * @var string
+     */
+    private $_remoteAddress = "";
+
+    /**
+     * Returns the registered IP-address.
+     *
+     * @return string
+     */
+    public function getRemoteAddress()
+    {
+        return $this->_remoteAddress;
+    }
+
+    /**
+     * Set IP-address.
+     *
+     * @param string $remoteAddress
+     * @return \BlockFile 
+     */
+    public function setRemoteAddress($remoteAddress)
+    {
+        assert('is_string($remoteAddress); // Invalid argument $remoteAddress: string expected');
+        assert('filter_var($remoteAddress, FILTER_VALIDATE_IP); // Not a valid IP-address');
+        $this->_remoteAddress = $remoteAddress;
+        return $this;
+    }
+
+    /**
      * Replace file contents by $input.
+     *
      * Note that changes are buffered and will
      * not be written to the file unless you explicitely
      * call write().
      *
-     * @access  public
      * @param   string  $input new file contents
      * @return  bool
      * @name    BlockFile::setContent()
@@ -69,7 +98,6 @@ class BlockFile extends File
     /**
      * Alias of BlockFile::setContent()
      *
-     * @access  public
      * @param   string  $input  new file contents
      * @return  bool
      * @see     BlockFile::setContent()
@@ -81,9 +109,8 @@ class BlockFile extends File
     }
 
     /**
-     * read the file contents to buffer
+     * Read the file contents to buffer.
      *
-     * @access  public
      * @return  bool
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
@@ -107,62 +134,48 @@ class BlockFile extends File
     }
 
     /**
-     * check if the current user has been blocked
+     * Check if the current user has been blocked.
      *
      * Returns bool(true) if the visitor's IP
      * has been black-listed and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isBlocked()
     {
         assert('is_array($this->content);');
 
-        /* read file contents */
-        $this->read();
+        $this->read(); // read file contents
+        $this->content = (array) $this->content;
 
-        /* get remote address */
-        global $YANA;
-        if (isset($YANA)) {
-            $REMOTE_ADDR = $YANA->getVar('REMOTE_ADDR');
-        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-            $REMOTE_ADDR = $_SERVER['REMOTE_ADDR'];
-        } else {
+        $_remoteAddress = $this->getRemoteAddress(); // get remote address
+        if (empty($_remoteAddress)) {
             return false;
-        }
-
-        /* check input */
-        if (empty($REMOTE_ADDR) || !is_string($REMOTE_ADDR)) {
-            return false;
-        } else {
-            /* settype to ARRAY */
-            $this->content = (array) $this->content;
         }
 
         /* check if remote address is black-listed */
         assert('!isset($line); /* cannot redeclare variable $line */');
         foreach ($this->content as $line)
         {
-            /* settype to STRING */
-            $line = (string) $line;
-            if (preg_match("/(?:\*|\d{1,3})\.(?:\*|\d{1,3})\.(?:\*|\d{1,3})\.(?:\*|\d{1,3})/", $line, $remoteAddress)) {
-                $remoteAddress = str_replace('.', '\.', $remoteAddress[0]);
-                $remoteAddress = str_replace('*', '\d{1,3}', $remoteAddress);
-                if (preg_match("/".$remoteAddress."/", $REMOTE_ADDR)) {
-                    /* match found, return bool(true) (and abort loop) */
+            $remoteAddress = filter_var((string) $line, FILTER_VALIDATE_IP);
+            if ($remoteAddress) {
+                $remoteAddress = str_replace('.', '\.', $remoteAddress);
+                $remoteAddress = str_replace('*', '[a-fA-F0-9]{,4}', $remoteAddress);
+                if (preg_match("/".$remoteAddress."/", $_remoteAddress)) {
+                    // match found, return bool(true) (and abort loop)
                     return true;
                 } else {
-                    /* entry does not match (continue with next) */
+                    // entry does not match (continue with next)
                 }
             } else {
-                /* not an IP-address - treat as comment */
+                // not an IP-address - treat as comment
             }
         }
         unset($line);
 
         return false;
     }
+
 }
 
 ?>
