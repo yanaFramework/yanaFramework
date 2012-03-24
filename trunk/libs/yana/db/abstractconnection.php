@@ -256,11 +256,9 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     }
 
     /**
-     * get values from the database
+     * Get values from the database.
      *
-     * This returns the values at adress $key
-     * starting from $offset and limited to
-     * $limit results.
+     * This returns the values at adress $key starting from $offset and limited to $limit results.
      *
      * The $key parameter has three synopsis.
      * <ul>
