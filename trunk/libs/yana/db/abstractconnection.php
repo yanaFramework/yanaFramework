@@ -215,39 +215,30 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function getDBMS()
     {
+        $dbms = "generic";
         if (!empty($this->dsn['DBMS'])) {
             $dbms = strtolower($this->dsn['DBMS']);
-            switch ($dbms)
-            {
-                // Mapping aliases (driver names) to real DBMS names
-                case 'mysqli':
-                    return "mysql";
-                break;
-                case 'pgsql':
-                    return "postgresql";
-                break;
-                case 'fbsql':
-                    return "frontbase";
-                break;
-                case 'ifx':
-                    return "informix";
-                break;
-                case 'ibase':
-                    return "interbase";
-                break;
-                case 'access':
-                    return "msaccess";
-                break;
-                case 'oci8':
-                    return "oracle";
-                break;
-                // any other
-                default:
-                    return $dbms;
-                break;
-            }
-        } else {
-            return "generic";
+        }
+        switch ($dbms)
+        {
+            // Mapping aliases (driver names) to real DBMS names
+            case 'mysqli':
+                return "mysql";
+            case 'pgsql':
+                return "postgresql";
+            case 'fbsql':
+                return "frontbase";
+            case 'ifx':
+                return "informix";
+            case 'ibase':
+                return "interbase";
+            case 'access':
+                return "msaccess";
+            case 'oci8':
+                return "oracle";
+            // any other
+            default:
+                return $dbms;
         }
     }
 
