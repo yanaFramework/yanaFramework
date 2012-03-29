@@ -68,7 +68,7 @@ class Driver extends \Yana\Core\Object
     private $_tableName = "";
 
     /**
-     * @var array
+     * @var \SML[][]
      */
     private $_src = array();
 
@@ -1258,40 +1258,51 @@ class Driver extends \Yana\Core\Object
         if (is_null($desc)) {
             $desc = $this->_desc;
         }
-        if (count($columns) === 0) {
+        if (count($columns) === 0 || !is_array($a) || !is_array($b)) {
             return 0;
-        } else {
-            $sort = array_shift($columns);
-            $sort = mb_strtoupper($sort[1]);
-            $isDescending = array_shift($desc);
+        }
 
-            if (!is_array($a) || !is_array($b)) {
-                return 0;
-            } elseif (!isset($a[$sort]) && !isset($b[$sort])) {
+        $sortArray = array_shift($columns);
+        $sort = mb_strtoupper($sortArray[1]);
+        $isDescending = array_shift($desc);
+        unset($sortArray);
+
+        switch (true)
+        {
+
+            case (!isset($a[$sort]) && !isset($b[$sort])):
                 $result = $this->_sort($a, $b, $columns, $desc);
-            } elseif (!isset($a[$sort])) {
-                $result = -1;
-            } elseif (!isset($b[$sort])) {
-                $result = 1;
-            } elseif ($a[$sort] < $b[$sort]) {
-                $result = -1;
-            } elseif ($a[$sort] > $b[$sort]) {
-                $result = 1;
-            } else {
-                if (count($columns) > 0) {
-                    $result = $this->_sort($a, $b, $columns, $desc);
-                } else {
-                    $result = 0;
-                }
-            } // end if
-            assert('is_int($result) && $result >= -1 && $result <= 1; // unexpected result');
+                break;
 
-            if ($isDescending) {
-                return - $result;
-            } else {
-                return $result;
-            } // end if
-        } // end if
+            case (!isset($a[$sort])):
+                $result = -1;
+                break;
+
+            case (!isset($b[$sort])):
+                $result = 1;
+                break;
+
+            case ($a[$sort] < $b[$sort]):
+                $result = -1;
+                break;
+
+            case ($a[$sort] > $b[$sort]):
+                $result = 1;
+                break;
+
+            case count($columns) > 0:
+                $result = $this->_sort($a, $b, $columns, $desc);
+                break;
+
+            default:
+                $result = 0;
+                break;
+
+        } // end switch
+
+        assert('is_int($result) && $result >= -1 && $result <= 1; // unexpected result');
+
+        return ($isDescending) ? - $result : $result;
     }
 
     /**
@@ -1580,8 +1591,8 @@ class Driver extends \Yana\Core\Object
      *
      * Removes non-matching rows from the resultset.
      *
-     * @param   array  &$result  result set
-     * @param   array  &$having  having-clause
+     * @param  array  &$result  result set
+     * @param  array  &$having  having-clause
      */
     private function _doHaving(array &$result, array &$having)
     {
@@ -1657,10 +1668,10 @@ class Driver extends \Yana\Core\Object
         {
             case 'or':
                 return $this->_doWhere($current, $leftOperand) || $this->_doWhere($current, $rightOperand);
-            break;
+
             case 'and':
                 return $this->_doWhere($current, $leftOperand) && $this->_doWhere($current, $rightOperand);
-            break;
+
         }
 
         /**
@@ -1691,8 +1702,10 @@ class Driver extends \Yana\Core\Object
         switch ($operator)
         {
             case '<>':
+                // fall through
                 $operator = '!=';
             case '!=':
+                // fall through
             case '=':
                 $column = $table->getColumn($leftOperand);
                 assert('$column instanceof \Yana\Db\Ddl\Column; // Column not found: ' . $leftOperand);
@@ -1703,65 +1716,47 @@ class Driver extends \Yana\Core\Object
                     return strcasecmp($value, $rightOperand) === 0 xor $operator === '!=';
                 }
                 return (strcmp($value, $rightOperand) === 0) xor $operator === '!=';
-            break;
 
             case 'like':
                 $rightOperand = preg_quote($rightOperand, '/');
                 $rightOperand = str_replace('%', '.*', $rightOperand);
                 $rightOperand = str_replace('_', '.?', $rightOperand);
+                // fall through
             case 'regexp':
                 return preg_match('/^' . $rightOperand . '$/is', $value) === 1;
-            break;
 
             case '<':
                 return ($value < $rightOperand);
-            break;
 
             case '>':
                 return ($value > $rightOperand);
-            break;
 
             case '<=':
                 return ($value <= $rightOperand);
-            break;
 
             case '>=':
                 return ($value >= $rightOperand);
-            break;
 
             case 'in':
-                if ($rightOperand instanceof DbSelect) {
+                if ($rightOperand instanceof \Yana\Db\Queries\Select) {
                     $rightOperand = $rightOperand->getResults();
                 }
                 return (bool) in_array($value, $rightOperand);
-            break;
 
             case 'not in':
-                if ($rightOperand instanceof DbSelect) {
+                if ($rightOperand instanceof \Yana\Db\Queries\Select) {
                     $rightOperand = $rightOperand->getResults();
                 }
                 return !in_array($value, $rightOperand);
-            break;
 
             case 'exists':
-                if ($rightOperand instanceof DbSelectExist) {
-                    return $rightOperand->doesExist();
-                } else {
-                    return false;
-                }
-            break;
+                return ($rightOperand instanceof \Yana\Db\Queries\SelectExist) && $rightOperand->doesExist();
 
             case 'not exists':
-                if ($rightOperand instanceof DbSelectExist) {
-                    return !$rightOperand->doesExist();
-                } else {
-                    return false;
-                }
-            break;
+                return ($rightOperand instanceof \Yana\Db\Queries\SelectExist) && !$rightOperand->doesExist();
 
             default:
                 return true;
-            break;
         } // end switch
     }
 
@@ -1825,12 +1820,12 @@ class Driver extends \Yana\Core\Object
             }
             $smlfile->failSafeRead();
 
-            $this->_src[$this->_database][$this->_tableName] =& $smlfile;
+            $this->_src[$this->_database][$this->_tableName] = $smlfile;
         }
     }
 
     /**
-     * return filename
+     * Return path to database SML file.
      *
      * @param   string  $database   database name
      * @param   string  $extension  extension
@@ -1838,11 +1833,14 @@ class Driver extends \Yana\Core\Object
      */
     private function _getFilename($database, $extension)
     {
+        assert('is_string($database); // Invalid argument $database: string expected');
+        assert('is_string($extension); // Invalid argument $extension: string expected');
+
         return realpath(self::$_baseDir) . '/' . $database . '/' . $this->_tableName . '.' . $extension;
     }
 
     /**
-     * compare with another object
+     * Compare with another object.
      *
      * Returns bool(true) if this object and $anotherObject
      * are equal and bool(false) otherwise.
