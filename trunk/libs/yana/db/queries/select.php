@@ -569,7 +569,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      * @param   string  $rowSep       row seperator
      * @param   bool    $hasHeader    add column names as first line (yes/no)
      * @return  string
-     * @name    DbSelect::toCSV()
+     * @name    \Yana\Db\Queries\Select::toCSV()
      * @throws  \Yana\Core\Exceptions\InvalidValueException  if the database query is incomplete or invalid
      */
     public function toCSV($colSep = ';', $rowSep = "\n", $hasHeader = true)
@@ -645,7 +645,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      * @param   string  $colSep       column seperator
      * @param   string  $rowSep       row seperator
      * @return  string
-     * @see     DbSelect::toCSV()
+     * @see     \Yana\Db\Queries\Select::toCSV()
      */
     private static function _rowToCsv(array $row, $colSep, $rowSep)
     {
@@ -667,7 +667,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      *
      * @param   mixed   $value        data
      * @return  string
-     * @see     DbSelect::toCSV()
+     * @see     \Yana\Db\Queries\Select::toCSV()
      */
     private static function _valueToCSV($value)
     {
@@ -681,7 +681,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      * array.
      *
      * @return  array
-     * @see     DbSelect::toCSV()
+     * @see     \Yana\Db\Queries\Select::toCSV()
      */
     public function getColumnTitles()
     {
