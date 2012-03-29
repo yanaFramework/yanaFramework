@@ -105,7 +105,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     public function __construct(\Yana\Db\Ddl\Database $schema)
     {
         $this->schema = $schema;
-        $this->reset();
+        $this->rollback();
     }
 
     /**
@@ -267,7 +267,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      *         as the address of the values you want to retrieve.
      *     </li>
      *     <li>
-     *         The argument $key may also be an object of type DbSelect.
+     *         The argument $key may also be an object of type {@see \Yana\Db\Queries\Select}.
      *         If so, no additional parameters need to be present.
      *         This is a shortcut, which e.g. allows you to prepare
      *         a query as an object and reuse it with multiple arguments.
@@ -661,7 +661,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     /**
      * Counts and returns the rows of $table.
      *
-     * You may also provide the parameter $table as an object of type DbSelectCount.
+     * You may also provide the parameter $table as an object of type {@see \Yana\Db\Queries\SelectCount}.
      * In this case the second argument should be empty.
      * Instead, add a where clause to your query object.
      *
@@ -717,7 +717,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * If no argument is provided, the function returns bool(true)
      * if a database connection exists and bool(false) if not.
      *
-     * You may also provide the parameter $key as an object of type DbSelectExist.
+     * You may also provide the parameter $key as an object of type {@see \Yana\Db\Queries\SelectExist}.
      *
      * @uses    $AbstractConnection->exists('table.5')
      *
