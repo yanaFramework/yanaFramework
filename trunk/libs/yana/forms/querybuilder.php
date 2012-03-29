@@ -317,13 +317,13 @@ class QueryBuilder extends \Yana\Core\Object
      * This returns a query object bound to the form, that can be used to count the pages.
      *
      * @access  protected
-     * @return  \DbSelectCount
+     * @return  \Yana\Db\Queries\SelectCount
      */
     public function buildCountQuery()
     {
         if (!isset($this->_cache[__FUNCTION__])) {
             $query = clone $this->buildSelectQuery();
-            assert('$query instanceof \DbSelectCount;');
+            assert('$query instanceof \Yana\Db\Queries\SelectCount;');
             $query->setLimit(0);
             $query->setOffset(0);
             $this->_cache[__FUNCTION__] = $query;
