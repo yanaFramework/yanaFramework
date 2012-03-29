@@ -256,7 +256,7 @@ class FileDbTest extends PHPUnit_Framework_TestCase
         $this->dbsobj->rollback();
 
         // multiple columns
-        $dbQuery = new DbSelect($this->dbsobj);
+        $dbQuery = new \Yana\Db\Queries\Select($this->dbsobj);
         $dbQuery->setTable('i');
         $dbQuery->setRow('foo');
         $dbQuery->setInnerJoin('t');
@@ -274,7 +274,7 @@ class FileDbTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $test, '"get multiple columns" test failed');
 
         // Alias test
-        $dbQuery = new DbSelect($this->dbsobj);
+        $dbQuery = new \Yana\Db\Queries\Select($this->dbsobj);
         $dbQuery->setTable('i');
         $dbQuery->setRow('foo');
         $dbQuery->setInnerJoin('t');
@@ -291,7 +291,7 @@ class FileDbTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $test, 'Using alias on joined tables failed');
 
-        $dbQuery = new DbSelect($this->dbsobj);
+        $dbQuery = new \Yana\Db\Queries\Select($this->dbsobj);
         $dbQuery->setTable('t');
         $dbQuery->setColumns(array('a' => 'tid', 'b' => 'tb', 'c' => 'tvalue'));
         $test = $this->dbsobj->select($dbQuery);
