@@ -402,7 +402,7 @@ class Builder extends \Yana\Core\Object
      * @access  public
      * @param   array  $where  valid where clause
      * @return  SmartFormUtility
-     * @see     DbSelectExist::setWhere()
+     * @see     \Yana\Db\Queries\SelectExist::setWhere()
      */
     public function setWhere(array $where)
     {
