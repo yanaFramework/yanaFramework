@@ -1445,13 +1445,13 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         }
         // right operand
         if ($operator === 'exists' || $operator === 'not exists') {
-            if ($rightOperand instanceof DbSelect) {
+            if ($rightOperand instanceof \Yana\Db\Queries\Select) {
                 $rightOperand = "($rightOperand)";
             }
         } elseif ($operator === 'in' || $operator === 'not in') {
             assert('!isset($value); // cannot redeclare variable $value');
             assert('!isset($list); // cannot redeclare variable $list');
-            if ($rightOperand instanceof DbSelect) {
+            if ($rightOperand instanceof \Yana\Db\Queries\Select) {
                 $list = (string) $rightOperand;
             } else {
                 $list = "";
@@ -1646,7 +1646,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
                 if (!($rightOperand instanceof \Yana\Db\Queries\SelectExist)) {
                     throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid where clause.\n\t\t" .
                         "The operator '{$operator}' requires the right operand " .
-                        "to be an instance of DbSelectExist.", E_USER_WARNING);
+                        "to be an instance of \Yana\Db\Queries\SelectExist.", E_USER_WARNING);
                 }
             break;
             case 'in':
