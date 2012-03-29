@@ -224,7 +224,7 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->dbsobj->commit(), 'commit() to database failed');
 
-        $test = new DbSelect($this->dbsobj);
+        $test = new \Yana\Db\Queries\Select($this->dbsobj);
         $test->setTable('ft');
         $test = $test->toCSV(',', "\n", false);
         $expected = '"1","1"' . "\n";
@@ -351,7 +351,7 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
         $this->dbsobj->reset();
 
         // multiple columns
-        $dbQuery = new DbSelect($this->dbsobj);
+        $dbQuery = new \Yana\Db\Queries\Select($this->dbsobj);
         $dbQuery->setTable('i');
         $dbQuery->setRow('foo');
         $dbQuery->setInnerJoin('t');
