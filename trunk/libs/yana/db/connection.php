@@ -216,23 +216,23 @@ class Connection extends \Yana\Db\AbstractConnection
             if (!is_readable("$sqlFile")) {
                 throw new \Yana\Core\Exceptions\NotReadableException("The file '{$sqlFile}' is not readable.", E_USER_NOTICE);
             }
-            $raw_data = file_get_contents($sqlFile);
+            $rawData = file_get_contents($sqlFile);
             // remove comments and line breaks
-            $raw_data = preg_replace("/\s*\#[^\n]*/i", "", $raw_data);
-            $raw_data = preg_replace("/\s*\-\-[^\n]*/i", "", $raw_data);
-            $raw_data = preg_replace("/;\s*\n\s*/i", "[NEXT_COMMAND]", $raw_data);
-            $raw_data = preg_replace("/\s/", " ", $raw_data);
-            if (empty($raw_data)) {
+            $rawData = preg_replace("/\s*\#[^\n]*/i", "", $rawData);
+            $rawData = preg_replace("/\s*\-\-[^\n]*/i", "", $rawData);
+            $rawData = preg_replace("/;\s*\n\s*/i", "[NEXT_COMMAND]", $rawData);
+            $rawData = preg_replace("/\s/", " ", $rawData);
+            if (empty($rawData)) {
                 \Yana\Log\LogManager::getLogger()->addLog("SQL import canceled. File is empty.", E_USER_NOTICE, $sqlFile);
                 return false;
             }
             // add items
-            $this->_queue = explode("[NEXT_COMMAND]", $raw_data);
+            $this->_queue = explode("[NEXT_COMMAND]", $rawData);
             if ($this->commit() !== false) {
-                \Yana\Log\LogManager::getLogger()->addLog("SQL import was successful.", E_USER_NOTICE, $raw_data);
+                \Yana\Log\LogManager::getLogger()->addLog("SQL import was successful.", E_USER_NOTICE, $rawData);
                 return true;
             } else {
-                \Yana\Log\LogManager::getLogger()->addLog("SQL import failed.", E_USER_NOTICE, $raw_data);
+                \Yana\Log\LogManager::getLogger()->addLog("SQL import failed.", E_USER_NOTICE, $rawData);
                 return false;
             }
         }
