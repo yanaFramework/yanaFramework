@@ -135,6 +135,8 @@ class plugin_db_tools extends StdClass implements IsPlugin
             throw $error->setFilename($filename);
         }
         // output file
+        header("Cache-Control: maxage=1"); // Bug in IE8 with HTTPS-downloads
+        header("Pragma: public");
         header("Content-Disposition: attachment; filename=${filename}");
         header("Content-type: text/xml");
         header("Content-Length: " . mb_strlen($xml));
@@ -169,9 +171,11 @@ class plugin_db_tools extends StdClass implements IsPlugin
             throw $error->setFilename($filename);
         }
         // output file
+        header("Cache-Control: maxage=1"); // Bug in IE8 with HTTPS-downloads
+        header("Pragma: public");
         header("Content-Disposition: attachment; filename=${filename}");
         header('Content-Type: application/xml');
-        header("Content-Length: " . mb_strlen($xml));
+        header("Content-Length: " . strlen($xml));
         exit($xml);
     }
 
@@ -208,9 +212,11 @@ class plugin_db_tools extends StdClass implements IsPlugin
                 throw $error->setFilename($filename);
             }
             // output file
+            header("Cache-Control: maxage=1"); // Bug in IE8 with HTTPS-downloads
+            header("Pragma: public");
             header("Content-Disposition: attachment; filename=${filename}");
             header("Content-type: text/plain");
-            header("Content-Length: " . mb_strlen($structure));
+            header("Content-Length: " . strlen($structure));
             exit($structure);
         } else {
             return false;
@@ -252,9 +258,11 @@ class plugin_db_tools extends StdClass implements IsPlugin
             throw $error->setFilename($filename);
         }
         // output file
+        header("Cache-Control: maxage=1"); // Bug in IE8 with HTTPS-downloads
+        header("Pragma: public");
         header("Content-Disposition: attachment; filename=${filename}");
         header("Content-type: text/plain");
-        header("Content-Length: " . mb_strlen($structure));
+        header("Content-Length: " . strlen($structure));
         exit($structure);
     }
 
@@ -323,9 +331,11 @@ class plugin_db_tools extends StdClass implements IsPlugin
             $error = new FileNotCreatedError();
             throw $error->setFilename($filename);
         }
+        header("Cache-Control: maxage=1"); // Bug in IE8 with HTTPS-downloads
+        header("Pragma: public");
         header("Content-Disposition: attachment; filename=${filename}");
         header("Content-type: text/plain");
-        header("Content-Length: " . mb_strlen($fileContents));
+        header("Content-Length: " . strlen($fileContents));
         exit($fileContents);
     }
 
