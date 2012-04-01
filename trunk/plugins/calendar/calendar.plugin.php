@@ -1433,6 +1433,8 @@ class plugin_calendar extends StdClass implements IsPlugin
         }
         header("Content-type: text/html; charset=utf-8");
         header("Content-type: application/ics");
+        header("Cache-Control: maxage=1"); // Bug in IE8 with HTTPS-downloads
+        header("Pragma: public");
         header("Content-Disposition: attachment; filename=\"".$filename."\"");
         $content = $data['content'];
         die(utf8_decode($content));
