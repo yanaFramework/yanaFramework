@@ -528,18 +528,15 @@ class plugin_db_admin extends StdClass implements IsPlugin
             throw $error->setFilename($filename);
         }
 
-        header("Pragma: no-cache");
+        header("Cache-Control: maxage=1"); // Bug in IE8 with HTTPS-downloads
+        header("Pragma: public");
+        header("Content-type: text/plain");
         if ($useZip) {
             $fileContents = gzencode($fileContents, 9);
             $filename .= '.gz';
-            header("Content-type: text/plain");
-            header("Content-Disposition: attachment; filename=${filename}");
-            header("Content-Length: " . strlen($fileContents));
-        } else {
-            header("Content-type: text/plain");
-            header("Content-Disposition: attachment; filename=${filename}");
-            header("Content-Length: " . strlen($fileContents));
         }
+        header("Content-Disposition: attachment; filename=${filename}");
+        header("Content-Length: " . strlen($fileContents));
         exit($fileContents);
     }
 
