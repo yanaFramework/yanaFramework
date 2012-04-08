@@ -1245,14 +1245,17 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         assert('is_string($dbms); // Wrong type for argument 1. String expected');
         $dbms = strtolower($dbms);
         $constraints = array();
-        if (!empty($this->constraints)) {
-            foreach ($this->constraints as $constraint)
-            {
-                if ($constraint->getDBMS() === $dbms) {
-                    $constraints[] = $constraint;
-                }
+
+        foreach ((array) $this->constraints as $constraint)
+        {
+            /* @var $constraint \Yana\Db\Ddl\Constraint */
+            assert($constraint instanceof \Yana\Db\Ddl\Constraint);
+
+            if ($constraint->getDBMS() === $dbms) {
+                $constraints[] = $constraint;
             }
         }
+
         return $constraints;
     }
 
@@ -1271,14 +1274,17 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         assert('is_string($name); // Invalid argument $name: string expected');
         assert('is_string($dbms); // Invalid argument $dbms: string expected');
         $dbms = strtolower($dbms);
-        if (!empty($this->constraints)) {
-            foreach ($this->constraints as $constraint)
-            {
-                if ($constraint->getDBMS() === $dbms && $constraint->getName() === $name) {
-                    return $constraint;
-                }
+
+        foreach ((array) $this->constraints as $constraint)
+        {
+            /* @var $constraint \Yana\Db\Ddl\Constraint */
+            assert($constraint instanceof \Yana\Db\Ddl\Constraint);
+
+            if ($constraint->getDBMS() === $dbms && $constraint->getName() === $name) {
+                return $constraint;
             }
         }
+
         return null;
     }
 
@@ -1691,15 +1697,14 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * Returns bool(true) if $row is valid and bool(false) otherwise.
      *
-     * @param   scalar  $value     value of the inserted/updated row
-     * @param   string  $dbms      target DBMS (e.g. mysql, mssql, ..., generic)
-     * @param   array   &$files    list of modified or inserted columns of type file or image
+     * @param   scalar  $value   value of the inserted/updated row
+     * @param   array   &$files  list of modified or inserted columns of type file or image
      * @return  bool
      * @throws  \Yana\Core\Exceptions\NotFoundException        if the column definition is invalid
      * @throws  InvalidValueWarning                            if an invalid value is encountered, that could not be sanitized
      * @throws  \Yana\Core\Exceptions\NotImplementedException  when the column has an unknown datatype
      */
-    public function sanitizeValue($value, $dbms = "generic", array &$files = array())
+    public function sanitizeValue($value, array &$files = array())
     {
         $title = $this->getTitle();
         if (empty($title)) {
