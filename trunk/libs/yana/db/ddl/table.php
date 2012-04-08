@@ -881,15 +881,18 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
         assert('is_string($dbms); // Wrong type for argument 1. String expected');
         $dbms = strtolower($dbms);
         assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
+
         $constraints = array();
-        if (!empty($this->constraints)) {
-            foreach ($this->constraints as $constraint)
-            {
-                if ($constraint->getDBMS() === $dbms) {
-                    $constraints[] = $constraint;
-                }
+        foreach ($this->constraints as $constraint)
+        {
+            /* @var $constraint \Yana\Db\Ddl\Constraint */
+            assert($constraint instanceof \Yana\Db\Ddl\Constraint);
+
+            if ($constraint->getDBMS() === $dbms) {
+                $constraints[] = $constraint;
             }
         }
+
         return $constraints;
     }
 
@@ -909,14 +912,16 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
         assert('is_string($dbms); // Wrong type for argument 2. String expected');
         assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
         $dbms = strtolower($dbms);
-        if (!empty($this->constraints)) {
-            foreach ($this->constraints as $constraint)
-            {
-                if ($constraint->getDBMS() === $dbms && $constraint->getName() === $name) {
-                    return $constraint;
-                }
+
+        foreach ((array) $this->constraints as $constraint)
+        {
+            /* @var $constraint \Yana\Db\Ddl\Constraint */
+            assert($constraint instanceof \Yana\Db\Ddl\Constraint);
+            if ($constraint->getDBMS() === $dbms && $constraint->getName() === $name) {
+                return $constraint;
             }
         }
+
         return null;
     }
 
