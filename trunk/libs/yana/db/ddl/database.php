@@ -626,11 +626,11 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getDataSource()
     {
+        $dataSource = null;
         if (is_string($this->datasource)) {
-            return $this->datasource;
-        } else {
-            return null;
+            $dataSource = $this->datasource;
         }
+        return $dataSource;
     }
 
     /**
@@ -649,11 +649,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function setDataSource($dataSource = "")
     {
         assert('is_string($dataSource); // Wrong type for argument 1. String expected');
-        if (empty($dataSource)) {
-            $this->datasource = null;
-        } else {
-            $this->datasource = "$dataSource";
-        }
+        $this->datasource = (empty($dataSource)) ? null : "$dataSource";
         return $this;
     }
 
@@ -705,11 +701,12 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
+
+        $table = null;
         if (isset($this->tables[$name])) {
-            return $this->tables[$name];
-        } else {
-            return null;
+            $table = $this->tables[$name];
         }
+        return $table;
     }
 
     /**
@@ -733,11 +730,10 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         $name = mb_strtolower($name);
         if (isset($this->tables[$name])) {
             throw new \Yana\Core\Exceptions\AlreadyExistsException("Another table with the name '$name' is already defined.");
-
-        } else {
-            $this->tables[$name] = new \Yana\Db\Ddl\Table($name, $this);
-            return $this->tables[$name];
         }
+
+        $this->tables[$name] = new \Yana\Db\Ddl\Table($name, $this);
+        return $this->tables[$name];
     }
 
     /**
@@ -785,11 +781,14 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
+
+        $view = null;
         if (isset($this->views[$name])) {
-            return $this->views[$name];
-        } else {
-            return null;
+            $view = $this->views[$name];
+            assert($view instanceof \Yana\Db\Ddl\Views\View);
         }
+
+        return $view;
     }
 
     /**
@@ -813,11 +812,10 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         $name = mb_strtolower($name);
         if (isset($this->views[$name])) {
             throw new \Yana\Core\Exceptions\AlreadyExistsException("Another view with the name '$name' is already defined.");
-
-        } else {
-            $this->views[$name] = new \Yana\Db\Ddl\Views\View($name, $this);
-            return $this->views[$name];
         }
+
+        $this->views[$name] = new \Yana\Db\Ddl\Views\View($name, $this);
+        return $this->views[$name];
     }
 
     /**
@@ -863,11 +861,14 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function getFunction($name)
     {
         $name = mb_strtolower($name);
+
+        $function = null;
         if (isset($this->functions[$name])) {
-            return $this->functions[$name];
-        } else {
-            return null;
+            $function = $this->functions[$name];
+            assert($function instanceof \Yana\Db\Ddl\Functions\Object);
         }
+
+        return $function;
     }
 
     /**
@@ -891,11 +892,10 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         $name = mb_strtolower($name);
         if (isset($this->functions[$name])) {
             throw new \Yana\Core\Exceptions\AlreadyExistsException("Another function with the name '$name' is already defined.");
-
-        } else {
-            $this->functions[$name] = new \Yana\Db\Ddl\Functions\Object($name);
-            return $this->functions[$name];
         }
+
+        $this->functions[$name] = new \Yana\Db\Ddl\Functions\Object($name);
+        return $this->functions[$name];
     }
 
     /**
@@ -942,11 +942,14 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function getSequence($name)
     {
         $name = mb_strtolower($name);
+
+        $sequence = null;
         if (isset($this->sequences[$name])) {
-            return $this->sequences[$name];
-        } else {
-            return null;
+            $sequence = $this->sequences[$name];
+            assert($sequence instanceof \Yana\Db\Ddl\Sequence);
         }
+
+        return $sequence;
     }
 
     /**
@@ -970,11 +973,10 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         $name = mb_strtolower($name);
         if (isset($this->sequences[$name])) {
             throw new \Yana\Core\Exceptions\AlreadyExistsException("Another sequence with the name '$name' is already defined.");
-
-        } else {
-            $this->sequences[$name] = new \Yana\Db\Ddl\Sequence($name);
-            return $this->sequences[$name];
         }
+
+        $this->sequences[$name] = new \Yana\Db\Ddl\Sequence($name);
+        return $this->sequences[$name];
     }
 
     /**
@@ -1024,21 +1026,23 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
         if (empty($this->initialization)) {
             return array();
-        } else {
-            $initialization = array();
-            foreach ($this->initialization as $entry)
-            {
-                // target DBMS does not match
-                $initDbms = $entry->getDBMS();
-                if ($initDbms !== 'generic' && $initDbms !== $dbms) {
-                    continue;
-
-                } else {
-                    $initialization[] = $entry->getSQL();
-                }
-            }
-            return $initialization;
         }
+
+        $initialization = array();
+        foreach ((array) $this->initialization as $entry)
+        {
+            /* @var $entry \Yana\Db\Ddl\DatabaseInit */
+            assert($entry instanceof \Yana\Db\Ddl\DatabaseInit);
+
+            // target DBMS does not match
+            $initDbms = $entry->getDBMS();
+            if ($initDbms !== 'generic' && $initDbms !== $dbms) {
+                continue;
+            }
+
+            $initialization[] = $entry->getSQL();
+        }
+        return $initialization;
     }
 
     /**
@@ -1067,11 +1071,11 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
-        if (isset($this->tables[$name])) {
-            $this->tables[$name] = null;
-        } else {
+        if (!isset($this->tables[$name])) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such table '$name'.");
         }
+
+        $this->tables[$name] = null;
     }
 
     /**
@@ -1086,11 +1090,11 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
-        if (isset($this->views[$name])) {
-            $this->views[$name] = null;
-        } else {
+        if (!isset($this->views[$name])) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such view '$name'.");
         }
+
+        $this->views[$name] = null;
     }
 
     /**
@@ -1105,11 +1109,11 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
-        if (isset($this->forms[$name])) {
-            $this->forms[$name] = null;
-        } else {
+        if (!isset($this->forms[$name])) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such form '$name'.");
         }
+
+        $this->forms[$name] = null;
     }
 
     /**
@@ -1124,11 +1128,11 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
-        if (isset($this->functions[$name])) {
-            $this->functions[$name] = null;
-        } else {
+        if (!isset($this->functions[$name])) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such function '$name'.");
         }
+
+        $this->functions[$name] = null;
     }
 
     /**
@@ -1143,11 +1147,11 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
-        if (isset($this->sequences[$name])) {
-            $this->sequences[$name] = null;
-        } else {
+        if (!isset($this->sequences[$name])) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such sequence '$name'.");
         }
+
+        $this->sequences[$name] = null;
     }
 
     /**
@@ -1269,11 +1273,14 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     {
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
+
+        $form = null;
         if (isset($this->forms[$name])) {
-            return $this->forms[$name];
-        } else {
-            return null;
+            $form = $this->forms[$name];
+            assert($form instanceof \Yana\Db\Ddl\Form);
         }
+
+        return $form;
     }
 
     /**
@@ -1380,15 +1387,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function equals(\Yana\Core\IsObject $anotherObject)
     {
-        if ($anotherObject instanceof $this) {
-            if ($this->path == $anotherObject->path) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
+        return ($anotherObject instanceof $this) && ($this->path == $anotherObject->path);
     }
 
     /**
@@ -1405,22 +1404,16 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         {
             case isset($this->tables[$name]):
                 return $this->tables[$name];
-            break;
             case isset($this->views[$name]):
                 return $this->views[$name];
-            break;
             case isset($this->forms[$name]):
                 return $this->forms[$name];
-            break;
             case isset($this->functions[$name]):
                 return $this->functions[$name];
-            break;
             case isset($this->sequences[$name]):
                 return $this->sequences[$name];
-            break;
             default:
                 return null;
-            break;
         }
     }
 
