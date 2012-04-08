@@ -39,27 +39,22 @@ class DDLTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var    XDDL
-     * @access protected
      */
     private $_file;
 
     /**
      * @var    \Yana\Db\Ddl\Database
-     * @access protected
      */
     private $_object;
 
     /**
      * @var    string
-     * @access protected
      */
     private $_path = 'resources/test.db.xml';
 
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     *
-     * @access protected
      */
     protected function setUp()
     {
@@ -77,8 +72,6 @@ class DDLTest extends PHPUnit_Framework_TestCase
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
-     *
-     * @access protected
      */
     protected function tearDown()
     {
@@ -89,9 +82,6 @@ class DDLTest extends PHPUnit_Framework_TestCase
 
     /**
      * encode to XML
-     *
-     * @covers toSimpleXML
-     * @covers toXML
      */
     public function testEncode()
     {
