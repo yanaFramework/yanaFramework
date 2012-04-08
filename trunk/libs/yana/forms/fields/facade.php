@@ -79,16 +79,6 @@ class Facade extends \Yana\Core\Object
     private $_filter = null;
 
     /**
-     * States if the given value is valid.
-     *
-     * True = is valid, False = is invalid, Null = not checked.
-     *
-     * @access  private
-     * @var     bool
-     */
-    private $_isValid = null;
-
-    /**
      * Create new instance.
      *
      * @access  public
@@ -523,33 +513,6 @@ class Facade extends \Yana\Core\Object
             break;
         }
         return array($leftOperand, $operator, $rightOperand);
-    }
-
-    /**
-     * Validate value.
-     *
-     * This validates the current content of the field and returns bool(true) if it is valid and bool(false) otherwise.
-     *
-     * @access  public
-     * @return  bool
-     * @throws  \Yana\Core\Exceptions\NotFoundException  when column definition was not found (unable to validate)
-     */
-    public function isValid()
-    {
-        $key = $this->getName();
-        if (!isset($this->_isValid)) {
-            $column = $this->getColumn();
-            try {
-
-                $column->sanitizeValue($this->getValue());
-                $this->_isValid = true;
-
-            } catch (\Exception $e) {
-                $this->_isValid = false; // an error occured - Field is not valid
-            }
-        }
-        assert('is_bool($this->isValid);');
-        return (bool) $this->_isValid;
     }
 
     /**
