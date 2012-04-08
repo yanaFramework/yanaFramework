@@ -1154,7 +1154,7 @@ class DDLAllTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($result1, $testArray1, '\Yana\Db\Ddl\Column::getConstraints failed');
 
         $result1 = $this->column->getConstraint("name2", "mysql");
-        $this->assertNull($result1, '\Yana\Db\Ddl\Column::getConstraints failed');
+        $this->assertNull($result1);
 
         $get = $this->column->getConstraints('odbc');
         $this->assertType('array', $get, 'assert failed, the value should be from type array');
