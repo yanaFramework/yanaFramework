@@ -1230,26 +1230,27 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
     {
         assert('is_string($dbms); // Wrong type for argument 1. String expected');
         $dbms = strtolower($dbms);
-        if (!empty($this->triggers)) {
-            foreach ($this->triggers as $trigger)
+
+        foreach ((array) $this->triggers as $trigger)
+        {
+            /* @var $trigger \Yana\Db\Ddl\Trigger */
+            assert($trigger instanceof \Yana\Db\Ddl\Trigger);
+
+            switch (true)
             {
-                switch (true)
-                {
-                    case ($trigger->getDBMS() !== $dbms):
-                    case ($on === 0 && !$trigger->isBefore()):
-                    case ($on === 1 && !$trigger->isAfter()):
-                    case ($on === 2 && !$trigger->isInstead()):
-                    case ($event === 0 && !$trigger->isInsert()):
-                    case ($event === 1 && !$trigger->isUpdate()):
-                    case ($event === 2 && !$trigger->isDelete()):
-                        continue;
-                    break;
-                    default:
-                        return $trigger->getTrigger();
-                    break;
-                }
+                case ($trigger->getDBMS() !== $dbms):
+                case ($on === 0 && !$trigger->isBefore()):
+                case ($on === 1 && !$trigger->isAfter()):
+                case ($on === 2 && !$trigger->isInstead()):
+                case ($event === 0 && !$trigger->isInsert()):
+                case ($event === 1 && !$trigger->isUpdate()):
+                case ($event === 2 && !$trigger->isDelete()):
+                    continue;
+                default:
+                    return $trigger->getTrigger();
             }
         }
+
         return null;
     }
 
@@ -1461,7 +1462,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
              */
             } else {
                 if (isset($row[$columnName])) {
-                    $row[$columnName] = $column->sanitizeValue($row[$columnName], $dbms, $files);
+                    $row[$columnName] = $column->sanitizeValue($row[$columnName], $files);
                 }
                 continue;
             } // end if
