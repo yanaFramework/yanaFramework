@@ -87,7 +87,7 @@ class ConstraintCollection extends \Yana\Core\AbstractCollection
         if (YANA_DB_STRICT && !preg_match(self::CONSTRAINT_SYNTAX, $code)) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Syntax error in constraint '$code' .", E_USER_ERROR);
         }
-        parent::offsetSet($key, $code);
+        $this->_offsetSet($key, $code);
     }
 
     /**
