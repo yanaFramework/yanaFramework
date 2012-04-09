@@ -79,16 +79,6 @@ abstract class AbstractDecorator extends \Yana\Core\Object
     private $_object = null;
 
     /**
-     * Sets up the object to be decorated.
-     *
-     * @param  object  $object  decorated object
-     */
-    public function __construct($object)
-    {
-        $this->_setDecoratedObject($object);
-    }
-
-    /**
      * Returns the instance that all calls will be relayed to.
      *
      * @return object
