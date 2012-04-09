@@ -41,89 +41,86 @@ class ExceptionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsExce
      *
      * This also sets the message according to the given type.
      *
-     * @param   int  $errorCode  Some \MDB2_ERROR code
+     * @param   \MDB2_Error  $error  Some \MDB2_ERROR code
      * @return  \Yana\Core\Exceptions\AbstractException
      */
-    public function toException($errorCode)
+    public function toException(\MDB2_Error $error)
     {
-        assert('is_int($errorCode); // Invalid argument $errorCode: int expected');
-
-        switch ($errorCode)
+        switch ($error->getCode())
         {
             case \MDB2_ERROR_ACCESS_VIOLATION:
-                return new \Yana\Db\Queries\Exceptions\SecurityException("Access violation.");
+                return new \Yana\Db\Queries\Exceptions\SecurityException($error->getMessage());
 
             case \MDB2_ERROR_ALREADY_EXISTS:
-                return new \Yana\Db\Queries\Exceptions\DuplicateValueException("Already exists.");
+                return new \Yana\Db\Queries\Exceptions\DuplicateValueException($error->getMessage());
 
             case \MDB2_ERROR_CANNOT_ALTER:
-                return new \Yana\Db\Queries\Exceptions\QueryException("Cannot alter table.");
+                return new \Yana\Db\Queries\Exceptions\QueryException($error->getMessage());
 
             case \MDB2_ERROR_CANNOT_CREATE:
-                return new \Yana\Db\Queries\Exceptions\QueryException("Cannot create table.");
+                return new \Yana\Db\Queries\Exceptions\QueryException($error->getMessage());
 
             case \MDB2_ERROR_CANNOT_DELETE:
-                return new \Yana\Db\Queries\Exceptions\QueryException("Cannot delete row.");
+                return new \Yana\Db\Queries\Exceptions\QueryException($error->getMessage());
 
             case \MDB2_ERROR_CANNOT_DROP:
-                return new \Yana\Db\Queries\Exceptions\QueryException("Cannot drop object.");
+                return new \Yana\Db\Queries\Exceptions\QueryException($error->getMessage());
 
             case \MDB2_ERROR_CANNOT_REPLACE:
-                return new \Yana\Db\Queries\Exceptions\QueryException("Cannot replace row.");
+                return new \Yana\Db\Queries\Exceptions\QueryException($error->getMessage());
 
             case \MDB2_ERROR_CONNECT_FAILED:
-                return new \Yana\Db\ConnectionException("Cannot connect to database");
+                return new \Yana\Db\ConnectionException($error->getMessage());
 
             case \MDB2_ERROR_CONSTRAINT:
-                return new \Yana\Db\Queries\Exceptions\ConstraintException("Constraint violation.");
+                return new \Yana\Db\Queries\Exceptions\ConstraintException($error->getMessage());
 
             case \MDB2_ERROR_CONSTRAINT_NOT_NULL:
-                return new \Yana\Db\Queries\Exceptions\ConstraintException("Not Null constraint violation.");
+                return new \Yana\Db\Queries\Exceptions\ConstraintException($error->getMessage());
 
             case \MDB2_ERROR_DISCONNECT_FAILED:
-                return new \Yana\Db\ConnectionException("Cannot disconnect from database");
+                return new \Yana\Db\ConnectionException($error->getMessage());
 
             case \MDB2_ERROR_DIVZERO:
-                return new \Yana\Db\Queries\Exceptions\QueryException("Division by zero.");
+                return new \Yana\Db\Queries\Exceptions\QueryException($error->getMessage());
 
             case \MDB2_ERROR_INVALID_NUMBER:
-                return new \Yana\Db\Queries\Exceptions\InvalidSyntaxException("Invalid Number.");
+                return new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($error->getMessage());
 
             case \MDB2_ERROR_NODBSELECTED:
-                return new \Yana\Db\ConnectionException("No database selected.");
+                return new \Yana\Db\ConnectionException($error->getMessage());
 
             case \MDB2_ERROR_NOSUCHDB:
-                return new \Yana\Db\Queries\Exceptions\DatabaseNotFoundException();
+                return new \Yana\Db\Queries\Exceptions\DatabaseNotFoundException($error->getMessage());
 
             case \MDB2_ERROR_NOSUCHFIELD:
-                return new \Yana\Db\Queries\Exceptions\ColumnNotFoundException();
+                return new \Yana\Db\Queries\Exceptions\ColumnNotFoundException($error->getMessage());
 
             case \MDB2_ERROR_NOSUCHTABLE:
-                return new \Yana\Db\Queries\Exceptions\TableNotFoundException();
+                return new \Yana\Db\Queries\Exceptions\TableNotFoundException($error->getMessage());
 
             case \MDB2_ERROR_UNSUPPORTED:
             case \MDB2_ERROR_NOT_CAPABLE:
-                return new \Yana\Core\Exceptions\NotImplementedException();
+                return new \Yana\Core\Exceptions\NotImplementedException($error->getMessage());
 
             case \MDB2_ERROR_NO_PERMISSION:
-                return new \Yana\Db\Queries\Exceptions\SecurityException("Permission denied.");
+                return new \Yana\Db\Queries\Exceptions\SecurityException($error->getMessage());
 
             case \MDB2_ERROR_INVALID:
-                return new \Yana\Db\Queries\Exceptions\InvalidSyntaxException("Invalid SQL.");
+                return new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($error->getMessage());
 
             case \MDB2_ERROR_SYNTAX:
-                return new \Yana\Db\Queries\Exceptions\InvalidSyntaxException("Error in SQL syntax.");
+                return new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($error->getMessage());
 
             case \MDB2_ERROR_TRUNCATED:
-                return new \Yana\Db\Queries\Exceptions\NotFoundException("Requested value not found.");
+                return new \Yana\Db\Queries\Exceptions\NotFoundException($error->getMessage());
 
             case \MDB2_ERROR_VALUE_COUNT_ON_ROW:
                 $message = "The 'insert'-statement has fewer columns than values specified in the 'values'-clause.";
                 return new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($message);
 
-            case \MDB2_ERROR:
             default:
-                return new \Yana\Db\DatabaseException();
+                return new \Yana\Db\DatabaseException($error->getMessage());
         }
     }
 

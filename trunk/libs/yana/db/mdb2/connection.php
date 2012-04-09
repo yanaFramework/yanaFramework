@@ -178,8 +178,11 @@ class Connection extends \Yana\Db\AbstractConnection
 
         $mdb2Result = $connection->sendQueryString($sqlStmt);
 
-        if (!$mdb2Result instanceof \MDB2_Result_Common) {
-            throw $this->_getExceptionFactory()->toException((int) $mdb2Result);
+        if ($mdb2Result instanceof \MDB2_Error) {
+            throw $this->_getExceptionFactory()->toException($mdb2Result);
+
+        } elseif (!$mdb2Result instanceof \MDB2_Result_Common) {
+            throw new \Yana\Db\DatabaseException();
         }
 
         return new \Yana\Db\Mdb2\Result($mdb2Result);;
