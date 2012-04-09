@@ -256,11 +256,7 @@ class Update extends \Yana\Db\Queries\Insert
             return false;
         }
 
-        if (!defined('MDB2_FETCHMODE_ASSOC')) {
-            /** @ignore */
-            define('MDB2_FETCHMODE_ASSOC', 2);
-        }
-        $resultRow = $result->fetchRow(MDB2_FETCHMODE_ASSOC, 0);
+        $resultRow = $result->fetchRow(0);
         assert('is_array($resultRow); /* unexpected result: $resultRow */');
         $profileId = array_pop($resultRow);
         $session = SessionManager::getInstance();
@@ -305,7 +301,7 @@ class Update extends \Yana\Db\Queries\Insert
     /**
      * Sends the query to the database server and returns a result-object.
      *
-     * @return  FileDbResult
+     * @return  \Yana\Db\IsResult
      * @since   2.9.3
      * @ignore
      */

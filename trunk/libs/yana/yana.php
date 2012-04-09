@@ -1209,9 +1209,9 @@ final class Yana extends \Yana\Core\AbstractSingleton
             }
         }
         if (YANA_DATABASE_ACTIVE) {
-            $connection = new \Yana\Db\Connection($schema);
+            $connection = new \Yana\Db\Mdb2\Connection($schema);
         } else {
-            $connection = new \Yana\Db\FileDbConnection($schema);
+            $connection = new \Yana\Db\FileDb\Connection($schema);
         }
         if (!empty($schemaName)) {
             self::$_connections[$schemaName] = $connection;

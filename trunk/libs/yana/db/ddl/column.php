@@ -92,35 +92,35 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         // option and optgroup elements are serialized and unserialized elsewhere
     );
 
-    /** @var bool            */ protected $autoincrement = null;
-    /** @var DLLConstraint[] */ protected $constraints = array();
-    /** @var array           */ protected $default = array();
-    /** @var string          */ protected $description = null;
-    /** @var array           */ protected $enumerationItems = array();
-    /** @var bool            */ protected $fixed = null;
-    /** @var \Yana\Db\Ddl\Grant[]      */ protected $grants = array();
-    /** @var string          */ protected $imageBackground = null;
-    /** @var int             */ protected $imageHeight = null;
-    /** @var int             */ protected $imageWidth = null;
-    /** @var bool            */ protected $imageRatio = null;
-    /** @var float           */ protected $max = null;
-    /** @var float           */ protected $min = null;
-    /** @var bool            */ protected $notNull = null;
-    /** @var \Yana\Db\Ddl\Table        */ protected $parent = null;
-    /** @var string          */ protected $pattern = null;
-    /** @var int             */ protected $precision = null;
-    /** @var bool            */ protected $readonly = null;
-    /** @var string          */ protected $referenceColumn = null;
-    /** @var string          */ protected $referenceLabel = null;
-    /** @var string          */ protected $referenceTable = null;
-    /** @var int             */ protected $size = null;
-    /** @var float           */ protected $step = null;
-    /** @var string          */ protected $title = null;
-    /** @var string          */ protected $type = null;
-    /** @var bool            */ protected $unique = null;
-    /** @var bool            */ protected $unsigned = null;
-    /** @var int             */ protected $_maxsize = null;
-    /** @var int             */ protected $_length = null;
+    /** @var bool                 */ protected $autoincrement = null;
+    /** @var DLLConstraint[]      */ protected $constraints = array();
+    /** @var array                */ protected $default = array();
+    /** @var string               */ protected $description = null;
+    /** @var array                */ protected $enumerationItems = array();
+    /** @var bool                 */ protected $fixed = null;
+    /** @var \Yana\Db\Ddl\Grant[] */ protected $grants = array();
+    /** @var string               */ protected $imageBackground = null;
+    /** @var int                  */ protected $imageHeight = null;
+    /** @var int                  */ protected $imageWidth = null;
+    /** @var bool                 */ protected $imageRatio = null;
+    /** @var float                */ protected $max = null;
+    /** @var float                */ protected $min = null;
+    /** @var bool                 */ protected $notNull = null;
+    /** @var \Yana\Db\Ddl\Table   */ protected $parent = null;
+    /** @var string               */ protected $pattern = null;
+    /** @var int                  */ protected $precision = null;
+    /** @var bool                 */ protected $readonly = null;
+    /** @var string               */ protected $referenceColumn = null;
+    /** @var string               */ protected $referenceLabel = null;
+    /** @var string               */ protected $referenceTable = null;
+    /** @var int                  */ protected $size = null;
+    /** @var float                */ protected $step = null;
+    /** @var string               */ protected $title = null;
+    /** @var string               */ protected $type = null;
+    /** @var bool                 */ protected $unique = null;
+    /** @var bool                 */ protected $unsigned = null;
+    /** @var int                  */ protected $_maxsize = null;
+    /** @var int                  */ protected $_length = null;
 
     /**#@-*/
 
@@ -281,11 +281,11 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         assert('is_string($value); // Invalid argument $value: string expected');
         $value = strtolower($value);
         assert('in_array($value, self::getSupportedTypes()); // Undefined column type "' . $value . '". ');
-        if (!empty($value)) {
-            $this->type = "$value";
-        } else {
+        if (empty($value)) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Type cannot be empty.");
         }
+
+        $this->type = "$value";
         return $this;
     }
 
@@ -662,11 +662,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function isUnsigned()
     {
-        if (empty($this->unsigned) && empty($this->fixed)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->unsigned) || $this->isFixed();
     }
 
     /**
@@ -758,11 +754,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function isAutoIncrement()
     {
-        if (empty($this->autoincrement)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($this->autoincrement);
     }
 
     /**
@@ -809,18 +801,17 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         {
             case 'integer':
                 return $this->isAutoIncrement();
-            break;
+
             case 'inet':
                 return ($this->getDefault() === 'REMOTE_ADDR');
-            break;
+
             case 'time':
             case 'date':
             case 'timestamp':
                 return ($this->getDefault() === 'CURRENT_TIMESTAMP');
-            break;
+
             default:
                 return false;
-            break;
         } // end switch
     }
 
@@ -857,7 +848,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         {
             case 'integer':
                 return $this->setAutoIncrement($isAutoFill);
-            break;
+
             case 'inet':
                 if ($isAutoFill) {
                     $this->setDefault('REMOTE_ADDR');
@@ -867,6 +858,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                     }
                 }
             break;
+
             case 'time':
             case 'date':
             case 'timestamp':
@@ -878,10 +870,10 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                     }
                 }
             break;
+
             default:
                 $message = "Auto-fill is not implemented for columns of type '{$this->type}'.";
                 throw new \Yana\Core\Exceptions\NotImplementedException($message, E_USER_NOTICE);
-            break;
         } // end switch
         return $this;
     }
@@ -936,12 +928,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function isPrimaryKey()
     {
-        // Can't decide
-        if (!isset($this->parent)) {
-            return false;
-        } else {
-            return ($this->parent->getPrimaryKey() === $this->name);
-        }
+        return (isset($this->parent)) ? (bool) ($this->parent->getPrimaryKey() === $this->name) : false;
     }
 
     /**
@@ -959,11 +946,9 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
             case 'integer':
             case 'float':
                 return true;
-            break;
             default:
                 return false;
-            break;
-        } // end switch
+        }
     }
 
     /**
@@ -1007,10 +992,10 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         }
 
         $this->setSize($length);
+
+        $this->precision = null;
         if ($precision > 0) {
             $this->precision = (int) $precision;
-        } else {
-            $this->precision = null;
         }
         return $this;
     }
@@ -1055,10 +1040,10 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
     public function setSize($size = -1)
     {
         assert('is_int($size); // Wrong type for argument 1. Integer expected');
+        $this->size = null;
+
         if ($size > 0) {
             $this->size = (int) $size;
-        } else {
-            $this->size = null;
         }
         return $this;
     }
@@ -1158,19 +1143,15 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * Get the default values.
      *
      * Returns an associative array of all default values of the column, where
-     * the target DBMS are the keys and the defaults are the values of the
-     * array.
+     * the target DBMS are the keys and the defaults are the values of the array.
      *
      * @return  array
      */
     public function getDefaults()
     {
-        assert('is_array($this->default); // Wrong type for argument 1. Array expected');
-        if (is_array($this->default)) {
-            return $this->default;
-        } else {
-            return array();
-        }
+        assert('is_array($this->default);');
+
+        return (array) $this->default;
     }
 
     /**
@@ -1187,13 +1168,15 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
         assert('is_string($dbms); // Wrong type for argument 1. String expected');
         $dbms = strtolower($dbms);
         assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
+
+        $default = null;
         if (isset($this->default[$dbms])) {
-            return $this->default[$dbms];
+            $default = $this->default[$dbms];
         } elseif (isset($this->default['generic'])) {
-            return $this->default['generic'];
-        } else {
-            return null;
+            $default = $this->default['generic'];
         }
+
+        return $default;
     }
 
     /**
@@ -1443,13 +1426,13 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
     public function dropEnumerationItem($id)
     {
         assert('is_scalar($id); // Wrong type for argument 1. Scalar value expected');
-        if (isset($this->enumerationItems[$id])) {
-            unset($this->enumerationItems[$id]);
-            $this->_enumValues = null; // reset cache
-        } else {
+        if (!isset($this->enumerationItems[$id])) {
             $message = "No such option '$id' in Enumeration '{$this->getName()}'.";
             throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
         }
+
+        unset($this->enumerationItems[$id]);
+        $this->_enumValues = null; // reset cache
     }
 
     /**
@@ -1638,290 +1621,44 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
             // IPs
             case 'inet':
                 if ($default === 'REMOTE_ADDR') {
-                    if (isset($_SERVER['REMOTE_ADDR'])) {
-                        return $_SERVER['REMOTE_ADDR'];
-                    } else {
-                        return '0.0.0.0';
-                    }
-                } else {
-                    return $default;
+                    // The fall-back is here to avoid errors when the framework is used in command-line mode
+                    return (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
                 }
+                return $default;
+
             // dates and times
             case 'time':
                 if ($default === 'CURRENT_TIMESTAMP') {
                     return date('c');
-                } else {
-                    return $default;
                 }
+                return $default;
+
             case 'date':
                 if ($default === 'CURRENT_TIMESTAMP') {
                     return date('Y-m-d');
-                } else {
-                    return $default;
                 }
+                return $default;
+
             case 'timestamp':
                 if ($default === 'CURRENT_TIMESTAMP') {
                     return time();
-                } else {
-                    return $default;
                 }
-            break;
+                return $default;
+
             case 'string':
                 switch ($this->name)
                 {
                     case 'profile_id':
                         return \Yana::getId();
-                    break;
                     case 'user_created':
                     case 'user_modified':
                         return \YanaUser::getUserName();
-                    break;
-                    default:
-                        return $default;
-                    break;
                 }
-            break;
+                return $default;
             // any other
             default:
                 return $default;
-            break;
         }
-    }
-
-    /**
-     * Validate a row against database schema.
-     *
-     * The argument $row is expected to be an associative array of values, representing
-     * a row that should be inserted or updated in the table. The keys of the array $row are
-     * expected to be the lowercased column names.
-     *
-     * Returns bool(true) if $row is valid and bool(false) otherwise.
-     *
-     * @param   scalar  $value   value of the inserted/updated row
-     * @param   array   &$files  list of modified or inserted columns of type file or image
-     * @return  bool
-     * @throws  \Yana\Core\Exceptions\NotFoundException        if the column definition is invalid
-     * @throws  InvalidValueWarning                            if an invalid value is encountered, that could not be sanitized
-     * @throws  \Yana\Core\Exceptions\NotImplementedException  when the column has an unknown datatype
-     */
-    public function sanitizeValue($value, array &$files = array())
-    {
-        $title = $this->getTitle();
-        if (empty($title)) {
-            $title = $this->getName();
-        }
-        $column = $this->getReferenceColumn();
-        $type = $column->getType();
-        $length = (int) $column->getLength();
-
-        // validate pattern
-        $pattern = $column->getPattern();
-        if (!empty($pattern) && !preg_match("/^$pattern\$/", $value)) {
-            $error = new \InvalidValueWarning();
-            throw $error->setField($title);
-        }
-
-        switch ($type)
-        {
-            case 'array':
-                if (is_array($value)) {
-                    return $value;
-                }
-            break;
-            case 'bool':
-                if ($value === true || $value === false) {
-                    return $value;
-                } else {
-                    $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                    if (!is_null($value)) {
-                        return $value;
-                    }
-                }
-            break;
-            case 'color':
-                /* This is a hexadecimal color value.
-                 * It contains exactly 6 characters of [0-9A-F] and a leading '#' sign.
-                 * Example: #f01234
-                 */
-                $options["regexp"] = '/^#[0-9a-f]{6}$/si';
-                if (filter_var($value, FILTER_VALIDATE_REGEXP, array("options" => $options)) !== false) {
-                    return strtoupper($value);
-                }
-            break;
-            case 'date':
-                // example: 2000-05-28
-                if (is_array($value) && isset($value['month'], $value['day'], $value['year'])) {
-                    $value = mktime(0, 0, 0, $value['month'], $value['day'], $value['year']);
-                }
-                if (is_int($value)) {
-                    return date('Y-m-d', $value);
-                } elseif (is_string($value) && preg_match('/^\d{4}-\d{2}-\d{2}$/s', $value)) {
-                    return $value;
-                }
-            break;
-            case 'enum':
-                $enumerationItems = $column->getEnumerationItemNames();
-                if (!YANA_DB_STRICT || in_array($value, $enumerationItems)) {
-                    return $value;
-                }
-            break;
-            case 'image':
-            case 'file':
-                /* Files and images are both treated in the same way.
-                 * They are just displayed differently by the GUI and
-                 * use different code for upload and download in the
-                 * \Yana\Db\Blob class, which handles all database artifacts.
-                 */
-                if (is_array($value)) {
-                    /* Value is the uploaded file as if taken from $_FILES[$columnName].
-                     * This information is used later to iterate over the files to insert or update.
-                     */
-                    if (isset($value['error']) && $value['error'] !== UPLOAD_ERR_NO_FILE) {
-                        /* check file size
-                         *
-                         * Note: the size value is given in 'byte'
-                         */
-                        $maxSize = (int) $column->getSize();
-                        if ($maxSize > 0 && $value['size'] > $maxSize) {
-                            $alert = new \FilesizeError("", UPLOAD_ERR_SIZE);
-                            throw $alert->setFilename($value['name'])->setMaxSize($maxSize);
-                        }
-                        $id = \Yana\Db\Blob::getNewFileId($this);
-                        $value['column'] = $column;
-                        $files[] = $value;
-                        return $id;
-                    } else {
-                        return null;
-                    }
-                } elseif ($value === "1") {
-                    // This occurs when a file is deleted
-                    $files[] = array('column' => $column);
-                    return "";
-                } else {
-                    return \Yana\Db\Blob::getFileIdFromFilename($value);
-                }
-            break;
-            case 'range':
-                $value = filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                if (filter_var($value, FILTER_VALIDATE_FLOAT) === false) {
-                    $error = new \InvalidValueWarning();
-                    throw $error->setField($title);
-                }
-                if (($value <= $column->getRangeMax()) && ($value >= $column->getRangeMin())) {
-                    return (float) $value;
-                }
-            break;
-            case 'float':
-                $precision = (int) $column->getPrecision();
-                if (\Yana\Io\FloatValidator::validate($value, $length - $precision, (bool) $column->isUnsigned())) {
-                    return round($value, $precision);
-                }
-            break;
-            case 'html':
-                if (is_string($value)) {
-                    $value = \Yana\Util\String::htmlSpecialChars($value);
-                    if ($length > 0) {
-                        $value = mb_substr($value, 0, $length);
-                    }
-                    return $value;
-                }
-            break;
-            case 'inet':
-                if (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) !== false) {
-                    return $value;
-                }
-            break;
-            case 'integer':
-                if (\Yana\Io\IntegerValidator::validate($value, $length, (bool) $column->isUnsigned())) {
-                    return (int) $value;
-                }
-            break;
-            case 'list':
-                if (is_array($value)) {
-                    return array_values($value);
-                }
-            break;
-            case 'mail':
-                $value = filter_var($value, FILTER_SANITIZE_EMAIL);
-                if ($length > 0) {
-                    $value = mb_substr($value, 0, $length);
-                }
-                if (filter_var($value, FILTER_VALIDATE_EMAIL) !== false) {
-                    return $value;
-                }
-            break;
-            case 'password':
-                if (is_string($value)) {
-                    return md5($value);
-                }
-            break;
-            case 'set':
-                if (is_array($value)) {
-                    if (YANA_DB_STRICT) {
-                        $enumerationItems = $column->getEnumerationItemNames();
-                        if (count(array_diff($value, $enumerationItems)) > 0) {
-                            $error = new \InvalidValueWarning();
-                            throw $error->setField($title);
-                        }
-                        unset($enumerationItems);
-                    }
-                    return $value;
-                }
-            break;
-            case 'reference':
-            case 'string':
-                if (is_string($value)) {
-                    return \Yana\Io\StringValidator::sanitize($value, $length, \Yana\Io\StringValidator::LINEBREAK);
-                }
-            break;
-            case 'text':
-                if (is_string($value)) {
-                    return \Yana\Io\StringValidator::sanitize($value, $length, \Yana\Io\StringValidator::USERTEXT);
-                }
-            break;
-            case 'time':
-            case 'timestamp':
-                if (is_array($value)) {
-                    if (isset($value['hour'], $value['minute'], $value['month'], $value['day'], $value['year'])) {
-                        $value = mktime(
-                            $value['hour'],
-                            $value['minute'],
-                            0,
-                            $value['month'],
-                            $value['day'],
-                            $value['year']
-                        );
-                    }
-                }
-                if ($type === 'time') {
-                    if (is_int($value)) {
-                        return date('c', $value);
-                    } elseif (is_string($value)) {
-                        // 2000-05-28T18:10:25+00:00
-                        if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}([\+\-]\d{2}:\d{2})?$/s', $value)) {
-                            return $value;
-                        }
-                    }
-                } elseif (is_int($value)) {
-                    return $value;
-                }
-            break;
-            case 'url':
-                $value = filter_var($value, FILTER_SANITIZE_URL);
-                if ($length > 0) {
-                    $value = mb_substr($value, 0, $length);
-                }
-                if (filter_var($value, FILTER_VALIDATE_URL) !== false) {
-                    return $value;
-                }
-            break;
-            default:
-                assert('!in_array($value, self::getSupportedTypes()); // Unhandled column type. ');
-                throw new \Yana\Core\Exceptions\NotImplementedException("Type '$type' not implemented.", E_USER_ERROR);
-            break;
-        }
-        $error = new \InvalidValueWarning();
-        throw $error->setField($title);
     }
 
     /**

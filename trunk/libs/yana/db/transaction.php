@@ -71,12 +71,25 @@ class Transaction extends \Yana\Core\Object
     }
 
     /**
+     * The database schema that is used in the current session.
+     *
+     * Please note that you should not change this schema unless
+     * you REALLY know what you are doing.
+     *
+     * @return \Yana\Db\Ddl\Database
+     */
+    protected function _getSchema()
+    {
+        return $this->_schema;
+    }
+
+    /**
      * Commit current transaction and write all changes to the database.
      *
      * @return  bool
      * @throws  \Yana\Core\Exceptions\NotWriteableException  when the database or table is locked
      */
-    public function commit()
+    public function commit(\Yana\Db\IsDriver $driver)
     {
         /* Buffer empty */
         if (count($this->_queue) == 0) {
@@ -84,9 +97,7 @@ class Transaction extends \Yana\Core\Object
         }
 
         // start transaction
-        $connection = $this->getConnection();
-        $connection->beginTransaction();
-        $dbSchema = $this->getSchema();
+        $driver->beginTransaction();
 
         assert('!isset($i); /* Cannot redeclare $i */');
         for ($i = 0; $i < count($this->_queue); $i++)
@@ -129,7 +140,7 @@ class Transaction extends \Yana\Core\Object
                  */
                 \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", \Yana\Log\TypeEnumeration::WARNING,
                     $result->getMessage());
-                $result = $connection->rollback();
+                $result = $driver->rollback();
                 /*
                  * 4.1.3) when rollback failed, create entry in logs
                  */
@@ -144,7 +155,7 @@ class Transaction extends \Yana\Core\Object
             // 4.2) query was successfull
 
             $triggerCollection(); // fire "on after ..."-trigger(s)
-            unset($triggerCollection, $tableName, $column);
+            unset($triggerCollection);
         } // end foreach (query)
         unset($i);
 
@@ -156,17 +167,14 @@ class Transaction extends \Yana\Core\Object
          * conditions where two transaction try to modify
          * the same data.
          */
-        $result = $connection->commit();
-        /*
-         * 5.1) commit failed
-         */
-        if ($this->isError($result)) {
+        if (!$driver->commit()) {
+            // commit failed
             \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", \Yana\Log\TypeEnumeration::WARNING,
                 $result->getMessage());
             return false;
         }
         $this->_queue = array();
-        return $this;
+        return true;
     }
 
     /**
@@ -183,13 +191,10 @@ class Transaction extends \Yana\Core\Object
         // get properties
         $tableName = $updateQuery->getTable();
         $column = $updateQuery->getColumn();
-        $value = $updateQuery->getValues();
+        $value = $updateQuery->getValues(); // get values by reference
 
         assert('!isset($table); /* Cannot redeclare var $table */');
-        $table = $this->getSchema()->getTable($tableName);
-
-        // get values by reference
-        $value = $updateQuery->getValues();
+        $table = $this->_getSchema()->getTable($tableName);
 
         // updating table / column is illegal
         assert('!isset($expectedResult); /* Cannot redeclare var $expectedResult */');
@@ -201,12 +206,12 @@ class Transaction extends \Yana\Core\Object
 
         //before update: check constraints and triggers
         assert('!isset($constraint); // Cannot redeclare var $constraint');
-        $constraint = ($column == '*') ? $value : array($column => $value);
+        $constraint = ($column === '*') ? $value : array($column => $value);
 
         $constraints = new \Yana\Db\Helpers\ConstraintCollection($table->getConstraints(), $constraint);
         if ($constraints() === false) {
-            throw new \Yana\Db\Queries\Exceptions\ConstraintException("Update on table '{$tableName}' failed. " .
-                "Constraint check failed for statement '$updateQuery'.", E_USER_WARNING);
+            $_message = "Update on table '{$tableName}' failed. Constraint check failed for statement '$updateQuery'.";
+            throw new \Yana\Db\Queries\Exceptions\ConstraintException($_message, E_USER_WARNING);
         }
 
         $triggerContainer = new \Yana\Db\Helpers\Triggers\Container($table, $column, $value, $updateQuery->getRow());
@@ -216,23 +221,6 @@ class Transaction extends \Yana\Core\Object
         assert('!isset($triggerCollection); /* Cannot redeclare var $triggerCollection */');
         $triggerCollection = new \Yana\Db\Helpers\Triggers\TriggerCollection();
         $triggerCollection[] = new \Yana\Db\Helpers\Triggers\AfterUpdate($triggerContainer);
-
-        // untaint input
-        switch ($updateQuery->getExpectedResult())
-        {
-            case \Yana\Db\ResultEnumeration::ROW:
-                $value = $table->sanitizeRow($value, $this->getDBMS(), false);
-            break;
-            case \Yana\Db\ResultEnumeration::CELL:
-                if ($table->getColumn($column)->getType() !== 'array') {
-                    assert('$table->isColumn($column);');
-                    $value = $table->getColumn($column)->sanitizeValue($value, $this->getDBMS());
-                }
-            break;
-            default:
-                // this point should be impossible to reach
-                throw new \Yana\Db\Queries\Exceptions\InvalidResultTypeException("You may only update rows and cells.");
-        }
 
         // add SQL statement to queue
         $this->_queue[] = array($updateQuery, $triggerCollection);
@@ -255,7 +243,7 @@ class Transaction extends \Yana\Core\Object
         $value = $insertQuery->getValues();
 
         assert('!isset($table); /* Cannot redeclare var $table */');
-        $table = $this->_schema->getTable($tableName);
+        $table = $this->_getSchema()->getTable($tableName);
 
         // inserting updating table / column is illegal
         $expectedResult = $insertQuery->getExpectedResult();
@@ -285,8 +273,6 @@ class Transaction extends \Yana\Core\Object
                 "Can only insert a row, not a table, cell or column.");
         }
 
-        $value = $table->sanitizeRow($value, $this->getDBMS(), false);
-
         // add statement to queue
         $this->_queue[] = array($insertQuery, $triggerCollection);
 
@@ -304,7 +290,7 @@ class Transaction extends \Yana\Core\Object
         $tableName = $deleteQuery->getTable();
 
         assert('!isset($table); // Cannot redeclare var $table');
-        $table = $this->getSchema()->getTable($tableName);
+        $table = $this->_getSchema()->getTable($tableName);
 
         // get old row for logging an generic triggers
         assert('!isset($oldRows); /* Cannot redeclare var $oldRows */');

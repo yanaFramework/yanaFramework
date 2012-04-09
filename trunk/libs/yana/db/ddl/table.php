@@ -1395,88 +1395,6 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
     }
 
     /**
-     * Validate a row against database schema.
-     *
-     * The argument $row is expected to be an associative array of values, representing
-     * a row that should be inserted or updated in the table. The keys of the array $row are
-     * expected to be the lowercased column names.
-     *
-     * Returns bool(true) if $row is valid and bool(false) otherwise.
-     *
-     * @access  public
-     * @param   array   $row       values of the inserted/updated row
-     * @param   string  $dbms      target DBMS, defaults to "generic"
-     * @param   bool    $isInsert  type of operation (true = insert, false = update)
-     * @param   array   &$files    list of modified or inserted columns of type file or image
-     * @return  array
-     * @throws  \Yana\Core\Exceptions\NotWriteableException  if a target column or table is not writeable
-     * @throws  InvalidValueWarning                          if a given value is missing or not valid
-     */
-    public function sanitizeRow(array $row, $dbms = "generic", $isInsert = true, array &$files = array())
-    {
-        assert('is_bool($isInsert); // Wrong type for argument 2. Boolean expected');
-        /* @var $column \Yana\Db\Ddl\Column */
-        foreach ($this->getColumns() as $column)
-        {
-            $columnName = $column->getName();
-            /*
-             * error - not writeable
-             */
-            if (!$isInsert && $column->isReadonly() && isset($row[$columnName])) {
-                throw new \Yana\Core\Exceptions\NotWriteableException("Database is readonly. " .
-                    "Update operation on table '{$this->getName()}' aborted.");
-            }
-            /*
-             * valid - value may be empty for update-queries
-             */
-            if (!$isInsert && !isset($row[$columnName])) {
-                continue;
-            }
-            /*
-             * 3) value is not set (and requires closer investigation)
-             */
-            if (!isset($row[$columnName]) || $row[$columnName] === "") {
-
-                $default = $column->getAutoValue($dbms);
-
-                /*
-                 * autofill column
-                 */
-                if (!is_null($default)) {
-                    $row[$columnName] = $default;
-                    continue;
-                } elseif ($column->isAutoIncrement()) {
-                    continue;
-                }
-
-                /*
-                 * error - value is missing
-                 */
-                if (!$column->isNullable()) {
-                    $title = $column->getTitle();
-                    if (empty($title)) {
-                        $title = $column->getName();
-                    }
-                    $warning = new \MissingFieldWarning();
-                    throw $warning->setField($title);
-                } else {
-                    $row[$columnName] = null;
-                }
-            /*
-             * 4) this input is valid - move to next
-             */
-            } else {
-                if (isset($row[$columnName])) {
-                    $row[$columnName] = $column->sanitizeValue($row[$columnName], $files);
-                }
-                continue;
-            } // end if
-        } // end for
-
-        return $row;
-    }
-
-    /**
      * Set primary/clustered index.
      *
      * Removes attribute clustered from previous clustered index.
@@ -1493,7 +1411,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
     public function setPrimaryIndex(\Yana\Db\Ddl\Index $index)
     {
         if ($this->primaryIndex !== $index) {
-            if (isset($this->primaryIndex)) {
+            if ($this->primaryIndex instanceof \Yana\Db\Ddl\Index) {
                 $this->primaryIndex->setClustered(false);
             }
             $this->primaryIndex = $index;

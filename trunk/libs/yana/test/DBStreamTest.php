@@ -57,7 +57,7 @@ class DbStreamTest extends PHPUnit_Framework_TestCase
         try {
             chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
             $schema = XDDL::getDatabase('check');
-            $this->dbsobj = new \Yana\Db\Connection($schema);
+            $this->dbsobj = new \Yana\Db\Mdb2\Connection($schema);
         } catch (\Exception $e) {
             $this->markTestSkipped("Unable to connect to database");
         }

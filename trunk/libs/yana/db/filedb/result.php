@@ -30,27 +30,25 @@
 namespace Yana\Db\FileDb;
 
 /**
- * FileDbResult
- *
- * This class represents a FileDB resultset.
+ * Represents a FileDB resultset.
  *
  * @package     yana
  * @subpackage  db
  *
  * @ignore
  */
-class Result extends \Yana\Core\Object
+class Result extends \Yana\Core\Object implements \Yana\Db\IsResult
 {
 
     /**
      * @var array
      */
-    private $result = array();
+    private $_result = array();
 
     /**
      * @var string
      */
-    private $message = '';
+    private $_message = '';
 
     /**
      * Creates a new resultset.
@@ -62,12 +60,12 @@ class Result extends \Yana\Core\Object
     {
         $message = (string) $message;
         if (is_null($result)) {
-            $this->result = null;
+            $this->_result = null;
         } else {
             assert('is_array($result);');
-            $this->result = \Yana\Util\Hashtable::changeCase($result, CASE_LOWER);
+            $this->_result = \Yana\Util\Hashtable::changeCase($result, CASE_LOWER);
         }
-        $this->message  = trim($message);
+        $this->_message  = trim($message);
     }
 
     /**
@@ -75,28 +73,92 @@ class Result extends \Yana\Core\Object
      *
      * @return  int
      */
-    public function numRows()
+    public function countRows()
     {
-        return count($this->result);
+        return count($this->_result);
     }
 
     /**
      * Fetch a row from the resultset.
      *
-     * Returns an associative array of the row at index $i in the result set.
+     * Returns an associative array of the row at index $i of the result set.
      *
-     * @param   mixed  $dummy  (ignored) this is here for compatibility reasons
-     * @param   int    $i      row number
+     * @param   int  $rowNumber  index of the row to retrieve
      * @return  array
      */
-    public function fetchRow($dummy, $i)
+    public function fetchRow($rowNumber)
     {
-        $i = (int) $i;
-        if (isset($this->result[$i])) {
-            return $this->result[$i];
-        } else {
-            return array();
+        assert('is_int($i); // Invalid argument $i: int expected');
+
+        $row = array();
+        if (isset($this->_result[$rowNumber])) {
+            $row = $this->_result[$rowNumber];
         }
+        return $row;
+    }
+
+    /**
+     * Fetch and return all rows from the result set.
+     *
+     * @return  array
+     */
+    public function fetchAll()
+    {
+        return $this->_result;
+    }
+
+    /**
+     * Fetch and return a column from the current row pointer position
+     *
+     * @param   int|string  $column  the column number (or name) to fetch
+     * @return  array
+     */
+    public function fetchColumn($column = 0)
+    {
+        assert('is_string($column) || is_int($column); // Invalid argument $column: int expected');
+
+        $result = array();
+        foreach ($this->_result as $row)
+        {
+            $result[] = $this->_fetchCellFromRow($row, $column);
+        }
+        return $result;
+    }
+
+    /**
+     * Fetch single column from the next row from a result set.
+     *
+     * @param   int|string  $column  the column number (or name) to fetch
+     * @param   int         $row     number of the row where the data can be found
+     * @return  mixed
+     */
+    public function fetchOne($column = 0, $rowNumber = 0)
+    {
+        assert('is_string($column) || is_int($column); // Invalid argument $column: int expected');
+        assert('is_int($rowNumber); // Invalid argument $rowNumber: int expected');
+
+        $row = $this->fetchRow($rowNumber);
+        return $this->_fetchCellFromRow($row, $column);
+    }
+
+    /**
+     * Fetch a cell from a row array.
+     * 
+     * @param   array       $row     a single row
+     * @param   int|string  $column  the column number (or name) to fetch
+     * @return  mixed
+     */
+    private function _fetchCellFromRow(array $row, $column)
+    {
+        assert('is_string($column) || is_int($column); // Invalid argument $column: int expected');
+
+        $cell = null;
+        if (is_string($column) && isset($row[$column])) {
+            $cell = $row[$column]; 
+        } elseif (is_int($column) && count($row) >= $column) {
+            $cell = \array_slice($row, $column, 1);
+        }
+        return $cell;
     }
 
     /**
@@ -110,7 +172,7 @@ class Result extends \Yana\Core\Object
      */
     public function getMessage()
     {
-        return $this->message;
+        return $this->_message;
     }
 
     /**
@@ -126,23 +188,7 @@ class Result extends \Yana\Core\Object
      */
     public function isError()
     {
-        return is_null($this->result);
-    }
-
-    /**
-     * Compare with another object.
-     *
-     * Returns bool(true) if this object and $anotherObject are equal and bool(false) otherwise.
-     *
-     * Two instances are considered equal if and only if they are both objects of the same class and their
-     * attributes are equal.
-     *
-     * @param    \Yana\Core\IsObject  $anotherObject     another object too compare
-     * @return   string
-     */
-    public function equals(\Yana\Core\IsObject $anotherObject)
-    {
-        return (bool) ($anotherObject == $this);
+        return is_null($this->_result);
     }
 
 }

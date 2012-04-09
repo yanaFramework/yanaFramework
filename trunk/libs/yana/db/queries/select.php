@@ -772,14 +772,9 @@ class Select extends \Yana\Db\Queries\SelectCount
         $output = array();
         $id = $table->getPrimaryKey();
 
-        if (!defined('MDB2_FETCHMODE_ASSOC')) {
-            /** @ignore */
-            define('MDB2_FETCHMODE_ASSOC', 2);
-        }
-
-        for ($i = 0; $i < $result->numRows(); $i++)
+        for ($i = 0; $i < $result->countRows(); $i++)
         {
-            $row = $result->fetchRow(MDB2_FETCHMODE_ASSOC, $i);
+            $row = $result->fetchRow($i);
             // Error: unexpected result
             if (!is_array($row)) {
 

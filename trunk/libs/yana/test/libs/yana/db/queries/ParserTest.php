@@ -50,7 +50,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     protected $query;
     /**
-     * @var    FileDb
+     * @var    \Yana\Db\FileDb\Connection
      * @access protected
      */
     protected $db;
@@ -69,7 +69,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             if (!isset($this->db)) {
                 \Yana\Db\DDl\DDL::setDirectory(CWD. 'resources/');
                 $schema = \XDDL::getDatabase('check');
-                $this->db = new \FileDb($schema);
+                $this->db = new \Yana\Db\FileDb\Connection($schema);
             }
             $this->parser = new \Yana\Db\Queries\Parser($this->db);
         } catch (\Exception $e) {
@@ -469,10 +469,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         // Delete
         $this->query = new \Yana\Db\Queries\Delete($this->db);
         $this->query->setTable('ft');
-        // $this->dbquery->setColumn('ftid');
         $this->query->setRow(2);
         $this->query->useInheritance(true);
-        $getExpResults = $this->query->getExpectedResult();
         $s5 = (string) $this->query;
         $valid = 'DELETE FROM ft WHERE ft.ftid = "2"';
         $this->assertEquals($valid, $s5, 'assert failed, the expected sql delete statement must be equal');

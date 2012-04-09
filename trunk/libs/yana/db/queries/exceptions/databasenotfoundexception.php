@@ -25,17 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db;
+namespace Yana\Db\Queries\Exceptions;
 
 /**
- * <<exception>> Thrown when Pear MDB2 is required but not found.
+ * <<exception>> Thrown when a database was used in a query but does not exist.
  *
  * @package     yana
  * @subpackage  db
  */
-class PearDbException extends \Yana\Db\DatabaseException
+class DatabaseNotFoundException extends \Yana\Core\Exceptions\NotFoundException
 {
-    /* intentionally left blank */
+
+    // intentionally left blank
+
 }
 
 ?>

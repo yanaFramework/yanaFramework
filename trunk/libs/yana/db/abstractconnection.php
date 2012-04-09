@@ -39,22 +39,9 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
 {
 
     /**
-     * @var  \MDB2_Driver_Common
-     * @ignore
-     */
-    protected $database = null;
-
-    /**
      * @var  string
-     * @ignore
      */
-    protected $name = "";
-
-    /**
-     * @var  array
-     * @ignore
-     */
-    protected $dsn = array();
+    private $_name = "";
 
     /**
      * @var  array
@@ -90,9 +77,8 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * you REALLY know what you are doing.
      *
      * @var  \Yana\Db\Ddl\Database
-     * @ignore
      */
-    protected $schema  = null;
+    private $_schema  = null;
 
     /**
      * Create a new instance.
@@ -104,7 +90,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function __construct(\Yana\Db\Ddl\Database $schema)
     {
-        $this->schema = $schema;
+        $this->_schema = $schema;
         $this->rollback();
     }
 
@@ -141,7 +127,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function getSchema()
     {
-        return $this->schema;
+        return $this->_schema;
     }
 
     /**
@@ -191,58 +177,6 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     }
 
     /**
-     * Get the DSN.
-     *
-     * This function returns an associative array containing
-     * information on the current connection or bool(false) on error.
-     *
-     * @return  array
-     * @see     \Yana\Db\ConnectionFactory::getDsn()
-     */
-    public function getDsn()
-    {
-        $dsn = false;
-        if (is_array($this->dsn)) {
-            $dsn = $this->dsn;
-        }
-        return $dsn;
-    }
-
-    /**
-     * Returns the name of the chosen DBMS as a lower-cased string.
-     *
-     * @return  string
-     */
-    public function getDBMS()
-    {
-        $dbms = "generic";
-        if (!empty($this->dsn['DBMS'])) {
-            $dbms = strtolower($this->dsn['DBMS']);
-        }
-        switch ($dbms)
-        {
-            // Mapping aliases (driver names) to real DBMS names
-            case 'mysqli':
-                return "mysql";
-            case 'pgsql':
-                return "postgresql";
-            case 'fbsql':
-                return "frontbase";
-            case 'ifx':
-                return "informix";
-            case 'ibase':
-                return "interbase";
-            case 'access':
-                return "msaccess";
-            case 'oci8':
-                return "oracle";
-            // any other
-            default:
-                return $dbms;
-        }
-    }
-
-    /**
      * Commit current transaction and write all changes to the database.
      *
      * @return  bool
@@ -250,8 +184,8 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function commit()
     {
-        $return = $this->_transaction->commit();
-        $this->_transaction = new \Yana\Db\Transaction($this->schema);
+        $return = $this->_transaction->commit($this->_getConnection());
+        $this->_transaction = new \Yana\Db\Transaction($this->getSchema());
         return $return;
     }
 
@@ -329,7 +263,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
         if (is_object($key) && $key instanceof \Yana\Db\Queries\Select) {
 
             assert('func_num_args() === 1; // Too many arguments. Only 1 argument expected.');
-            $selectQuery =& $key;
+            $selectQuery = $key;
 
         } else {
 
@@ -449,7 +383,8 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             $this->_cache[$tableName][$row][$column] = $value;
         }
 
-        return $this->_transaction->update($updateQuery);
+        $this->_transaction->update($updateQuery);
+        return true;
     }
 
     /**
@@ -556,8 +491,8 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * This is a shortcut, which e.g. allows you to prepare
      * a query as an object and reuse it with multiple arguments.
      *
-     * @param   string|\Yana\Db\Queries\Insert  $key    the address of the row that should be inserted
-     * @param   mixed            $value  value
+     * @param   string|\Yana\Db\Queries\Insert  $key  the address of the row that should be inserted
+     * @param   array                           $row  associative array of values
      * @return  bool
      * @name    AbstractConnection::insert()
      * @see     AbstractConnection::insertOrUpdate()
@@ -566,7 +501,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when either $key or $value is invalid
      * @throws  \Yana\Core\Exceptions\NotWriteableException     when the table or database is locked
      */
-    public function insert($key, $value = array())
+    public function insert($key, array $row = array())
     {
         if (!$this->_isWriteable()) {
             throw new \Yana\Core\Exceptions\NotWriteableException('Operation aborted, not writeable.', E_USER_NOTICE);
@@ -579,12 +514,15 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
 
         } else { // input is key address
 
+            assert('is_string($key); // Invalid argument $key: string expected');
+
             $queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
-            $insertQuery = $queryBuilder->insert($key, $value);
+            $insertQuery = $queryBuilder->insert($key, $row);
 
         }
 
-        return $this->_transaction->insert($insertQuery);
+        $this->_transaction->insert($insertQuery);
+        return true;
     }
 
     /**
@@ -777,7 +715,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     public function __toString()
     {
         try {
-            return $this->getName();
+            return $this->_getName();
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -789,12 +727,12 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * @return  string
      * @ignore
      */
-    protected function getName()
+    protected function _getName()
     {
-        if (!isset($this->name)) {
-            $this->name = $this->getSchema()->getName();
+        if (!isset($this->_name)) {
+            $this->_name = $this->getSchema()->getName();
         }
-        return $this->name;
+        return $this->_name;
     }
 
     /**
@@ -817,7 +755,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             "(" . gettype($value) .") " . "'" . print_r($value, true) . "'", E_USER_NOTICE);
             $value = (string) $value;
         }
-        return $this->getConnection()->quote($value);
+        return $this->_getConnection()->quote($value);
     }
 
     /**
@@ -829,7 +767,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     {
         if (!$this->isWriteable()) {
             \Yana\Log\LogManager::getLogger()->addLog("Database is not writeable. " .
-                "Check if attribute readonly is set to true in structure file: " . $this->getName(), E_USER_WARNING);
+                "Check if attribute readonly is set to true in structure file: " . $this->_getName(), E_USER_WARNING);
             return false;
         } else {
             return true;
@@ -932,17 +870,20 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * resets the database cache.
      *
      * @name  AbstractConnection::reset()
+     * @return \Yana\Db\AbstractConnection
      */
     public function reset()
     {
-        $this->_transaction = new \Yana\Db\Transaction($this->schema);
+        $this->_transaction = new \Yana\Db\Transaction($this->getSchema());
         $this->_cache = array();
+        return $this;
     }
 
     /**
      * Alias of AbstractConnection::reset()
      *
      * @see  AbstractConnection::reset()
+     * @return \Yana\Db\AbstractConnection
      */
     public function rollback()
     {
@@ -964,134 +905,8 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function equals(\Yana\Core\IsObject $anotherObject)
     {
-        return (bool) ($anotherObject instanceof $this) && $this->getName()->equals($anotherObject->getName()) &&
-            $this->database == $anotherObject->database;
+        return (bool) ($anotherObject instanceof $this) && $this->_getName() == $anotherObject->_getName();
     }
-
-    /**
-     * Check foreign keys constraints.
-     *
-     * This should be called before updating or inserting a row or a cell.
-     *
-     * Note: this provides a certain level of referential integrity
-     * even with DBMS that do not support this feature at all, like
-     * MySQL on MyISAM tables.
-     *
-     * Note: This checks only outgoing - not incoming foreign keys!
-     *
-     * Returns bool(true) if all foreign key constraints are satisfied and
-     * bool(false) otherwise.
-     *
-     * @param    \Yana\Db\Ddl\Table  $table       table definition
-     * @param    mixed               $value       row or cell value
-     * @param    string              $columnName  name of updated column (when updating a cell)
-     * @return   bool
-     * @ignore
-     */
-    private function _checkForeignKeys(\Yana\Db\Ddl\Table $table, $value, $columnName = null)
-    {
-        // ignore when strict checks are turned off
-        if (!YANA_DB_STRICT) {
-            return true;
-        }
-        if (!is_null($columnName)) {
-            $value = array($columnName => $value);
-        }
-        $dbSchema = $this->getSchema();
-        /* @var $foreign \Yana\Db\Ddl\ForeignKey */
-        assert('!isset($foreign); /* Cannot redeclare var $fkey */');
-        foreach ($table->getForeignKeys() as $foreign)
-        {
-            $isPartialMatch = !is_null($columnName) || $foreign->getMatch() === \Yana\Db\Ddl\KeyMatchStrategyEnumeration::PARTIAL;
-            $isFullMatch = is_null($columnName) && $foreign->getMatch() === \Yana\Db\Ddl\KeyMatchStrategyEnumeration::FULL;
-            $targetTable = mb_strtolower($foreign->getTargetTable());
-            $fTable = $dbSchema->getTable($targetTable);
-            foreach ($foreign->getColumns() as $sourceColumn => $targetColumn)
-            {
-                if (empty($targetColumn)) {
-                    $isPrimaryKey = true;
-                    $targetColumn = $fTable->getPrimaryKey();
-                } else {
-                    $isPrimaryKey = false;
-                }
-                /*
-                 * If the referenced row does not exist,
-                 * check if there is one recently inserted in cache
-                 */
-                if (isset($value[$sourceColumn])) {
-                    $isMatch = false;
-                    // foreign key does match
-                    if ($isPrimaryKey && isset($this->_cache[$targetTable][mb_strtolower($value[$sourceColumn])])) {
-                        $isMatch = true;
-                    } else {
-                        // scan cache first
-                        if (isset($this->_cache[$targetTable])) {
-                            foreach ($this->_cache[$targetTable] as $row)
-                            {
-                                if (!isset($row[$targetColumn])) {
-                                    continue;
-                                }
-                                if (strcasecmp($row[$targetColumn], $value[$sourceColumn]) === 0) {
-                                    $isMatch = true;
-                                    break;
-                                }
-                            }
-                        }
-                        // if not in cache, try the database
-                        if (!$isMatch) {
-                            $dbExist = new \Yana\Db\Queries\SelectExist($this);
-                            $dbExist->setTable($targetTable);
-                            $dbExist->setWhere(array($targetColumn, '=', mb_strtolower($value[$sourceColumn])));
-                            $isMatch = $dbExist->doesExist();
-                        }
-                    }
-                    if ($isMatch) {
-                        if ($isPartialMatch) {
-                            // for a partial match it is enough if at least one of the keys matches
-                            return true;
-                        }
-                    } else {
-                        \Yana\Log\LogManager::getLogger()->addLog("Update on table '{$table->getName()}' failed. " .
-                            "Foreign key constraint mismatch. " .
-                            "The value '{$value[$sourceColumn]}' for attribute '{$sourceColumn}' " .
-                            "refers to a non-existing entry in table '{$targetTable}'. ",
-                            E_USER_ERROR, $value);
-                        return false;
-                    }
-                } elseif ($isFullMatch) {
-                    // for a full match the column must not be null
-                    return false;
-                }
-            }
-            unset($targetTable, $fkey, $ufkey);
-        } // end foreach
-        return true;
-    }
-
-    /**
-     * Import SQL from a file.
-     *
-     * The input parameter $sqlFile can wether be filename,
-     * or a numeric array of SQL statements.
-     *
-     * Returns bool(true) on success or bool(false) on error.
-     * Note that the statements are executed within a transaction.
-     * If the function fails,
-     *
-     * @param   string|array  $sqlFile filename which contain the SQL statments or an nummeric array of SQL statments.
-     * @return  bool
-     */
-    abstract public function importSQL($sqlFile);
-
-    /**
-     * Returns the quoted Id as a string.
-     *
-     * The id is surrounded by delimiters, depending on the DBMS selected.
-     *
-     * @param   mixed  $value  name of database object
-     * @return  string
-     */
-    abstract public function quoteId($value);
 
     /**
      * serialize this object to a string
@@ -1129,62 +944,9 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * Subclasses should implement a lazy auto-reconnect in this function
      * for wakeup after unserializing the instance from cache.
      *
-     * @return  \MDB2_Driver_Common
+     * @return  \Yana\Db\IsDriver
      */
-    abstract protected function getConnection();
-
-    /**
-     * Send a sql-statement directly to the PEAR database API, bypassing this API.
-     *
-     * Note: for security reasons this only sends one single SQL statement at a time.
-     * This is done by checking the input for a semicolon followed by anything but
-     * whitespace. If such input is found, an E_USER_WARNING is issued and the
-     * function will return bool(false).
-     *
-     * While bypassing the API leaves nearly all of the input checking to you, this
-     * is meant to prevent at least a minimum of the common SQL injection attacks.
-     * A known attack is to try to terminate a current statement with ';' and afterwards
-     * "inject" their own stuff as a second statement. The common attack vector usually
-     * is unchecked form data.
-     *
-     * If you want to send a sequence of statements, call this function multiple times.
-     *
-     * The function will return bool(false) if the database connection or the
-     * PEAR API is not available and otherwise will whatever PEAR sends back as the
-     * result of your statement.
-     *
-     * Note: when database usage is disabled via the administrator's menu,
-     * the PEAR-DB API can not be used and this function will return bool(false).
-     *
-     * The $offset and $limit arguments became available in version 2.8.8
-     *
-     * Since version 2.9.3 this function has a second synopsis:
-     * You may provide a DbQuery object instead of the SQL statement.
-     *
-     * <code>
-     * $db->query($sqlStmt, $offset, $limit);
-     * // 2nd synopsis
-     * $db->query($dbQueryObject);
-     * </code>
-     *
-     * Note that when providing the DbQuery object, the $limit and $offset arguments are
-     * ignored.
-     *
-     * @param   string|\Yana\Db\Queries\AbstractQuery  $sqlStmt  one SQL statement (or a query object) to execute
-     * @param   int                                    $offset   the row to start from
-     * @param   int                                    $limit    the maximum numbers of rows in the resultset
-     * @return  mixed
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException if the SQL statement is not valid
-     */
-    abstract public function query($sqlStmt, $offset = 0, $limit = 0);
-
-    /**
-     * Returns bool(true) if the object is an error result.
-     *
-     * @param   mixed  $result  result
-     * @return  bool
-     */
-    abstract public function isError($result);
+    abstract protected function _getConnection();
 
 }
 

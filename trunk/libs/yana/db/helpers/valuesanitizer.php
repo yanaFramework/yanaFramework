@@ -188,8 +188,10 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
                 }
             break;
             case 'bool':
-                $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                if (!is_null($value)) {
+                if (!is_bool($value)) { // required since bool(false) will return NULL!
+                    $value = filter_var((string) $value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                }
+                if (is_bool($value)) {
                     return $value;
                 }
             break;
@@ -373,10 +375,10 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
             default:
                 assert('!in_array($value, self::getSupportedTypes()); // Unhandled column type. ');
                 throw new \Yana\Core\Exceptions\NotImplementedException("Type '$type' not implemented.", E_USER_ERROR);
-            break;
         }
         $error = new \InvalidValueWarning();
-        throw $error->setField($title);
+        $error->setField($title);print "$title";
+        throw $error;
     }
 
 }

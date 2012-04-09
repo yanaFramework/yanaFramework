@@ -28,12 +28,14 @@
 namespace Yana\Db\Queries\Exceptions;
 
 /**
- * <<exception>> Thrown when a table.row.column reference was used in a query but does not exist.
+ * <<exception>> Security restriction in effect.
+ *
+ * Thrown when a query does not succeed due to security restrictions of the current database user.
  *
  * @package     yana
  * @subpackage  db
  */
-class TargetNotFoundException extends \Yana\Core\Exceptions\NotFoundException
+class SecurityException extends \Yana\Core\Exceptions\NotFoundException
 {
 
     // intentionally left blank

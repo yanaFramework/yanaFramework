@@ -47,6 +47,11 @@ class Connection extends \Yana\Db\AbstractConnection
     private $_reservedSqlKeywords = null;
 
     /**
+     * @var  array
+     */
+    private $_dsn = array();
+
+    /**
      * Create a new instance.
      *
      * Each database connection depends on a schema file describing the database.
@@ -66,11 +71,44 @@ class Connection extends \Yana\Db\AbstractConnection
 
         // open database connection
         $this->_database = $server->getConnection();
-        $this->dsn = $server->getDsn();
+        $this->_dsn = $server->getDsn();
 
         parent::__construct($schema);
     }
 
+    /**
+     * Returns the name of the chosen DBMS as a lower-cased string.
+     *
+     * @return  string
+     */
+    public function getDBMS()
+    {
+        $dbms = "generic";
+        if (!empty($this->_dsn['DBMS'])) {
+            $dbms = strtolower($this->_dsn['DBMS']);
+        }
+        switch ($dbms)
+        {
+            // Mapping aliases (driver names) to real DBMS names
+            case 'mysqli':
+                return "mysql";
+            case 'pgsql':
+                return "postgresql";
+            case 'fbsql':
+                return "frontbase";
+            case 'ifx':
+                return "informix";
+            case 'ibase':
+                return "interbase";
+            case 'access':
+                return "msaccess";
+            case 'oci8':
+                return "oracle";
+            // any other
+            default:
+                return $dbms;
+        }
+    }
 
     /**
      * Compare with another object.
@@ -95,14 +133,12 @@ class Connection extends \Yana\Db\AbstractConnection
      *
      * Note: for security reasons this only sends one single SQL statement at a time.
      * This is done by checking the input for a semicolon followed by anything but
-     * whitespace. If such input is found, an E_USER_WARNING is issued and the
-     * function will return bool(false).
+     * whitespace. If such input is found, an exception is thrown.
      *
      * While bypassing the API leaves nearly all of the input checking to you, this
      * is meant to prevent at least a minimum of the common SQL injection attacks.
      * A known attack is to try to terminate a current statement with ';' and afterwards
-     * "inject" their own stuff as a second statement. The common attack vector usually
-     * is unchecked form data.
+     * "inject" a second statement. The most common attack vector is unchecked form data.
      *
      * If you want to send a sequence of statements, call this function multiple times.
      *
@@ -110,65 +146,78 @@ class Connection extends \Yana\Db\AbstractConnection
      * PEAR API is not available and otherwise will whatever PEAR sends back as the
      * result of your statement.
      *
-     * Note: when database usage is disabled via the administrator's menu,
-     * the PEAR-DB API can not be used and this function will return bool(false).
-     *
-     * The $offset and $limit arguments became available in version 2.8.8
-     *
-     * Since version 2.9.3 this function has a second synopsis:
-     * You may provide a DbQuery object instead of the SQL statement.
-     *
-     * <code>
-     * $connection->query($sqlStmt, $offset, $limit);
-     * // 2nd synopsis
-     * $connection->query($dbQuery);
-     * </code>
-     *
-     * Note that when providing the DbQuery object, the $limit and $offset arguments are
-     * ignored.
-     *
-     * @param   string|\Yana\Db\Queries\AbstractQuery  $sqlStmt  one SQL statement (or a query object) to execute
-     * @param   int             $offset   the row to start from
-     * @param   int             $limit    the maximum numbers of rows in the resultset
-     * @return  mixed
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException if the SQL statement is not valid
+     * @param   string  $sqlStmt  one SQL statement (or a query object) to execute
+     * @param   int     $offset   the row to start from
+     * @param   int     $limit    the maximum numbers of rows in the resultset
+     * @return  \Yana\Db\IsResult
+     * @throws  \Yana\Db\Queries\Exceptions\QueryException if the SQL statement is not valid
      */
-    public function query($sqlStmt, $offset = 0, $limit = 0)
+    public function sendQueryString($sqlStmt, $offset = 0, $limit = 0)
     {
+        assert('is_string($sqlStmt); // Invalid argument $sqlStmt: string expected');
         assert('is_int($offset) && $offset >= 0; // Invalid argument $offset. Must be a positive integer.');
         assert('is_int($limit) && $limit >= 0; // Invalid argument $limit. Must be a positive integer.');
-        /*
-         * 1) check sql statement
+
+        /* Add this line for debugging purposes:
+         * error_log($sqlStmt . " LIMIT $offset, $limit\n", 3, 'test.log');
          */
-        if ($sqlStmt instanceof \Yana\Db\Queries\AbstractQuery) {
-            $offset = $sqlStmt->getOffset();
-            $limit = $sqlStmt->getLimit();
-            $sqlStmt = (string) $sqlStmt;
-            /*
-             * Add this line for debugging purposes
-             *
-             * error_log($sqlStmt . " LIMIT $offset, $limit\n", 3, 'test.log');
-             */
-        }
-        if (!is_string($sqlStmt)) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException('Argument $sqlStmt is expected to be a string.');
-        }
-        $reg = "/;.*(?:select|insert|delete|update|create|alter|grant|revoke).*$/is";
-        if (strpos($sqlStmt, ';') !== false && preg_match($reg, $sqlStmt)) {
+
+        // security check
+        if (preg_match("/;.*(?:select|insert|delete|update|create|alter|grant|revoke).*$/is", $sqlStmt)) {
             $message = "A semicolon has been found in the current input '{$sqlStmt}', " .
                 "indicating multiple queries.\n\t\t As this might be the result of a hacking attempt " .
                 "it is prohibited for security reasons and the queries won't be executed.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
+            throw new \Yana\Db\Queries\Exceptions\SecurityException($message);
         }
 
-        $connection = $this->getConnection();
-        /*
-         * 3) send query to database
-         */
+        $connection = $this->_getConnection();
+
         if ($offset > 0 || $limit > 0) {
             $connection->setLimit($limit, $offset);
         }
-        return $connection->query($sqlStmt);
+
+        $mdb2Result = $connection->sendQueryString($sqlStmt);
+
+        if (!$mdb2Result instanceof \MDB2_Result_Common) {
+            throw $this->_getExceptionFactory()->toException((int) $mdb2Result);
+        }
+
+        return new \Yana\Db\Mdb2\Result($mdb2Result);;
+    }
+
+    /**
+     * Returns a exception factory.
+     *
+     * Use this to translate 
+     *
+     * @return  \Yana\Db\Mdb2\IsExceptionFactory
+     */
+    protected function _getExceptionFactory()
+    {
+        return new \Yana\Db\Mdb2\ExceptionFactory();
+    }
+
+    /**
+     * Send a sql-statement directly to the PEAR database API.
+     *
+     * This only sends one single SQL statement.
+     * If you want to send a sequence of statements, call this function multiple times.
+     *
+     * The function will return bool(false) if the database connection or the
+     * PEAR API is not available and otherwise will whatever PEAR sends back as the
+     * result of your statement.
+     *
+     * @param   \Yana\Db\Queries\AbstractQuery  $query  one SQL statement (or a query object) to execute
+     * @return  mixed
+     * @throws  \Yana\Db\Queries\Exceptions\QueryException if the SQL statement is not valid
+     */
+    public function sendQueryObject(\Yana\Db\Queries\AbstractQuery $query)
+    {
+        $offset = $query->getOffset();
+        $limit = $query->getLimit();
+        $sqlStmt = (string) $query;
+
+        return $this->sendQueryString($sqlStmt, $offset, $limit);
     }
 
     /**
@@ -259,11 +308,10 @@ class Connection extends \Yana\Db\AbstractConnection
     }
 
     /**
-     * isError
+     * Returns bool(true) if the object is an instance of \MDB2_Error.
      *
-     * @param   mixed   $result  result
+     * @param   mixed  $result  result set to check
      * @return  bool
-     * @ignore
      */
     public function isError($result)
     {
@@ -310,7 +358,7 @@ class Connection extends \Yana\Db\AbstractConnection
             case 'mysqli':
             case 'postgresql':
             case 'mssql':
-                return $this->getConnection()->quoteIdentifier($value);
+                return $this->_getConnection()->quoteIdentifier($value);
 
             /* quote only where necessary
              *
@@ -318,7 +366,7 @@ class Connection extends \Yana\Db\AbstractConnection
              */
             default:
                 if (strpos($value, ' ') !== false || $this->_isSqlKeyword($value) === true) {
-                    return $this->getConnection()->quoteIdentifier($value);
+                    return $this->_getConnection()->quoteIdentifier($value);
                 }
 
                 return $value;
@@ -367,10 +415,10 @@ class Connection extends \Yana\Db\AbstractConnection
      * @return  \MDB2_Driver_Common
      * @ignore
      */
-    protected function getConnection()
+    protected function _getConnection()
     {
         if (!isset($this->_database)) {
-            $dbServer = new \Yana\Db\Mdb2\ConnectionFactory($this->dsn);
+            $dbServer = new \Yana\Db\Mdb2\ConnectionFactory($this->_dsn);
             $this->_database = $dbServer->getConnection();
         }
         return $this->_database;

@@ -576,11 +576,12 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             $table = $this->tableName;
         }
         $table = mb_strtoupper($table);
+
+        $parent = false;
         if (isset($this->parentTables[$table])) {
-            return $this->parentTables[$table];
-        } else {
-            return false;
+            $parent = $this->parentTables[$table];
         }
+        return $parent;
     }
 
     /**
@@ -609,18 +610,18 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         {
             $fTableKey = mb_strtoupper($table->getTableByForeignKey($primaryKey));
             // detect circular reference (when table is already in parent list)
-            if (!in_array($fTableKey, $parents)) {
-                $foreignTable = $dbSchema->getTable($fTableKey);
-                assert('$foreignTable instanceof \Yana\Db\Ddl\Table; // Misspelled foreign key in table: ' . $tableName);
-                $foreignKey = mb_strtoupper($foreignTable->getPrimaryKey());
-                $this->setJoin($fTableKey, $primaryKey, $foreignKey);
-                $this->_setParentTable($table, $foreignTable);
-                $table = $foreignTable;
-                $primaryKey = $foreignKey;
-                $primaryKeyColumn = $table->getColumn($primaryKey);
-            } else {
+            if (in_array($fTableKey, $parents)) {
                 break;
             }
+
+            $foreignTable = $dbSchema->getTable($fTableKey);
+            assert('$foreignTable instanceof \Yana\Db\Ddl\Table; // Misspelled foreign key in table: ' . $tableName);
+            $foreignKey = mb_strtoupper($foreignTable->getPrimaryKey());
+            $this->setJoin($fTableKey, $primaryKey, $foreignKey);
+            $this->_setParentTable($table, $foreignTable);
+            $table = $foreignTable;
+            $primaryKey = $foreignKey;
+            $primaryKeyColumn = $table->getColumn($primaryKey);
         }
         return $this;
     }
@@ -744,6 +745,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             /* @var $foreignKey \Yana\Db\Ddl\ForeignKey */
             foreach ($foreignKeys as $foreignKey)
             {
+                assert($foreignKey instanceof \Yana\Db\Ddl\ForeignKey);
                 $foreignTable = $foreignKey->getTargetTable();
                 // skip if table doesn't match
                 if ($tableName === $foreignTable) {
@@ -806,10 +808,9 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         }
 
         // Auto-attach profile check to where clause if profile constraint is present.
+        $this->profile = array();
         if ($table->hasProfile()) {
             $this->profile = array('profile_id', '=', \Yana::getId());
-        } else {
-            $this->profile = array();
         }
 
         // We expect the result to be a table.
@@ -1182,12 +1183,11 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     public function getRow()
     {
+        $row = '*';
         if (is_string($this->row)) {
-            return mb_strtolower($this->row);
-        } else {
-            /* error: no row has been selected, yet */
-            return '*';
+            $row = mb_strtolower($this->row);
         }
+        return $row;
     }
 
     /**
@@ -1364,7 +1364,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
 
         // reset when empty
         if (empty($orderBy)) {
-            return;
+            return $this;
         }
 
         foreach($orderBy as $i => $column)
@@ -1899,13 +1899,13 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      *
      * Returns a result-object.
      *
-     * @return  \Yana\Db\FileDb\Result
+     * @return  \Yana\Db\IsResult
      * @since   2.9.3
      * @ignore
      */
     public function sendQuery()
     {
-        return $this->db->query($this);
+        return $this->db->sendQueryObject($this);
     }
 
     /**

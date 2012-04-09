@@ -180,7 +180,7 @@ class Delete extends \Yana\Db\Queries\AbstractQuery
     /**
      * Sends the query to the database server and returns a result-object.
      *
-     * @return  FileDbResult
+     * @return  \Yana\Db\IsResult
      * @since   2.9.3
      * @ignore
      */

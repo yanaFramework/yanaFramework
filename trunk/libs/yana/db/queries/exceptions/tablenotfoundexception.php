@@ -33,7 +33,7 @@ namespace Yana\Db\Queries\Exceptions;
  * @package     yana
  * @subpackage  db
  */
-class TableNotFoundException extends \Yana\Db\Queries\Exceptions\QueryException
+class TableNotFoundException extends \Yana\Core\Exceptions\NotFoundException
 {
 
     // intentionally left blank

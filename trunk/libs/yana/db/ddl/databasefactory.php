@@ -47,6 +47,7 @@ namespace Yana\Db\Ddl;
  */
 class DatabaseFactory extends \Yana\Db\Ddl\Database
 {
+
     /**
      * create database from tableInfo
      *
@@ -55,7 +56,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
      *
      * @access  public
      * @static
-     * @param   MDB2_Driver_Common   $connection  MDB2 database connection
+     * @param   \MDB2_Driver_Common  $connection  MDB2 database connection
      * @return  \Yana\Db\Ddl\Database
      * @throws  DbError  when any of the operations fail
      */
