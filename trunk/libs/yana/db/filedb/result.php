@@ -88,7 +88,7 @@ class Result extends \Yana\Core\Object implements \Yana\Db\IsResult
      */
     public function fetchRow($rowNumber)
     {
-        assert('is_int($i); // Invalid argument $i: int expected');
+        assert('is_int($rowNumber); // Invalid argument $rowNumber: int expected');
 
         $row = array();
         if (isset($this->_result[$rowNumber])) {
