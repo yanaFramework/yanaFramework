@@ -71,7 +71,7 @@ class plugin_check extends StdClass implements IsPlugin
         $registry = \Yana\VDrive\Registry::getGlobalInstance();
         if (!empty($sql)) {
             $sql = stripcslashes($sql);
-            $fileDb = new \Yana\Db\FileDbConnection(XDDL::getDatabase($db));
+            $fileDb = new \Yana\Db\FileDb\Connection(XDDL::getDatabase($db));
             $query = null;
             try {
 

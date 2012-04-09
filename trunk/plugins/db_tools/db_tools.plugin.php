@@ -126,7 +126,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
     public function db_tools_write_config()
     {
         $errorReporting = error_reporting(E_ERROR | E_WARNING); // suppress MDB2 Notices
-        $db = new \Yana\Db\ConnectionFactory();
+        $db = new \Yana\Db\Mdb2\ConnectionFactory();
         error_reporting($errorReporting);
         $xml = (string) \Yana\Db\Ddl\DatabaseFactory::createDatabase($db->getConnection());
         $filename = 'database.db.xml';

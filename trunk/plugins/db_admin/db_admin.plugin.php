@@ -76,7 +76,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
         $yana = Yana::getInstance();
 
         if (!class_exists("MDB2")) {
-            throw new \Yana\Db\PearDbException();
+            throw new \Yana\Db\Mdb2\PearDbException();
         }
 
         $yana->setVar("DATABASE_ACTIVE",      YANA_DATABASE_ACTIVE);
@@ -113,7 +113,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
         global $YANA;
 
         if (!class_exists("MDB2") && !$silent) {
-            throw new \Yana\Db\PearDbException();
+            throw new \Yana\Db\Mdb2\PearDbException();
         }
 
         if (empty($dbms) || empty($list)) {
@@ -201,7 +201,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
 
             $installFile = $installDirectory . $item . '.sql';
             $dbSchema = XDDL::getDatabase($item);
-            $database = new \Yana\Db\Connection($dbSchema);
+            $database = new \Yana\Db\Mdb2\Connection($dbSchema);
 
             /* If no SQL file for the current $item does exist,
              * we need to call the appropriate \Yana\Db\Export\SqlFactory method
@@ -313,7 +313,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
 
         if (!class_exists("MDB2")) {
             if (!$silent) {
-                throw new \Yana\Db\PearDbException();
+                throw new \Yana\Db\Mdb2\PearDbException();
             }
             return false;
         }
@@ -328,8 +328,8 @@ class plugin_db_admin extends StdClass implements IsPlugin
              * read database content
              */
             $dbSchema = XDDL::getDatabase($item);
-            $db = new \Yana\Db\Connection($dbSchema);
-            $fileDb = new \Yana\Db\FileDbConnection($dbSchema);
+            $db = new \Yana\Db\Mdb2\Connection($dbSchema);
+            $fileDb = new \Yana\Db\FileDb\Connection($dbSchema);
 
             /**
              * prepare queries
@@ -582,7 +582,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                 'DATABASE' => stripslashes($name)
             );
 
-            $test = \Yana\Db\ConnectionFactory::isAvailable($dsn);
+            $test = \Yana\Db\Mdb2\ConnectionFactory::isAvailable($dsn);
             if ($test !== true) {
                 throw new Error('Unable to establish connection to database server. " .
                     "Check your input please!');
