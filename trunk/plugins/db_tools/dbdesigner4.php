@@ -59,7 +59,7 @@ require_once 'dbinfotable.php';
  * @package    yana
  * @subpackage plugins
  */
-class DbDesigner4 extends File implements IsDbImport
+class DbDesigner4 extends \File implements \IsDbImport
 {
     /**#@+
      * @ignore
@@ -228,7 +228,7 @@ class DbDesigner4 extends File implements IsDbImport
             break;
 
             case 'column':
-                $this->currentColumn = new DbInfoColumn($attrs['COLNAME']);
+                $this->currentColumn = new \DbInfoColumn($attrs['COLNAME']);
                 $this->currentColumn->setTable($this->currentTable->getName());
                 if (isset($this->dataTypes[$attrs['IDDATATYPE']])) {
 
@@ -403,6 +403,9 @@ class DbDesigner4 extends File implements IsDbImport
             case 'table':
                 foreach ($this->columns as $column)
                 {
+                    assert($column instanceof \DbInfoColumn);
+                    /* @var $column \DbInfoColumn */
+
                     if (!empty($column->name)) {
                         $this->currentTable->addColumn($column);
                     }
