@@ -274,22 +274,19 @@ class Update extends \Yana\Db\Queries\Insert
                     \Yana\Log\LogManager::getLogger()->addLog("Security restriction. " .
                         "The profile id of an entry may not be changed.", E_USER_WARNING);
                     return false;
-                } else {
-                    return true;
                 }
-            break;
+                return true;
+
             case \Yana\Db\ResultEnumeration::CELL:
                 if (strcasecmp($this->getColumn(), 'profile_id') === 0) {
                     \Yana\Log\LogManager::getLogger()->addLog("Security restriction. " .
                         "The profile id of an entry may not be changed.", E_USER_WARNING);
                     return false;
-                } else {
-                    return true;
                 }
-            break;
+                return true;
+
             default:
                 return false;
-            break;
         }
     }
 
