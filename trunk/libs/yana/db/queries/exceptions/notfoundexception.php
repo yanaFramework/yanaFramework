@@ -28,12 +28,12 @@
 namespace Yana\Db\Queries\Exceptions;
 
 /**
- * <<exception>> Thrown when a table.row.column reference was used in a query but does not exist.
+ * <<exception>> Thrown when a database object was used in a query but does not exist.
  *
  * @package     yana
  * @subpackage  db
  */
-class TargetNotFoundException extends \Yana\Core\Exceptions\NotFoundException
+class NotFoundException extends \Yana\Db\Queries\Exceptions\QueryException
 {
 
     // intentionally left blank

@@ -25,24 +25,40 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Db\FileDb;
+
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __DIR__ . '/../../../../include.php';
 
 /**
  * DbStream test-case
  *
  * @package  test
  */
-class FileDbTest extends PHPUnit_Framework_TestCase
+class ConnectionTest extends \PHPUnit_Framework_TestCase
 {
+
     /**
      * database connection
      *
-     * @var DbStream
+     * @var \Yana\Db\FileDb\Connection
      */
     public $dbsobj = null;
+
+    /**
+     * Constructor
+     *
+     * @ignore
+     */
+    public function __construct()
+    {
+        \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
+        // just in case
+        $this->setUp(); 
+        $this->tearDown();
+    }
 
     /**
      * Prepares the environment before running a test.
@@ -54,7 +70,7 @@ class FileDbTest extends PHPUnit_Framework_TestCase
             \Yana\Db\FileDb\Driver::setBaseDirectory(CWD. 'resources/db/');
             \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
             $schema = \XDDL::getDatabase('check');
-            $this->dbsobj = new \Yana\Db\FileDbConnection($schema);
+            $this->dbsobj = new \Yana\Db\FileDb\Connection($schema);
             restore_error_handler();
 
         } catch (\Exception $e) {
@@ -76,19 +92,6 @@ class FileDbTest extends PHPUnit_Framework_TestCase
         unset ( $this->dbsobj );
     }
 
-    /**
-     * Constructor
-     *
-     * @ignore
-     */
-    public function __construct()
-    {
-        \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
-        // just in case
-        $this->setUp(); 
-        $this->tearDown();
-    }
-
 
     /**
      * insert and update
@@ -98,41 +101,38 @@ class FileDbTest extends PHPUnit_Framework_TestCase
     public function testInsertAndUpdate()
     {
         // init database
-        $test = $this->dbsobj->insert( 'ft.1', array ('ftvalue' => 1 ) );
-        $this->assertTrue($test, 'init ft.1 failed');
+        $this->dbsobj->insert('ft.1', array('ftvalue' => 1));
 
         // supposed to fail
         try {
-            $this->dbsobj->insert( 't.foo1', array ('tvalue' => 1 ) );
+            $this->dbsobj->insert( 't.foo1', array('tvalue' => 1));
             $this->fail('init t.foo1 failed');
-        } catch (MissingFieldWarning $e) {
+        } catch (\MissingFieldWarning $e) {
             // success
         }
 
         // supposed to fail
         try {
-            $this->dbsobj->insertOrUpdate( 't.foo2', array ('tvalue' => 1, 'FTid' => 2 ) );
+            $this->dbsobj->insertOrUpdate('t.foo2', array('tvalue' => 1, 'FTid' => 2 ));
             $this->fail('expected insert of t.foo2 to fail, due to a foreign-key constraint');
         } catch (\Exception $e) {
             // success
         }
 
-        $test = $this->dbsobj->insert( 't.foo', array ('tvalue' => 1, 'ftid' => 1, 'tb' => true ) );
-        $this->assertTrue($test, 'init t.foo failed');
+        $this->dbsobj->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true));
 
-
-        $test = $this->dbsobj->insert( 't.foo3', array ('tvalue' => 3, 'ftid' => 1, 'tb' => false ) );
-        $this->assertTrue($test, 'init t.foo3 failed');
+        $this->dbsobj->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false));
+        $this->assertTrue($this->dbsobj->commit(), 'commit to database failed');
 
         // supposed to fail
-        $test = @$this->dbsobj->insertOrUpdate( 'i.foo2', array ('ta' => array (1 => 1 ) ) );
-        $this->assertFalse($test, 'init i.foo2 failed');
+        $this->dbsobj->insertOrUpdate('i.foo2', array('ta' => array (1 => 1)));
+        $this->assertFalse($this->dbsobj->commit(), 'init i.foo2 failed');
+        $this->assertTrue($this->dbsobj->rollback());
 
-        $test = $this->dbsobj->insert( 'i.foo', array ('ta' => array ('1' => '1' ) ) );
-        $this->assertTrue($test, 'init i.foo failed');
+        $this->dbsobj->insert('i.foo', array('ta' => array('1' => '1')));
 
         // supposed to succeed
-        $test = $this->dbsobj->update( 'i.foo.ta.1.a', 2 );
+        $test = $this->dbsobj->update('i.foo.ta.1.a', 2 );
         $this->assertTrue($test, '"set array content" failed');
 
         $this->assertTrue($this->dbsobj->commit(), 'commit to database failed');

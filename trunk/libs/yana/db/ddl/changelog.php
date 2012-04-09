@@ -149,8 +149,11 @@ class ChangeLog extends \Yana\Db\Ddl\DDL
         $dbms = strtolower($dbms);
         assert('is_array($this->changes); // Member "changes" has unexpected type. Array expected.');
         $log = array();
+
+        assert('!isset($entry); // Cannot redeclare var $entry');
         foreach ($this->changes as $entry)
         {
+            /* @var $entry \Yana\Db\Ddl\Logs\Sql */
             // target DBMS does not match
             if ($entry instanceof \Yana\Db\Ddl\Logs\Sql && $entry->getDBMS() !== 'generic' && $entry->getDBMS() !== $dbms) {
                 continue;
@@ -171,6 +174,8 @@ class ChangeLog extends \Yana\Db\Ddl\DDL
 
             }
         } // end foreach
+        unset($entry);
+
         return $log;
     }
 

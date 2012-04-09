@@ -77,6 +77,50 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
     protected $files = array();
 
     /**
+     * @var \Yana\Db\Helpers\IsSanitizer
+     */
+    private $_sanitizer = null;
+
+    /**
+     * create a new instance
+     *
+     * This creates and initializes a new instance of this class.
+     *
+     * The argument $database can be an instance of class Connection or
+     * any derived sub-class (e.g. FileDb).
+     *
+     * @param  \Yana\Db\IsConnection  $database  a database resource
+     */
+    public function __construct(\Yana\Db\IsConnection $database)
+    {
+        parent::__construct($database);
+        $this->_sanitizer = new \Yana\Db\Helpers\ValueSanitizer($this->getDatabase()->getDBMS());
+    }
+
+    /**
+     * @param \Yana\Db\Helpers\IsSanitizer $sanitizer
+     * @return \Yana\Db\Queries\AbstractQuery
+     */
+    public function setSanitizer(\Yana\Db\Helpers\IsSanitizer $sanitizer)
+    {
+        $this->_sanitizer = $sanitizer;
+
+        return $this;
+    }
+
+    /**
+     * Returns the sanitizer algorithm used to clean input values.
+     *
+     * If no sanitizer has been set, it will create one.
+     *
+     * @return \Yana\Db\Helpers\IsSanitizer
+     */
+    protected function _getSanitizer()
+    {
+        return $this->_sanitizer;
+    }
+
+    /**
      * <<magic>> Called to create copies of the object when using the "clone" keyword.
      *
      * It will empty the query queue for the cloned object.
@@ -120,9 +164,10 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
      *
      * @param   mixed  $values  value(s) for current query
      * @return  \Yana\Db\Queries\Insert
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if a given argument is invalid
-     * @throws  \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException     when the primary key is invalid or ambigious
-     * @throws  \Yana\Db\Queries\Exceptions\ConstraintException            when a constraint violation is detected
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException          if a given argument is invalid
+     * @throws  \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException  when the primary key is invalid or ambigious
+     * @throws  \Yana\Db\Queries\Exceptions\ConstraintException         when a constraint violation is detected
+     * @throws  \Yana\Db\Queries\Exceptions\InvalidResultTypeException  when trying to insert anything but a row.
      */
     public function setValues($values)
     {
@@ -134,7 +179,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
             $values = \Yana\Util\Hashtable::changeCase($values, CASE_LOWER);
 
         } elseif ($this->type === \Yana\Db\Queries\TypeEnumeration::INSERT) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid type. " .
+            throw new \Yana\Db\Queries\Exceptions\InvalidResultTypeException("Invalid type. " .
                 "Database values must be an array for insert-statements.");
 
         /*
@@ -211,7 +256,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 if ($column->isAutoIncrement()) {
                     /* ignore - is to be inserted automatically by database */
                 } elseif ($this->row !== '*') {
-                    $values[$primaryKey] = $column->sanitizeValue($this->row, $this->db->getDBMS(), $this->files);
+                    $values[$primaryKey] = $this->_getSanitizer()->sanitizeValueByColumn($column, $this->row, $this->files);
                 } else {
                     $message = "Cannot insert a row without a primary key. Operation aborted.";
                     throw new \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException($message);
@@ -225,32 +270,42 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 throw new \Yana\Db\Queries\Exceptions\ConstraintException($message, E_USER_WARNING);
             }
 
-        }
+        } // end INSERT-statement
+        
+        switch ($this->getExpectedResult())
+        {
+            // INSERT and UPDATE statements
+            case \Yana\Db\ResultEnumeration::ROW:
+                assert('is_array($values); // Row must be an array');
+                // upper-case primary key
+                if (isset($values[$primaryKey])) {
+                    $values[$primaryKey] = mb_strtoupper($values[$primaryKey]);
+                }
+                // check if row is valid
+                $values = $this->_getSanitizer()->sanitizeRowByTable($table, $values, $isInsert, $this->files);
+            break;
 
-        if ($this->expectedResult === \Yana\Db\ResultEnumeration::ROW) {
-            assert('is_array($values); // Row must be an array');
-            // upper-case primary key
-            if (isset($values[$primaryKey])) {
-                $values[$primaryKey] = mb_strtoupper($values[$primaryKey]);
-            }
-            // check if row is valid
-            $values = $table->sanitizeRow($values, $this->db->getDBMS(), $isInsert, $this->files);
-        } else {
-            assert('!$isInsert; // May only insert rows, not tables, cells or columns');
-            assert('$this->expectedResult === DbResultEnumeration::CELL || ' .
-                '$this->expectedResult ===  DbResultEnumeration::COLUMN;');
-            if (empty($this->arrayAddress) && isset($this->column[0]) && is_array($this->column[0])) {
-                assert('count($this->column) === 1;');
-                assert('count($this->column[0]) === 2;');
-                assert('isset($this->column[0][1]);');
-                assert('$this->tableName === $this->column[0][0];');
-                assert('$table->isColumn($this->column[0][1]);');
-                assert('!isset($column); // Cannot redeclare var $column');
-                $column = $table->getColumn($this->column[0][1]);
-                assert('$column instanceof \Yana\Db\Ddl\Column;');
-                $values = $column->sanitizeValue($values, $this->db->getDBMS(), $this->files);
-                unset($column);
-            }
+            // UPDATE statements only
+            default:
+                if (!$isInsert) {
+                    // this point should be impossible to reach
+                    $_message = "You may only inset rows - not cells or columns.";
+                    throw new \Yana\Db\Queries\Exceptions\InvalidResultTypeException($_message);
+                }
+                assert('!$isInsert; // May only insert rows, not tables, cells or columns');
+                if (empty($this->arrayAddress) && isset($this->column[0]) && is_array($this->column[0])) {
+                    assert('count($this->column) === 1;');
+                    assert('count($this->column[0]) === 2;');
+                    assert('isset($this->column[0][1]);');
+                    assert('$this->tableName === $this->column[0][0];');
+                    assert('$table->isColumn($this->column[0][1]);');
+                    assert('!isset($column); // Cannot redeclare var $column');
+                    $column = $table->getColumn($this->column[0][1]);
+                    assert('$column instanceof \Yana\Db\Ddl\Column;');
+                    $values = $this->_getSanitizer()->sanitizeValueByColumn($column, $values, $this->files);
+                    unset($column);
+                }
+            break;
         }
         unset($primaryKey);
 
@@ -339,8 +394,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
      * Note: This function may throw a number of exception.
      * If you wish to handle them all at once, catch a {@see \Yana\Db\Queries\Exceptions\QueryException}.
      *
-     * @return  FileDbResult
-     * @throws  DbError  when a query fails
+     * @return  \Yana\Db\IsResult
      * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException      when the table does not exist
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException          if a given argument is invalid
      * @throws  \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException  when the primary key is invalid or ambigious
@@ -376,7 +430,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 // Values are invalid
                 $this->setValues($values);
                 // submit query
-                $result = $this->db->query($this);
+                $result = $this->db->sendQueryObject($this);
                 // break on error
                 if ($this->db->isError($result)) {
                     break;

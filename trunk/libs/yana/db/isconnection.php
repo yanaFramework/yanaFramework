@@ -46,17 +46,6 @@ interface IsConnection
     public function getSchema();
 
     /**
-     * Get the DSN.
-     *
-     * This function returns an associative array containing
-     * information on the current connection or bool(false) on error.
-     *
-     * @return  array
-     * @see     \Yana\Db\ConnectionFactory::getDsn()
-     */
-    public function getDsn();
-
-    /**
      * Returns the name of the chosen DBMS as a lower-cased string.
      *
      * @return  string
@@ -105,11 +94,11 @@ interface IsConnection
     /**
      * Insert $value at position $key.
      *
-     * @param   string|\Yana\Db\Queries\Insert  $key    the address of the row that should be inserted
-     * @param   mixed            $value  value
+     * @param   string|\Yana\Db\Queries\Insert  $key  the address of the row that should be inserted
+     * @param   array                           $row  associative array of values
      * @return  bool
      */
-    public function insert($key, $value = array());
+    public function insert($key, array $row = array());
 
     /**
      * Remove one row.
@@ -162,6 +151,59 @@ interface IsConnection
      * @see  AbstractConnection::reset()
      */
     public function rollback();
+
+    /**
+     * Send a sql-statement directly to the database driver API.
+     *
+     * This is meant to send one single SQL statement at a time.
+     * If you want to send a sequence of statements, call this function multiple times.
+     *
+     * @param   string  $sqlStmt  one SQL statement (or a query object) to execute
+     * @param   int     $offset   the row to start from
+     * @param   int     $limit    the maximum numbers of rows in the resultset
+     * @return  mixed
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException if the SQL statement is not valid
+     */
+    public function sendQueryString($sqlStmt, $offset = 0, $limit = 0);
+
+    /**
+     * Send a sql-statement directly to the database driver API.
+     *
+     * @param   \Yana\Db\Queries\AbstractQuery  $sqlStmt  one SQL statement (or a query object) to execute
+     * @return  mixed
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException if the SQL statement is not valid
+     */
+    public function sendQueryObject(\Yana\Db\Queries\AbstractQuery $sqlStmt);
+
+    /**
+     * Import SQL from a file.
+     *
+     * The input parameter $sqlFile can wether be filename,
+     * or a numeric array of SQL statements.
+     *
+     * Returns bool(true) on success or bool(false) on error.
+     * Note that the statements are executed within a transaction.
+     *
+     * @param   string|array  $sqlFile filename which contain the SQL statments or an nummeric array of SQL statments.
+     * @return  bool
+     */
+    public function importSQL($sqlFile);
+
+    /**
+     * Returns bool(true) if the object is an error result.
+     *
+     * @param   mixed  $result  result
+     * @return  bool
+     */
+    public function isError($result);
+
+    /**
+     * Returns the quoted database identifier as a string.
+     *
+     * @param   mixed  $value  name of database object
+     * @return  string
+     */
+    public function quoteId($value);
 
 }
 

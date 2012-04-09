@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db;
+namespace Yana\Db\FileDb;
 
 /**
  * <<decorator>> Simulates a sql-database on a flat-file.
@@ -43,8 +43,13 @@ namespace Yana\Db;
  * @package     yana
  * @subpackage  db
  */
-class FileDbConnection extends \Yana\Db\AbstractConnection
+class Connection extends \Yana\Db\AbstractConnection
 {
+
+    /**
+     * @var  \Yana\Db\FileDb\Driver
+     */
+    private $_database = null;
 
     /**
      * Creates a new instance of this class.
@@ -54,15 +59,16 @@ class FileDbConnection extends \Yana\Db\AbstractConnection
     public function __construct(\Yana\Db\Ddl\Database $schema)
     {
         parent::__construct($schema);
-        $this->dsn = array(
-            'USE_ODBC' => false,
-            'DBMS'     => '',
-            'HOST'     => false,
-            'PORT'     => false,
-            'USERNAME' => false,
-            'PASSWORD' => false,
-            'DATABASE' => $this->getName()
-        );
+    }
+
+    /**
+     * Returns the name of the chosen DBMS as a lower-cased string.
+     *
+     * @return  string
+     */
+    public function getDBMS()
+    {
+        return "generic";
     }
 
     /**
@@ -93,76 +99,63 @@ class FileDbConnection extends \Yana\Db\AbstractConnection
     }
 
     /**
-     * optional API bypass
-     *
-     * Send a sinle sql-statement directly to FileDB, bypassing the query-builder.
-     *
-     * The function will return bool(false) if the database connection is not
-     * available and otherwise will return whatever FileDB sends back as the
-     * result of your statement.
+     * Send SQL-statement directly to teh FileDB driver.
      *
      * Note: FileDB was designed to understand the statements generated
      * by the query-builder and is not intended to be called directly.
-     * This means it will understand only SQL statements that comply with the syntax
-     * that is provided by the query-builder.
      *
-     * @param   string|object  $sqlStmt  one SQL statement to execute
-     * @param   int            $offset   the row to start from
-     * @param   int            $limit    the maximum numbers of rows in the resultset
-     * @return  mixed
-     * @since   2.8.8
-     * @ignore
+     * @param   string  $sqlStmt  one SQL statement to execute
+     * @param   int     $offset   the row to start from
+     * @param   int     $limit    the maximum numbers of rows in the resultset
+     * @return  \Yana\Db\IsResult
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the SQL statement is not valid
      */
-    public function query($sqlStmt, $offset = 0, $limit = 0)
+    public function sendQueryString($sqlStmt, $offset = 0, $limit = 0)
     {
+        assert('is_string($sqlStmt); // Invalid argument $sqlStmt: string expected');
         assert('is_int($offset) && $offset >= 0; // Invalid argument $offset. Must be a positive integer.');
         assert('is_int($limit) && $limit >= 0; // Invalid argument $limit. Must be a positive integer.');
 
-        // check input
-        if ($sqlStmt instanceof \Yana\Db\Queries\AbstractQuery) {
-            return $this->getConnection()->dbQuery($sqlStmt);
-        } elseif (!is_string($sqlStmt)) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException('Argument $sqlStmt is expected to be a string.');
-        }
-
-        $reg = "/;.*(?:select|insert|delete|update|create|alter|grant|revoke).*$/is";
-        if (strpos($sqlStmt, ';') !== false && preg_match($reg, $sqlStmt)) {
-            $message = "A semicolon has been found in the current input '{$sqlStmt}', " .
-                "indicating multiple queries.\n\t\t As this might be the result of a hacking attempt " .
-                "it is prohibited for security reasons and the queries won't be executed.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
-        }
-
         // send query to database
-        return $this->getConnection()->limitQuery($sqlStmt, $offset, $limit);
+        $this->_getConnection()->setLimit($limit, $offset);
+        return $this->_getConnection()->sendQueryString($sqlStmt); // may throw exception
+    }
+
+    /**
+     * Send a prepared database statement to the FileDB driver.
+     *
+     * @param   \Yana\Db\Queries\AbstractQuery  $query  one SQL statement to execute
+     * @return  \Yana\Db\IsResult
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the SQL statement is not valid
+     */
+    public function sendQueryObject(\Yana\Db\Queries\AbstractQuery $query)
+    {
+        return $this->_getConnection()->sendQueryObject($query); // may throw exception
     }
 
     /**
      * Returns bool(true) if the object is an error result.
      *
-     * @param   mixed  $result  result
+     * @param   mixed  $result  result set to check
      * @return  bool
-     * @ignore
      */
     public function isError($result)
     {
-        return ($result instanceof \Yana\Db\FileDb\Result && $result->isError());
+        return ($result instanceof \Yana\Db\IsResult && $result->isError());
     }
 
     /**
      * get database connection
      *
-     * @return  \MDB2_Driver_Common
+     * @return  \Yana\Db\FileDb\Driver
      * @ignore
      */
-    protected function getConnection()
+    protected function _getConnection()
     {
-        if (!isset($this->database)) {
-            $this->database = new \Yana\Db\FileDb\Driver($this->getSchema());
-            $this->database->autoCommit(false);
+        if (!isset($this->_database)) {
+            $this->_database = new \Yana\Db\FileDb\Driver($this->getSchema());
         }
-        return $this->database;
+        return $this->_database;
     }
 
 }

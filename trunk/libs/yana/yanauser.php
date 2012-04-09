@@ -907,16 +907,14 @@ class YanaUser extends \Yana\Core\Object
     }
 
     /**
-     * create a new user
+     * Create a new user.
      *
-     * @access  public
-     * @static
      * @param   string  $userName  user name
      * @param   string  $mail      e-mail address
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException    if another user with the same name already exists
-     * @throws  DbError                                         when the database entry could not be created
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when no user name is given
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException    if another user with the same name already exists
+     * @throws  \DbError                                        when the database entry could not be created
      */
     public static function createUser($userName, $mail)
     {
@@ -931,17 +929,13 @@ class YanaUser extends \Yana\Core\Object
         if (YanaUser::isUser($userName)) {
             throw new \Yana\Core\Exceptions\AlreadyExistsException("A user with the name '$userName' already exists.");
         }
-        switch (false)
-        {
-            // insert user settings
-            case self::$_database->insert("user.$userName", array('USER_MAIL' => $mail)):
-            // initialize user profile
-            case self::$_database->insert("userprofile.$userName", array("userprofile_modified" => time())):
-            // commit changes
-            case self::$_database->commit():
-                throw new DbError("Unable to commit changes to the database server while trying to update " .
-                    "settings for user '{$userName}'.");
-            break;
+        // insert user settings
+        self::$_database->insert("user.$userName", array('USER_MAIL' => $mail));
+        // initialize user profile
+        self::$_database->insert("userprofile.$userName", array("userprofile_modified" => time()));
+        if (!self::$_database->commit()) {
+            throw new \DbError("Unable to commit changes to the database server while trying to update " .
+                "settings for user '{$userName}'.");
         }
     }
 

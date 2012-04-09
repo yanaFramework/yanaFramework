@@ -254,11 +254,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
             return false;
         }
 
-        if (!defined('MDB2_FETCHMODE_ORDERED')) {
-            /** @ignore */
-            define('MDB2_FETCHMODE_ORDERED', 1);
-        }
-        $i = $result->fetchRow(MDB2_FETCHMODE_ORDERED, 0);
+        $i = $result->fetchRow(0);
         return !empty($i);
     }
 

@@ -206,11 +206,7 @@ class SelectCount extends \Yana\Db\Queries\SelectExist
             return 0;
         }
 
-        if (!defined('MDB2_FETCHMODE_ORDERED')) {
-            /** @ignore */
-            define('MDB2_FETCHMODE_ORDERED', 1);
-        }
-        $i = $result->fetchRow(MDB2_FETCHMODE_ORDERED, 0);
+        $i = $result->fetchRow(0, false);
         if (is_null($i) || !isset($i[0])) {
             return 0;
         } else {

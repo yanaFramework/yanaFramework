@@ -25,17 +25,27 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db;
+namespace Yana\Db\Mdb2;
 
 /**
- * <<exception>> When unable to connect to the database.
+ * <<interface>> Takes a MDB2 error constant and returns the appropriate exception.
  *
  * @package     yana
  * @subpackage  db
  */
-class ConnectionException extends \Yana\Db\DatabaseException
+interface IsExceptionFactory
 {
-    /* intentionally left blank */
+
+    /**
+     * Convert MDB2 error code to the appropriate exception object.
+     *
+     * This also sets the message according to the given type.
+     *
+     * @param   int  $errorCode  Some \MDB2_ERROR code
+     * @return  \Yana\Core\Exceptions\AbstractException
+     */
+    public function toException($errorCode);
+
 }
 
 ?>

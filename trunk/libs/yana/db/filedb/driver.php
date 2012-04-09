@@ -39,7 +39,7 @@ namespace Yana\Db\FileDb;
  * @package     yana
  * @subpackage  db
  */
-class Driver extends \Yana\Core\Object
+class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
 {
 
     /**
@@ -143,9 +143,8 @@ class Driver extends \Yana\Core\Object
     }
 
     /**
-     * set base directory
-     *
      * Set directory where database files are to be stored.
+     *
      * Note: the directory must be read- and writeable.
      *
      * @param  string  $directory  new base directory
@@ -162,48 +161,22 @@ class Driver extends \Yana\Core\Object
     }
 
     /**
-     * activate/deactive auto-commit
-     *
-     * @param   bool  $mode  on / off
-     * @return  int
-     */
-    public function autoCommit($mode = false)
-    {
-        assert('is_bool($mode); // Wrong type for argument 1. Boolean expected.');
-
-        $this->_autoCommit = (bool) $mode;
-        return 1;
-    }
-
-    /**
-     * Not implemented: returns 1.
-     *
-     * @param   string  $dummy  module name
-     * @return  int
-     * @ignore
-     */
-    public function loadModule($dummy = "")
-    {
-        return 1;
-    }
-
-    /**
      * begin transaction
      *
      * This deactives auto-commit, so the following statements will wait for commit or rollback.
      *
-     * @return  int
+     * @return  bool
      */
     public function beginTransaction()
     {
         $this->_autoCommit = false;
-        return 1;
+        return true;
     }
 
     /**
      * rollback current transaction
      *
-     * @return  int
+     * @return  bool
      */
     public function rollback()
     {
@@ -214,7 +187,7 @@ class Driver extends \Yana\Core\Object
         if (isset($this->_idx[$this->_database][$this->_tableName])) {
             $this->_idx[$this->_database][$this->_tableName]->rollback();
         }
-        return 1;
+        return true;
     }
 
     /**
@@ -224,39 +197,8 @@ class Driver extends \Yana\Core\Object
      */
     public function commit()
     {
-        return $this->_write(true);
-    }
-
-    /**
-     * get list of database objects
-     *
-     * Returns a list of all 'tables' inside the current database,
-     * or a list of all available 'databases' as a numeric array.
-     * Returns MDB2_ERROR_UNSUPPORTED otherwise.
-     *
-     * @param   string  $type  valid values are 'tables' and 'databases'
-     * @return  array
-     */
-    public function getListOf($type)
-    {
-        assert('is_string($type); // Wrong type for argument 1. String expected.');
-
-        switch($type)
-        {
-            case 'tables':
-                return $this->listTables();
-            break;
-            case 'databases':
-                return self::listDatabases();
-            break;
-            default:
-                if (!defined('MDB2_ERROR_UNSUPPORTED')) {
-                    /** @ignore */
-                    define('MDB2_ERROR_UNSUPPORTED', -6);
-                }
-                return MDB2_ERROR_UNSUPPORTED;
-            break;
-        }
+        $result = $this->_write(true);
+        return !$result->isError();
     }
 
     /**
@@ -339,14 +281,104 @@ class Driver extends \Yana\Core\Object
     }
 
     /**
+     * Check foreign keys constraints.
+     *
+     * This should be called before updating or inserting a row or a cell.
+     * Note: This checks only outgoing - not incoming foreign keys!
+     *
+     * Returns bool(true) if all foreign key constraints are satisfied and bool(false) otherwise.
+     *
+     * @param    \Yana\Db\Ddl\Table  $table       table definition
+     * @param    mixed               $value       row or cell value
+     * @param    string              $columnName  name of updated column (when updating a cell)
+     * @return   bool
+     */
+    private function _checkForeignKeys(\Yana\Db\Ddl\Table $table, $value, $columnName = null)
+    {
+        if (!is_null($columnName)) {
+            $row = array($columnName => $value);
+        } else {
+            assert('is_array($value); // Invalid argument $value: array expected');
+            $row = (array) $value;
+        }
+        /* @var $foreign \Yana\Db\Ddl\ForeignKey */
+        assert('!isset($foreign); /* Cannot redeclare var $fkey */');
+        foreach ($table->getForeignKeys() as $foreign)
+        {
+            $isPartialMatch = !is_null($columnName) || $foreign->getMatch() === \Yana\Db\Ddl\KeyMatchStrategyEnumeration::PARTIAL;
+            $isFullMatch = is_null($columnName) && $foreign->getMatch() === \Yana\Db\Ddl\KeyMatchStrategyEnumeration::FULL;
+            $targetTable = mb_strtolower($foreign->getTargetTable());
+            $fTable = $this->_schema->getTable($targetTable);
+            if ($fTable instanceof \Yana\Db\Ddl\Table) {
+                foreach ($foreign->getColumns() as $sourceColumn => $targetColumn)
+                {
+                    $isPrimaryKey = false;
+                    if (empty($targetColumn)) {
+                        $isPrimaryKey = true;
+                        $targetColumn = $fTable->getPrimaryKey();
+                    }
+                    /*
+                    * If the referenced row does not exist,
+                    * check if there is one recently inserted in cache
+                    */
+                    if (isset($row[$sourceColumn])) {
+                        $isMatch = false;
+                        // check if foreign key does match
+                        $database = $this->_getSourceDatabaseNameForTable($fTable);
+                        if (!isset($this->_src[$this->_database][$targetTable])) {
+                            $filename = $this->_getFilename($database, 'sml', $targetTable);
+                            $sml = $this->_createSmlFile($filename);
+                            $sml->failSafeRead();
+                        }
+                        $sml = $this->_src[$this->_database][$targetTable];
+                        if ($isPrimaryKey && $sml->getVar($row[$sourceColumn])) {
+                            $isMatch = true;
+                        } else {
+                            assert('!isset($_row); // Cannot redeclare var $_row');
+                            foreach ($sml->getContent() as $_row)
+                            {
+                                if (!isset($_row[$targetColumn])) {
+                                    continue;
+                                }
+                                if (strcasecmp($_row[$targetColumn], $row[$sourceColumn]) === 0) {
+                                    $isMatch = true;
+                                    break;
+                                }
+                            }
+                            unset($_row);
+                        }
+                        if ($isMatch) {
+                            if ($isPartialMatch) {
+                                // for a partial match it is enough if at least one of the keys matches
+                                return true;
+                            }
+                        } else {
+                            \Yana\Log\LogManager::getLogger()->addLog("Update on table '{$table->getName()}' failed. " .
+                                "Foreign key constraint mismatch. " .
+                                "The value '{$row[$sourceColumn]}' for attribute '{$sourceColumn}' " .
+                                "refers to a non-existing entry in table '{$targetTable}'. ",
+                                E_USER_ERROR, $row);
+                            return false;
+                        }
+                    } elseif ($isFullMatch) {
+                        // for a full match the column must not be null
+                        return false;
+                    }
+                } // end foreach (column)
+                unset($targetTable, $fkey, $ufkey);
+            } // end if (table exists)
+        } // end foreach (reference)
+        return true;
+    }
+
+    /**
      * Execute a single query.
      *
      * @param   \Yana\Db\Queries\AbstractQuery  $dbQuery  query object
      * @return  \Yana\Db\FileDb\Result
-     * @since   2.9.3
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given query is invalid
      */
-    public function dbQuery(\Yana\Db\Queries\AbstractQuery $dbQuery)
+    public function sendQueryObject(\Yana\Db\Queries\AbstractQuery $dbQuery)
     {
         /**
          * Add this line for debugging purposes
@@ -564,6 +596,7 @@ class Driver extends \Yana\Core\Object
              * 4) UPDATE statement
              */
             case $dbQuery instanceof \Yana\Db\Queries\Update:
+                /* @var $dbQuery \Yana\Db\Queries\Update */
                 try {
                     $this->_select($this->_query->getTable());
                 } catch (\Yana\Core\Exceptions\NotFoundException $e) {
@@ -581,14 +614,19 @@ class Driver extends \Yana\Core\Object
                     return new \Yana\Db\FileDb\Result(null, $message);
                 }
 
+                if (!$this->_checkForeignKeys($this->_table, $set, $dbQuery->getColumn())) {
+                    $message = "SQL ERROR: Foreign key check failed on table '{$this->_table}' for " .
+                        "row " . print_r($set, true);
+                    return new \Yana\Db\FileDb\Result(null, $message);
+                }
+
                 /* update cell */
                 if ($this->_query->getExpectedResult() === \Yana\Db\ResultEnumeration::CELL) {
                     $column = mb_strtoupper($this->_query->getColumn());
-                    if ($column !== '*') {
-                        $set = array($column => $set);
-                    } else {
+                    if ($column === '*') {
                         return new \Yana\Db\FileDb\Result(null, "SQL ERROR: Syntax error.");
                     }
+                    $set = array($column => $set);
                     unset($column);
 
                 /* update row */
@@ -709,11 +747,20 @@ class Driver extends \Yana\Core\Object
                     return new \Yana\Db\FileDb\Result(null, $message);
                 }
                 $set = $this->_query->getValues();
+
+                if (!$this->_checkForeignKeys($this->_table, $set)) {
+                    $message = "SQL ERROR: Foreign key check failed on table '{$this->_table}' for " .
+                        "row " . print_r($set, true);
+                    return new \Yana\Db\FileDb\Result(null, $message);
+                }
+
                 assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
                 $primaryKey = $this->_table->getPrimaryKey();
                 if (empty($set)) {
                     return new \Yana\Db\FileDb\Result(null, 'SQL ERROR: The statement contains illegal values.');
-                } elseif ($this->_table->getColumn($primaryKey)->isAutoIncrement()) {
+                }
+
+                if ($this->_table->getColumn($primaryKey)->isAutoIncrement()) {
                     $this->_increment($set);
                 }
 
@@ -855,7 +902,6 @@ class Driver extends \Yana\Core\Object
             default:
                 $message = "Invalid or unknown SQL statement: {$this->_query}.";
                 throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_ERROR);
-            break;
         }
 
     }
@@ -890,7 +936,7 @@ class Driver extends \Yana\Core\Object
         } else {
             $dbQuery->setOffset($offset);
             $dbQuery->setLimit($limit);
-            return $this->dbQuery($dbQuery, $offset, $limit);
+            return $this->sendQueryObject($dbQuery, $offset, $limit);
         }
     }
 
@@ -899,16 +945,25 @@ class Driver extends \Yana\Core\Object
      *
      * Alias of limitQuery() with $offset and $limit params stripped.
      *
-     * @param   string  $sqlStmt    sql statement
+     * @param   string  $sqlStmt  some SQL statement
      * @return  \Yana\Db\FileDb\Result
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException if the query is invalid or could not be parsed
      */
-    public function query($sqlStmt)
+    public function sendQueryString($sqlStmt)
     {
         assert('is_string($sqlStmt); // Wrong type for argument 1. String expected');
-        $offset = $this->_offset;
-        $limit = $this->_limit;
-        $this->_offset = $this->_limit = 0;
-        return $this->limitQuery("$sqlStmt", $offset, $limit);
+        $offset = (int) $this->_offset;
+        $limit = (int) $this->_limit;
+        $this->_offset = $this->_limit = 0; // reset for next query
+
+        // parse SQL
+        $queryParser = new \Yana\Db\Queries\Parser(\Yana::connect($this->_database));
+        $dbQuery = $queryParser->parseSQL($sqlStmt);
+
+        // route to query handling
+        $dbQuery->setOffset($offset);
+        $dbQuery->setLimit($limit);
+        return $this->sendQueryObject($dbQuery);
     }
 
     /**
@@ -919,7 +974,7 @@ class Driver extends \Yana\Core\Object
      *
      * @param   int $limit  set the limit for query
      * @param   int $offset set the offset for query
-     * @return  int
+     * @return  bool
      */
     public function setLimit($limit, $offset = null)
     {
@@ -931,7 +986,7 @@ class Driver extends \Yana\Core\Object
         if (!is_null($offset) && $offset >= 0) {
             $this->_offset = (int) $offset;
         }
-        return 1;
+        return true;
     }
 
     /**
@@ -970,7 +1025,7 @@ class Driver extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @param   string  $tableName  teble name
+     * @param   string  $tableName  table name
      * @throws  \Yana\Core\Exceptions\NotFoundException  if selected table does not exist
      */
     private function _select($tableName)
@@ -983,6 +1038,7 @@ class Driver extends \Yana\Core\Object
         if (isset($this->_src[$this->_database][$tableName])) {
             $this->_tableName = $tableName;
             $this->_table = $this->_schema->getTable($tableName);
+            assert('$this->_table instanceof \Yana\Db\Ddl\Table; // Table not found in Schema');
             return;
         }
 
@@ -995,22 +1051,7 @@ class Driver extends \Yana\Core\Object
         if (!$table instanceof \Yana\Db\Ddl\Table) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such table '$tableName'.");
         }
-        assert('!isset($parent); // Cannot redeclare $parent');
-        $parent = $table->getParent();
-        assert('!isset($database); // Cannot redeclare $database');
-        // get data source from parent (if it exists)
-        if (!$parent instanceof \Yana\Db\Ddl\Database) {
-            $database = $this->_schema->getName();
-        } else {
-            $database = $parent->getName();
-        }
-        unset($parent);
-
-        if (is_null($database)) {
-            $database = $this->_database;
-        }
-        assert('is_string($database); // Unexpected result: $database must be a string');
-        assert('!empty($this->_database); // Unexpected result: $database must not be empty');
+        $database = $this->_getSourceDatabaseNameForTable($table);
 
         // set current table
         $this->_tableName = $tableName;
@@ -1025,6 +1066,39 @@ class Driver extends \Yana\Core\Object
         assert('$this->_table instanceof \Yana\Db\Ddl\Table; // Table not found in Schema');
         assert('is_string($this->_tableName); // Unexpected result: $this->_tableName must be a string');
         assert('$this->_tableName !== ""; // Unexpected result: $this->_tableName must not be empty');
+    }
+
+    /**
+     * Get the source database for the table given.
+     *
+     * A schema/database may include other databases/schemas that define their own tables.
+     * These tables will then be known within the namespace of the importing database.
+     *
+     * Still the included tables refer to their own database name.
+     * Thus a tablespace is not necessarily always found in the database's directory, but
+     * in the directory of the table's parent database.
+     *
+     * This function thus looks up and returns the correct database name of a table.
+     *
+     * @param   \Yana\Db\Ddl\Table  $table  table to look up
+     * @return  string
+     * @throws  \Yana\Core\Exceptions\NotFoundException
+     */
+    private function _getSourceDatabaseNameForTable(\Yana\Db\Ddl\Table $table)
+    {
+        assert('!isset($parent); // Cannot redeclare $parent');
+        $parent = $table->getParent();
+        assert('!isset($database); // Cannot redeclare $database');
+        // get data source from parent (if it exists)
+        $databaseName = ($parent instanceof \Yana\Db\Ddl\Database) ? $parent->getName() : $this->_schema->getName();
+        unset($parent);
+
+        if (is_null($databaseName)) {
+            assert('!empty($this->_database); // Unexpected result: $database must not be empty');
+            $databaseName = $this->_database;
+        }
+        assert('is_string($databaseName); // Unexpected result: $databaseName must be a string');
+        return $databaseName;
     }
 
     /**
@@ -1807,16 +1881,11 @@ class Driver extends \Yana\Core\Object
     {
         if (!isset($this->_src[$this->_database][$this->_tableName])) {
             $filename = $this->_getFilename($database, 'sml');
-            $smlfile = new \SML($filename, CASE_UPPER);
-            if (!$smlfile->exists()) {
-                $smlfile->create();
-                if ($database != $this->_database) {
-                    $filename = $this->_getFilename($this->_database, 'sml');
-                    $smlfile = new \SML($filename, CASE_UPPER);
-                    if (!$smlfile->exists()) {
-                        $smlfile->create();
-                    }
-                }
+            $isCreated = false;
+            $smlfile = $this->_createSmlFile($filename, $isCreated);
+            if ($isCreated && $database != $this->_database) {
+                $filename = $this->_getFilename($this->_database, 'sml');
+                $smlfile = $this->_createSmlFile($filename);
             }
             $smlfile->failSafeRead();
 
@@ -1825,18 +1894,45 @@ class Driver extends \Yana\Core\Object
     }
 
     /**
+     * Creates and returns a new SML instance.
+     *
+     * if the file does not exist, it is created.
+     *
+     * @param  string  $filename
+     * @param  bool    &$isCreated  
+     * @return \SML
+     */
+    private function _createSmlFile($filename, &$isCreated = false)
+    {
+        assert('is_string($filename); // Invalid argument $filename: string expected');
+
+        $smlfile = new \SML($filename, CASE_UPPER);
+        if (!$smlfile->exists()) {
+            $isCreated = true;
+            $smlfile->create();
+        }
+        return $smlfile;
+    }
+
+    /**
      * Return path to database SML file.
      *
-     * @param   string  $database   database name
+     * @param   string  $database   database name in lower-cased letters
      * @param   string  $extension  extension
+     * @param   string  $tableName  name of the table in lower-cased letters
      * @return  string
      */
-    private function _getFilename($database, $extension)
+    private function _getFilename($database, $extension, $tableName = "")
     {
         assert('is_string($database); // Invalid argument $database: string expected');
         assert('is_string($extension); // Invalid argument $extension: string expected');
+        assert('is_string($tableName); // Invalid argument $tableName: string expected');
 
-        return realpath(self::$_baseDir) . '/' . $database . '/' . $this->_tableName . '.' . $extension;
+        if (empty($tableName)) {
+            $tableName = $this->_tableName;
+        }
+
+        return realpath(self::$_baseDir) . '/' . $database . '/' . $tableName . '.' . $extension;
     }
 
     /**
