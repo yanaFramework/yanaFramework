@@ -260,9 +260,11 @@ class plugin_db_admin extends StdClass implements IsPlugin
                 assert('!isset($stmt); // Cannot redeclare var $stmt');
                 foreach ($initStmts as $stmt)
                 {
-                    $parser = new DbQueryParser($database);
-                    if ($parser->parseSQL($stmt)) {
-                        $initialization[] = $parser;
+                    $parser = new \Yana\Db\Queries\Parser($database);
+                    try {
+                        $initialization[] = $parser->parseSQL($stmt);
+                    } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
+                        continue;
                     }
                 }
                 unset($stmt, $parser);
@@ -275,11 +277,12 @@ class plugin_db_admin extends StdClass implements IsPlugin
          */
         foreach ($initialization as $stmt)
         {
+            assert($stmt instanceof \Yana\Db\Queries\AbstractQuery);
             if (!$stmt->sendQuery()) {
                 trigger_error($stmt->db->getMessage(), E_USER_WARNING);
                 return false;
             } else {
-                $stmt->db->commit();
+                $stmt->getDatabase()->commit();
             }
         }
 
