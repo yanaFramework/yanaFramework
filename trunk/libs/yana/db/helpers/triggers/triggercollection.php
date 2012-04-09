@@ -59,21 +59,17 @@ class TriggerCollection extends \Yana\Core\AbstractCollection
      * $collection->_offsetSet($offset, $item);
      * </code>
      *
-     * @param  scalar                   $key   offset
-     * @param  \Yana\Db\Ddl\Constraint  $item  constraint to add to the collection
+     * @param  scalar                               $key   offset
+     * @param  \Yana\Db\Helpers\Triggers\IsTrigger  $item  constraint to add to the collection
      * @throws \Yana\Core\Exceptions\InvalidArgumentException 
      */
     public function offsetSet($key, $item)
     {
-        if (!$item instanceof \Yana\Db\Ddl\Constraint) {
-            $message = "Item must be instance of \Yana\Db\Ddl\Constraint.";
+        if (!$item instanceof \Yana\Db\Helpers\Triggers\IsTrigger) {
+            $message = "Item must be instance of \Yana\Db\Helpers\Triggers\IsTrigger.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message. \E_USER_ERROR);
         }
-        $code = $item->getConstraint();
-        if (YANA_DB_STRICT && !preg_match(self::CONSTRAINT_SYNTAX, $code)) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Syntax error in constraint '$code' .", E_USER_ERROR);
-        }
-        parent::offsetSet($key, $code);
+        $this->_offsetSet($key, $item);
     }
 
     /**
