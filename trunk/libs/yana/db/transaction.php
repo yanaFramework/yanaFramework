@@ -245,7 +245,7 @@ class Transaction extends \Yana\Core\Object
         assert('!isset($table); /* Cannot redeclare var $table */');
         $table = $this->_getSchema()->getTable($tableName);
 
-        // inserting updating table / column is illegal
+        // inserting or updating table or column is illegal
         $expectedResult = $insertQuery->getExpectedResult();
         if ($expectedResult !== \Yana\Db\ResultEnumeration::ROW) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Query is invalid. " .
