@@ -68,9 +68,7 @@ abstract class AbstractSqlFactory extends \Yana\Core\Object
      */
     protected function _setProvider(\Yana\Db\Export\IsXslProvider $provider)
     {
-        if (!isset($this->_provider)) {
-            $this->_provider = new \Yana\Db\Export\Xsl\Provider();
-        }
+        $this->_provider = $provider;
         return $this;
     }
 
