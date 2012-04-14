@@ -58,11 +58,11 @@ class Provider extends \Yana\Core\Object implements \Yana\Db\Export\IsXslProvide
         $name = strtolower($name);
         if (!isset(self::$_instances[$name])) {
 
-            $xslFilename = __DIR__ . '/';
+            $xslFilename = __DIR__ . '/resources/';
             switch ($name)
             {
                 case \Yana\Db\Export\IsXslProvider::MYSQL:
-                case \Yana\Db\Export\IsXslProvider::MSSQL:
+                case \Yana\Db\Export\IsXslProvider::POSTGRESQL:
                     $xslFilename .= $name . ".xsl";
                     break;
                 default:
