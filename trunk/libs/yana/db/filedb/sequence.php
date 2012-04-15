@@ -90,7 +90,7 @@ class Sequence extends \Yana\Core\Object
      * Reads all sequence information from the database and initializes a new instance.
      *
      * @param   string  $name  name of sequence
-     * @throws  \Yana\Core\Exceptions\NotFoundException  if the sequence does not exist
+     * @throws  \Yana\Db\Queries\Exceptions\NotFoundException  if the sequence does not exist
      */
     public function __construct($name)
     {
@@ -102,7 +102,7 @@ class Sequence extends \Yana\Core\Object
         }
         $row = self::$db->select("sequences.$name");
         if (empty($row)) {
-            throw new \Yana\Core\Exceptions\NotFoundException("No such sequence '$name'.", E_USER_WARNING);
+            throw new \Yana\Db\Queries\Exceptions\NotFoundException("No such sequence '$name'.", E_USER_WARNING);
         }
 
         $this->name = (string) $name;
