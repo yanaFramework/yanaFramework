@@ -28,23 +28,26 @@
 namespace Yana\Db\Mdb2;
 
 /**
- * <<interface>> Takes a MDB2 error constant and returns the appropriate exception.
+ * <<factory>> Mock class for Unit tests.
+ *
+ * Always returns the same exception.
  *
  * @package     yana
  * @subpackage  db
  */
-interface IsExceptionFactory
+class NullExceptionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsExceptionFactory
 {
 
     /**
-     * Convert MDB2 error code to the appropriate exception object.
+     * Always returns an empty DatabaseException.
      *
-     * This also sets the message according to the given type.
-     *
-     * @param   \MDB2_Error  $errorCode  Some \MDB2_ERROR code
+     * @param   \MDB2_Error  $error  Some \MDB2_ERROR code
      * @return  \Yana\Db\DatabaseException
      */
-    public function toException(\MDB2_Error $errorCode);
+    public function toException(\MDB2_Error $error)
+    {
+        return new \Yana\Db\DatabaseException("");
+    }
 
 }
 
