@@ -42,7 +42,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-class Parser extends \Yana\Core\Object
+class Parser extends \Yana\Core\Object implements \Yana\Db\Queries\IsParser
 {
 
     /**
