@@ -66,7 +66,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     /**
      * @var \Yana\Db\Transaction
      */
-    protected $_transaction = null;
+    private $_transaction = null;
 
     /**
      * database schema
@@ -184,9 +184,23 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function commit()
     {
-        $return = $this->_transaction->commit($this->_getConnection());
-        $this->_transaction = new \Yana\Db\Transaction($this->getSchema());
+        $return = $this->_getTransaction()->commit($this->_getConnection()); // throws exception
+        $this->reset();
         return $return;
+    }
+
+    /**
+     * Returns a transaction object.
+     *
+     * @return  \Yana\Db\IsTransaction
+     * @throws  \Yana\Core\Exceptions\NotWriteableException  when the database or table is locked
+     */
+    protected function _getTransaction()
+    {
+        if (!isset($this->_transaction)) {
+            $this->_transaction = new \Yana\Db\Transaction($this->getSchema());
+        }
+        return $this->_transaction;
     }
 
     /**
@@ -297,13 +311,11 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * @see     AbstractConnection::insert()
      * @since   2.9.5
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when either the given $key or $value is invalid
+     * @throws  \Yana\Core\Exceptions\NotWriteableException  when the database or table is locked
      */
     public function update($key, $value = array())
     {
-        if (!$this->_isWriteable()) {
-            trigger_error('Operation aborted, not writeable.', E_USER_NOTICE);
-            return false;
-        }
+        $transaction = $this->_getTransaction(); // throws NotWriteableException
 
         if (is_object($key) && $key instanceof \Yana\Db\Queries\Update) { // input is query object
 
@@ -342,7 +354,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             \Yana\Log\LogManager::getLogger()->addLog("The user was trying to save form data, which has changed " .
                 "since he accessed the corrsponding form. The operation has been aborted, " .
                 "as updating this row would have overwritten changes made by another user.", E_USER_WARNING);
-            throw new FormTimeoutWarning();
+            throw new \FormTimeoutWarning();
         }
 
         /*
@@ -367,7 +379,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
                     $_value = array();
                 }
                 \Yana\Util\Hashtable::set($_value, $arrayAddress, $value);
-                $value =& $_value;
+                $value = $_value;
                 $updateQuery->setValues($value);
                 unset($_value);
             }
@@ -383,7 +395,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             $this->_cache[$tableName][$row][$column] = $value;
         }
 
-        $this->_transaction->update($updateQuery);
+        $transaction->update($updateQuery);
         return true;
     }
 
@@ -422,6 +434,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * @see     AbstractConnection::insert()
      * @see     AbstractConnection::update()
      * @since   2.9.5
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the query is neither an insert, nor an update statement
      */
     public function insertOrUpdate($key, $value = array())
     {
@@ -436,8 +449,8 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
                 return $this->insert($dbQuery);
 
             } else {
-                trigger_error("Unable to insert or update row. Invalid query.", E_USER_WARNING);
-                return false;
+                $message = "Unable to insert or update row. Invalid query.";
+                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
             }
 
         } else { // input is key address
@@ -503,9 +516,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function insert($key, array $row = array())
     {
-        if (!$this->_isWriteable()) {
-            throw new \Yana\Core\Exceptions\NotWriteableException('Operation aborted, not writeable.', E_USER_NOTICE);
-        }
+        $transaction = $this->_getTransaction(); // throws NotWriteableException
 
         if (is_object($key) && $key instanceof \Yana\Db\Queries\Insert) { // input is query object
 
@@ -521,7 +532,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
 
         }
 
-        $this->_transaction->insert($insertQuery);
+        $transaction->insert($insertQuery);
         return true;
     }
 
@@ -571,16 +582,14 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * @param   array            $where  where clause
      * @param   int              $limit  maximum number of rows to remove
      * @return  bool
+     * @throws  \Yana\Core\Exceptions\NotWriteableException  when the table or database is locked
      */
     public function remove($key, array $where = array(), $limit = 1)
     {
         assert('is_int($limit); // Wrong argument type for argument 3. Integer expected.');
         assert('$limit >= 0; // Invalid argument 3. Value must be greater or equal 0.');
 
-        if (!$this->_isWriteable()) {
-            trigger_error('Operation aborted, not writeable.', E_USER_NOTICE);
-            return false;
-        }
+        $transaction = $this->_getTransaction(); // throws NotWriteableException
 
         if (is_object($key) && $key instanceof \Yana\Db\Queries\Delete) { // input is query object
 
@@ -593,7 +602,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             $deleteQuery = $queryBuilder->remove($key, $where, $limit);
 
         }
-        return $this->_transaction->remove($deleteQuery);
+        return $transaction->remove($deleteQuery);
     }
 
     /**
@@ -759,22 +768,6 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     }
 
     /**
-     * check if database is writeable
-     *
-     * @return  bool
-     */
-    private function _isWriteable()
-    {
-        if (!$this->isWriteable()) {
-            \Yana\Log\LogManager::getLogger()->addLog("Database is not writeable. " .
-                "Check if attribute readonly is set to true in structure file: " . $this->_getName(), E_USER_WARNING);
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
      * return when the row was last modified
      *
      * Check when the data has been last modified by any other than the current user.
@@ -874,7 +867,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function reset()
     {
-        $this->_transaction = new \Yana\Db\Transaction($this->getSchema());
+        $this->_transaction = null;
         $this->_cache = array();
         return $this;
     }

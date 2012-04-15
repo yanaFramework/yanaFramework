@@ -161,6 +161,14 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
     }
 
     /**
+     * @return \Yana\Db\Queries\IsParser
+     */
+    protected function _newSqlParser()
+    {
+        return \Yana\Db\Queries\Parser(\Yana::connect($this->_database));
+    }
+
+    /**
      * begin transaction
      *
      * This deactives auto-commit, so the following statements will wait for commit or rollback.
@@ -281,6 +289,71 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
     }
 
     /**
+     * Execute a single query.
+     *
+     * @param   \Yana\Db\Queries\AbstractQuery  $query  query object
+     * @return  \Yana\Db\FileDb\Result
+     * @throws  \Yana\Db\Queries\Exceptions\NotSupportedException  when given query is invalid
+     * @throws  \Yana\Core\Exceptions\DataException                on failure
+     */
+    public function sendQueryObject(\Yana\Db\Queries\AbstractQuery $query)
+    {
+        /**
+         * Add this line for debugging purposes
+         *
+         * error_log((string) $query . "\n", 3, 'test.log');
+         */
+
+        $this->_query = $query;
+
+        switch (true)
+        {
+            /*
+             * 1) SELECT statement
+             */
+            case $query instanceof \Yana\Db\Queries\Select:
+                return $this->_executeSelectQuery($query);
+
+            /*
+             * 2) SELECT count(*) statement
+             */
+            case $query instanceof \Yana\Db\Queries\SelectCount:
+                return $this->_executeSelectCountQuery($query);
+
+            /*
+             * 3) SELECT 1 statement
+             */
+            case $query instanceof \Yana\Db\Queries\SelectExist:
+                return $this->_executeSelectExistQuery($query);
+
+            /*
+             * 4) UPDATE statement
+             */
+            case $query instanceof \Yana\Db\Queries\Update:
+                return $this->_executeUpdateQuery($query);
+
+            /*
+             * 5) INSERT INTO statement
+             */
+            case $query instanceof \Yana\Db\Queries\Insert:
+                return $this->_executeInsertQuery($query);
+            /*
+             * 6) DELETE statement
+             */
+            case $query instanceof \Yana\Db\Queries\Delete:
+                return $this->_executeDeleteQuery($query);
+
+            /*
+             * 7) invalid or unknown statement
+             */
+            default:
+                $message = "Invalid or unknown SQL statement: {$query}.";
+                throw new \Yana\Db\Queries\Exceptions\NotSupportedException($message, E_USER_ERROR);
+        }
+
+    }
+
+    /**
      * Check foreign keys constraints.
      *
      * This should be called before updating or inserting a row or a cell.
@@ -295,12 +368,15 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     private function _checkForeignKeys(\Yana\Db\Ddl\Table $table, $value, $columnName = null)
     {
+        $row = array();
         if (!is_null($columnName)) {
             $row = array($columnName => $value);
         } else {
             assert('is_array($value); // Invalid argument $value: array expected');
             $row = (array) $value;
         }
+        assert('is_array($row);');
+
         /* @var $foreign \Yana\Db\Ddl\ForeignKey */
         assert('!isset($foreign); /* Cannot redeclare var $fkey */');
         foreach ($table->getForeignKeys() as $foreign)
@@ -312,11 +388,15 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
             if ($fTable instanceof \Yana\Db\Ddl\Table) {
                 foreach ($foreign->getColumns() as $sourceColumn => $targetColumn)
                 {
+                    assert('is_string($sourceColumn);');
+
                     $isPrimaryKey = false;
                     if (empty($targetColumn)) {
                         $isPrimaryKey = true;
                         $targetColumn = $fTable->getPrimaryKey();
                     }
+                    assert('is_string($targetColumn);');
+
                     /*
                     * If the referenced row does not exist,
                     * check if there is one recently inserted in cache
@@ -325,17 +405,25 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
                         $isMatch = false;
                         // check if foreign key does match
                         $database = $this->_getSourceDatabaseNameForTable($fTable);
+
+                        // load tablespace
                         if (!isset($this->_src[$this->_database][$targetTable])) {
                             $filename = $this->_getFilename($database, 'sml', $targetTable);
                             $sml = $this->_createSmlFile($filename);
                             $sml->failSafeRead();
+                            $this->_src[$this->_database][$targetTable] = $sml;
                         }
                         $sml = $this->_src[$this->_database][$targetTable];
-                        if ($isPrimaryKey && $sml->getVar($row[$sourceColumn])) {
+                        assert($sml instanceof \SML);
+
+                        assert('isset($row[$sourceColumn]);');
+                        assert('is_scalar($row[$sourceColumn]); // Value for foreign key must be scalar');
+
+                        if ($isPrimaryKey && $sml->getVar($targetColumn . '.' . $row[$sourceColumn])) {
                             $isMatch = true;
                         } else {
                             assert('!isset($_row); // Cannot redeclare var $_row');
-                            foreach ($sml->getContent() as $_row)
+                            foreach ($sml->getVars() as $_row)
                             {
                                 if (!isset($_row[$targetColumn])) {
                                     continue;
@@ -347,12 +435,12 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
                             }
                             unset($_row);
                         }
-                        if ($isMatch) {
-                            if ($isPartialMatch) {
-                                // for a partial match it is enough if at least one of the keys matches
-                                return true;
-                            }
-                        } else {
+                        if ($isMatch && $isPartialMatch) {
+
+                            // for a partial match it is enough if at least one of the keys matches
+                            return true;
+
+                        } elseif (!$isMatch) {
                             \Yana\Log\LogManager::getLogger()->addLog("Update on table '{$table->getName()}' failed. " .
                                 "Foreign key constraint mismatch. " .
                                 "The value '{$row[$sourceColumn]}' for attribute '{$sourceColumn}' " .
@@ -372,572 +460,535 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
     }
 
     /**
-     * Execute a single query.
+     * Execute a SELECT query.
      *
-     * @param   \Yana\Db\Queries\AbstractQuery  $dbQuery  query object
+     * @param   \Yana\Db\Queries\Select  $query  query object
      * @return  \Yana\Db\FileDb\Result
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given query is invalid
+     * @throws  \Yana\Core\Exceptions\DataException  on failure
      */
-    public function sendQueryObject(\Yana\Db\Queries\AbstractQuery $dbQuery)
+    private function _executeSelectQuery(\Yana\Db\Queries\Select $query)
     {
-        /**
-         * Add this line for debugging purposes
-         *
-         * error_log((string) $dbQuery . "\n", 3, 'test.log');
+        $id = $query->toId();
+        $offset = $query->getOffset();
+        $limit = $query->getLimit();
+        /*
+         * 1.1) result is cached
          */
-        $this->_query = $dbQuery;
-        $offset = $this->_query->getOffset();
-        $limit  = $this->_query->getLimit();
-
-        switch (true)
-        {
+        if (isset($this->_cache[$id])) {
             /*
-             * 1) SELECT statement
+             * 1.1.1) return result
              */
-            case $dbQuery instanceof \Yana\Db\Queries\Select:
-                $id = $this->_query->toId();
-                /*
-                 * 1.1) result is cached
-                 */
-                if (isset($this->_cache[$id])) {
-                    /*
-                     * 1.1.1) return result
-                     */
-                    return $this->_cache[$id];
-                }
-                /*
-                 * 1.2) result is not cached
-                 */
-                try {
-                    $this->_select($this->_query->getTable());
-                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-                    return new \Yana\Db\FileDb\Result(null, "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.");
-                }
-                /*
-                 * 1.2.1) analyse query object
-                 */
-                $this->_sort = $this->_query->getOrderBy();
-                $this->_desc = $this->_query->getDescending();
-                $columns = $this->_query->getColumns();
-                $where = $this->_query->getWhere();
-                $having = $this->_query->getHaving();
-                $joins = $this->_query->getJoins();
-                /*
-                 * 1.2.2) no joined tables (simple request)
-                 */
-                if (empty($joins)) {
-                    /*
-                     * 1.2.2.1) fetch result
-                     */
-                    $result = $this->_get($columns, $where, $having, $offset, $limit);
-
-                /*
-                 * 1.2.3) contains joined tables (complex request)
-                 */
-                } else {
-                    /**
-                     * {@internal
-                     * Note:
-                     * Natural joins cannot occur, because DbQuery always adds
-                     * column associations when two tables are joined.
-                     * Joining tables without an valid association between them
-                     * is prohibited and will issue an error.
-                     *
-                     * As a result we can skip scanning for natural joins here
-                     * to improve performance. :-)
-                     * }}
-                     */
-
-                    /*
-                     * 1.2.3.1) resolve where clause
-                     */
-                    assert('!isset($tableB); // Cannot redeclare var $tableB');
-                    assert('!isset($clause); // Cannot redeclare var $tableB');
-                    assert('!isset($resultset); // Cannot redeclare var $resultset');
-                    assert('!isset($listOfResultSets); // Cannot redeclare var $listOfResultSets');
-                    $listOfResultSets = array();
-                    foreach ($joins as $tableB => $clause)
-                    {
-                        $resultset = $this->_join($this->_tableName, $tableB, $clause[0],
-                                                  $clause[1], $columns, $where, $clause[2]);
-                        if (!empty($resultset)) {
-                            $listOfResultSets[] = $resultset;
-                        }
-                        unset($resultset);
-                    } // end foreach
-                    /*
-                     * 1.2.3.2) merge resultsets
-                     */
-                    $result = array();
-                    if (!empty($listOfResultSets)) {
-                        assert('!isset($item); // Cannot redeclare var $item');
-                        foreach ($listOfResultSets as $item)
-                        {
-                            if (!empty($item)) {
-                                $result = \Yana\Util\Hashtable::merge($result, $item);
-                            }
-                        }
-                        unset($item);
-                    } // end if
-                    unset($tableB, $clause, $listOfResultSets);
-                    /*
-                     * 1.2.3.3) sorting and limiting
-                     */
-                    $this->_doSort($result);
-                    if (!empty($having)) {
-                        $this->_doHaving($result, $having);
-                    }
-                    $this->_doLimit($result, $offset, $limit);
-                } // end if
-                $result = new \Yana\Db\FileDb\Result($result);
-                /*
-                 * 1.2.4) move to cache
-                 */
-                $this->_cache[$id] = $result;
-
-                /*
-                 * 1.2.5) return result
-                 */
-                return $result;
-            break;
-            /*
-             * 2) SELECT count(*) statement
-             */
-            case $dbQuery instanceof \Yana\Db\Queries\SelectCount:
-                $id = $this->_query->toId();
-                /*
-                 * 1.1) result is cached
-                 */
-                if (isset($this->_cache[$id])) {
-                    /*
-                     * 1.1.1) return result
-                     */
-                    return $this->_cache[$id];
-                }
-                /*
-                 * 1.2) result is not cached
-                 */
-                try {
-                    $this->_select($this->_query->getTable());
-                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-                    $message = "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.";
-                    return new \Yana\Db\FileDb\Result(null, $message);
-                }
-                $where = $this->_query->getWhere();
-
-                /*
-                 * 1.2.1) look up
-                 */
-                $length = $this->_length($where);
-
-                /*
-                 * 1.2.3) create result
-                 */
-                if (is_int($length)) {
-                    $result = new \Yana\Db\FileDb\Result(array(array($length)));
-                    /*
-                     * 1.2.4) move to cache
-                     */
-                    $this->_cache[$id] = $result;
-                    /*
-                     * 1.2.5) return result
-                     */
-                    return $result;
-                    $this->_cache[$id] = $result;
-                } else {
-                    return new \Yana\Db\FileDb\Result(null, 'SQL ERROR: Syntax error.');
-                }
-            break;
-            /*
-             * 3) SELECT 1 statement
-             */
-            case $dbQuery instanceof \Yana\Db\Queries\SelectExist:
-                $id = $this->_query->toId();
-                /*
-                 * 1.1) result is cached
-                 */
-                if (isset($this->_cache[$id])) {
-                    /*
-                     * 1.1.1) return result
-                     */
-                    return $this->_cache[$id];
-                }
-                /*
-                 * 1.2) result is not cached
-                 */
-                try {
-                    $this->_select($this->_query->getTable());
-                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-                    $message = "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.";
-                    return new \Yana\Db\FileDb\Result(null, $message);
-                }
-                $where = $this->_query->getWhere();
-
-                /*
-                 * 1.2.1) look up
-                 */
-                $length = $this->_length($where);
-
-                if ($length > 0) {
-                    $result = new \Yana\Db\FileDb\Result(array(1));
-                } else {
-                    $result = new \Yana\Db\FileDb\Result(array());
-                }
-                /*
-                 * 1.2.3) move to cache
-                 */
-                $this->_cache[$id] = $result;
-                /*
-                 * 1.2.4) return result
-                 */
-                return $result;
-            break;
-            /*
-             * 4) UPDATE statement
-             */
-            case $dbQuery instanceof \Yana\Db\Queries\Update:
-                /* @var $dbQuery \Yana\Db\Queries\Update */
-                try {
-                    $this->_select($this->_query->getTable());
-                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-                    $message = "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.";
-                    return new \Yana\Db\FileDb\Result(null, $message);
-                }
-                $set = $this->_query->getValues();
-                $where = $this->_query->getWhere();
-                $this->_sort = $this->_query->getOrderBy();
-                $this->_desc = $this->_query->getDescending();
-
-                $row = mb_strtoupper($this->_query->getRow());
-                if ($row === '*') {
-                    $message = "SQL ERROR: Cannot update entry. No primary key provided.";
-                    return new \Yana\Db\FileDb\Result(null, $message);
-                }
-
-                if (!$this->_checkForeignKeys($this->_table, $set, $dbQuery->getColumn())) {
-                    $message = "SQL ERROR: Foreign key check failed on table '{$this->_table}' for " .
-                        "row " . print_r($set, true);
-                    return new \Yana\Db\FileDb\Result(null, $message);
-                }
-
-                /* update cell */
-                if ($this->_query->getExpectedResult() === \Yana\Db\ResultEnumeration::CELL) {
-                    $column = mb_strtoupper($this->_query->getColumn());
-                    if ($column === '*') {
-                        return new \Yana\Db\FileDb\Result(null, "SQL ERROR: Syntax error.");
-                    }
-                    $set = array($column => $set);
-                    unset($column);
-
-                /* update row */
-                } else {
-                    $set = \Yana\Util\Hashtable::changeCase($set, CASE_UPPER);
-                }
-
-                assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
-                $primaryKey = mb_strtoupper($this->_table->getPrimaryKey());
-
-                /* get reference to Index file */
-                assert('!isset($idxfile); // Cannot redeclare var $idxfile');
-                $idxfile = $this->_getIndexFile();
-
-                assert('!isset($columnName); // Cannot redeclare var $columnName');
-                assert('!isset($column); // Cannot redeclare var $column');
-                foreach ($this->_table->getColumns() as $column)
-                {
-                    $columnName = mb_strtoupper($column->getName());
-                    if (isset($set[$columnName])) {
-                        /*
-                         * check unique constraint
-                         *
-                         * Unique constraint is breached if:
-                         * 1) an entry with the same key already exists AND
-                         * 2) the existing entry is not the same as the one which
-                         *    is currently being updated
-                         */
-                        if ($column->isUnique() === true) {
-                            assert('!isset($tmp); // Cannot redeclare var $tmp');
-                            $tmp = $idxfile->getVar($column, $set[$column]);
-                            /*
-                             * Error - unique constraint has already been breached by some
-                             * previous operation.
-                             * This may occur, when a unique constraint is added, that
-                             * didn't exis before.
-                             */
-                            if (is_array($tmp) && count($tmp) > 1) {
-                                assert('!isset($log); // Cannot redeclare var $log');
-                                $log = "SQL WARNING: The column {$column} " .
-                                    "has an unique constraint, but multiple " .
-                                    "rows with the same name have been found. " .
-                                    "This conflict can not be solved automatically. " .
-                                    "Please edit and update the affected table.";
-                                \Yana\Log\LogManager::getLogger()->addLog($log, E_USER_WARNING, array('affected rows:' => $tmp));
-                                unset($log);
-                            }
-                            /*
-                             * error - constraint is breached
-                             */
-                            if (!empty($tmp) && strcasecmp($tmp, $row) !== 0) {
-                                $message = "SQL ERROR: Cannot update entry with column {$column}" .
-                                    "= ".$set[$column].". The column has an unique constraint " .
-                                    "and another entry with the same value already exists.";
-                                return new \Yana\Db\FileDb\Result(null, $message);
-                            }
-                            unset($tmp);
-                        }
-                    } // end if
-                    unset($columnName);
-                } // end foreach
-                unset($column);
-
-                $smlfile =& $this->_getSmlFile();
-
-                /* if primary key is renamed, the old one has to be replaced */
-                if (isset($set[$primaryKey]) && strcasecmp($row, $set[$primaryKey]) !== 0) {
-                    $smlfile->remove("$primaryKey.$row");
-                    $row = mb_strtoupper($set[$primaryKey]);
-                    unset($set[$primaryKey]);
-                    $set = array($row => $set);
-                } elseif ($row != "") {
-                    $set = array($row => $set);
-                } else {
-                    return new \Yana\Db\FileDb\Result(null, "SQL ERROR: Syntax error.");
-                } // end if
-
-                /*
-                 * remove old array values -
-                 * but only if a new value is set
-                 */
-                assert('!isset($columnName); // Cannot redeclare var $columnName');
-                assert('!isset($column); // Cannot redeclare var $column');
-                foreach ($set[$row] as $columnName => $column)
-                {
-                    if (is_array($column)) {
-                        $smlfile->setVar("$primaryKey.$row.$columnName", array());
-                    } elseif (is_null($column)) {
-                        $smlfile->remove("$primaryKey.$row.$columnName");
-                    }
-                } // end foreach
-                unset($column, $columnName);
-
-                // get row
-                assert('!isset($currentRow); // Cannot redeclare var $currentRow');
-                $currentRow =& $smlfile->getVarByReference($primaryKey);
-                if (!empty($currentRow)) {
-                    /* update row */
-                    $currentRow = \Yana\Util\Hashtable::merge($currentRow, $set);
-
-                    /* after data has been changed, reorganize all indexes */
-                    $idxfile->create();
-
-                    return $this->_write();
-                } else {
-
-                    return new \Yana\Db\FileDb\Result(null, "unable to save changes");
-                } // end if
-            break;
-            /*
-             * 5) INSERT INTO statement
-             */
-            case $dbQuery instanceof \Yana\Db\Queries\Insert:
-                try {
-                    $this->_select($this->_query->getTable());
-                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-                    $message = "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.";
-                    return new \Yana\Db\FileDb\Result(null, $message);
-                }
-                $set = $this->_query->getValues();
-
-                if (!$this->_checkForeignKeys($this->_table, $set)) {
-                    $message = "SQL ERROR: Foreign key check failed on table '{$this->_table}' for " .
-                        "row " . print_r($set, true);
-                    return new \Yana\Db\FileDb\Result(null, $message);
-                }
-
-                assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
-                $primaryKey = $this->_table->getPrimaryKey();
-                if (empty($set)) {
-                    return new \Yana\Db\FileDb\Result(null, 'SQL ERROR: The statement contains illegal values.');
-                }
-
-                if ($this->_table->getColumn($primaryKey)->isAutoIncrement()) {
-                    $this->_increment($set);
-                }
-
-                if (isset($set[$primaryKey])) {
-                    $primaryValue = $set[$primaryKey];
-                    unset($set[$primaryKey]);
-                } else {
-                    $primaryValue = $this->_query->getRow();
-                    if ($primaryValue === '*') {
-                        $message = "SQL ERROR: Cannot insert entry. No primary key provided.";
-                        return new \Yana\Db\FileDb\Result(null, $message);
-                    }
-                }
-
-                /* get reference to SML file */
-                assert('!isset($smlfile); // Cannot redeclare var $smlfile');
-                $smlfile = $this->_getSmlFile();
-                /* get reference to Index file */
-                assert('!isset($idxfile); // Cannot redeclare var $idxfile');
-                $idxfile = $this->_getIndexFile();
-
-                /* create column */
-                assert('!isset($column); // Cannot redeclare var $column');
-                assert('!isset($columnName); // Cannot redeclare var $columnName');
-                foreach ($this->_table->getColumns() as $column)
-                {
-                    $columnName = mb_strtoupper($column->getName());
-                    if (isset($set[$columnName])) {
-                        /*
-                         * check unique constraint
-                         *
-                         * Unique constraint is breached if:
-                         * 1) an entry with the same key already exists
-                         */
-                        if ($column->isUnique() === true) {
-                            assert('!isset($tmp); /* Cannot redeclare var $tmp */');
-                            $tmp = $idxfile->getVar($column, $set[$column]);
-                            /*
-                             * Error - unique constraint has already been breached by some
-                             * previous operation.
-                             * This may occur, when a unique constraint is added, that didn't
-                             * exist before.
-                             */
-                            if (is_array($tmp) && count($tmp) > 1) {
-                                assert('!isset($log); // Cannot redeclare var $log');
-                                $log = "SQL WARNING: The column {$column} " .
-                                    "has an unique constraint, but multiple " .
-                                    "rows with the same name have been found. " .
-                                    "This conflict can not be solved automatically. " .
-                                    "Please edit and update the affected table.";
-                                \Yana\Log\LogManager::getLogger()->addLog($log, E_USER_WARNING, array('affected rows:' => $tmp));
-                                unset($log);
-                            }
-                            /*
-                             * error - constraint is breached
-                             */
-                            if (!empty($tmp)) {
-                                $message = "SQL ERROR: Cannot insert entry with column {$column} " .
-                                    "= " . $set[$column] . ". The column has an unique constraint " .
-                                    "and another entry with the same value already exists.";
-                                return new \Yana\Db\FileDb\Result(null, $message);
-                            }
-                            unset($tmp);
-                        } // end if
-                        /*
-                         * update indexes
-                         *
-                         * Index needs to be updated if:
-                         * 1) any column which explicitely has an index is updated OR
-                         * 2) any column which implicitely requires an index is updated
-                         *   (currently that is the case for columns using unique constraints)
-                         */
-                        if ($column->hasIndex() === true || $column->isUnique() === true) {
-                            $idxfile->create($column, array($primaryValue, $set[$column]));
-                        } // end if
-                    } // end if
-                } // end foreach
-                unset($column);
-                if (is_array($smlfile->getVar("{$primaryKey}.{$primaryValue}"))) {
-                    $message = "SQL ERROR: Cannot insert entry with primary key = " .
-                        "{$primaryValue}. Another entry with this key already exists.";
-                    return new \Yana\Db\FileDb\Result(null, $message);
-                } else {
-                    $smlfile->setVar("$primaryKey.$primaryValue", $set);
-                    return $this->_write();
-                } // end if
-            break;
-            /*
-             * 6) DELETE statement
-             */
-            case $dbQuery instanceof \Yana\Db\Queries\Delete:
-                try {
-                    $this->_select($this->_query->getTable());
-                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-                    $message = "SQL ERROR: Table '" . $this->_query->getTable() . "' is unknown.";
-                    return new \Yana\Db\FileDb\Result(null, $message);
-                }
-
-                $where = $this->_query->getWhere();
-                $this->_sort = $this->_query->getOrderBy();
-                $this->_desc = $this->_query->getDescending();
-                $limit = $this->_query->getLimit();
-
-                $smlfile = $this->_getSmlFile();
-                $idxfile = $this->_getIndexFile();
-
-                assert('!isset($rows); // Cannot redeclare var $rows');
-                $rows = $this->_get(array($this->_table->getPrimaryKey()), $where, array(), 0, $limit);
-
-                if (empty($rows)) {
-                    /* error */
-
-                    if ($dbQuery->getExpectedResult() === \Yana\Db\ResultEnumeration::ROW) {
-                        return new \Yana\Db\FileDb\Result(null, "SQL-ERROR: unable to delete; entry does not exist");
-                    } else {
-                        return new \Yana\Db\FileDb\Result(array());
-                    }
-                } else {
-                    assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
-                    $primaryKey = mb_strtoupper($this->_table->getPrimaryKey());
-                    assert('!isset($row); // Cannot redeclare var $row');
-                    foreach ($rows as $row)
-                    {
-                        if (!$smlfile->remove($primaryKey.'.'.$row[$primaryKey])) {
-                            return new \Yana\Db\FileDb\Result(null, "unable to save changes");
-                        } // end if
-                    } // end foreach
-                    unset($primaryKey, $rows, $row);
-
-                    /* after data has been changed, reorganize all indexes */
-                    $idxfile->create();
-
-                    return $this->_write();
-                } // end if
-            break;
-            /*
-             * 7) invalid or unknown statement
-             */
-            default:
-                $message = "Invalid or unknown SQL statement: {$this->_query}.";
-                throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_ERROR);
+            return $this->_cache[$id];
         }
+        /*
+         * 1.2) result is not cached
+         */
+        $this->_select($query->getTable()); // throws exception
+        /*
+         * 1.2.1) analyse query object
+         */
+        $this->_sort = $query->getOrderBy();
+        $this->_desc = $query->getDescending();
+        $columns = $query->getColumns();
+        $where = $query->getWhere();
+        $having = $query->getHaving();
+        $joins = $query->getJoins();
+        /*
+         * 1.2.2) no joined tables (simple request)
+         */
+        if (empty($joins)) {
+            /*
+             * 1.2.2.1) fetch result
+             */
+            $result = $this->_get($columns, $where, $having, $offset, $limit);
 
+            /*
+             * 1.2.3) contains joined tables (complex request)
+             */
+        } else {
+            /**
+             * {@internal
+             * Note:
+             * Natural joins cannot occur, because DbQuery always adds
+             * column associations when two tables are joined.
+             * Joining tables without an valid association between them
+             * is prohibited and will issue an error.
+             *
+             * As a result we can skip scanning for natural joins here
+             * to improve performance. :-)
+             * }}
+             */
+            /*
+             * 1.2.3.1) resolve where clause
+             */
+            assert('!isset($tableB); // Cannot redeclare var $tableB');
+            assert('!isset($clause); // Cannot redeclare var $tableB');
+            assert('!isset($resultset); // Cannot redeclare var $resultset');
+            assert('!isset($listOfResultSets); // Cannot redeclare var $listOfResultSets');
+            $listOfResultSets = array();
+            foreach ($joins as $tableB => $clause)
+            {
+                $resultset = $this->_join($this->_tableName, $tableB, $clause[0], $clause[1], $columns, $where, $clause[2]);
+                if (!empty($resultset)) {
+                    $listOfResultSets[] = $resultset;
+                }
+                unset($resultset);
+            } // end foreach
+            /*
+             * 1.2.3.2) merge resultsets
+             */
+            $result = array();
+            if (!empty($listOfResultSets)) {
+                assert('!isset($item); // Cannot redeclare var $item');
+                foreach ($listOfResultSets as $item)
+                {
+                    if (!empty($item)) {
+                        $result = \Yana\Util\Hashtable::merge($result, $item);
+                    }
+                }
+                unset($item);
+            } // end if
+            unset($tableB, $clause, $listOfResultSets);
+            /*
+             * 1.2.3.3) sorting and limiting
+             */
+            $this->_doSort($result);
+            if (!empty($having)) {
+                $this->_doHaving($result, $having);
+            }
+            $this->_doLimit($result, $offset, $limit);
+        } // end if
+        $result = new \Yana\Db\FileDb\Result($result);
+        /*
+         * 1.2.4) move to cache
+         */
+        $this->_cache[$id] = $result;
+
+        /*
+         * 1.2.5) return result
+         */
+        return $result;
     }
 
     /**
-     * execute a single query
+     * Execute a SELECT count(*) query.
+     *
+     * @param   \Yana\Db\Queries\SelectCount  $query  query object
+     * @return  \Yana\Db\FileDb\Result
+     * @throws  \Yana\Core\Exceptions\DataException  on failure
+     */
+    private function _executeSelectCountQuery(\Yana\Db\Queries\SelectCount $query)
+    {
+        $id = $query->toId();
+        /*
+         * 1.1) result is cached
+         */
+        if (isset($this->_cache[$id])) {
+            /*
+             * 1.1.1) return result
+             */
+            return $this->_cache[$id];
+        }
+        /*
+         * 1.2) result is not cached
+         */
+        $this->_select($query->getTable()); // throws exception
+        $where = $query->getWhere();
+
+        /*
+         * 1.2.1) look up
+         */
+        $length = $this->_length($where);
+
+        /*
+         * 1.2.3) create result
+         */
+        if (!is_int($length)) {
+            throw new \Yana\Db\Queries\Exceptions\InvalidSyntaxException('Syntax error.');
+        }
+        $result = new \Yana\Db\FileDb\Result(array(array($length)));
+        /*
+         * 1.2.4) move to cache
+         */
+        $this->_cache[$id] = $result;
+        /*
+         * 1.2.5) return result
+         */
+        return $result;
+    }
+
+    /**
+     * Execute a SELECT 1 query.
+     *
+     * @param   \Yana\Db\Queries\SelectExist  $query  query object
+     * @return  \Yana\Db\FileDb\Result
+     * @throws  \Yana\Core\Exceptions\DataException  on failure
+     */
+    private function _executeSelectExistQuery(\Yana\Db\Queries\SelectExist $query)
+    {
+        $id = $query->toId();
+        /*
+         * 1.1) result is cached
+         */
+        if (isset($this->_cache[$id])) {
+            /*
+             * 1.1.1) return result
+             */
+            return $this->_cache[$id];
+        }
+        /*
+         * 1.2) result is not cached
+         */
+        $this->_select($query->getTable()); // throws exception
+        $where = $query->getWhere();
+
+        /*
+         * 1.2.1) look up
+         */
+        $length = $this->_length($where);
+
+        if ($length > 0) {
+            $result = new \Yana\Db\FileDb\Result(array(1));
+        } else {
+            $result = new \Yana\Db\FileDb\Result(array());
+        }
+        /*
+         * 1.2.3) move to cache
+         */
+        $this->_cache[$id] = $result;
+        /*
+         * 1.2.4) return result
+         */
+        return $result;
+    }
+
+    /**
+     * Execute an UPDATE statement.
+     *
+     * @param   \Yana\Db\Queries\Update  $query  query object
+     * @return  \Yana\Db\FileDb\Result
+     * @throws  \Yana\Core\Exceptions\DataException  on failure
+     */
+    private function _executeUpdateQuery(\Yana\Db\Queries\Update $query)
+    {
+        $this->_select($query->getTable()); // throws exception
+        $set = $query->getValues();
+
+        $this->_sort = $query->getOrderBy();
+        $this->_desc = $query->getDescending();
+
+        $row = mb_strtoupper($query->getRow());
+        if ($row === '*') {
+            $message = "Cannot update entry. No primary key provided.";
+            throw new \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException($message);
+        }
+
+        if (!$this->_checkForeignKeys($this->_table, $set, $query->getColumn())) {
+            $message = "Foreign key check failed on table '{$this->_table->getName()}' for " .
+                    "row " . print_r($set, true);
+            throw new \Yana\Db\Queries\Exceptions\ConstraintException($message);
+        }
+
+        /* update cell */
+        if ($query->getExpectedResult() === \Yana\Db\ResultEnumeration::CELL) {
+            $column = mb_strtoupper($query->getColumn());
+            if ($column === '*') {
+                $message = "Syntax error. No column name provided in update statement.";
+                throw new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($message);
+            }
+            $set = array($column => $set);
+            unset($column);
+
+            /* update row */
+        } else {
+            $set = \Yana\Util\Hashtable::changeCase($set, CASE_UPPER);
+        }
+
+        assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
+        $primaryKey = mb_strtoupper($this->_table->getPrimaryKey());
+
+        /* get reference to Index file */
+        assert('!isset($idxfile); // Cannot redeclare var $idxfile');
+        $idxfile = $this->_getIndexFile();
+
+        assert('!isset($columnName); // Cannot redeclare var $columnName');
+        assert('!isset($column); // Cannot redeclare var $column');
+        foreach ($this->_table->getColumns() as $column)
+        {
+            $columnName = mb_strtoupper($column->getName());
+            if (isset($set[$columnName])) {
+                /*
+                 * check unique constraint
+                 *
+                 * Unique constraint is breached if:
+                 * 1) an entry with the same key already exists AND
+                 * 2) the existing entry is not the same as the one which
+                 *    is currently being updated
+                 */
+                if ($column->isUnique() === true) {
+                    assert('!isset($tmp); // Cannot redeclare var $tmp');
+                    $tmp = $idxfile->getVar($column, $set[$column]);
+                    /*
+                     * Error - unique constraint has already been breached by some
+                     * previous operation.
+                     * This may occur, when a unique constraint is added, that
+                     * didn't exis before.
+                     */
+                    if (is_array($tmp) && count($tmp) > 1) {
+                        assert('!isset($log); // Cannot redeclare var $log');
+                        $log = "SQL WARNING: The column {$column} " .
+                                "has an unique constraint, but multiple " .
+                                "rows with the same name have been found. " .
+                                "This conflict can not be solved automatically. " .
+                                "Please edit and update the affected table.";
+                        \Yana\Log\LogManager::getLogger()->addLog($log, E_USER_WARNING, array('affected rows:' => $tmp));
+                        unset($log);
+                    }
+                    /*
+                     * error - constraint is breached
+                     */
+                    if (!empty($tmp) && strcasecmp($tmp, $row) !== 0) {
+                        $message = "Cannot update entry with column {$column}" .
+                                "= " . $set[$column] . ". The column has an unique constraint " .
+                                "and another entry with the same value already exists.";
+                        throw new \Yana\Db\Queries\Exceptions\DuplicateValueException($message);
+                    }
+                    unset($tmp);
+                }
+            } // end if
+            unset($columnName);
+        } // end foreach
+        unset($column);
+
+        $smlfile = & $this->_getSmlFile();
+
+        /* if primary key is renamed, the old one has to be replaced */
+        if (isset($set[$primaryKey]) && strcasecmp($row, $set[$primaryKey]) !== 0) { // updating primary key
+            $smlfile->remove("$primaryKey.$row"); // remove old row
+            $row = mb_strtoupper($set[$primaryKey]);
+            unset($set[$primaryKey]);
+            $set = array($row => $set); // insert as new
+        } elseif ($row != "") { // inserting a new row
+            $set = array($row => $set);
+        } else { // missing primary key
+            $message = "Syntax error. No primary key given.";
+            throw new \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException($message);
+        } // end if
+
+        /*
+         * remove old array values -
+         * but only if a new value is set
+         */
+        assert('!isset($columnName); // Cannot redeclare var $columnName');
+        assert('!isset($column); // Cannot redeclare var $column');
+        foreach ($set[$row] as $columnName => $column)
+        {
+            if (is_array($column)) {
+                $smlfile->setVar("$primaryKey.$row.$columnName", array());
+            } elseif (is_null($column)) {
+                $smlfile->remove("$primaryKey.$row.$columnName");
+            }
+        } // end foreach
+        unset($column, $columnName);
+
+        // get row
+        assert('!isset($currentRow); // Cannot redeclare var $currentRow');
+        $currentRow = & $smlfile->getVarByReference($primaryKey);
+        if (empty($currentRow)) {
+            $message = "Unable to save changes because the selected row was not found. Table may be corrupt.";
+            throw new \Yana\Db\DatabaseException($message);
+        }
+        /* update row */
+        $currentRow = \Yana\Util\Hashtable::merge($currentRow, $set);
+
+        /* after data has been changed, reorganize all indexes */
+        $idxfile->create();
+
+        return $this->_write();
+    }
+
+    /**
+     * Execute an INSERT statement.
+     *
+     * @param   \Yana\Db\Queries\Insert  $query  query object
+     * @return  \Yana\Db\FileDb\Result
+     * @throws  \Yana\Core\Exceptions\DataException  on failure
+     */
+    private function _executeInsertQuery(\Yana\Db\Queries\Insert $query)
+    {
+        $this->_select($query->getTable());
+        $set = $query->getValues();
+
+        if (!$this->_checkForeignKeys($this->_table, $set)) {
+            $message = "Foreign key check failed on table '{$this->_table->getName()}' for " .
+                    "row " . print_r($set, true);
+            throw new \Yana\Db\Queries\Exceptions\InconsistencyException($message);
+        }
+
+        assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
+        $primaryKey = $this->_table->getPrimaryKey();
+        if (empty($set)) {
+            $message = 'The statement contains illegal values.';
+            throw new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($message);
+        }
+
+        if ($this->_table->getColumn($primaryKey)->isAutoIncrement()) {
+            $this->_increment($set);
+        }
+
+        if (isset($set[$primaryKey])) {
+            $primaryValue = $set[$primaryKey];
+            unset($set[$primaryKey]);
+        } else {
+            $primaryValue = $query->getRow();
+            if ($primaryValue === '*') {
+                $message = "Cannot insert entry. No primary key provided.";
+                throw new \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException($message);
+            }
+        }
+
+        /* get reference to SML file */
+        assert('!isset($smlfile); // Cannot redeclare var $smlfile');
+        $smlfile = $this->_getSmlFile();
+        /* get reference to Index file */
+        assert('!isset($idxfile); // Cannot redeclare var $idxfile');
+        $idxfile = $this->_getIndexFile();
+
+        /* create column */
+        assert('!isset($column); // Cannot redeclare var $column');
+        assert('!isset($columnName); // Cannot redeclare var $columnName');
+        foreach ($this->_table->getColumns() as $column)
+        {
+            $columnName = mb_strtoupper($column->getName());
+            if (isset($set[$columnName])) {
+                /*
+                 * check unique constraint
+                 *
+                 * Unique constraint is breached if:
+                 * 1) an entry with the same key already exists
+                 */
+                if ($column->isUnique() === true) {
+                    assert('!isset($tmp); /* Cannot redeclare var $tmp */');
+                    $tmp = $idxfile->getVar($column, $set[$column]);
+                    /*
+                     * Error - unique constraint has already been breached by some
+                     * previous operation.
+                     * This may occur, when a unique constraint is added, that didn't
+                     * exist before.
+                     */
+                    if (is_array($tmp) && count($tmp) > 1) {
+                        assert('!isset($log); // Cannot redeclare var $log');
+                        $log = "SQL WARNING: The column {$column} " .
+                                "has an unique constraint, but multiple " .
+                                "rows with the same name have been found. " .
+                                "This conflict can not be solved automatically. " .
+                                "Please edit and update the affected table.";
+                        \Yana\Log\LogManager::getLogger()->addLog($log, E_USER_WARNING, array('affected rows:' => $tmp));
+                        unset($log);
+                    }
+                    /*
+                     * error - constraint is breached
+                     */
+                    if (!empty($tmp)) {
+                        $message = "SQL ERROR: Cannot insert entry with column {$column} " .
+                                "= " . $set[$column] . ". The column has an unique constraint " .
+                                "and another entry with the same value already exists.";
+                        throw new \Yana\Db\Queries\Exceptions\DuplicateValueException($message);
+                    }
+                    unset($tmp);
+                } // end if
+                /*
+                 * update indexes
+                 *
+                 * Index needs to be updated if:
+                 * 1) any column which explicitely has an index is updated OR
+                 * 2) any column which implicitely requires an index is updated
+                 *   (currently that is the case for columns using unique constraints)
+                 */
+                if ($column->hasIndex() === true || $column->isUnique() === true) {
+                    $idxfile->create($column, array($primaryValue, $set[$column]));
+                } // end if
+            } // end if
+        } // end foreach
+        unset($column);
+        if (is_array($smlfile->getVar("{$primaryKey}.{$primaryValue}"))) {
+            $message = "SQL ERROR: Cannot insert entry with primary key = " .
+                    "{$primaryValue}. Another entry with this key already exists.";
+            throw new \Yana\Db\Queries\Exceptions\DuplicateValueException($message);
+        }
+
+        $smlfile->setVar("$primaryKey.$primaryValue", $set);
+        return $this->_write();
+    }
+
+    /**
+     * Execute a DELETE statement.
+     *
+     * @param   \Yana\Db\Queries\Delete  $query  query object
+     * @return  \Yana\Db\FileDb\Result
+     * @throws  \Yana\Core\Exceptions\DataException  on failure
+     */
+    private function _executeDeleteQuery(\Yana\Db\Queries\Delete $query)
+    {
+        $this->_select($query->getTable()); // throws exception
+
+        $where = $query->getWhere();
+        $this->_sort = $query->getOrderBy();
+        $this->_desc = $query->getDescending();
+        $limit = $query->getLimit();
+
+        $smlfile = $this->_getSmlFile();
+        $idxfile = $this->_getIndexFile();
+
+        assert('!isset($rows); // Cannot redeclare var $rows');
+        $rows = $this->_get(array($this->_table->getPrimaryKey()), $where, array(), 0, $limit);
+
+        if (empty($rows)) {
+            /* error */
+
+            if ($query->getExpectedResult() === \Yana\Db\ResultEnumeration::ROW) {
+                $message = "Unable to delete the row. The row you tried to delete was not found.";
+                throw new \Yana\Core\Exceptions\NotFoundException($message);
+            }
+            return new \Yana\Db\FileDb\Result(array());
+        }
+
+        assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
+        $primaryKey = mb_strtoupper($this->_table->getPrimaryKey());
+        assert('!isset($row); // Cannot redeclare var $row');
+        foreach ($rows as $row)
+        {
+            if (!$smlfile->remove($primaryKey . '.' . $row[$primaryKey])) {
+                throw new \Yana\Db\DatabaseException("Unable to save changes.");
+            }
+        } // end foreach
+        unset($primaryKey, $rows, $row);
+
+        /* after data has been changed, reorganize all indexes */
+        $idxfile->create();
+
+        return $this->_write();
+    }
+
+    /**
+     * Execute a single query.
      *
      * @param   string  $sqlStmt  one SQL statement to execute
      * @param   int     $offset   the row to start from
      * @param   int     $limit    the maximum number of rows in the resultset
      * @return  \Yana\Db\FileDb\Result
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the query is invalid or could not be parsed
      */
     public function limitQuery($sqlStmt, $offset = 0, $limit = 0)
     {
-        $sqlStmt = (string) $sqlStmt;
-        $offset  = (int)    $offset;
-        $limit   = (int)    $limit;
+        // parse SQL
+        $queryParser = $this->_newSqlParser();
+        $dbQuery = $queryParser->parseSQL((string) $sqlStmt); // throws exception
 
-        /*
-         * 1) parse SQL
-         */
-        $dbQuery = new \Yana\Db\Queries\Parser(\Yana::connect($this->_database));
-        /*
-         * 2) error - throw a line if invalid or (possibly) hazardous statement is encountered
-         */
-        if (!$dbQuery->parseSQL($sqlStmt)) {
-            trigger_error("Invalid or unknown SQL statement: $sqlStmt.", E_USER_ERROR);
-
-        /*
-         * 3) route to query handling
-         */
-        } else {
-            $dbQuery->setOffset($offset);
-            $dbQuery->setLimit($limit);
-            return $this->sendQueryObject($dbQuery, $offset, $limit);
-        }
+        // route to query handling
+        $dbQuery->setOffset((int) $offset);
+        $dbQuery->setLimit((int) $limit);
+        return $this->sendQueryObject($dbQuery);
     }
 
     /**
@@ -947,7 +998,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      *
      * @param   string  $sqlStmt  some SQL statement
      * @return  \Yana\Db\FileDb\Result
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException if the query is invalid or could not be parsed
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the query is invalid or could not be parsed
      */
     public function sendQueryString($sqlStmt)
     {
@@ -957,8 +1008,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         $this->_offset = $this->_limit = 0; // reset for next query
 
         // parse SQL
-        $queryParser = new \Yana\Db\Queries\Parser(\Yana::connect($this->_database));
-        $dbQuery = $queryParser->parseSQL($sqlStmt);
+        $queryParser = $this->_newSqlParser();
+        $dbQuery = $queryParser->parseSQL($sqlStmt); // throws exception
 
         // route to query handling
         $dbQuery->setOffset($offset);
@@ -1026,7 +1077,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      * Returns bool(true) on success and bool(false) on error.
      *
      * @param   string  $tableName  table name
-     * @throws  \Yana\Core\Exceptions\NotFoundException  if selected table does not exist
+     * @return  \Yana\Db\FileDb\Driver
+     * @throws  \Yana\Db\Queries\Exceptions\TableNotFoundException  if selected table does not exist
      */
     private function _select($tableName)
     {
@@ -1039,7 +1091,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
             $this->_tableName = $tableName;
             $this->_table = $this->_schema->getTable($tableName);
             assert('$this->_table instanceof \Yana\Db\Ddl\Table; // Table not found in Schema');
-            return;
+            return $this;
         }
 
         /*
@@ -1049,7 +1101,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         $table = $this->_schema->getTable($tableName);
 
         if (!$table instanceof \Yana\Db\Ddl\Table) {
-            throw new \Yana\Core\Exceptions\NotFoundException("No such table '$tableName'.");
+            throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("No such table '$tableName'.");
         }
         $database = $this->_getSourceDatabaseNameForTable($table);
 
@@ -1066,6 +1118,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         assert('$this->_table instanceof \Yana\Db\Ddl\Table; // Table not found in Schema');
         assert('is_string($this->_tableName); // Unexpected result: $this->_tableName must be a string');
         assert('$this->_tableName !== ""; // Unexpected result: $this->_tableName must not be empty');
+        return $this;
     }
 
     /**
@@ -1104,7 +1157,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
     /**
      * Simulate MySQL's auto-increment feature.
      *
-     * @param  array  &$set    new value of this property
+     * @param   array  &$set    new value of this property
+     * @throws  \Yana\Db\Queries\Exceptions\NotFoundException  when unable to load the sequence
      */
     private function _increment(array &$set)
     {
@@ -1426,12 +1480,13 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         {
             /* @var $table \SML */
             if (!$table->exists()) {
-                // auto-create missing file
-                $table->create();
+
+                $table->create(); // auto-create missing file
             }
             if (!$table->write()) {
-                // error
-                return new \Yana\Db\FileDb\Result(null, 'unable to save changes');
+
+                throw new \Yana\Db\DatabaseException('unable to save changes');
+
             }
         } /* end for */
         unset($table);
@@ -1843,7 +1898,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
     {
         $idxfile =& $this->_idx[$this->_database][$this->_tableName];
         if (!is_object($idxfile)) {
-            trigger_error("No index-file found.", E_USER_ERROR);
+            $message = "Index-file not found. Is the directory writable?";
+            throw new \Yana\Db\DatabaseException($message, E_USER_ERROR);
         }
         return $idxfile;
     }

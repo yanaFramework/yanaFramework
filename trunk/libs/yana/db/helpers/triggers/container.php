@@ -79,10 +79,10 @@ class Container extends \Yana\Core\Object
     /**
      * Create new instance
      *
-     * @param  string  $table   name of table
-     * @param  mixed   &$value  value of column
-     * @param  string  $field   name of column
-     * @param  mixed   $rowId   value of primary key
+     * @param  string  $table  name of table
+     * @param  mixed   $value  value of column
+     * @param  string  $field  name of column
+     * @param  mixed   $rowId  value of primary key
      */
     public function __construct(\Yana\Db\Ddl\Table $table, &$value, $field = "", $rowId = null)
     {

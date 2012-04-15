@@ -377,7 +377,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
                 throw new \Yana\Core\Exceptions\NotImplementedException("Type '$type' not implemented.", E_USER_ERROR);
         }
         $error = new \InvalidValueWarning();
-        $error->setField($title);print "$title";
+        $error->setField($title);
         throw $error;
     }
 

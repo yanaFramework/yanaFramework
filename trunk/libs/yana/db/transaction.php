@@ -28,14 +28,12 @@
 namespace Yana\Db;
 
 /**
- * <<abstract>> <<decorator>> Database API.
- *
- * Base class for database connection decorators.
+ * Database transaction class.
  *
  * @package     yana
  * @subpackage  db
  */
-class Transaction extends \Yana\Core\Object
+class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
 {
 
     /**
@@ -63,10 +61,15 @@ class Transaction extends \Yana\Core\Object
      * Each database connection depends on a schema file describing the database.
      * These files are to be found in config/db/*.db.xml
      *
-     * @param  \Yana\Db\Ddl\Database  $schema  schema in database definition language
+     * @param   \Yana\Db\Ddl\Database  $schema  schema in database definition language
+     * @throws  \Yana\Core\Exceptions\NotWriteableException  when the database or table is locked
      */
     public function __construct(\Yana\Db\Ddl\Database $schema)
     {
+        if ($schema->isReadonly()) {
+            $message = "Unable to commit changes. Database schema is set to read-only.";
+            throw new \Yana\Core\Exceptions\NotWriteableException($message);
+        }
         $this->_schema = $schema;
     }
 
@@ -87,13 +90,11 @@ class Transaction extends \Yana\Core\Object
      * Commit current transaction and write all changes to the database.
      *
      * @return  bool
-     * @throws  \Yana\Core\Exceptions\NotWriteableException  when the database or table is locked
      */
     public function commit(\Yana\Db\IsDriver $driver)
     {
-        /* Buffer empty */
         if (count($this->_queue) == 0) {
-            return true;
+            return true; // nothing to commit
         }
 
         // start transaction
@@ -134,17 +135,16 @@ class Transaction extends \Yana\Core\Object
             /*
              * 4.1) error - query failed
              */
-            if ($this->isError($result)) {
+            if ($result->isError()) {
                 /*
                  * 4.1.2) rollback on error
                  */
                 \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", \Yana\Log\TypeEnumeration::WARNING,
                     $result->getMessage());
-                $result = $driver->rollback();
                 /*
                  * 4.1.3) when rollback failed, create entry in logs
                  */
-                if ($this->isError($result)) {
+                if (!$driver->rollback()) {
                     assert('!isset($message); // Cannot redefine var $message');
                     $message = "Unable to rollback changes. Database might contain corrupt data.";
                     \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::ERROR);
@@ -214,7 +214,7 @@ class Transaction extends \Yana\Core\Object
             throw new \Yana\Db\Queries\Exceptions\ConstraintException($_message, E_USER_WARNING);
         }
 
-        $triggerContainer = new \Yana\Db\Helpers\Triggers\Container($table, $column, $value, $updateQuery->getRow());
+        $triggerContainer = new \Yana\Db\Helpers\Triggers\Container($table, $value, $updateQuery->getRow());
         $trigger = new \Yana\Db\Helpers\Triggers\BeforeUpdate($triggerContainer);
         $trigger(); // fire trigger
 
@@ -326,11 +326,14 @@ class Transaction extends \Yana\Core\Object
     }
 
     /**
-     * Reset the object to default values
+     * Reset the object to default values.
+     *
+     * @return  \Yana\Db\Transaction
      */
     public function rollback()
     {
         $this->_queue = array();
+        return $this;
     }
 
 }

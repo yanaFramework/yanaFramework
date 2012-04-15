@@ -287,9 +287,9 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
 
             // UPDATE statements only
             default:
-                if (!$isInsert) {
+                if ($isInsert) {
                     // this point should be impossible to reach
-                    $_message = "You may only inset rows - not cells or columns.";
+                    $_message = "You may only insert rows - not cells or columns.";
                     throw new \Yana\Db\Queries\Exceptions\InvalidResultTypeException($_message);
                 }
                 assert('!$isInsert; // May only insert rows, not tables, cells or columns');
