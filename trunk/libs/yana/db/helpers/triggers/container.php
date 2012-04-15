@@ -40,8 +40,7 @@ class Container extends \Yana\Core\Object
     /**
      * current operation
      *
-     * @access  public
-     * @var     string
+     * @var  string
      */
     public $operation = "";
 
@@ -87,9 +86,6 @@ class Container extends \Yana\Core\Object
     public function __construct(\Yana\Db\Ddl\Table $table, &$value, $field = "", $rowId = null)
     {
         assert('is_string($field); // Invalid argument $field: string expected');
-        if (is_string($value)) {
-            $value = stripslashes($value);
-        }
         $this->table = $table;
         $this->value =& $value;
         $this->field = mb_strtoupper((string) $field);
