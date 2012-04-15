@@ -12,6 +12,9 @@
                 name="ftvalue">
                 <default>0</default>
             </integer>
+            <array
+                name="array"
+            />
         </declaration>
     </table>
     <table name="t">
