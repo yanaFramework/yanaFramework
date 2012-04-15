@@ -84,7 +84,7 @@ class ConstraintCollection extends \Yana\Core\AbstractCollection
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message. \E_USER_ERROR);
         }
         $code = $item->getConstraint();
-        if (YANA_DB_STRICT && !preg_match(self::CONSTRAINT_SYNTAX, $code)) {
+        if (!preg_match(self::CONSTRAINT_SYNTAX, $code)) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Syntax error in constraint '$code' .", E_USER_ERROR);
         }
         $this->_offsetSet($key, $code);
@@ -101,10 +101,8 @@ class ConstraintCollection extends \Yana\Core\AbstractCollection
     {
         foreach ($this->toArray() as $code)
         {
-            $function = create_function('$ROW', "return ($code) == true;");
+            $function = create_function('$ROW', "return (bool) ($code);");
             if ($function($this->_row) === false) {
-                \Yana\Log\LogManager::getLogger()->addLog("Constraint '$code' failed " .
-                    "on table '{$table->getName()}' with value '" . print_r($this->_row, true) . "'.", E_USER_WARNING);
                 return false;
             }
         }
