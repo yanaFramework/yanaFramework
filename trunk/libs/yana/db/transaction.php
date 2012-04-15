@@ -130,27 +130,29 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
             /*
              * 3 send request to database
              */
-            $result = $dbQuery->sendQuery();
+            try {
 
-            /*
-             * 4.1) error - query failed
-             */
-            if ($result->isError()) {
-                /*
-                 * 4.1.2) rollback on error
-                 */
+                $result = $dbQuery->sendQuery();
+
+            } catch (\Yana\Db\DatabaseException $queryException) { // error - query failed
+
                 \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", \Yana\Log\TypeEnumeration::WARNING,
-                    $result->getMessage());
-                /*
-                 * 4.1.3) when rollback failed, create entry in logs
-                 */
-                if (!$driver->rollback()) {
+                    \get_class($queryException) . ': ' . $queryException->getMessage());
+
+                try {
+
+                    $driver->rollback();
+
+                } catch (\Yana\Db\DatabaseException $rollBackException) { // when rollback failed, create log-entry
+
                     assert('!isset($message); // Cannot redefine var $message');
                     $message = "Unable to rollback changes. Database might contain corrupt data.";
                     \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::ERROR);
                     unset($message);
+
                 }
-                return false;
+                throw $queryException;
+
             }
             // 4.2) query was successfull
 

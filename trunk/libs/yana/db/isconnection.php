@@ -190,14 +190,6 @@ interface IsConnection
     public function importSQL($sqlFile);
 
     /**
-     * Returns bool(true) if the object is an error result.
-     *
-     * @param   mixed  $result  result
-     * @return  bool
-     */
-    public function isError($result);
-
-    /**
      * Returns the quoted database identifier as a string.
      *
      * @param   mixed  $value  name of database object
