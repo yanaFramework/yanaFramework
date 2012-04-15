@@ -42,7 +42,7 @@ class ExceptionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsExce
      * This also sets the message according to the given type.
      *
      * @param   \MDB2_Error  $error  Some \MDB2_ERROR code
-     * @return  \Yana\Core\Exceptions\AbstractException
+     * @return  \Yana\Db\DatabaseException
      */
     public function toException(\MDB2_Error $error)
     {
@@ -101,7 +101,7 @@ class ExceptionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsExce
 
             case \MDB2_ERROR_UNSUPPORTED:
             case \MDB2_ERROR_NOT_CAPABLE:
-                return new \Yana\Core\Exceptions\NotImplementedException($error->getMessage());
+                return new \Yana\Db\Queries\Exceptions\NotSupportedException($error->getMessage());
 
             case \MDB2_ERROR_NO_PERMISSION:
                 return new \Yana\Db\Queries\Exceptions\SecurityException($error->getMessage());

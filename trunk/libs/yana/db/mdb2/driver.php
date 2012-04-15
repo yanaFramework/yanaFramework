@@ -30,7 +30,7 @@
 namespace Yana\Db\Mdb2;
 
 /**
- * <<adapter>> Wrapper for PEAR MDB2 database driver.
+ * <<wrapper>> Wrapper / adapter for PEAR MDB2 database driver.
  *
  * @package     yana
  * @subpackage  db
@@ -39,13 +39,45 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
 {
 
     /**
+     * @var \Yana\Db\Mdb2\IsExceptionFactory
+     */
+    private $_exceptionFactory = null;
+
+    /**
      * constructor
      *
-     * @param  \Yana\Db\Ddl\Database  $schema  database schema
+     * @param  \Yana\Db\Ddl\Database             $schema   database schema
+     * @param  \Yana\Db\Mdb2\IsExceptionFactory  $factory  use this to inject mock factory
      */
-    public function __construct(\MDB2_Driver_Common $driver)
+    /**
+     * 
+     * @param \MDB2_Driver_Common $driver
+     */
+    public function __construct(\MDB2_Driver_Common $driver, \Yana\Db\Mdb2\IsExceptionFactory $factory = null)
     {
+        $this->_exceptionFactory = $factory;
         $this->_setDecoratedObject($driver);
+    }
+
+    /**
+     * Checks if the return value is an error code and throws an exception if so.
+     *
+     * Returns the value unchanged if it is valid.
+     *
+     * @return  mixed
+     * @throws  \Yana\Db\DatabaseException  on failure
+     */
+    protected function _checkReturnValue($errorCode)
+    {
+        if ($errorCode instanceof \MDB2_Error) {
+            /* @codeCoverageIgnoreStart */
+            if ($this->_exceptionFactory === null) {
+                $this->_exceptionFactory = new \Yana\Db\Mdb2\ExceptionFactory();
+            }
+            /* @codeCoverageIgnoreEnd */
+            throw $this->_exceptionFactory->toException($errorCode);
+        }
+        return $errorCode;
     }
 
     /**
@@ -64,36 +96,40 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      * This deactives auto-commit, so the following statements will wait for commit or rollback.
      *
      * @return  bool
+     * @throws  \Yana\Db\DatabaseException  on failure
      */
     public function beginTransaction()
     {
-        return $this->_getDecoratedObject()->beginTransaction() === \MDB2_OK;
+        return $this->_checkReturnValue($this->_getDecoratedObject()->beginTransaction()) === \MDB2_OK;
     }
 
     /**
      * rollback current transaction
      *
      * @return  bool
+     * @throws  \Yana\Db\DatabaseException  on failure
      */
     public function rollback()
     {
-        return $this->_getDecoratedObject()->beginTransaction() === \MDB2_OK;
+        return $this->_checkReturnValue($this->_getDecoratedObject()->beginTransaction()) === \MDB2_OK;
     }
 
     /**
      * commit current transaction
      *
      * @return  bool
+     * @throws  \Yana\Db\DatabaseException  on failure
      */
     public function commit()
     {
-        return $this->_getDecoratedObject()->commit() === \MDB2_OK;
+        return $this->_checkReturnValue($this->_getDecoratedObject()->commit()) === \MDB2_OK;
     }
 
     /**
      * get list of databases
      *
      * @return  array
+     * @throws  \Yana\Db\DatabaseException  on failure
      */
     public function listDatabases()
     {
@@ -101,7 +137,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
         /* @var $connection \MDB2_Driver_Manager_Common */
         $connection->loadModule('Manager');
         $connection->loadModule('Reverse');
-        return $connection->listDatabases();
+        return $this->_checkReturnValue($connection->listDatabases());
     }
 
     /**
@@ -109,6 +145,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      *
      * @param   string  $database  database nasme
      * @return  array
+     * @throws  \Yana\Db\DatabaseException  on failure
      */
     public function listTables($database = null)
     {
@@ -116,13 +153,14 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
         /* @var $connection \MDB2_Driver_Manager_Common */
         $connection->loadModule('Manager');
         $connection->loadModule('Reverse');
-        return $connection->listTables($database = null);
+        return $this->_checkReturnValue($connection->listTables($database));
     }
 
     /**
      * get list of functions
      *
      * @return  array
+     * @throws  \Yana\Db\DatabaseException  on failure
      */
     public function listFunctions()
     {
@@ -130,7 +168,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
         /* @var $connection \MDB2_Driver_Manager_Common */
         $connection->loadModule('Manager');
         $connection->loadModule('Reverse');
-        return $connection->listFunctions();
+        return $this->_checkReturnValue($connection->listFunctions());
     }
 
     /**
@@ -138,6 +176,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      *
      * @param   string  $database  dummy for compatibility
      * @return  array
+     * @throws  \Yana\Db\DatabaseException  on failure
      */
     public function listSequences($database = null)
     {
@@ -145,7 +184,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
         /* @var $connection \MDB2_Driver_Manager_Common */
         $connection->loadModule('Manager');
         $connection->loadModule('Reverse');
-        return $connection->listSequences($database = null);
+        return $this->_checkReturnValue($connection->listSequences($database));
     }
 
     /**
@@ -153,6 +192,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      *
      * @param   string  $table  table name
      * @return  array
+     * @throws  \Yana\Db\DatabaseException  on failure
      */
     public function listTableFields($table)
     {
@@ -162,7 +202,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
         /* @var $connection \MDB2_Driver_Manager_Common */
         $connection->loadModule('Manager');
         $connection->loadModule('Reverse');
-        return $connection->listTableFields($table);
+        return $this->_checkReturnValue($connection->listTableFields($table));
     }
 
     /**
@@ -170,6 +210,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      *
      * @param   string  $table  table name
      * @return  array
+     * @throws  \Yana\Db\DatabaseException  on failure
      */
     public function listTableIndexes($table)
     {
@@ -179,7 +220,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
         /* @var $connection \MDB2_Driver_Manager_Common */
         $connection->loadModule('Manager');
         $connection->loadModule('Reverse');
-        return $connection->listTableIndexes($table);
+        return $this->_checkReturnValue($connection->listTableIndexes($table));
     }
 
     /**
@@ -187,11 +228,12 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      *
      * @param   \Yana\Db\Queries\AbstractQuery  $dbQuery  query object
      * @return  \Yana\Db\FileDb\Result
+     * @throws  \Yana\Db\DatabaseException  on failure
      */
     public function sendQueryObject(\Yana\Db\Queries\AbstractQuery $dbQuery)
     {
         $this->setLimit($dbQuery->getLimit(), $dbQuery->getOffset());
-        return $this->sendQueryString((string) $sqlStmt);
+        return $this->_checkReturnValue($this->sendQueryString((string) $dbQuery));
     }
 
     /**
@@ -201,12 +243,13 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      *
      * @param   string  $sqlStmt    sql statement
      * @return  \Yana\Db\FileDb\Result
+     * @throws  \Yana\Db\DatabaseException  on failure
      */
     public function sendQueryString($sqlStmt)
     {
         assert('is_string($sqlStmt); // Invalid argument $sqlStmt: string expected');
 
-        return $this->_getDecoratedObject()->query($sqlStmt);
+        return $this->_checkReturnValue($this->_getDecoratedObject()->query($sqlStmt));
     }
 
     /**
@@ -218,6 +261,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      * @param   int $limit  set the limit for query
      * @param   int $offset set the offset for query
      * @return  bool
+     * @throws  \Yana\Db\DatabaseException  on failure
      */
     public function setLimit($limit, $offset = null)
     {
@@ -225,7 +269,7 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
         assert('is_null($offset) || is_int($offset); // Wrong type for argument 2. Integer expected');
 
         if ($offset > 0 || $limit > 0) {
-            return $this->_getDecoratedObject()->setLimit($limit, $offset) === \MDB2_OK;
+            return $this->_checkReturnValue($this->_getDecoratedObject()->setLimit($limit, $offset)) === \MDB2_OK;
         }
         return false;
     }
