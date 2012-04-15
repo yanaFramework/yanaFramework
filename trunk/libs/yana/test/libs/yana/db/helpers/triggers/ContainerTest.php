@@ -47,16 +47,24 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     protected $object;
 
     /**
+     * @var Container
+     */
+    private $_table;
+
+    /**
+     * @var Container
+     */
+    private $_query;
+
+    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
     protected function setUp()
     {
-        $table = new \Yana\Db\Ddl\Table("test");
-        $value = 'StringValue';
-        $field = "fieldName";
-        $rowId = 1;
-        $this->object = new Container($table, $value, $field, $rowId);
+        $this->_table = new \Yana\Db\Ddl\Table("test");
+        $this->_query = new \Yana\Db\Queries\Insert(new \Yana\Db\NullConnection());
+        $this->object = new Container($this->_table, $this->_query);
     }
 
     /**
@@ -73,10 +81,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function test()
     {
-        $this->assertEquals(new \Yana\Db\Ddl\Table("test"), $this->object->table);
-        $this->assertEquals('StringValue', $this->object->value);
-        $this->assertEquals("FIELDNAME", $this->object->field);
-        $this->assertEquals(1, $this->object->row);
+        $this->assertEquals($this->_table, $this->object->table);
+        $this->assertEquals($this->_query, $this->object->query);
     }
 
 }
