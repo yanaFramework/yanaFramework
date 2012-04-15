@@ -25,10 +25,12 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Db\Ddl;
+
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __DIR__ . '/../../../../include.php';
 
 
 /**
@@ -36,7 +38,7 @@ require_once dirname(__FILE__) . '/include.php';
  *
  * @package  test
  */
-class DDLAllTest extends PHPUnit_Framework_TestCase
+class DatabaseTest extends \PHPUnit_Framework_TestCase
 {
 
     /**

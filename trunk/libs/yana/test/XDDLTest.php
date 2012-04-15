@@ -35,8 +35,9 @@ require_once dirname(__FILE__) . '/include.php';
  *
  * @package  test
  */
-class DDLTest extends PHPUnit_Framework_TestCase
+class XDDLTest extends PHPUnit_Framework_TestCase
 {
+
     /**
      * @var    XDDL
      */
@@ -59,7 +60,7 @@ class DDLTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         try {
-            $this->_file = new XDDL(CWD . $this->_path);
+            $this->_file = new \XDDL(CWD . $this->_path);
             $this->_file->read();
             $this->_object = $this->_file->toDatabase();
             $this->_object->setModified();
