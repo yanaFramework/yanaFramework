@@ -55,17 +55,9 @@ class ExceptionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsExce
                 return new \Yana\Db\Queries\Exceptions\DuplicateValueException($error->getMessage());
 
             case \MDB2_ERROR_CANNOT_ALTER:
-                return new \Yana\Db\Queries\Exceptions\QueryException($error->getMessage());
-
             case \MDB2_ERROR_CANNOT_CREATE:
-                return new \Yana\Db\Queries\Exceptions\QueryException($error->getMessage());
-
             case \MDB2_ERROR_CANNOT_DELETE:
-                return new \Yana\Db\Queries\Exceptions\QueryException($error->getMessage());
-
             case \MDB2_ERROR_CANNOT_DROP:
-                return new \Yana\Db\Queries\Exceptions\QueryException($error->getMessage());
-
             case \MDB2_ERROR_CANNOT_REPLACE:
                 return new \Yana\Db\Queries\Exceptions\QueryException($error->getMessage());
 
@@ -73,8 +65,6 @@ class ExceptionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsExce
                 return new \Yana\Db\ConnectionException($error->getMessage());
 
             case \MDB2_ERROR_CONSTRAINT:
-                return new \Yana\Db\Queries\Exceptions\ConstraintException($error->getMessage());
-
             case \MDB2_ERROR_CONSTRAINT_NOT_NULL:
                 return new \Yana\Db\Queries\Exceptions\ConstraintException($error->getMessage());
 
@@ -107,8 +97,6 @@ class ExceptionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsExce
                 return new \Yana\Db\Queries\Exceptions\SecurityException($error->getMessage());
 
             case \MDB2_ERROR_INVALID:
-                return new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($error->getMessage());
-
             case \MDB2_ERROR_SYNTAX:
                 return new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($error->getMessage());
 
