@@ -44,24 +44,28 @@ class Container extends \Yana\Core\Object
      * @var     string
      */
     public $operation = "";
+
     /**
      * current table
      *
      * @var  \Yana\Db\Ddl\Table
      */
     public $table = null;
+
     /**
      * current field
      *
      * @var  int
      */
     public $field = "";
+
     /**
      * current value
      *
      * @var  mixed
      */
     public $value = null;
+
     /**
      * current row id
      *
@@ -75,14 +79,14 @@ class Container extends \Yana\Core\Object
     /**
      * Create new instance
      *
-     * @param  string  $table      name of table
-     * @param  mixed   &$value     value of column
-     * @param  string  $field      name of column
-     * @param  mixed   $rowId      value of primary key
+     * @param  string  $table   name of table
+     * @param  mixed   &$value  value of column
+     * @param  string  $field   name of column
+     * @param  mixed   $rowId   value of primary key
      */
     public function __construct(\Yana\Db\Ddl\Table $table, &$value, $field = "", $rowId = null)
     {
-        assert('is_string($field); // Wrong type for argument 4. String expected.');
+        assert('is_string($field); // Invalid argument $field: string expected');
         if (is_string($value)) {
             $value = stripslashes($value);
         }
