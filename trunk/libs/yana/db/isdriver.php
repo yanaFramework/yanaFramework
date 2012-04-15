@@ -111,7 +111,7 @@ interface IsDriver extends \Yana\Core\IsObject
      * Execute a single query.
      *
      * @param   \Yana\Db\Queries\AbstractQuery  $dbQuery  query object
-     * @return  \Yana\Db\FileDb\Result
+     * @return  \Yana\Db\IsResult
      * @since   2.9.3
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given query is invalid
      */
@@ -123,7 +123,7 @@ interface IsDriver extends \Yana\Core\IsObject
      * Alias of limitQuery() with $offset and $limit params stripped.
      *
      * @param   string  $sqlStmt    sql statement
-     * @return  \Yana\Db\FileDb\Result
+     * @return  \Yana\Db\IsResult
      */
     public function sendQueryString($sqlStmt);
 
