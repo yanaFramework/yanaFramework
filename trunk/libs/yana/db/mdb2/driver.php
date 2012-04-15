@@ -223,13 +223,14 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      * Execute a single query.
      *
      * @param   \Yana\Db\Queries\AbstractQuery  $dbQuery  query object
-     * @return  \Yana\Db\FileDb\Result
+     * @return  \Yana\Db\Mdb2\Result
      * @throws  \Yana\Db\DatabaseException  on failure
      */
     public function sendQueryObject(\Yana\Db\Queries\AbstractQuery $dbQuery)
     {
         $this->setLimit($dbQuery->getLimit(), $dbQuery->getOffset());
-        return $this->_checkReturnValue($this->sendQueryString((string) $dbQuery));
+        $resultObject = $this->_checkReturnValue($this->sendQueryString((string) $dbQuery));
+        return new \Yana\Db\Mdb2\Result($resultObject);
     }
 
     /**
@@ -238,14 +239,15 @@ class Driver extends \Yana\Core\AbstractDecorator implements \Yana\Db\IsDriver
      * Alias of limitQuery() with $offset and $limit params stripped.
      *
      * @param   string  $sqlStmt    sql statement
-     * @return  \Yana\Db\FileDb\Result
+     * @return  \Yana\Db\Mdb2\Result
      * @throws  \Yana\Db\DatabaseException  on failure
      */
     public function sendQueryString($sqlStmt)
     {
         assert('is_string($sqlStmt); // Invalid argument $sqlStmt: string expected');
 
-        return $this->_checkReturnValue($this->_getDecoratedObject()->query($sqlStmt));
+        $resultObject = $this->_checkReturnValue($this->_getDecoratedObject()->query($sqlStmt));
+        return new \Yana\Db\Mdb2\Result($resultObject);
     }
 
     /**
