@@ -92,6 +92,49 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         unset ( $this->dbsobj );
     }
 
+    /**
+     * insert and update
+     *
+     * @test
+     * @expectedException \Yana\Db\DatabaseException
+     */
+    public function testInsertAndUpdateWithFailingForeignKeyCheck()
+    {
+        $this->dbsobj->insertOrUpdate('t.foo2', array('tvalue' => 1, 'FTid' => 2 ));
+        $this->dbsobj->commit(); // expected to throw exception
+    }
+
+    /**
+     * insert and update
+     *
+     * @test
+     * @expectedException \MissingFieldWarning
+     */
+    public function testInsertWithMissingField()
+    {
+        $this->dbsobj->insert('t.foo1', array('tvalue' => 1));
+    }
+
+    /**
+     * @test
+     */
+    public function testUpdateArrayAddress()
+    {
+        $this->dbsobj->insert('ft.1', array('array' => array('1' => '1')));
+        $this->dbsobj->update('ft.1.array.1.a', 2); // must not throw exception
+        $this->dbsobj->commit();
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Db\Queries\Exceptions\QueryException
+     */
+    public function testInsertWithDuplicateKey()
+    {
+        $this->dbsobj->insert('i.foo', array('ta' => array('1' => '1')));
+        $this->dbsobj->insert('i.foo', array('ta' => array('1' => '1')));
+        $this->dbsobj->commit();
+    }
 
     /**
      * insert and update
@@ -103,61 +146,36 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         // init database
         $this->dbsobj->insert('ft.1', array('ftvalue' => 1));
 
-        // supposed to fail
-        try {
-            $this->dbsobj->insert( 't.foo1', array('tvalue' => 1));
-            $this->fail('init t.foo1 failed');
-        } catch (\MissingFieldWarning $e) {
-            // success
-        }
-
-        // supposed to fail
-        try {
-            $this->dbsobj->insertOrUpdate('t.foo2', array('tvalue' => 1, 'FTid' => 2 ));
-            $this->fail('expected insert of t.foo2 to fail, due to a foreign-key constraint');
-        } catch (\Exception $e) {
-            // success
-        }
-
         $this->dbsobj->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true));
 
         $this->dbsobj->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false));
         $this->assertTrue($this->dbsobj->commit(), 'commit to database failed');
 
         // supposed to fail
-        $this->dbsobj->insertOrUpdate('i.foo2', array('ta' => array (1 => 1)));
-        $this->assertFalse($this->dbsobj->commit(), 'init i.foo2 failed');
-        $this->assertTrue($this->dbsobj->rollback());
+        try {
+            $this->dbsobj->insertOrUpdate('i.foo2', array('ta' => array (1 => 1)));
+            $this->dbsobj->commit();
+            $this->fail('init i.foo2 failed');
+        } catch (\Yana\Db\Queries\Exceptions\InconsistencyException $e) {
+            $this->dbsobj->rollback();
+        }
 
         $this->dbsobj->insert('i.foo', array('ta' => array('1' => '1')));
 
         // supposed to succeed
-        $test = $this->dbsobj->update('i.foo.ta.1.a', 2 );
-        $this->assertTrue($test, '"set array content" failed');
+        $this->dbsobj->update('i.foo.ta.1.a', 2);
 
-        $this->assertTrue($this->dbsobj->commit(), 'commit to database failed');
-
-        // supposed to fail
-        try {
-
-            $value = array('ta' => array('1' => '1') );
-            $this->dbsobj->insert('i.foo', $value);
-            @$this->dbsobj->commit();
-            $this->fail('duplicate key test (1) failed');
-
-        } catch (\Exception $e) {
-            // success
-        }
+        $this->dbsobj->commit();
 
         // supposed to fail
         try {
 
             $value = array('iid' => 'foo', 'ta' => array('1' => '1' ) );
             $this->dbsobj->insert('i', $value);
-            @$this->dbsobj->commit();
+            $this->dbsobj->commit();
             $this->fail('duplicate key test (2) failed');
 
-        } catch (\Exception $e) {
+        } catch (\Yana\Db\Queries\Exceptions\QueryException $e) {
             // success
         }
 
@@ -178,7 +196,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($test, '"exists column" test failed');
 
         // exists (supposed to fail)
-        $test = @$this->dbsobj->exists( 't.fooBar.tid' );
+        $test = $this->dbsobj->exists( 't.fooBar.tid' );
         $this->assertFalse($test, '"exists failure" test failed');
 
         // get table
@@ -213,10 +231,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         // get last entry
         $test = $this->dbsobj->select( 't.?.tValue' );
         $this->assertEquals($test, 3, '"get last entry" test failed');
-
-        // test foreign key constraint
-        $test = @$this->dbsobj->insertOrUpdate( 't.foo.ftid', 2 ); // supposed to fail
-        $this->assertFalse($test, '"foreign key" test failed');
 
         // test buffer
         $test = $this->dbsobj->update( 'ft.3', array('ftvalue' => 3 ) );
@@ -316,14 +330,14 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         try {
             $this->dbsobj->update('t.foo.tf', -1);
             $this->fail('"unsigned" test failed');
-        } catch (\Exception $e) {
+        } catch (\InvalidValueWarning $e) {
             // success
         }
 
         // test for property "zerofill"
         // column t.ti is a zerofilled integer with length 4
         $this->assertTrue($this->dbsobj->update('t.foo.ti', 1), '"set zerofill" test failed');
-        $this->assertTrue($this->dbsobj->write(), '"set zerofill" test failed');
+        $this->assertTrue($this->dbsobj->commit(), '"set zerofill" test failed');
 
         $this->assertEquals($this->dbsobj->select('t.foo.ti'), '0001', '"get zerofill" test failed');
     }
