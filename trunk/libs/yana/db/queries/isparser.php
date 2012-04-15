@@ -25,18 +25,25 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db\Queries\Exceptions;
+namespace Yana\Db\Queries;
 
 /**
- * <<exception>> When the query encounters inconsistent data in the database.
+ * <<interface>> Query-Parser.
  *
  * @package     yana
  * @subpackage  db
  */
-class InconsistencyException extends \Yana\Db\Queries\Exceptions\ConstraintException
+interface IsParser
 {
 
-    // intentionally left blank
+    /**
+     * Parse SQL query into query object.
+     *
+     * @param   string     $sqlStmt   SQL statement
+     * @return  \Yana\Db\Queries\AbstractQuery
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the query is invalid or could not be parsed
+     */
+    public function parseSQL($sqlStmt);
 
 }
 
