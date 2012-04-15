@@ -117,8 +117,9 @@ class Connection extends \Yana\Db\AbstractConnection
         assert('is_int($limit) && $limit >= 0; // Invalid argument $limit. Must be a positive integer.');
 
         // send query to database
-        $this->_getConnection()->setLimit($limit, $offset);
-        return $this->_getConnection()->sendQueryString($sqlStmt); // may throw exception
+        $connection = $this->_getConnection();
+        $connection->setLimit($limit, $offset);
+        return $connection->sendQueryString($sqlStmt); // may throw exception
     }
 
     /**
@@ -130,7 +131,8 @@ class Connection extends \Yana\Db\AbstractConnection
      */
     public function sendQueryObject(\Yana\Db\Queries\AbstractQuery $query)
     {
-        return $this->_getConnection()->sendQueryObject($query); // may throw exception
+        $connection = $this->_getConnection();
+        return $connection->sendQueryObject($query); // may throw exception
     }
 
     /**
