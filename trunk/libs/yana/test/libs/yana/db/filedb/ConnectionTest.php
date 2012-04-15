@@ -153,7 +153,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
         // supposed to fail
         try {
-            $this->dbsobj->insertOrUpdate('i.foo2', array('ta' => array (1 => 1)));
+            $this->dbsobj->insertOrUpdate('i.foo2', array('ta' => array(1 => 1)));
             $this->dbsobj->commit();
             $this->fail('init i.foo2 failed');
         } catch (\Yana\Db\Queries\Exceptions\InconsistencyException $e) {
@@ -170,80 +170,79 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         // supposed to fail
         try {
 
-            $value = array('iid' => 'foo', 'ta' => array('1' => '1' ) );
+            $value = array('iid' => 'foo', 'ta' => array('1' => '1'));
             $this->dbsobj->insert('i', $value);
             $this->dbsobj->commit();
             $this->fail('duplicate key test (2) failed');
-
         } catch (\Yana\Db\Queries\Exceptions\QueryException $e) {
             // success
         }
 
         // exists table
-        $test = $this->dbsobj->exists( 't' );
+        $test = $this->dbsobj->exists('t');
         $this->assertTrue($test, '"exists table" test failed');
 
         // exists row
-        $test = $this->dbsobj->exists( 't.fOo' );
+        $test = $this->dbsobj->exists('t.fOo');
         $this->assertTrue($test, '"exists row" test failed');
 
         // exists cell
-        $test = $this->dbsobj->exists( 't.fOo.tid' );
+        $test = $this->dbsobj->exists('t.fOo.tid');
         $this->assertTrue($test, '"exists cell" test failed');
 
         // exists column
-        $test = $this->dbsobj->exists( 'i.*.ta' );
+        $test = $this->dbsobj->exists('i.*.ta');
         $this->assertTrue($test, '"exists column" test failed');
 
         // exists (supposed to fail)
-        $test = $this->dbsobj->exists( 't.fooBar.tid' );
+        $test = $this->dbsobj->exists('t.fooBar.tid');
         $this->assertFalse($test, '"exists failure" test failed');
 
         // get table
-        $table = $this->dbsobj->select( 'T' );
+        $table = $this->dbsobj->select('T');
         $this->assertType('array', $table, '"get table" test failed');
         $this->assertArrayHasKey('FOO', $table, '"get table" test failed');
         $this->assertType('array', $table['FOO'], '"get table" test failed');
 
         // get row
-        $row = $this->dbsobj->select( 't.fOo' );
+        $row = $this->dbsobj->select('t.fOo');
         $this->assertType('array', $row, '"get table" test failed');
         $this->assertArrayHasKey('TVALUE', $row, '"get table" test failed');
 
         // get cell (1)
-        $cell = $this->dbsobj->select( 'T.Foo.TValue' );
+        $cell = $this->dbsobj->select('T.Foo.TValue');
         $this->assertEquals($cell, 1, '"get cell 1" test failed');
 
         // get cell (2)
-        $cell = $this->dbsobj->select( 't.fOo.tB' );
+        $cell = $this->dbsobj->select('t.fOo.tB');
         $this->assertTrue($cell, '"get cell 2" test failed');
 
         // resolve foreign key
-        $test = $this->dbsobj->select( 't.fOo.ftid.ftvalue' );
+        $test = $this->dbsobj->select('t.fOo.ftid.ftvalue');
         $this->assertEquals($test, 1, '"resolving foreign key" test failed');
 
         // get column
-        $column = $this->dbsobj->select( 'T.*.fTid' );
-        $length = $this->dbsobj->length( 't' );
+        $column = $this->dbsobj->select('T.*.fTid');
+        $length = $this->dbsobj->length('t');
         $this->assertType('array', $column, '"get column" test failed');
         $this->assertEquals(count($column), $length, '"get column" test failed');
 
         // get last entry
-        $test = $this->dbsobj->select( 't.?.tValue' );
+        $test = $this->dbsobj->select('t.?.tValue');
         $this->assertEquals($test, 3, '"get last entry" test failed');
 
         // test buffer
-        $test = $this->dbsobj->update( 'ft.3', array('ftvalue' => 3 ) );
+        $test = $this->dbsobj->update('ft.3', array('ftvalue' => 3));
         $this->assertTrue($test, '"buffer test" insert failed');
 
-        $test = $this->dbsobj->update( 't.FOO3.ftid', 3 ); // supposed to succeed
+        $test = $this->dbsobj->update('t.FOO3.ftid', 3); // supposed to succeed
         $this->assertTrue($test, '"buffer key" read of buffer content failed');
 
-        $test = $this->dbsobj->select( 'i.foo.ta.1.a' ); // supposed to succeed
+        $test = $this->dbsobj->select('i.foo.ta.1.a'); // supposed to succeed
         $this->assertEquals($test, 2, '"get array content" failed');
 
         // length table
-        $length = $this->dbsobj->length( 'T' );
+        $length = $this->dbsobj->length('T');
         $this->assertEquals($length, 2, '"get length" test failed');
 
         // rollback
@@ -253,7 +252,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $temp1 = array(1 => 2, 2 => 3);
         $temp2 = 2;
         // stored in table "i"
-        $test['ta'] = $temp1 ;
+        $test['ta'] = $temp1;
         // not stored in table "i", but in parent table "t"
         $test['tvalue'] = $temp2;
         // must update "i" AND "t" (not just "i" or "t")
@@ -276,14 +275,14 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $dbQuery->setInnerJoin('t');
         $dbQuery->setColumns(array('i.iid', 'ta', 't.tvalue'));
         $test = $this->dbsobj->select($dbQuery);
-        $expected = array (
-             "IID" => "FOO",
-             "TA" => array (
-                   1 => "2",
-                   2 => "3"
-                 ),
-             "TVALUE" => 2
-             );
+        $expected = array(
+            "IID" => "FOO",
+            "TA" => array(
+                1 => "2",
+                2 => "3"
+            ),
+            "TVALUE" => 2
+        );
 
         $this->assertEquals($expected, $test, '"get multiple columns" test failed');
 
@@ -294,14 +293,14 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $dbQuery->setInnerJoin('t');
         $dbQuery->setColumns(array('a' => 'i.iid', 'b' => 'ta', 'c' => 't.tvalue'));
         $test = $this->dbsobj->select($dbQuery);
-        $expected = array (
-             "A" => "FOO",
-             "B" => array (
-                   1 => "2",
-                   2 => "3"
-                 ),
-             "C" => 2
-         );
+        $expected = array(
+            "A" => "FOO",
+            "B" => array(
+                1 => "2",
+                2 => "3"
+            ),
+            "C" => 2
+        );
 
         $this->assertEquals($expected, $test, 'Using alias on joined tables failed');
 
@@ -309,7 +308,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $dbQuery->setTable('t');
         $dbQuery->setColumns(array('a' => 'tid', 'b' => 'tb', 'c' => 'tvalue'));
         $test = $this->dbsobj->select($dbQuery);
-        $expected = array (
+        $expected = array(
             array(
                 "A" => "FOO",
                 "B" => true,

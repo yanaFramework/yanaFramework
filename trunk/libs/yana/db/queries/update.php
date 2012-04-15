@@ -245,16 +245,12 @@ class Update extends \Yana\Db\Queries\Insert
         $select->setRow($row);
         $select->setColumn("profile_id");
         $select->setLimit(1);
-        $result = $select->sendQuery();
-        unset($select);
-        /*
-         * handle result
-         */
-        if ($this->db->isError($result)) {
-            $message = "Unable to update entry {$table}.{$row}.\n\t\t".$result->getMessage();
-            trigger_error($message, E_USER_WARNING);
+        try {
+            $result = $select->sendQuery();
+        } catch (\Yana\Db\Queries\Exceptions\QueryException $e) {
             return false;
         }
+        unset($select);
 
         $resultRow = $result->fetchRow(0);
         assert('is_array($resultRow); /* unexpected result: $resultRow */');

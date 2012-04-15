@@ -205,8 +205,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     public function commit()
     {
-        $result = $this->_write(true);
-        return !$result->isError();
+        return $this->_write(true);
     }
 
     /**

@@ -406,11 +406,6 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
         // send query
         $result = parent::sendQuery();
 
-        // query failed
-        if ($this->db->isError($result)) {
-            return $result;
-        }
-
         // execute queue
         if (!empty($this->queue)) {
             // retrieve and submit queries in queue
@@ -431,10 +426,6 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 $this->setValues($values);
                 // submit query
                 $result = $this->db->sendQueryObject($this);
-                // break on error
-                if ($this->db->isError($result)) {
-                    break;
-                }
             }
             unset($table, $values);
             // re-activate inheritance
@@ -443,10 +434,8 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
         }
 
         // upload new files
-        if (!$this->db->isError($result)) {
-            $this->deleteFiles($this->files);
-            $this->uploadFiles($this->files);
-        }
+        $this->deleteFiles($this->files);
+        $this->uploadFiles($this->files);
 
         // return result object
         return $result;

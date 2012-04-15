@@ -311,17 +311,6 @@ class Connection extends \Yana\Db\AbstractConnection
     }
 
     /**
-     * Returns bool(true) if the object is an instance of \MDB2_Error.
-     *
-     * @param   mixed  $result  result set to check
-     * @return  bool
-     */
-    public function isError($result)
-    {
-        return $result instanceof \MDB2_Error;
-    }
-
-    /**
      * smart id quoting
      *
      * Returns the quotes Id as a string

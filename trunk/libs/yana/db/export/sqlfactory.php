@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Db;
+namespace Yana\Db\Export;
 
 /**
  * <<decorator>>  database Creator
@@ -91,7 +91,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
      * @param string $name
      * @param array  $arguments 
      */
-    public function __call($name, $arguments)
+    public function __call($name, array $arguments)
     {
         if (strpos($name, 'create') === 0) { // expect "createDbmsName"
             $id = substr($name, 6); // extract "DbmsName"

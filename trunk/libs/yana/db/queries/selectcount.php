@@ -199,19 +199,21 @@ class SelectCount extends \Yana\Db\Queries\SelectExist
      */
     public function countResults()
     {
-        $result = $this->sendQuery();
-        if ($this->db->isError($result)) {
-            $message = "Statement '$this' on database failed";
+        try {
+            
+            $result = $this->sendQuery();
+
+        } catch (\Yana\Db\Queries\Exceptions\QueryException $e) {
+
+            $message = "Statement '$this' on database failed: " . \get_class($e) . ' ' . $e->getMessage();
             \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_WARNING, $result);
             return 0;
         }
 
-        $i = $result->fetchRow(0, false);
-        if (is_null($i) || !isset($i[0])) {
-            return 0;
-        } else {
-            return (int) $i[0];
-        }
+        $rowCount = $result->fetchOne();
+        assert('is_numeric($rowCount)');
+
+        return (int) $rowCount;
     }
 
 }

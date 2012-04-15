@@ -136,17 +136,6 @@ class Connection extends \Yana\Db\AbstractConnection
     }
 
     /**
-     * Returns bool(true) if the object is an error result.
-     *
-     * @param   mixed  $result  result set to check
-     * @return  bool
-     */
-    public function isError($result)
-    {
-        return ($result instanceof \Yana\Db\IsResult && $result->isError());
-    }
-
-    /**
      * get database connection
      *
      * @return  \Yana\Db\FileDb\Driver

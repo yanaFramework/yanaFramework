@@ -249,8 +249,9 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
      */
     public function doesExist()
     {
-        $result = $this->sendQuery();
-        if ($this->db->isError($result)) {
+        try {
+            $result = $this->sendQuery();
+        } catch (\Yana\Db\Queries\Exceptions\QueryException $e) {
             return false;
         }
 

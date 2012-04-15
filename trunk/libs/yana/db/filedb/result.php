@@ -153,10 +153,13 @@ class Result extends \Yana\Core\Object implements \Yana\Db\IsResult
         assert('is_string($column) || is_int($column); // Invalid argument $column: int expected');
 
         $cell = null;
-        if (is_string($column) && isset($row[$column])) {
-            $cell = $row[$column]; 
-        } elseif (is_int($column) && count($row) >= $column) {
-            $cell = \array_slice($row, $column, 1);
+        switch (true)
+        {
+            case is_int($column) && count($row) >= $column:
+                $row = \array_values($row);
+            // fall through
+            case is_string($column) && isset($row[$column]):
+                $cell = $row[$column];
         }
         return $cell;
     }
@@ -173,22 +176,6 @@ class Result extends \Yana\Core\Object implements \Yana\Db\IsResult
     public function getMessage()
     {
         return $this->_message;
-    }
-
-    /**
-     * Check wether the result is an error.
-     *
-     * Returns bool(true) if the request resulted in an error state and bool(false) otherwise.
-     *
-     * {@internal
-     * If something went wrong, the property "result" is not set. This means, $this->result is NULL.
-     * }}
-     *
-     * @return  bool
-     */
-    public function isError()
-    {
-        return is_null($this->_result);
     }
 
 }

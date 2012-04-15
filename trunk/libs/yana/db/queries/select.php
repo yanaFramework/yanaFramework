@@ -760,10 +760,6 @@ class Select extends \Yana\Db\Queries\SelectCount
     {
         $result = $this->sendQuery();
 
-        if ($this->db->isError($result)) {
-            \Yana\Log\LogManager::getLogger()->addLog("Statement '$this' on database failed", E_USER_WARNING, $result);
-            return null;
-        }
         $returnedType = $this->getExpectedResult();
         $table = $this->db->getSchema()->getTable($this->getTable());
         assert('$table instanceof \Yana\Db\Ddl\Table;');
