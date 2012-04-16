@@ -100,7 +100,10 @@ class Sequence extends \Yana\Core\Object
         if (empty(self::$db)) {
             self::_connect();
         }
-        $row = self::$db->select("sequences.$name");
+        $query = new \Yana\Db\Queries\Select(self::$db);
+        $query->setTable("sequences")
+            ->setRow($name);
+        $row = $query->getResults();
         if (empty($row)) {
             throw new \Yana\Db\Queries\Exceptions\NotFoundException("No such sequence '$name'.", E_USER_WARNING);
         }
@@ -293,12 +296,12 @@ class Sequence extends \Yana\Core\Object
         assert('is_null($min) || is_int($min); // Invalid argument type argument 4. Integer expected.');
         assert('is_null($max) || is_int($max); // Invalid argument type argument 5. Integer expected.');
         assert('is_bool($cycle); // Invalid argument type argument 6. Boolean expected.');
-        
+
         // establish datbase connection
         if (empty(self::$db)) {
             self::_connect();
         }
-        
+
         // ascending sequence
         if ($increment > 0) {
             if (is_null($min)) {
@@ -333,10 +336,15 @@ class Sequence extends \Yana\Core\Object
             'max' => (int) $max,
             'cycle' => (bool) $cycle
         );
-    
-        if (self::$db->insert("sequences.$name", $row) && self::$db->commit()) {
-            return true;
-        } else {
+
+        try {
+            $query = new \Yana\Db\Queries\Insert(self::$db);
+            $query->setTable("sequences");
+            $query->setRow($name);
+            $query->setValues($row);
+            $query->sendQuery();
+            return (bool) self::$db->commit();
+        } catch (\Yana\Db\DatabaseException $e) {
             return false;
         }
     }
@@ -389,7 +397,7 @@ class Sequence extends \Yana\Core\Object
             // descending sequence (reset to max)
             } else {
                 $this->value = $this->max;
-                
+
             }
 
         // outside range for non-cyclic sequence

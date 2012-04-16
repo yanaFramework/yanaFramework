@@ -1066,6 +1066,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      *
      * @param   string  $name  table name
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the table is not found
+     * @return  \Yana\Db\Ddl\Database
      */
     public function dropTable($name)
     {
@@ -1076,6 +1077,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         }
 
         $this->tables[$name] = null;
+        return $this;
     }
 
     /**
@@ -1085,6 +1087,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      *
      * @param   string  $name  view name
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the view is not found
+     * @return  \Yana\Db\Ddl\Database
      */
     public function dropView($name)
     {
@@ -1095,6 +1098,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         }
 
         $this->views[$name] = null;
+        return $this;
     }
 
     /**
@@ -1104,6 +1108,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      *
      * @param   string  $name  form name
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the form is not found
+     * @return  \Yana\Db\Ddl\Database
      */
     public function dropForm($name)
     {
@@ -1114,6 +1119,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         }
 
         $this->forms[$name] = null;
+        return $this;
     }
 
     /**
@@ -1123,6 +1129,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      *
      * @param   string  $name  function name
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the function is not found
+     * @return  \Yana\Db\Ddl\Database
      */
     public function dropFunction($name)
     {
@@ -1133,6 +1140,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         }
 
         $this->functions[$name] = null;
+        return $this;
     }
 
     /**
@@ -1142,6 +1150,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      *
      * @param   string  $name  sequence name
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the sequence is not found
+     * @return  \Yana\Db\Ddl\Database
      */
     public function dropSequence($name)
     {
@@ -1152,6 +1161,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         }
 
         $this->sequences[$name] = null;
+        return $this;
     }
 
     /**
@@ -1166,6 +1176,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      *
      * @param   string  $sql   SQL statement
      * @param   string  $dbms  target database-management-system
+     * @return  \Yana\Db\Ddl\Database
      */
     public function addInit($sql, $dbms = "generic")
     {
@@ -1177,6 +1188,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         $init->setDBMS($dbms);
         $init->setSQL($sql);
         $this->initialization[] = $init;
+        return $this;
     }
 
     /**
