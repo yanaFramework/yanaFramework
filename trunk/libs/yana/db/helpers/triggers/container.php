@@ -38,13 +38,6 @@ class Container extends \Yana\Core\Object
 {
 
     /**
-     * current operation
-     *
-     * @var  string
-     */
-    public $operation = "";
-
-    /**
      * current table
      *
      * @var  \Yana\Db\Ddl\Table
@@ -52,44 +45,22 @@ class Container extends \Yana\Core\Object
     public $table = null;
 
     /**
-     * current field
+     * new values of the modified row
      *
-     * @var  int
+     * @var  \Yana\Db\Queries\AbstractQuery
      */
-    public $field = "";
-
-    /**
-     * current value
-     *
-     * @var  mixed
-     */
-    public $value = null;
-
-    /**
-     * current row id
-     *
-     * This is the value of the primary key column.
-     * It is only available if it was part of the query.
-     *
-     * @var  scalar
-     */
-    public $row = null;
+    public $query = null;
 
     /**
      * Create new instance
      *
-     * @param  string  $table  name of table
-     * @param  mixed   $value  value of column
-     * @param  string  $field  name of column
-     * @param  mixed   $rowId  value of primary key
+     * @param  \Yana\Db\Ddl\Table              $table  name of table
+     * @param  \Yana\Db\Queries\AbstractQuery  $query  database query to execute
      */
-    public function __construct(\Yana\Db\Ddl\Table $table, &$value, $field = "", $rowId = null)
+    public function __construct(\Yana\Db\Ddl\Table $table, \Yana\Db\Queries\AbstractQuery $query)
     {
-        assert('is_string($field); // Invalid argument $field: string expected');
         $this->table = $table;
-        $this->value =& $value;
-        $this->field = mb_strtoupper((string) $field);
-        $this->row = $rowId;
+        $this->query = $query;
     }
 
 }

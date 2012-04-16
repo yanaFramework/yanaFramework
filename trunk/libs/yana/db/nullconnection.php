@@ -32,9 +32,23 @@ namespace Yana\Db;
  *
  * @package     yana
  * @subpackage  db
+ * @ignore
  */
 class NullConnection extends \Yana\Core\Object implements \Yana\Db\IsConnection
 {
+
+    /**
+     * @var  \Yana\Db\Ddl\Database 
+     */
+    private $_schema = null;
+
+    /**
+     * Initialize schema.
+     */
+    public function __construct()
+    {
+        $this->_schema = new \Yana\Db\Ddl\Database();
+    }
 
     /**
      * Get database schema.
@@ -43,7 +57,7 @@ class NullConnection extends \Yana\Core\Object implements \Yana\Db\IsConnection
      */
     public function getSchema()
     {
-        return new \Yana\Db\Ddl\Database();
+        return $this->_schema;
     }
 
     /**

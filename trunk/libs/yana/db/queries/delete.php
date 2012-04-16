@@ -168,9 +168,11 @@ class Delete extends \Yana\Db\Queries\AbstractQuery
     }
 
     /**
-     * For update and delete queries this function will retrieve and return the unmodified values.
+     * Will retrieve and return the row that is to be deleted.
      *
-     * @return  mixed
+     * Returns a list of affected rows.
+     *
+     * @return  array
      */
     public function getOldValues()
     {
