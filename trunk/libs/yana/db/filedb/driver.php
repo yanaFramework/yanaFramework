@@ -1165,13 +1165,14 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         if (is_null($this->_autoIncrement)) {
             $name = __CLASS__ . '\\' . $this->_database . '\\' . $this->_tableName;
             try {
-                $this->_autoIncrement = new \Yana\Db\FileDb\Sequence($name);
-            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
+                $sequence = new \Yana\Db\FileDb\Sequence($name);
+            } catch (\Yana\Db\Queries\Exceptions\NotFoundException $e) {
                 \Yana\Db\FileDb\Sequence::create($name);
-                $this->_autoIncrement = new \Yana\Db\FileDb\Sequence($name);
+                $sequence = new \Yana\Db\FileDb\Sequence($name);
                 unset($e);
             }
             unset($name);
+            $this->_autoIncrement = $sequence;
         }
 
         /*
