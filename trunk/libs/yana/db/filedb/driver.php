@@ -135,11 +135,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
             mkdir(self::$_baseDir . $this->_database);
             chmod(self::$_baseDir . $this->_database, 0700);
         }
-        if (is_readable(self::$_baseDir . $this->_database)) {
-            $this->_src[$this->_database] = array();
-            $this->_idx[$this->_database] = array();
-            $this->_cache = array();
-        }
+        $this->rollback();
     }
 
     /**
@@ -189,12 +185,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
     public function rollback()
     {
         $this->_cache = array();
-        if (isset($this->_src[$this->_database][$this->_tableName])) {
-            $this->_src[$this->_database][$this->_tableName]->reset();
-        }
-        if (isset($this->_idx[$this->_database][$this->_tableName])) {
-            $this->_idx[$this->_database][$this->_tableName]->rollback();
-        }
+        $this->_src[$this->_database] = array();
+        $this->_idx[$this->_database] = array();
         return true;
     }
 
@@ -375,6 +367,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
             $row = (array) $value;
         }
         assert('is_array($row);');
+        $row = \array_change_key_case($row, \CASE_LOWER);
 
         /* @var $foreign \Yana\Db\Ddl\ForeignKey */
         assert('!isset($foreign); /* Cannot redeclare var $fkey */');
@@ -395,6 +388,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
                         $targetColumn = $fTable->getPrimaryKey();
                     }
                     assert('is_string($targetColumn);');
+                    $sourceColumn = \mb_strtolower($sourceColumn);
+                    $targetColumn = \mb_strtolower($targetColumn);
 
                     /*
                     * If the referenced row does not exist,
@@ -421,9 +416,12 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
                         if ($isPrimaryKey && $sml->getVar($targetColumn . '.' . $row[$sourceColumn])) {
                             $isMatch = true;
                         } else {
+                            assert('!isset($_id); // Cannot redeclare var $_id');
                             assert('!isset($_row); // Cannot redeclare var $_row');
-                            foreach ($sml->getVars() as $_row)
+                            foreach ((array) $sml->getVar($fTable->getPrimaryKey()) as $_id => $_row)
                             {
+                                $_row[$fTable->getPrimaryKey()] = $_id;
+                                $_row = \array_change_key_case($_row, \CASE_LOWER);
                                 if (!isset($_row[$targetColumn])) {
                                     continue;
                                 }
@@ -432,7 +430,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
                                     break;
                                 }
                             }
-                            unset($_row);
+                            unset($_id, $_row);
                         }
                         if ($isMatch && $isPartialMatch) {
 
@@ -759,7 +757,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         } // end foreach
         unset($column);
 
-        $smlfile = & $this->_getSmlFile();
+        $smlfile = $this->_getSmlFile();
 
         /* if primary key is renamed, the old one has to be replaced */
         if (isset($set[$primaryKey]) && strcasecmp($row, $set[$primaryKey]) !== 0) { // updating primary key
@@ -1237,10 +1235,10 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         }
 
         // initialize vars
-        $result     =  array();
-        $smlfile    =& $this->_getSmlFile();
-        $primaryKey =  mb_strtoupper($this->_table->getPrimaryKey($this->_tableName));
-        $data       =  $smlfile->getVar($primaryKey);
+        $result     = array();
+        $smlfile    = $this->_getSmlFile();
+        $primaryKey = mb_strtoupper($this->_table->getPrimaryKey($this->_tableName));
+        $data       = $smlfile->getVar($primaryKey);
 
         // if the target table is empty ...
         if (!is_array($data)) {
@@ -1537,7 +1535,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             return array();
         }
-        $SMLA =& $this->_getSmlFile();
+        $SMLA = $this->_getSmlFile();
         $cursorA = $SMLA->getVarByReference($pkA);
         if (is_null($cursorA)) {
             return array(); // table A has no entries -> resultset is empty
@@ -1553,7 +1551,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             return array();
         }
-        $SMLB =& $this->_getSmlFile();
+        $SMLB = $this->_getSmlFile();
         $cursorB = $SMLB->getVarByReference($pkB);
 
         /* notify me if results are not valid */
@@ -1893,27 +1891,26 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      *
      * @return  \Yana\Db\FileDb\Index
      */
-    private function &_getIndexFile()
+    private function _getIndexFile()
     {
-        $idxfile =& $this->_idx[$this->_database][$this->_tableName];
-        if (!is_object($idxfile)) {
-            $message = "Index-file not found. Is the directory writable?";
+        if (!isset($this->_idx[$this->_database][$this->_tableName])) {
+            $message = "Index-file not found for databae {$this->_database} table {$this->_tableName}. Is the directory writable?";
             throw new \Yana\Db\DatabaseException($message, E_USER_ERROR);
         }
-        return $idxfile;
+        return $this->_idx[$this->_database][$this->_tableName];
     }
 
     /**
      * create index file
      *
-     * @param  string  $database   database name
+     * @param  string  $database  database name
      */
-    private function _setIndexFile($database = null)
+    private function _setIndexFile($database)
     {
         $filename = $this->_getFilename($database, 'idx');
-        $smlfile =& $this->_getSmlFile();
+        $smlfile = $this->_getSmlFile();
         $idxfile = new \Yana\Db\FileDb\Index($this->_table, $smlfile, $filename);
-        $this->_idx[$this->_database][$this->_tableName] =& $idxfile;
+        $this->_idx[$this->_database][$this->_tableName] = $idxfile;
     }
 
     /**
@@ -1921,7 +1918,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      *
      * @return  \SML
      */
-    private function &_getSmlFile()
+    private function _getSmlFile()
     {
         return $this->_src[$this->_database][$this->_tableName];
     }
