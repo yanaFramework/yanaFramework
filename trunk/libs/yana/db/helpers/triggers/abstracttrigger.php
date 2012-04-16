@@ -71,7 +71,6 @@ abstract class AbstractTrigger extends \Yana\Core\Object implements \Yana\Db\Hel
     {
         $functionName = $this->_getTriggerFunction();
         if (is_callable($functionName)) {
-            $this->_container->operation = $this->_getTriggerType();
             call_user_func($functionName, $this->_container);
         }
     }

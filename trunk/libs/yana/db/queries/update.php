@@ -283,11 +283,11 @@ class Update extends \Yana\Db\Queries\Insert
     }
 
     /**
-     * Get old values
+     * Will retrieve and return the unmodified values.
      *
-     * For update and delete queries this function will retrieve and return the unmodified values.
+     * Returns a list of affected rows.
      *
-     * @return  mixed
+     * @return  array
      */
     public function getOldValues()
     {

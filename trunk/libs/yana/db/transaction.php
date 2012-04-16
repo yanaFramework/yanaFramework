@@ -216,7 +216,7 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
             throw new \Yana\Db\Queries\Exceptions\ConstraintException($_message, E_USER_WARNING);
         }
 
-        $triggerContainer = new \Yana\Db\Helpers\Triggers\Container($table, $value, $updateQuery->getRow());
+        $triggerContainer = new \Yana\Db\Helpers\Triggers\Container($table, $updateQuery);
         $trigger = new \Yana\Db\Helpers\Triggers\BeforeUpdate($triggerContainer);
         $trigger(); // fire trigger
 
@@ -260,7 +260,7 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
             throw new \Yana\Db\Queries\Exceptions\ConstraintException("Insert on table '{$tableName}' failed. " .
                 "Constraint check failed for statement '$insertQuery'.", E_USER_WARNING);
         }
-        $triggerContainer = new \Yana\Db\Helpers\Triggers\Container($table, $value, $insertQuery->getRow());
+        $triggerContainer = new \Yana\Db\Helpers\Triggers\Container($table, $insertQuery);
         $trigger = new \Yana\Db\Helpers\Triggers\BeforeInsert($triggerContainer);
         $trigger(); // fire trigger
 
@@ -294,32 +294,15 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
         assert('!isset($table); // Cannot redeclare var $table');
         $table = $this->_getSchema()->getTable($tableName);
 
-        // get old row for logging an generic triggers
-        assert('!isset($oldRows); /* Cannot redeclare var $oldRows */');
-        $oldRows = $deleteQuery->getOldValues();
-
-        if (empty($oldRows)) {
-            return $this; // abort: there is nothing to delete
-        }
-
-        if ($deleteQuery->getLimit() === 1) {
-            $oldRows = array($oldRows);
-        }
-
         // loop through deleted rows
+        $triggerContainer = new \Yana\Db\Helpers\Triggers\Container($table, $deleteQuery);
+        $trigger = new \Yana\Db\Helpers\Triggers\BeforeDelete($triggerContainer);
+        $trigger(); // fire trigger
+
+        // save trigger settings for onAfterDelete
         assert('!isset($triggerCollection); /* Cannot redeclare var $triggerCollection */');
         $triggerCollection = new \Yana\Db\Helpers\Triggers\TriggerCollection();
-        assert('!isset($oldRow); /* Cannot redeclare var $oldRow */');
-        foreach ($oldRows as $oldRow)
-        {
-            $triggerContainer = new \Yana\Db\Helpers\Triggers\Container($table, $oldRow, $deleteQuery->getRow());
-            $trigger = new \Yana\Db\Helpers\Triggers\BeforeDelete($triggerContainer);
-            $trigger(); // fire trigger
-
-            // save trigger settings for onAfterDelete
-            $triggerCollection[] = new \Yana\Db\Helpers\Triggers\AfterDelete($triggerContainer);
-        }
-        unset($oldRow);
+        $triggerCollection[] = new \Yana\Db\Helpers\Triggers\AfterDelete($triggerContainer);
 
         // add query to queue
         $this->_queue[] = array($deleteQuery, $triggerCollection);

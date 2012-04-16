@@ -143,39 +143,39 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
     /**
      * @var string
      */
-     protected $arrayAddress = '';
+    protected $arrayAddress = '';
 
     /**
      * @var bool
      */
-     protected $useInheritance = true;
+    protected $useInheritance = true;
 
     /**
      * @var bool
      */
-     protected $isSubQuery = false;
+    protected $isSubQuery = false;
 
     /**
      * @var array
      */
-     protected $parentTables = array();
+    protected $parentTables = array();
 
     /**
      * @var array
      */
-     protected $tableByColumn = array();
+    protected $tableByColumn = array();
 
     /**
      * @var \Yana\Db\Ddl\Table
      */
-     protected $table = null;
+    protected $table = null;
 
     /**
      * @var array
      */
-     protected $oldValues = null;
+    private $_oldValues = null;
 
-    /**#@-*/
+    /** #@- */
 
     /**
      * create a new instance
@@ -266,20 +266,20 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     public function resetQuery()
     {
-        $this->id             = null;
-        $this->row            = '*';
-        $this->column         = array();
-        $this->profile        = array();
-        $this->rowId          = array();
-        $this->where          = array();
-        $this->orderBy        = null;
-        $this->desc           = false;
-        $this->limit          = 0;
-        $this->joins          = array();
-        $this->arrayAddress   = '';
-        $this->parentTables   = array();
-        $this->tableByColumn  = array();
-        $this->oldValues      = null;
+        $this->id            = null;
+        $this->row           = '*';
+        $this->column        = array();
+        $this->profile       = array();
+        $this->rowId         = array();
+        $this->where         = array();
+        $this->orderBy       = null;
+        $this->desc          = false;
+        $this->limit         = 0;
+        $this->joins         = array();
+        $this->arrayAddress  = '';
+        $this->parentTables  = array();
+        $this->tableByColumn = array();
+        $this->_oldValues    = null;
         return $this;
     }
 
@@ -343,7 +343,6 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             default:
                 throw new \Yana\Core\Exceptions\InvalidArgumentException("Argument 1 is invalid. " .
                     "The selected statement type is unknown.", E_USER_WARNING);
-            break;
         }
         return $this;
     }
@@ -1879,19 +1878,25 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      *
      * For update and delete queries this function will retrieve and return the unmodified values.
      *
-     * @return  mixed
+     * @return  array
      * @ignore
      */
     protected function getOldValues()
     {
-        if (!isset($this->oldValues)) {
+        if (!isset($this->_oldValues)) {
             $query = new \Yana\Db\Queries\Select($this->db);
             $query->setTable($this->getTable());
-            $query->setColumn($this->getColumn());
             $query->setRow($this->getRow());
-            $this->oldValues = $this->db->select($query);
+            if ($this->getRow() === '*') {
+                $query->setWhere($this->getWhere());
+            }
+            $oldValues = $this->db->select($query);
+            if ($query->getExpectedResult() === \Yana\Db\ResultEnumeration::ROW) {
+                $oldValues = array($oldValues);
+            }
+            $this->_oldValues = $oldValues;
         }
-        return $this->oldValues;
+        return $this->_oldValues;
     }
 
     /**

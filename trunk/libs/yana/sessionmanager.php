@@ -33,39 +33,33 @@
  * This is a manager class to handle user data and
  * permission levels.
  *
- * @access      public
  * @name        SessionManager
  * @package     yana
  * @subpackage  core
  *
  * @ignore
  */
-class SessionManager extends \Yana\Core\AbstractSingleton implements Serializable
+class SessionManager extends \Yana\Core\AbstractSingleton implements \Serializable
 {
+
     /**
      * This is a place-holder for the singleton's instance
      *
-     * @access  private
-     * @static
-     * @var     object
+     * @var  object
      */
     private static $_instance = null;
 
     /**
      * database connection
      *
-     * @ignore
-     * @access  private
-     * @var     \Yana\Db\IsConnection
+     * @var  \Yana\Db\IsConnection
      */
     private static $_database = null;
 
     /**
      * default profile id
      *
-     * @ignore
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private static $_defaultProfileId = "DEFAULT";
 
@@ -73,15 +67,13 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
      * result cache
      *
      * @ignore
-     * @access  protected
-     * @var     array
+     * @var  array
      */
     protected $cache = array();
 
     /**
      * @ignore
-     * @access  protected
-     * @var     array
+     * @var  array
      */
     protected static $rules = array();
 
@@ -91,9 +83,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
      * Creates an instance if there is none.
      * Then it returns a reference to this (single) instance.
      *
-     * @access  public
-     * @static
-     * @return  SessionManager
+     * @return  \SessionManager
      */
     public static function &getInstance()
     {
@@ -115,8 +105,6 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
      *
      * Returns an empty array, if there are no entries.
      *
-     * @access  public
-     * @static
      * @return  array
      */
     public static function getGroups()
@@ -133,8 +121,6 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
      *
      * Returns an empty array, if there are no entries.
      *
-     * @access  public
-     * @static
      * @return  array
      */
     public static function getRoles()
@@ -144,11 +130,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
     }
 
     /**
-     * <<Singleton>> constructor
-     *
-     * creates a new instance of this class
-     *
-     * @ignore
+     * <<Singleton>> Creates a new instance of this class.
      */
     private function __construct()
     {
@@ -156,10 +138,8 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
     }
 
     /**
-     * set datasource
+     * Set datasource.
      *
-     * @access  public
-     * @static
      * @param   \Yana\Db\IsConnection  $database     datasource
      * @ignore
      */
@@ -169,10 +149,8 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
     }
 
     /**
-     * get datasource
+     * Get datasource.
      *
-     * @access  public
-     * @static
      * @return  \Yana\Db\IsConnection
      * @ignore
      */
@@ -185,7 +163,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
     }
 
     /**
-     * add security rule
+     * Add security rule.
      *
      * This method adds a reference to an user-definded function to a list of custom security checks.
      *
@@ -246,19 +224,16 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
      * The code above returns true, if the user's security level is higher or equal the required
      * level. The check is added when the plugin is created.
      *
-     * @access  public
-     * @static
      * @param   string  $rule  must be a valid callback
      * @see     SessionManager::checkPermission()
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException when the function is not callable
      */
     public static function addSecurityRule($rule)
     {
-        if (is_callable($rule)) {
-            self::$rules[] = $rule;
-        } else {
+        if (!is_callable($rule)) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("The argument is not a valid callback function.");
         }
+        self::$rules[] = $rule;
     }
 
     /**
@@ -266,10 +241,6 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
      *
      * Rescan plugin list and refresh the action security settings.
      *
-     * Returns bool(true) on sucess and bool(false) on error.
-     *
-     * @access  public
-     * @static
      * @throws  DbAlert  if changes could not be saved to database
      *
      * @ignore
@@ -393,9 +364,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
             }
         }
         unset($row);
-        if (!$database->commit()) {
-            throw new DbAlert("Unable to commit changes.");
-        }
+        $database->commit(); // may throw exception
     }
 
     /**
@@ -407,7 +376,6 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
      * Returns bool(true) if the user's permission level is high enough to
      * execute the changes and bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $profileId  profile id
      * @param   string  $action     action
      * @param   string  $userName   user name
@@ -514,10 +482,8 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
     }
 
     /**
-     * check requirements against given rules
+     * Check requirements against given rules.
      *
-     * @access  public
-     * @static
      * @param   array   $required   list of required privileges
      * @param   string  $profileId  profile id
      * @param   string  $action     action name
@@ -555,12 +521,11 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
     }
 
     /**
-     * set security level
+     * Set security level.
      *
      * Sets the user's security level to an integer value.
      * The value must be greater or equal 0 and less or equal 100.
      *
-     * @access  public
      * @param   int     $level      new security level [0,100]
      * @param   string  $userName   user to update
      * @param   string  $profileId  profile to update
@@ -634,12 +599,11 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
     }
 
     /**
-     * get security level
+     * Get security level.
      *
      * Returns the user's security level as an integer value.
      * The default is 0.
      *
-     * @access  public
      * @param   string  $userName   user name
      * @param   string  $profileId  profile id
      * @return  int
@@ -650,7 +614,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
         assert('is_string($profileId); // Wrong type for argument 2. String expected');
         /* Argument 1 */
         if (empty($profileId)) {
-            $profileId = Yana::getId();
+            $profileId = \Yana::getId();
         }
         $profileId = mb_strtoupper($profileId);
 
@@ -662,7 +626,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
          * }}
          */
         if (empty($userName)) {
-            $userName = (string) YanaUser::getUserName();
+            $userName = (string) \YanaUser::getUserName();
         }
 
         $level = 0;
@@ -707,11 +671,8 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
     }
 
     /**
-     * serialize this object to a string
-     *
      * Returns the serialized object as a string.
      *
-     * @access  public
      * @return  string
      */
     public function serialize()
@@ -725,7 +686,6 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements Serializabl
     /**
      * Reinitializes the object.
      *
-     * @access  public
      * @param   string  $string  string to unserialize
      */
     public function unserialize($string)

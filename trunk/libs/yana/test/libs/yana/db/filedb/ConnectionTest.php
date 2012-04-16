@@ -55,9 +55,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     public function __construct()
     {
         \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
-        // just in case
-        $this->setUp(); 
-        $this->tearDown();
     }
 
     /**
@@ -89,14 +86,13 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $this->dbsobj->remove("t.*", array(), 0);
         $this->dbsobj->remove("ft.*", array(), 0);
         $this->dbsobj->commit();
-        unset ( $this->dbsobj );
     }
 
     /**
      * insert and update
      *
      * @test
-     * @expectedException \Yana\Db\DatabaseException
+     * @expectedException \Yana\Db\Queries\Exceptions\InconsistencyException
      */
     public function testInsertAndUpdateWithFailingForeignKeyCheck()
     {

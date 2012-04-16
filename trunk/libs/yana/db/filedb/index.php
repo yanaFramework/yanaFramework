@@ -349,16 +349,14 @@ class Index extends \Yana\Core\Object
      */
     public function rollback()
     {
-        $indexes = null;
+        $indexes = array();
         if (file_exists($this->_filename)) {
             $indexes = unserialize(file_get_contents($this->_filename));
-        }
-        if (is_array($indexes)) {
-            $this->_indexes = $indexes;
+            assert('is_array($indexes);');
         } else {
-            $this->_indexes = array();
             $this->create();
         }
+        $this->_indexes = $indexes;
     }
 
 }
