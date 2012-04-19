@@ -191,6 +191,7 @@ abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Cor
      * @param   scalar  $offset  index of item to replace
      * @param   mixed   $value   new value of item
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the value is not a valid collection item
+     * @return  mixed
      */
     protected function _offsetSet($offset, $value)
     {
@@ -199,6 +200,7 @@ abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Cor
         } else {
             $this->_items[] = $value;
         }
+        return $value;
     }
 
     /**
