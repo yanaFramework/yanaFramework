@@ -170,6 +170,9 @@ abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Cor
     /**
      * Insert or replace item.
      *
+     * This method is protected to force developers to "overwrite" it with
+     * proper type and syntax checks in place.
+     *
      * Implement this function in your sub-class as follows:
      * <code>
      * if ($yourTypeCheckHere) {
@@ -178,7 +181,6 @@ abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Cor
      *     throw new \Yana\Core\Exceptions\InvalidArgumentException();
      * }
      * </code>
-     * 
      *
      * Example:
      * <code>
