@@ -32,7 +32,6 @@ namespace Yana\Forms;
  *
  * An outer iterator, that allows to iterate over the rows of a table layout
  *
- * @access      public
  * @package     yana
  * @subpackage  form
  */
@@ -42,15 +41,15 @@ class RowIterator extends \Yana\Core\AbstractCollection
     /**
      * Insert or replace a row.
      *
-     * @access  public
      * @param   string  $offset  index of item to replace
-     * @param   array   $row     new value of item
+     * @param   array   $value   the row you wish to add
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not an array
+     * @return  array
      */
     public function offsetSet($offset, $value)
     {
         if (is_array($value)) {
-            $this->_offsetSet($offset, $value);
+            return $this->_offsetSet($offset, $value);
         } else {
             $message = "Array expected. Found " . gettype($value) . " instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
