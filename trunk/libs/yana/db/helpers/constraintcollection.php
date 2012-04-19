@@ -52,8 +52,8 @@ class ConstraintCollection extends \Yana\Core\AbstractCollection
     /**
      * Initializes the collection.
      *
-     * @param   \Yana\Db\Ddl\Constraint[]  $items  expects a list of constraints
-     * @param   array                      $row    database row to evaluate
+     * @param  \Yana\Db\Ddl\Constraint[]  $items  expects a list of constraints
+     * @param  array                      $row    database row to evaluate
      */
     public function __construct(array $items = array(), array $row = array())
     {
@@ -73,9 +73,10 @@ class ConstraintCollection extends \Yana\Core\AbstractCollection
      * $collection->_offsetSet($offset, $item);
      * </code>
      *
-     * @param  scalar                   $key   offset
-     * @param  \Yana\Db\Ddl\Constraint  $item  constraint to add to the collection
-     * @throws \Yana\Core\Exceptions\InvalidArgumentException 
+     * @param   scalar                   $key   offset
+     * @param   \Yana\Db\Ddl\Constraint  $item  constraint to add to the collection
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException
+     * @return  \Yana\Db\Ddl\Constraint
      */
     public function offsetSet($key, $item)
     {
@@ -87,7 +88,7 @@ class ConstraintCollection extends \Yana\Core\AbstractCollection
         if (!preg_match(self::CONSTRAINT_SYNTAX, $code)) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Syntax error in constraint '$code' .", E_USER_ERROR);
         }
-        $this->_offsetSet($key, $code);
+        return $this->_offsetSet($key, $code);
     }
 
     /**
