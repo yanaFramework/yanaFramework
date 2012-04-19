@@ -128,7 +128,11 @@ abstract class AbstractCountableArray extends \Yana\Core\Object implements \Yana
      */
     public function offsetSet($offset, $value)
     {
-        $this->_items[$offset] = $value;
+        if (!is_null($offset)) {
+            $this->_items[$offset] = $value;
+        } else {
+            $this->_items[] = $value;
+        }
     }
 
     /**
