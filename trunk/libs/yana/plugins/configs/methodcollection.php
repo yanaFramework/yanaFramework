@@ -85,6 +85,7 @@ class MethodCollection extends \Yana\Core\AbstractCollection
      * @param   string               $offset  ignored
      * @param   MethodConfiguration  $value   newly added instance
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not a valid item of the collection
+     * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function offsetSet($offset, $value)
     {
@@ -93,7 +94,7 @@ class MethodCollection extends \Yana\Core\AbstractCollection
                 $offset = $value->getMethodName();
             }
             assert('is_string($offset); // Invalid argument $offset: string expected');
-            $this->_offsetSet(mb_strtolower($offset), $value);
+            return $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
             $message = "Instance of MethodConfiguration expected. " .
                 "Found " . gettype($value) . "(" . ((is_object($value)) ? get_class($value) : $value) . ") instead.";
