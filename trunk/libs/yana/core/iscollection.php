@@ -33,7 +33,7 @@ namespace Yana\Core;
  * @package     yana
  * @subpackage  core
  */
-interface IsCollection extends \Iterator, \Countable, \ArrayAccess
+interface IsCollection extends \Iterator, \Yana\Core\IsCountableArray
 {
 
     /**
