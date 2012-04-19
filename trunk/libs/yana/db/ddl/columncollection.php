@@ -44,6 +44,7 @@ class ColumnCollection extends \Yana\Core\AbstractCollection
      * @param   string               $offset  index of item to replace
      * @param   \Yana\Db\Ddl\Column  $value   new value of item
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the given value is not valid
+     * @return  \Yana\Db\Ddl\Column
      */
     public function offsetSet($offset, $value)
     {
@@ -51,7 +52,7 @@ class ColumnCollection extends \Yana\Core\AbstractCollection
             if (!is_string($offset)) {
                 $offset = $value->getName();
             }
-            $this->_offsetSet(mb_strtolower($offset), $value);
+            return $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
             $message = "Instance of \Yana\Db\Ddl\Column expected. Found " . gettype($value) . "(" .
                 ((is_object($value)) ? get_class($value) : $value) . ") instead.";
