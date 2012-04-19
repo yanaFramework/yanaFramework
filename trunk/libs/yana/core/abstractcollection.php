@@ -194,7 +194,11 @@ abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Cor
      */
     protected function _offsetSet($offset, $value)
     {
-        $this->_items[$offset] = $value;
+        if (!is_null($offset)) {
+            $this->_items[$offset] = $value;
+        } else {
+            $this->_items[] = $value;
+        }
     }
 
     /**
