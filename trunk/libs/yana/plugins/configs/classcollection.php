@@ -81,6 +81,7 @@ class ClassCollection extends \Yana\Core\AbstractCollection
      * @param   string                                    $offset  ignored
      * @param   \Yana\Plugins\Configs\ClassConfiguration  $value   newly added instance
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
     public function offsetSet($offset, $value)
     {
@@ -88,7 +89,7 @@ class ClassCollection extends \Yana\Core\AbstractCollection
             if (!is_string($offset)) {
                 $offset = preg_replace('/^Plugin_/i', '', $value->getClassName());
             }
-            $this->_offsetSet(mb_strtolower($offset), $value);
+            return $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
             $message = "Instance of \Yana\Plugins\Configs\ClassConfiguration expected. " .
                 "Found " . gettype($value) . "(" . ((is_object($value)) ? get_class($value) : $value) . ") instead.";
