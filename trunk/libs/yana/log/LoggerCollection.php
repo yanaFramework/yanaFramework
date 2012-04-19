@@ -39,9 +39,10 @@ class LoggerCollection extends \Yana\Core\AbstractCollection implements IsLogHan
     /**
      * Store new value in database.
      *
-     * @param scalar    $offset  where to place the value (may also be empty)
-     * @param IsLogger  $value   new value to store
+     * @param   scalar              $offset  where to place the value (may also be empty)
+     * @param   \Yana\Log\IsLogger  $value   new value to store
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not valid
+     * @return  \Yana\Log\IsLogger
      */
     public function offsetSet($offset, $value)
     {
@@ -49,7 +50,7 @@ class LoggerCollection extends \Yana\Core\AbstractCollection implements IsLogHan
             if (!is_string($offset)) {
                 $offset = $value->getName();
             }
-            $this->_offsetSet(mb_strtolower($offset), $value);
+            return $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
             $message = "Instance of IsLogger expected. Found " . gettype($value) . "(" .
                 ((is_object($value)) ? get_class($value) : $value) . ") instead.";
@@ -60,11 +61,11 @@ class LoggerCollection extends \Yana\Core\AbstractCollection implements IsLogHan
     /**
      * This implements the logging behavior.
      *
-     * @param   string  $message  the message that should be reported
-     * @param   int     $level    numeric level of severity
-     * @param   mixed   $data     any kind of data that might help to understand context in which the message was created
+     * @param  string  $message  the message that should be reported
+     * @param  int     $level    numeric level of severity
+     * @param  mixed   $data     any kind of data that might help to understand context in which the message was created
      */
-    public function addLog($message, $level = IsLogger::INFO, $data = array())
+    public function addLog($message, $level = \Yana\Log\IsLogger::INFO, $data = array())
     {
         foreach ($this as $logger)
         {
