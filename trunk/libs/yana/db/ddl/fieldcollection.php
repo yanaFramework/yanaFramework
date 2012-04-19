@@ -32,7 +32,6 @@ namespace Yana\Db\Ddl;
  *
  * A field represents an UI input-element inside a form.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  * @see         \Yana\Db\Ddl\Field
@@ -43,18 +42,18 @@ class FieldCollection extends \Yana\Core\AbstractCollection
     /**
      * Insert or replace item.
      *
-     * @access  public
      * @param   string              $offset  index of item to replace
      * @param   \Yana\Db\Ddl\Field  $value   new value of item
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given value is not valid
+     * @return  \Yana\Db\Ddl\Field
      */
     public function offsetSet($offset, $value)
     {
-        if ($value instanceof \Yana\Db\Ddl\Field) {
+        if (!$value instanceof \Yana\Db\Ddl\Field) {
             if (!is_string($offset)) {
                 $offset = $value->getName();
             }
-            $this->_offsetSet(mb_strtolower($offset), $value);
+            return $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
             $message = "Instance of \Yana\Db\Ddl\Field expected. Found " . gettype($value) . "(" . get_class($value) . ") instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
