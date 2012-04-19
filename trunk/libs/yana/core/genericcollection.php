@@ -47,10 +47,11 @@ class GenericCollection extends \Yana\Core\AbstractCollection
      *
      * @param   scalar  $offset  index of item to replace
      * @param   mixed   $value   new value of item
+     * @return  mixed
      */
     public function offsetSet($offset, $value)
     {
-        $this->_offsetSet($offset, $value);
+        return $this->_offsetSet($offset, $value);
     }
 
 }
