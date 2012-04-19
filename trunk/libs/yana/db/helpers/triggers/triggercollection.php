@@ -59,9 +59,10 @@ class TriggerCollection extends \Yana\Core\AbstractCollection
      * $collection->_offsetSet($offset, $item);
      * </code>
      *
-     * @param  scalar                               $key   offset
-     * @param  \Yana\Db\Helpers\Triggers\IsTrigger  $item  constraint to add to the collection
-     * @throws \Yana\Core\Exceptions\InvalidArgumentException 
+     * @param   scalar                               $key   offset
+     * @param   \Yana\Db\Helpers\Triggers\IsTrigger  $item  constraint to add to the collection
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException 
+     * @return  \Yana\Db\Helpers\Triggers\IsTrigger
      */
     public function offsetSet($key, $item)
     {
@@ -69,7 +70,7 @@ class TriggerCollection extends \Yana\Core\AbstractCollection
             $message = "Item must be instance of \Yana\Db\Helpers\Triggers\IsTrigger.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message. \E_USER_ERROR);
         }
-        $this->_offsetSet($key, $item);
+        return $this->_offsetSet($key, $item);
     }
 
     /**
