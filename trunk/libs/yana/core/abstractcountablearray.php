@@ -54,6 +54,16 @@ abstract class AbstractCountableArray extends \Yana\Core\Object implements \Yana
     }
 
     /**
+     * Set item list.
+     *
+     * @param  array  $items  items to place in array
+     */
+    protected function _setItems(array $items)
+    {
+        $this->_items = $items;
+    }
+
+    /**
      * Return the number of items in the collection.
      *
      * If the collection is empty, it returns 0.
@@ -62,7 +72,7 @@ abstract class AbstractCountableArray extends \Yana\Core\Object implements \Yana
      */
     public function count()
     {
-        return count($this->_items);
+        return count($this->_getItems());
     }
 
     /**
@@ -79,7 +89,8 @@ abstract class AbstractCountableArray extends \Yana\Core\Object implements \Yana
      */
     public function offsetExists($offset)
     {
-        return isset($this->_items[$offset]);
+        $items = $this->_getItems();
+        return isset($items[$offset]);
     }
 
     /**
@@ -96,8 +107,9 @@ abstract class AbstractCountableArray extends \Yana\Core\Object implements \Yana
      */
     public function offsetGet($offset)
     {
-        if (isset($this->_items[$offset])) {
-            return $this->_items[$offset];
+        $items = $this->_getItems();
+        if (isset($items[$offset])) {
+            return $items[$offset];
         } else {
             return null;
         }
@@ -125,14 +137,18 @@ abstract class AbstractCountableArray extends \Yana\Core\Object implements \Yana
      * @param   scalar  $offset  index of item to replace
      * @param   mixed   $value   new value of item
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the value is not a valid collection item
+     * @return  mixed
      */
     public function offsetSet($offset, $value)
     {
+        $items = $this->_getItems();
         if (!is_null($offset)) {
-            $this->_items[$offset] = $value;
+            $items[$offset] = $value;
         } else {
-            $this->_items[] = $value;
+            $items[] = $value;
         }
+        $this->_setItems($items);
+        return $value;
     }
 
     /**
@@ -150,9 +166,11 @@ abstract class AbstractCountableArray extends \Yana\Core\Object implements \Yana
      */
     public function offsetUnset($offset)
     {
-        if (isset($this->_items[$offset])) {
-            unset($this->_items[$offset]);
+        $items = $this->_getItems();
+        if (isset($items[$offset])) {
+            unset($items[$offset]);
         }
+        $this->_setItems($items);
     }
 
 }
