@@ -67,11 +67,11 @@ class ArrayAdapterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testUpdate()
+    public function testSaveEntity()
     {
         $this->assertEquals(0, count($this->_object));
         $mockObject = new \Yana\Io\Adapters\MockSplSubject();
-        $this->_object->update($mockObject);
+        $this->_object->saveEntity($mockObject);
         $this->assertEquals(1, count($this->_object));
         $this->assertEquals($mockObject, $this->_object[0]);
     }
@@ -95,22 +95,22 @@ class ArrayAdapterTest extends \PHPUnit_Framework_TestCase
  * @package test
  * @ignore
  */
-class MockSplSubject implements \SplSubject
+class MockSplSubject extends \Yana\Core\Object implements \Yana\Io\Adapters\IsEntity
 {
 
-    public function attach(SplObserver $observer)
+    public function setDataAdapter(\Yana\Io\Adapters\IsDataAdapter $adapter)
     {
         // intentionally left blank
     }
 
-    public function detach(SplObserver $observer)
+    public function saveEntity()
     {
         // intentionally left blank
     }
 
-    public function notify()
+    public function getId()
     {
-        // intentionally left blank
+        return 1;
     }
 
 }
