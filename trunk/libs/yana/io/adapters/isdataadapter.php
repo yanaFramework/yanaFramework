@@ -40,7 +40,7 @@ namespace Yana\Io\Adapters;
  * @subpackage  core
  * @ignore
  */
-interface IsDataAdapter extends \Yana\Core\IsCountableArray, \SplObserver
+interface IsDataAdapter extends \Yana\Core\IsCountableArray
 {
 
     /**
@@ -49,6 +49,13 @@ interface IsDataAdapter extends \Yana\Core\IsCountableArray, \SplObserver
      * @return  array
      */
     public function getIds();
+
+    /**
+     * Persists the given entity.
+     *
+     * @param  \Yana\Io\Adapters\IsEntity  $entity  object to persist
+     */
+	public function saveEntity(\Yana\Io\Adapters\IsEntity $entity);
 
 }
 
