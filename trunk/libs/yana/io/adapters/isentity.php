@@ -1,4 +1,5 @@
 <?php
+
 /**
  * YANA library
  *
@@ -37,7 +38,7 @@ namespace Yana\Io\Adapters;
  * @package     yana
  * @subpackage  core
  */
-interface IsEntity extends \Yana\Core\IsObject, \SplSubject
+interface IsEntity extends \Yana\Core\IsObject
 {
 
     /**
@@ -46,6 +47,18 @@ interface IsEntity extends \Yana\Core\IsObject, \SplSubject
      * @return  scalar
      */
     public function getId();
+
+    /**
+     * This sets the data adapter used to persist the entity
+     *
+     * @param  \Yana\Io\Adapters\IsDataAdapter  $adapter  object that should be used
+     */
+    public function setDataAdapter(\Yana\Io\Adapters\IsDataAdapter $adapter);
+
+    /**
+     * Calls the assigned data adapter to persist the entity.
+     */
+    public function saveEntity();
 
 }
 

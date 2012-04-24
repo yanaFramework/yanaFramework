@@ -48,12 +48,12 @@ class ArrayAdapter extends \Yana\Core\AbstractCountableArray implements \Yana\Io
      * $array[] = $subject;
      * </code>
      *
-     * @param  \SplSubject  $subject  what you want to add
+     * @param  \Yana\Io\Adapters\IsEntity  $entity  what you want to add
      */
-    public function update(\SplSubject $subject)
+    public function saveEntity(\Yana\Io\Adapters\IsEntity $entity)
     {
-        if (!\in_array($subject, $this->_getItems())) {
-            $this[] = $subject;
+        if (!\in_array($entity, $this->_getItems())) {
+            $this[] = $entity;
         }
     }
 

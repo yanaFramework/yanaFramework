@@ -41,51 +41,48 @@ abstract class AbstractEntity extends \Yana\Core\Object implements \Yana\Io\Adap
     /**
      * List of observers used to persist the entity's state.
      *
-     * @var  \SplObserver[]
+     * @var  \Yana\Io\Adapters\ArrayAdapter
      */
-    private $_observers = array();
+    private $_adapter = null;
 
     /**
-     * Adds an object to the list of observers.
+     * Initializes the adapter with a dummy implementation.
      *
-     * If the observer is already on the list, the function does nothing.
-     *
-     * @param  \SplObserver  $observer  add this object
+     * @ignore
      */
-    public function attach(\SplObserver $observer)
+    public function __construct()
     {
-        if ($observer !== null && !\in_array($observer, $this->_observers)) {
-            $this->_observers[] = $observer;
-        }
+        $this->setDataAdapter(new \Yana\Io\Adapters\ArrayAdapter());
     }
 
     /**
-     * Removes an observer from the list.
+     * This sets the data adapter used to persist the entity
      *
-     * If the observer is not on the list, the function does nothing.
-     *
-     * @param  \SplObserver  $observer  remove this object from the list of observers
+     * @param  \Yana\Io\Adapters\IsDataAdapter  $adapter  object that should be used
      */
-    public function detach(\SplObserver $observer)
+    public function setDataAdapter(\Yana\Io\Adapters\IsDataAdapter $adapter)
     {
-        $key = \array_search($observer, $this->_observers, true);
-        if ($key !== false) {
-            unset($this->_observers[$key]);
-        }
+        $this->_adapter = $adapter;
+    }
+
+    /**
+     * Get adapter.
+     *
+     * This returns the adapter selected via setDataAdapter() or a default dummy implementation if no other is selected.
+     * 
+     * @return  \Yana\Io\Adapters\ArrayAdapter
+     */
+    protected function _getDataAdapter()
+    {
+        return $this->_adapter;
     }
 
     /**
      * Notifies all active observers to check the state of the entity.
      */
-    public function notify()
+    public function saveEntity()
     {
-        foreach ($this->_observers as $observer)
-        {
-            assert('$observer instanceof \SplObserver');
-            /* @var $observer \SplObserver */
-            $observer->update($this);
-        }
-        unset($observer);
+        $this->_getDataAdapter()->saveEntity($entity);
     }
 
 }
