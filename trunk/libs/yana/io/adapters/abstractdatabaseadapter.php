@@ -35,7 +35,7 @@ namespace Yana\Io\Adapters;
  * @package     yana
  * @subpackage  core
  */
-class DatabaseAdapter extends \Yana\Core\Object implements \Yana\Io\Adapters\IsDataAdapter
+abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yana\Io\Adapters\IsDataBaseAdapter
 {
 
     /**
@@ -67,7 +67,7 @@ class DatabaseAdapter extends \Yana\Core\Object implements \Yana\Io\Adapters\IsD
             throw new \Yana\Core\Exceptions\NotFoundException($message);
         }
         $this->_databaseConnection = $db;
-        $this->_tableName = strtolower("$table");
+        $this->_tableName = mb_strtolower("$table");
     }
 
     /**
@@ -89,6 +89,22 @@ class DatabaseAdapter extends \Yana\Core\Object implements \Yana\Io\Adapters\IsD
     {
         return $this->_databaseConnection;
     }
+
+    /**
+     * Serializes the entity object to a table-row.
+     *
+     * @param   \Yana\Io\Adapters\IsEntity  $entity  object to convert
+     * @return  array
+     */
+    abstract protected function _serializeEntity(\Yana\Io\Adapters\IsEntity $entity);
+
+    /**
+     * Unserializes the table-row to an entity object.
+     *
+     * @param   array  $dataSet  table row to convert
+     * @return  \Yana\Io\Adapters\IsEntity
+     */
+    abstract protected function _unserializeEntity(array $dataSet);
 
     /**
      * Return the number of items in the table.
@@ -134,14 +150,16 @@ class DatabaseAdapter extends \Yana\Core\Object implements \Yana\Io\Adapters\IsD
      * </code>
      *
      * @param   scalar  $offset  index of item to retrieve
-     * @return  mixed
+     * @return  \Yana\Io\Adapters\IsEntity
      */
     public function offsetGet($offset)
     {
         $query = new \Yana\Db\Queries\Select($this->_getDatabaseConnection());
         $query->setTable($this->_getTableName());
         $query->setRow($offset);
-        return $query->getResults();
+        $dataSet = $query->getResults();
+        $entity = $this->_unserializeEntity($dataSet);
+        return $entity;
     }
 
     /**
@@ -163,22 +181,35 @@ class DatabaseAdapter extends \Yana\Core\Object implements \Yana\Io\Adapters\IsD
      * parent::_offsetSet($offset, $item);
      * </code>
      *
-     * @param   scalar  $offset  index of item to replace
-     * @param   mixed   $value   new value of item
+     * The method returns the used entity to allow chained assignments (like this: $a = $b[1] = $c).
+     *
+     * @param   scalar                      $offset  index of item to replace
+     * @param   \Yana\Io\Adapters\IsEntity  $entity  save this entity
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the value is not a valid collection item
-     * @return  mixed
+     * @return  \Yana\Io\Adapters\IsEntity
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $entity)
     {
+        if (!$entity instanceof \Yana\Io\Adapters\IsEntity) {
+            throw new \Yana\Core\Exceptions\InvalidArgumentException('Instance of "IsEntity" expected.');
+        }
+        if ($offset !== null && $offset !== $entity->getId()) {
+            $entity->setId($offset);
+        }
+
         if ($offset && $this->offsetExists($offset)) {
             $query = new \Yana\Db\Queries\Update($this->_getDatabaseConnection());
         } else {
             $query = new \Yana\Db\Queries\Insert($this->_getDatabaseConnection());
         }
         $query->setTable($this->_getTableName());
-        $query->setRow($offset);
-        $query->setValues($value);
-        return $query->sendQuery();
+        if ($offset) {
+            $query->setRow($offset);
+        }
+        $values = $this->_serializeEntity($entity);
+        $query->setValues($values);
+        $query->sendQuery();
+        return $entity;
     }
 
     /**
@@ -232,6 +263,107 @@ class DatabaseAdapter extends \Yana\Core\Object implements \Yana\Io\Adapters\IsD
         $this->offsetSet($offset, $entity);
     }
 
+    /**
+     * Removes the given entity from the database.
+     *
+     * @param   \Yana\Io\Adapters\IsEntity  $entity  compose the where clause based on this object
+     */
+    public function deleteEntity(\Yana\Io\Adapters\IsEntity $entity)
+    {
+        $this->offsetUnset($entity->getId());
+    }
+
+    /**
+     * DELETE all entries WHERE "column" = 'value'.
+     *
+     * @param   string  $columnName  name of column to search in
+     * @param   scalar  $value       used for where clause
+     * @return  int
+     * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  when the used column is not known
+     */
+    public function deleteEntities($columnName, $value)
+    {
+        $query = new \Yana\Db\Queries\Delete($this->_getDatabaseConnection());
+        $query->setTable($this->_getTableName());
+        $query->setWhere(array($columnName, '=', $value));
+        $query->setLimit(0);
+        $query->sendQuery();
+    }
+
+    /**
+     * SELECTs all entries WHERE "column" = 'value'.
+     *
+     * @param   string  $columnName  name of column to search in
+     * @param   scalar  $value       used for where clause
+     * @return  \Yana\Io\Adapters\IsEntity[]
+     * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  when the used column is not known
+     */
+    public function findEntities($columnName, $value)
+    {
+        $where = array($columnName, '=', $value);
+        return $this->_getEntities($where);
+    }
+
+    /**
+     * Analyzes the given entity and returns all items with similar properties.
+     *
+     * What is considered "similar" depends on the implementation.
+     *
+     * @param   \Yana\Io\Adapters\IsEntity  $entity  compose the where clause based on this object
+     * @return  \Yana\Io\Adapters\IsEntity[]
+     */
+    public function findSimilarEntities(\Yana\Io\Adapters\IsEntity $entity)
+    {
+        $where = $this->_buildWhereClause($entity);
+        return $this->_getEntities($where);
+    }
+
+    /**
+     * SELECTs all entries WHERE "column" = 'value'.
+     *
+     * @return  \Yana\Io\Adapters\IsEntity[]
+     */
+    public function getAllEntities()
+    {
+        return $this->_getEntities();
+    }
+
+    /**
+     * Finds and returns all entities based on the given where clause.
+     * 
+     * @param   array  $where  where clause to use in SELECT statement
+     * @return  \Yana\Io\Adapters\IsEntity[]
+     */
+    protected function _getEntities(array $where = array())
+    {
+        $query = new \Yana\Db\Queries\Select($this->_getDatabaseConnection());
+        $query->setTable($this->_getTableName());
+        $query->setWhere($where);
+        $items = array();
+        foreach ($query->getResults() as $item)
+        {
+            $items[] = $this->_unserializeEntity($item);
+        }
+        return $items;
+    }
+
+    /**
+     * Build a where clause based on the properties of the given entity.
+     *
+     * @param   \Yana\Io\Adapters\IsEntity  $entity  object to convert
+     * @return array 
+     */
+    protected function _buildWhereClause(\Yana\Io\Adapters\IsEntity $entity)
+    {
+        $dataSet = $this->_serializeEntity($entity);
+        $where = array();
+        foreach ($dataSet as $columnName => $value)
+        {
+            $_clause = array($columnName, '=', $value);
+            $where = (empty($where)) ? $_clause : array($_clause, 'AND', $where);
+        }
+        return $where;
+    }
 }
 
 ?>

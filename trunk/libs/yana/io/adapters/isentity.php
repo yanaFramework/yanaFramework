@@ -42,11 +42,19 @@ interface IsEntity extends \Yana\Core\IsObject
 {
 
     /**
-     * Return an array of all valid identifiers.
+     * Returns a unique identifier.
      *
      * @return  scalar
      */
     public function getId();
+
+    /**
+     * Set the identifying value for this entity.
+     *
+     * @param   scalar  $id  unique identier
+     * @return  \Yana\Io\Adapters\IsEntity
+     */
+    public function setId($id);
 
     /**
      * This sets the data adapter used to persist the entity
