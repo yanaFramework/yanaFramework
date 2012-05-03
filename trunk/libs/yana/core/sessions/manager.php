@@ -28,15 +28,30 @@
 namespace Yana\Core\Sessions;
 
 /**
- * <<Interface>> Session manager.
+ * Session manager.
  *
  * For classes that manage sessions.
  *
  * @package     yana
  * @subpackage  core
  */
-interface IsManager
+class Manager extends \Yana\Core\Object implements \Yana\Core\Sessions\IsManager
 {
+
+    /**
+     * @var \Yana\Core\Sessions\IsSessionSaveHandler
+     */
+    private static $_handler = null;
+
+    /**
+     * Returns the registered custom save handler or NULL if there is none.
+     * 
+     * @return  \Yana\Core\Sessions\IsSessionSaveHandler
+     */
+    protected static function _getSaveHandler()
+    {
+        return $this->_handler;
+    }
 
     /**
      * Registers a new session save handler.
@@ -44,7 +59,24 @@ interface IsManager
      * @param  \Yana\Core\Sessions\IsSessionSaveHandler  $handler   new session safe handler
      * @param  bool                                  $autoSave  additionally registers session_write_close() as shutdown function
      */
-    public function setSaveHandler(\Yana\Core\Sessions\IsSessionSaveHandler $handler, $autoSave = false);
+    public function setSaveHandler(\Yana\Core\Sessions\IsSessionSaveHandler $handler, $autoSave = false)
+    {
+        // Register a custom session save handler
+        session_set_save_handler(array($handler, 'open'), array($handler, 'close'), array($handler, 'read'),
+            array($handler, 'write'), array($handler, 'destroy'), array($handler, 'gc'));
+        self::$_handler = $handler;
+
+        /* Register session_write_close() as a shutdown function
+         *
+         * Note: this may not be necessary as PHP by default does it itself, however it can be deactivated in the php.ini,
+         *       thus making this option very usefull to enforce the intended behavior.
+         */
+        if ($autoSave) {
+            \register_shutdown_function('session_write_close');
+        }
+
+        return $this;
+    }
 
 }
 

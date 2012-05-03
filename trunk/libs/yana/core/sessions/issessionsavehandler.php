@@ -37,7 +37,7 @@ namespace Yana\Core\Sessions;
  * @subpackage  core
  * @link        http://www.php.net/manual/en/class.sessionhandlerinterface.php
  */
-interface IsSessionHandler
+interface IsSessionSaveHandler
 {
 
     /**
