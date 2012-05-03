@@ -35,7 +35,7 @@ namespace Yana\Io\Adapters;
  * @package     yana
  * @subpackage  core
  */
-class MemCacheAdapter extends \Yana\Io\Adapters\ArrayAdapter implements \Yana\Io\Adapters\IsDataAdapter
+class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana\Io\Adapters\IsDataAdapter
 {
 
     /**
@@ -92,6 +92,22 @@ class MemCacheAdapter extends \Yana\Io\Adapters\ArrayAdapter implements \Yana\Io
     public function getIds()
     {
         return \array_keys(parent::_getItems());
+    }
+
+    /**
+     * Adds the item if it is missing.
+     *
+     * Same as:
+     * <code>
+     * $array[] = $subject;
+     * </code>
+     *
+     * @param  \Yana\Io\Adapters\IsEntity  $entity  what you want to add
+     */
+    public function saveEntity(\Yana\Io\Adapters\IsEntity $entity)
+    {
+        $offset = ($entity->getId()) ? $entity->getId() : null;
+        $this->offsetSet($offset, $entity);
     }
 
     /**
