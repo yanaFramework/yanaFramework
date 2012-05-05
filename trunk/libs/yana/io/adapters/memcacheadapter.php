@@ -70,7 +70,7 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
      */
     public function __construct(\Memcache $memCache, $prefix = __CLASS__, $lifetime = 0)
     {
-        assert('is_string($index); // Invalid argument $index: string expected');
+        assert('is_string($prefix); // Invalid argument $prefix: string expected');
         assert('is_int($lifetime); // Invalid argument $lifetime: int expected');
 
         $this->_prefix = (string) $prefix;
