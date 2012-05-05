@@ -62,7 +62,7 @@ class MemCacheAdapterTest extends \PHPUnit_Framework_TestCase
             return;
         }
         $memCache->flush();
-        $this->object = new \Yana\Io\Adapters\MemCacheAdapterTest($memCache, __CLASS__, time());
+        $this->object = new \Yana\Io\Adapters\MemCacheAdapter($memCache, __CLASS__, 0);
     }
 
     /**
@@ -71,7 +71,10 @@ class MemCacheAdapterTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
+        foreach ($this->object->getIds() as $offset)
+        {
+            $this->object->offsetUnset($offset);
+        }
     }
 
     /**
@@ -97,10 +100,10 @@ class MemCacheAdapterTest extends \PHPUnit_Framework_TestCase
      */
     public function testOffsetSet()
     {
-        $this->object->offsetSet('existing-offest', true);
+        $this->object->offsetSet('existing-offest', 1);
         $this->assertTrue($this->object->offsetExists('existing-offest'));
-        $this->assertEquals(true, $this->object->offsetGet('existing-offest'));
-    }
+        $this->assertEquals(1, $this->object->offsetGet('existing-offest')); 
+   }
 
     /**
      * @test
