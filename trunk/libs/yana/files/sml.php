@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Files;
+
 if (!defined('CASE_MIXED')) {
     /**
      * @ignore
@@ -42,7 +44,7 @@ if (!defined('CASE_MIXED')) {
  * which is widely used and understood by most people.
  *
  * @package     yana
- * @subpackage  file_system
+ * @subpackage  files
  * @since       2.8.5
  * @name        SML
  */
@@ -73,13 +75,13 @@ class SML extends \Yana\Files\File implements \Yana\Core\IsVarContainer
      *
      * To simulate virtual static references.
      *
-     * @var  SML
+     * @var  \Yana\Files\SML
      * @ignore
      */
     protected $decoder = null;
 
     /**
-     * return contents of resource
+     * Return contents of resource.
      *
      * Note: The type returned depends on the resource.
      * The default is a string, containing the file's contents as a text.
@@ -100,9 +102,8 @@ class SML extends \Yana\Files\File implements \Yana\Core\IsVarContainer
     }
 
     /**
-     * constructor
-     *
      * Create a new instance of this class.
+     *
      * This extends the super class constructor.
      *
      * Note the additional parameter $caseSensitive.
@@ -173,9 +174,8 @@ class SML extends \Yana\Files\File implements \Yana\Core\IsVarContainer
     }
 
     /**
-     * get a reference from the file
-     *
      * Returns the value at the position specified by $key.
+     *
      * The value is returned by reference.
      *
      * @param   string  $key  address of the var to get (use wildcard '*' to get all)
@@ -224,27 +224,21 @@ class SML extends \Yana\Files\File implements \Yana\Core\IsVarContainer
      *
      * @param   string  $key    adress of old data
      * @param   mixed   $value  new data
+     * @return  \Yana\Files\SML
      * @name    SML::setVar()
      */
     public function setVar($key, $value)
     {
-        assert('is_scalar($key); // Wrong argument type for argument 1. String expected.');
-        $key = $this->_convertKey($key);
-        $this->_isReady = true;
-        if (is_array($value)) {
-            $this->_setKeyCase($value);
-        }
-        \Yana\Util\Hashtable::set($this->content, $key, $value);
+        $this->setVarByReference($key, $value);
+        return $this;
     }
 
     /**
-     * Set var by reference
-     *
-     * Create or update new key / value pair by reference.
+     * Replace key / value pair by reference.
      *
      * @param   string  $key     adress of old data
      * @param   mixed   &$value  new data
-     * @return  bool
+     * @return  \Yana\Files\SML
      * @see     SML::insert()
      * @since   2.9.5
      */
@@ -262,27 +256,42 @@ class SML extends \Yana\Files\File implements \Yana\Core\IsVarContainer
         } else {
             \Yana\Util\Hashtable::setByReference($this->content, $key, $value);
         }
-        return true;
+        return $this;
     }
 
     /**
      * Replaces all content of the file with the provided array.
      *
      * @param   array  $array  new file content
-     * @return  \SML
+     * @return  \Yana\Files\SML
      *
-     * @name    SML::set()
+     * @name    SML::setVars()
      */
     public function setVars(array $array)
     {
+        $this->setVarsByReference($array);
+        return $this;
+    }
+
+
+    /**
+     * Replaces all content of the file with the provided array.
+     *
+     * @param   array  &$array  new file content
+     * @return  \Yana\Files\SML
+     *
+     * @name    SML::setVarsByReference()
+     */
+    public function setVarsByReference(array &$array)
+    {
         $this->_setKeyCase($array);
-        $this->content = $array;
+        $this->content =& $array;
         $this->_isReady = true;
         return $this;
     }
 
     /**
-     * reset the file
+     * Reset the file contents.
      *
      * Changes to the file will not be safed unless you
      * explicitely call $configFile->write().
@@ -313,7 +322,7 @@ class SML extends \Yana\Files\File implements \Yana\Core\IsVarContainer
     }
 
     /**
-     * initialize file contents
+     * Initialize file contents.
      *
      * You should always call this before anything else.
      * Returns the file content on success and bool(false) on error.
@@ -337,7 +346,7 @@ class SML extends \Yana\Files\File implements \Yana\Core\IsVarContainer
     }
 
     /**
-     * get the number of elements
+     * Get the number of elements.
      *
      * This returns how many elements can
      * be found inside the array at position
@@ -381,7 +390,7 @@ class SML extends \Yana\Files\File implements \Yana\Core\IsVarContainer
     }
 
     /**
-     * remove an entry from the file
+     * Remove an entry from the file.
      *
      * When no argument is given the function removes all entries.
      *
@@ -421,7 +430,7 @@ class SML extends \Yana\Files\File implements \Yana\Core\IsVarContainer
     }
 
     /**
-     * test if a certain value exists
+     * Test if a certain value exists.
      *
      * This function has two synopsis:
      *
@@ -459,7 +468,7 @@ class SML extends \Yana\Files\File implements \Yana\Core\IsVarContainer
     }
 
     /**
-     * Read a file in SML syntax and return its contents
+     * Read a file in SML syntax and return its contents.
      *
      * The argument $input can wether be a filename or a numeric array
      * of strings created by file($filename).
@@ -719,7 +728,7 @@ class SML extends \Yana\Files\File implements \Yana\Core\IsVarContainer
     }
 
     /**
-     * Read variables from an encoded string
+     * Read variables from an encoded string.
      *
      * This function is pretty much the same as SML::getFile() except
      * for the fact that it is working on strings rather than files.
@@ -811,7 +820,7 @@ class SML extends \Yana\Files\File implements \Yana\Core\IsVarContainer
     }
 
     /**
-     * convert $key parameter
+     * Convert $key parameter.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -846,7 +855,7 @@ class SML extends \Yana\Files\File implements \Yana\Core\IsVarContainer
     }
 
     /**
-     * set case of $array's keys according to object settings
+     * Set case of $array's keys according to object settings.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -891,11 +900,6 @@ class SML extends \Yana\Files\File implements \Yana\Core\IsVarContainer
         } else {
             return "";
         }
-    }
-
-    public function setVarsByReference(array &$value)
-    {
-        
     }
 
     /**

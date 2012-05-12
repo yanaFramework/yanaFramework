@@ -1204,7 +1204,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
             if (YANA_CACHE_ACTIVE === true && is_file($cacheFile)) {
                 $schema = unserialize(file_get_contents($cacheFile));
             } else {
-                $schema = \XDDL::getDatabase($schema);
+                $schema = \Yana\Files\XDDL::getDatabase($schema);
                 file_put_contents($cacheFile, serialize($schema));
             }
         }

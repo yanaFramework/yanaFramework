@@ -182,7 +182,7 @@ class ArrayValidator extends AbstractValidator
         $options = $this->getOptions();
         if ($options & self::TO_SML) {
 
-            $array = \SML::encode($array, null, CASE_UPPER);
+            $array = \Yana\Files\SML::encode($array, null, CASE_UPPER);
 
         } elseif ($options & self::TO_XML) {
 

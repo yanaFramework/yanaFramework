@@ -25,13 +25,15 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Files;
+
 /**
- * database structure
+ * Database structure.
  *
  * This wrapper class represents the structure of a database
  *
  * @package     yana
- * @subpackage  db
+ * @subpackage  files
  */
 class XDDL extends \Yana\Files\File
 {

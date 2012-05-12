@@ -779,7 +779,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
             } else {
                 trigger_error("A value of non-scalar type '" . gettype($value) .
                     "' has been found in an SQL statement and will be converted to string.", E_USER_NOTICE);
-                return YANA_DB_DELIMITER . \SML::encode($value) . YANA_DB_DELIMITER;'"NULL"';
+                return YANA_DB_DELIMITER . \Yana\Files\SML::encode($value) . YANA_DB_DELIMITER;'"NULL"';
 
             }
         } /* end if */
@@ -838,7 +838,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
              * array
              */
             case is_array($value):
-                $value = \SML::encode($value);
+                $value = \Yana\Files\SML::encode($value);
             break;
 
             /*

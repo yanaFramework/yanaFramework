@@ -54,12 +54,12 @@ class PrintArray extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
         }
         $array = $params['value'];
         if (is_string($array)) {
-            $array = \SML::decode($array);
+            $array = \Yana\Files\SML::decode($array);
         }
         $lDelim = $smarty->smarty->left_delimiter;
         $rDelim = $smarty->smarty->right_delimiter;
         if (is_array($array)) {
-            $array = htmlspecialchars(\SML::encode($array), ENT_COMPAT, 'UTF-8');
+            $array = htmlspecialchars(\Yana\Files\SML::encode($array), ENT_COMPAT, 'UTF-8');
             $replacement = '<span style="color: #35a;">$1</span>$2<span style="color: #35a;">$3</span>';
 
             $array = preg_replace('/(&lt;\w[^&]*&gt;)(.*?)(&lt;\/[^&]*&gt;)$/m', $replacement, $array);

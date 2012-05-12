@@ -68,7 +68,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
     private $_tableName = "";
 
     /**
-     * @var \SML[][]
+     * @var \Yana\Files\SML[][]
      */
     private $_src = array();
 
@@ -408,7 +408,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
                             $this->_src[$this->_database][$targetTable] = $sml;
                         }
                         $sml = $this->_src[$this->_database][$targetTable];
-                        assert($sml instanceof \SML);
+                        assert($sml instanceof \Yana\Files\SML);
 
                         assert('isset($row[$sourceColumn]);');
                         assert('is_scalar($row[$sourceColumn]); // Value for foreign key must be scalar');
@@ -1823,7 +1823,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         }
         /* handle non-scalar values */
         if (!is_scalar($value)) {
-            $value = \SML::encode($value);
+            $value = \Yana\Files\SML::encode($value);
         }
         /* switch by operator */
         switch ($operator)
@@ -1917,7 +1917,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
     /**
      * initialize and return current SML file by reference
      *
-     * @return  \SML
+     * @return  \Yana\Files\SML
      */
     private function _getSmlFile()
     {
@@ -1953,13 +1953,13 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      *
      * @param  string  $filename
      * @param  bool    &$isCreated  
-     * @return \SML
+     * @return \Yana\Files\SML
      */
     private function _createSmlFile($filename, &$isCreated = false)
     {
         assert('is_string($filename); // Invalid argument $filename: string expected');
 
-        $smlfile = new \SML($filename, CASE_UPPER);
+        $smlfile = new \Yana\Files\SML($filename, CASE_UPPER);
         if (!$smlfile->exists()) {
             $isCreated = true;
             $smlfile->create();

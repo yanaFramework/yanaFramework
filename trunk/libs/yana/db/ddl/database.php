@@ -409,7 +409,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
                         "Defined in file '" . $this->getName() . "'.";
                     throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_ERROR);
                 }
-                $xddl = new \XDDL($path);
+                $xddl = new \Yana\Files\XDDL($path);
                 self::$instances[$path] = $xddl->toDatabase();
                 unset($xddl);
             }
