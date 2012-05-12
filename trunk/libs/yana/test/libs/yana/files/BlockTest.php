@@ -25,10 +25,12 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Files;
+
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __Dir__ . '/../../../include.php';
 
 /**
  * Test class for BlockFile
@@ -36,7 +38,7 @@ require_once dirname(__FILE__) . '/include.php';
  * @package  test
  *
  */
-class BlockFileTest extends PHPUnit_Framework_TestCase
+class BlockTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -68,7 +70,7 @@ class BlockFileTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_object = new BlockFile($this->_source);
+        $this->_object = new \Yana\Files\Block($this->_source);
     }
 
     /**
