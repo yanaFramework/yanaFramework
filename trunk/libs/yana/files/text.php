@@ -25,25 +25,25 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Files;
+
 /**
  * Base class for handling text files
  *
  * Adds functions to read and write to line-based text files.
  *
- * @access      public
  * @package     yana
- * @subpackage  file_system
+ * @subpackage  files
  */
 class TextFile extends \Yana\Files\File implements \Yana\Files\IsTextFile
 {
 
     /**
-     * set file content
+     * Set file content.
      *
      * Replace the content of the file with the value of argument $content.
      *
-     * @access  public
-     * @param   string  $content    content
+     * @param   string  $content  content
      */
     public function setContent($content)
     {
@@ -54,28 +54,26 @@ class TextFile extends \Yana\Files\File implements \Yana\Files\IsTextFile
     }
 
     /**
-     * get line from file
+     * Get line from file.
      *
      * The content of the given line is returned.
      * If the line does not exist, the function returns false.
      *
-     * @access  public
-     * @param   int  $lineNr    line number
+     * @param   int  $lineNr  line number
      * @return  string
      */
     public function getLine($lineNr)
     {
+        $line = false;
         if (isset($this->content[$lineNr])) {
-            return $this->content[$lineNr];
-        } else {
-            return false;
+            $line = $this->content[$lineNr];
         }
+        return $line;
     }
 
     /**
      * Appends the value as a new line to the end of the file.
      *
-     * @access  public
      * @param   scalar  $content    content
      */
     public function appendLine($content)
@@ -91,7 +89,6 @@ class TextFile extends \Yana\Files\File implements \Yana\Files\IsTextFile
     /**
      * Sets the text of the given line to the given content.
      *
-     * @access  public
      * @param   int     $lineNr     line number
      * @param   string  $content    content
      * @thros   \Yana\Core\Exceptions\OutOfBoundsException  if the line does not exist
@@ -117,7 +114,6 @@ class TextFile extends \Yana\Files\File implements \Yana\Files\IsTextFile
      * key is numeric. Note: The array index shifts after you remove a line, so
      * line numbers may change.
      *
-     * @access  public
      * @param   int  $lineNr  line to remove
      * @thros   \Yana\Core\Exceptions\OutOfBoundsException  if the line does not exist
      */
@@ -142,17 +138,16 @@ class TextFile extends \Yana\Files\File implements \Yana\Files\IsTextFile
      * If the file is empty, doesn't exist or is not loaded, the function will
      * return 0.
      *
-     * @access  public
      * @return  int
      */
     public function length()
     {
-        if (!isset($this->content)) {
-            return 0;
-        } else {
+        $count = 0;
+        if (isset($this->content)) {
             assert('is_array($this->content);');
-            return count($this->content);
+            $count = count($this->content);
         }
+        return $count;
     }
 
 }

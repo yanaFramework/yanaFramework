@@ -46,22 +46,22 @@
  * This is also a good way around if you just don't know the
  * structure of future entries yet.
  *
- * @access      public
  * @package     yana
  * @subpackage  files
- *
+ * @ignore
+ * @deprecated  since version 4.0
  */
-class DatFile extends TextFile
+class Dat extends \Yana\Files\Text
 {
+
     /**
-     * retrieve a line of data from the file
+     * Retrieve a line of data from the file.
      *
      * This returns the dataset in line $lineNr as an associative array, or
      * bool(false) on error.
      *
      * Note that the keys are returned in capital letters.
      *
-     * @access  public
      * @param   int  $lineNr  line to retrieve
      * @return  array
      */
@@ -77,37 +77,32 @@ class DatFile extends TextFile
     }
 
     /**
-     * retrieve all data from the file
+     * Retrieve all data from the file.
      *
      * This returns the datasets, or bool(false) on error.
      *
      * Note that the keys are returned in capital letters.
      *
-     * @access  public
      * @return  array
      */
     public function getLines()
     {
+        $array = array();
         if (!empty($this->content)) {
-            $array = array();
             foreach ($this->content as $line)
             {
                 $array[] = self::_parseLine($line);
             }
-            return $array;
-        } else {
-            return array();
         }
+        return $array;
     }
 
     /**
-     * parse a line of text and return content
+     * Parse a line of text and return content.
      *
      * This function parses a single line of text from a DatFile
      * and returns the contents as an array.
      *
-     * @access  private
-     * @static
      * @param   string  $line  line of text to parse
      * @return  array
      */
@@ -115,6 +110,7 @@ class DatFile extends TextFile
     {
         assert('is_string($line); // Wrong type for argument 1. String expected');
         $array = array();
+        $matches = array();
         preg_match_all("/<(.*)>(.*)<\/.*>/Ui", $line, $matches);
         for ($i = 0; $i < count($matches[0]); $i++)
         {
@@ -126,7 +122,7 @@ class DatFile extends TextFile
     }
 
     /**
-     * insert (append) an entry to the file
+     * Insert (append) an entry to the file.
      *
      * This appends the new entry to the file.
      * Depending on the setting for argument $append, the entry is appended to
@@ -136,7 +132,6 @@ class DatFile extends TextFile
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   array  $content  associative array containing the new entry
      * @param   bool   $append   true = append entry on end of file, false = insert entry on top of file
      */
@@ -158,14 +153,13 @@ class DatFile extends TextFile
     }
 
     /**
-     * update an entry of the file
+     * Update an entry of the file.
      *
      * Replaces an existing entry.
      * The input array must not be multi-dimensional.
      *
      * If the line does not exist, an OutOfBoundsException is thrown.
      *
-     * @access  public
      * @param   int    $lineNr    line number to update
      * @param   array  $newEntry  associative array containing the new entry
      * @since   2.9.6
@@ -180,10 +174,8 @@ class DatFile extends TextFile
     }
 
     /**
-     * encode an entry
+     * Encode an entry.
      *
-     * @access  private
-     * @static
      * @param   array   $entry  entry that should be encode
      * @return  string
      */
@@ -202,5 +194,7 @@ class DatFile extends TextFile
 
         return $txt;
     }
+
 }
+
 ?>
