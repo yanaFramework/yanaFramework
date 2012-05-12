@@ -384,7 +384,7 @@ class plugin_calendar extends StdClass implements IsPlugin
         // create a new calendar file for the current user
         $fileName = $name.time().'calendar';
         $savePath = $dir->getPath() . $fileName.'.xml';
-        $file = new TextFile($savePath);
+        $file = new \Yana\Files\Text($savePath);
         if (!$file->exists()) {
             $file->create();
         }
@@ -887,7 +887,7 @@ class plugin_calendar extends StdClass implements IsPlugin
         /* @var $dir Dir */
         $dir = $YANA->getPlugins()->{'calendar:/xcal'};
         $path = $dir->getPath() . $fileName.'.xml';
-        $file = new TextFile($path);
+        $file = new \Yana\Files\Text($path);
         if (!$file->exists()) {
             $file->create();
         }
@@ -1458,7 +1458,7 @@ class plugin_calendar extends StdClass implements IsPlugin
         $dir = $YANA->getPlugins()->{'calendar:/xcal'};
 
         $path = $dir->getPath() . $fileName.'.xml';
-        $deleteUserFile = new TextFile($path);
+        $deleteUserFile = new \Yana\Files\Text($path);
 
         if ($deleteUserFile->exists()) {
             $deleteUserFile->delete();
