@@ -25,17 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Db\FileDb;
+
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __DIR__ . '/../../../../include.php';
 
 /**
  * Counter test-case
  *
  * @package  test
  */
-class CounterTest extends PHPUnit_Framework_TestCase
+class CounterTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -86,7 +88,7 @@ class CounterTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        chdir(CWD . '../../../');
+        chdir(CWD . '../../../../../../../');
         \Yana\Db\FileDb\Driver::setBaseDirectory(CWD . '/resources/db/');
         try {
             \Yana\Db\FileDb\Counter::create($this->_counterId, 1, null, null, null, true);
