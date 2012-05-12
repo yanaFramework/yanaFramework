@@ -25,17 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Files;
+
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __Dir__ . '/../../../include.php';
 
 /**
  * Test class for DDL
  *
  * @package  test
  */
-class XDDLTest extends PHPUnit_Framework_TestCase
+class XDDLTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -60,7 +62,7 @@ class XDDLTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         try {
-            $this->_file = new \XDDL(CWD . $this->_path);
+            $this->_file = new XDDL(CWD . $this->_path);
             $this->_file->read();
             $this->_object = $this->_file->toDatabase();
             $this->_object->setModified();
@@ -97,7 +99,7 @@ class XDDLTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($cachedXML, $xml);
 
         // add header in xml
-        $dtd = '<!DOCTYPE  database SYSTEM "resources/dtd/database.dtd">';
+        $dtd = '<!DOCTYPE  database SYSTEM "file://' . \urlencode(CWD) . '/resources/dtd/database.dtd">';
         $encoding = iconv_get_encoding("internal_encoding");
         $replacement = '<?xml version="1.0" encoding="' . $encoding . '"?>' . "\n" . $dtd;
         $pattern = '/(\<\?xml[\d\D]*\?\>)/';
@@ -122,11 +124,15 @@ class XDDLTest extends PHPUnit_Framework_TestCase
         $source = preg_replace('/^\s+/m', '', $source);
         $source = preg_replace('/\s+$/m', '', $source);
         $source = preg_replace('/[\n\r\f]/', '', $source);
+        $source = preg_replace('/<\?.*?\?>/', '', $source);
+        $source = preg_replace('/<\!.*?>/', '', $source);
         // trim white-space
         $xml = trim($xml);
         $xml = preg_replace('/^\s+/m', '', $xml);
         $xml = preg_replace('/\s+$/m', '', $xml);
         $xml = preg_replace('/[\n\r\f]/', '', $xml);
+        $xml = preg_replace('/<\?.*?\?>/', '', $xml);
+        $xml = preg_replace('/<\!.*?>/', '', $xml);
         // compare source and generated result
         $message = "Round-trip decoding/encoding of source-document failed. " .
             "The result differs from the source file.";
