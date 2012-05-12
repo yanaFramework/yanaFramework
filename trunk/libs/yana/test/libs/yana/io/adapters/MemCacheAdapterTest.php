@@ -27,9 +27,10 @@
 
 namespace Yana\Io\Adapters;
 
-require_once 'PHPUnit/Framework.php';
-
-require_once dirname(__FILE__) . '/../../../../../io/adapters/memcacheadapter.php';
+/**
+ * @ignore
+ */
+require_once __DIR__ . '/../../../../include.php';
 
 /**
  * Test class for MemCacheAdapter.
@@ -56,13 +57,19 @@ class MemCacheAdapterTest extends \PHPUnit_Framework_TestCase
             return;
         }
         $memCache = new \Memcache();
-        $memCache->addServer('localhost');
-        if ($memCache->getstats() === false) {
+        $memCacheServer = new \Yana\Io\Adapters\MemCache\Server();
+        $wrapper = new \Yana\Io\Adapters\MemCache\MemcacheWrapper($memCache);
+        $wrapper->addServer($memCacheServer);
+        if ($memCache->getStats() === false) {
             $this->markTestSkipped();
             return;
         }
         $memCache->flush();
-        $this->object = new \Yana\Io\Adapters\MemCacheAdapter($memCache, __CLASS__, 0);
+
+        $prefix = __CLASS__;
+        $lifetime = 0;
+
+        $this->object = new \Yana\Io\Adapters\MemCacheAdapter($wrapper, $prefix, $lifetime);
     }
 
     /**
