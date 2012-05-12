@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: FileReadonly
+ * PHPUnit test-case
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,53 +25,48 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Files;
+
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __Dir__ . '/../../../include.php';
 
 /**
- * Test class for FileReadonly
+ * Test class for Readonly
  *
  * @package  test
  */
-class FileReadonlyTest extends PHPUnit_Framework_TestCase
+class ReadonlyTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var    FileReadonly
-     * @access protected
+     * @var    Readonly
      */
     protected $object = null;
 
     /**
      * @var    resource
-     * @access protected
      */
     protected $fileHandle = null;
 
     /**
      * @var    string
-     * @access protected
      */
     protected $path = 'resources/fileread.txt';
 
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     *
-     * @access protected
      */
     protected function setUp()
     {
-        $this->object = new FileReadonly(CWD . $this->path);
+        $this->object = new Readonly(CWD . $this->path);
         $this->object->read();
     }
 
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
-     *
-     * @access protected
      */
     protected function tearDown()
     {
@@ -89,7 +84,7 @@ class FileReadonlyTest extends PHPUnit_Framework_TestCase
      */
     public function testReadNotFoundException()
     {
-        $nonExistFile = new FileReadonly('resources/nonExistfile.txt');
+        $nonExistFile = new Readonly('resources/nonExistfile.txt');
         $nonExistFile->read();
     }
 
@@ -159,7 +154,7 @@ class FileReadonlyTest extends PHPUnit_Framework_TestCase
         $fileContent = $this->object->getContent();
         $this->assertType('string', $fileContent, '"$fileContent" is not from type string');
 
-        $nonExistFile = new FileReadonly('resources/nonExistfile.txt');
+        $nonExistFile = new Readonly('resources/nonExistfile.txt');
         $fileContent = $nonExistFile->getContent();
         $this->assertEquals(mb_strlen($fileContent), 0, 'assert failed , expected result is 0');
         unset($nonExistFile);
@@ -176,7 +171,7 @@ class FileReadonlyTest extends PHPUnit_Framework_TestCase
         // expected for not empty and loaded
         $this->assertFalse($empty, 'assert failed - "$empty" is true');
 
-        $nonExistFile = new FileReadonly('resources/nonExistfile.txt');
+        $nonExistFile = new Readonly('resources/nonExistfile.txt');
         $empty = $nonExistFile->isEmpty();
         $this->assertTrue($empty, 'assert failed, source is empty');
         unset($nonExistFile);
@@ -232,7 +227,7 @@ class FileReadonlyTest extends PHPUnit_Framework_TestCase
      */
     public function testGetMd5NonExistingfile()
     {
-        $nonExistFile = new FileReadonly('resources/nonExistfile.txt');
+        $nonExistFile = new Readonly('resources/nonExistfile.txt');
         $md5 = $nonExistFile->getMd5();
         $this->assertFalse($md5, 'assert failed, source is empty');
         unset($nonExistFile);
