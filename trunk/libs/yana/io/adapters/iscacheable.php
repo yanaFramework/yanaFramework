@@ -2,8 +2,6 @@
 /**
  * YANA library
  *
- * Primary controller class
- *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
  * License:   GNU GPL  http://www.gnu.org/licenses/
@@ -27,34 +25,29 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Forms\Setups;
+namespace Yana\Io\Adapters;
 
 /**
- * <<manager>> Cache manager class.
+ * <<Interface>> Cacheable object.
  *
- * This base class is meant to 
+ * This identifies classes that may use caching.
+ * Note: it is recommended to set the ArrayAdapter in the constructor as default if no other cache is provided.
  *
- * @access      public
  * @package     yana
- * @subpackage  cache
+ * @subpackage  core
  */
-class CacheManager extends \CacheSessionManager
+interface IsCacheable
 {
 
     /**
-     * <<magic>> Set cache item.
+     * Replace the cache adapter.
      *
-     * This adds or replaces an item of the cache at the given index with whatever object $value contains.
+     * Note that this may also replace the cache contents.
      *
-     * @access  public
-     * @param   string             $name   index of cached object
-     * @param   \Yana\Forms\Setup  $value  new value of cached instance
+     * @param   \Yana\Io\Adapters\IsDataAdapter  $cache  new cache adapter
+     * @return  \Yana\Io\Adapters\IsCacheable
      */
-    public function __set($name, $value)
-    {
-        assert('$value instanceof \Yana\Forms\Setup; // Invalid argument $value: instance of \Yana\Forms\Setup expected');
-        parent::__set($name, $value);
-    }
+    public function setCache(\Yana\Io\Adapters\IsDataAdapter $cache);
 
 }
 

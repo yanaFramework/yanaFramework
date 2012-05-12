@@ -34,28 +34,31 @@ namespace Yana\Forms;
  *
  * This is a command class. It encapsulates parameters to be used to call a complex function.
  *
- * @static
- * @access      public
  * @package     yana
  * @subpackage  form
  * @ignore
  */
-class Builder extends \Yana\Core\Object
+class Builder extends \Yana\Core\Object implements \Yana\Io\Adapters\IsCacheable
 {
+
+    /**
+     * Cache adapter.
+     *
+     * @var \Yana\Io\Adapters\IsDataAdapter
+     */
+    private $_cache = null;
 
     /**
      * Database connection.
      *
-     * @access  private
-     * @var     \Yana\Db\IsConnection
+     * @var  \Yana\Db\IsConnection
      */
     private $_database;
 
     /**
      * Database schema.
      *
-     * @access  private
-     * @var     \Yana\Db\Ddl\Database
+     * @var  \Yana\Db\Ddl\Database
      */
     private $_schema;
 
@@ -70,32 +73,28 @@ class Builder extends \Yana\Core\Object
     /**
      * Query builder class.
      *
-     * @access  private
-     * @var     \Yana\Forms\Worker
+     * @var  \Yana\Forms\Worker
      */
     private $_queryBuilder;
 
     /**
      * Included builder.
      *
-     * @access  protected
-     * @var     \Yana\Forms\Setups\Builder
+     * @var  \Yana\Forms\Setups\Builder
      */
     private $_setupBuilder = null;
 
     /**
      * (mandatory) path and name of structure file
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_file = "";
 
     /**
      * (optional) name of form to use (either $id or $table must be present!)
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_id = "";
 
@@ -110,127 +109,111 @@ class Builder extends \Yana\Core\Object
     /**
      * (optional) list of columns, that should be shown in the form
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_show = array();
 
     /**
      * (optional) list of columns, that should NOT be shown in the form
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_hide = array();
 
     /**
      * (optional) sequence for SQL-where clause
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_where = "";
 
     /**
      * (optional) name of column to sort entries by
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_sort = "";
 
     /**
      * (optional) sort entries in descending (true) or ascending (false) order
      *
-     * @access  private
-     * @var     bool
+     * @var  bool
      */
     private $_desc = false;
 
     /**
      * (optional) number of 1st entry to show
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_page = 0;
 
     /**
      * (optional) number of entries to show on each page
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_entries = 20;
 
     /**
      * (optional) name of action (plugin-function) to execute on the event
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_oninsert = "";
 
     /**
      * (optional) name of action (plugin-function) to execute on the event
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_onupdate = "";
 
     /**
      * (optional) name of action (plugin-function) to execute on the event
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_ondelete = "";
 
     /**
      * (optional) name of action (plugin-function) to execute on the event
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_onsearch = "";
 
     /**
      * (optional) name of action (plugin-function) to execute on the event
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_ondownload = "download_file";
 
     /**
      * (optional) name of action (plugin-function) to execute on the event
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_onexport = "";
 
     /**
      * where multiple layouts are available to present the result, this allows to choose the prefered one
      *
-     * @access  private
-     * @var     int
+     * @var  int
      */
     private $_layout = null;
 
     /**
      * base form
      *
-     * @access  private
-     * @var     \Yana\Db\Ddl\Form
+     * @var  \Yana\Db\Ddl\Form
      */
     private $_form = null;
 
     /**
      * Get setup-builder.
      *
-     * @access  protected
      * @return  \Yana\Forms\Setups\Builder
      */
     protected function _getSetupBuilder()
@@ -241,7 +224,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get query-builder.
      *
-     * @access  protected
      * @return  \Yana\Forms\Worker
      */
     protected function _getQueryBuilder()
@@ -252,7 +234,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get name of database file.
      *
-     * @access  public
      * @return  string
      */
     public function getFile()
@@ -263,7 +244,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get id of form.
      *
-     * @access  public
      * @return  string
      */
     public function getId()
@@ -277,7 +257,6 @@ class Builder extends \Yana\Core\Object
      * If you wish to extract a sub-form, give the full path separate the names with a dot.
      * Example: "form.subform".
      *
-     * @access  public
      * @param   string  $id  valid form name
      * @return  SmartFormUtility 
      */
@@ -290,7 +269,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get name of table.
      *
-     * @access  public
      * @return  string
      */
     public function getTable()
@@ -301,7 +279,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Set table to choose from database.
      *
-     * @access  public
      * @param   string  $table  valid table name
      * @return  SmartFormUtility 
      */
@@ -314,7 +291,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get white-listed column names.
      *
-     * @access  public
      * @return  array
      */
     public function getShow()
@@ -325,7 +301,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Set list of columns, that should be shown in the form.
      *
-     * @access  public
      * @param   array  $show  white-listed column names.
      * @return  SmartFormUtility 
      */
@@ -338,7 +313,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get black-listed column names.
      *
-     * @access  public
      * @return  array
      */
     public function getHide()
@@ -349,7 +323,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Set list of columns, that should NOT be shown in the form.
      *
-     * @access  public
      * @param   array  $hide  black-listed column names.
      * @return  SmartFormUtility 
      */
@@ -362,7 +335,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get where clause.
      *
-     * @access  public
      * @return  string|array
      */
     public function getWhere()
@@ -399,7 +371,6 @@ class Builder extends \Yana\Core\Object
      * )
      * </code>
      *
-     * @access  public
      * @param   array  $where  valid where clause
      * @return  SmartFormUtility
      * @see     \Yana\Db\Queries\SelectExist::setWhere()
@@ -413,7 +384,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get name of column to sort by.
      *
-     * @access  public
      * @return  string
      */
     public function getSort()
@@ -424,7 +394,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Set name of column to sort entries by.
      *
-     * @access  public
      * @param   string  $sort  valid column name
      * @return  SmartFormUtility 
      */
@@ -437,7 +406,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Check if contents are sorted descending order.
      *
-     * @access  public
      * @return  bool
      */
     public function isDescending()
@@ -448,7 +416,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Set sorting order for entries.
      *
-     * @access  public
      * @param   bool  $desc  true = descending, false = ascending
      * @return  SmartFormUtility 
      */
@@ -461,7 +428,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get number of 1st page to show.
      *
-     * @access  public
      * @return  int
      */
     public function getPage()
@@ -472,7 +438,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Set number of 1st page to show.
      *
-     * @access  public
      * @param   int  $page  positive number (default = 0)
      * @return  SmartFormUtility 
      */
@@ -485,7 +450,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get number of entries to view per page.
      *
-     * @access  public
      * @return  int
      */
     public function getEntries()
@@ -496,7 +460,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Set number of entries to view per page.
      *
-     * @access  public
      * @param   int  $entries  positive number (default = 20)
      * @return  SmartFormUtility 
      */
@@ -509,7 +472,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get name of action.
      *
-     * @access  public
      * @return  string
      */
     public function getOninsert()
@@ -522,7 +484,6 @@ class Builder extends \Yana\Core\Object
      *
      * Name of action (plugin-function) to execute on the event
      *
-     * @access  public
      * @param   string  $oninsert  form action name
      * @return  SmartFormUtility 
      */
@@ -535,7 +496,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get name of action.
      *
-     * @access  public
      * @return  string
      */
     public function getOnupdate()
@@ -548,7 +508,6 @@ class Builder extends \Yana\Core\Object
      *
      * Name of action (plugin-function) to execute on the event
      *
-     * @access  public
      * @param   string  $onupdate  form action name
      * @return  SmartFormUtility 
      */
@@ -561,7 +520,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get name of action.
      *
-     * @access  public
      * @return  string
      */
     public function getOndelete()
@@ -574,7 +532,6 @@ class Builder extends \Yana\Core\Object
      *
      * Name of action (plugin-function) to execute on the event
      *
-     * @access  public
      * @param   string  $ondownload  form action name
      * @return  SmartFormUtility 
      */
@@ -587,7 +544,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get name of action.
      *
-     * @access  public
      * @return  string
      */
     public function getOnsearch()
@@ -600,7 +556,6 @@ class Builder extends \Yana\Core\Object
      *
      * Name of action (plugin-function) to execute on the event
      *
-     * @access  public
      * @param   string  $ondownload  form action name
      * @return  SmartFormUtility 
      */
@@ -613,7 +568,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get name of action.
      *
-     * @access  public
      * @return  string
      */
     public function getOndownload()
@@ -626,7 +580,6 @@ class Builder extends \Yana\Core\Object
      *
      * Name of action (plugin-function) to execute on the event
      *
-     * @access  public
      * @param   string  $ondownload  form action name
      * @return  SmartFormUtility 
      */
@@ -639,7 +592,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get name of action.
      *
-     * @access  public
      * @return  string
      */
     public function getOnexport()
@@ -652,7 +604,6 @@ class Builder extends \Yana\Core\Object
      *
      * Name of action (plugin-function) to execute on the event
      *
-     * @access  public
      * @param   string  $onexport  form action name
      * @return  SmartFormUtility 
      */
@@ -665,7 +616,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get index of selected layout.
      *
-     * @access  public
      * @return  int
      */
     public function getLayout()
@@ -678,7 +628,6 @@ class Builder extends \Yana\Core\Object
      *
      * Where multiple layouts are available to present the result, this allows to choose the prefered one.
      *
-     * @access  public
      * @param   int  $layout  positive number (default = 0)
      * @return  SmartFormUtility 
      */
@@ -691,7 +640,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Set bsae \Yana\Db\Ddl\Form.
      *
-     * @access  protected
      * @param   \Yana\Db\Ddl\Form $form  base form definition
      * @return  SmartFormUtility 
      */
@@ -713,11 +661,11 @@ class Builder extends \Yana\Core\Object
     /**
      * Initialize instance
      *
-     * @access  public
      * @param   string  $file  name of database to connect to
      */
     public function __construct($file)
     {
+        $this->_cache = new \Yana\Io\Adapters\SessionAdapter(__CLASS__);
         $this->_file = (string) $file;
         $this->_database = \Yana::connect($this->_file);
         $this->_schema = $this->_database->getSchema();
@@ -726,11 +674,32 @@ class Builder extends \Yana\Core\Object
     }
 
     /**
+     * Register a cache adapter.
+     *
+     * @param   \Yana\Io\Adapters\IsDataAdapter  $cache  a valid cache adapter
+     * @return  \Yana\Forms\Builder
+     */
+    public function setCache(\Yana\Io\Adapters\IsDataAdapter $cache)
+    {
+        $this->_cache = $cache;
+        return $this;
+    }
+
+    /**
+     * Returns the cache adapter.
+     *
+     * @return  \Yana\Io\Adapters\IsDataAdapter
+     */
+    protected function _getCache()
+    {
+        return $this->_cache;
+    }
+
+    /**
      * <<magic>> Implements IsCloneable.
      *
      * Provides a shallow-copy (not a deep-copy as by default).
      *
-     * @access  public
      * @ignore
      */
     public function __clone()
@@ -741,7 +710,6 @@ class Builder extends \Yana\Core\Object
     /**
      * <<magic>> Invoke the function.
      *
-     * @access  public
      * @return  \Yana\Forms\Facade
      */
     public function __invoke()
@@ -749,9 +717,9 @@ class Builder extends \Yana\Core\Object
         $form = $this->_buildForm();
         $formSetup = null;
 
-        $cache = new \Yana\Forms\Setups\CacheManager();
-        if (isset($cache->{$form->getName()})) {
-            $formSetup = $cache->{$form->getName()};
+        $cache = $this->_getCache();
+        if (isset($cache[$form->getName()])) {
+            $formSetup = $cache[$form->getName()];
         } else {
             $formSetup = $this->_buildSetup($form);
         }
@@ -800,7 +768,7 @@ class Builder extends \Yana\Core\Object
             $this->_setupBuilder->updateValues($request);
         }
 
-        $cache->{$form->getName()} = $this->_setupBuilder->__invoke(); // add to cache
+        $cache[$form->getName()] = $this->_setupBuilder->__invoke(); // add to cache
         $this->_buildSubForms($this->_facade);
 
         return $this->_facade;
@@ -809,7 +777,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Build \Yana\Db\Ddl\Form object.
      *
-     * @access  private
      * @return  \Yana\Db\Ddl\Form
      * @throws  \Yana\Core\Exceptions\BadMethodCallException    when a parameter is missing
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when a paraemter is not valid
@@ -850,7 +817,6 @@ class Builder extends \Yana\Core\Object
      *
      * This function takes a table and initializes the form based on it's structure and columns.
      *
-     * @access  protected
      * @return  \Yana\Db\Ddl\Form
      */
     protected function _buildFormFromTable(\Yana\Db\Ddl\Table $table)
@@ -887,7 +853,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Add field by column definition.
      *
-     * @access  private
      * @param   \Yana\Db\Ddl\Form    $form    form definition
      * @param   \Yana\Db\Ddl\Column  $column  column definition
      */
@@ -925,7 +890,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Build \Yana\Db\Ddl\Form object.
      *
-     * @access  private
      * @param   \Yana\Forms\Facade  $form  parent form
      * @throws  \Yana\Core\Exceptions\BadMethodCallException    when a parameter is missing
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when a paraemter is not valid
@@ -953,7 +917,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Build FormSetup object.
      *
-     * @access  private
      * @param   \Yana\Db\Ddl\Form  $form  base form
      * @return  \Yana\Forms\Setup
      * @throws  \Yana\Core\Exceptions\NotFoundException  when a paraemter is not valid
@@ -991,7 +954,6 @@ class Builder extends \Yana\Core\Object
      *
      * This column list is used to auto-generate a whitelist of column names for the generated form.
      *
-     * @access  private
      * @param   mixed  $showColumns  whitelist
      * @param   mixed  $hideColumns  blacklist
      * @return  SmartFormUtility 
