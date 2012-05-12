@@ -31,11 +31,11 @@
  * BlockFile
  *
  * @package     yana
- * @subpackage  file_system
+ * @subpackage  files
  *
  * @ignore
  */
-class BlockFile extends File
+class BlockFile extends \Yana\Files\File
 {
 
     /**

@@ -46,7 +46,7 @@ if (!defined('CASE_MIXED')) {
  * @since       2.8.5
  * @name        SML
  */
-class SML extends File implements \Yana\Core\IsVarContainer
+class SML extends \Yana\Files\File implements \Yana\Core\IsVarContainer
 {
 
     /**

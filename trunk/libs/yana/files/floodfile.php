@@ -38,7 +38,7 @@
  *
  * @ignore
  */
-class FloodFile extends File
+class FloodFile extends \Yana\Files\File
 {
 
     /**

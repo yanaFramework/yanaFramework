@@ -216,7 +216,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
         $name = $form->getTable();
 
         // create HTML page
-        /* @var $html \File */
+        /* @var $html \Yana\Files\File */
         $html = $yana->getPlugins()->{'sdk:/templates/html.file'};
         $html = $yana->getView()->createContentTemplate($html->getPath());
         $html->setVar('form', $form);
@@ -342,7 +342,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
         assert('is_string($target); // Wrong argument type argument 2. String expected');
 
         $yana = Yana::getInstance();
-        /* @var $xliffTemplate \File */
+        /* @var $xliffTemplate \Yana\Files\File */
         $xliffTemplate = $yana->getPlugins()->{'sdk:/templates/language.file'};
         $xliffTemplate = $yana->getView()->createContentTemplate($xliffTemplate->getPath());
         $xliffTemplate->setVar('source', $source);

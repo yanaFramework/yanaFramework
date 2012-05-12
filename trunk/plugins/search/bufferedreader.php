@@ -41,7 +41,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class BufferedReader extends FileReadonly
+class BufferedReader extends \Yana\Files\Readonly
 {
 
     /**

@@ -33,7 +33,7 @@
  * @package     yana
  * @subpackage  db
  */
-class XDDL extends File
+class XDDL extends \Yana\Files\File
 {
 
     /**
