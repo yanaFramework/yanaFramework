@@ -30,7 +30,7 @@ namespace Yana\VDrive;
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __DIR__ . '/../../../include.php';
 
 /**
  * Test implementation for abstract class Mountpoint
@@ -50,7 +50,7 @@ class MountpointImplementationTest extends AbstractMountpoint
     public function __construct($path)
     {
         $this->path = $path;
-        $this->mountpoint = new \File($path);
+        $this->mountpoint = new \Yana\Files\File($path);
         $this->type = "file";
     }
 }
