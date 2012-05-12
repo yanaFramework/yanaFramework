@@ -829,7 +829,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
      * the function returns bool(false) instead and issues a warning.
      *
      * @param   string  $path  virtual file path
-     * @return  \Yana\File\AbstractResource
+     * @return  \Yana\Files\AbstractResource
      */
     public function getResource($path)
     {

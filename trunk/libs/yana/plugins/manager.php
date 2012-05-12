@@ -543,7 +543,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * @access  public
      * @param   string  $pluginName  identifier for the plugin
      * @param   string  $key         identifier for the file to get
-     * @return  \Yana\File\AbstractResource
+     * @return  \Yana\Files\AbstractResource
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the plugin name is invalid
      */
     public function get($pluginName, $key)

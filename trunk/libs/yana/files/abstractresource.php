@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\File;
+namespace Yana\Files;
 
 /**
  * <<abstract>> filesystem resource
@@ -37,15 +37,12 @@ namespace Yana\File;
  * All subclasses should implement the abstract functions read() and isEmpty().
  * You are also encouraged to re-implement the function __toString().
  *
- * @abstract
- * @access      public
  * @package     yana
- * @subpackage  file
+ * @subpackage  files
  */
 abstract class AbstractResource extends \Yana\Core\Object
 {
     /**#@+
-     * @access  protected
      * @ignore
      */
 
@@ -75,7 +72,6 @@ abstract class AbstractResource extends \Yana\Core\Object
      * You are encouraged to re-implement this in each derived sub-classes to
      * better represent the type of resource.
      *
-     * @access  public
      * @return  string
      * @ignore
      */
@@ -101,7 +97,6 @@ abstract class AbstractResource extends \Yana\Core\Object
      *
      * }}
      *
-     * @access  public
      * @return  string
      * @name    FileSystemResource::getPath()
      */
@@ -116,7 +111,6 @@ abstract class AbstractResource extends \Yana\Core\Object
      *
      * Returns true, if the resource exists.
      *
-     * @access  public
      * @return  bool
      */
     public function exists()
@@ -150,9 +144,7 @@ abstract class AbstractResource extends \Yana\Core\Object
      * Use the function resetStats() to clear the cache and reload all
      * statistics when needed.
      *
-     * @access  public
      * @return  bool
-     * @since   2.9 RC3
      */
     public function isWriteable()
     {
@@ -171,9 +163,7 @@ abstract class AbstractResource extends \Yana\Core\Object
      *  <li> the script has permission to read data from it </li>
      * </ul>
      *
-     * @access  public
      * @return  bool
-     * @since   3.1.0
      */
     public function isReadable()
     {
@@ -200,9 +190,7 @@ abstract class AbstractResource extends \Yana\Core\Object
      * support this setting. So if a resource is not write-protected on Windows
      * systems, it's always also "executable".
      *
-     * @access  public
      * @return  bool
-     * @since   3.1.0
      */
     public function isExecutable()
     {
@@ -214,20 +202,16 @@ abstract class AbstractResource extends \Yana\Core\Object
      *
      * Since this is an abstract method, it is to implemented in the sub-classes.
      *
-     * @abstract
-     * @access  public
      * @return  bool
-     *
      * @ignore
      */
     abstract public function isEmpty();
 
     /**
-     * reset file statistics
+     * Reset statistics.
      *
      * Reset file stats, e.g. after creating a file that did not exist.
      *
-     * @access  protected
      * @ignore
      */
     protected function resetStats()
@@ -238,14 +222,12 @@ abstract class AbstractResource extends \Yana\Core\Object
     }
 
     /**
-     * get time when file was last modified
+     * Get time when file was last modified.
      *
      * Returns the file MTIME value (from cached value).
      * The result is an UNIX timestamp (UTC), or bool(false) if an error occurs.
      *
-     * @access  public
      * @return  int
-     * @since   2.8.5
      */
     public function getLastModified()
     {
@@ -260,7 +242,7 @@ abstract class AbstractResource extends \Yana\Core\Object
     }
 
     /**
-     * get cached file-size
+     * Get cached file-size.
      *
      * Returns the FILESIZE (cached) value.
      * Note! This is the value of the original file WITHOUT the changes you possibly made to
@@ -268,9 +250,7 @@ abstract class AbstractResource extends \Yana\Core\Object
      *
      * If the file is new, it returns bool(false).
      *
-     * @access  protected
      * @return  int
-     * @since   3.1.0
      * @ignore
      */
     protected function getFilesize()
@@ -285,7 +265,7 @@ abstract class AbstractResource extends \Yana\Core\Object
     }
 
     /**
-     * compare with another object
+     * Compare with another object.
      *
      * Returns bool(true) if this object and $anotherObject are equal and
      * bool(false) otherwise.
@@ -293,7 +273,6 @@ abstract class AbstractResource extends \Yana\Core\Object
      * Two instances are considered equal if and only if they are both objects
      * of the same class and they both refer to the same filesystem resource.
      *
-     * @access  public
      * @param   \Yana\Core\IsObject  $anotherObject  another object too compare
      * @return  bool
      */

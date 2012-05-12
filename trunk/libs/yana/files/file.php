@@ -35,7 +35,7 @@
  * @package     yana
  * @subpackage  file_system
  */
-class File extends FileReadonly implements \Yana\File\IsWritable
+class File extends FileReadonly implements \Yana\Files\IsWritable
 {
     /**
      * read file contents

@@ -38,7 +38,7 @@
  * @package     yana
  * @subpackage  file_system
  */
-class FileReadonly extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
+class FileReadonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
 {
 
     /**
