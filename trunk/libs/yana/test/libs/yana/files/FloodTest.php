@@ -25,27 +25,27 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Files;
+
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __Dir__ . '/../../../include.php';
 
 /**
- * Test class for FloodFile
+ * Test class for Flood
  *
  * @package  test
  */
-class FloodFileTest extends PHPUnit_Framework_TestCase
+class FloodTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var     string
-     * @access  protected
      */
     protected $file = "resources/floodfiletest.txt";
 
     /**
-     * @var     FloodFile
-     * @access  protected
+     * @var     Flood
      */
     protected $object;
 
@@ -57,7 +57,7 @@ class FloodFileTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new FloodFile( CWD . $this->file );
+        $this->object = new Flood( CWD . $this->file );
         $this->object->create();
         $this->object->reset();
     }
@@ -90,9 +90,9 @@ class FloodFileTest extends PHPUnit_Framework_TestCase
 
         $getContent = explode("\n", $this->object->getContent());
 
-        $this->assertEquals(count($getContent), 3, "unexpected FloodFile length");
-        $this->assertEquals((int) $getContent[2], $count, "FloodFile counter did not increment correctly");
-        $this->assertEquals($getContent[0], $ipAdr, "FloodFile IP-Adress unexpected");
+        $this->assertEquals(count($getContent), 3, "unexpected file length");
+        $this->assertEquals((int) $getContent[2], $count, "Flood counter did not increment correctly");
+        $this->assertEquals($getContent[0], $ipAdr, "Flood IP-Adress unexpected");
 
     }
 

@@ -25,10 +25,12 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Files;
+
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __Dir__ . '/../../../include.php';
 
 /**
  * Test class for File
@@ -36,7 +38,7 @@ require_once dirname(__FILE__) . '/include.php';
  * @package  test
  *
  */
-class FileTest extends PHPUnit_Framework_TestCase
+class FileTest extends \PHPUnit_Framework_TestCase
 {
     /** @var    File */ protected $object;
     /** @var  string */ protected $source = 'resources/file.txt';

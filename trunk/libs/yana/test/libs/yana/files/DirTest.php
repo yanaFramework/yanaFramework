@@ -24,18 +24,20 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
- 
+
+namespace Yana\Files;
+
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __Dir__ . '/../../../include.php';
 
 /**
  * Test class for Dir
  *
  * @package  test
  */
-class DirTest extends PHPUnit_Framework_TestCase
+class DirTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
