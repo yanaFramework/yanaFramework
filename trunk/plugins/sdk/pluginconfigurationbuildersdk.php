@@ -422,7 +422,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
         unset($fileName, $content);
 
         // create class skeleton
-        $phpFile = new TextFile($pluginDir->getPath() . $pluginId . '.plugin.php');
+        $phpFile = new \Yana\Files\Text($pluginDir->getPath() . $pluginId . '.plugin.php');
         $phpFile->create();
         $phpFile->setContent($this->getClassSkeleton());
         if (!$phpFile->write()) {
@@ -432,7 +432,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
         }
 
         // create AJAX-Yana bridge
-        $apiFile = new TextFile($skinDir->getPath() . '/api.js');
+        $apiFile = new \Yana\Files\Text($skinDir->getPath() . '/api.js');
         $apiFile->create();
         $apiFile->setContent($this->getJsApi());
         if (!$apiFile->write()) {
@@ -442,7 +442,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
         }
 
         // create XLIFF translation file
-        $xliffFile = new TextFile($enDir->getPath() . '/' . $pluginId . '.xlf');
+        $xliffFile = new \Yana\Files\Text($enDir->getPath() . '/' . $pluginId . '.xlf');
         $xliffFile->create();
         $xliffFile->setContent("<?xml version=\"1.0\"?>\n" . $this->getXliff());
         if (!$xliffFile->write()) {
@@ -450,7 +450,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
             $error->setFilename($xliffFile->getPath());
             throw $error;
         }
-        $xliffFile = new TextFile($deDir->getPath() . '/' . $pluginId . '.xlf');
+        $xliffFile = new \Yana\Files\Text($deDir->getPath() . '/' . $pluginId . '.xlf');
         $xliffFile->create();
         $xliffFile->setContent("<?xml version=\"1.0\"?>\n" . $this->getXliff("en", "de"));
         if (!$xliffFile->write()) {

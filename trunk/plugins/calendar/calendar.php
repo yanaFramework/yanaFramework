@@ -1429,7 +1429,7 @@ class Calendar extends \Yana\File\AbstractResource
     {
         // load the current calendar file
         $path = $this->getPath();
-        $xmlFile = new TextFile($path);
+        $xmlFile = new \Yana\Files\Text($path);
         $xmlFile->read();
         $content = $xmlFile->getContent();
         $xml = \simplexml_load_string($content);
@@ -1544,7 +1544,7 @@ class Calendar extends \Yana\File\AbstractResource
         }
         assert('is_string($content); // Wrong argument type argument 1. String expected');
 
-        $file = new TextFile($path);
+        $file = new \Yana\Files\Text($path);
         if (!$file->exists()) {
             return false;
         }
