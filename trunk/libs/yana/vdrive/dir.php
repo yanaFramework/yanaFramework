@@ -59,7 +59,7 @@ class Dir extends AbstractMountpoint
     public function __construct($path)
     {
         assert('is_string($path); // Wrong type for argument 1. String expected');
-        $this->mountpoint = new \Dir($path);
+        $this->mountpoint = new \Yana\Files\Dir($path);
         $this->path = $path;
     }
 

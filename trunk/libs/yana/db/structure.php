@@ -4199,7 +4199,7 @@ class Structure extends \Yana\Files\SML
     public static function getListOfFiles($fullFilename = false)
     {
         $directory = self::getDirectory();
-        $dir = new \Dir($directory);
+        $dir = new \Yana\Files\Dir($directory);
         $list = array();
         $dirList = $dir->dirlist('*' . self::$_extension);
         if (is_array($dirList)) {

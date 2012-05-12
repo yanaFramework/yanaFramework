@@ -227,7 +227,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
             chmod($tempDir, 0777);
         }
         if (!file_exists($configDir)) {
-            $configSrc = new Dir($configDir);
+            $configSrc = new \Yana\Files\Dir($configDir);
             $configSrc->copy($configDir, true, 0777, true, null, '/^(?!\.blob$)/i', true);
             unset($configSrc);
         }

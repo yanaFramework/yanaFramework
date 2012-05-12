@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Files;
+
 /**
  * Manipulate a directory
  *
@@ -32,22 +34,18 @@
  * You may use this to get a list of contents, or remove,
  * or create a directory.
  *
- * @access      public
  * @package     yana
- * @subpackage  file_system
+ * @subpackage  files
  */
 class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
 {
 
     /**#@+
      * @ignore
-     * @access  protected
      */
     /** @var array  */ protected $content = array();
     /** @var string */ protected $filter = "";
-    /**
-     * @static
-     * @var array   */ protected static $size = null;
+    /** @var array  */ protected static $size = null;
     /**#@-*/
 
     /**
@@ -69,8 +67,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
     /**
      * read contents and put results in cache (filter settings will be applied)
      *
-     * @access  public
-     * @return  Dir
+     * @return  \Yana\Files\Dir
      * @throws  \Yana\Core\Exceptions\NotFoundException  when directory is not found
      */
     public function read()
@@ -165,7 +162,6 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
      *
      * This will only return filenames with the path stripped.
      *
-     * @access  public
      * @param   int  $index  number of file to return
      * @return  array
      */
@@ -200,13 +196,12 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
     }
 
     /**
-     * return current file filter
+     * Return current file filter.
      *
      * The current last filter used is always cached
      * until reset. The default is an empty file filter (all files).
      * The empty file filter equals an empty string.
      *
-     * @access  public
      * @return  string
      * @since   3.1.0
      */
@@ -222,9 +217,8 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
      * The default is an empty file filter (all files).
      * To reset the filter, leave the setting empty.
      *
-     * @access  public
      * @param   string  $filter   current file filter
-     * @return  Dir
+     * @return  \Yana\Files\Dir
      * @since   3.1.0
      */
     public function setFilter($filter = "")
@@ -235,17 +229,15 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
     }
 
     /**
-     * create this directory
-     *
      * Tries to create the directory.
+     *
      * Check the developer's cookbook for an example to this function.
      *
      * You may also want to review the PHP-manual for function chmod() on the use of the $mode
      * parameter.
      *
-     * @access  public
      * @param   int  $mode  access mode, an octal number of 1 through 0777.
-     * @return  Dir
+     * @return  \Yana\Files\Dir
      * @name    Dir::create()
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when argument $mode is not an integer or out of range
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when the directory already exists
@@ -278,16 +270,13 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
     }
 
     /**
-     * remove this directory
+     * Remove this directory.
      *
      * By option you may choose to also recursivly remove all files and subdirectories inside.
      * Otherwise the directory will only be removed if it is empty.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @uses    $Dir->delete(false)
-     *
-     * @access  public
      * @param   bool  $isRecursive  triggers wether to remove directories even if they are not empty, default = false
      * @return  bool
      * @throws  \Yana\Core\Exceptions\NotWriteableException  when directory cannot be deleted
@@ -307,7 +296,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
                         return false;
                     }
                 } elseif (is_dir($this->getPath() . $element)) {
-                    $dir = new Dir($this->getPath() . $element);
+                    $dir = new \Yana\Files\Dir($this->getPath() . $element);
                     if ($dir->delete(true) === false) {
                         return false;
                     }
@@ -325,12 +314,10 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
     }
 
     /**
-     * return a string representation of this directory
-     *
      * Returns a string with the contents of this directory.
+     *
      * Entries are seperated by line-breaks.
      *
-     * @access  public
      * @return  string
      */
     public function __toString()
@@ -345,15 +332,12 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
     }
 
     /**
-     * check wether the directory has no contents
+     * Check wether the directory has no contents.
      *
      * Returns bool(true) if there are no files that
      * match the current filter and bool(false) if there
      * is at least 1 file that matches.
      *
-     * @uses    $Dir->isEmpty()
-     *
-     * @access  public
      * @return  bool
      */
     public function isEmpty()
@@ -362,7 +346,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
     }
 
     /**
-     * get the number of files inside the directory
+     * Get the number of files inside the directory.
      *
      * This returns a positive integer.
      * Note that this functions counts the files in respect
@@ -370,9 +354,6 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
      * of files reported here and the number in total
      * may vary.
      *
-     * @uses    $Dir->length()
-     *
-     * @access  public
      * @return  int
      */
     public function length()
@@ -381,15 +362,12 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
     }
 
     /**
-     * list contents of a directory
+     * List contents of a directory.
      *
      * The argument $filter may contain multiple file extension,
      * use a pipe '|' sign to seperate them.
      * Example: "*.xml|*.html" will find all xml- and html-files
      *
-     * @uses $Dir->dirlist('*.cfg')
-     *
-     * @access  public
      * @param   string  $filter  filter
      * @return  array
      */
@@ -405,8 +383,6 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
     }
 
     /**
-     * get size of directory
-     *
      * Returns the size of $directory in bytes.
      *
      * This function gets the sum of the sizes of all files in
@@ -421,10 +397,6 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
      *
      * Returns bool(false) if the directory does not exist and issues an E_USER_WARNING.
      *
-     * @uses    $Dir->getSize()
-     * @uses    $Dir->getSize('foo/bar')
-     *
-     * @access  public
      * @param   string    $directory      directory name
      * @param   bool      $countSubDirs   on / off
      * @param   bool      $useCache       on / off
@@ -490,12 +462,11 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
     }
 
     /**
-     * reset statistic data
+     * Reset statistics.
      *
      * Reset directory stats, e.g. after creating a file that did not exist.
      *
-     * @access  protected
-     * @return  Dir
+     * @return  \Yana\Files\Dir
      * @ignore
      */
     protected function resetStats()
@@ -506,11 +477,10 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
     }
 
     /**
-     * check if directory exists and is readable
+     * Check if directory exists and is readable.
      *
      * Returns bool(true) on success and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function exists()
@@ -520,7 +490,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
     }
 
     /**
-     * copy the directory to some destination
+     * Copy the directory to some destination.
      *
      * This will create a copy of this directory and its contents on the
      * filesystem.
@@ -573,7 +543,6 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
      * $dir->copy('bar7/', true, 0766, true, null, '/^(?!foobar$)/i', true);
      * </code>
      *
-     * @access   public
      * @param    string   $destDir      destination to copy the file to
      * @param    bool     $overwrite    setting this to false will prevent existing files from getting overwritten
      * @param    int      $mode         the access restriction that applies to the copied file, defaults to 0766
@@ -659,7 +628,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
             foreach (explode('/', $destDir) as $dir)
             {
                 if (!is_dir($currentDir . $dir)) {
-                    $current = new Dir($currentDir . $dir);
+                    $current = new \Yana\Files\Dir($currentDir . $dir);
                     $current->create($mode);
                 }
                 $currentDir .= $dir.'/';
@@ -684,7 +653,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
                 }
                 /* if sub-dir matches the directory pattern ... */
                 if (is_null($dirFilter) || preg_match($dirFilter, $item)) {
-                    $dir = new Dir($this->path . $item);
+                    $dir = new \Yana\Files\Dir($this->path . $item);
                     assert('!isset($copySucceeded); // Cannot redeclare var $copySucceeded');
                     $copySucceeded = $dir->copy($destDir . $item . '/', $overwrite, $mode,
                         $copySubDirs, $fileFilter, $dirFilter, true);
