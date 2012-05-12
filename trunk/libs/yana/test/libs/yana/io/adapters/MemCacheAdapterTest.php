@@ -60,16 +60,17 @@ class MemCacheAdapterTest extends \PHPUnit_Framework_TestCase
         $memCacheServer = new \Yana\Io\Adapters\MemCache\Server();
         $wrapper = new \Yana\Io\Adapters\MemCache\MemcacheWrapper($memCache);
         $wrapper->addServer($memCacheServer);
-        if ($memCache->getStats() === false) {
-            $this->markTestSkipped();
-            return;
-        }
-        $memCache->flush();
 
         $prefix = __CLASS__;
         $lifetime = 0;
 
-        $this->object = new \Yana\Io\Adapters\MemCacheAdapter($wrapper, $prefix, $lifetime);
+        try {
+            $this->object = new \Yana\Io\Adapters\MemCacheAdapter($wrapper, $prefix, $lifetime);
+        } catch (\Yana\Io\Adapters\MemCache\ServerNotAvailableException $e) {
+            $this->markTestSkipped($e->getMessage());
+            return;
+        }
+        $memCache->flush();
     }
 
     /**
@@ -82,6 +83,17 @@ class MemCacheAdapterTest extends \PHPUnit_Framework_TestCase
         {
             $this->object->offsetUnset($offset);
         }
+    }
+
+    /**
+     * @expectedException \Yana\Io\Adapters\MemCache\ServerNotAvailableException
+     * @test
+     */
+    public function testConstruct()
+    {
+        $memCache = new \Memcache();
+        $wrapper = new \Yana\Io\Adapters\MemCache\MemcacheWrapper($memCache);
+        new \Yana\Io\Adapters\MemCacheAdapter($wrapper);
     }
 
     /**
