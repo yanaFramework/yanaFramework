@@ -366,7 +366,7 @@ class plugin_calendar extends StdClass implements IsPlugin
             return false;
         }
         global $YANA;
-        /* @var $dir Dir */
+        /* @var $dir \Yana\Files\Dir */
         $dir = $YANA->getPlugins()->{'calendar:/xcal'};
 
         // this is the model path of the calendar which contains the body of the calendar

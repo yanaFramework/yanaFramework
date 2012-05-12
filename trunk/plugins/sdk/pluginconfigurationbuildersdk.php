@@ -58,7 +58,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
      * directory
      *
      * @access  private
-     * @var     Dir
+     * @var     \Yana\Files\Dir
      */
     private $_pluginDir = null;
 
@@ -120,14 +120,14 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
      * get plugin directory
      *
      * @access  protected
-     * @return  Dir
+     * @return  \Yana\Files\Dir
      * @ignore
      */
     protected function getPluginDir()
     {
         if (!isset($this->_pluginDir)) {
             $dir = \Yana\Plugins\Manager::getPluginDirectoryPath();
-            $this->_pluginDir  = new Dir($dir . '/' . strtolower($this->object->getId()) . '/');
+            $this->_pluginDir  = new \Yana\Files\Dir($dir . '/' . strtolower($this->object->getId()) . '/');
         }
         return $this->_pluginDir;
     }
@@ -364,10 +364,10 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
         $pluginId = strtolower($this->object->getId());
 
         $pluginDir = $this->getPluginDir();
-        $skinDir = new Dir($pluginDir->getPath() . '/templates/');
-        $langDir = new Dir($pluginDir->getPath() . '/languages/');
-        $enDir = new Dir($langDir->getPath() . '/en/');
-        $deDir = new Dir($langDir->getPath() . '/de/');
+        $skinDir = new \Yana\Files\Dir($pluginDir->getPath() . '/templates/');
+        $langDir = new \Yana\Files\Dir($pluginDir->getPath() . '/languages/');
+        $enDir = new \Yana\Files\Dir($langDir->getPath() . '/en/');
+        $deDir = new \Yana\Files\Dir($langDir->getPath() . '/de/');
         if ($overwrite) {
             if ($pluginDir->exists()) {
                 $pluginDir->delete(true);
