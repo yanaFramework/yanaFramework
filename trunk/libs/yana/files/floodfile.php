@@ -27,33 +27,29 @@
  * @ignore
  */
 
+namespace Yana\Files;
+
 /**
- * FloodFile
+ * Class to keep try of forum flooding attempts.
  *
  * This file is intended to be used as a counter.
  *
- * @access      public
  * @package     yana
- * @subpackage  file_system
+ * @subpackage  files
  *
  * @ignore
  */
-class FloodFile extends \Yana\Files\File
+class Flood extends \Yana\Files\File
 {
 
     /**
-     * @ignore
-     * @access  private
-     * @var     int
+     * @var  int
      */
-    private $max = 0;
+    private $_max = 0;
 
     /**
-     * add entry to file
+     * Increment counter and save changes.
      *
-     * increment counter and save changes
-     *
-     * @access  public
      * @param   string  $ip  IP to be used (defaults to current user IP)
      * @return  bool
      */
@@ -90,9 +86,8 @@ class FloodFile extends \Yana\Files\File
     }
 
     /**
-     * alias of set()
+     * Alias of set().
      *
-     * @access  public
      * @param   scalar  $ip IP to be used (defaults to current user IP)
      * @return  bool
      */
@@ -102,13 +97,12 @@ class FloodFile extends \Yana\Files\File
     }
 
     /**
-     * check if user is blocked
+     * Check if user is blocked.
      *
      * Returns bool(true) if the maximum number of entries
      * for this user have been exceeded and bool(false)
      * otherwise.
      *
-     * @access  public
      * @return  bool
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the source file is not readable
      */
@@ -123,7 +117,7 @@ class FloodFile extends \Yana\Files\File
             /*
              * 1) is deactivated
              */
-            case $this->max <= 0:
+            case $this->_max <= 0:
             /*
              * 2) no data found (yet) - occurs during first run
              */
@@ -139,24 +133,21 @@ class FloodFile extends \Yana\Files\File
             /*
              * 5) maximum number of entries not reached yet
              */
-            case $this->content[2] < $this->max:
+            case $this->content[2] < $this->_max:
                 return false;
-            break;
             /*
              * 6) user has exceeded maximum number of entries
              */
             default:
                 return true;
-            break;
         } /* end switch */    
     }
 
     /**
-     * set maxmimum number of entries
+     * Set maxmimum number of entries.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   int  $max  a positive number
      * @return  bool
      */
@@ -165,7 +156,7 @@ class FloodFile extends \Yana\Files\File
         assert('is_int($max); // Wrong argument type argument 1. Integer expected');
 
         if ($max >= 0) {
-            $this->max = (int) $max;
+            $this->_max = (int) $max;
             return true;
         } else {
             $message = "Expected maximum number to be a positive integer, found '{$max}' instead.";
@@ -175,15 +166,14 @@ class FloodFile extends \Yana\Files\File
     }
 
     /**
-     * get maximum number of entries
+     * Get maximum number of entries.
      *
-     * @access  public
      * @return  int
      */
     public function getMax()
     {
         assert('is_int($this->max);');
-        return $this->max;
+        return $this->_max;
     }
 
 }

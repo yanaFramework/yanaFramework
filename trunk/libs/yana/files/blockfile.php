@@ -27,15 +27,17 @@
  * @ignore
  */
 
+namespace Yana\Files;
+
 /**
- * BlockFile
+ * Class for IP blocking
  *
  * @package     yana
  * @subpackage  files
  *
  * @ignore
  */
-class BlockFile extends \Yana\Files\File
+class Block extends \Yana\Files\File
 {
 
     /**
@@ -45,7 +47,7 @@ class BlockFile extends \Yana\Files\File
      * not be written to the file unless you explicitely call write().
      *
      * @param   string|array  $input new file contents
-     * @return  BlockFile
+     * @return  \Yana\Files\Block
      * @name    BlockFile::setContent()
      */
     public function setContent($input)
