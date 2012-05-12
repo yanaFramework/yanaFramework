@@ -273,7 +273,7 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
             foreach (explode('/', $destDir) as $dir)
             {
                 if (!is_dir($currentDir . $dir)) {
-                    $current = new Dir($currentDir . $dir);
+                    $current = new \Dir($currentDir . $dir);
                     $current->create($mode);
                 }
                 $currentDir .= $dir.'/';
