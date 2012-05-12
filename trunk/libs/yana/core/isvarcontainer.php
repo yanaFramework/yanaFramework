@@ -27,7 +27,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana;
+namespace Yana\Core;
 
 /**
  * <<interface>> Container interface for classes managing variables.
@@ -65,7 +65,7 @@ interface IsVarContainer
      *
      * @param   string  $key        key of updated element
      * @param   mixed   &$value     new value
-     * @return  \Yana\IsVarContainer
+     * @return  \Yana\Core\IsVarContainer
      */
     public function setVarByReference($key, &$value);
 
@@ -73,7 +73,7 @@ interface IsVarContainer
      * Replaces all elements of the container by reference.
      *
      * @param   array  &$value  set of new values
-     * @return  \Yana\IsVarContainer
+     * @return  \Yana\Core\IsVarContainer
      */
     public function setVarsByReference(array &$value);
 
@@ -85,7 +85,7 @@ interface IsVarContainer
      *
      * @param   string  $key        key of updated element
      * @param   mixed   $value      new value
-     * @return  \Yana\IsVarContainer
+     * @return  \Yana\Core\IsVarContainer
      */
     public function setVar($key, $value);
 
@@ -93,7 +93,7 @@ interface IsVarContainer
      * Replaces all elements of the container.
      *
      * @param   array  $value  set of new values
-     * @return  \Yana\IsVarContainer
+     * @return  \Yana\Core\IsVarContainer
      */
     public function setVars(array $value);
 

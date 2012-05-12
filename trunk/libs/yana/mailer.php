@@ -31,7 +31,7 @@
  * @package     yana
  * @subpackage  mail
  */
-class Mailer extends \Yana\Core\Object implements \Yana\IsVarContainer, \Yana\Views\IsTemplate
+class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Yana\Views\IsTemplate
 {
 
     /**

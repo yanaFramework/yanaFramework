@@ -47,7 +47,7 @@
  * @subpackage  core
  */
 final class Yana extends \Yana\Core\AbstractSingleton
-    implements \Yana\Report\IsReportable, \Yana\Log\IsLogable, \Yana\IsVarContainer
+    implements \Yana\Report\IsReportable, \Yana\Log\IsLogable, \Yana\Core\IsVarContainer
 {
 
     /**

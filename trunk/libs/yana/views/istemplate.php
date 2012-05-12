@@ -33,7 +33,7 @@ namespace Yana\Views;
  * @package     yana
  * @subpackage  views
  */
-interface IsTemplate extends \Yana\IsVarContainer
+interface IsTemplate extends \Yana\Core\IsVarContainer
 {
 
     /**
