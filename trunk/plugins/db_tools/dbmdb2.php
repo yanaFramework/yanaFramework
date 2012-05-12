@@ -468,7 +468,7 @@ class DbMDB2 extends \Yana\Files\File implements IsDbImport
             assert('!isset($field); // Cannot redeclare var $field');
             foreach ($m1[1] as $string)
             {
-                $field = SML::decode($string);
+                $field = \Yana\Files\SML::decode($string);
 
                 if (isset($field['name'])) {
                     $value = $this->_handleValue($field, $string);
@@ -597,7 +597,7 @@ class DbMDB2 extends \Yana\Files\File implements IsDbImport
             {
                 if (preg_match('/^.*?<\/' . $name . '>/si', $string, $m)) {
                     $m = $m[0];
-                    $array = SML::decode($m);
+                    $array = \Yana\Files\SML::decode($m);
                     $string = mb_substr($string, mb_strlen($m[0]));
                 }
                 $value = false;
@@ -657,7 +657,7 @@ class DbMDB2 extends \Yana\Files\File implements IsDbImport
             break;
             case isset($data['function']):
                 $string = preg_replace('/^.*?<function>(.*?)<\/function>.*$/si', '$1', $string);
-                return $this->_handleFunction(SML::decode($string), $string);
+                return $this->_handleFunction(\Yana\Files\SML::decode($string), $string);
             break;
             case isset($data['expression']):
                 $string = preg_replace('/^.*?<expression>(.*?)<\/expression>.*$/si', '$1', $string);

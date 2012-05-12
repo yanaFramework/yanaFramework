@@ -200,7 +200,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
             }
 
             $installFile = $installDirectory . $item . '.sql';
-            $dbSchema = XDDL::getDatabase($item);
+            $dbSchema = \Yana\Files\XDDL::getDatabase($item);
             $database = new \Yana\Db\Mdb2\Connection($dbSchema);
 
             /* If no SQL file for the current $item does exist,
@@ -327,7 +327,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
             /**
              * read database content
              */
-            $dbSchema = XDDL::getDatabase($item);
+            $dbSchema = \Yana\Files\XDDL::getDatabase($item);
             $db = new \Yana\Db\Mdb2\Connection($dbSchema);
             $fileDb = new \Yana\Db\FileDb\Connection($dbSchema);
 
