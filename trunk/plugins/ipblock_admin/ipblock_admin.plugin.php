@@ -38,8 +38,8 @@ class plugin_ipblock_admin extends StdClass implements IsPlugin
      * @static
      */
 
-    /** @var BlockFile */ private static $_whitelist = null;
-    /** @var BlockFile */ private static $_blacklist = null;
+    /** @var \Yana\Files\Block */ private static $_whitelist = null;
+    /** @var \Yana\Files\Block */ private static $_blacklist = null;
 
     /**#@-*/
 
@@ -62,7 +62,7 @@ class plugin_ipblock_admin extends StdClass implements IsPlugin
      *
      * @access  private
      * @static
-     * @return  BlockFile
+     * @return  \Yana\Files\Block
      */
     private static function _getWhitelist()
     {
@@ -78,7 +78,7 @@ class plugin_ipblock_admin extends StdClass implements IsPlugin
      *
      * @access  private
      * @static
-     * @return  BlockFile
+     * @return  \Yana\Files\Block
      */
     private static function _getBlacklist()
     {
@@ -201,14 +201,14 @@ class plugin_ipblock_admin extends StdClass implements IsPlugin
         $blacklistFile = self::_getBlacklist();
 
         if (!$whitelistFile->exists()) {
-            $whitelistFile = new BlockFile(dirname($whitelistFile->getPath()) . '/' . Yana::getId() . '.whitelist');
+            $whitelistFile = new \Yana\Files\Block(dirname($whitelistFile->getPath()) . '/' . Yana::getId() . '.whitelist');
             $whitelistFile->create();
         } else {
             $whitelistFile->read();
         }
 
         if (!$blacklistFile->exists()) {
-            $blacklistFile = new BlockFile(dirname($blacklistFile->getPath()) . '/' . Yana::getId() . '.blacklist');
+            $blacklistFile = new \Yana\Files\Block(dirname($blacklistFile->getPath()) . '/' . Yana::getId() . '.blacklist');
             $blacklistFile->create();
         } else {
             $blacklistFile->read();

@@ -204,7 +204,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
             if (!is_array($structure)) {
                 return false;
             } else {
-                $structure = SML::encode($structure);
+                $structure = \Yana\Files\SML::encode($structure);
             }
             $filename = 'database.config';
             if (!empty($structure)) {
@@ -250,7 +250,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
         if (!is_array($structure)) {
             return false;
         } else {
-            $structure = SML::encode($structure);
+            $structure = \Yana\Files\SML::encode($structure);
         }
         $filename = 'database.config';
         if (empty($structure)) {
@@ -321,7 +321,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
                     $error = new InvalidValueWarning();
                     throw $error->setField('DBMS=' . $dbms);
             }
-            $dbc = new \Yana\Db\Export\SqlFactory( XDDL::getDatabase($dbName) );
+            $dbc = new \Yana\Db\Export\SqlFactory( \Yana\Files\XDDL::getDatabase($dbName) );
             $arrayOfStmts = $dbc->$methodName();
             $fileContents .= implode("\n", $arrayOfStmts) . "\n";
         }
