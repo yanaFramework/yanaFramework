@@ -25,10 +25,12 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core;
+
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __Dir__ . '/../../../include.php';
 
 
 /**
@@ -36,11 +38,11 @@ require_once dirname(__FILE__) . '/include.php';
  *
  * @package  test
  */
-class ObjectTest extends PHPUnit_Framework_TestCase
+class ObjectTest extends \PHPUnit_Framework_TestCase
 {
+
     /**
-     * @var    Object
-     * @access protected
+     * @var  \Yana\Core\Object
      */
     protected $object;
     
@@ -55,19 +57,15 @@ class ObjectTest extends PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     *
-     * @access protected
      */
     protected function setUp()
     {
-        $this->object = new Object();
+        $this->object = new \Yana\Core\Object();
     }
 
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
-     *
-     * @access protected
      */
     protected function tearDown()
     {
@@ -121,7 +119,7 @@ class ObjectTest extends PHPUnit_Framework_TestCase
         $getClass = $this->object->getClass();
         $this->assertType('string', $getClass, 'asserft faield, the value is not from type string');
         // expected Object as a string
-        $this->assertEquals('Object', $getClass, ' the values should be equal');
+        $this->assertEquals(__NAMESPACE__ . '\\Object', $getClass, ' the values should be equal');
     }
 
     /**
@@ -141,5 +139,7 @@ class ObjectTest extends PHPUnit_Framework_TestCase
         // expected false 
         $this->assertFalse($clone === $this->object, 'that two cant be identical');
     }
+
 }
+
 ?>
