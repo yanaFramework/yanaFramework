@@ -33,7 +33,7 @@ namespace Yana\Io\Adapters;
  * Session adapter, that stores and restores the given object from the session settings.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  io
  */
 class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana\Io\Adapters\IsDataAdapter
 {
@@ -57,18 +57,18 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
     /**
      * MemCache instance.
      *
-     * @var  \Memcache
+     * @var  \Yana\Io\Adapters\MemCache\IsWrapper
      */
     private $_memCache = null;
 
     /**
-     * constructor
+     * Constructor.
      *
-     * @param  \Memcache  $memCache  connection to MemCache server
-     * @param  string     $prefix     name of client
-     * @param  int        $lifetime  cache lifetime (0 = forever, or number of seconds (max 30 days), or timestamp)
+     * @param  \Yana\Io\Adapters\MemCache\IsWrapper  $memCache  connection to MemCache server
+     * @param  string                                $prefix    id to prevent adapters from overwriting one another
+     * @param  int                                   $lifetime  0 = forever, or seconds (max 30 days), or timestamp
      */
-    public function __construct(\Memcache $memCache, $prefix = __CLASS__, $lifetime = 0)
+    public function __construct(\Yana\Io\Adapters\MemCache\IsWrapper $memCache, $prefix = __CLASS__, $lifetime = 0)
     {
         assert('is_string($prefix); // Invalid argument $prefix: string expected');
         assert('is_int($lifetime); // Invalid argument $lifetime: int expected');
@@ -77,11 +77,47 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
         $this->_memCache = $memCache;
         $this->_lifetime = (int) $lifetime;
 
+        if (!$this->_isAvailable()) {
+            $message = "No Memcache server available. You may want to check your server and network settings.";
+            throw new \Yana\Io\Adapters\MemCache\ServerNotAvailableException($message);
+        }
         // In order to be countable the class keeps track of all valid ids.
-        $keyList = $this->_memCache->get($this->_toMemCacheKey(""));
+        $keyList = $this->_memCache->getVar($this->_toMemCacheKey(""));
         if (\is_array($keyList)) {
             $this->_setItems($keyList);
         }
+    }
+
+    /**
+     * Returns prefix to put in front of offset keys.
+     *
+     * @return string
+     */
+    protected function _getPrefix()
+    {
+        return $this->_prefix;
+    }
+
+    /**
+     * Returns the Memcache instance.
+     *
+     * @return \Yana\Io\Adapters\MemCache\IsWrapper
+     */
+    protected function _getMemCache()
+    {
+        return $this->_memCache;
+    }
+
+    /**
+     * Checks wether or not any of the Memcache servers is reachable.
+     *
+     * Returns bool(true) if it gets an answer from any of the listed servers.
+     *
+     * @return  bool
+     */
+    protected function _isAvailable()
+    {
+        return (bool) $this->_getMemCache()->getStats();
     }
 
     /**
@@ -108,26 +144,6 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
     {
         $offset = ($entity->getId()) ? $entity->getId() : null;
         $this->offsetSet($offset, $entity);
-    }
-
-    /**
-     * Returns prefix to put in front of offset keys.
-     *
-     * @return string
-     */
-    protected function _getPrefix()
-    {
-        return $this->_prefix;
-    }
-
-    /**
-     * Returns the Memcache instance.
-     *
-     * @return \Memcache
-     */
-    protected function _getMemCache()
-    {
-        return $this->_memCache;
     }
 
     /**
@@ -179,7 +195,7 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
         $result = null;
 
         if ($this->offsetExists($offset)) {
-            $result = $this->_getMemCache()->get($this->_toMemCacheKey($offset));
+            $result = $this->_getMemCache()->getVar($this->_toMemCacheKey($offset));
         }
 
         return $result;
@@ -207,9 +223,9 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
         }
 
         // MemCache::set( scalar index, value, flags, lifetime in seconds )
-        $this->_getMemCache()->set($this->_toMemCacheKey($offset), $value, 0, $this->_getLifetime());
+        $this->_getMemCache()->setVar($this->_toMemCacheKey($offset), $value, $this->_getLifetime());
         // store updated key list
-        $this->_getMemCache()->set($this->_toMemCacheKey(""), $this->_getItems(), 0, $this->_getLifetime());
+        $this->_getMemCache()->setVar($this->_toMemCacheKey(""), $this->_getItems(), $this->_getLifetime());
         return $value;
     }
 
@@ -220,11 +236,11 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
      */
     public function offsetUnset($offset)
     {
-        $this->_getMemCache()->delete($this->_toMemCacheKey($offset));
+        $this->_getMemCache()->unsetVar($this->_toMemCacheKey($offset));
         // update key list
         parent::offsetUnset($offset);
         // store updated key list
-        $this->_getMemCache()->set($this->_toMemCacheKey(""), $this->_getItems(), 0, $this->_getLifetime());
+        $this->_getMemCache()->setVar($this->_toMemCacheKey(""), $this->_getItems(), $this->_getLifetime());
     }
 
 }

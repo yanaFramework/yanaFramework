@@ -31,7 +31,7 @@ namespace Yana\Io\Adapters\MemCache;
  * <<wrapper>> For use with PECL extention "Memcache".
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  io
  */
 class MemcacheWrapper extends \Yana\Core\Object implements \Yana\Io\Adapters\MemCache\IsWrapper
 {

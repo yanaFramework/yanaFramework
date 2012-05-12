@@ -33,9 +33,8 @@ namespace Yana\Io\Adapters;
  * Null adapter, that basically does nothing at all.
  * Use this for UnitTests!
  *
- * @access      public
  * @package     yana
- * @subpackage  core
+ * @subpackage  io
  */
 class ArrayAdapter extends \Yana\Core\AbstractCountableArray implements \Yana\Io\Adapters\IsDataAdapter
 {

@@ -33,7 +33,7 @@ namespace Yana\Io\Adapters;
  * Session adapter, that stores and restores the given object from the session settings.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  io
  */
 class SessionAdapter extends \Yana\Io\Adapters\ArrayAdapter implements \Yana\Io\Adapters\IsDataAdapter
 {

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -24,50 +23,19 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
-namespace Yana\Io\Adapters;
+namespace Yana\Io;
 
 /**
- * <<Interface>> Data Entity
- *
- * Base class for plain entities.
+ * <<exception>> Indicates, that an I/O operation on a data-resource has failed.
  *
  * @package     yana
- * @subpackage  io
+ * @subpackage  core
  */
-interface IsEntity extends \Yana\Core\IsObject
+class IoException extends \Yana\Core\Exceptions\DataException
 {
-
-    /**
-     * Returns a unique identifier.
-     *
-     * @return  scalar
-     */
-    public function getId();
-
-    /**
-     * Set the identifying value for this entity.
-     *
-     * @param   scalar  $id  unique identier
-     * @return  \Yana\Io\Adapters\IsEntity
-     */
-    public function setId($id);
-
-    /**
-     * This sets the data adapter used to persist the entity
-     *
-     * @param  \Yana\Io\Adapters\IsDataAdapter  $adapter  object that should be used
-     */
-    public function setDataAdapter(\Yana\Io\Adapters\IsDataAdapter $adapter);
-
-    /**
-     * Calls the assigned data adapter to persist the entity.
-     */
-    public function saveEntity();
-
+    // intentionally left blank
 }
 
 ?>
