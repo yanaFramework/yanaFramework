@@ -59,7 +59,7 @@ require_once 'dbinfotable.php';
  * @package    yana
  * @subpackage plugins
  */
-class DbDesigner4 extends \File implements \IsDbImport
+class DbDesigner4 extends \Yana\Files\File implements \IsDbImport
 {
     /**#@+
      * @ignore

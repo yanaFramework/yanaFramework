@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Files;
+
 /**
  * checked reading of file sources
  *
@@ -34,26 +36,22 @@
  * Note: This class does not implement methods for writing
  * on files.
  *
- * @access      public
  * @package     yana
- * @subpackage  file_system
+ * @subpackage  files
  */
-class FileReadonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
+class Readonly extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
 {
 
     /**
      * MD5 checksum cache
      *
-     * @access  private
      * @var string
-     * @ignore
      */
     private $checkSum = null;
 
     /**
      * file content
      *
-     * @access  protected
      * @var array
      * @ignore
      */
@@ -64,7 +62,6 @@ class FileReadonly extends \Yana\Files\AbstractResource implements \Yana\Files\I
      *
      * Tries to read the file contents and throws an exception on error.
      *
-     * @access  public
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
      */
@@ -96,7 +93,6 @@ class FileReadonly extends \Yana\Files\AbstractResource implements \Yana\Files\I
      *
      * The process is aborted if it fails 3 times.
      *
-     * @access  public
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
      */
@@ -121,7 +117,6 @@ class FileReadonly extends \Yana\Files\AbstractResource implements \Yana\Files\I
      * Returns the size of the file in bytes (from cached value).
      * If an error occurs, bool(false) is returned.
      *
-     * @access  public
      * @return  int
      * @since   2.8.5
      */
@@ -136,7 +131,6 @@ class FileReadonly extends \Yana\Files\AbstractResource implements \Yana\Files\I
      * Note: The type returned depends on the resource.
      * The default is a string, containing the file's contents as a text.
      *
-     * @access  public
      * @return  mixed
      */
     public function getContent()
@@ -147,24 +141,24 @@ class FileReadonly extends \Yana\Files\AbstractResource implements \Yana\Files\I
     /**
      * alias of get()
      *
-     * @access  public
      * @return  string
      */
     public function __toString()
     {
+        $message = "";
         if (!$this->exists()) {
-            return "File ".$this->getPath()." does not exist\n";
+            $message = "File " . $this->getPath() . " does not exist\n";
         } elseif ($this->isEmpty()) {
-            return "File ".$this->getPath()." is wether empty or not loaded\n";
+            $message = "File " . $this->getPath() . " is wether empty or not loaded\n";
         } else {
-            return $this->getContent();
+            $message = $this->getContent();
         }
+        return $message;
     }
 
     /**
      * returns bool(true) if the source is empty or not loaded
      *
-     * @access  public
      * @return  bool
      */
     public function isEmpty()
@@ -200,7 +194,6 @@ class FileReadonly extends \Yana\Files\AbstractResource implements \Yana\Files\I
      * If you prefer a hash value over a checksum, you may want to have
      * a look at {@link FileReadonly::getMd5()} instead.
      *
-     * @access  public
      * @param   string  $filename   filename
      * @return  int
      * @name    FileReadonly::getCrc32()
@@ -258,7 +251,6 @@ class FileReadonly extends \Yana\Files\AbstractResource implements \Yana\Files\I
      * If you prefer a checksum over a hash value, you may want to have
      * a look at {@link FileReadonly::getCrc32()} instead.
      *
-     * @access  public
      * @param   string  $filename  name of file (using current file if left blank)
      * @return  string
      * @since   2.8.5
@@ -295,7 +287,6 @@ class FileReadonly extends \Yana\Files\AbstractResource implements \Yana\Files\I
      *
      * Reset file stats, e.g. after creating a file that did not exist.
      *
-     * @access  protected
      * @ignore
      */
     protected function resetStats()

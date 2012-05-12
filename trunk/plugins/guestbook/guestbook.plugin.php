@@ -689,7 +689,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         $id = Yana::getId();
         /* do not show new guestbooks, if Auto-Option is deactivated */
         $dir = $YANA->getResource('system:/config/profiledir');
-        $file = new FileReadonly($dir->getPath() . $id . '.cfg');
+        $file = new \Yana\Files\Readonly($dir->getPath() . $id . '.cfg');
         if ($id !== 'default' && !$file->exists() && !$YANA->getVar("PROFILE.AUTO")) {
             \Yana\Log\LogManager::getLogger()->addLog("Access restriction in effect. Access to undefined profile {$id} denied.");
             throw new FileNotFoundError();

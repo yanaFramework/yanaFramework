@@ -48,7 +48,7 @@
  *
  * @access      public
  * @package     yana
- * @subpackage  file_system
+ * @subpackage  files
  *
  */
 class DatFile extends TextFile

@@ -76,7 +76,7 @@ require_once 'dbinfotable.php';
  * @package    yana
  * @subpackage plugins
  */
-class DbMDB2 extends File implements IsDbImport
+class DbMDB2 extends \Yana\Files\File implements IsDbImport
 {
     /**#@+
      * @ignore

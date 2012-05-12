@@ -32,54 +32,50 @@ namespace Yana\Files;
  *
  * This class identifies writable resources.
  *
- * @access      public
  * @package     yana
- * @subpackage  file
+ * @subpackage  files
  */
-interface IsWritable extends IsReadable
+interface IsWritable extends \Yana\Files\IsReadable
 {
 
     /**
-     * create the current file if it does not exist
+     * Create the current file if it does not exist.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @return  bool
      */
     public function create();
 
     /**
-     * write file to system
+     * Write file to system.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @return  bool
      */
     public function write();
 
     /**
-     * delete this file
+     * Delete this file.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @return  bool
      */
     public function delete();
 
     /**
-     * copy the file to some destination
+     * Copy the file to some destination.
      *
      * This will create a copy of this file on the filesystem.
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access   public
      * @param    string   $destFile     destination to copy the file to
      * @return   bool
      */
     public function copy($destFile);
+
 }
 
 ?>

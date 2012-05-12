@@ -25,25 +25,26 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Files;
+
 /**
- * checked reading and writing of file sources
+ * Checked reading and writing of file sources.
  *
  * This class adds functionality to write changes
  * on the object to the corresponding file.
  *
- * @access      public
  * @package     yana
- * @subpackage  file_system
+ * @subpackage  files
  */
-class File extends FileReadonly implements \Yana\Files\IsWritable
+class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
 {
+
     /**
-     * read file contents
+     * Read file contents.
      *
      * Tries to read the file contents.
      * Additionaly reads and caches the file attributes.
      *
-     * @access  public
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      * @throws  \Yana\Core\Exceptions\NotFoundException     if the file does not exist
      */
@@ -55,12 +56,11 @@ class File extends FileReadonly implements \Yana\Files\IsWritable
     }
 
     /**
-     * write file to system
+     * Write file to system.
      *
      * This function will return bool(true) on success.
      * It issues an E_USER_NOTICE and returns bool(false) on error.
      *
-     * @access  public
      * @return  bool
      * @throws  \Yana\Core\Exceptions\NotWriteableException  when file does not exist or is not writeable
      */
@@ -91,11 +91,10 @@ class File extends FileReadonly implements \Yana\Files\IsWritable
     }
 
     /**
-     * delete this file
+     * Delete this file.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @return  bool
      */
     public function delete()
@@ -111,14 +110,13 @@ class File extends FileReadonly implements \Yana\Files\IsWritable
     }
 
     /**
-     * failSafe writing of data
+     * Fail-safe writing of data.
      *
      * Automatically restarts writing if the file-resource
      * is temporarily not available after waiting for 0.5 seconds.
      *
      * The process is aborted if it failed 3 times.
      *
-     * @access  public
      * @return  bool
      */
     public function failSafeWrite()
@@ -136,9 +134,8 @@ class File extends FileReadonly implements \Yana\Files\IsWritable
     }
 
     /**
-     * create the current file if it does not exist
+     * Create the current file if it does not exist.
      *
-     * @access  public
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException  when target does already exist
      * @throws  \Yana\Core\Exceptions\NotWriteableException   when unable to create file
      */
@@ -158,13 +155,12 @@ class File extends FileReadonly implements \Yana\Files\IsWritable
     }
 
     /**
-     * reload file contents
+     * Reload file contents.
      *
      * You accidently did something wrong with the file?
      * Calling this will reload the file from disk while
      * reseting its current state.
      *
-     * @access  public
      * @throws  \Yana\Core\Exceptions\NotReadableException  if the file is not readable
      */
     public function reset()
@@ -178,7 +174,7 @@ class File extends FileReadonly implements \Yana\Files\IsWritable
     }
 
     /**
-     * copy the file to some destination
+     * Copy the file to some destination.
      *
      * This will create a copy of this file on the filesystem.
      * Bool(true) will be returned on success and bool(false)
@@ -213,7 +209,6 @@ class File extends FileReadonly implements \Yana\Files\IsWritable
      * in a UNIX environment (while it may be executable on windows platforms)
      * until you set the $mode parameter to 0777.
      *
-     * @access   public
      * @param    string   $destFile     destination to copy the file to
      * @param    bool     $overwrite    setting this to false will prevent existing files from getting overwritten
      * @param    bool     $isRecursive  setting this to true will automatically, recursively create directories
