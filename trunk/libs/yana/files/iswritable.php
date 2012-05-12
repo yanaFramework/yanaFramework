@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\File;
+namespace Yana\Files;
 
 /**
  * <<Interface>> writable file system resource

@@ -25,14 +25,13 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\File;
+namespace Yana\Files;
 
 /**
  * <<Interface>> readable file system resource
  *
  * This class identifies readable resources.
  *
- * @access      public
  * @package     yana
  * @subpackage  file
  */
@@ -44,7 +43,6 @@ interface IsReadable
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @throws  \Yana\Core\Exceptions\NotFoundException     when the file is not found
      * @throws  \Yana\Core\Exceptions\NotReadableException  when the file is not readable
      */
@@ -53,7 +51,6 @@ interface IsReadable
     /**
      * return file contents as string
      *
-     * @access  public
      * @return  string
      */
     public function getContent();
@@ -63,7 +60,6 @@ interface IsReadable
      *
      * Returns a the path of the resource.
      *
-     * @access  public
      * @return  string
      */
     public function getPath();
@@ -73,7 +69,6 @@ interface IsReadable
      *
      * Returns true, if the resource exists.
      *
-     * @access  public
      * @return  bool
      */
     public function exists();
@@ -83,7 +78,6 @@ interface IsReadable
      *
      * Returns true, if the resource is readable.
      *
-     * @access  public
      * @return  bool
      */
     public function isReadable();
@@ -93,7 +87,6 @@ interface IsReadable
      *
      * Returns true, if the resource is writeable.
      *
-     * @access  public
      * @return  bool
      */
     public function isWriteable();
@@ -103,7 +96,6 @@ interface IsReadable
      *
      * Returns true, if the resource is executable.
      *
-     * @access  public
      * @return  bool
      */
     public function isExecutable();

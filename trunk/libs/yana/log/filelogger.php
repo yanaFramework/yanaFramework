@@ -41,14 +41,9 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
 {
 
     /**
-     * @var \Yana\File\IsTextFile
+     * @var \Yana\Files\IsTextFile
      */
     private $_file = null;
-
-    /**
-     * @var array
-     */
-    private $_messages = array();
 
     /**
      * @var int
@@ -61,9 +56,9 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
     private $_mailRecipient = "";
 
     /**
-     * @param  \Yana\File\IsTextFile  $database  connection object
+     * @param  \Yana\Files\IsTextFile  $database  connection object
      */
-    public function __construct(\Yana\File\IsTextFile $file)
+    public function __construct(\Yana\Files\IsTextFile $file)
     {
         $this->_file = $file;
     }
@@ -78,7 +73,6 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
     public function addLog($message, $level = IsLogger::INFO, $data = array())
     {
         if ($this->_isAcceptable($level)) {
-            $filename = 'cache/error.log';
             $log = \Log::getLogFromMessage($message);
 
             $errorMessage = "";
@@ -194,7 +188,7 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
         $mail = new FormMailer();
         $mail->setContent($oldLogEntries)
             ->setSubject('JOURNAL')
-            ->send($logMail);
+            ->send($recipient);
 
         // truncate file
         $this->_file->setContent(array());

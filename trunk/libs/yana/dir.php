@@ -36,7 +36,7 @@
  * @package     yana
  * @subpackage  file_system
  */
-class Dir extends \Yana\File\AbstractResource implements \Yana\File\IsReadable
+class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
 {
 
     /**#@+

@@ -43,7 +43,7 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
 {
 
     /**
-     * @var \Yana\File\IsReadable
+     * @var \Yana\Files\IsReadable
      * @ignore
      */
     protected $mountpoint = null;
@@ -116,7 +116,7 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
             return true;
         }
         // check if resource is valid
-        if (!($this->mountpoint instanceof \Yana\File\IsReadable)) {
+        if (!($this->mountpoint instanceof \Yana\Files\IsReadable)) {
             return false;
         }
         if ($this->mountpoint->exists()) {
