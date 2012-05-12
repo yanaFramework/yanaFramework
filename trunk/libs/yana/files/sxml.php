@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Files;
+
 /**
  * Simple XML Files
  *
@@ -66,11 +68,11 @@
  * See the PHP manual for details.
  *
  * @package     yana
- * @subpackage  file_system
+ * @subpackage  files
  * @since       3.1.0
  * @name        SXML
  */
-class SXML extends SML
+class SXML extends \Yana\Files\SML
 {
 
     /**

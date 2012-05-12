@@ -36,7 +36,7 @@
  * @since       3.1.0
  * @name        JsonFile
  */
-class JsonFile extends SML
+class JsonFile extends \Yana\Files\SML
 {
     /**
      * constructor

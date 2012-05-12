@@ -48,7 +48,7 @@ class Index extends \Yana\Core\Object
     private $_table = "";
 
     /**
-     * @var \SML
+     * @var \Yana\Files\SML
      */
     private $_data = null;
 
@@ -66,10 +66,10 @@ class Index extends \Yana\Core\Object
      * constructor
      *
      * @param  \Yana\Db\Ddl\Table  $table     table (DDL object)
-     * @param  \SML                $data      data (SML object)
+     * @param  \Yana\Files\SML                $data      data (SML object)
      * @param  string              $filename  filename
      */
-    public function __construct(\Yana\Db\Ddl\Table $table, \SML $data, $filename)
+    public function __construct(\Yana\Db\Ddl\Table $table, \Yana\Files\SML $data, $filename)
     {
         assert('is_string($filename); // Wrong type for argument 3. String expected');
 
