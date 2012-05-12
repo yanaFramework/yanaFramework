@@ -35,7 +35,7 @@ namespace Yana\Files;
  * @package     yana
  * @subpackage  files
  */
-class TextFile extends \Yana\Files\File implements \Yana\Files\IsTextFile
+class Text extends \Yana\Files\File implements \Yana\Files\IsTextFile
 {
 
     /**
