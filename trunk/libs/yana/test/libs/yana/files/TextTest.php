@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: TextFile
+ * PHPUnit test-case
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,21 +25,23 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Files;
+
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __Dir__ . '/../../../include.php';
 
 /**
- * Test class for TextFile
+ * Test class for Text
  *
  * @package  test
  */
-class TextFileTest extends PHPUnit_Framework_TestCase
+class TextTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var  FileReadonly
+     * @var  \Yana\Files\Text
      */
     protected $_object;
 
@@ -64,7 +66,7 @@ class TextFileTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_object = new TextFile(CWD . $this->_path);
+        $this->_object = new Text(CWD . $this->_path);
         $this->_object->read();
     }
 
@@ -104,7 +106,7 @@ class TextFileTest extends PHPUnit_Framework_TestCase
         $get = $this->_object->getLine(3);
         $this->assertFalse($get, 'assert failed, no entry for expected line');
 
-        $nonExistFile = new TextFile('resources/nonExistfile.txt');
+        $nonExistFile = new Text('resources/nonExistfile.txt');
         $get = $nonExistFile->getLine(1);
         $this->assertEquals(mb_strlen($get), 0, 'assert failed , expected result is 0');
         unset($nonExistFile);
@@ -201,7 +203,7 @@ class TextFileTest extends PHPUnit_Framework_TestCase
        $this->assertType('integer', $length, 'not valid type "integer"');
 
        // try with non existing path
-       $newFile = new TextFile('resources/nonExistfile.txt');
+       $newFile = new Text('resources/nonExistfile.txt');
        $length = $newFile->length();
        $this->assertEquals($length, 0, 'assert failed, source doesnt exist');
        unset($newFile);

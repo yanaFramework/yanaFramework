@@ -25,46 +25,44 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Files;
+
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __Dir__ . '/../../../include.php';
 
 /**
  * Test class for DatFile
  * 
  * @package  test
  */
-class DatFileTest extends PHPUnit_Framework_TestCase
+class DatTest extends \PHPUnit_Framework_TestCase
 {
+
     /**
-     * @var    DatFile
-     * @access protected
+     * @var    Dat
      */
     protected $object;
+
     /**
      * @var    string
-     * @access protected
      */
     protected $source = 'resources/test.dat';
 
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     * 
-     * @access protected
      */
     protected function setUp()
     {
-        $this->object = new DatFile(CWD . $this->source);
+        $this->object = new Dat(CWD . $this->source);
         $this->object->read();
     }
 
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
-     *
-     * @access protected
      */
     protected function tearDown()
     { 
@@ -108,7 +106,7 @@ class DatFileTest extends PHPUnit_Framework_TestCase
     /**
      * Get Invalid Argument
      *
-     * @expectedException  PHPUnit_Framework_Error
+     * @expectedException  \PHPUnit_Framework_Error
      * @test
      */
     function testGetLineInvalidArgument()
@@ -121,7 +119,7 @@ class DatFileTest extends PHPUnit_Framework_TestCase
     /**
      * Get Invalid Argument1
      *
-     * @expectedException  PHPUnit_Framework_Error
+     * @expectedException  \PHPUnit_Framework_Error
      * @test
      */
     function testGetLineInvalidArgument1()
@@ -174,7 +172,7 @@ class DatFileTest extends PHPUnit_Framework_TestCase
     /**
      * set line
      *
-     * @expectedException  PHPUnit_Framework_Error
+     * @expectedException  \PHPUnit_Framework_Error
      * @test
      */
     public function testSetLineInvalidArgument()
@@ -226,13 +224,15 @@ class DatFileTest extends PHPUnit_Framework_TestCase
         
         // result should be 2
         $this->assertEquals($this->object->length(), 2, '"length" test failed.');
-        
+
         //add new row and try again 
         $dataset = array('eins' => 'bla', 'drei' => 'bla', 'next' => 'bla');
         $this->object->appendLine($dataset);
-        
+
         // result should be 3
         $this->assertEquals($this->object->length(), 3, '"length" test failed.');
     }
+
 }
+
 ?>
