@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -24,50 +23,21 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
-namespace Yana\Io\Adapters;
+namespace Yana\Io\Adapters\MemCache;
 
 /**
- * <<Interface>> Data Entity
+ * <<exception>> Memcache server not available.
  *
- * Base class for plain entities.
+ * Thrown when none of the registered Memcache servers can be reached.
  *
  * @package     yana
  * @subpackage  io
  */
-interface IsEntity extends \Yana\Core\IsObject
+class ServerNotAvailableException extends \Yana\Io\Adapters\AdapterException
 {
-
-    /**
-     * Returns a unique identifier.
-     *
-     * @return  scalar
-     */
-    public function getId();
-
-    /**
-     * Set the identifying value for this entity.
-     *
-     * @param   scalar  $id  unique identier
-     * @return  \Yana\Io\Adapters\IsEntity
-     */
-    public function setId($id);
-
-    /**
-     * This sets the data adapter used to persist the entity
-     *
-     * @param  \Yana\Io\Adapters\IsDataAdapter  $adapter  object that should be used
-     */
-    public function setDataAdapter(\Yana\Io\Adapters\IsDataAdapter $adapter);
-
-    /**
-     * Calls the assigned data adapter to persist the entity.
-     */
-    public function saveEntity();
-
+    // intentionally left blank
 }
 
 ?>

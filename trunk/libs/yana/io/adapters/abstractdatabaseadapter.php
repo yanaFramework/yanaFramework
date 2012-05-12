@@ -33,7 +33,7 @@ namespace Yana\Io\Adapters;
  * Database adapter, that stores and restores the given object from a database connection.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  io
  */
 abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yana\Io\Adapters\IsDataBaseAdapter
 {
@@ -55,7 +55,6 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yan
     /**
      * constructor
      *
-     * @access  public
      * @param   string  $index  where to store session data $_SESSION[$index]
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the table is not registered in the database
      */
