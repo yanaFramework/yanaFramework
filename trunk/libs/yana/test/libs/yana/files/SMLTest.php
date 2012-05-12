@@ -1,7 +1,6 @@
 <?php
-
 /**
- * PHPUnit test-case: SML
+ * PHPUnit test-case
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -25,17 +24,20 @@
  * @package  test
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
+
+namespace Yana\Files;
+
 /**
  * @ignore
  */
-require_once __DIR__ . '/include.php';
+require_once __Dir__ . '/../../../include.php';
 
 /**
  *  SML test-case
  *
  * @package  test
  */
-class SMLTest extends PHPUnit_Framework_TestCase
+class SMLTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
