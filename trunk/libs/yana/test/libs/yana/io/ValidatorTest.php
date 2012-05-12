@@ -30,7 +30,7 @@ namespace Yana\Io;
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __DIR__ . '/../../../include.php';
 
 /**
  * Test class for Toolbox

@@ -30,7 +30,7 @@ namespace Yana\Util;
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __Dir__ . '/../../../include.php';
 
 /**
  * Test class for Hashtable
