@@ -42,6 +42,7 @@ namespace Yana\Files;
  */
 abstract class AbstractResource extends \Yana\Core\Object
 {
+
     /**#@+
      * @ignore
      */
@@ -53,8 +54,6 @@ abstract class AbstractResource extends \Yana\Core\Object
     /**#@-*/
 
     /**
-     * constructor
-     *
      * Create a new instance of this class.
      *
      * @param  string  $filename    filename

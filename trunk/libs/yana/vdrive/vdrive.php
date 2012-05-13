@@ -28,7 +28,7 @@
 namespace Yana\VDrive;
 
 /**
- * Virtual Drive
+ * Virtual Drive.
  *
  * Class to abstract from real filesystems by mapping
  * filenames to aliases (mountpoints).
@@ -75,7 +75,6 @@ namespace Yana\VDrive;
  * You may want to see the DTD for a more in-depth definition
  * of the elements: config/dtd/drive.dtd
  *
- * @access     public
  * @package    yana
  * @subpackage vdrive
  * @name       VDrive
@@ -83,21 +82,30 @@ namespace Yana\VDrive;
 class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsReportable, \Serializable
 {
 
-    /**#@+
-     * @ignore
-     * @access  private
+    /**
+     * @var  array
      */
-    /** @var array         */ private $drive = array();
-    /** @var string        */ private $baseDir = "";
-    /** @var array         */ private $files = array();
-    /** @var Configuration */ private $content = null;
-    /**#@-*/
+    private $_drive = array();
+
+    /**
+     * @var  string
+     */
+    private $_baseDir = "";
+
+    /**
+     * @var  array
+     */
+    private $_files = array();
+
+    /**
+     * @var  \Yana\VDrive\Configuration
+     */
+    private $_content = null;
 
     /**
      * local directory settings
      *
-     * @access  protected
-     * @var     array
+     * @var  array
      * @ignore
      */
     protected $vars = array();
@@ -105,48 +113,41 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
     /**
      * default directory settings
      *
-     * @static
-     * @access  private
-     * @var     array
+     * @var  array
      */
-    private static $defaultSettings = array();
+    private static $_defaultSettings = array();
 
     /**
      * use default directory settings
      *
      * true = yes, false = no
      *
-     * @static
-     * @access  private
-     * @var     bool
+     * @var  bool
      */
-    private static $useDefaults = false;
+    private static $_useDefaults = false;
 
     /**
-     * constructor
-     *
-     * creates a new virtual drive instance
+     * Creates a new virtual drive instance.
      *
      * @name   VDrive::__construct()
-     * @param  string  $path        path
-     * @param  string  $baseDir     base directory
+     * @param  string  $path     absolute path to configuration file
+     * @param  string  $baseDir  base directory
      */
     public function __construct($path, $baseDir = "")
     {
         assert('is_string($path); // Wrong type for argument 1. String expected');
         assert('is_string($baseDir); // Wrong type for argument 2. String expected');
         parent::__construct($path);
-        $this->baseDir = (string) $baseDir;
+        $this->_baseDir = (string) $baseDir;
     }
 
     /**
-     * get a drive's mountpoint
+     * Get a drive's mountpoint.
      *
      * You may access the drive of a plugin by using it's name.
      *
-     * @access  public
      * @param   string  $name  name of plugin
-     * @return  VDrive
+     * @return  \Yana\VDrive\VDrive
      */
     public function __get($name)
     {
@@ -155,7 +156,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
     }
 
     /**
-     * make this the default drive
+     * Make this the default drive.
      *
      * Each drive has it's own private settings. However: you can make
      * one drive make a public "default drive". The settings of this drive
@@ -173,16 +174,15 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
      * But be adviced: you should always do this BEFORE creating the object,
      * or otherwise it will have no effect.
      *
-     * @access  public
      * @ignore
      */
     public function setAsGlobal()
     {
-        self::$defaultSettings =& $this->vars;
+        self::$_defaultSettings =& $this->vars;
     }
 
     /**
-     * use defaults
+     * Use defaults.
      *
      * If set to true, this function will cause all
      * drives created in the future to always fall back to the
@@ -207,28 +207,21 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
      * the drive will ignore "foo.txt" and always load
      * "bar.txt", no matter if any of both exists.
      *
-     * @access  public
-     * @param   bool  $useDefaults  (true = use defaults, false otherweise)
-     * @static
+     * @param  bool  $useDefaults  (true = use defaults, false otherweise)
      */
     public static function useDefaults($useDefaults)
     {
-        if ($useDefaults) {
-            self::$useDefaults = true;
-        } else {
-            self::$useDefaults = false;
-        }
+        self::$_useDefaults = (bool) $useDefaults;
     }
 
     /**
-     * mount an unmounted virtual drive
+     * Mount an unmounted virtual drive.
      *
      * Mount the mountpoint identified by $name and copies the contents
      * (if any) to the repository.
      *
      * This function returns bool(true) on success, or bool(false) on error.
      *
-     * @access  public
      * @name    VDrive::mount()
      * @param   string  $name  name of the drive to mount
      * @return  bool
@@ -238,11 +231,11 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
         assert('is_string($name); // Wrong argument type for argument 1. String expected.');
 
         /* try to mounting the file */
-        if (!isset($this->drive["$name"]) || !$this->drive["$name"]->mount()) {
+        if (!isset($this->_drive["$name"]) || !$this->_drive["$name"]->mount()) {
             return false;
         }
         assert('!isset($file); // Cannot redeclare var $file');
-        $file = $this->files["$name"] = $this->drive["$name"]->getMountpoint();
+        $file = $this->_files["$name"] = $this->_drive["$name"]->getMountpoint();
 
         /* if it is a SML file, load the configuration */
         if ($file instanceOf \Yana\Core\IsVarContainer && $file->exists()) {
@@ -260,21 +253,20 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
     }
 
     /**
-     * read the virtual drive
+     * Read the virtual drive.
      *
      * This loads the virtual drive and initializes it's contents.
      * It does nothing when called multiple times.
      *
      * If the file does not exist or is not readable, the function throws an exception.
      *
-     * @access  public
      * @name    VDrive::read()
      * @throws  \Yana\Core\Exceptions\NotReadableException    when source file is not readable
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException  when the file could not be read or contains invalid syntax
      */
     public function read()
     {
-        if (isset($this->content)) {
+        if (isset($this->_content)) {
             return;
         }
         /* get file content */
@@ -284,26 +276,25 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
             throw new \Yana\Core\Exceptions\NotReadableException($message, E_USER_WARNING);
         }
         /* apply default settings */
-        $content = \Yana\Util\String::replaceToken($content, self::$defaultSettings);
+        $content = \Yana\Util\String::replaceToken($content, self::$_defaultSettings);
         /* create configuration */
-        $this->content = Configuration::loadString($content);
+        $this->_content = Configuration::loadString($content);
         /* read XML */
-        if (!($this->content instanceOf Configuration)) {
+        if (!($this->_content instanceOf Configuration)) {
             $message = "Not a valid VDrive configuration file: '{$this->getPath()}'";
             throw new \Yana\Core\Exceptions\InvalidSyntaxException($message, E_USER_WARNING);
         }
-        $this->_readXML($this->content);
+        $this->_readXML($this->_content);
     }
 
     /**
-     * build the virtual drive
+     * Build the virtual drive.
      *
      * This iterates through the XML file and builds the virtual drive
      * as definded.
      *
-     * @access  private
-     * @param   Configuration  $content  current xml node
-     * @param   string               $path     current virtual path
+     * @param   \Yana\VDrive\Configuration  $content  current xml node
+     * @param   string                      $path     current virtual path
      */
     private function _readXML(Configuration $content, $path = "")
     {
@@ -342,13 +333,13 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
                 $file = (string) $node->attributes()->path;
 
                 if (!preg_match('/^[\w\/]*[\w\.]+\.php$/s', $file)) {
-                    trigger_error("Invalid filename to include: '{$this->baseDir}{$file}'.", E_USER_WARNING);
+                    trigger_error("Invalid filename to include: '{$this->_baseDir}{$file}'.", E_USER_WARNING);
 
-                } elseif (!is_file("{$this->baseDir}{$file}")) {
-                    trigger_error("No such file to include: '{$this->baseDir}{$file}'.", E_USER_WARNING);
+                } elseif (!is_file("{$this->_baseDir}{$file}")) {
+                    trigger_error("No such file to include: '{$this->_baseDir}{$file}'.", E_USER_WARNING);
 
                 } else {
-                    include_once "{$this->baseDir}{$file}";
+                    include_once "{$this->_baseDir}{$file}";
                 }
             }
             unset($node);
@@ -369,12 +360,12 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
                 if ($node->isDir()) {
 
                     // create a new mount-point
-                    $this->drive[$name] = new Dir($source);
+                    $this->_drive[$name] = new Dir($source);
 
                     // set file filter
                     $filter = $node->getNodeFilter();
                     if (isset($filter)) {
-                        $this->drive[$name]->setFilter($filter);
+                        $this->_drive[$name]->setFilter($filter);
                     }
 
                     // recurse into directory
@@ -392,7 +383,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
                     }
 
                     // create a new mount-point
-                    $this->drive[$name] = new File($source, $type);
+                    $this->_drive[$name] = new \Yana\Files\File($source, $type);
                     unset($type);
 
                 } /* end if */
@@ -403,7 +394,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
                 }
 
                 // set requirements
-                $this->drive[$name]->setRequirements($node->nodeRequiresReadable(),
+                $this->_drive[$name]->setRequirements($node->nodeRequiresReadable(),
                                                      $node->nodeRequiresWriteable(),
                                                      $node->nodeRequiresExecutable());
 
@@ -412,16 +403,15 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
     }
 
     /**
-     * get source value from XML node
+     * Get source value from XML node.
      *
      * Interates through sources and returns the first existing file or directory in the list.
      * If none exists, it returns the last element in the list.
      *
-     * @access  private
-     * @param   Configuration  $content   content
+     * @param   \Yana\VDrive\Configuration  $content  Virtual Drive configuration settings
      * @return  string
      */
-    private function _getSource(Configuration $content)
+    private function _getSource(\Yana\VDrive\Configuration $content)
     {
         $sources = $content->getNodeSources();
 
@@ -430,7 +420,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
          * When in default mode, always the last (default)
          * element will be used.
          */
-        if (self::$useDefaults) {
+        if (self::$_useDefaults) {
             $sources = array(end($sources));
         }
 
@@ -440,12 +430,12 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
         {
             $source = (string) $source;
             if (mb_strpos($source, YANA_LEFT_DELIMITER) !== false) {
-                $source = \Yana\Util\String::replaceToken($source, self::$defaultSettings);
+                $source = \Yana\Util\String::replaceToken($source, self::$_defaultSettings);
             } else {
                 /* intentionally left blank */
             }
             if (!preg_match('/^(\w:|\/)/', $source)) {
-                $source = $this->baseDir . $source;
+                $source = $this->_baseDir . $source;
             }
             if (file_exists($source)) {
                 return $source;
@@ -455,16 +445,13 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
     }
 
     /**
-     * get string represenation of a virtual drive
+     * Get string represenation of a virtual drive.
      *
      * This returns a human readable overview of the currently loaded virtual drive and
      * it's contents.
      *
      * You might want to use this for debugging purposes.
      *
-     * @uses    print "<pre>" . $vDrive . "</pre>";
-     *
-     * @access  public
      * @return  string
      */
     public function __toString()
@@ -475,23 +462,21 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
     /**
      * Return file contents as string.
      *
-     * @access  public
      * @return  string
      */
     public function getContent()
     {
         // read file if not already read
         $this->read();
-        return $this->content->__toString();
+        return $this->_content->__toString();
     }
 
     /**
-     * get a resource
+     * Get a resource.
      *
      * Returns the file system resource specified by $key, or bool(false) if the resource
      * does not exist, or was unable to return any contents.
      *
-     * @access  public
      * @name    VDrive::getResource()
      * @param   string  $path  virtual file path
      * @return  \Yana\Files\AbstractResource
@@ -504,19 +489,16 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
         assert('is_string($path); // Wrong argument type for argument 1. String expected.');
         // read file if not already read
         $this->read();
-        if (!isset($this->drive[$path])) {
+        if (!isset($this->_drive[$path])) {
             $message = "No such virtual file or directory '$path'.";
             throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_WARNING);
         }
-        return $this->drive[$path]->getMountpoint();
+        return $this->_drive[$path]->getMountpoint();
     }
 
     /**
-     * get resource path
-     *
      * Resolves the virtual path and returns the real path of the resource.
      *
-     * @access  public
      * @param   string  $virtualPath    virtual path that should be converted to real path
      * @return  string
      * @throws  \Yana\Core\Exceptions\NotFoundException       when virtual file or directory does not exist.
@@ -525,44 +507,40 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
      */
     public function getResourcePath($virtualPath)
     {
+        assert('is_string($virtualPath); // Invalid argument $virtualPath: string expected');
+
         return $this->getResource($virtualPath)->getPath();
     }
 
     /**
-     * get list of mountpoints
+     * Get list of mountpoints.
      *
      * Returns an array of {@see Mountpoint}s where the keys are the file paths and the values
      * are the mountpoint definitions.
      *
-     * @access  public
      * @return  array
      */
     public function getMountpoints()
     {
-        return $this->drive;
+        return $this->_drive;
     }
 
     /**
-     * check if drive is empty
+     * Check if drive is empty.
      *
      * Returns true if the file containing the VDrive-definition does not exist,
      * is not readable, or is empty.
      * Returns false otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isEmpty()
     {
-        if (!is_readable($this->path) || !is_file($this->path) || !filesize($this->path)) {
-            return true;
-        } else {
-            return false;
-        }
+        return (bool) (!is_readable($this->path) || !is_file($this->path) || !filesize($this->path));
     }
 
     /**
-     * check a virtual drive for errors and return a report
+     * Check a virtual drive for errors and return a report.
      *
      * This is to check a virtual drive for syntax errors and missing files.
      *
@@ -587,7 +565,6 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
      * </report>
      * </code>
      *
-     * @access  public
      * @param   \Yana\Report\IsReport  $report  base report
      * @return  \Yana\Report\IsReport
      * @name    VDrive::getReport()
@@ -598,12 +575,12 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
         if (is_null($report)) {
             $report = \Yana\Report\Xml::createReport(__CLASS__);
         }
-        $report->addText("Base directory: {$this->baseDir}");
+        $report->addText("Base directory: {$this->_baseDir}");
 
-        if (!isset($this->content)) {
+        if (!isset($this->_content)) {
             $report->addWarning("Cannot perform check! Drive is not mounted.");
         } else {
-            foreach ($this->drive as $name => $node)
+            foreach ($this->_drive as $name => $node)
             {
                 $subReport = $report->addReport("$name");
                 $node->getReport($subReport);
@@ -613,11 +590,8 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
     }
 
     /**
-     * serialize this object to a string
-     *
      * Returns the serialized object as a string.
      *
-     * @access  public
      * @return  string
      */
     public function serialize()
@@ -632,7 +606,6 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
     /**
      * Reinitializes the object.
      *
-     * @access  public
      * @param   string  $string  string to unserialize
      */
     public function unserialize($string)
@@ -641,7 +614,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
         {
             $this->$key = $value;
         }
-        $this->content = Configuration::loadFile($this->path);
+        $this->_content = Configuration::loadFile($this->path);
     }
 
 }
