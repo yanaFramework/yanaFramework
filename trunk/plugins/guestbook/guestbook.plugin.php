@@ -408,7 +408,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
          *
          * return error if entry with same content already exists
          */
-        $myFlood = $YANA->getPlugins()->{"guestbook:/my.floodfile"};
+        $myFlood = $YANA->getPlugins()->{"guestbook:/my.flood"};
         $myFlood->setMax((int)$YANA->getVar("PROFILE.GUESTBOOK.FLOODING"));
         if ($myFlood->isBlocked()) {
             \Yana\Log\LogManager::getLogger()->addLog('Possibly flooding attempt detected. User request rejected.');

@@ -68,7 +68,7 @@ class plugin_ipblock_admin extends StdClass implements IsPlugin
     {
         if (!isset(self::$_whitelist)) {
             $pluginManager = \Yana\Plugins\Manager::getInstance();
-            self::$_whitelist = $pluginManager->ipblock_admin->getContent("ipblock:/dir/whitelist.blockfile");
+            self::$_whitelist = $pluginManager->ipblock_admin->getContent("ipblock:/dir/whitelist.block");
         }
         return self::$_whitelist;
     }
@@ -84,7 +84,7 @@ class plugin_ipblock_admin extends StdClass implements IsPlugin
     {
         if (!isset(self::$_blacklist)) {
             $pluginManager = \Yana\Plugins\Manager::getInstance();
-            self::$_blacklist = $pluginManager->ipblock_admin->getContent("ipblock:/dir/blacklist.blockfile");
+            self::$_blacklist = $pluginManager->ipblock_admin->getContent("ipblock:/dir/blacklist.block");
         }
         return self::$_blacklist;
     }
