@@ -345,9 +345,9 @@ class plugin_antispam extends StdClass implements IsPlugin
     public function security_get_image($security_image_index)
     {
         global $YANA;
-        $imagesrc = dirname(__FILE__) . "captchas/security_image" . rand(0, 9) . ".png";
-        /* @var $file \DatFile */
-        $file = $YANA->getPlugins()->default_library->getResource('antispam:/security.datfile');
+        $imagesrc = __DIR__ . "captchas/security_image" . rand(0, 9) . ".png";
+        /* @var $file \Yana\Files\Dat */
+        $file = $YANA->getPlugins()->default_library->getResource('antispam:/security.dat');
         $contents = array();
 
         if (!$file->exists()) {
@@ -444,7 +444,7 @@ class plugin_antispam extends StdClass implements IsPlugin
             return true;
         }
 
-        $file = $YANA->getPlugins()->default_library->getResource('antispam:/security.datfile');
+        $file = $YANA->getPlugins()->default_library->getResource('antispam:/security.dat');
         $file->read();
         if (!$file->isEmpty()) {
             $contents = $file->getLine(0);
