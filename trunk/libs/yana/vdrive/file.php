@@ -42,37 +42,31 @@ class File extends AbstractMountpoint
 {
 
     /**
-     * constructor
+     * Constructor.
      *
-     * @access  public
-     * @param   string  $path   path
-     * @param   string  $type   type  (default : FileReadonly)
+     * @param   string  $path       path to existing file
+     * @param   string  $className  class name including namespace, defaults to \Yana\Files\Readonly
+     * @throws  \Yana\Core\Exceptions\ClassNotFoundException  when the given class does not exist
      */
-    public function __construct($path, $type = null)
+    public function __construct($path, $className = '')
     {
         assert('is_string($path); // Wrong type for argument 1. String expected');
-        assert('is_null($type) || is_string($type); // Wrong type for argument 2. String expected');
+        assert('is_string($className); // Wrong type for argument 2. String expected');
 
-        $this->path = $path;
+        $this->type = (!$className) ? '\Yana\Files\Readonly' : (string) $className;
+        $this->path = (string) $path;
 
-        /* fall back to default value */
-        if (empty($type)) {
-            $type = '\\FileReadonly';
-        } elseif ($type[0] !== '\\') {
-            $type = '\\' . $type;
-        }
         /* error: class does not exist */
-        if (!class_exists($type)) {
-            trigger_error("Invalid resource-type argument supplied for Mountpoint '" . print_r($path, true) . "'.\n\t" .
-            "No such file wrapper: '$type'.", E_USER_WARNING);
-            return;
+        if (!class_exists($className)) {
+            $message = "Invalid resource-type argument supplied for Mountpoint '" . print_r($path, true) . "'.\n\t" .
+                "No such file wrapper: '$className'.";
+            throw new \Yana\VDrive\ClassNotFoundException($message, E_USER_WARNING);
+        }
 
         /* all fine - proceed */
-        } else {
-            $this->type = $type;
-            assert('class_exists($this->type); // The value $this->type is expected to be a valid class name.');
-            $this->mountpoint = new $this->type($this->path);
-        }
+        $this->type = $className;
+        assert('class_exists($this->type); // The value $this->type is expected to be a valid class name.');
+        $this->mountpoint = new $this->type($this->path);
     }
 
 }

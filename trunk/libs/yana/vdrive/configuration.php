@@ -79,7 +79,6 @@ namespace Yana\VDrive;
  * Note that you don't need to convert the Configuration object to a string.
  * This is done automatically.
  *
- * @access     public
  * @package    yana
  * @subpackage vdrive
  * @name       Configuration
@@ -88,15 +87,14 @@ namespace Yana\VDrive;
  */
 class Configuration extends \Yana\XmlArray
 {
+
     /**
      * <<factory>> load a file
      *
      * Returns the file identified by $path as a Configuration object.
      *
-     * @access  public
-     * @static
      * @param   string  $path  file path
-     * @return  Configuration
+     * @return  \Yana\VDrive\Configuration
      */
     public static function loadFile($path)
     {
@@ -109,10 +107,8 @@ class Configuration extends \Yana\XmlArray
      *
      * Returns $string as a Configuration object.
      *
-     * @access  public
-     * @static
      * @param   string  $string     string
-     * @return  Configuration
+     * @return  \Yana\VDrive\Configuration
      */
     public static function loadString($string)
     {
@@ -125,9 +121,7 @@ class Configuration extends \Yana\XmlArray
      *
      * Returns the an empty file identified by $path as a Configuration object.
      *
-     * @access  public
-     * @static
-     * @return  Configuration
+     * @return  \Yana\VDrive\Configuration
      */
     public static function createDrive()
     {
@@ -135,12 +129,10 @@ class Configuration extends \Yana\XmlArray
     }
 
     /**
-     * set name
-     *
      * Sets the name of this mountpoint.
      *
-     * @access  public
      * @param   string  $name  mountpoint-name
+     * @return  \Yana\VDrive\Configuration
      */
     public function setNodeName($name)
     {
@@ -155,51 +147,43 @@ class Configuration extends \Yana\XmlArray
                 } else {
                     $this->attributes()->name = $name;
                 }
-            break;
         }
+        return $this;
     }
 
     /**
-     * get name
-     *
      * Returns the name of this mountpoint.
      *
-     * @access  public
      * @return  string
      */
     public function getNodeName()
     {
+        $name = null;
         if (isset($this->attributes()->name)) {
-            return (string) $this->attributes()->name;
-        } else {
-            return null;
+            $name = (string) $this->attributes()->name;
         }
+        return $name;
     }
 
     /**
-     * get value
-     *
      * Returns a the value attribute of a var-node if it is set.
      *
-     * @access  public
      * @return  string
      */
     public function getNodeValue()
     {
+        $value = null;
         if (isset($this->attributes()->value)) {
-            return (string) $this->attributes()->value;
-        } else {
-            return null;
+            $value = (string) $this->attributes()->value;
         }
+        return $value;
     }
 
     /**
-     * set filter
-     *
      * Sets the filter of this mountpoint.
      *
-     * @access  public
      * @param   string  $filter  mountpoint-filter
+     * @return  \Yana\VDrive\Configuration
      */
     public function setNodeFilter($filter)
     {
@@ -214,179 +198,156 @@ class Configuration extends \Yana\XmlArray
                 }
             break;
         }
+        return $this;
     }
 
     /**
-     * get filter
-     *
      * Returns the filter setting of this mountpoint.
      *
-     * @access  public
      * @return  string
      */
     public function getNodeFilter()
     {
+        $filter = null;
         if (isset($this->attributes()->filter)) {
-            return (string) $this->attributes()->filter;
-        } else {
-            return null;
+            $filter = (string) $this->attributes()->filter;
         }
+        return $filter;
     }
 
     /**
-     * set auto-mount
-     *
      * Sets the auto-mount attribute of this mountpoint.
      *
-     * @access  public
-     * @param   string  $automount  mountpoint-auto-mount setting
+     * @param   string  $isAutomount  mountpoint-auto-mount setting
+     * @return  \Yana\VDrive\Configuration
      */
-    public function setNodeAutomount($automount)
+    public function setNodeAutomount($isAutomount)
     {
-        assert('is_bool($automount); // Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isAutomount); // Invalid argument $isAutomount: bool expected');
+
         switch ($this->getName())
         {
             case 'dir':
             case 'file':
-                if ($automount) {
-                    $automount = "yes";
+                if ($isAutomount) {
+                    $isAutomount = "yes";
                 } else {
-                    $automount = "no";
+                    $isAutomount = "no";
                 }
                 if (!isset($this->attributes()->automount)) {
-                    $this->addAttribute("automount", $automount);
+                    $this->addAttribute("automount", $isAutomount);
                 } else {
-                    $this->attributes()->automount = $automount;
+                    $this->attributes()->automount = $isAutomount;
                 }
             break;
         }
+        return $this;
     }
 
     /**
-     * get auto-mount
-     *
      * Returns the auto-mount setting of this mountpoint.
+     *
      * The default is bool(false).
      *
-     * @access  public
      * @return  bool
      */
     public function getNodeAutomount()
     {
+        $isAutomount = false;
         if (isset($this->attributes()->automount)) {
-            return $this->attributes()->automount == 'yes';
-        } else {
-            return false;
+            $isAutomount = $this->attributes()->automount == 'yes';
         }
+        return $isAutomount;
     }
 
     /**
-     * add a drive var
-     *
      * Adds a variable definition to the drive.
      *
-     * @access  public
      * @param   string  $name   name of var
      * @param   string  $value  value of var
-     * @return  Configuration
+     * @return  \Yana\VDrive\Configuration
      */
     public function addNodeVar($name, $value)
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
         assert('is_string($value); // Wrong type for argument 2. String expected');
-        switch ($this->getName())
-        {
-            case 'drive':
-                $var = $this->addChild("var");
-                $var->addAttribute("name", "$name");
-                $var->addAttribute("value", "$value");
-                return $var;
-            break;
-            default:
-                return null;
-            break;
+
+        $var = null;
+        if ($this->getName() === 'drive') {
+            $var = $this->addChild("var");
+            $var->addAttribute("name", "$name");
+            $var->addAttribute("value", "$value");
         }
+        return $var;
     }
 
     /**
-     * get list of vars
-     *
      * Returns a list of vars for the drive.
      *
-     * @access  public
      * @return  array
      */
     public function getNodeVars()
     {
+        $vars = array();
         if (isset($this->var)) {
-            return $this->var;
-        } else {
-            return array();
+            $vars = $this->var;
         }
+        return $vars;
     }
 
     /**
-     * add a drive file
-     *
      * Adds a file definition to the drive.
      *
-     * @access  public
-     * @param   string  $name       name of file
-     * @param   bool    $automount  auto-mount setting
-     * @return  Configuration
+     * @param   string  $name         name of file
+     * @param   bool    $isAutomount  auto-mount setting
+     * @return  \Yana\VDrive\Configuration
      */
-    public function addNodeFile($name, $automount = false)
+    public function addNodeFile($name, $isAutomount = false)
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
-        assert('is_bool($automount); // Wrong type for argument 2. Boolean expected');
+        assert('is_bool($isAutomount); // Wrong type for argument 2. Boolean expected');
+
+        $file = null;
         switch ($this->getName())
         {
             case 'drive':
             case 'dir':
                 $file = $this->addChild("file");
                 $file->setNodeName($name);
-                $file->setNodeAutomount($automount);
-                return $file;
-            break;
-            default:
-                return null;
-            break;
+                $file->setNodeAutomount($isAutomount);
         }
+        return $file;
     }
 
     /**
-     * get list of files
-     *
      * Returns a list of files for the current node.
      *
-     * @access  public
      * @return  array
      */
     public function getNodeFiles()
     {
+        $files = array();
         if (isset($this->file)) {
-            return $this->file;
-        } else {
-            return array();
+            $files = $this->file;
         }
+        return $files;
     }
 
     /**
-     * add a drive directory
-     *
      * Adds a directory definition to the drive.
      *
-     * @access  public
      * @param   string  $name       name of directory
      * @param   bool    $automount  auto-mount setting
      * @param   string  $filter     (optional)
-     * @return  Configuration
+     * @return  \Yana\VDrive\Configuration
      */
     public function addNodeDir($name, $automount = false, $filter = "")
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
         assert('is_bool($automount); // Wrong type for argument 2. Boolean expected');
         assert('is_string($filter); // Wrong type for argument 3. String expected');
+
+        $dir = null;
         switch ($this->getName())
         {
             case 'drive':
@@ -395,241 +356,184 @@ class Configuration extends \Yana\XmlArray
                 $dir->setNodeName($name);
                 $dir->setNodeAutomount($automount);
                 $dir->setNodeFilter($filter);
-                return $dir;
-            break;
-            default:
-                return null;
-            break;
         }
+        return $dir;
     }
 
     /**
-     * get list of directory
-     *
      * Returns a list of files for the current node.
      *
-     * @access  public
      * @return  array
      */
     public function getNodeDirs()
     {
+        $dirs = array();
         if (isset($this->dir)) {
-            return $this->dir;
-        } else {
-            return array();
+            $dirs = $this->dir;
         }
+        return $dirs;
     }
 
     /**
-     * add a drive include path
-     *
      * Adds an include path definition to the drive.
      *
-     * @access  public
      * @param   string  $path   path
-     * @return  Configuration
+     * @return  \Yana\VDrive\Configuration
      */
     public function addNodeInclude($path)
     {
         assert('is_string($path); // Wrong type for argument 1. String expected');
-        switch ($this->getName())
-        {
-            case 'drive':
-                $include = $this->addChild("include");
-                $include->addAttribute("path", "$path");
-                return $include;
-            break;
-            default:
-                return null;
-            break;
+
+        $include = null;
+        if ($this->getName() === 'drive') {
+            $include = $this->addChild("include");
+            $include->addAttribute("path", "$path");
         }
+        return $include;
     }
 
     /**
-     * get list of include paths
-     *
      * Returns a list of include paths for the drive.
      *
-     * @access  public
      * @return  array
      */
     public function getNodeIncludes()
     {
+        $includes = array();
         if (isset($this->include)) {
-            return $this->include;
-        } else {
-            return array();
+            $includes = $this->include;
         }
+        return $includes;
     }
 
     /**
-     * add a source path
-     *
      * Adds a source path to the list.
+     *
      * Note: a resource may have multiple alternative paths.
      * Where the first path that refers to an existing resource "wins".
      * The last path should hold a default value.
      *
      * New values are always added to the end of the list.
      *
-     * @access  public
-     * @param   string  $source  source path to add
-     * @return  Configuration
+     * @param   string  $path  source path to add
+     * @return  \Yana\VDrive\Configuration
      */
-    public function addNodeSource($source)
+    public function addNodeSource($path)
     {
-        assert('is_string($source); // Wrong type for argument 1. String expected');
+        assert('is_string($path); // Invalid argument $path: string expected');
+
+        $source = null;
         switch ($this->getName())
         {
             case 'dir':
             case 'file':
-                return $this->addChild("source", "$source");
-            break;
-            default:
-                return null;
-            break;
+                $source = $this->addChild("source", "$path");
         }
+        return $source;
     }
 
     /**
-     * get list of sources
-     *
      * Returns a list of source for the mountpoint, sorted by priority.
      *
-     * @access  public
      * @return  array
      */
     public function getNodeSources()
     {
+        $sources = array();
         if (isset($this->source)) {
-            return $this->source;
-        } else {
-            return array();
+            $sources = $this->source;
         }
+        return $sources;
     }
 
     /**
-     * set requirements
-     *
      * Sets wether the resource must be read-, write, and/or executable.
      *
-     * @access  public
      * @param   string  $readable    (true = is redable , false otherweise)
      * @param   string  $writeable   (true = is writeable , false otherweise)
      * @param   string  $executable  (true = is executable , false otherweise)
-     * @return  Configuration
+     * @return  \Yana\VDrive\Configuration
      */
     public function setNodeRequirements($readable = false, $writeable = false, $executable = false)
     {
         assert('is_bool($readable); // Wrong type for argument 1. Boolean expected');
         assert('is_bool($writeable); // Wrong type for argument 2. Boolean expected');
         assert('is_bool($executable); // Wrong type for argument 3. Boolean expected');
+
+        $requirements = null;
         switch ($this->getName())
         {
             case 'dir':
             case 'file':
-                $requirements = null;
+                $isReadable = ($readable) ? 'yes' : 'no';
+                $isWriteable = ($writeable) ? 'yes' : 'no';
+                $isExecutable = ($executable) ? 'yes' : 'no';
                 if (!isset($this->requirements)) {
                     $requirements = $this->addChild('requirements');
-                    if ($readable) {
-                        $requirements->addAttribute('readable', 'yes');
-                    } else {
-                        $requirements->addAttribute('readable', 'no');
-                    }
-                    if ($writeable) {
-                        $requirements->addAttribute('writeable', 'yes');
-                    } else {
-                        $requirements->addAttribute('writeable', 'no');
-                    }
-                    if ($executable) {
-                        $requirements->addAttribute('executable', 'yes');
-                    } else {
-                        $requirements->addAttribute('executable', 'no');
-                    }
+                    $requirements->addAttribute('readable', $isReadable);
+                    $requirements->addAttribute('writeable', $isWriteable);
+                    $requirements->addAttribute('executable', $isExecutable);
                 } else {
                     $requirements =& $this->requirements;
-                    if ($readable) {
-                        $requirements->attributes()->readable = 'yes';
-                    } else {
-                        $requirements->attributes()->readable = 'no';
-                    }
-                    if ($writeable) {
-                        $requirements->attributes()->writeable = 'yes';
-                    } else {
-                        $requirements->attributes()->writeable = 'no';
-                    }
-                    if ($executable) {
-                        $requirements->attributes()->executable = 'yes';
-                    } else {
-                        $requirements->attributes()->executable = 'no';
-                    }
+                    $requirements->attributes()->readable = $isReadable;
+                    $requirements->attributes()->writeable = $isWriteable;
+                    $requirements->attributes()->executable = $isExecutable;
                 }
-                return $requirements;
-            default:
-                return null;
         }
+        return $requirements;
     }
 
     /**
-     * must be readable?
-     *
      * Returns wether or not the resource must be readable.
+     *
      * Default is bool(false).
      *
-     * @access  public
      * @return  bool
      */
     public function nodeRequiresReadable()
     {
+        $isReadable = false;
         if (isset($this->requirements) && !empty($this->requirements->attributes()->readable)) {
-            return $this->requirements->attributes()->readable == 'yes';
-        } else {
-            return false;
+            $isReadable = $this->requirements->attributes()->readable == 'yes';
         }
+        return $isReadable;
     }
 
     /**
-     * must be writeable?
-     *
      * Returns wether or not the resource must be writeable.
+     *
      * Default is bool(false).
      *
-     * @access  public
      * @return  bool
      */
     public function nodeRequiresWriteable()
     {
+        $isWriteable = false;
         if (isset($this->requirements) && isset($this->requirements->attributes()->writeable)) {
-            return $this->requirements->attributes()->writeable == 'yes';
-        } else {
-            return false;
+            $isWriteable = $this->requirements->attributes()->writeable == 'yes';
         }
+        return $isWriteable;
     }
 
     /**
-     * must be executable?
-     *
      * Returns wether or not the resource must be executable.
+     *
      * Default is bool(false).
      *
-     * @access  public
      * @return  bool
      */
     public function nodeRequiresExecutable()
     {
+        $isExecutable = false;
         if (isset($this->requirements) && isset($this->requirements->attributes()->executable)) {
-            return $this->requirements->attributes()->executable == 'yes';
-        } else {
-            return false;
+            $isExecutable = $this->requirements->attributes()->executable == 'yes';
         }
+        return $isExecutable;
     }
 
     /**
-     * <<magic>> convert to string
+     * <<magic>> Outputs the contents as an XML string.
      *
-     * Outputs the contents as an XML string.
-     *
-     * @access  public
      * @return  string
      * @ignore
      */
@@ -639,11 +543,10 @@ class Configuration extends \Yana\XmlArray
     }
 
     /**
-     * check type of node
+     * Returns bool(true) if the node is a dircetory.
      *
-     * Returns bool(true) if the node has the given type and bool(false) otherwise.
+     * Contains sub-directories and files.
      *
-     * @access  public
      * @return  bool
      */
     public function isDir()
@@ -652,11 +555,10 @@ class Configuration extends \Yana\XmlArray
     }
 
     /**
-     * check type of node
+     * Returns bool(true) if the node is a drive configuration.
      *
-     * Returns bool(true) if the node has the given type and bool(false) otherwise.
+     * Contains includes, vars, directories and files.
      *
-     * @access  public
      * @return  bool
      */
     public function isDrive()
@@ -665,11 +567,10 @@ class Configuration extends \Yana\XmlArray
     }
 
     /**
-     * check type of node
+     * Returns bool(true) if the node is a file.
      *
-     * Returns bool(true) if the node has the given type and bool(false) otherwise.
+     * Has no children.
      *
-     * @access  public
      * @return  bool
      */
     public function isFile()
@@ -678,11 +579,10 @@ class Configuration extends \Yana\XmlArray
     }
 
     /**
-     * check type of node
+     * Returns bool(true) if the node is a variable definition.
      *
-     * Returns bool(true) if the node has the given type and bool(false) otherwise.
+     * Has no children.
      *
-     * @access  public
      * @return  bool
      */
     public function isVar()
@@ -691,11 +591,8 @@ class Configuration extends \Yana\XmlArray
     }
 
     /**
-     * check type of node
+     * Returns bool(true) if the node is a class include definition.
      *
-     * Returns bool(true) if the node has the given type and bool(false) otherwise.
-     *
-     * @access  public
      * @return  bool
      */
     public function isInclude()
@@ -704,17 +601,15 @@ class Configuration extends \Yana\XmlArray
     }
 
     /**
-     * check type of node
+     * Returns bool(true) if the node is a file or a directory.
      *
-     * Returns bool(true) if the node is either a file or directory and bool(false) otherwise.
-     *
-     * @access  public
      * @return  bool
      */
     public function isMountpoint()
     {
         return $this->getName() === 'file' || $this->getName() === 'dir';
     }
+
 }
 
 ?>

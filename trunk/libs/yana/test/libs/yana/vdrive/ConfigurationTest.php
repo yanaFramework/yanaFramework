@@ -104,7 +104,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         // test source
         $file->addNodeSource('foo.txt');
         $file->addNodeSource('bar.txt');
-        $this->assertEquals($file->getNodeSources()->asXML(), '<source>foo.txt</source>', '"set/get source" test failed');
+        $this->assertEquals('<source>foo.txt</source>', $file->getNodeSources()->asXML(), '"set/get source" test failed');
         // test directories
         $dir = $this->object->addNodeDir("test", true);
         $this->assertTrue(isset($dir), '"create dir" test failed');
