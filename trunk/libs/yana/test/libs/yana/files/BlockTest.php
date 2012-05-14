@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: BlockFile
+ * PHPUnit test-case
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,7 +33,7 @@ namespace Yana\Files;
 require_once __Dir__ . '/../../../include.php';
 
 /**
- * Test class for BlockFile
+ * Test class for Block
  *
  * @package  test
  *
@@ -42,7 +42,7 @@ class BlockTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var  BlockFile
+     * @var  \Yana\Files\Block
      */
     protected $_object;
 
