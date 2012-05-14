@@ -10,12 +10,12 @@
     <dir name="dir" filter=".cfg">
     	<source>../../{$PROFILESDIR}</source>
     	<requirements readable="yes" writeable="yes"/>
-    	<file name="whitelist.blockfile">
+    	<file name="whitelist.block">
    			<source>{$ID}.whitelist</source>
    			<source>default_whitelist.config</source>
     		<requirements writeable="yes"/>
     	</file>
-    	<file name="blacklist.blockfile">
+    	<file name="blacklist.block">
    			<source>{$ID}.blacklist</source>
    			<source>default_blacklist.config</source>
     		<requirements writeable="yes"/>
