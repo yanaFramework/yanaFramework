@@ -119,7 +119,7 @@
 		<requirements readable="yes"/>
 	</dir>
 
-	<file name="skincache.textfile">
+	<file name="skincache.text">
 		<source>{$TEMPDIR}skin_{$PROFILE.SKIN}.tmp</source>
 	</file>
 

@@ -127,6 +127,13 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
     private static $_useDefaults = false;
 
     /**
+     * The default namespace as prefix for class-names of file wrappers.
+     *
+     * @var  string
+     */
+    private $_defaultNamespaceForFileWrappers = '\\Yana\\Files\\';
+
+    /**
      * Creates a new virtual drive instance.
      *
      * @name   VDrive::__construct()
@@ -153,6 +160,16 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
         return $this->getResource($name);
+    }
+
+    /**
+     * Returns the default namespace as prefix for class-names of file wrappers.
+     * 
+     * @return  string
+     */
+    protected function _getDefaultNamespaceForFileWrappers()
+    {
+        return $this->_defaultNamespaceForFileWrappers;
     }
 
     /**
@@ -278,7 +295,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
         /* apply default settings */
         $content = \Yana\Util\String::replaceToken($content, self::$_defaultSettings);
         /* create configuration */
-        $this->_content = Configuration::loadString($content);
+        $this->_content = \Yana\VDrive\Configuration::loadString($content);
         /* read XML */
         if (!($this->_content instanceOf \Yana\VDrive\Configuration)) {
             $message = "Not a valid VDrive configuration file: '{$this->getPath()}'";
@@ -374,6 +391,9 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
                 } elseif ($node->isFile()) {
 
                     // get class name
+                    assert('!isset($namespace); // Cannot redeclare var $namespace');
+                    $namespace = ($node->getNodeNamespace()) ? ($node->getNodeNamespace()) :
+                        $this->_getDefaultNamespaceForFileWrappers();
                     assert('!isset($type); // Cannot redeclare var $type');
                     $type = '';
                     assert('!isset($match); // Cannot redeclare var $match');
@@ -384,8 +404,8 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
                     unset($match);
 
                     // create a new mount-point
-                    $this->_drive[$name] = new \Yana\VDrive\File($source, $type);
-                    unset($type);
+                    $this->_drive[$name] = new \Yana\VDrive\File($source, $namespace . $type);
+                    unset($type, $namespace);
 
                 } /* end if */
 
@@ -457,7 +477,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
      */
     public function __toString()
     {
-        return (string) $this->getReport();
+        return $this->getReport()->asXML();
     }
 
     /**
@@ -599,15 +619,15 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
     {
         // returns a list of key => value pairs
         $properties = get_object_vars($this);
-        // remove the table object (it is redundant)
-        unset($properties['content']);
+        // remove the \SimpleXML object (throws an exception when trying to serialize)
+        unset($properties['_content']);
         return serialize($properties);
     }
 
     /**
      * Reinitializes the object.
      *
-     * @param   string  $string  string to unserialize
+     * @param  string  $string  string to unserialize
      */
     public function unserialize($string)
     {

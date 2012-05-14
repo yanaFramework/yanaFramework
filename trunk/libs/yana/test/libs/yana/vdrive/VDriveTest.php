@@ -41,60 +41,56 @@ class VDriveTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    VDrive
-     * @access protected
+     * @var  \Yana\VDrive\VDrive
      */
-    protected $_object;
+    private $_object;
 
     /**
-     * @var    path
-     *
-     * @access protected
+     * @var  \Yana\VDrive\VDrive
      */
-    protected $_path = 'resources/my.drive.xml';
+    private $_inavalidDrive;
 
     /**
-     * @var    basDir
-     *
-     * @access protected
+     * @var  string
      */
-    protected $_baseDir = '/resources/';
+    private $_path = 'resources/my.drive.xml';
+
+    /**
+     * @var  string
+     */
+    private $_baseDir = '/resources/';
 
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     *
-     * @access protected
      */
     protected function setUp()
     {
-        $this->_object = new VDrive(CWD.$this->_path, CWD.$this->_baseDir);
+        $this->_object = new VDrive(CWD . $this->_path, CWD . $this->_baseDir);
         VDrive::useDefaults(false);
         // create a vdrive with a non exist path
-        $this->no_vdrive = new VDrive(CWD.'/resources/noexist.xml', CWD.'/resources/');
+        $this->_inavalidDrive = new VDrive(CWD . '/resources/noexist.xml', CWD . '/resources/');
     }
 
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
-     *
-     * @access protected
      */
     protected function tearDown()
     {
-        unset($this->_object, $this->no_vdrive);
+        unset($this->_object, $this->_inavalidDrive);
     }
 
     /**
      * read invalid Argument
      *
-     * @expectedException PHPUnit_Framework_Error
+     * @expectedException \PHPUnit_Framework_Error
      * @test
      */
-    function testReadInvalidArgument()
+    public function testReadInvalidArgument()
     {
         // expected an excepion before checking content var
-        $this->no_vdrive->read();
+        $this->_inavalidDrive->read();
     }
 
     /**
@@ -103,9 +99,9 @@ class VDriveTest extends \PHPUnit_Framework_TestCase
      * @expectedException \Yana\Core\Exceptions\NotFoundException
      * @test
      */
-    function testGetInvalidArgument()
+    public function testGetInvalidArgument()
     {
-        $vDrive = new VDrive(CWD.$this->_path);
+        $vDrive = new VDrive(CWD . $this->_path);
         $vDrive->getResource('noexist');
     }
 
@@ -114,9 +110,9 @@ class VDriveTest extends \PHPUnit_Framework_TestCase
      *
      * @test
      */
-    function testGetContent()
+    public function testGetContent()
     {
-        $vDrive = new VDrive(CWD.$this->_path);
+        $vDrive = new VDrive(CWD . $this->_path);
         $content = $vDrive->getContent();
         $this->assertType('string', $content, 'the value should be of type string');
         unset($vDrive, $content);
@@ -127,28 +123,56 @@ class VDriveTest extends \PHPUnit_Framework_TestCase
      *
      * @test
      */
-    function testIsEmpty()
+    public function testIsEmpty()
     {
-        $empty = $this->no_vdrive->isEmpty();
+        $empty = $this->_inavalidDrive->isEmpty();
         // expected true for an empty source
         $this->assertTrue($empty, 'VDrive-definitions does not exist, is not redable or is empty');
+
+        // expected false for existing path
+        $this->assertFalse($this->_object->isEmpty(), 'the expected value can not be empty');
     }
 
     /**
-     * get Report
+     * Get Report
      *
      * @test
      */
-    function testGetReport()
+    public function testGetReport()
     {
-        $getReport = $this->no_vdrive->getReport();
+        $getReport = $this->_inavalidDrive->getReport();
         // expected an object
         $this->assertTrue($getReport instanceof \Yana\Report\Xml, 'expected an object of type \Yana\Report\Xml');
+
+        // expected an object instanceof \Yana\Report\Xml without errors and warnings
+        $this->_object->read();
+        $getReport = $this->_object->getReport();
+        $this->assertType('object', $getReport, 'the value should be of type object');
+        $this->assertTrue($getReport instanceof \Yana\Report\Xml, 'the value should be an instance of \Yana\Report\Xml');
+        $this->assertEquals(0, count($getReport->getErrors()), 'there should be no errors');
+        $this->assertEquals(0, count($getReport->getWarnings()), 'there should be no warnings');
+
+        $string = (string) $this->_object;
+        $this->assertType('string', $string, 'assert faield, the value should be of type string');
+        $this->assertNotEquals(0, strlen($string), 'the value cannot be empty');
     }
 
     /**
-     * test
-     *
+     * @test
+     */
+    public function testSerialize()
+    {
+        $this->_object->read();
+        $serialize = $this->_object->serialize();
+        $this->assertType('string', $serialize, 'assert faield, the value should be of type string');
+
+        // expected an object
+        $unserialize = unserialize(serialize($this->_object));
+        $this->assertType('object', $unserialize, 'the value should be of type object');
+        $this->assertEquals($this->_object, $unserialize, 'both ojects must be the same');
+    }
+
+    /**
      * @test
      */
     public function test()
@@ -158,15 +182,14 @@ class VDriveTest extends \PHPUnit_Framework_TestCase
         // test file loading
         $this->assertEquals($this->_object->getContent(), $xml->asXML(), '"file loading" test failed');
 
-
         $path = $this->_object->getPath();
-        $this->assertEquals(CWD.$this->_path, $path, 'the expected path should be the same as givin');
+        $this->assertEquals(CWD . $this->_path, $path, 'the expected path should be the same as givin');
 
         // expected an object from element name default_config.sml
         $get = $this->_object->getResource('system:/config/profiledir/default_config.sml');
         //$get = $this->object->getResource('config/profiles/default.sml');
         $this->assertType('object', $get, 'the value should be of type object');
-        $this->assertEquals(CWD.$this->_baseDir.'{$CONFIGDIR}profiles/default.config', $get->getPath(), 'the given path should be match the expected');
+        $this->assertEquals(CWD . $this->_baseDir . '{$CONFIGDIR}profiles/default.config', $get->getPath(), 'the given path should be match the expected');
 
         // expected the same result like in get() function
         $_get = $this->_object->__get('system:/config/profiledir/default_config.sml');
@@ -177,7 +200,7 @@ class VDriveTest extends \PHPUnit_Framework_TestCase
 
         $get = $this->_object->__get('system:/config/profiledir/config.sml');
         $this->assertType('object', $get, 'the value should be of type object');
-        $this->assertEquals(CWD.$this->_baseDir.'{$CONFIGDIR}profiles/default.config', $get->getPath(), 'the given path should be match the expected');
+        $this->assertEquals(CWD . $this->_baseDir . '{$CONFIGDIR}profiles/default.config', $get->getPath(), 'the given path should be match the expected');
         unset($get);
 
         // get content of the xml file - xml string expected
@@ -192,35 +215,12 @@ class VDriveTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('system:/skin/skindir', $get, 'the expected key should be in array');
         $this->assertArrayHasKey('system:/smile', $get, 'the expected key should be in array');
 
-        // expected false for existing path
-        $empty = $this->_object->isEmpty();
-        $this->assertFalse($empty, 'the expected value can not be empty');
-
-        // expected an object instanceof \Yana\Report\Xml without errors and warnings
-        $getReport = $this->_object->getReport();
-        $this->assertType('object', $getReport, 'the value should be of type object');
-        $this->assertTrue($getReport instanceof \Yana\Report\Xml, 'the value should be an instance of \Yana\Report\Xml');
-        $this->assertEquals(0, count($getReport->getErrors()), 'there should be no errors');
-        $this->assertEquals(0, count($getReport->getWarnings()), 'there should be no warnings');
-
-        $string = (string) $this->_object;
-        $this->assertType('string', $string, 'assert faield, the value should be of type string');
-        $this->assertNotEquals(0, strlen($string), 'the value can not be empty');
-
-        $serialize = serialize($this->_object);
-        $this->assertType('string', $serialize, 'assert faield, the value should be of type string');
-
-        // expected an object
-        $unserialize = unserialize($serialize);
-        $this->assertType('object', $unserialize, 'the value should be of type object');
-        $this->assertEquals($this->_object, $unserialize, 'both ojects must be the same');
-
-        $vDrive = new VDrive(CWD.$this->_path, CWD.$this->_baseDir);
+        $vDrive = new VDrive(CWD . $this->_path, CWD . $this->_baseDir);
         VDrive::useDefaults(true);
         // expected the last path in source
         $get = $this->_object->__get('system:/config/profiledir/config.sml');
         $this->assertType('object', $get, 'the value should be of type object');
-        $this->assertEquals(CWD.$this->_baseDir.'{$CONFIGDIR}profiles/default.config', $get->getPath(), 'the given path should be match the expected');
+        $this->assertEquals(CWD . $this->_baseDir . '{$CONFIGDIR}profiles/default.config', $get->getPath(), 'the given path should be match the expected');
         unset($vDrive);
     }
 
