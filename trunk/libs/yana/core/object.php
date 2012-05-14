@@ -63,7 +63,7 @@ class Object extends \StdClass implements \Yana\Core\IsObject, \Yana\Core\IsClon
      */
     public function __call($name, array $arguments)
     {
-        throw new \Yana\Core\Exceptions\UndefinedMethodException($name);
+        throw new \Yana\Core\Exceptions\UndefinedMethodException($name . " in " . $this->getClass());
     }
 
     /**

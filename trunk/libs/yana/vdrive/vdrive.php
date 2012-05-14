@@ -280,7 +280,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
         /* create configuration */
         $this->_content = Configuration::loadString($content);
         /* read XML */
-        if (!($this->_content instanceOf Configuration)) {
+        if (!($this->_content instanceOf \Yana\VDrive\Configuration)) {
             $message = "Not a valid VDrive configuration file: '{$this->getPath()}'";
             throw new \Yana\Core\Exceptions\InvalidSyntaxException($message, E_USER_WARNING);
         }
@@ -296,7 +296,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
      * @param   \Yana\VDrive\Configuration  $content  current xml node
      * @param   string                      $path     current virtual path
      */
-    private function _readXML(Configuration $content, $path = "")
+    private function _readXML(\Yana\VDrive\Configuration $content, $path = "")
     {
         assert('is_string($path); // Wrong type for argument 2. String expected');
 
@@ -375,15 +375,16 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
 
                     // get class name
                     assert('!isset($type); // Cannot redeclare var $type');
-                    $type = array();
-                    if (preg_match('/\.(\w+)$/', $name, $type)) {
-                        $type = $type[1];
-                    } else {
-                        $type = 'FileReadonly';
+                    $type = '';
+                    assert('!isset($match); // Cannot redeclare var $match');
+                    $match = array();
+                    if (preg_match('/\.(\w+)$/', $name, $match)) {
+                        $type = $match[1];
                     }
+                    unset($match);
 
                     // create a new mount-point
-                    $this->_drive[$name] = new \Yana\Files\File($source, $type);
+                    $this->_drive[$name] = new \Yana\VDrive\File($source, $type);
                     unset($type);
 
                 } /* end if */
