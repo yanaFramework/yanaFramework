@@ -137,16 +137,13 @@ class Configuration extends \Yana\XmlArray
     public function setNodeName($name)
     {
         assert('is_string($name); // Wrong type for argument 1. String expected');
-        switch ($this->getName())
-        {
-            case 'dir':
-            case 'file':
-            case 'var':
-                if (!isset($this->attributes()->name)) {
-                    $this->addAttribute("name", "$name");
-                } else {
-                    $this->attributes()->name = $name;
-                }
+
+        if ($this->isMountpoint() || $this->isVar()) {
+            if (!isset($this->attributes()->name)) {
+                $this->addAttribute("name", "$name");
+            } else {
+                $this->attributes()->name = $name;
+            }
         }
         return $this;
     }
@@ -180,6 +177,40 @@ class Configuration extends \Yana\XmlArray
     }
 
     /**
+     * Returns a the namespace attribute of a file-node if it is set.
+     *
+     * @return  string
+     */
+    public function getNodeNamespace()
+    {
+        $namespace = null;
+        if (isset($this->attributes()->namespace)) {
+            $namespace = (string) $this->attributes()->namespace;
+        }
+        return $namespace;
+    }
+
+    /**
+     * Sets the namespace attribute of a file-node.
+     *
+     * @param  string  $namespace  a PHP namespace used as prefix for class-names of file wrappers
+     * @return \Yana\VDrive\Configuration
+     */
+    public function setNodeNamespace($namespace)
+    {
+        assert('is_string($namespace); // Invalid argument $namespace: string expected');
+
+        if ($this->isFile()) {
+            if (!isset($this->attributes()->namespace)) {
+                $this->addAttribute("namespace", $namespace);
+            } else {
+                $this->attributes()->namespace = $namespace;
+            }
+        }
+        return $this;
+    }
+
+    /**
      * Sets the filter of this mountpoint.
      *
      * @param   string  $filter  mountpoint-filter
@@ -188,15 +219,13 @@ class Configuration extends \Yana\XmlArray
     public function setNodeFilter($filter)
     {
         assert('is_string($filter); // Wrong type for argument 1. String expected');
-        switch ($this->getName())
-        {
-            case 'dir':
-                if (!isset($this->attributes()->filter)) {
-                    $this->addAttribute("filter", "$filter");
-                } else {
-                    $this->attributes()->filter = $filter;
-                }
-            break;
+
+        if ($this->isDir()) {
+            if (!isset($this->attributes()->filter)) {
+                $this->addAttribute("filter", "$filter");
+            } else {
+                $this->attributes()->filter = $filter;
+            }
         }
         return $this;
     }
@@ -225,21 +254,13 @@ class Configuration extends \Yana\XmlArray
     {
         assert('is_bool($isAutomount); // Invalid argument $isAutomount: bool expected');
 
-        switch ($this->getName())
-        {
-            case 'dir':
-            case 'file':
-                if ($isAutomount) {
-                    $isAutomount = "yes";
-                } else {
-                    $isAutomount = "no";
-                }
-                if (!isset($this->attributes()->automount)) {
-                    $this->addAttribute("automount", $isAutomount);
-                } else {
-                    $this->attributes()->automount = $isAutomount;
-                }
-            break;
+        if ($this->isMountpoint()) {
+            $isAutomount = ($isAutomount) ? "yes" : "no";
+            if (!isset($this->attributes()->automount)) {
+                $this->addAttribute("automount", $isAutomount);
+            } else {
+                $this->attributes()->automount = $isAutomount;
+            }
         }
         return $this;
     }
@@ -273,7 +294,7 @@ class Configuration extends \Yana\XmlArray
         assert('is_string($value); // Wrong type for argument 2. String expected');
 
         $var = null;
-        if ($this->getName() === 'drive') {
+        if ($this->isDrive()) {
             $var = $this->addChild("var");
             $var->addAttribute("name", "$name");
             $var->addAttribute("value", "$value");
@@ -308,13 +329,10 @@ class Configuration extends \Yana\XmlArray
         assert('is_bool($isAutomount); // Wrong type for argument 2. Boolean expected');
 
         $file = null;
-        switch ($this->getName())
-        {
-            case 'drive':
-            case 'dir':
-                $file = $this->addChild("file");
-                $file->setNodeName($name);
-                $file->setNodeAutomount($isAutomount);
+        if ($this->isDrive() || $this->isDir()) {
+            $file = $this->addChild("file");
+            $file->setNodeName($name);
+            $file->setNodeAutomount($isAutomount);
         }
         return $file;
     }
@@ -348,14 +366,11 @@ class Configuration extends \Yana\XmlArray
         assert('is_string($filter); // Wrong type for argument 3. String expected');
 
         $dir = null;
-        switch ($this->getName())
-        {
-            case 'drive':
-            case 'dir':
-                $dir = $this->addChild("dir");
-                $dir->setNodeName($name);
-                $dir->setNodeAutomount($automount);
-                $dir->setNodeFilter($filter);
+        if ($this->isDrive() || $this->isDir()) {
+            $dir = $this->addChild("dir");
+            $dir->setNodeName($name);
+            $dir->setNodeAutomount($automount);
+            $dir->setNodeFilter($filter);
         }
         return $dir;
     }
@@ -385,7 +400,7 @@ class Configuration extends \Yana\XmlArray
         assert('is_string($path); // Wrong type for argument 1. String expected');
 
         $include = null;
-        if ($this->getName() === 'drive') {
+        if ($this->isDrive()) {
             $include = $this->addChild("include");
             $include->addAttribute("path", "$path");
         }
@@ -423,11 +438,8 @@ class Configuration extends \Yana\XmlArray
         assert('is_string($path); // Invalid argument $path: string expected');
 
         $source = null;
-        switch ($this->getName())
-        {
-            case 'dir':
-            case 'file':
-                $source = $this->addChild("source", "$path");
+        if ($this->isMountpoint()) {
+            $source = $this->addChild("source", "$path");
         }
         return $source;
     }
@@ -461,24 +473,21 @@ class Configuration extends \Yana\XmlArray
         assert('is_bool($executable); // Wrong type for argument 3. Boolean expected');
 
         $requirements = null;
-        switch ($this->getName())
-        {
-            case 'dir':
-            case 'file':
-                $isReadable = ($readable) ? 'yes' : 'no';
-                $isWriteable = ($writeable) ? 'yes' : 'no';
-                $isExecutable = ($executable) ? 'yes' : 'no';
-                if (!isset($this->requirements)) {
-                    $requirements = $this->addChild('requirements');
-                    $requirements->addAttribute('readable', $isReadable);
-                    $requirements->addAttribute('writeable', $isWriteable);
-                    $requirements->addAttribute('executable', $isExecutable);
-                } else {
-                    $requirements =& $this->requirements;
-                    $requirements->attributes()->readable = $isReadable;
-                    $requirements->attributes()->writeable = $isWriteable;
-                    $requirements->attributes()->executable = $isExecutable;
-                }
+        if ($this->isMountpoint()) {
+            $isReadable = ($readable) ? 'yes' : 'no';
+            $isWriteable = ($writeable) ? 'yes' : 'no';
+            $isExecutable = ($executable) ? 'yes' : 'no';
+            if (!isset($this->requirements)) {
+                $requirements = $this->addChild('requirements');
+                $requirements->addAttribute('readable', $isReadable);
+                $requirements->addAttribute('writeable', $isWriteable);
+                $requirements->addAttribute('executable', $isExecutable);
+            } else {
+                $requirements =& $this->requirements;
+                $requirements->attributes()->readable = $isReadable;
+                $requirements->attributes()->writeable = $isWriteable;
+                $requirements->attributes()->executable = $isExecutable;
+            }
         }
         return $requirements;
     }
@@ -607,7 +616,7 @@ class Configuration extends \Yana\XmlArray
      */
     public function isMountpoint()
     {
-        return $this->getName() === 'file' || $this->getName() === 'dir';
+        return $this->isFile() || $this->isDir();
     }
 
 }
