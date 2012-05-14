@@ -40,16 +40,13 @@ require_once __DIR__ . '/../../../include.php';
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var    Configuration
-     * @access protected
+     * @var  \Yana\VDrive\Configuration
      */
     protected $object;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     *
-     * @access protected
      */
     protected function setUp()
     {
@@ -59,28 +56,61 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
-     *
-     * @access protected
      */
     protected function tearDown()
     {
     }
 
     /**
+     * Test vars.
+     *
      * @test
      */
-    public function test()
+    public function testVars()
+    {
+        $this->object = \Yana\VDrive\Configuration::createDrive();
+        $var = $this->object->addNodeVar('foo', 'yes');
+        $this->assertEquals('yes', $var->getNodeValue());
+        $this->assertTrue($var->isVar());
+        $this->assertFalse($this->object->isVar());
+        $this->object->addNodeVar('bar', 'no');
+        $vars = $this->object->getNodeVars();
+        $this->assertEquals($vars[0]->asXML(), '<var name="foo" value="yes"/>', '"set/get vars" test failed');
+        $this->assertEquals($vars[1]->asXML(), '<var name="bar" value="no"/>', '"set/get vars" test failed');
+    }
+
+    /**
+     * @test
+     */
+    public function testNamespace()
+    {
+        $file = $this->object->addNodeFile("test");
+        $this->assertNull($this->object->getNodeNamespace());
+        $this->assertNull($file->getNodeNamespace());
+        $file->setNodeNamespace('test');
+        $this->assertEquals('test', $file->getNodeNamespace(), 'Must add attribute');
+        $file->setNodeNamespace('test1');
+        $this->assertEquals('test1', $file->getNodeNamespace(), 'Must replace attribute');
+        $this->object->setNodeNamespace('test');
+        $this->assertNull($this->object->getNodeNamespace(), 'Must only add attribute to file-nodes');
+    }
+
+    /**
+     * @test
+     */
+    public function testToString()
     {
         $xml = simplexml_load_file(CWD . '/resources/test.drive.xml');
 
         // test file loading
         $this->assertEquals($this->object->__toString(), $xml->asXML(), '"file loading" test failed');
+    }
 
-        $this->object = Configuration::createDrive();
-        // test vars
-        $this->object->addNodeVar('foo', 'yes');
-        $this->object->addNodeVar('bar', 'no');
-        $this->assertEquals($this->object->getNodeVars()->asXML(), '<var name="foo" value="yes"/>', '"set/get vars" test failed');
+    /**
+     * @test
+     */
+    public function testFunctions()
+    {
         // test includes
         $this->object->addNodeInclude('foo.php');
         $this->object->addNodeInclude('bar.php');
