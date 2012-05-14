@@ -118,7 +118,7 @@ class ApplicationBuilder extends \Yana\Core\Object
             case YANA_ERROR_LOG:
                 error_reporting(E_ALL);
                 $formatter = new \Yana\Log\Formatter\TextFormatter();
-                $logger = new \Yana\Log\FileLogger(new TextFile('cache/error.log'));
+                $logger = new \Yana\Log\FileLogger(new \Yana\Files\Text('cache/error.log'));
                 $logger->setLogLevel(E_ALL & ~E_STRICT);
                 $isActive = true;
                 break;

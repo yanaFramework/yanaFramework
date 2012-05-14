@@ -638,8 +638,8 @@ final class Yana extends \Yana\Core\AbstractSingleton
     {
         if (!isset($this->_skin)) {
             $registry = $this->getRegistry();
-            $registry->mount('system:/skincache.textfile');
-            $cacheFile = $registry->getResource('system:/skincache.textfile');
+            $registry->mount('system:/skincache.text');
+            $cacheFile = $registry->getResource('system:/skincache.text');
 
             if (YANA_CACHE_ACTIVE === true && $cacheFile->exists()) {
                 assert('!isset($skin); // Cannot redeclare var $skin');

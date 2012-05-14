@@ -48,7 +48,7 @@ class Block extends \Yana\Files\File
      *
      * @param   string|array  $input new file contents
      * @return  \Yana\Files\Block
-     * @name    BlockFile::setContent()
+     * @name    Block::setContent()
      */
     public function setContent($input)
     {

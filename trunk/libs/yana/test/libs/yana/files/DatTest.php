@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: DatFile
+ * PHPUnit test-case
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -33,7 +33,7 @@ namespace Yana\Files;
 require_once __Dir__ . '/../../../include.php';
 
 /**
- * Test class for DatFile
+ * Test class for Dat
  * 
  * @package  test
  */
