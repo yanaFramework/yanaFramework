@@ -7,7 +7,7 @@
 	The contained entries may not be changed at any case.
 -->
 <drive name="guestbook">
-	<file name="my.floodfile">
+	<file name="my.flood">
 		<source>../../{$TEMPDIR}{$ID}.flood</source>
 		<requirements writeable="yes"/>
 	</file>

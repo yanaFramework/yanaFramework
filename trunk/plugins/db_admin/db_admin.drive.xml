@@ -7,7 +7,7 @@
 	The contained entries may not be changed at any case.
 -->
 <drive name="db_admin">
-    <file name="dbconfig.textfile">
+    <file name="dbconfig.text">
     	<source>{$CONFIGDIR}dbconfig.php</source>
     	<requirements readable="yes" writeable="yes" executable="yes"/>
     </file>
