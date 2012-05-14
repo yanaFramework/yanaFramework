@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: RSSitem
+ * PHPUnit test-case: RSS
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}
@@ -30,7 +30,7 @@ namespace Yana\RSS;
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __DIR__ . '/../../../include.php';
 
 /**
  * Test class for RSSitem
@@ -41,7 +41,6 @@ class ItemTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @access protected
      * @var Item
      */
     protected $item;
@@ -49,12 +48,10 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     *
-     * @access protected
      */
     protected function setUp()
     {
-        $this->item = new Item('Abcöäß');
+        $this->item = new \Yana\RSS\Item('Abcöäß');
     }
 
     /**

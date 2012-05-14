@@ -57,7 +57,7 @@ class DbStructureTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->markSkipped(); // source class is deprecated
+        $this->markTestSkipped(); // source class is deprecated
         DDL::setDirectory(CWD . '/resources/');
         $this->databaseName = 'check';
         try {

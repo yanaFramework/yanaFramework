@@ -30,7 +30,7 @@ namespace Yana\RSS;
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __DIR__ . '/../../../include.php';
 
 
 /**
@@ -315,7 +315,7 @@ class FeedTest extends \PHPUnit_Framework_TestCase
         $toString = (string) $this->_rss;
         $this->assertContains('test.css', $toString);
         $this->assertContains('test.xsl', $toString);
-        $this->assertType('string', $toString, 'assert failed, the value is not from type string');
+        $this->assertInternalType('string', $toString, 'assert failed, the value is not from type string');
 
         // check if rss is valid
         $url = str_replace(' ', '%20', CWD.'resources/dtd/rss.dtd');

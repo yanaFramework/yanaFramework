@@ -594,7 +594,7 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     public function testToArray()
     {
         $toArray = $this->dbinfocolumn->toArray();
-        $this->assertType('array', $toArray, 'assert failed, the value is not of type array');
+        $this->assertInternalType('array', $toArray, 'assert failed, the value is not of type array');
         $this->assertArrayHasKey('table', $toArray, 'assert failed, the array value should be have the "table" as a key');
     }
 }
