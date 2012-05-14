@@ -30,6 +30,7 @@
 
 <!ATTLIST file
     name       CDATA     #REQUIRED
+    namespace  CDATA     #IMPLIED
     automount  (yes|no)  "no"
 >
 
