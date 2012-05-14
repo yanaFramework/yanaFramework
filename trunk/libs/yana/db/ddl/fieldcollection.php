@@ -50,14 +50,13 @@ class FieldCollection extends \Yana\Core\AbstractCollection
     public function offsetSet($offset, $value)
     {
         if (!$value instanceof \Yana\Db\Ddl\Field) {
-            if (!is_string($offset)) {
-                $offset = $value->getName();
-            }
-            return $this->_offsetSet(mb_strtolower($offset), $value);
-        } else {
             $message = "Instance of \Yana\Db\Ddl\Field expected. Found " . gettype($value) . "(" . get_class($value) . ") instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
+        if (!is_string($offset)) {
+            $offset = $value->getName();
+        }
+        return $this->_offsetSet(mb_strtolower($offset), $value);
     }
 
 }
