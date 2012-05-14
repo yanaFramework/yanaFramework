@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit test-case: DDL ALL
+ * PHPUnit test-case
  *
  * Software:  Yana PHP-Framework
  * Version:   {VERSION} - {DATE}

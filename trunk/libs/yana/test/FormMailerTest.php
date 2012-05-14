@@ -40,27 +40,22 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
 
     /**
      * @var    FormMailer
-     * @access protected
      */
     protected $object;
     /**
      * sammelt die Maileinträge
      * 
      * @var    mails
-     * @access protected
      */
     protected $mails = array();
     /**
      * @var    string
-     * @access protected
      */
     protected $backupMailHandler;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     *
-     * @access protected
      */
     protected function setUp()
     {
@@ -72,8 +67,6 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
-     *
-     * @access protected
      */
     protected function tearDown()
     {
@@ -85,7 +78,6 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
      *
      * Protocols any function call to check whether mail input vars are correct.
      *
-     * @access  public
      * @param   string  $to
      * @param   string  $subject
      * @param   string  $message
@@ -135,7 +127,6 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($result, "FormMailer should not accept an empty Content");
 
         // wrong Element Type 'Object'
-        $exception = false;
         $this->object->setContent(array("test" => new \Yana\Core\Object()));
         try {
             $this->object->send("mail@domain.tld");

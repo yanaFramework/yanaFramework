@@ -117,8 +117,8 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     {
         chdir(CWD . '/../../../');
         \Yana\Db\Ddl\DDL::setDirectory('config/db/');
-        $schema = \XDDL::getDatabase('user');
-        $this->_database = new FileDb($schema);
+        $schema = \Yana\Files\XDDL::getDatabase('user');
+        $this->_database = new \Yana\Db\FileDb\Connection($schema);
         SessionManager::setDatasource($this->_database);
         YanaUser::setDatasource($this->_database);
         $this->_sessionManager = SessionManager::getInstance();

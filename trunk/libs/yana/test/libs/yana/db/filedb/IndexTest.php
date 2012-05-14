@@ -25,17 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Db\FileDb;
+
 /**
  * @ignore
  */
-require_once __DIR__ . '/include.php';
+require_once __DIR__ . '/../../../../include.php';
 
 /**
  * Test class for FileDbIndex
  *
  * @package  test
  */
-class FileDbIndexTest extends PHPUnit_Framework_TestCase
+class IndexTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var FileDbIndex
@@ -103,14 +105,14 @@ class FileDbIndexTest extends PHPUnit_Framework_TestCase
         $this->_indexFilePath = tempnam(sys_get_temp_dir(), __CLASS__);
         file_put_contents($this->_indexFilePath, $this->_indexFileConents);
 
-        $data = new SML($this->_smlFilePath, CASE_UPPER);
+        $data = new \Yana\Files\SML($this->_smlFilePath, CASE_UPPER);
         $table = new \Yana\Db\Ddl\Table('FOO');
         $table->addColumn('FOOID', 'integer');
         $table->addColumn('FVALUE', 'string');
         $table->addColumn('FNUMBER', 'integer');
         $table->setPrimaryKey('FOOID');
         $table->addIndex('FVALUE');
-        $this->_object = new FileDbIndex($table, $data, $this->_indexFilePath);
+        $this->_object = new \Yana\Db\FileDb\Index($table, $data, $this->_indexFilePath);
     }
 
     /**
