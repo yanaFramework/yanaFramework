@@ -814,11 +814,11 @@ class Select extends \Yana\Db\Queries\SelectCount
             assert('!isset($columnName); // Cannot redeclare var $columnName');
             assert('!isset($value); // Cannot redeclare var $value');
             assert('!isset($column); // Cannot redeclare var $column');
+            assert('!isset($arrayAddress); // Cannot redeclare var $arrayAddress');
             foreach ($row as $alias => $value)
             {
                 if (!is_null($value)) {
                     $columnName = $this->getColumnByAlias($alias);
-                    assert('!isset($arrayAddress); // Cannot redeclare var $arrayAddress');
                     $arrayAddress = '';
                     // check input
                     switch ($returnedType)
@@ -838,7 +838,7 @@ class Select extends \Yana\Db\Queries\SelectCount
                                     "which should not exist according to your database schema file. " .
                                     "The unexpected column will be ignored.";
                                 \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_NOTICE, $e->getMessage());
-                                continue;
+                                continue 2;
                             }
                         break;
                         case \Yana\Db\ResultEnumeration::CELL:
