@@ -107,7 +107,7 @@ class Manager extends \Yana\Core\Object implements \Yana\Views\IsManager
         assert('is_string($filename); // Invalid argument $filename: string expected');
         assert('is_string($mainContentTemplate); // Invalid argument $mainContentTemplate: string expected');
 
-        $isAjaxRequest = (bool) \Request::getVars('is_ajax_request');
+        $isAjaxRequest = (bool) \Yana\Core\Request::getVars('is_ajax_request');
 
         /**
          * If this is an AJAX request we should only output the content, leaving off the frame.

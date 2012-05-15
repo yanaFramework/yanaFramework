@@ -27,73 +27,63 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core;
+
 /**
  * <<Utility>> Request object
  *
  * This class is meant to handle and provide request header information.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */
 final class Request extends \Yana\Core\AbstractUtility
 {
+
     /**
      * Untainted request vars send via method post
      *
-     * @access  private
-     * @static
-     * @var     array
+     * @var  array
      */
     private static $post = null;
 
     /**
      * Untainted request vars send via method get
      *
-     * @access  private
-     * @static
-     * @var     array
+     * @var  array
      */
     private static $get = null;
 
     /**
      * Untainted request vars
      *
-     * @access  private
-     * @static
-     * @var     array
+     * @var  array
      */
     private static $request = null;
 
     /**
      * Untainted cookie vars
      *
-     * @access  private
-     * @static
-     * @var     array
+     * @var  array
      */
     private static $cookie = null;
 
     /**
      * Rebuild file vars send via POST
      *
-     * @access  private
-     * @static
-     * @var     array
+     * @var  array
      */
     private static $files = null;
 
     /**
      * Request uri
      *
-     * @access  private
-     * @static
-     * @var     array
+     * @var  array
      */
     private static $uri = null;
 
     /**
-     * get canonical request URI
+     * Get canonical request URI.
      *
      * Returns a canonical request URI that is identical, no matter if the data was sent via GET,
      * or POST. You may use this function to calculate IDs or identify the page.
@@ -113,8 +103,6 @@ final class Request extends \Yana\Core\AbstractUtility
      * This means, servers are allowed to omit it!
      * See the complete list here: http://hoohoo.ncsa.illinois.edu/cgi/env.html
      *
-     * @access  public
-     * @static
      * @return  string
      */
     public static function getUri()
@@ -209,12 +197,10 @@ final class Request extends \Yana\Core\AbstractUtility
      */
 
     /**
-     * get a value from the get vars
+     * Get a value from the get vars.
      *
      * Returns the untainted value identified by $key or NULL if the value does not exist.
      *
-     * @access  public
-     * @static
      * @param   string  $key  adress of data in memory (case insensitive)
      * @return  mixed
      * @see     Request::getVars()
@@ -228,12 +214,10 @@ final class Request extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * get a value from the post vars
+     * Get a value from the post vars.
      *
      * Returns the untainted value identified by $key or NULL if the value does not exist.
      *
-     * @access  public
-     * @static
      * @param   string  $key  adress of data in memory (case insensitive)
      * @return  mixed
      * @see     Request::getVars()
@@ -247,13 +231,11 @@ final class Request extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * get a value from the cookie vars
+     * Get a value from the cookie vars.
      *
      * Returns the untainted value identified by $key or NULL if the value does not exist.
      * Note: that cookies may have been disabled on the client machine.
      *
-     * @access  public
-     * @static
      * @param   string  $key  adress of data in memory (case insensitive)
      * @return  mixed
      * @see     Request::getVars()
@@ -268,7 +250,7 @@ final class Request extends \Yana\Core\AbstractUtility
 
 
     /**
-     * get a value from the request vars
+     * Get a value from the request vars.
      *
      * Returns the value identified by $key from an untainted, merged copy of the $_POST and $_GET arrays.
      *
@@ -289,8 +271,6 @@ final class Request extends \Yana\Core\AbstractUtility
      * php index.php arg.0=value1 arg.1=value2 arg.foo=bar
      * </code>
      *
-     * @access  public
-     * @static
      * @param   string  $key  adress of data in memory (case insensitive)
      * @return  mixed
      * @name    Request::getVars()
@@ -321,7 +301,7 @@ final class Request extends \Yana\Core\AbstractUtility
     /**#@-*/
 
     /**
-     * build file array from $_FILES input
+     * Build file array from $_FILES input-
      *
      * Why you need this function?
      * Well, it's use comes when you use nested forms and
@@ -389,8 +369,6 @@ final class Request extends \Yana\Core\AbstractUtility
      * }
      * </code>
      *
-     * @access  public
-     * @static
      * @param   string  $key  adress of data in memory (case insensitive)
      * @return  array
      */
@@ -421,7 +399,7 @@ final class Request extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * build file array from $_FILES input
+     * Build file array from $_FILES input.
      *
      * Converts:
      * <code>
@@ -448,8 +426,6 @@ final class Request extends \Yana\Core\AbstractUtility
      * );
      * </code>
      *
-     * @access  private
-     * @static
      * @param   mixed   $files     file array or scalar property
      * @param   string  $property  one of: name, type, size, tmp_name, error
      * @return  array
@@ -470,15 +446,13 @@ final class Request extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * remove empty (phantom) entries
+     * Remove empty (phantom) entries.
      *
      * PHP adds entries to $_FILES array even when no file was uploaded at all, adding a phantom error
      * UPLOAD_ERR_NO_FILE.
      *
      * To avoid bogus error messages and unexpected behavior, we remove these phantom files from the upload list.
      *
-     * @access  private
-     * @static
      * @param   array  $files  list of files
      * @return  array
      */
@@ -501,10 +475,8 @@ final class Request extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * untaint request vars
+     * Untaint request vars-
      *
-     * @access  private
-     * @static
      * @param   array   $value    request vars
      * @param   bool    $unquote  true: strip slashes, false: leave slashes alone
      * @return  array
@@ -528,6 +500,7 @@ final class Request extends \Yana\Core\AbstractUtility
         }
         return $value;
     }
+
 }
 
 ?>
