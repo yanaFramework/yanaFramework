@@ -28,18 +28,41 @@
 namespace Yana\Io;
 
 /**
- * <<abstract>> Validator base class.
- *
- * All validators should extend this class.
+ * <<interface>> For data validation.
  *
  * @package     yana
  * @subpackage  io
- * @ignore
  */
-abstract class AbstractValidator extends \Yana\Core\Object implements \Yana\Io\IsValidator
+interface IsValidator
 {
 
-   // intentionally left blank
+    /**
+     * Evaluate if a value is a valid IP-address.
+     *
+     * @param   mixed  $value  value to validate
+     * @return  bool
+     */
+    public static function validate($value);
+
+    /**
+     * Sanitize object.
+     *
+     * Returns NULL for invalid values.
+     *
+     * @param   mixed  $value  value to sanitize
+     * @return  mixed 
+     */
+    public function __invoke($value);
+
+    /**
+     * Sanitize object.
+     *
+     * Returns NULL for invalid objects.
+     *
+     * @param   mixed  $value  value to sanitize
+     * @return  bool 
+     */
+    public static function sanitize($value);
 
 }
 
