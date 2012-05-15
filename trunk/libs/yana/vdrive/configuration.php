@@ -85,7 +85,7 @@ namespace Yana\VDrive;
  *
  * @ignore
  */
-class Configuration extends \Yana\XmlArray
+class Configuration extends \Yana\Util\XmlArray
 {
 
     /**

@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana;
+namespace Yana\Util;
 
 /**
  * SimpleXML implementation with array conversion
@@ -36,7 +36,6 @@ namespace Yana;
  * $array = $xml->toArray();
  * </code>
  *
- * @access     public
  * @package    yana
  * @subpackage core
  * @name       XmlArray
@@ -45,7 +44,7 @@ class XmlArray extends \SimpleXMLElement
 {
 
     /**
-     * get XML content as array
+     * Get XML content as array.
      *
      * Especially usefull for XML documents that use no attributes and are thus
      * very simple.
@@ -111,7 +110,6 @@ class XmlArray extends \SimpleXMLElement
      * this setting. Otherwise use a numeric array, for it stores the nodes in
      * exactly the same order in which they appear in the source document.
      *
-     * @access  public
      * @param   bool   $asNumericArray  return result either as numeric (true) or associative array (false)
      * @return  mixed
      */

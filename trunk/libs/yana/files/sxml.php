@@ -141,7 +141,7 @@ class SXML extends \Yana\Files\SML
         if (is_file("$input")) {
             try {
 
-                $sxml = simplexml_load_file($input, '\Yana\XmlArray');
+                $sxml = simplexml_load_file($input, '\Yana\Util\XmlArray');
 
             } catch (\Exception $e) {
                 trigger_error("XML ERROR in file '{$input}'.", E_USER_WARNING);
@@ -150,7 +150,7 @@ class SXML extends \Yana\Files\SML
         } elseif (is_array($input)) {
             try {
 
-                $sxml = simplexml_load_string(implode("", $input), '\Yana\XmlArray');
+                $sxml = simplexml_load_string(implode("", $input), '\Yana\Util\XmlArray');
 
             } catch (\Exception $e) {
                 trigger_error("XML ERROR in file.", E_USER_WARNING);

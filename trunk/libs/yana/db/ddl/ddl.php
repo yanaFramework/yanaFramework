@@ -329,7 +329,7 @@ abstract class DDL extends \Yana\Core\Object
     /**
      * Unserialize a XDDL-node to an object and returns it.
      *
-     * @param   \SimpleXMLElement  $node  node create via \Yana\XMLArray::toArray()
+     * @param   \SimpleXMLElement  $node  node create via \Yana\Util\XMLArray::toArray()
      * @return  \Yana\Db\Ddl\DDL
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node)
