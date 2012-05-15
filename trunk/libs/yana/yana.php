@@ -60,7 +60,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
     /**
      * System configuration file
      *
-     * @var  \Yana\XmlArray
+     * @var  \Yana\Util\XmlArray
      */
     private static $_config = null;
 
@@ -271,7 +271,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
         assert('is_file($filename);     // Invalid argument 1. Input is not a file.');
         assert('is_readable($filename); // Invalid argument 1. Configuration file is not readable.');
         // get System Config file
-        self::$_config = simplexml_load_file($filename, '\Yana\XmlArray');
+        self::$_config = simplexml_load_file($filename, '\Yana\Util\XmlArray');
         // load CD-ROM application settings on demand
         if (YANA_CDROM === true) {
             self::_activateCDApplication();
@@ -1131,7 +1131,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
                 $result = $values;
             }
         }
-        if ($result instanceof \Yana\XmlArray) {
+        if ($result instanceof \Yana\Util\XmlArray) {
             $result = $result->toArray();
         }
         return $result;
