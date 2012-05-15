@@ -25,47 +25,46 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Db;
+
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __Dir__ . '/../../../include.php';
 
 /**
- * Test class for DbStructure
+ * Test class for Structure
  *
  * @package  test
+ * @deprecated since version 4.0
  */
-class DbStructureTest extends PHPUnit_Framework_TestCase
+class StructureTest extends \PHPUnit_Framework_TestCase
 {
+
     /**
-     * @var    DbStructure
-     * @access protected
+     * @var    \Yana\Db\Structure
      */
     protected $object;
 
     /**
-     * @var    String
-     * @access protected
+     * @var    string
      */
     protected $databaseName;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     *
-     * @access protected
      */
     protected function setUp()
     {
-        $this->markTestSkipped(); // source class is deprecated
-        DDL::setDirectory(CWD . '/resources/');
+        \Yana\Db\Ddl\DDL::setDirectory(CWD . '/resources/');
         $this->databaseName = 'check';
         try {
-            $this->object = new DbStructure ( $this->databaseName );
-            restore_error_handler();
+            $this->object = new \Yana\Db\Structure($this->databaseName);
+            $this->object->read();
 
         } catch (\Exception $e) {
-            $this->markTestSkipped("Unable to connect to database");
+            $this->markTestSkipped("Unable to load structure file");
         }
     }
 
@@ -99,7 +98,6 @@ class DbStructureTest extends PHPUnit_Framework_TestCase
      */
     public function testRead()
     {
-        $this->object->read();
         $test = $this->object->getStructure();
         $testKeys0 = array_keys($test);
         $this->assertContains('USE_STRICT', $testKeys0, 'USE_STRICT Tag is missing');
@@ -253,7 +251,7 @@ class DbStructureTest extends PHPUnit_Framework_TestCase
      */
     public function testAll()
     {
-        $db = new DbStructure('temp.sml');
+        $db = new \Yana\Db\Structure('temp.sml');
 
         // "USE_STRICT"
         $db->setStrict(true);
@@ -477,14 +475,14 @@ class DbStructureTest extends PHPUnit_Framework_TestCase
      */
     public function testGetFileList()
     {
-        $dir = DbStructure::getDirectory();
+        $dir = \Yana\Db\Structure::getDirectory();
         $this->assertTrue(is_dir($dir), 'Base directory is not valid.');
         $expected = array();
         foreach (glob("$dir/*.config") as $file)
         {
             $expected[] = basename($file, '.config');
         }
-        $result = DbStructure::getListOfFiles();
+        $result = \Yana\Db\Structure::getListOfFiles();
 
         $this->assertEquals($result, $expected, 'List of config files is missing values.');
     }
@@ -496,7 +494,7 @@ class DbStructureTest extends PHPUnit_Framework_TestCase
      */
     public function test1()
     {
-        $db = new DbStructure('temp.sml');
+        $db = new \Yana\Db\Structure('temp.sml');
         
         // "USE_STRICT"
         $db->setStrict(true);
