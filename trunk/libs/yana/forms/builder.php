@@ -731,8 +731,8 @@ class Builder extends \Yana\Core\Object implements \Yana\Io\Adapters\IsCacheable
             $formSetup->setSearchTerm($this->_facade->getParent()->getSetup()->getSearchTerm());
         }
 
-        $request = (array) \Request::getVars($form->getName());
-        $files = (array) \Request::getFiles($form->getName());
+        $request = (array) \Yana\Core\Request::getVars($form->getName());
+        $files = (array) \Yana\Core\Request::getFiles($form->getName());
         if (!empty($files)) {
             $request = \Yana\Util\Hashtable::merge($request, $files);
         }

@@ -164,7 +164,7 @@ class Feed extends \Yana\Core\Object
         $language = \Language::getInstance();
         $this->_title = (string) $language->getVar('program_title');
         $this->_language = (string) $language->getLocale();
-        $this->_link = \Request::getUri();
+        $this->_link = \Yana\Core\Request::getUri();
     }
 
     /**

@@ -323,7 +323,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
             $action = $this->getAction();
         }
         if (is_null($args)) {
-            $args = Request::getVars();
+            $args = \Yana\Core\Request::getVars();
         }
 
         /**
@@ -435,7 +435,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
     protected function getAction()
     {
         if (!isset(self::$_action)) {
-            $action = Request::getVars('action');
+            $action = \Yana\Core\Request::getVars('action');
             // work-around for IE-bug
             if (is_array($action)) {
                 if (count($action) === 1) {
@@ -506,7 +506,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
                 $this->_registry->setVar("ID", self::getId());
                 $this->_registry->mergeVars('*', \Yana\Util\Hashtable::changeCase(self::$_config->toArray(), \CASE_UPPER));
             }
-            $request = Request::getVars();
+            $request = \Yana\Core\Request::getVars();
             $this->_registry->mergeVars('*', $request);
             $this->_registry->setAsGlobal();
 
@@ -691,7 +691,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
     public static function getId()
     {
         if (!isset(self::$_id)) {
-            $id = Request::getVars('id');
+            $id = \Yana\Core\Request::getVars('id');
             if (!empty($id)) {
                 self::$_id = mb_strtolower($id);
             } elseif (!empty(self::$_config->default->profile)) {
@@ -901,7 +901,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
         /**
          * is an AJAX request
          */
-        if (\Request::getVars('is_ajax_request')) {
+        if (\Yana\Core\Request::getVars('is_ajax_request')) {
             $event = 'null';
             $templateName = 'id:STDOUT';
         }
