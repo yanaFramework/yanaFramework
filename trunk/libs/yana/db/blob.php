@@ -48,7 +48,7 @@ namespace Yana\Db;
  * @subpackage  db
  * @since       2.9.2
  */
-class Blob extends \\Yana\Files\Readonly
+class Blob extends \Yana\Files\Readonly
 {
 
     /**
