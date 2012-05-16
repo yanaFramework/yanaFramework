@@ -99,7 +99,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
             $xmlDocument = new \DOMDocument();
             $xmlDocument->loadXML((string) $this->schema);
 
-            $xslDocument = $this->_getProvider()->$name;
+            $xslDocument = $this->_getProvider()->$id;
             return self::_transformToSql($xmlDocument, $xslDocument);
         }
         return parent__call($name, $arguments);
@@ -122,6 +122,11 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
     private static function _transformToSql(\DOMDocument $xmlDocument, \DOMDocument $xslDocument)
     {
         // XSLT processor
+        if (!\class_exists('\XSLTProcessor')) {
+            $message = "The PHP XSL extension was not found. Windows users: add 'extension=php_xsl.dll' to your php.ini file." .
+                " On Linux please use 'apt-get install php5-xsl' on your console.";
+            throw new \Yana\Db\Export\ExportException($message, E_USER_ERROR);
+        }
         $xsltProcessor = new \XSLTProcessor();
         $xsltProcessor->importStyleSheet($xslDocument); // attach the xsl rules
 
