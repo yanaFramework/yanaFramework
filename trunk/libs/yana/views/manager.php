@@ -169,13 +169,13 @@ class Manager extends \Yana\Core\Object implements \Yana\Views\IsManager
      */
     private function _createTemplate(&$filename, \Smarty_Internal_Template $parent = null)
     {
+        $cacheId = null;
+        $compileId = null;
         if ($this->_smarty->caching) {
             $cacheId = $this->_getCacheId();
             $compileId = $cacheId;
-            return $this->_smarty->createTemplate($filename, $cacheId, $compileId, $parent);
-        } else {
-            return $this->_smarty->createTemplate($filename, null, null, $parent);
         }
+        return $this->_smarty->createTemplate($filename, $cacheId, $compileId, $parent);
     }
 
     /**
