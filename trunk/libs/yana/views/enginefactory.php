@@ -146,13 +146,13 @@ class EngineFactory extends \Yana\Core\Object
         /**
          * Directory setup
          */
-        foreach ((array) $config->templatedir as $dir)
+        foreach ($config->templatedir as $dir)
         {
             $smarty->addTemplateDir($dir);
         }
         unset($dir);
 
-        foreach ((array) $config->configdir as $dir)
+        foreach ($config->configdir as $dir)
         {
             $smarty->addConfigDir($dir);
         }
@@ -196,7 +196,7 @@ class EngineFactory extends \Yana\Core\Object
         }
         unset($plugin);
 
-        foreach ((array) $config->defaultmodifier as $plugin)
+        foreach ($config->defaultmodifier as $plugin)
         {
             $smarty->addDefaultModifiers((string) $plugin);
         }
