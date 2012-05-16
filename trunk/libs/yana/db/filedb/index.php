@@ -351,8 +351,11 @@ class Index extends \Yana\Core\Object
     {
         $indexes = array();
         if (file_exists($this->_filename)) {
-            $indexes = unserialize(file_get_contents($this->_filename));
-            assert('is_array($indexes);');
+            $_indexes = unserialize(file_get_contents($this->_filename));
+            if (\is_array($_indexes)) {
+                $indexes = $_indexes; // should always be the case (but just to be on the safe side)
+            }
+            unset($_indexes);
         } else {
             $this->create();
         }
