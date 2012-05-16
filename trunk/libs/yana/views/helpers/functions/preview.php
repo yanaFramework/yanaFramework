@@ -49,7 +49,7 @@ class Preview extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
      */
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
-        $document = new \Yana\Views\Template("id:gui_preview");
+        $document = $this->_getViewManager()->createContentTemplate("id:gui_preview");
         if (isset($params['width'])) {
             $document->setVar('WIDTH', $params['width']);
         }
