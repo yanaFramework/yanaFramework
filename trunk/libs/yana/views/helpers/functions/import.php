@@ -58,29 +58,31 @@ class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
     {
         switch (true)
         {
-            case isset($params['file']):
+            case !empty($params['file']):
                 assert('is_string($params["file"]); // Wrong argument type: file. String expected');
                 $filename = $params['file'];
                 if (!\Yana\Util\String::startsWith($filename, 'file:')) {
                     $filename = 'file:' . $filename;
                 }
                 $document = $this->_getViewManager()->createContentTemplate($filename);
-                unset($params['file'], $filename);
+                unset($params['file']);
             break;
 
-            case isset($params['id']):
+            case !empty($params['id']):
                 assert('is_string($params["id"]); // Wrong argument type: id. String expected');
                 $filename = $params['id'];
                 if (!\Yana\Util\String::startsWith($filename, 'id:')) {
                     $filename = 'id:' . $filename;
                 }
-                $document = $this->_getViewManager()->createContentTemplate($filename);
-                unset($params['id'], $filename);
+                unset($params['id']);
             break;
 
-            case isset($params['template']):
-                $document = $params['template'];
-                assert('$document instanceof \Yana\Views\Template; // Wrong argument: template. Instance of Template expected');
+            case !empty($params['template']):
+                assert('is_string($params["template"]); // Wrong argument type: template. String expected');
+                $filename = $params['template'];
+                if (!\Yana\Util\String::startsWith($filename, 'id:') && !\Yana\Util\String::startsWith($filename, 'file:')) {
+                    $filename = ((\is_file($filename)) ? 'file:' : 'id:') . $filename;
+                }
                 unset($params['template']);
             break;
 
@@ -89,6 +91,7 @@ class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
                 return "";
         }
 
+        $document = $this->_getViewManager()->createContentTemplate($filename);
         if (count($params) > 0) {
             $document->setVarsByReference($params);
         }
