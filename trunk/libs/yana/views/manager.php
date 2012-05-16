@@ -97,15 +97,15 @@ class Manager extends \Yana\Core\Object implements \Yana\Views\IsManager
      *
      * A view always consists of at least two parts: a base document and an included document.
      *
-     * @param   string  $filename             path to template file that hold the page layout (usually: index.tpl)
-     * @param   string  $mainContentTemplate  path to another template file that renders the page content
-     * @param   string  $mainContentTemplate  path to another template file that renders the page content
+     * @param   string  $filename                 path to template file that hold the page layout (usually: index.tpl)
+     * @param   string  $mainContentTemplateName  path to another template file that renders the page content
+     * @param   array   $templateVars             possibly multi-dimensional, associative array of template variables
      * @return  \Yana\Views\Template
      */
-    public function createLayoutTemplate($filename, $mainContentTemplate, array $templateVars)
+    public function createLayoutTemplate($filename, $mainContentTemplateName, array $templateVars)
     {
         assert('is_string($filename); // Invalid argument $filename: string expected');
-        assert('is_string($mainContentTemplate); // Invalid argument $mainContentTemplate: string expected');
+        assert('is_string($mainContentTemplateName); // Invalid argument $mainContentTemplate: string expected');
 
         $isAjaxRequest = (bool) \Yana\Core\Request::getVars('is_ajax_request');
 
@@ -113,9 +113,9 @@ class Manager extends \Yana\Core\Object implements \Yana\Views\IsManager
          * If this is an AJAX request we should only output the content, leaving off the frame.
          */
         if ($isAjaxRequest) {
-            if (!empty($mainContentTemplate)) {
-                $filename = $mainContentTemplate; // We drop the layout and just use the content template
-                $mainContentTemplate = '';
+            if (!empty($mainContentTemplateName)) {
+                $filename = $mainContentTemplateName; // We drop the layout and just use the content template
+                $mainContentTemplateName = '';
             }
         }
 
@@ -132,8 +132,12 @@ class Manager extends \Yana\Core\Object implements \Yana\Views\IsManager
              */
             $template->assign('FILE_IS_INCLUDE', true);
         }
+        if (\strpos(':', $mainContentTemplateName) === false) {
+            $mainContentTemplateName = ((\is_file($mainContentTemplateName)) ? 'file:' : 'id:') . $mainContentTemplateName;
+        }
         $template->assign('SYSTEM_TEMPLATE', $filename);
-        $template->assign('SYSTEM_INSERT', $mainContentTemplate);
+        $contentTemplate = $this->createContentTemplate($mainContentTemplateName);
+        $template->assign('SYSTEM_INSERT', $contentTemplate);
 
         $this->_layoutTemplate = $template;
         $template = new \Yana\Views\Template($this->_layoutTemplate);
