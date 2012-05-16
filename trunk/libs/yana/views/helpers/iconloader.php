@@ -79,7 +79,7 @@ class IconLoader extends \Yana\Core\Object
                 }
             }
 
-            sort(self::$_icons);
+            asort(self::$_icons);
         }
         return self::$_icons;
     }
