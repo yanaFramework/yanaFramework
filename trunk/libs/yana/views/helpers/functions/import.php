@@ -56,32 +56,39 @@ class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
      */
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
-        $filename = '';
-        if (isset($params['file'])) {
+        switch (true)
+        {
+            case isset($params['file']):
+                assert('is_string($params["file"]); // Wrong argument type: file. String expected');
+                $filename = $params['file'];
+                if (!\Yana\Util\String::startsWith($filename, 'file:')) {
+                    $filename = 'file:' . $filename;
+                }
+                $document = $this->_getViewManager()->createContentTemplate($filename);
+                unset($params['file'], $filename);
+            break;
 
-            assert('is_string($params["file"]); // Wrong argument type: file. String expected');
-            $filename = $params['file'];
-            if (!\Yana\Util\String::startsWith($filename, 'file:')) {
-                $filename = 'file:' . $filename;
-            }
-            unset($params['file']);
+            case isset($params['id']):
+                assert('is_string($params["id"]); // Wrong argument type: id. String expected');
+                $filename = $params['id'];
+                if (!\Yana\Util\String::startsWith($filename, 'id:')) {
+                    $filename = 'id:' . $filename;
+                }
+                $document = $this->_getViewManager()->createContentTemplate($filename);
+                unset($params['id'], $filename);
+            break;
 
-        } elseif (isset($params['id'])) {
+            case isset($params['template']):
+                $document = $params['template'];
+                assert('$document instanceof \Yana\Views\Template; // Wrong argument: template. Instance of Template expected');
+                unset($params['template']);
+            break;
 
-            assert('is_string($params["id"]); // Wrong argument type: id. String expected');
-            $filename = $params['id'];
-            if (!\Yana\Util\String::startsWith($filename, 'id:')) {
-                $filename = 'id:' . $filename;
-            }
-            unset($params['id']);
-
-        } else {
-            trigger_error("Missing argument. You need to provide either the argument 'file' or 'id'.", E_USER_WARNING);
-            return "";
-
+            default:
+                \trigger_error("Missing argument. You need to provide either the argument 'file' or 'id'.", E_USER_WARNING);
+                return "";
         }
 
-        $document = $this->_getViewManager()->createContentTemplate($filename);
         if (count($params) > 0) {
             $document->setVarsByReference($params);
         }
