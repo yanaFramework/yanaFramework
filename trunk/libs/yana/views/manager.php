@@ -132,12 +132,8 @@ class Manager extends \Yana\Core\Object implements \Yana\Views\IsManager
              */
             $template->assign('FILE_IS_INCLUDE', true);
         }
-        if (\strpos(':', $mainContentTemplateName) === false) {
-            $mainContentTemplateName = ((\is_file($mainContentTemplateName)) ? 'file:' : 'id:') . $mainContentTemplateName;
-        }
         $template->assign('SYSTEM_TEMPLATE', $filename);
-        $contentTemplate = $this->createContentTemplate($mainContentTemplateName);
-        $template->assign('SYSTEM_INSERT', $contentTemplate);
+        $template->assign('SYSTEM_INSERT', $mainContentTemplateName);
 
         $this->_layoutTemplate = $template;
         $template = new \Yana\Views\Template($this->_layoutTemplate);
