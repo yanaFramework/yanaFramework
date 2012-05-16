@@ -70,6 +70,7 @@ class Template extends \Yana\Core\Object implements \Yana\Views\IsTemplate
      * Existing template vars will be replaced.
      *
      * @return  string
+     * @throws  \SmartyException  when template is not found
      */
     public function fetch()
     {
