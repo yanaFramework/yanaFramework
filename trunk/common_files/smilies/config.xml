@@ -5,7 +5,7 @@
     <file name="boese.gif" regex=":[\-oO]?\(|boese|angry"/>
     <file name="bigsmile.gif" regex="bigsmile"/>
     <file name="chinesisch.gif" regex="chines(isch|e)"/>
-    <file name="cool.gif" regex="8[\-oO])"/>
+    <file name="cool.gif" regex="8[\-oO]\)"/>
     <file name="engel.gif" regex="engel|angel|good"/>
     <file name="frage.gif" regex="frage|\?"/>
     <file name="grinsen.gif" regex=";[\-oO]\)|grin|grinsen"/>
