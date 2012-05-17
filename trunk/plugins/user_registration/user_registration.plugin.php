@@ -214,7 +214,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
             $YANA = Yana::getInstance();
             $YANA->setVar('PASSWORT', $password);
             $YANA->setVar('NAME', $user->getName());
-            $mail = new Mailer($YANA->getView()->createContentTemplate("id:USER_PASSWORD_MAIL"));
+            $mail = new \Yana\Mails\Mailer($YANA->getView()->createContentTemplate("id:USER_PASSWORD_MAIL"));
             $mail->setSender($YANA->getVar("PROFILE.MAIL"));
             $mail->setVar('DATE', date('d-m-Y'));
             $mail->setSubject($YANA->getLanguage()->getVar("user.mail_subject"));
@@ -245,7 +245,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
 
         $YANA = \Yana::getInstance();
         $now = getdate();
-        $mail = new Mailer($YANA->getView()->createContentTemplate($template));
+        $mail = new \Yana\Mails\Mailer($YANA->getView()->createContentTemplate($template));
         $mail->setSubject($YANA->getLanguage()->getVar("USER.MAIL_SUBJECT")."\n");
         $mail->setVar('DATE', $now['mday'] . '.' . $now['mon'] . '.' . $now['year']);
         $mail->send($mail);

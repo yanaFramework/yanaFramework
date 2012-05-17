@@ -181,7 +181,7 @@ class plugin_user_admin extends StdClass implements IsPlugin
             assert('!isset($sender); // Cannot redeclare var $sender');
             $sender = $YANA->getVar("PROFILE.MAIL");
             if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
-                $mail = new Mailer($YANA->getView()->createContentTemplate("id:USER_PASSWORD_MAIL"));
+                $mail = new \Yana\Mails\Mailer($YANA->getView()->createContentTemplate("id:USER_PASSWORD_MAIL"));
                 $mail->setSender($sender);
                 $mail->setVar('DATE', date('d-m-Y'));
                 $mail->setSubject($YANA->getLanguage()->getVar("user.mail_subject"));
@@ -241,7 +241,7 @@ class plugin_user_admin extends StdClass implements IsPlugin
                     }
                 }
 
-                // before doing anything, check if entry exists 
+                // before doing anything, check if entry exists
                 if (!YanaUser::isUser($id)) {
                     throw new UserNotFoundError();
                 }
