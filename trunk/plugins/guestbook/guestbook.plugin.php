@@ -437,7 +437,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         if ($YANA->getVar("PROFILE.GUESTBOOK.MAIL") && $YANA->getVar("PROFILE.GUESTBOOK.NOTIFICATION")) {
             $templateFile = $YANA->getPlugins()->{"guestbook:/notification.file"};
             $template = $YANA->getView()->createContentTemplate($templateFile->getPath());
-            self::_sendMail(new Mailer($template), $entry);
+            self::_sendMail(new \Yana\Mails\Mailer($template), $entry);
         }
         Microsummary::setText(__CLASS__, 'Guestbook, update ' . date('d M y G:s', time()));
     }
@@ -701,10 +701,10 @@ class plugin_guestbook extends StdClass implements IsPlugin
      *
      * @access  private
      * @static
-     * @param   Mailer  $mail       mail template
+     * @param   \Yana\Mails\Mailer  $mail       mail template
      * @param   array   $INPUT      input data
      */
-    private static function _sendMail(Mailer $mail, array $INPUT)
+    private static function _sendMail(\Yana\Mails\Mailer $mail, array $INPUT)
     {
         global $YANA;
         $sender = $YANA->getVar("PROFILE.MAIL");

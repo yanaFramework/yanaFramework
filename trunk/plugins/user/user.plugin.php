@@ -288,7 +288,7 @@ class plugin_user extends StdClass implements IsPlugin
             '?action=set_reset_pwd&key=' . $uniqueKey;
 
         // set the mail values
-        $mailer = new Mailer($template);
+        $mailer = new \Yana\Mails\Mailer($template);
         $mailer->setSubject($subject);
         $mailer->setSender($sender);
         $mailer->setVar('NAME', $userName);
