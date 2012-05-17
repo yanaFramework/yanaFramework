@@ -25,17 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Mails;
+
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __DIR__ . '/../../../include.php';
 
 /**
  * Test class for Mailer
  *
  * @package  test
  */
-class MailerTest extends PHPUnit_Framework_TestCase
+class MailerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -125,7 +127,7 @@ class MailerTest extends PHPUnit_Framework_TestCase
 
         $result = $this->mailer->send($recipient);
         $this->assertTrue($result, 'assert failed, the mail is not sended');
-        
+
         $mail = array_pop($this->mails);
         // check if message match the template text
         $this->assertEquals($mail[2], $validText, 'Message text should match given message argument');
@@ -167,7 +169,7 @@ class MailerTest extends PHPUnit_Framework_TestCase
         $send = Mailer::mail($recipient, $subject, $text);
         $this->assertTrue($send, 'assert failed, message is not sended');
         $mail = array_pop($this->mails);
-        
+
         // check if text match the argunent text
         $this->assertEquals($mail[2], $text, 'Message text should match given message argument');
         // check recipient

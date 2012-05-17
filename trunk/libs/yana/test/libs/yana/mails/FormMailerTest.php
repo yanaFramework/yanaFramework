@@ -25,17 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Mails;
+
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __DIR__ . '/../../../include.php';
 
 /**
  * Test class for Formmailer
  *
  * @package  test
  */
-class FormMailerTest extends PHPUnit_Framework_TestCase
+class FormMailerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -44,7 +46,7 @@ class FormMailerTest extends PHPUnit_Framework_TestCase
     protected $object;
     /**
      * sammelt die Maileinträge
-     * 
+     *
      * @var    mails
      */
     protected $mails = array();

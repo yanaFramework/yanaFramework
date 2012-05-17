@@ -25,11 +25,13 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Mails;
+
 /**
- * create and send mails based on templates
+ * Create and send mails based on templates.
  *
  * @package     yana
- * @subpackage  mail
+ * @subpackage  mails
  */
 class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Yana\Views\IsTemplate
 {
@@ -95,7 +97,7 @@ class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Ya
      * Set subject line.
      *
      * @param   string  $subject  single-line of text
-     * @return  Mailer
+     * @return  \Yana\Mails\Mailer
      */
     public function setSubject($subject)
     {
@@ -123,7 +125,7 @@ class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Ya
      * not deliver any e-mail in case it doesn't.
      *
      * @param   string  $sender  e-mail address
-     * @return  Mailer
+     * @return  \Yana\Mails\Mailer
      */
     public function setSender($sender)
     {
@@ -138,8 +140,6 @@ class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Ya
      *
      * This function sends an e.mail with the currently set subject
      * and content to the recipient you provide.
-     *
-     * @uses    $mailer->send('recipient@somewhere.tld');
      *
      * @param   string  $recipient  mail address
      * @return  bool
@@ -164,7 +164,7 @@ class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Ya
     }
 
     /**
-     * set global mail handler function
+     * Set global mail handler function.
      *
      * The mail handler may be any function that implements the same interface
      * as PHP's mail() function.
@@ -189,7 +189,7 @@ class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Ya
     }
 
     /**
-     * get global mail handler function
+     * Get global mail handler function.
      *
      * The mail handler may be any function that implements the same interface
      * as PHP's mail() function.
@@ -234,7 +234,7 @@ class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Ya
     }
 
     /**
-     * get mail handler function
+     * Get mail handler function.
      *
      * The mail handler may be any function that implements the same interface
      * as PHP's mail() function.
@@ -252,15 +252,15 @@ class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Ya
      */
     public function getMailHandler()
     {
-        if (is_callable($this->_mailHandler)) {
-            return $this->_mailHandler;
-        } else {
-            return self::getGlobalMailHandler();
+        $mailHandler = $this->_mailHandler;
+        if (!is_callable($mailHandler)) {
+            $mailHandler = self::getGlobalMailHandler();
         }
+        return $mailHandler;
     }
 
     /**
-     * send an e.mail
+     * Send an e-mail.
      *
      * This function sends an e.mail and lets
      * you provide the recipient, subject, text and header.
@@ -337,7 +337,10 @@ class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Ya
      *
      * See the developer's cookbook for more detailed information and examples.
      *
-     * @uses    Mailer::mail('recipient@somewhere.tld', 'My Subject', 'My Text', array('from' => 'myMail@domain.tld'));
+     * <code>
+     * $headers = array('from' => 'myMail@domain.tld');
+     * Mailer::mail('recipient@somewhere.tld', 'My Subject', 'My Text', $headers);
+     * </code>
      *
      * @param   string    $recipient    mail address
      * @param   string    $subject      short description
@@ -550,7 +553,7 @@ class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Ya
      *
      * @param   string  $varName  address
      * @param   mixed   $var      some new value
-     * @return  \Mailer
+     * @return  \Yana\Mails\Mailer
      */
     public function setVar($varName, $var)
     {
@@ -565,7 +568,7 @@ class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Ya
      * This replaces all template vars with new ones.
      *
      * @param   array  $vars  associative array containg new set of template vars
-     * @return  \Mailer
+     * @return  \Yana\Mails\Mailer
      */
     public function setVars(array $vars)
     {
@@ -581,7 +584,7 @@ class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Ya
      *
      * @param   string  $varName  address
      * @param   mixed   &$var     some new value
-     * @return  \Mailer
+     * @return  \Yana\Mails\Mailer
      */
     public function setVarByReference($varName, &$var)
     {
@@ -599,7 +602,7 @@ class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Ya
      *
      * @param   string  $varName  address
      * @param   mixed   &$var     some new value
-     * @return  \Mailer
+     * @return  \Yana\Mails\Mailer
      */
     public function setVarsByReference(array &$vars)
     {
@@ -621,7 +624,7 @@ class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Ya
      * Set path to mail template.
      *
      * @param   string  $filename  path to mail template
-     * @return  Mailer
+     * @return  \Yana\Mails\Mailer
      */
     public function setPath($filename)
     {
