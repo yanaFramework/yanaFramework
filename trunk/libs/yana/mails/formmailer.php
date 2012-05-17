@@ -25,12 +25,13 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Mails;
+
 /**
  * create and send mails from form data
  *
- * @access      public
  * @package     yana
- * @subpackage  mail
+ * @subpackage  mails
  */
 class FormMailer extends \Yana\Core\Object
 {
@@ -38,39 +39,34 @@ class FormMailer extends \Yana\Core\Object
     /**
      * Subject line of mail to be send.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_subject = "";
 
     /**
      * Line of text before content.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_headline = "";
 
     /**
      * Line of text after content.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_footline = "";
 
     /**
      * The form content.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_content  = array();
 
     /**
      * Get subject line.
      *
-     * @access  public
      * @return  string
      */
     public function getSubject()
@@ -81,9 +77,8 @@ class FormMailer extends \Yana\Core\Object
     /**
      * Set subject line.
      *
-     * @access  public
      * @param   string  $subject  single-line of text
-     * @return  FormMailer
+     * @return  \Yana\Mails\FormMailer
      */
     public function setSubject($subject)
     {
@@ -95,7 +90,6 @@ class FormMailer extends \Yana\Core\Object
     /**
      * Get line of text before content.
      *
-     * @access  public
      * @return  string
      */
     public function getHeadline()
@@ -106,9 +100,8 @@ class FormMailer extends \Yana\Core\Object
     /**
      * Set line of text before content.
      *
-     * @access  public
      * @param   string  $headline  single-line of text
-     * @return  FormMailer
+     * @return  \Yana\Mails\FormMailer
      */
     public function setHeadline($headline)
     {
@@ -120,7 +113,6 @@ class FormMailer extends \Yana\Core\Object
     /**
      * Get line of text after content.
      *
-     * @access  public
      * @return  string
      */
     public function getFootline()
@@ -131,9 +123,8 @@ class FormMailer extends \Yana\Core\Object
     /**
      * Set line of text after content.
      *
-     * @access  public
      * @param   string  $footline  single-line of text
-     * @return  FormMailer
+     * @return  \Yana\Mails\FormMailer
      */
     public function setFootline($footline)
     {
@@ -145,7 +136,6 @@ class FormMailer extends \Yana\Core\Object
     /**
      * Get form content.
      *
-     * @access  public
      * @return  array
      */
     public function getContent()
@@ -156,9 +146,8 @@ class FormMailer extends \Yana\Core\Object
     /**
      * Set form content.
      *
-     * @access  public
      * @param   string  $content  list of key-value pairs, where keys are field-names
-     * @return  FormMailer
+     * @return  \Yana\Mails\FormMailer
      */
     public function setContent(array $content)
     {
@@ -171,7 +160,6 @@ class FormMailer extends \Yana\Core\Object
      *
      * Returns bool(true) on success or bool(false) on error.
      *
-     * @access  public
      * @param   string    $recipient    mail address
      * @param   function  $mailHandler  function to handle mails
      * @return  bool
@@ -192,18 +180,16 @@ class FormMailer extends \Yana\Core\Object
             $this->_subject = preg_replace("/[^\w \(\)äÄüÜöÖß]/", "", $this->_subject);
             /* untaint send mail */
             $subject = "[MAILFORM] " . $this->_subject;
-            $test = Mailer::mail((string) $recipient, $subject, $this->_makeMail(), array(), $mailHandler);
+            $test = \Yana\Mails\Mailer::mail((string) $recipient, $subject, $this->_makeMail(), array(), $mailHandler);
         }
         assert('is_bool($test); // Unexpected result: $test. Boolean expected.');
         return $test;
     }
 
     /**
-     * make mail
+     * Make mail.
      *
-     * @access  private
      * @return  string
-     * @ignore
      */
     private function _makeMail()
     {

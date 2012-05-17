@@ -185,7 +185,7 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
         $oldLogEntries = $this->_file->getContent();
 
         // send e-mail
-        $mail = new FormMailer();
+        $mail = new \Yana\Mails\FormMailer();
         $mail->setContent($oldLogEntries)
             ->setSubject('JOURNAL')
             ->send($recipient);
