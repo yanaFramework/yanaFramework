@@ -39,11 +39,13 @@ require_once __Dir__ . '/../../../include.php';
  */
 class SXMLTest extends \PHPUnit_Framework_TestCase
 {
+
     /**
      * @var    SXML
      * @access protected
      */
     protected $object = null;
+
     /**
      * @var    string
      * @access protected
@@ -108,7 +110,7 @@ class SXMLTest extends \PHPUnit_Framework_TestCase
     {
         $testSource = file_get_contents(CWD . $this->source);
         $testArray = array("tag" => "text", "othertag" => "more text");
-        $testString = SXML::encode($testArray);
+        $testString = SXML::encode($testArray, "root");
         $this->assertEquals($testString, $testSource, "Test: encode SXML-file failed");
 
         // try with upper case / lower case
@@ -158,8 +160,9 @@ class SXMLTest extends \PHPUnit_Framework_TestCase
     {
         $expected = "<root>\n\t<tag attr=\"1\">\n\t\t<attr>2</attr>\n\t</tag>\n\t" .
             "<tag attr=\"2\">2</tag>\n</root>\n";
-        $array = SXML::decode($expected);print_r($array);
-        $actual = SXML::encode($array);
+        $decoder = new Decoders\SXML();
+        $array = $decoder->decode($expected);
+        $actual = $decoder->encode($array);
         $this->assertEquals($expected, $actual, 'Calling encode(decode($xml)) must not change the input.');
     }
 }
