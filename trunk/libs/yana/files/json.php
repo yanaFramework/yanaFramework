@@ -28,19 +28,16 @@
 namespace Yana\Files;
 
 /**
- * Simple Markup Language (SML) Files
+ * JSON Files.
  *
- * This is a wrapper-class that may be used to work with *.config and *.sml files.
- *
- * SML files provide the same semantics and functionality as JSON encoded files,
- * are as easy to read and understand, but they stick with XML-style markup,
- * which is widely used and understood by most people.
+ * This is a wrapper-class that may be used to work with *.json files.
  *
  * @package     yana
  * @subpackage  files
- * @since       2.8.5
+ * @since       3.1.0
+ * @name        JsonFile
  */
-class SML extends \Yana\Files\AbstractVarContainer
+class Json extends \Yana\Files\AbstractVarContainer
 {
 
     /**
@@ -48,7 +45,7 @@ class SML extends \Yana\Files\AbstractVarContainer
      */
     protected static function _getDecoder()
     {
-        return new \Yana\Files\Decoders\SML();
+        return new \Yana\Files\Decoders\Json();
     }
 
 }

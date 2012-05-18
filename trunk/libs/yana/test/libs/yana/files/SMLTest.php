@@ -43,19 +43,9 @@ class SMLTest extends \PHPUnit_Framework_TestCase
     /**
      * SML instance to test
      *
-     * @var SML
+     * @var \Yana\Files\SML
      */
     public $instance = null;
-
-    /**
-     * Constructor
-     *
-     * @ignore
-     */
-    public function __construct()
-    {
-        // intentionally left blank
-    }
 
     /**
      * Prepares the environment before running a test.
@@ -94,11 +84,11 @@ class SMLTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetVarByReference()
     {
-        $test = $this->instance->getVarByReference();
-        $this->assertType('array', $test, '"assert failed , value is not from type array');
+        $test1 = $this->instance->getVarByReference();
+        $this->assertType('array', $test1, '"assert failed , value is not from type array');
 
-        $test = $this->instance->getVarByReference('array');
-        $this->assertEquals(count($test), 2, 'assert failed , expected array with 2 values');
+        $test2 = $this->instance->getVarByReference('array');
+        $this->assertEquals(count($test2), 2, 'assert failed , expected array with 2 values');
     }
 
     /**
@@ -113,8 +103,8 @@ class SMLTest extends \PHPUnit_Framework_TestCase
         $test['foo'] = 'error';
         unset($test);
 
-        $test = $this->instance->getVar('foo');
-        $this->assertEquals($test, 'bar', '"set on reference" test failed.');
+        $test2 = $this->instance->getVar('foo');
+        $this->assertEquals($test2, 'bar', '"set on reference" test failed.');
     }
 
     /**
