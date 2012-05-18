@@ -82,6 +82,14 @@ if (!defined('YANA_GET_DIRS')) {
 }
 
 /**#@-*/
+if (!defined('CASE_MIXED')) {
+    /**
+     * used for change case commands
+     *
+     * @ignore
+     */
+    define('CASE_MIXED', -1);
+}
 if (!defined('YANA_VERSION')) {
     /**
      * currently installed version of the Yana Framework
