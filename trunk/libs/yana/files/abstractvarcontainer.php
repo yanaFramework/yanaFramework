@@ -27,13 +27,6 @@
 
 namespace Yana\Files;
 
-if (!defined('CASE_MIXED')) {
-    /**
-     * @ignore
-     */
-    define('CASE_MIXED', -1);
-}
-
 /**
  * Simple Markup Language (SML) Files
  *
