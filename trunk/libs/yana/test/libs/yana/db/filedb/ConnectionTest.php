@@ -66,7 +66,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
             \Yana\Db\FileDb\Driver::setBaseDirectory(CWD. 'resources/db/');
             \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
-            $schema = \XDDL::getDatabase('check');
+            $schema = \Yana\Files\XDDL::getDatabase('check');
             $this->dbsobj = new \Yana\Db\FileDb\Connection($schema);
             restore_error_handler();
 

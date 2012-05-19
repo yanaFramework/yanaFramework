@@ -355,7 +355,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testEncrypt7()
     {
         $this->assertEquals(
-            '$2vU67iv49YBo', \Yana\Util\String::encrypt("test", "blowfish", "passwordpassword")
+            '$2rcByx51ejoM', \Yana\Util\String::encrypt("test", "blowfish", "passwordpassword")
         );
     }
 
@@ -851,8 +851,8 @@ class StringTest extends \PHPUnit_Framework_TestCase
 
     /**
      * testEncode().
-     * @covers String::encode
-     * @covers String::decode
+     * @covers \Yana\Util\String::encode
+     * @covers \Yana\Util\String::decode
      *
      * @test
      */
@@ -869,10 +869,10 @@ class StringTest extends \PHPUnit_Framework_TestCase
                           'rot13',);
         foreach($encoding as $code)
         {  
-            $encode = String::encode('this is a test string äöü', $code, ENT_COMPAT, 'UTF-8');
+            $encode = \Yana\Util\String::encode('this is a test string äöü', $code, ENT_COMPAT, 'UTF-8');
             $this->assertNotEquals('this is a test string äöü', $code, 'assert failed, expected two different strings for encoding '.$code.', result can not be equal');
             if($code != 'quote') {
-                $decode = String::decode($encode, $code, ENT_COMPAT, 'UTF-8');
+                $decode = \Yana\Util\String::decode($encode, $code, ENT_COMPAT, 'UTF-8');
                 $this->assertEquals('this is a test string äöü', $decode, 'assert failed, the expected result must be equal for decoding '.$code);
             }
         }

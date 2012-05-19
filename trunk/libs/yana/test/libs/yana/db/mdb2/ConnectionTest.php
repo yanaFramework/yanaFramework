@@ -415,7 +415,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     public function testEquals()
     {
         // create another object of this class
-        $schema = XDDL::getDatabase('check');
+        $schema = \Yana\Files\XDDL::getDatabase('check');
         $anotherObject = new \Yana\Db\Mdb2\Connection($schema);
         $test = $this->dbsobj->equals($anotherObject);
         $this->assertFalse($test, 'assert failed, there are two different objects of dbstrem');

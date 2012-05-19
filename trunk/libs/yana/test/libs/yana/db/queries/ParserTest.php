@@ -68,7 +68,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
             if (!isset($this->db)) {
                 \Yana\Db\DDl\DDL::setDirectory(CWD. 'resources/');
-                $schema = \XDDL::getDatabase('check');
+                $schema = \Yana\Files\XDDL::getDatabase('check');
                 $this->db = new \Yana\Db\FileDb\Connection($schema);
             }
             $this->parser = new \Yana\Db\Queries\Parser($this->db);
