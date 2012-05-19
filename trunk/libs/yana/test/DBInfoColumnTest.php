@@ -32,6 +32,7 @@ require_once dirname(__FILE__) . '/include.php';
 
 /**
  * DbInfoColumn test-case
+ *
  * @covers DbInfoColumn
  * @package  test
  */
