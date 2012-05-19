@@ -41,7 +41,15 @@ require_once __Dir__ . '/../../../include.php';
 class XmlArrayTest extends \PHPUnit_Framework_TestCase
 {
 
-    /** @var  string */ protected $xmlfile = 'resources/test.db.xml';
+    /**
+     * @var  string
+     */
+    private $_xmlSource = '<root><child1>1</child1></root>';
+
+    /**
+     * @var  \Yana\Util\XmlArray
+     */
+    private $_object = null;
 
     /**
      * Constructor
@@ -61,7 +69,8 @@ class XmlArrayTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        // intentionally left blank
+        
+        $this->_object = new \Yana\Util\XmlArray($this->_xmlSource);
     }
 
     /**
@@ -76,17 +85,33 @@ class XmlArrayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * ToArray
-     *
      * @test
      */
-    public function testToArray()
+    public function testIsset()
     {
-        $xml = simplexml_load_file(CWD . $this->xmlfile, '\Yana\Util\XmlArray');
-        $array = $xml->toArray(true);
-        $this->assertType('array', $array, 'assert failed, value is not from type array');
-        $array = $xml->toArray(false);
-        $this->assertType('array', $array, 'assert failed, value is not from type array');
+        $this->assertTrue(isset($this->_object->child1));
+    }
+
+    /**
+     * @test
+     */
+    public function testToArrayAsNumericArray()
+    {
+        $array = $this->_object->toArray(true);
+        $this->assertInternalType('array', $array, 'assert failed, value is not from type array');
+        $expected = array("#tag" => "root", array("#tag" => "child1", "#pcdata" => "1"));
+        $this->assertEquals($expected, $array);
+    }
+
+    /**
+     * @test
+     */
+    public function testToArrayAsAssociativeArray()
+    {
+        $array = $this->_object->toArray(false);
+        $this->assertInternalType('array', $array);
+        $expected = array("child1" => "1");
+        $this->assertEquals($expected, $array);
     }
 }
 ?>

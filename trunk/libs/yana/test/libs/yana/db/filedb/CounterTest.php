@@ -88,14 +88,12 @@ class CounterTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        chdir(CWD . '../../../../../../../');
-        \Yana\Db\FileDb\Driver::setBaseDirectory(CWD . '/resources/db/');
+        \Yana\Db\Ddl\DDL::setDirectory(CWD . '/resources/db/');
         try {
             \Yana\Db\FileDb\Counter::create($this->_counterId, 1, null, null, null, true);
             \Yana\Db\FileDb\Counter::create($this->_counterNoIPId, 1, null, null, null, true, false);
         } catch (\Exception $e) {
             $this->fail($e->getMessage());
-            chdir(CWD);
         }
 
         $this->_object = new \Yana\Db\FileDb\Counter($this->_counterId);
@@ -195,17 +193,6 @@ class CounterTest extends \PHPUnit_Framework_TestCase
         $counterInstance = \Yana\Db\FileDb\Counter::getInstance($this->_counterId);
         $compareResult = $this->_object->equals($counterInstance);
         $this->assertTrue($compareResult, 'assert failed, objects need too be equal - true expected');
-    }
-
-    /**
-     * Counter NotFoundException
-     *
-     * @expectedException \Yana\Core\Exceptions\NotFoundException
-     * @test
-     */
-    function testCounterNotFoundException()
-    {
-        $newInstance = \Yana\Db\FileDb\Counter::getInstance('new_counter');
     }
 
 }

@@ -30,7 +30,7 @@ namespace Yana\Views;
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __DIR__ . '/../../../include.php';
 
 /**
  * Test class for Skin
@@ -41,18 +41,17 @@ class SkinTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    Skin
-     * @access protected
+     * @var  \Yana\Views\Skin
      */
     protected $_object;
+
     /**
-     * @var    Dir
-     * @access protected
+     * @var  \Yana\Files\Dir
      */
     protected $_defaultDir;
+
     /**
-     * @var    Dir
-     * @access protected
+     * @var  \Yana\Files\Dir
      */
     protected $_testDir;
 
@@ -64,9 +63,9 @@ class SkinTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_defaultDir = new \Dir(CWD . '/resources/skin/default');
+        $this->_defaultDir = new \Yana\Files\Dir(CWD . '/resources/skin/default');
         $this->_defaultDir->setFilter('*.skin.xml');
-        $this->_testDir = new \Dir(CWD . '/resources/skin/test');
+        $this->_testDir = new \Yana\Files\Dir(CWD . '/resources/skin/test');
         $this->_testDir->setFilter('*.skin.xml');
         \Yana\Views\Skin::setBaseDirectory(CWD . '/resources/skin/');
         $this->_object = new \Yana\Views\Skin('test');
