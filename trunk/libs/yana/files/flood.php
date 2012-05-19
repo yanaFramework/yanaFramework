@@ -172,7 +172,7 @@ class Flood extends \Yana\Files\File
      */
     public function getMax()
     {
-        assert('is_int($this->max);');
+        assert('is_int($this->_max);');
         return $this->_max;
     }
 
