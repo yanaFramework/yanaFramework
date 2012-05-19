@@ -1200,7 +1200,11 @@ final class Yana extends \Yana\Core\AbstractSingleton
             if (isset(self::$_connections[$schemaName])) {
                 return self::$_connections[$schemaName];
             }
-            $cacheFile = (string) self::$_config->tempdir . 'ddl_' . $schemaName . '.tmp';
+            $tempDir = __DIR__ . '/../../cache/';
+            if (isset(self::$_config) && isset(self::$_config->tempdir)) {
+                $tempDir = (string) self::$_config->tempdir;
+            }
+            $cacheFile = $tempDir . 'ddl_' . $schemaName . '.tmp';
             if (YANA_CACHE_ACTIVE === true && is_file($cacheFile)) {
                 $schema = unserialize(file_get_contents($cacheFile));
             } else {
