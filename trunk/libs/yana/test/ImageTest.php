@@ -39,51 +39,46 @@ require_once dirname(__FILE__) . '/include.php';
  */
 class ImageTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var    Image
-     * @access protected
-     */
-    private $image;
-
-     /**
-     * @var    Image
-     * @access protected
-     */
-    protected $emptyImage;
 
     /**
-     * @var    Image
-     * @access protected
+     * @var  \Yana\Media\Image
      */
-    protected $dummyImage;
+    private $_image;
 
     /**
-     * @var    Image
-     * @access protected
+     * @var  \Yana\Media\Image
      */
-    protected $nonexistImage;
+    private $_emptyImage;
 
     /**
-     * @var    Image
-     * @access protected
+     * @var  \Yana\Media\Image
      */
-    protected $invalidImage;
+    private $_dummyImage;
 
     /**
-     * @access protected
+     * @var  \Yana\Media\Image
      */
-    protected $imageSource = 'resources/image/logo.png';
+    private $_brokenImage;
 
     /**
-     * @access protected
+     * @var  \Yana\Media\Image
      */
-    protected $dummySource = 'resources/image/test3.png';
+    private $_invalidImage;
 
     /**
-     * @access protected
+     * @var  string
      */
-    protected $invalidSource = 'resources/file.txt';
+    private $_imageSource = 'resources/image/logo.png';
 
+    /**
+     * @var  string
+     */
+    private $_dummySource = 'resources/image/test3.png';
+
+    /**
+     * @var  string
+     */
+    private $_invalidSource = 'resources/file.txt';
 
     /**
      * Constructor
@@ -103,11 +98,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->image = new Image(CWD . $this->imageSource);
-        $this->emptyImage = new Image();
-        $this->dummyImage = new Image(CWD . $this->dummySource);
-        $this->noexistImage = new Image('nonexist.png');
-        $this->invalidImage = new Image(CWD . $this->invalidSource);
+        $this->markTestIncomplete('Binaries are broken. Test needs refactoring');
+        return;
+        $this->_image = new Image(CWD . $this->_imageSource);
+        $this->_emptyImage = new Image();
+        $this->_dummyImage = new Image(CWD . $this->_dummySource);
+        $this->_brokenImage = new Image('nonexist.png');
+        $this->_invalidImage = new Image(CWD . $this->_invalidSource);
     }
 
     /**
@@ -118,11 +115,22 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        $this->image->__destruct();
-        $this->emptyImage->__destruct();
-        $this->dummyImage->__destruct();
-        $this->noexistImage->__destruct();
-        $this->invalidImage->__destruct();
+        if (isset($this->_image)) {
+            $this->_image->__destruct();
+        }
+        if (isset($this->_emptyImage)) {
+            $this->_emptyImage->__destruct();
+        }
+        if (isset($this->_dummyImage)) {
+            $this->_dummyImage->__destruct();
+        }
+        if (isset($this->_brokenImage)) {
+            $this->_brokenImage->__destruct();
+        }
+        if (isset($this->_invalidImage)) {
+            $this->_invalidImage->__destruct();
+        }
+        return;
     }
 
     /**
@@ -146,11 +154,11 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetPath()
     {
-        $path = $this->image->getPath();
+        $path = $this->_image->getPath();
         $this->assertType('string', $path, 'assert failed, return value of getPath() has wrong type');
         $this->assertTrue(is_file($path), 'assert failed,path doesnt exist');
 
-        $noExist = $this->emptyImage->getPath();
+        $noExist = $this->_emptyImage->getPath();
         $this->assertFalse($noExist, 'assert failed , path doesnt exist');
     }
 
@@ -163,10 +171,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testExists()
     {
-        $exists = $this->image->exists();
+        $exists = $this->_image->exists();
         $this->assertTrue($exists, 'assert failed, image doesnt exists');
 
-        $noExist = $this->noexistImage->exists();
+        $noExist = $this->_brokenImage->exists();
         $this->assertFalse($noExist, 'assert failed , image exist');
     }
 
@@ -179,10 +187,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsBroken()
     {
-        $isbroken = $this->noexistImage->isBroken();
+        $isbroken = $this->_brokenImage->isBroken();
         $this->assertTrue($isbroken, 'assert failed, the image is not broken');
 
-        $broken = $this->image->isBroken();
+        $broken = $this->_image->isBroken();
         // expecting false
         $this->assertFalse($broken, 'assert failed - the image is broken');
     }
@@ -196,10 +204,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsTruecolor()
     {
-        $truecolor = $this->noexistImage->IsTruecolor();
+        $truecolor = $this->_brokenImage->IsTruecolor();
         $this->assertFalse($truecolor, 'assert failed, the image is broken');
 
-        $truecolor = $this->image->isTruecolor();
+        $truecolor = $this->_image->isTruecolor();
         $this->assertTrue($truecolor, 'assert "isTruecolor()" failed - image is not true color');
     }
 
@@ -212,11 +220,11 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testCloneObject()
     {
-        $cloneObject = clone $this->image;
+        $cloneObject = clone $this->_image;
         $this->assertType('object', $cloneObject, 'assert failed , value is not from type object');
 
-        $clone = clone $this->noexistImage;
-        $this->assertEquals($this->noexistImage, $clone,  'assert failed , the two variables are not equal');
+        $clone = clone $this->_brokenImage;
+        $this->assertEquals($this->_brokenImage, $clone,  'assert failed , the two variables are not equal');
         $this->assertType('object', $clone, 'assert failed, value is not from type object');
         unset($clone);
     }
@@ -230,8 +238,8 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testEquals()
     {
-        $cloneObject = clone $this->image;
-        $equals = $this->image->equals($cloneObject);
+        $cloneObject = clone $this->_image;
+        $equals = $this->_image->equals($cloneObject);
         $this->assertFalse($equals, 'assert "equals()" failed,  the objects are equal');
     }
 
@@ -244,13 +252,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testEqualsResoure()
     {
-        $resource = $this->image->getResource();
+        $resource = $this->_image->getResource();
         $this->assertType('resource', $resource, 'assert failed, value is not from type resource');
-        $equalsResource = $this->image->equalsResoure($resource);
+        $equalsResource = $this->_image->equalsResoure($resource);
         $this->assertTrue($equalsResource, 'assert "equalsResoure()" failed, invalid resource');
 
-        $resource = $this->emptyImage->getResource();
-        $equalsResource = $this->image->equalsResoure($resource);
+        $resource = $this->_emptyImage->getResource();
+        $equalsResource = $this->_image->equalsResoure($resource);
         $this->assertFalse($equalsResource, 'assert "equalsResoure()" failed , valid resource');
     }
 
@@ -263,10 +271,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetResource()
     {
-        $resource = $this->image->getResource();
+        $resource = $this->_image->getResource();
         $this->assertType('resource', $resource, 'assert failed, value is not from type resource');
 
-        $resource = $this->noexistImage->getResource();
+        $resource = $this->_brokenImage->getResource();
         $this->assertFalse($resource, 'assert failed, invalid resource');
     }
 
@@ -290,10 +298,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetWidth()
     {
-        $width = $this->image->getWidth();
+        $width = $this->_image->getWidth();
         $this->assertType('integer', $width, 'assert "getWidth()" failed, value is not from type integer');
 
-        $width = $this->noexistImage->getWidth();
+        $width = $this->_brokenImage->getWidth();
         $this->assertFalse($width, 'assert failed , image is broken');
     }
 
@@ -306,10 +314,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetHeight()
     {
-        $height = $this->image->getHeight();
+        $height = $this->_image->getHeight();
         $this->assertType('integer', $height, 'assert "getHeight()" failed, value is not from type integer');
 
-        $height = $this->noexistImage->getHeight();
+        $height = $this->_brokenImage->getHeight();
         $this->assertFalse($height, 'assert failed , image is broken');
     }
 
@@ -324,14 +332,14 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testDrawPoint()
     {
         $x = $y = 10;
-        $color = $this->image->black;
-        $drawPoint = $this->image->drawPoint($x, $y, $color);
+        $color = $this->_image->black;
+        $drawPoint = $this->_image->drawPoint($x, $y, $color);
         $this->assertTrue($drawPoint, 'assert "drawPoint()" failed, point is not set');
 
-        $drawPoint = $this->image->drawPoint($x, $y);
+        $drawPoint = $this->_image->drawPoint($x, $y);
         $this->assertTrue($drawPoint, 'assert "drawPoint()" failed, point is not set');
 
-        $drawPoint = $this->noexistImage->drawPoint($x, $y);
+        $drawPoint = $this->_brokenImage->drawPoint($x, $y);
         $this->assertFalse($drawPoint, 'assert "drawPoint()" failed , image is broken');
     }
 
@@ -344,13 +352,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testDrawLine()
     {
-        $drawLine = $this->image->drawLine(15, 15, 15, 80, $this->image->black);
+        $drawLine = $this->_image->drawLine(15, 15, 15, 80, $this->_image->black);
         $this->assertTrue($drawLine, 'assert "drawLine()" failed, line is not set');
 
-        $drawLine = $this->image->drawLine(15, 15, 15, 80);
+        $drawLine = $this->_image->drawLine(15, 15, 15, 80);
         $this->assertTrue($drawLine, 'assert "drawLine()" failed, line is not set');
 
-        $drawLine = $this->noexistImage->drawLine(15, 15, 15, 80, $this->image->black);
+        $drawLine = $this->_brokenImage->drawLine(15, 15, 15, 80, $this->_image->black);
         $this->assertFalse($drawLine, 'assert "drawLine()" failed , image is broken');
     }
 
@@ -363,13 +371,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testDrawString()
     {
-        $drawString = $this->noexistImage->drawString('Yana description', 50, 20);
+        $drawString = $this->_brokenImage->drawString('Yana description', 50, 20);
         $this->assertFalse($drawString, 'assert drawString() failed ,  image is broken');
 
-        $drawString = $this->image->drawString('Yana description', 50, 20, $this->image->getColor(0, 0, 255), 3, true);
+        $drawString = $this->_image->drawString('Yana description', 50, 20, $this->_image->getColor(0, 0, 255), 3, true);
         $this->assertTrue($drawString, 'assert "drawString()" failed, string is not set');
 
-        $drawString = $this->image->drawString('Yana description', null, null, $this->image->getColor(0, 0, 255), 3, false);
+        $drawString = $this->_image->drawString('Yana description', null, null, $this->_image->getColor(0, 0, 255), 3, false);
         $this->assertTrue($drawString, 'assert "drawString()" failed, string is not set');
     }
 
@@ -382,13 +390,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testDrawFormattedString()
     {
-        $drawFormattedString = $this->noexistImage->drawFormattedString('another description on the other site');
+        $drawFormattedString = $this->_brokenImage->drawFormattedString('another description on the other site');
         $this->assertFalse($drawFormattedString, 'assert "drawFormattedString()" failed, image is broken');
 
-        $drawFormattedString = $this->image->drawFormattedString('another description on the other site', 150, 80, $this->image->getColor(0, 0, 255), 'tahoma', 12, 15);
+        $drawFormattedString = $this->_image->drawFormattedString('another description on the other site', 150, 80, $this->_image->getColor(0, 0, 255), 'tahoma', 12, 15);
         $this->assertTrue($drawFormattedString, 'assert "drawFormattedString()" failed, formattedString is not set');
 
-        $drawFormattedString = $this->image->drawFormattedString('another description on the other site');
+        $drawFormattedString = $this->_image->drawFormattedString('another description on the other site');
         $this->assertTrue($drawFormattedString, 'assert "drawFormattedString()" failed, formattedString is not set');
     }
 
@@ -400,7 +408,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testDrawFormattedStringInvalidArgument()
     {
-        $this->image->drawFormattedString('test', 150, 80, $this->image->getColor(0, 0, 255), 'Not a font', 12, 15);
+        $this->_image->drawFormattedString('test', 150, 80, $this->_image->getColor(0, 0, 255), 'Not a font', 12, 15);
     }
 
     /**
@@ -412,13 +420,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testDrawEllipse()
     {
-        $drawEllipse = $this->noexistImage->drawEllipse(280, 200, 50);
+        $drawEllipse = $this->_brokenImage->drawEllipse(280, 200, 50);
         $this->assertFalse($drawEllipse, 'assert "drawEllipse()" failed , image is broken');
 
-        $drawEllipse = $this->image->drawEllipse(280, 200, 50, null, $this->image->getColor(255, 0, 0), $this->image->getColor(255, 0, 0, 0));
+        $drawEllipse = $this->_image->drawEllipse(280, 200, 50, null, $this->_image->getColor(255, 0, 0), $this->_image->getColor(255, 0, 0, 0));
         $this->assertTrue($drawEllipse, 'assert "drawEllipse()" failed, ellipse is not set');
 
-        $drawEllipse = $this->image->drawEllipse(280, 200, 50);
+        $drawEllipse = $this->_image->drawEllipse(280, 200, 50);
         $this->assertTrue($drawEllipse, 'assert "drawEllipse()" failed, ellipse is not set');
     }
 
@@ -431,13 +439,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testDrawRectangle()
     {
-        $drawRectangle = $this->noexistImage->drawRectangle(280, 200, 50);
+        $drawRectangle = $this->_brokenImage->drawRectangle(280, 200, 50);
         $this->assertFalse($drawRectangle, 'assert "drawRectangle()" failed,image is broken');
 
-        $drawRectangle = $this->image->drawRectangle(10, 10, 30, null, $this->image->getColor(255, 0, 160));
+        $drawRectangle = $this->_image->drawRectangle(10, 10, 30, null, $this->_image->getColor(255, 0, 160));
         $this->assertTrue($drawRectangle, 'assert "drawRectangle()" failed, rectangle is not set');
 
-        $drawRectangle = $this->image->drawRectangle(10, 10, 30);
+        $drawRectangle = $this->_image->drawRectangle(10, 10, 30);
         $this->assertTrue($drawRectangle, 'assert "drawRectangle()" failed, rectangle is not set');
     }
 
@@ -455,18 +463,18 @@ class ImageTest extends \PHPUnit_Framework_TestCase
                     1 => array( 40, 20 ),
                     2 => array( 0, 20  )
                 );
-        $drawPolygon = $this->noexistImage->drawPolygon($points, 53, 80, $this->image->black, $this->image->black);
+        $drawPolygon = $this->_brokenImage->drawPolygon($points, 53, 80, $this->_image->black, $this->_image->black);
         $this->assertFalse($drawPolygon, 'assert "drawPolygon()" failed , image is broken');
 
-        $drawPolygon = $this->image->drawPolygon($points, 53, 80, $this->image->getColor(0, 255, 0), $this->image->getColor(50, 220, 50));
+        $drawPolygon = $this->_image->drawPolygon($points, 53, 80, $this->_image->getColor(0, 255, 0), $this->_image->getColor(50, 220, 50));
         $this->assertTrue($drawPolygon, 'assert "drawPolygon()" failed, polygon is not set');
 
         // try the same without set color
-        $drawPolygon = $this->image->drawPolygon($points, 53, 80);
+        $drawPolygon = $this->_image->drawPolygon($points, 53, 80);
         $this->assertTrue($drawPolygon, 'assert "drawPolygon()" failed, polygon is not set');
 
         $points = array();
-        $drawPolygon = $this->image->drawPolygon($points, 530000, 80, $this->image->black, $this->image->blue);
+        $drawPolygon = $this->_image->drawPolygon($points, 530000, 80, $this->_image->black, $this->_image->blue);
         $this->assertFalse($drawPolygon, 'Cannot draw polygon outside of canvas');
     }
 
@@ -479,10 +487,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testFill()
     {
-        $fill = $this->noexistImage->fill($this->image->blue, 10, 10, $this->image->black);
+        $fill = $this->_brokenImage->fill($this->_image->blue, 10, 10, $this->_image->black);
         $this->assertFalse($fill, 'assert "fill()" failed, image is broken');
 
-        $fill = $this->image->fill($this->image->getColor(0, 255, 0), 10, 10, $this->image->getColor(255, 0, 0));
+        $fill = $this->_image->fill($this->_image->getColor(0, 255, 0), 10, 10, $this->_image->getColor(255, 0, 0));
         $this->assertTrue($fill, 'assert "fill()" failed, fill with a color is not set');
     }
 
@@ -495,15 +503,15 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testEnableAlpha()
     {
-        $enableAlpha = $this->noexistImage->enableAlpha(true, null);
+        $enableAlpha = $this->_brokenImage->enableAlpha(true, null);
         $this->assertFalse($enableAlpha, 'assert "enableAlpha()" failed, image is broken');
 
         // enabled
-        $enableAlpha = $this->image->enableAlpha(true, null);
+        $enableAlpha = $this->_image->enableAlpha(true, null);
         $this->assertTrue($enableAlpha, 'assert "enableAlpha()" failed, enableAlpha is not set');
 
         // disabled
-        $disableAlpha = $this->image->enableAlpha(false, null);
+        $disableAlpha = $this->_image->enableAlpha(false, null);
         $this->assertTrue($disableAlpha, 'assert "enableAlpha()" failed, enableAlpha is set');
     }
 
@@ -516,13 +524,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testEnableAntialias()
     {
-        $enableAntialias = $this->noexistImage->enableAntialias();
+        $enableAntialias = $this->_brokenImage->enableAntialias();
         $this->assertFalse($enableAntialias, 'assert "enableAntialias()" failed, image is broken');
 
-        $enableAntialias = $this->image->enableAntialias();
+        $enableAntialias = $this->_image->enableAntialias();
         $this->assertTrue($enableAntialias, 'assert "enableAntialias()" failed, enableAntialias is not set');
 
-        $disableAntialias = $this->image->enableAntialias(false);
+        $disableAntialias = $this->_image->enableAntialias(false);
         $this->assertTrue($disableAntialias, 'assert "enableAntialias()" failed, enableAntialias with param "false" is not set');
     }
 
@@ -535,7 +543,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetFontWidth()
     {
-        $fontWidth = $this->image->getFontWidth(3);
+        $fontWidth = $this->_image->getFontWidth(3);
         $this->assertType('integer', $fontWidth, 'assert failed - "$fontWidth" is not from type integer');
     }
 
@@ -548,7 +556,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetFontHeight()
     {
-        $fontHeight = $this->image->getFontHeight(3);
+        $fontHeight = $this->_image->getFontHeight(3);
         $this->assertType('integer', $fontHeight, 'assert failed, value is not from type integer');
     }
 
@@ -562,12 +570,12 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testGetColorValues()
     {
         // broken
-        $isBroken = $this->invalidImage->getColorValues($this->image->black);
+        $isBroken = $this->_invalidImage->getColorValues($this->_image->black);
         $this->assertFalse($isBroken, 'assert "getColorValues()" failed, image is broken');
 
-        $color = $this->image->getColor(153, 50, 204);
+        $color = $this->_image->getColor(153, 50, 204);
         $this->assertType('integer', $color, 'assert "getColor()" failed, value is not from type integer');
-        $colorValues = $this->image->getColorValues($color);
+        $colorValues = $this->_image->getColorValues($color);
         $this->assertType('array', $colorValues, 'assert "getColorValues()" failed, value is not from type array');
     }
 
@@ -579,7 +587,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetColorValuesInvalidArgument()
     {
-        $this->image->getColorValues(-1);
+        $this->_image->getColorValues(-1);
     }
 
     /**
@@ -592,22 +600,22 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testGetColorAt()
     {
         // broken
-        $isBroken = $this->invalidImage->getColorAt(80, 80);
+        $isBroken = $this->_invalidImage->getColorAt(80, 80);
         $this->assertFalse($isBroken, 'assert "getColorAt()" failed, image is broken');
 
-        $colorAt = $this->image->getColorAt(80, 80);
+        $colorAt = $this->_image->getColorAt(80, 80);
         $this->assertType('integer', $colorAt, 'assert "getColorAt()" failed, value is not from type integer');
 
-        $colorAt = $this->image->getColorAt(-80, 80);
+        $colorAt = $this->_image->getColorAt(-80, 80);
         $this->assertFalse($colorAt, 'assert failed - the first argument must be > than 0 ');
 
-        $colorAt = $this->image->getColorAt(80, -80);
+        $colorAt = $this->_image->getColorAt(80, -80);
         $this->assertFalse($colorAt, 'assert failed - the second argument must be > than 0 ');
 
-        $colorAt = $this->image->getColorAt(-80, -80);
+        $colorAt = $this->_image->getColorAt(-80, -80);
         $this->assertFalse($colorAt, 'assert failed - both arguments must be > than 0 ');
 
-        $colorAt = $this->image->getColorAt(950, 650);
+        $colorAt = $this->_image->getColorAt(950, 650);
         $this->assertFalse($colorAt, 'assert failed - one or both values are bigger than the image');
     }
     /**
@@ -619,7 +627,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSize()
     {
-        $size = $this->image->getSize(CWD . $this->imageSource);
+        $size = $this->_image->getSize(CWD . $this->_imageSource);
         $this->assertType('array', $size , 'assert "getSize()" failed, value is not from type array');
     }
 
@@ -631,7 +639,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSizeInvalidArgument()
     {
-        $size = $this->image->getSize($this->image->black);
+        $size = $this->_image->getSize($this->_image->black);
         $this->assertFalse($size, 'assert failed, first argument must be a string');
     }
 
@@ -644,7 +652,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetColor()
     {
-        $color = $this->image->getColor(153, 50, 204);
+        $color = $this->_image->getColor(153, 50, 204);
         $this->assertType('integer', $color, 'assert "getColor()" failed, value is not from type integer');
     }
 
@@ -658,13 +666,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testGetLineWidth()
     {
         // broken
-        $isBroken = $this->invalidImage->getLineWidth();
+        $isBroken = $this->_invalidImage->getLineWidth();
         $this->assertFalse($isBroken, 'assert "getLineWidth()" failed, image is broken');
 
-        $setLine = $this->image->setLineWidth(100);
+        $setLine = $this->_image->setLineWidth(100);
         $this->assertTrue($setLine, 'assert "setLineWidth()" failed');
 
-        $lineWidth = $this->image->getLineWidth();
+        $lineWidth = $this->_image->getLineWidth();
         $this->assertType('integer', $lineWidth, 'assert "getLineWidth()" failed, value is not from type integer');
     }
 
@@ -678,14 +686,14 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testSetLineWidth()
     {
         // broken
-        $isBroken = $this->invalidImage->setLineWidth(80);
+        $isBroken = $this->_invalidImage->setLineWidth(80);
         $this->assertFalse($isBroken, 'assert "setLineWidth()" failed, image is broken');
 
-        $setLineWidth = $this->image->setLineWidth(80);
+        $setLineWidth = $this->_image->setLineWidth(80);
         $this->assertTrue($setLineWidth, 'assert "setLineWidth()" failed, LineWidth is not set');
 
         // param value = 0
-        $setLineWidth = $this->image->setLineWidth(0);
+        $setLineWidth = $this->_image->setLineWidth(0);
         $this->assertFalse($setLineWidth, 'assert "SetLineWidth()" failed, the first argument must be in excess of 0');
     }
 
@@ -699,13 +707,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testSetLineStyle()
     {
         // broken
-        $isBroken = $this->invalidImage->setLineStyle(255, 180);
+        $isBroken = $this->_invalidImage->setLineStyle(255, 180);
         $this->assertFalse($isBroken, 'assert "setLineStyle()" failed, image is broken');
 
-        $withParam = $this->image->setLineStyle(255, 180);
+        $withParam = $this->_image->setLineStyle(255, 180);
         $this->assertTrue($withParam, 'assert "setLineStyle()" failed, lineStyle is not set');
 
-        $setLineStyle = $this->image->setLineStyle();
+        $setLineStyle = $this->_image->setLineStyle();
         $this->assertTrue($setLineStyle, 'assert "setLineStyle()" failed, lineStyle is not set');
     }
 
@@ -717,32 +725,32 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testReplaceIndexColor()
     {
         // broken
-        $isBroken = $this->invalidImage->replaceIndexColor(0, $this->image->black);
+        $isBroken = $this->_invalidImage->replaceIndexColor(0, $this->_image->black);
         $this->assertFalse($isBroken, 'assert "replaceIndexColor()" failed, image is broken');
 
         // expecting false
-        $replaceIndexColor = $this->image->replaceIndexColor(2, array('red'=>0,'green'=>255,'blue'=>100));
+        $replaceIndexColor = $this->_image->replaceIndexColor(2, array('red'=>0,'green'=>255,'blue'=>100));
         $this->assertFalse($replaceIndexColor, 'Should not be able to replace palette color on true-color images.');
 
-        $this->image->reduceColorDepth(255);
+        $this->_image->reduceColorDepth(255);
 
-        $replaceIndexColor = $this->image->replaceIndexColor(2, array('red'=>0,'green'=>255,'blue'=>100));
+        $replaceIndexColor = $this->_image->replaceIndexColor(2, array('red'=>0,'green'=>255,'blue'=>100));
         $this->assertTrue($replaceIndexColor, 'assert "replaceIndexColor()" failed');
 
         // expecting false
-        $replaceIndexColor = $this->image->replaceIndexColor(2, array('red'=>321,'green'=>255,'blue'=>100));
+        $replaceIndexColor = $this->_image->replaceIndexColor(2, array('red'=>321,'green'=>255,'blue'=>100));
         $this->assertFalse($replaceIndexColor, 'assert "replaceIndexColor()" failed, the integer value of red need to be beetwen 0 and 255');
 
         // expecting false
-        $replaceIndexColor = $this->image->replaceIndexColor(2, array('red'=>0,'green'=>280,'blue'=>100));
+        $replaceIndexColor = $this->_image->replaceIndexColor(2, array('red'=>0,'green'=>280,'blue'=>100));
         $this->assertFalse($replaceIndexColor, 'assert "replaceIndexColor()" failed, the integer value of green need to be beetwen 0 and 255');
 
         // expecting false
-        $replaceIndexColor = $this->image->replaceIndexColor(2, array('red'=>0,'green'=>255,'blue'=>600));
+        $replaceIndexColor = $this->_image->replaceIndexColor(2, array('red'=>0,'green'=>255,'blue'=>600));
         $this->assertFalse($replaceIndexColor, 'assert "replaceIndexColor()" failed, the integer value of blue need to be beetwen 0 and 255');
 
         // expecting false
-        $replaceIndexColor = $this->image->replaceIndexColor(2, array('red'=>-20,'green'=>320,'blue'=>600));
+        $replaceIndexColor = $this->_image->replaceIndexColor(2, array('red'=>-20,'green'=>320,'blue'=>600));
         $this->assertFalse($replaceIndexColor, 'assert "replaceIndexColor()" failed, the integer values of "RGB" need to be beetwen 0 and 255');
 
     }
@@ -756,9 +764,9 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testReplaceIndexColorInvalidArgument()
     {
         // expecting false
-        $this->image->reduceColorDepth(255);
+        $this->_image->reduceColorDepth(255);
 
-        $replaceIndexColor = $this->image->replaceIndexColor(-1, 0);
+        $replaceIndexColor = $this->_image->replaceIndexColor(-1, 0);
         $this->assertFalse($replaceIndexColor, 'assert failed, first argument must be a valid color');
     }
 
@@ -771,9 +779,9 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testReplaceIndexColorInvalidArgument2()
     {
         // expecting false
-        $this->image->reduceColorDepth(255);
+        $this->_image->reduceColorDepth(255);
 
-        $replaceIndexColor = $this->image->replaceIndexColor(0, -1);
+        $replaceIndexColor = $this->_image->replaceIndexColor(0, -1);
         $this->assertFalse($replaceIndexColor, 'assert failed, second argument must be a valid color');
     }
 
@@ -785,10 +793,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testReplaceColor()
     {
         // broken
-        $isBroken = $this->invalidImage->replaceColor(1, $this->image->yellow);
+        $isBroken = $this->_invalidImage->replaceColor(1, $this->_image->yellow);
         $this->assertFalse($isBroken, 'assert "replaceColor()" failed, image is broken');
 
-        $replaceColor = $this->image->replaceColor(1, $this->image->yellow);
+        $replaceColor = $this->_image->replaceColor(1, $this->_image->yellow);
         $this->assertTrue($replaceColor, 'assert "replaceColor()" failed');
     }
 
@@ -802,15 +810,15 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testSetBrush()
     {
         // broken
-        $isBroken = $this->invalidImage->setBrush('small star');
+        $isBroken = $this->_invalidImage->setBrush('small star');
         $this->assertFalse($isBroken, 'assert "setBrush()" failed , image is broken');
 
-        $setBrush = $this->image->setBrush('small star');
+        $setBrush = $this->_image->setBrush('small star');
         // expected false
         $this->assertFalse($setBrush, 'assert "setBrush()" failed');
 
         // new brush created
-        $setBrush = $this->image->setBrush(CWD . 'resources/brush/small-star.png');
+        $setBrush = $this->_image->setBrush(CWD . 'resources/brush/small-star.png');
         $this->assertTrue($setBrush, 'assert "setBrush()" failed, brush is not set');
     }
 
@@ -823,14 +831,14 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetBackgroundColor()
     {
-        $color = $this->image->getColor(153, 50, 204);
-        $setBackgroundColor = $this->image->setBackgroundColor($color);
+        $color = $this->_image->getColor(153, 50, 204);
+        $setBackgroundColor = $this->_image->setBackgroundColor($color);
         $this->assertTrue($setBackgroundColor, 'backgroundcolor is not set to $color');
 
-        $setBackgroundColor = $this->image->setBackgroundColor();
+        $setBackgroundColor = $this->_image->setBackgroundColor();
         $this->assertTrue($setBackgroundColor, 'backgroundcolor is not reset');
 
-        $setBackgroundColor = $this->image->setBackgroundColor($color, false);
+        $setBackgroundColor = $this->_image->setBackgroundColor($color, false);
         $this->assertTrue($setBackgroundColor, 'backgroundcolor is not replaced with $color');
     }
 
@@ -842,7 +850,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetBackgroundColorInvalidArgument()
     {
-        $setBackgroundColor = $this->image->setBackgroundColor(-1, true);
+        $setBackgroundColor = $this->_image->setBackgroundColor(-1, true);
         $this->assertFalse($setBackgroundColor, 'First argument must be a valid color.');
     }
 
@@ -856,14 +864,14 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testGetBackgroundColor()
     {
         // broken
-        $isBroken = $this->invalidImage->getBackgroundColor();
+        $isBroken = $this->_invalidImage->getBackgroundColor();
         $this->assertFalse($isBroken, 'assert "getBackgroundColor()" failed, image is broken');
 
         // set color
-        $color = $this->image->getColor(153, 50, 204);
-        $setBgColor = $this->image->setBackgroundColor($color);
+        $color = $this->_image->getColor(153, 50, 204);
+        $setBgColor = $this->_image->setBackgroundColor($color);
 
-        $backgroundColor = $this->image->getBackgroundColor();
+        $backgroundColor = $this->_image->getBackgroundColor();
         $this->assertType('integer', $backgroundColor, 'assert "getBackgroundColor()"failed, value is not from type integer');
     }
 
@@ -877,10 +885,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testIsInterlaced()
     {
         // broken
-        $isBroken = $this->invalidImage->isInterlaced();
+        $isBroken = $this->_invalidImage->isInterlaced();
         $this->assertFalse($isBroken, 'assert "isInterlaced()" failed, image is broken');
 
-        $interlaced = $this->image->isInterlaced();
+        $interlaced = $this->_image->isInterlaced();
         $this->assertFalse($interlaced, 'assert "isInterlaced" failed,  assert is true');
     }
 
@@ -894,13 +902,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testEnableInterlace()
     {
         // broken
-        $isBroken = $this->invalidImage->enableInterlace(true);
+        $isBroken = $this->_invalidImage->enableInterlace(true);
         $this->assertFalse($isBroken, 'assert "enableInterlace()" failed, image is broken');
 
-        $enableInterlace = $this->image->enableInterlace(true);
+        $enableInterlace = $this->_image->enableInterlace(true);
         $this->assertTrue($enableInterlace, 'assert "enableInterlace()" failed, assert is false');
 
-        $disableInterlace = $this->image->enableInterlace(false);
+        $disableInterlace = $this->_image->enableInterlace(false);
         $this->assertFalse($disableInterlace, 'assert "enableInterlace()" failed, assert is true');
     }
 
@@ -914,10 +922,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testHasAlpha()
     {
         // broken
-        $isBroken = $this->invalidImage->hasAlpha();
+        $isBroken = $this->_invalidImage->hasAlpha();
         $this->assertFalse($isBroken, 'assert "hasAlpha()" failed, image is broken');
 
-        $hasAlpha = $this->image->hasAlpha();
+        $hasAlpha = $this->_image->hasAlpha();
         // expected false for non exist alpha
         $this->assertFalse($hasAlpha, 'assert "hasAlpha()" failed, assert is true');
     }
@@ -932,16 +940,16 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testSetGamma()
     {
         // broken
-        $isBroken = $this->invalidImage->setGamma(3.0);
+        $isBroken = $this->_invalidImage->setGamma(3.0);
         $this->assertFalse($isBroken, 'assert "setGamma()" failed, image is broken');
 
-        $setGamma = $this->image->setGamma(3.0);
+        $setGamma = $this->_image->setGamma(3.0);
         $this->assertTrue($setGamma, 'assert "setGamma()" failed, assert is false');
 
-        $setGamma = $this->image->setGamma(11.0);
+        $setGamma = $this->_image->setGamma(11.0);
         $this->assertFalse($setGamma, 'The argument needs to be an integer betwen 0.1 and 10.0');
 
-        $setGamma = $this->image->setGamma(-1.0);
+        $setGamma = $this->_image->setGamma(-1.0);
         $this->assertFalse($setGamma, 'The argument needs to be an integer betwen 0.1 and 10.0');
     }
 
@@ -955,10 +963,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testRotate()
     {
         // broken
-        $isBroken = $this->invalidImage->rotate(12.54);
+        $isBroken = $this->_invalidImage->rotate(12.54);
         $this->assertFalse($isBroken, 'assert "rotate()" failed, image is broken');
 
-        $rotate = $this->image->rotate(12.54);
+        $rotate = $this->_image->rotate(12.54);
         $this->assertTrue($rotate, 'assert "rotate()" failed, assert is false');
     }
 
@@ -970,7 +978,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testRotateInvalidArgument()
     {
-        $rotate = $this->image->rotate(MAX_INT);
+        $rotate = $this->_image->rotate(MAX_INT);
         $this->assertFalse($rotate, 'assert failed, first argument must have a float value');
     }
 
@@ -984,21 +992,21 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testResizeCanvas()
     {
         // broken
-        $isBroken = $this->invalidImage->resizeCanvas(100, 100, 20, 20);
+        $isBroken = $this->_invalidImage->resizeCanvas(100, 100, 20, 20);
         $this->assertFalse($isBroken, 'assert "resizeCanvas()" failed , image is broken');
 
-        $resizeCanvas = $this->image->resizeCanvas();
+        $resizeCanvas = $this->_image->resizeCanvas();
         $this->assertTrue($resizeCanvas, 'assert "resizeCanvas()" failed, assert is false');
 
-        $resizeCanvas = $this->image->resizeCanvas(100, 100, 20, 20);
+        $resizeCanvas = $this->_image->resizeCanvas(100, 100, 20, 20);
         $this->assertTrue($resizeCanvas, 'assert "resizeCanvas()" failed, assert is false');
 
         // expected true negativ values will be converted to positive
-        $firstResizeCanvas = $this->image->resizeCanvas(100, 100, -5, -10, array('red' =>230, 'green' => 120, 'blue' => 98));
+        $firstResizeCanvas = $this->_image->resizeCanvas(100, 100, -5, -10, array('red' =>230, 'green' => 120, 'blue' => 98));
         $this->assertTrue($firstResizeCanvas, 'assert "resizeCanvas()" failed, assert is false');
 
         // expected true - set the last param as an integer
-        $secondResizeCanvas = $this->image->resizeCanvas(100, 100, -5, -10, $this->image->blue);
+        $secondResizeCanvas = $this->_image->resizeCanvas(100, 100, -5, -10, $this->_image->blue);
         $this->assertTrue($secondResizeCanvas, 'assert "resizeCanvas()" failed, assert is false');
     }
 
@@ -1010,7 +1018,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testResizeCanvasInvalidArgument()
     {
-        $resizeCanvas = $this->image->resizeCanvas(0);
+        $resizeCanvas = $this->_image->resizeCanvas(0);
         $this->assertFalse($resizeCanvas, 'First argument must be an integer value greater 0.');
     }
 
@@ -1022,7 +1030,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testResizeCanvasInvalidArgument2()
     {
-        $resizeCanvas = $this->image->resizeCanvas(1, 0);
+        $resizeCanvas = $this->_image->resizeCanvas(1, 0);
         $this->assertFalse($resizeCanvas, 'Second argument must be an integer value greater 0.');
     }
 
@@ -1034,7 +1042,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testResizeCanvasInvalidArgument3()
     {
-        $resizeCanvas = $this->image->resizeCanvas(1, 1, 2);
+        $resizeCanvas = $this->_image->resizeCanvas(1, 1, 2);
         $this->assertFalse($resizeCanvas, 'Left padding may not exceed canvas size.');
     }
 
@@ -1046,7 +1054,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testResizeCanvasInvalidArgument4()
     {
-        $resizeCanvas = $this->image->resizeCanvas(1, 1, 0, 2);
+        $resizeCanvas = $this->_image->resizeCanvas(1, 1, 0, 2);
         $this->assertFalse($resizeCanvas, 'Top padding may not exceed canvas size.');
     }
 
@@ -1058,7 +1066,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testResizeCanvasInvalidArgument5()
     {
-        $resizeCanvas = $this->image->resizeCanvas(100, 100, 20, 20, array('red' =>230, 'green' => 120));
+        $resizeCanvas = $this->_image->resizeCanvas(100, 100, 20, 20, array('red' =>230, 'green' => 120));
         $this->assertFalse($resizeCanvas, 'Fifth argument must be an array with values red, green, blue.');
     }
 
@@ -1071,7 +1079,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testResizeImage()
     {
-        $resizeImage = $this->image->resizeImage(150, 150);
+        $resizeImage = $this->_image->resizeImage(150, 150);
         $this->assertTrue($resizeImage, 'assert "resizeImage()" failed, assert is false');
     }
 
@@ -1085,22 +1093,22 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testResize()
     {
         // broken
-        $isBroken = $this->invalidImage->resize(100, 50);
+        $isBroken = $this->_invalidImage->resize(100, 50);
         $this->assertFalse($isBroken, 'assert "resize()" failed, image is broken');
 
-        $resize = $this->image->resize(150, 50);
+        $resize = $this->_image->resize(150, 50);
         $this->assertTrue($resize, 'assert "resize()" failed, assert is false');
 
         //expected false
-        $resize = $this->image->resize();
+        $resize = $this->_image->resize();
         $this->assertFalse($resize, 'assert "resize()" failed, both values cant be NULL');
 
         //try with the first argument
-        $resize = $this->image->resize(150);
+        $resize = $this->_image->resize(150);
         $this->assertTrue($resize, 'assert "resize()" failed, assert is false');
 
         //try with the second argument
-        $resize = $this->image->resize(null, 50);
+        $resize = $this->_image->resize(null, 50);
         $this->assertTrue($resize, 'assert "resize()" failed, assert is false');
     }
 
@@ -1114,10 +1122,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testGetTransparency()
     {
         // broken
-        $isBroken = $this->invalidImage->getTransparency();
+        $isBroken = $this->_invalidImage->getTransparency();
         $this->assertFalse($isBroken, 'assert "getTransparency()" failed, image is broken');
 
-        $transparency = $this->image->getTransparency();
+        $transparency = $this->_image->getTransparency();
         $this->assertType('integer', $transparency, 'assert "getTransparency()" failed, value is from type integer');
     }
 
@@ -1131,16 +1139,16 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testSetTransparency()
     {
         // broken
-        $isBroken = $this->invalidImage->setTransparency($this->image->black);
+        $isBroken = $this->_invalidImage->setTransparency($this->_image->black);
         $this->assertFalse($isBroken, 'assert "setTransparency()" failed, image is broken');
 
-        $color = $this->image->getColor(0, 205, 0);
+        $color = $this->_image->getColor(0, 205, 0);
         $this->assertType('integer', $color, 'assert "getColor()" failed, value is not from type integer');
-        $setTransparency = $this->image->setTransparency($color);
+        $setTransparency = $this->_image->setTransparency($color);
         $this->assertTrue($setTransparency, 'assert "setTransparency()" failed, assert is false');
 
         // set beackgroundcolor when no param given
-        $setTransparency = $this->image->setTransparency();
+        $setTransparency = $this->_image->setTransparency();
         $this->assertTrue($setTransparency, 'assert "setTransparency()" failed, assert is false');
     }
 
@@ -1154,10 +1162,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testGetPaletteSize()
     {
         // broken
-        $isBroken = $this->invalidImage->getPaletteSize();
+        $isBroken = $this->_invalidImage->getPaletteSize();
         $this->assertFalse($isBroken, 'assert "getPaletteSize()" failed, image is broken');
 
-        $paletteSize = $this->image->getPaletteSize();
+        $paletteSize = $this->_image->getPaletteSize();
         $this->assertType('integer', $paletteSize, 'assert "getPaletteSize()" failed, value is not from type integer');
     }
 
@@ -1171,16 +1179,16 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testReduceColorDepth()
     {
         // broken
-        $isBroken = $this->invalidImage->reduceColorDepth(100);
+        $isBroken = $this->_invalidImage->reduceColorDepth(100);
         $this->assertFalse($isBroken, 'assert "reduceColorDepth()" failed, image is broken');
 
-        $reduceColorDepth = $this->image->reduceColorDepth(100);
+        $reduceColorDepth = $this->_image->reduceColorDepth(100);
         $this->assertTrue($reduceColorDepth, 'assert "reduceColorDepth()" failed, assert is false');
 
-        $reduceColorDepth = $this->image->reduceColorDepth(257);
+        $reduceColorDepth = $this->_image->reduceColorDepth(257);
         $this->assertFalse($reduceColorDepth, 'First argument must be an integer betwen 2-256.');
 
-        $reduceColorDepth = $this->image->reduceColorDepth(1 ,true);
+        $reduceColorDepth = $this->_image->reduceColorDepth(1 ,true);
         $this->assertFalse($reduceColorDepth, 'First argument must be a positive integer.');
     }
 
@@ -1194,10 +1202,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testCopyRegion()
     {
         // broken
-        $isBroken = $this->invalidImage->copyRegion($this->dummyImage, 30, 30, 120, 120, 30, 30);
+        $isBroken = $this->_invalidImage->copyRegion($this->_dummyImage, 30, 30, 120, 120, 30, 30);
         $this->assertFalse($isBroken, 'assert "copyRegion()" failed, image is broken');
 
-       $copyRegion = $this->image->copyRegion($this->dummyImage, 30, 30, 120, 120, 30, 30);
+       $copyRegion = $this->_image->copyRegion($this->_dummyImage, 30, 30, 120, 120, 30, 30);
        $this->assertTrue($copyRegion, 'assert "copyRegion()" failed, assert is false');
     }
 
@@ -1211,10 +1219,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testToGrayscale()
     {
         // broken
-        $isBroken = $this->invalidImage->toGrayscale();
+        $isBroken = $this->_invalidImage->toGrayscale();
         $this->assertFalse($isBroken, 'assert "toGrayscale()" failed, image is broken');
 
-        $toGrayscale = $this->image->toGrayscale();
+        $toGrayscale = $this->_image->toGrayscale();
         $this->assertTrue($toGrayscale, 'assert "toGrayscale()" failed, assert is false');
     }
 
@@ -1227,7 +1235,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testToGreyscale()
     {
-        $toGreyscale = $this->image->toGreyscale();
+        $toGreyscale = $this->_image->toGreyscale();
         $this->assertTrue($toGreyscale, 'assert "toGreyscale()" failed, assert is false');
     }
 
@@ -1241,10 +1249,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testMonochromatic()
     {
         // broken
-        $isBroken = $this->invalidImage->monochromatic(155, 48, 255);
+        $isBroken = $this->_invalidImage->monochromatic(155, 48, 255);
         $this->assertFalse($isBroken, 'assert "monochromatic()" failed, image is broken');
 
-        $monochromatic = $this->image->monochromatic(155, 48, 255);
+        $monochromatic = $this->_image->monochromatic(155, 48, 255);
         $this->assertTrue($monochromatic, 'assert "monochromatic()" falied, assert is false');
     }
 
@@ -1256,7 +1264,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testMonochromaticInvalidArgument()
     {
-        $this->image->monochromatic(500, 48, 255);
+        $this->_image->monochromatic(500, 48, 255);
     }
 
     /**
@@ -1267,7 +1275,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testMonochromaticInvalidArgument1()
     {
-        $this->image->monochromatic(155, -25, 255);
+        $this->_image->monochromatic(155, -25, 255);
     }
 
     /**
@@ -1280,13 +1288,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testBrightness()
     {
         // broken
-        $isBroken = $this->invalidImage->brightness(0.4);
+        $isBroken = $this->_invalidImage->brightness(0.4);
         $this->assertFalse($isBroken, 'assert "brightness()" failed, image is broken');
 
-        $brightness = $this->image->brightness(0.4);
+        $brightness = $this->_image->brightness(0.4);
         $this->assertTrue($brightness, 'assert "brightness()" failed, assert is false');
 
-        $brightness = $this->image->brightness(0.0);
+        $brightness = $this->_image->brightness(0.0);
         $this->assertTrue($brightness, 'assert "brightness()" failed, assert is false');
     }
 
@@ -1298,7 +1306,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testBrightnessInvalidArgument()
     {
-        $this->image->brightness(-1);
+        $this->_image->brightness(-1);
     }
 
     /**
@@ -1309,7 +1317,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testBrightnessInvalidArgument1()
     {
-        $this->image->brightness(5);
+        $this->_image->brightness(5);
     }
 
 
@@ -1323,13 +1331,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testContrast()
     {
         // broken
-        $isBroken = $this->invalidImage->contrast(0.4);
+        $isBroken = $this->_invalidImage->contrast(0.4);
         $this->assertFalse($isBroken, 'assert "contrast()" failed, image is broken');
 
-        $contrast = $this->image->contrast(0.4);
+        $contrast = $this->_image->contrast(0.4);
         $this->assertTrue($contrast, 'assert "contrast()" failed, assert is false');
 
-        $contrast = $this->image->contrast(0.0);
+        $contrast = $this->_image->contrast(0.0);
         $this->assertTrue($contrast, 'assert "contrast()" failed, assert is false');
     }
 
@@ -1341,7 +1349,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testContrastInvalidArgument()
     {
-        $this->image->contrast(-3);
+        $this->_image->contrast(-3);
     }
 
     /**
@@ -1352,7 +1360,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testContrastInvalidArgument1()
     {
-        $this->image->contrast(2);
+        $this->_image->contrast(2);
     }
 
 
@@ -1366,10 +1374,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testNegate()
     {
         // broken
-        $isBroken = $this->invalidImage->negate();
+        $isBroken = $this->_invalidImage->negate();
         $this->assertFalse($isBroken, 'assert "negate()" failed, image is broken');
 
-        $negate = $this->image->negate();
+        $negate = $this->_image->negate();
         $this->assertTrue($negate, 'assert "negate()" failed, assert is false');
     }
 
@@ -1381,23 +1389,23 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testApplyFilter()
     {
         // broken
-        $isBroken = $this->invalidImage->applyFilter(IMG_FILTER_NEGATE);
+        $isBroken = $this->_invalidImage->applyFilter(IMG_FILTER_NEGATE);
         $this->assertFalse($isBroken, 'assert "applyFilter()" failed, image is broken');
 
         // set filter with no args
-        $filter = $this->image->applyFilter(IMG_FILTER_NEGATE);
+        $filter = $this->_image->applyFilter(IMG_FILTER_NEGATE);
         $this->assertTrue($filter, 'assert "applyFilter()" failed, filter is not set');
 
         // set filter with 1 arg
-        $filter = $this->image->applyFilter(IMG_FILTER_SMOOTH, 0.5);
+        $filter = $this->_image->applyFilter(IMG_FILTER_SMOOTH, 0.5);
         $this->assertTrue($filter, 'assert "applyFilter()" failed, filter is not set');
 
         // set filter with 3 args
-        $filter = $this->image->applyFilter(IMG_FILTER_COLORIZE, 100, 100, 100);
+        $filter = $this->_image->applyFilter(IMG_FILTER_COLORIZE, 100, 100, 100);
         $this->assertTrue($filter, 'assert "applyFilter()" failed, filter is not set');
 
         // set filter with 4 args
-        $filter = $this->image->applyFilter(IMG_FILTER_COLORIZE, 100, 100, 100, 100);
+        $filter = $this->_image->applyFilter(IMG_FILTER_COLORIZE, 100, 100, 100, 100);
         $this->assertTrue($filter, 'assert "applyFilter()" failed, filter is not set');
     }
 
@@ -1411,10 +1419,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testColorize()
     {
         // broken
-        $isBroken = $this->invalidImage->colorize(255, 50, 150);
+        $isBroken = $this->_invalidImage->colorize(255, 50, 150);
         $this->assertFalse($isBroken, 'assert "colorize()" failed, image is broken');
 
-        $colorize = $this->image->colorize(255, 50, 150);
+        $colorize = $this->_image->colorize(255, 50, 150);
         $this->assertTrue($colorize, 'assert "colorize()" failed, assert is false');
     }
 
@@ -1426,7 +1434,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testColorizeInvalidArgument()
     {
-        $this->image->colorize(256, 50, 150);
+        $this->_image->colorize(256, 50, 150);
     }
 
     /**
@@ -1439,10 +1447,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testMultiply()
     {
         // broken
-        $isBroken = $this->invalidImage->multiply(200, 255, 255);
+        $isBroken = $this->_invalidImage->multiply(200, 255, 255);
         $this->assertFalse($isBroken, 'assert "multiply()" failed, image is broken');
 
-        $multiply = $this->image->multiply(200, 255, 255);
+        $multiply = $this->_image->multiply(200, 255, 255);
         $this->assertTrue($multiply, 'assert "multiply()" failed, assert is false');
     }
 
@@ -1454,7 +1462,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testMultiplyInvalidArgument()
     {
-        $this->image->multiply(-255, 50, 150);
+        $this->_image->multiply(-255, 50, 150);
     }
 
     /**
@@ -1465,7 +1473,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testMultiplyInvalidArgument1()
     {
-        $this->image->multiply(255, 500, 150);
+        $this->_image->multiply(255, 500, 150);
     }
 
     /**
@@ -1478,10 +1486,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testBlur()
     {
         // broken
-        $isBroken = $this->invalidImage->blur(0.95);
+        $isBroken = $this->_invalidImage->blur(0.95);
         $this->assertFalse($isBroken, 'assert "blur()" failed, image is broken');
 
-        $blur = $this->image->blur(0.95);
+        $blur = $this->_image->blur(0.95);
         $this->assertTrue($blur, 'assert "blur()" failed, assert is false');
     }
 
@@ -1493,7 +1501,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testBlurInvalidArgument()
     {
-        $this->image->blur(2.0);
+        $this->_image->blur(2.0);
     }
 
     /**
@@ -1504,7 +1512,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testBlurInvalidArgument1()
     {
-        $this->image->blur(-1);
+        $this->_image->blur(-1);
     }
 
     /**
@@ -1517,13 +1525,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testSharpen()
     {
         // broken
-        $isBroken = $this->invalidImage->sharpen(0.62);
+        $isBroken = $this->_invalidImage->sharpen(0.62);
         $this->assertFalse($isBroken, 'assert "sharpen()" failed, image is broken');
 
-        $sharpen = $this->image->sharpen(0.62);
+        $sharpen = $this->_image->sharpen(0.62);
         $this->assertTrue($sharpen, 'assert "sharpen()" failed, assert is false');
 
-        $sharpen = $this->image->sharpen(0);
+        $sharpen = $this->_image->sharpen(0);
         $this->assertTrue($sharpen, 'assert "sharpen()" failed, assert is false');
 
     }
@@ -1536,7 +1544,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testSharpenInvalidArgument()
     {
-        $sharpen = $this->image->sharpen(2);
+        $sharpen = $this->_image->sharpen(2);
         $this->assertFalse($sharpen, 'assert failed, first argument must be between 0 and 1');
     }
 
@@ -1550,10 +1558,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testFlipX()
     {
         // broken
-        $isBroken = $this->invalidImage->flipX();
+        $isBroken = $this->_invalidImage->flipX();
         $this->assertFalse($isBroken, 'assert "flipX()" failed, image is broken');
 
-        $flipX = $this->image->flipX();
+        $flipX = $this->_image->flipX();
         $this->assertTrue($flipX, 'assert "flipX()" failed, assert is false');
     }
 
@@ -1567,10 +1575,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testFlipY()
     {
         // broken
-        $isBroken = $this->invalidImage->flipY();
+        $isBroken = $this->_invalidImage->flipY();
         $this->assertFalse($isBroken, 'assert "flipY()" failed, image is broken');
 
-        $flipY = $this->image->flipY();
+        $flipY = $this->_image->flipY();
         $this->assertTrue($flipY, 'assert "flipY()" failed, assert is false');
     }
 
@@ -1582,11 +1590,11 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testCopyPalette()
     {
         // with image file given
-        $copyPalette = $this->image->copyPalette($this->dummyImage);
+        $copyPalette = $this->_image->copyPalette($this->_dummyImage);
         $this->assertTrue($copyPalette, 'assert "copyPalette()" failed, the palette cant be copied');
 
         // with object given
-        $copyPalette = $this->image->copyPalette($this->image);
+        $copyPalette = $this->_image->copyPalette($this->_image);
         $this->assertTrue($copyPalette, 'assert "copyPalette()" failed, the palette cant be copied');
     }
 
@@ -1609,7 +1617,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testOutputToScreenInvalidArgument()
     {
-        $outputToScreen = $this->image->outputToScreen($this->dummySource);
+        $outputToScreen = $this->_image->outputToScreen($this->_dummySource);
         $this->assertFalse($outputToScreen, 'assert "outputToScreen()" failed, assert is true');
     }
 
@@ -1622,8 +1630,8 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testOutputToFile()
     {
-        $filename = dirname(CWD . $this->imageSource) . DIRECTORY_SEPARATOR . 'testimage';
-        $outputToFile = $this->image->outputToFile($filename, 'png');
+        $filename = dirname(CWD . $this->_imageSource) . DIRECTORY_SEPARATOR . 'testimage';
+        $outputToFile = $this->_image->outputToFile($filename, 'png');
         $isFile = is_file($outputToFile);
         $isDeleted = unlink($outputToFile);
         $this->assertType('string', $outputToFile, 'unable to create output file');
@@ -1640,7 +1648,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testCompareImage()
     {
-        $compareImage = $this->image->compareImage($this->dummyImage);
+        $compareImage = $this->_image->compareImage($this->_dummyImage);
         $this->assertType('float', $compareImage, 'assert "compareImage()" failed, value is not from type float');
     }
 
@@ -1653,7 +1661,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testCompareImageInvalidArgument()
     {
         $nonExistPath = 'nonexist.png';
-        $this->image->compareImage($nonExistPath);
+        $this->_image->compareImage($nonExistPath);
     }
 
     /**
@@ -1665,28 +1673,28 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function test1()
     {
-        $color = $this->image->getColorAt(90, 90);
+        $color = $this->_image->getColorAt(90, 90);
         $this->assertType('integer', $color, 'assert failed "$color" is not from type integer');
 
-        $setTransparency0 = $this->image->setTransparency($color);
+        $setTransparency0 = $this->_image->setTransparency($color);
         $this->assertTrue($setTransparency0, 'assert failed "$setTransparency0" is false');
 
-        $setBackgroundColor = $this->image->setBackgroundColor($this->image->white);
+        $setBackgroundColor = $this->_image->setBackgroundColor($this->_image->white);
         $this->assertTrue($setBackgroundColor, 'assert failed "$setBackgroundColor" is false');
 
-        $flipY0 = $this->image->flipY();
+        $flipY0 = $this->_image->flipY();
         $this->assertTrue($flipY0, 'assert failed "$flipY0" is false');
 
-        $flipY1 = $this->image->flipY();
+        $flipY1 = $this->_image->flipY();
         $this->assertTrue($flipY1, 'assert failed "$flipY1" is false');
 
-        $flipX0 = $this->image->flipX();
+        $flipX0 = $this->_image->flipX();
         $this->assertTrue($flipX0, 'assert failed "$flipX0" is false');
 
-        $flipX1 = $this->image->flipX();
+        $flipX1 = $this->_image->flipX();
         $this->assertTrue($flipX1, 'assert failed "$flipX1" is false');
 
-        $sharpen = $this->image->sharpen(0.85);
+        $sharpen = $this->_image->sharpen(0.85);
         $this->assertTrue($sharpen, 'assert failed "$sharpen" is false');
 
         /**
@@ -1696,7 +1704,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
          * We grant a 5% tolerance.
          */
         $expectedResult = new Image(CWD . 'resources/image/test1.png');
-        $difference = $expectedResult->compareImage($this->image);
+        $difference = $expectedResult->compareImage($this->_image);
         $this->assertLessThan(0.05, $difference, 'assert failed, image does not match expected result');
     }
 
@@ -1709,64 +1717,64 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function test2()
     {
-        $enableAntialias0 = $this->emptyImage->enableAntialias();
+        $enableAntialias0 = $this->_emptyImage->enableAntialias();
         $this->assertTrue($enableAntialias0, 'assert failed "enableAntialias0" is false');
 
-        $enableInterlace0 = $this->emptyImage->enableInterlace();
+        $enableInterlace0 = $this->_emptyImage->enableInterlace();
         $this->assertTrue($enableInterlace0, 'assert failed "$enableInterlace0" is false');
 
-        $setLineWidth0 = $this->emptyImage->setLineWidth(3);
+        $setLineWidth0 = $this->_emptyImage->setLineWidth(3);
         $this->assertTrue($setLineWidth0, 'assert failed "$setLineWidth0"');
 
-        $r = $this->emptyImage->red;
-        $l = $this->emptyImage->lime;
-        $w = $this->emptyImage->getBackgroundColor();
+        $r = $this->_emptyImage->red;
+        $l = $this->_emptyImage->lime;
+        $w = $this->_emptyImage->getBackgroundColor();
         $this->assertType('integer', $w, 'asssert failed "$w" is not from typ integer');
 
-        $setLineStyle0 = $this->emptyImage->setLineStyle($r, $l, $w);
+        $setLineStyle0 = $this->_emptyImage->setLineStyle($r, $l, $w);
         $this->assertTrue($setLineStyle0, 'assert failed "$setLineStyle0" is false');
 
         // the following should not be visible
-        $drawString0 = $this->emptyImage->drawString('fill error', 20, 40, $this->emptyImage->red);
+        $drawString0 = $this->_emptyImage->drawString('fill error', 20, 40, $this->_emptyImage->red);
         $this->assertTrue($drawString0, 'assert failed "$drawString0" is false');
 
         // paint it with background color
-        $fill0 = $this->emptyImage->fill($this->emptyImage->yellow, 0, 0, $this->emptyImage->black);
+        $fill0 = $this->_emptyImage->fill($this->_emptyImage->yellow, 0, 0, $this->_emptyImage->black);
         $this->assertTrue($fill0, 'assert failed "$fill0" is false');
 
-        $fill1 = $this->emptyImage->fill($this->emptyImage->getBackgroundColor(), 0, 0, $this->emptyImage->black);
+        $fill1 = $this->_emptyImage->fill($this->_emptyImage->getBackgroundColor(), 0, 0, $this->_emptyImage->black);
         $this->assertTrue($fill1, 'assert failed "$fill1" is false');
 
         // the following should not be visible
-        $drawString1 = $this->emptyImage->drawString('canvas error', 20, 60, $this->emptyImage->red);
+        $drawString1 = $this->_emptyImage->drawString('canvas error', 20, 60, $this->_emptyImage->red);
         $this->assertTrue($drawString1, 'assert failed "$drawString1" is false');
-        $clearCanvas = $this->emptyImage->clearCanvas();
+        $clearCanvas = $this->_emptyImage->clearCanvas();
 
 
         // this should do nothing
-        $fill2 = $this->emptyImage->fill($this->emptyImage->red, 0, 0, $this->emptyImage->getBackgroundColor());
+        $fill2 = $this->_emptyImage->fill($this->_emptyImage->red, 0, 0, $this->_emptyImage->getBackgroundColor());
         $this->assertTrue($fill2, 'assert failed "$fill2" is false');
 
         // draw some objects
-        $drawEllipse0 = $this->emptyImage->drawEllipse(30, 30, 50, null, $this->emptyImage->black, $this->emptyImage->white, -30, 150);
+        $drawEllipse0 = $this->_emptyImage->drawEllipse(30, 30, 50, null, $this->_emptyImage->black, $this->_emptyImage->white, -30, 150);
         $this->assertTrue($drawEllipse0, 'assert failed "$drawEllipse0" is false');
 
-        $rotate0 = $this->emptyImage->rotate(-30.0);
+        $rotate0 = $this->_emptyImage->rotate(-30.0);
         $this->assertTrue($rotate0, 'assert failed "$rotate0" is false');
 
-        $drawEllipse1 = $this->emptyImage->drawEllipse(110, 40, 50, 10, $this->emptyImage->black, $this->emptyImage->white, 180, 0);
+        $drawEllipse1 = $this->_emptyImage->drawEllipse(110, 40, 50, 10, $this->_emptyImage->black, $this->_emptyImage->white, 180, 0);
         $this->assertTrue($drawEllipse1, 'assert failed "$drawEllipse1" is false');
 
-        $drawEllipse2 = $this->emptyImage->drawEllipse(110, 50, 20, null, IMG_COLOR_STYLED);
+        $drawEllipse2 = $this->_emptyImage->drawEllipse(110, 50, 20, null, IMG_COLOR_STYLED);
         $this->assertTrue($drawEllipse2, 'assert failed "$drawEllipse2" is false');
 
-        $drawEllipse3 = $this->emptyImage->drawEllipse(110, 50, 12, null, null, $this->emptyImage->black);
+        $drawEllipse3 = $this->_emptyImage->drawEllipse(110, 50, 12, null, null, $this->_emptyImage->black);
         $this->assertTrue($drawEllipse3, 'assert failed "$drawEllipse3" is false');
 
-        $setBackgroundColor0 = $this->emptyImage->setBackgroundColor($this->emptyImage->lime);
+        $setBackgroundColor0 = $this->_emptyImage->setBackgroundColor($this->_emptyImage->lime);
         $this->assertTrue($setBackgroundColor0, 'assert failed "$setBackgroundColor0" is false');
 
-        $drawEllipse4 = $this->emptyImage->drawEllipse(75, 75, 150, null, $this->emptyImage->blue);
+        $drawEllipse4 = $this->_emptyImage->drawEllipse(75, 75, 150, null, $this->_emptyImage->blue);
         $this->assertTrue($drawEllipse4, 'assert failed "$drawEllipse4" is false');
 
         $points = array(
@@ -1774,80 +1782,80 @@ class ImageTest extends \PHPUnit_Framework_TestCase
             1 => array( 40, 20 ),
             2 => array( 0, 20  )
         );
-        $drawPolygon0 = $this->emptyImage->drawPolygon($points, 53, 80, $this->emptyImage->black, $this->emptyImage->fuchsia);
+        $drawPolygon0 = $this->_emptyImage->drawPolygon($points, 53, 80, $this->_emptyImage->black, $this->_emptyImage->fuchsia);
         $this->assertTrue($drawPolygon0, 'assert failed "$drawPolygon0" is false');
 
         // set transparency
-        $setTransparency1 = $this->emptyImage->setTransparency($this->emptyImage->lime);
+        $setTransparency1 = $this->_emptyImage->setTransparency($this->_emptyImage->lime);
         $this->assertTrue($setTransparency1, 'assert failed "$setTransparency1" is false');
 
         // resize the image
-        $resize0 = $this->emptyImage->resize(400);
+        $resize0 = $this->_emptyImage->resize(400);
         $this->assertTrue($resize0, 'assert failed "$resize0" is false');
 
-        $drawString2 = $this->emptyImage->drawString('don\'t keep smiling!', 50, 200);
+        $drawString2 = $this->_emptyImage->drawString('don\'t keep smiling!', 50, 200);
         $this->assertTrue($drawString2, 'assert failed "$drawString2" is false');
 
-        $h = $this->emptyImage->getFontHeight(2);
+        $h = $this->_emptyImage->getFontHeight(2);
         $this->assertType('integer', $h, 'assert failed "$h" is not from type integer');
 
-        $w = $this->emptyImage->getFontWidth(2);
+        $w = $this->_emptyImage->getFontWidth(2);
         $this->assertType('integer', $w, 'assert failed "$w" is not from type integer');
 
-        $drawString3 = $this->emptyImage->drawString('_____', 50, 200 - (int) floor($h / 3), $this->emptyImage->red);
+        $drawString3 = $this->_emptyImage->drawString('_____', 50, 200 - (int) floor($h / 3), $this->_emptyImage->red);
         $this->assertTrue($drawString3, 'assert failed "$drawString3" is false');
 
-        $drawString4 = $this->emptyImage->drawString('____________', 50 + ($w * 6), 202, $this->emptyImage->red);
+        $drawString4 = $this->_emptyImage->drawString('____________', 50 + ($w * 6), 202, $this->_emptyImage->red);
         $this->assertTrue($drawEllipse4, 'assert failed "$drawString4" is false');
 
         // draw some other objects
-        $drawRectangle0 = $this->emptyImage->drawRectangle(50, 150, 100, 10, $this->emptyImage->black, $this->emptyImage->white);
+        $drawRectangle0 = $this->_emptyImage->drawRectangle(50, 150, 100, 10, $this->_emptyImage->black, $this->_emptyImage->white);
         $this->assertTrue($drawRectangle0, 'assert failed "$drawRectangle0" is false');
 
-        $setLineWidth1 = $this->emptyImage->setLineWidth(2);
+        $setLineWidth1 = $this->_emptyImage->setLineWidth(2);
         $this->assertTrue($setLineWidth1, 'assert failed "$setLineWidth1" is false');
 
-        $drawRectangle1 = $this->emptyImage->drawRectangle(75, 160, 50, 8, $this->emptyImage->black, $this->emptyImage->lime);
+        $drawRectangle1 = $this->_emptyImage->drawRectangle(75, 160, 50, 8, $this->_emptyImage->black, $this->_emptyImage->lime);
         $this->assertTrue($drawRectangle1, 'assert failed "$drawRectangle1" is false');
 
-        $setLineWidth2 = $this->emptyImage->setLineWidth(1);
+        $setLineWidth2 = $this->_emptyImage->setLineWidth(1);
         $this->assertTrue($setLineWidth2, 'assert failed "$setLineWidth2" is false');
 
-        $drawRectangle2 = $this->emptyImage->drawRectangle(85, 168, 30, 4, $this->emptyImage->black, $this->emptyImage->maroon);
+        $drawRectangle2 = $this->_emptyImage->drawRectangle(85, 168, 30, 4, $this->_emptyImage->black, $this->_emptyImage->maroon);
         $this->assertTrue($drawRectangle2, 'assert failed "$drawRectangle2" is false');
 
         // this line should be dashed
-        $setLineWidth3 = $this->emptyImage->setLineWidth(10);
+        $setLineWidth3 = $this->_emptyImage->setLineWidth(10);
         $this->assertTrue($setLineWidth3, 'assert failed "$setLineWidth3" is false');
 
-        $drawLine0 = $this->emptyImage->drawLine(70, 50, 40, 80, IMG_COLOR_STYLED);
+        $drawLine0 = $this->_emptyImage->drawLine(70, 50, 40, 80, IMG_COLOR_STYLED);
         $this->assertTrue($drawLine0, 'assert failed "$drawLine0" is false');
 
-        $setGamma0 = $this->emptyImage->setGamma(0.5);
+        $setGamma0 = $this->_emptyImage->setGamma(0.5);
         $this->assertTrue($setGamma0, 'assert failed "$setGamma0" is false');
 
-        $fill3 = $this->emptyImage->fill($this->emptyImage->yellow, 100, 100);
+        $fill3 = $this->_emptyImage->fill($this->_emptyImage->yellow, 100, 100);
         $this->assertTrue($fill3, 'assert failed "$fill3" is false');
 
-        $enableAntialias1 = $this->emptyImage->enableAntialias();
+        $enableAntialias1 = $this->_emptyImage->enableAntialias();
         $this->assertTrue($enableAntialias1, 'assert failed "$enableAntialias1" is false');
 
-        $drawPoint0 = $this->emptyImage->drawPoint(90, 126, IMG_COLOR_STYLEDBRUSHED);
+        $drawPoint0 = $this->_emptyImage->drawPoint(90, 126, IMG_COLOR_STYLEDBRUSHED);
         $this->assertTrue($drawPoint0, 'assert failed "$drawPoint0" is false');
 
-        $drawPoint1 = $this->emptyImage->drawPoint(105, 126, IMG_COLOR_BRUSHED);
+        $drawPoint1 = $this->_emptyImage->drawPoint(105, 126, IMG_COLOR_BRUSHED);
         $this->assertTrue($drawPoint1, 'assert failed "$drawPoint1" is false');
 
-        $replaceColor = $this->emptyImage->replaceColor($this->emptyImage->fuchsia, $this->emptyImage->silver);
+        $replaceColor = $this->_emptyImage->replaceColor($this->_emptyImage->fuchsia, $this->_emptyImage->silver);
         $this->assertTrue($replaceColor, 'assert failed "$replaceColor" is false');
 
-        $replaceColor0 = $this->emptyImage->replaceColor($this->emptyImage->lime, $this->emptyImage->white);
+        $replaceColor0 = $this->_emptyImage->replaceColor($this->_emptyImage->lime, $this->_emptyImage->white);
         $this->assertTrue($replaceColor0, 'assert failed "$replaceColor0" is false');
 
-        $drawFormattedString0 = $this->emptyImage->drawFormattedString('Hello World!', 50, 40, $this->emptyImage->black, null, 14, 5);
+        $drawFormattedString0 = $this->_emptyImage->drawFormattedString('Hello World!', 50, 40, $this->_emptyImage->black, null, 14, 5);
         $this->assertTrue($drawFormattedString0, 'assert failed "$drawFormattedString0" is false');
 
-        $negate0 = $this->emptyImage->negate();
+        $negate0 = $this->_emptyImage->negate();
         $this->assertTrue($negate0, 'assert failed "$negate0" is false');
 
         /**
@@ -1857,7 +1865,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
          * We grant a 5% tolerance.
          */
         $expectedResult = new Image(CWD . 'resources/image/test2.png');
-        $difference = $expectedResult->compareImage($this->emptyImage);
+        $difference = $expectedResult->compareImage($this->_emptyImage);
         $this->assertLessThan(0.05, $difference, 'assert failed, image does not match expected result');
     }
 
@@ -1875,22 +1883,22 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
           $brush->setColor(128, 128, 128)->setSize(8);
 
-          $setBackgroundColor = $this->emptyImage->setBackgroundColor($this->emptyImage->yellow);
+          $setBackgroundColor = $this->_emptyImage->setBackgroundColor($this->_emptyImage->yellow);
           $this->assertTrue($setBackgroundColor, 'unable to set background color');
 
-          $setBrush0 = $this->emptyImage->setBrush($brush);
+          $setBrush0 = $this->_emptyImage->setBrush($brush);
           $this->assertTrue($setBrush0, 'unable to select new brush for image');
 
-          $drawPoint = $this->emptyImage->drawPoint(150, 100, IMG_COLOR_BRUSHED);
+          $drawPoint = $this->_emptyImage->drawPoint(150, 100, IMG_COLOR_BRUSHED);
           $this->assertTrue($drawPoint, 'unable to draw Point');
 
-          $drawLine = $this->emptyImage->drawLine(150, 100, 154, 104, IMG_COLOR_BRUSHED);
+          $drawLine = $this->_emptyImage->drawLine(150, 100, 154, 104, IMG_COLOR_BRUSHED);
           $this->assertTrue($drawLine, 'unable to draw line');
 
-          $drawRectangle3 = $this->emptyImage->drawRectangle(10, 10, 60, 60, $this->emptyImage->black, $this->emptyImage->blue);
+          $drawRectangle3 = $this->_emptyImage->drawRectangle(10, 10, 60, 60, $this->_emptyImage->black, $this->_emptyImage->blue);
           $this->assertTrue($drawRectangle3, 'assert failed "$drawRectangle3" is false');
 
-          $drawEllipse5 = $this->emptyImage->drawEllipse(155, 65, 100, 50, $this->emptyImage->black, $this->emptyImage->fuchsia);
+          $drawEllipse5 = $this->_emptyImage->drawEllipse(155, 65, 100, 50, $this->_emptyImage->black, $this->_emptyImage->fuchsia);
           $this->assertTrue($drawEllipse5, 'assert failed "$drawEllipse5" is false');
 
           /**
@@ -1900,7 +1908,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
            * We grant a 5% tolerance.
            */
           $expectedResult = new Image(CWD . 'resources/image/test3.png');
-          $difference = $expectedResult->compareImage($this->emptyImage);
+          $difference = $expectedResult->compareImage($this->_emptyImage);
           $this->assertLessThan(0.05, $difference, 'assert failed, image does not match expected result');
     }
 
