@@ -62,6 +62,7 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
         /*
          * 1) set table
          */
+        $database = new \Yana\Db\Ddl\Database();
         $query = new \Yana\Db\Queries\Select($database);
         $query->setTable(current($tables));
         $query->setColumns($column);

@@ -4220,7 +4220,11 @@ class Image extends \Yana\Core\Object
         /* resize */
         $h = $this->getHeight();
         $w = $this->getWidth();
-        if ($h !== $otherImage->getHeight() || $w !== $otherImage->getWidth()) {
+        if ($w == 0 || $h == 0) {
+            /* invalid image */
+            trigger_error("Not a valid image.", E_USER_WARNING);
+            return false;
+        } elseif ($h !== $otherImage->getHeight() || $w !== $otherImage->getWidth()) {
             $otherImage->resize($w, $h);
         }
 
@@ -4244,10 +4248,12 @@ class Image extends \Yana\Core\Object
                 $c = (abs($color['blue'] - 127) / 128);
                 $diff += ($a + $b + $c) / 3;
             }
+            assert('$h != 0; // Division by zero');
             $difference += $diff / $h;
         }
         $otherImage->__destruct();
 
+        assert('$w != 0; // Division by zero');
         return ($difference / $w);
     }
 
@@ -4273,8 +4279,8 @@ class Image extends \Yana\Core\Object
             return "broken image";
 
         } else {
-            return ( ($this->isTruecolor) ? 'truecolor' : 'palette' )."-image(".$this->getWidth()."px,".
-                $this->getHeight()."px)";
+            return ( ($this->isTruecolor) ? 'truecolor' : 'palette' ) . "-image(" . $this->getWidth() . "px," .
+                $this->getHeight() . "px)";
         }
     }
 

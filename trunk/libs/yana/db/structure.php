@@ -2186,7 +2186,7 @@ class Structure extends \Yana\Files\SML
                 if (preg_match($regEx, $default)) {
                     continue;
                 }
-                return \Yana\Io\StringValidator::sanitize($default, 0, \Yana\Io\StringValidator::TOKEN);
+                return \Yana\Data\StringValidator::sanitize($default, 0, \Yana\Data\StringValidator::TOKEN);
             } // end foreach
             return null;
         } else {

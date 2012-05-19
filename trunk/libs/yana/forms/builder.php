@@ -38,13 +38,13 @@ namespace Yana\Forms;
  * @subpackage  form
  * @ignore
  */
-class Builder extends \Yana\Core\Object implements \Yana\Io\Adapters\IsCacheable
+class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheable
 {
 
     /**
      * Cache adapter.
      *
-     * @var \Yana\Io\Adapters\IsDataAdapter
+     * @var \Yana\Data\Adapters\IsDataAdapter
      */
     private $_cache = null;
 
@@ -665,7 +665,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Io\Adapters\IsCacheable
      */
     public function __construct($file)
     {
-        $this->_cache = new \Yana\Io\Adapters\SessionAdapter(__CLASS__);
+        $this->_cache = new \Yana\Data\Adapters\SessionAdapter(__CLASS__);
         $this->_file = (string) $file;
         $this->_database = \Yana::connect($this->_file);
         $this->_schema = $this->_database->getSchema();
@@ -676,10 +676,10 @@ class Builder extends \Yana\Core\Object implements \Yana\Io\Adapters\IsCacheable
     /**
      * Register a cache adapter.
      *
-     * @param   \Yana\Io\Adapters\IsDataAdapter  $cache  a valid cache adapter
+     * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  a valid cache adapter
      * @return  \Yana\Forms\Builder
      */
-    public function setCache(\Yana\Io\Adapters\IsDataAdapter $cache)
+    public function setCache(\Yana\Data\Adapters\IsDataAdapter $cache)
     {
         $this->_cache = $cache;
         return $this;
@@ -688,7 +688,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Io\Adapters\IsCacheable
     /**
      * Returns the cache adapter.
      *
-     * @return  \Yana\Io\Adapters\IsDataAdapter
+     * @return  \Yana\Data\Adapters\IsDataAdapter
      */
     protected function _getCache()
     {

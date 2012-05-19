@@ -46,6 +46,7 @@ namespace Yana\Util;
  */
 class String extends \Yana\Core\AbstractUtility
 {
+
     /**#@+
      * used as 2nd argument in method self::trim()
      *
