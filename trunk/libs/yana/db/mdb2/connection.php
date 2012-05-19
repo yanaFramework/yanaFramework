@@ -66,7 +66,7 @@ class Connection extends \Yana\Db\AbstractConnection
     {
         // fall back to default connection
         if (is_null($server)) {
-            $server = new \Yana\Db\Mb2\ConnectionFactory(); // may throw \Yana\Db\ConnectionException
+            $server = new \Yana\Db\Mdb2\ConnectionFactory(); // may throw \Yana\Db\ConnectionException
         }
 
         // open database connection

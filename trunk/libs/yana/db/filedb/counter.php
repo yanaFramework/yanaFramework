@@ -28,7 +28,7 @@
 namespace Yana\Db\FileDb;
 
 /**
- * counter wrapper
+ * Counter wrapper.
  *
  * This class implements persistent counters - optional with IP checking -
  * for various purposes: e.g. visitor counts, statistics, polls.
@@ -39,32 +39,29 @@ namespace Yana\Db\FileDb;
  * You are encouraged to use a single backslash as a namespace delimiter.
  * Example: MyQuestionnaireClass\FavouritePets\Dogs
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class Counter extends \Yana\Db\FileDb\Sequence
 {
-    /**#@+
-     * @ignore
-     */
 
     /**
-     * @var boolean
+     * @var  bool
+     * @ignore
      */
     protected $useIp = true;
 
     /**
-     * @var string
+     * @var  string
+     * @ignore
      */
     protected $info = "";
 
     /**
-     * @var array
+     * @var  array
+     * @ignore
      */
     protected $ip = array();
-
-    /**#@-*/
 
     /**
      * @var array
@@ -110,7 +107,6 @@ class Counter extends \Yana\Db\FileDb\Sequence
      * Important note: this function requires the database connection to be stable and not closed
      * during shutdown sequence until the destructor is finished.
      *
-     * @access  public
      * @ignore
      */
     public function __destruct()
@@ -128,8 +124,6 @@ class Counter extends \Yana\Db\FileDb\Sequence
     }
 
     /**
-     * create new counter
-     *
      * Create a counter with the given name and arguments.
      *
      * Use the $useIp parameter with the setting bool(true) to create a counter with IP checking
@@ -140,8 +134,6 @@ class Counter extends \Yana\Db\FileDb\Sequence
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
-     * @static
      * @param   string  $name       unique name for this sequence
      * @param   int     $increment  must not be 0
      * @param   int     $start      must be within range [$min, $max]
@@ -173,11 +165,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
 
             );
 
-            if (parent::$db->insert("counter.$name", $row) && parent::$db->commit()) {
-                return true;
-            } else {
-                return false;
-            }
+            return (parent::$db->insert("counter.$name", $row) && parent::$db->commit());
         } else {
             return false;
         }
@@ -185,12 +173,10 @@ class Counter extends \Yana\Db\FileDb\Sequence
     }
 
     /**
-     * check if counter exists
+     * Check if counter exists.
      *
      * Returns bool(true) if a counter with the given name exists and bool(false) otherwise.
      *
-     * @access  public
-     * @static
      * @param   string  $name  counter name
      * @return  bool
      */
@@ -207,14 +193,10 @@ class Counter extends \Yana\Db\FileDb\Sequence
     }
 
     /**
-     * drop sequence
-     *
      * Drop an existing sequence with the given name.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
-     * @static
      * @param   string  $name  counter name
      * @return  bool
      */
@@ -235,9 +217,8 @@ class Counter extends \Yana\Db\FileDb\Sequence
     }
 
     /**
-     * check if counter uses IP
+     * Check if counter uses IP.
      *
-     * @access  public
      * @return  bool
      */
     public function hasIp()
@@ -246,25 +227,24 @@ class Counter extends \Yana\Db\FileDb\Sequence
     }
 
     /**
-     * set if counter should use IP
+     * Set if counter should use IP.
      *
-     * @access  public
      * @param   bool  $useIp  true: check for IP, false: ignore IP
      */
     public function useIp($useIp = true)
     {
         assert('is_bool($useIp); // Invalid argument type argument 1. Boolean expected.');
         $this->useIp = (bool) $useIp;
+        return $this;
     }
 
     /**
-     * get counter info
+     * Get counter info.
      *
      * The 'info' field is an optional text value, that describes the counter.
      *
      * This function returns the current description of counter.
      *
-     * @access  public
      * @return  string
      */
     public function getInfo()
@@ -273,13 +253,12 @@ class Counter extends \Yana\Db\FileDb\Sequence
     }
 
     /**
-     * set counter info
+     * Set counter info.
      *
      * The 'info' field is an optional text value, that describes the counter.
      *
      * This function returns the current description of counter.
      *
-     * @access  public
      * @param   string  $info  optional text value, that describes the counter
      * @return  string
      */
@@ -287,16 +266,16 @@ class Counter extends \Yana\Db\FileDb\Sequence
     {
         assert('is_string($info); // Invalid argument type argument 1. String expected.');
         $this->info = $info;
+        return $this;
     }
 
     /**
-     * get counter ips
+     * Get counter IPs.
      *
      * The 'ip' field is a mandatory array of text values, that represents the IPs.
      *
-     * This function returns the actual ips.
+     * This function returns the actual IPs.
      *
-     * @access  public
      * @return  array
      */
     public function getIps()
@@ -305,7 +284,7 @@ class Counter extends \Yana\Db\FileDb\Sequence
     }
 
     /**
-     * Increment/Decrement counter
+     * Increment/Decrement counter.
      *
      * Adds $ammount (defaults to +1) to the counter $id and sets
      * the counter description (the 'info' field)
@@ -314,7 +293,6 @@ class Counter extends \Yana\Db\FileDb\Sequence
      * Note: as you might already have guessed, using a negative
      * value for $ammount decrements the counter.
      *
-     * @access  public
      * @return  int
      */
     public function getNextValue()
@@ -364,14 +342,12 @@ class Counter extends \Yana\Db\FileDb\Sequence
     }
 
     /**
-     * get instance
+     * Get instance.
      *
      * This function reads all counter information from the database and initializes a new instance.
      *
      * If the counter does not exist, it get's created automatically.
      *
-     * @access  public
-     * @static
      * @param   string    $name  counter name
      * @return  \Yana\Db\FileDb\Counter
      */

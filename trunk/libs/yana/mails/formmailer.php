@@ -175,7 +175,7 @@ class FormMailer extends \Yana\Core\Object
 
             /* untaint subject */
             assert('is_string($this->_subject);');
-            $this->_subject = \Yana\Io\StringValidator::sanitize($this->_subject, 128, \Yana\Io\StringValidator::LINEBREAK);
+            $this->_subject = \Yana\Data\StringValidator::sanitize($this->_subject, 128, \Yana\Data\StringValidator::LINEBREAK);
             $this->_subject = strip_tags($this->_subject);
             $this->_subject = preg_replace("/[^\w \(\)äÄüÜöÖß]/", "", $this->_subject);
             /* untaint send mail */

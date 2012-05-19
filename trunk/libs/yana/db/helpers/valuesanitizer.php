@@ -270,7 +270,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
             break;
             case 'float':
                 $precision = (int) $column->getPrecision();
-                if (\Yana\Io\FloatValidator::validate($value, $length - $precision, (bool) $column->isUnsigned())) {
+                if (\Yana\Data\FloatValidator::validate($value, $length - $precision, (bool) $column->isUnsigned())) {
                     return round($value, $precision);
                 }
             break;
@@ -289,7 +289,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
                 }
             break;
             case 'integer':
-                if (\Yana\Io\IntegerValidator::validate($value, $length, (bool) $column->isUnsigned())) {
+                if (\Yana\Data\IntegerValidator::validate($value, $length, (bool) $column->isUnsigned())) {
                     return (int) $value;
                 }
             break;
@@ -328,12 +328,12 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
             case 'reference':
             case 'string':
                 if (is_string($value)) {
-                    return \Yana\Io\StringValidator::sanitize($value, $length, \Yana\Io\StringValidator::LINEBREAK);
+                    return \Yana\Data\StringValidator::sanitize($value, $length, \Yana\Data\StringValidator::LINEBREAK);
                 }
             break;
             case 'text':
                 if (is_string($value)) {
-                    return \Yana\Io\StringValidator::sanitize($value, $length, \Yana\Io\StringValidator::USERTEXT);
+                    return \Yana\Data\StringValidator::sanitize($value, $length, \Yana\Data\StringValidator::USERTEXT);
                 }
             break;
             case 'time':

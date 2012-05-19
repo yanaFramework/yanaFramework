@@ -484,9 +484,9 @@ final class Request extends \Yana\Core\AbstractUtility
     private static function _untaintRequest(array $value, $unquote = false)
     {
         $value = array_change_key_case($value, CASE_LOWER);
-        $sanitizer = new \Yana\Io\StringValidator();
+        $sanitizer = new \Yana\Data\StringValidator();
         $sanitizer->setMaxLength(50000)
-            ->addOption(\Yana\Io\StringValidator::TOKEN);
+            ->addOption(\Yana\Data\StringValidator::TOKEN);
         foreach ($value as $i => $item)
         {
             if (is_array($item)) {

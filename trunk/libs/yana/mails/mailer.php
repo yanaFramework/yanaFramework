@@ -361,7 +361,7 @@ class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Ya
         assert('is_callable($mailHandler); // Wrong type for argument 5. Function expected');
 
         $recipient = filter_var($recipient, FILTER_SANITIZE_EMAIL);
-        $subject = strip_tags(\Yana\Io\StringValidator::sanitize($subject, 128, \Yana\Io\StringValidator::LINEBREAK));
+        $subject = strip_tags(\Yana\Data\StringValidator::sanitize($subject, 128, \Yana\Data\StringValidator::LINEBREAK));
         assert('is_string($text); // Unexpected result: $text. String expected.');
 
         /* settype to ARRAY */
@@ -389,7 +389,7 @@ class Mailer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer, \Ya
             foreach ($header as $key => $value)
             {
                 if (preg_match('/^[a-z\d-]+$/', $key) && !preg_match('/[\r\n]/', $value)) {
-                    $value = \Yana\Io\StringValidator::sanitize($value, 128, \Yana\Io\StringValidator::LINEBREAK);
+                    $value = \Yana\Data\StringValidator::sanitize($value, 128, \Yana\Data\StringValidator::LINEBREAK);
                     if (!empty($value)) {
                         switch ($key) {
                             case 'cc':

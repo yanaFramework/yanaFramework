@@ -42,16 +42,16 @@ class MemcacheSaveHandler extends \Yana\Core\Object implements \Yana\Core\Sessio
     /**
      * A MemCache connection object.
      *
-     * @var \Yana\Io\Adapters\MemCacheAdapter
+     * @var \Yana\Data\Adapters\MemCacheAdapter
      */
     private $_memCache = null;
 
     /**
      * Initialize instance
      *
-     * @param \Yana\Io\Adapters\MemCacheAdapter  $memCache a connection adapter connected to the Memcache server
+     * @param \Yana\Data\Adapters\MemCacheAdapter  $memCache a connection adapter connected to the Memcache server
      */
-    public function __construct(\Yana\Io\Adapters\MemCacheAdapter $memCache)
+    public function __construct(\Yana\Data\Adapters\MemCacheAdapter $memCache)
     {
         $this->_memCache = $memCache;
     }
@@ -59,7 +59,7 @@ class MemcacheSaveHandler extends \Yana\Core\Object implements \Yana\Core\Sessio
     /**
      * Returns a MemCache connection object.
      *
-     * @return \Yana\Io\Adapters\MemCacheAdapter
+     * @return \Yana\Data\Adapters\MemCacheAdapter
      */
     protected function _getMemCache()
     {
