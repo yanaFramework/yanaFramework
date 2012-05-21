@@ -46,7 +46,7 @@ class SelectCountParser extends \Yana\Db\Queries\Parsers\AbstractParser implemen
      */
     public function parseStatement(array $syntaxTree)
     {
-        $query = new \Yana\Db\Queries\SelectCount($database);
+        $query = new \Yana\Db\Queries\SelectCount($this->_getDatabase());
 
         // retrieve table
         $tables = $syntaxTree['tables'];

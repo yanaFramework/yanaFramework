@@ -62,7 +62,7 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
         /*
          * 1) set table
          */
-        $database = new \Yana\Db\Ddl\Database();
+        $database = $this->_getDatabase();
         $query = new \Yana\Db\Queries\Select($database);
         $query->setTable(current($tables));
         $query->setColumns($column);
@@ -100,7 +100,7 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
                         foreach ($tableA->getColumnNames() as $columnA)
                         {
                             if (in_array($columnA, $columnsB)) {
-                                $query->addWhere(array($tableNameA, $columnA), '=', array($tableNameB, $columnB));
+                                $query->addWhere(array($tableNameA, $columnA), '=', array($tableNameB, $columnA));
                             }
                         } // end foreach
                         unset($tableNameA, $tableA, $columnsB, $tableNameB, $tableB, $columnA);
@@ -141,13 +141,17 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
          * 3) set order by and direction
          */
         if (!empty($orderBy)) {
+            $orderByColumns = array();
+            $orderByDirections = array();
             assert('!isset($columnName); // Cannot redeclare variable $columnName');
             assert('!isset($direction); // Cannot redeclare variable $direction');
             foreach ($orderBy as $columnName => $direction)
             {
-                $query->addOrderBy($columnName, $direction == 'desc');
+                $orderByColumns[] = $columnName;
+                $orderByDirections[] = $direction == 'desc';
             }
             unset($columnName, $direction);
+            $query->setOrderBy($orderByColumns, $orderByDirections);
         }
 
         /*

@@ -46,7 +46,7 @@ class SelectExistParser extends \Yana\Db\Queries\Parsers\AbstractParser implemen
      */
     public function parseStatement(array $syntaxTree)
     {
-        $query = new \Yana\Db\Queries\SelectExists($database);
+        $query = new \Yana\Db\Queries\SelectExist($this->_getDatabase());
 
         // retrieve table
         $tables = $syntaxTree['tables'];

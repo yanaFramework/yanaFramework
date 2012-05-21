@@ -52,7 +52,7 @@ class InsertParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
         $values = $syntaxTree['values']; // array of value settings
         $set = array(); // combined array of $keys and $values
 
-        $query = new \Yana\Db\Queries\Insert($database);
+        $query = new \Yana\Db\Queries\Insert($this->_getDatabase());
         $query->setTable($table);
 
         // combine arrays of keys and values
@@ -104,7 +104,7 @@ class InsertParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
         unset($i, $value);
         // combine keys and values
         $set = array();
-        $table = $this->_getDatabase()->getSchema()->getTable($this->getTable($query->getTable()));
+        $table = $this->_getDatabase()->getSchema()->getTable($query->getTable());
         assert('!isset($column); // Cannot redeclare var $column');
         assert('!isset($i); // Cannot redeclare var $i');
         for ($i = 0; $i < count($keys); $i++)
