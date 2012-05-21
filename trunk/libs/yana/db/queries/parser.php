@@ -98,18 +98,24 @@ class Parser extends \Yana\Core\Object implements \Yana\Db\Queries\IsParser
                     {
                         case preg_match('/^select\s+1\s+/i', $sqlStmt):
                             $parser = new \Yana\Db\Queries\Parsers\SelectExistParser($this->_getDatabase());
+                            break;
                         case preg_match('/^select\s+count\(/i', $sqlStmt):
                             $parser = new \Yana\Db\Queries\Parsers\SelectCountParser($this->_getDatabase());
+                            break;
                         default:
                             $parser = new \Yana\Db\Queries\Parsers\SelectParser($this->_getDatabase());
+                            break;
                     }
                     break;
                 case 'insert':
                     $parser = new \Yana\Db\Queries\Parsers\InsertParser($this->_getDatabase());
+                    break;
                 case 'update':
                     $parser = new \Yana\Db\Queries\Parsers\UpdateParser($this->_getDatabase());
+                    break;
                 case 'delete':
                     $parser = new \Yana\Db\Queries\Parsers\DeleteParser($this->_getDatabase());
+                    break;
             }
         }
         if (!$parser) {
