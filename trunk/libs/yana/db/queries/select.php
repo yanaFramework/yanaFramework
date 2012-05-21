@@ -177,7 +177,9 @@ class Select extends \Yana\Db\Queries\SelectCount
          * 2) single column
          */
         if (count($columns) === 1) {
-            $this->setColumn(array_pop($columns));
+            $column = array_pop($columns);
+            assert('is_string($column); /* String expected */');
+            $this->setColumn($column);
             return;
 
         }
