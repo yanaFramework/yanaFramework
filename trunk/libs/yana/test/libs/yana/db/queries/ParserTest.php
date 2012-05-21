@@ -39,35 +39,33 @@ require_once __DIR__ . '/../../../../include.php';
  */
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
+
     /**
-     * @var    \Yana\Db\Queries\Parser
-     * @access protected
+     * @var  \Yana\Db\Queries\Parser
      */
     protected $parser;
+
     /**
-     * @var    \Yana\Db\Queries\AbstractQuery
-     * @access protected
+     * @var  \Yana\Db\Queries\AbstractQuery
      */
     protected $query;
+
     /**
-     * @var    \Yana\Db\FileDb\Connection
-     * @access protected
+     * @var  \Yana\Db\FileDb\Connection
      */
     protected $db;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     *
-     * @access protected
      */
     protected function setUp()
     {
         try {
-            \Yana\Db\FileDb\Driver::setBaseDirectory(CWD. 'resources/');
+            \Yana\Db\FileDb\Driver::setBaseDirectory(CWD . 'resources/');
             chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
             if (!isset($this->db)) {
-                \Yana\Db\DDl\DDL::setDirectory(CWD. 'resources/');
+                \Yana\Db\Ddl\DDL::setDirectory(CWD . 'resources/');
                 $schema = \Yana\Files\XDDL::getDatabase('check');
                 $this->db = new \Yana\Db\FileDb\Connection($schema);
             }
@@ -80,8 +78,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
-     *
-     * @access protected
      */
     protected function tearDown()
     {
@@ -89,8 +85,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * exists
-     *
      * @test
      */
     public function testExists()
@@ -103,8 +97,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * alternative writing
-     *
      * @test
      */
     public function testAlternativeWriting1()
@@ -118,8 +110,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * alternative writing
-     *
      * @test
      */
     public function testAlternativeWriting2()
@@ -133,8 +123,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * alternative writing
-     *
      * @test
      */
     public function testAlternativeWriting3()
@@ -172,18 +160,16 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      *
      * This is supposed to fail (due to missing foreign key).
      *
-     * @expectedException ParserError
+     * @expectedException \ParserError
      * @test
      */
     public function testDeleteInvalidArgumentException()
     {
         $sql1 = 'DELETE t&t FROM ft WHERE ft.ftvalue = "1"';
-        $result = $this->query = $this->parser->parseSQL($sql1, $this->db);
+        $this->query = $this->parser->parseSQL($sql1, $this->db);
     }
 
     /**
-     * length
-     *
      * @test
      */
     public function testLength()
@@ -196,8 +182,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * select table
-     *
      * @test
      */
     public function testSelectTable()
@@ -210,8 +194,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * select row
-     *
      * @test
      */
     public function testSelectRow()
@@ -224,8 +206,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * select column
-     *
      * @test
      */
     public function testSelectColumn()
@@ -239,8 +219,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * add column
-     *
      * @test
      */
     public function testAddColumn()
@@ -284,8 +262,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * insert into
-     *
      * @test
      */
     public function testInsertInto()
@@ -312,8 +288,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * update
-     *
      * @test
      */
     public function testUpdate()
@@ -327,8 +301,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * delete table
-     *
      * @test
      */
     public function testDeleteTable()
