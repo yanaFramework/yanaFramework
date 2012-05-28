@@ -94,8 +94,8 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
     {
         assert('is_string($tagName); // Wrong type for argument 2. String expected');
 
-        $result = $this->_parseSimpleTag($tagName);           // simple tags: @foo
-        $result = $this->_parseComplexTag($tagName, $result); // complex tags: {@foo ... }
+        $resultWithSimpleTags = $this->_parseSimpleTag($tagName);           // simple tags: @foo
+        $result = $this->_parseComplexTag($tagName, $resultWithSimpleTags); // complex tags: {@foo ... }
 
         assert('is_array($result); // result is expected to be an array');
         if (!empty($result)) {
@@ -147,6 +147,7 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
         /**
          * 1) simple tags: @foo
          */
+        $match = array();
         if (preg_match_all('/ @' . preg_quote($tagName, '/') . '(\s.*|)$/mi', $this->getText(), $match)) {
 
             foreach ($match[1] as $i => $tagContent)
@@ -158,6 +159,7 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
                  * 2) get list of values
                  */
                 assert('!isset($match2); // Cannot redeclare var $match2');
+                $match2 = array(); // for use in reg-exp.
                 if ($tagContent === "") {
                     $result[$count] = true;
                 } elseif (preg_match_all('/([\w-]+)\:\s+([^,]*)/', $match[1][$i], $match2)) {
