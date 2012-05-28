@@ -132,6 +132,16 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
     }
 
     /**
+     * Returns an instance of the translations container.
+     *
+     * @return \Language
+     */
+    protected function _getLanguageInstance()
+    {
+        return \Language::getInstance();
+    }
+
+    /**
      * Selects the current instance as the main skin for the application.
      */
     public function selectMainSkin()
@@ -695,7 +705,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
     public function getText()
     {
         // get translated description
-        $lang = Language::getInstance();
+        $lang = $this->_getLanguageInstance();
         switch (true)
         {
             case isset($this->_descriptions[$lang->getLocale()]):
@@ -806,7 +816,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
 
         } else {
             /* get instance of language manager */
-            $language = Language::getInstance();
+            $language = $this->_getLanguageInstance();
             /*
              * loop through template definition and create a report for each
              */
