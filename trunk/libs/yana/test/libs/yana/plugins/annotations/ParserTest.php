@@ -62,6 +62,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
              * {@test  Key1: Value, Key2: Value,
              *        Key3: Value}
              * @test2  Key1: Value, Key2: Value, Key3: Value
+             * @test3 \Name\Space\ClassName
+             * @test4 Key1: \Name\Space\ClassName
              */
         ';
         $this->object = new \Yana\Plugins\Annotations\Parser($text);
@@ -107,6 +109,17 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals($array, $this->object->getTag('test'));
         $this->assertEquals($array, $this->object->getTag('test2'));
+    }
+
+    /**
+     * @test
+     */
+    public function testGetTagWithNamespace()
+    {
+        $array = array(
+            'Key1' => '\Name\Space\ClassName'
+        );
+        $this->assertEquals($array, $this->object->getTag('test4'));
     }
 
     /**
