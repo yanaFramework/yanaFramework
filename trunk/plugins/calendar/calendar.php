@@ -37,7 +37,7 @@ require_once 'recurrance.php';
  * @package     yana
  * @subpackage  plugins
  */
-class Calendar extends \Yana\File\AbstractResource
+class Calendar extends \Yana\Files\AbstractResource
 {
     /**#@+
      * calendar default properties
