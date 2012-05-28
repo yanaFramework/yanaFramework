@@ -166,10 +166,10 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
             return;
         }
 
-        $content = $this->_file->getContent();
+        $totalContent = $this->_file->getContent();
         // remove all but the maximum number of latest entries (giving a negative number makes PHP sort descending)
-        $content = array_slice($content, -$maxLogLength);
-        $this->_file->setContent($content);
+        $trailingContent = array_slice($totalContent, -$maxLogLength);
+        $this->_file->setContent($trailingContent);
         $this->_file->write();
     }
 
@@ -202,7 +202,7 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
     {
         if ($this->getMaxNumerOfEntries() > 0 && $this->_file->length() > $this->getMaxNumerOfEntries()) {
             if ($this->getMailRecipient()) {
-                $this->_flushToMail($recipient);
+                $this->_flushToMail($this->getMailRecipient());
             } else {
                 $this->_cleanUp($this->getMaxNumerOfEntries());
             }

@@ -28,10 +28,7 @@
 namespace Yana\Log;
 
 /**
- * Database logger that writes messages to the "log" table.
- *
- * You may decide to set a maximum number of log entries,
- * and optionally have log entries send to your mail-address.
+ * Prints all messages to the screen.
  *
  * @package    yana
  * @subpackage log
