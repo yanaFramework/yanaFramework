@@ -105,13 +105,12 @@ class plugin_user_profile extends StdClass implements IsPlugin
      * @user        level: 30
      * @menu        group: setup
      * @title       {lang id="user.22"}
-     * @onerror     goto: index, text: UserNotFoundError
      *
      * @access      public
      */
     public function get_profile_edit()
     {
-        global $YANA;
+        $YANA = Yana::getInstance();
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_USER_EDIT"));
         $YANA->setVar("USERNAME", YanaUser::getUserName());
         $builder = new \Yana\Forms\Builder('user_admin');
@@ -211,6 +210,9 @@ class plugin_user_profile extends StdClass implements IsPlugin
         } else {
             $userId = YanaUser::getUserName();
         }
+        if (YanaUser::isUser($userId)) {
+            throw new UserNotFoundError();
+        }
 
         $userData = self::getDatabase()->select("userprofile." . $userId);
 
@@ -218,7 +220,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
             return false;
         }
 
-        global $YANA;
+        $YANA = Yana::getInstance();
         $YANA->setVar("USERNAME", $userId);
         $YANA->setVar("USER", $userData);
     }
