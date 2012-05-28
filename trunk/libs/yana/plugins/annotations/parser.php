@@ -150,6 +150,8 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
         $match = array();
         if (preg_match_all('/ @' . preg_quote($tagName, '/') . '(\s.*|)$/mi', $this->getText(), $match)) {
 
+            assert('!isset($i); // Cannot redeclare var $i');
+            assert('!isset($tagContent); // Cannot redeclare var $tagContent');
             foreach ($match[1] as $i => $tagContent)
             {
                 $count = count($result);
@@ -164,6 +166,9 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
                     $result[$count] = true;
                 } elseif (preg_match_all('/([\w-]+)\:\s+([^,]*)/', $match[1][$i], $match2)) {
                     $result[$count] = array();
+                    assert('!isset($key); // Cannot redeclare var $key');
+                    assert('!isset($value); // Cannot redeclare var $value');
+                    assert('!isset($j); // Cannot redeclare var $j');
                     for ($j = 0; $j < count($match2[0]); $j++)
                     {
                         /**
@@ -171,19 +176,17 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
                          */
                         $key = $match2[1][$j];
                         $value = trim($match2[2][$j]);
-                        if ($value === "") {
-                            $result[$count][$match2[1][$j]] = true;
-                        } else {
-                            $result[$count][$match2[1][$j]] = $value;
-                        }
+                        $result[$count][$key] = ($value === "") ? true : $value;
                     } // end for
+                    unset($j, $key, $value);
                 } else {
                     $result[$count] = $tagContent;
                 }
                 unset($match2);
             } // end foreach
+            unset($i, $tagContent);
  
-        }
+        } // end if 
         return $result;
     }
 
@@ -209,11 +212,11 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
         /**
          * 1) more complex tags: {@foo key: value }
          */
+        $match = array();
         if (preg_match_all('/\{@' . preg_quote($tagName, '/') . '\s*([^\}]*)/si', $this->getText(), $match)) {
 
-            assert('!isset($i); // Cannot redeclare var $i');
             assert('!isset($tagContent); // Cannot redeclare var $tagContent');
-            foreach ($match[1] as $i => $tagContent)
+            foreach ($match[1] as $tagContent)
             {
                 $count = count($result);
 
@@ -222,10 +225,13 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
                  * 2) get list of values
                  */
                 assert('!isset($match2); // Cannot redeclare var $match2');
+                $match2 = array();
                 if ($tagContent === "") {
                     $result[$count] = true;
                 } elseif (preg_match('/([\w-]+)\:\s+/', $tagContent)) {
                     $result[$count] = array();
+                    assert('!isset($key); // Cannot redeclare var $key');
+                    assert('!isset($value); // Cannot redeclare var $value');
                     while (preg_match('/(([\w-]+)\:\s+(.*?))(?:,?\s*?[\w-]+\:|$)/s', $tagContent, $match2))
                     {
                         $tagContent = str_replace($match2[1], '', $tagContent);
@@ -234,12 +240,9 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
                          */
                         $key = $match2[2];
                         $value = trim($match2[3]);
-                        if ($value === "") {
-                            $result[$count][$match2[2]] = true;
-                        } else {
-                            $result[$count][$match2[2]] = $value;
-                        }
+                        $result[$count][$key] = ($value === "") ? true : $value;
                     } // end while
+                    unset($key, $value);
                 } else {
                     $result[$count] = $tagContent;
                 }
