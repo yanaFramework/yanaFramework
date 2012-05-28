@@ -1315,20 +1315,21 @@ final class Yana extends \Yana\Core\AbstractSingleton
                 $subreport->addError($message);
             }
         }
+        unset($subreport);
 
         /**
          * 4) Add a list of MD5 checksums for several important files
          */
-        $subreport = $report->addReport("System-integrity check");
+        $systemIntegrityReport = $report->addReport("System-integrity check");
         $message = "The following list contains the MD5 checksums of several important files. " .
             "Compare these with your own list to see, " .
             "if any of these files have recently been modified without your knowledge.";
-        $subreport->addText($message);
+        $systemIntegrityReport->addText($message);
 
         if (is_dir('manual')) {
             $message = "You do not need to copy the directory 'manual' to your website. " .
                 "It is not required to run the program. You might want to remove it to safe space.";
-            $subreport->addNotice($message);
+            $systemIntegrityReport->addNotice($message);
         }
 
         foreach (glob('./*.php') as $root)
@@ -1339,16 +1340,15 @@ final class Yana extends \Yana\Core\AbstractSingleton
                     "If you did'nt place this file here, " .
                     "it might be the result of an hijacking attempt. " .
                     "You should consider removing this file.";
-                $subreport->addWarning($message);
+                $systemIntegrityReport->addWarning($message);
             } else {
-                $subreport->addText("{$root} = " . md5_file($root));
+                $systemIntegrityReport->addText("{$root} = " . md5_file($root));
             }
         } // end foreach
         foreach (glob(dirname(__FILE__) . '/*.php') as $root)
         {
-            $subreport->addText("{$root} = " . md5_file($root));
+            $systemIntegrityReport->addText("{$root} = " . md5_file($root));
         }
-        unset($subreport);
 
         /**
          *  5) Add subreports
@@ -1356,12 +1356,13 @@ final class Yana extends \Yana\Core\AbstractSingleton
         foreach ($this as $name => $member)
         {
             if (is_object($member) && $member instanceof \Yana\Report\IsReportable) {
-                $subreport = $report->addReport("$name");
-                $member->getReport($subreport);
+                $memberReport = $report->addReport("$name");
+                $member->getReport($memberReport);
             }
         }
-        unset($subreport);
+        unset($memberReport);
 
+        $iconIntegrityReport = $report->addReport('Searching for icon images');
         $registry = $this->getRegistry();
         /* @var $dir \Dir */
         assert('!isset($dir); // Cannot redeclare var $dir');
@@ -1370,10 +1371,10 @@ final class Yana extends \Yana\Core\AbstractSingleton
         if (count($smilies)==0) {
             $message = "No Icons found. Please check if the given directory is correct: '" .
                 $dir->getPath() . "'.";
-            $subreport->addWarning($message);
+            $iconIntegrityReport->addWarning($message);
         } else {
-            $subreport->addText(count($smilies) . " Icons found in directory '" . $dir->getPath() . "'.");
-            $subreport->addText("No problems found: Directory setting seems to be correct.");
+            $iconIntegrityReport->addText(count($smilies) . " Icons found in directory '" . $dir->getPath() . "'.");
+            $iconIntegrityReport->addText("No problems found: Directory setting seems to be correct.");
         }
         unset($dir);
 
@@ -1409,16 +1410,26 @@ final class Yana extends \Yana\Core\AbstractSingleton
         foreach ($messages as $message)
         {
             if (!$isFinal) {
-                if ($message instanceof Error) {
-                    $messageClass = "error";
-                    $isFinal = true;
-                } elseif ($message instanceof SuccessMessage) {
-                    $messageClass = "message";
-                    $isFinal = true;
-                } elseif ($message instanceof Warning) {
-                    $messageClass = "warning";
-                } elseif (empty($messageClass)) {
-                    $messageClass = "alert";
+                switch ($message->getCode())
+                {
+                    case \E_USER_ERROR:
+                    case \E_ERROR:
+                        $messageClass = "error";
+                        $isFinal = true;
+                        break;
+                    case \E_USER_WARNING:
+                    case \E_WARNING:
+                        $messageClass = "warning";
+                        break;
+                    case \E_USER_NONE:
+                        $messageClass = "message";
+                        $isFinal = true;
+                        break;
+                    case \E_NOTICE:
+                    case \E_USER_DEPRECATED:
+                    case \E_USER_NOTICE:
+                    default:
+                        $messageClass = "alert";
                 }
             }
             if ($message->getHeader() || $message->getText()) {
