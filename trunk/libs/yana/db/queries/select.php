@@ -59,29 +59,27 @@ namespace Yana\Db\Queries;
  */
 class Select extends \Yana\Db\Queries\SelectCount
 {
-    /**#@+
-     * @ignore
-     */
 
     /**
      * @var int
+     * @ignore
      */
     protected $type = \Yana\Db\Queries\TypeEnumeration::SELECT;
 
     /**
      * @var array
+     * @ignore
      */
     protected $having = array();
 
     /**
      * @var int
+     * @ignore
      */
     protected $offset = 0;
 
-    /** #@- */
-
     /**
-     * reset query
+     * Reset query.
      *
      * Resets all properties of the query object, except
      * for the database connection and the properties
@@ -854,7 +852,7 @@ class Select extends \Yana\Db\Queries\SelectCount
                         break;
                         default:
                             throw new \Yana\Core\Exceptions\InvalidArgumentException("Syntax error. " .
-                                "The input '{$key}' is not a valid key address.");
+                                "The input is not a valid key address.");
                         break;
                     } // end switch
                     // decode cell
@@ -879,7 +877,7 @@ class Select extends \Yana\Db\Queries\SelectCount
                     break;
                     default:
                         throw new \Yana\Core\Exceptions\InvalidArgumentException("Syntax error. " .
-                            "The input '{$key}' is not a valid key address.");
+                            "The input is not a valid key address.");
                     break;
                 } // end switch
             } // end foreach (column)
