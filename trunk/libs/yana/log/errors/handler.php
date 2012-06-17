@@ -53,7 +53,7 @@ class Handler extends \Yana\Core\Object implements \Yana\Log\Errors\IsHandler
     private $_isActive = false;
 
     /**
-     * Temporary helper function until functionality is transfered to a logger class.
+     * Initialize instances.
      *
      * @param  \Yana\Log\Formatter\IsFormatter  $formatter  formats the error messages for output
      * @param  \Yana\Log\IsLogger               $logger     Logs the formatted errors
