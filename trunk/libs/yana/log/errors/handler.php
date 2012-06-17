@@ -29,20 +29,12 @@
 namespace Yana\Log\Errors;
 
 /**
- * <<utility>> static class for error handling and debugging
- *
- * This class provides static methods to set the current error
- * reporting level, set the way how errors are reported -
- * wether as text messages on the screen or (hidden from visitors)
- * in log files - and to format and output reported errors.
- *
- * The center of interest for a common audience should be
- * how to enable or disable error reporting for debug purposes.
+ * Class for formatting errors and sending them to a logger.
  *
  * @package     yana
  * @subpackage  log
  */
-class Handler extends \Yana\Core\Object
+class Handler extends \Yana\Core\Object implements \Yana\Log\Errors\IsHandler
 {
 
     /**
@@ -64,6 +56,7 @@ class Handler extends \Yana\Core\Object
      * Temporary helper function until functionality is transfered to a logger class.
      *
      * @param  \Yana\Log\Formatter\IsFormatter  $formatter  formats the error messages for output
+     * @param  \Yana\Log\IsLogger               $logger     Logs the formatted errors
      */
     public function __construct(\Yana\Log\Formatter\IsFormatter $formatter, \Yana\Log\IsLogger $logger)
     {
