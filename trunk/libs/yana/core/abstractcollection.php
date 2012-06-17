@@ -51,8 +51,8 @@ abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Cor
     public function setItems(array $items = array())
     {
         $this->_items = array();
-        foreach ($items as $key => $value) {
-            $this[$key] = $value;
+        foreach ($items as $offset => $value) {
+            $this->_offsetSet($offset, $value);
         }
     }
 
@@ -64,11 +64,10 @@ abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Cor
      */
     public function current()
     {
-        if ($this->valid()) {
-            return current($this->_items);
-        } else {
+        if (!$this->valid()) {
             throw new \Yana\Core\Exceptions\OutOfBoundsException("Iterator index out of bounds");
         }
+        return current($this->_items);
     }
 
     /**
@@ -160,11 +159,11 @@ abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Cor
      */
     public function offsetGet($offset)
     {
+        $value = null;
         if (isset($this->_items[$offset])) {
-            return $this->_items[$offset];
-        } else {
-            return null;
+            $value = $this->_items[$offset];
         }
+        return $value;
     }
 
     /**
