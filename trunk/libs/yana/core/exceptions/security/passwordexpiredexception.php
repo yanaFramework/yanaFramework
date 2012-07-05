@@ -25,16 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Security;
+
 /**
- * Error
+ * <<exception>> Security restriction in effect.
  *
- * This class represents errors passed to the user.
+ * Thrown as a warning, when the client is forced to log-out due to a recent change of his password.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class InvalidLoginError extends Error
+class PasswordExpiredException extends \Yana\Core\Exceptions\Security\SecurityException
 {
     /* intentionally left blank */
 }
