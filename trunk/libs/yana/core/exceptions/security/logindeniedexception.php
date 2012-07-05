@@ -25,16 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Security;
+
 /**
- * Error
+ * <<exception>> Security restriction in effect.
  *
- * This class represents errors passed to the user.
+ * Thrown when a user is temorarily denied log-in.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class PermissionDeniedError extends Error
+class LoginDeniedException extends \Yana\Core\Exceptions\Security\SecurityException
 {
     /* intentionally left blank */
 }

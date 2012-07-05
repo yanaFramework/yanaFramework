@@ -25,16 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Security;
+
 /**
- * Warning
+ * <<exception>> Security restriction in effect.
  *
- * This class represents warnings passed to the user.
+ * Thrown when a client tries to do something that he is not allowed to.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class PasswordExpiredWarning extends Warning
+class PermissionDeniedException extends \Yana\Core\Exceptions\Security\SecurityException
 {
     /* intentionally left blank */
 }
