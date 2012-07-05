@@ -523,12 +523,12 @@ class YanaUser extends \Yana\Core\Object
      * Returns bool(true) on success and bool(false) on error.
      *
      * @access  public
-     * @throws  InvalidLoginError  when access is denied
+     * @throws  \Yana\Core\Exceptions\Security\InvalidLoginException  when access is denied
      */
     public function login()
     {
         if (!$this->isActive()) {
-            throw new InvalidLoginError();
+            throw new \Yana\Core\Exceptions\Security\InvalidLoginException();
         }
         /* never reuse old sessions, to prevent injection of data or session id */
         $this->logout();
