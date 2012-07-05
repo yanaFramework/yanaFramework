@@ -86,12 +86,12 @@
                     <target>Die Aktion '{$ACTION}' ist undefiniert, Operation abgebrochen.<it id="br1" pos="open">&lt;br /&gt;</it><bpt id="noscript1">&lt;noscript&gt;</bpt>Hinweis an IE-Nutzer: In einigen IE-Versionen gibt es ein bekanntes Problem mit einer nicht standardkonformen Verarbeitung des HTML "button" tags. Diese Software besitzt einen JavaScript-Workaround für das Problem. Aktivieren Sie JavaScript und versuchen Sie es erneut.<ept id="noscript1">&lt;/noscript&gt;</ept></target>
                 </trans-unit>
             </group>
-            <group id="InvalidLoginError">
-                <trans-unit id="InvalidLoginError.h">
+            <group id="\Yana\Core\Exceptions\Security\InvalidLoginException">
+                <trans-unit id="\Yana\Core\Exceptions\Security\InvalidLoginException.h">
                     <source>Access denied.</source>
                     <target>Zugriff verweigert.</target>
                 </trans-unit>
-                <trans-unit id="InvalidLoginError.p">
+                <trans-unit id="\Yana\Core\Exceptions\Security\InvalidLoginException.p">
                     <source>The given user name and/or password is incorrect. Please check the text you entered and try again.</source>
                     <target>Der eingegebene Nutzername und/oder Passwort sind leider nicht korrekt. Bitte prüfen Sie Ihre Eingabe und versuchen Sie es erneut.</target>
                 </trans-unit>
@@ -206,12 +206,12 @@
                     <target>Die folgenden Felder enthalten ungültige Werte: <bpt id="b1">&lt;b&gt;</bpt>{$FIELD}<ept id="b1">&lt;/b&gt;</ept></target>
                 </trans-unit>
             </group>
-            <group id="PermissionDeniedError">
-                <trans-unit id="PermissionDeniedError.h">
+            <group id="\Yana\Core\Exceptions\Security\PermissionDeniedException">
+                <trans-unit id="\Yana\Core\Exceptions\Security\PermissionDeniedException.h">
                     <source>Permission denied.</source>
                     <target>Zugriff verweigert.</target>
                 </trans-unit>
-                <trans-unit id="PermissionDeniedError.p">
+                <trans-unit id="\Yana\Core\Exceptions\Security\PermissionDeniedException.p">
                     <source>We are sorry: you don't have permission to perform the requested action.<it id="br1" pos="open">&lt;br /&gt;</it>If you feel this is an error, report this message to the administrator.</source>
                     <target>Sie haben keine ausreichenden Rechte die gewünschte Funktion aufzurufen.<it id="br1" pos="open">&lt;br /&gt;</it>Wenn Sie diese Sperre aufheben möchten, wenden Sie sich bitte an den Administrator.</target>
                 </trans-unit>
@@ -266,12 +266,12 @@
                     <target>Dieses Konto ist geschützt und darf aus Sicherheitsgründen nicht gelöscht, oder deaktiviert werden. Veränderungen der Nutzergruppe sind nicht gestattet.</target>
                 </trans-unit>
             </group>
-            <group id="LoginDeniedError">
-                <trans-unit id="LoginDeniedError.h">
+            <group id="\Yana\Core\Exceptions\Security\LoginDeniedException">
+                <trans-unit id="\Yana\Core\Exceptions\Security\LoginDeniedException.h">
                     <source>Login currently not possible.</source>
                     <target>Login vorübergehend nicht möglich.</target>
                 </trans-unit>
-                <trans-unit id="LoginDeniedError.p">
+                <trans-unit id="\Yana\Core\Exceptions\Security\LoginDeniedException.p">
                     <source>Because a wrong password has been entered more than 3 times, any login to this account is suspended for 5 minutes. Please wait to the end of this period and try again. If you forgot your password, please notify your administrator.</source>
                     <target>Das Passwort wurde mehr als 3 Mal falsch eingegeben. Der Login ist für 5 Minuten gesperrt. Bitte warten Sie diese Frist ab und versuchen Sie es dann erneut. Falls Sie Ihr Passwort vergessen haben sollten, benachrichtigen Sie Ihren Administrator.</target>
                 </trans-unit>
@@ -392,12 +392,12 @@
                     <target>Die angegebene Mailadresse ist nicht registriert.</target>
                 </trans-unit>
             </group>
-            <group id="PasswordExpiredWarning">
-                <trans-unit id="PasswordExpiredWarning.h">
+            <group id="\Yana\Core\Exceptions\Security\PasswordExpiredException">
+                <trans-unit id="\Yana\Core\Exceptions\Security\PasswordExpiredException.h">
                     <source>Permission denied</source>
                     <target>Zugriff verweigert</target>
                 </trans-unit>
-                <trans-unit id="PasswordExpiredWarning.p">
+                <trans-unit id="\Yana\Core\Exceptions\Security\PasswordExpiredException.p">
                     <source>The time limit for changing your password has expired. Please re-request a new password. If you need assistance, contact your administrator for help.</source>
                     <target>Das Zeitlimit zum Ändern Ihres Passworts ist überschritten. Bitte fordern Sie erneut ein neues Passwort an. Falls Sie Unterstützung benötigen, wenden Sie sich bitte an Ihren Administrator.</target>
                 </trans-unit>
