@@ -100,7 +100,9 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
         $timeDuration = (int) $YANA->getVar("PROFILE.USER.PASSWORD.TIME");
         if ($timeDuration > 0) {
             if (self::_isExpired($user, $timeDuration)) {
-                new PasswordExpiredWarning();
+                $message = "Your password has expired.";
+                $level = \E_USER_WARNING;
+                new \Yana\Core\Exceptions\Security\PasswordExpiredException($message, $level);
                 $YANA->exitTo("get_pwd");
             }
         }
@@ -218,7 +220,7 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
     }
 
     /**
-     * Password time duration
+     * Password time duration.
      *
      * This function checks the date of expiration and returns bool(true)
      * if the password has expired, and bool(false) otherwise.
@@ -238,13 +240,12 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
 
         /* get the current user password expiry time */
         $time = $db->select("user.$userName.user_pwd_time");
+        $currentTime = time();
+        $expiryTime = $currentTime;
         if (!empty($time)) {
             $expiryTime = $time + ($timeDuration * 30 * 24 * 60 * 60);
-            if ($expiryTime < time()) {
-                return true;
-            }
         }
-        return false;
+        return $expiryTime < $currentTime;
     }
 
     /**
@@ -258,9 +259,10 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
      *
      * @access      private
      * @static
-     * @param       string $old_password  old password
-     * @param       string $new_password  new password
+     * @param       string  $old_password  old password
+     * @param       string  $new_password  new password
      * @return      bool
+     * @throws      \Yana\Core\Exceptions\Security\InvalidLoginException  when name or password are invalid
      */
     private static function _isAllowedPwd($old_password, $new_password)
     {
@@ -289,7 +291,9 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
         /* check if the old password is correct */
         if (isset($currentUserInformation['USER_PWD']) && $currentUserInformation['USER_PWD'] != $old_password) {
             if ($currentUserInformation['USER_PWD'] != 'UNINITIALIZED') {
-                throw new InvalidLoginError();
+                $message = "Invalid name or password.";
+                $level = \E_USER_ERROR;
+                throw new \Yana\Core\Exceptions\Security\InvalidLoginException($message, $level);
             }
         }
         /* check if the new password is the same like the last one */

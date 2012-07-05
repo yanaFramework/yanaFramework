@@ -360,16 +360,17 @@ class plugin_user extends StdClass implements IsPlugin
      * @param       string  $repeat_pwd  duplicate of new password
      * @param       string  $old_pwd     old password
      * @return      bool
+     * @throws      \Yana\Core\Exceptions\Security\InvalidLoginException  when name or password are invalid
      */
     public function set_pwd($new_pwd, $repeat_pwd, $old_pwd = "")
     {
-        global $YANA;
         try {
 
             $user = YanaUser::getInstance();
             if (!$user->checkPassword($old_pwd)) {
-                new InvalidLoginError();
-                $YANA->exitTo();
+                $message = "Invalid name or password.";
+                $level = \E_USER_ERROR;
+                throw new \Yana\Core\Exceptions\Security\InvalidLoginException($message, $level);
                 /**
                  * This case exits to the default page (which should be public),
                  * to avoid redirection problems when redirecting to a page which
@@ -410,11 +411,12 @@ class plugin_user extends StdClass implements IsPlugin
     }
 
     /**
-     * Check Password reset Ticket
+     * Check Password reset ticket.
      *
-     * @access      private
-     * @param       string    $recoveryId recovery id
-     * @return      array
+     * @access  private
+     * @param   string  $recoveryId recovery id
+     * @return  array
+     * @throws  \Yana\Core\Exceptions\Security\PasswordExpiredException  when the user's password has expired
      */
     private function _getUserId($recoveryId)
     {
@@ -431,13 +433,9 @@ class plugin_user extends StdClass implements IsPlugin
         }
 
         $user = array_pop($user);
-        if (!isset($user['USER_RECOVER_UTC'])) {
-            throw new PasswordExpiredWarning();
-        }
-
-        // T - 4h
-        if ($user['USER_RECOVER_UTC'] + 14400 < time()) {
-            throw new PasswordExpiredWarning();
+        // Note: 14400 = 4h
+        if (!isset($user['USER_RECOVER_UTC']) || $user['USER_RECOVER_UTC'] + 14400 < time()) {
+            throw new \Yana\Core\Exceptions\Security\PasswordExpiredException();
         }
 
         return $user['USER_ID'];
@@ -470,8 +468,8 @@ class plugin_user extends StdClass implements IsPlugin
      * @access      public
      * @param       string  $user  user name
      * @param       string  $pass  password
-     * @throws      InvalidLoginError      when user name or password were invalid
-     * @throws      PermissionDeniedError  when invalid password was entered 3 times
+     * @throws      \Yana\Core\Exceptions\Security\InvalidLoginException      when invalid password was entered
+     * @throws      \Yana\Core\Exceptions\Security\PermissionDeniedException  when invalid password was entered 3 times
      */
     public function check_login($user, $pass = "")
     {
@@ -481,7 +479,9 @@ class plugin_user extends StdClass implements IsPlugin
         } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             /* delay output if attempt failed to make brute-force attacks more difficult to commit */
             sleep(2);
-            throw new InvalidLoginError();
+            $message = "Invalid name or password.";
+            $level = \E_USER_ERROR;
+            throw new \Yana\Core\Exceptions\Security\InvalidLoginException($message, $level);
         }
 
         /* 1. reset failure count if failure time has expired */
@@ -490,7 +490,7 @@ class plugin_user extends StdClass implements IsPlugin
         }
         /* 2. exit if the user has 3 times tried to login with a wrong password in last 5 minutes */
         if ($userData->getFailureCount() >= $this->maxFailureCount) {
-            throw new PermissionDeniedError();
+            throw new \Yana\Core\Exceptions\Security\PermissionDeniedException();
         }
         /* 3. error - login has failed */
         if (!$userData->checkPassword($pass)) {
@@ -506,7 +506,9 @@ class plugin_user extends StdClass implements IsPlugin
              * to make brute-force attacks on password forms harder.
              */
             sleep(2);
-            throw new InvalidLoginError();
+            $message = "Invalid name or password.";
+            $level = \E_USER_ERROR;
+            throw new \Yana\Core\Exceptions\Security\InvalidLoginException($message, $level);
         }
         $nextAction = "";
         if (isset($_SESSION['on_login_goto'])) {

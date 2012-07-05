@@ -45,6 +45,7 @@ class plugin_ipblock extends StdClass implements IsPlugin
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
+     * @throws \Yana\Core\Exceptions\Security\PermissionDeniedException  when the client's IP is black-listed
      */
     public function catchAll($event, array $ARGS)
     {
@@ -74,9 +75,7 @@ class plugin_ipblock extends StdClass implements IsPlugin
         $remoteAddress = $YANA->getVar('REMOTE_ADDR');
 
         if ($blacklist->isBlocked($remoteAddress) && !($whitelist->exists() && $whitelist->isBlocked())) {
-            new PermissionDeniedError();
-            $YANA->exitTo(); // die
-            return false;
+            throw new \Yana\Core\Exceptions\Security\PermissionDeniedException();
         }
 
         return true; // access granted
