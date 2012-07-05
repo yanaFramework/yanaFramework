@@ -40,7 +40,7 @@ interface IsHandler
      * Activate or deactive error handler.
      *
      * @param   bool  $isActive  true = activate, false = deactivate
-     * @return  Handler 
+     * @return  \Yana\Log\Errors\IsHandler
      */
     public function setActivate($isActive = true);
 
