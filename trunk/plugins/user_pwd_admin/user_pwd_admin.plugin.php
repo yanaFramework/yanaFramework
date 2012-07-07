@@ -133,7 +133,9 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
             $min_quality = 100;
         }
         if (self::_getQuality($new_pwd) < $min_quality) {
-            throw new LowPasswordQualityWarning();
+            $message = "Password is not complex enough.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\Security\LowPasswordQualityException($message, $level);
         }
         //check if the password does not match the last (max. 5) used passwords
         if (!plugin_user_pwd_admin::_isAllowedPwd($old_pwd, $new_pwd)) {
