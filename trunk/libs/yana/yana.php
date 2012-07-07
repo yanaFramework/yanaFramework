@@ -1414,22 +1414,22 @@ final class Yana extends \Yana\Core\AbstractSingleton
                 {
                     case \E_USER_ERROR:
                     case \E_ERROR:
-                        $messageClass = "error";
+                        $messageClass = \Yana\Core\Exceptions\ResultTypeEnumeration::ERROR;
                         $isFinal = true;
                         break;
                     case \E_USER_WARNING:
                     case \E_WARNING:
-                        $messageClass = "warning";
+                        $messageClass = \Yana\Core\Exceptions\ResultTypeEnumeration::WARNING;
                         break;
                     case \E_USER_NONE:
-                        $messageClass = "message";
+                        $messageClass = \Yana\Core\Exceptions\ResultTypeEnumeration::MESSAGE;
                         $isFinal = true;
                         break;
                     case \E_NOTICE:
                     case \E_USER_DEPRECATED:
                     case \E_USER_NOTICE:
                     default:
-                        $messageClass = "alert";
+                        $messageClass = \Yana\Core\Exceptions\ResultTypeEnumeration::ALERT;
                 }
             }
             if ($message->getHeader() || $message->getText()) {

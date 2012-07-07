@@ -25,16 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Security;
+
 /**
- * Warning
+ * <<exception>> Security restriction in effect.
  *
- * This class represents warnings passed to the user.
+ * Thrown when an user enters a password that is not complex enough.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class LowPasswordQualityWarning extends Warning
+class LowPasswordQualityException extends \Yana\Core\Exceptions\Security\SecurityException
 {
     /* intentionally left blank */
 }
