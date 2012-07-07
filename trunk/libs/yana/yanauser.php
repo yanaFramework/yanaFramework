@@ -32,7 +32,6 @@
  *
  * This persistent class provides access to user data and function to set logins and passwords.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  *
@@ -43,9 +42,7 @@ class YanaUser extends \Yana\Core\Object
     /**
      * Name of currently selected user
      *
-     * @access  protected
-     * @static
-     * @var     string
+     * @var  string
      * @ignore
      */
     protected static $selectedUser = null;
@@ -53,9 +50,7 @@ class YanaUser extends \Yana\Core\Object
     /**
      * List of existing instances
      *
-     * @access  protected
-     * @static
-     * @var     array
+     * @var  array
      * @ignore
      */
     protected static $instances = array();
@@ -63,34 +58,23 @@ class YanaUser extends \Yana\Core\Object
     /**
      * database connection
      *
-     * @ignore
-     * @access  private
-     * @var     \Yana\Db\IsConnection
+     * @var  \Yana\Db\IsConnection
      */
     private static $_database = null;
 
     /**
      * Is the currently selected user logged-in (yes/no)
      *
-     * @access  private
-     * @static
-     * @var     bool
+     * @var  bool
      */
     private static $_isLoggedIn = null;
 
     /**
      * list of user names
      *
-     * @access  private
-     * @static
-     * @var     array
+     * @var  array
      */
     private static $_userNames = null;
-
-    /**#@+
-     * @ignore
-     * @access  private
-     */
 
     /** @var string */ private $_name = null;
     /** @var string */ private $_language = null;
@@ -110,22 +94,19 @@ class YanaUser extends \Yana\Core\Object
     /** @var string */ private $_session = null;
     /** @var array  */ private $_groups = null;
     /** @var array  */ private $_roles = null;
-    /**#@-*/
 
     /**
      * update cache
      *
-     * @access  protected
-     * @var     array
+     * @var  array
      * @ignore
      */
     protected $updates = array();
 
     /**
-     * instance if
+     * unique application id used for security checks like CSRF-tokens.
      *
-     * @access  protected
-     * @var     string
+     * @var  string
      * @ignore
      */
     protected static $applicationId = null;
@@ -139,8 +120,6 @@ class YanaUser extends \Yana\Core\Object
      * If $skinName is NULL the function will return the currently
      * selected main skin instead.
      *
-     * @access  public
-     * @static
      * @param   string  $userName  name of instance to get
      * @return  YanaUser
      * @throws  \Yana\Core\Exceptions\NotFoundException  if the requested user does not exist
@@ -168,8 +147,6 @@ class YanaUser extends \Yana\Core\Object
      * Returns bool(true) if a user named $userName can be found in the current database.
      * Returns bool(false) otherwise.
      *
-     * @access  public
-     * @static
      * @param   string  $userName   user name
      * @return  bool
      */
@@ -187,8 +164,6 @@ class YanaUser extends \Yana\Core\Object
      * Returns the name of the currently logged-in user as a string.
      * If there is none NULL is returned.
      *
-     * @access  public
-     * @static
      * @return  string
      */
     public static function getUserName()
@@ -206,8 +181,6 @@ class YanaUser extends \Yana\Core\Object
      *
      * Returns a list of all registered user names.
      *
-     * @access  public
-     * @static
      * @return  array
      */
     public static function getUserNames()
@@ -223,11 +196,8 @@ class YanaUser extends \Yana\Core\Object
     }
 
     /**
-     * Constructor
-     *
      * Creates an user by name.
      *
-     * @access  private
      * @param   string  $userName  current user name
      * @throws  \Yana\Core\Exceptions\NotFoundException  if the requested user does not exist
      */
@@ -284,8 +254,6 @@ class YanaUser extends \Yana\Core\Object
     /**
      * set datasource
      *
-     * @access  public
-     * @static
      * @param   \Yana\Db\IsConnection  $database     datasource
      * @ignore
      */
@@ -297,8 +265,6 @@ class YanaUser extends \Yana\Core\Object
     /**
      * get datasource
      *
-     * @access  public
-     * @static
      * @return  \Yana\Db\IsConnection
      * @ignore
      */
@@ -311,11 +277,8 @@ class YanaUser extends \Yana\Core\Object
     }
 
     /**
-     * persistent destructor
+     * Writes back changes to the database.
      *
-     * Writes back chages to database.
-     *
-     * @access  public
      * @ignore
      */
     public function __destruct()
@@ -334,7 +297,6 @@ class YanaUser extends \Yana\Core\Object
      *
      * Returns an empty array, if there are no entries.
      *
-     * @access  public
      * @return  array
      */
     public function getGroups()
@@ -353,7 +315,6 @@ class YanaUser extends \Yana\Core\Object
      *
      * Returns an empty array, if there are no entries.
      *
-     * @access  public
      * @return  array
      */
     public function getRoles()
@@ -369,7 +330,6 @@ class YanaUser extends \Yana\Core\Object
      *
      * Returns bool(true) if the password is correct an bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $userPwd  user password
      * @return  bool
      * @ignore
@@ -411,8 +371,6 @@ class YanaUser extends \Yana\Core\Object
      * Thus: if a session-id is shorter than 20 bytes (40 digits) this is an obvious hint that
      * either the user has not logged-in, or the session id is not valid.
      *
-     * @access  public
-     * @static
      * @return  bool
      */
     public static function isLoggedIn()
@@ -448,7 +406,6 @@ class YanaUser extends \Yana\Core\Object
      *
      * Returns the name of the user as a string.
      *
-     * @access  public
      * @return  string
      */
     public function getName()
@@ -459,7 +416,6 @@ class YanaUser extends \Yana\Core\Object
     /**
      * get password
      *
-     * @access  private
      * @return  string
      */
     private function _getPassword()
@@ -476,7 +432,6 @@ class YanaUser extends \Yana\Core\Object
      * In case of success the function returns the new password.
      * (You will need it, if you use a auto-created random password.)
      *
-     * @access  public
      * @param   string  $password user password
      * @return  string
      * @throws  DbError  when the database update failed
@@ -522,7 +477,6 @@ class YanaUser extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @throws  \Yana\Core\Exceptions\Security\InvalidLoginException  when access is denied
      */
     public function login()
@@ -580,8 +534,6 @@ class YanaUser extends \Yana\Core\Object
      * logout
      *
      * Destroy the current session and clear all session data.
-     *
-     * @access  public
      */
     public function logout()
     {
@@ -609,7 +561,6 @@ class YanaUser extends \Yana\Core\Object
      *
      * Sets prefered language of the user, that is used to provide translates GUI elements.
      *
-     * @access  public
      * @param   string  $language  language or locale string
      */
     public function setLanguage($language)
@@ -623,7 +574,6 @@ class YanaUser extends \Yana\Core\Object
     /**
      * get prefered language
      *
-     * @access  public
      * @return  string
      */
     public function getLanguage()
@@ -639,7 +589,6 @@ class YanaUser extends \Yana\Core\Object
      *
      * The default is 0.
      *
-     * @access  public
      * @return  int
      */
     public function getFailureCount()
@@ -655,7 +604,6 @@ class YanaUser extends \Yana\Core\Object
      *
      * The default is 0.
      *
-     * @access  public
      * @return  int
      */
     public function getFailureTime()
@@ -668,8 +616,6 @@ class YanaUser extends \Yana\Core\Object
      *
      * Resets the number of times the user entered an invalid password back to 0.
      * Use this, when the maximum failure time has expired.
-     *
-     * @access  public
      */
     public function resetFailureCount()
     {
@@ -679,8 +625,6 @@ class YanaUser extends \Yana\Core\Object
 
     /**
      * reset password recovery id
-     *
-     * @access  private
      */
     private function _resetPasswordRecoveryId()
     {
@@ -694,8 +638,6 @@ class YanaUser extends \Yana\Core\Object
      * Returns the number of times the user sucessfully logged-in.
      *
      * The default is 0.
-     *
-     * @access  public
      * @return  int
      */
     public function getLoginCount()
@@ -704,16 +646,13 @@ class YanaUser extends \Yana\Core\Object
     }
 
     /**
-     * get login time
-     *
-     * Returns the timestamp when user last sucessfully logged-in.
+     * Get the timestamp when user last sucessfully logged-in.
      *
      * Note: This number is not reset on log-out.
      * Thus you cannot use this settings to check if a user is currently logged-in.
      *
      * The default is 0.
      *
-     * @access  public
      * @return  int
      */
     public function getLoginTime()
@@ -726,7 +665,6 @@ class YanaUser extends \Yana\Core\Object
      *
      * Sets the user's mail address. This information is required to send the user a password.
      *
-     * @access  public
      * @param   string  $mail  e-mail address
      */
     public function setMail($mail)
@@ -740,7 +678,6 @@ class YanaUser extends \Yana\Core\Object
     /**
      * get mail address
      *
-     * @access  public
      * @return  string
      */
     public function getMail()
@@ -754,7 +691,6 @@ class YanaUser extends \Yana\Core\Object
      * Set to bool(true) if the user prefers to see expert applications settings and bool(false)
      * if a simpler GUI is prefered.
      *
-     * @access  public
      * @param   bool  $isExpert  use expert settings (yes/no)
      */
     public function setExpert($isExpert)
@@ -771,7 +707,6 @@ class YanaUser extends \Yana\Core\Object
      * Returns bool(true) if the user prefers to see expert applications settings and bool(false)
      * if a simpler GUI is prefered.
      *
-     * @access  public
      * @return  string
      */
     public function isExpert()
@@ -785,7 +720,6 @@ class YanaUser extends \Yana\Core\Object
      * Set to bool(true) if the user should be able to log-in or to bool(false) if the user
      * should be deactivated (suspended) without permanently deleting the user settings.
      *
-     * @access  public
      * @param   bool  $isActive  use expert settings (yes/no)
      */
     public function setActive($isActive)
@@ -801,7 +735,6 @@ class YanaUser extends \Yana\Core\Object
      *
      * Returns bool(true) if the user is activated and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isActive()
@@ -812,7 +745,6 @@ class YanaUser extends \Yana\Core\Object
     /**
      * get the time when the user was created
      *
-     * @access  public
      * @return  string
      */
     public function getTimeCreated()
@@ -829,7 +761,6 @@ class YanaUser extends \Yana\Core\Object
      *
      * The default is 0.
      *
-     * @access  public
      * @return  int
      */
     public function getPasswordChangedTime()
@@ -847,7 +778,6 @@ class YanaUser extends \Yana\Core\Object
      *
      * If there are have been no other passwords then the current, this returns an empty list.
      *
-     * @access  public
      * @return  array
      */
     public function getRecentPasswords()
@@ -861,7 +791,6 @@ class YanaUser extends \Yana\Core\Object
      * When the user requests a new password, a recovery id is created and sent to his mail address.
      * This is to ensure that the user is a allowed to reset the password.
      *
-     * @access  public
      * @return  string
      */
     public function getPasswordRecoveryId()
@@ -877,7 +806,6 @@ class YanaUser extends \Yana\Core\Object
      *
      * The default is 0.
      *
-     * @access  public
      * @return  int
      */
     public function getPasswordRecoveryTime()
@@ -894,7 +822,6 @@ class YanaUser extends \Yana\Core\Object
      *
      * Returns the new recovery id.
      *
-     * @access  public
      * @return  string
      */
     public function createPasswordRecoveryId()
@@ -942,8 +869,6 @@ class YanaUser extends \Yana\Core\Object
     /**
      * Remove the chosen user from the database.
      *
-     * @access  public
-     * @static
      * @param   string  $userName  user name
      * @return  bool
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when no valid user name given
@@ -962,7 +887,7 @@ class YanaUser extends \Yana\Core\Object
 
         // user should not delete himself
         if ($userName === self::getUserName()) {
-            throw new UserDeleteSelfError();
+            throw new Yana\Core\Exceptions\User\DeleteSelfException();
         }
 
         // user does not exist
@@ -970,7 +895,6 @@ class YanaUser extends \Yana\Core\Object
             throw new \Yana\Core\Exceptions\NotFoundException("No such user: '$userName'.", E_USER_WARNING);
         }
 
-        $userName = mb_strtoupper("$userName");
         switch (false)
         {
             // delete profile
@@ -1001,8 +925,6 @@ class YanaUser extends \Yana\Core\Object
      * This function takes user name and password phrase as clear text and returns the
      * hash-code for this password.
      *
-     * @access  public
-     * @static
      * @param   string  $salt   user name
      * @param   string  $text   password (clear text)
      * @return  string
@@ -1028,8 +950,6 @@ class YanaUser extends \Yana\Core\Object
      * The instance-id identifies the current instance of the installation,
      * where multiple instances of the framework are available on the same server.
      *
-     * @access  protected
-     * @static
      * @return  string
      * @ignore
      */
