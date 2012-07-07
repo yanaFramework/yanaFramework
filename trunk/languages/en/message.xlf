@@ -246,12 +246,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="UserDeleteSelfError">
-                <trans-unit id="UserDeleteSelfError.h">
+            <group id="Yana\Core\Exceptions\User\DeleteSelfException">
+                <trans-unit id="Yana\Core\Exceptions\User\DeleteSelfException.h">
                     <target>User is not allowed to delete it's own account.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="UserDeleteSelfError.p">
+                <trans-unit id="Yana\Core\Exceptions\User\DeleteSelfException.p">
                     <target>You have tried to delete the own user account. This action is prohibited for security reasons.</target>
                     <source/>
                 </trans-unit>
