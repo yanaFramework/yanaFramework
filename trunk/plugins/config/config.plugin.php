@@ -368,7 +368,7 @@ class plugin_config extends StdClass implements IsPlugin
         $profileDir = $profileDir->getPath();
         $newProfile = new \Yana\Files\SML("{$profileDir}{$id}.cfg", CASE_MIXED);
         if ($newProfile->exists()) {
-            $error = new AlreadyExistsWarning();
+            $error = new \Yana\Core\Exceptions\AlreadyExistsException();
             throw $error->setId($id);
         }
         try {

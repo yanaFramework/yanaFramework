@@ -373,7 +373,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
                 $pluginDir->delete(true);
             }
         } elseif ($pluginDir->exists()) {
-            $error = new AlreadyExistsWarning();
+            $error = new \Yana\Core\Exceptions\AlreadyExistsException();
             $error->setId($pluginId);
             throw $error;
         }
