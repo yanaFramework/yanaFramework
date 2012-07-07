@@ -246,12 +246,12 @@
                     <target>Ein anderer Nutzer mit dem selben Nutzernamen existiert bereits am System. Bitte wählen Sie einen anderen Namen und versuchen Sie es erneut.</target>
                 </trans-unit>
             </group>
-            <group id="UserDeleteSelfError">
-                <trans-unit id="UserDeleteSelfError.h">
+            <group id="Yana\Core\Exceptions\User\DeleteSelfException">
+                <trans-unit id="Yana\Core\Exceptions\User\DeleteSelfException.h">
                     <source>User is not allowed to delete it's own account.</source>
                     <target>Nutzer kann sich nicht selbst löschen.</target>
                 </trans-unit>
-                <trans-unit id="UserDeleteSelfError.p">
+                <trans-unit id="Yana\Core\Exceptions\User\DeleteSelfException.p">
                     <source>You have tried to delete the own user account. This action is prohibited for security reasons.</source>
                     <target>Sie haben versucht Ihr eigenes Nutzerkonto zu löschen. Diese Aktion ist aus Sicherheitsgründen nicht gestattet.</target>
                 </trans-unit>
