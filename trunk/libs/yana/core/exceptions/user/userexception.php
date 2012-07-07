@@ -25,16 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Security;
+
 /**
- * Warning
+ * <<exception>> User management issue.
  *
- * This class represents warnings passed to the user.
+ * Used as base-class for exceptions related to user management.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class UserAlreadyExistsWarning extends AlreadyExistsWarning
+class UserException extends \Yana\Core\Exceptions\AbstractException
 {
     /* intentionally left blank */
 }
