@@ -226,22 +226,22 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="UserNotFoundError">
-                <trans-unit id="UserNotFoundError.h">
+            <group id="Yana\Core\Exceptions\User\NotFoundException">
+                <trans-unit id="Yana\Core\Exceptions\User\NotFoundException.h">
                     <target>User unknown.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="UserNotFoundError.p">
+                <trans-unit id="Yana\Core\Exceptions\User\NotFoundException.p">
                     <target>Please check the name you provided and try again.</target>
                     <source/>
                 </trans-unit>
             </group>
-            <group id="UserAllreadyExistsWarning">
-                <trans-unit id="UserAllreadyExistsWarning.h">
+            <group id="Yana\Core\Exceptions\User\AlreadyExistsException">
+                <trans-unit id="Yana\Core\Exceptions\User\AlreadyExistsException.h">
                     <target>User already exists.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="UserAllreadyExistsWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\User\AlreadyExistsException.p">
                     <target>Another user with the same user name already exists. Please choose another login and try again.</target>
                     <source/>
                 </trans-unit>
@@ -256,12 +256,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="UserDeleteAdminError">
-                <trans-unit id="UserDeleteAdminError.h">
+            <group id="Yana\Core\Exceptions\User\DeleteAdminException">
+                <trans-unit id="Yana\Core\Exceptions\User\DeleteAdminException.h">
                     <target>Administrator is a protected account.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="UserDeleteAdminError.p">
+                <trans-unit id="Yana\Core\Exceptions\User\DeleteAdminException.p">
                     <target>This account is protected and may not be deleted or deactivated for security reasons. Changes to this user's groups are prohibited.</target>
                     <source/>
                 </trans-unit>

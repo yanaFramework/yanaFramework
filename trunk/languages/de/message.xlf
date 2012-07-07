@@ -226,22 +226,22 @@
                     <target>Es konnte kein neuer Eintrag mit der id "{$ID}" erzeugt werden, weil bereits ein anderer Eintrag mit diesem Namen existiert.</target>
                 </trans-unit>
             </group>
-            <group id="UserNotFoundError">
-                <trans-unit id="UserNotFoundError.h">
+            <group id="Yana\Core\Exceptions\User\NotFoundException">
+                <trans-unit id="Yana\Core\Exceptions\User\NotFoundException.h">
                     <source>User unknown.</source>
                     <target>Nutzer unbekannt.</target>
                 </trans-unit>
-                <trans-unit id="UserNotFoundError.p">
+                <trans-unit id="Yana\Core\Exceptions\User\NotFoundException.p">
                     <source>Please check the name you provided and try again.</source>
                     <target>Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut.</target>
                 </trans-unit>
             </group>
-            <group id="UserAllreadyExistsWarning">
-                <trans-unit id="UserAllreadyExistsWarning.h">
+            <group id="Yana\Core\Exceptions\User\AlreadyExistsException">
+                <trans-unit id="Yana\Core\Exceptions\User\AlreadyExistsException.h">
                     <source>User already exists.</source>
                     <target>Nutzer existiert bereits.</target>
                 </trans-unit>
-                <trans-unit id="UserAllreadyExistsWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\User\AlreadyExistsException.p">
                     <source>Another user with the same user name already exists. Please choose another login and try again.</source>
                     <target>Ein anderer Nutzer mit dem selben Nutzernamen existiert bereits am System. Bitte wählen Sie einen anderen Namen und versuchen Sie es erneut.</target>
                 </trans-unit>
@@ -256,12 +256,12 @@
                     <target>Sie haben versucht Ihr eigenes Nutzerkonto zu löschen. Diese Aktion ist aus Sicherheitsgründen nicht gestattet.</target>
                 </trans-unit>
             </group>
-            <group id="UserDeleteAdminError">
-                <trans-unit id="UserDeleteAdminError.h">
+            <group id="Yana\Core\Exceptions\User\DeleteAdminException">
+                <trans-unit id="Yana\Core\Exceptions\User\DeleteAdminException.h">
                     <source>Administrator is a protected account.</source>
                     <target>Systemadministrator ist ein geschütztes Konto.</target>
                 </trans-unit>
-                <trans-unit id="UserDeleteAdminError.p">
+                <trans-unit id="Yana\Core\Exceptions\User\DeleteAdminException.p">
                     <source>This account is protected and may not be deleted or deactivated for security reasons. Changes to this user's groups are prohibited.</source>
                     <target>Dieses Konto ist geschützt und darf aus Sicherheitsgründen nicht gelöscht, oder deaktiviert werden. Veränderungen der Nutzergruppe sind nicht gestattet.</target>
                 </trans-unit>
