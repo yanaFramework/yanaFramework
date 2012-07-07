@@ -216,12 +216,12 @@
                     <target>Sie haben keine ausreichenden Rechte die gewünschte Funktion aufzurufen.<it id="br1" pos="open">&lt;br /&gt;</it>Wenn Sie diese Sperre aufheben möchten, wenden Sie sich bitte an den Administrator.</target>
                 </trans-unit>
             </group>
-            <group id="AllreadyExistsWarning">
-                <trans-unit id="AllreadyExistsWarning.h">
+            <group id="Yana\Core\Exceptions\AlreadyExistsException">
+                <trans-unit id="Yana\Core\Exceptions\AlreadyExistsException.h">
                     <source>Permission denied.</source>
                     <target>Zugriff verweigert.</target>
                 </trans-unit>
-                <trans-unit id="AllreadyExistsWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\AlreadyExistsException.p">
                     <source>Unable to create an entry with the id "{$ID}" because another entry with the same name already exists.</source>
                     <target>Es konnte kein neuer Eintrag mit der id "{$ID}" erzeugt werden, weil bereits ein anderer Eintrag mit diesem Namen existiert.</target>
                 </trans-unit>

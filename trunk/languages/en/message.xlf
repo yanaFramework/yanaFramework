@@ -216,12 +216,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="AllreadyExistsWarning">
-                <trans-unit id="AllreadyExistsWarning.h">
+            <group id="Yana\Core\Exceptions\AlreadyExistsException">
+                <trans-unit id="Yana\Core\Exceptions\AlreadyExistsException.h">
                     <target>Permission denied.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="AllreadyExistsWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\AlreadyExistsException.p">
                     <target>Unable to create an entry with the id "{$ID}" because another entry with the same name already exists.</target>
                     <source/>
                 </trans-unit>
