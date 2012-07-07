@@ -263,7 +263,11 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->events[$name])) {
-            throw new \Yana\Core\Exceptions\AlreadyExistsException("Another action with the name '$name' is already defined.");
+            $message = "Another action with the name '$name' is already defined.";
+            $level = E_USER_WARNING;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($name);
+            throw $exception;
 
         } else {
             $this->events[$name] = new \Yana\Db\Ddl\Event($name);

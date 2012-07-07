@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Core\Exceptions\Security;
+namespace Yana\Core\Exceptions\Exception;
 
 /**
  * <<exception>> User management issue.

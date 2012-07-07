@@ -422,7 +422,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
         $columnName = mb_strtolower($columnName);
         if (isset($this->columns[$columnName])) {
             $message = "Another column with the name '$columnName' already exists in table '{$this->getName()}'.";
-            throw new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_WARNING);
+            $level = E_USER_WARNING;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($columnName);
+            throw $exception;
         } else {
             // may throw \Yana\Core\Exceptions\InvalidArgumentException
             $column = new \Yana\Db\Ddl\Column($columnName, $this);
@@ -820,7 +823,11 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
         } elseif (!isset($this->indexes[$indexName])) {
             $this->indexes[$indexName] = $newIndex;
         } else {
-            throw new \Yana\Core\Exceptions\AlreadyExistsException("Another index by the name '$indexName' already exists.");
+            $message = "Another index by the name '$indexName' already exists.";
+            $level = E_USER_WARNING;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($indexName);
+            throw $exception;
         }
 
         return $newIndex;

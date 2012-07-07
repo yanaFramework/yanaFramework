@@ -144,7 +144,9 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
         if ($this->exists()) {
             $message = "Unable to create directory '{$this->getPath()}'. " .
                 "Another directory with the same name already exists.";
-            throw new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_NOTICE);
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_NOTICE);
+            $exception->setId($this->getPath());
+            throw $exception;
         }
         if (!touch($this->getPath())) {
             $message = "Unable to create file '{$this->getPath()}'. Target not writeable.";
@@ -249,7 +251,9 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
         if ($overwrite === false && $fileExist === true) {
             $message = "Unable to copy file '{$destDir}{$destFile}'. " .
                 "Another file with the same name does already exist.";
-            throw new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_NOTICE);
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_NOTICE);
+            $exception->setId('{$destDir}{$destFile}');
+            throw $exception;
         }
         if ($overwrite === true && $fileExist === true && is_writeable($destDir . $destFile) === false) {
             $message = "Unable to copy to file '{$destDir}{$destFile}'. ".

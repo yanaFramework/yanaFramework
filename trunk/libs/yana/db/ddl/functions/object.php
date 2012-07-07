@@ -268,7 +268,11 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
             $this->implementations[$dbms] = $implementation;
             return $implementation;
         } else {
-            throw new \Yana\Core\Exceptions\AlreadyExistsException("Implementation for DBMS '$dbms' is already defined.");
+            $message = "Implementation for DBMS '$dbms' is already defined.";
+            $level = E_USER_WARNING;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($dbms);
+            throw $exception;
         }
     }
 

@@ -729,7 +729,12 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->tables[$name])) {
-            throw new \Yana\Core\Exceptions\AlreadyExistsException("Another table with the name '$name' is already defined.");
+            $message = "Another table with the name '$name' is already defined.";
+            $level = E_USER_WARNING;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($name);
+            throw $exception;
+            
         }
 
         $this->tables[$name] = new \Yana\Db\Ddl\Table($name, $this);
@@ -811,7 +816,11 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->views[$name])) {
-            throw new \Yana\Core\Exceptions\AlreadyExistsException("Another view with the name '$name' is already defined.");
+            $message = "Another view with the name '$name' is already defined.";
+            $level = E_USER_WARNING;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($name);
+            throw $exception;
         }
 
         $this->views[$name] = new \Yana\Db\Ddl\Views\View($name, $this);
@@ -891,7 +900,11 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->functions[$name])) {
-            throw new \Yana\Core\Exceptions\AlreadyExistsException("Another function with the name '$name' is already defined.");
+            $message = "Another function with the name '$name' is already defined.";
+            $level = E_USER_WARNING;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($name);
+            throw $exception;
         }
 
         $this->functions[$name] = new \Yana\Db\Ddl\Functions\Object($name);
@@ -972,7 +985,11 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->sequences[$name])) {
-            throw new \Yana\Core\Exceptions\AlreadyExistsException("Another sequence with the name '$name' is already defined.");
+            $message = "Another sequence with the name '$name' is already defined.";
+            $level = E_USER_WARNING;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($name);
+            throw $exception;
         }
 
         $this->sequences[$name] = new \Yana\Db\Ddl\Sequence($name);
@@ -1315,7 +1332,10 @@ class Database extends \Yana\Db\Ddl\AbstractObject
         $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             $message = "Another form with the name '$name' already exists in database '{$this->getName()}'.";
-            throw new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_WARNING);
+            $level = E_USER_WARNING;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($this->getName());
+            throw $exception;
         }
         // add element to list of defined forms
         $this->forms[$name] = new \Yana\Db\Ddl\Form($name, $this);

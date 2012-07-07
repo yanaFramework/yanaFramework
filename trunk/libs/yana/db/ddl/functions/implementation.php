@@ -244,7 +244,11 @@ class Implementation extends \Yana\Db\Ddl\DDL
         assert('is_string($name); // Wrong type for argument 1. String expected');
         $name = mb_strtolower($name);
         if (isset($this->parameters[$name])) {
-            throw new \Yana\Core\Exceptions\AlreadyExistsException("Another parameter with the name '$name' is already defined.");
+            $message = "Another parameter with the name '$name' is already defined.";
+            $level = E_USER_WARNING;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($name);
+            throw $exception;
 
         } else {
             $this->parameters[$name] = new \Yana\Db\Ddl\Functions\Parameter($name);

@@ -609,7 +609,10 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
         $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             $message = "Another form with the name '$name' already exists in form '{$this->getName()}'.";
-            throw new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_WARNING);
+            $level = E_USER_WARNING;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($name);
+            throw $exception;
         }
         $this->forms[$name] = new self($name, $this);
         return $this->forms[$name];
@@ -721,7 +724,10 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
         assert('is_string($name); // Invalid argument $name: string expected');
         if (isset($this->fields[$name])) {
             $message = "Another field with the name '$name' already exists in form '" . $this->getName() . "'.";
-            throw new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_WARNING);
+            $level = E_USER_WARNING;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($name);
+            throw $exception;
         }
         // add element to list of defined fields
         $this->fields[$name] = new \Yana\Db\Ddl\Field($name);
@@ -806,7 +812,11 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
         assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->events[$name])) {
-            throw new \Yana\Core\Exceptions\AlreadyExistsException("Another action with the name '$name' is already defined.");
+            $message = "Another action with the name '$name' is already defined.";
+            $level = E_USER_WARNING;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($name);
+            throw $exception;
 
         } else {
             $this->events[$name] = new \Yana\Db\Ddl\Event($name);

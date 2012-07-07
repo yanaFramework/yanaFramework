@@ -260,7 +260,10 @@ class Index extends \Yana\Db\Ddl\AbstractObject
 
         if (isset($this->columns[$name])) {
             $message = "Column '$name' already defined in index.";
-            throw new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_WARNING);;
+            $level = E_USER_WARNING;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($name);
+            throw $exception;
         }
 
         $this->columns[$name] = $indexColumn;
