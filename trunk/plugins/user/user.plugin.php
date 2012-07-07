@@ -127,15 +127,17 @@ class plugin_user extends StdClass implements IsPlugin
             $menuEntry->setTitle($YANA->getLanguage()->getVar($action));
             \Yana\Plugins\Menu::getInstance()->setMenuEntry($action, $menuEntry);
             return true;
+        } elseif (!YanaUser::isLoggedIn()) {
+            $_SESSION['on_login_goto'] = $event;
+            $message = "A valid login is required to access this function.";
+            $level = \E_USER_WARNING;
+            new \Yana\Core\Exceptions\Security\LoginRequiredException($message, $level);
+            $YANA->exitTo("login");
         } else {
-            if (!YanaUser::isLoggedIn()) {
-                new LoginRequiredWarning();
-                $_SESSION['on_login_goto'] = $event;
-                $YANA->exitTo("login");
-            } else {
-                new InsufficientRightsWarning();
-                $YANA->exitTo();
-            }
+            $message = "The login is valid, but the access rights are not enough to access the function.";
+            $level = \E_USER_WARNING;
+            new \Yana\Core\Exceptions\Security\InsufficientRightsException($message, $level);
+            $YANA->exitTo();
         }
     }
 
