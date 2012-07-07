@@ -39,7 +39,19 @@ namespace Yana\Core\Exceptions;
  */
 class AlreadyExistsException extends \Yana\Core\Exceptions\DataException
 {
-    /* intentionally left blank */
+
+    /**
+     * Set id of duplicate entry.
+     *
+     * @param   scalar  $id  identifier of duplicate entry
+     * @return  \Yana\Core\Exceptions\AlreadyExistsException
+     */
+    public function setId($id)
+    {
+        $this->data = array('ID' => $id);
+        return $this;
+    }
+
 }
 
 ?>
