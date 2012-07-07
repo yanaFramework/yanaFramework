@@ -34,12 +34,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="LowPasswordQualityWarning">
-                <trans-unit id="LowPasswordQualityWarning.h">
+            <group id="Yana\Core\Exceptions\Security\LowPasswordQualityException">
+                <trans-unit id="Yana\Core\Exceptions\Security\LowPasswordQualityException.h">
                     <target>Password quality is too low.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="LowPasswordQualityWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Security\LowPasswordQualityException.p">
                     <target>Required action can not be saved. Please use for you password numbers and special characters.</target>
                     <source/>
                 </trans-unit>
