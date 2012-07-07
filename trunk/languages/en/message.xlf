@@ -24,12 +24,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="LoginRequiredWarning">
-                <trans-unit id="LoginRequiredWarning.h">
+            <group id="Yana\Core\Exceptions\Security\LoginRequiredException">
+                <trans-unit id="Yana\Core\Exceptions\Security\LoginRequiredException.h">
                     <target>Password required.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="LoginRequiredWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Security\LoginRequiredException.p">
                     <target>You are entering a protected area. Please enter your user name and password to proceed.</target>
                     <source/>
                 </trans-unit>
@@ -44,12 +44,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="InsufficientRightsWarning">
-                <trans-unit id="InsufficientRightsWarning.h">
+            <group id="Yana\Core\Exceptions\Security\InsufficientRightsException">
+                <trans-unit id="Yana\Core\Exceptions\Security\InsufficientRightsException.h">
                     <target>Permission denied.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="InsufficientRightsWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Security\InsufficientRightsException.p">
                     <target>Your login is correct, but the requested action is not available, since you got insufficient permission for this section. Please check your URL. If you feel this is an error and want your settings checked, please inform your administrator.</target>
                     <source/>
                 </trans-unit>
@@ -86,12 +86,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="\Yana\Core\Exceptions\Security\InvalidLoginException">
-                <trans-unit id="\Yana\Core\Exceptions\Security\InvalidLoginException.h">
+            <group id="Yana\Core\Exceptions\Security\InvalidLoginException">
+                <trans-unit id="Yana\Core\Exceptions\Security\InvalidLoginException.h">
                     <target>Access denied.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="\Yana\Core\Exceptions\Security\InvalidLoginException.p">
+                <trans-unit id="Yana\Core\Exceptions\Security\InvalidLoginException.p">
                     <target>The given user name and/or password is incorrect. Please check the text you entered and try again.</target>
                     <source/>
                 </trans-unit>
@@ -206,12 +206,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="\Yana\Core\Exceptions\Security\PermissionDeniedException">
-                <trans-unit id="\Yana\Core\Exceptions\Security\PermissionDeniedException.h">
+            <group id="Yana\Core\Exceptions\Security\PermissionDeniedException">
+                <trans-unit id="Yana\Core\Exceptions\Security\PermissionDeniedException.h">
                     <target>Permission denied.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="\Yana\Core\Exceptions\Security\PermissionDeniedException.p">
+                <trans-unit id="Yana\Core\Exceptions\Security\PermissionDeniedException.p">
                     <target>We are sorry: you don't have permission to perform the requested action.<it id="br1" pos="open">&lt;br /&gt;</it>If you feel this is an error, report this message to the administrator.</target>
                     <source/>
                 </trans-unit>
@@ -266,12 +266,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="\Yana\Core\Exceptions\Security\LoginDeniedException">
-                <trans-unit id="\Yana\Core\Exceptions\Security\LoginDeniedException.h">
+            <group id="Yana\Core\Exceptions\Security\LoginDeniedException">
+                <trans-unit id="Yana\Core\Exceptions\Security\LoginDeniedException.h">
                     <target>Login currently not possible.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="\Yana\Core\Exceptions\Security\LoginDeniedException.p">
+                <trans-unit id="Yana\Core\Exceptions\Security\LoginDeniedException.p">
                     <target>Because a wrong password has been entered more than 3 times, any login to this account is suspended for 5 minutes. Please wait to the end of this period and try again. If you forgot your password, please notify your administrator.</target>
                     <source/>
                 </trans-unit>
@@ -392,12 +392,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="\Yana\Core\Exceptions\Security\PasswordExpiredException">
-                <trans-unit id="\Yana\Core\Exceptions\Security\PasswordExpiredException.h">
+            <group id="Yana\Core\Exceptions\Security\PasswordExpiredException">
+                <trans-unit id="Yana\Core\Exceptions\Security\PasswordExpiredException.h">
                     <target>Permission denied</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="\Yana\Core\Exceptions\Security\PasswordExpiredException.p">
+                <trans-unit id="Yana\Core\Exceptions\Security\PasswordExpiredException.p">
                     <target>The time limit for changing your password has expired. Please re-request a new password. If you need assistance, contact your administrator for help.</target>
                     <source/>
                 </trans-unit>
