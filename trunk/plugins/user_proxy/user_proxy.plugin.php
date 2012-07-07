@@ -335,11 +335,10 @@ class plugin_user_proxy extends StdClass implements IsPlugin
 
         $where = array('USER_CREATED', '=', $currentUser);
         if (!empty($user)) {
-            if ($user !== $currentUser) {
-                $where = array($where, 'and', array('USER_ID', '=', $user));
-            } else {
-                throw new UserDeleteSelfError();
+            if ($user === $currentUser) {
+                throw new \Yana\Core\Exceptions\User\DeleteSelfException();
             }
+            $where = array($where, 'and', array('USER_ID', '=', $user));
         }
         foreach($rules as $key)
         {
