@@ -25,18 +25,34 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\User;
+
 /**
- * Error
+ * <<exception>> User management issue.
  *
- * This class represents errors passed to the user.
+ * Thrown when trying to delete the administrator account.
+ * This is not allowed as it effectively may block access to function required to
+ * set up and maintain the application.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class UserDeleteSelfError extends Error
+class DeleteAdminException extends \Yana\Core\Exceptions\Security\UserException
 {
-    /* intentionally left blank */
+
+    /**
+     * Create a new instance.
+     *
+     * @param  string      $message   the message that should be reported
+     * @param  int         $code      optional error code
+     * @param  \Exception  $previous  use this when you need to rethrow a catched exception
+     */
+    public function __construct($message = "", $code = \E_USER_ERROR, \Exception $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
+
 }
 
 ?>

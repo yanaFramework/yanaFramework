@@ -25,16 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\User;
+
 /**
- * Error
+ * <<exception>> User management issue.
  *
- * This class represents errors passed to the user.
+ * Thrown when user tries to delete his own account.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class UserDeleteAdminError extends Error
+class DeleteSelfException extends \Yana\Core\Exceptions\Security\UserException
 {
     /* intentionally left blank */
 }

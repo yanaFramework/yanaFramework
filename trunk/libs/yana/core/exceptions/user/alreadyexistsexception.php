@@ -25,18 +25,33 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\User;
+
 /**
- * Error
+ * <<exception>> User management issue.
  *
- * This class represents errors passed to the user.
+ * Thrown when user trying to create an user account when another user by the same name
+ * already exists.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class UserNotFoundError extends Error
+class AlreadyExistsException extends \Yana\Core\Exceptions\AlreadyExistsException
 {
-    /* intentionally left blank */
+
+    /**
+     * Create a new instance.
+     *
+     * @param  string      $message   the message that should be reported
+     * @param  int         $code      optional error code
+     * @param  \Exception  $previous  use this when you need to rethrow a catched exception
+     */
+    public function __construct($message = "", $code = \E_USER_WARNING, \Exception $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
+
 }
 
 ?>
