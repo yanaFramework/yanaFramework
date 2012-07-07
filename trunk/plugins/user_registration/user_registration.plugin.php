@@ -88,7 +88,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
         $key = uniqid(substr(md5($mail), 0, 3));
 
         if ($database->exists("user.$name")) {
-            throw new UserAllreadyExistsWarning();
+            throw new \Yana\Core\Exceptions\User\AlreadyExistsException();
         }
 
         /*
@@ -196,11 +196,11 @@ class plugin_user_registration extends StdClass implements IsPlugin
         $entry = $database->select($select);
         assert('is_array($entry); // Array expected: $entry. Invalid dataset or invalid query.');
         if (empty($entry)) {
-            throw new UserNotFoundError();
+            throw new \Yana\Core\Exceptions\User\NotFoundException();
         }
         $entry = array_pop($entry);
         if (!isset($entry['NEWUSER_NAME']) || !isset($entry['NEWUSER_MAIL'])) {
-            throw new UserNotFoundError();
+            throw new \Yana\Core\Exceptions\User\NotFoundException();
         }
 
         // try to create user
@@ -223,7 +223,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
         } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
             throw new InvalidInputWarning();
         } catch (\Yana\Core\Exceptions\AlreadyExistsException $e) {
-            throw new UserAllreadyExistsWarning();
+            throw new \Yana\Core\Exceptions\User\AlreadyExistsException();
         } catch (\Exception $e) {
             throw new Error();
         }
