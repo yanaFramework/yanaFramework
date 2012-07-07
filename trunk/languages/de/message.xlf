@@ -34,12 +34,12 @@
                     <target>Sie betreten einen geschützten Bereich. Bitte geben Sie Ihren Nutzernamen und Passwort ein, um sich anzumelden.</target>
                 </trans-unit>
             </group>
-            <group id="LowPasswordQualityWarning">
-                <trans-unit id="LowPasswordQualityWarning.h">
+            <group id="Yana\Core\Exceptions\Security\LowPasswordQualityException">
+                <trans-unit id="Yana\Core\Exceptions\Security\LowPasswordQualityException.h">
                     <source>Password quality is too low.</source>
                     <target>Passwort qualität is zu niedrig.</target>
                 </trans-unit>
-                <trans-unit id="LowPasswordQualityWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Security\LowPasswordQualityException.p">
                     <source>Required action can not be saved. Please use for you password numbers and special characters.</source>
                     <target>Die gewünschte Aktion konnte nicht gespeichert werden. Bitte verwenden Sie zahlen und sonderzeichen für Ihr passwort.</target>
                 </trans-unit>
