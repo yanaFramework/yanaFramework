@@ -431,7 +431,7 @@ class plugin_user extends StdClass implements IsPlugin
 
         assert('is_array($user); // $user must be of type array');
         if (count($user) !== 1) {
-            throw new UserNotFoundError();
+            throw new \Yana\Core\Exceptions\User\NotFoundException();
         }
 
         $user = array_pop($user);

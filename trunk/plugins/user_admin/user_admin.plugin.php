@@ -243,12 +243,15 @@ class plugin_user_admin extends StdClass implements IsPlugin
 
                 // before doing anything, check if entry exists
                 if (!YanaUser::isUser($id)) {
-                    throw new UserNotFoundError();
+                    $message = "No user found with id: " . \htmlentities($id);
+                    $level = E_USER_ERROR;
+                    throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
                 }
 
-                /* should not deactivate administrator */
                 if ($id === "administrator" && !$entry['user_active']) {
-                    throw new UserDeleteAdminError();
+                    $message = "The administrator's account must not be deactivated";
+                    $level = E_USER_ERROR;
+                    throw new \Yana\Core\Exceptions\User\DeleteAdminException($message, $level);
                 }
             }
         );
@@ -275,7 +278,7 @@ class plugin_user_admin extends StdClass implements IsPlugin
         {
             // Administrator account should not be deleted
             if (strtoupper($id) == "ADMINISTRATOR") {
-                throw new UserDeleteAdminError();
+                throw new \Yana\Core\Exceptions\User\DeleteAdminException();
             }
 
             // try to remove user
@@ -320,7 +323,7 @@ class plugin_user_admin extends StdClass implements IsPlugin
         } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
             throw new InvalidInputWarning();
         } catch (\Yana\Core\Exceptions\AlreadyExistsException $e) {
-            throw new UserAllreadyExistsWarning();
+            throw new \Yana\Core\Exceptions\User\AlreadyExistsException();
         } catch (\Exception $e) {
             throw new Error();
         }

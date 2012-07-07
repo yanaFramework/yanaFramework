@@ -211,7 +211,9 @@ class plugin_user_profile extends StdClass implements IsPlugin
             $userId = YanaUser::getUserName();
         }
         if (YanaUser::isUser($userId)) {
-            throw new UserNotFoundError();
+            $message = "No user found with id: " . \htmlentities($userId);
+            $level = E_USER_ERROR;
+            throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
         }
 
         $userData = self::getDatabase()->select("userprofile." . $userId);
@@ -241,8 +243,10 @@ class plugin_user_profile extends StdClass implements IsPlugin
         $userData = self::getDatabase()->select("userprofile.$target");
 
         // user not found or not active
-        if (!$userData['USER_ID'] || !$userData['USER_ACTIVE']) {
-            throw new UserNotFoundError();
+        if (empty($userData['USER_ID']) || empty($userData['USER_ACTIVE'])) {
+            $message = "No user found with id: " . \htmlentities($target);
+            $level = E_USER_ERROR;
+            throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
         }
 
         $isOwnProfile = strcasecmp($target, YanaUser::getUserName()) === 0;
