@@ -25,16 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Security;
+
 /**
- * Warning
+ * <<exception>> Security restriction in effect.
  *
- * This class represents warnings passed to the user.
+ * Thrown when an unauthenticated user tries to access a function that requires a valid login.
  *
  * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class LoginRequiredWarning extends Warning
+class LoginRequiredException extends \Yana\Core\Exceptions\Security\SecurityException
 {
     /* intentionally left blank */
 }

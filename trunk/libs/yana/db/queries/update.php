@@ -221,6 +221,7 @@ class Update extends \Yana\Db\Queries\Insert
      * @return  bool
      * @since   2.9.3
      * @ignore
+     * @throws  \Yana\Core\Exceptions\Security\InsufficientRightsException  when the user may not access the profile
      */
     protected function checkProfile(&$value)
     {
@@ -257,7 +258,9 @@ class Update extends \Yana\Db\Queries\Insert
         $profileId = array_pop($resultRow);
         $session = SessionManager::getInstance();
         if ($session->checkPermission($profileId) !== true) {
-            throw new InsufficientRightsWarning();
+            $message = "The login is valid, but the access rights are not enough to access the function.";
+            $level = \E_USER_WARNING;
+            throw new \Yana\Core\Exceptions\Security\InsufficientRightsException($message, $level);
         }
         switch ($this->getExpectedResult())
         {
