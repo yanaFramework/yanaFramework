@@ -255,7 +255,10 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
         if ($this->exists()) {
             $message = "Unable to create directory '{$this->getPath()}'. " .
                 "Another directory with the same name already exists.";
-            throw new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_NOTICE);
+            $level = \E_USER_NOTICE;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($this->getPath());
+            throw $exception;
         }
 
         $path = $this->getPath();
@@ -579,7 +582,10 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
         if ($overwrite === false && file_exists($destDir) === true) {
             $message = "Unable to copy directory '{$destDir}'. " .
                 "Another directory with the same name does already exist.";
-            throw new \Yana\Core\Exceptions\AlreadyExistsException($message, E_USER_NOTICE);
+            $level = \E_USER_NOTICE;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($destDir);
+            throw $exception;
         }
         if ($overwrite === true && file_exists($destDir) === true && is_writeable($destDir) === false) {
             $message = "Unable to copydirectory '{$destDir}'. The directory does already exist and is not writeable.";

@@ -395,7 +395,11 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
             $this->fields[$name] = new \Yana\Db\Ddl\Views\Field($name);
             return $this->fields[$name];
         } else {
-            throw new \Yana\Core\Exceptions\AlreadyExistsException("Another field with the name '$name' is already defined.");
+            $message = "Another field with the name '$name' is already defined.";
+            $level = E_USER_WARNING;
+            $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
+            $exception->setId($name);
+            throw $exception;
         }
     }
 

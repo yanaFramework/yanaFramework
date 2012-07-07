@@ -838,10 +838,9 @@ class YanaUser extends \Yana\Core\Object
      *
      * @param   string  $userName  user name
      * @param   string  $mail      e-mail address
-     * @throws  \Yana\Core\Exceptions\AlreadyExistsException    if another user with the same name already exists
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when no user name is given
-     * @throws  \Yana\Core\Exceptions\AlreadyExistsException    if another user with the same name already exists
-     * @throws  \DbError                                        when the database entry could not be created
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException     when no user name is given
+     * @throws  \Yana\Core\Exceptions\User\AlreadyExistsException  if another user with the same name already exists
+     * @throws  \DbError                                           when the database entry could not be created
      */
     public static function createUser($userName, $mail)
     {
@@ -854,7 +853,9 @@ class YanaUser extends \Yana\Core\Object
             throw new \Yana\Core\Exceptions\InvalidArgumentException("No user name given.", E_USER_WARNING);
         }
         if (YanaUser::isUser($userName)) {
-            throw new \Yana\Core\Exceptions\AlreadyExistsException("A user with the name '$userName' already exists.");
+            $message = "A user with the name '$userName' already exists.";
+            $level = E_USER_WARNING;
+            throw new \Yana\Core\Exceptions\User\AlreadyExistsException($message, $level);
         }
         // insert user settings
         self::$_database->insert("user.$userName", array('USER_MAIL' => $mail));
