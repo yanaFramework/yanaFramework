@@ -25,16 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Files;
+
 /**
- * File not readable error.
+ * <<exception>> File not writeable.
  *
- * Used when a requested file is not readable.
+ * Used when a requested file is not writeable.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class NotReadableError extends FileError
+class NotWriteableException extends \Yana\Core\Exceptions\Files\FileException
 {
     /* intentionally left blank */
 }

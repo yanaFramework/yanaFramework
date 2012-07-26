@@ -25,16 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Files;
+
 /**
- * File not created error.
+ * <<exception>> File not created.
  *
  * Used when a file could not be created during an operation.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class FileNotCreatedError extends FileError
+class NotCreatedException extends \Yana\Core\Exceptions\Files\FileException
 {
     /* intentionally left blank */
 }

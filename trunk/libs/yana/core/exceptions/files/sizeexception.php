@@ -25,28 +25,28 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Files;
+
 /**
- * File error.
+ * <<exception>> Filesize exceeds maximum.
  *
- * This is a base class for all errors that have to do with files.
+ * Used when an (uploaded) file is larger than the maximum allowed size.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class FileError extends Error
+class SizeException extends \Yana\Core\Exceptions\Files\FileException
 {
 
     /**
-     * Set file name.
+     * Set maximum file size.
      *
-     * @access  public
-     * @param   scalar  $file  path to some file or filename
-     * @return  UploadFailedError
+     * @param   scalar  $max  maximum file size in byte
+     * @return  \Yana\Core\Exceptions\Files\SizeException
      */
-    public function setFilename($file)
+    public function setMaxSize($max)
     {
-        $this->data['FILE'] = (string) $file;
+        $this->data['MAXIMUM'] = (string) $max;
         return $this;
     }
 

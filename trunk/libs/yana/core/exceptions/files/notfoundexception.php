@@ -25,31 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Files;
+
 /**
- * Filesize error.
+ * <<exception>> File not found.
  *
- * Used when a file exceeds the maximum allowed size.
+ * Used when a file was expected does not exist or could not be accessed.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class FilesizeError extends FileError
+class NotFoundException extends \Yana\Core\Exceptions\Files\FileException
 {
-
-    /**
-     * Set maximum file size.
-     *
-     * @access  public
-     * @param   scalar  $max  maximum file size in byte
-     * @return  FilesizeError
-     */
-    public function setMaxSize($max)
-    {
-        $this->data['MAXIMUM'] = (string) $max;
-        return $this;
-    }
-
+    /* intentionally left blank */
 }
 
 ?>
