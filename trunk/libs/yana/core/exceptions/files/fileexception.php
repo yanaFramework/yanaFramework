@@ -25,18 +25,32 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Files;
+
 /**
- * Error
+ * <<exception>> Form data related issues.
  *
- * This class represents errors passed to the user.
+ * Thrown when a client commits data to a form that is not valid for some reason.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class FileNotFoundError extends Error
+class FileException extends \Yana\Core\Exceptions\DataException
 {
-    /* intentionally left blank */
+
+    /**
+     * Set file name.
+     *
+     * @access  public
+     * @param   scalar  $file  path to some file or filename
+     * @return  \Yana\Core\Exceptions\Files\FileException
+     */
+    public function setFilename($file)
+    {
+        $this->data['FILE'] = (string) $file;
+        return $this;
+    }
+
 }
 
 ?>

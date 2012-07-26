@@ -25,16 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Files;
+
 /**
- * File not writeable error.
+ * <<exception>> File upload has failed.
  *
- * Used when a requested file is not writeable.
+ * Thrown whenever a file upload has failed for <i>some</i> reason.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class NotWriteableError extends FileError
+class UploadFailedException extends \Yana\Core\Exceptions\Files\FileException
 {
     /* intentionally left blank */
 }
