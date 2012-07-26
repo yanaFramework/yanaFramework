@@ -46,6 +46,8 @@ class plugin_antispam extends StdClass implements IsPlugin
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
+     * @throws  \Yana\Core\Exceptions\Forms\SuspendedException  when form is committed too soon
+     * @throws  \Yana\Core\Exceptions\Forms\TimeoutException    when form is committed too late
      */
     public function catchAll($event, array $ARGS)
     {
@@ -163,7 +165,9 @@ class plugin_antispam extends StdClass implements IsPlugin
                     \Yana\Log\LogManager::getLogger()->addLog($log, E_USER_NOTICE, $header_data);
                     unset($log);
                 }
-                throw new FormSuspendedWarning();
+                $message = 'Entry is committed too soon. Please wait and try again.';
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Core\Exceptions\Forms\SuspendedException($message, $level);
             }
             if (time() - $time > 1800) {
 
@@ -171,10 +175,13 @@ class plugin_antispam extends StdClass implements IsPlugin
                     assert('!isset($log); // Cannot redeclare var $log');
                     $log = 'SPAM: blocked entry because maximum time of ' .
                         'life (30 minutes) for the form has been exceeded.';
-                    \Yana\Log\LogManager::getLogger()->addLog($log, E_USER_NOTICE, $header_data);
-                    unset($log);
+                    $level = \Yana\Log\TypeEnumeration::INFO;
+                    \Yana\Log\LogManager::getLogger()->addLog($log, $level, $header_data);
+                    unset($log, $level);
                 }
-                throw new FormTimeoutWarning();
+                $message = 'The form contents have expired. Please reload and try again.';
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Core\Exceptions\Forms\TimeoutException($message, $level);
             }
             /**
              * 3.3) if an invisible field has been filled,
@@ -186,7 +193,8 @@ class plugin_antispam extends StdClass implements IsPlugin
                     assert('!isset($log); // Cannot redeclare var $log');
                     $log = 'SPAM: blocked entry because a field that is ' .
                         'not visible to human visitors has been filled.';
-                    \Yana\Log\LogManager::getLogger()->addLog($log, E_USER_NOTICE, $header_data);
+                    $level = \Yana\Log\TypeEnumeration::INFO;
+                    \Yana\Log\LogManager::getLogger()->addLog($log, $level, $header_data);
                     unset($log);
                 }
                 throw new SpamError();

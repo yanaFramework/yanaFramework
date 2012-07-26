@@ -356,6 +356,8 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
      *
      * @access  public
      * @param   bool  $overwrite  Replace existing files? True = yes, false = no.
+     * @throws  \Yana\Core\Exceptions\Files\NotWriteableException  when a plugin file could not be copied
+     * @throws  \Yana\Core\Exceptions\Files\NotCreatedException    when a plugin file could not be created
      */
     public function buildPlugin($overwrite = false)
     {
@@ -397,13 +399,17 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
         {
             if (isset($file['src'])) {
                 if (!copy($file['src'], $file['dest'])) {
-                    $error = new NotWriteableError();
+                    $message = "A file was not copied. Is target directory writeable?";
+                    $code =  \Yana\Log\TypeEnumeration::ERROR;
+                    $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $code);
                     $error->setFilename($file['dest']);
                     throw $error;
                 }
             } elseif (isset($file['content'])) {
                 if (file_put_contents($file['dest'], $file['content']) === false) {
-                    $error = new NotWriteableError();
+                    $message = "A file was not created. Is target directory writeable?";
+                    $code =  \Yana\Log\TypeEnumeration::ERROR;
+                    $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $code);
                     $error->setFilename($file['dest']);
                     throw $error;
                 }
@@ -426,35 +432,47 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
         $phpFile->create();
         $phpFile->setContent($this->getClassSkeleton());
         if (!$phpFile->write()) {
-            $error = new NotWriteableError();
+            $message = "PHP file was not created. Is target directory writeable?";
+            $code = \Yana\Log\TypeEnumeration::ERROR;
+            $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $code);
             $error->setFilename($phpFile->getPath());
             throw $error;
         }
+        unset($phpFile);
 
         // create AJAX-Yana bridge
         $apiFile = new \Yana\Files\Text($skinDir->getPath() . '/api.js');
         $apiFile->create();
         $apiFile->setContent($this->getJsApi());
         if (!$apiFile->write()) {
-            $error = new NotWriteableError();
+            $message = "JavaScript file was not created. Is target directory writeable?";
+            $code = \Yana\Log\TypeEnumeration::ERROR;
+            $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $code);
             $error->setFilename($apiFile->getPath());
             throw $error;
         }
+        unset($apiFile);
 
         // create XLIFF translation file
         $xliffFile = new \Yana\Files\Text($enDir->getPath() . '/' . $pluginId . '.xlf');
         $xliffFile->create();
         $xliffFile->setContent("<?xml version=\"1.0\"?>\n" . $this->getXliff());
         if (!$xliffFile->write()) {
-            $error = new NotWriteableError();
+            $message = "XLIFF english locale file was not created. Is target directory writeable?";
+            $code = \Yana\Log\TypeEnumeration::ERROR;
+            $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $code);
             $error->setFilename($xliffFile->getPath());
             throw $error;
         }
+        unset($xliffFile);
+
         $xliffFile = new \Yana\Files\Text($deDir->getPath() . '/' . $pluginId . '.xlf');
         $xliffFile->create();
         $xliffFile->setContent("<?xml version=\"1.0\"?>\n" . $this->getXliff("en", "de"));
         if (!$xliffFile->write()) {
-            $error = new NotWriteableError();
+            $message = "XLIFF german locale file was not created. Is target directory writeable?";
+            $code = \Yana\Log\TypeEnumeration::ERROR;
+            $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $code);
             $error->setFilename($xliffFile->getPath());
             throw $error;
         }

@@ -78,7 +78,7 @@ class plugin_rss_admin extends StdClass implements IsPlugin
      * @user        group: admin, level: 100
      * @template    MESSAGE
      * @onsuccess   goto: get_rss_to_html_config
-     * @onerror     goto: get_rss_to_html_config, text: FileNotFoundError
+     * @onerror     goto: get_rss_to_html_config, text: Yana\Core\Exceptions\Files\NotFoundException
      *
      * @access      public
      * @param       array  $ARGS  ignored

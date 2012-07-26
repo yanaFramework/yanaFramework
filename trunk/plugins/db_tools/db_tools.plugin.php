@@ -131,7 +131,9 @@ class plugin_db_tools extends StdClass implements IsPlugin
         $xml = (string) \Yana\Db\Ddl\DatabaseFactory::createDatabase($db->getConnection());
         $filename = 'database.db.xml';
         if (empty($xml)) {
-            $error = new FileNotCreatedError();
+            $message = "Did not create '{$filename}' because the file is empty.";
+            $code = E_USER_WARNING;
+            $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $code);
             throw $error->setFilename($filename);
         }
         // output file
@@ -167,7 +169,9 @@ class plugin_db_tools extends StdClass implements IsPlugin
         $xml = \Yana\Db\Export\DataFactory::createXML(true, array_values($list));
         $filename = 'database.xml';
         if (empty($xml)) {
-            $error = new FileNotCreatedError();
+            $message = "Did not create '{$filename}' because the file is empty.";
+            $code = E_USER_WARNING;
+            $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $code);
             throw $error->setFilename($filename);
         }
         // output file
@@ -208,7 +212,9 @@ class plugin_db_tools extends StdClass implements IsPlugin
             }
             $filename = 'database.config';
             if (!empty($structure)) {
-                $error = new FileNotCreatedError();
+                $message = "Did not create '{$filename}' because the file is empty.";
+                $code = E_USER_WARNING;
+                $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $code);
                 throw $error->setFilename($filename);
             }
             // output file
@@ -254,7 +260,9 @@ class plugin_db_tools extends StdClass implements IsPlugin
         }
         $filename = 'database.config';
         if (empty($structure)) {
-            $error = new FileNotCreatedError();
+            $message = "Did not create '{$filename}' because the file is empty.";
+            $code = E_USER_WARNING;
+            $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $code);
             throw $error->setFilename($filename);
         }
         // output file
@@ -328,7 +336,9 @@ class plugin_db_tools extends StdClass implements IsPlugin
 
         $filename = mb_strtolower(preg_replace('/\W/', '_', $dbms) . '.sql');
         if (empty($fileContents)) {
-            $error = new FileNotCreatedError();
+            $message = "Did not create '{$filename}' because the file is empty.";
+            $code = E_USER_WARNING;
+            $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $code);
             throw $error->setFilename($filename);
         }
         header("Cache-Control: maxage=1"); // Bug in IE8 with HTTPS-downloads

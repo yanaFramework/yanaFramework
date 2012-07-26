@@ -304,7 +304,7 @@ class plugin_user extends StdClass implements IsPlugin
      *
      * @type        security
      * @template    USER_RESET_PWD
-     * @onerror     text: FileNotFoundError
+     * @onerror     text: Yana\Core\Exceptions\Files\NotFoundException
      *
      * @access      public
      * @param       string  $key  user id

@@ -301,7 +301,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         if (!class_exists('RSS')) {
             throw new Error("RSS wrapper class not found. Unable to proceed.");
         }
-        self::_securityCheck(); // throws FileNotFoundError
+        self::_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
 
         /* get entries */
         $rows = $this->_getTable();
@@ -365,12 +365,13 @@ class plugin_guestbook extends StdClass implements IsPlugin
      * @param       string  $hometown    author location
      * @param       string  $homepage    URL
      * @param       int     $opinion     rating (0..5)
+     * @throws      \Yana\Core\Exceptions\Forms\FloodException  when user sent too many posts in a row
      */
     public function guestbook_write_new($name, $message, $msgtyp, $messenger = "", $mail = "", $hometown = "", $homepage = "", $opinion = "")
     {
         /* @var $YANA \Yana */
         global $YANA;
-        self::_securityCheck(); // throws FileNotFoundError
+        self::_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
 
         $permission = $YANA->getVar("PERMISSION");
         /* avoid spamming */
@@ -411,8 +412,10 @@ class plugin_guestbook extends StdClass implements IsPlugin
         $myFlood = $YANA->getPlugins()->{"guestbook:/my.flood"};
         $myFlood->setMax((int)$YANA->getVar("PROFILE.GUESTBOOK.FLOODING"));
         if ($myFlood->isBlocked()) {
-            \Yana\Log\LogManager::getLogger()->addLog('Possibly flooding attempt detected. User request rejected.');
-            throw new FloodWarning();
+            $message = 'Possibly flooding attempt detected. Request rejected.';
+            $code = \Yana\Log\TypeEnumeration::WARNING;
+            \Yana\Log\LogManager::getLogger()->addLog($message, $code);
+            throw new \Yana\Core\Exceptions\Forms\FloodException($message, $code);
         }
         assert('!isset($where); // Cannot redeclare var $where');
         $where = array('profile_id', '=', Yana::getId());
@@ -426,12 +429,16 @@ class plugin_guestbook extends StdClass implements IsPlugin
         }
         /* insert new entry into table */
         if (!$database->insert('guestbook.*', $entry)) {
-            \Yana\Log\LogManager::getLogger()->addLog('Failed to insert entry.', E_USER_NOTICE, $entry);
-            throw new InvalidInputWarning();
+            $message = 'Failed to insert entry.';
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            \Yana\Log\LogManager::getLogger()->addLog($message, $level, $entry);
+            throw new InvalidInputWarning($message, $level);
         }
         if (!$database->commit()) {
-            \Yana\Log\LogManager::getLogger()->addLog('Unable to submit entry.', E_USER_NOTICE, $entry);
-            throw new Error();
+            $message = 'Unable to submit entry.';
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            \Yana\Log\LogManager::getLogger()->addLog($message, $level, $entry);
+            throw new Error($message, $level);
         }
         /* send Mail */
         if ($YANA->getVar("PROFILE.GUESTBOOK.MAIL") && $YANA->getVar("PROFILE.GUESTBOOK.NOTIFICATION")) {
@@ -458,7 +465,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
     public function guestbook_entry($target)
     {
         global $YANA;
-        self::_securityCheck(); // throws FileNotFoundError
+        self::_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
 
         // create link to user profile (if profile viewer is installed)
         if ($YANA->getPlugins()->isActive('user_admin')) {
@@ -498,7 +505,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
     public function guestbook_read($page = 0, $entries = null)
     {
         global $YANA;
-        self::_securityCheck(); // throws FileNotFoundError
+        self::_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
 
         Microsummary::publishSummary(__CLASS__);
         \Yana\RSS\Publisher::publishFeed('guestbook_read_rss');
@@ -681,7 +688,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
      *
      * @access  private
      * @static
-     * @throws  FileNotFoundError
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException
      */
     private static function _securityCheck()
     {
@@ -691,8 +698,10 @@ class plugin_guestbook extends StdClass implements IsPlugin
         $dir = $YANA->getResource('system:/config/profiledir');
         $file = new \Yana\Files\Readonly($dir->getPath() . $id . '.cfg');
         if ($id !== 'default' && !$file->exists() && !$YANA->getVar("PROFILE.AUTO")) {
-            \Yana\Log\LogManager::getLogger()->addLog("Access restriction in effect. Access to undefined profile {$id} denied.");
-            throw new FileNotFoundError();
+            $message = "Access restriction in effect. Access to undefined profile {$id} denied.";
+            $code = \Yana\Log\TypeEnumeration::WARNING;
+            \Yana\Log\LogManager::getLogger()->addLog($message);
+            throw new \Yana\Core\Exceptions\Files\NotFoundException($message, $code);
         }
     }
 
