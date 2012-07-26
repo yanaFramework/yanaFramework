@@ -60,18 +60,18 @@
                     <target>Die Datei {$FILE} ist keine gültige Grafik.</target>
                 </trans-unit>
             </group>
-            <group id="UploadFailedError">
-                <trans-unit id="UploadFailedError.h">
+            <group id="Yana\Core\Exceptions\Files\UploadFailedException">
+                <trans-unit id="Yana\Core\Exceptions\Files\UploadFailedException.h">
                     <source>The file {$FILE} could not be saved.</source>
                     <target>Die Datei {$FILE} konnte nicht gespeichert werden.</target>
                 </trans-unit>
             </group>
-            <group id="FilesizeError">
-                <trans-unit id="FilesizeError.h">
+            <group id="Yana\Core\Exceptions\Files\SizeException">
+                <trans-unit id="Yana\Core\Exceptions\Files\SizeException.h">
                     <source>Input is not valid.</source>
                     <target>Eingabe ist ungültig.</target>
                 </trans-unit>
-                <trans-unit id="FilesizeError.p">
+                <trans-unit id="Yana\Core\Exceptions\Files\SizeException.p">
                     <source>The file {$FILE} is too large. It must not exceed a maximum size of {$MAXIMUM} byte.</source>
                     <target>Die Datei {$FILE} ist zu groß. Sie darf nicht größer sein als {$MAXIMUM} byte.</target>
                 </trans-unit>
@@ -126,22 +126,22 @@
                     <target>Bitte achten Sie darauf Beiträge nicht mehrmals abzusenden.</target>
                 </trans-unit>
             </group>
-            <group id="FloodWarning">
-                <trans-unit id="FloodWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\FloodException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\FloodException.h">
                     <source>Your entry has already been saved.</source>
                     <target>Ihr Beitrag wurde bereits gespeichert.</target>
                 </trans-unit>
-                <trans-unit id="FloodWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\FloodException.p">
                     <source>No additional entries allowed this time.<it id="br1" pos="open">&lt;br /&gt;</it>Please give me and other visitors some time to react on the entries you already made.</source>
                     <target>Weitere Einträge sind zur Zeit nicht erlaubt.<it id="br1" pos="open">&lt;br /&gt;</it>Bitte geben Sie mir und anderen Besuchern etwas Zeit, auf Ihren Eintrag zu reagieren.</target>
                 </trans-unit>
             </group>
-            <group id="FileNotFoundError">
-                <trans-unit id="FileNotFoundError.h">
+            <group id="Yana\Core\Exceptions\Files\NotFoundException">
+                <trans-unit id="Yana\Core\Exceptions\Files\NotFoundException.h">
                     <source>The requested file could not be found.</source>
                     <target>Die gewünschte Datei ist leider nicht vorhanden.</target>
                 </trans-unit>
-                <trans-unit id="FileNotFoundError.p">
+                <trans-unit id="Yana\Core\Exceptions\Files\NotFoundException.p">
                     <source>Please check the URL and try again.</source>
                     <target>Bitte überprüfen Sie die angegebene URL und versuchen Sie es erneut.</target>
                 </trans-unit>
@@ -276,32 +276,32 @@
                     <target>Das Passwort wurde mehr als 3 Mal falsch eingegeben. Der Login ist für 5 Minuten gesperrt. Bitte warten Sie diese Frist ab und versuchen Sie es dann erneut. Falls Sie Ihr Passwort vergessen haben sollten, benachrichtigen Sie Ihren Administrator.</target>
                 </trans-unit>
             </group>
-            <group id="FileNotCreatedError">
-                 <trans-unit id="FileNotCreatedError.h">
+            <group id="Yana\Core\Exceptions\Files\NotCreatedException">
+                 <trans-unit id="Yana\Core\Exceptions\Files\NotCreatedException.h">
                     <source>File could not be created</source>
                     <target>Datei konnte nicht erzeugt werden</target>
                  </trans-unit>
-                 <trans-unit id="FileNotCreatedError.p">
+                 <trans-unit id="Yana\Core\Exceptions\Files\NotCreatedException.p">
                     <source>Unable to create file <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept>. Possible reason: access restriction in effect. Please inform administrator on this error.</source>
                     <target>Die Datei <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept> konnte nicht erzeugt werden. Möglicherweise sind unzureichende Rechte gesetzt oder das Verzeichnis ist schreibgeschützt. Bitte informieren Sie den Webmaster dieser Seite.</target>
                  </trans-unit>
             </group>
-            <group id="NotWriteableError">
-                 <trans-unit id="NotWriteableError.h">
+            <group id="Yana\Core\Exceptions\Files\NotWriteableException">
+                 <trans-unit id="Yana\Core\Exceptions\Files\NotWriteableException.h">
                     <source>Data could not be saved</source>
                     <target>Daten konnten nicht gespeichert werden</target>
                  </trans-unit>
-                 <trans-unit id="NotWriteableError.p">
+                 <trans-unit id="Yana\Core\Exceptions\Files\NotWriteableException.p">
                     <source>Unable to perform write operation on resource <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept>. Possible reason: access restriction in effect. Please inform administrator on this error.</source>
                     <target>Der Schreibzugriff auf die Ressource <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept> ist gescheitert. Möglicherweise ist die Ressource gerade durch einen anderen Nutzer zur Bearbeitung gesperrt, oder es sind unzureichende Rechte gesetzt oder die Ressource ist schreibgeschützt. Bitte informieren Sie den Webmaster dieser Seite.</target>
                  </trans-unit>
             </group>
-            <group id="NotReadableError">
-                 <trans-unit id="NotReadableError.h">
+            <group id="Yana\Core\Exceptions\Files\NotReadableException">
+                 <trans-unit id="Yana\Core\Exceptions\Files\NotReadableException.h">
                     <source>Data could not be read</source>
                     <target>Daten konnten nicht gelesen werden</target>
                  </trans-unit>
-                 <trans-unit id="NotReadableError.p">
+                 <trans-unit id="Yana\Core\Exceptions\Files\NotReadableException.p">
                     <source>Unable to perform read operation on resource <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept>. Possible reason: access restriction in effect, or resource is not available. Please inform administrator on this error.</source>
                     <target>Der Zugriff auf die Ressource <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept> ist gescheitert. Möglicherweise ist die Ressource gerade durch einen anderen Nutzer zur Bearbeitung gesperrt, oder es sind unzureichende Rechte gesetzt oder die Ressource ist nicht verfügbar. Bitte informieren Sie den Webmaster dieser Seite.</target>
                  </trans-unit>
@@ -346,22 +346,22 @@
                     <target>Wegen Spam-Verdacht wurde Ihnen der Zugriff auf die gewünschte Ressource vorübergehend nicht gewährt.</target>
                 </trans-unit>
             </group>
-            <group id="FormSuspendedWarning">
-                <trans-unit id="FormSuspendedWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\SuspendedException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\SuspendedException.h">
                     <source>Please be patient</source>
                     <target>Bitte haben Sie einen Moment Geduld</target>
                 </trans-unit>
-                <trans-unit id="FormSuspendedWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\SuspendedException.p">
                     <source>You did submit the form too recently. Please wait a few seconds and try again.</source>
                     <target>Sie haben das Formular zu schnell abgesendet. Bitte warten Sie einige Sekunden und versuchen Sie es erneut.</target>
                 </trans-unit>
             </group>
-            <group id="FormTimeoutWarning">
-                <trans-unit id="FormTimeoutWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\TimeoutException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\TimeoutException.h">
                     <source>Form data has expired</source>
                     <target>Formulardaten sind abgelaufen</target>
                 </trans-unit>
-                <trans-unit id="FormTimeoutWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\TimeoutException.p">
                     <source>The data contained in the submitted form is more than half an hour old. Before you submit this entry, you should check if the provided data is still up to date.</source>
                     <target>Die Daten im Formular sind mehr als eine halbe Stunde alt. Bevor Sie den Eintrag abschicken, prüfen Sie bitte ob Ihre Daten noch aktuell sind.</target>
                 </trans-unit>
