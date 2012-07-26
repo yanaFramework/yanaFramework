@@ -32,7 +32,6 @@ namespace Yana\Core\Exceptions\Security;
  *
  * Thrown when a user entered an invalid name or password.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */

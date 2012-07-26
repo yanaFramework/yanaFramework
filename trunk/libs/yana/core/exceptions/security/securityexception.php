@@ -32,7 +32,6 @@ namespace Yana\Core\Exceptions\Security;
  *
  * Thrown when a client tries to do something that he is not allowed to.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */

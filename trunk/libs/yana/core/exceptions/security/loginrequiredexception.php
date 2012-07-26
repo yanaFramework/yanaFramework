@@ -32,7 +32,6 @@ namespace Yana\Core\Exceptions\Security;
  *
  * Thrown when an unauthenticated user tries to access a function that requires a valid login.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */

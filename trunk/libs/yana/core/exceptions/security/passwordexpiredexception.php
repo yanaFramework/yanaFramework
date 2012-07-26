@@ -32,7 +32,6 @@ namespace Yana\Core\Exceptions\Security;
  *
  * Thrown as a warning, when the client is forced to log-out due to a recent change of his password.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */
