@@ -37,7 +37,7 @@ if (!defined('CWD')) {
 }
 if (empty($_SERVER['DOCUMENT_ROOT']) && isset($_SERVER['OS']) && preg_match('/windows/i', $_SERVER['OS'])) {
     $_SERVER['DOCUMENT_ROOT'] =  realpath(CWD . "../../../../../") . '/htdocs/';
-    $path = dirname($_SERVER["DOCUMENT_ROOT"]);
+    $path = dirname($_SERVER["DOCUMENT_ROOT"]); // Will be used by importing test-case
 }
 
 ?>
