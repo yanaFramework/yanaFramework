@@ -30,7 +30,7 @@ namespace Yana\Core;
 /**
  * @ignore
  */
-require_once __Dir__ . '/../../../include.php';
+require_once __DIR__ . '/../../../include.php';
 
 /**
  * Test implementation
