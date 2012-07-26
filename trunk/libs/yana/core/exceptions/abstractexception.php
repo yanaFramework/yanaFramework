@@ -172,10 +172,12 @@ abstract class AbstractException extends \Exception
      *
      * @access  public
      * @param   mixed  $data  context data
+     * @return  \Yana\Core\Exceptions\AbstractException
      */
     public function setData($data)
     {
         $this->data = $data;
+        return $this;
     }
 
     /**
@@ -183,12 +185,14 @@ abstract class AbstractException extends \Exception
      *
      * @access  protected
      * @param   string  $header  headline
+     * @return  \Yana\Core\Exceptions\AbstractException
      * @ignore
      */
     protected function setHeader($header)
     {
         assert('is_string($header); // Wrong argument type argument 1. String expected');
         $this->header = (string) $header;
+        return $this;
     }
 
     /**
@@ -196,12 +200,14 @@ abstract class AbstractException extends \Exception
      *
      * @access  protected
      * @param   string  $text  descriptive text
+     * @return  \Yana\Core\Exceptions\AbstractException
      * @ignore
      */
     protected function setText($text)
     {
         assert('is_string($text); // Wrong argument type argument 1. String expected');
         $this->text = (string) $text;
+        return $this;
     }
 
     /**

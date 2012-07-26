@@ -162,6 +162,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
      * @throws  \Yana\Core\Exceptions\NotFoundException        if the column definition is invalid
      * @throws  InvalidValueWarning                            if an invalid value is encountered, that could not be sanitized
      * @throws  \Yana\Core\Exceptions\NotImplementedException  when the column has an unknown datatype
+     * @throws  \Yana\Core\Exceptions\Files\SizeException           when uploaded file is too large
      */
     public function sanitizeValueByColumn(\Yana\Db\Ddl\Column $column, $value, array &$files = array())
     {
@@ -240,7 +241,8 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
                          */
                         $maxSize = (int) $column->getSize();
                         if ($maxSize > 0 && $value['size'] > $maxSize) {
-                            $alert = new \FilesizeError("", UPLOAD_ERR_SIZE);
+                            $message = "Uploaded file is too large.";
+                            $alert = new \Yana\Core\Exceptions\Files\SizeException($message, UPLOAD_ERR_SIZE);
                             throw $alert->setFilename($value['name'])->setMaxSize($maxSize);
                         }
                         $id = \Yana\Db\Blob::getNewFileId($column);

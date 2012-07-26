@@ -25,16 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Forms;
+
 /**
- * Warning
+ * <<exception>> Form timed out.
  *
- * This class represents warnings passed to the user.
+ * Thrown when a form is sent too late and the form token is no longer valid.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class FormSuspendedWarning extends \Warning
+class TimeoutException extends \Yana\Core\Exceptions\Forms\FormException
 {
     /* intentionally left blank */
 }

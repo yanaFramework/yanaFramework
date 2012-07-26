@@ -34,7 +34,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class InvalidImageError extends FileError
+class InvalidImageError extends \Yana\Core\Exceptions\Files\FileException
 {
     /* intentionally left blank */
 }

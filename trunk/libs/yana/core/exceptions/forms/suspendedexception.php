@@ -25,16 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Forms;
+
 /**
- * Warning
+ * <<exception>> Form suspended.
  *
- * This class represents warnings passed to the user.
+ * Thrown when a form is sent too early and the form token is not yet valid.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class FormTimeoutWarning extends \Warning
+class SuspendedException extends \Yana\Core\Exceptions\Forms\FormException
 {
     /* intentionally left blank */
 }

@@ -888,7 +888,7 @@ class YanaUser extends \Yana\Core\Object
 
         // user should not delete himself
         if ($userName === self::getUserName()) {
-            throw new Yana\Core\Exceptions\User\DeleteSelfException();
+            throw new \Yana\Core\Exceptions\User\DeleteSelfException();
         }
 
         // user does not exist

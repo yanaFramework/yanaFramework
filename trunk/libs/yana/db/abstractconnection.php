@@ -351,10 +351,12 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
         // check whether the row has been modified since last access
         if (YANA_DB_STRICT && isset($_SESSION['transaction_isolation_created']) &&
             $this->_getLastModified($tableName, $row) > $_SESSION['transaction_isolation_created']) {
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             \Yana\Log\LogManager::getLogger()->addLog("The user was trying to save form data, which has changed " .
                 "since he accessed the corrsponding form. The operation has been aborted, " .
-                "as updating this row would have overwritten changes made by another user.", E_USER_WARNING);
-            throw new \FormTimeoutWarning();
+                "as updating this row would have overwritten changes made by another user.", $level);
+            $message = "The form contents are no longer valid. Please reload and try again.";
+            throw new Yana\Core\Exceptions\Forms\TimeoutException($message, $level);
         }
 
         /*

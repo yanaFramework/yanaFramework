@@ -184,7 +184,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
      */
     private function __construct()
     {
-        $this->_loggers = new Yana\Log\LoggerCollection();
+        $this->_loggers = new \Yana\Log\LoggerCollection();
     }
 
     /**
