@@ -32,7 +32,6 @@ namespace Yana\Core\Exceptions\Security;
  *
  * Thrown when a user is temorarily denied log-in.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */

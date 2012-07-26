@@ -33,7 +33,6 @@ namespace Yana\Core\Exceptions\Security;
  * Thrown when the user is authenticated already, but does not have sufficient rights to execute
  * the function he tried to access.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */

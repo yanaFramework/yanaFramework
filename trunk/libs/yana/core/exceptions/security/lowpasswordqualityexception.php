@@ -32,7 +32,6 @@ namespace Yana\Core\Exceptions\Security;
  *
  * Thrown when an user enters a password that is not complex enough.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */
