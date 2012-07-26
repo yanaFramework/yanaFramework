@@ -409,15 +409,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->query->setTable('t');
         $columns = array('tid', 'tvalue', 'ti', 'ftid');
         $this->query->setColumns($columns);
-        $setOffset = $this->query->setOffset(20);
-        $this->assertTrue($setOffset, 'assert failed, the offset are not set');
+        $this->query->setOffset(20);
+        $this->assertEquals(20, $this->query->getOffset());
         $this->query->setInnerJoin('ft');
         $getJoins = $this->query->getJoins();
         $this->assertType('array', $getJoins, 'assert failed, the expected value should be of type array');
         $this->assertArrayHasKey('ft', $getJoins, 'assert failed, the array shuld have the expected key "ft"');
         $this->assertTrue(in_array('ftid', $getJoins['ft']), 'assert failed, the value ftid must be match an entrie in givin array');
-        $unsetJoin = $this->query->unsetJoin('ft');
-        $this->assertTrue($unsetJoin, 'assert failed, the join is still avalible');
+        $this->query->unsetJoin('ft');
         $getJoin = $this->query->getJoin('ft');
         $this->assertFalse($getJoin, 'assert failed, the join ft does not exist');
         $s4 = (string) $this->query;
