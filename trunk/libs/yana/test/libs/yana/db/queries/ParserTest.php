@@ -277,7 +277,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     /**
      * insert into (missing primary key)
      *
-     * @expectedException DbWarningLog
+     * @expectedException Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException
      * @test
      */
     public function testInsertIntoMissingPrimaryKey()
