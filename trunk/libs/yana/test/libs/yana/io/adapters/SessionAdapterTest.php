@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Io\Adapters;
+namespace Yana\Data\Adapters;
 
 /**
  * @ignore
@@ -42,7 +42,7 @@ class SessionAdapterTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Io\Adapters\SessionAdapter
+     * @var \Yana\Data\Adapters\SessionAdapter
      */
     protected $_object;
 
@@ -53,7 +53,7 @@ class SessionAdapterTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $_SESSION[__CLASS__] = null;
-        $this->_object = new \Yana\Io\Adapters\SessionAdapter(__CLASS__);
+        $this->_object = new \Yana\Data\Adapters\SessionAdapter(__CLASS__);
     }
 
     /**

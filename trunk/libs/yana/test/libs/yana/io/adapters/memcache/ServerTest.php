@@ -25,14 +25,14 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Io\Adapters\MemCache;
+namespace Yana\Data\Adapters\MemCache;
 
 /**
  * @ignore
  */
 require_once __DIR__ . '/../../../../../include.php';
 
-namespace Yana\Io\Adapters\MemCache;
+namespace Yana\Data\Adapters\MemCache;
 
 /**
  * Test class for Server.

@@ -25,14 +25,14 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Io\Adapters\MemCache;
+namespace Yana\Data\Adapters\MemCache;
 
 /**
  * @ignore
  */
 require_once __DIR__ . '/../../../../../include.php';
 
-namespace Yana\Io\Adapters\MemCache;
+namespace Yana\Data\Adapters\MemCache;
 
 /**
  * Test class for MemcacheWrapper.
@@ -59,8 +59,8 @@ class MemcacheWrapperTest extends \PHPUnit_Framework_TestCase
             return;
         }
         $memCache = new \Memcache();
-        $memCacheServer = new \Yana\Io\Adapters\MemCache\Server();
-        $wrapper = new \Yana\Io\Adapters\MemCache\MemcacheWrapper($memCache);
+        $memCacheServer = new \Yana\Data\Adapters\MemCache\Server();
+        $wrapper = new \Yana\Data\Adapters\MemCache\MemcacheWrapper($memCache);
         $wrapper->addServer($memCacheServer);
         if ($memCache->getStats() === false) {
             $this->markTestSkipped();
@@ -128,9 +128,9 @@ class MemcacheWrapperTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddServer()
     {
-        $memCacheServer = new \Yana\Io\Adapters\MemCache\Server();
+        $memCacheServer = new \Yana\Data\Adapters\MemCache\Server();
         $this->assertTrue($this->object->addServer($memCacheServer));
-        $memCacheServer = new \Yana\Io\Adapters\MemCache\Server('non-existing-host', 1234);
+        $memCacheServer = new \Yana\Data\Adapters\MemCache\Server('non-existing-host', 1234);
         $this->assertTrue($this->object->addServer($memCacheServer));
     }
 
@@ -139,11 +139,11 @@ class MemcacheWrapperTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetStats()
     {
-        $memCacheServer = new \Yana\Io\Adapters\MemCache\Server('non-existing-host', 1234);
+        $memCacheServer = new \Yana\Data\Adapters\MemCache\Server('non-existing-host', 1234);
         $this->assertTrue($this->object->addServer($memCacheServer));
         $key1 = $memCacheServer->getHostName() . ':' . $memCacheServer->getPort();
 
-        $memCacheServer = new \Yana\Io\Adapters\MemCache\Server();
+        $memCacheServer = new \Yana\Data\Adapters\MemCache\Server();
         $key2 = $memCacheServer->getHostName() . ':' . $memCacheServer->getPort();
 
         $stats = $this->object->getStats();

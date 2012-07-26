@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Io;
+namespace Yana\Data;
 
 /**
  * @ignore

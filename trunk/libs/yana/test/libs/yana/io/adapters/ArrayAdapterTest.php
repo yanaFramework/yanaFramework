@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Io\Adapters;
+namespace Yana\Data\Adapters;
 
 /**
  * @ignore
@@ -52,7 +52,7 @@ class ArrayAdapterTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_object = new \Yana\Io\Adapters\ArrayAdapter();
+        $this->_object = new \Yana\Data\Adapters\ArrayAdapter();
     }
 
     /**
@@ -70,7 +70,7 @@ class ArrayAdapterTest extends \PHPUnit_Framework_TestCase
     public function testSaveEntity()
     {
         $this->assertEquals(0, count($this->_object));
-        $mockObject = new \Yana\Io\Adapters\MockSplSubject();
+        $mockObject = new \Yana\Data\Adapters\MockSplSubject();
         $this->_object->saveEntity($mockObject);
         $this->assertEquals(1, count($this->_object));
         $this->assertEquals($mockObject, $this->_object[0]);
@@ -95,10 +95,10 @@ class ArrayAdapterTest extends \PHPUnit_Framework_TestCase
  * @package test
  * @ignore
  */
-class MockSplSubject extends \Yana\Core\Object implements \Yana\Io\Adapters\IsEntity
+class MockSplSubject extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEntity
 {
 
-    public function setDataAdapter(\Yana\Io\Adapters\IsDataAdapter $adapter)
+    public function setDataAdapter(\Yana\Data\Adapters\IsDataAdapter $adapter)
     {
         // intentionally left blank
     }
