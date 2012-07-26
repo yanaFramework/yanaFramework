@@ -25,16 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Forms;
+
 /**
- * Warning
+ * <<exception>> Form data related issues.
  *
- * This class represents warnings passed to the user.
+ * Thrown when a client commits data to a form that is not valid for some reason.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class FloodWarning extends Warning
+class FormException extends \Yana\Core\Exceptions\DataException
 {
     /* intentionally left blank */
 }

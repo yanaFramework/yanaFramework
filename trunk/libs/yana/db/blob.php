@@ -176,7 +176,7 @@ class Blob extends \Yana\Files\Readonly
      * @param   bool  $fullsize  show full size or thumb-nail (images only)
      * @return  string
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if file with index $id does not exist
-     * @throws  FileNotFoundError                               if the requested file no longer exists
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException        if the requested file no longer exists
      */
     public static function getFilenameFromSession($id, $fullsize = false)
     {
@@ -198,7 +198,11 @@ class Blob extends \Yana\Files\Readonly
             $file = self::getThumbnailFromFileId($id);
         }
         if (!is_file($file)) {
-            throw new \FileNotFoundError($file);
+            $message = "Database entry exists, but the corresponding file was not found '{$file}'.";
+            $code = \Yana\Log\TypeEnumeration::ERROR;
+            $error = new \Yana\Core\Exceptions\Files\NotFoundException($message, $code);
+            $error->setFilename($file);
+            throw $error;
         }
         return $file;
     }
@@ -208,13 +212,17 @@ class Blob extends \Yana\Files\Readonly
      *
      * @param   string  $file
      * @return  string
-     * @throws  FileNotFoundError  if the given $file does not exist
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  if the given $file does not exist
      */
     public static function storeFilenameInSession($file)
     {
         assert('is_string($file); // Wrong argument type argument 1. String expected');
         if (!is_file($file)) {
-            throw new \FileNotFoundError();
+            $message = "File was not found '{$file}'.";
+            $code = \Yana\Log\TypeEnumeration::ERROR;
+            $error = new \Yana\Core\Exceptions\Files\NotFoundException($message, $code);
+            $error->setFilename($file);
+            throw $error;
         }
         if (!isset($_SESSION[__CLASS__]) || !is_array($_SESSION[__CLASS__])) {
             $_SESSION[__CLASS__] = array();
@@ -467,6 +475,9 @@ class Blob extends \Yana\Files\Readonly
      *
      * @param   array  $file  item taken from $_FILES array
      * @return  string
+     * @throws  \Yana\Core\Exceptions\Files\NotWriteableException on UPLOAD_ERR_INVALID_TARGET and UPLOAD_ERR_OTHER
+     * @throws  \Yana\Core\Exceptions\Files\UploadFailedException on UPLOAD_ERR_FILE_TYPE
+     * @throws  \Yana\Core\Exceptions\Files\SizeException         on UPLOAD_ERR_FORM_SIZE, UPLOAD_ERR_SIZE, UPLOAD_ERR_FORM_SIZE
      */
     private static function _getTempName(array $file)
     {
@@ -487,23 +498,29 @@ class Blob extends \Yana\Files\Readonly
                     if (!isset($maxSize)) {
                         $maxSize = (int) $_POST['MAX_FILE_SIZE'];
                     }
-                    $alert = new \FilesizeError("", $file['error']);
+                    $message = "Uploaded file exceeds maximum size.";
+                    $alert = new \Yana\Core\Exceptions\Files\SizeException($message, $file['error']);
                     throw $alert->setFilename($filename)->setMaxSize($maxSize);
                 break;
 
                 case UPLOAD_ERR_FILE_TYPE:
-                    $error = new \UploadFailedError("", UPLOAD_ERR_FILE_TYPE);
+                    $message = "Uploaded file has a file type that is either not recognized or not permitted.";
+                    $error = new \Yana\Core\Exceptions\Files\UploadFailedException($message, UPLOAD_ERR_FILE_TYPE);
                     throw $error->setFilename($filename);
                 break;
 
                 case UPLOAD_ERR_INVALID_TARGET:
-                    \Yana\Log\LogManager::getLogger()->addLog("Unable to write uploaded file '{$filename}'.");
-                    throw new \NotWriteableError("", UPLOAD_ERR_INVALID_TARGET);
+                    $message = "Unable to write uploaded file '{$filename}'.";
+                    \Yana\Log\LogManager::getLogger()->addLog($message);
+                    $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, UPLOAD_ERR_INVALID_TARGET);
+                    throw $error->setFilename($filename);
                 break;
                 case UPLOAD_ERR_OTHER:
                 default:
-                    \Yana\Log\LogManager::getLogger()->addLog("Unable to write uploaded file '{$filename}'.");
-                    throw new \NotWriteableError("", $file['error']);
+                    $message = "Unable to write uploaded file '{$filename}'.";
+                    \Yana\Log\LogManager::getLogger()->addLog($message);
+                    $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $file['error']);
+                    throw $error->setFilename($filename);
                 break;
             } // end switch (error code)
         }
@@ -572,7 +589,9 @@ class Blob extends \Yana\Files\Readonly
 
         /* handle errors */
         if (!is_file($fileTempName) || !is_readable($fileTempName)) {
-            $error = new \UploadFailedError("", E_USER_NOTICE);
+            $message = "Uploaded file is not readable.";
+            $code = \Yana\Log\TypeEnumeration::INFO;
+            $error = new \Yana\Core\Exceptions\Files\UploadFailedException($message, $code);
             throw $error->setFilename($filename);
 
         } /* end error handling */

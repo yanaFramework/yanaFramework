@@ -25,29 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Forms;
+
 /**
- * Database notice
+ * <<exception>> Form post flooding.
  *
- * This class represents notices passed to the user.
+ * Thrown when possible media flooding attempt is detected.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class DbNotice extends Notice
+class FloodException extends \Yana\Core\Exceptions\Forms\FormException
 {
-    /**
-     * constructor
-     *
-     * @param  string      $message   the message that should be reported
-     * @param  int         $code      optional error code
-     * @param  \Exception  $previous  use this when you need to rethrow a catched exception
-     */
-    public function __construct($message = "", $code = E_USER_NOTICE, \Exception $previous = null)
-    {
-        parent::__construct($message, $code, $previous);
-        \Yana\Log\LogManager::getLogger()->addLog($message, $code);
-    }
+    /* intentionally left blank */
 }
 
 ?>
