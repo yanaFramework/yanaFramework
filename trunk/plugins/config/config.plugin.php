@@ -373,15 +373,19 @@ class plugin_config extends StdClass implements IsPlugin
         }
         try {
             $newProfile->create();
-        } catch (Exception $e) {
-            $error = new FileNotCreatedError();
+        } catch (\Exception $e) {
+            $message = "Directory is not writable or permission denied.";
+            $code = \Yana\Log\TypeEnumeration::ERROR;
+            $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $code, $e);
             throw $error->setFilename($newProfile->getPath());
         }
         if (!$newProfile->setVars($REF)) {
             throw new Error();
         }
         if (!$newProfile->write()) {
-            $error = new NotWriteableError();
+            $message = "Changes to profile could not be saved.";
+            $code = \Yana\Log\TypeEnumeration::ERROR;
+            $error = new \Yana\Core\Exceptions\Files\NotWriteableException($message, $code);
             throw $error->setFilename($newProfile->getPath());
         }
     }
@@ -452,7 +456,7 @@ class plugin_config extends StdClass implements IsPlugin
      * @type        read
      * @user        level: 1
      * @template    ABOUT_TEMPLATE
-     * @onerror     goto: index, text: FileNotFoundError
+     * @onerror     goto: index, text: Yana\Core\Exceptions\Files\NotFoundException
      * @language    admin
      *
      * @access      public

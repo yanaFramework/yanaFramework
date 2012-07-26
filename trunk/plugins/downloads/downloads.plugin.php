@@ -58,14 +58,18 @@ class plugin_downloads extends StdClass implements IsPlugin
      * @access      public
      * @param       int   $target    image identifier
      * @param       bool  $fullsize  show fullsize image (or preview?)
-     * @throws      FileNotFoundError
+     * @throws      \Yana\Core\Exceptions\Files\NotFoundException
      */
     public function download_file($target, $fullsize = false)
     {
         $source = \Yana\Db\Blob::getFilenameFromSession($target, $fullsize);
 
         if ($source === false) {
-            throw new FileNotFoundError();
+            $message = "Unable to start download. The requested file was not found.";
+            $code = E_USER_ERROR;
+            $error = new \Yana\Core\Exceptions\Files\NotFoundException($message, $code);
+            $error->setFilename((string) $target);
+            throw $error;
         } elseif (preg_match('/\.gz$/', $source)) {
             $this->_downloadFile($source);
         } else {

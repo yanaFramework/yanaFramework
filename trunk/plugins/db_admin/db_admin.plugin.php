@@ -527,7 +527,9 @@ class plugin_db_admin extends StdClass implements IsPlugin
 
         $filename = mb_strtolower(preg_replace('/\W/', '_', $dbms) . '.sql');
         if (empty($fileContents)) {
-            $error = new FileNotCreatedError();
+            $message = 'Did not create SQL file because it is empty.';
+            $code = E_USER_WARNING;
+            $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $code);
             throw $error->setFilename($filename);
         }
 
