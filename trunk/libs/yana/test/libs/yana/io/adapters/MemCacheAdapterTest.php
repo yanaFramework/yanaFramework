@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Io\Adapters;
+namespace Yana\Data\Adapters;
 
 /**
  * @ignore
@@ -42,7 +42,7 @@ class MemCacheAdapterTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Io\Adapters\MemCacheAdapter
+     * @var \Yana\Data\Adapters\MemCacheAdapter
      */
     protected $object;
 
@@ -57,16 +57,16 @@ class MemCacheAdapterTest extends \PHPUnit_Framework_TestCase
             return;
         }
         $memCache = new \Memcache();
-        $memCacheServer = new \Yana\Io\Adapters\MemCache\Server();
-        $wrapper = new \Yana\Io\Adapters\MemCache\MemcacheWrapper($memCache);
+        $memCacheServer = new \Yana\Data\Adapters\MemCache\Server();
+        $wrapper = new \Yana\Data\Adapters\MemCache\MemcacheWrapper($memCache);
         $wrapper->addServer($memCacheServer);
 
         $prefix = __CLASS__;
         $lifetime = 0;
 
         try {
-            $this->object = new \Yana\Io\Adapters\MemCacheAdapter($wrapper, $prefix, $lifetime);
-        } catch (\Yana\Io\Adapters\MemCache\ServerNotAvailableException $e) {
+            $this->object = new \Yana\Data\Adapters\MemCacheAdapter($wrapper, $prefix, $lifetime);
+        } catch (\Yana\Data\Adapters\MemCache\ServerNotAvailableException $e) {
             $this->markTestSkipped($e->getMessage());
             return;
         }
@@ -86,14 +86,14 @@ class MemCacheAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Yana\Io\Adapters\MemCache\ServerNotAvailableException
+     * @expectedException \Yana\Data\Adapters\MemCache\ServerNotAvailableException
      * @test
      */
     public function testConstruct()
     {
         $memCache = new \Memcache();
-        $wrapper = new \Yana\Io\Adapters\MemCache\MemcacheWrapper($memCache);
-        new \Yana\Io\Adapters\MemCacheAdapter($wrapper);
+        $wrapper = new \Yana\Data\Adapters\MemCache\MemcacheWrapper($memCache);
+        new \Yana\Data\Adapters\MemCacheAdapter($wrapper);
     }
 
     /**
