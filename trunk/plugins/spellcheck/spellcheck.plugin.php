@@ -68,7 +68,8 @@ class plugin_spellcheck extends StdClass implements IsPlugin
      */
     public function spellcheck()
     {
-        include_once "config.php";
+        $config = array();
+        include_once __DIR__ . "/config.php"; // overwrites the $config array
 
         // Set RPC response headers
         header('Content-Type: text/plain');
@@ -85,11 +86,12 @@ class plugin_spellcheck extends StdClass implements IsPlugin
         // Configuration is invalid
         if (empty($config['general.engine'])) {
             $language = Language::getInstance();
+            $level = \Yana\Log\TypeEnumeration::ERROR;
             exit(json_encode(array(
                 "result" => null,
                 "id" => null,
                 "error" => array(
-                    "errstr" => $language->getVar('500', E_USER_ERROR, 'No spellchecking-engine selected.'),
+                    "errstr" => $language->getVar('500', $level, 'No spellchecking-engine selected.'),
                     "errfile" => "",
                     "errline" => null,
                     "errcontext" => "",

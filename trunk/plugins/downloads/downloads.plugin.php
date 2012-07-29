@@ -66,7 +66,7 @@ class plugin_downloads extends StdClass implements IsPlugin
 
         if ($source === false) {
             $message = "Unable to start download. The requested file was not found.";
-            $code = E_USER_ERROR;
+            $code = \Yana\Log\TypeEnumeration::ERROR;
             $error = new \Yana\Core\Exceptions\Files\NotFoundException($message, $code);
             $error->setFilename((string) $target);
             throw $error;

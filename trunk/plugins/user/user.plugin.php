@@ -130,12 +130,12 @@ class plugin_user extends StdClass implements IsPlugin
         } elseif (!YanaUser::isLoggedIn()) {
             $_SESSION['on_login_goto'] = $event;
             $message = "A valid login is required to access this function.";
-            $level = \E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             new \Yana\Core\Exceptions\Security\LoginRequiredException($message, $level);
             $YANA->exitTo("login");
         } else {
             $message = "The login is valid, but the access rights are not enough to access the function.";
-            $level = \E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             new \Yana\Core\Exceptions\Security\InsufficientRightsException($message, $level);
             $YANA->exitTo();
         }
@@ -371,7 +371,7 @@ class plugin_user extends StdClass implements IsPlugin
             $user = YanaUser::getInstance();
             if (!$user->checkPassword($old_pwd)) {
                 $message = "Invalid name or password.";
-                $level = \E_USER_ERROR;
+                $level = \Yana\Log\TypeEnumeration::ERROR;
                 throw new \Yana\Core\Exceptions\Security\InvalidLoginException($message, $level);
                 /**
                  * This case exits to the default page (which should be public),
@@ -423,7 +423,8 @@ class plugin_user extends StdClass implements IsPlugin
     private function _getUserId($recoveryId)
     {
         if (!is_string($recoveryId)) {
-            throw new InvalidInputWarning("", E_USER_NOTICE);
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            throw new InvalidInputWarning("", $level);
         }
 
         $database = SessionManager::getDatasource();
@@ -482,7 +483,7 @@ class plugin_user extends StdClass implements IsPlugin
             /* delay output if attempt failed to make brute-force attacks more difficult to commit */
             sleep(2);
             $message = "Invalid name or password.";
-            $level = \E_USER_ERROR;
+            $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\Security\InvalidLoginException($message, $level);
         }
 
@@ -509,7 +510,7 @@ class plugin_user extends StdClass implements IsPlugin
              */
             sleep(2);
             $message = "Invalid name or password.";
-            $level = \E_USER_ERROR;
+            $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\Security\InvalidLoginException($message, $level);
         }
         $nextAction = "";

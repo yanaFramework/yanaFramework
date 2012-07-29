@@ -132,7 +132,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
         $filename = 'database.db.xml';
         if (empty($xml)) {
             $message = "Did not create '{$filename}' because the file is empty.";
-            $code = E_USER_WARNING;
+            $code = \Yana\Log\TypeEnumeration::WARNING;
             $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $code);
             throw $error->setFilename($filename);
         }
@@ -170,7 +170,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
         $filename = 'database.xml';
         if (empty($xml)) {
             $message = "Did not create '{$filename}' because the file is empty.";
-            $code = E_USER_WARNING;
+            $code = \Yana\Log\TypeEnumeration::WARNING;
             $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $code);
             throw $error->setFilename($filename);
         }
@@ -213,7 +213,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
             $filename = 'database.config';
             if (!empty($structure)) {
                 $message = "Did not create '{$filename}' because the file is empty.";
-                $code = E_USER_WARNING;
+                $code = \Yana\Log\TypeEnumeration::WARNING;
                 $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $code);
                 throw $error->setFilename($filename);
             }
@@ -261,7 +261,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
         $filename = 'database.config';
         if (empty($structure)) {
             $message = "Did not create '{$filename}' because the file is empty.";
-            $code = E_USER_WARNING;
+            $code = \Yana\Log\TypeEnumeration::WARNING;
             $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $code);
             throw $error->setFilename($filename);
         }
@@ -337,7 +337,7 @@ class plugin_db_tools extends StdClass implements IsPlugin
         $filename = mb_strtolower(preg_replace('/\W/', '_', $dbms) . '.sql');
         if (empty($fileContents)) {
             $message = "Did not create '{$filename}' because the file is empty.";
-            $code = E_USER_WARNING;
+            $code = \Yana\Log\TypeEnumeration::WARNING;
             $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $code);
             throw $error->setFilename($filename);
         }

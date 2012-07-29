@@ -581,7 +581,9 @@ class plugin_config extends StdClass implements IsPlugin
 
             if ($urlInfo !== false && ($fsock) != false) {
                 if (!empty($errno)) {
-                    trigger_error('Update-check failed to open connection to server. Reason: ' . $errstr, E_USER_NOTICE);
+                    $message = 'Update-check failed to open connection to server. Reason: ' . $errstr;
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    \Yana\Log\LogManager::getLogger()->addLog($message, $level);
                     @fclose($fsock);
                     file_put_contents($tempFile, $link);
                     return $link;

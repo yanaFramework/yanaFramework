@@ -94,7 +94,8 @@ class DbDesigner4 extends \Yana\Files\File implements \IsDbImport
             if (!xml_parse($parser, $this->getContent())) {
                 $message = "XML error: " . xml_error_string(xml_get_error_code($parser)) . "\n\t\t" .
                     " in file '" . $this->getPath() . "' at line " . xml_get_current_line_number($parser);
-                trigger_error($message, E_USER_WARNING);
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                \Yana\Log\LogManager::getLogger()->addLog($message, $level);
                 return false;
             }
             xml_parser_free($parser);
