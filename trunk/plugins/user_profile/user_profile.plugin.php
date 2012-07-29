@@ -212,7 +212,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
         }
         if (YanaUser::isUser($userId)) {
             $message = "No user found with id: " . \htmlentities($userId);
-            $level = E_USER_ERROR;
+            $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
         }
 
@@ -245,7 +245,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
         // user not found or not active
         if (empty($userData['USER_ID']) || empty($userData['USER_ACTIVE'])) {
             $message = "No user found with id: " . \htmlentities($target);
-            $level = E_USER_ERROR;
+            $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
         }
 

@@ -1178,18 +1178,22 @@ class plugin_calendar extends StdClass implements IsPlugin
 
         $file = $_FILES['file'];
         if (empty($file)) {
-            throw new \Yana\Core\Exceptions\NotFoundException('File not found', E_USER_NOTICE);
+            throw new \Yana\Core\Exceptions\NotFoundException('File not found', \Yana\Log\TypeEnumeration::INFO);
         }
         $fileName = explode('.', $file['name']);
         $type = $fileName[1];
         $fileName = $fileName[0];
         $filePath = $file['tmp_name'];
         if (!file_exists($filePath)) {
-            throw new \Yana\Core\Exceptions\NotFoundException('The expected File: '.$fileName.' does not exist', E_USER_NOTICE);
+            $message = 'The expected File: '.$fileName.' does not exist';
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            throw new \Yana\Core\Exceptions\NotFoundException($message, $level);
             return false;
         }
         if (!isset($type) || $type != 'ics') {
-            throw new \Yana\Core\Exceptions\NotReadableException('The expected File:'.$file['name'].' is not supported');
+            $message = 'The expected File: '.$file['name'].' does not exist';
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            throw new \Yana\Core\Exceptions\NotReadableException($message, $level);
             return false;
         }
 

@@ -113,7 +113,8 @@ class plugin_rss extends StdClass implements IsPlugin
         if (!($fp = @fopen($this->file, "r"))) {
             $message = "Could not open XML input. Check if '".print_r($this->file).
                 "' is a correct path to a valid XML file!";
-            trigger_error($message, E_USER_WARNING);
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            \Yana\Log\LogManager::getLogger()->addLog($message, $level);
             return false;
 
         } else {
@@ -121,11 +122,11 @@ class plugin_rss extends StdClass implements IsPlugin
             while ($data = fread($fp, 4096))
             {
                 if (!xml_parse($parser, $data, feof($fp))) {
-                    $errorMessage = "XML error: ".
+                    $message = "XML error: ".
                     xml_error_string(xml_get_error_code($parser)) .
                     " in file '" . $this->file .
                     "' at line " . xml_get_current_line_number($parser);
-                    trigger_error($errorMessage, E_USER_WARNING);
+                    \Yana\Log\LogManager::getLogger()->addLog($message, $level);
                     return false;
                 }
             }

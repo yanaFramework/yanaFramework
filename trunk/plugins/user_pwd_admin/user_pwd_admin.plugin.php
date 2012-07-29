@@ -101,7 +101,7 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
         if ($timeDuration > 0) {
             if (self::_isExpired($user, $timeDuration)) {
                 $message = "Your password has expired.";
-                $level = \E_USER_WARNING;
+                $level = \Yana\Log\TypeEnumeration::WARNING;
                 new \Yana\Core\Exceptions\Security\PasswordExpiredException($message, $level);
                 $YANA->exitTo("get_pwd");
             }
@@ -294,7 +294,7 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
         if (isset($currentUserInformation['USER_PWD']) && $currentUserInformation['USER_PWD'] != $old_password) {
             if ($currentUserInformation['USER_PWD'] != 'UNINITIALIZED') {
                 $message = "Invalid name or password.";
-                $level = \E_USER_ERROR;
+                $level = \Yana\Log\TypeEnumeration::ERROR;
                 throw new \Yana\Core\Exceptions\Security\InvalidLoginException($message, $level);
             }
         }

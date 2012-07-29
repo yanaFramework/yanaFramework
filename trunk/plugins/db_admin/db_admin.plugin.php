@@ -264,6 +264,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                     try {
                         $initialization[] = $parser->parseSQL($stmt);
                     } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
+                        unset($e);
                         continue;
                     }
                 }
@@ -279,7 +280,9 @@ class plugin_db_admin extends StdClass implements IsPlugin
         {
             assert($stmt instanceof \Yana\Db\Queries\AbstractQuery);
             if (!$stmt->sendQuery()) {
-                trigger_error($stmt->db->getMessage(), E_USER_WARNING);
+                $message = $stmt->db->getMessage();
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                \Yana\Log\LogManager::getLogger()->addLog($message, $level);
                 return false;
             } else {
                 $stmt->getDatabase()->commit();
@@ -528,7 +531,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
         $filename = mb_strtolower(preg_replace('/\W/', '_', $dbms) . '.sql');
         if (empty($fileContents)) {
             $message = 'Did not create SQL file because it is empty.';
-            $code = E_USER_WARNING;
+            $code = \Yana\Log\TypeEnumeration::WARNING;
             $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $code);
             throw $error->setFilename($filename);
         }
@@ -567,8 +570,10 @@ class plugin_db_admin extends StdClass implements IsPlugin
      * @param       bool    $autoinstall  install automatically?
      * @param       bool    $autosync     synchronize automatically?
      * @param       bool    $silent       mute error messages
+     * @param       array   $list         list of database schemas
      */
-    public function set_db_configuration($active, $dbms, $host = "", $port = "", $user = "", $password = "", $name = "", $prefix = "", $autoinstall = false, $autosync = false, $silent = false)
+    public function set_db_configuration($active, $dbms, $host = "", $port = "", $user = "", $password = "", $name = "",
+        $prefix = "", $autoinstall = false, $autosync = false, $silent = false, array $list = array())
     {
         /**
          * 1) Test if connection is available
@@ -615,7 +620,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
             $silent = true;
             if ($active === 'true') {
                 if ($autoinstall) {
-                    $test = $this->db_install($ARGS);
+                    $test = $this->db_install($dbms, $list, $silent);
                     if ($test !== true) {
                         \Yana\Log\LogManager::getLogger()->addLog('Notice: installation of tables failed. " .
                             "(May be tables already exist?)');
@@ -631,7 +636,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                 /* continue (FileDB does not need a database installation) */
             }
             if ($autosync) {
-                $test = $this->db_sync($ARGS);
+                $test = $this->db_sync($dbms, $list, $silent);
                 if ($test !== true) {
                     \Yana\Log\LogManager::getLogger()->addLog('Unable to install tables of plugin "user" with the " .
                         "choosen dbms. Operation aborted.');

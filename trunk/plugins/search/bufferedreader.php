@@ -74,7 +74,8 @@ class BufferedReader extends \Yana\Files\Readonly
         $this->_bufferSize = (int) $bufferSize;
         $this->_file = fopen($filename, "r");
         if ($this->_file === false) {
-            throw new \Yana\Core\Exceptions\NotReadableException("Unable to open file '$filename'.\n", E_USER_NOTICE);
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            throw new \Yana\Core\Exceptions\NotReadableException("Unable to open file '$filename'.\n", $level);
         }
         parent::__construct($filename);
     }
@@ -99,7 +100,8 @@ class BufferedReader extends \Yana\Files\Readonly
     public function read()
     {
         if (!$this->exists()) {
-            throw new \Yana\Core\Exceptions\NotFoundException("No such file: '{$this->getPath()}'.", E_USER_NOTICE);
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            throw new \Yana\Core\Exceptions\NotFoundException("No such file: '{$this->getPath()}'.", $level);
         }
         if ($this->hasMoreContent()) {
             $this->content = array(fread($this->_file, $this->_bufferSize));

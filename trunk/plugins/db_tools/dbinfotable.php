@@ -221,7 +221,9 @@ class DbInfoTable extends \Yana\Core\Object
         $column = mb_strtolower($column);
 
         if (!isset($this->columns[$column])) {
-            trigger_error("No such column '$column'.", E_USER_WARNING);
+            $message = "No such column '{$column}'.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            \Yana\Log\LogManager::getLogger()->addLog($message, $level);
             return false;
 
         } else {
@@ -274,21 +276,21 @@ class DbInfoTable extends \Yana\Core\Object
         /* apply default value */
         $column = mb_strtolower($column);
         $foreignTable = mb_strtolower($foreignTable);
+        $foreignColumn = mb_strtolower($foreignColumn);
         if ($foreignColumn === "") {
             $foreignColumn = $column;
-        } else {
-            $foreignColumn = mb_strtolower($foreignColumn);
         }
 
+        // Error: Foreign key set on a target column that does not exist
         if (!isset($this->columns[$column])) {
-            trigger_error("No such column '$column'.", E_USER_ERROR);
+            $message = "No such column '{$column}'.";
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            \Yana\Log\LogManager::getLogger()->addLog($message, $level);
             return false;
-
-        } else {
-            $this->columns[$column]->setForeignKey(true);
-            $this->columns[$column]->setReference($foreignTable, $foreignColumn);
-
         }
+
+        $this->columns[$column]->setForeignKey(true);
+        $this->columns[$column]->setReference($foreignTable, $foreignColumn);
 
         $this->foreignKeys[] = array(
             'column' => $column,

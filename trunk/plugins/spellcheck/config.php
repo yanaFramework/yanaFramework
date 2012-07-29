@@ -21,6 +21,6 @@
 	//$config['PSpellShell.aspell'] = '"c:\Program Files\Aspell\bin\aspell.exe"';
 	//$config['PSpellShell.tmp'] = 'c:/temp';
 
-    require_once dirname(__FILE__) . "/classes/SpellChecker.php";
-    require_once dirname(__FILE__) . "/classes/" . $config["general.engine"] . ".php";
+    require_once __DIR__ . "/classes/SpellChecker.php";
+    require_once __DIR__ . "/classes/" . $config["general.engine"] . ".php";
 ?>

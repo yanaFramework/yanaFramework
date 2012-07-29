@@ -573,12 +573,14 @@ class plugin_guestbook extends StdClass implements IsPlugin
         // If the update operation was not successful, issue an error message and abort.
         if (!$database->update("guestbook.${target}.guestbook_comment", $guestbook_comment)) {
             $message = "Unable to insert comment at 'guestbook.${target}.'";
-            \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_WARNING, array('guestbook_comment' => $guestbook_comment));
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            \Yana\Log\LogManager::getLogger()->addLog($message, $level, array('guestbook_comment' => $guestbook_comment));
             throw new InvalidInputWarning();
         }
         if (!$database->commit()) {
             $message = "Unable to commit changes to entry 'guestbook.${target}.'";
-            \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_ERROR, array('guestbook_comment' => $guestbook_comment));
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            \Yana\Log\LogManager::getLogger()->addLog($message, $level, array('guestbook_comment' => $guestbook_comment));
             throw new Error();
         }
     }
