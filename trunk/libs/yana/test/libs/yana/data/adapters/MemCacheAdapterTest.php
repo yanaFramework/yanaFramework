@@ -79,9 +79,11 @@ class MemCacheAdapterTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        foreach ($this->object->getIds() as $offset)
-        {
-            $this->object->offsetUnset($offset);
+        if ($this->object) {
+            foreach ($this->object->getIds() as $offset)
+            {
+                $this->object->offsetUnset($offset);
+            }
         }
     }
 
