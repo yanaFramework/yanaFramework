@@ -116,12 +116,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="SpamWarning">
-                <trans-unit id="SpamWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\AlreadySavedException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\AlreadySavedException.h">
                     <target>Your entry has already been saved.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="SpamWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\AlreadySavedException.p">
                     <target>Please remember to submit your entries only once.</target>
                     <source/>
                 </trans-unit>
@@ -336,12 +336,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="SpamError">
-                <trans-unit id="SpamError.h">
+            <group id="Yana\Core\Exceptions\Forms\SpamException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\SpamException.h">
                     <target>Access denied</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="SpamError.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\SpamException.p">
                     <target>To protect this site from spam, access to the requested resource was temporarily not granted to you.</target>
                     <source/>
                 </trans-unit>
@@ -353,6 +353,16 @@
                 </trans-unit>
                 <trans-unit id="Yana\Core\Exceptions\Forms\SuspendedException.p">
                     <target>You did submit the form too recently. Please wait a few seconds and try again.</target>
+                    <source/>
+                </trans-unit>
+            </group>
+            <group id="Yana\Core\Exceptions\Forms\InvalidTokenException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\InvalidTokenException.h">
+                    <target>Incomplete form data</target>
+                    <source/>
+                </trans-unit>
+                <trans-unit id="Yana\Core\Exceptions\Forms\InvalidTokenException.p">
+                    <target>The form you submitted did not contain all mandatory data. Please reload and try again.</target>
                     <source/>
                 </trans-unit>
             </group>
