@@ -196,7 +196,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
     protected function isSafemode()
     {
         if (!isset($this->isSafemode)) {
-            $eventConfiguration = $this->getPlugins()->getEventConfiguration($this->getAction());
+            $eventConfiguration = $this->getPlugins()->getEventConfiguration($this->_getAction());
             if ($eventConfiguration instanceof \Yana\Plugins\Configs\MethodConfiguration) {
                 $this->_isSafeMode = ($eventConfiguration->getSafemode() === true);
             } else {
@@ -311,6 +311,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
      * @param   string  $action  script action parameter
      * @param   array   $args    array of passed arguments
      * @return  bool
+     * @throws  \Yana\Core\Exceptions\InvalidActionException  when the event is undefined
      */
     public function callAction($action = "", array $args = null)
     {
@@ -320,7 +321,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
          * 1) check for default arguments
          */
         if (empty($action)) {
-            $action = $this->getAction();
+            $action = $this->_getAction();
         }
         if (is_null($args)) {
             $args = \Yana\Core\Request::getVars();
@@ -334,7 +335,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
         $plugins = $this->getPlugins();
         $eventConfiguration = $plugins->getEventConfiguration($action);
         if (!($eventConfiguration instanceof \Yana\Plugins\Configs\MethodConfiguration)) {
-            $error = new InvalidActionError();
+            $error = new \Yana\Core\Exceptions\InvalidActionException();
             $error->setAction($action);
             return false;
         }
@@ -408,7 +409,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
     }
 
     /**
-     * get current action
+     * Get current action.
      *
      * @internal This also checks the action parameter for validity.
      *
@@ -430,9 +431,10 @@ final class Yana extends \Yana\Core\AbstractSingleton
      * </code>
      *
      * @return  string
+     * @throws  \Yana\Core\Exceptions\InvalidActionException  when the event is undefined
      * @ignore
      */
-    protected function getAction()
+    protected function _getAction()
     {
         if (!isset(self::$_action)) {
             $action = \Yana\Core\Request::getVars('action');
@@ -449,7 +451,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
             {
                 case isset($action) && !is_string($action):
                 case isset($action) && !$this->getPlugins()->isEvent($action):
-                    $error = new InvalidActionError();
+                    $error = new \Yana\Core\Exceptions\InvalidActionException();
                     $error->setAction($action);
                 // fall through
                 case empty($action):
@@ -587,7 +589,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
         if (!isset($this->_view)) {
             $factory = new \Yana\Views\EngineFactory(self::$_config->templates);
             $this->_view = $factory->createInstance();
-            $this->setVar("ACTION", $this->getAction());
+            $this->setVar("ACTION", $this->_getAction());
         }
         return $this->_view;
     }
