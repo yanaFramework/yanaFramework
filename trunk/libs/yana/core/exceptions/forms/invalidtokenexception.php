@@ -25,16 +25,22 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Forms;
+
 /**
- * Error
+ * <<exception>> CSRF-token is invalid (or missing).
  *
- * This class represents errors passed to the user.
+ * The CSRF form token ensures that the form has been called by the browser before sending it's contents.
+ * C.S.R.F = cross-site request forgery. This prevents 1) primitive spam-bots from auto-submitting posts
+ * without ever viewing the forms and 2) tricking users into submitting a form action (like setting a new password)
+ * by making them click a forged link (note: for that attack to be successful the user needs to be currently logged in).
  *
- * @access      public
+ * This exception is thrown when the token is either missing or invalid.
+ *
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class SpamError extends Error
+class InvalidTokenException extends \Yana\Core\Exceptions\Forms\FormException
 {
     /* intentionally left blank */
 }

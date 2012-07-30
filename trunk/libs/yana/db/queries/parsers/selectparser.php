@@ -47,12 +47,14 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
      */
     public function parseStatement(array $syntaxTree)
     {
-                
         $tables = $syntaxTree['tables']; // array of table names
         $column = $syntaxTree['columns']; // array of column names
-        $where = @$syntaxTree['where_clause']; // array of left operand, operator, right operand
-        $having = @$syntaxTree['having_clause']; // array of left operand, operator, right operand
-        $orderBy = @$syntaxTree['sort_order']; // list of columns (keys) and asc/desc (value)
+        // array of left operand, operator, right operand
+        $unparsedWhere = (!empty($syntaxTree['where_clause'])) ? $syntaxTree['where_clause'] : array();
+        // array of left operand, operator, right operand
+        $having = (!empty($syntaxTree['having_clause'])) ? $syntaxTree['having_clause'] : array();
+        // list of columns (keys) and asc/desc (value)
+        $orderBy = (!empty($syntaxTree['sort_order'])) ? $syntaxTree['sort_order'] : array();
 
         if (empty($tables)) {
             $message = "SQL-statement has no table names: $syntaxTree.";
@@ -66,7 +68,12 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
         $query = new \Yana\Db\Queries\Select($database);
         $query->setTable(current($tables));
         $query->setColumns($column);
-        $query->setWhere($this->_parseWhere($where));
+
+        if (!empty($unparsedWhere)) {
+            $where = $this->_parseWhere($unparsedWhere);
+            $query->setWhere($where);
+        }
+        unset($where, $unparsedWhere);
 
         /*
          * Resolve natural join to inner joins by automatically finding appropriate keys.
@@ -81,6 +88,7 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
                 $i++;
                 $tableNameA = $tables[$i - 1];
                 $tableNameB = $tables[$i];
+                $isLeftJoin = false;
                 // switch by type of join
                 switch ($join)
                 {
@@ -124,7 +132,8 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
                         $isLeftJoin = true;
                         // fall through
                     default:
-                        $success = $this->_parseJoin(!$query, $tableNameA, $tableNameB, $query->where, empty($isLeftJoin));
+                        $where = $query->getWhere();
+                        $success = $this->_parseJoin($query, $tableNameA, $tableNameB, $where, $isLeftJoin);
                         if (!$success) {
                             $message = "SQL error: accidental cross-join detected in statement '{$query}'." .
                                 "\n\t\tThe statement has been ignored.";
@@ -134,7 +143,7 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
                     break;
                 }
             } // end foreach
-            unset($i, $join);
+            unset($i, $join, $isLeftJoin);
         } // end if
 
         /*

@@ -25,16 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Forms;
+
 /**
- * Warning
+ * <<exception>> Anti-Spam rules violated.
  *
- * This class represents warnings passed to the user.
+ * Thrown when the committed post is detected as possible spam.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class SpamWarning extends Warning
+class SpamException extends \Yana\Core\Exceptions\Forms\FormException
 {
     /* intentionally left blank */
 }
