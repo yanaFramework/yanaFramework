@@ -149,7 +149,9 @@ class plugin_antispam extends StdClass implements IsPlugin
                     \Yana\Log\LogManager::getLogger()->addLog($log, $level, $headerData);
                     unset($log);
                 }
-                throw new SpamError();
+                $message = "Submitted form data is invalid.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Core\Exceptions\Forms\SpamException($message, $level);
             }
             /**
              * 3.2) assume a user would need at least 5 seconds and at most 30 minutes to fill the form
@@ -196,7 +198,9 @@ class plugin_antispam extends StdClass implements IsPlugin
                     \Yana\Log\LogManager::getLogger()->addLog($log, $level, $headerData);
                     unset($log);
                 }
-                throw new SpamError();
+                $message = "Submitted form data is invalid.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Core\Exceptions\Forms\SpamException($message, $level);
             }
             /**
              * 4.1) check if input has a valid form id
@@ -213,20 +217,19 @@ class plugin_antispam extends StdClass implements IsPlugin
                             \Yana\Log\LogManager::getLogger()->addLog($message, $level);
                         }
                         if ($_SESSION['yana_form_id'] === 'expired') {
-                            throw new SpamWarning();
+                            $message = "The forms CSRF token has expired. Reload form and try again.";
+                            $level = \Yana\Log\TypeEnumeration::WARNING;
+                            throw new \Yana\Core\Exceptions\Forms\TokenExpiredException($message, $level);
                         } else {
-                            throw new InvalidInputWarning();
+                            $message = "CSRF token was invalid.";
+                            $level = \Yana\Log\TypeEnumeration::WARNING;
+                            throw new \Yana\Core\Exceptions\Forms\InvalidTokenException($message, $level);
                         }
                         $_SESSION['yana_form_id'] = 'expired';
                         return false;
-                    break;
-                    default:
-                        $_SESSION['yana_form_id'] = 'expired';
-                    break;
                 }
-            } else {
-                $_SESSION['yana_form_id'] = 'expired';
             }
+            $_SESSION['yana_form_id'] = 'expired';
         } /* end if */
 
         /**
@@ -254,7 +257,9 @@ class plugin_antispam extends StdClass implements IsPlugin
                     \Yana\Log\LogManager::getLogger()->addLog($log, $level, $headerData);
                     unset($log);
                 }
-                throw new SpamError();
+                $message = "Submitted form data is invalid.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Core\Exceptions\Forms\SpamException($message, $level);
             break;
         }
 
@@ -275,7 +280,9 @@ class plugin_antispam extends StdClass implements IsPlugin
                         \Yana\Log\LogManager::getLogger()->addLog($log, $level, $headerData);
                         unset($log);
                     }
-                    throw new SpamError();
+                    $message = "Submitted form data is invalid.";
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    throw new \Yana\Core\Exceptions\Forms\SpamException($message, $level);
 
                 }
                 unset($words);
@@ -294,19 +301,14 @@ class plugin_antispam extends StdClass implements IsPlugin
                             \Yana\Log\LogManager::getLogger()->addLog($log, $level, $headerData);
                             unset($log);
                         }
-                        throw new SpamError();
+                        $message = "Submitted form data is invalid.";
+                        $level = \Yana\Log\TypeEnumeration::WARNING;
+                        throw new \Yana\Core\Exceptions\Forms\SpamException($message, $level);
 
                     }
                 }
                 unset($words);
             }
-        }
-
-        /**
-         * 6) clean up the garbage
-         */
-        if (isset($ARGS['yana_form_id'])) {
-            unset($ARGS['yana_form_id']);
         }
         return true;
     }

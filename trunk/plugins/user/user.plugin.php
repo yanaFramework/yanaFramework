@@ -224,7 +224,6 @@ class plugin_user extends StdClass implements IsPlugin
     public function get_lost_pwd(array $ARGS)
     {
         global $YANA;
-        $sessionManager = SessionManager::getInstance();
         $database = SessionManager::getDatasource();
         // check captcha field
         if (\Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
@@ -332,9 +331,6 @@ class plugin_user extends StdClass implements IsPlugin
      */
     public function reset_pwd($key, $new_pwd, $repeat_pwd)
     {
-        global $YANA;
-        $db = SessionManager::getDatasource();
-
         // check if user exist in the database
         $userName = $this->_getUserId($key);
         assert('is_string($userName);');
