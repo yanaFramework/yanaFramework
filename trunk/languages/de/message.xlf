@@ -116,12 +116,12 @@
                     <target>Vielen Dank für Ihren Besuch!</target>
                 </trans-unit>
             </group>
-            <group id="SpamWarning">
-                <trans-unit id="SpamWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\AlreadySavedException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\AlreadySavedException.h">
                     <source>Your entry has already been saved.</source>
                     <target>Dieser Eintrag wurde bereits gespeichert.</target>
                 </trans-unit>
-                <trans-unit id="SpamWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\AlreadySavedException.p">
                     <source>Please remember to submit your entries only once.</source>
                     <target>Bitte achten Sie darauf Beiträge nicht mehrmals abzusenden.</target>
                 </trans-unit>
@@ -336,12 +336,12 @@
                     <target>Diese Datenbankanwendung benötigt PEAR-MDB2. Leider konnte diese auf Ihrem Server nicht gefunden werden. Deshalb konnte dieses Plugin nicht gestartet werden.<bpt id="h1">&lt;span class="embtag_tag_h"&gt;</bpt>Administratoren:<ept id="h1">&lt;/span</ept> Überprüfen Sie die Serverkonfiguration und stellen Sie sicher, dass in der Datei "php.ini" der Installationspfad von PEAR in der Variable "include_path" genannt wird.<bpt id="h2">&lt;span class="embtag_tag_h"&gt;</bpt>Administrator:<ept id="h2">&lt;/span</ept> Melden Sie dieses Problem Ihrem Administrator. Sollten Sie PEAR-MDB2 auf Ihrem Server nicht nutzen dürfen, müssen Sie auf die Datenbankunterstützung leider verzichten.</target>
                 </trans-unit>
             </group>
-            <group id="SpamError">
-                <trans-unit id="SpamError.h">
+            <group id="Yana\Core\Exceptions\Forms\SpamException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\SpamException.h">
                     <source>Access denied</source>
                     <target>Zugriff verweigert</target>
                 </trans-unit>
-                <trans-unit id="SpamError.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\SpamException.p">
                     <source>To protect this site from spam, access to the requested resource was temporarily not granted to you.</source>
                     <target>Wegen Spam-Verdacht wurde Ihnen der Zugriff auf die gewünschte Ressource vorübergehend nicht gewährt.</target>
                 </trans-unit>
@@ -354,6 +354,16 @@
                 <trans-unit id="Yana\Core\Exceptions\Forms\SuspendedException.p">
                     <source>You did submit the form too recently. Please wait a few seconds and try again.</source>
                     <target>Sie haben das Formular zu schnell abgesendet. Bitte warten Sie einige Sekunden und versuchen Sie es erneut.</target>
+                </trans-unit>
+            </group>
+            <group id="Yana\Core\Exceptions\Forms\InvalidTokenException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\InvalidTokenException.h">
+                    <source>Incomplete form data</source>
+                    <target>Formularangaben sind unvollständig</target>
+                </trans-unit>
+                <trans-unit id="Yana\Core\Exceptions\Forms\InvalidTokenException.p">
+                    <source>The form you submitted did not contain all mandatory data. Please reload and try again.</source>
+                    <target>Das abgesendete Formular enthielt nicht alle Pflichtangaben. Bitte laden sie das Formular neu und versuchen Sie es noch einmal.</target>
                 </trans-unit>
             </group>
             <group id="Yana\Core\Exceptions\Forms\TimeoutException">
