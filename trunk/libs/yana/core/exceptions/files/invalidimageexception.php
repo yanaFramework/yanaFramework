@@ -25,16 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Files;
+
 /**
- * Invalid image file error.
+ * <<exception>> File is not a valid image.
  *
- * Used when an image is found that is not valid for the requested operation.
+ * Thrown whenever a file is expected to be an image but could not be recognized as such.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class InvalidImageError extends \Yana\Core\Exceptions\Files\FileException
+class InvalidImageException extends \Yana\Core\Exceptions\Files\FileException
 {
     /* intentionally left blank */
 }

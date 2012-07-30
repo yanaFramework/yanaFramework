@@ -669,6 +669,7 @@ class Blob extends \Yana\Files\Readonly
      *                             string background  RGB color as hex-value (e.g. #ffffff)
      * @return  string
      * @ignore
+     * @throws  \Yana\Core\Exceptions\Files\InvalidImageException  when the uploaded file was no valid image
      */
     public static function uploadImage(array $file, $fileId, array $settings)
     {
@@ -677,14 +678,15 @@ class Blob extends \Yana\Files\Readonly
         $filename = self::_getOriginalName($file);
 
         // check mime-type of uploaded file
+        $mimetype = 'png';
         if (!empty($file['type'])) {
             if (!preg_match('/^image\/(\w+)$/s', $file['type'], $mimetype)) {
-                $error = new \InvalidImageError("", UPLOAD_ERR_FILE_TYPE);
+                $message = "The uploaded file has an invalid MIME-type.";
+                $level = UPLOAD_ERR_FILE_TYPE;
+                $error = new \Yana\Core\Exceptions\Files\InvalidImageException($message, $level);
                 throw $error->setFilename($filename);
             }
             $mimetype = $mimetype[1];
-        } else {
-            $mimetype = 'png';
         }
 
         /* name of output files */
@@ -706,7 +708,9 @@ class Blob extends \Yana\Files\Readonly
          * check if the "broken" flag has been set
          */
         if ($image->isBroken()) {
-            $error = new \InvalidImageError("", UPLOAD_ERR_FILE_TYPE);
+            $message = "The uploaded file was not a valid image.";
+            $level = UPLOAD_ERR_FILE_TYPE;
+            $error = new \Yana\Core\Exceptions\Files\InvalidImageException($message, $level);
             throw $error->setFilename($filename);
         }
         $width = $height = $background = null; // init image settings
