@@ -807,7 +807,9 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             $lastModified = unserialize(file_get_contents($path));
             if (!is_array($lastModified)) {
                 $lastModified = array();
-                trigger_error("File content is not valid '{$path}'.", E_USER_NOTICE);
+                $message = "File contents are not valid '{$path}'. The file will be reset automatically.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                \Yana\Log\LogManager::getLogger()->addLog($message, $level);
             }
             $this->_lastModified = $lastModified;
             unset($lastModified);

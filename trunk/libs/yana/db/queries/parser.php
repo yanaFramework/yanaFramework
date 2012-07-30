@@ -122,6 +122,7 @@ class Parser extends \Yana\Core\Object implements \Yana\Db\Queries\IsParser
             $message = "Invalid or unknown SQL statement: $sqlStmt.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
+        assert('is_array($syntaxTree)');
         return $parser->parseStatement($syntaxTree);
     }
 

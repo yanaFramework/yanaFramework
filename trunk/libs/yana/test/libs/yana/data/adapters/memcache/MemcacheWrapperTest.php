@@ -62,7 +62,7 @@ class MemcacheWrapperTest extends \PHPUnit_Framework_TestCase
         $memCacheServer = new \Yana\Data\Adapters\MemCache\Server();
         $wrapper = new \Yana\Data\Adapters\MemCache\MemcacheWrapper($memCache);
         $wrapper->addServer($memCacheServer);
-        if ($memCache->getStats() === false) {
+        if (@$memCache->getStats() === false) {
             $this->markTestSkipped();
             return;
         }

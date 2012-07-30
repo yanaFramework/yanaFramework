@@ -145,9 +145,9 @@ final class Request extends \Yana\Core\AbstractUtility
                     self::$uri = $_SERVER['PHP_SELF'];
 
                 } else {
-                    $message = 'Unable to resolve website URL. ' .
-                        'This feature will not be available on this server.';
-                    trigger_error($message, E_USER_NOTICE);
+                    $message = 'Unable to resolve website URL. This feature will not be available on this server.';
+                    $level = \Yana\Log\TypeEnumeration::INFO;
+                    \Yana\Log\LogManager::getLogger()->addLog($message, $level);
                     self::$uri = "";
 
                     return self::$uri;
