@@ -309,8 +309,8 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * @param   string  $event  identifier of the occured event
      * @param   array   $args   list of arguments
      * @return  mixed
-     * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
-     * @throws  InvalidActionError                          when the event is undefined
+     * @throws  \Yana\Core\Exceptions\NotReadableException    when an existing VDrive definition is not readable
+     * @throws  \Yana\Core\Exceptions\InvalidActionException  when the event is undefined
      */
     public function broadcastEvent($event, array $args)
     {
@@ -319,7 +319,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
         // event must be defined
         $config = $this->getEventConfiguration($event);
         if (!($config instanceof \Yana\Plugins\Configs\MethodConfiguration)) {
-            $error = new \InvalidActionError();
+            $error = new \Yana\Core\Exceptions\InvalidActionException();
             $error->setAction($event);
             throw $error;
         }

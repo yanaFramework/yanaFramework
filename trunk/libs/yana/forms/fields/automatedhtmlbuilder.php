@@ -509,9 +509,10 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 $form->getPrimaryKey() . '-' . $field->getName() . '"';
             $class = 'class="gui_generator_int_link"';
             $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
-            /* @var $event \Yana\Db\Ddl\Event */
             foreach ($field->getField()->getEvents() as $event)
             {
+                assert($event instanceof \Yana\Db\Ddl\Event);
+                /* @var $event \Yana\Db\Ddl\Event */
                 $label = $event->getLabel();
                 $title = $event->getTitle();
                 $icon = $event->getIcon();
@@ -570,6 +571,8 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             /* @var $event \Yana\Db\Ddl\Event */
             foreach ($field->getField()->getEvents() as $event)
             {
+                assert($event instanceof \Yana\Db\Ddl\Event);
+                /* @var $event \Yana\Db\Ddl\Event */
                 if (strtolower($event->getLanguage()) !== 'javascript') {
                     continue; // non-javascript - ignore!
                 }

@@ -25,28 +25,28 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions;
+
 /**
- * Error
+ * <<exception>> An action that has been called by the client is undefined.
  *
- * This class represents errors passed to the user.
- *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class InvalidActionError extends Error
+class InvalidActionException extends \Yana\Core\Exceptions\BadFunctionCallException
 {
 
     /**
      * Set invalid action name.
      *
-     * @access  public
-     * @param   scalar  $action  identifier
-     * @return  InvalidActionError
+     * @param   scalar  $actionName  identifier
+     * @return  \Yana\Core\Exceptions\InvalidActionException
      */
-    public function setAction($action)
+    public function setAction($actionName)
     {
-        $this->data['ACTION'] = (string) $action;
+        assert('is_scalar($actionName); // Invalid argument $actionName: scalar expected');
+
+        $this->data['ACTION'] = (string) $actionName;
         return $this;
     }
 
