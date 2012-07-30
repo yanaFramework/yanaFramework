@@ -54,8 +54,8 @@
                     <target>Ihr Login ist korrekt, aber die gewünschte Aktion ist nicht verfügbar weil Ihre Zugriffsrechte nicht ausreichend sind. Bitte prüfen Sie gegebenenfalls, ob die gewählte URL korrekt ist. Falls Sie Ihre Zugriffsrechte aktualisieren lassen wollen, wenden Sie sich bitte an Ihren Administrator.</target>
                 </trans-unit>
             </group>
-            <group id="InvalidImageError">
-                <trans-unit id="InvalidImageError.h">
+            <group id="Yana\Core\Exceptions\Files\InvalidImageException">
+                <trans-unit id="Yana\Core\Exceptions\Files\InvalidImageException.h">
                     <source>The file {$FILE} is not a valid image.</source>
                     <target>Die Datei {$FILE} ist keine gültige Grafik.</target>
                 </trans-unit>

@@ -54,8 +54,8 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="InvalidImageError">
-                <trans-unit id="InvalidImageError.h">
+            <group id="Yana\Core\Exceptions\Files\InvalidImageException">
+                <trans-unit id="Yana\Core\Exceptions\Files\InvalidImageException.h">
                     <target>The file {$FILE} is not a valid image.</target>
                     <source/>
                 </trans-unit>
