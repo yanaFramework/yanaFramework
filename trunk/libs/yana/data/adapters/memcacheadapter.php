@@ -117,7 +117,12 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
      */
     protected function _isAvailable()
     {
-        return (bool) $this->_getMemCache()->getStats();
+        $isAvailable = false;
+        foreach ((array) $this->_getMemCache()->getStats() as $status)
+        {
+            $isAvailable = $isAvailable || $status !== false;
+        }
+        return $isAvailable;
     }
 
     /**
