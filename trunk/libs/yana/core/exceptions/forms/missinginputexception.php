@@ -25,16 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Forms;
+
 /**
- * Warning
+ * <<exception>> Incomplete form input.
  *
- * This class represents warnings passed to the user.
+ * Thrown when a portion of the form sent is missing.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  cor
  */
-class MissingInputWarning extends Warning
+class MissingInputException extends \Yana\Core\Exceptions\Forms\FormException
 {
     /* intentionally left blank */
 }

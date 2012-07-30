@@ -176,12 +176,12 @@
                     <target>Ein gewählter Parameter ist ungültig. Entweder wurde ein ungültiger bzw. gar kein Wert angegeben, oder der gewählte Link ist defekt. Dies kann zum Beispiel passieren, wenn eine Datei zum Speichern gewählt wurde, aber kein Dateiname angegeben wird.<it id="br1" pos="open">&lt;br /&gt;</it>Bitte wählen Sie eine andere Belegung für Ihre Parameter. Sollte dieser Fehler trotzdem weiterhin bestehen bleiben, wenden Sie sich an den Webmaster.</target>
                 </trans-unit>
             </group>
-            <group id="MissingInputWarning">
-                <trans-unit id="MissingInputWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\MissingInputException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\MissingInputException.h">
                     <source>Input is invalid.</source>
                     <target>Eingabe ist ungültig.</target>
                 </trans-unit>
-                <trans-unit id="MissingInputWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\MissingInputException.p">
                     <source>Please fill in all required information before you submit the form.</source>
                     <target>Bitte füllen Sie alle erforderlichen Felder aus, bevor Sie einen Eintrag abschicken.</target>
                 </trans-unit>
