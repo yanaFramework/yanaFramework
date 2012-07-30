@@ -76,12 +76,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="InvalidActionError">
-                <trans-unit id="InvalidActionError.h">
+            <group id="Yana\Core\Exceptions\InvalidActionException">
+                <trans-unit id="Yana\Core\Exceptions\InvalidActionException.h">
                     <target>Page not found.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="InvalidActionError.p">
+                <trans-unit id="Yana\Core\Exceptions\InvalidActionException.p">
                     <target>The action '{$ACTION}' is undefined, operation aborted.<it id="br1" pos="open">&lt;br /&gt;</it><bpt id="noscript1">&lt;noscript&gt;</bpt>Note to IE users: there exists a known issue with nonstandard compliant handling of the HTML "button" tag in some IE versions. This software has a JavaScript work-around for this problem. Activate JavaScript and try again.<ept id="noscript1">&lt;/noscript&gt;</ept></target>
                     <source/>
                 </trans-unit>
