@@ -76,12 +76,12 @@
                     <target>Die Datei {$FILE} ist zu groß. Sie darf nicht größer sein als {$MAXIMUM} byte.</target>
                 </trans-unit>
             </group>
-            <group id="InvalidActionError">
-                <trans-unit id="InvalidActionError.h">
+            <group id="Yana\Core\Exceptions\InvalidActionException">
+                <trans-unit id="Yana\Core\Exceptions\InvalidActionException.h">
                     <source>Page not found.</source>
                     <target>Seite nicht gefunden.</target>
                 </trans-unit>
-                <trans-unit id="InvalidActionError.p">
+                <trans-unit id="Yana\Core\Exceptions\InvalidActionException.p">
                     <source>The action '{$ACTION}' is undefined, operation aborted.<it id="br1" pos="open">&lt;br /&gt;</it><bpt id="noscript1">&lt;noscript&gt;</bpt>Note to IE users: there exists a known issue with nonstandard compliant handling of the HTML "button" tag in some IE versions. This software has a JavaScript work-around for this problem. Activate JavaScript and try again.<ept id="noscript1">&lt;/noscript&gt;</ept></source>
                     <target>Die Aktion '{$ACTION}' ist undefiniert, Operation abgebrochen.<it id="br1" pos="open">&lt;br /&gt;</it><bpt id="noscript1">&lt;noscript&gt;</bpt>Hinweis an IE-Nutzer: In einigen IE-Versionen gibt es ein bekanntes Problem mit einer nicht standardkonformen Verarbeitung des HTML "button" tags. Diese Software besitzt einen JavaScript-Workaround für das Problem. Aktivieren Sie JavaScript und versuchen Sie es erneut.<ept id="noscript1">&lt;/noscript&gt;</ept></target>
                 </trans-unit>
