@@ -187,8 +187,11 @@ class plugin_guestbook extends StdClass implements IsPlugin
         if (!is_int($permission) || $permission < 1) {
             if (\Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
                 if ($YANA->callAction("security_check_image", \Yana\Core\Request::getPost()) === false) {
-                    \Yana\Log\LogManager::getLogger()->addLog('SPAM: CAPTCHA not solved, entry has not been created.');
-                    throw new SpamError();
+                    $message = 'CAPTCHA not solved, entry has not been created.';
+                    $level = \Yana\Log\TypeEnumeration::DEBUG;
+                    \Yana\Log\LogManager::getLogger()->addLog($message, $level);
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    throw new \Yana\Core\Exceptions\Forms\SpamException($message, $level);
                 }
             }
         }
@@ -365,7 +368,8 @@ class plugin_guestbook extends StdClass implements IsPlugin
      * @param       string  $hometown    author location
      * @param       string  $homepage    URL
      * @param       int     $opinion     rating (0..5)
-     * @throws      \Yana\Core\Exceptions\Forms\FloodException  when user sent too many posts in a row
+     * @throws      \Yana\Core\Exceptions\Forms\FloodException         when user sent too many posts in a row
+     * @throws      \Yana\Core\Exceptions\Forms\AlreadySavedException  when user submits the same text twice
      */
     public function guestbook_write_new($name, $message, $msgtyp, $messenger = "", $mail = "", $hometown = "", $homepage = "", $opinion = "")
     {
@@ -378,8 +382,11 @@ class plugin_guestbook extends StdClass implements IsPlugin
         if (!is_int($permission) || $permission < 1) {
             if (\Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
                 if ($YANA->callAction("security_check_image", \Yana\Core\Request::getPost()) === false) {
-                    \Yana\Log\LogManager::getLogger()->addLog('SPAM: CAPTCHA not solved, entry has not been created.');
-                    throw new SpamError();
+                    $message = 'CAPTCHA not solved, entry has not been created.';
+                    $level = \Yana\Log\TypeEnumeration::DEBUG;
+                    \Yana\Log\LogManager::getLogger()->addLog($message, $level);
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    throw new \Yana\Core\Exceptions\Forms\SpamException($message, $level);
                 }
             }
         }
@@ -422,7 +429,9 @@ class plugin_guestbook extends StdClass implements IsPlugin
         $recent_entry = $database->select("guestbook.?.guestbook_message", $where);
         unset($where);
         if (!empty($entry['guestbook_message']) && $recent_entry == $entry['guestbook_message']) {
-            throw new SpamWarning();
+            $message = "Duplicate entry. The same message was submit twice.";
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            throw new \Yana\Core\Exceptions\Forms\AlreadySavedException($message, $level);
         }
         if ($myFlood->getMax() > 0) {
             $myFlood->set();
