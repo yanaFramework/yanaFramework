@@ -412,16 +412,6 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="InvalidUrlError">
-                <trans-unit id="InvalidUrlError.h">
-                    <target>Permission denied</target>
-                    <source/>
-                </trans-unit>
-                <trans-unit id="InvalidUrlError.p">
-                    <target>Please make sure that the entered URL is correct.</target>
-                    <source/>
-                </trans-unit>
-            </group>
             <group id="EmptySelectionWarning">
                 <trans-unit id="EmptySelectionWarning.h">
                     <target>Changes could not be saved</target>
