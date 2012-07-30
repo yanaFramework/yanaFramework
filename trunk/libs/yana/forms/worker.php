@@ -33,7 +33,6 @@ namespace Yana\Forms;
  * C.R.U.D. = Create, Read, Update, Delete.
  * These stand for the standard operations on any database and form data.
  *
- * @access      public
  * @package     yana
  * @subpackage  form
  */
@@ -43,7 +42,6 @@ class Worker extends \Yana\Forms\QueryBuilder
     /**
      * Initialize instance.
      *
-     * @access  public
      * @param   \Yana\Db\IsConnection  $db    database connection used to create the querys
      * @param   \Yana\Forms\Facade     $form  meta data describing the form
      */
@@ -58,7 +56,6 @@ class Worker extends \Yana\Forms\QueryBuilder
      *
      * Registers the new callback (if provided) and returns all known callbacks for the requested event.
      *
-     * @access  private
      * @param   string    $event     name of event to trigger
      * @param   callable  $callback  some call-back function
      * @return  array
@@ -88,7 +85,6 @@ class Worker extends \Yana\Forms\QueryBuilder
      * If the function throws an exception,
      * the execution will be terminated and the changes are not written to the database.
      *
-     * @access  public
      * @param   callable  $callback  some call-back function
      * @return  array 
      */
@@ -109,7 +105,6 @@ class Worker extends \Yana\Forms\QueryBuilder
      * If the function throws an exception,
      * the execution will be terminated and the changes are not written to the database.
      *
-     * @access  public
      * @param   callable  $callback  some call-back function
      * @return  array 
      */
@@ -130,7 +125,6 @@ class Worker extends \Yana\Forms\QueryBuilder
      * If the function throws an exception,
      * the execution will be terminated and the changes are not written to the database.
      *
-     * @access  public
      * @param   callable  $callback  some call-back function
      * @return  array 
      */
@@ -151,7 +145,6 @@ class Worker extends \Yana\Forms\QueryBuilder
      * If the function throws an exception,
      * the execution will be terminated and the changes are not written to the database.
      *
-     * @access  public
      * @param   callable  $callback  some call-back function
      * @return  \Yana\Forms\Worker 
      */
@@ -172,7 +165,6 @@ class Worker extends \Yana\Forms\QueryBuilder
      * If the function throws an exception,
      * the execution will be terminated and the changes are not written to the database.
      *
-     * @access  public
      * @param   callable  $callback  some call-back function
      * @return  \Yana\Forms\Worker 
      */
@@ -212,10 +204,9 @@ class Worker extends \Yana\Forms\QueryBuilder
      *
      * The function will return bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @return  bool
-     * @throws  InvalidInputWarning  when the value could not be inserted
-     * @throws  MissinginputWarning  when no input data has been provided
+     * @throws  InvalidInputWarning                                when the value could not be inserted
+     * @throws  \Yana\Core\Exceptions\Forms\MissingInputException  when no input data has been provided
      */
     public function create()
     {
@@ -240,7 +231,9 @@ class Worker extends \Yana\Forms\QueryBuilder
             $tableName = $this->_form->getBaseForm()->getTable();
 
             if (empty($newEntry)) {
-                throw new \MissinginputWarning('No data has been provided.');
+                $message = 'No data has been provided.';
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
             }
 
             // execute hooks
@@ -278,7 +271,6 @@ class Worker extends \Yana\Forms\QueryBuilder
      *
      * If the field does not refer to a column of type "reference", then an empty array will be returned.
      *
-     * @access  public
      * @param   string  $columnName  name of column to look up
      * @param   string  $searchTerm  find all entries that start with ...
      * @param   int     $limit       maximum number of hits, set to 0 to get all (default = 50)
@@ -306,7 +298,6 @@ class Worker extends \Yana\Forms\QueryBuilder
     /**
      * Returns the contents of the form as CSV string.
      *
-     * @access  public
      * @return  bool
      */
     public function export()
@@ -326,10 +317,9 @@ class Worker extends \Yana\Forms\QueryBuilder
      * The update may fail either because there is nothing to update, or the database operation causes an error.
      * The function will return bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @return  bool
-     * @throws  InvalidInputWarning  when an updated row does not exist
-     * @throws  MissinginputWarning  when no input data has been provided
+     * @throws  InvalidInputWarning                                when an updated row does not exist
+     * @throws  \Yana\Core\Exceptions\Forms\MissingInputException  when no input data has been provided
      */
     public function update()
     {
@@ -339,7 +329,9 @@ class Worker extends \Yana\Forms\QueryBuilder
             $tableName = $this->_form->getBaseForm()->getTable();
 
             if (empty($updatedEntries)) {
-                throw new \MissinginputWarning('No data has been provided.');
+                $message = 'No data has been provided.';
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
             }
 
             foreach ($updatedEntries as $id => $entry)
@@ -379,17 +371,18 @@ class Worker extends \Yana\Forms\QueryBuilder
      * The operation uses a transaction (if the database supports it).
      * Returns bool(true) on success and bool(false) otherwise.
      *
-     * @access  public
      * @param   array  $selectedEntries list of primary keys, of the rows to be removed
      * @return  bool
-     * @throws  MissinginputWarning  when no input data has been provided
+     * @throws  \Yana\Core\Exceptions\Forms\MissingInputException  when no input data has been provided
      */
     public function delete(array $selectedEntries)
     {
         $result = "";
         if ($this->_form) {
             if (empty($selectedEntries)) {
-                throw new \MissinginputWarning('No row has been selected.');
+                $message = 'No row has been selected.';
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
             }
             $tableName = $this->_form->getBaseForm()->getTable();
             // remove entry from database

@@ -176,12 +176,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="MissingInputWarning">
-                <trans-unit id="MissingInputWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\MissingInputException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\MissingInputException.h">
                     <target>Input is invalid.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="MissingInputWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\MissingInputException.p">
                     <target>Please fill in all required information before you submit the form.</target>
                     <source/>
                 </trans-unit>
