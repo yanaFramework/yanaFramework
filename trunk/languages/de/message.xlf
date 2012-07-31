@@ -146,22 +146,22 @@
                     <target>Bitte überprüfen Sie die angegebene URL und versuchen Sie es erneut.</target>
                 </trans-unit>
             </group>
-            <group id="InvalidCharacterWarning">
-                <trans-unit id="InvalidCharacterWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\InvalidCharacterException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\InvalidCharacterException.h">
                     <source>A chosen parameter is not valid.</source>
                     <target>Eingabe ist ungültig.</target>
                 </trans-unit>
-                <trans-unit id="InvalidCharacterWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\InvalidCharacterException.p">
                     <source>The value "{$VALUE}" at field "{$FIELD}" contains illegal characters. Allowed characters are: "{$VALID}".</source>
                     <target>Der Wert "{$VALUE}" im Feld "{$FIELD}" enthält ungültige Zeichen. Erlaubte Zeichen sind: "{$VALID}".</target>
                 </trans-unit>
             </group>
-            <group id="InvalidSyntaxWarning">
-                <trans-unit id="InvalidSyntaxWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\InvalidSyntaxException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\InvalidSyntaxException.h">
                     <source>A chosen parameter is not valid.</source>
                     <target>Eingabe ist ungültig.</target>
                 </trans-unit>
-                <trans-unit id="InvalidSyntaxWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\InvalidSyntaxException.p">
                     <source>The value "{$VALUE}" at field "{$FIELD}" has an invalid format. Valid is: "{$VALID}".</source>
                     <target>Der Wert "{$VALUE}" im Feld "{$FIELD}" hat ein ungültiges Format. Gültig ist: "{$VALID}".</target>
                 </trans-unit>
@@ -186,22 +186,22 @@
                     <target>Bitte füllen Sie alle erforderlichen Felder aus, bevor Sie einen Eintrag abschicken.</target>
                 </trans-unit>
             </group>
-            <group id="MissingFieldWarning">
-                <trans-unit id="MissingFieldWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\MissingFieldException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\MissingFieldException.h">
                     <source>Input is invalid.</source>
                     <target>Eingabe ist ungültig.</target>
                 </trans-unit>
-                <trans-unit id="MissingFieldWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\MissingFieldException.p">
                     <source>The following mandatory information is missing: <bpt id="b1">&lt;b&gt;</bpt>{$FIELD}<ept id="b1">&lt;/b&gt;</ept></source>
                     <target>Die folgenden Pflichtangaben fehlen: <bpt id="b1">&lt;b&gt;</bpt>{$FIELD}<ept id="b1">&lt;/b&gt;</ept></target>
                 </trans-unit>
             </group>
-            <group id="InvalidValueWarning">
-                <trans-unit id="InvalidValueWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\InvalidValueException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\InvalidValueException.h">
                     <source>Your entry could not be saved.</source>
                     <target>Die Aktion konnte nicht durchgeführt werden.</target>
                 </trans-unit>
-                <trans-unit id="InvalidValueWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\InvalidValueException.p">
                     <source>The following fields contain invalid input: <bpt id="b1">&lt;b&gt;</bpt>{$FIELD}<ept id="b1">&lt;/b&gt;</ept></source>
                     <target>Die folgenden Felder enthalten ungültige Werte: <bpt id="b1">&lt;b&gt;</bpt>{$FIELD}<ept id="b1">&lt;/b&gt;</ept></target>
                 </trans-unit>

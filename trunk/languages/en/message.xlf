@@ -146,22 +146,22 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="InvalidCharacterWarning">
-                <trans-unit id="InvalidCharacterWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\InvalidCharacterException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\InvalidCharacterException.h">
                     <target>A chosen parameter is not valid.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="InvalidCharacterWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\InvalidCharacterException.p">
                     <target>The value "{$VALUE}" at field "{$FIELD}" contains illegal characters. Allowed characters are: "{$VALID}".</target>
                     <source/>
                 </trans-unit>
             </group>
-            <group id="InvalidSyntaxWarning">
-                <trans-unit id="InvalidSyntaxWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\InvalidSyntaxException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\InvalidSyntaxException.h">
                     <target>A chosen parameter is not valid.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="InvalidSyntaxWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\InvalidSyntaxException.p">
                     <target>The value "{$VALUE}" at field "{$FIELD}" has an invalid format. Valid is: "{$VALID}".</target>
                     <source/>
                 </trans-unit>
@@ -186,22 +186,22 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="MissingFieldWarning">
-                <trans-unit id="MissingFieldWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\MissingFieldException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\MissingFieldException.h">
                     <target>Input is invalid.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="MissingFieldWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\MissingFieldException.p">
                     <target>The following mandatory information is missing: <bpt id="b1">&lt;b&gt;</bpt>{$FIELD}<ept id="b1">&lt;/b&gt;</ept></target>
                     <source/>
                 </trans-unit>
             </group>
-            <group id="InvalidValueWarning">
-                <trans-unit id="InvalidValueWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\InvalidValueException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\InvalidValueException.h">
                     <target>Your entry could not be saved.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="InvalidValueWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\InvalidValueException.p">
                     <target>The following fields contain invalid input: <bpt id="b1">&lt;b&gt;</bpt>{$FIELD}<ept id="b1">&lt;/b&gt;</ept></target>
                     <source/>
                 </trans-unit>
