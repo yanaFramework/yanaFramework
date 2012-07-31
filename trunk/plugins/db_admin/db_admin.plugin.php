@@ -475,6 +475,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
      * @param       string  $target_dbms  the DBMS to install databases on
      * @param       array   $list         a list of databases to install
      * @param       array   $options      a list of flags structure, data, zip
+     * @throws      \Yana\Core\Exceptions\Forms\InvalidSyntaxException  when the chosen DBMS is not valid
      */
     public function db_backup($target_dbms, array $list, array $options)
     {
@@ -514,8 +515,10 @@ class plugin_db_admin extends StdClass implements IsPlugin
             case 'IFX':
             case 'SYBASE':
             default:
-                $error = new InvalidValueWarning();
-                throw $error->setField('DBMS=' . $dbms);
+                $message = "Chosen DBMS is invalid.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                $error = new \Yana\Core\Exceptions\Forms\InvalidSyntaxException($message, $level);
+                throw $error->setValue($dbms)->setValid('DB2, MSSQL, MYSQL, OCI8, PGSQL')->setField('DBMS');
         }
 
         foreach ($list as $dbName)

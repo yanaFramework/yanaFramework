@@ -160,8 +160,6 @@ class plugin_db_tools extends StdClass implements IsPlugin
      */
     public function db_tools_exportxml(array $list)
     {
-        global $YANA;
-
         if (empty($list)) {
             throw new InvalidInputWarning();
         }
@@ -285,11 +283,10 @@ class plugin_db_tools extends StdClass implements IsPlugin
      * @access      public
      * @param       string  $dbms           type of DBMS
      * @param       array   $list  list of database schemas
+     * @throws      \Yana\Core\Exceptions\Forms\InvalidSyntaxException  when the chosen DBMS is not valid
      */
     public function db_tools_exportsql ($dbms, array $list)
     {
-        global $YANA;
-
         $fileContents = "";
 
         foreach ($list as $dbName)
@@ -326,8 +323,10 @@ class plugin_db_tools extends StdClass implements IsPlugin
                 case 'ifx':
                 case 'sybase':
                 default:
-                    $error = new InvalidValueWarning();
-                    throw $error->setField('DBMS=' . $dbms);
+                    $message = "Chosen DBMS is invalid.";
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    $error = new \Yana\Core\Exceptions\Forms\InvalidSyntaxException($message, $level);
+                    throw $error->setValue($dbms)->setValid('DB2, MSSQL, MYSQL, OCI8, PGSQL')->setField('DBMS');
             }
             $dbc = new \Yana\Db\Export\SqlFactory( \Yana\Files\XDDL::getDatabase($dbName) );
             $arrayOfStmts = $dbc->$methodName();

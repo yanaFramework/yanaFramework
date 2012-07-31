@@ -493,6 +493,9 @@ class plugin_search extends StdClass implements IsPlugin
      *
      * @access      public
      * @return      bool
+     * @throws      \Yana\Core\Exceptions\Forms\MissingFieldException   when one of the required files is not uploaded
+     * @throws      \Yana\Core\Exceptions\Forms\InvalidSyntaxException  when the uploaded file hasn't the expected name
+     * @throws      \Yana\Core\Exceptions\Files\UploadFailedException   when the uploaded file could not be saved
      */
     public function search_write_upload()
     {
@@ -504,53 +507,61 @@ class plugin_search extends StdClass implements IsPlugin
         $documents_dat = $YANA->getPlugins()->{'search:/documents.file'};
         if (!is_object($documents_dat)) {
             return false;
-        } else {
-            $documents_dat = $documents_dat->getPath();
         }
+        $documents_dat = $documents_dat->getPath();
 
         $keywords_dat = $YANA->getPlugins()->{'search:/keywords.file'};
         if (!is_object($keywords_dat)) {
             return false;
-        } else {
-            $keywords_dat = $keywords_dat->getPath();
         }
+        $keywords_dat = $keywords_dat->getPath();
 
         /*
          * 2) check if both files have been provided
          */
         if (empty($_FILES['documents_dat']['tmp_name'])) {
-            $data = array('FIELD' => '"documents.dat"');
-            $error = new MissingFieldWarning();
-            $error->setData($data);
-            throw new $error;
+            $name = "documents.dat";
+            $message = "A mandatory file has not been uploaded.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            $error = new \Yana\Core\Exceptions\Forms\MissingFieldException($message, $level);
+            throw $error->setField($name);
         }
         if (empty($_FILES['keywords_dat']['tmp_name'])) {
-            $data = array('FIELD' => '"keywords.dat"');
-            $error = new MissingFieldWarning();
-            $error->setData($data);
-            throw new $error;
+            $name = "keywords.dat";
+            $message = "A mandatory file has not been uploaded.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            $error = new \Yana\Core\Exceptions\Forms\MissingFieldException($message, $level);
+            throw $error->setField($name);
         }
         /*
          * 3) check names of uploaded files
          */
         if ($_FILES['documents_dat']['name'] !== 'documents.dat') {
-            $error = new InvalidValueWarning();
-            throw $error->setField('documents.dat = "' . $_FILES['documents_dat']['name'] . '"');
+            $message = "Uploaded file has not expected name.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            $error = new \Yana\Core\Exceptions\Forms\InvalidSyntaxException($message, $level);
+            throw $error->setValue($_FILES['documents_dat']['name'])->setValid('documents.dat')->setField('documents');
         }
         if ($_FILES['keywords_dat']['name'] !== 'keywords.dat') {
-            $error = new InvalidValueWarning();
-            throw $error->setField('"keywords.dat = "' . $_FILES['keywords_dat']['name'] . '"');
+            $message = "Uploaded file has not expected name.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            $error = new \Yana\Core\Exceptions\Forms\InvalidSyntaxException($message, $level);
+            throw $error->setValue($_FILES['keywords_dat']['name'])->setValid('keywords.dat')->setField('keywords');
         }
         /*
          * 4) move uploaded files to destination
          */
         if (!move_uploaded_file($_FILES['documents_dat']['tmp_name'], $documents_dat)) {
-            $error = new InvalidValueWarning();
-            throw $error->setField('"documents.dat"');
+            $message = "Uploaded file could not be saved. (Check if PHP has permission to access the temp-directory.)";
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            $error = new \Yana\Core\Exceptions\Files\UploadFailedException($message, $level);
+            throw $error->setFilename('documents.dat');
         }
         if (!move_uploaded_file($_FILES['keywords_dat']['tmp_name'], $keywords_dat)) {
-            $error = new InvalidValueWarning();
-            throw $error->setField('"keywords.dat"');
+            $message = "Uploaded file could not be saved. (Check if PHP has permission to access the temp-directory.)";
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            $error = new \Yana\Core\Exceptions\Files\UploadFailedException($message, $level);
+            throw $error->setFilename('keywords.dat');
         }
         return true;
     }
