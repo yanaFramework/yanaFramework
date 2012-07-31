@@ -138,7 +138,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
      * @access  public
      * @param   string  $image  image path
      * @return  PluginConfigurationBuilderSdk
-     * @throws  InvalidSyntaxWarning  when the image has no valid type
+     * @throws  \Yana\Core\Exceptions\Files\InvalidImageException  when the image has no valid type
      */
     public function setImage($image)
     {
@@ -146,12 +146,14 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
         {
             case !is_string($image):
             case !preg_match('/^[\d\w-_\.]+\.(gif|jpg|png)$/si', $image):
-                $error = new InvalidSyntaxWarning();
-                $error->setField('image')->setValue($image)->setValid('file.gif, file.jpg, file.png');
+                $message = "";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                $error = new \Yana\Core\Exceptions\Files\InvalidImageException($message, $level);
+                $error->setFilename($image);
                 throw $error;
             break;
-            default:
 
+            default:
                 $yana = Yana::getInstance();
                 $pluginManager = $yana->getPlugins();
                 $logoDir = $pluginManager->{'sdk:/images/logos'};
@@ -665,8 +667,10 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
             {
                 case 'name':
                     if (mb_strlen($value) > 15 || !preg_match('/^[\d\w-_ äüöß\(\)]+$/si', $value)) {
-                        $error = new InvalidCharacterWarning();
-                        $error->setField($key)->setValue($name)->setValid('a-z, 0-9, -, _, ß, ä, ö, ü, " "');
+                        $message = 'Not a valid name.';
+                        $errorLevel = \Yana\Log\TypeEnumeration::WARNING;
+                        $error = new \Yana\Core\Exceptions\Forms\InvalidCharacterException($message, $errorLevel);
+                        $error->setField($key)->setValue($value)->setValid('a-z, 0-9, -, _, ß, ä, ö, ü, " "');
                         throw $error;
                     }
                     $this->object->setDefaultTitle($value);
@@ -677,7 +681,9 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
                     break;
                 case 'parent':
                     if (!preg_match('/^[\d\w-_]*$/si', $value)) {
-                        $error = new InvalidCharacterWarning();
+                        $message = 'Not a valid plugin name.';
+                        $errorLevel = \Yana\Log\TypeEnumeration::WARNING;
+                        $error = new \Yana\Core\Exceptions\Forms\InvalidCharacterException($message, $errorLevel);
                         $error->setField($key)->setValue($value)->setValid('a-z, 0-9, -, _');
                         throw $error;
                     }
@@ -685,7 +691,9 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
                     break;
                 case 'package':
                     if (!preg_match('/^[\d\w-_]*$/si', $value)) {
-                        $error = new InvalidCharacterWarning();
+                        $message = 'Not a valid identifier.';
+                        $errorLevel = \Yana\Log\TypeEnumeration::WARNING;
+                        $error = new \Yana\Core\Exceptions\Forms\InvalidCharacterException($message, $errorLevel);
                         $error->setField($key)->setValue($value)->setValid('a-z, 0-9, -, _');
                         throw $error;
                     }
@@ -742,24 +750,34 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
             ->setTemplate(array_shift($action));
 
         $user = new \Yana\Plugins\UserLevel();
+        $group = array_shift($action);
+        $role = array_shift($action);
+        $level = array_shift($action);
+
         try {
-            $user->setGroup(array_shift($action));
+            $user->setGroup($group);
         } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
-            $error = new InvalidCharacterWarning();
+            $message = 'Given group name is not alpha-numeric.';
+            $errorLevel = \Yana\Log\TypeEnumeration::WARNING;
+            $error = new \Yana\Core\Exceptions\Forms\InvalidCharacterException($message, $errorLevel, $e);
             $error->setField('GROUP')->setValid('a-z, 0-9, -, _')->setValue($group);
             throw $error;
         }
         try {
-            $user->setRole(array_shift($action));
+            $user->setRole($role);
         } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
-            $error = new InvalidCharacterWarning();
+            $message = 'Given role name is not alpha-numeric.';
+            $errorLevel = \Yana\Log\TypeEnumeration::WARNING;
+            $error = new \Yana\Core\Exceptions\Forms\InvalidCharacterException($message, $errorLevel, $e);
             $error->setField('ROLE')->setValid('a-z, 0-9, -, _')->setValue($role);
             throw $error;
         }
         try {
-            $user->setLevel((int) array_shift($action));
+            $user->setLevel((int) $level);
         } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
-            $error = new InvalidCharacterWarning();
+            $message = 'Given group name is not a number.';
+            $errorLevel = \Yana\Log\TypeEnumeration::WARNING;
+            $error = new \Yana\Core\Exceptions\Forms\InvalidCharacterException($message, $errorLevel, $e);
             $error->setField('LEVEL')->setValid('0-100')->setValue($level);
             throw $error;
         }
