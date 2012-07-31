@@ -188,19 +188,28 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
         $yana = Yana::getInstance();
         $installDirectory = $yana->getResource('system:/dbinstall/' . mb_strtolower($dbms));
         if (!is_object($installDirectory)) {
-            throw new Log("Registry error: there is no registered install directory ".
-                "named '{$dbms}'. The uploaded SQL-file could not be saved.");
+            $message = "Registry error: there is no registered install directory ".
+                "named '{$dbms}'. The uploaded SQL-file could not be saved.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            \Yana\Log\LogManager::getLogger()->addLog($message, $level);
+            $error = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $level);
+            throw $error->setField('DBMS');
+            
         }
         if (!$installDirectory->exists()) {
             $installDirectory->create(0777);
         }
         if (!is_dir($installDirectory->getPath())) {
-            throw new Log("Unable to create the directory '{$dbms}'. " .
-                "The uploaded SQL-file could not be saved.");
+            $message = "Unable to create the directory '{$dbms}'. " .
+                "The uploaded SQL-file could not be saved.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            \Yana\Log\LogManager::getLogger()->addLog($message, $level);
+            $error = new \Yana\Core\Exceptions\Files\NotFoundException($message, $level);
+            throw $error->setFilename($dbms . '/');
         }
         $this->_filesToCopy[] = array(
             'src' => $file,
-            'dest' => $installDirectory->getPath().$plugin->getId().'.sql'
+            'dest' => $installDirectory->getPath() . $this->object->getId() . '.sql'
         );
         return $this;
     }
