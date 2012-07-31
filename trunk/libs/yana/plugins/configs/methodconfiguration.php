@@ -814,6 +814,8 @@ class MethodConfiguration extends \Yana\Core\Object
             return $this;
         }
 
+        $message = "A provided paramter is invalid.";
+        $errorLevel = \Yana\Log\TypeEnumeration::ERROR;
         $i = 0;
         foreach ($this->getParams() as $name => $type)
         {
@@ -825,7 +827,7 @@ class MethodConfiguration extends \Yana\Core\Object
                     case 'integer':
                     case 'int':
                         if (!is_numeric($value)) {
-                            $error = new InvalidValueWarning();
+                            $error = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $errorLevel);
                             throw $error->setField($name);
                         } else {
                             $this->_args[$name] = (int) $value;
@@ -834,7 +836,7 @@ class MethodConfiguration extends \Yana\Core\Object
                     case 'float':
                     case 'double':
                         if (!is_numeric($value)) {
-                            $error = new InvalidValueWarning();
+                            $error = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $errorLevel);
                             throw $error->setField($name);
                         } else {
                             $this->_args[$name] = (float) $value;
@@ -846,7 +848,7 @@ class MethodConfiguration extends \Yana\Core\Object
                     break;
                     case 'array':
                         if (!is_array($value)) {
-                            $error = new InvalidValueWarning();
+                            $error = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $errorLevel);
                             throw $error->setField($name);
                         } else {
                             $this->_args[$name] = $value;
@@ -854,7 +856,7 @@ class MethodConfiguration extends \Yana\Core\Object
                     break;
                     default:
                         if (!is_string($value)) {
-                            $error = new InvalidValueWarning();
+                            $error = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $errorLevel);
                             throw $error->setField($name);
                         } else {
                             $this->_args[$name] = $value;
@@ -865,7 +867,8 @@ class MethodConfiguration extends \Yana\Core\Object
                 $this->_args[$name] = $this->_defaults[$i];
             } else {
                 // missing parameter
-                $error = new MissingFieldWarning();
+                $message = "A mandatory parameter is missing.";
+                $error = new \Yana\Core\Exceptions\Forms\MissingFieldException($message, $errorLevel);
                 throw $error->setField($name);
             }
             $i++;

@@ -25,18 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Forms;
+
 /**
- * Notice
+ * <<exception>> Invalid value found in form field data.
  *
- * This class represents alerts passed to the user.
+ * Thrown when a field is provided with data, that is not valid for the form.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class Notice extends Message
+class InvalidValueException extends \Yana\Core\Exceptions\Forms\FieldException
 {
-    // intentionally left blank
+    /* intentionally left blank */
 }
 
 ?>

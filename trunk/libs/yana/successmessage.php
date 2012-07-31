@@ -31,7 +31,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class SuccessMessage extends Notice
+class SuccessMessage extends Message
 {
 
     /**

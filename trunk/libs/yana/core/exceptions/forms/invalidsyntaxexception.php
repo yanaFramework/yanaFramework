@@ -25,24 +25,25 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Forms;
+
 /**
- * Warning
+ * <<exception>> Invalid syntax of form field data.
  *
- * This class represents warnings passed to the user.
+ * Thrown when a field is provided with data, that does not match a given syntax.
+ * E.g. a field of type "date" that does not follow the expected date-format.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class InvalidSyntaxWarning extends FieldWarning
+class InvalidSyntaxException extends \Yana\Core\Exceptions\Forms\InvalidValueException
 {
 
     /**
      * Set invalid value.
      *
-     * @access  public
      * @param   mixed $value the invalid value
-     * @return  InvalidSyntaxWarning 
+     * @return  \Yana\Core\Exceptions\Forms\InvalidSyntaxException 
      */
     public function setValue($value)
     {
@@ -53,9 +54,8 @@ class InvalidSyntaxWarning extends FieldWarning
     /**
      * Set list of valid characters.
      *
-     * @access  public
      * @param   string  $valid  list of valid characters
-     * @return  InvalidSyntaxWarning 
+     * @return  \Yana\Core\Exceptions\Forms\InvalidSyntaxException 
      */
     public function setValid($valid)
     {

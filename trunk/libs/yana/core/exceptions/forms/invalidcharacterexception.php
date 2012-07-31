@@ -25,16 +25,18 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Forms;
+
 /**
- * Warning
+ * <<exception>> Invalid characters in form field data.
  *
- * This class represents warnings passed to the user.
+ * Thrown when a field contains invalid characters.
+ * E.g. a field of type "number" containing a letter.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class InvalidValueWarning extends FieldWarning
+class InvalidCharacterException extends \Yana\Core\Exceptions\Forms\InvalidSyntaxException
 {
     /* intentionally left blank */
 }
