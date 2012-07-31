@@ -252,7 +252,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      *
      * This is supposed to fail (due to missing foreign key).
      *
-     * @expectedException MissingFieldWarning
+     * @expectedException Yana\Core\Exceptions\Forms\MissingFieldException
      * @test
      */
     public function testSelectMissingForeignKeyInvalidException()

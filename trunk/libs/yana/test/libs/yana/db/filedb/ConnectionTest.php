@@ -104,7 +104,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
      * insert and update
      *
      * @test
-     * @expectedException \MissingFieldWarning
+     * @expectedException Yana\Core\Exceptions\Forms\MissingFieldException
      */
     public function testInsertWithMissingField()
     {
@@ -325,7 +325,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         try {
             $this->dbsobj->update('t.foo.tf', -1);
             $this->fail('"unsigned" test failed');
-        } catch (\InvalidValueWarning $e) {
+        } catch (\Yana\Core\Exceptions\Forms\InvalidValueException $e) {
             // success
         }
 

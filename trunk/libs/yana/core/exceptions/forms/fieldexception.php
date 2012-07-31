@@ -25,18 +25,32 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Forms;
+
 /**
- * Warning
+ * <<exception>> Invalid form field data.
  *
- * This class represents warnings passed to the user.
+ * Base class, used when any input for a given form field is invalid.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class MissingFieldWarning extends FieldWarning
+class FieldException extends \Yana\Core\Exceptions\Forms\FormException
 {
-    /* intentionally left blank */
+
+    /**
+     * Set field name.
+     *
+     * @param   string  $fieldName  Field that contained the invalid value
+     * @return  \Yana\Core\Exceptions\Forms\FieldException 
+     */
+    public function setField($fieldName)
+    {
+        assert('is_string($fieldName); // Invalid argument $fieldName: string expected');
+        $this->data['FIELD'] = $fieldName;
+        return $this;
+    }
+
 }
 
 ?>

@@ -80,8 +80,9 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
      * @param   bool    $isInsert  type of operation (true = insert, false = update)
      * @param   array   &$files    list of modified or inserted columns of type file or image
      * @return  array
-     * @throws  \Yana\Core\Exceptions\NotWriteableException  if a target column or table is not writeable
-     * @throws  InvalidValueWarning                          if a given value is missing or not valid
+     * @throws  \Yana\Core\Exceptions\NotWriteableException        if a target column or table is not writeable
+     * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  if a given value is not valid
+     * @throws  \Yana\Core\Exceptions\Forms\MissingFieldException  when a not-nullable column is missing
      */
     public function sanitizeRowByTable(\Yana\Db\Ddl\Table $table, array $row, $isInsert = true, array &$files = array())
     {
@@ -128,7 +129,9 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
                     if (empty($title)) {
                         $title = $column->getName();
                     }
-                    $warning = new \MissingFieldWarning();
+                    $message = "A mandatory column has not been provided.";
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    $warning = new \Yana\Core\Exceptions\Forms\MissingFieldException($message, $level);
                     throw $warning->setField($title);
                 } else {
                     $row[$columnName] = null;
@@ -138,6 +141,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
              */
             } else {
                 if (isset($row[$columnName])) {
+                    // throws exception
                     $row[$columnName] = $this->sanitizeValueByColumn($column, $row[$columnName], $files);
                 }
             } // end if
@@ -159,10 +163,11 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
      * @param   mixed               $value   value of the inserted/updated row
      * @param   array               &$files  list of modified or inserted columns of type file or image
      * @return  mixed
-     * @throws  \Yana\Core\Exceptions\NotFoundException        if the column definition is invalid
-     * @throws  InvalidValueWarning                            if an invalid value is encountered, that could not be sanitized
-     * @throws  \Yana\Core\Exceptions\NotImplementedException  when the column has an unknown datatype
-     * @throws  \Yana\Core\Exceptions\Files\SizeException           when uploaded file is too large
+     * @throws  \Yana\Core\Exceptions\NotFoundException            if the column definition is invalid
+     * @throws  \Yana\Core\Exceptions\Forms\InvalidValueException  if an invalid value is encountered, that could not be sanitized
+     * @throws  \Yana\Core\Exceptions\Forms\InvalidSyntaxException if a value does not match a required pattern or syntax
+     * @throws  \Yana\Core\Exceptions\NotImplementedException      when the column has an unknown datatype
+     * @throws  \Yana\Core\Exceptions\Files\SizeException          when uploaded file is too large
      */
     public function sanitizeValueByColumn(\Yana\Db\Ddl\Column $column, $value, array &$files = array())
     {
@@ -177,8 +182,10 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
         // validate pattern
         $pattern = $column->getPattern();
         if (!empty($pattern) && !preg_match("/^$pattern\$/", $value)) {
-            $error = new \InvalidValueWarning();
-            throw $error->setField($title);
+            $message = "Field data does not match pattern.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            $error = new \Yana\Core\Exceptions\Forms\InvalidSyntaxException($message, $level);
+            throw $error->setValid($pattern)->setValue($value)->setField($title);
         }
 
         switch ($type)
@@ -263,7 +270,9 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
             case 'range':
                 $value = filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 if (filter_var($value, FILTER_VALIDATE_FLOAT) === false) {
-                    $error = new \InvalidValueWarning();
+                    $message = "Input is not a valid number.";
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    $error = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $level);
                     throw $error->setField($title);
                 }
                 if (($value <= $column->getRangeMax()) && ($value >= $column->getRangeMin())) {
@@ -316,14 +325,14 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
             break;
             case 'set':
                 if (is_array($value)) {
-                    if (YANA_DB_STRICT) {
-                        $enumerationItems = $column->getEnumerationItemNames();
-                        if (count(array_diff($value, $enumerationItems)) > 0) {
-                            $error = new \InvalidValueWarning();
-                            throw $error->setField($title);
-                        }
-                        unset($enumerationItems);
+                    $enumerationItems = $column->getEnumerationItemNames();
+                    if (count(array_diff($value, $enumerationItems)) > 0) {
+                        $message = "Field is not a valid enumartion item.";
+                        $level = \Yana\Log\TypeEnumeration::WARNING;
+                        $error = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $level);
+                        throw $error->setField($title);
                     }
+                    unset($enumerationItems);
                     return $value;
                 }
             break;
@@ -378,7 +387,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
                 assert('!in_array($value, self::getSupportedTypes()); // Unhandled column type. ');
                 throw new \Yana\Core\Exceptions\NotImplementedException("Type '$type' not implemented.", E_USER_ERROR);
         }
-        $error = new \InvalidValueWarning();
+        $error = new \Yana\Core\Exceptions\Forms\InvalidValueException();
         $error->setField($title);
         throw $error;
     }
