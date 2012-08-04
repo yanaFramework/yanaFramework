@@ -412,12 +412,12 @@
                     <target>Das Zeitlimit zum Ändern Ihres Passworts ist überschritten. Bitte fordern Sie erneut ein neues Passwort an. Falls Sie Unterstützung benötigen, wenden Sie sich bitte an Ihren Administrator.</target>
                 </trans-unit>
             </group>
-            <group id="EmptySelectionWarning">
-                <trans-unit id="EmptySelectionWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\NothingSelectedException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\NothingSelectedException.h">
                     <source>Changes could not be saved</source>
                     <target>Änderungen konnten nicht gespeichert werden</target>
                 </trans-unit>
-                <trans-unit id="EmptySelectionWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\NothingSelectedException.p">
                     <source>Please select at least one entry for this operation.</source>
                     <target>Bitte wählen Sie für diese Operation mindestens einen Eintrag aus.</target>
                 </trans-unit>
