@@ -386,18 +386,18 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="InvalidMailWarning">
-                <trans-unit id="InvalidMailWarning.h">
+            <group id="Yana\Core\Exceptions\User\MailInvalidException">
+                <trans-unit id="Yana\Core\Exceptions\User\MailInvalidException.h">
                     <target>Invalid e-mail address</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="InvalidMailWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\User\MailInvalidException.p">
                     <target>Please check the entered e-mail address.</target>
                     <source/>
                 </trans-unit>
             </group>
-            <group id="MailNotFoundError">
-                <trans-unit id="MailNotFoundError.h">
+            <group id="Yana\Core\Exceptions\User\MailNotFoundException">
+                <trans-unit id="Yana\Core\Exceptions\User\MailNotFoundException.h">
                     <target>The entered e-mail address is not registered.</target>
                     <source/>
                 </trans-unit>
