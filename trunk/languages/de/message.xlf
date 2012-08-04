@@ -386,18 +386,18 @@
                     <target>Es wurde eine Nachricht an die angegebene Mailadresse gesendet. Bitte überprüfen Sie Ihr Mailpostfach.</target>
                 </trans-unit>
             </group>
-            <group id="InvalidMailWarning">
-                <trans-unit id="InvalidMailWarning.h">
+            <group id="Yana\Core\Exceptions\User\MailInvalidException">
+                <trans-unit id="Yana\Core\Exceptions\User\MailInvalidException.h">
                     <source>Invalid e-mail address</source>
                     <target>Ungültige Mailadresse</target>
                 </trans-unit>
-                <trans-unit id="InvalidMailWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\User\MailInvalidException.p">
                     <source>Please check the entered e-mail address.</source>
                     <target>Überprüfen Sie bitte die von Ihnen angegebene Mailadresse.</target>
                 </trans-unit>
             </group>
-            <group id="MailNotFoundError">
-                <trans-unit id="MailNotFoundError.h">
+            <group id="Yana\Core\Exceptions\User\MailNotFoundException">
+                <trans-unit id="Yana\Core\Exceptions\User\MailNotFoundException.h">
                     <source>The entered e-mail address is not registered.</source>
                     <target>Die angegebene Mailadresse ist nicht registriert.</target>
                 </trans-unit>
