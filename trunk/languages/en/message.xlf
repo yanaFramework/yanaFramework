@@ -412,12 +412,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="EmptySelectionWarning">
-                <trans-unit id="EmptySelectionWarning.h">
+            <group id="Yana\Core\Exceptions\Forms\NothingSelectedException">
+                <trans-unit id="Yana\Core\Exceptions\Forms\NothingSelectedException.h">
                     <target>Changes could not be saved</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="EmptySelectionWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\Forms\NothingSelectedException.p">
                     <target>Please select at least one entry for this operation.</target>
                     <source/>
                 </trans-unit>
