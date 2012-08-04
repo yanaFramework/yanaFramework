@@ -38,7 +38,7 @@ namespace Yana\Core\Exceptions\User;
  * @package     yana
  * @subpackage  core
  */
-class DeleteAdminException extends \Yana\Core\Exceptions\Security\UserException
+class DeleteAdminException extends \Yana\Core\Exceptions\User\UserException
 {
 
     /**

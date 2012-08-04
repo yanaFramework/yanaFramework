@@ -36,7 +36,7 @@ namespace Yana\Core\Exceptions\User;
  * @package     yana
  * @subpackage  core
  */
-class DeleteSelfException extends \Yana\Core\Exceptions\Security\UserException
+class DeleteSelfException extends \Yana\Core\Exceptions\User\UserException
 {
     
     /**
