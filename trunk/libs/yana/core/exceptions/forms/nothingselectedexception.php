@@ -25,16 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Forms;
+
 /**
- * Warning
+ * <<exception>> No entry was selected.
  *
- * This class represents warnings passed to the user.
+ * If an action operates on a list of entries and the client has to select which;
+ * This exception is thrown, when the client selected none of the options, submits the form anyway
+ * and there is nothing to do for the action called.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class EmptySelectionWarning extends Warning
+class NothingSelectedException extends \Yana\Core\Exceptions\Forms\FieldException
 {
     /* intentionally left blank */
 }
