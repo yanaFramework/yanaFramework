@@ -25,16 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\User;
+
 /**
- * Error
+ * <<exception>> User management issue.
  *
- * This class represents errors passed to the user.
+ * Thrown when searching for a user by using a mail address that does not exist.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class MailNotFoundError extends Error
+class MailNotFoundException extends \Yana\Core\Exceptions\User\UserException
 {
     /* intentionally left blank */
 }

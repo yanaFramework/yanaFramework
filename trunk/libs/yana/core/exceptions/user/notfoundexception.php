@@ -32,7 +32,6 @@ namespace Yana\Core\Exceptions\User;
  *
  * Thrown when searching for a user that does not exist.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */

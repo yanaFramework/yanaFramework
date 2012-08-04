@@ -34,7 +34,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class DbAlert extends Alert
+class DbAlert extends Message
 {
     /**
      * constructor

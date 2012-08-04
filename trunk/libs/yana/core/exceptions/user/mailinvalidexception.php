@@ -25,17 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\User;
+
 /**
- * Alert.
+ * <<exception>> User management issue.
  *
- * This class represents alerts passed to the user.
+ * Thrown when entering a mail-address for a user that is not valid.
  *
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class Alert extends Message
+class MailInvalidException extends \Yana\Core\Exceptions\User\UserException
 {
-    // intentionally left blank
+    /* intentionally left blank */
 }
 
 ?>

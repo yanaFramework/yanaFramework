@@ -37,7 +37,7 @@ namespace Yana\Core\Exceptions\User;
  * @package     yana
  * @subpackage  core
  */
-class AlreadyExistsException extends \Yana\Core\Exceptions\Security\UserException
+class AlreadyExistsException extends \Yana\Core\Exceptions\User\UserException
 {
 
     /**
