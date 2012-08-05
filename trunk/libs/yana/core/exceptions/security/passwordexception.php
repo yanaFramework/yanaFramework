@@ -25,31 +25,19 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Core\Exceptions\Files;
+namespace Yana\Core\Exceptions\Security;
 
 /**
- * <<exception>> Form data related issues.
+ * <<exception>> Security restriction in effect.
  *
- * Thrown when a client commits data to a form that is not valid for some reason.
+ * Thrown when a problem with a user password is detected.
  *
  * @package     yana
  * @subpackage  core
  */
-class FileException extends \Yana\Core\Exceptions\DataException
+class PasswordException extends \Yana\Core\Exceptions\Security\PasswordException
 {
-
-    /**
-     * Set file name.
-     *
-     * @param   scalar  $file  path to some file or filename
-     * @return  \Yana\Core\Exceptions\Files\FileException
-     */
-    public function setFilename($file)
-    {
-        $this->data['FILE'] = (string) $file;
-        return $this;
-    }
-
+    /* intentionally left blank */
 }
 
 ?>

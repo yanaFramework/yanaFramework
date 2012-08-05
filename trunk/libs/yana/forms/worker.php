@@ -205,7 +205,6 @@ class Worker extends \Yana\Forms\QueryBuilder
      * The function will return bool(true) on success and bool(false) on error.
      *
      * @return  bool
-     * @throws  InvalidInputWarning                                when the value could not be inserted
      * @throws  \Yana\Core\Exceptions\Forms\MissingInputException  when no input data has been provided
      */
     public function create()
@@ -242,22 +241,15 @@ class Worker extends \Yana\Forms\QueryBuilder
                 $callback($newEntry); // may throw exception
             }
 
-            if (!$this->_db->insert($tableName, $newEntry)) {
-                throw new \InvalidInputWarning('Unable to insert entry. Is database read-only or the sequence out of sync?');
-            }
+            $this->_db->insert($tableName, $newEntry); // may throw exception
 
             // execute hooks
             foreach ($this->afterCreate() as $callback)
             {
                 $callback($newEntry); // may throw exception
             }
-            try {
-                $this->_db->commit(); // may throw exception
-                $result = true;
-            } catch (\Exception $e) {
-                unset($e);
-                $result = false;
-            }
+            $this->_db->commit(); // may throw exception
+            $result = true;
         }
         return $result;
     }
@@ -324,7 +316,7 @@ class Worker extends \Yana\Forms\QueryBuilder
      * The function will return bool(true) on success and bool(false) on error.
      *
      * @return  bool
-     * @throws  InvalidInputWarning                                when an updated row does not exist
+     * @throws  \Yana\Core\Exceptions\NotFoundException            when an updated row does not exist
      * @throws  \Yana\Core\Exceptions\Forms\MissingInputException  when no input data has been provided
      */
     public function update()
@@ -346,7 +338,9 @@ class Worker extends \Yana\Forms\QueryBuilder
 
                 /* before doing anything, check if entry exists */
                 if (!$this->_db->exists("{$tableName}.{$id}")) {
-                    throw new \InvalidInputWarning('Entry not found');
+                $message = 'Entry not found';
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    throw new \Yana\Core\Exceptions\NotFoundException($message, $level);
                 }
 
                 // execute hooks
@@ -365,13 +359,8 @@ class Worker extends \Yana\Forms\QueryBuilder
                     $callback($id, $entry); // may throw exception
                 }
             } // end for
-            try {
-                $this->_db->commit(); // may throw exception
-                $result = true;
-            } catch (\Exception $e) {
-                unset($e);
-                $result = false;
-            }
+            $this->_db->commit(); // may throw exception
+            $result = true;
         }
         return $result;
     }

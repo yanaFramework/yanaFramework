@@ -35,7 +35,7 @@ namespace Yana\Core\Exceptions\Files;
  * @package     yana
  * @subpackage  core
  */
-class InvalidImageException extends \Yana\Core\Exceptions\Files\FileException
+class InvalidImageException extends \Yana\Core\Exceptions\Files\InvalidTypeException
 {
     /* intentionally left blank */
 }
