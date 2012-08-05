@@ -139,15 +139,15 @@ class Microsummary extends \Yana\Core\AbstractUtility
             return false;
         }
         $value = array('microsummary_id' => $id, 'microsummary_text' => $text);
-        $result = $db->insertOrUpdate("microsummary.$id", $value);
-        if (!empty($result)) {
-            /* insert failed */
-            return false;
-        }
-        if ($db->commit()) {
+        try {
+            $result = $db->insertOrUpdate("microsummary.$id", $value);
+            if (!empty($result)) {
+                return false;
+            }
+            $db->commit(); // may throw exception
             return true;
-        } else {
-            /* commit failed */
+        } catch (\Exception $e) {
+            unset($e);
             return false;
         }
     }

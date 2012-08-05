@@ -25,25 +25,27 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\User;
+
 /**
- * Warning
+ * <<exception>> User name missing.
  *
- * This class represents warnings passed to the user.
+ * Thrown when a form requires a user name but none is provided.
  *
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class Warning extends Message
+class MissingNameException extends \Yana\Core\Exceptions\User\UserException
 {
 
     /**
-     * constructor
+     * Create a new instance.
      *
      * @param  string      $message   the message that should be reported
      * @param  int         $code      optional error code
      * @param  \Exception  $previous  use this when you need to rethrow a catched exception
      */
-    public function __construct($message = "", $code = E_USER_WARNING, \Exception $previous = null)
+    public function __construct($message = "", $code = \Yana\Log\TypeEnumeration::WARNING, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

@@ -34,7 +34,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class InvalidInputWarning extends Warning
+class InvalidInputWarning extends Message
 {
     /* intentionally left blank */
 }

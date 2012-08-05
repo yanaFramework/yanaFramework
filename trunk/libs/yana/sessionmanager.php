@@ -584,7 +584,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements \Serializab
                 )
             ), 1);
         if ($remove) {
-            $database->commit();
+            $database->commit(); // may throw exception
         }
         $result = $database->insert("securitylevel", array(
                 "user_id" => $userName,
@@ -593,9 +593,10 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements \Serializab
                 "user_created" => $currentUser,
                 "user_proxy_active" => true
             ));
-        if (!$result || !$database->commit()) {
+        if (!$result) {
             throw new Error("Unable to commit changed security level for user '$userName'.", E_USER_WARNING);
         }
+        $database->commit(); // may throw exception
     }
 
     /**

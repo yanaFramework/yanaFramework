@@ -55,7 +55,7 @@ interface IsConnection
     /**
      * Commits the current transaction.
      *
-     * @return  bool
+     * @return  \Yana\Db\IsConnection
      */
     public function commit();
 

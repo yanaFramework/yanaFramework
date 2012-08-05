@@ -25,32 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Db;
+
 /**
- * Database error
+ * <<exception>> When unable to commit an entry to the database.
  *
- * This class represents errors passed to the user.
- * The error is automatically added to the log-files.
- *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  db
  */
-class DbError extends Message
+class CommitFailedException extends \Yana\Db\DatabaseException
 {
-
-    /**
-     * constructor
-     *
-     * @param  string      $message   the message that should be reported
-     * @param  int         $code      optional error code
-     * @param  \Exception  $previous  use this when you need to rethrow a catched exception
-     */
-    public function __construct($message = "", $code = E_USER_ERROR, \Exception $previous = null)
-    {
-        parent::__construct($message, $code, $previous);
-        \Yana\Log\LogManager::getLogger()->addLog($message, $code);
-    }
-
+    /* intentionally left blank */
 }
 
 ?>

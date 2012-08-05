@@ -111,15 +111,19 @@ class Counter extends \Yana\Db\FileDb\Sequence
      */
     public function __destruct()
     {
-        parent::__destruct();
-        $row = array(
-            'name' => $this->name,
-            'useip' => $this->useIp,
-            'ip' => $this->ip,
-            'info' => $this->info
-        );
-        if (parent::$db->update("counter.{$this->name}", $row)) {
-            parent::$db->commit();
+        try {
+            parent::__destruct();
+            $row = array(
+                'name' => $this->name,
+                'useip' => $this->useIp,
+                'ip' => $this->ip,
+                'info' => $this->info
+            );
+            if (parent::$db->update("counter.{$this->name}", $row)) {
+                parent::$db->commit(); // may throw exception
+            }
+        } catch (\Exception $e) {
+            unset($e); // Destructor may not throw exceptions
         }
     }
 
@@ -165,7 +169,16 @@ class Counter extends \Yana\Db\FileDb\Sequence
 
             );
 
-            return (parent::$db->insert("counter.$name", $row) && parent::$db->commit());
+            $success = parent::$db->insert("counter.$name", $row);
+            try {
+                if ($success) {
+                    parent::$db->commit(); // may throw exception
+                }
+            } catch (\Exception $e) {
+                unset($e);
+                return false;
+            }
+            return $success;
         } else {
             return false;
         }
@@ -210,10 +223,17 @@ class Counter extends \Yana\Db\FileDb\Sequence
         }
 
         // remove database entry
-        return (bool)
-            parent::$db->remove("counter.$name") &&
-            parent::$db->commit() &&
-            parent::drop($name);
+        $success = parent::$db->remove("counter.$name");
+        try {
+            if ($success) {
+                parent::$db->commit(); // may throw exception
+                $success = parent::drop($name);
+            }
+        } catch (\Exception $e) {
+            unset($e);
+            return false;
+        }
+        return $success;
     }
 
     /**

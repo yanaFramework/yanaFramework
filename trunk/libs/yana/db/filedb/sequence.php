@@ -150,16 +150,20 @@ class Sequence extends \Yana\Core\Object
      */
     public function __destruct()
     {
-        $row = array(
-            'name' => $this->name,
-            'value' => $this->value,
-            'increment' => $this->increment,
-            'min' => $this->min,
-            'max' => $this->max,
-            'cycle' => $this->cycle
-        );
-        if (self::$db->update("sequences.{$this->name}", $row)) {
-            self::$db->commit();
+        try {
+            $row = array(
+                'name' => $this->name,
+                'value' => $this->value,
+                'increment' => $this->increment,
+                'min' => $this->min,
+                'max' => $this->max,
+                'cycle' => $this->cycle
+            );
+            if (self::$db->update("sequences.{$this->name}", $row)) {
+                self::$db->commit(); // may throw exception
+            }
+        } catch (\Exception $e) { // Destructor may not throw exceptions
+            unset($e);
         }
     }
 
@@ -343,7 +347,8 @@ class Sequence extends \Yana\Core\Object
             $query->setRow($name);
             $query->setValues($row);
             $query->sendQuery();
-            return (bool) self::$db->commit();
+            self::$db->commit(); // may throw exception
+            return true;
         } catch (\Yana\Db\DatabaseException $e) {
             return false;
         }
@@ -371,7 +376,15 @@ class Sequence extends \Yana\Core\Object
         }
 
         // remove datbase entry
-        return (bool) (self::$db->remove("sequences.$name") && self::$db->commit());
+        $success = self::$db->remove("sequences.$name");
+        try {
+            self::$db->commit(); // may throw exception
+            $success = true;
+        } catch (\Exception $e) {
+            unset($e);
+            $success = false;
+        }
+        return (bool) $success;
     }
 
     /**

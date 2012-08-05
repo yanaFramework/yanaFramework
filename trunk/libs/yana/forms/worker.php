@@ -251,7 +251,13 @@ class Worker extends \Yana\Forms\QueryBuilder
             {
                 $callback($newEntry); // may throw exception
             }
-            $result = $this->_db->commit();
+            try {
+                $this->_db->commit(); // may throw exception
+                $result = true;
+            } catch (\Exception $e) {
+                unset($e);
+                $result = false;
+            }
         }
         return $result;
     }
@@ -323,7 +329,7 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function update()
     {
-        $result = "";
+        $result = false;
         if ($this->_form) {
             $updatedEntries = $this->_form->getSetup()->getContext('update')->getRows()->toArray();
             $tableName = $this->_form->getBaseForm()->getTable();
@@ -359,7 +365,13 @@ class Worker extends \Yana\Forms\QueryBuilder
                     $callback($id, $entry); // may throw exception
                 }
             } // end for
-            $result = $this->_db->commit();
+            try {
+                $this->_db->commit(); // may throw exception
+                $result = true;
+            } catch (\Exception $e) {
+                unset($e);
+                $result = false;
+            }
         }
         return $result;
     }
@@ -377,7 +389,7 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function delete(array $selectedEntries)
     {
-        $result = "";
+        $result = false;
         if ($this->_form) {
             if (empty($selectedEntries)) {
                 $message = 'No row has been selected.';
@@ -402,7 +414,13 @@ class Worker extends \Yana\Forms\QueryBuilder
                     $callback($id); // may throw exception
                 }
             }
-            $result = $this->_db->commit();
+            try {
+                $this->_db->commit(); // may throw exception
+                $result = true;
+            } catch (\Exception $e) {
+                unset($e);
+                $result = false;
+            }
         }
         return $result;
     }

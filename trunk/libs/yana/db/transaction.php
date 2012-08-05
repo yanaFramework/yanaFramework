@@ -89,12 +89,13 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
     /**
      * Commit current transaction and write all changes to the database.
      *
-     * @return  bool
+     * @return  \Yana\Db\IsTransaction
+     * @throws  \Yana\Db\CommitFailedException  when the commit did not succeed
      */
     public function commit(\Yana\Db\IsDriver $driver)
     {
         if (count($this->_queue) == 0) {
-            return true; // nothing to commit
+            return $this; // nothing to commit
         }
 
         // start transaction
@@ -170,13 +171,14 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
          * the same data.
          */
         if (!$driver->commit()) {
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             // commit failed
-            \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", \Yana\Log\TypeEnumeration::WARNING,
-                $result->getMessage());
-            return false;
+            \Yana\Log\LogManager::getLogger()->addLog("Failed: $dbQuery", $level, $result->getMessage());
+            $message = "Unable to commit changes.";
+            throw new \Yana\Db\CommitFailedException($message, $level);
         }
         $this->_queue = array();
-        return true;
+        return $this;
     }
 
     /**

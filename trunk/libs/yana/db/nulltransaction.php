@@ -39,7 +39,8 @@ class NullTransaction extends \Yana\Core\Object implements \Yana\Db\IsTransactio
     /**
      * Commit current transaction and write all changes to the database.
      *
-     * @return  bool
+     * @return  \Yana\Db\IsTransaction
+     * @throws  \Yana\Db\CommitFailedException  when the commit did not succeed
      */
     public function commit(\Yana\Db\IsDriver $driver)
     {

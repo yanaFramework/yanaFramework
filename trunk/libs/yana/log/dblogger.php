@@ -138,6 +138,8 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
     /**
      * This writes all messages to the database and flushes the cache.
      *
+     * Called by destructor.
+     *
      * @ignore
      */
     protected function _flushToDatabase()
@@ -186,12 +188,14 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
         }
 
         // abort if database commit failed
-        $this->_database->commit();
+        $this->_database->commit(); // may throw exception
         $this->_messages = array();
     }
 
     /**
      * Checks if the database is full and if so, removes the oldest entries.
+     *
+     * Called by destructor.
      *
      * @param  int  $maxLogLength  maximum number of entries that will remain in the logs
      */
@@ -201,12 +205,14 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
         $oldId = array_pop($oldLogEntry);
 
         if ($this->_database->remove("log", array('LOG_ID', '<=', $oldId), 0)) {
-            $this->_database->commit();
+            $this->_database->commit(); // may throw exception
         }
     }
 
     /**
      * Removes all entries from the log table and forwards them as an e-mail.
+     *
+     * Called by destructor.
      *
      * @param  string  $recipient  valid e-mail address
      */
@@ -220,11 +226,11 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
         $mail = new \Yana\Mails\FormMailer();
         $mail->setContent($oldLogEntries)
             ->setSubject('JOURNAL')
-            ->send($logMail);
+            ->send($recipient);
 
         // truncate table log
         if ($this->_database->remove("log", array(), 0) === false) {
-            $this->_database->commit();
+            $this->_database->commit(); // may throw exception
         }
     }
 
@@ -233,14 +239,19 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      */
     public function __destruct()
     {
-        $this->_flushToDatabase();
-        // finished, if number of log entries is still smaller than maximum
-        if ($this->getMaxNumerOfEntries() > 0 && $this->_database->length('log') > $this->getMaxNumerOfEntries()) {
-            if ($this->getMailRecipient()) {
-                $this->_flushDatabaseToMail($recipient);
-            } else {
-                $this->_cleanUpDatabase($this->getMaxNumerOfEntries());
+        try {
+            $this->_flushToDatabase();
+            // finished, if number of log entries is still smaller than maximum
+            if ($this->getMaxNumerOfEntries() > 0 && $this->_database->length('log') > $this->getMaxNumerOfEntries()) {
+                if ($this->getMailRecipient()) {
+                    $recipient = $this->getMailRecipient();
+                    $this->_flushDatabaseToMail($recipient);
+                } else {
+                    $this->_cleanUpDatabase($this->getMaxNumerOfEntries());
+                }
             }
+        } catch (\Exception $e) {
+            unset($e);
         }
     }
 

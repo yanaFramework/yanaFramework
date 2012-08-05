@@ -267,23 +267,8 @@ class Connection extends \Yana\Db\AbstractConnection
             throw new \Yana\Core\Exceptions\NotWriteableException("Database is readonly. SQL import aborted.", E_USER_NOTICE);
         }
 
-        // input is array
-        if (is_array($sqlFile)) {
-            $this->_queue = $sqlFile;
-            try {
-                $success = $this->commit();
-            } catch (\Exception $e) {
-                $success = false;
-            }
-            if ($success !== false) {
-                \Yana\Log\LogManager::getLogger()->addLog("SQL import was successful.", E_USER_NOTICE, $sqlFile);
-                return true;
-            } else {
-                \Yana\Log\LogManager::getLogger()->addLog("SQL import failed.", E_USER_NOTICE, $sqlFile);
-                return false;
-            }
-
-        } else { // input is string
+        $success = true;
+        if (!is_array($sqlFile)) { // input is string
 
             if (!is_readable("$sqlFile")) {
                 throw new \Yana\Core\Exceptions\NotReadableException("The file '{$sqlFile}' is not readable.", E_USER_NOTICE);
@@ -299,15 +284,21 @@ class Connection extends \Yana\Db\AbstractConnection
                 return false;
             }
             // add items
-            $this->_queue = explode("[NEXT_COMMAND]", $rawData);
-            if ($this->commit() !== false) {
-                \Yana\Log\LogManager::getLogger()->addLog("SQL import was successful.", E_USER_NOTICE, $rawData);
-                return true;
-            } else {
-                \Yana\Log\LogManager::getLogger()->addLog("SQL import failed.", E_USER_NOTICE, $rawData);
-                return false;
-            }
+            $sqlFile = explode("[NEXT_COMMAND]", $rawData);
         }
+        assert('\is_array($sqlFile); // Invalid result. Array expected for $sqlFile');
+        $this->_queue = $sqlFile;
+
+        try {
+            $this->commit(); // may throw exception
+        } catch (\Exception $e) {
+            $success = false;
+            unset($e);
+        }
+        $message = "SQL import " . (($success) ? "was successful." : "has failed");
+        $level = \Yana\Log\TypeEnumeration::INFO;
+        \Yana\Log\LogManager::getLogger()->addLog("SQL import failed.", $level, $sqlFile);
+        return (bool) $success;
     }
 
     /**
