@@ -60,6 +60,12 @@
                     <source/>
                 </trans-unit>
             </group>
+            <group id="Yana\Core\Exceptions\Files\InvalidTypeException">
+                <trans-unit id="Yana\Core\Exceptions\Files\InvalidTypeException.h">
+                    <target>The file {$FILE} has the wrong type: {$TYPE} expected.</target>
+                    <source/>
+                </trans-unit>
+            </group>
             <group id="Yana\Core\Exceptions\Files\UploadFailedException">
                 <trans-unit id="Yana\Core\Exceptions\Files\UploadFailedException.h">
                     <target>The file {$FILE} could not be saved.</target>
@@ -236,6 +242,36 @@
                     <source/>
                 </trans-unit>
             </group>
+            <group id="Yana\Core\Exceptions\Security\LowPasswordQualityException">
+                <trans-unit id="Yana\Core\Exceptions\Security\LowPasswordQualityException.h">
+                    <target>Low password quality</target>
+                    <source/>
+                </trans-unit>
+                <trans-unit id="Yana\Core\Exceptions\Security\LowPasswordQualityException.p">
+                    <target>The password you entered is too easy to guess. Please enter a more complex password and try again.</target>
+                    <source/>
+                </trans-unit>
+            </group>
+            <group id="Yana\Core\Exceptions\Security\PasswordUsedBeforeException">
+                <trans-unit id="Yana\Core\Exceptions\Security\PasswordUsedBeforeException.h">
+                    <target>Password has already been used</target>
+                    <source/>
+                </trans-unit>
+                <trans-unit id="Yana\Core\Exceptions\Security\PasswordUsedBeforeException.p">
+                    <target>The provided password is the same that you have used before. Please select another one.</target>
+                    <source/>
+                </trans-unit>
+            </group>
+            <group id="Yana\Core\Exceptions\Security\PasswordDoesNotMatchException">
+                <trans-unit id="Yana\Core\Exceptions\Security\PasswordDoesNotMatchException.h">
+                    <target>Password does not match</target>
+                    <source/>
+                </trans-unit>
+                <trans-unit id="Yana\Core\Exceptions\Security\PasswordDoesNotMatchException.p">
+                    <target>The provided passwords don't match. Please try again.</target>
+                    <source/>
+                </trans-unit>
+            </group>
             <group id="Yana\Core\Exceptions\User\NotFoundException">
                 <trans-unit id="Yana\Core\Exceptions\User\NotFoundException.h">
                     <target>User unknown.</target>
@@ -243,6 +279,16 @@
                 </trans-unit>
                 <trans-unit id="Yana\Core\Exceptions\User\NotFoundException.p">
                     <target>Please check the name you provided and try again.</target>
+                    <source/>
+                </trans-unit>
+            </group>
+            <group id="Yana\Core\Exceptions\NotFoundException">
+                <trans-unit id="Yana\Core\Exceptions\NotFoundException.h">
+                    <target>Entry not found.</target>
+                    <source/>
+                </trans-unit>
+                <trans-unit id="Yana\Core\Exceptions\NotFoundException.p">
+                    <target>Please check the name or id you provided and try again.</target>
                     <source/>
                 </trans-unit>
             </group>
