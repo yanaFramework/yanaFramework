@@ -226,6 +226,16 @@
                     <source/>
                 </trans-unit>
             </group>
+            <group id="Yana\Core\Exceptions\User\MissingNameException">
+                <trans-unit id="Yana\Core\Exceptions\User\MissingNameException.h">
+                    <target>User name missing</target>
+                    <source/>
+                </trans-unit>
+                <trans-unit id="Yana\Core\Exceptions\User\MissingNameException.p">
+                    <target>Please make sure to provide a valid name and try again.</target>
+                    <source/>
+                </trans-unit>
+            </group>
             <group id="Yana\Core\Exceptions\User\NotFoundException">
                 <trans-unit id="Yana\Core\Exceptions\User\NotFoundException.h">
                     <target>User unknown.</target>
@@ -316,12 +326,12 @@
                     <source/>
                  </trans-unit>
             </group>
-            <group id="SearchFailedError">
-                <trans-unit id="SearchFailedError.h">
-                    <target>ERROR 500: search index has not been found.</target>
+            <group id="Plugins\Search\IndexNotFoundException">
+                <trans-unit id="Plugins\Search\IndexNotFoundException.h">
+                    <target>Search index has not been found.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="SearchFailedError.p">
+                <trans-unit id="Plugins\Search\IndexNotFoundException.p">
                     <target><bpt id="b1">&lt;b&gt;</bpt>Dear visitor:<ept id="b1">&lt;/b&gt;</ept> the search engine is temporarily not available. Please inform the administrator of this site.<it id="br1" pos="open">&lt;br /&gt;</it> <it id="br2" pos="open">&lt;br /&gt;</it><bpt id="b2">&lt;b&gt;</bpt>Administrator:<ept id="b2">&lt;/b&gt;</ept> Before using this search engine for the first time, you have to use the tool "suchindexErstellen" provided with this program to generate index-files for your web site. This index consists of 2 files: "keywords.dat" and "documents.dat" which need to placed in the directory: "plugins/search". For details on how to do this see the provided readme file!</target>
                     <source/>
                 </trans-unit>
