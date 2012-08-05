@@ -284,8 +284,12 @@ class YanaUser extends \Yana\Core\Object
     public function __destruct()
     {
         if (!empty($this->updates)) {
-            self::$_database->update("user.{$this->_name}", $this->updates);
-            self::$_database->commit();
+            try {
+                self::$_database->update("user.{$this->_name}", $this->updates);
+                self::$_database->commit(); // may throw exception
+            } catch (\Exception $e) { // Destructor may not throw an exception
+                unset($e);
+            }
         }
     }
 
@@ -449,11 +453,11 @@ class YanaUser extends \Yana\Core\Object
         switch (false)
         {
             case self::$_database->update("USER.{$this->_name}.USER_PWD", $newPwd):
-            case self::$_database->commit():
                 throw new DbError("A new password was requested for user '{$this->_name}'. " .
                     "But the database entry could not be updated.");
             break;
             default:
+                self::$_database->commit(); // may throw exception
                 $this->_passwords[] = $this->_getPassword();
                 if (count($this->_passwords) > 10) {
                     array_shift($this->_passwords);
@@ -838,7 +842,7 @@ class YanaUser extends \Yana\Core\Object
      *
      * @param   string  $userName  user name
      * @param   string  $mail      e-mail address
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException     when no user name is given
+     * @throws  \Yana\Core\Exceptions\User\MissingNameException    when no user name is given
      * @throws  \Yana\Core\Exceptions\User\AlreadyExistsException  if another user with the same name already exists
      * @throws  \DbError                                           when the database entry could not be created
      */
@@ -850,7 +854,8 @@ class YanaUser extends \Yana\Core\Object
         $userName = mb_strtoupper("$userName");
 
         if (empty($userName)) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("No user name given.", E_USER_WARNING);
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\User\MissingNameException("No user name given.", $level);
         }
         if (YanaUser::isUser($userName)) {
             $message = "A user with the name '$userName' already exists.";
@@ -861,9 +866,12 @@ class YanaUser extends \Yana\Core\Object
         self::$_database->insert("user.$userName", array('USER_MAIL' => $mail));
         // initialize user profile
         self::$_database->insert("userprofile.$userName", array("userprofile_modified" => time()));
-        if (!self::$_database->commit()) {
-            throw new \DbError("Unable to commit changes to the database server while trying to update " .
-                "settings for user '{$userName}'.");
+        try {
+            self::$_database->commit(); // may throw exception
+        } catch (\Exception $e) {
+            $message = "Unable to commit changes to the database server while trying to update settings for user '{$userName}'.";
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \DbError($message, $level, $e);
         }
     }
 
@@ -907,12 +915,13 @@ class YanaUser extends \Yana\Core\Object
             case self::$_database->remove("securitylevel.*", array("user_created", "=", $userName), 0):
             // delete user settings
             case self::$_database->remove("user.$userName"):
-            // commit changes
-            case self::$_database->commit():
                 throw new DbError("Unable to commit changes to the database server while trying to remove".
                     "user '{$userName}'.");
             break;
+
             default:
+                // commit changes
+                self::$_database->commit(); // may throw exception
                 if (isset(self::$instances[$userName])) {
                     unset(self::$instances[$userName]);
                 }

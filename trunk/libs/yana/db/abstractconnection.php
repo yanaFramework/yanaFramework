@@ -179,14 +179,19 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     /**
      * Commit current transaction and write all changes to the database.
      *
-     * @return  bool
+     * @return  \Yana\Db\AbstractConnection
      * @throws  \Yana\Core\Exceptions\NotWriteableException  when the database or table is locked
+     * @throws  \Yana\Db\CommitFailedException               when the commit failed
      */
     public function commit()
     {
-        $return = $this->_getTransaction()->commit($this->_getConnection()); // throws exception
+        $transaction = $this->_getTransaction();
+        assert($transaction instanceof \Yana\Db\IsTransaction);
+        $connection = $this->_getConnection();
+        assert($connection instanceof \Yana\Db\IsDriver);
+        $transaction->commit($connection); // throws exception
         $this->reset();
-        return $return;
+        return $this;
     }
 
     /**
