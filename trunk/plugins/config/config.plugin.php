@@ -294,6 +294,7 @@ class plugin_config extends StdClass implements IsPlugin
      * @param       array  $pluginlist  all plugins
      * @param       array  $plugins     activated plugins
      * @return      bool
+     * @throws      \Yana\Core\Exceptions\NotFoundException  when a selected plugin was not found
      */
     public function save_pluginlist(array $pluginlist, array $plugins)
     {
@@ -303,15 +304,10 @@ class plugin_config extends StdClass implements IsPlugin
             /* We don't mind, wether $plugin is a plugin or not, since
              * the PluginManager does this checking for us.
              */
-            try {
-                if (in_array($plugin, $plugins)) {
-                    $pluginManager->setActive($plugin, \Yana\Plugins\ActivityEnumeration::ACTIVE);
-                } else {
-                    $pluginManager->setActive($plugin, \Yana\Plugins\ActivityEnumeration::INACTIVE);
-                }
-            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-                throw new InvalidInputWarning();
-            }
+            $state = (in_array($plugin, $plugins)) ? \Yana\Plugins\ActivityEnumeration::ACTIVE :
+                \Yana\Plugins\ActivityEnumeration::INACTIVE;
+
+            $pluginManager->setActive($plugin, $state); // may throw NotFoundException
         }
         /* save changes and refresh the plugin cache */
         return $this->refresh_pluginlist();

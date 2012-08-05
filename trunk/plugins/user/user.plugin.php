@@ -109,36 +109,59 @@ class plugin_user extends StdClass implements IsPlugin
      */
     public function catchAll($event, array $ARGS)
     {
-        settype($event, "string");
-
         /* @var $YANA Yana */
         global $YANA;
+        // Load translation strings
         $YANA->getLanguage()->readFile("user");
 
         if ($YANA->getSession()->checkPermission(null, $event)) {
-            /* access granted */
-            $menu = \Yana\Plugins\Menu::getInstance();
-            if (YanaUser::isLoggedIn()) {
-                $action = "logout";
-            } else {
-                $action = "login";
-            }
-            $menuEntry = new \Yana\Plugins\MenuEntry();
-            $menuEntry->setTitle($YANA->getLanguage()->getVar($action));
-            \Yana\Plugins\Menu::getInstance()->setMenuEntry($action, $menuEntry);
+            /**
+             * Access granted.
+             */
+            $this->_addLoginMenuEntry();
             return true;
         } elseif (!YanaUser::isLoggedIn()) {
+            /**
+             * Access denied.
+             *
+             * Relocates to the login-page.
+             */
             $_SESSION['on_login_goto'] = $event;
             $message = "A valid login is required to access this function.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             new \Yana\Core\Exceptions\Security\LoginRequiredException($message, $level);
             $YANA->exitTo("login");
         } else {
+            /**
+             * Access denied.
+             *
+             * Relocates to the start-page.
+             */
             $message = "The login is valid, but the access rights are not enough to access the function.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             new \Yana\Core\Exceptions\Security\InsufficientRightsException($message, $level);
             $YANA->exitTo();
         }
+    }
+    /**
+     * This adds a menu entry for login or logout.
+     */
+    private function _addLoginMenuEntry()
+    {
+        global $YANA;
+        // Where the menu entry should go to
+        $action = "login";
+        if (YanaUser::isLoggedIn()) {
+            $action = "logout";
+        }
+        // What the name of the entry should be
+        $title = $YANA->getLanguage()->getVar($action);
+        // Create entry for login or logout
+        $menuEntry = new \Yana\Plugins\MenuEntry();
+        $menuEntry->setTitle($title);
+        // Add entry to menu
+        $menu = \Yana\Plugins\Menu::getInstance();
+        $menu->setMenuEntry($action, $menuEntry);
     }
 
     /**
@@ -236,17 +259,21 @@ class plugin_user extends StdClass implements IsPlugin
         $userMail = mb_strtolower($ARGS['user']);
         // email address is not valid
         if (filter_var($userMail, FILTER_VALIDATE_EMAIL) === false) {
-            throw new InvalidMailWarning();
+            $message = "User's e-mail address is invalid.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\User\MailInvalidException($message, $level);
         }
 
-        // check if user exist in the database
+        // check if user exist in the database (select * from user where user_mail = ?)
         $user = $database->select('user', array('USER_MAIL', '=', $userMail));
-        // clean variables
-        unset($userMail);
-        // e-mail is not present on the db
+
+        // e-mail is not found in the db
         if (count($user) !== 1) {
-            throw new MailNotFoundError();
+            $message = "No user found with mail " . $userMail;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\User\MailNotFoundException($message, $level);
         }
+        unset($userMail);
 
         /* Get user name and mail.
          *
@@ -269,7 +296,7 @@ class plugin_user extends StdClass implements IsPlugin
         $recovery = array("user_recover_id" => $uniqueKey, "user_recover_utc" => time());
         $setRecoveryId = $database->update("user.{$userName}", $recovery);
         unset($recovery);
-        $database->commit();
+        $database->commit(); // may throw exception
 
         // check for successful user record update
         if ($setRecoveryId == false) {
@@ -418,17 +445,16 @@ class plugin_user extends StdClass implements IsPlugin
      */
     private function _getUserId($recoveryId)
     {
-        if (!is_string($recoveryId)) {
-            $level = \Yana\Log\TypeEnumeration::INFO;
-            throw new InvalidInputWarning("", $level);
-        }
+        assert('is_string($recoveryId); // Invalid argument $recoveryId: string expected');
 
         $database = SessionManager::getDatasource();
         $user = $database->select('user', array('user_recover_id', '=', $recoveryId));
 
         assert('is_array($user); // $user must be of type array');
         if (count($user) !== 1) {
-            throw new \Yana\Core\Exceptions\User\NotFoundException();
+            $message = "No user found with with recovery id: " . \htmlentities($recoveryId);
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
         }
 
         $user = array_pop($user);
@@ -524,6 +550,7 @@ class plugin_user extends StdClass implements IsPlugin
         }
         return true;
     }
+
 }
 
 ?>

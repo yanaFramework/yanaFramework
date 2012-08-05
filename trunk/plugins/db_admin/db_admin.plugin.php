@@ -107,6 +107,8 @@ class plugin_db_admin extends StdClass implements IsPlugin
      * @param       array   $list    list of database schemas
      * @param       bool    $silent  mute error messages
      * @return      bool
+     * @throws      \Yana\Core\Exceptions\Forms\MissingInputException  when either DBMS or databases have not been selected
+     * @throws      \Yana\Db\Mdb2\PearDbException                      when PEAR MDB2 was not found
      */
     public function db_install($dbms, array $list, $silent = false)
     {
@@ -117,14 +119,13 @@ class plugin_db_admin extends StdClass implements IsPlugin
         }
 
         if (empty($dbms) || empty($list)) {
-            /* invalid option - the choosen dbms is unknown */
-            if (!$silent) {
-                throw new InvalidInputWarning();
-            }
-        } else {
-            $dbms = mb_strtoupper($dbms);
-            $dbList = $list;
+            /* nothing to do */
+            $message = "No databases for target DBMS selected.";
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
         }
+        $dbms = mb_strtoupper($dbms);
+        $dbList = $list;
 
         /* Mapping the DBMS to the SQL export function in class \Yana\Db\Export\SqlFactory */
         switch ($dbms)
@@ -285,7 +286,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
                 \Yana\Log\LogManager::getLogger()->addLog($message, $level);
                 return false;
             } else {
-                $stmt->getDatabase()->commit();
+                $stmt->getDatabase()->commit(); // may throw exception
             }
         }
 
@@ -395,23 +396,30 @@ class plugin_db_admin extends StdClass implements IsPlugin
                         }
                         return false;
                     } else if ($i > 20) {
-                        if ($fileDb->commit()) {
+                        try {
+                            $fileDb->commit(); // may throw exception
                             $i = 0;
-                        } else {
+                        } catch (\Exception $e) {
                             if (!$silent) {
                                 \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to FileDB.");
                             }
+                            unset($e);
                             return false;
                         }
                     } else {
                         $i++;
                     }
                 }
-                if ($i > 0 && !$fileDb->commit()) {
-                    if (!$silent) {
-                        \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to FileDB.");
+                if ($i > 0) {
+                    try {
+                        $fileDb->commit(); // may throw exception
+                    } catch (\Exception $e) {
+                        if (!$silent) {
+                            \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to FileDB.");
+                        }
+                        unset($e);
+                        return false;
                     }
-                    return false;
                 }
                 unset($i);
 
@@ -433,12 +441,14 @@ class plugin_db_admin extends StdClass implements IsPlugin
                             }
                             return false;
                         } else if ($i > 20) {
-                            if ($db->commit()) {
+                            try {
+                                $db->commit(); // may throw exception
                                 $i = 0;
-                            } else {
+                            } catch (\Exception $e) {
                                 if (!$silent) {
                                     \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to Database.");
                                 }
+                                unset($e);
                                 return false;
                             }
                         } else {
@@ -448,11 +458,16 @@ class plugin_db_admin extends StdClass implements IsPlugin
                     }
                 }
                 unset($diff);
-                if ($i > 0 && !$db->commit()) {
-                    if (!$silent) {
-                        \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to Database.");
+                if ($i > 0) {
+                    try {
+                        $db->commit(); // may throw exception
+                    } catch (\Exception $e) {
+                        if (!$silent) {
+                            \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to Database.");
+                        }
+                        unset($e);
+                        return false;
                     }
-                    return false;
                 }
                 unset($i);
             } /* end foreach */

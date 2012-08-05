@@ -157,11 +157,14 @@ class plugin_db_tools extends StdClass implements IsPlugin
      *
      * @access      public
      * @param       array  $list  list of database schemas
+     * @throws      \Yana\Core\Exceptions\Forms\NothingSelectedException  when nothing was selected to export
      */
     public function db_tools_exportxml(array $list)
     {
         if (empty($list)) {
-            throw new InvalidInputWarning();
+            $message = "The list of databases to export is empty.";
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            throw new \Yana\Core\Exceptions\Forms\NothingSelectedException($message, $level);
         }
 
         $xml = \Yana\Db\Export\DataFactory::createXML(true, array_values($list));

@@ -311,22 +311,13 @@ class plugin_user_admin extends StdClass implements IsPlugin
         $newUser = self::getUserForm()->getInsertValues();
         $userName = $newUser['user_id'];
 
-        try {
-
-            YanaUser::createUser($userName, $newUser['user_mail']);
-            $db = SessionManager::getDatasource();
-            if (!$db->update("user.$userName", $newUser) || !$db->commit()) {
-                return false;
-            }
-            return $this->set_user_pwd(array('target' => array('user_id' => $userName)));
-
-        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
-            throw new InvalidInputWarning();
-        } catch (\Yana\Core\Exceptions\AlreadyExistsException $e) {
-            throw new \Yana\Core\Exceptions\User\AlreadyExistsException();
-        } catch (\Exception $e) {
-            throw new Error();
+        YanaUser::createUser($userName, $newUser['user_mail']);
+        $db = SessionManager::getDatasource();
+        if (!$db->update("user.$userName", $newUser)) {
+            return false;
         }
+        $db->commit(); // may throw exception
+        return $this->set_user_pwd(array('target' => array('user_id' => $userName)));
     }
 
     /**

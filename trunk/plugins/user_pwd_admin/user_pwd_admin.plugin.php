@@ -137,10 +137,8 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\Security\LowPasswordQualityException($message, $level);
         }
-        //check if the password does not match the last (max. 5) used passwords
-        if (!plugin_user_pwd_admin::_isAllowedPwd($old_pwd, $new_pwd)) {
-            throw new InvalidInputWarning();
-        }
+        // check if the password does not match the last (max. 5) used passwords
+        plugin_user_pwd_admin::_isAllowedPwd($old_pwd, $new_pwd); // may throw exception
         return true;
     }
 
@@ -300,13 +298,18 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
         }
         /* check if the new password is the same like the last one */
         if (isset($currentUserInformation['USER_PWD']) && $currentUserInformation['USER_PWD'] == $new_password) {
+            $message = "Password is the same that you have used before. Please select another one.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\Security\PasswordDoesNotMatchException($message, $level);
             return false;
         }
         /* check if the new password is the same like the last (max. 5)*/
         $currentPWDList = $currentUserInformation['USER_PWD_LIST'];
         if (isset($currentPWDList)) {
             if (in_array($new_password, $currentPWDList)) {
-                return false;
+                $message = "Password is the same that you have used before. Please select another one.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Core\Exceptions\Security\PasswordUsedBeforeException($message, $level);
             }
             array_push($currentPWDList, $currentUserInformation['USER_PWD']);
             // update the user password list or insert the list if does not exist
@@ -320,9 +323,7 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
         $db->update("USER.$user.USER_PWD_LIST", $currentPWDList);
         /* set pwd create date if not exist or update */
         $db->update("USER.$user.USER_PWD_TIME", mktime());
-        if (!$db->commit()) {
-            throw new Error();
-        }
+        $db->commit(); // may throw exception
         return true;
     }
 
