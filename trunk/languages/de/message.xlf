@@ -60,6 +60,12 @@
                     <target>Die Datei {$FILE} ist keine gültige Grafik.</target>
                 </trans-unit>
             </group>
+            <group id="Yana\Core\Exceptions\Files\InvalidTypeException">
+                <trans-unit id="Yana\Core\Exceptions\Files\InvalidTypeException.h">
+                    <source>The file {$FILE} has the wrong type: {$TYPE} expected.</source>
+                    <target>Die Datei {$FILE} hat den falschen Typ: {$TYPE} erwartet.</target>
+                </trans-unit>
+            </group>
             <group id="Yana\Core\Exceptions\Files\UploadFailedException">
                 <trans-unit id="Yana\Core\Exceptions\Files\UploadFailedException.h">
                     <source>The file {$FILE} could not be saved.</source>
@@ -236,6 +242,36 @@
                     <target>Bitte stellen Sie sicher, dass ein gültiger Name angegeben wird und versuchen Sie es erneut.</target>
                 </trans-unit>
             </group>
+            <group id="Yana\Core\Exceptions\Security\LowPasswordQualityException">
+                <trans-unit id="Yana\Core\Exceptions\Security\LowPasswordQualityException.h">
+                    <source>Low password quality</source>
+                    <target>Niedrige Passwortqualität</target>
+                </trans-unit>
+                <trans-unit id="Yana\Core\Exceptions\Security\LowPasswordQualityException.p">
+                    <source>The password you entered is too easy to guess. Please enter a more complex password and try again.</source>
+                    <target>Das eingegebene Passwort ist zu leicht zu erraten. Bitte wählen Sie ein komplexeres Passwort und versuchen Sie es erneut.</target>
+                </trans-unit>
+            </group>
+            <group id="Yana\Core\Exceptions\Security\PasswordUsedBeforeException">
+                <trans-unit id="Yana\Core\Exceptions\Security\PasswordUsedBeforeException.h">
+                    <source>Password has already been used</source>
+                    <target>Passwort wurde bereits verwendet</target>
+                </trans-unit>
+                <trans-unit id="Yana\Core\Exceptions\Security\PasswordUsedBeforeException.p">
+                    <source>The provided password is the same that you have used before. Please select another one.</source>
+                    <target>Das eingegebene Passwort wurde zuvor bereits verwendet. Bitte wählen Sie ein anderes.</target>
+                </trans-unit>
+            </group>
+            <group id="Yana\Core\Exceptions\Security\PasswordDoesNotMatchException">
+                <trans-unit id="Yana\Core\Exceptions\Security\PasswordDoesNotMatchException.h">
+                    <source>Password does not match</source>
+                    <target>Passwort wurde bereits verwendet</target>
+                </trans-unit>
+                <trans-unit id="Yana\Core\Exceptions\Security\PasswordDoesNotMatchException.p">
+                    <source>The provided passwords don't match. Please try again.</source>
+                    <target>Die eingegebenen Passwörter stimmen nicht überein. Bitte versuchen Sie es erneut.</target>
+                </trans-unit>
+            </group>
             <group id="Yana\Core\Exceptions\User\NotFoundException">
                 <trans-unit id="Yana\Core\Exceptions\User\NotFoundException.h">
                     <source>User unknown.</source>
@@ -244,6 +280,16 @@
                 <trans-unit id="Yana\Core\Exceptions\User\NotFoundException.p">
                     <source>Please check the name you provided and try again.</source>
                     <target>Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut.</target>
+                </trans-unit>
+            </group>
+            <group id="Yana\Core\Exceptions\NotFoundException">
+                <trans-unit id="Yana\Core\Exceptions\NotFoundException.h">
+                    <source>Entry not found.</source>
+                    <target>Eintrag nicht gefunden.</target>
+                </trans-unit>
+                <trans-unit id="Yana\Core\Exceptions\NotFoundException.p">
+                    <source>Please check the name or id you provided and try again.</source>
+                    <target>Bitte korrigieren Sie Ihre Eingabe und versuchen Sie es erneut.</target>
                 </trans-unit>
             </group>
             <group id="Yana\Core\Exceptions\User\AlreadyExistsException">
