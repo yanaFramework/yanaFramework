@@ -30,8 +30,7 @@ namespace Yana\Core\Exceptions;
 /**
  * <<exception>> Item not found.
  *
- * Thrown when you try to add access a named item, but no item with the given
- * name is found.
+ * Thrown when you try to access a named item, but no item with the given name is found.
  *
  * @access      public
  * @package     yana

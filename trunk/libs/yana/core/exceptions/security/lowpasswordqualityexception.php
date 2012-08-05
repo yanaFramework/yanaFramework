@@ -35,7 +35,7 @@ namespace Yana\Core\Exceptions\Security;
  * @package     yana
  * @subpackage  core
  */
-class LowPasswordQualityException extends \Yana\Core\Exceptions\Security\SecurityException
+class LowPasswordQualityException extends \Yana\Core\Exceptions\Security\PasswordException
 {
     /* intentionally left blank */
 }

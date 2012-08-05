@@ -28,25 +28,25 @@
 namespace Yana\Core\Exceptions\Files;
 
 /**
- * <<exception>> Form data related issues.
+ * <<exception>> File is not valid.
  *
- * Thrown when a client commits data to a form that is not valid for some reason.
+ * Thrown whenever a file is expected to be of a certain type but is not recognized as such.
  *
  * @package     yana
  * @subpackage  core
  */
-class FileException extends \Yana\Core\Exceptions\DataException
+class InvalidTypeException extends \Yana\Core\Exceptions\Files\FileException
 {
 
     /**
-     * Set file name.
+     * Set the expected file type.
      *
-     * @param   scalar  $file  path to some file or filename
+     * @param   scalar  $expectedType  expected file extension or MIME type
      * @return  \Yana\Core\Exceptions\Files\FileException
      */
-    public function setFilename($file)
+    public function setExpectedType($expectedType)
     {
-        $this->data['FILE'] = (string) $file;
+        $this->data['TYPE'] = (string) $expectedType;
         return $this;
     }
 
