@@ -149,8 +149,17 @@ class plugin_search extends StdClass implements IsPlugin
                     }
                     unset($mostWanted);
                 }
-                $db->insertOrUpdate("searchstats.$counterId", $statistics);
-                $db->commit();
+                // Update search statistics
+                try {
+                    $db->insertOrUpdate("searchstats.$counterId", $statistics);
+                    $db->commit(); // may throw exception
+                } catch (\Yana\Db\DatabaseException $e) {
+                    // This just updates statistics - we don't care so much if this doesn't succeed.
+                    $message = "Unable to update search statistics counter '{$counterId}': " . $e->getMessage();
+                    $level = \Yana\Log\TypeEnumeration::INFO;
+                    \Yana\Log\LogManager::getLogger()->addLog($message, $level);
+                    unset($e, $message, $level);
+                }
                 unset($counterId, $counterInfo, $counterValue, $statistics);
             } // end for
             unset($temp, $db);
@@ -590,7 +599,10 @@ class plugin_search extends StdClass implements IsPlugin
         $documentList = array();
 
         if (!$keywords->exists() || !$documents->exists()) {
-            throw new SearchFailedError();
+            $message = "Search index is missing.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            \Yana\Log\LogManager::getLogger()->addLog($message, $level);
+            throw new \Plugins\Search\IndexNotFoundException();
         }
 
         $keywords->read();

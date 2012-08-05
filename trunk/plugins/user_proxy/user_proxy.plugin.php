@@ -84,7 +84,6 @@ class plugin_user_proxy extends StdClass implements IsPlugin
         $YANA->setVar('USER_IS_EXPERT', $this->_getIsExpert());
 
         $currentUser = YanaUser::getUserName();
-        $defaultProfile = Yana::getDefault('profile');
         /**
          * @var DBStream $db
          */
@@ -93,7 +92,8 @@ class plugin_user_proxy extends StdClass implements IsPlugin
         /**
          * get all Users Names
          */
-        $users = $db->select('user.*.user_id', array('USER_ID', '!=', $currentUser));
+        $where = array('USER_ID', '!=', $currentUser);
+        $users = $db->select('user.*.user_id', $where);
         $YANA->setVar("USERLIST", $users);
         unset($where, $users);
 
@@ -108,8 +108,9 @@ class plugin_user_proxy extends StdClass implements IsPlugin
             array('USER_PROXY_ACTIVE', '=', true)
         );
         $rows = $db->select('securitylevel', $where, array("profile", "security_level"), 0, 0, true);
-        $YANA->setVar("LEVELS",  self::_getLevels($rows, $profiles));
+        $YANA->setVar("LEVELS", self::_getLevels($rows, $profiles));
         unset($rows);
+        // WHERE clause will be reused
 
         /**
          * get groups
@@ -141,13 +142,14 @@ class plugin_user_proxy extends StdClass implements IsPlugin
         $rows = $db->select('securitylevel', $where, array("profile", "security_level"), 0, 0, true);
         $YANA->setVar("GRANTED_LEVELS", self::_getLevels($rows, $profiles, $users));
         unset($rows);
+        // WHERE clause will be reused
 
         /**
          * get groups
          */
         $rows = $db->select('securityrules', $where, array("user_id"));
         $YANA->setVar("GRANTED_RULES", self::_getRules($rows, $profiles, $users));
-        unset($rows);
+        unset($where, $rows);
 
         // store list of users with grants
         $YANA->setVar("GRANTED_USERS", $users);
@@ -176,7 +178,10 @@ class plugin_user_proxy extends StdClass implements IsPlugin
     public function set_user_proxy($user, array $rules = array(), array $levels = array())
     {
         if (empty($rules) && empty($levels)) {
-            throw new EmptySelectionWarning();
+            $message = "Nothing to do: no entry selected to operate on.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            $warning = new \Yana\Core\Exceptions\Forms\NothingSelectedException($message, $level);
+            throw $warning->setField('rules/levels');
         }
 
         $db = SessionManager::getDatasource();
@@ -186,14 +191,12 @@ class plugin_user_proxy extends StdClass implements IsPlugin
         foreach ($rules as $i => $ruleId)
         {
             if (is_numeric($ruleId)) {
-                $rule = $db->select(
-                    "securityrules.$ruleId",
-                    array(
-                        array("USER_ID", '=', YanaUser::getUserName()),
-                        'and',
-                        array('USER_PROXY_ACTIVE', '=', true)
-                    )
+                $where = array(
+                    array("USER_ID", '=', YanaUser::getUserName()),
+                    'and',
+                    array('USER_PROXY_ACTIVE', '=', true)
                 );
+                $rule = $db->select("securityrules.{$ruleId}", $where);
 
                 if (empty($rule)) {
                     unset($rules[$i]);
@@ -209,7 +212,7 @@ class plugin_user_proxy extends StdClass implements IsPlugin
                 $get = $db->select('securityrules', array('USER_CREATED', '=', $currentUser));
 
                 if (!empty($get)) {
-                    foreach($get as $key)
+                    foreach ($get as $key)
                     {
                         // check if entry already exist
                         switch (true)
@@ -220,16 +223,15 @@ class plugin_user_proxy extends StdClass implements IsPlugin
                             case $key['PROFILE'] != $rule['PROFILE']:
                                 // does not match
                                 continue;
-                            break;
+                                break;
                             default:
                                 // entry is the same
                                 unset($rule);
-                            break;
+                                break;
                         }
                     }
                 }
-                unset($get);
-                unset($key);
+                unset($get, $key);
 
                 if (isset($rule)) {
                     if (!$db->insert("securityrules", $rule)) {
@@ -240,7 +242,7 @@ class plugin_user_proxy extends StdClass implements IsPlugin
                 unset($rules[$i]);
             }
         }
-         
+
         $session = SessionManager::getInstance();
         foreach ($levels as $i => $profileId)
         {
@@ -262,7 +264,7 @@ class plugin_user_proxy extends StdClass implements IsPlugin
                 // get all entries where user created is the logged user
                 $get = $db->select('securitylevel', array('USER_CREATED', '=', $currentUser));
                 if (!empty($get) && isset($row)) {
-                    foreach($get as $key)
+                    foreach ($get as $key)
                     {
                         // check if entry already exist
                         switch (true)
@@ -272,16 +274,15 @@ class plugin_user_proxy extends StdClass implements IsPlugin
                             case $key['PROFILE'] != $row['PROFILE']:
                                 // does not match
                                 continue;
-                            break;
+                                break;
                             default:
                                 // entry is the same
                                 unset($row);
-                            break;
+                                break;
                         }
                     }
                 }
-                unset($get);
-                unset($key);
+                unset($get, $key);
                 if (isset($row)) {
                     if (!$db->insert("securitylevel", $row)) {
                         return false;
@@ -291,11 +292,8 @@ class plugin_user_proxy extends StdClass implements IsPlugin
                 unset($levels[$i]);
             }
         }
-        if ($db->commit()) {
-            return true;
-        } else {
-            return false;
-        }
+        $db->commit(); // may throw exception
+        return true;
     }
 
     /**
@@ -328,7 +326,10 @@ class plugin_user_proxy extends StdClass implements IsPlugin
         $user = mb_strtoupper($user);
 
         if (empty($rules) && empty($levels)) {
-            throw new EmptySelectionWarning();
+            $message = "Nothing to do: no entry selected to operate on.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            $warning = new \Yana\Core\Exceptions\Forms\NothingSelectedException($message, $level);
+            throw $warning->setField('rules/levels');
         }
         $db = SessionManager::getDatasource();
         $currentUser = YanaUser::getUserName();
@@ -340,23 +341,24 @@ class plugin_user_proxy extends StdClass implements IsPlugin
             }
             $where = array($where, 'and', array('USER_ID', '=', $user));
         }
-        foreach($rules as $key)
+        foreach ($rules as $key)
         {
-            if (!$db->remove('securityrules.'.$key, $where)) {
+            if (!$db->remove('securityrules.' . $key, $where)) {
                 return false;
             }
         }
         unset($key);
 
-        foreach($levels as $key)
+        foreach ($levels as $key)
         {
-            if (!$db->remove('securitylevel.'.$key, $where)) {
+            if (!$db->remove('securitylevel.' . $key, $where)) {
                 return false;
             }
         }
         unset($key);
 
-        return $db->commit();
+        $db->commit(); // may throw exception
+        return true;
     }
 
     /**
@@ -384,6 +386,7 @@ class plugin_user_proxy extends StdClass implements IsPlugin
         }
         return $this->isExpert;
     }
+
     /**
      * get security levels
      *
@@ -399,7 +402,7 @@ class plugin_user_proxy extends StdClass implements IsPlugin
     {
         $userLevels = array();
         $defaultProfile = Yana::getDefault('profile');
-        foreach($rows as $key => $item)
+        foreach ($rows as $item)
         {
             if (!empty($item['PROFILE'])) {
                 $profile = mb_strtoupper($item['PROFILE']);
@@ -410,9 +413,9 @@ class plugin_user_proxy extends StdClass implements IsPlugin
                 $userName = $item['USER_ID'];
             }
             $entry = array(
-                    "SECURITY_ID" => $item["SECURITY_ID"],
-                    "SECURITY_LEVEL" => $item["SECURITY_LEVEL"]
-                );
+                "SECURITY_ID" => $item["SECURITY_ID"],
+                "SECURITY_LEVEL" => $item["SECURITY_LEVEL"]
+            );
             if (isset($userName) && !isset($userLevels[$profile][$userName])) {
                 if (!in_array($userName, $users)) {
                     $users[] = $userName;
@@ -445,7 +448,7 @@ class plugin_user_proxy extends StdClass implements IsPlugin
     {
         $userRules = array();
         $defaultProfile = Yana::getDefault('profile');
-        foreach($rows as $key => $item)
+        foreach ($rows as $key => $item)
         {
             if (!empty($item['PROFILE'])) {
                 $profile = mb_strtoupper($item['PROFILE']);
@@ -481,5 +484,7 @@ class plugin_user_proxy extends StdClass implements IsPlugin
         }
         return $userRules;
     }
+
 }
+
 ?>

@@ -192,13 +192,11 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
         /* remove entry from database */
         foreach ($selected_entries as $id)
         {
-            if (!$database->remove("securityactionrules.${id}")) {
-                /* entry does not exist */
-                throw new InvalidInputWarning();
-            }
+            $database->remove("securityactionrules.{$id}");
         } /* end for */
         /* commit changes */
-        return $database->write();
+        $database->commit(); // may throw exception
+        return true;
     }
 
     /**

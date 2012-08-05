@@ -139,7 +139,11 @@ class plugin_sdk extends StdClass implements IsPlugin
         {
             if (!empty($_FILES[$dbms]['tmp_name'])) {
                 if (!preg_match('/^\S+\.sql$/s', $_FILES[$dbms]['name'])) {
-                    throw new InvalidInputWarning();
+                    $message = "SQL file expected";
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    $warning = new \Yana\Core\Exceptions\Files\InvalidTypeException($message, $level);
+                    $warning->setFile();
+                    throw $warning;
                 }
                 $pluginBuilder->addSqlFile($dbms, $_FILES[$dbms]['tmp_name']);
             }

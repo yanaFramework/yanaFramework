@@ -176,7 +176,6 @@ class plugin_guestbook extends StdClass implements IsPlugin
      * @param       string  $hometown    author location
      * @param       string  $homepage    URL
      * @param       int     $opinion     rating (0..5)
-     * @return      bool
      */
     public function guestbook_write_edit($target, $name, $message, $msgtyp, $messenger = "", $mail = "", $hometown = "", $homepage = "", $opinion = "")
     {
@@ -227,7 +226,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         }
 
         /* don't forget to save your recent changes ;-) */
-        return $database->commit();
+        $database->commit(); // may throw exception
     }
 
     /**
@@ -244,7 +243,6 @@ class plugin_guestbook extends StdClass implements IsPlugin
      *
      * @access      public
      * @param       array  $selected_entries  list of entries to delete
-     * @return      bool
      * @throws      Alert  when some input data is invalid
      */
     public function guestbook_write_delete(array $selected_entries)
@@ -286,7 +284,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
             }
         } /* end foreach */
         /* now delete those entries */
-        return $database->commit();
+        $database->commit(); // may throw exception
     }
 
     /**
@@ -443,11 +441,14 @@ class plugin_guestbook extends StdClass implements IsPlugin
             \Yana\Log\LogManager::getLogger()->addLog($message, $level, $entry);
             throw new InvalidInputWarning($message, $level);
         }
-        if (!$database->commit()) {
+        try {
+            $database->commit(); // may throw exception
+        }
+        catch (\Exception $e) {
             $message = 'Unable to submit entry.';
             $level = \Yana\Log\TypeEnumeration::ERROR;
             \Yana\Log\LogManager::getLogger()->addLog($message, $level, $entry);
-            throw new Error($message, $level);
+            throw new $e;
         }
         /* send Mail */
         if ($YANA->getVar("PROFILE.GUESTBOOK.MAIL") && $YANA->getVar("PROFILE.GUESTBOOK.NOTIFICATION")) {
@@ -586,11 +587,14 @@ class plugin_guestbook extends StdClass implements IsPlugin
             \Yana\Log\LogManager::getLogger()->addLog($message, $level, array('guestbook_comment' => $guestbook_comment));
             throw new InvalidInputWarning();
         }
-        if (!$database->commit()) {
+        try {
+            $database->commit(); // may throw exception
+        }
+        catch (\Exception $e) {
             $message = "Unable to commit changes to entry 'guestbook.${target}.'";
             $level = \Yana\Log\TypeEnumeration::ERROR;
             \Yana\Log\LogManager::getLogger()->addLog($message, $level, array('guestbook_comment' => $guestbook_comment));
-            throw new Error();
+            throw $e;
         }
     }
 

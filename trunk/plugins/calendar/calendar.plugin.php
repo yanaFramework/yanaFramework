@@ -30,6 +30,11 @@
 require_once 'calendar.php';
 
 /**
+ * @ignore
+ */
+require_once 'indexnotfoundexception.php';
+
+/**
  * Calendar plugin
  *
  * @access     public
@@ -399,7 +404,7 @@ class plugin_calendar extends StdClass implements IsPlugin
         }
         if ($result) {
             $db = self::_getDatabase();
-            $db->write();
+            $db->commit();
         }
 
         return $result;
@@ -859,7 +864,9 @@ class plugin_calendar extends StdClass implements IsPlugin
         if ($writeXML) {
             $result = self::insertCalendar($name, $filename, $url, true);
             $db = self::_getDatabase();
-            if (!$db->write()) {
+            try {
+                $db->commit();
+            } catch (\Exception $e) {
                 $result = false;
             }
         } else {
@@ -892,7 +899,7 @@ class plugin_calendar extends StdClass implements IsPlugin
             $file->create();
         }
         $file->setContent($content);
-        return $file->write();
+        $file->write();
     }
 
     /**
@@ -922,7 +929,8 @@ class plugin_calendar extends StdClass implements IsPlugin
         }
 
         /* commit changes */
-        return $db->commit();
+        $db->commit(); // may throw exception
+        return true;
     }
 
     /**
@@ -942,19 +950,25 @@ class plugin_calendar extends StdClass implements IsPlugin
      */
     protected static function removeCalendarFile($datasetID)
     {
+        $isSuccess = false;
         $db = self::_getDatabase();
         $calendar = $db->select("calendar.{$datasetID}");
+
         if (empty($calendar)) {
-            throw new Warning('The expected dataset for ID:'.$datasetID.' does not exist');
+
+            $fileName = $calendar['CALENDAR_FILENAME'];
+            if (!empty($fileName)) {
+                $isSuccess = (bool) self::removeXCalFile($fileName);
+            }
         }
 
-        $fileName = $calendar['CALENDAR_FILENAME'];
-        if (empty($fileName)) {
-            return false;
+        if (!$isSuccess) {
+            $message = "Trying to delete a calendar that does not exist.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            \Yana\Log\LogManager::getLogger()->addLog($message, $level, $datasetID);
         }
 
-        $result = self::removeXCalFile($fileName);
-        return $result;
+        return $isSuccess;
     }
 
     /**
@@ -1219,7 +1233,8 @@ class plugin_calendar extends StdClass implements IsPlugin
         }
         // commit the new entry into database
         $db = self::_getDatabase();
-        return $db->write();
+        $db->commit(); // may throw exception
+        return true;
     }
 
     /**

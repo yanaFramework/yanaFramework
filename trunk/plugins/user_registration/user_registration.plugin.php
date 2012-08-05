@@ -77,18 +77,26 @@ class plugin_user_registration extends StdClass implements IsPlugin
 
         $mail = mb_substr(mb_strtolower($mail), 0, 255);
         if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidInputWarning();
+            $message = "Invalid user mail address.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\User\MailInvalidException($message, $level);
         }
 
         $name = mb_strtolower($username);
         if (empty($name)) {
-            throw new InvalidInputWarning();
+            $message = "Missing user name.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            $e = new \Yana\Core\Exceptions\Forms\MissingFieldException($message, $level);
+            throw $e->setField('Name');
         }
 
         $key = uniqid(substr(md5($mail), 0, 3));
 
         if ($database->exists("user.$name")) {
-            throw new \Yana\Core\Exceptions\User\AlreadyExistsException();
+            $message = "Another user by that name already exists.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            $e = new \Yana\Core\Exceptions\User\AlreadyExistsException($message, $level);
+            throw $e->setData($name);
         }
 
         /*
@@ -104,7 +112,13 @@ class plugin_user_registration extends StdClass implements IsPlugin
             }
         }
         unset($duplicates);
-        $database->commit();
+
+        try {
+            $database->commit(); // may throw exception
+        } catch (\Yana\Db\CommitFailedException $e) {
+            // unable to delete duplicates (maybe already deleted)
+            unset($e);
+        }
 
         /*
          * 2) Remove timed out entries
@@ -122,18 +136,27 @@ class plugin_user_registration extends StdClass implements IsPlugin
             }
         }
         unset($old_entries);
-        $database->commit();
+
+        try {
+            $database->commit(); // may throw exception
+        } catch (\Yana\Db\CommitFailedException $e) {
+            // unable to delete entries (maybe already deleted)
+            unset($e);
+        }
 
         /*
          * 4) add row to table
          */
         $row = array("newuser_name" => $name, "newuser_key" => $key, "newuser_mail" => $mail);
         if (!$database->insert("newuser.*", $row)) {
-            throw new InvalidInputWarning();
+            $message = "Entry could not be created";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            $exception = new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level);
+            $exception->setData($row);
+            throw $exception;
 
-        } elseif (!$database->commit()) {
-            throw new Error();
         }
+        $database->commit(); // may throw exception
 
         global $YANA;
         $YANA->setVar('WEBSITE_URL', $YANA->getVar("REFERER"));
@@ -186,7 +209,8 @@ class plugin_user_registration extends StdClass implements IsPlugin
         $database = Yana::connect("user");
 
         if (!$database->exists('newuser', array(array('newuser_key', $target, '=')))) {
-            throw new InvalidInputWarning();
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\User\NotFoundException("", $level);
         }
 
         $select = new \Yana\Db\Queries\Select($database);
@@ -204,29 +228,19 @@ class plugin_user_registration extends StdClass implements IsPlugin
         }
 
         // try to create user
-        try {
+        YanaUser::createUser($entry['NEWUSER_NAME'], $entry['NEWUSER_MAIL']);
+        $user = YanaUser::getInstance($entry['NEWUSER_NAME']);
+        $password = $user->setPassword();
 
-            YanaUser::createUser($entry['NEWUSER_NAME'], $entry['NEWUSER_MAIL']);
-            $user = YanaUser::getInstance($entry['NEWUSER_NAME']);
-            $password = $user->setPassword();
-
-            // send password to user's mail account
-            $YANA = Yana::getInstance();
-            $YANA->setVar('PASSWORT', $password);
-            $YANA->setVar('NAME', $user->getName());
-            $mail = new \Yana\Mails\Mailer($YANA->getView()->createContentTemplate("id:USER_PASSWORD_MAIL"));
-            $mail->setSender($YANA->getVar("PROFILE.MAIL"));
-            $mail->setVar('DATE', date('d-m-Y'));
-            $mail->setSubject($YANA->getLanguage()->getVar("user.mail_subject"));
-            $mail->send($user->getMail());
-
-        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
-            throw new InvalidInputWarning();
-        } catch (\Yana\Core\Exceptions\AlreadyExistsException $e) {
-            throw new \Yana\Core\Exceptions\User\AlreadyExistsException();
-        } catch (\Exception $e) {
-            throw new Error();
-        }
+        // send password to user's mail account
+        $YANA = Yana::getInstance();
+        $YANA->setVar('PASSWORT', $password);
+        $YANA->setVar('NAME', $user->getName());
+        $mail = new \Yana\Mails\Mailer($YANA->getView()->createContentTemplate("id:USER_PASSWORD_MAIL"));
+        $mail->setSender($YANA->getVar("PROFILE.MAIL"));
+        $mail->setVar('DATE', date('d-m-Y'));
+        $mail->setSubject($YANA->getLanguage()->getVar("user.mail_subject"));
+        $mail->send($user->getMail());
     }
 
     /**

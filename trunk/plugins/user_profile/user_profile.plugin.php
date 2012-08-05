@@ -138,7 +138,9 @@ class plugin_user_profile extends StdClass implements IsPlugin
         $form = self::getProfileForm();
 
         if (count($form->getUpdateValues()) !== 1) {
-            throw new InvalidInputWarning();
+            $message = "Input is invalid";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
         }
 
         $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
@@ -168,7 +170,9 @@ class plugin_user_profile extends StdClass implements IsPlugin
         $form = self::getProfileForm();
 
         if (count($form->getUpdateValues()) !== 1) {
-            throw new InvalidInputWarning();
+            $message = "Input is invalid";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
         }
 
         $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
