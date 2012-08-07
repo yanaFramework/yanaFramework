@@ -99,7 +99,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
      * @user        group: admin, level: 100
      * @template    MESSAGE
      * @onsuccess   goto: GET_DB_CONFIGURATION
-     * @onerror     goto: GET_DB_CONFIGURATION, text: InvalidInputWarning
+     * @onerror     goto: GET_DB_CONFIGURATION, text: Yana\Core\Exceptions\InvalidInputException
      * @safemode    true
      *
      * @access      public
@@ -130,13 +130,6 @@ class plugin_db_admin extends StdClass implements IsPlugin
         /* Mapping the DBMS to the SQL export function in class \Yana\Db\Export\SqlFactory */
         switch ($dbms)
         {
-            case 'DBASE':
-            case 'FBSQL':
-            case 'IBASE':
-            case 'IFX':
-            case 'SYBASE':
-                $method_name  = null;
-            break;
             case 'DB2':
                 $method_name  = 'createDB2';
             break;
@@ -157,30 +150,35 @@ class plugin_db_admin extends StdClass implements IsPlugin
             case 'PGSQL':
                 $method_name  = 'createPostgreSQL';
             break;
+
+            // The following DBMS are currently not supported
+            case 'DBASE':
+            case 'FBSQL':
+            case 'IBASE':
+            case 'IFX':
+            case 'SYBASE':
             default:
-                throw new InvalidInputWarning();
-            break;
+                $message = "Chosen DBMS is invalid.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                $error = new \Yana\Core\Exceptions\Forms\InvalidSyntaxException($message, $level);
+                throw $error->setValue($dbms)->setValid('DB2, MSSQL, MYSQL, OCI8, PGSQL')->setField('DBMS');
         }
 
         /* Mapping the DBMS to it's installation directory */
         $installDirectory = $YANA->getResource('system:/dbinstall/' . mb_strtolower($dbms));
-        if ($installDirectory === false) {
+        if (!$installDirectory instanceof \Yana\Files\Dir || !$installDirectory->exists()) {
             /* invalid option - the choosen dbms is unknown */
-            \Yana\Log\LogManager::getLogger()->addLog("Unable to install database. The choosen DBMS '${dbms}' is unknown.");
+            \Yana\Log\LogManager::getLogger()->addLog("Unable to install database. The choosen DBMS '{$dbms}' is unknown.");
             if (!$silent) {
-                throw new InvalidInputWarning();
+                $message = 'Did not create SQL file because the target directoy does not exist.';
+                $code = \Yana\Log\TypeEnumeration::WARNING;
+                $error = new \Yana\Core\Exceptions\Files\NotFoundException($message, $code);
+                throw $error->setFilename("{$dbms}");
             }
             return false;
         }
 
         /* we assume the class \Yana\Db\Export\SqlFactory has the desired method. This will be tested later! */
-
-        if (!$installDirectory->exists() && is_null($method_name)) {
-            if (!$silent) {
-                throw new Error("There is no installation file for this dbms available.");
-            }
-            return false;
-        }
 
         /* get the list of available installation files */
         $installDirectory = $installDirectory->getPath();
@@ -193,7 +191,10 @@ class plugin_db_admin extends StdClass implements IsPlugin
             /* check the input */
             if (!is_string($item)) {
                 if (!$silent) {
-                    throw new InvalidInputWarning();
+                    $message = 'Did not create SQL file because the input is invalid.';
+                    $code = \Yana\Log\TypeEnumeration::WARNING;
+                    $error = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $code);
+                    throw $error->setField('DBMS');
                 }
                 return false;
             } else {
@@ -201,7 +202,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
             }
 
             $installFile = $installDirectory . $item . '.sql';
-            $dbSchema = \Yana\Files\XDDL::getDatabase($item);
+            $dbSchema = \Yana\Files\XDDL::getDatabase($item); // may throw \Yana\Core\Exceptions\NotFoundException
             $database = new \Yana\Db\Mdb2\Connection($dbSchema);
 
             /* If no SQL file for the current $item does exist,
@@ -302,7 +303,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
      * @user        group: admin, level: 100
      * @template    MESSAGE
      * @onsuccess   goto: GET_DB_CONFIGURATION
-     * @onerror     goto: GET_DB_CONFIGURATION, text: InvalidInputWarning
+     * @onerror     goto: GET_DB_CONFIGURATION, text: Yana\Core\Exceptions\InvalidInputException
      * @safemode    true
      *
      * @access      public
@@ -573,7 +574,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
      * @user        group: admin, level: 100
      * @template    MESSAGE
      * @onsuccess   goto: GET_DB_CONFIGURATION
-     * @onerror     goto: GET_DB_CONFIGURATION, text: InvalidInputWarning
+     * @onerror     goto: GET_DB_CONFIGURATION, text: Yana\Core\Exceptions\InvalidInputException
      * @safemode    true
      *
      * @access      public

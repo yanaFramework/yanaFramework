@@ -74,7 +74,7 @@ class plugin_antispam_admin extends StdClass implements IsPlugin
      * @user        group: admin, level: 100
      * @template    message
      * @onsuccess   goto: get_setup_global_antispam
-     * @onerror     goto: get_setup_global_antispam, text: InvalidInputWarning
+     * @onerror     goto: get_setup_global_antispam, text: Yana\Core\Exceptions\InvalidInputException
      * @safemode    true
      *
      * @access      public
@@ -114,7 +114,7 @@ class plugin_antispam_admin extends StdClass implements IsPlugin
      * @user        group: admin, level: 60
      * @template    message
      * @onsuccess   goto: get_setup_antispam
-     * @onerror     goto: get_setup_antispam, text: InvalidInputWarning
+     * @onerror     goto: get_setup_antispam, text: Yana\Core\Exceptions\InvalidInputException
      * @safemode    false
      *
      * @access  public
