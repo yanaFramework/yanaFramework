@@ -14,16 +14,6 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="Error">
-                <trans-unit id="Error.h">
-                    <target>The requested action could not be completed.</target>
-                    <source/>
-                </trans-unit>
-                <trans-unit id="Error.p">
-                    <target>Required files may have been removed or may not be accessable at the moment. Please check back later.<it id="br1" pos="open">&lt;br /&gt;</it>If you (even though) continue to get this message, please contact the administrator.</target>
-                    <source/>
-                </trans-unit>
-            </group>
             <group id="Yana\Core\Exceptions\Security\LoginRequiredException">
                 <trans-unit id="Yana\Core\Exceptions\Security\LoginRequiredException.h">
                     <target>Password required.</target>
@@ -144,11 +134,11 @@
             </group>
             <group id="Yana\Core\Exceptions\Files\NotFoundException">
                 <trans-unit id="Yana\Core\Exceptions\Files\NotFoundException.h">
-                    <target>The requested file could not be found.</target>
+                    <target>The requested file or directory was not found.</target>
                     <source/>
                 </trans-unit>
                 <trans-unit id="Yana\Core\Exceptions\Files\NotFoundException.p">
-                    <target>Please check the URL and try again.</target>
+                    <target>Please check your input and try again.</target>
                     <source/>
                 </trans-unit>
             </group>
@@ -172,12 +162,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="InvalidInputWarning">
-                <trans-unit id="InvalidInputWarning.h">
+            <group id="Yana\Core\Exceptions\InvalidInputException">
+                <trans-unit id="Yana\Core\Exceptions\InvalidInputException.h">
                     <target>A chosen parameter is not valid.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="InvalidInputWarning.p">
+                <trans-unit id="Yana\Core\Exceptions\InvalidInputException.p">
                     <target>A parameter you have chosen is not valid. This is because you entered no or an incorrect value, or the link that brought you here does not work. For example, this may happen, if you chose to safe a file without giving a destination to safe the file to.<it id="br1" pos="open">&lt;br /&gt;</it>Try chosing another parameter setting. If you still keep getting this message, please inform the administrator.</target>
                     <source/>
                 </trans-unit>
@@ -338,7 +328,27 @@
                     <source/>
                  </trans-unit>
                  <trans-unit id="Yana\Core\Exceptions\Files\NotCreatedException.p">
-                    <target>Unable to create file <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept>. Possible reason: access restriction in effect. Please inform administrator on this error.</target>
+                    <target>Unable to create file <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept>. Possible reason: access restriction in effect.</target>
+                    <source/>
+                 </trans-unit>
+            </group>
+            <group id="Yana\Db\Queries\Exceptions\NotCreatedException">
+                 <trans-unit id="Yana\Db\Queries\Exceptions\NotCreatedException.h">
+                    <target>The entry could not be created</target>
+                    <source/>
+                 </trans-unit>
+                 <trans-unit id="Yana\Db\Queries\Exceptions\NotCreatedException.p">
+                    <target>Please check your input and try again. Possible reason: a required field has not been provided, a reference to another entry is not valid or the database may not be ready to accept your request.</target>
+                    <source/>
+                 </trans-unit>
+            </group>
+            <group id="Yana\Db\Queries\Exceptions\NotDeletedException">
+                 <trans-unit id="Yana\Db\Queries\Exceptions\NotDeletedException.h">
+                    <target>The entry could not be deleted</target>
+                    <source/>
+                 </trans-unit>
+                 <trans-unit id="Yana\Db\Queries\Exceptions\NotDeletedException.p">
+                    <target>The selection may either be invalid, the entry has already been removed, or it is still referenced by another entry and cannot be removed.</target>
                     <source/>
                  </trans-unit>
             </group>
@@ -478,13 +488,23 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="ConnectionException">
-                <trans-unit id="ConnectionException.h">
+            <group id="Yana\Db\ConnectionException">
+                <trans-unit id="Yana\Db\ConnectionException.h">
                     <target>An error occurred</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="ConnectionException.p">
+                <trans-unit id="Yana\Db\ConnectionException.p">
                     <target>Unable to establish database connection.<it id="br3" pos="open">&lt;br /&gt;</it>The service may be temporarily unavailable. Please try again later. If you continue to get this message, please report this issue to your administrator.<it id="br4" pos="open">&lt;br /&gt;</it>Administrator: Please check your connection settings on your administration panel. Check if your database server is running and reachable.</target>
+                    <source/>
+                </trans-unit>
+            </group>
+            <group id="Exception">
+                <trans-unit id="Exception.h">
+                    <target>The requested action could not be completed.</target>
+                    <source/>
+                </trans-unit>
+                <trans-unit id="Exception.p">
+                    <target>Required files may have been removed or may not be accessable at the moment. Please check back later.<it id="br1" pos="open">&lt;br /&gt;</it>If you (even though) continue to get this message, please contact the administrator.</target>
                     <source/>
                 </trans-unit>
             </group>

@@ -14,16 +14,6 @@
                     <target></target>
                 </trans-unit>
             </group>
-            <group id="Error">
-                <trans-unit id="Error.h">
-                    <source>The requested action could not be completed.</source>
-                    <target>Es ist ein Fehler aufgetreten.</target>
-                </trans-unit>
-                <trans-unit id="Error.p">
-                    <source>Required files may have been removed or may not be accessable at the moment. Please check back later.<it id="br1" pos="open">&lt;br /&gt;</it>If you (even though) continue to get this message, please contact the administrator.</source>
-                    <target>Die gewünschte Aktion konnte nicht ausgeführt werden. Bitte versuchen Sie es erneut.<it id="br1" pos="open">&lt;br /&gt;</it>Sollte der Fehler weiterhin auftreten, wenden Sie sich an den Webmaster.</target>
-                </trans-unit>
-            </group>
             <group id="Yana\Core\Exceptions\Security\LoginRequiredException">
                 <trans-unit id="Yana\Core\Exceptions\Security\LoginRequiredException.h">
                     <source>Password required.</source>
@@ -144,12 +134,12 @@
             </group>
             <group id="Yana\Core\Exceptions\Files\NotFoundException">
                 <trans-unit id="Yana\Core\Exceptions\Files\NotFoundException.h">
-                    <source>The requested file could not be found.</source>
-                    <target>Die gewünschte Datei ist leider nicht vorhanden.</target>
+                    <source>The requested file or directory was not found.</source>
+                    <target>Die gewünschte Datei oder Verzeichnis ist nicht vorhanden.</target>
                 </trans-unit>
                 <trans-unit id="Yana\Core\Exceptions\Files\NotFoundException.p">
-                    <source>Please check the URL and try again.</source>
-                    <target>Bitte überprüfen Sie die angegebene URL und versuchen Sie es erneut.</target>
+                    <source>Please check your input and try again.</source>
+                    <target>Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut.</target>
                 </trans-unit>
             </group>
             <group id="Yana\Core\Exceptions\Forms\InvalidCharacterException">
@@ -338,8 +328,28 @@
                     <target>Datei konnte nicht erzeugt werden</target>
                  </trans-unit>
                  <trans-unit id="Yana\Core\Exceptions\Files\NotCreatedException.p">
-                    <source>Unable to create file <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept>. Possible reason: access restriction in effect. Please inform administrator on this error.</source>
-                    <target>Die Datei <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept> konnte nicht erzeugt werden. Möglicherweise sind unzureichende Rechte gesetzt oder das Verzeichnis ist schreibgeschützt. Bitte informieren Sie den Webmaster dieser Seite.</target>
+                    <source>Unable to create file <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept>. Possible reason: access restriction in effect.</source>
+                    <target>Die Datei <bpt id="b1">&lt;b&gt;</bpt>{$FILE}<ept id="b1">&lt;/b&gt;</ept> konnte nicht erzeugt werden. Möglicherweise sind unzureichende Rechte gesetzt oder das Verzeichnis ist schreibgeschützt.</target>
+                 </trans-unit>
+            </group>
+            <group id="Yana\Db\Queries\Exceptions\NotCreatedException">
+                 <trans-unit id="Yana\Db\Queries\Exceptions\NotCreatedException.h">
+                    <source>The entry could not be created</source>
+                    <target>Der Eintrag konnte nicht erzeugt werden</target>
+                 </trans-unit>
+                 <trans-unit id="Yana\Db\Queries\Exceptions\NotCreatedException.p">
+                    <source>Please check your input and try again. Possible reason: a required field has not been provided, a reference to another entry is not valid or the database may not be ready to accept your request.</source>
+                    <target>Bitte prüfen Sie Ihre Eingaben und versuchen Sie es erneut. Möglicher Ursachen: ein notwendiges Feld ist nicht ausgefüllt, ein Verweis auf einen anderen Eintrag ist ungültig, oder die Datenbank ist derzeit nicht in der Lage Ihre Anfrage zu bearbeiten.</target>
+                 </trans-unit>
+            </group>
+            <group id="Yana\Db\Queries\Exceptions\NotDeletedException">
+                 <trans-unit id="Yana\Db\Queries\Exceptions\NotDeletedException.h">
+                    <source>The entry could not be deleted</source>
+                    <target>Der Eintrag konnte nicht gelöscht werden</target>
+                 </trans-unit>
+                 <trans-unit id="Yana\Db\Queries\Exceptions\NotDeletedException.p">
+                    <source>The selection may either be invalid, the entry has already been removed, or it is still referenced by another entry and cannot be removed.</source>
+                    <target>Die Auswahl könnte ungültig oder bereits gelöscht sein, oder ein anderer Eintrag verweist noch auf diesen, sodass ein Löschen derzeit nicht möglich ist.</target>
                  </trans-unit>
             </group>
             <group id="Yana\Core\Exceptions\Files\NotWriteableException">
@@ -478,14 +488,24 @@
                     <target>Bitte wählen Sie für diese Operation mindestens einen Eintrag aus.</target>
                 </trans-unit>
             </group>
-            <group id="ConnectionException">
-                <trans-unit id="ConnectionException.h">
+            <group id="Yana\Db\ConnectionException">
+                <trans-unit id="Yana\Db\ConnectionException.h">
                     <source>An error occurred</source>
                     <target>Es ist ein Fehler aufgetreten</target>
                 </trans-unit>
-                <trans-unit id="ConnectionException.p">
+                <trans-unit id="Yana\Db\ConnectionException.p">
                     <source>Unable to establish database connection.<it id="br3" pos="open">&lt;br /&gt;</it>The service may be temporarily unavailable. Please try again later. If you continue to get this message, please report this issue to your administrator.<it id="br4" pos="open">&lt;br /&gt;</it>Administrator: Please check your connection settings on your administration panel. Check if your database server is running and reachable.</source>
                     <target>Verbindung zur Datenbank konnte nicht hergestellt werden.<it id="br3" pos="open">&lt;br /&gt;</it>Dieser Dienst ist möglicherweise vorübergehend nicht verfügbar. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut. Sollten Sie weiterhin diese Meldung erhalten, informieren Sie bitte den Administrator über dieses Problem.<it id="br4" pos="open">&lt;br /&gt;</it>Administrator: bitte prüfen Sie im Administrationsmenü, ob die Einstellungen der Datenbankverbindung korrekt sind. Stellen Sie sicher, dass der Datenbankserver aktiviert und erreichbar ist.</target>
+                </trans-unit>
+            </group>
+            <group id="Exception">
+                <trans-unit id="Exception.h">
+                    <source>The requested action could not be completed.</source>
+                    <target>Es ist ein Fehler aufgetreten.</target>
+                </trans-unit>
+                <trans-unit id="Exception.p">
+                    <source>Required files may have been removed or may not be accessable at the moment. Please check back later.<it id="br1" pos="open">&lt;br /&gt;</it>If you (even though) continue to get this message, please contact the administrator.</source>
+                    <target>Die gewünschte Aktion konnte nicht ausgeführt werden. Bitte versuchen Sie es erneut.<it id="br1" pos="open">&lt;br /&gt;</it>Sollte der Fehler weiterhin auftreten, wenden Sie sich an den Webmaster.</target>
                 </trans-unit>
             </group>
         </body>
