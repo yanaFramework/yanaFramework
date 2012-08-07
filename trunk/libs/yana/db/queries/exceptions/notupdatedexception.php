@@ -25,16 +25,15 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Db\Queries\Exceptions;
+
 /**
- * Warning
+ * <<exception>> When unable to commit an entry to the database.
  *
- * This class represents warnings passed to the user.
- *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  db
  */
-class InvalidInputWarning extends Message
+class NotUpdatedException extends \Yana\Db\Queries\Exceptions\QueryException
 {
     /* intentionally left blank */
 }
