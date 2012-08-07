@@ -237,7 +237,7 @@ class plugin_user extends StdClass implements IsPlugin
      * @type        security
      * @template    message
      * @onsuccess   goto: login, text: MailMessage
-     * @onerror     goto: set_lost_pwd, text: InvalidInputWarning
+     * @onerror     goto: set_lost_pwd, text: Yana\Core\Exceptions\InvalidInputException
      *
      *
      * @access      public
@@ -348,7 +348,7 @@ class plugin_user extends StdClass implements IsPlugin
      * @type        security
      * @template    message
      * @onsuccess   goto: login
-     * @onerror     goto: login, text: InvalidInputWarning
+     * @onerror     goto: login, text: Yana\Core\Exceptions\InvalidInputException
      *
      * @access      public
      * @param       string  $key         user id

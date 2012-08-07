@@ -139,16 +139,19 @@ class plugin_guestbook extends StdClass implements IsPlugin
      *
      * @access      public
      * @param       int  $target  id of guestbook entry
+     * @throws      \Yana\Core\Exceptions\NotFoundException  when the selected row does not exist or is not readable
      */
     public function guestbook_read_edit($target)
     {
         global $YANA;
 
-        $row = self::getDatabase()->select("guestbook.$target");
+        $row = self::getDatabase()->select("guestbook.{$target}");
 
         /* check if target row exists */
         if (empty($row)) {
-            throw new InvalidInputWarning();
+            $message = "The row guestbook.{$target} was not found.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\NotFoundException($message, $level);
         }
 
         $YANA->setVar('ROW', $row);
@@ -176,6 +179,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
      * @param       string  $hometown    author location
      * @param       string  $homepage    URL
      * @param       int     $opinion     rating (0..5)
+     * @throws      \Yana\Db\Queries\Exceptions\NotUpdatedException  when the entry was not updated
      */
     public function guestbook_write_edit($target, $name, $message, $msgtyp, $messenger = "", $mail = "", $hometown = "", $homepage = "", $opinion = "")
     {
@@ -210,23 +214,33 @@ class plugin_guestbook extends StdClass implements IsPlugin
         $database = self::getDatabase();
 
         /* before doing anything, check if entry exists */
-        if (!$database->exists("guestbook.$target")) {
+        if (!$database->exists("guestbook.{$target}")) {
             /* error - no such entry */
-            \Yana\Log\LogManager::getLogger()->addLog("The selected entry guestbook.$target does not exist!");
-            throw new InvalidInputWarning();
+            $message = "The selected entry guestbook.{$target} does not exist!";
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            \Yana\Log\LogManager::getLogger()->addLog($message, $level);
+            throw new \Yana\Db\Queries\Exceptions\NotUpdatedException($message, $level);
         }
 
         /**
-         * 1) If the update operation was not successful, issue an error
-         *    message and abort. (will also forfeit all previously made,
-         *    uncommited changes)
+         * If the update operation was not successful, issue an error
+         * message and abort. (will also forfeit all previously made,
+         * uncommited changes)
          */
-        if (!$database->update("guestbook.$target", $entry)) {
-            throw new InvalidInputWarning();
+        if (!$database->update("guestbook.{$target}", $entry)) {
+            $message = "The entry guestbook.{$target} could not be updated!";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Db\Queries\Exceptions\NotUpdatedException($message, $level);
         }
 
         /* don't forget to save your recent changes ;-) */
-        $database->commit(); // may throw exception
+        try {
+            $database->commit(); // may throw exception
+        } catch (\Exception $e) {
+            $message = "Unable to commit changes.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Db\Queries\Exceptions\NotUpdatedException($message, $level, $e);
+        }
     }
 
     /**
@@ -243,13 +257,16 @@ class plugin_guestbook extends StdClass implements IsPlugin
      *
      * @access      public
      * @param       array  $selected_entries  list of entries to delete
-     * @throws      Alert  when some input data is invalid
+     * @throws      \Yana\Db\Queries\Exceptions\NotDeletedException       when the entry could not be deleted
+     * @throws      \Yana\Core\Exceptions\Forms\NothingSelectedException  when the list of entries to delete is empty
      */
     public function guestbook_write_delete(array $selected_entries)
     {
         /* check if input exists */
         if (!empty($selected_entries)) {
-            throw new InvalidInputWarning();
+            $message = "No entry selected for deletion.";
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            throw new \Yana\Core\Exceptions\Forms\NothingSelectedException($message, $level);
         }
         $database = self::getDatabase();
         /* loop through selected entries */
@@ -262,10 +279,10 @@ class plugin_guestbook extends StdClass implements IsPlugin
              *    issue an error message and abort. (will also forfeit all
              *    previously made, uncommited changes)
              */
-            if (!$database->exists("guestbook.$id")) {
-                \Yana\Log\LogManager::getLogger()->addLog("The selected entry guestbook.$id does not exist!");
-                throw new InvalidInputWarning();
-
+            if (!$database->exists("guestbook.{$id}")) {
+                $message = "The selected entry guestbook.{$id} could not be deleted because it does not exist.";
+                $level = \Yana\Log\TypeEnumeration::INFO;
+                throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level);
             }
 
             /*
@@ -273,18 +290,21 @@ class plugin_guestbook extends StdClass implements IsPlugin
              *    message and abort. (will also forfeit all previously made,
              *    uncommited changes)
              */
-            if (!$database->remove("guestbook.$id")) {
-                throw new InvalidInputWarning();
-
-            /*
-             * 3) If all was fine, proceed to next value.
-             */
-            } else {
-                continue;
+            if (!$database->remove("guestbook.{$id}")) {
+                $message = "The selected entry guestbook.{$id} could not be deleted.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level);
             }
         } /* end foreach */
         /* now delete those entries */
-        $database->commit(); // may throw exception
+        try {
+            $database->commit(); // may throw exception
+        } catch (\Exception $e) {
+            $message = "Unable to commit changes.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level, $e);
+        }
+        
     }
 
     /**
@@ -368,6 +388,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
      * @param       int     $opinion     rating (0..5)
      * @throws      \Yana\Core\Exceptions\Forms\FloodException         when user sent too many posts in a row
      * @throws      \Yana\Core\Exceptions\Forms\AlreadySavedException  when user submits the same text twice
+     * @throws      \Yana\Db\Queries\Exceptions\NotCreatedException    when the entry was not created
      */
     public function guestbook_write_new($name, $message, $msgtyp, $messenger = "", $mail = "", $hometown = "", $homepage = "", $opinion = "")
     {
@@ -439,7 +460,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
             $message = 'Failed to insert entry.';
             $level = \Yana\Log\TypeEnumeration::WARNING;
             \Yana\Log\LogManager::getLogger()->addLog($message, $level, $entry);
-            throw new InvalidInputWarning($message, $level);
+            throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level);
         }
         try {
             $database->commit(); // may throw exception
@@ -448,7 +469,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
             $message = 'Unable to submit entry.';
             $level = \Yana\Log\TypeEnumeration::ERROR;
             \Yana\Log\LogManager::getLogger()->addLog($message, $level, $entry);
-            throw new $e;
+            throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level, $e);
         }
         /* send Mail */
         if ($YANA->getVar("PROFILE.GUESTBOOK.MAIL") && $YANA->getVar("PROFILE.GUESTBOOK.NOTIFICATION")) {
@@ -466,7 +487,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
      * @template    templates/entry.html.tpl
      * @language    guestbook
      * @style       templates/default.css
-     * @onerror     goto: null, text: InvalidInputWarning
+     * @onerror     goto: null, text: Yana\Core\Exceptions\InvalidInputException
      *
      * @access      public
      * @param       int  $target  id of entry to show
@@ -505,7 +526,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
      * @style       ../../skins/default/styles/gui_generator.css
      * @style       templates/default.css
      * @script      templates/ajax.js
-     * @onerror     goto: null, text: InvalidInputWarning
+     * @onerror     goto: null, text: Yana\Core\Exceptions\InvalidInputException
      * @menu        group: start
      *
      * @access      public
@@ -576,25 +597,26 @@ class plugin_guestbook extends StdClass implements IsPlugin
      * @access      public
      * @param       int     $target             id of comment to edit
      * @param       string  $guestbook_comment  comment text
+     * @throws      \Yana\Db\Queries\Exceptions\NotCreatedException  when the entry was not created
      */
     public function guestbook_write_comment($target, $guestbook_comment = "")
     {
         $database = self::getDatabase();
         // If the update operation was not successful, issue an error message and abort.
         if (!$database->update("guestbook.${target}.guestbook_comment", $guestbook_comment)) {
-            $message = "Unable to insert comment at 'guestbook.${target}.'";
+            $message = "Unable to insert comment at 'guestbook.{$target}.'";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             \Yana\Log\LogManager::getLogger()->addLog($message, $level, array('guestbook_comment' => $guestbook_comment));
-            throw new InvalidInputWarning();
+            throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level);
         }
         try {
             $database->commit(); // may throw exception
         }
         catch (\Exception $e) {
-            $message = "Unable to commit changes to entry 'guestbook.${target}.'";
+            $message = "Unable to commit changes to entry 'guestbook.{$target}.'";
             $level = \Yana\Log\TypeEnumeration::ERROR;
             \Yana\Log\LogManager::getLogger()->addLog($message, $level, array('guestbook_comment' => $guestbook_comment));
-            throw $e;
+            throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level, $e);
         }
     }
 
