@@ -245,6 +245,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $this->dbsobj->rollback();
 
         $test = $this->dbsobj->select('i.foo');
+        $test = \array_change_key_case($test);
         $temp1 = array(1 => 2, 2 => 3);
         $temp2 = 2;
         // stored in table "i"
