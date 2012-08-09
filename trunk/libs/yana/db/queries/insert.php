@@ -144,7 +144,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
      * and reuse it without creating another one. This can
      * help to improve the performance of your application.
      *
-     * @return  \Yana\Db\Queries\Insert 
+     * @return  \Yana\Db\Queries\Insert
      */
     public function resetQuery()
     {
@@ -189,7 +189,8 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid type. " .
                 "Database values must be an array or scalar.");
         }
-        assert('isset($this->tableName); // Cannot set values - need to set table first!');
+        $tableName = $this->getTable();
+        assert('!empty($tableName); // Cannot set values - need to set table first!');
 
         /*
          * 1.d) handle table inheritance
@@ -199,33 +200,28 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
             $columns = $this->getColumns();
             if (empty($columns)) {
                 assert('!isset($columnName); // Cannot redeclare var $columnName');
-                assert('!isset($parent); // Cannot redeclare var $parent');
                 foreach (array_keys($values) as $columnName)
                 {
-                    $parent = $this->getParentByColumn($columnName);
-                    if (false !== $parent) {
-                        $this->_appendValue($parent, $columnName, $values[$columnName]);
-                        unset($values[$columnName]);
-                    }
-                    unset($parent);
+                    $columns[] = array($tableName, $columnName);
                 }
                 unset($columnName);
-            } else {
-                assert('!isset($column); // Cannot redeclare var $column');
-                foreach ($columns as $column)
-                {
-                    assert('is_array($column); // Invalid property "column". Two-dimensional array expected.');
-                    assert('!isset($parent); // Cannot redeclare var $parent');
-                    $parent = $this->getParentByColumn($column[1]);
-                    if (false !== $parent) {
-                        $this->_appendValue($parent, $column[1], $values);
-                        return;
-                    }
-                    unset($parent);
-                }
-                unset($column);
             }
-            unset($columns);
+
+            assert('!isset($column); // Cannot redeclare var $column');
+            foreach ($columns as $column)
+            {
+                assert('is_array($column); // Invalid property "column". Two-dimensional array expected.');
+                assert('!isset($parent); // Cannot redeclare var $parent');
+                assert('!isset($columnName); // Cannot redeclare var $columnName');
+                $columnName = $column[1];
+                $parent = $this->getParentByColumn($columnName);
+                if (false !== $parent && isset($values[$columnName])) {
+                    $this->_appendValue($parent, $columnName, $values[$columnName]);
+                    unset($values[$columnName]);
+                }
+                unset($parent, $columnName);
+            }
+            unset($column, $columns);
         }
 
         $table = $this->currentTable();
@@ -271,7 +267,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
             }
 
         } // end INSERT-statement
-        
+
         switch ($this->getExpectedResult())
         {
             // INSERT and UPDATE statements
