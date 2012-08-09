@@ -145,7 +145,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $this->dbsobj->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true));
 
         $this->dbsobj->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false));
-        $this->assertTrue($this->dbsobj->commit(), 'commit to database failed');
+        $this->dbsobj->commit();
 
         // supposed to fail
         try {
@@ -253,7 +253,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $test['tvalue'] = $temp2;
         // must update "i" AND "t" (not just "i" or "t")
         $this->assertTrue($this->dbsobj->update('i.foo', $test), '"update inheritance 1" test failed, unable to update');
-        $this->assertTrue($this->dbsobj->commit(), '"update inheritance 1" test failed, unable to commit');
+        $this->dbsobj->commit();
 
         // check if tables "i" and "t" have both been updated
         $this->assertEquals($this->dbsobj->select('i.foo.ta'), $temp1, '"update inheritance 2" test failed for table "i.foo.ta".');
@@ -332,7 +332,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         // test for property "zerofill"
         // column t.ti is a zerofilled integer with length 4
         $this->assertTrue($this->dbsobj->update('t.foo.ti', 1), '"set zerofill" test failed');
-        $this->assertTrue($this->dbsobj->commit(), '"set zerofill" test failed');
+        $this->dbsobj->commit();
 
         $this->assertEquals($this->dbsobj->select('t.foo.ti'), '0001', '"get zerofill" test failed');
     }
