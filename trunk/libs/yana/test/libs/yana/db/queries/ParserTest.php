@@ -70,6 +70,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
                 $this->db = new \Yana\Db\FileDb\Connection($schema);
             }
             $this->parser = new \Yana\Db\Queries\Parser($this->db);
+            // reset database
+            $this->db->remove('i', array(), 0);
+            $this->db->remove('t', array(), 0);
+            $this->db->remove('ft', array(), 0);
+            $this->db->commit();
         } catch (\Exception $e) {
             $this->markTestSkipped("Unable to connect to database");
         }
@@ -267,9 +272,17 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     public function testInsertInto()
     {
         $sql1 = 'INSERT INTO t (tid, tvalue, ftid) VALUES ("1", "2", "1");';
-        $this->query = $this->parser->parseSQL($sql1, $this->db);
-        $this->assertTrue($this->query instanceof \Yana\Db\Queries\Insert, "Parser error: $sql1");
-        $sql2 = (string) $this->query;
+        $query = $this->query;
+        /* @var $query \Yana\Db\Queries\Insert */
+        $query = $this->parser->parseSQL($sql1, $this->db);
+        $this->assertTrue($query instanceof \Yana\Db\Queries\Insert, "Parser error: $sql1");
+        $expectedValues = array(
+            'tid' => "1",
+            'tvalue' => "2",
+            'ftid' => "1"
+        );
+        $this->assertEquals($expectedValues, $query->getValues());
+        $sql2 = (string) $query;
         $sql3 = 'INSERT INTO t (tid, tvalue, ftid) VALUES ("1", "2", "1")';
         $this->assertEquals($sql3, $sql2, "Statement not resolved: $sql2");
     }
