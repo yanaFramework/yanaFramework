@@ -147,9 +147,10 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
                 } catch (\Yana\Db\DatabaseException $rollBackException) { // when rollback failed, create log-entry
 
                     assert('!isset($message); // Cannot redefine var $message');
-                    $message = "Unable to rollback changes. Database might contain corrupt data.";
+                    $message = "Unable to rollback changes. Database might contain corrupt data. "
+                        . $rollBackException->getMessage();
                     \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::ERROR);
-                    unset($message);
+                    unset($message, $rollBackException);
 
                 }
                 throw $queryException;
@@ -211,12 +212,15 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
         //before update: check constraints and triggers
         assert('!isset($constraint); // Cannot redeclare var $constraint');
         $constraint = ($column === '*') ? $value : array($column => $value);
+        assert('is_array($constraint); /* Array expected for values to update */');
 
+        assert('!isset($constraints); // Cannot redeclare var $constraints');
         $constraints = new \Yana\Db\Helpers\ConstraintCollection($table->getConstraints(), $constraint);
         if ($constraints() === false) {
             $_message = "Update on table '{$tableName}' failed. Constraint check failed for statement '$updateQuery'.";
             throw new \Yana\Db\Queries\Exceptions\ConstraintException($_message, E_USER_WARNING);
         }
+        unset($constraints);
 
         $triggerContainer = new \Yana\Db\Helpers\Triggers\Container($table, $updateQuery);
         $trigger = new \Yana\Db\Helpers\Triggers\BeforeUpdate($triggerContainer);
@@ -257,11 +261,13 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
         }
 
         // constraint check failed
+        assert('!isset($constraints); // Cannot redeclare var $constraints');
         $constraints = new \Yana\Db\Helpers\ConstraintCollection($table->getConstraints(), $value);
         if ($constraints() === false) {
             throw new \Yana\Db\Queries\Exceptions\ConstraintException("Insert on table '{$tableName}' failed. " .
                 "Constraint check failed for statement '$insertQuery'.", E_USER_WARNING);
         }
+        unset($constraints);
         $triggerContainer = new \Yana\Db\Helpers\Triggers\Container($table, $insertQuery);
         $trigger = new \Yana\Db\Helpers\Triggers\BeforeInsert($triggerContainer);
         $trigger(); // fire trigger
