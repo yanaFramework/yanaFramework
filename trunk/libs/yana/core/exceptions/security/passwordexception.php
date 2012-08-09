@@ -35,7 +35,7 @@ namespace Yana\Core\Exceptions\Security;
  * @package     yana
  * @subpackage  core
  */
-class PasswordException extends \Yana\Core\Exceptions\Security\PasswordException
+class PasswordException extends \Yana\Core\Exceptions\Security\SecurityException
 {
     /* intentionally left blank */
 }
