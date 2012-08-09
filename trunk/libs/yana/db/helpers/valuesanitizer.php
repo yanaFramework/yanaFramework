@@ -133,17 +133,15 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
                     $level = \Yana\Log\TypeEnumeration::WARNING;
                     $warning = new \Yana\Core\Exceptions\Forms\MissingFieldException($message, $level);
                     throw $warning->setField($title);
-                } else {
-                    $row[$columnName] = null;
+
+                } elseif (isset($row[$columnName]) && $row[$columnName] === "") {
+                    $row[$columnName] = null; // Don't set values to NULL if they are not given
                 }
             /*
              * 4) this input is valid - move to next
              */
-            } else {
-                if (isset($row[$columnName])) {
-                    // throws exception
-                    $row[$columnName] = $this->sanitizeValueByColumn($column, $row[$columnName], $files);
-                }
+            } elseif (isset($row[$columnName])) {
+                $row[$columnName] = $this->sanitizeValueByColumn($column, $row[$columnName], $files); // may throw exception
             } // end if
         } // end for
 
