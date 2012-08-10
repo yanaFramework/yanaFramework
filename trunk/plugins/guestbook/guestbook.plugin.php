@@ -319,9 +319,6 @@ class plugin_guestbook extends StdClass implements IsPlugin
     public function guestbook_read_rss()
     {
         global $YANA;
-        if (!class_exists('RSS')) {
-            throw new Error("RSS wrapper class not found. Unable to proceed.");
-        }
         self::_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
 
         /* get entries */
