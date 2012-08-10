@@ -64,7 +64,7 @@ class Blob extends \Yana\Files\Readonly
      * @var  string
      * @ignore
      */
-    protected static $blobDir = null;
+    protected static $blobDir = 'config/db/.blob/';
 
     /**
      * Read file contents.
@@ -300,7 +300,11 @@ class Blob extends \Yana\Files\Readonly
     /**
      * Extract unique file-id from a database value.
      *
-     * @param   string  $filename filename
+     * For any given path like "path/file.extension" this returns "file".
+     * 
+     * @internal Note: for "path/file.ext1.ext2" this returns "ext1". (Remember this for "file.tar.gz")
+     *
+     * @param   string  $filename  expected to be path/file.extension
      * @return  string
      * @ignore
      */
@@ -322,7 +326,7 @@ class Blob extends \Yana\Files\Readonly
         assert('is_string($id); // Invalid argument $id: string expected');
         assert('is_string($type); // Invalid argument $type: string expected');
 
-        $file = self::_getBlobDirectory() . $id;
+        $file = self::getDirectory() . $id;
         switch ($type)
         {
             case 'image':
@@ -335,7 +339,7 @@ class Blob extends \Yana\Files\Readonly
         if (is_file($file)) {
             return $file;
         } else {
-            foreach (glob(self::_getBlobDirectory() . $id . '.*') as $filename)
+            foreach (glob(self::getDirectory() . $id . '.*') as $filename)
             {
                 return $filename;
             }
@@ -355,7 +359,7 @@ class Blob extends \Yana\Files\Readonly
     public static function getThumbnailFromFileId($id)
     {
         assert('is_string($id); // Wrong argument type argument 1. String expected');
-        return self::_getBlobDirectory() . "thumb.{$id}.png";
+        return self::getDirectory() . "thumb.{$id}.png";
     }
 
     /**
@@ -408,25 +412,22 @@ class Blob extends \Yana\Files\Readonly
      * Returns path to directory where blob-files are stored.
      *
      * @return  string
-     * @ignore
      */
-    protected static function _getBlobDirectory()
+    public static function getDirectory()
     {
-        if (is_null(self::$blobDir)) {
-            if (isset($GLOBALS['YANA'])) {
-                $blobDir = $GLOBALS['YANA']->getVar('DBBLOB');
-            } else {
-                $blobDir = 'config/db/.blob/';
-            }
-            assert('is_dir($blobDir); // Blob-dir does not exist');
-            self::$blobDir = realpath($blobDir) . DIRECTORY_SEPARATOR;
-            if (empty(self::$blobDir)) {
-                $message = "Configuration error: the yana system setting 'DBBLOB' = '$blobDir' " .
-                    "does not refer to not a valid directory.";
-                throw new \Error($message);
-            }
-        }
+        assert('is_dir(self::$blobDir); // Blob-dir does not exist');
         return self::$blobDir;
+    }
+
+    /**
+     * Set path to directory where blob-files are stored.
+     * 
+     * @param  string  $directory
+     */
+    public static function setDirectory($directory)
+    {
+        assert('is_dir($directory); // Directory does not exist');
+        self::$blobDir = realpath($directory) . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -582,7 +583,7 @@ class Blob extends \Yana\Files\Readonly
         assert('is_string($fileId); // Wrong argument type for argument 3. String expected');
 
         assert('!isset($dir); // Cannot redeclare var $dir');
-        $dir = self::_getBlobDirectory();
+        $dir = self::getDirectory();
 
         $fileTempName = self::_getTempName($file);
         $filename = self::_getOriginalName($file);
@@ -673,7 +674,7 @@ class Blob extends \Yana\Files\Readonly
      */
     public static function uploadImage(array $file, $fileId, array $settings)
     {
-        $dir = self::_getBlobDirectory();
+        $dir = self::getDirectory();
         $fileTempName = self::_getTempName($file);
         $filename = self::_getOriginalName($file);
 

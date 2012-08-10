@@ -6,7 +6,7 @@
 	<var name="PROFILESDIR" value="{$YANA_CDROM_DIR}config/profiles/"/>
 	<var name="COUNTERDIR" value="{$YANA_CDROM_DIR}config/counter/"/>
 	<var name="DBDIR" value="{$YANA_CDROM_DIR}config/db/"/>
-	<var name="DBBLOB" value="config/db/.blob/"/>
+	<var name="BLOBDIR" value="config/db/.blob/"/>
 	<var name="DATADIR" value="common_files/"/>
 	<var name="BRUSHDIR" value="common_files/brush/"/>
 	<var name="LANGUAGEDIR" value="languages/"/>
@@ -43,12 +43,12 @@
 	</dir>
 
 	<dir name="dbfiles" filter=".gz">
-		<source>{$DBBLOB}</source>
+		<source>{$BLOBDIR}</source>
 		<requirements readable="yes" writeable="yes"/>
 	</dir>
 
 	<dir name="dbimages" filter=".jpeg|.jpg|.png|.gif">
-		<source>{$DBBLOB}</source>
+		<source>{$BLOBDIR}</source>
 		<requirements readable="yes"/>
 	</dir>
 
