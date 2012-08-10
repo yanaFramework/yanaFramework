@@ -355,6 +355,8 @@ class plugin_user extends StdClass implements IsPlugin
      * @param       string  $new_pwd     new password
      * @param       string  $repeat_pwd  duplicate of new password
      * @return      bool
+     * @throws      \Yana\Core\Exceptions\Security\PasswordDoesNotMatchException  when the passwords don't match
+     * @throws      \Yana\Core\Exceptions\Security\PasswordException              when the password was not saved
      */
     public function reset_pwd($key, $new_pwd, $repeat_pwd)
     {
@@ -365,7 +367,8 @@ class plugin_user extends StdClass implements IsPlugin
         try {
 
             $user = YanaUser::getInstance($userName);
-            return $this->_setPwd($user, $new_pwd, $repeat_pwd);
+            $this->_setPwd($user, $new_pwd, $repeat_pwd); // may throw exception
+            return true;
 
         } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             return false;
@@ -385,7 +388,9 @@ class plugin_user extends StdClass implements IsPlugin
      * @param       string  $repeat_pwd  duplicate of new password
      * @param       string  $old_pwd     old password
      * @return      bool
-     * @throws      \Yana\Core\Exceptions\Security\InvalidLoginException  when name or password are invalid
+     * @throws      \Yana\Core\Exceptions\Security\InvalidLoginException          when name or password are invalid
+     * @throws      \Yana\Core\Exceptions\Security\PasswordDoesNotMatchException  when the passwords don't match
+     * @throws      \Yana\Core\Exceptions\Security\PasswordException              when the password was not saved
      */
     public function set_pwd($new_pwd, $repeat_pwd, $old_pwd = "")
     {
@@ -403,9 +408,7 @@ class plugin_user extends StdClass implements IsPlugin
                  * that it is false.
                  */
             }
-            if (!$this->_setPwd($user, $new_pwd, $repeat_pwd)) {
-                throw new Error();
-            }
+            $this->_setPwd($user, $new_pwd, $repeat_pwd); // may throw exception
             return true;
 
         } catch (\Yana\Core\Exceptions\NotFoundException $e) {
@@ -420,18 +423,22 @@ class plugin_user extends StdClass implements IsPlugin
      * @param       YanaUser  $user         user instance
      * @param       string    $newPwd       new password
      * @param       string    $repeatPwd    new password
-     * @return      bool
+     * @throws      \Yana\Core\Exceptions\Security\PasswordDoesNotMatchException  when the passwords don't match
+     * @throws      \Yana\Core\Exceptions\Security\PasswordException              when the password was not saved
      */
     private function _setPwd(YanaUser $user, $newPwd, $repeatPwd)
     {
         if ($newPwd !== $repeatPwd) {
-            return false;
+            $message ="The two new passwords entered do not match.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\Security\PasswordDoesNotMatchException($message, $level);
         }
         try {
             $user->setPassword($newPwd);
-            return true;
-        } catch (DbError $e) { // unable to set password
-            return false;
+        } catch (\Yana\Db\DatabaseException $e) { // unable to set password
+            $message = "Unable to set password.";
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\Security\PasswordException($message, $level, $e);
         }
     }
 
