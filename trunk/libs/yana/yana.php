@@ -285,6 +285,9 @@ final class Yana extends \Yana\Core\AbstractSingleton
         if (isset(self::$_config->pluginfile)) {
             \Yana\Plugins\Manager::setPath((string) self::$_config->pluginfile, (string) self::$_config->plugindir);
         }
+        if (!empty(self::$_config->blobdir)) {
+            \Yana\Db\Blob::setDirectory((string) self::$_config->blobdir);
+        }
     }
 
     /**
