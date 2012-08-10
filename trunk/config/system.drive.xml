@@ -26,9 +26,9 @@
         Database blobs should not be moved since they might be too large -
         however if you need to do it anyway, uncomment this option.
 
-        <var name="DBBLOB" value="{$YANA_CDROM_DIR}config/db/.blob/"/>
+        <var name="BLOBDIR" value="{$YANA_CDROM_DIR}config/db/.blob/"/>
     -->
-	<var name="DBBLOB" value="config/db/.blob/"/>
+	<var name="BLOBDIR" value="config/db/.blob/"/>
 	<var name="DATADIR" value="common_files/"/>
 	<var name="LANGUAGEDIR" value="languages/"/>
 	<var name="SKINDIR" value="{$SKINDIR}/"/>
@@ -58,12 +58,12 @@
 	</dir>
 
 	<dir name="dbfiles" filter=".gz">
-		<source>{$DBBLOB}</source>
+		<source>{$BLOBDIR}</source>
 		<requirements readable="yes" writeable="yes"/>
 	</dir>
 
 	<dir name="dbimages" filter=".jpeg|.jpg|.png|.gif">
-		<source>{$DBBLOB}</source>
+		<source>{$BLOBDIR}</source>
 		<requirements readable="yes"/>
 	</dir>
 
