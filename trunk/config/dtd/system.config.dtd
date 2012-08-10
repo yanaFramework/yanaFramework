@@ -1,21 +1,23 @@
 <!-- auto-generated DTD -->
-<!ELEMENT system (date|default|templates|php_self|pluginfile|skindir|plugindir|plugincache|tempdir|configdrive|configdir)*>
+<!ELEMENT system (date|default|templates|php_self|pluginfile|skindir|blobdir|plugindir|plugincache|tempdir|configdrive|configdir)*>
 <!ELEMENT configdir (#PCDATA)>
 <!ELEMENT configdrive (#PCDATA)>
 <!ELEMENT tempdir (#PCDATA)>
 <!ELEMENT plugincache (#PCDATA)>
 <!ELEMENT plugindir (#PCDATA)>
 <!ELEMENT skindir (#PCDATA)>
+<!ELEMENT blobdir (#PCDATA)>
 <!ELEMENT pluginfile (#PCDATA)>
 <!ELEMENT php_self (#PCDATA)>
 <!ELEMENT templates (security|usesubdirs|defaultresourcetype|outputfilter|postfilter|prefilter|varfilter|blockfunction|function|modifier|resourcetype|leftdelimiter|rightdelimiter|templatedir|cachedir|caching|cachelifetime|cachingtype|compilecheck|compiledir|configdir|debugging|defaultmodifier)*>
 <!ELEMENT leftdelimiter (#PCDATA)>
 <!ELEMENT rightdelimiter (#PCDATA)>
+<!ELEMENT varfilter (#PCDATA)>
 <!-- Smarty template left delimiter. -->
 <!ELEMENT templatedir (#PCDATA)>
 <!ELEMENT cachedir (#PCDATA)>
 <!ELEMENT caching (#PCDATA)>
-<!ELEMENT cachelifetime EMPTY>
+<!ELEMENT cachelifetime (#PCDATA)>
 <!ELEMENT cachingtype (#PCDATA)>
 <!ELEMENT compilecheck (#PCDATA)>
 <!ELEMENT compiledir (#PCDATA)>
@@ -46,16 +48,16 @@
 <!ELEMENT defaultresourcetype (#PCDATA)>
 <!ELEMENT usesubdirs (#PCDATA)><!ELEMENT security (#PCDATA|library|security|phphandling|securedir|trusteddir|staticclass|phpfunction|phpmodifier|stream|allowedmodifier|disabledmodifier|allowedtag|disabledtag|allowconstants|allowsuperglobals)*>
 <!ELEMENT phphandling (#PCDATA)>
-<!ELEMENT securedir EMPTY>
-<!ELEMENT trusteddir EMPTY>
+<!ELEMENT securedir (#PCDATA)>
+<!ELEMENT trusteddir (#PCDATA)>
 <!ELEMENT staticclass (#PCDATA)>
 <!ELEMENT phpfunction (#PCDATA)>
 <!ELEMENT phpmodifier (#PCDATA)>
 <!ELEMENT stream (#PCDATA)>
-<!ELEMENT allowedmodifier EMPTY>
-<!ELEMENT disabledmodifier EMPTY>
-<!ELEMENT allowedtag EMPTY>
-<!ELEMENT disabledtag EMPTY>
+<!ELEMENT allowedmodifier (#PCDATA)>
+<!ELEMENT disabledmodifier (#PCDATA)>
+<!ELEMENT allowedtag (#PCDATA)>
+<!ELEMENT disabledtag (#PCDATA)>
 <!ELEMENT allowconstants (#PCDATA)>
 <!ELEMENT allowsuperglobals (#PCDATA)>
 <!ELEMENT default (#PCDATA|profile|homepage|message|event|skin|language|database|user|multicast_groups|security|library|default|update_server)*>
