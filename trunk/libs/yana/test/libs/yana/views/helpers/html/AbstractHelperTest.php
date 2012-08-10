@@ -32,6 +32,9 @@ namespace Yana\Views\Helpers\Html;
  */
 require_once dirname(__FILE__) . '/../../../../../include.php';
 
+/**
+ * @ignore
+ */
 class Helper extends \Yana\Views\Helpers\Html\AbstractHelper
 {
 
