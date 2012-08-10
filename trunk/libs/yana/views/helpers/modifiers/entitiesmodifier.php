@@ -52,7 +52,7 @@ class EntitiesModifier extends \Yana\Views\Helpers\AbstractViewHelper implements
      */
     public function __invoke($string)
     {
-        return \Yana\Util\String::htmlSpecialChars($string);
+        return \Yana\Util\String::htmlSpecialChars((string) $string);
     }
 
 }
