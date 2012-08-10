@@ -30,11 +30,6 @@
 require_once 'calendar.php';
 
 /**
- * @ignore
- */
-require_once 'indexnotfoundexception.php';
-
-/**
  * Calendar plugin
  *
  * @access     public
