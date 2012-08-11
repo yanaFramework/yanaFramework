@@ -559,6 +559,7 @@ class plugin_user extends StdClass implements IsPlugin
         if ($nextAction) {
             Yana::getInstance()->exitTo($nextAction);
         }
+        throw $loginMessage;
     }
 
 }
