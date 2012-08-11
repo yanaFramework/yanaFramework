@@ -364,15 +364,17 @@ class plugin_user extends StdClass implements IsPlugin
         $userName = $this->_getUserId($key);
         assert('is_string($userName);');
 
+        $isSuccess = true;
         try {
 
             $user = YanaUser::getInstance($userName);
             $this->_setPwd($user, $new_pwd, $repeat_pwd); // may throw exception
-            return true;
 
         } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-            return false;
+            unset($e);
+            $isSuccess = false;
         }
+        return $isSuccess;
     }
 
     /**
@@ -394,6 +396,7 @@ class plugin_user extends StdClass implements IsPlugin
      */
     public function set_pwd($new_pwd, $repeat_pwd, $old_pwd = "")
     {
+        $isSuccess = true;
         try {
 
             $user = YanaUser::getInstance();
@@ -409,11 +412,12 @@ class plugin_user extends StdClass implements IsPlugin
                  */
             }
             $this->_setPwd($user, $new_pwd, $repeat_pwd); // may throw exception
-            return true;
 
         } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-            return false;
+            unset($e);
+            $isSuccess = false;
         }
+        return $isSuccess;
     }
 
     /**
@@ -549,13 +553,12 @@ class plugin_user extends StdClass implements IsPlugin
         }
         $userData->login(); // creates new session
         self::$userName = $user;
-        new LoginMessage(); // report success
+        $loginMessage = new LoginMessage(); // report success
 
         /* route next action */
         if ($nextAction) {
             Yana::getInstance()->exitTo($nextAction);
         }
-        return true;
     }
 
 }
