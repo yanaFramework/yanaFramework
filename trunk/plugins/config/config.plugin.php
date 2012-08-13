@@ -24,6 +24,11 @@
  */
 
 /**
+ * @ignore
+ */
+require_once __DIR__ . '/updatechecker.php';
+
+/**
  * Configration menu
  *
  * This plugin provides the basic administration menu and
@@ -74,6 +79,7 @@ class plugin_config extends StdClass implements IsPlugin
     public function index()
     {
         global $YANA;
+        /* @var $YANA \Yana */
 
         // create options for select-boxes
         $YANA->setVar('LANGUAGEFILES', $YANA->getLanguage()->getLanguages());
@@ -93,7 +99,16 @@ class plugin_config extends StdClass implements IsPlugin
         $this->index_plugins();
 
         $YANA->setVar('USER_IS_EXPERT', $this->_getIsExpert());
-        $YANA->getView()->setFunction('updateCheck', array($this, '_updateCheck'));
+        $language = $YANA->getLanguage();
+        $updateChecker = new \Plugins\Config\UpdateChecker($language);
+        $cacheDirPath = $YANA->getVar('TEMPDIR') . '/pluginConfig/';
+        $cacheDir = new \Yana\Files\Dir($cacheDirPath);
+        $cacheLifetime = 28800; // 8 hours
+        $cacheAdapter = new \Yana\Data\Adapters\FileCacheAdapter($cacheDir, $cacheLifetime);
+        $updateChecker->setCache($cacheAdapter);
+
+        $view = $YANA->getView();
+        $view->setFunction('updateCheck', array($updateChecker, '__invoke'));
     }
 
     /**
@@ -122,13 +137,9 @@ class plugin_config extends StdClass implements IsPlugin
 
         /* get list of all installed plugins */
         $pluginNames = $pluginManager->getPluginNames();
-        $pluginDir = $pluginManager->getPluginDir();
 
         /* output vars */
         $plugins = array();
-
-        /* get current security level */
-        $permission = $yana->getVar('PERMISSION');
 
         assert('!isset($j); // Cannot redeclare var $j');
         assert('!isset($item); // Cannot redeclare var $item');
@@ -375,9 +386,7 @@ class plugin_config extends StdClass implements IsPlugin
             $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $code, $e);
             throw $error->setFilename($newProfile->getPath());
         }
-        if (!$newProfile->setVars($REF)) {
-            throw new Error();
-        }
+        $newProfile->setVars($REF);
         if (!$newProfile->write()) {
             $message = "Changes to profile could not be saved.";
             $code = \Yana\Log\TypeEnumeration::ERROR;
@@ -518,12 +527,11 @@ class plugin_config extends StdClass implements IsPlugin
      *
      * @static
      * @access  public
-     * @param   array   $params
-     * @return  int
+     * @return  string
      * @since   2.9.11
      * @ignore
      */
-    public static function _updateCheck(array $params)
+    public static function updateCheck()
     {
         assert('isset($GLOBALS["YANA"]); // Global var $YANA not set');
         global $YANA;
