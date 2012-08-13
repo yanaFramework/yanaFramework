@@ -28,32 +28,62 @@
 namespace Yana\Files;
 
 /**
- * <<interface>> readable file system resource
- *
- * This class identifies readable resources.
+ * <<interface>> filesystem resource.
  *
  * @package     yana
- * @subpackage  file
+ * @subpackage  files
  */
-interface IsReadable extends \Yana\Files\IsResource
+interface IsResource
 {
 
     /**
-     * Read file contents.
-     *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * @throws  \Yana\Core\Exceptions\NotFoundException     when the file is not found
-     * @throws  \Yana\Core\Exceptions\NotReadableException  when the file is not readable
-     */
-    public function read();
-
-    /**
-     * Returns the file contents as string.
+     * Get path to the resource.
      *
      * @return  string
      */
-    public function getContent();
+    public function getPath();
+
+    /**
+     * Returns true, if the resource exists.
+     *
+     * @return  bool
+     */
+    public function exists();
+
+    /**
+     * Returns true, if the resource is writeable.
+     *
+     * @return  bool
+     */
+    public function isWriteable();
+
+    /**
+     * Returns true, if the resource is readable.
+     *
+     * @return  bool
+     */
+    public function isReadable();
+
+    /**
+     * Returns true, if the resource is executable.
+     *
+     * @return  bool
+     */
+    public function isExecutable();
+
+    /**
+     * Returns true, if the resource has no contents.
+     *
+     * @return  bool
+     */
+    public function isEmpty();
+
+    /**
+     * Get time when the resource was last modified.
+     *
+     * @return  int
+     */
+    public function getLastModified();
 
 }
 

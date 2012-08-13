@@ -40,7 +40,7 @@ namespace Yana\Files;
  * @package     yana
  * @subpackage  files
  */
-abstract class AbstractResource extends \Yana\Core\Object
+abstract class AbstractResource extends \Yana\Core\Object implements \Yana\Files\IsResource
 {
 
     /**#@+
@@ -195,16 +195,6 @@ abstract class AbstractResource extends \Yana\Core\Object
     {
         return $this->exists() && is_executable($this->getPath());
     }
-
-    /**
-     * <<abstract>> isEmpty
-     *
-     * Since this is an abstract method, it is to implemented in the sub-classes.
-     *
-     * @return  bool
-     * @ignore
-     */
-    abstract public function isEmpty();
 
     /**
      * Reset statistics.
