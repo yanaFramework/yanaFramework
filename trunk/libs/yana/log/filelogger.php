@@ -73,8 +73,13 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
     public function addLog($message, $level = IsLogger::INFO, $data = array())
     {
         if ($this->_isAcceptable($level)) {
-            $log = \Log::getLogFromMessage($message);
 
+            $logEntry = array(
+                'MESSAGE' => (string) $message,
+                'USER' => (!empty($_SESSION['user_name'])) ? (string) $_SESSION['user_name'] : '*GUEST',
+                'ACTION' => \Yana\Plugins\Manager::getLastEvent(),
+                'TIME' => date('r')
+            );
             $errorMessage = "";
 
             /**
@@ -82,8 +87,7 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
              * and additional information describing the circumstances
              * in which the error occured.
              */
-            $log['TIME'] = date('r');
-            foreach ($log as $label => $value)
+            foreach ($logEntry as $label => $value)
             {
                 $errorMessage .= $label;
                 for ($i = mb_strlen($label); $i < 15; $i++)
