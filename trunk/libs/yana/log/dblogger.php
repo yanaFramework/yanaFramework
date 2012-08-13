@@ -155,12 +155,9 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
 
         $previousLog = '';
 
-        assert('!isset($message); /* cannot redeclare variable $message */');
         assert('!isset($newLog); // Cannot redeclare var $newLog');
-        foreach ($this->_messages as $message)
+        foreach ($this->_messages as $newLog)
         {
-            assert('$message instanceof Log; // unexpected result: Entry is not a subclass of Log');
-            $newLog = Log::getLog($message, "log_");
             assert('is_array($newLog); // unexpected result: Log entry is expected to be an array');
 
             // check if new log entry is valid
@@ -180,7 +177,7 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
             $logChanged = true;
             $messageCount++;
         } // end foreach ($message)
-        unset($message);
+        unset($newLog);
 
         // skip if nothing has changed
         if ($logChanged !== true) {
