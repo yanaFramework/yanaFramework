@@ -880,10 +880,9 @@ class YanaUser extends \Yana\Core\Object
      *
      * @param   string  $userName  user name
      * @return  bool
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when no valid user name given
-     * @throws  \Yana\Core\Exceptions\NotFoundException         when the given user does not exist
-     * @throws  DbError                                         when a query on the database failed
-     * @throws  Error                                           when the user may not be deleted for other reasons
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException   when no valid user name given
+     * @throws  \Yana\Core\Exceptions\NotFoundException          when the given user does not exist
+     * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  when the user may not be deleted for other reasons
      */
     public static function removeUser($userName)
     {
@@ -915,9 +914,10 @@ class YanaUser extends \Yana\Core\Object
             case self::$_database->remove("securitylevel.*", array("user_created", "=", $userName), 0):
             // delete user settings
             case self::$_database->remove("user.$userName"):
-                throw new DbError("Unable to commit changes to the database server while trying to remove".
-                    "user '{$userName}'.");
-            break;
+                $message = "Unable to commit changes to the database server while trying to remove".
+                    "user '{$userName}'.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level);
 
             default:
                 // commit changes
@@ -945,7 +945,7 @@ class YanaUser extends \Yana\Core\Object
         assert('is_scalar($text); // Wrong argument type for argument 2. String expected.');
         $salt = mb_substr(mb_strtoupper("$salt"), 0, 2);
 
-        $string = "$salt$text";
+        $string = "{$salt}{$text}";
 
         if (function_exists('sha1')) {
             return sha1($string);

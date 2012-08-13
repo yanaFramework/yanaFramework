@@ -529,8 +529,9 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements \Serializab
      * @param   int     $level      new security level [0,100]
      * @param   string  $userName   user to update
      * @param   string  $profileId  profile to update
-     * @throws  Error                                    on database error
-     * @throws  \Yana\Core\Exceptions\NotFoundException  when user not found
+     * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  on database error
+     * @throws  \Yana\Db\CommitFailedException                   on database error
+     * @throws  \Yana\Core\Exceptions\NotFoundException          when user not found
      */
     public function setSecurityLevel($level, $userName = '', $profileId = '')
     {
@@ -594,7 +595,9 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements \Serializab
                 "user_proxy_active" => true
             ));
         if (!$result) {
-            throw new Error("Unable to commit changed security level for user '$userName'.", E_USER_WARNING);
+            $message = "Unable to commit changed security level for user '$userName'.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level);
         }
         $database->commit(); // may throw exception
     }
