@@ -103,18 +103,16 @@ class plugin_db_admin extends StdClass implements IsPlugin
      * @safemode    true
      *
      * @access      public
-     * @param       string  $dbms    type of DBMS
-     * @param       array   $list    list of database schemas
-     * @param       bool    $silent  mute error messages
-     * @return      bool
+     * @param       string  $dbms  type of DBMS
+     * @param       array   $list  list of database schemas
      * @throws      \Yana\Core\Exceptions\Forms\MissingInputException  when either DBMS or databases have not been selected
      * @throws      \Yana\Db\Mdb2\PearDbException                      when PEAR MDB2 was not found
      */
-    public function db_install($dbms, array $list, $silent = false)
+    public function db_install($dbms, array $list)
     {
         global $YANA;
 
-        if (!class_exists("MDB2") && !$silent) {
+        if (!class_exists("MDB2")) {
             throw new \Yana\Db\Mdb2\PearDbException();
         }
 
@@ -131,24 +129,24 @@ class plugin_db_admin extends StdClass implements IsPlugin
         switch ($dbms)
         {
             case 'DB2':
-                $method_name  = 'createDB2';
+                $methodName  = 'createDB2';
             break;
             case 'ACCESS':
-                $method_name  = 'createMSAccess';
+                $methodName  = 'createMSAccess';
             break;
             case 'MSSQL':
-                $method_name  = 'createMSSQL';
+                $methodName  = 'createMSSQL';
             break;
             case 'MYSQL':
             case 'MYSQLI':
                 $dbms         = 'MYSQL';
-                $method_name  = 'createMySQL';
+                $methodName  = 'createMySQL';
             break;
             case 'OCI8':
-                $method_name  = 'createOracleDB';
+                $methodName  = 'createOracleDB';
             break;
             case 'PGSQL':
-                $method_name  = 'createPostgreSQL';
+                $methodName  = 'createPostgreSQL';
             break;
 
             // The following DBMS are currently not supported
@@ -169,13 +167,10 @@ class plugin_db_admin extends StdClass implements IsPlugin
         if (!$installDirectory instanceof \Yana\Files\Dir || !$installDirectory->exists()) {
             /* invalid option - the choosen dbms is unknown */
             \Yana\Log\LogManager::getLogger()->addLog("Unable to install database. The choosen DBMS '{$dbms}' is unknown.");
-            if (!$silent) {
-                $message = 'Did not create SQL file because the target directoy does not exist.';
-                $code = \Yana\Log\TypeEnumeration::WARNING;
-                $error = new \Yana\Core\Exceptions\Files\NotFoundException($message, $code);
-                throw $error->setFilename("{$dbms}");
-            }
-            return false;
+            $message = 'Did not create SQL file because the target directoy does not exist.';
+            $code = \Yana\Log\TypeEnumeration::WARNING;
+            $error = new \Yana\Core\Exceptions\Files\NotFoundException($message, $code);
+            throw $error->setFilename("{$dbms}");
         }
 
         /* we assume the class \Yana\Db\Export\SqlFactory has the desired method. This will be tested later! */
@@ -190,13 +185,10 @@ class plugin_db_admin extends StdClass implements IsPlugin
         {
             /* check the input */
             if (!is_string($item)) {
-                if (!$silent) {
-                    $message = 'Did not create SQL file because the input is invalid.';
-                    $code = \Yana\Log\TypeEnumeration::WARNING;
-                    $error = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $code);
-                    throw $error->setField('DBMS');
-                }
-                return false;
+                $message = 'Did not create SQL file because the input is invalid.';
+                $code = \Yana\Log\TypeEnumeration::WARNING;
+                $error = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $code);
+                throw $error->setField('DBMS');
             } else {
                 $item = mb_strtolower($item);
             }
@@ -214,24 +206,21 @@ class plugin_db_admin extends StdClass implements IsPlugin
 
                 /* If the \Yana\Db\Export\SqlFactory class does not support the desired function.
                  */
-                if (!method_exists($sqlFactory, $method_name)) {
+                if (!method_exists($sqlFactory, $methodName)) {
 
-                    if (!$silent) {
-                        if (!file_exists($installFile)) {
-                            throw new Error("Unable to install database. " .
-                                "There is no installation file available for database '$item'.");
-                        } else {
-                            throw new Error("Unable to install database '$item'. " .
-                                "Cannot read sql file '$installFile'.");
-                        }
+                    if (!file_exists($installFile)) {
+                        $message = "Unable to install database '$item'. There is no installation file available.";
+                    } else {
+                        $message = "Unable to install database '$item'. Cannot read sql file '$installFile'.";
                     }
-                    return false;
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level);
 
                 /* Else, create and execute the SQL statements.
                  */
                 } else {
                     /* create ... */
-                    $sqlStmts = $sqlFactory->$method_name();
+                    $sqlStmts = $sqlFactory->$methodName();
                     /* ... execute */
                     if ($database->importSQL($sqlStmts) === false) {
                         \Yana\Log\LogManager::getLogger()->addLog("Note: Unable to install database '$item'.");
@@ -281,17 +270,15 @@ class plugin_db_admin extends StdClass implements IsPlugin
         foreach ($initialization as $stmt)
         {
             assert($stmt instanceof \Yana\Db\Queries\AbstractQuery);
-            if (!$stmt->sendQuery()) {
-                $message = $stmt->db->getMessage();
+            $result = $stmt->sendQuery();
+            if (!$result) {
+                $message = "Unable to initialize database.";
                 $level = \Yana\Log\TypeEnumeration::WARNING;
                 \Yana\Log\LogManager::getLogger()->addLog($message, $level);
-                return false;
-            } else {
-                $stmt->getDatabase()->commit(); // may throw exception
+                throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level);
             }
+            $stmt->getDatabase()->commit(); // may throw exception
         }
-
-        return true;
     }
 
     /**
@@ -307,23 +294,21 @@ class plugin_db_admin extends StdClass implements IsPlugin
      * @safemode    true
      *
      * @access      public
-     * @param       string  $dbms    type of DBMS
-     * @param       array   $list    list of database schema to handle
-     * @param       bool    $silent  mute error messages
-     * @return      bool
+     * @param       string  $dbms  type of DBMS
+     * @param       array   $list  list of database schema to handle
      */
-    public function db_sync($dbms, array $list, $silent = false)
+    public function db_sync($dbms, array $list)
     {
         @set_time_limit(500);
 
         if (!class_exists("MDB2")) {
-            if (!$silent) {
-                throw new \Yana\Db\Mdb2\PearDbException();
-            }
-            return false;
+            throw new \Yana\Db\Mdb2\PearDbException();
         }
         if (empty($dbms) || empty($list)) {
-            return false;
+            /* nothing to do */
+            $message = "No databases for target DBMS selected.";
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
         }
 
         assert('!isset($dbSchema); // Cannot redeclare var $dbSchema');
@@ -391,35 +376,30 @@ class plugin_db_admin extends StdClass implements IsPlugin
                 {
                     $selectQuery->setRow($key);
                     if (!$fileDb->insert("$tableName.$key", $db->select($selectQuery))) {
-                        if (!$silent) {
-                            $message = "Unable to copy value $tableName.$key from database to FileDB";
-                            \Yana\Log\LogManager::getLogger()->addLog($message);
-                        }
-                        return false;
-                    } else if ($i > 20) {
+                        $message = "Unable to copy value $tableName.$key from database to FileDB";
+                        \Yana\Log\LogManager::getLogger()->addLog($message);
+                    } else if ($i > 20) { // safe point all 20 inserts
                         try {
                             $fileDb->commit(); // may throw exception
                             $i = 0;
                         } catch (\Exception $e) {
-                            if (!$silent) {
-                                \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to FileDB.");
-                            }
-                            unset($e);
-                            return false;
+                            $message = "Failed to commit changes to FileDB.";
+                            $level = \Yana\Log\TypeEnumeration::ERROR;
+                            \Yana\Log\LogManager::getLogger()->addLog($message. " " . $e->getMessage(), $level);
+                            throw new \Yana\Db\CommitFailedException($message, $level, $e);
                         }
                     } else {
                         $i++;
                     }
                 }
-                if ($i > 0) {
+                if ($i > 0) { // commit pending transaction
                     try {
                         $fileDb->commit(); // may throw exception
                     } catch (\Exception $e) {
-                        if (!$silent) {
-                            \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to FileDB.");
-                        }
-                        unset($e);
-                        return false;
+                        $message = "Failed to commit changes to FileDB.";
+                        $level = \Yana\Log\TypeEnumeration::ERROR;
+                        \Yana\Log\LogManager::getLogger()->addLog($message. " " . $e->getMessage(), $level);
+                        throw new \Yana\Db\CommitFailedException($message, $level, $e);
                     }
                 }
                 unset($i);
@@ -436,21 +416,19 @@ class plugin_db_admin extends StdClass implements IsPlugin
                     foreach ($diff as $key)
                     {
                         if (!$db->insert("$tableName.$key", $fileContent[$key])) {
-                            if (!$silent) {
-                                $message = "Unable to copy value $tableName.$key from FileDB to database";
-                                \Yana\Log\LogManager::getLogger()->addLog($message);
-                            }
-                            return false;
+                            $message = "Unable to copy value $tableName.$key from FileDB to database";
+                            $level = \Yana\Log\TypeEnumeration::WARNING;
+                            \Yana\Log\LogManager::getLogger()->addLog($message, $level);
+                            throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level);
                         } else if ($i > 20) {
                             try {
                                 $db->commit(); // may throw exception
                                 $i = 0;
                             } catch (\Exception $e) {
-                                if (!$silent) {
-                                    \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to Database.");
-                                }
-                                unset($e);
-                                return false;
+                                \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to Database.");
+                                $level = \Yana\Log\TypeEnumeration::ERROR;
+                                \Yana\Log\LogManager::getLogger()->addLog($message. " " . $e->getMessage(), $level);
+                                throw new \Yana\Db\CommitFailedException($message, $level, $e);
                             }
                         } else {
                             $i++;
@@ -463,19 +441,16 @@ class plugin_db_admin extends StdClass implements IsPlugin
                     try {
                         $db->commit(); // may throw exception
                     } catch (\Exception $e) {
-                        if (!$silent) {
-                            \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to Database.");
-                        }
-                        unset($e);
-                        return false;
+                        \Yana\Log\LogManager::getLogger()->addLog("Failed to commit changes to Database.");
+                        $level = \Yana\Log\TypeEnumeration::ERROR;
+                        \Yana\Log\LogManager::getLogger()->addLog($message. " " . $e->getMessage(), $level);
+                        throw new \Yana\Db\CommitFailedException($message, $level, $e);
                     }
                 }
                 unset($i);
             } /* end foreach */
 
         } /* end foreach */
-
-        return true;
     }
 
     /**
@@ -588,11 +563,10 @@ class plugin_db_admin extends StdClass implements IsPlugin
      * @param       string  $prefix       table prefix
      * @param       bool    $autoinstall  install automatically?
      * @param       bool    $autosync     synchronize automatically?
-     * @param       bool    $silent       mute error messages
      * @param       array   $list         list of database schemas
      */
     public function set_db_configuration($active, $dbms, $host = "", $port = "", $user = "", $password = "", $name = "",
-        $prefix = "", $autoinstall = false, $autosync = false, $silent = false, array $list = array())
+        $prefix = "", $autoinstall = false, $autosync = false, array $list = array())
     {
         /**
          * 1) Test if connection is available
@@ -608,12 +582,12 @@ class plugin_db_admin extends StdClass implements IsPlugin
                 'DATABASE' => stripslashes($name)
             );
 
+            // Test if the connection settings are valid
             $test = \Yana\Db\Mdb2\ConnectionFactory::isAvailable($dsn);
             if ($test !== true) {
-                throw new Error('Unable to establish connection to database server. " .
-                    "Check your input please!');
-            } else {
-                /* all fine - proceed */
+                $message = 'Unable to establish connection to database server. Check your input please!';
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Db\ConnectionException($message, $level);
             }
         } else {
             /**
@@ -636,17 +610,13 @@ class plugin_db_admin extends StdClass implements IsPlugin
         } elseif (!YANA_DATABASE_ACTIVE && $active === 'false') {
             /* continue without changes */
         } else {
-            $silent = true;
             if ($active === 'true') {
                 if ($autoinstall) {
-                    $test = $this->db_install($dbms, $list, $silent);
-                    if ($test !== true) {
-                        \Yana\Log\LogManager::getLogger()->addLog('Notice: installation of tables failed. " .
-                            "(May be tables already exist?)');
-                        throw new Error('Installation of tables failed. " .
-                            "(Do tables already exist?)');
-                    } else {
-                        /* success - proceed to next step */
+                    try {
+                        $this->db_install($dbms, $list);
+                    } catch (\Exception $e) {
+                        \Yana\Log\LogManager::getLogger()->addLog('Notice: installation of tables failed. ' . $e->getMessage());
+                        throw $e;
                     }
                 } else {
                     /* continue without changes */
@@ -655,14 +625,13 @@ class plugin_db_admin extends StdClass implements IsPlugin
                 /* continue (FileDB does not need a database installation) */
             }
             if ($autosync) {
-                $test = $this->db_sync($dbms, $list, $silent);
-                if ($test !== true) {
+                try {
+                    $this->db_sync($dbms, $list);
+                } catch (\Exception $e) {
                     \Yana\Log\LogManager::getLogger()->addLog('Unable to install tables of plugin "user" with the " .
-                        "choosen dbms. Operation aborted.');
-                    throw new Error();
-                } else {
-                    /* success - proceed to next step */
-                } /* end if */
+                        "choosen dbms. Operation aborted. ' . $e->getMessage());
+                    throw $e;
+                }
             } else {
                 /* continue without changes */
             }
