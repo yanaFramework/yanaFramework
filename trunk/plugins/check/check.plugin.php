@@ -121,7 +121,7 @@ class plugin_check extends StdClass implements IsPlugin
             print '<option value="' . $database . '"' . (($database === $db) ? ' selected>' : '>') . $database .
                 '</option>';
         }
-        print '</select>&nbsp;<label>SQL: <input size="100" name="sql" value="' .
+        print '</select></label>&nbsp;<label>SQL: <input size="100" name="sql" value="' .
             htmlspecialchars($sql, ENT_COMPAT, 'UTF-8') . '"></label>' .
         '<input type="submit" value="OK">' .
         '<pre>' . htmlspecialchars($result, ENT_NOQUOTES, 'UTF-8') . '</pre>';
