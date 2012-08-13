@@ -37,7 +37,7 @@ namespace Yana\Files;
  * @package     yana
  * @subpackage  files
  */
-class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
+class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir
 {
 
     /**#@+
@@ -175,6 +175,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
                 $this->read();
 
             } catch (\Yana\Core\Exceptions\NotFoundException $e) { // directory does not exist
+                unset($e);
                 $this->content = array();
             }
 
@@ -281,28 +282,33 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
      * Returns bool(true) on success and bool(false) on error.
      *
      * @param   bool  $isRecursive  triggers wether to remove directories even if they are not empty, default = false
-     * @return  bool
+     * @return  \Yana\Files\Dir
      * @throws  \Yana\Core\Exceptions\NotWriteableException  when directory cannot be deleted
+     * @throws  \Yana\Core\Exceptions\NotFoundException      when directory is not found
      */
     public function delete($isRecursive = false)
     {
         assert('is_bool($isRecursive); // Wrong argument type argument 1. Boolean expected');
 
         if ($isRecursive === true) {
-            $content = $this->dirlist('');
+            if ($this->getFilter()) {
+                $this->setFilter(); // removes any previously set file-filter
+                $this->read(); // reloads the directory contents, may throw \Yana\Core\Exceptions\NotFoundException
+            }
+            $content = $this->getContent();
             assert('!isset($element); /* cannot redeclare variable $element */');
             foreach ($content as $element)
             {
                 $element = '/'.$element;
                 if (is_file($this->getPath() . $element)) {
                     if (unlink($this->getPath() . $element) === false) {
-                        return false;
+                        $message = "Unable to delete file '" . $this->getPath() . $element . "'.";
+                        $level = \Yana\Log\TypeEnumeration::ERROR;
+                        throw new \Yana\Core\Exceptions\NotWriteableException($message, $level);
                     }
                 } elseif (is_dir($this->getPath() . $element)) {
                     $dir = new \Yana\Files\Dir($this->getPath() . $element);
-                    if ($dir->delete(true) === false) {
-                        return false;
-                    }
+                    $dir->delete(true);
                 } else {
                     /* intentionally left blank */
                 }
@@ -311,9 +317,10 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
         }
         if (@rmdir($this->getPath()) === false) {
             $message = "Unable to delete directory '" . $this->getPath() . "'.";
-            throw new \Yana\Core\Exceptions\NotWriteableException($message, E_USER_ERROR);
+                        $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\NotWriteableException($message, $level);
         }
-        return true;
+        return $this;
     }
 
     /**
@@ -378,7 +385,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
     {
         assert('is_null($filter) || is_string($filter); // Wrong type for argument 1. String expected');
 
-        if (empty($this->content) || $this->filter !== $filter) {
+        if (empty($this->content) || $this->getFilter() !== $filter) {
             $this->filter = (string) $filter;
             $this->read();
         }
@@ -553,9 +560,11 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
      * @param    string   $fileFilter   use this to limit the copied files to a specific extension
      * @param    string   $dirFilter    use this to limit the copied directories to those matching the filter
      * @param    bool     $useRegExp    set this to bool(true) if you want filters to be treated as a regular expression
-     * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when one input argument is invalid
-     * @throws   \Yana\Core\Exceptions\AlreadyExistsException    if the target directory already exists
-     * @throws   \Yana\Core\Exceptions\NotWriteableException     if the target location is not writeable
+     * @return   \Yana\Files\Dir
+     * @throws   \Yana\Core\Exceptions\InvalidArgumentException   when one input argument is invalid
+     * @throws   \Yana\Core\Exceptions\AlreadyExistsException     if the target directory already exists
+     * @throws   \Yana\Core\Exceptions\NotWriteableException      if the target location is not writeable
+     * @throws   \Yana\Core\Exceptions\Files\NotCreatedException  when a file or directory could not be created at the target
      */
     public function copy($destDir, $overwrite = true, $mode = 0766, $copySubDirs = false, $fileFilter = null, $dirFilter = null, $useRegExp = false)
     {
@@ -569,27 +578,30 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
 
         if ($mode > 0777 || $mode < 1) {
             $message = "Argument mode must be an octal number in range: [1,0777].";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
 
         /* validity checking */
         if (empty($destDir) || mb_strlen($destDir) > 512) {
             $message = "Invalid directory name '{$destDir}'.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
 
         /* check if directory already exists */
         if ($overwrite === false && file_exists($destDir) === true) {
             $message = "Unable to copy directory '{$destDir}'. " .
                 "Another directory with the same name does already exist.";
-            $level = \E_USER_NOTICE;
+            $level = \Yana\Log\TypeEnumeration::INFO;
             $exception = new \Yana\Core\Exceptions\AlreadyExistsException($message, $level);
             $exception->setId($destDir);
             throw $exception;
         }
         if ($overwrite === true && file_exists($destDir) === true && is_writeable($destDir) === false) {
             $message = "Unable to copydirectory '{$destDir}'. The directory does already exist and is not writeable.";
-            throw new \Yana\Core\Exceptions\NotWriteableException($message, E_USER_NOTICE);
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            throw new \Yana\Core\Exceptions\NotWriteableException($message, $level);
         }
 
         /* argument $fileFilter */
@@ -661,16 +673,11 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
                 if (is_null($dirFilter) || preg_match($dirFilter, $item)) {
                     $dir = new \Yana\Files\Dir($this->path . $item);
                     assert('!isset($copySucceeded); // Cannot redeclare var $copySucceeded');
-                    $copySucceeded = $dir->copy($destDir . $item . '/', $overwrite, $mode,
-                        $copySubDirs, $fileFilter, $dirFilter, true);
-                    if ($copySucceeded === false) {
-                        return false;
-                    }
-                    unset($copySucceeded);
+                    $dir->copy($destDir . $item . '/', $overwrite, $mode, $copySubDirs, $fileFilter, $dirFilter, true);
                     if (chmod($destDir . $item, decoct($mode)) === false) {
                         $message = "Unable to set mode (access level) for directory '{$destDir}{$item}'.";
-                        trigger_error($message, E_USER_NOTICE);
-                        return false;
+                        $level = \Yana\Log\TypeEnumeration::INFO;
+                        \Yana\Log\LogManager::getLogger()->addLog($message, $level);
                     }
                 } // end if
 
@@ -680,12 +687,14 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
             } elseif (is_file($this->path . $item)) {
                 if (is_null($fileFilter) || preg_match($fileFilter, $item)) {
                     if (copy($this->path . $item, $destDir . $item) === false) {
-                        trigger_error("Unable to copy file '{$destDir}{$item}'.", E_USER_NOTICE);
-                        return false;
+                        $message = "Unable to copy file.";
+                        $level = \Yana\Log\TypeEnumeration::WARNING;
+                        $error = new \Yana\Core\Exceptions\Files\NotCreatedException($message, $level);
+                        throw $error->setFilename("{$destDir}{$item}");
                     } elseif (chmod($destDir . $item, $mode) === false) {
-                        $message = "Unable to set mode (access level) for file '{$destDir}{$item}'.";
-                        trigger_error($message, E_USER_NOTICE);
-                        return false;
+                        $message = "Unable to set mode (access level) for directory '{$destDir}{$item}'.";
+                        $level = \Yana\Log\TypeEnumeration::INFO;
+                        \Yana\Log\LogManager::getLogger()->addLog($message, $level);
                     } else {
                         continue;
                     }
@@ -703,7 +712,7 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsReadable
         closedir($handle);
         unset($dir, $item, $handle);
 
-        return true;
+        return $this;
     }
 
 }
