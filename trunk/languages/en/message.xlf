@@ -490,11 +490,11 @@
             </group>
             <group id="Yana\Db\ConnectionException">
                 <trans-unit id="Yana\Db\ConnectionException.h">
-                    <target>An error occurred</target>
+                    <target>Unable to establish database connection.</target>
                     <source/>
                 </trans-unit>
                 <trans-unit id="Yana\Db\ConnectionException.p">
-                    <target>Unable to establish database connection.<it id="br3" pos="open">&lt;br /&gt;</it>The service may be temporarily unavailable. Please try again later. If you continue to get this message, please report this issue to your administrator.<it id="br4" pos="open">&lt;br /&gt;</it>Administrator: Please check your connection settings on your administration panel. Check if your database server is running and reachable.</target>
+                    <target>Check your connection settings and try again. If the settings are correct, the database may be unreachable at this time.</target>
                     <source/>
                 </trans-unit>
             </group>
