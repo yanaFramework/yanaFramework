@@ -35,7 +35,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class DbWarning extends Message
+class DbWarning extends \Yana\Core\Exceptions\AbstractException
 {
     /**
      * constructor
