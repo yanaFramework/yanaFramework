@@ -31,7 +31,7 @@
  * @package     yana
  * @subpackage  error_reporting
  */
-class SuccessMessage extends Message
+class SuccessMessage extends \Yana\Core\Exceptions\AbstractException
 {
 
     /**
@@ -41,7 +41,7 @@ class SuccessMessage extends Message
      * @param  int         $code      optional error code
      * @param  \Exception  $previous  use this when you need to rethrow a catched exception
      */
-    public function __construct($message = "", $code = 0, \Exception $previous = null)
+    public function __construct($message = "", $code = \Yana\Log\TypeEnumeration::SUCCESS, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }
