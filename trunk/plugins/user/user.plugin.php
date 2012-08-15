@@ -236,7 +236,7 @@ class plugin_user extends StdClass implements IsPlugin
      *
      * @type        security
      * @template    message
-     * @onsuccess   goto: login, text: MailMessage
+     * @onsuccess   goto: login, text: Yana\Core\Exceptions\Messages\MailMessage
      * @onerror     goto: set_lost_pwd, text: Yana\Core\Exceptions\InvalidInputException
      *
      *
@@ -482,7 +482,7 @@ class plugin_user extends StdClass implements IsPlugin
      *
      * @type        security
      * @template    message
-     * @onsuccess   text: LogoutMessage
+     * @onsuccess   text: Yana\Core\Exceptions\Messages\LogoutMessage
      *
      * @access      public
      */
@@ -553,7 +553,7 @@ class plugin_user extends StdClass implements IsPlugin
         }
         $userData->login(); // creates new session
         self::$userName = $user;
-        $loginMessage = new LoginMessage(); // report success
+        $loginMessage = new \Yana\Core\Exceptions\Messages\LoginMessage(); // report success
 
         /* route next action */
         if ($nextAction) {

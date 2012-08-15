@@ -198,7 +198,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
      *
      * @type        default
      * @template    MESSAGE
-     * @onsuccess   goto: login, text: FirstLoginMessage
+     * @onsuccess   goto: login, text: Yana\Core\Exceptions\Messages\FirstLoginMessage
      * @language    user
      *
      * @access      public
