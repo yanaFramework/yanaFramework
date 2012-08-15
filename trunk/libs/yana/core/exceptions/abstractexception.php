@@ -237,17 +237,18 @@ abstract class AbstractException extends \Exception
     public function getHeader()
     {
         if (!isset($this->header)) {
+            $this->header = "";
+
             $language = \Language::getInstance();
             $language->readFile('message');
+
             $id = get_class($this);
-            if ($language->isVar("$id.h")) {
-                $this->header = (string) $language->getVar("$id.h");
+            if ($language->isVar($id . ".h")) {
+                $this->header = (string) $language->getVar($id . ".h");
                 if (!empty($this->data)) {
                     $this->header = \Yana\Util\String::replaceToken($this->header, $this->data);
                     $this->header = $language->replaceToken($this->header);
                 }
-            } else {
-                $this->header = "";
             }
         }
         return $this->header;
@@ -265,10 +266,12 @@ abstract class AbstractException extends \Exception
     public function getText()
     {
         if (!isset($this->text)) {
+            $this->text = "";
+
             $language = \Language::getInstance();
             $language->readFile('message');
+
             $id = get_class($this);
-            $this->text = "";
             if ($language->isVar($id . ".p")) {
                 $this->text = (string) $language->getVar($id . ".p");
                 if (!empty($this->data)) {
