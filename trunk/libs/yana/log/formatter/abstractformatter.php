@@ -89,7 +89,7 @@ abstract class AbstractFormatter extends \Yana\Core\Object implements \Yana\Log\
     protected function _getMessage()
     {
         if (!isset(self::$_message)) {
-            self::$_message = new Message();
+            self::$_message = new \Yana\Log\Formatter\Message();
         }
         return self::$_message;
     }
@@ -97,10 +97,10 @@ abstract class AbstractFormatter extends \Yana\Core\Object implements \Yana\Log\
     /**
      * Renew the cache.
      *
-     * @param  Message  $message  new cache instance
+     * @param  \Yana\Log\Formatter\Message  $message  new cache instance
      * @ignore
      */
-    protected function _setMessage(Message $message)
+    protected function _setMessage(\Yana\Log\Formatter\Message $message)
     {
         self::$_message = $message;
     }
