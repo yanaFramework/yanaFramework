@@ -25,14 +25,15 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Messages;
+
 /**
- * Success message
+ * <<exception>> Issued on a user's first login.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class LogoutMessage extends SuccessMessage
+class FirstLoginMessage extends \Yana\Core\Exceptions\Messages\SuccessMessage
 {
     // intentionally left blank
 }

@@ -25,14 +25,15 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Messages;
+
 /**
- * Success message
+ * <<exception>> Issued after a user successfully logged out.
  *
- * @access      public
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class FirstLoginMessage extends SuccessMessage
+class LogoutMessage extends \Yana\Core\Exceptions\Messages\SuccessMessage
 {
     // intentionally left blank
 }

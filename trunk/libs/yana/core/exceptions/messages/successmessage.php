@@ -25,16 +25,31 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Core\Exceptions\Messages;
+
 /**
- * Success message
+ * <<exception>> Success message.
  *
- * @access      public
+ * Base class for messages indicating the results of a successful action.
+ *
  * @package     yana
- * @subpackage  error_reporting
+ * @subpackage  core
  */
-class MailMessage extends SuccessMessage
+class SuccessMessage extends \Yana\Core\Exceptions\AbstractException
 {
-    // intentionally left blank
+
+    /**
+     * Constructor.
+     *
+     * @param  string      $message   the message that should be reported
+     * @param  int         $code      optional error code
+     * @param  \Exception  $previous  use this when you need to rethrow a catched exception
+     */
+    public function __construct($message = "", $code = \Yana\Log\TypeEnumeration::SUCCESS, \Exception $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
+
 }
 
 ?>
