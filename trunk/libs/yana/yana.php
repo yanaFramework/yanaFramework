@@ -1029,7 +1029,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
 
         if ($route instanceof \Yana\Plugins\Configs\EventRoute) {
             // create default message if there is none
-            if (Message::countMessages() === 0) {
+            if (\Yana\Core\Exceptions\AbstractException::countMessages() === 0) {
                 if ($route->getMessage()) {
                     $messageClass = $route->getMessage();
                 } else {
@@ -1398,12 +1398,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
         $stdout = array();
 
         assert('!isset($messages); // Cannot redeclare variable $messages');
-        $messages = array();
-        if (defined('YANA_ERROR_REPORTING') && YANA_ERROR_REPORTING === YANA_ERROR_ON) {
-            $messages = \Yana\Core\Exceptions\AbstractException::getMessages();
-        } else {
-            $messages = Message::getMessages();
-        }
+        $messages = \Yana\Core\Exceptions\AbstractException::getMessages();
         assert('is_array($messages); // unexpected result: List of messages is not an array');
 
         if (empty($messages)) {

@@ -52,11 +52,11 @@ class EventRoute
     /**
      * Predefined event message.
      */
-    const MSG_SUCCESS = "SuccessMessage";
+    const MSG_SUCCESS = '\Yana\Core\Exceptions\Messages\SuccessMessage';
     /**
      * Predefined event message.
      */
-    const MSG_ERROR = "Error";
+    const MSG_ERROR = '\Yana\Core\Exceptions\LogicException';
 
     /**
      * Type of event triggered.
