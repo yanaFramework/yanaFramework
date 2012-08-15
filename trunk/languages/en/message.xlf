@@ -4,12 +4,12 @@
     <file source-language="en" datatype="html" original="" target-language="de">
         <header/>
         <body>
-            <group id="SuccessMessage">
-                <trans-unit id="SuccessMessage.h">
+            <group id="Yana\Core\Exceptions\Messages\SuccessMessage">
+                <trans-unit id="Yana\Core\Exceptions\Messages\SuccessMessage.h">
                     <target>Your changes have been saved.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="SuccessMessage.p">
+                <trans-unit id="Yana\Core\Exceptions\Messages\SuccessMessage.p">
                     <target></target>
                     <source/>
                 </trans-unit>
@@ -92,22 +92,22 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="LoginMessage">
-                <trans-unit id="LoginMessage.h">
+            <group id="Yana\Core\Exceptions\Messages\LoginMessage">
+                <trans-unit id="Yana\Core\Exceptions\Messages\LoginMessage.h">
                     <target>Access granted.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="LoginMessage.p">
+                <trans-unit id="Yana\Core\Exceptions\Messages\LoginMessage.p">
                     <target>Welcome!</target>
                     <source/>
                 </trans-unit>
             </group>
-            <group id="LogoutMessage">
-                <trans-unit id="LogoutMessage.h">
+            <group id="Yana\Core\Exceptions\Messages\LogoutMessage">
+                <trans-unit id="Yana\Core\Exceptions\Messages\LogoutMessage.h">
                     <target>You have been logged out.</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="LogoutMessage.p">
+                <trans-unit id="Yana\Core\Exceptions\Messages\LogoutMessage.p">
                     <target>Have a nice day!</target>
                     <source/>
                 </trans-unit>
@@ -372,12 +372,12 @@
                     <source/>
                  </trans-unit>
             </group>
-            <group id="FirstLoginMessage">
-                 <trans-unit id="FirstLoginMessage.h">
+            <group id="Yana\Core\Exceptions\Messages\FirstLoginMessage">
+                 <trans-unit id="Yana\Core\Exceptions\Messages\FirstLoginMessage.h">
                      <target>Thank you for your registration.</target>
                     <source/>
                  </trans-unit>
-                 <trans-unit id="FirstLoginMessage.p">
+                 <trans-unit id="Yana\Core\Exceptions\Messages\FirstLoginMessage.p">
                      <target>Your password has been emailed to you! Please check your inbox!</target>
                     <source/>
                  </trans-unit>
@@ -392,12 +392,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="PearDbException">
-                <trans-unit id="PearDbException.h">
+            <group id="Yana\Db\Mdb2\PearDbException">
+                <trans-unit id="Yana\Db\Mdb2\PearDbException.h">
                     <target>PHP configuration error</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="PearDbException.p">
+                <trans-unit id="Yana\Db\Mdb2\PearDbException.p">
                     <target>This database application requires PEAR-MDB2. Since it could not be found on your server, this plugin was unable to start. <bpt id="h1">&lt;span class="embtag_tag_h"&gt;</bpt>Administrators:<ept id="h1">&lt;/span</ept> Check the server configuration and make sure the variable "include_path"    in file "php.ini" refers to the PEAR installation path.<bpt id="h2">&lt;span class="embtag_tag_h"&gt;</bpt>Administrator:<ept id="h2">&lt;/span</ept> Inform your admin on this problem. In case you are not allowed to use PEAR-MDB2 on your server, I am afraid you won't be able to run database applications on this server.</target>
                     <source/>
                 </trans-unit>
@@ -442,12 +442,12 @@
                     <source/>
                 </trans-unit>
             </group>
-            <group id="MailMessage">
-                <trans-unit id="MailMessage.h">
+            <group id="Yana\Core\Exceptions\Messages\MailMessage">
+                <trans-unit id="Yana\Core\Exceptions\Messages\MailMessage.h">
                     <target>E-mail sent</target>
                     <source/>
                 </trans-unit>
-                <trans-unit id="MailMessage.p">
+                <trans-unit id="Yana\Core\Exceptions\Messages\MailMessage.p">
                     <target>A message has been sent to the entered e-mail address. Please check your e-mail inbox.</target>
                     <source/>
                 </trans-unit>
