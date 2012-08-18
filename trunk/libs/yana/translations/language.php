@@ -25,95 +25,91 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Translations;
+
 /**
  * <<Singleton>> Language
  *
  * This class may be used to dynamically load additional
  * language files at runtime.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */
-class Language extends \Yana\Core\AbstractSingleton implements Serializable
+class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Yana\Log\IsLogable
 {
+
     /**
      * This is a place-holder for the singleton's instance
      *
-     * @access  private
-     * @static
-     * @var     object
+     * @var  \Yana\Translations\Language
      */
     private static $_instance = null;
 
     /**
      * a list of all languages installed
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_languages = array();
 
     /**
      * file extension for language definition files
      *
-     * @access  private
-     * @static
-     * @var     string
+     * @var  string
      */
     private static $_fileExtension = ".language.xml";
 
     /**
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_directories = array();
 
     /**
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_language = "";
 
     /**
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_country = "";
 
     /**
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_fileLoaded = array();
 
     /**
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_strings = array();
 
     /**
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_groups = array();
 
     /**
      * language information cache
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_info = array();
 
     /**
      * cache for valid language directories
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_validDirsCache = array();
+
+    /**
+     * Collection for keeping and calling loggers.
+     *
+     * @var  \Yana\Log\IsLogHandler
+     */
+    private $_loggers = null;
 
     /**
      * get instance of this class
@@ -121,14 +117,12 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
      * Creates an instance if there is none.
      * Then it returns a reference to this (single) instance.
      *
-     * @access  public
-     * @static
-     * @return  Language
+     * @return  \Yana\Translations\Language
      */
     public static function &getInstance()
     {
         if (!isset(self::$_instance)) {
-            self::$_instance = new Language();
+            self::$_instance = new self();
         }
         return self::$_instance;
     }
@@ -140,43 +134,40 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
      */
     private function __construct()
     {
-        /* intentionally left blank */
+        // intentionally left blank
     }
 
     /**
-     * get language string
-     *
      * Alias of Language::getVar()
      *
-     * @access  public
      * @param   string  $id   id
      * @return  mixed
      * @see     Language::getVar()
      */
     public function __get($id)
     {
-        assert('is_string($id); // Wrong type for argument 1. String expected');
+        assert('is_string($id); // Invalid argument $id: string expected');
         return $this->getVar($id);
     }
 
     /**
-     * set language string
-     *
      * Alias of Language::setVar()
      *
-     * @access  public
      * @param   string  $id     id
      * @param   string  $value  value
+     * @return  string
      * @see     Language::setVar()
      */
     public function __set($id, $value)
     {
-        assert('is_string($id); // Wrong type for argument 1. String expected');
+        assert('is_string($id); // Invalid argument $id: string expected');
+        assert('is_string($value); // Invalid argument $value: string expected');
         $this->setVar($id, $value);
+        return $value;
     }
 
     /**
-     * get name of selected language
+     * Get name of selected language.
      *
      * Returns the name of the currently selected
      * language as a string, or bool(false) on error.
@@ -189,7 +180,6 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
      * files are stored. Check the directory
      * "languages/" for a complete list.
      *
-     * @access  public
      * @return  string|bool(false)
      * @since   2.9.6
      * @name    Language::getLanguage()
@@ -206,7 +196,7 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
     }
 
     /**
-     * get name of selected country
+     * Get name of selected country.
      *
      * Returns the name of the currently selected
      * country as a string, or bool(false) on error.
@@ -220,7 +210,6 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
      * Returns 'en' for English, 'de' for German.
      * May also return complete locales like 'en-US', if specified.
      *
-     * @access  public
      * @return  string|bool(false)
      * @since   3.1.0
      * @name    Language::getCountry()
@@ -237,7 +226,7 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
     }
 
     /**
-     * get name of selected locale
+     * Get name of selected locale.
      *
      * Returns the name of the currently selected
      * locale as a string, or bool(false) on error.
@@ -247,7 +236,6 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
      * or 'de-AU' for austrian German. The country part of the locale is
      * optional.
      *
-     * @access  public
      * @return  string|bool(false)
      * @since   3.1.0
      * @name    Language::getCountry()
@@ -268,7 +256,7 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
     }
 
     /**
-     * read language strings from a file
+     * Read language strings from a file.
      *
      * You may find valid filenames in the following directory 'languages/<locale>/*.xlf'.
      * Provide the file without path and file extension.
@@ -278,9 +266,10 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
      * This function issues an E_USER_NOTICE if the file does not exist.
      * It returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   string  $file  name of translation file that should be loaded
-     * @return  bool
+     * @return  \Yana\Translations\Language
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException   when the give filename is invalid
+     * @throws  \Yana\Core\Exceptions\Files\NotFoundException  when the language file is not found
      */
     public function readFile($file)
     {
@@ -294,10 +283,11 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
 
             // check syntax of filename
             if (!preg_match("/^[\w_-\d]+$/i", $file)) {
-                $message = "The provided language-file id '$file' contains illegal characters.".
+                $message = "The provided language-file id contains illegal characters.".
                     " Be aware that only alphanumeric (a-z,0-9,-,_) characters are allowed.";
-                trigger_error($message, E_USER_NOTICE);
-                return false;
+                $level = \Yana\Log\TypeEnumeration::INFO;
+                $e = new \Yana\Core\Exceptions\Translations\InvalidFileNameException($message, $level);
+                throw $e->setFilename($file);
             }
 
             // override defaults where available
@@ -316,9 +306,9 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
                     try {
 
                         // LanguageInterchangeFile extends \SimpleXMLElement
-                        $xml = new LanguageInterchangeFile($selectedFile, LIBXML_NOENT, true);
-                        $xml->toArray($this->_strings);
-                        $xml->getGroups($this->_groups);
+                        $xml = new \Yana\Translations\LanguageInterchangeFile($selectedFile, LIBXML_NOENT, true);
+                        $this->_strings = $xml->toArray($this->_strings);
+                        $this->_groups = $xml->getGroups($this->_groups);
                         $this->_fileLoaded[$file] = true;
                         $this->_strings = array_change_key_case($this->_strings, CASE_LOWER);
                         $this->_groups = array_change_key_case($this->_groups, CASE_LOWER);
@@ -326,7 +316,7 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
                     } catch (\Exception $e) {
                         assert('!isset($message); // Cannot redeclare var $message');
                         $message = "Error in language file: '$file'.";
-                        \Yana\Log\LogManager::getLogger()->addLog($message, E_USER_WARNING, $e->getMessage());
+                        $this->getLogger()->addLog($message, E_USER_WARNING, $e->getMessage());
                         unset($message);
                     }
                 }
@@ -334,12 +324,13 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
             }
             unset($directory);
         }
-        if (!empty($this->_fileLoaded[$file])) {
-            return true;
-        } else {
-            \Yana\Log\LogManager::getLogger()->addLog("No language-file found for id '$file'.");
-            return false;
+        if (empty($this->_fileLoaded[$file])) {
+            $message = "No language-file found for id '{$file}'.";
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            $e = new \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException($message, $level);
+            throw $e->setFilename($file);
         }
+        return $this;
     }
 
     /**
@@ -438,7 +429,9 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
             return $array;
 
         } else {
-            \Yana\Log\LogManager::getLogger()->addLog("No text found for key '$key'.");
+            $message = "No text found for key '$key'.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            $this->getLogger()->addLog($message, $level);
             return "$key";
         }
     }
@@ -478,9 +471,9 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
      *
      * Note that the translation is saved even if there is no source text.
      *
-     * @access  public
      * @param   string  $key    adress of data in memory (case insensitive)
      * @param   string  $value  new value (may be scalar value or array)
+     * @return  \Yana\Translations\Language
      * @name    Language::setVar()
      * @see     Language::getVar()
      */
@@ -491,6 +484,7 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
         $key = mb_strtolower((string) $key);
 
         $this->_strings[$key] = (string) $value;
+        return $this;
     }
 
     /**
@@ -529,6 +523,7 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
      *
      * @access  public
      * @param   string  $directory  base directory
+     * @return \Yana\Translations\Language
      * @throws  \Yana\Core\Exceptions\NotFoundException   when the chosen directory does not exist
      *
      * @ignore
@@ -543,6 +538,7 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
             $this->_directories[] = "$directory/";
             $this->_validateDirectory($directory);
         }
+        return $this;
     }
 
     /**
@@ -554,6 +550,7 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
      * @param   string  $selectedLanguage  current language
      * @param   string  $selectedCountry   current country (optional)
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the provided locale is not valid
+     * @return \Yana\Translations\Language
      *
      * @ignore
      */
@@ -586,6 +583,7 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
         // revalidate directories
         $this->_validateDirectories($this->_directories);
         array_unique($this->_validDirsCache);
+        return $this;
     }
 
     /**
@@ -738,6 +736,32 @@ class Language extends \Yana\Core\AbstractSingleton implements Serializable
             }
         }
         return $string;
+    }
+
+    /**
+     * Adds a logger to the class.
+     *
+     * @param  \Yana\Log\IsLogger  $logger  instance that will handle the logging
+     * @return \Yana\Translations\Language
+     */
+    public function attachLogger(\Yana\Log\IsLogger $logger)
+    {
+        $collection = $this->getLogger();
+        $collection[] = $logger;
+        return $this;
+    }
+
+    /**
+     * Returns the attached loggers.
+     *
+     * @return  \Yana\Log\IsLogHandler
+     */
+    public function getLogger()
+    {
+        if (!isset($this->_loggers)) {
+            $this->_loggers = new \Yana\Log\LoggerCollection();
+        }
+        return $this->_loggers;
     }
 
 }

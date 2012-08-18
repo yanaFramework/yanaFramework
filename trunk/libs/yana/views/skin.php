@@ -134,11 +134,11 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
     /**
      * Returns an instance of the translations container.
      *
-     * @return \Language
+     * @return \Yana\Translations\Language
      */
     protected function _getLanguageInstance()
     {
-        return \Language::getInstance();
+        return \Yana\Translations\Language::getInstance();
     }
 
     /**
@@ -850,10 +850,15 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
                     foreach ($element['LANGUAGE'] as $value)
                     {
                         if (!empty($value)) {
-                            if (!$language->readFile($value)) {
+                            try {
+
+                                $language->readFile($value); // may throw exception
+
+                            } catch (\Yana\Core\Exceptions\Translations\TranslationException $e) {
                                 $subReport->addWarning("A required language file '{$value}' is not available. " .
                                     "Please check if the chosen language file is correct and update your ".
-                                    "language pack if needed.");
+                                    "language pack if needed. " . $e->getMessage());
+                                unset($e);
                             }
                         }
                     }

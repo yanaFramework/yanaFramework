@@ -177,7 +177,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testLogin()
     {
-        $language = Language::getInstance();
+        $language = \Yana\Translations\Language::getInstance();
         $language->addDirectory('languages');
         $language->setLocale('de');
 
@@ -238,7 +238,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testLogout()
     {
-        $language = Language::getInstance();
+        $language = \Yana\Translations\Language::getInstance();
         $language->addDirectory('languages/');
         $language->setLocale('de');
 

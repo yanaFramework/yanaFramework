@@ -114,10 +114,16 @@ class IdResource extends \Yana\Views\Resources\FileResource
         $skin = $this->_getSkin();
 
         // load language files associated with the template
-        $language = \Language::getInstance();
+        $language = \Yana\Translations\Language::getInstance();
         foreach ($skin->getLanguage($key) as $languageFile)
         {
-            $language->readFile($languageFile);
+            try {
+
+                $language->readFile($languageFile); // may throw exception
+
+            } catch (\Yana\Core\Exceptions\Translations\TranslationException $e) {
+                // no need to throw an exception here, since we may safely continue without the file
+            }
         }
 
         $manager = $this->_getViewManager();

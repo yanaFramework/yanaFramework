@@ -262,7 +262,7 @@ class Builder extends \Yana\Core\Object
             'OFFSET_PAGE' => $offsetPage,
             'LAST_PAGE' => $lastPage
         );
-        $lang = \Language::getInstance();
+        $lang = \Yana\Translations\Language::getInstance();
         $header = $lang->getVar("DESCR_SHOW");
         $header = \Yana\Util\String::replaceToken($header, $params);
         $this->object->getContext('update')->setHeader($header);
@@ -289,7 +289,7 @@ class Builder extends \Yana\Core\Object
         assert('!isset($pluginManager); // Cannot redeclare var $pluginManager');
         $pluginManager = \Yana\Plugins\Manager::getInstance();
         $action = $pluginManager->getFirstEvent();
-        $lang = \Language::getInstance();
+        $lang = \Yana\Translations\Language::getInstance();
         $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
         $linkTemplate = '<a class="gui_generator_%s" href="' .
             $formatter("action=$action&" . $this->getForm()->getName() . "[page]=%s", false, false) .

@@ -78,6 +78,8 @@ abstract class AbstactLogger extends \Yana\Core\Object implements \Yana\Log\IsLo
      */
     protected function _isAcceptable($level)
     {
+        assert('is_int($level); // Invalid argument $level: int expected');
+
         $reportingLevel = $this->getLogLevel();
         return ($reportingLevel & ~$level) !== $reportingLevel;
     }
