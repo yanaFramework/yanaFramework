@@ -112,7 +112,20 @@ class plugin_user extends StdClass implements IsPlugin
         /* @var $YANA Yana */
         global $YANA;
         // Load translation strings
-        $YANA->getLanguage()->readFile("user");
+        try {
+
+            $YANA->getLanguage()->readFile("user"); // may throw exception
+
+        } catch (\Yana\Core\Exceptions\Translations\TranslationException $e) {
+            /* Throwing an exception here would prevent the whole application from running at all,
+             * so we just report it and leave it for later.
+             */
+            $message = $e->getMessage();
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            $data = $e->getData();
+            \Yana\Log\LogManager::getLogger()->addLog($message, $level, $data);
+            unset($e);
+        }
 
         if ($YANA->getSession()->checkPermission(null, $event)) {
             /**

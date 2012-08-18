@@ -136,7 +136,7 @@ class plugin_project extends StdClass implements IsPlugin
      */
     public function project_sum($target)
     {
-        $language = Language::getInstance();
+        $language = \Yana\Translations\Language::getInstance();
 
         /* get entries from database */
         $key = 'effort.*.effort_duration';
