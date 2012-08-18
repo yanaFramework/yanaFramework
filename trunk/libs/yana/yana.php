@@ -99,7 +99,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
     /**
      * to load language strings
      *
-     * @var  Language
+     * @var  \Yana\Translations\Language
      */
     private $_language = null;
 
@@ -132,11 +132,11 @@ final class Yana extends \Yana\Core\AbstractSingleton
     private $_view = null;
 
     /**
-     * List of logger classes.
+     * Collection of logger classes.
      *
-     * @var  array
+     * @var  \Yana\Log\LoggerCollection
      */
-    private $_loggers = array();
+    private $_loggers = null;
 
     /**
      * caches database connections
@@ -369,7 +369,19 @@ final class Yana extends \Yana\Core\AbstractSingleton
             assert('!isset($languageId); // Cannot redeclare var $languageId');
             foreach ($languages as $languageId)
             {
-                $language->readFile($languageId);
+                try {
+
+                    $language->readFile($languageId); // may throw exception
+
+                } catch (\Yana\Core\Exceptions\Translations\TranslationException $e) {
+                    // log the issue so that it can be reviewed later
+                    $message = $e->getMessage();
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    $data = $e->getData();
+                    $this->getLogger()->addLog($message, $level, $data);
+                    unset($e);
+                    // We may safely continue without the file for now
+                }
             }
             unset($language, $languageId);
         }
@@ -602,13 +614,13 @@ final class Yana extends \Yana\Core\AbstractSingleton
      *
      * This returns the language component. If none exists, a new instance is created.
      *
-     * @return  Language
+     * @return  \Yana\Translations\Language
      */
     public function getLanguage()
     {
         if (!isset($this->_language)) {
             $languageDir = $this->getVar('LANGUAGEDIR');
-            $this->_language = Language::getInstance();
+            $this->_language = \Yana\Translations\Language::getInstance();
             $this->_language->addDirectory($languageDir);
             $this->_language->setLocale((string) self::$_config->default->language);
             if (isset($_SESSION['language'])) {
@@ -618,7 +630,11 @@ final class Yana extends \Yana\Core\AbstractSingleton
                     unset($_SESSION['language']);
                 }
             }
-            $this->_language->readFile('default');
+            try {
+                $this->_language->readFile('default');
+            } catch (\Yana\Core\Exceptions\InvalidArgumentException $e){
+                unset($_SESSION['language']);
+            }
             $array = array();
             foreach (glob("$languageDir*", GLOB_ONLYDIR) as $dir)
             {
@@ -1455,6 +1471,8 @@ final class Yana extends \Yana\Core\AbstractSingleton
     public function attachLogger(\Yana\Log\IsLogger $logger)
     {
         $this->_loggers[] = $logger;
+        // inherit loggers to included classes
+        $this->getLanguage()->attachLogger($logger);
     }
 
     /**

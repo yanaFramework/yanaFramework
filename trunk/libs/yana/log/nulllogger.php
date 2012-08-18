@@ -50,8 +50,10 @@ class NullLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      */
     public function addLog($message, $level = IsLogger::INFO, $data = array())
     {
-        if ($this->_isAcceptable($level)) {
-            $this->_messages[] = func_get_args();
+        assert('is_numeric($level); // Invalid argument $level: numeric expected');
+
+        if ($this->_isAcceptable((int) $level)) {
+            $this->_messages[] = array($message, $level, $data);
         }
     }
 

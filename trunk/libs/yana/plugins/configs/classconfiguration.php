@@ -535,7 +535,7 @@ class ClassConfiguration extends \Yana\Core\Object
 
         // get defaults
         if (is_null($language)) {
-            $languageManager = \Language::getInstance();
+            $languageManager = \Yana\Translations\Language::getInstance();
             $language = $languageManager->getLanguage();
             $country = $languageManager->getCountry();
         }
@@ -564,7 +564,7 @@ class ClassConfiguration extends \Yana\Core\Object
 
         // get defaults
         if (is_null($language) && class_exists('Language')) {
-            $languageManager = \Language::getInstance();
+            $languageManager = \Yana\Translations\Language::getInstance();
             $language = $languageManager->getLanguage();
             $country = $languageManager->getCountry();
         }

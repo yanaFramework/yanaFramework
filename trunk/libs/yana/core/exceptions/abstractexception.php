@@ -239,16 +239,20 @@ abstract class AbstractException extends \Exception
         if (!isset($this->header)) {
             $this->header = "";
 
-            $language = \Language::getInstance();
-            $language->readFile('message');
+            try {
+                $language = \Yana\Translations\Language::getInstance();
+                $language->readFile('message'); // may throw TranslationException
 
-            $id = get_class($this);
-            if ($language->isVar($id . ".h")) {
-                $this->header = (string) $language->getVar($id . ".h");
-                if (!empty($this->data)) {
-                    $this->header = \Yana\Util\String::replaceToken($this->header, $this->data);
-                    $this->header = $language->replaceToken($this->header);
+                $id = get_class($this);
+                if ($language->isVar($id . ".h")) {
+                    $this->header = (string) $language->getVar($id . ".h");
+                    if (!empty($this->data)) {
+                        $this->header = \Yana\Util\String::replaceToken($this->header, $this->data);
+                        $this->header = $language->replaceToken($this->header);
+                    }
                 }
+            } catch (\Yana\Core\Exceptions\Translations\TranslationException $e) {
+                unset($e);
             }
         }
         return $this->header;
@@ -268,24 +272,29 @@ abstract class AbstractException extends \Exception
         if (!isset($this->text)) {
             $this->text = "";
 
-            $language = \Language::getInstance();
-            $language->readFile('message');
+            try {
+                $language = \Yana\Translations\Language::getInstance();
+                $language->readFile('message'); // may throw TranslationException
 
-            $id = get_class($this);
-            if ($language->isVar($id . ".p")) {
-                $this->text = (string) $language->getVar($id . ".p");
-                if (!empty($this->data)) {
-                    $this->text = \Yana\Util\String::replaceToken($this->text, $this->data);
-                    $this->text = $language->replaceToken($this->text);
+                $id = get_class($this);
+                if ($language->isVar($id . ".p")) {
+                    $this->text = (string) $language->getVar($id . ".p");
+                    if (!empty($this->data)) {
+                        $this->text = \Yana\Util\String::replaceToken($this->text, $this->data);
+                        $this->text = $language->replaceToken($this->text);
+                    }
+                } elseif (!empty($this->message)) {
+                    $this->text = $this->message;
+                    if (count($this->data) > 1) { // must have more than obligatory entry "MESSAGE"
+                        $data = $this->data;
+                        unset($data['MESSAGE']);
+                        $this->text .= ";" . print_r($this->data, true);
+                    }
                 }
-            } elseif (!empty($this->message)) {
-                $this->text = $this->message;
-                if (count($this->data) > 1) { // must have more than obligatory entry "MESSAGE"
-                    $data = $this->data;
-                    unset($data['MESSAGE']);
-                    $this->text .= ";" . print_r($this->data, true);
-                }
+            } catch (\Yana\Core\Exceptions\Translations\TranslationException $e) {
+                unset($e);
             }
+
             $this->text = preg_replace('/\s/', ' ', $this->text);
             $this->text = mb_substr($this->text, 0, 1000);
             $this->text = str_replace('"', '&quot;', $this->text);

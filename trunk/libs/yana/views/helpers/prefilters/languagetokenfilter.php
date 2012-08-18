@@ -49,7 +49,7 @@ class LanguageTokenFilter extends \Yana\Views\Helpers\AbstractViewHelper impleme
      */
     public function __invoke($source, \Smarty_Internal_Template $templateClass)
     {
-        $language = \Language::getInstance();
+        $language = \Yana\Translations\Language::getInstance();
         $source = $language->replaceToken($source);
         return $source;
     }

@@ -52,7 +52,7 @@ class Language extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\V
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
         assert('isset($params["id"]); // Missing parameter: id');
-        return (string) \Language::getInstance()->getVar((string) $params['id']);
+        return (string) \Yana\Translations\Language::getInstance()->getVar((string) $params['id']);
     }
 
 }

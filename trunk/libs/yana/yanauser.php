@@ -511,7 +511,7 @@ class YanaUser extends \Yana\Core\Object
         // initialize language settings
         if (!empty($this->_language)) {
             assert('!isset($languageManager); // Cannot redeclare var $languageManager');
-            $languageManager = Language::getInstance();
+            $languageManager = \Yana\Translations\Language::getInstance();
             try {
 
                 $languageManager->setLocale($this->_language);

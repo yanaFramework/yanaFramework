@@ -46,16 +46,12 @@ class LoggerCollection extends \Yana\Core\AbstractCollection implements IsLogHan
      */
     public function offsetSet($offset, $value)
     {
-        if ($value instanceof \Yana\Log\IsLogger) {
-            if (!is_string($offset)) {
-                $offset = $value->getName();
-            }
-            return $this->_offsetSet(mb_strtolower($offset), $value);
-        } else {
+        if (!$value instanceof \Yana\Log\IsLogger) {
             $message = "Instance of IsLogger expected. Found " . gettype($value) . "(" .
                 ((is_object($value)) ? get_class($value) : $value) . ") instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
+        return $this->_offsetSet($offset, $value);
     }
 
     /**
@@ -69,7 +65,8 @@ class LoggerCollection extends \Yana\Core\AbstractCollection implements IsLogHan
     {
         foreach ($this as $logger)
         {
-            $logger->addLog($level, $description, $fileName, $lineNumber);
+            /* @var $logger \Yana\Log\IsLogger */
+            $logger->addLog($message, $level, $data);
         }
     }
 

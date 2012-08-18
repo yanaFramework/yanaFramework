@@ -161,7 +161,7 @@ class Feed extends \Yana\Core\Object
         $this->setDescription($description);
 
         // auto-generated fields
-        $language = \Language::getInstance();
+        $language = \Yana\Translations\Language::getInstance();
         $this->_title = (string) $language->getVar('program_title');
         $this->_language = (string) $language->getLocale();
         $this->_link = \Yana\Core\Request::getUri();
@@ -170,7 +170,7 @@ class Feed extends \Yana\Core\Object
     /**
      * Returns the title of the channel.
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -229,7 +229,7 @@ class Feed extends \Yana\Core\Object
      * Set a channel description.
      *
      * @param  string  $description  a text to describe context and purpose of this channel
-     * @return Feed 
+     * @return \Yana\RSS\Feed
      */
     public function setDescription($description)
     {
@@ -261,8 +261,8 @@ class Feed extends \Yana\Core\Object
      * This settings is auto-detected from the currently used locale. Only change it if needed.
      *
      * @param  string  $language  valid language/locale string, e.g. en, en-US
-     * @return Feed
-     * @see    \Language
+     * @return \Yana\RSS\Feed
+     * @see    \Yana\Translations\Language
      */
     public function setLanguage($language)
     {
@@ -365,7 +365,7 @@ class Feed extends \Yana\Core\Object
     }
 
     /**
-     * Get "time to live" in minutes. 
+     * Get "time to live" in minutes.
      *
      * Indicates how long a channel can be cached before refreshing from the source.
      * Defaults to 0.
@@ -378,12 +378,12 @@ class Feed extends \Yana\Core\Object
     }
 
     /**
-     * Set "time to live". 
+     * Set "time to live".
      *
      * Indicates how long a channel can be cached before refreshing from the source.
      *
      * @param  int  $ttl  number of minutes, must be >= 0
-     * @return Feed 
+     * @return Feed
      */
     public function setTimeToLive($ttl)
     {
@@ -410,7 +410,7 @@ class Feed extends \Yana\Core\Object
      * URL to *.jpg, *.gif, or *.png image to display with the feed, e.g. a website logo.
      *
      * @param  string  $image  must be a valid URL.
-     * @return Feed 
+     * @return Feed
      */
     public function setImage($image)
     {
@@ -442,7 +442,7 @@ class Feed extends \Yana\Core\Object
      * E.g. "private", "news" aso.
      *
      * @param  array  $category  list of strings
-     * @return Feed 
+     * @return Feed
      */
     public function setCategory(array $category)
     {
@@ -466,7 +466,7 @@ class Feed extends \Yana\Core\Object
      * You may set an URL to either a CSS or XSLT file that the browser can use to render the RSS-file.
      *
      * @param  string  $css  must be a valid URL
-     * @return Feed 
+     * @return Feed
      */
     public function setCss($css)
     {
@@ -493,7 +493,7 @@ class Feed extends \Yana\Core\Object
      * You may set an URL to either a CSS or XSLT file that the browser can use to render the RSS-file.
      *
      * @param  string  $xslt  must be a valid URL
-     * @return Feed 
+     * @return Feed
      */
     public function setXslt($xslt)
     {
@@ -521,7 +521,7 @@ class Feed extends \Yana\Core\Object
     /**
      * Get RSS feed items of this channel.
      *
-     * @return \Yana\RSS\Item[] 
+     * @return \Yana\RSS\Item[]
      */
     public function getItems()
     {
