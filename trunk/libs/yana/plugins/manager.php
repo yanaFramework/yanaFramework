@@ -62,17 +62,12 @@ namespace Yana\Plugins;
  * described above. Also each plugin may abort the chain of operation at any time by either
  * returning FALSE or throwing an exception.
  *
- * @access      public
  * @name        PluginManager
  * @package     yana
  * @subpackage  plugins
  */
 class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsReportable
 {
-
-    /**#@+
-     * @access  private
-     */
 
     /**
      * This is a place-holder for the singleton's instance
@@ -101,7 +96,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * result of last handled action
      *
      * @var bool
-     * @static
      */
     private static $_lastResult = null;
 
@@ -109,7 +103,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * name of currently handled event
      *
      * @var string
-     * @static
      */
     private static $_lastEvent = "";
 
@@ -117,7 +110,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * name of initially handled event
      *
      * @var string
-     * @static
      */
     private static $_firstEvent = "";
 
@@ -125,7 +117,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * definition of next event in queue
      *
      * @var \Yana\Plugins\Configs\EventRoute
-     * @static
      */
     private static $_nextEvent = null;
 
@@ -155,7 +146,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     private $_repository = null;
 
-    /**#@-*/
     /**#@+
      * class constants
      *
@@ -167,13 +157,11 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     /**#@-*/
 
     /**
-     * get instance of this class
+     * Get instance of this class.
      *
      * Creates an instance if there is none.
      * Then it returns a reference to this (single) instance.
      *
-     * @access  public
-     * @static
      * @return  \Yana\Plugins\Manager
      */
     public static function &getInstance()
@@ -199,7 +187,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * set path configuration
+     * Set path configuration.
      *
      * The plugin configuration file contains interface-settings for all plugins.
      * The plugin directory is the place, where all plugins reside.
@@ -209,8 +197,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      *\Yana\Plugins\Manager::setPath("config/plugins.cfg", "plugins/");
      * </code>
      *
-     * @access  public
-     * @static
      * @param   string  $configurationFile  path to plugin configuration file (plugins.cfg)
      * @param   string  $pluginDirectory    path to plugin base directory
      * @throws  \Yana\Core\Exceptions\NotFoundException  when on of the given paths is invalid
@@ -231,13 +217,11 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * get path to plugin configuration file
+     * Get path to plugin configuration file.
      *
      * The plugin configuration file contains interface-settings for all plugins.
      * Returns the path relative to the application root directory.
      *
-     * @access  public
-     * @static
      * @return  string
      */
     public static function getConfigFilePath()
@@ -248,7 +232,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     /**
      * Get configuration manager.
      *
-     * @access  private
      * @return  \Yana\Plugins\Repository
      */
     private function _getRepository()
@@ -269,7 +252,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * Returns an associative array, where the keys are the plugin-names and the values are instances
      * of \Yana\Plugins\Configs\ClassConfiguration.
      *
-     * @access  public
      * @return  \Yana\Plugins\Configs\ClassCollection
      */
     public function getPluginConfigurations()
@@ -278,13 +260,11 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * get path to plugin directory
+     * Get path to plugin directory.
      *
      * The plugin directory is the place, where all plugins reside.
      * Returns the path relative to the application root directory.
      *
-     * @access  public
-     * @static
      * @return  string
      */
     public static function getPluginDirectoryPath()
@@ -293,7 +273,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * broadcast an event to all plugins
+     * Broadcast an event to all plugins.
      *
      * This function looks up an event that you provide
      * with the argument $event, and sends it to all
@@ -305,7 +285,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * the argument $ARGUMENTS, which is supposed to be
      * an associative array.
      *
-     * @access  public
      * @param   string  $event  identifier of the occured event
      * @param   array   $args   list of arguments
      * @return  mixed
@@ -352,14 +331,12 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * Get result of last action handler
+     * Get result of last action handler.
      *
      * Returns the result of the last successfully handled action.
      * Returns bool(false) if there was an error.
      * Returns NULL if no action was handled yet.
      *
-     * @access  public
-     * @static
      * @return  mixed
      */
     public static function getLastResult()
@@ -368,14 +345,12 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * Get the previously handled event
+     * Get the previously handled event.
      *
      * Returns the name of the current or previously handled event.
      *
      * If there has been no previous event, the function will return an empty string.
      *
-     * @access  public
-     * @static
      * @return  string
      */
     public static function getLastEvent()
@@ -384,13 +359,12 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * Get the initially handled event
+     * Get the initially handled event.
      *
      * Returns the name of the currently handled event.
      *
      * If there has been no previous event, the function will return an empty string.
      *
-     * @access  public
      * @return  string
      */
     public function getFirstEvent()
@@ -399,14 +373,13 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * Get the next event in queue
+     * Get the next event in queue.
      *
      * If the last action has a successor, this function returns the definition
      * of the next action in the queue.
      *
      * If there is no action, the function will return NULL.
      *
-     * @access  public
      * @return  \Yana\Plugins\Configs\EventRoute
      */
     public function getNextEvent()
@@ -427,13 +400,10 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * refresh plugin file
-     *
      * Rescan plugin directory and refresh the plugin cache.
      *
      * Returns bool(true) on sucess and bool(false) on error.
      *
-     * @access  public
      * @return  bool
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      *
@@ -460,12 +430,11 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * check if plugin is active
+     * Check if plugin is active.
      *
      * Returns bool(true) if the plugin identified by $pluginName exists
      * and is active and bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $pluginName  identifier for the plugin
      * @return  bool
      * @since   2.8.9
@@ -483,14 +452,13 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * check if plugin is active by default
+     * Check if plugin is active by default.
      *
      * A plugin that is active by default cannot be deactivated via the configuration menu.
      *
      * Returns bool(true) if the plugin identified by $pluginName exists
      * and is active and bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $pluginName  identifier for the plugin
      * @return  bool
      * @since   3.1.0
@@ -509,7 +477,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     /**
      * Activate / deactive a plugin.
      *
-     * @access  public
      * @param   string  $pluginName   identifier for the plugin to be de-/activated
      * @param   int     $state        ActivityEnumeration::INACTIVE = off, ActivityEnumeration::ACTIVE = on
      * @throws  \Yana\Core\Exceptions\NotFoundException     when no plugin with the given name is found
@@ -540,7 +507,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * name $pluginName and the name $key of the file you want.
      * This is usefull from plugins that extend the functionality of another.
      *
-     * @access  public
      * @param   string  $pluginName  identifier for the plugin
      * @param   string  $key         identifier for the file to get
      * @return  \Yana\Files\AbstractResource
@@ -563,11 +529,8 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * get a plugin's drive
+     * Access the drive of a plugin by using it's name.
      *
-     * You may access the drive of a plugin by using it's name.
-     *
-     * @access  public
      * @param   string  $name  name of plugin
      * @return  \Yana\VDrive\VDrive
      */
@@ -587,13 +550,12 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * check if a specific plugin is installed
+     * Check if a specific plugin is installed.
      *
      * This returns bool(true) if a plugin with the name
      * $pluginName exists and has currently been installed.
      * Otherwise it returns bool(false).
      *
-     * @access  public
      * @param   string  $pluginName  identifier for the plugin
      * @return  bool
      */
@@ -604,9 +566,8 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * toString
+     * Returns the plugins and their properties as plain text.
      *
-     * @access  public
      * @return  string
      *
      * @ignore
@@ -630,14 +591,13 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * get the name of the directory where plugins are installed
+     * Get the name of the directory where plugins are installed.
      *
      * This returns a string value. By default the plugin install
      * path is "plugins/". Still you should note, that you are
      * strongly encouraged to use this function rather than using
      * hard-wired pathnames in your source-code.
      *
-     * @access  public
      * @return  string
      */
     public function getPluginDir()
@@ -647,12 +607,11 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * get plugin configuration
+     * Get plugin configuration.
      *
      * Creates and returns a configuration object,
      * reflecting the implementing plugin class.
      *
-     * @access  public
      * @param   string  $pluginName   plugin name
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      * @since   3.1.0
@@ -672,12 +631,8 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * get list of plugin names
+     * Returns a numeric array with the names of all available plugins.
      *
-     * Returns a numeric array with a list of
-     * all available plugins.
-     *
-     * @access  public
      * @return  array
      * @since   3.1.0
      */
@@ -687,7 +642,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * get the type of an event
+     * Get the type of an event.
      *
      * Returns the type of the event identified by $eventName
      * as a string.
@@ -696,7 +651,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      *
      * If no such event is defined, the default value is returned.
      *
-     * @access  public
      * @param   string  $eventName  identifier of the wanted event
      * @return  string
      * @ignore
@@ -729,7 +683,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     /**
      * Get the event configuration.
      *
-     * @access  public
      * @param   string  $eventName  identifier of the wanted event
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -742,7 +695,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     /**
      * Get list of event configurations.
      *
-     * @access  public
      * @return  PluginMethodCollection
      */
     public function getEventConfigurations()
@@ -756,7 +708,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * Returns bool(true) if the given string matches the name
      * of an defined event and bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $eventName  identifier of the event
      * @return  bool
      */
@@ -769,7 +720,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     /**
      * Check if plugin is currently loaded.
      *
-     * @access  public
      * @param   string  $pluginName  identifier of the plugin to check
      * @return  bool
      */
@@ -780,9 +730,8 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * get event subscribers
+     * Get event subscribers.
      *
-     * @access  private
      * @param   string  $event  event
      * @return  array
      *
@@ -804,12 +753,10 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * _loadPlugins
-     *
      * Loads plugins from a list of names.
+     *
      * If no list is provided, all known plugins are loaded.
      *
-     * @access  private
      * @param   array  $plugins list of plugin names
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      * @ignore
@@ -826,9 +773,8 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * Load a plugin
+     * Load a plugin.
      *
-     * @access  private
      * @param   string  $name  Must be valid identifier. Consists of chars, numbers and underscores.
      * @throws  \Yana\Core\Exceptions\NotReadableException  when an existing VDrive definition is not readable
      * @ignore
@@ -896,7 +842,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * }
      * </code>
      *
-     * @access  public
      * @param   \Yana\Report\IsReport  $report  base report
      * @return  \Yana\Report\IsReport
      * @name    \Yana\Plugins\Manager::getReport()
@@ -954,7 +899,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
                                 "Please check if reference and filename for this template are correct and " .
                                 "all files have been installed correctly.");
                         } else {
-                            $subReport->addText("Template: $filename");
+                            $subReport->addText("Template: {$filename}");
                         }
                     } catch (\Yana\Core\Exceptions\NotFoundException $e) {
                         $subReport->addError("The definition of template '" . $template . "' contains errors: " .
@@ -970,8 +915,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
 
     /**
      * Reinitialize instance.
-     *
-     * @access  public
      */
     public function __wakeup()
     {
