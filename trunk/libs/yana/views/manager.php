@@ -46,27 +46,13 @@ namespace Yana\Views;
  * @package     yana
  * @subpackage  core
  */
-class Manager extends \Yana\Core\Object implements \Yana\Views\IsManager
+class Manager extends \Yana\Views\AbstractManager implements \Yana\Views\IsManager
 {
-
-    /**
-     * List of stylesheets.
-     *
-     * @var  array
-     */
-    private $_styles = array();
 
     /**
      * @var \Smarty_Internal_Template
      */
     private $_layoutTemplate = null;
-
-    /**
-     * List of script files.
-     *
-     * @var  array
-     */
-    private $_scripts = array();
 
     /**
      * global Smarty instance
@@ -224,78 +210,6 @@ class Manager extends \Yana\Core\Object implements \Yana\Views\IsManager
             assert('is_string(self::$_cacheId) && !empty(self::$_cacheId); // failure calculating cache id');
         }
         return self::$_cacheId;
-    }
-
-    /**
-     * Add path to CSS stylesheet file.
-     *
-     * @param  string  $file  path and file name
-     * @return \Yana\Views\Manager
-     */
-    public function addStyle($file)
-    {
-        assert('is_string($file); // Wrong argument type argument 1. String expected');
-        $this->_styles[] = "$file";
-        return $this;
-    }
-
-    /**
-     * Add path to javascript file.
-     *
-     * @param  string  $file  path and file name
-     * @return \Yana\Views\Manager
-     */
-    public function addScript($file)
-    {
-        assert('is_string($file); // Wrong argument type argument 1. String expected');
-        $this->_scripts[] = "$file";
-        return $this;
-    }
-
-    /**
-     * Add multiple CSS files.
-     *
-     * @param  array  $files  path and file names
-     * @return \Yana\Views\Manager
-     */
-    public function addStyles(array $files)
-    {
-        $this->_styles = array_merge($this->_styles, $files);
-        $this->_styles = array_unique($this->_styles);
-        return $this;
-    }
-
-    /**
-     * Add multiple JavaScript files.
-     *
-     * @param  array  $files  path and file names
-     * @return \Yana\Views\Manager
-     */
-    public function addScripts(array $files)
-    {
-        $this->_scripts = array_merge($files, $this->_scripts);
-        $this->_scripts = array_unique($this->_scripts);
-        return $this;
-    }
-
-    /**
-     * Returns list of paths to CSS stylesheets.
-     *
-     * @return  array
-     */
-    public function getStyles()
-    {
-        return $this->_styles;
-    }
-
-    /**
-     * Returns list of paths to javascript files.
-     *
-     * @return  array
-     */
-    public function getScripts()
-    {
-        return $this->_scripts;
     }
 
     /**
