@@ -195,7 +195,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
      */
     protected function isSafemode()
     {
-        if (!isset($this->isSafemode)) {
+        if (!isset($this->_isSafemode)) {
             $eventConfiguration = $this->getPlugins()->getEventConfiguration($this->_getAction());
             if ($eventConfiguration instanceof \Yana\Plugins\Configs\MethodConfiguration) {
                 $this->_isSafeMode = ($eventConfiguration->getSafemode() === true);
