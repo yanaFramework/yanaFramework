@@ -119,8 +119,8 @@ class Manager extends \Yana\Core\Object implements \Yana\Views\IsManager
             }
         }
 
-        $template = $this->_createTemplate($filename);
-        $template->assign($templateVars); // Initialize template variables
+        $internalTemplate = $this->_createTemplate($filename);
+        $internalTemplate->assign($templateVars); // Initialize template variables
 
         if ($isAjaxRequest) {
             if (headers_sent() === false) {
@@ -130,15 +130,15 @@ class Manager extends \Yana\Core\Object implements \Yana\Views\IsManager
              * For AJAX-Requests we leave off the layout and just output the template's body-tag (if any).
              * This is done by the output post-processor that will look for the $FILE_IS_INCLUDE flag.
              */
-            $template->assign('FILE_IS_INCLUDE', true);
+            $internalTemplate->assign('FILE_IS_INCLUDE', true);
         }
-        $template->assign('SYSTEM_TEMPLATE', $filename);
-        $template->assign('SYSTEM_INSERT', $mainContentTemplateName);
+        $internalTemplate->assign('SYSTEM_TEMPLATE', $filename);
+        $internalTemplate->assign('SYSTEM_INSERT', $mainContentTemplateName);
 
-        $this->_layoutTemplate = $template;
-        $template = new \Yana\Views\Template($this->_layoutTemplate);
-        $template->setVar('BASEDIR', dirname($template->getPath()));
-        return $template;
+        $this->_layoutTemplate = $internalTemplate;
+        $wrappedTemplate = new \Yana\Views\Template($this->_layoutTemplate);
+        $wrappedTemplate->setVar('BASEDIR', dirname($wrappedTemplate->getPath()));
+        return $wrappedTemplate;
     }
 
     /**
@@ -154,10 +154,10 @@ class Manager extends \Yana\Core\Object implements \Yana\Views\IsManager
     {
         assert('is_string($filename); // Invalid argument $filename: string expected');
 
-        $template = $this->_createTemplate($filename, $this->_layoutTemplate);
-        $template = new \Yana\Views\Template($template);
-        $template->setVar('BASEDIR', dirname($template->getPath()));
-        return $template;
+        $internalTemplate = $this->_createTemplate($filename, $this->_layoutTemplate);
+        $wrappedTemplate = new \Yana\Views\Template($internalTemplate);
+        $wrappedTemplate->setVar('BASEDIR', dirname($wrappedTemplate->getPath()));
+        return $wrappedTemplate;
     }
 
     /**
