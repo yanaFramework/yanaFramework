@@ -30,7 +30,6 @@ namespace Yana\Forms;
 /**
  * <<facade>> Form wrapper base class.
  *
- * @access      public
  * @package     yana
  * @subpackage  form
  * @ignore
@@ -41,7 +40,6 @@ class Facade extends \Yana\Core\Object
     /**
      * List of sub-forms.
      *
-     * @access  private
      * @var     array
      */
     private $_forms = array();
@@ -49,7 +47,6 @@ class Facade extends \Yana\Core\Object
     /**
      * List of searchable fields.
      *
-     * @access  private
      * @var     \Yana\Forms\Fields\FacadeCollection
      */
     private $_searchForm = null;
@@ -57,7 +54,6 @@ class Facade extends \Yana\Core\Object
     /**
      * List of updatable fields.
      *
-     * @access  private
      * @var     \Yana\Forms\Fields\FacadeCollection
      */
     private $_updateForm = null;
@@ -65,7 +61,6 @@ class Facade extends \Yana\Core\Object
     /**
      * List of insertable fields.
      *
-     * @access  private
      * @var     \Yana\Forms\Fields\FacadeCollection
      */
     private $_insertForm = null;
@@ -73,7 +68,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Base table.
      *
-     * @access  private
      * @var     \Yana\Db\Ddl\Table
      */
     private $_table = null;
@@ -81,7 +75,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Form definition
      *
-     * @access  private
      * @var     \Yana\Db\Ddl\Form
      */
     private $_form = null;
@@ -89,7 +82,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Form setup
      *
-     * @access  private
      * @var     \Yana\Forms\Setup
      */
     private $_setup = null;
@@ -99,15 +91,12 @@ class Facade extends \Yana\Core\Object
      *
      * Leave blank if it is a root element.
      *
-     * @access  private
      * @var     \Yana\Forms\Facade
      */
     private $_parent = null;
 
     /**
      * create new instance
-     *
-     * @access  public
      */
     public function __construct()
     {
@@ -117,7 +106,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Relay function call to wrapped object.
      *
-     * @access  public
      * @param   string  $name       method name
      * @param   array   $arguments  list of arguments to pass to function
      * @return  mixed
@@ -138,7 +126,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Add a form element.
      *
-     * @access  public
      * @param   \Yana\Db\Ddl\Form  $form  new form that will be wrapped
      * @return  \Yana\Forms\Facade
      */
@@ -152,7 +139,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Returns the sub-form as a FormFacade element.
      *
-     * @access  public
      * @param   string  $name  name of requested sub-form.
      * @return  \Yana\Forms\Facade
      */
@@ -166,7 +152,6 @@ class Facade extends \Yana\Core\Object
      *
      * This allows to access the underlying form directly, instead of using the facade.
      *
-     * @access  public
      * @return  \Yana\Db\Ddl\Form
      */
     public function getBaseForm()
@@ -177,7 +162,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Set form object.
      *
-     * @access  public
      * @param   \Yana\Db\Ddl\Form  $form  configuring the contents of the form
      * @return  \Yana\Forms\Facade
      */
@@ -196,7 +180,6 @@ class Facade extends \Yana\Core\Object
      * The result may be null, if there is no parent at all.
      * Check the result object!
      *
-     * @access  public
      * @return  \Yana\Forms\Facade
      */
     public function getParent()
@@ -210,7 +193,6 @@ class Facade extends \Yana\Core\Object
      * If the current form is a child element, this will point to it's parent.
      * Set to NULL if it is a root element and there is no parent.
      *
-     * @access  public
      * @param   \Yana\Forms\Facade  $parentForm  configuring the contents of the parent form
      * @return  \Yana\Forms\Facade
      */
@@ -223,7 +205,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Get the setup configuration of this form.
      *
-     * @access  public
      * @return  \Yana\Forms\Setup
      */
     public function getSetup()
@@ -234,7 +215,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Set form setup.
      *
-     * @access  public
      * @param   \Yana\Forms\Setup  $setup  configuring the behavior of the form
      * @return  \Yana\Forms\Facade
      */
@@ -247,7 +227,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Returns an array of sub-forms as FormFacade elements.
      *
-     * @access  public
      * @return  array 
      */
     public function getForms()
@@ -261,7 +240,6 @@ class Facade extends \Yana\Core\Object
      * Returns bool(true) if the form has embedded sub-forms and at least one of them has an insert action.
      * Returns bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function hasInsertableChildren()
@@ -282,7 +260,6 @@ class Facade extends \Yana\Core\Object
      * Returns bool(true) if the form has embedded sub-forms and at least one of them has an update action.
      * Returns bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function hasUpdatableChildren()
@@ -303,7 +280,6 @@ class Facade extends \Yana\Core\Object
      * Returns bool(true) if the form has embedded sub-forms and at least one of them has a search action.
      * Returns bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function hasSearchableChildren()
@@ -321,7 +297,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Get searchable form.
      *
-     * @access  public
      * @return  \Yana\Forms\ContextSensitiveWrapper
      */
     public function getSearchForm()
@@ -336,7 +311,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Get updatable form.
      *
-     * @access  public
      * @return  \Yana\Forms\ContextSensitiveWrapper
      */
     public function getUpdateForm()
@@ -351,7 +325,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Get insertable form.
      *
-     * @access  public
      * @return  \Yana\Forms\ContextSensitiveWrapper
      */
     public function getInsertForm()
@@ -368,7 +341,6 @@ class Facade extends \Yana\Core\Object
      *
      * This returns an array of values entered in the update form.
      *
-     * @access  public
      * @return  array
      */
     public function getUpdateValues()
@@ -381,7 +353,6 @@ class Facade extends \Yana\Core\Object
      *
      * This returns an array of values entered in the insert form.
      *
-     * @access  public
      * @return  array
      */
     public function getInsertValues()
@@ -394,7 +365,6 @@ class Facade extends \Yana\Core\Object
      *
      * This returns an array of values entered in the search form.
      *
-     * @access  protected
      * @return  array
      */
     public function getSearchValues()
@@ -408,7 +378,6 @@ class Facade extends \Yana\Core\Object
      * Each form definition must be linked to a table in the same database.
      * This function looks it up and returns this definition.
      *
-     * @access  public
      * @return  \Yana\Db\Ddl\Table
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the database, or table was not found
      */
@@ -441,7 +410,6 @@ class Facade extends \Yana\Core\Object
      *
      * It is optional. If it is not set, the function returns NULL instead.
      *
-     * @access  public
      * @return  string
      */
     public function getTitle()
@@ -452,6 +420,7 @@ class Facade extends \Yana\Core\Object
                 $title = $this->getTable()->getTitle();
             } catch (\Exception $e) {
                 $title = $this->_form->getName(); // fall back to name if table does not exist
+                unset($e);
             }
         }
         return $title;
@@ -459,8 +428,7 @@ class Facade extends \Yana\Core\Object
 
     /**
      * Convert to HTML code.
-     * 
-     * @access  public
+     *
      * @return  string
      */
     public function __toString()
