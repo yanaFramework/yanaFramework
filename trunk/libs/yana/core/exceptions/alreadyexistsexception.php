@@ -33,7 +33,6 @@ namespace Yana\Core\Exceptions;
  * Thrown when you try to add an item, but another item of the same name does
  * already exist.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */
