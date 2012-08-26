@@ -49,9 +49,7 @@ abstract class AbstractException extends \Exception
     /**
      * Message queue
      *
-     * @access  protected
-     * @static
-     * @var     array
+     * @var  array
      * @ignore
      */
     protected static $queue = array();
@@ -62,7 +60,6 @@ abstract class AbstractException extends \Exception
      * Any kind of data that might help to understand the context
      * in which the message was created.
      *
-     * @access  protected
      * @var     mixed
      * @ignore
      */
@@ -71,7 +68,6 @@ abstract class AbstractException extends \Exception
     /**
      * message header text
      *
-     * @access  protected
      * @var     string
      * @ignore
      */
@@ -80,15 +76,12 @@ abstract class AbstractException extends \Exception
     /**
      * a descriptive message text
      *
-     * @access  protected
      * @var     string
      * @ignore
      */
     protected $text = null;
 
     /**
-     * constructor
-     *
      * Create a new instance, representing a system message.
      *
      * @param  string      $message   the message that should be reported
@@ -114,8 +107,6 @@ abstract class AbstractException extends \Exception
      * Returns the message queue as an array of objets of type Message.
      * The list is sorted in order of creation of the messages.
      *
-     * @access  public
-     * @static
      * @return  array
      */
     public static function getMessages()
@@ -130,8 +121,6 @@ abstract class AbstractException extends \Exception
      * Returns the number of messages in the message queue.
      * If the queue is empty, 0 is returned.
      *
-     * @access  public
-     * @static
      * @return  int
      */
     public static function countMessages()
@@ -145,8 +134,6 @@ abstract class AbstractException extends \Exception
      *
      * Returns given context data (where available).
      *
-     * @access  public
-     * @final
      * @return  mixed
      */
     final public function getData()
@@ -170,7 +157,6 @@ abstract class AbstractException extends \Exception
      * throw $error;
      * </code>
      *
-     * @access  public
      * @param   mixed  $data  context data
      * @return  \Yana\Core\Exceptions\AbstractException
      */
@@ -183,7 +169,6 @@ abstract class AbstractException extends \Exception
     /**
      * set message header
      *
-     * @access  protected
      * @param   string  $header  headline
      * @return  \Yana\Core\Exceptions\AbstractException
      * @ignore
@@ -198,7 +183,6 @@ abstract class AbstractException extends \Exception
     /**
      * set message text
      *
-     * @access  protected
      * @param   string  $text  descriptive text
      * @return  \Yana\Core\Exceptions\AbstractException
      * @ignore
@@ -217,8 +201,7 @@ abstract class AbstractException extends \Exception
      * containing the text in the message attribute and a serialized
      * representation of the data attribute.
      *
-     * @access public
-     * @return string
+     * @return  string
      */
     public function __toString()
     {
@@ -231,7 +214,6 @@ abstract class AbstractException extends \Exception
      * Returns the message headline (if any).
      * If there is none, an empty string is returned.
      *
-     * @access  public
      * @return  string
      */
     public function getHeader()
@@ -264,7 +246,6 @@ abstract class AbstractException extends \Exception
      * Returns the message text (if any).
      * If there is none, an empty string is returned.
      *
-     * @access  public
      * @return  string
      */
     public function getText()
