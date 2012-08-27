@@ -272,11 +272,21 @@ abstract class AbstractContext extends \Yana\Core\Object
             $text = wordwrap($text, 70);
         } elseif (preg_match('/^text\/html/i', $contentType)) {
             // basically all except form tags, images, frames, header tags and script elements
-            $allowableTags = array(
-                'a', 'abbr', 'acronym', 'address', 'b', 'big', 'br', 'blockquote', 'caption', 'center', 'cite', 'code', 'col',
-                'colgroup', 'dd', 'del', 'dfn', 'dir', 'div', 'dl', 'dt', 'em', 'font', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-                'hr', 'i', 'ins', 'kbd', 'li', 'ol', 'p', 'pre', 'q', 'samp', 'small', 'span', 'strong', 'sub', 'sup',
-                'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'tt');
+            $allowableTags = '<a>,<abbr>,<acronym>,<address>,' .
+                '<b>,<big>,<br>,<blockquote>,' .
+                '<caption>,<center>,<cite>,<code>,<col>,<colgroup>,' .
+                '<dd>,<del>,<dfn>,<dir>,<div>,<dl>,<dt>,' .
+                '<em>,' .
+                '<font>,' .
+                '<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,' .
+                '<i>,<ins>,' .
+                '<kbd>,' .
+                '<li>,' .
+                '<ol>,' .
+                '<p>,<pre>,' .
+                '<q>,' .
+                '<samp>,<small>,<span>,<strong>,<sub>,<sup>' .
+                '<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<tr>,<tt>';
             $text = \strip_tags($text, $allowableTags);
         }
         return $text;
