@@ -35,7 +35,7 @@ namespace Yana\Mails\Headers;
  * @package     yana
  * @subpackage  mails
  */
-interface IsHeader
+interface IsHeader extends \Yana\Core\IsCollection
 {
 
     /**

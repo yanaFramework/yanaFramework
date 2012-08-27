@@ -28,31 +28,29 @@
 namespace Yana\Mails;
 
 /**
- * <<facade>> Create and send mails from form data.
+ * Create and send mails based on templates.
  *
  * @package     yana
  * @subpackage  mails
  */
-class FormMailer extends \Yana\Mails\AbstractMailerFacade
+class TemplateMailer extends \Yana\Mails\AbstractMailerFacade
 {
 
     /**
-     * @var \Yana\Mails\Messages\FormMessage
+     * @var \Yana\Mails\Messages\TemplateMessage
      */
     private $_message = null;
 
     /**
      * Create new mailer facade.
      *
-     * @param  \Yana\Mails\Strategies\Contexts\IsContext  $context  a callable class used to send e-mails
-     * @param  \Yana\Mails\Messages\FormMessage           $message  the mail's properties
+     * @param  \Yana\Views\IsTemplate                     $template  the mail contents
+     * @param  \Yana\Mails\Strategies\Contexts\IsContext  $context   a callable class used to send e-mails
      */
-    public function __construct(\Yana\Mails\Strategies\Contexts\IsContext $context = null,
-        \Yana\Mails\Messages\FormMessage $message = null)
+    public function __construct(\Yana\Views\IsTemplate $template,
+        \Yana\Mails\Strategies\Contexts\IsContext $context = null)
     {
-        if (is_null($message)) {
-            $message = new \Yana\Mails\Messages\FormMessage();
-        }
+        $message = new \Yana\Mails\Messages\TemplateMessage($template);
         if (is_null($context)) {
             $strategy = new \Yana\Mails\Strategies\NativeStrategy();
             $context = new \Yana\Mails\Strategies\Contexts\UserInputContext($strategy);
@@ -64,10 +62,10 @@ class FormMailer extends \Yana\Mails\AbstractMailerFacade
     /**
      * Set up the message properties.
      *
-     * @param   \Yana\Mails\Messages\FormMessage  $message  the message settings
+     * @param   \Yana\Mails\Messages\TemplateMessage  $message  the message settings
      * @return  \Yana\Mails\FormMailer
      */
-    protected function _setMessage(\Yana\Mails\Messages\FormMessage $message)
+    protected function _setMessage(\Yana\Mails\Messages\TemplateMessage $message)
     {
         $this->_message = $message;
         return $this;
@@ -76,7 +74,7 @@ class FormMailer extends \Yana\Mails\AbstractMailerFacade
     /**
      * Returns the message properties.
      *
-     * @return  \Yana\Mails\Messages\FormMessage
+     * @return  \Yana\Mails\Messages\TemplateMessage
      */
     protected function _getMessage()
     {
@@ -88,17 +86,17 @@ class FormMailer extends \Yana\Mails\AbstractMailerFacade
      *
      * @param   string  $recipient  mail address
      * @param   string  $subject    one line of short description
-     * @param   array   $formData   some form data
+     * @param   array   $vars       data to pass to the template
      * @param   array   $headers    additional mail headers
      * @return  bool
      */
-    public function send($recipient, $subject, array $formData, array $headers = array())
+    public function send($recipient, $subject, array $vars, array $headers = array())
     {
         $headerCollection = new \Yana\Mails\Headers\MailHeaderCollection();
         $headerCollection->setItems($headers);
 
         $message = $this->_getMessage();
-        $message->composeTextFromFormData($subject, $formData)
+        $message->setVars($vars)
             ->setRecipient($recipient)
             ->setSubject($subject)
             ->setHeaders($headerCollection);

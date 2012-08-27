@@ -53,7 +53,7 @@ class TrustedInputContext extends \Yana\Mails\Strategies\Contexts\AbstractContex
         $recipient = $message->getRecipient();
         $subject = $message->getSubject();
         $text = $message->getText();
-        $headers = $message->getHeaders();
+        $headers = $message->getHeaders()->toArray();
 
         $mailFunction = $this->_getMailingStrategy();
         return (bool) $mailFunction($recipient, $subject, $text, $headers);

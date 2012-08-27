@@ -59,7 +59,7 @@ class Message extends \Yana\Core\Object implements \Yana\Mails\Messages\IsMessag
     /**
      * Get the currently selected additional headers.
      *
-     * @return  array
+     * @return  \Yana\Mails\Headers\IsHeader
      */
     public function getHeaders()
     {
@@ -69,10 +69,10 @@ class Message extends \Yana\Core\Object implements \Yana\Mails\Messages\IsMessag
     /**
      * Set additional headers.
      *
-     * @param   array  $headers  key is header name, value is header value
+     * @param   \Yana\Mails\Headers\IsHeader  $headers  key is header name, value is header value
      * @return  \Yana\Mails\Messages\IsMessage
      */
-    public function setHeaders(array $headers)
+    public function setHeaders(\Yana\Mails\Headers\IsHeader $headers)
     {
         $this->_headers = $headers;
         return $this;

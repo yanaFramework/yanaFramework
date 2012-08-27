@@ -41,19 +41,14 @@ class FormMailerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    FormMailer
+     * @var    \Yana\Mails\FormMailer
      */
     protected $object;
+
     /**
-     * sammelt die Maileinträge
-     *
-     * @var    mails
+     * @var    \Yana\Mails\Strategies\NullStrategy
      */
-    protected $mails = array();
-    /**
-     * @var    string
-     */
-    protected $backupMailHandler;
+    protected $strategy;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -61,36 +56,18 @@ class FormMailerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new FormMailer();
-        $this->backupMailHandler = Mailer::getGlobalMailHandler();
-        Mailer::setGlobalMailHandler(array($this, 'sendMail'));
+        $this->strategy = new \Yana\Mails\Strategies\NullStrategy();
+        $context = new \Yana\Mails\Strategies\Contexts\UserInputContext($this->strategy);
+        $this->object = new \Yana\Mails\FormMailer($context);
     }
 
     /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Mails\InvalidMailException
      */
-    protected function tearDown()
+    public function testException()
     {
-        Mailer::setGlobalMailHandler($this->backupMailHandler);
-    }
-
-    /**
-     * Dummy send mail function
-     *
-     * Protocols any function call to check whether mail input vars are correct.
-     *
-     * @param   string  $to
-     * @param   string  $subject
-     * @param   string  $message
-     * @param   string  $additionalHeaders
-     * @param   string  $additionalParameters
-     * @return  bool
-     */
-    public function sendMail($to, $subject, $message, $additionalHeaders = "", $additionalParameters = "")
-    {
-        $this->mails[] = func_get_args();
-        return true;
+        $this->object->send("invalid", "", array());
     }
 
     /**
@@ -100,75 +77,16 @@ class FormMailerTest extends \PHPUnit_Framework_TestCase
      */
     public function testSend()
     {
-        $this->object->setContent(array('Test'));
+        $formData = array("a" => "b", "c" => 1, 2 => "d");
 
-        // Test Exception Number as Recipient
-        try {
-            $result = $this->object->send(1);
-            $this->fail("FormMailer should not accept a number as recipient.");
-        } catch (\Exception $e) {
-            // success
-        }
-
-        // Test exception empty as recipient
-        try {
-            $result = $this->object->send("");
-            $this->fail("FormMailer should not accept an empty recipient.");
-        } catch (\Exception $e) {
-            // success
-        }
-
-        // Test empty content
-        $this->object->setContent(array());
-        $result = true;
-        try {
-            $result = $this->object->send("mail@domain.tld");
-        } catch (\Exception $e) {
-            $this->fail("Unexpected exception: " . $e->getMessage());
-        }
-        $this->assertFalse($result, "FormMailer should not accept an empty Content");
-
-        // wrong Element Type 'Object'
-        $this->object->setContent(array("test" => new \Yana\Core\Object()));
-        try {
-            $this->object->send("mail@domain.tld");
-            $this->fail("FormMailer should only accept scalar values or arrays as content-elements.");
-        } catch (\Exception $e) {
-            $expectedNoticeString = $e->getMessage();
-            $this->assertRegExp('/Invalid form data/i', $expectedNoticeString, "FormMailer should only accept scalar values or arrays in form fields.");
-        }
-
-        // äöüß are no illegal Character
-        $this->object->setContent(array("äöüß" => "aaa"));
-        try {
-            $this->object->send("mail@domain.tld");
-        } catch (\Exception $e) {
-            $this->fail("FormMailer should accept Umlaut characters in keys");
-        }
-
-        // illegal Characters in the Key
-        // should throw a Notice
-        $this->object->setContent(array(iconv("", "UTF-8", "áéí") => "aaa"));
-        $expectedNoticeString = "";
-        try {
-            $this->object->send("mail@domain.tld");
-            $this->fail("FormMailer should not accept special characters in keys.");
-        } catch (\Exception $e) {
-            $expectedNoticeString = $e->getMessage();
-            $this->assertRegExp('/Invalid form data/i', $expectedNoticeString, "FormMailer should not accept special characters in keys.");
-        }
-
-        $this->object->setContent(array("a" => "b", "c" => 1, 2 => "d"))
-            ->setSubject("mySubject")
-            ->setHeadline("myHeadline");
-        $result = $this->object->send("mail@domain.tld");
+        $result = $this->object->send("mail@domain.tld", "mySubject", $formData);
         $this->assertTrue($result, "Mail has not been sent.");
 
-        $lastMail = array_pop($this->mails);
+        $mails = $this->strategy->getMails();
+        $lastMail = array_pop($mails);
         $this->assertRegExp("/a:\s*b/", $lastMail[2], "Formmailer has lost some data, or data is not retrievable");
         $this->assertRegExp("/c:\s*1/", $lastMail[2], "Formmailer has lost some data, or data is not retrievable");
         $this->assertRegExp("/2:\s*d/", $lastMail[2], "Formmailer has lost some data, or data is not retrievable");
-        $this->assertRegExp("/charset\s*=\s*UTF\-8/i", $lastMail[3], "Formmailer should send UTF-8, if not stated otherwise");
     }
 
 }

@@ -101,13 +101,27 @@ abstract class AbstractContext extends \Yana\Core\Object
     /**
      * Restricts all headers.
      *
-     * Allowed headers are "cc", "return-path", "from", "content-type", "mime-type", "content-transfer-encoding",
-     * "x-mailer", "x-sender-ip", "x-server-time", "x-yana-php-header-protection" and "x-yana-php-spam-protection".
+     * Allowed headers are:
+     * "cc",
+     * "bcc",
+     * "return-path",
+     * "reply-to",
+     * "from",
+     * "sender",
+     * "importance",
+     * "content-type",
+     * "date",
+     * "mime-type",
+     * "content-transfer-encoding",
+     * "x-priority",
+     * "x-mailer",
+     * "x-sender-ip",
+     * "x-server-time",
+     * "x-yana-php-header-protection".
      *
      * Any other header found will be dropped.
      * When a header is dropped, a header value for "x-yana-php-header-protection" is added.
-     * When a "bcc" header is found, a header value for "x-yana-php-spam-protection" is added.
-     * These are added to aid spam-filters.
+     * This is added to aid spam-filters.
      *
      * @param   array  $headers  key-value pairs of mail headers
      * @return  array
@@ -123,33 +137,36 @@ abstract class AbstractContext extends \Yana\Core\Object
             switch ($key)
             {
                 case 'cc':
-                    $restrictedHeaders['cc'] = "";
+                case 'bcc':
+                case 'reply-to':
+                    $restrictedHeaders[$key] = "";
 
-                    assert('!isset($ccValue); /* cannot redeclare variable $ccValue */');
-                    foreach ((array) $value as $ccValue)
+                    assert('!isset($mail); /* cannot redeclare variable $mail */');
+                    foreach ((array) $value as $mail)
                     {
-                        if (filter_var($ccValue, FILTER_VALIDATE_EMAIL)) {
-                            if (!empty($restrictedHeaders['cc'])) {
-                                $restrictedHeaders['cc'] .= "; ";
+                        if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
+                            if (!empty($restrictedHeaders[$key])) {
+                                $restrictedHeaders[$key] .= "; ";
                             }
-                            $restrictedHeaders['cc'] .= $ccValue;
+                            $restrictedHeaders[$key] .= $mail;
                         }
                     } /* end foreach */
-                    unset($ccValue);
-                    break;
-                case 'bcc':
-                    /* bcc is not allowed! */
-                    $spamProtection = '1 (bcc is not allowed in mail - recipients were dropped)';
-                    $restrictedHeaders['x-yana-php-spam-protection'] = $spamProtection;
+                    unset($mail);
                     break;
                 case 'return-path':
-                    if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                        $restrictedHeaders['return-path'] = "$value";
-                    }
-                    break;
+                case 'sender':
                 case 'from':
                     if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                        $restrictedHeaders['from'] = "$value";
+                        $restrictedHeaders[$key] = "$value";
+                    }
+                    break;
+                case 'importance':
+                    switch (strtolower($value))
+                    {
+                        case 'high':
+                        case 'normal':
+                        case 'low':
+                            $restrictedHeaders[$key] = "$value";
                     }
                     break;
                 case 'content-type':
@@ -167,11 +184,12 @@ abstract class AbstractContext extends \Yana\Core\Object
                         $restrictedHeaders['content-transfer-encoding'] = "$value";
                     }
                     break;
+                case 'date':
+                case 'x-priority':
                 case 'x-mailer':
                 case 'x-sender-ip':
                 case 'x-server-time':
                 case 'x-yana-php-header-protection':
-                case 'x-yana-php-spam-protection':
                     $restrictedHeaders[$key] = "$value";
                     break;
                 default:
@@ -215,8 +233,8 @@ abstract class AbstractContext extends \Yana\Core\Object
             'x-server-time' => date("c", time()),
             'content-type' => 'text/plain; charset=UTF-8',
             'mime-version' => '1.0',
-            'x-yana-php-header-protection' => '0 (no suspicious header found)',
-            'x-yana-php-spam-protection' => '0 (no recipients were dropped)'
+            'date' => \date('r'),
+            'x-yana-php-header-protection' => '0 (no suspicious header found)'
         );
 
         return $headers + $defaultHeaders;

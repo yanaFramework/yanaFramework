@@ -39,17 +39,17 @@ interface IsMessage
     /**
      * Get the currently selected additional headers.
      *
-     * @return  array
+     * @return  \Yana\Mails\Headers\IsHeader
      */
     public function getHeaders();
 
     /**
      * Set additional headers.
      *
-     * @param   array  $headers  key is header name, value is header value
+     * @param   \Yana\Mails\Headers\IsHeader  $headers  key is header name, value is header value
      * @return  \Yana\Mails\Messages\IsMessage
      */
-    public function setHeaders(array $headers);
+    public function setHeaders(\Yana\Mails\Headers\IsHeader $headers);
 
     /**
      * Get the subject line of the e-mail.

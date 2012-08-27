@@ -66,14 +66,9 @@ class UserInputContext extends \Yana\Mails\Strategies\Contexts\AbstractContext
      * </code>
      *
      * <ul>
-     * <li>
-     * Note that for security reasons the $header parameter does not
-     * allow recipients to be defined using 'bcc'. You should use 'cc'
-     * instead.
-     * </li>
      *
      * <li>
-     * Also note that the default encoding for mails to send via this method
+     * Note that the default encoding for mails to send via this method
      * is plain text in UTF-8. You may change this via the $header var 'content-type'.
      * </li>
      *
@@ -119,7 +114,7 @@ class UserInputContext extends \Yana\Mails\Strategies\Contexts\AbstractContext
         $recipient = $message->getRecipient();
         $subject = $message->getSubject();
         $text = $message->getText();
-        $headers = $message->getHeaders();
+        $headers = $message->getHeaders()->toArray();
 
         if (!filter_var($recipient, \FILTER_VALIDATE_EMAIL)) {
             $message = "Cannot send an e-mail without a valid recipient.";
