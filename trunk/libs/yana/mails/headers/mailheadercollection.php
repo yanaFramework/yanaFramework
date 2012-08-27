@@ -65,6 +65,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
     {
         $this['x-priority'] = '1 (Highest)'; // Proprietary
         $this['importance'] = 'High'; // RFC 4021
+        return $this;
     }
 
     /**
@@ -76,6 +77,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
     {
         $this['x-priority'] = '3 (Normal)'; // Proprietary
         $this['importance'] = 'Normal'; // RFC 4021
+        return $this;
     }
 
     /**
@@ -87,6 +89,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
     {
         $this['x-priority'] = '5 (Lowest)'; // Proprietary
         $this['importance'] = 'Low'; // RFC 4021
+        return $this;
     }
 
     /**
@@ -181,7 +184,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      */
     public function getReplyAddresses()
     {
-        return (array) (isset($this['reply-to'])) ? $this['reply-to'] : array();
+        return (array) $this['reply-to'];
     }
 
     /**
@@ -206,7 +209,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      */
     public function getFromAddress()
     {
-        return (isset($this['from'])) ? $this['from'] : "";
+        return (string) $this['from'];
     }
 
     /**
@@ -228,7 +231,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      */
     public function getCcAddresses()
     {
-        return (array) (isset($this['cc'])) ? $this['cc'] : array();
+        return (array) $this['cc'];
     }
 
     /**
@@ -253,7 +256,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      */
     public function getBccAddresses()
     {
-        return (array) (isset($this['bcc'])) ? $this['bcc'] : array();
+        return (array) $this['bcc'];
     }
 
     /**
@@ -274,7 +277,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      */
     public function isHtml()
     {
-        $isHtml = isset($this['content-type']) && preg_match('/^text/html/i', $this['content-type']);
+        $isHtml = isset($this['content-type']) && preg_match('/^text\/html/i', $this['content-type']);
         return $isHtml;
     }
 
@@ -298,7 +301,7 @@ class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yan
      */
     public function isPlainText()
     {
-        $isText = !isset($this['content-type']) || preg_match('/^text/plain/i', $this['content-type']);
+        $isText = !isset($this['content-type']) || preg_match('/^text\/plain/i', $this['content-type']);
         return $isText;
     }
 
