@@ -33,7 +33,7 @@ namespace Yana\Mails\Headers;
  * @package     yana
  * @subpackage  mails
  */
-class MailHeader extends \Yana\Core\AbstractCollection implements \Yana\Mails\Headers\IsHeader
+class MailHeaderCollection extends \Yana\Core\AbstractCollection implements \Yana\Mails\Headers\IsHeader
 {
 
     /**
