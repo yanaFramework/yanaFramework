@@ -55,9 +55,12 @@ class NullTemplate extends \Yana\Core\Object implements \Yana\Views\IsTemplate
      */
     public function fetch()
     {
+        $path = $this->getPath();
         $string = "";
-        if (is_file($this->getPath())) {
-            $string = \file_get_contents($this->getPath());
+        if (is_file($path)) {
+            $string = \file_get_contents($path);
+        } elseif (preg_match('/^string:/', $path)) {
+            $string = preg_replace('/^string:/', '', $path);
         }
         return $string;
     }
@@ -90,7 +93,7 @@ class NullTemplate extends \Yana\Core\Object implements \Yana\Views\IsTemplate
      */
     public function getVar($key)
     {
-        return @$this->_vars[$key];
+        return (isset($this->_vars[$key])) ? $this->_vars[$key] : null;
     }
 
     /**
