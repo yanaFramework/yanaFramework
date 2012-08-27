@@ -60,6 +60,63 @@ class UserInputContextTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($message->getHeaders()->offsetGet('importance'), $actualHeaders['importance']);
     }
 
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Mails\InvalidMailException
+     */
+    public function testInvokeInvalidMailException()
+    {
+        $message = new \Yana\Mails\Messages\Message();
+        $message->setSubject('Valid subject')
+            ->setRecipient('invalid mail')
+            ->setText('Valid text');
+        $this->object->__invoke($message);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Mails\MissingSubjectException
+     */
+    public function testInvokeMissingSubjectException()
+    {
+        $message = new \Yana\Mails\Messages\Message();
+        $message->setSubject("\n\r\f")
+            ->setRecipient('valid@mail.tld')
+            ->setText('Valid text');
+        $this->object->__invoke($message);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\Mails\MissingTextException
+     */
+    public function testInvokeMissingTextException()
+    {
+        $message = new \Yana\Mails\Messages\Message();
+        $message->setSubject('Valid subject')
+            ->setRecipient('valid@mail.tld')
+            ->setText('');
+        $this->object->__invoke($message);
+    }
+
+    /**
+     * @test
+     */
+    public function testInvokeHtml()
+    {
+        $message = new \Yana\Mails\Messages\Message();
+        $message->setSubject('Valid subject')
+            ->setRecipient('valid@mail.tld')
+            ->setText('<b>Good Tag</b><script>Bad Tag</script>@')
+            ->getHeaders()->setAsHtml();
+        $this->object->__invoke($message);
+
+        $expectedArgument = '<b>Good Tag</b>Bad Tag[at]';
+        $mails = $this->strategy->getMails();
+        $actualArguments = array_pop($mails);
+        $this->assertEquals($expectedArgument, $actualArguments[2]);
+    }
+
 }
 
 ?>
