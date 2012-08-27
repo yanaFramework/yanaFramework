@@ -207,6 +207,18 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
     }
 
     /**
+     * Creates a new form mailer and returns it.
+     *
+     * @return  \Yana\Mails\FormMailer
+     *
+     * @internal Override this method in unit-tests to inject a null mailer.
+     */
+    protected function _getMailer()
+    {
+        return new \Yana\Mails\FormMailer();
+    }
+
+    /**
      * Removes all entries from the log table and forwards them as an e-mail.
      *
      * Called by destructor.
@@ -220,10 +232,8 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
         $oldLogEntries = $this->_database->select("log", array(), array('LOG_ID'));
 
         // send e-mail
-        $mail = new \Yana\Mails\FormMailer();
-        $mail->setContent($oldLogEntries)
-            ->setSubject('JOURNAL')
-            ->send($recipient);
+        $mail = $this->_getMailer();
+        $mail->send($recipient, 'JOURNAL', $oldLogEntries);
 
         // truncate table log
         if ($this->_database->remove("log", array(), 0) === false) {

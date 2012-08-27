@@ -178,7 +178,21 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
     }
 
     /**
+     * Creates a new form mailer and returns it.
+     *
+     * @return  \Yana\Mails\FormMailer
+     *
+     * @internal Override this method in unit-tests to inject a null mailer.
+     */
+    protected function _getMailer()
+    {
+        return new \Yana\Mails\FormMailer();
+    }
+
+    /**
      * Removes all entries from the log table and forwards them as an e-mail.
+     *
+     * Called by destructor.
      *
      * @param  string  $recipient  valid e-mail address
      */
@@ -189,10 +203,8 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
         $oldLogEntries = $this->_file->getContent();
 
         // send e-mail
-        $mail = new \Yana\Mails\FormMailer();
-        $mail->setContent($oldLogEntries)
-            ->setSubject('JOURNAL')
-            ->send($recipient);
+        $mail = $this->_getMailer();
+        $mail->send($recipient, 'JOURNAL', $oldLogEntries);
 
         // truncate file
         $this->_file->setContent(array());
