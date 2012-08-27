@@ -70,7 +70,7 @@ class TextMailerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testSend().
+     * @test
      */
     public function testSend()
     {
