@@ -54,7 +54,15 @@ class Message extends \Yana\Core\Object implements \Yana\Mails\Messages\IsMessag
     /**
      * @var  array
      */
-    private $_headers = array();
+    private $_headers = null;
+
+    /**
+     * Initializes the mail headers with an empty collection.
+     */
+    public function __construct()
+    {
+        $this->_headers = new \Yana\Mails\Headers\MailHeaderCollection();
+    }
 
     /**
      * Get the currently selected additional headers.
