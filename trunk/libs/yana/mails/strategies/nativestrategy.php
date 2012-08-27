@@ -53,7 +53,7 @@ class NativeStrategy extends \Yana\Mails\Strategies\AbstractStrategy
 
         $headerString = $this->_convertHeadersToString($header);
 
-        return (bool) mail($recipient, $subject, $text, $headerString);
+        return (bool) !empty($recipient) && mail($recipient, $subject, $text, $headerString);
     }
 
 }
