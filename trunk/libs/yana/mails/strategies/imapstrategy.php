@@ -33,7 +33,7 @@ namespace Yana\Mails\Strategies;
  * @package     yana
  * @subpackage  mails
  */
-class NativeStrategy extends \Yana\Mails\Strategies\AbstractStrategy
+class ImapStrategy extends \Yana\Mails\Strategies\AbstractStrategy
 {
 
     /**
@@ -59,25 +59,7 @@ class NativeStrategy extends \Yana\Mails\Strategies\AbstractStrategy
         }
         $headerString = $this->_convertHeadersToString($header);
 
-        return (bool) imap_mail($recipient, $subject, $text, $headerString);
-    }
-
-    /**
-     * Converts the array to a string.
-     * 
-     * @param   array  $headers  key-value pairs of mail headers
-     * @return  string
-     */
-    protected function _convertHeadersToString(array $headers)
-    {
-        $headerString = "";
-        $replaceCharacters = array("\n", "\r", "\f", ":");
-        foreach ($headers as $key => $string)
-        {
-            $value = \str_replace($replaceCharacters, "", $string);
-            $headerString .= $key . ": " . $value . "\r\n";
-        }
-        return $headerString;
+        return (bool) !empty($recipient) && imap_mail($recipient, $subject, $text, $headerString);
     }
 
 }
