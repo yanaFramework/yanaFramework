@@ -37,24 +37,23 @@ require_once __DIR__ . '/../../../include.php';
  *
  * @package  test
  */
-class MailerTest extends \PHPUnit_Framework_TestCase
+class TemplateMailerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    Mailer
-     * @access protected
+     * @var    \Yana\Mails\Strategies\NullStrategy
      */
-    protected $mailer;
+    protected $strategy;
+
     /**
-     * @var    string
-     * @access protected
+     * @var    \Yana\Mails\TemplateMailer
      */
-    protected $backupMailHandler;
+    protected $object;
+
     /**
      * @var    array
-     * @access protected
      */
-    protected $mails = array();
+    private $mails = array();
 
     /**
      * Constructor
@@ -74,14 +73,15 @@ class MailerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->markTestIncomplete();return;
-        chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
-        $this->mailer = new Mailer(new \Yana\Views\NullTemplate());
-        $this->mailer->setPath(CWD . 'resources/mail.tpl')
-            ->setSender('qwerty@domain.tld')
-            ->setSubject('unit test');
-        $this->backupMailHandler = Mailer::getGlobalMailHandler();
-        Mailer::setGlobalMailHandler(array($this, 'sendMail'));
+        $this->markTestIncomplete();
+        return;
+        $this->strategy = new \Yana\Mails\Strategies\NullStrategy();
+        $this->template = new \Yana\Views\NullTemplate();
+        $context = new \Yana\Mails\Strategies\Contexts\UserInputContext($this->template, $this->strategy);
+        $this->object = new \Yana\Mails\TemplateMailer($context);
+        $path = CWD . 'resources/mail.tpl';
+        $sender = 'qwerty@domain.tld';
+        $subject = 'unit test';
     }
 
     /**
@@ -92,28 +92,6 @@ class MailerTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        unset($this->mailer);
-        chdir(CWD);
-        Mailer::setGlobalMailHandler($this->backupMailHandler);
-    }
-
-    /**
-     * Dummy send mail function
-     *
-     * Protocols any function call to check whether mail input vars are correct.
-     *
-     * @access  public
-     * @param   string  $to
-     * @param   string  $subject
-     * @param   string  $message
-     * @param   string  $additionalHeaders
-     * @param   string  $additionalParameters
-     * @return  bool
-     */
-    public function sendMail($to, $subject, $message, $additionalHeaders = "", $additionalParameters = "")
-    {
-        $this->mails[] = func_get_args();
-        return true;
     }
 
     /**
@@ -122,11 +100,11 @@ class MailerTest extends \PHPUnit_Framework_TestCase
     public function testSend()
     {
         // set text for valid template text
-        $validText = file_get_contents($this->mailer->getPath());
+        $validText = file_get_contents($this->object->getPath());
         //set recipient
         $recipient = 'mail@domain.tld';
 
-        $result = $this->mailer->send($recipient);
+        $result = $this->object->send($recipient);
         $this->assertTrue($result, 'assert failed, the mail is not sended');
 
         $mail = array_pop($this->mails);
@@ -140,29 +118,11 @@ class MailerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     * @test
-     */
-    public function testsetGlobalMailHandlerException()
-    {
-       Mailer::setGlobalMailHandler('sendMail');
-    }
-
-    /**
-     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
-     * @test
-     */
-    public function testsetMailHandlerException()
-    {
-       $this->mailer->setMailHandler('sendMail');
-    }
-
-    /**
      * @test
      */
     public function testMail()
     {
-        $subject = $this->mailer->getSubject();
+        $subject = $this->object->getSubject();
         $recipient = 'mail@domain.tld';
         $text = 'qwerty qwerty qwerty qwerty qwerty'."\n".
                 'ytrewq ytrewq ytrewq ytrewq ytrewq';
@@ -185,7 +145,7 @@ class MailerTest extends \PHPUnit_Framework_TestCase
         // check if text match the argunent text
         $this->assertEquals($mail[2], $text, 'Message text should match given message argument');
 
-        $result = $this->mailer->getMailHandler();
+        $result = $this->object->getMailHandler();
         $this->assertTrue($result[0] instanceof MailerTest, 'assert failed , value should be an instance of MailerTest');
         $this->assertTrue($result[1] == 'sendMail', 'assert failed, the variables should be equal');
     }
