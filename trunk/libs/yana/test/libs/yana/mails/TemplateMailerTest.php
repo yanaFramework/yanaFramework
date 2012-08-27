@@ -41,19 +41,19 @@ class TemplateMailerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    \Yana\Mails\Strategies\NullStrategy
+     * @var  \Yana\Mails\Strategies\NullStrategy
      */
     protected $strategy;
 
     /**
-     * @var    \Yana\Mails\TemplateMailer
+     * @var  \Yana\Views\NullTemplate
      */
-    protected $object;
+    protected $template;
 
     /**
-     * @var    array
+     * @var  \Yana\Mails\TemplateMailer
      */
-    private $mails = array();
+    protected $object;
 
     /**
      * Constructor
@@ -73,15 +73,11 @@ class TemplateMailerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->markTestIncomplete();
-        return;
         $this->strategy = new \Yana\Mails\Strategies\NullStrategy();
+        $context = new \Yana\Mails\Strategies\Contexts\UserInputContext($this->strategy);
         $this->template = new \Yana\Views\NullTemplate();
-        $context = new \Yana\Mails\Strategies\Contexts\UserInputContext($this->template, $this->strategy);
-        $this->object = new \Yana\Mails\TemplateMailer($context);
-        $path = CWD . 'resources/mail.tpl';
-        $sender = 'qwerty@domain.tld';
-        $subject = 'unit test';
+        $this->template->setPath(CWD . 'resources/mail.tpl');
+        $this->object = new \Yana\Mails\TemplateMailer($this->template, $context);
     }
 
     /**
@@ -99,55 +95,16 @@ class TemplateMailerTest extends \PHPUnit_Framework_TestCase
      */
     public function testSend()
     {
-        // set text for valid template text
-        $validText = file_get_contents($this->object->getPath());
-        //set recipient
-        $recipient = 'mail@domain.tld';
+        $vars = array('Test');
+        $expectedArguments = array("mail@domain.tld", "mySubject", $this->template->fetch());
+        $result = $this->object->send($expectedArguments[0], $expectedArguments[1], $vars);
+        $this->assertTrue($result, "Mail has not been sent.");
 
-        $result = $this->object->send($recipient);
-        $this->assertTrue($result, 'assert failed, the mail is not sended');
-
-        $mail = array_pop($this->mails);
-        // check if message match the template text
-        $this->assertEquals($mail[2], $validText, 'Message text should match given message argument');
-        // check recipient
-        $this->assertEquals($mail[0], $recipient, 'Recipient should match given recipient argument');
-        $expectedSubject = '[MAILFORM] unit test';
-        // check subject
-        $this->assertEquals($mail[1], $expectedSubject, 'Subject should match given subject argument');
-    }
-
-    /**
-     * @test
-     */
-    public function testMail()
-    {
-        $subject = $this->object->getSubject();
-        $recipient = 'mail@domain.tld';
-        $text = 'qwerty qwerty qwerty qwerty qwerty'."\n".
-                'ytrewq ytrewq ytrewq ytrewq ytrewq';
-
-        $send = Mailer::mail($recipient, $subject, $text);
-        $this->assertTrue($send, 'assert failed, message is not sended');
-        $mail = array_pop($this->mails);
-
-        // check if text match the argunent text
-        $this->assertEquals($mail[2], $text, 'Message text should match given message argument');
-        // check recipient
-        $this->assertEquals($mail[0], $recipient, 'Recipient should match given recipient argument');
-        // check subject
-        $this->assertEquals($mail[1], $subject, 'Subject should match given subject argument');
-
-        $header = array('cc' => 'new@mail.tld', 'content-type' => 'text/plain; charset=UTF-8', 'mime-version' => '1.0');
-        $send = Mailer::mail($recipient, $subject, $text, $header);
-        $this->assertTrue($send, 'assert failed, message is not sended');
-        $mail = array_pop($this->mails);
-        // check if text match the argunent text
-        $this->assertEquals($mail[2], $text, 'Message text should match given message argument');
-
-        $result = $this->object->getMailHandler();
-        $this->assertTrue($result[0] instanceof MailerTest, 'assert failed , value should be an instance of MailerTest');
-        $this->assertTrue($result[1] == 'sendMail', 'assert failed, the variables should be equal');
+        $mails = $this->strategy->getMails();
+        $lastMail = array_pop($mails);
+        $this->assertEquals($lastMail[0], $expectedArguments[0]);
+        $this->assertEquals($lastMail[1], $expectedArguments[1]);
+        $this->assertEquals($lastMail[2], $expectedArguments[2]);
     }
 
 }
