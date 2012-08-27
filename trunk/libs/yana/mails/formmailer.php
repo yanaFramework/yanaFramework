@@ -50,6 +50,7 @@ class FormMailer extends \Yana\Mails\AbstractMailerFacade
     public function __construct(\Yana\Mails\Strategies\Contexts\IsContext $context = null,
         \Yana\Mails\Messages\FormMessage $message = null)
     {
+        // @codeCoverageIgnoreStart
         if (is_null($message)) {
             $message = new \Yana\Mails\Messages\FormMessage();
         }
@@ -57,6 +58,7 @@ class FormMailer extends \Yana\Mails\AbstractMailerFacade
             $strategy = new \Yana\Mails\Strategies\NativeStrategy();
             $context = new \Yana\Mails\Strategies\Contexts\UserInputContext($strategy);
         }
+        // @codeCoverageIgnoreEnd
         $this->_setMessage($message);
         $this->_setContext($context);
     }

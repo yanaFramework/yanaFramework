@@ -51,10 +51,12 @@ class TemplateMailer extends \Yana\Mails\AbstractMailerFacade
         \Yana\Mails\Strategies\Contexts\IsContext $context = null)
     {
         $message = new \Yana\Mails\Messages\TemplateMessage($template);
+        // @codeCoverageIgnoreStart
         if (is_null($context)) {
             $strategy = new \Yana\Mails\Strategies\NativeStrategy();
             $context = new \Yana\Mails\Strategies\Contexts\UserInputContext($strategy);
         }
+        // @codeCoverageIgnoreEnd
         $this->_setMessage($message);
         $this->_setContext($context);
     }
