@@ -472,7 +472,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         if ($YANA->getVar("PROFILE.GUESTBOOK.MAIL") && $YANA->getVar("PROFILE.GUESTBOOK.NOTIFICATION")) {
             $templateFile = $YANA->getPlugins()->{"guestbook:/notification.file"};
             $template = $YANA->getView()->createContentTemplate($templateFile->getPath());
-            self::_sendMail(new \Yana\Mails\Mailer($template), $entry);
+            self::_sendMail($template, $entry);
         }
         Microsummary::setText(__CLASS__, 'Guestbook, update ' . date('d M y G:s', time()));
     }
@@ -744,22 +744,23 @@ class plugin_guestbook extends StdClass implements IsPlugin
      *
      * @access  private
      * @static
-     * @param   \Yana\Mails\Mailer  $mail       mail template
-     * @param   array   $INPUT      input data
+     * @param   \Yana\Views\IsTemplate  $template  mail template
+     * @param   array                   $vars      input data
      */
-    private static function _sendMail(\Yana\Mails\Mailer $mail, array $INPUT)
+    private static function _sendMail(\Yana\Views\IsTemplate $template, array $vars)
     {
         global $YANA;
         $sender = $YANA->getVar("PROFILE.MAIL");
         $recipient = $YANA->getVar("PROFILE.GUESTBOOK.MAIL");
+
         if (filter_var($recipient, FILTER_VALIDATE_EMAIL) && filter_var($sender, FILTER_VALIDATE_EMAIL)) {
-            $INPUT = \Yana\Util\Hashtable::changeCase($INPUT, CASE_UPPER);
-            $now = getdate();
-            $mail->setSubject($YANA->getLanguage()->getVar("MAIL_SUBJECT"));
-            $mail->setSender($sender);
-            $mail->setVars($INPUT);
-            $mail->setVar('DATE', $now['mday'] . '.' . $now['mon'] . '.' . $now['year']);
-            $mail->send($recipient);
+
+            $templateMailer = new \Yana\Mails\TemplateMailer($template);
+            $subject = $YANA->getLanguage()->getVar("mail_subject");
+            $vars = \Yana\Util\Hashtable::changeCase($vars, CASE_UPPER);
+            $vars['DATE'] = date('d-m-Y');
+            $headers = array('from' => $sender);
+            $templateMailer->send($recipient, $subject, $vars, $headers);
         }
     }
 

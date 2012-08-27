@@ -162,7 +162,8 @@ class plugin_user_registration extends StdClass implements IsPlugin
         $YANA->setVar('WEBSITE_URL', $YANA->getVar("REFERER"));
         $YANA->setVar('KEY', $key);
         $YANA->setVar('MAIL', $mail);
-        self::_sendMail($mail, "id:USER_CONFIRM_MAIL");
+        $template = $YANA->getView()->createContentTemplate("id:USER_CONFIRM_MAIL");
+        self::_sendMail($mail, $template);
     }
 
     /**
@@ -236,33 +237,41 @@ class plugin_user_registration extends StdClass implements IsPlugin
         $YANA = Yana::getInstance();
         $YANA->setVar('PASSWORT', $password);
         $YANA->setVar('NAME', $user->getName());
-        $mail = new \Yana\Mails\Mailer($YANA->getView()->createContentTemplate("id:USER_PASSWORD_MAIL"));
-        $mail->setSender($YANA->getVar("PROFILE.MAIL"));
-        $mail->setVar('DATE', date('d-m-Y'));
-        $mail->setSubject($YANA->getLanguage()->getVar("user.mail_subject"));
-        $mail->send($user->getMail());
+
+        $template = $YANA->getView()->createContentTemplate("id:USER_PASSWORD_MAIL");
+        $sender = $YANA->getVar("PROFILE.MAIL");
+        if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
+            $recipient = $user->getMail();
+            $template = $YANA->getView()->createContentTemplate("id:USER_CONFIRM_MAIL");
+            self::_sendMail($recipient, $template, $sender);
+        }
+        unset($sender);
     }
 
     /**
-     * send mail
+     * Send some e-mail.
      *
-     * @access  private
-     * @static
-     * @param   string  $mail      mail address (recipient)
-     * @param   string  $template  template
+     * @param   string                  $recipient  mail address
+     * @param   \Yana\Views\IsTemplate  $template   template
+     * @param   string                  $sender     mail address
      * @ignore
      */
-    private static function _sendMail($mail, $template)
+    private static function _sendMail($recipient, \Yana\Views\IsTemplate $template, $sender = "")
     {
-        settype($mail, "string");
-        settype($template, "string");
+        assert('is_string($recipient); // Invalid argument $recipient: string expected');
+        assert('is_string($sender); // Invalid argument $sender: string expected');
+        global $YANA;
 
-        $YANA = \Yana::getInstance();
-        $now = getdate();
-        $mail = new \Yana\Mails\Mailer($YANA->getView()->createContentTemplate($template));
-        $mail->setSubject($YANA->getLanguage()->getVar("USER.MAIL_SUBJECT")."\n");
-        $mail->setVar('DATE', $now['mday'] . '.' . $now['mon'] . '.' . $now['year']);
-        $mail->send($mail);
+        $templateMailer = new \Yana\Mails\TemplateMailer($template);
+        $subject = $YANA->getLanguage()->getVar("user.mail_subject");
+        $vars = array('DATE' => date('d-m-Y'));
+
+        $headers = array();
+        if ($sender) {
+            $headers = array('from' => $sender);
+        }
+
+        $templateMailer->send($recipient, $subject, $vars, $headers);
     }
 
 }
