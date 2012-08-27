@@ -107,7 +107,7 @@ class UserInputContextTest extends \PHPUnit_Framework_TestCase
         $message = new \Yana\Mails\Messages\Message();
         $message->setSubject('Valid subject')
             ->setRecipient('valid@mail.tld')
-            ->setText('<b>Good Tag</b><script>Bad Tag</script>@')
+            ->setText('<b onbad="attribute">Good Tag</b><script>Bad Tag</script>@')
             ->getHeaders()->setAsHtml();
         $this->object->__invoke($message);
 
@@ -115,6 +115,89 @@ class UserInputContextTest extends \PHPUnit_Framework_TestCase
         $mails = $this->strategy->getMails();
         $actualArguments = array_pop($mails);
         $this->assertEquals($expectedArgument, $actualArguments[2]);
+    }
+
+    /**
+     * @test
+     */
+    public function testInvokeInvalidHeader()
+    {
+        $message = new \Yana\Mails\Messages\Message();
+        $message->setSubject('Valid subject')
+            ->setRecipient('valid@mail.tld')
+            ->setText('Valid text')
+            ->getHeaders()->offsetSet('invalid header', "foo\nbar");
+        $this->object->__invoke($message);
+
+        $mails = $this->strategy->getMails();
+        $actualArguments = array_pop($mails);
+        $headers = $actualArguments[3];
+        $this->assertArrayHasKey('x-yana-php-header-protection', $headers);
+        $this->assertArrayNotHasKey('invalid header', $headers);
+        $this->assertRegExp('/^1 \(.+\)/', $headers['x-yana-php-header-protection']);
+    }
+
+    /**
+     * @test
+     */
+    public function testInvokeRemoveHeader()
+    {
+        $message = new \Yana\Mails\Messages\Message();
+        $message->setSubject('Valid subject')
+            ->setRecipient('valid@mail.tld')
+            ->setText('Valid text')
+            ->getHeaders()->offsetSet('x-valid-header', 'to remove');
+        $this->object->__invoke($message);
+
+        $mails = $this->strategy->getMails();
+        $actualArguments = array_pop($mails);
+        $headers = $actualArguments[3];
+        $this->assertArrayHasKey('x-yana-php-header-protection', $headers);
+        $this->assertArrayNotHasKey('x-valid-header', $headers);
+        $this->assertRegExp('/^1 \(.+\)/', $headers['x-yana-php-header-protection']);
+    }
+
+    /**
+     * @test
+     */
+    public function testInvokeHeaders()
+    {
+        $message = new \Yana\Mails\Messages\Message();
+        $message->setSubject('Valid subject')
+            ->setRecipient('valid@mail.tld')
+            ->setText('Valid text');
+        $expectedHeaders = $message->getHeaders();
+        $expectedHeaders->setAsPlainText()
+            ->setFromAddress('from@mail.tld')
+            ->setCcAddresses(array('cc1@mail.tld', 'cc2@mail.tld'))
+            ->setBccAddresses(array('bcc@mail.tld'))
+            ->setReplyAddresses(array('reply@mail.tld'))
+            ->setHighPriority();
+        $expectedHeaders['mime-version'] = '1.2';
+        $expectedHeaders['content-transfer-encoding'] = '8bit';
+        $this->object->__invoke($message);
+
+        $mails = $this->strategy->getMails();
+        $actualArguments = array_pop($mails);
+        $actualHeaders = $actualArguments[3];
+        $this->assertArrayHasKey('x-yana-php-header-protection', $actualHeaders);
+        $this->assertRegExp('/^0 \(.+\)/', $actualHeaders['x-yana-php-header-protection']);
+        $this->assertArrayHasKey('from', $actualHeaders);
+        $this->assertArrayHasKey('cc', $actualHeaders);
+        $this->assertArrayHasKey('bcc', $actualHeaders);
+        $this->assertArrayHasKey('reply-to', $actualHeaders);
+        $this->assertArrayHasKey('importance', $actualHeaders);
+        $this->assertArrayHasKey('x-priority', $actualHeaders);
+        $this->assertArrayHasKey('mime-version', $actualHeaders);
+        $this->assertArrayHasKey('content-transfer-encoding', $actualHeaders);
+        $this->assertEquals($expectedHeaders['from'], $actualHeaders['from']);
+        $this->assertEquals(\implode('; ', $expectedHeaders['cc']), $actualHeaders['cc']);
+        $this->assertEquals(\implode('; ', $expectedHeaders['bcc']), $actualHeaders['bcc']);
+        $this->assertEquals(\implode('; ', $expectedHeaders['reply-to']), $actualHeaders['reply-to']);
+        $this->assertEquals($expectedHeaders['importance'], $actualHeaders['importance']);
+        $this->assertEquals($expectedHeaders['x-priority'], $actualHeaders['x-priority']);
+        $this->assertEquals($expectedHeaders['mime-version'], $actualHeaders['mime-version']);
+        $this->assertEquals($expectedHeaders['content-transfer-encoding'], $actualHeaders['content-transfer-encoding']);
     }
 
 }
