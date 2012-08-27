@@ -33,8 +33,7 @@ namespace Yana\Mails\Strategies\Contexts;
  * @package     yana
  * @subpackage  mails
  */
-abstract class AbstractContext extends \Yana\Core\Object
-    implements \Yana\Mails\Strategies\Contexts\IsContext
+abstract class AbstractContext extends \Yana\Core\Object implements \Yana\Mails\Strategies\Contexts\IsContext
 {
 
     /**
@@ -73,28 +72,42 @@ abstract class AbstractContext extends \Yana\Core\Object
      */
     protected function _sanitizeHeaders(array $headers)
     {
-        $sanitizedHeaders = array();
         $errorCount = 0;
 
-        assert('!isset($key); /* cannot redeclare variable $key */');
-        assert('!isset($value); /* cannot redeclare variable $value */');
-        foreach ($headers as $key => $value)
-        {
-            if (!preg_match('/^[a-z\d-]+$/', $key) || preg_match('/[\r\n]/', $value)) {
-                $errorCount++;
-                continue;
-            }
-            $value = \Yana\Data\StringValidator::sanitize($value, 128, \Yana\Data\StringValidator::LINEBREAK);
-            $sanitizedHeaders[$key] = $value;
-        }
-        unset($key, $value);
+        // Iterates over all array-elements and sanitizes the contents.
+        $sanitizedHeaders = $this->_walkHeader($headers, $errorCount);
 
         if ($errorCount > 0) {
-            $headerProtection = '1 (Dropped  suspicious header attributes for security reasons. '.
+            $headerProtection = '1 (Dropped suspicious header attributes for security reasons. '.
                 'Mail might contain errors)';
             $sanitizedHeaders['x-yana-php-header-protection'] = $headerProtection;
         }
 
+        return $sanitizedHeaders;
+    }
+
+    /**
+     * Iterates over all array-elements and sanitizes the contents.
+     *
+     * @param   array  $values       header values
+     * @param   int    &$errorCount  number of removed headers
+     * @return  array
+     */
+    private function _walkHeader(array $values, &$errorCount)
+    {
+        $sanitizedHeaders = array();
+        foreach ($values as $key => $value)
+        {
+            if (!preg_match('/^[a-z\d-]+$/', $key) || (is_string($value) && preg_match('/[\r\n\f]/', $value))) {
+                $errorCount++;
+                continue;
+            } elseif (is_array($value)) {
+                $value = $this->_walkHeader($value, $errorCount);
+            } else {
+                $value = \Yana\Data\StringValidator::sanitize($value, 128, \Yana\Data\StringValidator::LINEBREAK);
+            }
+            $sanitizedHeaders[$key] = $value;
+        }
         return $sanitizedHeaders;
     }
 
@@ -180,7 +193,7 @@ abstract class AbstractContext extends \Yana\Core\Object
                     }
                     break;
                 case 'content-transfer-encoding':
-                    if (preg_match('/^\d{,2}bit$/i', $value)) {
+                    if (preg_match('/^\d{1,2}bit$/i', $value)) {
                         $restrictedHeaders['content-transfer-encoding'] = "$value";
                     }
                     break;
@@ -267,9 +280,9 @@ abstract class AbstractContext extends \Yana\Core\Object
      */
     protected function _sanitizeText($text, $contentType)
     {
-        $text = preg_replace('/@/', '[at]', "$text");
+        $sanitizedText = $textWithAtStripped = preg_replace('/@/', '[at]', "$text");
         if (preg_match('/^text\/plain/i', $contentType)) {
-            $text = wordwrap($text, 70);
+            $sanitizedText = wordwrap($textWithAtStripped, 70);
         } elseif (preg_match('/^text\/html/i', $contentType)) {
             // basically all except form tags, images, frames, header tags and script elements
             $allowableTags = '<a>,<abbr>,<acronym>,<address>,' .
@@ -287,9 +300,11 @@ abstract class AbstractContext extends \Yana\Core\Object
                 '<q>,' .
                 '<samp>,<small>,<span>,<strong>,<sub>,<sup>' .
                 '<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<tr>,<tt>';
-            $text = \strip_tags($text, $allowableTags);
+            $textWithStrippedTags = \strip_tags($textWithAtStripped, $allowableTags);
+            // strip_tags does not remove malicious attributes, so we do this here:
+            $sanitizedText = \preg_replace('/<(\S+)\s[^<]*o\s*n\s*[^<]+>/Uis', '<$1>', $textWithStrippedTags);
         }
-        return $text;
+        return $sanitizedText;
     }
 
 }
