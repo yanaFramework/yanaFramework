@@ -489,15 +489,7 @@ class Sequence extends \Yana\Core\Object
      */
     public function equals(\Yana\Core\IsObject $anotherObject)
     {
-        if ($anotherObject instanceof $this) {
-            if ($this->name === $anotherObject->name) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
+        return ($anotherObject instanceof $this) && ($this->name === $anotherObject->name);
     }
 
 }
