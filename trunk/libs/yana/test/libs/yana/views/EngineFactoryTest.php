@@ -121,7 +121,7 @@ class EngineFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
+        \chdir(CWD);
     }
 
     /**
@@ -131,6 +131,7 @@ class EngineFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateInstance()
     {
+        \chdir(CWD . '/../../../');
         $this->object->createInstance();
     }
 
