@@ -71,9 +71,9 @@ class StringResource extends \Yana\Views\Resources\AbstractResource
      */
     protected function fetch($name, &$source, &$mtime)
     {
-        assert('is_string($string); // Wrong argument type argument 1. String expected');
+        assert('is_string($name); // Wrong argument type argument 1. String expected');
         $mtime = time();
-        $source = $string;
+        $source = $name;
     }
 
 }
