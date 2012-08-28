@@ -274,6 +274,7 @@ abstract class AbstractException extends \Exception
                 }
             } catch (\Yana\Core\Exceptions\Translations\TranslationException $e) {
                 unset($e);
+                $this->text = $this->message;
             }
 
             $this->text = preg_replace('/\s/', ' ', $this->text);
