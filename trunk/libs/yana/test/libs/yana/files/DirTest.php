@@ -205,10 +205,9 @@ class DirTest extends \PHPUnit_Framework_TestCase
      */
     public function testDelete()
     {
-        mkdir($this->nonExistingDir->getPath());
-        $delete = $this->nonExistingDir->delete();
+        mkdir($this->nonExistingDir->getPath());;
+        $this->assertFalse($this->nonExistingDir->delete()->exists(), 'unable to delete directory');
         $isDir = is_dir($this->nonExistingDir->getPath());
-        $this->assertTrue($delete, 'unable to delete directory');
         $this->assertFalse($isDir, 'function delete() returned true, but directory was not deleted');
     }
 
