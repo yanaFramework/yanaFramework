@@ -83,7 +83,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        chdir(CWD . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
+        chdir(CWD . '../../..' );
         \Yana\Db\FileDb\Driver::setBaseDirectory(CWD . '/resources/db/');
         try {
 
@@ -117,8 +117,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
      * increment getter and setter
      *
      * @test
-     * @covers  \Yana\Db\FileDb\Sequence::getIncrement()
-     * @covers  \Yana\Db\FileDb\Sequence::setIncrement()
+     * @covers  \Yana\Db\FileDb\Sequence
      */
     public function testIncrement()
     {
@@ -131,8 +130,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
      * max getter and setter
      *
      * @test
-     * @covers  \Yana\Db\FileDb\Sequence::getMax()
-     * @covers  \Yana\Db\FileDb\Sequence::setMax()
+     * @covers  \Yana\Db\FileDb\Sequence
      */
     public function testMax()
     {
@@ -145,8 +143,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
      * max getter and setter
      *
      * @test
-     * @covers  \Yana\Db\FileDb\Sequence::getMax()
-     * @covers  \Yana\Db\FileDb\Sequence::setMax()
+     * @covers  \Yana\Db\FileDb\Sequence
      * @expectedException  \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function testMaxInvalidArgumentException()
@@ -160,8 +157,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
      * min getter and setter
      *
      * @test
-     * @covers  \Yana\Db\FileDb\Sequence::getMin()
-     * @covers  \Yana\Db\FileDb\Sequence::setMin()
+     * @covers  \Yana\Db\FileDb\Sequence
      */
     public function testMin()
     {
@@ -174,8 +170,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
      * min getter and setter
      *
      * @test
-     * @covers  \Yana\Db\FileDb\Sequence::getMin()
-     * @covers  \Yana\Db\FileDb\Sequence::setMin()
+     * @covers  \Yana\Db\FileDb\Sequence
      * @expectedException  \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function testMinInvalidArgumentException()
@@ -189,8 +184,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
      * cycle getter and setter
      *
      * @test
-     * @covers  \Yana\Db\FileDb\Sequence::isCycle()
-     * @covers  \Yana\Db\FileDb\Sequence::setCycle()
+     * @covers  \Yana\Db\FileDb\Sequence
      */
     public function testCycle()
     {
@@ -203,8 +197,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
      * test value-getter (ascending non-cyclic sequence)
      *
      * @test
-     * @covers  \Yana\Db\FileDb\Sequence::getNextValue()
-     * @covers  \Yana\Db\FileDb\Sequence::getCurrentValue()
+     * @covers  \Yana\Db\FileDb\Sequence
      */
     public function testGetValueForAscendingSequence()
     {
@@ -239,8 +232,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
      * test value-getter (descending sequence)
      *
      * @test
-     * @covers  \Yana\Db\FileDb\Sequence::getNextValue()
-     * @covers  \Yana\Db\FileDb\Sequence::getCurrentValue()
+     * @covers  \Yana\Db\FileDb\Sequence
      */
     public function testGetValueForDescendingSequence()
     {
@@ -304,5 +296,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $equals = $this->ascendingSequence->equals($this->ascendingSequence);
         $this->assertTrue($equals, "Two itentical sequences must be equal.");
     }
+
 }
+
 ?>
