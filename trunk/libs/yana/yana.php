@@ -246,6 +246,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
         self::$_config->configdir = $cwd . (string) self::$_config->configdir;
         self::$_config->configdrive = $cwd . (string) self::$_config->configdrive;
         self::$_config->pluginfile = $cwd . (string) self::$_config->pluginfile;
+        self::$_config->skindir = $cwd . (string) self::$_config->skindir;
         \Yana\Db\AbstractConnection::setTempDir((string) self::$_config->tempdir);
     }
 
