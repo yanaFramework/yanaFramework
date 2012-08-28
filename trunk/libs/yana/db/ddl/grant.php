@@ -179,7 +179,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * @access  public
      * @param   string  $user  new value of this property
-     * @return  \Yana\Db\Ddl\Grant 
+     * @return  \Yana\Db\Ddl\Grant
      */
     public function setUser($user = "")
     {
@@ -222,7 +222,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      * @access  public
      * @param   string  $level  new value of this property
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given security level is outside range [0,100]
-     * @return  \Yana\Db\Ddl\Grant 
+     * @return  \Yana\Db\Ddl\Grant
      */
     public function setLevel($level = null)
     {
@@ -260,7 +260,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * @access  public
      * @param   bool  $isSelectable  true: selectable, false: not selectable
-     * @return  \Yana\Db\Ddl\Grant 
+     * @return  \Yana\Db\Ddl\Grant
      */
     public function setSelect($isSelectable = true)
     {
@@ -291,7 +291,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * @access  public
      * @param   bool  $isInsertable  true = allow, false = disallow insert statements
-     * @return  \Yana\Db\Ddl\Grant 
+     * @return  \Yana\Db\Ddl\Grant
      */
     public function setInsert($isInsertable = true)
     {
@@ -322,7 +322,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * @access  public
      * @param   bool  $isUpdatable  new value of this property
-     * @return  \Yana\Db\Ddl\Grant 
+     * @return  \Yana\Db\Ddl\Grant
      */
     public function setUpdate($isUpdatable = true)
     {
@@ -353,11 +353,13 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * @access  public
      * @param   bool  $isDeletable  new value of this property
+     * @return  \Yana\Db\Ddl\Grant
      */
     public function setDelete($isDeletable = true)
     {
         assert('is_bool($isDeletable); // Wrong type for argument 1. Boolean expected');
         $this->delete = (bool) $isDeletable;
+        return $this;
     }
 
     /**
@@ -384,7 +386,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * @access  public
      * @param   bool  $isGrantable  true: may grant, false: may not grant
-     * @return  \Yana\Db\Ddl\Grant 
+     * @return  \Yana\Db\Ddl\Grant
      */
     public function setGrantOption($isGrantable = true)
     {
@@ -418,11 +420,13 @@ class Grant extends \Yana\Db\Ddl\DDL
         assert('is_bool($grant); // Wrong type for argument 5. Boolean expected');
         switch (true)
         {
-            case $select && $this->isSelectable():
-            case $insert && $this->isInsertable():
-            case $update && $this->isUpdatable():
-            case $delete && $this->isDeletable():
-            case $grant && $this->isGrantable():
+            case $select && !$this->isSelectable():
+            case $insert && !$this->isInsertable():
+            case $update && !$this->isUpdatable():
+            case $delete && !$this->isDeletable():
+            case $grant && !$this->isGrantable():
+                return false;
+            default:
                 $user = $this->getUser();
                 $role = $this->getRole();
                 $level = $this->getLevel();
@@ -438,10 +442,6 @@ class Grant extends \Yana\Db\Ddl\DDL
                 $action = \Yana\Plugins\Manager::getLastEvent();
                 $userName = (string) \YanaUser::getUserName();
                 return (bool) \SessionManager::checkRule($required, $profileId, $action, $userName);
-            break;
-            default:
-                return false;
-            break;
         }
     }
 
@@ -468,12 +468,10 @@ class Grant extends \Yana\Db\Ddl\DDL
     {
         $hasPermission = true;
         /* @var $grant \Yana\Db\Ddl\Grant */
-        foreach ($grants as $grant)
+        foreach ($grants as $_grant)
         {
-            assert('$grant instanceof \Yana\Db\Ddl\Grant;');
-            $hasPermission = $grant->checkPermission(
-                $grant->isSelectable(), $grant->isInsertable(), $grant->isUpdatable(), $grant->isDeletable(), $grant->isGrantable()
-            );
+            assert($_grant instanceof \Yana\Db\Ddl\Grant);
+            $hasPermission = $_grant->checkPermission($select, $insert, $update, $delete, $grant);
             if ($hasPermission) {
                  break;
             }
