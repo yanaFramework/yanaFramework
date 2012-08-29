@@ -237,11 +237,10 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements \Serializab
     }
 
     /**
-     * refresh plugin security settings
-     *
      * Rescan plugin list and refresh the action security settings.
      *
-     * @throws  DbAlert  if changes could not be saved to database
+     * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  if the existing entries could not be deleted
+     * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if the new entries could not be inserted
      *
      * @ignore
      */
@@ -252,12 +251,12 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements \Serializab
         $database = self::getDatasource();
         if (!$database->remove('securityactionrules', $where, 0)) {
             $database->rollback();
-            throw new DbAlert("Unable to delete old entries.");
+            throw new \Yana\Db\Queries\Exceptions\NotDeletedException("Unable to delete old entries.");
         }
         // remove old actions
         if (!$database->remove('securityaction', array(), 0)) {
             $database->rollback();
-            throw new DbAlert("Unable to delete old entries.");
+            throw new \Yana\Db\Queries\Exceptions\NotDeletedException("Unable to delete old entries.");
         }
         $rows = array();
         $groups = array();
@@ -318,7 +317,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements \Serializab
         {
             if (!$database->insert('securityaction', $row)) {
                 $database->rollback();
-                throw new DbAlert("Unable to insert new action.");
+                throw new \Yana\Db\Queries\Exceptions\NotCreatedException("Unable to insert new action.");
             }
         }
         unset($actions, $row);
@@ -333,7 +332,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements \Serializab
             $group = array('group_id' => $groupId, 'group_name' => $groupId);
             if (!$database->insert("securitygroup.$groupId", $group)) {
                 $database->rollback();
-                throw new DbAlert("Unable to insert new group.");
+                throw new \Yana\Db\Queries\Exceptions\NotCreatedException("Unable to insert new group.");
             }
             unset($group);
         }
@@ -349,7 +348,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements \Serializab
             $role = array('role_id' => $roleId, 'role_name' => $roleId);
             if (!$database->insert("securityrole.$roleId", $role)) {
                 $database->rollback();
-                throw new DbAlert("Unable to insert new role.");
+                throw new \Yana\Db\Queries\Exceptions\NotCreatedException("Unable to insert new role.");
             }
             unset($role);
         }
@@ -360,7 +359,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements \Serializab
         {
             if (!$database->insert('securityactionrules', $row)) {
                 $database->rollback();
-                throw new DbAlert("Unable to insert new security setting.");
+                throw new \Yana\Db\Queries\Exceptions\NotCreatedException("Unable to insert new security setting.");
             }
         }
         unset($row);

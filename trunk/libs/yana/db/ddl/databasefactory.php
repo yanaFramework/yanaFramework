@@ -58,7 +58,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
      * @static
      * @param   \MDB2_Driver_Common  $connection  MDB2 database connection
      * @return  \Yana\Db\Ddl\Database
-     * @throws  DbError  when any of the operations fail
+     * @throws  \Yana\Db\ConnectionException  when unable to open connection to database
      */
     public static function createDatabase(\MDB2_Driver_Common $connection)
     {
@@ -70,7 +70,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
          */
         $name = $connection->getDatabase();
         if ($name instanceof \MDB2_Error) {
-            throw new \DbError($name->getMessage());
+            throw new \Yana\Db\ConnectionException($name->getMessage());
         }
         $database = new \Yana\Db\Ddl\Database($name);
         unset($name);
@@ -80,13 +80,13 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
          */
         $sequences = $connection->listSequences();
         if ($sequences instanceof \MDB2_Error) {
-            throw new \DbError($sequences->getMessage());
+            throw new \Yana\Db\DatabaseException($sequences->getMessage());
         }
         foreach($sequences as $name)
         {
             $info = $connection->getSequenceDefinition($name);
             if ($info instanceof \MDB2_Error) {
-                throw new \DbError($info->getMessage());
+                throw new \Yana\Db\DatabaseException($info->getMessage());
             }
             assert('is_array($info);');
             self::createSequence($database, $info, $name);
@@ -98,7 +98,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
          */
         $tables = $connection->listTables();
         if ($tables instanceof \MDB2_Error) {
-            throw new \DbError($tables->getMessage());
+            throw new \Yana\Db\DatabaseException($tables->getMessage());
         }
 
         foreach ($tables as $tableName)
@@ -114,7 +114,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
             assert('!isset($columns); // Cannot redeclare var $columns');
             $columns = $connection->listTableFields($tableName);
             if ($columns instanceof \MDB2_Error) {
-                throw new \DbError($columns->getMessage());
+                throw new \Yana\Db\DatabaseException($columns->getMessage());
             }
             assert('!isset($info); // Cannot redeclare var $info');
             assert('!isset($name); // Cannot redeclare var $name');
@@ -123,7 +123,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
             {
                 $info = $connection->getTableFieldDefinition($tableName, $name);
                 if ($info instanceof \MDB2_Error) {
-                    throw new \DbError($info->getMessage());
+                    throw new \Yana\Db\DatabaseException($info->getMessage());
                 }
                 /* MDB2 "suggests" multiple options for data-types.
                  * Since we don't know which is the best guess we simply take the first one.
@@ -140,7 +140,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
             assert('!isset($indexes); // Cannot redeclare var $indexes');
             $indexes = $connection->listTableIndexes($tableName);
             if ($indexes instanceof \MDB2_Error) {
-                throw new \DbError($indexes->getMessage());
+                throw new \Yana\Db\DatabaseException($indexes->getMessage());
             }
             assert('!isset($info); // Cannot redeclare var $info');
             assert('!isset($name); // Cannot redeclare var $name');
@@ -149,7 +149,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
             {
                 $info = $connection->getTableIndexDefinition($tableName, $name);
                 if ($info instanceof \MDB2_Error) {
-                    throw new \DbError($info->getMessage());
+                    throw new \Yana\Db\DatabaseException($info->getMessage());
                 }
                 assert('is_array($info);');
                 self::createIndex($table, $info, $name);
@@ -162,7 +162,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
             assert('!isset($constraints); // Cannot redeclare var $constraints');
             $constraints = $connection->listTableConstraints($tableName);
             if ($constraints instanceof \MDB2_Error) {
-                throw new \DbError($constraints->getMessage());
+                throw new \Yana\Db\DatabaseException($constraints->getMessage());
             }
             assert('!isset($info); // Cannot redeclare var $info');
             assert('!isset($name); // Cannot redeclare var $name');
@@ -171,7 +171,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
             {
                 $info = $connection->getTableConstraintDefinition($tableName, $name);
                 if ($info instanceof \MDB2_Error) {
-                    throw new \DbError($info->getMessage());
+                    throw new \Yana\Db\DatabaseException($info->getMessage());
                 }
                 assert('is_array($info);');
                 self::createConstraint($table, $info, $name);

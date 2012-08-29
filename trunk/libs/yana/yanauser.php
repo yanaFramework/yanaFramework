@@ -438,7 +438,7 @@ class YanaUser extends \Yana\Core\Object
      *
      * @param   string  $password user password
      * @return  string
-     * @throws  DbError  when the database update failed
+     * @throws  \Yana\Db\Queries\Exceptions\NotUpdatedException  when the database update failed
      */
     public function setPassword($password = NULL)
     {
@@ -453,8 +453,10 @@ class YanaUser extends \Yana\Core\Object
         switch (false)
         {
             case self::$_database->update("USER.{$this->_name}.USER_PWD", $newPwd):
-                throw new DbError("A new password was requested for user '{$this->_name}'. " .
-                    "But the database entry could not be updated.");
+                $message = "A new password was requested for user '{$this->_name}'. " .
+                    "But the database entry could not be updated.";
+                $level = \Yana\Log\TypeEnumeration::WARNING;
+                throw new \Yana\Db\Queries\Exceptions\NotUpdatedException($message, $level);
             break;
             default:
                 self::$_database->commit(); // may throw exception
@@ -844,7 +846,7 @@ class YanaUser extends \Yana\Core\Object
      * @param   string  $mail      e-mail address
      * @throws  \Yana\Core\Exceptions\User\MissingNameException    when no user name is given
      * @throws  \Yana\Core\Exceptions\User\AlreadyExistsException  if another user with the same name already exists
-     * @throws  \DbError                                           when the database entry could not be created
+     * @throws  \Yana\Db\CommitFailedException                     when the database entry could not be created
      */
     public static function createUser($userName, $mail)
     {
@@ -859,7 +861,7 @@ class YanaUser extends \Yana\Core\Object
         }
         if (YanaUser::isUser($userName)) {
             $message = "A user with the name '$userName' already exists.";
-            $level = E_USER_WARNING;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\User\AlreadyExistsException($message, $level);
         }
         // insert user settings
@@ -871,7 +873,7 @@ class YanaUser extends \Yana\Core\Object
         } catch (\Exception $e) {
             $message = "Unable to commit changes to the database server while trying to update settings for user '{$userName}'.";
             $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \DbError($message, $level, $e);
+            throw new \Yana\Db\CommitFailedException($message, $level, $e);
         }
     }
 
