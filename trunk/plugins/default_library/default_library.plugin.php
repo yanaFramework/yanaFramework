@@ -283,14 +283,14 @@ class plugin_default_library extends StdClass implements IsPlugin
      * Examples of usage:
      * <ol>
      *  <li> Setting a microsummary from a plugin:
-     *       <code>Microsummary::setText($id, 'Summary text');</code>
+     *       <code>\Yana\Util\Microsummary::setText($id, 'Summary text');</code>
      *  </li>
      *  <li> Retrieving a microsummary in a plugin:
-     *       <code>$microsummary = Microsummary::getText($id);</code>
+     *       <code>$microsummary = \Yana\Util\Microsummary::getText($id);</code>
      *  </li>
      *  <li> To indicate that a microsummary exists for your plugin
      *       add this as the last line in your plugin constructor
-     *       <code>Microsummary::publishSummary($id);</code>
+     *       <code>\Yana\Util\Microsummary::publishSummary($id);</code>
      *  </li>
      *  <li> Calling a microsummary from a browser:
      *       <code>index.php?action=get_microsummary&target=guestbook</code>
@@ -310,7 +310,7 @@ class plugin_default_library extends StdClass implements IsPlugin
         if (empty($target)) {
             exit('Error: illegal request');
         }
-        $microsummary = Microsummary::getText($target);
+        $microsummary = \Yana\Util\Microsummary::getText($target);
         if (empty($microsummary)) {
             exit('No summary available');
         }

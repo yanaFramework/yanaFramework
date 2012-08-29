@@ -106,13 +106,11 @@ class plugin_blog extends StdClass implements IsPlugin
      * @language    blog
      *
      * @access  public
-     * @return  bool
      */
     public function blog()
     {
         \Yana\RSS\Publisher::publishFeed('blog_rss');
-        Microsummary::publishSummary(__CLASS__);
-        return true;
+        \Yana\Util\Microsummary::publishSummary(__CLASS__);
     }
 
     /**
@@ -198,12 +196,11 @@ class plugin_blog extends StdClass implements IsPlugin
     {
         $form = self::getBlogForm();
         $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
-        if ($worker->create()) {
-            Microsummary::setText(__CLASS__, 'Blog, update '.date('d M y G:s', time()));
-            return true;
-        } else {
-            return false;
+        $success = (bool) $worker->create();
+        if ($success) {
+            \Yana\Util\Microsummary::setText(__CLASS__, 'Blog, update '.date('d M y G:s', time()));
         }
+        return $success;
     }
 
     /**

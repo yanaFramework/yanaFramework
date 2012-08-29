@@ -474,7 +474,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
             $template = $YANA->getView()->createContentTemplate($templateFile->getPath());
             self::_sendMail($template, $entry);
         }
-        Microsummary::setText(__CLASS__, 'Guestbook, update ' . date('d M y G:s', time()));
+        \Yana\Util\Microsummary::setText(__CLASS__, 'Guestbook, update ' . date('d M y G:s', time()));
     }
 
     /**
@@ -535,7 +535,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         global $YANA;
         self::_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
 
-        Microsummary::publishSummary(__CLASS__);
+        \Yana\Util\Microsummary::publishSummary(__CLASS__);
         \Yana\RSS\Publisher::publishFeed('guestbook_read_rss');
 
         /* get entries */

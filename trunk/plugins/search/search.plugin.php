@@ -82,9 +82,7 @@ class plugin_search extends StdClass implements IsPlugin
      */
     public function search_stats()
     {
-        if (class_exists('Microsummary')) {
-            Microsummary::publishSummary(__CLASS__);
-        }
+        \Yana\Util\Microsummary::publishSummary(__CLASS__);
         $numbers = Yana::connect('search')->select('searchstats');
         if (!empty($numbers)) {
             uasort($numbers, array($this, "_sortStatistics"));
@@ -140,18 +138,16 @@ class plugin_search extends StdClass implements IsPlugin
                 $statistics['SEARCHTERM'] = $counterInfo;
                 $counterValue = @$statistics['SEARCHCOUNT']++;
                 /* update Microsummary */
-                if (class_exists('Microsummary')) {
-                    assert('!isset($mostWanted);');
-                    $mostWanted = $db->select("searchstats", array(), 'searchcount', 0, 1, true);
-                    if ($mostWanted <= $counterValue) {
-                        Microsummary::setText(__CLASS__,
-                            'Search most wanted: '.$counterInfo.'('.$counterValue.')');
-                    }
-                    unset($mostWanted);
+                assert('!isset($mostWanted);');
+                $mostWanted = $db->select("searchstats", array(), 'searchcount', 0, 1, true);
+                if ($mostWanted <= $counterValue) {
+                    \Yana\Util\Microsummary::setText(__CLASS__,
+                        'Search most wanted: '.$counterInfo.'('.$counterValue.')');
                 }
+                unset($mostWanted);
                 // Update search statistics
                 try {
-                    $db->insertOrUpdate("searchstats.$counterId", $statistics);
+                    $db->insertOrUpdate("searchstats.{$counterId}", $statistics);
                     $db->commit(); // may throw exception
                 } catch (\Yana\Db\DatabaseException $e) {
                     // This just updates statistics - we don't care so much if this doesn't succeed.

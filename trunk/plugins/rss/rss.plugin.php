@@ -135,13 +135,11 @@ class plugin_rss extends StdClass implements IsPlugin
             $YANA->setVar("FILE", $this->file);
 
             /* Microsummaries */
-            if (class_exists('Microsummary')) {
-                Microsummary::publishSummary(__CLASS__);
-            }
+            \Yana\Util\Microsummary::publishSummary(__CLASS__);
 
-            if (class_exists('Microsummary') && count($this->_rss) > 0) {
+            if (count($this->_rss) > 0) {
                 $latest = array_shift($this->_rss);
-                Microsummary::setText(__CLASS__, 'RSS latest: '.$latest['TITLE'].
+                \Yana\Util\Microsummary::setText(__CLASS__, 'RSS latest: '.$latest['TITLE'].
                     ' ('.$latest['PUBDATE'].')');
             }
 
