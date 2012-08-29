@@ -56,7 +56,7 @@ class MicrosummaryFilter extends \Yana\Views\Helpers\AbstractViewHelper implemen
 
             $htmlHead = "";
 
-            foreach (\Microsummary::getSummaries() as $summary)
+            foreach (\Yana\Util\Microsummary::getSummaries() as $summary)
             {
                 $htmlHead .= "        " . $this->_microsummary($summary) . "\n";
             }

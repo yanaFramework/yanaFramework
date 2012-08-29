@@ -25,15 +25,15 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana\Util;
+
 /**
- * <<utility>> Microsummary
+ * <<utility>> Microsummary.
  *
- * This class provides static methods to read and
- * write persistent microsummaries.
+ * This class provides static methods to read and write persistent microsummaries.
  *
- * "Microsummaries" are a Firefox 2.0 feature that allows users
- * to create dynamic bookmark titles that automatically update
- * when the content of the bookmarked page changes.
+ * "Microsummaries" are a Firefox 2.0 feature that allows users to create dynamic bookmark
+ * titles that automatically update when the content of the bookmarked page changes.
  *
  * Have a look at what microsummaries can be:
  * <ul>
@@ -188,8 +188,6 @@ class Microsummary extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * get list of microsummaries
-     *
      * Returns a list of all previously published microsummaries.
      *
      * @return  array
