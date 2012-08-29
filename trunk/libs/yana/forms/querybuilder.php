@@ -344,7 +344,7 @@ class QueryBuilder extends \Yana\Core\Object
      *
      * @access  protected
      * @return  array
-     * @throws  DBWarning  when no foreign key is found
+     * @throws  \Yana\Db\Queries\Exceptions\NotFoundException  when no foreign key is found
      */
     protected function getForeignKey()
     {
@@ -388,7 +388,8 @@ class QueryBuilder extends \Yana\Core\Object
         }
         if (empty($keyName) || empty($columnName)) {
             $message = "No suitable foreign-key found in form '" . $form->getName() . "'.";
-            throw new \DbWarning($message, E_USER_ERROR);
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Db\Queries\Exceptions\NotFoundException($message, $level);
         }
         return array($keyName, $columnName);
     }

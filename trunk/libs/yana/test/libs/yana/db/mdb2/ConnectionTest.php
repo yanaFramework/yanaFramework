@@ -94,7 +94,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     /**
      * Update Invalid Argument Exception  
      *
-     * @expectedException DbError
+     * @expectedException \Yana\Db\Queries\Exceptions\NotUpdatedException
      * @test
      */
     public function testUpdateInvalidArgument()
