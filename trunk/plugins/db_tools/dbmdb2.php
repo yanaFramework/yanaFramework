@@ -223,7 +223,7 @@ class DbMDB2 extends \Yana\Files\File implements IsDbImport
                     $table->addColumn($column);
                 }
                 if (!$table->getPrimaryKey()) {
-                    @$table->setPrimaryKey(@$this->currentTable['primary']);
+                    $table->setPrimaryKey(@$this->currentTable['primary']);
                 }
                 if (!empty($this->currentTable['init'])) {
                     $table->setInit($this->currentTable['init']);
