@@ -182,12 +182,11 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
      *
      * @covers DbInfoTable::setPrimaryKey
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     function testSetPrimaryKeyInvalidArgument()
     {
-        $this->dbinfotable->setPrimaryKey('foobar');
+        $this->assertFalse($this->dbinfotable->setPrimaryKey('foobar'));
     }
 
     /**
@@ -231,12 +230,11 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
      *
      * @covers DbInfoTable::setForeignKey
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     function testSetForeignKeyInvalidArgument1()
     {
-        $this->dbinfotable->setForeignKey('barfoo', 'foobar', 'qwerty');
+        $this->assertFalse($this->dbinfotable->setForeignKey('barfoo', 'foobar', 'qwerty'));
     }
 
 
