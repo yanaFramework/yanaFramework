@@ -198,7 +198,7 @@ class DbDesigner4 extends \Yana\Files\File implements \IsDbImport
 
             case 'table':
                 $this->currentTable = new DbInfoTable($attrs['TABLENAME']);
-                @$this->currentTable->setComment($attrs['TABLENAME']);
+                $this->currentTable->setComment($attrs['TABLENAME']);
                 $this->tableNames[$attrs['ID']] = $attrs['TABLENAME'];
                 /**
                  * <table StandardInserts ...>   semicolon-seperated list of sql statements
