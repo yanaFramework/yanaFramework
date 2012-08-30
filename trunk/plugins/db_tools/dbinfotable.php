@@ -31,9 +31,9 @@
 require_once 'dbinfocolumn.php';
 
 /**
- * table information
+ * Table information.
  *
- * exports as (example):
+ * Exports as (example):
  *
  * Array
  * (
@@ -63,33 +63,47 @@ require_once 'dbinfocolumn.php';
  * are applied automatically.
  * Otherwise you will have to do it yourself.
  *
- * @access      public
  * @package     yana
  * @subpackage  database
  * @ignore
  */
 class DbInfoTable extends \Yana\Core\Object
 {
-    /**#@+
-     * @access  private
-     */
-
-    /** @var string */ private $primaryKey = null;
-    /** @var string */ private $comment = null;
-    /** @var string */ private $table = null;
-    /** @var array  */ private $foreignKeys = array();
-    /** @var array  */ private $init = array();
-    /** @var array  */ private $columns = array();
-
-    /**#@-*/
 
     /**
-     * Constructor
-     *
+     * @var string
+     */
+    private $primaryKey = null;
+
+    /**
+     * @var string
+     */
+    private $comment = null;
+
+    /**
+     * @var string
+     */
+    private $table = null;
+
+    /**
+     * @var array
+     */
+    private $foreignKeys = array();
+
+    /**
+     * @var array
+     */
+    private $init = array();
+
+    /**
+     * @var array
+     */
+    private $columns = array();
+
+    /**
      * This function creates a new instance of this class.
      *
      * @param   string  $table table name
-     * @access  public
      */
     public function __construct($table)
     {
@@ -98,20 +112,13 @@ class DbInfoTable extends \Yana\Core\Object
     }
 
     /**
-     * get table name
-     *
      * Returns table name on success and bool(false) on error.
      *
-     * @access  public
      * @return  string|bool(false)
      */
     public function getName()
     {
-        if (!is_string($this->table)) {
-            return false;
-        } else {
-            return $this->table;
-        }
+        return (is_string($this->table)) ? $this->table : false;
     }
 
     /**
@@ -120,98 +127,71 @@ class DbInfoTable extends \Yana\Core\Object
      * Returns a numeric list of sql statements, which ought to be run, when the table is created,
      * or bool(false) on error.
      *
-     * @access  public
      * @return  array|bool(false)
      * @since   2.9.7
      */
     public function getInit()
     {
-        if (is_array($this->init)) {
-            return $this->init;
-
-        } else {
-            return false;
-        }
+        return (is_array($this->init)) ? $this->init : false;
     }
 
     /**
-     * set initialization record
+     * Set initialization record.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
      * Note: this does not check the syntax of the statements.
      *
-     * @access  public
      * @param   array  $init  numeric list of sql statements
-     * @return  bool
-     * @since   2.9.7
+     * @return  \DbInfoTable
      */
     public function setInit(array $init)
     {
         $this->init = array_values($init);
-        return true;
+        return $this;
     }
 
     /**
-     * get comment
+     * eturns the comment as a string or bool(false) on error.
      *
-     * Returns the comment as a string,
-     * or bool(false) on error.
-     *
-     * @access  public
      * @return  string|bool(false)
      */
     public function getComment()
     {
-        if (is_string($this->comment)) {
-            return $this->comment;
-
-        } else {
-            return false;
-        }
+        return (is_string($this->comment)) ? $this->comment : false;
     }
 
     /**
-     * set comment
+     * Set comment.
      *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * @access  public
      * @param   string  $comment  set comment
-     * @return  bool
+     * @return  \DbInfoTable
      */
     public function setComment($comment)
     {
         assert('is_string($comment); // Wrong type for argument 1. String expected.');
         $this->comment = (string) $comment;
-        return true;
+        return $this;
     }
 
     /**
-     * get the name of the primary key
+     * Get the name of the primary key.
      *
      * Returns the name of the primary key as a lower-cased string,
      * or bool(false) on error.
      *
-     * @access  public
      * @return  string|bool(false)
      */
     public function getPrimaryKey()
     {
-        if (is_string($this->primaryKey)) {
-            return $this->primaryKey;
-
-        } else {
-            return false;
-        }
+        return (is_string($this->primaryKey)) ? $this->primaryKey : false;
     }
 
     /**
-     * set primary key
+     * Set primary key.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   string  $column  name of column containing the primary key
      * @return  bool
      */
@@ -234,25 +214,19 @@ class DbInfoTable extends \Yana\Core\Object
     }
 
     /**
-     * get array of foreign keys
+     * Get array of foreign keys.
      *
      * Returns bool(false) on error.
      *
-     * @access  public
      * @return  array|bool(false)
      */
     public function getForeignKeys()
     {
-        if (is_array($this->foreignKeys)) {
-            return $this->foreignKeys;
-
-        } else {
-            return false;
-        }
+        return (is_array($this->foreignKeys)) ? $this->foreignKeys : false;
     }
 
     /**
-     * set a foreign key constraint
+     * Set a foreign key constraint.
      *
      * Sets a foreign key constraint on $column.
      * If $foreignColumn is not set, it is assumed,
@@ -261,7 +235,6 @@ class DbInfoTable extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   string  $column         name of column in source table
      * @param   string  $foreignTable   name of destination table
      * @param   string  $foreignColumn  name of column in destination table
@@ -301,11 +274,8 @@ class DbInfoTable extends \Yana\Core\Object
     }
 
     /**
-     * add column object
+     * Add column object.
      *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * @access  public
      * @param   DbInfoColumn  $column info object
      * @return  bool
      */
@@ -329,7 +299,6 @@ class DbInfoTable extends \Yana\Core\Object
      *
      * Returns a numeric array of DbInfoColumn objects
      *
-     * @access  public
      * @return  array
      */
     public function getColumns()
@@ -341,7 +310,6 @@ class DbInfoTable extends \Yana\Core\Object
     /**
      * export object as associative array
      *
-     * @access  public
      * @return  array
      */
     public function toArray()
@@ -360,5 +328,7 @@ class DbInfoTable extends \Yana\Core\Object
         }
         return $array;
     }
+
 }
+
 ?>
