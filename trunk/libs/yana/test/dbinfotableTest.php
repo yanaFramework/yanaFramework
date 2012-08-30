@@ -141,15 +141,11 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($getComment, 'assert failed, no comments are set');
         unset($getComment);
         $text = 'this is a comment blog';
-        $comment = $this->dbinfotable->setComment($text);
-        $this->assertTrue($comment, 'assert failed, the coment is not set');
-        $getComment = $this->dbinfotable->getComment();
+        $getComment = $this->dbinfotable->setComment($text)->getComment();
         $this->assertEquals($text, $getComment, 'assert failed, the "$getComment" value should match the expected text');
         unset($getComment);
         // try second one
-        $comment = $this->dbinfotable->setComment('only one');
-        $this->assertTrue($comment, 'assert failed, the coment is not set');
-        $getComment = $this->dbinfotable->getComment();
+        $getComment = $this->dbinfotable->setComment('only one')->getComment();
         $this->assertEquals('only one', $getComment, 'assert failed, the "$getComment" value should match the expected text');
     }
 
@@ -329,9 +325,7 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0, count($getInit), 'assert failed, no initialization record is set');
         unset($getInit);
         $array = array(1 =>'select * from foo', 2=>'select * from bar');
-        $setInit = $this->dbinfotable->setInit($array);
-        $this->assertTrue($setInit, 'assert failed, initialization record is not set');
-        $getInit = $this->dbinfotable->getInit();
+        $getInit = $this->dbinfotable->setInit($array)->getInit();
         $this->assertTrue(in_array($array[1], $getInit), 'assert failed, the expected value is not in array');
         $this->assertTrue(in_array($array[2], $getInit), 'assert failed, the expected value is not in array');
         // create column3
@@ -355,6 +349,8 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
         $array = $this->dbinfotable->toArray();
         $this->assertType('array', $array, 'assert failed, the expected value is not of type array');
         $this->assertEquals('foo', $array['name'], 'assert failed, the expected value "name" is different from the tabel name');
-     }
+    }
+
 }
+
 ?>
