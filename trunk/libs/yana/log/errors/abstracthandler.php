@@ -33,30 +33,13 @@ namespace Yana\Log\Errors;
  * @package     yana
  * @subpackage  log
  */
-class Handler extends \Yana\Log\Errors\AbstractHandler
+abstract class AbstractHandler extends \Yana\Core\Object implements \Yana\Log\Errors\IsHandler
 {
 
     /**
-     * @var \Yana\Log\IsLogger
+     * @var bool
      */
-    private $_logger = null;
-
-    /**
-     * @var \Yana\Log\Formatter\IsFormatter 
-     */
-    private $_formatter = null;
-
-    /**
-     * Initialize instances.
-     *
-     * @param  \Yana\Log\Formatter\IsFormatter  $formatter  formats the error messages for output
-     * @param  \Yana\Log\IsLogger               $logger     Logs the formatted errors
-     */
-    public function __construct(\Yana\Log\Formatter\IsFormatter $formatter, \Yana\Log\IsLogger $logger)
-    {
-        $this->_logger = $logger;
-        $this->_formatter = $formatter;
-    }
+    private $_isActive = false;
 
     /**
      * This custom error handler implements logging of errors.
@@ -75,16 +58,7 @@ class Handler extends \Yana\Log\Errors\AbstractHandler
      *
      * @internal NOTE: this function is public for technical reasons. Don't call it yourself.
      */
-    public function handleError($errorNumber, $description, $file, $lineNumber)
-    {
-        $reportingLevel = error_reporting();
-        if (($reportingLevel & ~$errorNumber) !== $reportingLevel) {
-            $message = $this->_formatter->format($errorNumber, $description, $file, $lineNumber);
-            $this->_logger->addLog($message, $errorNumber);
-
-            $this->_exit();
-        }
-    }
+    abstract public function handleError($errorNumber, $description, $file, $lineNumber);
 
     /**
      * Handles failed assertions.
@@ -100,13 +74,7 @@ class Handler extends \Yana\Log\Errors\AbstractHandler
      *
      * @ignore
      */
-    public function handleAssertion($pathToFile, $lineNumber, $description)
-    {
-        $message = $this->_formatter->format(\Yana\Log\TypeEnumeration::ASSERT, $description, $pathToFile, $lineNumber);
-        $this->_logger->addLog($message, \Yana\Log\TypeEnumeration::ASSERT);
-
-        $this->_exit();
-    }
+    abstract public function handleAssertion($pathToFile, $lineNumber, $description);
 
     /**
      * Handles uncaught exceptions.
@@ -116,31 +84,31 @@ class Handler extends \Yana\Log\Errors\AbstractHandler
      *
      * @internal NOTE: this function is public for technical reasons. Don't call it yourself.
      */
-    public function handleException(\Exception $e)
-    {
-        // move down to root exception
-        $message = "";
-        do
-        {
-            $message .= $this->_formatter->format(
-                \Yana\Log\TypeEnumeration::EXCEPTION, $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTrace()
-            );
-            $e = $e->getPrevious();
-        } while ($e);
-        $this->_logger->addLog($message, \Yana\Log\TypeEnumeration::EXCEPTION);
-
-        $this->_exit();
-    }
+    abstract public function handleException(\Exception $e);
 
     /**
-     * Exit the application on error.
+     * Activate or deactive error handler.
+     *
+     * @param   bool  $isActive  true = activate, false = deactivate
+     * @return  Handler 
      */
-    protected function _exit()
+    public function setActivate($isActive = true)
     {
-        if (ob_get_length() !== false) {
-            ob_end_flush();
+        if ($this->_isActive != $isActive) {
+            if ($isActive) {
+                set_error_handler(array($this, 'handleError'));
+                set_exception_handler(array($this, 'handleException'));
+                assert_options(ASSERT_CALLBACK, array($this, 'handleAssertion'));
+                assert_options(ASSERT_ACTIVE, 1); // activates assertions
+                assert_options(ASSERT_QUIET_EVAL, 0); // surpresses warnings for errors in assertion code
+            } else {
+                assert_options(ASSERT_ACTIVE, 0); // deactivates assertions
+                restore_error_handler();
+                restore_exception_handler();
+            }
+            $this->_isActive = (bool) $isActive;
         }
-        exit(1);
+        return $this;
     }
 
 }
