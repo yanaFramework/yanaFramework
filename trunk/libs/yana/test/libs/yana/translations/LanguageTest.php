@@ -175,6 +175,16 @@ class LanguageTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testSetVars()
+    {
+        $vars = array('test' => 'translation');
+        $this->object->setVars($vars);
+        $this->assertEquals('translation', $this->object->getVar('test'));
+    }
+
+    /**
+     * @test
+     */
     public function testGetLanguages()
     {
         $this->assertEquals(array(), $this->object->getLanguages());
