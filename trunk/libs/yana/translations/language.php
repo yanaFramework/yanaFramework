@@ -36,7 +36,7 @@ namespace Yana\Translations;
  * @package     yana
  * @subpackage  core
  */
-class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Yana\Log\IsLogable
+class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Yana\Log\IsLogable, \Yana\Core\IsVarContainer
 {
 
     /**
@@ -188,11 +188,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      */
     public function getLanguage()
     {
-        if (!empty($this->_language)) {
-            return $this->_language;
-        } else {
-            return false;
-        }
+        return (!empty($this->_language)) ? $this->_language : false;
     }
 
     /**
@@ -218,11 +214,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      */
     public function getCountry()
     {
-        if (!empty($this->_country)) {
-            return $this->_country;
-        } else {
-            return false;
-        }
+        return (!empty($this->_country)) ? $this->_country : false;
     }
 
     /**
@@ -334,7 +326,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
     }
 
     /**
-     * get list of validated directories
+     * Get list of validated directories.
      *
      * The list of directories is just a list of base directories.
      * These directories are not specific for the given locale settings.
@@ -346,7 +338,6 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      * language settings may take some time, this function caches the results,
      * unless the locale settings are changed.
      *
-     * @access  private
      * @return  array
      */
     private function _getValidDirectories()
@@ -361,9 +352,8 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
     }
 
     /**
-     * validate directories
+     * Validate directories.
      *
-     * @access  private
      * @param   array  $directories  list of paths to validate
      */
     private function _validateDirectories($directories)
@@ -375,9 +365,8 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
     }
 
     /**
-     * validate directory
+     * Validate directory.
      *
-     * @access  private
      * @param  string  $directory  path to validate
      */
     private function _validateDirectory($directory)
@@ -390,9 +379,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
     }
 
     /**
-     * get language string
-     *
-     * Returns var from language file.
+     * Get language string.
      *
      * Example:
      * <code>
@@ -404,7 +391,6 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      * Note: the key may also refer to a group id. If so the function returns
      * all members of the group as an array.
      *
-     * @access  public
      * @param   string  $key  translation key (case insensitive)
      * @return  mixed
      * @name    Language::getVar()
@@ -439,7 +425,6 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
     /**
      * Returns all strings from language file.
      *
-     * @access  public
      * @param   string  $key  translation key (case insensitive)
      * @return  array
      */
@@ -449,11 +434,10 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
     }
 
     /**
-     * check if a translation exists
+     * Check if a translation exists.
      *
      * Returns bool(true) if the key can be translated and bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $key  translation key (case insensitive)
      * @return  bool
      */
@@ -465,9 +449,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
     }
 
     /**
-     * set translation string
-     *
-     * Set's the translation string specified by parameter $key.
+     * Set the translation string specified by parameter $key.
      *
      * Note that the translation is saved even if there is no source text.
      *
@@ -479,20 +461,57 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      */
     public function setVar($key, $value)
     {
+        return $this->setVarByReference($key, $value);
+    }
+
+    /**
+     * Set the translation string specified by parameter $key.
+     *
+     * Note that the translation is saved even if there is no source text.
+     *
+     * @param   string  $key    adress of data in memory (case insensitive)
+     * @param   string  $value  new value (may be scalar value or array)
+     * @return  \Yana\Translations\Language
+     */
+    public function setVarByReference($key, &$value)
+    {
         assert('is_string($key); // Wrong argument type for argument 1. String expected.');
         assert('is_string($value); // Wrong argument type for argument 2. String expected.');
         $key = mb_strtolower((string) $key);
 
-        $this->_strings[$key] = (string) $value;
+        $this->_strings[$key] =& $value;
         return $this;
     }
 
     /**
-     * returns a list of all languages
+     * Replaces the translation strings.
+     *
+     * @param   array  $values  set of new strings
+     * @return  \Yana\Translations\Language
+     */
+    public function setVars(array $values)
+    {
+        return $this->setVarsByReference($values);
+    }
+
+    /**
+     * Replaces the translation strings by reference.
+     *
+     * @param   array  &$values  set of new strings
+     * @return  \Yana\Translations\Language
+     */
+    public function setVarsByReference(array &$values)
+    {
+        $values = \array_change_key_case($values, \CASE_LOWER);
+        $this->_strings =& $values;
+        return $this;
+    }
+
+    /**
+     * Returns a list of all languages.
      *
      * Returns an associative array with a list of ids and names for all installed languages.
      *
-     * @access  public
      * @return  array
      * @since   3.1.0
      */
@@ -517,11 +536,8 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
     }
 
     /**
-     * add directory
+     * Add a directory to the list of language directories.
      *
-     * This adds a directory to the list of language directories.
-     *
-     * @access  public
      * @param   string  $directory  base directory
      * @return \Yana\Translations\Language
      * @throws  \Yana\Core\Exceptions\NotFoundException   when the chosen directory does not exist
@@ -542,11 +558,8 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
     }
 
     /**
-     * set directory
+     * Set the system locale.
      *
-     * Set the system locale and store the
-     *
-     * @access  public
      * @param   string  $selectedLanguage  current language
      * @param   string  $selectedCountry   current country (optional)
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the provided locale is not valid
@@ -587,9 +600,8 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
     }
 
     /**
-     * get path of default directory
+     * Get path of default directory.
      *
-     * @access  protected
      * @return  string
      * @ignore
      */
@@ -604,9 +616,8 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
     }
 
     /**
-     * get directories
+     * Get directories.
      *
-     * @access  public
      * @return  array
      * @ignore
      */
@@ -617,12 +628,11 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
     }
 
     /**
-     * get info
+     * Get list of info fields.
      *
      * Returns an array of language settings on success,
      * or bool(false) on error.
      *
-     * @access  public
      * @param   string  $languageName  name of language pack
      * @return  array
      * @throws  \Yana\Core\Exceptions\NotFoundException  when requested file is not found
@@ -665,11 +675,8 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
     }
 
     /**
-     * serialize this object to a string
-     *
      * Returns the serialized object as a string.
      *
-     * @access  public
      * @return  string
      */
     public function serialize()
@@ -685,7 +692,6 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
     /**
      * Reinitializes the object.
      *
-     * @access  public
      * @param   string  $string  string to unserialize
      */
     public function unserialize($string)
@@ -697,8 +703,6 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
     }
 
     /**
-     * replace token
-     *
      * Replace a token within a provided text.
      *
      * Note that this function replaces ALL entities found.
@@ -712,7 +716,6 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      * print \Yana\Util\String::replaceToken($string);
      * </code>
      *
-     * @access  public
      * @param   string  $string   sting text (look example)
      * @return  string
      */
