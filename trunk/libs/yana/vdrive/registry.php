@@ -135,25 +135,37 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\Core\IsVarContainer
         assert('is_string($key); // Wrong type for argument 1. String expected');
         assert('is_array($this->vars); // Unexpected type for instance property "vars". Array expected');
 
-        if (isset($this->vars[$key])) {
-            return $this->vars[$key];
+        if (!$this->isVar($key)) {
+            $value = false;
 
-        } elseif (isset($this->cache[$key])) {
-            if (is_null($this->cache[$key])) {
-                return false;
-            } else {
-                return $this->cache[$key];
-            }
+        } elseif (isset($this->vars[$key])) {
+            $value = $this->vars[$key];
 
-        } else { // return value specified by key
-            
-            $this->cache[$key] =& \Yana\Util\Hashtable::get($this->vars, $key);
-            if (is_null($this->cache[$key])) {
-                return false;
-            } else {
-                return $this->cache[$key];
-            }
+        } else {
+            assert('isset($this->cache[$key]); // Expected key to exist, but it was not loaded');
+            $value = $this->cache[$key];
         }
+        return $value;
+    }
+
+    /**
+     * Check if a var exists.
+     *
+     * Returns bool(true) if the key is known and bool(false) otherwise.
+     *
+     * @param   string  $key  some key (case insensitive)
+     * @return  bool
+     */
+    public function isVar($key)
+    {
+        assert('is_string($key); // Wrong type for argument 1. String expected');
+
+        $isVar = isset($this->vars[$key]) || (isset($this->cache[$key]) && !is_null($this->cache[$key]));
+        if (!$isVar) {
+            $this->cache[$key] =& \Yana\Util\Hashtable::get($this->vars, $key);
+            $isVar = !is_null($this->cache[$key]);
+        }
+        return $isVar;
     }
 
     /**
