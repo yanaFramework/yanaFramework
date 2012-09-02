@@ -67,8 +67,8 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->registry = new Registry(CWD.$this->path);
-        $set = $this->registry->setAsGlobal();
+        $this->registry = new \Yana\VDrive\Registry(CWD . $this->path);
+        $this->registry->setAsGlobal();
         $this->registry->read();
     }
 
@@ -84,14 +84,42 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * retrieves var from registry
+     * retrieves vars from registry
+     *
+     * @test
+     */
+    public function testGetVars()
+    {
+       $var = $this->registry->getVars();
+       $this->assertType('array', $var, 'assert failed, the value should be of type array');
+    }
+
+    /**
+     * retrieves vars from registry
      *
      * @test
      */
     public function testGetVar()
     {
-       $var = $this->registry->getVars();
-       $this->assertType('array', $var, 'assert failed, the value should be of type array');
+       $this->assertFalse($this->registry->isVar('unknown.key'));
+       $vars =& $this->registry->getVarsByReference();
+       $vars['unknown'] = array('key' => 'Test');
+       $this->assertEquals('Test', $this->registry->getVar('unknown.key')); // This must use the cache
+    }
+
+    /**
+     * check for existence.
+     *
+     * @test
+     */
+    public function testIsVar()
+    {
+       $this->assertFalse($this->registry->isVar('my.key'));
+       $this->assertFalse($this->registry->isVar('my key'));
+       $this->registry->setVar('my key', 'test');
+       $this->assertTrue($this->registry->isVar('my key'));
+       $this->registry->setVar('my.key', 'test');
+       $this->assertTrue($this->registry->isVar('my.key'));
     }
 
     /**
@@ -133,11 +161,9 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * test
-     *
      * @test
      */
-    public function test()
+    public function testMergeVars()
     {
         // get all elements of the registry path
         $getAll = $this->registry->getVars();
@@ -200,11 +226,9 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * test2
-     *
      * @test
      */
-    public function test2()
+    public function testUnsetVars()
     {
         // set a new key and value of type integer
         $this->registry->setVar('bar', '150');
