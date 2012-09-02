@@ -728,9 +728,22 @@ final class Yana extends \Yana\Core\AbstractSingleton
     }
 
     /**
-     * get value from registry
+     * Check if a var exists.
      *
-     * Returns var from registry (memory shared by all plugins)
+     * Returns bool(true) if the key is known and bool(false) otherwise.
+     *
+     * @param   string  $key  some key (case insensitive)
+     * @return  bool
+     */
+    public function isVar($key)
+    {
+        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+        $registry = $this->getRegistry();
+        return $registry->isVar("$key");
+    }
+
+    /**
+     * Returns var from registry (memory shared by all plugins).
      *
      * Example:
      * <code>
@@ -764,7 +777,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
     }
 
     /**
-     * sets var on registry by Reference
+     * Sets var on registry by Reference.
      *
      * The "registry" is memory shared by all plugins.
      *
