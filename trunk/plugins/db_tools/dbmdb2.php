@@ -222,8 +222,8 @@ class DbMDB2 extends \Yana\Files\File implements IsDbImport
                 {
                     $table->addColumn($column);
                 }
-                if (!$table->getPrimaryKey()) {
-                    $table->setPrimaryKey(@$this->currentTable['primary']);
+                if (!$table->getPrimaryKey() && isset($this->currentTable['primary'])) {
+                    $table->setPrimaryKey($this->currentTable['primary']);
                 }
                 if (!empty($this->currentTable['init'])) {
                     $table->setInit($this->currentTable['init']);
@@ -236,7 +236,9 @@ class DbMDB2 extends \Yana\Files\File implements IsDbImport
             case $name === 'field' && $this->_xPath('//table/declaration/field'):
                 if (!empty($this->currentColumn['name'])) {
                     $column = new DbInfoColumn($this->currentColumn['name']);
-                    $column->setType(@$this->currentColumn['type']);
+                    if (!empty($this->currentColumn['type'])) {
+                        $column->setType($this->currentColumn['type']);
+                    }
                     if (empty($this->currentColumn['notnull'])) {
                         $column->setNullable(true);
                     } elseif (strcasecmp($this->currentColumn['notnull'], 'false') === 0 ) {
@@ -249,16 +251,25 @@ class DbMDB2 extends \Yana\Files\File implements IsDbImport
                     $column->setIndex(false);
                     if (!empty($this->currentColumn['autoincrement'])) {
                         $column->setAuto(true);
-                    } elseif (strcasecmp(@$this->currentColumn['autoincrement'], 'true') === 0) {
+                    } elseif (isset($this->currentColumn['autoincrement']) &&
+                        strcasecmp($this->currentColumn['autoincrement'], 'true') === 0) {
                         $column->setAuto(true);
                     } else {
                         $column->setAuto(false);
                     }
-                    $column->setDefault(@$this->currentColumn['default']);
-                    $column->setUnsigned(@$this->currentColumn['unsigned']);
+                    if (isset($this->currentColumn['default'])) {
+                        $column->setDefault($this->currentColumn['default']);
+                    }
+                    if (isset($this->currentColumn['unsigned'])) {
+                        $column->setUnsigned($this->currentColumn['unsigned']);
+                    }
                     $column->setZerofill(null);
-                    @$column->setComment(@$this->currentColumn['comments']);
-                    $column->setLength((int) @$this->currentColumn['length']);
+                    if (isset($this->currentColumn['comments'])) {
+                        $column->setComment($this->currentColumn['comments']);
+                    }
+                    if (isset($this->currentColumn['length'])) {
+                        $column->setLength((int) $this->currentColumn['length']);
+                    }
                     $column->setUpdate(true);
                     $column->setInsert(true);
                     $column->setSelect(true);
