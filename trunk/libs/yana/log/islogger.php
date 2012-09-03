@@ -36,30 +36,6 @@ namespace Yana\Log;
  */
 interface IsLogger extends IsLogHandler
 {
-    /**
-     * Suggested level for debugging messages.
-     */
-    const DEBUG = E_STRICT;
-    /**
-     * Suggested level for noticed messages.
-     */
-    const INFO = E_USER_NOTICE;
-    /**
-     * Debugging
-     */
-    const WARNING = E_USER_WARNING;
-    /**
-     * Debugging
-     */
-    const ERROR = E_USER_ERROR;
-    /**
-     * Failed assertion
-     */
-    const ASSERT = E_ALL;
-    /**
-     * Any mesage
-     */
-    const ALL = E_ALL;
 
     /**
      * Set new logging level.

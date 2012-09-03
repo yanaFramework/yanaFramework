@@ -404,8 +404,8 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
 
         if (isset($this->_strings[$key])) {
             return $this->_strings[$key];
-        }
-        if (isset($this->_groups[$key])) {
+
+        } elseif (isset($this->_groups[$key])) {
 
             $array = array();
             foreach($this->_groups[$key] as $globalId => $localId)
@@ -415,7 +415,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
             return $array;
 
         } else {
-            $message = "No text found for key '$key'.";
+            $message = "No text found for key '{$key}'.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             $this->getLogger()->addLog($message, $level);
             return "$key";

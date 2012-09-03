@@ -74,14 +74,14 @@ abstract class AbstractDecorator extends \Yana\Core\Object
     /**
      * list of items to work on
      *
-     * @var     array
+     * @var  object
      */
     private $_object = null;
 
     /**
      * Returns the instance that all calls will be relayed to.
      *
-     * @return object
+     * @return  object
      */
     protected function _getDecoratedObject()
     {
@@ -91,8 +91,8 @@ abstract class AbstractDecorator extends \Yana\Core\Object
     /**
      * Set a new object that will be decorated.
      *
-     * @param object $object the new decorated object
-     * @return AbstractDecorator
+     * @param   object  $object the new decorated object
+     * @return  AbstractDecorator
      */
     protected function _setDecoratedObject($object)
     {
@@ -103,8 +103,8 @@ abstract class AbstractDecorator extends \Yana\Core\Object
     /**
      * <<magic>> Calls the wrapped object.
      *
-     * @param string $name       method name
-     * @param array  $arguments  method arguments
+     * @param  string  $name       method name
+     * @param  array   $arguments  method arguments
      * @ignore
      */
     public function __call($name, array $arguments)

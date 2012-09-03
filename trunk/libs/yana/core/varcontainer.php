@@ -30,13 +30,21 @@
 namespace Yana\Core;
 
 /**
- * <<interface>> Container interface for classes managing variables.
+ * Container for managing variables.
+ *
+ * This class' primary use is for implementing unit-tests.
  *
  * @package     yana
  * @subpackage  core
+ * @ingore
  */
-interface IsVarContainer
+class VarContainer implements \Yana\Core\IsVarContainer
 {
+
+    /**
+     * @var array
+     */
+    private $_contents = array();
 
     /**
      * Returns the var identified by $key or bool(false) on error.
@@ -48,14 +56,20 @@ interface IsVarContainer
      * @param   string  $key  the var to retrieve
      * @return  mixed
      */
-    public function getVar($key);
+    public function getVar($key)
+    {
+        return (isset($this->_contents[$key])) ? $this->_contents[$key] : null;
+    }
 
     /**
      * Returns all contained vars.
      *
      * @return  array
      */
-    public function getVars();
+    public function getVars()
+    {
+        return $this->_contents;
+    }
 
     /**
      * Check if a var exists.
@@ -65,7 +79,10 @@ interface IsVarContainer
      * @param   string  $key  some key (case insensitive)
      * @return  bool
      */
-    public function isVar($key);
+    public function isVar($key)
+    {
+        return (isset($this->_contents[$key]));
+    }
 
     /**
      * Sets the element identified by $key to $value by passing it's reference.
@@ -75,17 +92,25 @@ interface IsVarContainer
      *
      * @param   string  $key        key of updated element
      * @param   mixed   &$value     new value
-     * @return  \Yana\Core\IsVarContainer
+     * @return  \Yana\Core\VarContainer
      */
-    public function setVarByReference($key, &$value);
+    public function setVarByReference($key, &$value)
+    {
+        $this->_contents[$key] =& $value;
+        return $this;
+    }
 
     /**
      * Replaces all elements of the container by reference.
      *
      * @param   array  &$value  set of new values
-     * @return  \Yana\Core\IsVarContainer
+     * @return  \Yana\Core\VarContainer
      */
-    public function setVarsByReference(array &$value);
+    public function setVarsByReference(array &$value)
+    {
+        $this->_contents =& $value;
+        return $this;
+    }
 
     /**
      * Sets the element identified by $key  to $value.
@@ -95,17 +120,23 @@ interface IsVarContainer
      *
      * @param   string  $key        key of updated element
      * @param   mixed   $value      new value
-     * @return  \Yana\Core\IsVarContainer
+     * @return  \Yana\Core\VarContainer
      */
-    public function setVar($key, $value);
+    public function setVar($key, $value)
+    {
+        return $this->setVarByReference($key, $value);
+    }
 
     /**
      * Replaces all elements of the container.
      *
      * @param   array  $value  set of new values
-     * @return  \Yana\Core\IsVarContainer
+     * @return  \Yana\Core\VarContainer
      */
-    public function setVars(array $value);
+    public function setVars(array $value)
+    {
+        return $this->setVarsByReference($value);
+    }
 
 }
 

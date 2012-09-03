@@ -39,7 +39,7 @@ abstract class AbstactLogger extends \Yana\Core\Object implements \Yana\Log\IsLo
     /**
      * @var int
      */
-    private $_logLevel = IsLogger::ALL;
+    private $_logLevel = 0;
 
     /**
      * Get current logging level.
@@ -81,7 +81,7 @@ abstract class AbstactLogger extends \Yana\Core\Object implements \Yana\Log\IsLo
         assert('is_int($level); // Invalid argument $level: int expected');
 
         $reportingLevel = $this->getLogLevel();
-        return ($reportingLevel & ~$level) !== $reportingLevel;
+        return $reportingLevel <= 0 || (($reportingLevel & ~$level) !== $reportingLevel);
     }
 
 }

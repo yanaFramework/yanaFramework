@@ -86,6 +86,21 @@ class NullTemplate extends \Yana\Core\Object implements \Yana\Views\IsTemplate
     }
 
     /**
+     * Check if a var exists.
+     *
+     * Returns bool(true) if the key is known and bool(false) otherwise.
+     *
+     * @param   string  $key  some key (case insensitive)
+     * @return  bool
+     */
+    public function isVar($key)
+    {
+        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+
+        return isset($this->_vars[$key]);
+    }
+
+    /**
      * Get template var.
      *
      * @param   string  $key  variable-name

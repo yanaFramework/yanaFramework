@@ -43,7 +43,7 @@ class TypeEnumeration extends \Yana\Core\AbstractEnumeration
     /**
      * Suggested level for success informations.
      */
-    const SUCCESS = E_USER_NONE;
+    const SUCCESS = 0;
     /**
      * Suggested level for debugging messages.
      */

@@ -74,6 +74,19 @@ class TemplateMessage extends \Yana\Mails\Messages\Message implements \Yana\Core
     }
 
     /**
+     * Check if a var exists.
+     *
+     * Returns bool(true) if the key is known and bool(false) otherwise.
+     *
+     * @param   string  $key  some key (case insensitive)
+     * @return  bool
+     */
+    public function isVar($key)
+    {
+        return $this->_getTemplate()->isVar($key);
+    }
+
+    /**
      * Get registered vars.
      *
      * @return  array
