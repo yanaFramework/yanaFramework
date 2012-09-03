@@ -82,15 +82,6 @@ if (!defined('YANA_GET_DIRS')) {
 }
 
 /**#@-*/
-if (!defined('E_USER_NONE')) {
-    /**
-     * Indicates an info message that states that abscence of an error.
-     * May also be used to surpress error reporting.
-     *
-     * @ignore
-     */
-    define('E_USER_NONE',  0);
-}
 if (!defined('CASE_MIXED')) {
     /**
      * used for change case commands
