@@ -139,6 +139,13 @@ final class Yana extends \Yana\Core\AbstractSingleton
     private $_loggers = null;
 
     /**
+     * Tracks and prepares output messages.
+     *
+     * @var  \Yana\Log\ExceptionLogger
+     */
+    private $_exceptionLogger = null;
+
+    /**
      * caches database connections
      *
      * @var  \Yana\Db\IsConnection[]
@@ -246,7 +253,6 @@ final class Yana extends \Yana\Core\AbstractSingleton
         self::$_config->configdir = $cwd . (string) self::$_config->configdir;
         self::$_config->configdrive = $cwd . (string) self::$_config->configdrive;
         self::$_config->pluginfile = $cwd . (string) self::$_config->pluginfile;
-        self::$_config->skindir = $cwd . (string) self::$_config->skindir;
         \Yana\Db\AbstractConnection::setTempDir((string) self::$_config->tempdir);
     }
 
@@ -280,7 +286,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
             self::_setRealPaths(getcwd());
         }
         // initialize directories
-        if (!empty(self::$_config->skindir)) {
+        if (!empty(self::$_config->skindir) && is_dir(self::$_config->skindir)) {
             \Yana\Views\Skin::setBaseDirectory((string) self::$_config->skindir);
         }
         if (isset(self::$_config->pluginfile)) {
@@ -405,23 +411,44 @@ final class Yana extends \Yana\Core\AbstractSingleton
          *
          * Returns bool(true) on success and bool(false) otherwise.
          */
+        $result = false;
         try {
 
             $result = $plugins->broadcastEvent($action, $args);
+            if ($result !== false) {
+                /* Create timestamp to provide information for read-stability isolation level */
+                $_SESSION['transaction_isolation_created'] = time();
+            }
+
+        } catch (\Yana\Core\Exceptions\IsException $e) {
+            $this->_getExceptionLogger()->addException($e);
 
         } catch (\Exception $e) {
             $message = get_class($e) . ': ' . $e->getMessage() . ' Thrown in ' . $e->getFile() .
                 ' on line ' . $e->getLine();
             trigger_error($message, E_USER_WARNING);
-            return false;
+
         }
-        if ($result !== false) {
-            /* Create timestamp to provide information for read-stability isolation level */
-            $_SESSION['transaction_isolation_created'] = time();
-            return true;
-        } else {
-            return false;
+        return $result !== false;
+    }
+
+    /**
+     * Get exception logger.
+     *
+     * Builds and returns a class that converts exceptions to messages and passes them as var
+     * "STDOUT" to a var-container for output in a template or on the command line.
+     *
+     * @return  \Yana\Log\ExceptionLogger
+     * @ignore
+     */
+    protected function _getExceptionLogger()
+    {
+        if (!isset($this->_exceptionLogger)) {
+            $inputContainer = $this->getLanguage();
+            $inputContainer->readFile('message');
+            $this->_exceptionLogger = new \Yana\Log\ExceptionLogger($inputContainer);
         }
+        return $this->_exceptionLogger;
     }
 
     /**
@@ -927,7 +954,6 @@ final class Yana extends \Yana\Core\AbstractSingleton
          *
          * By default this will output any messages to a table of the database named 'log'.
          */
-        $level = $this->_prepareMessages();
         $view = $this->getView();
 
         assert('!isset($template); // Cannot redeclare var $template');
@@ -951,7 +977,6 @@ final class Yana extends \Yana\Core\AbstractSingleton
 
             $template = $view->createLayoutTemplate($templateName, '', $this->getVars());
             $template->setVar('ACTION', mb_strtolower("$event"));
-            $template->setVar('STDOUT.LEVEL', mb_strtolower("$level"));
 
             exit((string) $template);
         }
@@ -959,11 +984,10 @@ final class Yana extends \Yana\Core\AbstractSingleton
         /**
          * save message and relocate.
          */
-        $stdout = $this->getVar('STDOUT');
-        if (!is_array($stdout)) {
-            unset($_SESSION['STDOUT']);
-        } else {
-            $_SESSION['STDOUT'] = $stdout;
+        unset($_SESSION['STDOUT']);
+        $messageCollection = $this->_getExceptionLogger()->getMessages();
+        if ($messageCollection->count() > 0) {
+            $_SESSION['STDOUT'] = $messageCollection;
         }
 
         $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
@@ -1013,7 +1037,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
              * 3) all other template settings go here
              */
             default:
-                if ($result === false && \Yana\Core\Exceptions\AbstractException::countMessages() === 0) {
+                if ($result === false && $this->_getExceptionLogger()->getMessages()->count() === 0) {
                     $this->_outputAsMessage();
                     return;
                 }
@@ -1036,7 +1060,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
         if (!headers_sent()) {
             header('Content-Type: text/plain');
             header('Content-Encoding: UTF-8');
-            header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+            header("Expires: " . gmdate("D, d M Y H:i:s") . " GMT");
             header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
             header("Cache-Control: no-store, no-cache, must-revalidate");
             header("Cache-Control: post-check=0, pre-check=0", false);
@@ -1057,21 +1081,23 @@ final class Yana extends \Yana\Core\AbstractSingleton
         $target = "";
         $messageClass = "";
 
+        $logger = $this->_getExceptionLogger();
         if ($route instanceof \Yana\Plugins\Configs\EventRoute) {
             // create default message if there is none
-            if (\Yana\Core\Exceptions\AbstractException::countMessages() === 0) {
-                if ($route->getMessage()) {
-                    $messageClass = $route->getMessage();
-                } else {
-                    if ($route->getCode() === \Yana\Plugins\Configs\EventRoute::CODE_SUCCESS) {
-                        $messageClass = \Yana\Plugins\Configs\EventRoute::MSG_SUCCESS;
-                    } else {
-                        $messageClass = \Yana\Plugins\Configs\EventRoute::MSG_ERROR;
-                    }
+            if ($logger->getMessages()->count() === 0) {
+
+                $level = \Yana\Log\TypeEnumeration::ERROR;
+                $message = 'Action was not successfully';
+                if ($route->getCode() === \Yana\Plugins\Configs\EventRoute::CODE_SUCCESS) {
+                    $level = \Yana\Log\TypeEnumeration::SUCCESS;
+                    $message = 'Action carried out successfully';
                 }
 
-                if (class_exists($messageClass)) {
-                    new $messageClass();
+                $messageClass = $route->getMessage();
+                if ($messageClass && class_exists($messageClass)) {
+                    $logger->addException(new $messageClass($message, $level));
+                } else {
+                    $logger->addLog($message, $level);
                 }
             }
 
@@ -1083,6 +1109,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
             assert('!empty($target); // Configuration error: No default homepage set.');
             assert('is_string($target); // Configuration error: Default homepage invalid.');
         }
+        $this->setVar('STDOUT', $logger->getMessages());
 
         $this->exitTo($target);
     }
@@ -1104,18 +1131,17 @@ final class Yana extends \Yana\Core\AbstractSingleton
             $baseTemplate = (string) self::$_config->default->event->$_template;
         }
         if (!is_file($template) && !\Yana\Util\String::startsWith($template, 'id:')) {
-            $template = "id:$template";
+            $template = "id:{$template}";
         }
         /* register templates with view sub-system */
         $template = $view->createLayoutTemplate($baseTemplate, $template, $this->getVars());
         /* there is a special var called 'STDOUT' that is used to output messages */
-        if (!empty($_SESSION['STDOUT']['MESSAGES']) && is_array($_SESSION['STDOUT']['MESSAGES'])) {
-            $this->setVar('STDOUT', $_SESSION['STDOUT']);
+        if (isset($_SESSION['STDOUT'])) {
+            $template->setVar('STDOUT', $_SESSION['STDOUT']);
             unset($_SESSION['STDOUT']);
+        } else {
+            $template->setVar('STDOUT', $this->_getExceptionLogger()->getMessages());
         }
-
-        /* print message queue to client */
-        $this->_prepareMessages();
 
         /* print the page to the client */
         print $template->fetch();
@@ -1414,67 +1440,6 @@ final class Yana extends \Yana\Core\AbstractSingleton
         unset($dir);
 
         return $report;
-    }
-
-    /**
-     * iterate through message queue
-     *
-     * @return  string
-     */
-    private function _prepareMessages()
-    {
-        $messageClass = "";
-        $isFinal = false;
-        $stdout = array();
-
-        assert('!isset($messages); // Cannot redeclare variable $messages');
-        $messages = \Yana\Core\Exceptions\AbstractException::getMessages();
-        assert('is_array($messages); // unexpected result: List of messages is not an array');
-
-        if (empty($messages)) {
-            return "";
-        }
-
-        // event logging
-        assert('!isset($message); // Cannot redeclare variable $message');
-        foreach ($messages as $message)
-        {
-            if (!$isFinal) {
-                switch ($message->getCode())
-                {
-                    case \E_USER_ERROR:
-                    case \E_ERROR:
-                        $messageClass = \Yana\Core\Exceptions\ResultTypeEnumeration::ERROR;
-                        $isFinal = true;
-                        break;
-                    case \E_USER_WARNING:
-                    case \E_WARNING:
-                        $messageClass = \Yana\Core\Exceptions\ResultTypeEnumeration::WARNING;
-                        break;
-                    case \E_USER_NONE:
-                        $messageClass = \Yana\Core\Exceptions\ResultTypeEnumeration::MESSAGE;
-                        $isFinal = true;
-                        break;
-                    case \E_NOTICE:
-                    case \E_USER_DEPRECATED:
-                    case \E_USER_NOTICE:
-                    default:
-                        $messageClass = \Yana\Core\Exceptions\ResultTypeEnumeration::ALERT;
-                }
-            }
-            if ($message->getHeader() || $message->getText()) {
-                $stdout[] = array(
-                    'header' => $message->getHeader(),
-                    'text' => $message->getText()
-                );
-            }
-        } // end foreach (message)
-        unset($message);
-        if (!empty($stdout)) {
-            $this->setVar('STDOUT.MESSAGES', $stdout);
-            $this->setVar('STDOUT.LEVEL', $messageClass);
-        }
-        return $messageClass;
     }
 
     /**

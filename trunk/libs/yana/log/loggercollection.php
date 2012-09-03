@@ -61,7 +61,7 @@ class LoggerCollection extends \Yana\Core\AbstractCollection implements IsLogHan
      * @param  int     $level    numeric level of severity
      * @param  mixed   $data     any kind of data that might help to understand context in which the message was created
      */
-    public function addLog($message, $level = \Yana\Log\IsLogger::INFO, $data = array())
+    public function addLog($message, $level = \Yana\Log\TypeEnumeration::INFO, $data = array())
     {
         foreach ($this as $logger)
         {

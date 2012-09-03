@@ -105,6 +105,21 @@ class Template extends \Yana\Core\Object implements \Yana\Views\IsTemplate
     }
 
     /**
+     * Check if a var exists.
+     *
+     * Returns bool(true) if the key is known and bool(false) otherwise.
+     *
+     * @param   string  $key  some key (case insensitive)
+     * @return  bool
+     */
+    public function isVar($key)
+    {
+        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+
+        return !is_null($this->getVar($key));
+    }
+
+    /**
      * Get template var.
      *
      * If you call $template->getVar($varName) it will get the template var $varName and return it.

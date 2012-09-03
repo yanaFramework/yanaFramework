@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Core\Exceptions;
+namespace Yana\Log\ViewHelpers;
 
 /**
  * <<enumeration>> Holds possible results of an operation.
@@ -34,7 +34,7 @@ namespace Yana\Core\Exceptions;
  * @subpackage  core
  * @ignore
  */
-class ResultTypeEnumeration extends \Yana\Core\AbstractEnumeration
+class MessageLevelEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     /**

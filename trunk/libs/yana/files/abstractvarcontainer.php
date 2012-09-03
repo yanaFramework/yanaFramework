@@ -134,6 +134,19 @@ abstract class AbstractVarContainer extends \Yana\Files\File implements \Yana\Co
     }
 
     /**
+     * Check if a var exists.
+     *
+     * Returns bool(true) if the key is known and bool(false) otherwise.
+     *
+     * @param   string  $key  some key (case insensitive)
+     * @return  bool
+     */
+    public function isVar($key)
+    {
+        return !is_null($this->getVarByReference($key));
+    }
+
+    /**
      * Get a value from the file.
      *
      * Returns the value at the position specified by $key.

@@ -43,7 +43,7 @@ namespace Yana\Core\Exceptions;
  * @package     yana
  * @subpackage  core
  */
-abstract class AbstractException extends \Exception
+abstract class AbstractException extends \Exception implements \Yana\Core\Exceptions\IsException
 {
 
     /**

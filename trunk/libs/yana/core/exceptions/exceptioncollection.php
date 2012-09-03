@@ -25,24 +25,24 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Log;
+namespace Yana\Core\Exceptions;
 
 /**
  * <<collection>> Stores exceptions for later use.
  *
  * @package    yana
- * @subpackage log
+ * @subpackage core
  */
 class ExceptionCollection extends \Yana\Core\AbstractCollection
 {
 
     /**
-     * Store new value in database.
+     * Store new value in collection.
      *
      * @param   scalar      $offset  where to place the value (may also be empty)
      * @param   \Exception  $value   new value to store
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not valid
-     * @return  \Yana\Log\IsLogger
+     * @return  \Yana\Core\Exceptions\ExceptionCollection
      */
     public function offsetSet($offset, $value)
     {

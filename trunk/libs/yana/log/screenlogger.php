@@ -43,7 +43,7 @@ class ScreenLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      * @param   int     $level    numeric level of severity
      * @param   mixed   $data     any kind of data that might help to understand context in which the message was created
      */
-    public function addLog($message, $level = IsLogger::INFO, $data = array())
+    public function addLog($message, $level = \Yana\Log\TypeEnumeration::INFO, $data = array())
     {
         if ($this->_isAcceptable($level)) {
             print $message;
