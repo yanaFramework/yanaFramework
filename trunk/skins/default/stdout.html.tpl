@@ -1,10 +1,10 @@
 <div id="yana_stdout">
-{if $STDOUT}
-    <div id="messagebox" class="errlvl_{$STDOUT.LEVEL}">
-        <div class="errlvl_{$STDOUT.LEVEL}">
-        {foreach item=message from=$STDOUT.MESSAGES}
-             {if !empty($message.header)}<div class="message_header">{$message.header}</div>{/if}
-             {if !empty($message.text)}<div class="message_text">{$message.text}</div>{/if}
+{if count($STDOUT) > 0}
+    <div id="messagebox" class="errlvl_{$STDOUT->getLevel()}">
+        <div class="errlvl_{$STDOUT->getLevel()}">
+        {foreach item=message from=$STDOUT}
+             {if $message->getHeader()}<div class="message_header">{$message->getHeader()}</div>{/if}
+             {if $message->getText()}<div class="message_text">{$message->getText()}</div>{/if}
         {/foreach}
         </div>
     </div>
