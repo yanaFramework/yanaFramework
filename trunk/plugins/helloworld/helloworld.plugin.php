@@ -35,7 +35,7 @@ class Plugin_HelloWorld extends StdClass implements IsPlugin
      */
     public function catchAll($event, array $ARGS)
     {
-        return true; // @todo implement this function
+        return true;
     }
 
     /**
