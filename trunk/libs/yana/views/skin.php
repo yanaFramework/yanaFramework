@@ -219,7 +219,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
                     $this->_descriptions[(string) $description->attributes()->lang] = (string) $description;
                 }
                 unset($description);
-            }
+            } // end if
             // body
             foreach ($xml->body->template as $element)
             {
@@ -232,14 +232,14 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
                     assert('!isset($file); // Cannot redeclare $file');
                     $file = $dir . $attributes['file'];
                     if (!is_file("$file")) {
-                        $message = "The value '$file' is not a valid file resource.";
+                        $message = "The value '{$file}' is not a valid file resource.";
                         trigger_error($message, E_USER_WARNING);
                         unset($file);
                         continue;
                     }
                     $this->_value[$id]['FILE'] = $file;
                     unset($file);
-                }
+                } // end if
                 unset($attributes);
                 foreach ($element->children() as $item)
                 {
@@ -251,7 +251,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
                         case 'SKIN':
                         case 'STYLE':
                             if (!empty($item)) {
-                                if (!is_file("$dir$item")) {
+                                if (!is_file("{$dir}{$item}")) {
                                     $message = "The value '{$item}' is not a valid file resource.";
                                     trigger_error($message, E_USER_WARNING);
                                     continue;
@@ -261,19 +261,19 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
                         // fall through
                         case 'LANGUAGE':
                             if (!isset($attributes['id'])) {
-                                $this->_value[$id][$name][] = "$item";
+                                $this->_value[$id][$name][] = (string) $item;
                             } else {
-                                $this->_value[$id][$name][(string) $attributes['id']] = "$item";
+                                $this->_value[$id][$name][(string) $attributes['id']] = (string) $item;
                             }
                         break;
-                    }
-                }
-            }
-        }
+                    } // end switch
+                } // end foreach
+            } // end foreach
+        } // end if
     }
 
     /**
-     * get filename
+     * Get filename.
      *
      * This returns the path and name of the template file associated with $key (the template id).
      * An exception is thrown, if it does not exist.
@@ -294,7 +294,8 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
 
             // cache the name of the file
             if (!isset($this->_value[$key]['FILE'])) {
-                throw new \Yana\Core\Exceptions\NotFoundException("Missing file attribute for template with id '$key'.");
+                $message = "Missing file attribute for template with id '{$key}'.";
+                throw new \Yana\Core\Exceptions\NotFoundException($message);
             }
             self::$_filePaths[$key] = $this->_value[$key]['FILE'];
 
@@ -304,7 +305,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
     }
 
     /**
-     * set template file
+     * Set template file.
      *
      * This function set the path to a template file for the given id.
      *
@@ -324,7 +325,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
     }
 
     /**
-     * check if input is a valid template id
+     * Check if input is a valid template id.
      *
      * Returns bool(true) if a template named $key is currently registered
      * and bool(false) otherwise.
@@ -345,7 +346,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
     }
 
     /**
-     * get language
+     * Get language.
      *
      * @param   string  $key    key
      * @return  array
@@ -357,9 +358,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
     }
 
     /**
-     * set stylesheet
-     *
-     * This sets a CSS-stylesheet for template $key.
+     * Set a CSS-stylesheet for template $key.
      *
      * Examples:
      * <code>
@@ -390,7 +389,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
     }
 
     /**
-     * Sets a javascript-file for template $key.
+     * Set a javascript-file for template $key.
      *
      * Examples:
      * <code>
@@ -421,9 +420,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
     }
 
     /**
-     * set language
-     *
-     * This sets a language-file for template $key.
+     * Set a language-file for template $key.
      *
      * Examples:
      * <code>
@@ -454,9 +451,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
     }
 
     /**
-     * set property
-     *
-     * This sets a property for template $key.
+     * Set a property for template $key.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
