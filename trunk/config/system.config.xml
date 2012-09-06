@@ -124,7 +124,6 @@
         <prefilter>\Yana\Views\Helpers\PreFilters\LanguageTokenFilter</prefilter>
         <prefilter>\Yana\Views\Helpers\PreFilters\IncludeFilter</prefilter>
         <prefilter>\Yana\Views\Helpers\PreFilters\AjaxBridgeFilter</prefilter>
-        <prefilter>\Yana\Views\Helpers\PreFilters\RelativePathsFilter</prefilter>
         <!--
             List of post-processors to register.
             They must implement \Yana\Views\Helpers\IsPostFilter.
