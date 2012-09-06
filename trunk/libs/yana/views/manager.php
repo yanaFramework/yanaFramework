@@ -55,6 +55,11 @@ class Manager extends \Yana\Views\AbstractManager
     private $_layoutTemplate = null;
 
     /**
+     * @var \Yana\Views\Template
+     */
+    private $_currentTemplate = null;
+
+    /**
      * global Smarty instance
      *
      * @var  \Smarty
@@ -122,9 +127,7 @@ class Manager extends \Yana\Views\AbstractManager
         $internalTemplate->assign('SYSTEM_INSERT', $mainContentTemplateName);
 
         $this->_layoutTemplate = $internalTemplate;
-        $wrappedTemplate = new \Yana\Views\Template($this->_layoutTemplate);
-        $wrappedTemplate->setVar('BASEDIR', dirname($wrappedTemplate->getPath()));
-        return $wrappedTemplate;
+        return $this->_wrapTemplate($internalTemplate);
     }
 
     /**
@@ -141,9 +144,15 @@ class Manager extends \Yana\Views\AbstractManager
         assert('is_string($filename); // Invalid argument $filename: string expected');
 
         $internalTemplate = $this->_createTemplate($filename, $this->_layoutTemplate);
-        $wrappedTemplate = new \Yana\Views\Template($internalTemplate);
-        $wrappedTemplate->setVar('BASEDIR', dirname($wrappedTemplate->getPath()));
-        return $wrappedTemplate;
+        return $this->_wrapTemplate($internalTemplate);
+    }
+
+    /**
+     * @return \Yana\Views\Template
+     */
+    public function getCurrentTemplate()
+    {
+        return $this->_currentTemplate;
     }
 
     /**
@@ -162,6 +171,19 @@ class Manager extends \Yana\Views\AbstractManager
             $compileId = $cacheId;
         }
         return $this->_smarty->createTemplate($filename, $cacheId, $compileId, $parent);
+    }
+
+    /**
+     * Wraps the given template using a Template class.
+     *
+     * @param   \Smarty_Internal_Template  $internalTemplate  smarty template instance
+     * @return  \Yana\Views\Template
+     */
+    private function _wrapTemplate(\Smarty_Internal_Template $internalTemplate)
+    {
+        $wrappedTemplate = new \Yana\Views\Template($internalTemplate);
+        $this->_currentTemplate = $wrappedTemplate;
+        return $wrappedTemplate;
     }
 
     /**
