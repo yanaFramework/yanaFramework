@@ -62,14 +62,14 @@ class FileResource extends \Yana\Views\Resources\AbstractResource
 {
 
     /**
-     * @var \Skin
+     * @var \Yana\Views\Skin
      */
     private $_skin = null;
 
     /**
      * Retrieves and returns the skin/themes repository.
      *
-     * @return \Skin 
+     * @return \Yana\Views\Skin
      */
     protected function _getSkin()
     {
