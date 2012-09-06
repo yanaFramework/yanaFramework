@@ -36,7 +36,7 @@ namespace Yana\Views\Resources;
  *
  * To register use this code:
  * <code>
- * $smarty->register_resource("id",
+ * $smarty->register_resource("template",
  *   array("SmartFileResource::getTemplate",
  *     "SmartFileResource::getTimestamp",
  *     "SmartFileResource::isSecure",
@@ -52,7 +52,7 @@ namespace Yana\Views\Resources;
  *
  * May even be used in templates:
  * <code>
- * {import file="id:template_id"}
+ * {import file="template:template_id"}
  * </code>
  *
  * @package     yana
@@ -103,10 +103,11 @@ class FileResource extends \Yana\Views\Resources\AbstractResource
     {
         assert('is_string($filename); // Wrong argument type argument 1. String expected');
         if (is_file($filename)) {
-            // The base dir is used by the RelativePathsFilter to determine the path of the template
-            $this->_getViewManager()->getCurrentTemplate()->setVar('BASEDIR', \dirname($filename) . '/');
             $mtime = filemtime($filename);
-            $output = file_get_contents($filename);
+            $fileContents = file_get_contents($filename);
+            $baseDir = \dirname($filename) . '/';
+            $filter = new \Yana\Views\Resources\Helpers\RelativePathsFilter($this->_getViewManager());
+            $output = $filter($fileContents, $baseDir);
         }
     }
 

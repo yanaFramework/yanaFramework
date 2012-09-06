@@ -55,11 +55,6 @@ class Manager extends \Yana\Views\AbstractManager
     private $_layoutTemplate = null;
 
     /**
-     * @var \Yana\Views\Template
-     */
-    private $_currentTemplate = null;
-
-    /**
      * global Smarty instance
      *
      * @var  \Smarty
@@ -148,21 +143,13 @@ class Manager extends \Yana\Views\AbstractManager
     }
 
     /**
-     * @return \Yana\Views\Template
-     */
-    public function getCurrentTemplate()
-    {
-        return $this->_currentTemplate;
-    }
-
-    /**
      * This calls Smarty to create a new template.
      *
-     * @param   string                     &$filename  path to template file or template id (which will be resolved)
+     * @param   string                     $filename  path to template file or template id (which will be resolved)
      * @param   \Smarty_Internal_Template  $parent     parent template (if any)
      * @return  \Smarty_Internal_Template
      */
-    private function _createTemplate(&$filename, \Smarty_Internal_Template $parent = null)
+    private function _createTemplate($filename, \Smarty_Internal_Template $parent = null)
     {
         $cacheId = null;
         $compileId = null;
@@ -182,7 +169,6 @@ class Manager extends \Yana\Views\AbstractManager
     private function _wrapTemplate(\Smarty_Internal_Template $internalTemplate)
     {
         $wrappedTemplate = new \Yana\Views\Template($internalTemplate);
-        $this->_currentTemplate = $wrappedTemplate;
         return $wrappedTemplate;
     }
 
