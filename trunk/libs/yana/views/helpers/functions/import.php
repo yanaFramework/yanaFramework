@@ -50,11 +50,11 @@ class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
      * to use a relative path and does not force the template designer
      * to work with absolute paths.
      *
-     * @param   array                      $params  any list of arguments
-     * @param   \Smarty_Internal_Template  $smarty  reference to currently rendered template
+     * @param   array                      $params    any list of arguments
+     * @param   \Smarty_Internal_Template  $template  reference to currently rendered template
      * @return  string
      */
-    public function __invoke(array $params, \Smarty_Internal_Template $smarty)
+    public function __invoke(array $params, \Smarty_Internal_Template $template)
     {
         switch (true)
         {
@@ -64,7 +64,6 @@ class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
                 if (!\Yana\Util\String::startsWith($filename, 'file:')) {
                     $filename = 'file:' . $filename;
                 }
-                $document = $this->_getViewManager()->createContentTemplate($filename);
                 unset($params['file']);
             break;
 
