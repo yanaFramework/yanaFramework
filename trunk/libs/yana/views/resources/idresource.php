@@ -80,9 +80,9 @@ class IdResource extends \Yana\Views\Resources\FileResource
     }
 
     /**
-     * Retrieve last modification time of the requested resource
+     * Retrieve last modification time of the requested resource.
      *
-     * @param   string  $id       the template id
+     * @param   string  $id  the template id
      * @return  int
      */
     protected function fetchTimestamp($id)
@@ -97,12 +97,11 @@ class IdResource extends \Yana\Views\Resources\FileResource
     }
 
     /**
-     * load dependencies for template
+     * Load dependencies for template.
      *
      * This function takes the name of a template, looks up any language files,
      * scripts and stylesheets that the template depends on and loads them.
      *
-     * @access  public
      * @param   string  $key  template id
      * @throws  \Yana\Core\Exceptions\NotFoundException when the given template id does not exist
      */
