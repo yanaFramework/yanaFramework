@@ -201,49 +201,6 @@ class Template extends \Yana\Core\Object implements \Yana\Views\IsTemplate
         return $this;
     }
 
-    /**
-     * Set filename to fetch.
-     *
-     * Please note:
-     * <ol>
-     *   <li>  Template files may not have a reserved extension like
-     *         "htaccess", "php", "config" or the like.
-     *   </li>
-     *   <li>  Files should be adressed from the root.
-     *         This is where "index.php" is stored.
-     *   </li>
-     *   <li>  If you can't access a file, the file does not exist
-     *         or is not readable, a template error is thrown.
-     *   </li>
-     *   <li>  Filenames are case-sensitive!  </li>
-     * </ol>
-     *
-     * @param   string  $filename  name of the template file
-     * @return  \Yana\Views\Template
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the filename is invalid
-     */
-    public function setPath($filename)
-    {
-        assert('is_string($filename); // Wrong argument type for argument 1. String expected.');
-
-        if (preg_match("/.*\.(register|config|cfg|lock|dat|htaccess|php|inc|conf)/Ui", $filename)) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Access denied for file '$filename'.");
-        }
-        $this->template->template_resource = "$filename";
-        return $this;
-    }
-
-    /**
-     * Returns a string with the path and name of the current template.
-     *
-     * @return  string
-     */
-    public function getPath()
-    {
-        assert('is_string($this->template->template_resource); // Unexpected result: Template path is not a string');
-        return $this->template->template_resource;
-    }
-
 }
 
 ?>

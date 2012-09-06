@@ -47,36 +47,6 @@ interface IsTemplate extends \Yana\Core\IsVarContainer
      */
     public function fetch();
 
-    /**
-     * Set filename to fetch.
-     *
-     * Please note:
-     * <ol>
-     *   <li>  Template files may not have a reserved extension like
-     *         "htaccess", "php", "config" or the like.
-     *   </li>
-     *   <li>  Files should be adressed from the root.
-     *         This is where "index.php" is stored.
-     *   </li>
-     *   <li>  If you can't access a file, the file does not exist
-     *         or is not readable, a template error is thrown.
-     *   </li>
-     *   <li>  Filenames are case-sensitive!  </li>
-     * </ol>
-     *
-     * @param   string  $filename  name of the template file
-     * @return  \Yana\Views\Template
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the filename is invalid
-     */
-    public function setPath($filename);
-
-    /**
-     * Returns a string with the path and name of the current template.
-     *
-     * @return  string
-     */
-    public function getPath();
-
 }
 
 ?>
