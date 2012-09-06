@@ -62,6 +62,13 @@ interface IsManager
     public function createContentTemplate($filename);
 
     /**
+     * Returns the currently processed template.
+     *
+     * @return \Yana\Views\Template
+     */
+    public function getCurrentTemplate();
+
+    /**
      * Add path to CSS stylesheet file.
      *
      * @param  string  $file  path and file name

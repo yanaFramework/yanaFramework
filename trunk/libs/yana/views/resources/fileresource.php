@@ -103,6 +103,7 @@ class FileResource extends \Yana\Views\Resources\AbstractResource
     {
         assert('is_string($filename); // Wrong argument type argument 1. String expected');
         if (is_file($filename)) {
+            $this->_getViewManager()->getCurrentTemplate()->setVar('BASEDIR', \dirname($filename) . '/');
             $mtime = filemtime($filename);
             $output = file_get_contents($filename);
         }
