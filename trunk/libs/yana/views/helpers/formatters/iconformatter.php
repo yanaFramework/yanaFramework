@@ -55,10 +55,10 @@ class IconFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
             /* Emot-Codes */
             foreach ($iconLoader->getIcons() as $fileName => $regEx)
             {
-                $pattern = "/:" . $regEx . ":(\s|\[wbr\]|\[br\]|<br \/>)*:" . $regEx . ":/i";
+                $pattern = "/:(" . $regEx . "):(\s|\[wbr\]|\[br\]|<br \/>)*:(" . $regEx . "):/i";
                 $string = preg_replace($pattern, ':' . $regEx . ':', $string);
-                $pattern = "/:" . addcslashes($regEx, "+()[]{}.?*/\\$^") . ":/";
-                $replacement = '<img alt="" border="0" hspace="2" src="' . $fileName . '.gif"/>';
+                $pattern = "/:(" . addcslashes($regEx, "+()[]{}.?*/\\$^") . "):/";
+                $replacement = '<img alt="" border="0" hspace="2" src="' . $fileName . '"/>';
                 $string = preg_replace($pattern, $replacement, $string);
             }
         }
