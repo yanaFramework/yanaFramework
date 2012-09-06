@@ -103,6 +103,7 @@ class FileResource extends \Yana\Views\Resources\AbstractResource
     {
         assert('is_string($filename); // Wrong argument type argument 1. String expected');
         if (is_file($filename)) {
+            // The base dir is used by the RelativePathsFilter to determine the path of the template
             $this->_getViewManager()->getCurrentTemplate()->setVar('BASEDIR', \dirname($filename) . '/');
             $mtime = filemtime($filename);
             $output = file_get_contents($filename);
