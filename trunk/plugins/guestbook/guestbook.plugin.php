@@ -661,12 +661,12 @@ class plugin_guestbook extends StdClass implements IsPlugin
         $YANA->setVar('SORT', $sortBy); /* column name */
 
         /* create a footer with links to other pages of the resultset */
+        $listOfEntries = array();
         if ($last_page > ($entPerPage * 2)) {
-            $liste = array();
             $dots = false;
             for($k = 0; $k < ceil($last_page / $entPerPage); $k++)
             {
-                $it   = count($liste);
+                $it   = count($listOfEntries);
                 $first = ($k * $entPerPage);
                 if (($k + 1) * $entPerPage < $last_page) {
                     $last  = ($k + 1) * $entPerPage;
@@ -680,23 +680,20 @@ class plugin_guestbook extends StdClass implements IsPlugin
                 if ($has10Pages && $isNotFirstPage && $isNotLastPage && !$isNearCurrentPage) {
                     if (!$dots) {
                         $dots = true;
-                        $liste[$it]['TOO_MANY'] = true;
+                        $listOfEntries[$it]['TOO_MANY'] = true;
                     }
                 } else {
-                    $liste[$it]['FIRST'] = ($first + 1);
-                    $liste[$it]['LAST']  = $last;
+                    $listOfEntries[$it]['FIRST'] = ($first + 1);
+                    $listOfEntries[$it]['LAST']  = $last;
                     if ($first > $page-1 && $last < $page + $entPerPage + 1) {
                         $dots = false;
                     }
                 }
             } // end foreach
 
-            /* provide result to template */
-            $YANA->setVar('LIST_OF_ENTRIES', $liste);
-        } else {
-            /* only one page - footer is ignored */
-            $YANA->setVar('LIST_OF_ENTRIES', array());
-        }// end if
+        } // end if
+        /* provide result to template */
+        $YANA->setVar('LIST_OF_ENTRIES', $listOfEntries);
 
         $YANA->setVar('ENTRIES_PER_PAGE', $entPerPage); /* chunk size - numer of entries per page */
         $YANA->setVar('DESC', $desc); /* boolean value indicating sorting direction */
