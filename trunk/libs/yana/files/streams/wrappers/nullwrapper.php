@@ -39,12 +39,24 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
     /**
      * @var  string
      */
-    private $_content = "";
+    private static $_content = "";
 
     /**
      * @var  int
      */
-    private $_position = 0;
+    private static $_position = 0;
+
+    /**
+     * @var  array
+     */
+    private static $_directories = array();
+
+    /**
+     * Directory that is currently open for iteration.
+     *
+     * @var  string
+     */
+    private static $_directoryName = "";
 
     /**
      * Renames a file or directory
@@ -63,7 +75,7 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      */
     public function closeFile()
     {
-        // do nothing
+        self::$_content = "";
     }
 
     /**
@@ -116,11 +128,18 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      * @param   string  $path
      * @param   string  $mode
      * @param   int     $options
-     * @param   string  &$opened_path
+     * @param   string  &$openedPath
      * @return  bool
      */
     public function openFile($path, $mode, $options, &$openedPath)
     {
+        $dirname = \dirname($path);
+        $filename = \basename($path);
+        $this->makeDirectory($dirname, $mode, $options);
+        if (!\in_array($filename, self::$_directories[$dirname])) {
+            self::$_directories[$dirname][] = $filename;
+        }
+        $openedPath = $path;
         return true;
     }
 
@@ -132,8 +151,8 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      */
     public function readFile($count)
     {
-        $content = \substr($this->_content, $this->_position, $count);
-        $this->_position += $count;
+        $content = \substr(self::$_content, self::$_position, $count);
+        self::$_position += $count;
         return $content;
     }
 
@@ -179,7 +198,7 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      */
     public function getPositionInFile()
     {
-        return $this->_position;
+        return self::$_position;
     }
 
     /**
@@ -190,8 +209,8 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      */
     public function truncateFile($newSize)
     {
-        $this->_position = 0;
-        $this->_content = $this->readFile($newSize);
+        self::$_position = 0;
+        self::$_content = $this->readFile($newSize);
         return true;
     }
 
@@ -203,8 +222,8 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      */
     public function writeFile($data)
     {
-        $this->_position = 0;
-        $this->_content = $data;
+        self::$_position = 0;
+        self::$_content = $data;
         return strlen($data);
     }
 
@@ -229,7 +248,27 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      */
     public function getUrlStats($path, $flags)
     {
-        return array();
+        $path = preg_replace('/\/$/', '', $path);
+        $isDirectory = isset(self::$_directories[$path]);
+        $mode = ($isDirectory) ? 0040000 : 0100000;
+        $mode = $mode | 0000400 | 0000200 | 0000100;
+        $size = ($isDirectory) ? count(self::$_directories[$path]) : \strlen(self::$_content);
+        $time = time();
+        return array(
+            'dev' => 1,
+            'ino' => 0,
+            'mode' => $mode,
+            'nlink' => 0,
+            'uid' => 0,
+            'gid' => 0,
+            'rdev' => 0,
+            'size' => $size,
+            'atime' => $time,
+            'mtime' => $time,
+            'ctime' => $time,
+            'blksize' => -1,
+            'blocks' => -1
+        );
     }
 
     /**
@@ -239,6 +278,7 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      */
     public function closeDirectory()
     {
+        self::$_directoryName = "";
         return true;
     }
 
@@ -251,7 +291,13 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      */
     public function openDirectory($path , $options)
     {
-        return true;
+        $path = preg_replace('/\/$/', '', $path);
+        $isDirectory = isset(self::$_directories[$path]);
+        if ($isDirectory) {
+            self::$_directoryName = $path;
+            reset(self::$_directories[$path]);
+        }
+        return $isDirectory;
     }
 
     /**
@@ -261,7 +307,12 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      */
     public function readDirectory()
     {
-        return false;
+        $currentItem = false;
+        if (isset(self::$_directories[self::$_directoryName])) {
+            $currentItem = current(self::$_directories[self::$_directoryName]);
+            next(self::$_directories[self::$_directoryName]);
+        }
+        return $currentItem;
     }
 
     /**
@@ -271,7 +322,11 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      */
     public function rewindDirectory()
     {
-        return true;
+        $isDirectory = isset(self::$_directories[self::$_directoryName]);
+        if ($isDirectory) {
+            reset(self::$_directories[self::$_directoryName]);
+        }
+        return $isDirectory;
     }
 
     /**
@@ -282,9 +337,14 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      * @param int $options
      * @return bool
      */
-    public function makeDirectory($path , $mode , $options)
+    public function makeDirectory($path, $mode, $options)
     {
-        return true;
+        $path = preg_replace('/\/$/', '', $path);
+        $isNoDirectory = !isset(self::$_directories[$path]);
+        if ($isNoDirectory) {
+            self::$_directories[$path] = array();
+        }
+        return $isNoDirectory;
     }
 
     /**
@@ -296,7 +356,12 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
      */
     public function removeDirectory($path , $options)
     {
-        return true;
+        $path = preg_replace('/\/$/', '', $path);
+        $isDirectory = isset(self::$_directories[$path]);
+        if ($isDirectory) {
+            unset(self::$_directories[$path]);
+        }
+        return $isDirectory;
     }
 
 }
