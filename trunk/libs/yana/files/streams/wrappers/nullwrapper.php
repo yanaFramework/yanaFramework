@@ -343,6 +343,7 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
         $isNoDirectory = !isset(self::$_directories[$path]);
         if ($isNoDirectory) {
             self::$_directories[$path] = array();
+            \clearstatcache(); // required or otherwise is_dir() will still return FALSE.
         }
         return $isNoDirectory;
     }
@@ -360,6 +361,7 @@ class NullWrapper extends \Yana\Files\Streams\Wrappers\AbstractWrapper
         $isDirectory = isset(self::$_directories[$path]);
         if ($isDirectory) {
             unset(self::$_directories[$path]);
+            \clearstatcache(); // required or otherwise is_dir() will still return TRUE.
         }
         return $isDirectory;
     }
