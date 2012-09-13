@@ -471,47 +471,38 @@ class plugin_config extends StdClass implements IsPlugin
      */
     public function about($type, $target)
     {
+        /* @var $YANA \Yana */
         global $YANA;
-        $info = array();
+        $info = array(
+            'VERSION' => '1.0'
+        );
         switch ($type)
         {
             case "plugin":
-                $pluginConfiguration = $YANA->getPlugins()->getPluginConfiguration($target);
-                $info = array
-                (
-                    'NAME' => $pluginConfiguration->getTitle(),
-                    'LAST_CHANGE' => $pluginConfiguration->getLastModified(),
-                    'VERSION' => $pluginConfiguration->getVersion(),
-                    'LOGO' => $pluginConfiguration->getPreviewImage(),
-                    'AUTHOR' => $pluginConfiguration->getAuthor(),
-                    'UPDATE' => $pluginConfiguration->getUrl(),
-                    'DESCRIPTION' => $pluginConfiguration->getText()
-                );
+                $metaData = $YANA->getPlugins()->getPluginConfiguration($target);
+                $info['VERSION'] = $metaData->getVersion();
+                $info['UPDATE'] = $metaData->getUrl();
             break;
             case "skin":
-                $skin = new \Yana\Views\Skin($target);
-                $info = array
-                (
-                    'NAME' => $skin->getTitle(),
-                    'LAST_CHANGE' => $skin->getLastModified(),
-                    'LOGO' => $skin->getPreviewImage(),
-                    'AUTHOR' => $skin->getAuthor(),
-                    'CONTACT' => $skin->getUrl(),
-                    'DESCRIPTION' => $skin->getText()
-                );
+                $metaData = new \Yana\Views\Skin($target);
+                $info['CONTACT'] = $metaData->getUrl();
             break;
             case "language":
-                $info = $YANA->getLanguage()->getInfo($target);
+                $metaData = $YANA->getLanguage()->getInfo($target);
+                $info['CONTACT'] = $metaData->getUrl();
             break;
             default:
                 return false;
         }
-        if (!empty($info)) {
-            $YANA->setVar("INFO", $info);
-            return true;
-        } else {
-            return false;
-        }
+        // fill fields
+        $info['NAME'] = $metaData->getTitle();
+        $info['LAST_CHANGE'] = $metaData->getLastModified();
+        $info['LOGO'] = $metaData->getPreviewImage();
+        $info['AUTHOR'] = $metaData->getAuthor();
+        $info['DESCRIPTION'] = $metaData->getText();
+
+        $YANA->setVar("INFO", $info);
+        return true;
     }
 
     /**
