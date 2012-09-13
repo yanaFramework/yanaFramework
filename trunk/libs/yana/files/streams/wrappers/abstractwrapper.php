@@ -186,7 +186,7 @@ abstract class AbstractWrapper extends \Yana\Core\Object implements \Yana\Files\
      * @param   string  $path
      * @param   string  $mode
      * @param   int     $options
-     * @param   string  &$opened_path
+     * @param   string  &$openedPath
      * @return  bool
      */
     public function openFile($path, $mode, $options, &$openedPath)
