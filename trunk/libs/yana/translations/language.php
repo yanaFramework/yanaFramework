@@ -634,7 +634,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      * or bool(false) on error.
      *
      * @param   string  $languageName  name of language pack
-     * @return  array
+     * @return  \Yana\Translations\Languages\MetaData
      * @throws  \Yana\Core\Exceptions\NotFoundException  when requested file is not found
      *
      * @ignore
@@ -651,16 +651,22 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
             }
             // load definition
             $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
+            $metaData = new \Yana\Translations\Languages\MetaData();
             // get information
             if (!empty($xml)) {
-                $this->_info[$languageName] = array(
-                    'LOGO' => $this->getDefaultDirectory() . "/$languageName/icon.png",
-                    'LAST_CHANGE' => filemtime($file),
-                    'NAME' => (string) $xml->title,
-                    'AUTHOR' => (string) implode(', ', $xml->xpath('//author')),
-                    'CONTACT' => (string) $xml->url
-                );
+                $metaData->setPreviewImage($this->getDefaultDirectory() . "/$languageName/icon.png")
+                    ->setLastModified(filemtime($file))
+                    ->setTitle((string) $xml->title)
+                    ->setUrl((string) $xml->url);
+                // get list of authors
+                assert('!isset($author); /* cannot redeclare variable $author */');
+                $author = $xml->xpath('//author');
+                if (!empty($author)) {
+                    $metaData->setAuthor((string) implode(', ', $author));
+                }
+                unset($author);
                 // get translated description
+                assert('!isset($description); /* cannot redeclare variable $description */');
                 $description = $xml->xpath('//description[@lang="'. $this->getLocale() .'"]');
                 if (empty($description)) {
                     $description = $xml->xpath('//description[@lang="'. $this->getLanguage() .'"]');
@@ -668,8 +674,12 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
                 if (empty($description)) {
                     $description = $xml->xpath('//description[not(@lang)]');
                 }
-                $this->_info[$languageName]['DESCRIPTION'] = (string) implode(', ', $description);
+                if (!empty($description)) {
+                    $metaData->setText((string) implode(', ', $description));
+                }
+                unset($description);
             }
+            $this->_info[$languageName] = $metaData;
         }
         return $this->_info[$languageName];
     }
