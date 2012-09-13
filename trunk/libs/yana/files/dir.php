@@ -37,7 +37,7 @@ namespace Yana\Files;
  * @package     yana
  * @subpackage  files
  */
-class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir
+class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir, \IteratorAggregate
 {
 
     /**#@+
@@ -713,6 +713,16 @@ class Dir extends \Yana\Files\AbstractResource implements \Yana\Files\IsDir
         unset($dir, $item, $handle);
 
         return $this;
+    }
+
+    /**
+     * Allows to iterate over directory contents.
+     *
+     * @return  \Yana\Translations\Languages\DirectoryIterator
+     */
+    public function getIterator()
+    {
+        return new \Yana\Files\DirectoryIterator($this);
     }
 
 }
