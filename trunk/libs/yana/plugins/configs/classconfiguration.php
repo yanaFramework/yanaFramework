@@ -39,7 +39,7 @@ namespace Yana\Plugins\Configs;
  *
  * @ignore
  */
-class ClassConfiguration extends \Yana\Core\Object
+class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPackageMetaData
 {
 
     /**
