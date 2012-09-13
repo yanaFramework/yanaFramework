@@ -218,7 +218,7 @@ class LanguageTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException \Yana\Core\Exceptions\NotFoundException
      */
-    public function testGetInfo()
+    public function testGetInfoNotFoundException()
     {
         $this->object->getInfo('empty');
     }
