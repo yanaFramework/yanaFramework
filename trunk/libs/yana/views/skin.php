@@ -35,7 +35,7 @@ namespace Yana\Views;
  * @package     yana
  * @subpackage  views
  */
-class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
+class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable, \Yana\Core\IsPackageMetaData
 {
 
     /**
