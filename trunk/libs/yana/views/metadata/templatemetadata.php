@@ -65,7 +65,9 @@ class TemplateMetaData extends \Yana\Core\Object
     private $_styles = array();
 
     /**
-     * @param   string  $id
+     * Set template id.
+     *
+     * @param   string  $id  some string that is a valid identifier
      * @return  \Yana\Views\MetaData\TemplateMetaData
      */
     public function setId($id)
@@ -76,6 +78,8 @@ class TemplateMetaData extends \Yana\Core\Object
     }
 
     /**
+     * Get template id.
+     *
      * @return  string
      */
     public function getId()
@@ -99,7 +103,9 @@ class TemplateMetaData extends \Yana\Core\Object
     /**
      * Return path to template file.
      *
-     * This returns the path and name of the template file associated with the template as it was defined.
+     * This returns the path and name of the template file associated with
+     * the template as it was defined.
+     *
      * Note: This function does not check if the defined file actually does exist.
      *
      * @return  string
@@ -110,7 +116,11 @@ class TemplateMetaData extends \Yana\Core\Object
     }
 
     /**
-     * @param   array  $languages
+     * Set list of language ids.
+     *
+     * See {@see \Yana\Translations\Language} for more details on language ids.
+     *
+     * @param   array  $languages  the ids are filenames (without path or extension)
      * @return  \Yana\Views\MetaData\TemplateMetaData
      */
     public function setLanguages(array $languages)
@@ -120,6 +130,11 @@ class TemplateMetaData extends \Yana\Core\Object
     }
 
     /**
+     * Get list of language ids.
+     *
+     * The array may contain numeric and string indexes.
+     * String indexes are to be used as identifiers.
+     *
      * @return  array
      */
     public function getLanguages()
@@ -128,7 +143,11 @@ class TemplateMetaData extends \Yana\Core\Object
     }
 
     /**
-     * @param   array  $scripts
+     * Set list of script files.
+     *
+     * These should be relative paths that can be used as URIs.
+     *
+     * @param   array  $scripts  list of valid file paths
      * @return  \Yana\Views\MetaData\TemplateMetaData
      */
     public function setScripts(array $scripts)
@@ -138,6 +157,11 @@ class TemplateMetaData extends \Yana\Core\Object
     }
 
     /**
+     * Get list of script files.
+     *
+     * The array may contain numeric and string indexes.
+     * String indexes are to be used as identifiers.
+     *
      * @return  array
      */
     public function getScripts()
@@ -146,7 +170,11 @@ class TemplateMetaData extends \Yana\Core\Object
     }
 
     /**
-     * @param   array  $styles
+     * Set list of stylesheet files.
+     *
+     * These should be relative paths that can be used as URIs.
+     *
+     * @param   array  $styles  list of valid file paths
      * @return  \Yana\Views\MetaData\TemplateMetaData
      */
     public function setStyles(array $styles)
@@ -156,6 +184,11 @@ class TemplateMetaData extends \Yana\Core\Object
     }
 
     /**
+     * Get list of stylesheet files.
+     *
+     * The array may contain numeric and string indexes.
+     * String indexes are to be used as identifiers.
+     *
      * @return  array
      */
     public function getStyles()
