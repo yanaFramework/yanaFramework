@@ -1,0 +1,185 @@
+<?php
+
+/**
+ * YANA library
+ *
+ * Software:  Yana PHP-Framework
+ * Version:   {VERSION} - {DATE}
+ * License:   GNU GPL  http://www.gnu.org/licenses/
+ *
+ * This program: can be redistributed and/or modified under the
+ * terms of the GNU General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/.
+ *
+ * This notice MAY NOT be removed.
+ *
+ * @package  yana
+ * @license  http://www.gnu.org/licenses/gpl.txt
+ *
+ * @ignore
+ */
+
+namespace Yana\Views\MetaData;
+
+/**
+ * XML skin description file.
+ *
+ * @package     yana
+ * @subpackage  views
+ */
+class SkinXmlFile extends \SimpleXMLElement
+{
+
+    /**
+     * Get package title.
+     *
+     * @return  string
+     */
+    public function getTitle()
+    {
+        $title = "";
+        if (!empty($this->head->title)) {
+            $title = (string) $this->head->title;
+        }
+        return $title;
+    }
+
+    /**
+     * Get package description.
+     *
+     * @param   string  $locale  name of the locale to check for
+     * @return  string
+     */
+    public function getDescription($language = "", $country = "")
+    {
+        assert('is_string($language); // Invalid argument $language: string expected');
+        assert('is_string($country); // Invalid argument $country: string expected');
+
+        $locale = $language . "-" . $country;
+
+        $description = "";
+        switch (true)
+        {
+            case $this->xpath('//description[@lang="' . $locale . '"]') !== false:
+                $description = implode('', $this->xpath('//description[@lang="' . $locale . '"]'));
+                break;
+            case $this->xpath('//description[@lang="' . $language . '"]') !== false:
+                $description = implode('', $this->xpath('//description[@lang="' . $language . '"]'));
+                break;
+            case $this->xpath('//description[not @lang or @lang=""]') !== false:
+                $description = implode('', $this->xpath('//description[not @lang or @lang=""]'));
+                break;
+        }
+
+        return $description;
+    }
+
+    /**
+     * Get name(s) of the autor(s).
+     *
+     * @return  string
+     */
+    public function getAuthor()
+    {
+        return (string) implode(', ', (array) $this->xpath('//author'));
+    }
+
+    /**
+     * Get URL to author's website.
+     *
+     * This should point the user to a website where more information and/or
+     * updates are available for this package.
+     *
+     * @return  string
+     */
+    public function getUrl()
+    {
+        $url = "";
+        if (!empty($this->head->url)) {
+            $url = (string) $this->head->url;
+        }
+        return $url;
+    }
+
+    /**
+     * Returns list of template meta data elements.
+     *
+     * @param   string  $directory  file path
+     * @return  \Yana\Views\MetaData\TemplateMetaData[]
+     */
+    public function getTemplates($directory = "")
+    {
+        $templates = array();
+        if (!empty($this->body->template)) {
+            foreach ($this->body->template as $element)
+            {
+                $template = new \Yana\Views\MetaData\TemplateMetaData();
+                $attributes = $element->attributes();
+                if (empty($attributes['id'])) {
+                    continue;
+                }
+                $id = (string) $attributes['id'];
+                $template->setId($id);
+
+                if (!empty($attributes['file'])) {
+                    assert('!isset($file); // Cannot redeclare $file');
+                    $file = $directory . $attributes['file'];
+                    $template->setFile($file);
+                    unset($file);
+                } // end if
+                unset($attributes);
+
+                assert('!isset($values); /* cannot redeclare variable $values */');
+                $values = array(
+                    'SCRIPT' => array(),
+                    'STYLE' => array(),
+                    'LANGUAGE' => array(),
+                );
+                foreach ($element->children() as $item)
+                {
+                    $attributes = $item->attributes();
+                    $name = strtoupper($item->getName());
+                    switch ($name)
+                    {
+                        case 'SCRIPT':
+                        case 'STYLE':
+                            if (!empty($item)) {
+                                if (!is_file("{$directory}{$item}")) {
+                                    $message = "The value '{$item}' is not a valid file resource.";
+                                    trigger_error($message, E_USER_WARNING);
+                                    continue;
+                                }
+                                $item = "{$directory}{$item}";
+                            }
+                        // fall through
+                        case 'LANGUAGE':
+                            if (!isset($attributes['id'])) {
+                                $values[$name][] = (string) $item;
+                            } else {
+                                $values[$name][(string) $attributes['id']] = (string) $item;
+                            }
+                            break;
+                    } // end switch
+                } // end foreach
+                $template->setScripts($values['SCRIPT'])
+                    ->setStyles($values['STYLE'])
+                    ->setLanguages($values['LANGUAGE']);
+                unset($values);
+                $templates[$id] = $template;
+            } // end foreach
+        }
+        return $templates;
+    }
+
+}
+
+?>
