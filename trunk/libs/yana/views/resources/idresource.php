@@ -72,11 +72,14 @@ class IdResource extends \Yana\Views\Resources\FileResource
     {
         assert('is_string($id); // Wrong argument type argument 1. String expected');
 
-        $skin = $this->_getSkin();
-        if ($skin->isId($id)) {
-            $id = $skin->getFile($id); // throws NotFoundException
+        try {
+
+            $fileName = $this->_getSkin()->getTemplateData($id)->getFile(); // throws NotFoundException
+            parent::fetch($fileName, $output, $mtime);
+
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
+            unset($e); // So this was not a valid template id
         }
-        parent::fetch($id, $output, $mtime);
     }
 
     /**
@@ -88,50 +91,52 @@ class IdResource extends \Yana\Views\Resources\FileResource
     protected function fetchTimestamp($id)
     {
         assert('is_string($id); // Wrong argument type argument 1. String expected');
-        $skin = $this->_getSkin();
-        if ($skin->isId($id)) {
-            $this->_loadDependencies($id);
-            $id = $this->_getSkin()->getFile($id); // throws NotFoundException
+
+        $fileName = $id;
+        try {
+
+            $templateData = $this->_getSkin()->getTemplateData($id); // may throw NotFoundException
+            $this->_loadDependencies($templateData);
+            $fileName = $templateData->getFile();
+            return parent::fetchTimestamp($fileName);
+
+        } catch (\Yana\Core\Exceptions\NotFoundException $e) { // this must not throw an exception
+            unset($e);
+            return false; // So this is not a template
         }
-        return parent::fetchTimestamp($id);
     }
 
     /**
      * Load dependencies for template.
      *
-     * This function takes the name of a template, looks up any language files,
-     * scripts and stylesheets that the template depends on and loads them.
+     * This function looks up any language files, scripts and stylesheets that the template depends on and loads them.
      *
-     * @param   string  $key  template id
+     * @param   \Yana\Views\MetaData\TemplateMetaData  $templateData  template definition
      * @throws  \Yana\Core\Exceptions\NotFoundException when the given template id does not exist
      */
-    private function _loadDependencies($key)
+    private function _loadDependencies(\Yana\Views\MetaData\TemplateMetaData $templateData)
     {
-        assert('is_string($key); // Wrong type for argument 1. String expected');
-        $key = mb_strtoupper("$key");
-
-        $skin = $this->_getSkin();
-
         // load language files associated with the template
         $language = \Yana\Translations\Language::getInstance();
-        foreach ($skin->getLanguage($key) as $languageFile)
+        foreach ($templateData->getLanguages() as $languageFile)
         {
             try {
 
                 $language->readFile($languageFile); // may throw exception
 
             } catch (\Yana\Core\Exceptions\Translations\TranslationException $e) {
-                // no need to throw an exception here, since we may safely continue without the file
+                unset($e); // no need to throw an exception here, since we may safely continue without the file
             }
         }
+        unset($language, $languageFile);
 
         $manager = $this->_getViewManager();
 
         // prepare a list of css styles associated with the template
-        $manager->addStyles($skin->getStyle($key));
+        $manager->addStyles($templateData->getStyles());
 
         // prepare a list of javascript files associated with the template
-        $manager->addScripts($skin->getScript($key));
+        $manager->addScripts($templateData->getScripts());
     }
 
 }

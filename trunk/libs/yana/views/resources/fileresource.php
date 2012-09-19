@@ -80,19 +80,6 @@ class FileResource extends \Yana\Views\Resources\AbstractResource
     }
 
     /**
-     * Create a new instance.
-     *
-     * This also loads the configuration.
-     *
-     * @param  \Yana\Views\IsManager  $manager  View manager instance
-     */
-    public function __construct(\Yana\Views\IsManager $manager)
-    {
-        parent::__construct($manager);
-        $manager->getSmarty()->addTemplateDir($this->_getSkin()->getDirectory());
-    }
-
-    /**
      * Fetch template and its modification time from data source.
      *
      * @param string  $filename template name

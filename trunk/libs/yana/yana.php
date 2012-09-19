@@ -697,7 +697,6 @@ final class Yana extends \Yana\Core\AbstractSingleton
 
             } else {
                 $this->_skin = new \Yana\Views\Skin($this->getVar('PROFILE.SKIN'));
-                $this->_skin->selectMainSkin();
 
                 if (YANA_CACHE_ACTIVE === true) {
                     $cacheFile->create();

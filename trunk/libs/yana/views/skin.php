@@ -30,27 +30,27 @@
 namespace Yana\Views;
 
 /**
- * <<Singleton>> Skin
+ * Skin Manager class.
  *
  * @package     yana
  * @subpackage  views
  */
-class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable, \Yana\Core\IsPackageMetaData
+class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
 {
-
-    /**
-     * Name of currently selected main skin
-     *
-     * @var  string
-     */
-    private static $_selectedSkin = "default";
 
     /**
      * a list of all skins installed
      *
-     * @var  array
+     * @var  \Yana\Views\MetaData\SkinMetaData[]
      */
-    private static $_skins;
+    private $_configurations = array();
+
+    /**
+     * some data provider
+     *
+     * @var  \Yana\Views\MetaData\IsDataProvider
+     */
+    private $_dataProvider = null;
 
     /**
      * file extension for language definition files
@@ -63,38 +63,6 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable, \Yana
      * @var string
      */
     private $_name = "default";
-
-    /**
-     * @var array
-     */
-    private $_value = array();
-
-    /**
-     * @var string
-     */
-    private $_title = "";
-
-    /**
-     * @var string
-     */
-    private $_author = "";
-
-    /**
-     * @var string
-     */
-    private $_url = "";
-
-    /**
-     * @var array
-     */
-    private $_descriptions = array();
-
-    /**
-     * file path cache
-     *
-     * @var  array
-     */
-    private static $_filePaths = array();
 
     /**
      * base directory
@@ -115,50 +83,15 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable, \Yana
         assert('is_string($skinName); // Wrong type for argument 1. String expected');
 
         $this->_name = "$skinName";
-        $this->_value = array();
-
-        /* Load Defaults first */
-        if ($this->_name !== 'default') {
-            $this->_loadTemplates('default');
-        }
-
-        /* Overwrite Defaults where needed */
-        $this->_loadTemplates($this->_name);
-
-        /* select as main skin, if there is no other */
-        if (!isset(self::$_selectedSkin)) {
-            $this->selectMainSkin();
-        }
+        $this->_dataProvider = new \Yana\Views\MetaData\XmlDataProvider(self::$_baseDirectory);
     }
 
     /**
-     * Returns an instance of the translations container.
-     *
-     * @return \Yana\Translations\Language
+     * @return  \Yana\Views\MetaData\IsDataProvider
      */
-    protected function _getLanguageInstance()
+    protected function _getDataProvider()
     {
-        return \Yana\Translations\Language::getInstance();
-    }
-
-    /**
-     * Selects the current instance as the main skin for the application.
-     */
-    public function selectMainSkin()
-    {
-        self::$_selectedSkin = $this->getName();
-    }
-
-    /**
-     * is selected main skin
-     *
-     * Returns bool(true) if the skin is the currently selected main skin and bool(false) otherwise.
-     *
-     * @return  bool
-     */
-    public function isSelected()
-    {
-        return self::$_selectedSkin === $this->getName();
+        return $this->_dataProvider;
     }
 
     /**
@@ -178,8 +111,6 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable, \Yana
     }
 
     /**
-     * load template definitions
-     *
      * Read the skin definition file, get all defined templates and store definitions.
      *
      * NOTE: Collisions are treated as follows.
@@ -192,406 +123,53 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable, \Yana
      * So in a derived template the user may decide for himself what element to take and what to
      * drop.
      *
-     * @param   string  $skinName  name of skin definition that should be loaded
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the skin definition file is not found
-     * @ignore
+     * @return  \Yana\Views\MetaData\SkinMetaData[]
      */
-    private function _loadTemplates($skinName)
+    protected function _getConfigurations()
     {
-        $file = self::getSkinPath($skinName);
-        if (!is_file($file)) {
-            throw new \Yana\Core\Exceptions\NotFoundException("Skin definition not found: '$skinName'.");
-        }
-        // load definition
-        $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
-        unset($file);
-        // get information
-        if (!empty($xml)) {
-            $dir = self::$_baseDirectory;
-            // head
-            if ($xml->head) {
-                $this->_title = (string) $xml->head->_title;
-                $this->_author = (string) implode(', ', (array) $xml->head->_author);
-                $this->_url = (string) $xml->head->_url;
-                assert('!isset($description); // Cannot redeclare var $description');
-                foreach ($xml->head->description as $description)
-                {
-                    $this->_descriptions[(string) $description->attributes()->lang] = (string) $description;
-                }
-                unset($description);
-            } // end if
-            // body
-            foreach ($xml->body->template as $element)
-            {
-                $attributes = $element->attributes();
-                if (empty($attributes['id'])) {
-                    continue;
-                }
-                $id = (string) $attributes['id'];
-                if (!empty($attributes['file'])) {
-                    assert('!isset($file); // Cannot redeclare $file');
-                    $file = $dir . $attributes['file'];
-                    if (!is_file("$file")) {
-                        $message = "The value '{$file}' is not a valid file resource.";
-                        trigger_error($message, E_USER_WARNING);
-                        unset($file);
-                        continue;
-                    }
-                    $this->_value[$id]['FILE'] = $file;
-                    unset($file);
-                } // end if
-                unset($attributes);
-                foreach ($element->children() as $item)
-                {
-                    $attributes = $item->attributes();
-                    $name = strtoupper($item->getName());
-                    switch ($name)
-                    {
-                        case 'SCRIPT':
-                        case 'SKIN':
-                        case 'STYLE':
-                            if (!empty($item)) {
-                                if (!is_file("{$dir}{$item}")) {
-                                    $message = "The value '{$item}' is not a valid file resource.";
-                                    trigger_error($message, E_USER_WARNING);
-                                    continue;
-                                }
-                                $item = "$dir$item";
-                            }
-                        // fall through
-                        case 'LANGUAGE':
-                            if (!isset($attributes['id'])) {
-                                $this->_value[$id][$name][] = (string) $item;
-                            } else {
-                                $this->_value[$id][$name][(string) $attributes['id']] = (string) $item;
-                            }
-                        break;
-                    } // end switch
-                } // end foreach
-            } // end foreach
-        } // end if
-    }
+        if (empty($this->_configurations)) {
 
-    /**
-     * Get filename.
-     *
-     * This returns the path and name of the template file associated with $key (the template id).
-     * An exception is thrown, if it does not exist.
-     *
-     * Note: This function does not check if the defined file actually does exist.
-     *
-     * @param   string  $key  template id
-     * @return  string
-     * @throws  \Yana\Core\Exceptions\NotFoundException  when the given template id does not exist
-     */
-    public function getFile($key)
-    {
-        assert('is_string($key); // Wrong type for argument 1. String expected');
-        $key = mb_strtoupper("$key");
+            $skinName = $this->getName();
+            $dataProvider = $this->_getDataProvider();
 
-        // load file
-        if (!isset(self::$_filePaths[$key])) {
-
-            // cache the name of the file
-            if (!isset($this->_value[$key]['FILE'])) {
-                $message = "Missing file attribute for template with id '{$key}'.";
-                throw new \Yana\Core\Exceptions\NotFoundException($message);
-            }
-            self::$_filePaths[$key] = $this->_value[$key]['FILE'];
-
-        }
-
-        return self::$_filePaths[$key];
-    }
-
-    /**
-     * Set template file.
-     *
-     * This function set the path to a template file for the given id.
-     *
-     * @param   string  $key       id of template file
-     * @param   string  $filename  path and name of template file
-     */
-    public function setFile($key, $filename)
-    {
-        assert('is_string($key); // Wrong argument type argument 1. String expected');
-        assert('is_string($filename); // Wrong argument type argument 2. String expected');
-        assert('is_file($filename); // Invalid argument 2. File not found');
-        $key = mb_strtoupper("$key");
-        if (empty($this->_value[$key])) {
-            $this->_value[$key] = array();
-        }
-        $this->_value[$key]['FILE'] = $filename;
-    }
-
-    /**
-     * Check if input is a valid template id.
-     *
-     * Returns bool(true) if a template named $key is currently registered
-     * and bool(false) otherwise.
-     *
-     * @param   string  $key    key
-     * @return  bool
-     */
-    public function isId($key)
-    {
-        assert('is_string($key); // Wrong type for argument 1. String expected');
-        if (empty($key)) {
-            /* nothing to do */
-            return false;
-        } else {
-            $key = mb_strtoupper("$key");
-            return isset($this->_value[$key]['FILE']);
-        }
-    }
-
-    /**
-     * Get language.
-     *
-     * @param   string  $key    key
-     * @return  array
-     */
-    public function getLanguage($key)
-    {
-        assert('is_string($key); // Wrong type for argument 1. String expected');
-        return $this->_getProperty($key, 'LANGUAGE');
-    }
-
-    /**
-     * Set a CSS-stylesheet for template $key.
-     *
-     * Examples:
-     * <code>
-     * // add stylesheet
-     * $skin->setStyle('foo', 'foo.css');
-     * // replace stylesheet 'bar'
-     * $skin->setStyle('foo', 'bar.css', 'bar');
-     * // remove stylesheet 'bar'
-     * $skin->setStyle('foo', null, 'bar');
-     * // remove all stylesheets
-     * $skin->setStyle('foo');
-     * </code>
-     *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * @param   string  $key    key
-     * @param   string  $file   file
-     * @param   string  $name   name
-     * @return  bool
-     * @since   2.9.8
-     */
-    public function setStyle($key, $file = '', $name = '')
-    {
-        assert('is_string($key); // Wrong type for argument 1. String expected');
-        assert('is_string($file); // Wrong type for argument 2. String expected');
-        assert('is_string($name); // Wrong type for argument 3. String expected');
-        return $this->_setProperty($key, 'STYLE', "$file", "$name");
-    }
-
-    /**
-     * Set a javascript-file for template $key.
-     *
-     * Examples:
-     * <code>
-     * // add script
-     * $skin->setScript('foo', 'foo.js');
-     * // replace script 'bar'
-     * $skin->setScript('foo', 'bar.js', 'bar');
-     * // remove script 'bar'
-     * $skin->setScript('foo', null, 'bar');
-     * // remove all scripts
-     * $skin->setScript('foo');
-     * </code>
-     *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * @param   string  $key    key
-     * @param   string  $file   file
-     * @param   string  $name   name
-     * @return  bool
-     * @since   2.9.8
-     */
-    public function setScript($key, $file = '', $name = '')
-    {
-        assert('is_string($key); // Wrong type for argument 1. String expected');
-        assert('is_string($file); // Wrong type for argument 2. String expected');
-        assert('is_string($name); // Wrong type for argument 3. String expected');
-        return $this->_setProperty($key, 'SCRIPT', "$file", "$name");
-    }
-
-    /**
-     * Set a language-file for template $key.
-     *
-     * Examples:
-     * <code>
-     * // add language
-     * $skin->setLanguage('foo', 'foo.language.xml');
-     * // replace language 'bar'
-     * $skin->setLanguage('foo', 'bar.language.xml', 'bar');
-     * // remove language 'bar'
-     * $skin->setLanguage('foo', null, 'bar');
-     * // remove all language-files
-     * $skin->setLanguage('foo');
-     * </code>
-     *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * @param   string  $key    key
-     * @param   string  $file   file
-     * @param   string  $name   name
-     * @return  bool
-     * @since   2.9.8
-     */
-    public function setLanguage($key, $file = '', $name = '')
-    {
-        assert('is_string($key); // Wrong type for argument 1. String expected');
-        assert('is_string($file); // Wrong type for argument 2. String expected');
-        assert('is_string($name); // Wrong type for argument 3. String expected');
-        return $this->_setProperty("$key", 'LANGUAGE', "$file", "$name");
-    }
-
-    /**
-     * Set a property for template $key.
-     *
-     * Returns bool(true) on success and bool(false) on error.
-     *
-     * @param   string  $key            key
-     * @param   string  $propertyName   property name
-     * @param   string  $file           file
-     * @param   string  $name           name
-     * @return  bool
-     * @since   2.9.8
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the key is empty
-     */
-    private function _setProperty($key, $propertyName, $file = '', $name = '')
-    {
-        assert('is_string($key); // Wrong type for argument 1. String expected');
-        assert('is_string($propertyName); // Wrong type for argument 2. String expected');
-        assert('$propertyName === strtoupper($propertyName); // Argument 2 must be upper-cased');
-        assert('is_string($file); // Wrong type for argument 3. String expected');
-        assert('is_string($name); // Wrong type for argument 4. String expected');
-
-        if (empty($key)) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Template name may not be empty.");
-        } else {
-            $key = mb_strtoupper("$key");
-        }
-        if (!isset($this->_value[$key])) {
-            return false;
-        }
-
-        /*
-         * 1) modify whole list
-         */
-        if ($name === "") {
-
-            /*
-             * 1.1) unset list
-             */
-            if ($file === "") {
-                if (isset($this->_value[$key][$propertyName])) {
-                    unset($this->_value[$key][$propertyName]);
-                }
-                return true;
-
-            /*
-             * 1.2) add file
-             */
-            } else {
-                if (!isset($this->_value[$key][$propertyName])) {
-                    $this->_value[$key][$propertyName] = array();
-                }
-                $this->_value[$key][$propertyName][] = $file;
-                return true;
-
+            // Load Defaults first
+            if ($skinName !== 'default') {
+                $this->_configurations['default'] = $dataProvider->loadOject('default');
             }
 
-        /*
-         * 2) modify particular entry
-         */
-        } elseif (!isset($this->_value[$key][$propertyName]) || !is_array($this->_value[$key][$propertyName])) {
-            return false;
+            // Now load extensions where available
+            $this->_configurations[$skinName] = $dataProvider->loadOject($skinName);
+        }
+        return $this->_configurations;
+    }
 
-        } else {
-            /*
-             * 2.1) unset file
-             */
-            if ($file === "") {
-                if (isset($this->_value[$key][$propertyName][$name])) {
-                    unset($this->_value[$key][$propertyName][$name]);
-                    return true;
+    /**
+     * Returns a template definition.
+     *
+     * @param   string  $templateId  any valid identifier
+     * @return  \Yana\Views\MetaData\TemplateMetaData
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when no matching template was found
+     */
+    public function getTemplateData($templateId)
+    {
+        assert('is_string($templateId); // Invalid argument $templateId: string expected');
 
-                } else {
-                    return false;
-                }
+        $templateId = mb_strtoupper("$templateId");
 
-            /*
-             * 2.2) replace file
-             */
-            } else {
-                if (!isset($this->_value[$key][$propertyName])) {
-                    $this->_value[$key][$propertyName] = array();
-                }
-                $this->_value[$key][$propertyName][$name] = $file;
-                return true;
-
+        $configs = $this->_getConfigurations();
+        foreach ($configs as $config)
+        {
+            $templates = $config->getTemplates();
+            if (isset($templates[$templateId])) {
+                $templateData = $templates[$templateId];
+                assert($templateData instanceof \Yana\Views\MetaData\TemplateMetaData);
+                return $templateData;
             }
         }
-    }
-
-
-    /**
-     * Gets a property for a template $key.
-     *
-     * @param   string  $key            key
-     * @param   string  $propertyName   property name
-     * @return  array
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given key is empty
-     */
-    private function _getProperty($key, $propertyName)
-    {
-        assert('is_string($key); // Wrong type for argument 1. String expected');
-        assert('is_string($propertyName); // Wrong type for argument 2. String expected');
-        assert('$propertyName === strtoupper($propertyName); // Argument 2 must be upper-cased');
-        if (empty($key)) {
-            throw new \Yana\Core\Exceptions\InvalidArgumentException("Template name may not be empty.");
-        } else {
-            $key = mb_strtoupper("$key");
-        }
-
-        if (!isset($this->_value[$key])) {
-            return array();
-        }
-
-        if (!isset($this->_value[$key][$propertyName]) || !is_array($this->_value[$key][$propertyName])) {
-            return array();
-        } else {
-            return $this->_value[$key][$propertyName];
-        }
-    }
-
-    /**
-     * Returns the definition of the identified stylesheet.
-     *
-     * @param   string  $key    key
-     * @return  array
-     */
-    public function getStyle($key)
-    {
-        assert('is_string($key); // Wrong type for argument 1. String expected');
-        return $this->_getProperty($key, 'STYLE');
-    }
-
-    /**
-     * get script
-     *
-     * @param   string  $key    key
-     * @return  array
-     */
-    public function getScript($key)
-    {
-        assert('is_string($key); // Wrong type for argument 1. String expected');
-        return $this->_getProperty($key, 'SCRIPT');
+        $message = "No template found with id '{$templateId}'.";
+        $level = \Yana\Log\TypeEnumeration::ERROR;
+        throw new \Yana\Core\Exceptions\NotFoundException($message, $level);
     }
 
     /**
@@ -648,7 +226,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable, \Yana
      */
     public function getPath()
     {
-        return self::getSkinPath($this->_name);
+        return self::_getSkinPath($this->_name);
     }
 
     /**
@@ -683,96 +261,14 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable, \Yana
      *
      * @ignore
      */
-    public static function getSkinPath($skinName)
+    private static function _getSkinPath($skinName)
     {
         assert('is_string($skinName); // Wrong type for argument 1. String expected');
         return self::$_baseDirectory . "$skinName" . self::$_fileExtension;
     }
 
     /**
-     * get description
-     *
-     * This returns the skin description as a translated string.
-     * If no description is given, it returns an empty string.
-     *
-     * @return  string
-     */
-    public function getText()
-    {
-        // get translated description
-        $lang = $this->_getLanguageInstance();
-        switch (true)
-        {
-            case isset($this->_descriptions[$lang->getLocale()]):
-                return $this->_descriptions[$lang->getLocale()];
-            case isset($this->_descriptions[$lang->getLanguage()]):
-                return $this->_descriptions[$lang->getLanguage()];
-            case isset($this->_descriptions['']):
-                return $this->_descriptions[''];
-            default:
-                return "";
-        }
-    }
-
-    /**
-     * get time when file was last modified
-     *
-     * @return  int
-     */
-    public function getLastModified()
-    {
-        return filemtime($this->getPath());
-    }
-
-    /**
-     * Returns the skin title.
-     *
-     * @return  string
-     */
-    public function getTitle()
-    {
-        return $this->_title;
-    }
-
-    /**
-     * Returns the skin URL.
-     *
-     * The URL is meant to point to a website where the user may find additional
-     * information about the auhtor or the skin itself.
-     *
-     * @return  string
-     */
-    public function getUrl()
-    {
-        return $this->_title;
-    }
-
-    /**
-     * Returns the name of the author(s) as a string.
-     *
-     * If none are given, it returns an empty string.
-     *
-     * @return  string
-     */
-    public function getAuthor()
-    {
-        return $this->_author;
-    }
-
-    /**
-     * Returns the path to a preview image.
-     *
-     * Note that this function does not check, whether the image does exist.
-     *
-     * @return  string
-     */
-    public function getPreviewImage()
-    {
-        return self::$_baseDirectory . $this->_name . "/icon.png";
-    }
-
-    /**
-     * get a report
+     * Get a report.
      *
      * Returns a \Yana\Report\Xml object, which you may print, transform or output to a file.
      * It informs you about configuration issues or errors.
@@ -804,111 +300,97 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable, \Yana
         if (is_null($report)) {
             $report = \Yana\Report\Xml::createReport(__CLASS__);
         }
-        $report->addText("Skin directory: {$this->_name}");
+        $skinName = $this->getName();
+        $report->addText("Skin directory: {$skinName}");
 
-        if (empty($this->_value)) {
-            $report->addWarning("Cannot perform check! No template definitions found.");
+        /*
+         * loop through template definition and create a report for each
+         */
+        $configurations = $this->_getConfigurations();
+        assert('isset($configurations[$skinName]);');
+        $configuration = $configurations[$skinName];
+        /* @var $configuration \Yana\Views\MetaData\SkinMetaData */
+        assert($configuration instanceof \Yana\Views\MetaData\SkinMetaData);
+        unset($configurations);
 
-        } else {
-            /* get instance of language manager */
-            $language = $this->_getLanguageInstance();
+        assert('!isset($template); // Cannot redeclare var $template');
+        foreach ($configuration->getTemplates() as $key => $template)
+        {
+            /* @var $template \Yana\Views\MetaData\TemplateMetaData */
+            $subReport = $report->addReport("$key");
+            $hasError = false;
+
             /*
-             * loop through template definition and create a report for each
+             * check if template file exists
              */
-            foreach ($this->_value as $key => $element)
+            $filename = $template->getFile();
+            if (!file_exists($filename)) {
+                $subReport->addError("File '{$filename}' does not exist. " .
+                    "Please make sure this path and filename is correct " .
+                    "and you have all files installed. Reinstall if necessary.");
+                $hasError = true;
+            } else {
+                $subReport->addText("File: {$filename}");
+            }
+            unset($filename);
+
+            /*
+             * check language references
+             */
+            $language = \Yana\Translations\Language::getInstance(); // get instance of language manager
+            assert('!isset($value); /* cannot redeclare variable $value */');
+            foreach ($template->getLanguages() as $value)
             {
-                $subReport = $report->addReport("$key");
-                $hasError = false;
+                if (!empty($value)) {
+                    try {
 
-                /*
-                 * check if template file exists
-                 */
-                try {
-                    $filename = $this->getFile($key);
-                    if (!file_exists($filename)) {
-                        $subReport->addError("File '$filename' does not exist. " .
-                            "Please make sure this path and filename is correct " .
-                            "and you have all files installed. Reinstall if necessary.");
-                        $hasError = true;
-                    } else {
-                        $subReport->addText("File: $filename");
+                        $language->readFile($value); // may throw exception
+
+                    } catch (\Yana\Core\Exceptions\Translations\TranslationException $e) {
+                        $subReport->addWarning("A required language file '{$value}' is not available. " .
+                            "Please check if the chosen language file is correct and update your " .
+                            "language pack if needed. " . $e->getMessage());
+                        unset($e);
                     }
-                } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-                    $subReport->addWarning($e->getMessage());
                 }
+            }
+            unset($value);
 
-                /*
-                 * check language references
-                 */
-                if (!empty($element['LANGUAGE']) && is_array($element['LANGUAGE']) && count($element['LANGUAGE']) > 0) {
-                    assert('!isset($value); /* cannot redeclare variable $value */');
-                    foreach ($element['LANGUAGE'] as $value)
-                    {
-                        if (!empty($value)) {
-                            try {
-
-                                $language->readFile($value); // may throw exception
-
-                            } catch (\Yana\Core\Exceptions\Translations\TranslationException $e) {
-                                $subReport->addWarning("A required language file '{$value}' is not available. " .
-                                    "Please check if the chosen language file is correct and update your ".
-                                    "language pack if needed. " . $e->getMessage());
-                                unset($e);
-                            }
-                        }
-                    }
-                    unset($value);
+            /*
+             * check stylesheet references
+             */
+            assert('!isset($value); /* cannot redeclare variable $value */');
+            foreach ($template->getStyles() as $value)
+            {
+                if (!file_exists($value)) {
+                    $subReport->addError("A required stylesheet is not available." .
+                        "This template may not be displayed correctly.");
+                    $hasError = true;
                 }
+            }
+            unset($value);
 
-                /*
-                 * check stylesheet references
-                 */
-                if (!empty($element['STYLE']) && is_array($element['STYLE']) && count($element['STYLE']) > 0) {
-                    assert('!isset($value); /* cannot redeclare variable $value */');
-                    foreach ($element['STYLE'] as $value)
-                    {
-                        if (!file_exists($value)) {
-                            $subReport->addError("A required stylesheet is not available." .
-                            "This template may not be displayed correctly.");
-                            $hasError = true;
-                        }
-                    }
-                    unset($value);
+            /*
+             * check script references
+             */
+            assert('!isset($value); /* cannot redeclare variable $value */');
+            foreach ($template->getScripts() as $value)
+            {
+                if (!file_exists($value)) {
+                    $subReport->addError("A required javascript file is not available." .
+                        "This template may not be displayed correctly.");
+                    $hasError = true;
                 }
+            }
+            unset($value);
 
-                /*
-                 * check script references
-                 */
-                if (!empty($element['SCRIPT']) && is_array($element['SCRIPT']) && count($element['SCRIPT']) > 0) {
-                    assert('!isset($value); /* cannot redeclare variable $value */');
-                    foreach ($element['SCRIPT'] as $value)
-                    {
-                        if (!file_exists($value)) {
-                            $subReport->addError("A required javascript file is not available." .
-                            "This template may not be displayed correctly.");
-                            $hasError = true;
-                        }
-                    }
-                    unset($value);
-                }
-
-                if ($hasError !== true) {
-                    $subReport->addText("No problems found.");
-                }
-            } // end foreach
-        } // end if
+            if ($hasError !== true) {
+                $subReport->addText("No problems found.");
+            }
+        } // end foreach
+        unset($template);
 
         return $report;
-    }
-
-    /**
-     * Reinitialize instance.
-     */
-    public function __wakeup()
-    {
-        if (!isset(self::$_selectedSkin)) {
-            self::selectSkin($this);
-        }
     }
 
 }

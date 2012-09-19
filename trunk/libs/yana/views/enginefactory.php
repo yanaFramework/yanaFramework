@@ -175,6 +175,10 @@ class EngineFactory extends \Yana\Core\Object
         $smarty->compile_check = strtolower((string) $config->compilecheck) !== 'false';
 
         $smarty->error_reporting = E_ALL & ~E_NOTICE;
+
+        $directory = (string) $config->templatedir;
+        $smarty->addTemplateDir($directory);
+
         return $this;
     }
 

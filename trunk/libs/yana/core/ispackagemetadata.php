@@ -85,6 +85,16 @@ interface IsPackageMetaData
      */
     public function getPreviewImage();
 
+    /**
+     * Returns the version of this package.
+     *
+     * See the manual on the function version_compare() if you want more information on what
+     * version string should look like.
+     *
+     * @return  string
+     */
+    public function getVersion();
+
 }
 
 ?>
