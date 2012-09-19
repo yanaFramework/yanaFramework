@@ -634,7 +634,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      * or bool(false) on error.
      *
      * @param   string  $languageName  name of language pack
-     * @return  \Yana\Translations\Languages\MetaData
+     * @return  \Yana\Core\PackageMetaData
      * @throws  \Yana\Core\Exceptions\NotFoundException  when requested file is not found
      *
      * @ignore
@@ -651,7 +651,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
             }
             // load definition
             $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
-            $metaData = new \Yana\Translations\Languages\MetaData();
+            $metaData = new \Yana\Core\PackageMetaData();
             // get information
             if (!empty($xml)) {
                 $metaData->setPreviewImage($this->getDefaultDirectory() . "/$languageName/icon.png")

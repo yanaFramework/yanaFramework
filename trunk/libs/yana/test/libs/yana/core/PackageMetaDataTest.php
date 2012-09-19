@@ -25,17 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Translations\Languages;
+namespace Yana\Core;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../include.php';
+require_once __DIR__ . '/../../../include.php';
 
 /**
  * Test class for MetaData.
  */
-class MetaDataTest extends \PHPUnit_Framework_TestCase
+class PackageMetaDataTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -49,7 +49,7 @@ class MetaDataTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_object = new MetaData();
+        $this->_object = new PackageMetaData();
     }
 
     /**
@@ -60,7 +60,8 @@ class MetaDataTest extends \PHPUnit_Framework_TestCase
     {
         // add your code here
     }
-/**
+
+    /**
      * @test
      */
     public function testGetPreviewImage()
@@ -82,7 +83,7 @@ class MetaDataTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetLastModified()
     {
-        $this->assertEquals(0, $this->_object->getLastModified());
+        $this->assertNull($this->_object->getLastModified());
     }
 
     /**
@@ -158,7 +159,7 @@ class MetaDataTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetUrl()
     {
-        $value = 'ÄößAbc01;';
+        $value = 'http://www.Abc01.tld?foo=1#test';
         $this->assertEquals($value, $this->_object->setUrl($value)->getUrl());
     }
 
