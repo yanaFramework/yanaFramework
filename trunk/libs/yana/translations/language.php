@@ -675,7 +675,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
                     $description = $xml->xpath('//description[not(@lang)]');
                 }
                 if (!empty($description)) {
-                    $metaData->setText((string) implode(', ', $description));
+                    $metaData->setTexts((string) implode(', ', $description));
                 }
                 unset($description);
             }

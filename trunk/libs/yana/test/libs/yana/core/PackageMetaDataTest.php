@@ -123,10 +123,10 @@ class PackageMetaDataTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testSetText()
+    public function testSetTexts()
     {
         $value = 'ÄößAbc01;';
-        $this->assertEquals($value, $this->_object->setText($value)->getText());
+        $this->assertEquals($value, $this->_object->setTexts(array("" => $value))->getText());
     }
 
     /**

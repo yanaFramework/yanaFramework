@@ -45,16 +45,14 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * class name
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_className = "";
 
     /**
      * Path to plugin file.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_directory = "";
 
@@ -63,16 +61,14 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
      *
      * Keys are locales, values are texts.
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_titles = array();
 
     /**
      * Plugin title in default language.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_defaultTitle = "";
 
@@ -81,96 +77,84 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
      *
      * Keys are locales, values are texts.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_texts = array();
 
     /**
      * Plugin description in default language.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_defaultText = "";
 
     /**
      * Plugin type.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_type = \Yana\Plugins\TypeEnumeration::DEFAULT_SETTING;
 
     /**
      * Authors.
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_authors = array();
 
     /**
      * Priority setting.
      *
-     * @access  private
-     * @var     int
+     * @var  int
      */
     private $_priority = \Yana\Plugins\PriorityEnumeration::NORMAL;
 
     /**
      * Plugin application group.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_group = "";
 
     /**
      * Name of parent plugin, if inherited.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_parent = "";
 
     /**
      * List of plugin names, that this plugin depends on.
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_dependencies = array();
 
     /**
      * License string.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_license = "";
 
     /**
      * URL
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_url = "";
 
     /**
      * Version information - e.g. a date string.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_version = "";
 
     /**
      * Timestamp of when the source file was last modified.
      *
-     * @access  private
-     * @var     int
+     * @var  int
      */
     private $_lastModified = null;
 
@@ -179,32 +163,28 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
      *
      * Keys are menu ids and values are descriptions or language tokens.
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_menus = array();
 
     /**
      * Activity setting.
      *
-     * @access  private
-     * @var     int
+     * @var  int
      */
     private $_active = \Yana\Plugins\ActivityEnumeration::INACTIVE;
 
     /**
      * the plugin's identifier
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_id = "";
 
     /**
      * Public methods that this plugin offers.
      *
-     * @access  protected
-     * @var     array
+     * @var  array
      * @ignore
      */
     protected $methods = array();
@@ -212,7 +192,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Set plug-in's id.
      *
-     * @access  public
      * @param   string  $id  plugin unique identifier
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -226,7 +205,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Get plug-in's id.
      *
-     * @access  public
      * @return  string
      */
     public function getId()
@@ -237,7 +215,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Set class name.
      *
-     * @access  public
      * @param   string  $className  plugin's class name
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -251,7 +228,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Set path to source file.
      *
-     * @access  public
      * @param   string  $directory  absolute path
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -267,7 +243,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
      *
      * Keys are locales, values are texts.
      *
-     * @access  public
      * @param   array  $titles  list of titles
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -280,7 +255,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Set default title.
      *
-     * @access  public
      * @param   string  $defaultTitle  title using default locale.
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -294,7 +268,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Set translated plugin descriptions.
      *
-     * @access  public
      * @param   array  $texts  Keys are locales, values are texts.
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -307,7 +280,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Set plugin description in default language.
      *
-     * @access  public
      * @param   string  $defaultText  some user-defined text
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -323,7 +295,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
      *
      * Valid types are: primary, default, config, read, write, security, library.
      *
-     * @access  public
      * @param   string  $type  valid type identifier
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -337,7 +308,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Set authors.
      *
-     * @access  public
      * @param   array  $authors  list of author names and/or e-mails.
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -350,7 +320,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Set priority level.
      *
-     * @access  public
      * @param   int  $priority  element of PluginPriorityEnumeration
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -373,7 +342,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Set plugin application group.
      *
-     * @access  public
      * @param   string  $group  unique identifier
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -387,7 +355,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Set name of parent plugin, if inherited.
      *
-     * @access  public
      * @param   string  $parent  class name
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -401,7 +368,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * List of plugin names, that this plugin depends on.
      *
-     * @access  public
      * @param   array  $dependencies  class names
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -414,7 +380,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Set license string.
      *
-     * @access  public
      * @param   string  $license  some text
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -428,7 +393,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Set URL.
      *
-     * @access  public
      * @param   string  $url  URL of plugin maker's website
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -442,7 +406,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Set version.
      *
-     * @access  public
      * @param   string  $version  some information - e.g. a date string.
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -456,7 +419,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Set timestamp of when the source file was last modified.
      *
-     * @access  public
      * @param   int  $lastModified
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -470,7 +432,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Add menu definition.
      *
-     * @access public
      * @param  \Yana\Plugins\MenuEntry  $menu  Keys are menu ids and values are descriptions or language tokens.
      */
     public function addMenu(\Yana\Plugins\MenuEntry $menu)
@@ -482,7 +443,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * List of menu definitions.
      *
-     * @access  public
      * @param   array  $menus  Keys are menu ids and values are descriptions or language tokens.
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -498,7 +458,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Set activity state.
      *
-     * @access  public
      * @param   int  $active  element of PluginActivityEnumeration
      * @return  \Yana\Plugins\Configs\ClassConfiguration
      */
@@ -510,9 +469,8 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get time when file was last modified
+     * Get time when file was last modified.
      *
-     * @access  public
      * @return  int
      */
     public function getLastModified()
@@ -521,9 +479,8 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get title
+     * Get title.
      *
-     * @access  public
      * @param   string  $language  target language (default: auto-detect)
      * @param   string  $country   target country  (default: auto-detect)
      * @return  string
@@ -550,28 +507,20 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * Get plugin description
+     * Get plugin description.
      *
-     * @access  public
-     * @param   string  $language  target language (default: auto-detect)
-     * @param   string  $country   target country  (default: auto-detect)
+     * @param   string  $language  target language
+     * @param   string  $country   target country
      * @return  string
      */
-    public function getText($language = null, $country = null)
+    public function getText($language = "", $country = "")
     {
-        assert('is_null($language) || is_string($language); // Wrong type for argument 1. String expected');
-        assert('is_null($country) || is_string($country); // Wrong type for argument 2. String expected');
+        assert('is_string($language); // Invalid argument $language: string expected');
+        assert('is_string($country); // Invalid argument $country: string expected');
 
-        // get defaults
-        if (is_null($language) && class_exists('Language')) {
-            $languageManager = \Yana\Translations\Language::getInstance();
-            $language = $languageManager->getLanguage();
-            $country = $languageManager->getCountry();
-        }
-
-        if (isset($this->_texts["$language-$country"])) {
-            return $this->_texts["$language-$country"];
-        } elseif (isset($this->_texts[$language])) {
+        if (!empty($country) && isset($this->_texts["{$language}-{$country}"])) {
+            return $this->_texts["{$language}-{$country}"];
+        } elseif (!empty($language) && isset($this->_texts[$language])) {
             return $this->_texts[$language];
         } else {
             return $this->_defaultText;
@@ -579,9 +528,8 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get type
+     * Get plugin type.
      *
-     * @access  public
      * @return  string
      */
     public function getType()
@@ -595,7 +543,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
      * Returns a comma-seperated list of all authors.
      * If there is only one author, this name is returned.
      *
-     * @access  public
      * @return  string
      */
     public function getAuthor()
@@ -608,7 +555,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
      *
      * Returns a list of all authors.
      *
-     * @access  public
      * @return  array
      */
     public function getAuthors()
@@ -617,12 +563,11 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get priority
+     * Get priority.
      *
      * Returns the plugin's priority level as an integer.
      * The loweset priority is 0. The higher the value, the higher the priority.
      *
-     * @access  public
      * @return  string
      */
     public function getPriority()
@@ -646,14 +591,13 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get group
+     * Get group.
      *
      * Returns the plugin's group (if any).
      * This is similar to a "package" in OO-style programming languages.
      *
      * A group may have multiple plugins, but a plugin may only be a member of one group.
      *
-     * @access  public
      * @return  string
      */
     public function getGroup()
@@ -662,16 +606,14 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get parent
-     *
      * Returns the plugin's parent plugin.
+     *
      * This is when a plugin extends another by adding,
      * extending or overwriting methods.
      *
      * This is similar to a "parent class" in most OO-style programming languages.
      * A parent may have multiple child plugins, but a plugin may only have one parent.
      *
-     * @access  public
      * @return  string
      */
     public function getParent()
@@ -680,11 +622,8 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get dependencies
-     *
      * Returns the list of plugins who depend on this.
      *
-     * @access  public
      * @return  array
      */
     public function getDependencies()
@@ -693,15 +632,12 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get version
-     *
      * Returns the plugin's version string.
      *
      * This tag is optional.
      * The version may also be derived from
      * the plugin file's modification time.
      *
-     * @access  public
      * @return  string
      */
     public function getVersion()
@@ -710,13 +646,10 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get URL
-     *
      * Returns the plugin's URL (if any).
      *
      * This tag is optional.
      *
-     * @access  public
      * @return  string
      */
     public function getUrl()
@@ -725,13 +658,10 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * Get license.
-     *
      * Returns the plugin's license string.
      *
      * This tag is optional.
      *
-     * @access  public
      * @return  string
      */
     public function getLicense()
@@ -752,7 +682,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
      * Use this function to get all menu titles
      * defined by the plugin.
      *
-     * @access  public
      * @return  array
      */
     public function getMenuNames()
@@ -761,7 +690,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get menu entries
+     * Get menu entries.
      *
      * Each plugin may define it's own menues
      * and add entries to them. The names
@@ -773,7 +702,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
      * Use this function to get all menu entries
      * defined by methods.
      *
-     * @access  public
      * @param   string  $group  optionally limit entries to a certain group
      * @return  array
      */
@@ -795,11 +723,10 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get directory where file is stored
+     * Get directory where file is stored.
      *
      * Returns bool(false) on error.
      *
-     * @access  public
      * @return  string
      */
     public function getDirectory()
@@ -808,12 +735,11 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get plugin's default active state
+     * Get plugin's default active state.
      *
      * A plugin may define it's own prefered initial
      * active state. Default is 'inactive'.
      *
-     * @access  public
      * @return  int
      */
     public function getActive()
@@ -822,9 +748,8 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get URI to a preview image
+     * Get URI to a preview image.
      *
-     * @access  public
      * @return  array
      */
     public function getPreviewImage()
@@ -833,9 +758,8 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get URI to an icon image
+     * Get URI to an icon image.
      *
-     * @access  public
      * @return  array
      */
     public function getIcon()
@@ -844,9 +768,8 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get class name
+     * Get class name.
      *
-     * @access  public
      * @return  string
      */
     public function getClassName()
@@ -855,12 +778,11 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get method configuration
+     * Get method configuration.
      *
      * Returns the method configuration if it exists,
      * or NULL if there is none.
      *
-     * @access  public
      * @param   string  $methodName  name of method
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -875,9 +797,8 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * get method configurations
+     * Get method configurations.
      *
-     * @access  public
      * @return  array
      */
     public function getMethods()
@@ -888,7 +809,6 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     /**
      * Add a method configuration.
      *
-     * @access  public
      * @param   \Yana\Plugins\Configs\MethodConfiguration  $method  configuration data
      */
     public function addMethod(\Yana\Plugins\Configs\MethodConfiguration $method)
@@ -897,9 +817,8 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\IsPacka
     }
 
     /**
-     * unset method
+     * Unset method configuration.
      *
-     * @access  protected
      * @param   string  $methodName  name of method
      * @ignore
      */

@@ -108,6 +108,7 @@ class XmlDataProvider extends \Yana\Core\Object implements \Yana\Views\MetaData\
         // get information
         if (!empty($xml)) {
             $metaData->setTitle($xml->getTitle())
+                ->setTexts($xml->getDescriptions())
                 ->setAuthor($xml->getAuthor())
                 ->setUrl($xml->getUrl())
                 ->setPreviewImage($dir . $id . "/icon.png")
