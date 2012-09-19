@@ -46,9 +46,11 @@ interface IsPackageMetaData
     /**
      * Returns the package description.
      *
+     * @param   string  $language  target language
+     * @param   string  $country   target country
      * @return  string
      */
-    public function getText();
+    public function getText($language = "", $country = "");
 
     /**
      * Get time when package was last modified.

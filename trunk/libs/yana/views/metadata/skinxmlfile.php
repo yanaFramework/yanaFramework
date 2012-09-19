@@ -54,33 +54,30 @@ class SkinXmlFile extends \SimpleXMLElement
     }
 
     /**
-     * Get package description.
+     * Get package descriptions.
      *
-     * @param   string  $locale  name of the locale to check for
-     * @return  string
+     * Returns an array of descriptions, where the keys are the given locales (if any) and the values
+     * are the translated strings.
+     * If no locale is provided the key will be an empty string.
+     *
+     * Each locale must only be used once.
+     * If multiple entries with the same locale exist, previous entries will get replaced and only the last
+     * entry will be returned.
+     *
+     * @return  array
      */
-    public function getDescription($language = "", $country = "")
+    public function getDescriptions()
     {
-        assert('is_string($language); // Invalid argument $language: string expected');
-        assert('is_string($country); // Invalid argument $country: string expected');
-
-        $locale = $language . "-" . $country;
-
-        $description = "";
-        switch (true)
-        {
-            case $this->xpath('//description[@lang="' . $locale . '"]') !== false:
-                $description = implode('', $this->xpath('//description[@lang="' . $locale . '"]'));
-                break;
-            case $this->xpath('//description[@lang="' . $language . '"]') !== false:
-                $description = implode('', $this->xpath('//description[@lang="' . $language . '"]'));
-                break;
-            case $this->xpath('//description[not @lang or @lang=""]') !== false:
-                $description = implode('', $this->xpath('//description[not @lang or @lang=""]'));
-                break;
+        $descriptions = array();
+        $items = $this->xpath('//description');
+        if (!empty($items)) {
+            foreach ($items as $item)
+            {
+                $language = (isset($item['lang'])) ? (string) $item['lang'] : '';
+                $descriptions[$language] = (string) $item;
+            }
         }
-
-        return $description;
+        return $descriptions;
     }
 
     /**

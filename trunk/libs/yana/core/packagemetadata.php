@@ -52,9 +52,9 @@ class PackageMetaData extends \Yana\Core\Object implements \Yana\Core\IsPackageM
     private $_title = "";
 
     /**
-     * @var string
+     * @var array
      */
-    private $_text = "";
+    private $_texts = array();
 
     /**
      * @var string
@@ -153,13 +153,12 @@ class PackageMetaData extends \Yana\Core\Object implements \Yana\Core\IsPackageM
     /**
      * Set package description.
      *
-     * @param   string  $text  some text (no HTML allowed)
+     * @param   array  $text  some text (no HTML allowed)
      * @return  \Yana\Core\PackageMetaData
      */
-    public function setText($text)
+    public function setTexts(array $text)
     {
-        assert('is_string($text); // Invalid argument $text. String expected');
-        $this->_text = $text;
+        $this->_texts = $text;
         return $this;
     }
 
@@ -168,11 +167,24 @@ class PackageMetaData extends \Yana\Core\Object implements \Yana\Core\IsPackageM
      *
      * If no description is given, it returns an empty string.
      *
+     * @param   string  $language  target language
+     * @param   string  $country   target country
      * @return string
      */
-    public function getText()
+    public function getText($language = "", $country = "")
     {
-        return $this->_text;
+        assert('is_string($language); // Invalid argument $language: string expected');
+        assert('is_string($country); // Invalid argument $country: string expected');
+
+        $text = "";
+        if (!empty($country) && isset($this->_texts["{$language}-{$country}"])) {
+            $text = $this->_texts["{$language}-{$country}"];
+        } elseif (!empty($language) && isset($this->_texts[$language])) {
+            $text = $this->_texts[$language];
+        } elseif (isset($this->_texts[""])) {
+            $text = $this->_texts[""];
+        }
+        return $text;
     }
 
     /**

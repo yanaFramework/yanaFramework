@@ -29,6 +29,7 @@ class SkinXmlFileTest extends \PHPUnit_Framework_TestCase
                         <author>Erik</author>
                         <author>Tom</author>
                         <url>http://test.url</url>
+                        <description>this entry is a duplicate and should be ignored</description>
                         <description>default description</description>
                         <description lang="en">en description</description>
                     </head>
@@ -65,14 +66,12 @@ class SkinXmlFileTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testGetDescription().
+     * @test
      */
-    public function testGetDescription()
+    public function testGetDescriptions()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $expected = array('' => 'default description', 'en' => 'en description');
+        $this->assertEquals($expected, $this->object->getDescriptions());
     }
 
     /**
