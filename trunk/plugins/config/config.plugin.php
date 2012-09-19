@@ -494,12 +494,15 @@ class plugin_config extends StdClass implements IsPlugin
             default:
                 return false;
         }
+        $languageManager = \Yana\Translations\Language::getInstance();
+        $language = $languageManager->getLanguage();
+        $country = $languageManager->getCountry();
         // fill fields
         $info['NAME'] = $metaData->getTitle();
         $info['LAST_CHANGE'] = $metaData->getLastModified();
         $info['LOGO'] = $metaData->getPreviewImage();
         $info['AUTHOR'] = $metaData->getAuthor();
-        $info['DESCRIPTION'] = $metaData->getText();
+        $info['DESCRIPTION'] = $metaData->getText($language, $country);
 
         $YANA->setVar("INFO", $info);
         return true;
