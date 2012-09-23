@@ -36,7 +36,7 @@ namespace Yana\Views\MetaData;
  * @package     yana
  * @subpackage  views
  */
-interface IsSkinMetaData extends \Yana\Core\IsPackageMetaData
+interface IsSkinMetaData extends \Yana\Core\MetaData\IsPackageMetaData
 {
 
     /**

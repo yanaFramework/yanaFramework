@@ -28,25 +28,18 @@
  * @ignore
  */
 
-namespace Yana\Views\MetaData;
+namespace Yana\Translations\MetaData;
 
 /**
- * Data provider.
+ * Language meta data.
  *
  * @package     yana
- * @subpackage  views
+ * @subpackage  translations
  */
-interface IsDataProvider
+class LanguageMetaData extends \Yana\Core\MetaData\PackageMetaData implements \Yana\Translations\MetaData\IsLanguageMetaData
 {
 
-    /**
-     * Load data object.
-     *
-     * @param   string  $id  name of the object to load
-     * @return  \Yana\Core\IsObject
-     * @throws  \Yana\Core\Exceptions\NotFoundException
-     */
-    public function loadOject($id);
+    // intentionally left blank
 
 }
 

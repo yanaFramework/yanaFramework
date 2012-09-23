@@ -35,94 +35,74 @@ namespace Yana\Views\MetaData;
  * @package     yana
  * @subpackage  views
  */
-class XmlDataProvider extends \Yana\Core\Object implements \Yana\Views\MetaData\IsDataProvider
+class XmlDataProvider extends \Yana\Core\MetaData\XmlDataProvider
 {
-
-    /**
-     * basic directory
-     *
-     * @var  string
-     */
-    private $_directory = "";
-
-    /**
-     * file extension for language definition files
-     *
-     * @var  string
-     */
-    private $_fileExtension = ".skin.xml";
-
-    /**
-     * @param  string  $directory  base directory
-     */
-    public function __construct($directory)
-    {
-        assert('is_string($directory); // Invalid argument $directory: string expected');
-
-        $this->_directory = $directory;
-    }
-
-    /**
-     * Returns path to basic directory.
-     *
-     * @return  string
-     */
-    protected function _getDirectory()
-    {
-        return $this->_directory;
-    }
 
     /**
      * Get path to configuration file.
      *
-     * @param   string  $id  identifier for the skin
+     * @param   string  $id  identifier for the file to be loaded
      * @return  string
      */
-    protected function _getSkinPath($id)
+    protected function _convertIdToFilePath($id)
     {
         assert('is_string($id); // Invalid argument $id: string expected');
-
-        return $this->_getDirectory() .'/' . $id . $this->_fileExtension;
+        $file = $this->_getDirectory() .'/' . $id . ".skin.xml";
+        return $file;
     }
 
     /**
-     * Load skin data object.
+     * Create and load XML object.
      *
-     * @param   string  $id  name of the skin to load
-     * @return  \Yana\Views\MetaData\SkinMetaData
-     * @throws  \Yana\Core\Exceptions\NotFoundException
+     * @param   string  $file  file path
+     * @return  \Yana\Core\MetaData\XmlMetaData
      */
-    public function loadOject($id)
+    protected function _loadXmlByFileName($file)
+    {
+        assert('is_string($file); // Invalid argument $file: string expected');
+        return new \Yana\Views\MetaData\XmlMetaData($file, LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_NOENT, true);
+    }
+
+    /**
+     * Create new instance of meta data class.
+     *
+     * @return \Yana\Views\MetaData\SkinMetaData
+     */
+    protected function _createMetaData()
+    {
+        return new \Yana\Views\MetaData\SkinMetaData();
+    }
+
+    /**
+     * Fill meta data object with infos.
+     *
+     * This fills information on the meta data object based on the given XML.
+     * It also adds the path to a preview image.
+     *
+     * @param   \Yana\Core\MetaData\IsPackageMetaData  $metaData  object that should be filled
+     * @param   \Yana\Core\MetaData\XmlMetaData        $xml       provided XML meta data
+     * @param   string                                 $id        identifier for the processed XML file to be loaded
+     * @return  \Yana\Core\MetaData\IsPackageMetaData
+     */
+    protected function _fillMetaData(\Yana\Core\MetaData\IsPackageMetaData $metaData, \Yana\Core\MetaData\XmlMetaData $xml, $id)
     {
         assert('is_string($id); // Invalid argument $id: string expected');
-        $metaData = new \Yana\Views\MetaData\SkinMetaData();
 
-        $file = $this->_getSkinPath($id);
-        $dir = $this->_getDirectory() . '/';
-        if (!is_file($file)) {
-            throw new \Yana\Core\Exceptions\NotFoundException("Skin definition not found: '{$id}'.");
-        }
-        // load definition
-        $xml = new \Yana\Views\MetaData\SkinXmlFile($file, LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_NOENT, true);
+        $metaData = parent::_fillMetaData($metaData, $xml, $id);
 
-        // get information
         if (!empty($xml)) {
-            $metaData->setTitle($xml->getTitle())
-                ->setTexts($xml->getDescriptions())
-                ->setAuthor($xml->getAuthor())
-                ->setUrl($xml->getUrl())
-                ->setPreviewImage($dir . $id . "/icon.png")
-                ->setLastModified(filemtime($file));
+            $directory = $this->_getDirectory() . '/';
+            $previewImage = $directory . '/' . $id . "/icon.png";
+            $metaData->setPreviewImage($previewImage);
 
             assert('!isset($template); /* cannot redeclare variable $template */');
-            foreach ($xml->getTemplates($dir) as $template)
+            foreach ($xml->getTemplates($directory) as $template)
             {
                 /* @var $template \Yana\Views\MetaData\TemplateMetaData */
                 $metaData->addTemplate($template);
             }
             unset($template);
-        } // end if
-        unset($file);
+        }
 
         return $metaData;
     }

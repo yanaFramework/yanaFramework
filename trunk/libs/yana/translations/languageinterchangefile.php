@@ -34,7 +34,7 @@ namespace Yana\Translations;
  *
  * @access     public
  * @package    yana
- * @subpackage core
+ * @subpackage  translations
  * @name       LanguageInterchangeFile
  *
  * @ignore
