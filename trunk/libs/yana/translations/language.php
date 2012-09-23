@@ -34,7 +34,7 @@ namespace Yana\Translations;
  * language files at runtime.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  translations
  */
 class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Yana\Log\IsLogable, \Yana\Core\IsVarContainer
 {
@@ -634,7 +634,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      * or bool(false) on error.
      *
      * @param   string  $languageName  name of language pack
-     * @return  \Yana\Core\PackageMetaData
+     * @return  \Yana\Core\MetaData\PackageMetaData
      * @throws  \Yana\Core\Exceptions\NotFoundException  when requested file is not found
      *
      * @ignore
@@ -651,7 +651,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
             }
             // load definition
             $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
-            $metaData = new \Yana\Core\PackageMetaData();
+            $metaData = new \Yana\Core\MetaData\PackageMetaData();
             // get information
             if (!empty($xml)) {
                 $metaData->setPreviewImage($this->getDefaultDirectory() . "/$languageName/icon.png")

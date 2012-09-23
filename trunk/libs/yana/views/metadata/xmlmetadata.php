@@ -36,82 +36,14 @@ namespace Yana\Views\MetaData;
  * @package     yana
  * @subpackage  views
  */
-class SkinXmlFile extends \SimpleXMLElement
+class XmlMetaData extends \Yana\Core\MetaData\XmlMetaData
 {
-
-    /**
-     * Get package title.
-     *
-     * @return  string
-     */
-    public function getTitle()
-    {
-        $title = "";
-        if (!empty($this->head->title)) {
-            $title = (string) $this->head->title;
-        }
-        return $title;
-    }
-
-    /**
-     * Get package descriptions.
-     *
-     * Returns an array of descriptions, where the keys are the given locales (if any) and the values
-     * are the translated strings.
-     * If no locale is provided the key will be an empty string.
-     *
-     * Each locale must only be used once.
-     * If multiple entries with the same locale exist, previous entries will get replaced and only the last
-     * entry will be returned.
-     *
-     * @return  array
-     */
-    public function getDescriptions()
-    {
-        $descriptions = array();
-        $items = $this->xpath('//description');
-        if (!empty($items)) {
-            foreach ($items as $item)
-            {
-                $language = (isset($item['lang'])) ? (string) $item['lang'] : '';
-                $descriptions[$language] = (string) $item;
-            }
-        }
-        return $descriptions;
-    }
-
-    /**
-     * Get name(s) of the autor(s).
-     *
-     * @return  string
-     */
-    public function getAuthor()
-    {
-        return (string) implode(', ', (array) $this->xpath('//author'));
-    }
-
-    /**
-     * Get URL to author's website.
-     *
-     * This should point the user to a website where more information and/or
-     * updates are available for this package.
-     *
-     * @return  string
-     */
-    public function getUrl()
-    {
-        $url = "";
-        if (!empty($this->head->url)) {
-            $url = (string) $this->head->url;
-        }
-        return $url;
-    }
 
     /**
      * Returns list of template meta data elements.
      *
      * @param   string  $directory  file path
-     * @return  \Yana\Views\MetaData\TemplateMetaData[]
+     * @return  \Yana\Views\MetaData\IsTemplateMetaData[]
      */
     public function getTemplates($directory = "")
     {

@@ -28,43 +28,25 @@
  * @ignore
  */
 
-namespace Yana\Views\MetaData;
+namespace Yana\Core\MetaData;
 
 /**
- * Skin meta data.
+ * Meta Data provider.
  *
  * @package     yana
- * @subpackage  views
+ * @subpackage  core
  */
-class SkinMetaData extends \Yana\Core\MetaData\PackageMetaData implements \Yana\Views\MetaData\IsSkinMetaData
+interface IsDataProvider
 {
 
     /**
-     * @var  \Yana\Views\MetaData\TemplateMetaData[] 
-     */
-    private $_templates = array();
-
-    /**
-     * Add template information.
+     * Load data object.
      *
-     * @param   \Yana\Views\MetaData\TemplateMetaData  $template  meta data
-     * @return  \Yana\Views\MetaData\SkinMetaData
+     * @param   string  $id  name of the object to load
+     * @return  \Yana\Core\MetaData\IsPackageMetaData
+     * @throws  \Yana\Core\Exceptions\NotFoundException
      */
-    public function addTemplate(\Yana\Views\MetaData\TemplateMetaData $template)
-    {
-        $this->_templates[$template->getId()] = $template;
-        return $this;
-    }
-
-    /**
-     * Get list of template data objects.
-     *
-     * @return  \Yana\Views\MetaData\IsTemplateMetaData[] 
-     */
-    public function getTemplates()
-    {
-        return $this->_templates;
-    }
+    public function loadOject($id);
 
 }
 

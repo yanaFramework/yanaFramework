@@ -25,12 +25,12 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Core;
+namespace Yana\Core\MetaData;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../include.php';
+require_once __DIR__ . '/../../../../include.php';
 
 /**
  * Test class for MetaData.

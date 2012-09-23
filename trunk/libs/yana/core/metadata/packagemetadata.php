@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Core;
+namespace Yana\Core\MetaData;
 
 /**
  * This class holds information about a package.
@@ -33,7 +33,7 @@ namespace Yana\Core;
  * @package     yana
  * @subpackage  core
  */
-class PackageMetaData extends \Yana\Core\Object implements \Yana\Core\IsPackageMetaData
+class PackageMetaData extends \Yana\Core\Object implements \Yana\Core\MetaData\IsPackageMetaData
 {
 
     /**
@@ -77,7 +77,7 @@ class PackageMetaData extends \Yana\Core\Object implements \Yana\Core\IsPackageM
      * Note that this does not check wether or not the URI is valid.
      *
      * @param   string  $previewImage  URI to image file (should be PNG, GIF or JPG)
-     * @return  \Yana\Core\PackageMetaData
+     * @return  \Yana\Core\MetaData\PackageMetaData
      */
     public function setPreviewImage($previewImage)
     {
@@ -100,7 +100,7 @@ class PackageMetaData extends \Yana\Core\Object implements \Yana\Core\IsPackageM
      * Set time when package was last modified.
      *
      * @param   int  $lastModified  UNIX timestamp
-     * @return  \Yana\Core\PackageMetaData
+     * @return  \Yana\Core\MetaData\PackageMetaData
      */
     public function setLastModified($lastModified)
     {
@@ -129,7 +129,7 @@ class PackageMetaData extends \Yana\Core\Object implements \Yana\Core\IsPackageM
      * Set package title.
      *
      * @param   string   $title  some text (no HTML allowed)
-     * @return  \Yana\Core\PackageMetaData
+     * @return  \Yana\Core\MetaData\PackageMetaData
      */
     public function setTitle($title)
     {
@@ -154,7 +154,7 @@ class PackageMetaData extends \Yana\Core\Object implements \Yana\Core\IsPackageM
      * Set package description.
      *
      * @param   array  $text  some text (no HTML allowed)
-     * @return  \Yana\Core\PackageMetaData
+     * @return  \Yana\Core\MetaData\PackageMetaData
      */
     public function setTexts(array $text)
     {
@@ -191,7 +191,7 @@ class PackageMetaData extends \Yana\Core\Object implements \Yana\Core\IsPackageM
      * Set name(s) of the autor(s).
      *
      * @param   string  $author  List of names (no HTML allowed)
-     * @return  \Yana\Core\PackageMetaData
+     * @return  \Yana\Core\MetaData\PackageMetaData
      */
     public function setAuthor($author)
     {
@@ -217,7 +217,7 @@ class PackageMetaData extends \Yana\Core\Object implements \Yana\Core\IsPackageM
      * updates are available for this package.
      *
      * @param   string  $url  valid URL (no HTML allowed)
-     * @return  \Yana\Core\PackageMetaData
+     * @return  \Yana\Core\MetaData\PackageMetaData
      */
     public function setUrl($url)
     {
@@ -246,7 +246,7 @@ class PackageMetaData extends \Yana\Core\Object implements \Yana\Core\IsPackageM
      * version string should look like.
      *
      * @param   string  $version  some version string (no HTML allowed)
-     * @return  \Yana\Core\PackageMetaData
+     * @return  \Yana\Core\MetaData\PackageMetaData
      */
     public function setVersion($version)
     {

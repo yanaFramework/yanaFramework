@@ -31,12 +31,12 @@
 namespace Yana\Views\MetaData;
 
 /**
- * XML skin description file.
+ * Describes the configuration of a template.
  *
  * @package     yana
  * @subpackage  views
  */
-class TemplateMetaData extends \Yana\Core\Object
+class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData\IsTemplateMetaData
 {
 
     /**

@@ -28,43 +28,18 @@
  * @ignore
  */
 
-namespace Yana\Views\MetaData;
+namespace Yana\Translations\MetaData;
 
 /**
- * Skin meta data.
+ * Language pack meta data.
  *
  * @package     yana
- * @subpackage  views
+ * @subpackage  translations
  */
-class SkinMetaData extends \Yana\Core\MetaData\PackageMetaData implements \Yana\Views\MetaData\IsSkinMetaData
+interface IsLanguageMetaData extends \Yana\Core\MetaData\IsPackageMetaData
 {
 
-    /**
-     * @var  \Yana\Views\MetaData\TemplateMetaData[] 
-     */
-    private $_templates = array();
-
-    /**
-     * Add template information.
-     *
-     * @param   \Yana\Views\MetaData\TemplateMetaData  $template  meta data
-     * @return  \Yana\Views\MetaData\SkinMetaData
-     */
-    public function addTemplate(\Yana\Views\MetaData\TemplateMetaData $template)
-    {
-        $this->_templates[$template->getId()] = $template;
-        return $this;
-    }
-
-    /**
-     * Get list of template data objects.
-     *
-     * @return  \Yana\Views\MetaData\IsTemplateMetaData[] 
-     */
-    public function getTemplates()
-    {
-        return $this->_templates;
-    }
+    // intentionally left blank
 
 }
 
