@@ -54,8 +54,6 @@ if (!defined('CASE_MIXED')) {
  * The wildcard '*' may be used to refer to the hashtable
  * as a whole.
  *
- * @access      public
- * @static
  * @package     yana
  * @subpackage  util
  */
@@ -63,29 +61,21 @@ class Hashtable extends \Yana\Core\AbstractUtility
 {
 
     /**
-     * @access  private
-     * @static
-     * @var     string
-     * @ignore
+     * @var  string
      */
     private static $_inputEncoding = null;
 
     /**
-     * @access  private
-     * @static
-     * @var     string
-     * @ignore
+     * @var  string
      */
     private static $_outputEncoding = null;
 
     /**
-     * retrieve a value
+     * Retrieve a value.
      *
      * Finds the value identified by $key and returns it.
      * If the value is not found NULL is returned.
      *
-     * @access  public
-     * @static
      * @param   array   &$hash   associative array
      * @param   string  $key     address
      * @return  mixed
@@ -103,12 +93,10 @@ class Hashtable extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * _get
+     * Magic getter.
      *
-     * recursively resolve key address
+     * Recursively resolves key address.
      *
-     * @access  private
-     * @static
      * @param   array  &$hash        associative array
      * @param   array  &$listOfKeys  list of array keys
      * @return  mixed
@@ -132,14 +120,12 @@ class Hashtable extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * set an element by Reference
+     * Set an element by reference.
      *
      * Sets the element identified by $key to $value by passing it's reference.
      * If the value does not exist it gets inserted.
      * If a previous value existed the value gets updated.
      *
-     * @access  public
-     * @static
      * @name    Hashtable::setByReference()
      * @param   array   &$hash   associative array
      * @param   string  $key     address
@@ -173,14 +159,12 @@ class Hashtable extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * set an element to a value
+     * Set an element to a value.
      *
      * Sets the element identified by $key to $value.
      * If the value does not exist it gets inserted.
      * If a previous value existed the value gets updated.
      *
-     * @access  public
-     * @static
      * @name    Hashtable::set()
      * @param   array   &$hash  associative array
      * @param   string  $key    address
@@ -194,7 +178,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * set the data type of an element
+     * Set the data type of an element.
      *
      * Set the data type of the element identified by $key
      * to $type.
@@ -202,8 +186,6 @@ class Hashtable extends \Yana\Core\AbstractUtility
      * Returns bool(false) if the element is NULL or does not exist,
      * or the $type parameter is invalid. Returns bool(true) otherwise.
      *
-     * @access  public
-     * @static
      * @param   array   &$hash  associative array
      * @param   string  $key    address
      * @param   string  $type   data type
@@ -221,14 +203,12 @@ class Hashtable extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * check if an element exists
+     * Check if an element exists.
      *
      * Returns bool(false) if the element identified by $key
      * can not be found in the given hashtable or it is NULL.
      * Returns bool(true) otherwise.
      *
-     * @access  public
-     * @static
      * @param   array   &$hash  associative array
      * @param   string  $key    address
      * @return  bool
@@ -239,15 +219,13 @@ class Hashtable extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * remove an element
+     * Remove an element.
      *
      * Unsets the element identified by $key in the
      * hashtable. Returns bool(false) if the element
      * does not exist or the key is invalid.
      * Returns bool(true) otherwise.
      *
-     * @access  public
-     * @static
      * @param   array   &$hash  associative array
      * @param   string  $key    address
      * @return  bool
@@ -293,28 +271,24 @@ class Hashtable extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * Lowercase or uppercase all keys of an associative array
+     * Lowercase or uppercase all keys of an associative array.
      *
      * This is a recursive implementation of the PHP function array_change_key_case().
      * It takes the same arguments: an array $input to work on and an optional
      * argument $case. The argument $case can be one of two constants: CASE_LOWER and
      * CASE_UPPER, where CASE_LOWER is the default.
      *
-     * @access  public
-     * @static
-     * @param   array     $input  input array
-     * @param   int|bool  $case   CASE_UPPER or CASE_LOWER
+     * @param   array  $input  input array
+     * @param   int    $case   CASE_UPPER or CASE_LOWER
      * @return  array
      */
     public static function changeCase(array $input, $case = CASE_LOWER)
     {
-        assert('is_bool($case) || $case === CASE_UPPER || $case === CASE_LOWER; // '.
-            'Wrong argument type for argument 2. Expected CASE_UPPER or CASE_LOWER.');
+        assert('$case === CASE_UPPER || $case === CASE_LOWER; // '.
+            'Wrong argument type for $case. Expected CASE_UPPER or CASE_LOWER.');
 
         /* Map boolean input to constant */
-        if ($case === true || $case === CASE_UPPER) {
-            $case = CASE_UPPER;
-        } else {
+        if ($case !== CASE_UPPER) {
             $case = CASE_LOWER;
         }
 
@@ -386,8 +360,6 @@ class Hashtable extends \Yana\Core\AbstractUtility
      * )
      * </pre>
      *
-     * @access  public
-     * @static
      * @param   array  $a  base array
      * @param   array  $b  merge with this array
      * @return  array
@@ -429,8 +401,6 @@ class Hashtable extends \Yana\Core\AbstractUtility
      * An XML-header is created automatically.
      * Encoding of input and output will run on auto-detect.
      *
-     * @access  public
-     * @static
      * @param   mixed   $data           input data
      * @param   string  $name           name of root element
      * @param   int     $caseSensitive  CASE_UPPER, CASE_LOWER, CASE_MIXED
@@ -563,7 +533,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * recursive deep-copy on arrays
+     * Recursive deep-copy on arrays.
      *
      * This function creates a deep-copy of
      * the input $array and returns it.
@@ -577,8 +547,6 @@ class Hashtable extends \Yana\Core\AbstractUtility
      * neither the one nor the other.
      *
      * @since   2.8.5
-     * @access  public
-     * @static
      * @param   array  $array  input array that should be cloned
      * @return  array
      */
@@ -599,7 +567,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
     }
 
     /**
-     * search for a value in a sorted list
+     * Search for a value in a sorted list.
      *
      * If the array contains $needle, the key of $needle is
      * returned. Otherwise this functions returns bool(false).
@@ -644,7 +612,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
         /* Input handling */
         /* settype to STRING */
         $needle = (string) $needle;
-        $max = count($array) -1;
+        $max = count($array) - 1;
         $min = 0;
         $n = floor($max / 2);
         $previousN = array(-1, -1);
@@ -671,10 +639,10 @@ class Hashtable extends \Yana\Core\AbstractUtility
             array_shift($previousN);
             $previousN[] = $n;
 
-            if ($min!=$n) {
-                $n = $min + floor(($max - $min) /2);
+            if ($min != $n) {
+                $n = $min + floor(($max - $min) / 2);
             } else {
-                $n = $min + ceil(($max - $min) /2);
+                $n = $min + ceil(($max - $min) / 2);
             }
 
             if ($previousN[0] == $n || $previousN[1] == $n) {
@@ -683,6 +651,7 @@ class Hashtable extends \Yana\Core\AbstractUtility
         } /* end while */
         return false;
     }
+
 }
 
 ?>
