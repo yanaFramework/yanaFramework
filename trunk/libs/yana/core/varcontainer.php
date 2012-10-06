@@ -47,6 +47,34 @@ class VarContainer implements \Yana\Core\IsVarContainer
     private $_contents = array();
 
     /**
+     * Alias of getVar().
+     *
+     * @param   string  $id  some valid identifier
+     * @return  mixed
+     */
+    public function __get($id)
+    {
+        assert('is_string($id); // Invalid argument $id: string expected');
+        return $this->getVar($id);
+    }
+
+    /**
+     * Alias of setVar().
+     *
+     * Return the value that is passed to the function (for assignment chaining).
+     *
+     * @param   string  $id     some valid identifier
+     * @param   mixed   $value  any acceptable value
+     * @return  mixed
+     */
+    public function __set($id, $value)
+    {
+        assert('is_string($id); // Invalid argument $id: string expected');
+        $this->setVar($id, $value);
+        return $value;
+    }
+
+    /**
      * Returns the var identified by $key or bool(false) on error.
      *
      * Note: this function may return false but also other values that evaluates to false.
