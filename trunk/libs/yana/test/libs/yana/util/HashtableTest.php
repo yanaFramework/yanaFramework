@@ -233,11 +233,6 @@ class HashtableTest extends \PHPUnit_Framework_TestCase
         $this->assertType('array', $changeCase);
         $this->assertNotEquals($changeCase, $this->array);
 
-        // success CASE_LOWER
-        $changeCase = Hashtable::changeCase($this->array, false);
-        $this->assertType('array', $changeCase);
-        $this->assertNotEquals($changeCase, $this->array);
-
         // success CASE_UPPER
         $changeCase = Hashtable::changeCase($this->array, CASE_UPPER);
         $this->assertType('array', $changeCase);
@@ -245,11 +240,6 @@ class HashtableTest extends \PHPUnit_Framework_TestCase
 
         // success CASE_UPPER
         $changeCase = Hashtable::changeCase($this->array, 1);
-        $this->assertType('array', $changeCase);
-        $this->assertNotEquals($changeCase, $this->array);
-
-        // success CASE_UPPER
-        $changeCase = Hashtable::changeCase($this->array, true);
         $this->assertType('array', $changeCase);
         $this->assertNotEquals($changeCase, $this->array);
     }
