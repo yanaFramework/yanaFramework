@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -31,15 +30,26 @@
 namespace Yana\Translations\MetaData;
 
 /**
- * Language meta data.
+ * XML language description file.
  *
  * @package     yana
- * @subpackage  translations
+ * @subpackage  core
  */
-class LanguageMetaData extends \Yana\Core\MetaData\PackageMetaData implements \Yana\Translations\MetaData\IsLanguageMetaData
+class XmlDataProvider extends \Yana\Core\MetaData\XmlDataProvider
 {
 
-    // intentionally left blank
+    /**
+     * Get path to configuration file.
+     *
+     * @param   string  $id  identifier for the file to be loaded
+     * @return  string
+     */
+    protected function _convertIdToFilePath($id)
+    {
+        assert('is_string($id); // Invalid argument $id: string expected');
+        $file = $this->_getDirectory() .'/' . $id . ".language.xml";
+        return $file;
+    }
 
 }
 
