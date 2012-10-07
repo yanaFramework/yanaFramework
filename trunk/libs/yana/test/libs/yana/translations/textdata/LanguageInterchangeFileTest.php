@@ -25,12 +25,12 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Translations;
+namespace Yana\Translations\TextData;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../include.php';
+require_once __DIR__ . '/../../../../include.php';
 
 /**
  * Test class for LanguageInterchangeFile.
@@ -61,7 +61,7 @@ class LanguageInterchangeFileTest extends \PHPUnit_Framework_TestCase
         </xliff>';
 
     /**
-     * @var \Yana\Translations\LanguageInterchangeFile
+     * @var \Yana\Translations\TextData\LanguageInterchangeFile
      */
     protected $object;
 
@@ -71,7 +71,7 @@ class LanguageInterchangeFileTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Translations\LanguageInterchangeFile($this->_xml);
+        $this->object = new \Yana\Translations\TextData\LanguageInterchangeFile($this->_xml);
     }
 
     /**

@@ -88,31 +88,15 @@ class SkinTest extends \PHPUnit_Framework_TestCase
      */
     public function testStyleSheet()
     {
-        $temp = array();
+        $fooData = $this->_object->getTemplateData('foo');
 
-        $file =  $this->_testDir->getPath() . 'test.txt';
-        $this->assertEquals(array('test' => $file), $this->_object->getStyle('foo'), "read stylesheet failed");
-        $this->_object->setStyle('foo');
+        $file =  $this->_testDir->getPath() . '/test.txt';
+        $this->assertEquals(array('test' => $file), $fooData->getStyles(), "read stylesheet failed");
+        $fooData->setStyle('foo');
 
         // add stylesheet
-        $test = $this->_object->setStyle('foo', 'foo.css');
-        $temp[] = 'foo.css';
-        $this->assertEquals($temp, $this->_object->getStyle('foo'), "add stylesheet failed");
-
-        // replace stylesheet 'bar'
-        $test = $this->_object->setStyle('foo', 'bar.css', 'bar');
-        $temp['bar'] = 'bar.css';
-        $this->assertEquals($temp, $this->_object->getStyle('foo'), "replace stylesheet 'bar' failed");
-
-        // remove stylesheet 'bar'
-        $test = $this->_object->setStyle('foo', '', 'bar');
-        unset($temp['bar']);
-        $this->assertEquals($temp, $this->_object->getStyle('foo'), "remove stylesheet 'bar' failed");
-
-        // remove all stylesheets
-        $test = $this->_object->setStyle('foo');
-        $temp = array();
-        $this->assertEquals($temp, $this->_object->getStyle('foo'), "remove all stylesheets");
+        $fooData->setStyles(array('foo.css'));
+        $this->assertEquals(array('foo.css'), $fooData->getStyles(), "add stylesheet failed");
     }
 
     /**
@@ -122,31 +106,10 @@ class SkinTest extends \PHPUnit_Framework_TestCase
      */
     public function testScript()
     {
-        $temp = array();
+        $fooData = $this->_object->getTemplateData('foo');
 
         $file =  $this->_defaultDir->getPath() . 'default.txt';
-        $this->assertEquals(array($file, $file), $this->_object->getScript('foo'), "read script failed");
-        $this->_object->setScript('foo');
-
-        // add script
-        $test = $this->_object->setScript('foo', 'foo.js');
-        $temp[] = 'foo.js';
-        $this->assertEquals($this->_object->getScript('foo'), $temp, "add script failed");
-
-        // replace script 'bar'
-        $test = $this->_object->setScript('foo', 'bar.js', 'bar');
-        $temp['bar'] = 'bar.js';
-        $this->assertEquals($this->_object->getScript('foo'), $temp, "replace script 'bar' failed");
-
-        // remove script 'bar'
-        $test = $this->_object->setScript('foo', '', 'bar');
-        unset($temp['bar']);
-        $this->assertEquals($this->_object->getScript('foo'), $temp, "remove script 'bar' failed");
-
-        // remove all scripts
-        $test = $this->_object->setScript('foo');
-        $temp = array();
-        $this->assertEquals($this->_object->getScript('foo'), $temp, "remove all scripts");
+        $this->assertEquals(array($file, $file), $fooData->getScripts(), "read script failed");
     }
 
     /**
@@ -156,30 +119,9 @@ class SkinTest extends \PHPUnit_Framework_TestCase
      */
     public function testLanguage()
     {
-        $temp = array();
+        $fooData = $this->_object->getTemplateData('foo');
 
-        $this->assertEquals($this->_object->getLanguage('foo'), array('default'), "read language failed");
-        $this->_object->setLanguage('foo');
-
-        // add language
-        $test = $this->_object->setLanguage('foo', 'foo.config');
-        $temp[] = 'foo.config';
-        $this->assertEquals($this->_object->getLanguage('foo'), $temp, "add language");
-
-        // replace language 'bar'
-        $test = $this->_object->setLanguage('foo', 'bar.config', 'bar');
-        $temp['bar'] = 'bar.config';
-        $this->assertEquals($this->_object->getLanguage('foo'), $temp, "replace language 'bar' failed");
-
-        // remove language 'bar'
-        $test = $this->_object->setLanguage('foo', '', 'bar');
-        unset($temp['bar']);
-        $this->assertEquals($this->_object->getLanguage('foo'), $temp, "remove language 'bar' failed");
-
-        // remove all language-files
-        $test = $this->_object->setLanguage('foo');
-        $temp = array();
-        $this->assertEquals($this->_object->getLanguage('foo'), $temp, "remove all language-files");
+        $this->assertEquals(array('default'), $fooData->getLanguages(), "read language failed");
     }
 
 }
