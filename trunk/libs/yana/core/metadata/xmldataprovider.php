@@ -141,10 +141,13 @@ class XmlDataProvider extends \Yana\Core\Object implements \Yana\Core\MetaData\I
 
         if (!empty($xml)) {
             $file = $this->_convertIdToFilePath($id);
+            $directory = $this->_getDirectory() . '/';
+            $previewImage = $directory . '/' . $id . "/icon.png";
             $metaData->setTitle($xml->getTitle())
                 ->setTexts($xml->getDescriptions())
                 ->setAuthor($xml->getAuthor())
                 ->setUrl($xml->getUrl())
+                ->setPreviewImage($previewImage)
                 ->setLastModified(filemtime($file));
             unset($file);
 
