@@ -1,0 +1,159 @@
+<?php
+/**
+ * YANA library
+ *
+ * Software:  Yana PHP-Framework
+ * Version:   {VERSION} - {DATE}
+ * License:   GNU GPL  http://www.gnu.org/licenses/
+ *
+ * This program: can be redistributed and/or modified under the
+ * terms of the GNU General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/.
+ *
+ * This notice MAY NOT be removed.
+ *
+ * @package  yana
+ * @license  http://www.gnu.org/licenses/gpl.txt
+ */
+
+namespace Yana\Translations\TextData;
+
+/**
+ * Contains translation strings.
+ *
+ * @package     yana
+ * @subpackage  translations
+ * @ignore
+ */
+class TextContainer extends \Yana\Core\Object implements \Yana\Translations\TextData\IsTextContainer
+{
+
+    /**
+     * @var  array
+     */
+    private $_loaded = array();
+
+    /**
+     * @var  array
+     */
+    private $_strings = array();
+
+    /**
+     * @var  array
+     */
+    private $_groups = array();
+
+    /**
+     * Checks wether the id is marked as loaded.
+     *
+     * @param   string  $id  alpha-numeric text
+     * @return  bool
+     */
+    public function isLoaded($id)
+    {
+        assert('is_string($id); // Invalid argument $id: string expected');
+
+        return !empty($this->_loaded[$id]);
+    }
+
+    /**
+     * Marks the id as loaded.
+     *
+     * @param   string  $id  alpha-numeric text
+     * @return  \Yana\Translations\TextData\TextContainer
+     */
+    public function setLoaded($id)
+    {
+        assert('is_string($id); // Invalid argument $id: string expected');
+
+        $this->_loaded[$id] = true;
+        return $this;
+    }
+
+    /**
+     * Add translation strings.
+     *
+     * The keys are the translation-ids and the values are the translation strings.
+     *
+     * @param   array  $strings  list of translation strings
+     * @return  \Yana\Translations\TextData\TextContainer
+     */
+    public function addStrings(array $strings)
+    {
+        // This uses the union operator. It adds all elements of the right array, that are missing in the left array
+        // The operator is diffrenent from array_merge() in the sense that it doesn't create duplicate values
+        $this->_strings = $strings + $this->_strings;
+        return $this;
+    }
+
+    /**
+     * Get translation strings.
+     *
+     * The keys are the translation-ids and the values are the translation strings.
+     * 
+     * @return  array
+     */
+    public function getStrings()
+    {
+        return $this->_strings;
+    }
+
+    /**
+     * Add translation groups.
+     *
+     * A group is a container for multiple values.
+     * The group names are used as array keys for better performance
+     * in case you wish to look-up a if a certain group exists.
+     *
+     * Your groups should look like this:
+     * <code>
+     *  array(
+     *      "group1" => array(),
+     *      "group2" => array(
+     *          "group2.unit1" => "unit1"
+     *          "group2.unit2" => "unit2"
+     *      )
+     *  )
+     * </code>
+     *
+     * The idea is that you can easily look up all translation-ids in "group2",
+     * so that you can get all translations in that group.
+     * 
+     * @return  array
+     */
+    public function addGroups(array $groups)
+    {
+        $this->_groups = \Yana\Util\Hashtable::merge($this->_groups, $groups);
+        return $this;
+    }
+
+    /**
+     * Get translation groups.
+     *
+     * The group names are used as array keys for better performance
+     * in case you wish to look-up a if a certain group exists.
+     * The values are arrays containing all translation-ids that belong to a certain group.
+     * You may use these to retrieve all translations (aka "translation units") that belong to a group.
+     *
+     * Groups are an optional feature.
+     * If there are no groups the list may be empty.
+     *
+     * @return  array
+     */
+    public function getGroups()
+    {
+        return $this->_groups;
+    }
+
+}
+
+?>
