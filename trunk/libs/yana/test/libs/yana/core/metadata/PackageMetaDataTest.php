@@ -34,6 +34,8 @@ require_once __DIR__ . '/../../../../include.php';
 
 /**
  * Test class for MetaData.
+ *
+ * @package  test
  */
 class PackageMetaDataTest extends \PHPUnit_Framework_TestCase
 {
