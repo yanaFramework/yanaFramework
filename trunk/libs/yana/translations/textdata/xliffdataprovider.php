@@ -36,7 +36,7 @@ namespace Yana\Translations\TextData;
  * @subpackage  translations
  * @ignore
  */
-class XliffDataProvider extends \Yana\Core\Object implements \Yana\Core\MetaData\IsDataProvider
+class XliffDataProvider extends \Yana\Core\Object implements \Yana\Translations\TextData\IsDataProvider
 {
 
     /**
