@@ -30,7 +30,7 @@
 namespace Yana\Core\MetaData;
 
 /**
- * <<template method>> 
+ * Null adapter for testing purposes.
  *
  * @package     yana
  * @subpackage  core
