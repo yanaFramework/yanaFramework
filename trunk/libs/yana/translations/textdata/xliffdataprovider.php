@@ -33,7 +33,8 @@ namespace Yana\Translations\TextData;
  * XLIFF data provider to load XLIFF-files.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  translations
+ * @ignore
  */
 class XliffDataProvider extends \Yana\Core\Object implements \Yana\Core\MetaData\IsDataProvider
 {
