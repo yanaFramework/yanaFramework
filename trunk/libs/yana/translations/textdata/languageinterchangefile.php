@@ -188,9 +188,9 @@ class LanguageInterchangeFile extends \SimpleXMLElement implements \Yana\Transla
      */
     private function _decodeValue($string)
     {
-        $string = strip_tags($string);
-        $string = html_entity_decode($string);
-        return $string;
+        $withoutTags = strip_tags($string);
+        $decodedValue = html_entity_decode($withoutTags);
+        return $decodedValue;
     }
 
 }
