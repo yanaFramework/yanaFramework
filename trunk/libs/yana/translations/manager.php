@@ -35,7 +35,7 @@ namespace Yana\Translations;
  * @package     yana
  * @subpackage  translations
  */
-class Manager extends \Yana\Core\Object
+class Manager extends \Yana\Core\Object implements \Yana\Log\IsLogable
 {
 
     /**
@@ -49,9 +49,30 @@ class Manager extends \Yana\Core\Object
     private $_country = "";
 
     /**
-     * @var  \Yana\Core\MetaData\IsDataProvider[]
+     * @var  \Yana\Translations\TextData\DataProviderCollection
      */
-    private $_dataProviders = array();
+    private $_contentDataProviders = null;
+
+    /**
+     * @var  \Yana\Core\MetaData\DataProviderCollection
+     */
+    private $_metaDataProviders = null;
+
+    /**
+     * Collection for keeping and calling loggers.
+     *
+     * @var  \Yana\Log\IsLogHandler
+     */
+    private $_loggers = null;
+
+    /**
+     * Initializes collections
+     */
+    public function __construct()
+    {
+        $this->_contentDataProviders = new \Yana\Translations\TextData\DataProviderCollection();
+        $this->_metaDataProviders = new \Yana\Core\MetaData\DataProviderCollection();
+    }
 
     /**
      * Get name of selected language.
@@ -123,60 +144,84 @@ class Manager extends \Yana\Core\Object
      */
     public function getLocale()
     {
+        assert('!isset($locale); // Cannot redeclare var $locale');
         $locale = false;
+
         if (!empty($this->_country)) {
             $locale = $this->_language . '-' . $this->_country;
 
         } elseif (!empty($this->_language)) {
             $locale = (string) $this->_language;
         }
+
         return $locale;
     }
 
     /**
-     * Add a data provider (e.g. pointing to a directory) to the list of sources to search.
-     *
-     * If the data source is already part of the list, it is not added.
+     * Returns the collection of content-data providers.
      * 
-     * @param   \Yana\Core\MetaData\IsDataProvider  $provider  some data source
-     * @return  \Yana\Translations\Manager
+     * @return  \Yana\Translations\TextData\DataProviderCollection
      */
-    public function addDataProvider(\Yana\Core\MetaData\IsDataProvider $provider)
+    public function getContentDataProviders()
     {
-        if (!\in_array($provider, $this->_dataProviders)) {
-            $this->_dataProviders[] = $provider;
-        }
-        return $this;
+        return $this->_contentDataProviders;
     }
 
     /**
-     * Remove a data source.
-     *
-     * If the data source is not registered, nothing happens.
+     * Returns the collection of meta-data providers.
      * 
-     * @param   \Yana\Core\MetaData\IsDataProvider  $provider  some data source
-     * @return  \Yana\Translations\Manager
+     * @return  \Yana\Core\MetaData\DataProviderCollection
      */
-    public function removeDataProvider(\Yana\Core\MetaData\IsDataProvider $provider)
+    public function getMetaDataProviders()
     {
-        $key = \array_search($provider, $this->_dataProviders);
-        if (\is_int($key)) {
-            unset($this->_dataProviders[$key]);
-        }
-        return $this;
+        return $this->_metaDataProviders;
     }
 
     /**
-     * Returns list of all data sources for iteration.
+     * Returns the language pack's meta information.
      *
-     * The list returned should not contain duplicate entries.
+     * Use this to get more info on the language pack's author, title or description.
      *
-     * @return  \Yana\Core\MetaData\IsDataProvider[]
+     * @param   string  $locale  name of language pack
+     * @return  \Yana\Core\MetaData\IsPackageMetaData
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if the requested language pack is not found
      */
-    public function getDataProviders()
+    public function getMetaData($locale = "")
     {
-        assert('is_array($this->_dataProviders);');
-        return $this->_dataProviders;
+        assert('is_string($locale); // Invalid argument $locale: string expected');
+    
+        if (empty($locale)) {
+            $locale = $this->getLocale();
+        }
+
+        assert('!isset($metaData); // Cannot redeclare var $metaData');
+        $metaData = null;
+
+        // Iterate over all data sources and search for meta data
+        assert('!isset($provider); // Cannot redeclare var $provider');
+        foreach ($this->getMetaDataProviders() as $provider)
+        {
+            /* @var $provider \Yana\Core\MetaData\IsDataProvider */
+            try {
+                $metaData = $provider->loadOject($locale);
+                assert($metaData instanceof \Yana\Core\MetaData\IsPackageMetaData);
+                break; // Accept the first hit as result
+            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
+                unset($e); // Not here: try the next one
+            }
+        }
+        unset($provider);
+        // $metaData may still be NULL here
+
+        if (!$metaData instanceof \Yana\Core\MetaData\IsPackageMetaData) {
+            assert('!isset($message); // Cannot redeclare var $message');
+            $message = "Unable to find language pack: '{$locale}'.";
+            assert('!isset($level); // Cannot redeclare var $level');
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\NotFoundException($message, $level);
+        }
+
+        return $metaData;
     }
 
     /**
@@ -191,31 +236,63 @@ class Manager extends \Yana\Core\Object
      */
     public function setLocale($selectedLanguage, $selectedCountry = "")
     {
-        assert('is_string($selectedLanguage); // Wrong type for argument 1. String expected');
-        assert('is_string($selectedCountry); // Wrong argument type for argument 2. String expected.');
+        assert('is_string($selectedLanguage); // Invalid argument $selectedLanguage: string expected');
+        assert('is_string($selectedCountry); // Invalid argument $selectedCountry: string expected');
 
-        $selectedLanguage = mb_strtolower($selectedLanguage);
-        $selectedCountry = mb_strtoupper($selectedCountry);
+        assert('!isset($selectedLanguageLowercased); // Cannot redeclare var $selectedLanguageLowercased');
+        $selectedLanguageLowercased = mb_strtolower($selectedLanguage);
+        assert('!isset($selectedCountryUppercased); // Cannot redeclare var $selectedCountryUppercased');
+        $selectedCountryUppercased = mb_strtoupper($selectedCountry);
 
         // convert to locale string
-        $locale = "$selectedLanguage";
-        if ($selectedCountry != "") {
-            $locale .= "-$selectedCountry";
+        assert('!isset($locale); // Cannot redeclare var $locale');
+        $locale = "$selectedLanguageLowercased";
+        if ($selectedCountryUppercased != "") {
+            $locale .= "-" . $selectedCountryUppercased;
         }
 
         // check if locale is valid
         if (!preg_match('/^[a-z]{2}(-[A-Z]{2})?$/s', $locale)) {
-            $message = "Invalid locale setting '$selectedLanguage'.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
+            assert('!isset($message); // Cannot redeclare var $message');
+            $message = "Invalid locale setting '{$selectedLanguage}'.";
+            assert('!isset($level); // Cannot redeclare var $level');
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
         }
 
         // set system locale
         setlocale(LC_ALL, $locale);
 
-        $this->_language = $selectedLanguage;
-        $this->_country = $selectedCountry;
+        $this->_language = $selectedLanguageLowercased;
+        $this->_country = $selectedCountryUppercased;
 
         return $this;
+    }
+
+    /**
+     * Adds a logger to the class.
+     *
+     * @param  \Yana\Log\IsLogger  $logger  instance that will handle the logging
+     * @return \Yana\Translations\Language
+     */
+    public function attachLogger(\Yana\Log\IsLogger $logger)
+    {
+        $collection = $this->getLogger();
+        $collection[] = $logger;
+        return $this;
+    }
+
+    /**
+     * Returns the attached loggers.
+     *
+     * @return  \Yana\Log\IsLogHandler
+     */
+    public function getLogger()
+    {
+        if (!isset($this->_loggers)) {
+            $this->_loggers = new \Yana\Log\LoggerCollection();
+        }
+        return $this->_loggers;
     }
 
 }
