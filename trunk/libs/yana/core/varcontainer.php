@@ -38,13 +38,25 @@ namespace Yana\Core;
  * @subpackage  core
  * @ingore
  */
-class VarContainer implements \Yana\Core\IsVarContainer
+class VarContainer extends \Yana\Core\Object implements \Yana\Core\IsVarContainer
 {
 
     /**
      * @var array
      */
     private $_contents = array();
+
+    /**
+     * Convert a key name to an offset.
+     *
+     * @param   sclar  $key  some valid identifier, either a number or a non-empty text
+     * @return  string
+     */
+    protected function _toArrayOffset($key)
+    {
+        assert('is_scalar($key); // Invalid argument $key: string expected');
+        return (string) $key;
+    }
 
     /**
      * Alias of getVar().
@@ -77,7 +89,7 @@ class VarContainer implements \Yana\Core\IsVarContainer
     /**
      * Returns the var identified by $key or bool(false) on error.
      *
-     * Note: this function may return false but also other values that evaluates to false.
+     * Note: this function may return false but also other values that evaluate to false.
      * To check for an error use: is_null($result).
      * To check for bool(false) use: $result === false.
      *
@@ -86,7 +98,9 @@ class VarContainer implements \Yana\Core\IsVarContainer
      */
     public function getVar($key)
     {
-        return (isset($this->_contents[$key])) ? $this->_contents[$key] : null;
+        assert('!isset($offset); // Cannot redeclare var $offset');
+        $offset = $this->_toArrayOffset($key);
+        return (isset($this->_contents[$offset])) ? $this->_contents[$offset] : null;
     }
 
     /**
@@ -109,7 +123,9 @@ class VarContainer implements \Yana\Core\IsVarContainer
      */
     public function isVar($key)
     {
-        return (isset($this->_contents[$key]));
+        assert('!isset($offset); // Cannot redeclare var $offset');
+        $offset = $this->_toArrayOffset($key);
+        return (isset($this->_contents[$offset]));
     }
 
     /**
@@ -124,7 +140,9 @@ class VarContainer implements \Yana\Core\IsVarContainer
      */
     public function setVarByReference($key, &$value)
     {
-        $this->_contents[$key] =& $value;
+        assert('!isset($offset); // Cannot redeclare var $offset');
+        $offset = $this->_toArrayOffset($key);
+        $this->_contents[$offset] =& $value;
         return $this;
     }
 
