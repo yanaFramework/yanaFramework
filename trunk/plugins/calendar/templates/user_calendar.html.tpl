@@ -136,7 +136,8 @@
         <!--   End import formular   -->
         <!-- BEGIN calendar js-->
         <script type='text/javascript'>
-        <!--{literal}
+        <!--
+{literal}
                 $(document).ready(function() {
                         var date = new Date();
                         var d = date.getDate();
@@ -281,7 +282,7 @@
                                     userDefault = true;
                                 }
                             });
-                            if(userID == '') {
+                            if (userID == '') {
                                 userDefault = true;
                             }
                             var requestParams = {
