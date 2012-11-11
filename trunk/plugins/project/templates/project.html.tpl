@@ -15,7 +15,7 @@
 
 <p><label>
         {lang id="PRJ.CHOOSE"}:
-        <select onchange="window.ajaxRequest.send(this.options[this.selectedIndex].value)">
+        <select onchange="window.ajaxRequest.send(this.options[this.selectedIndex].value);">
             <!-- {foreach from=$PROJECT key="i" item="item"} -->
             <option value="{$item.PROJECT_ID}">{$item.PROJECT_NAME}</option>
             <!-- {/foreach} -->
