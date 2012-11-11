@@ -17,7 +17,7 @@
                     {/foreach}
                 </div>
             </div>
-            <span {if $deleteAction}onclick="if (confirm('{lang id="prompt_delete"}')) document.location.href = '{"action=$deleteAction&selected_entries[]={$form->getPrimaryKey()}"|url}'"{/if}
+            <span {if $deleteAction}onclick="if (confirm('{lang id="prompt_delete"}')) document.location.href = '{"action=$deleteAction&selected_entries[]={$form->getPrimaryKey()}"|url}';"{/if}
                 title='{lang id="delete"}' class="gui_generator_delete delete"></span>
         </div>
         {if $form->hasRows()}
@@ -28,12 +28,12 @@
 {/for}
     </div>
 <script type="text/javascript"><!--
-    $(function() {ldelim}
-        $('#{$formName}-photodesk').photoDesk({ldelim}
+    $(function() {
+        $('#{$formName}-photodesk').photoDesk({
             photoW: 100,
             photoH: 100,
             showShuffle: false,
             showViewAll: false
-        {rdelim});
-    {rdelim});
+        });
+    });
 //--></script>
