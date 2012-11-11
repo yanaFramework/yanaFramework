@@ -33,8 +33,8 @@ language[1] = '{lang id="SDK.JS_1"}';
     <span style="margin-right: 20px; vertical-align: 4px;">
         {lang id="SDK.NAV.0"}:
     </span>
-    <button id="btn_previous" onclick="previous()" disabled="disabled">{lang id="SDK.NAV.1"}</button>
-    <button id="btn_next" onclick="next()">{lang id="SDK.NAV.2"}</button>
+    <button id="btn_previous" onclick="previous();" disabled="disabled">{lang id="SDK.NAV.1"}</button>
+    <button id="btn_next" onclick="next();">{lang id="SDK.NAV.2"}</button>
 </div>
 
 <!-- END   document menu -->
@@ -49,19 +49,19 @@ language[1] = '{lang id="SDK.JS_1"}';
             <div style="float: right">
                 <a href="javascript://" title="{lang id="ADMIN.15"}"
                    class="buttonize">
-                   <span onclick="return toggleHelp(this)" class="icon_info_hover">&nbsp;</span>
+                   <span onclick="return toggleHelp(this);" class="icon_info_hover">&nbsp;</span>
                 </a>
             </div>
 
-            <button type="button" onclick="show(1,1,1)">{lang id="SDK.STEP1"}</button>
+            <button type="button" onclick="show(1,1,1);">{lang id="SDK.STEP1"}</button>
               <img alt="" src="sml.gif"/>
-            <button type="button" onclick="show(1,2,1)">{lang id="SDK.STEP2"}</button>
+            <button type="button" onclick="show(1,2,1);">{lang id="SDK.STEP2"}</button>
               <img alt="" src="sml.gif"/>
-            <button type="button" onclick="show(1,3,1)">{lang id="SDK.STEP3"}</button>
+            <button type="button" onclick="show(1,3,1);">{lang id="SDK.STEP3"}</button>
               <img alt="" src="sml.gif"/>
-            <button type="button" onclick="show(1,4,1)">{lang id="SDK.STEP4"}</button>
+            <button type="button" onclick="show(1,4,1);">{lang id="SDK.STEP4"}</button>
               <img alt="" src="sml.gif"/>
-            <button type="button" onclick="show(1,5,1)">{lang id="SDK.COMPLETE"}</button>
+            <button type="button" onclick="show(1,5,1);">{lang id="SDK.COMPLETE"}</button>
 
           </div>
 
@@ -73,9 +73,9 @@ language[1] = '{lang id="SDK.JS_1"}';
 
           <div class="toolbar" id="page_1_1">
 
-            <button type="button" onclick="show(1,1,1)">{lang id="SDK.APP"}</button>
-            <button type="button" onclick="show(1,1,2)">{lang id="SDK.AUTHOR"}</button>
-            <button type="button" onclick="show(1,1,3)">{lang id="SDK.STEP1_3"}</button>
+            <button type="button" onclick="show(1,1,1);">{lang id="SDK.APP"}</button>
+            <button type="button" onclick="show(1,1,2);">{lang id="SDK.AUTHOR"}</button>
+            <button type="button" onclick="show(1,1,3);">{lang id="SDK.STEP1_3"}</button>
 
           </div>
 
@@ -84,8 +84,8 @@ language[1] = '{lang id="SDK.JS_1"}';
 
           <div class="toolbar" id="page_1_2">
 
-            <button type="button" onclick="show(1,2,1)">{lang id="SDK.STEP2_2"}</button>
-            <button type="button" onclick="show(1,2,2)">{lang id="SDK.STEP2_3"}</button>
+            <button type="button" onclick="show(1,2,1);">{lang id="SDK.STEP2_2"}</button>
+            <button type="button" onclick="show(1,2,2);">{lang id="SDK.STEP2_3"}</button>
 
           </div>
 
@@ -121,7 +121,7 @@ language[1] = '{lang id="SDK.JS_1"}';
                   <tr>
                     <th>{lang id="SDK.IMG"}</th>
                     <td>
-                      <select name="image" class="optional" onchange="document.getElementById('image1').src='{$IMG_SRC}'+this.value" onkeyup="document.getElementById('image1').src='{$IMG_SRC}'+this.value">
+                      <select name="image" class="optional" onchange="document.getElementById('image1').src='{$IMG_SRC}'+this.value;" onkeyup="document.getElementById('image1').src='{$IMG_SRC}'+this.value;">
                         {foreach item=FILE from=$FILES}
                         {if $FILE != "blank.png"}
                         <option value="{$FILE}" {if $PLUGIN.image == $FILE || ( !$PLUGIN.image && $FILE == 'config.png' )} selected="selected" {/if}>{$FILE}</option>
@@ -179,7 +179,7 @@ language[1] = '{lang id="SDK.JS_1"}';
                   <tr>
                     <th title="{lang id="SDK.DESC8"}">{lang id="SDK.FIELD8"}</th>
                     <td><input type="text" id="input2" name="parent" class="optional" value="{$PLUGIN.parent}"/>
-                        <select onchange="document.getElementById('input2').value=this.value" class="additional">
+                        <select onchange="document.getElementById('input2').value=this.value;" class="additional">
                           <optgroup label="{lang id="CHOOSE_OPTION"}">
                             <option value="" style="background: #fca">{lang id="SDK.NONE"}</option>
                             <option value="config" style="background: #ddd">config</option>
@@ -228,7 +228,7 @@ language[1] = '{lang id="SDK.JS_1"}';
                     <th>{lang id="SDK.FIELD11.2"}</th>
                     <td class="optional">
                         <input type="text" id="interface_template" class="optional" value=""/>
-                        <select onchange="document.getElementById('interface_template').value=this.value" class="additional">
+                        <select onchange="document.getElementById('interface_template').value=this.value;" class="additional">
                             <option value="">{lang id="CHOOSE_OPTION"}</option>
                             <option value="MESSAGE">{lang id="SDK.FIELD11.3.0"}</option>
                             <option value="NULL">{lang id="SDK.FIELD11.3.1"}</option>
@@ -263,7 +263,7 @@ language[1] = '{lang id="SDK.JS_1"}';
                     <th>{lang id="SDK.FIELD12.0"}</th>
                     <td>
                         <input type="text" id="interface_menu" class="optional" value=""/>
-                        <select onchange="document.getElementById('interface_menu').value=this.value" class="additional">
+                        <select onchange="document.getElementById('interface_menu').value=this.value;" class="additional">
                             <option value="">{lang id="CHOOSE_OPTION"}</option>
                             <option value="start">{lang id="SDK.FIELD12.1"}</option>
                             <option value="setup">{lang id="SDK.FIELD12.2"}</option>
@@ -272,7 +272,7 @@ language[1] = '{lang id="SDK.JS_1"}';
                   </tr>
                 </table>
 
-                <button type="button" class="optional" onclick="addInterface()">{lang id="SDK.FIELD11.6"}</button>
+                <button type="button" class="optional" onclick="addInterface();">{lang id="SDK.FIELD11.6"}</button>
 
                 <fieldset style="visibility: hidden;">
                     <legend>{lang id="SDK.INTERFACE.LIST"}</legend>
