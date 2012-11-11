@@ -35,7 +35,7 @@
                 {/foreach}
                 {if $form->hasRows() && $form->isDeletable() && $deleteAction}
                     <a class="buttonize gui_generator_delete" title='{lang id="delete"}'
-                       onclick="return confirm('{lang id="prompt_delete"}')"
+                       onclick="return confirm('{lang id="prompt_delete"}');"
                        href={"action=$deleteAction&selected_entries[]="|cat:$form->getPrimaryKey()|href}>
                         <span class="icon_delete">&nbsp;</span>
                     </a>
@@ -66,7 +66,7 @@
     <div class="gui_generator_no_entries_found">{lang id="NO_ENTRIES_FOUND"}</div>
 {/for}
 <script type="text/javascript"><!--
-    $(function() {ldelim}
+    $(function() {
         $('.gui_generator_image a').fancybox();
-    {rdelim});
+    });
 //--></script>
