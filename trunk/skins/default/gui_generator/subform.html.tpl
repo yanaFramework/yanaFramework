@@ -1,6 +1,6 @@
 {if $form->getFields() || $form->hasAllInput()}
     <fieldset id="{$form->getName()}-edit" class="gui_generator_pane">
-        {if $form->getTitle()}<legend onclick="$(this).find('~ div, ~ input').toggle('slow')">{$form->getTitle()}</legend>{/if}
+        {if $form->getTitle()}<legend onclick="$(this).find('~ div, ~ input').toggle('slow');">{$form->getTitle()}</legend>{/if}
         <form method="post" action="{$PHP_SELF}" enctype="multipart/form-data" accept-charset="UTF-8" class="gui_generator_toolbar" id="{$form->getName()}-toolbar">
             <input type="hidden" name="id" value="{$ID}"/>
             <input type="hidden" name="{$SESSION_NAME}" value="{$SESSION_ID}"/>
@@ -41,7 +41,7 @@
                 </span>
                 <!-- BEGIN select entries per page -->
                 <label class="comment">{lang id="BUTTON_ENTRIES"}
-                    <select onchange="document.location.replace('{"action={$ACTION}&{$formName}[entries]="|url}'+this.options[this.selectedIndex].value)">
+                    <select onchange="document.location.replace('{"action={$ACTION}&{$formName}[entries]="|url}'+this.options[this.selectedIndex].value);">
                         <option value="{$form->getEntriesPerPage()}">{$form->getEntriesPerPage()}</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -73,7 +73,7 @@
                 <input type="hidden" name="action" value="{$form->getInsertAction()}"/>
                 <fieldset class="gui_generator_new">
                     <legend>
-                        <a class="buttonize" href="javascript://" onclick="$('#{$form->getName()}-new').slideToggle()">
+                        <a class="buttonize" href="javascript://" onclick="$('#{$form->getName()}-new').slideToggle();">
                             <span class="icon_new">&nbsp;</span>
                             {lang id="new_entry"}
                         </a>
@@ -152,7 +152,7 @@
         {/if}
         <script type="text/javascript"><!--
             $('#{$form->getName()}-settings').hide();
-            $('#{$form->getName()}-toolbar').append(
+            var subFormText = 
             {if $form->getEntriesPerPage() == 1}
                 '<a class="gui_generator_icon_up buttonize" title=\'{lang id="title_overview"}\'' +
                 'href={"action={$ACTION}&{$formName}[entries]=5&{$formName}[layout]={$form->getTemplate()}&{$formName}[page]=0"|href}>' +
@@ -165,8 +165,8 @@
             {/if}
                 '<a class="gui_generator_icon_settings buttonize" href="javascript://"' +
                 'onclick="return yanaGuiToggleVisibility(\'{$form->getName()}-settings\');">' +
-                '<span class="icon_edit">&nbsp;</span></a>'
-            );
+                '<span class="icon_edit">&nbsp;</span></a>';
+            $('#{$form->getName()}-toolbar').append(subFormText);
             $('#{$form->getName()}-new').hide();
         //--></script>
     </fieldset>
