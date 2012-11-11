@@ -328,7 +328,12 @@ language[1] = '{lang id="SDK.JS_1"}';
                     {lang id="HELP.0"}{lang id="HELP.6"}
                 </p>
 
-                <label class="mandatory" style="padding: 5px;">{lang id="SDK.SOURCE"} <input name="sourcefile" type="file" class="mandatory" onchange="if (!this.value.match(/\S+\.xml/i)) {ldelim} alert('{lang id="HELP.7"}'); this.value = ''; this.className = 'invalid'; {rdelim} else {ldelim} this.className = 'mandatory'; {rdelim}" value="{$PLUGIN.sourcefile}"/></label>
+                <label class="mandatory" style="padding: 5px;">
+                    {lang id="SDK.SOURCE"}
+                    <input name="sourcefile" type="file" class="mandatory"
+                           onchange="if (!this.value.match(/\S+\.xml/i)) { alert('{lang id="HELP.7"}'); this.value = ''; this.className = 'invalid'; } else { this.className = 'mandatory'; }"
+                           value="{$PLUGIN.sourcefile}"/>
+                </label>
 
             </div>
 
@@ -341,7 +346,7 @@ language[1] = '{lang id="SDK.JS_1"}';
 {foreach from=$LIST_OF_DBMS item=label key=dbms}
                     <li style="padding: 5px; margin: 5px;" class="optional">
                         <label>
-                            <input name="{$dbms}" type="file" class="optional" onchange="if (!this.value.match(/\S+\.sql$/i)) {ldelim} alert('{lang id="HELP.8"}'); this.value = ''; this.className = 'invalid'; {rdelim} else {ldelim} this.className = 'optional'; {rdelim}" value="{$PLUGIN.sqlfile}"/>
+                            <input name="{$dbms}" type="file" class="optional" onchange="if (!this.value.match(/\S+\.sql$/i)) { alert('{lang id="HELP.8"}'); this.value = ''; this.className = 'invalid'; } else { this.className = 'optional'; }" value="{$PLUGIN.sqlfile}"/>
                             {$label}
                         </label>
                     </li>
