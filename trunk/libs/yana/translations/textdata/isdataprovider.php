@@ -43,7 +43,7 @@ interface IsDataProvider
      *
      * @param   string  $id  name of the object to load
      * @return  \Yana\Translations\TextData\IsTextContainer
-     * @throws  \Yana\Core\Exceptions\NotFoundException
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the object for this id is not found
      */
     public function loadOject($id);
 
