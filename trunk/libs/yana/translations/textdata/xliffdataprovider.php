@@ -62,7 +62,7 @@ class XliffDataProvider extends \Yana\Core\Object implements \Yana\Translations\
     public function __construct(\Yana\Translations\TextData\IsTextContainer $container, \Yana\Files\IsDir $directory)
     {
         $this->_container = $container;
-        $this->_directoryctory;
+        $this->_directory = $directory;
     }
 
     /**
