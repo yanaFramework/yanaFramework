@@ -37,7 +37,7 @@ namespace Yana\Db\Queries;
  * @package     yana
  * @subpackage  db
  */
-class QueryBuilder extends \Yana\Core\Object
+class QueryBuilder extends \Yana\Core\Object implements \Yana\Db\Queries\IsQueryBuilder
 {
 
     /**
