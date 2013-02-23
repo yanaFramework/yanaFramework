@@ -78,7 +78,14 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      *
      * @var  \Yana\Db\Ddl\Database
      */
-    private $_schema  = null;
+    private $_schema = null;
+
+    /**
+     * lazy-loaded query-builder
+     *
+     * @var  \Yana\Db\Queries\IsQueryBuilder
+     */
+    private $_queryBuilder = null;
 
     /**
      * Create a new instance.
@@ -92,6 +99,36 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     {
         $this->_schema = $schema;
         $this->rollback();
+    }
+
+    /**
+     * Returns a query-builder instance.
+     *
+     * If no query builder is set, it creates a new one.
+     *
+     * @return  \Yana\Db\Queries\IsQueryBuilder
+     */
+    protected function _getQueryBuilder()
+    {
+        if (!isset($this->_queryBuilder)) {
+            $this->_queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
+        }
+        return $this->_queryBuilder;
+    }
+
+    /**
+     * Inject custom query builder.
+     *
+     * Use this for Unit-tests.
+     *
+     * @param   \Yana\Db\Queries\IsQueryBuilder  $queryBuilder  your custom query builder
+     * @return  \Yana\Db\AbstractConnection
+     * @ignore
+     */
+    public function setQueryBuilder(\Yana\Db\Queries\IsQueryBuilder $queryBuilder)
+    {
+        $this->_queryBuilder = $queryBuilder;#
+        return $this;
     }
 
     /**
@@ -209,6 +246,24 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     }
 
     /**
+     * Inject custom transaction handler.
+     *
+     * Use this for Unit-tests.
+     *
+     * Note: after a call to reset(), the transaction handler needs to be re-injected.
+     * Otherwise it will fall back to the default behavior.
+     *
+     * @param   \Yana\Db\IsTransaction   $transaction  your custom transaction handling class
+     * @return  \Yana\Db\AbstractConnection
+     * @ignore
+     */
+    public function setTransactionHandler(\Yana\Db\IsTransaction $transaction)
+    {
+        $this->_transaction = $transaction;
+        return $this;
+    }
+
+    /**
      * Get values from the database.
      *
      * This returns the values at adress $key starting from $offset and limited to $limit results.
@@ -286,7 +341,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
 
         } else {
 
-            $queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
+            $queryBuilder = $this->_getQueryBuilder();
             $selectQuery = $queryBuilder->select($key, $where, $orderBy, $offset, $limit, $desc);
         }
 
@@ -341,7 +396,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
                 $key = mb_strtolower("$key");
             }
 
-            $queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
+            $queryBuilder = $this->_getQueryBuilder();
             $updateQuery = $queryBuilder->update($key, $value);
 
         } // end if
@@ -482,7 +537,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             }
             unset($_key);
 
-            $queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
+            $queryBuilder = $this->_getQueryBuilder();
             if ($row !== '*' && (isset($this->_cache[$table][$row]) || $this->exists("$table.$row"))) {
                 $dbQuery = $queryBuilder->update($key, $value);
                 return $this->update($dbQuery);
@@ -534,7 +589,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
 
             assert('is_string($key); // Invalid argument $key: string expected');
 
-            $queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
+            $queryBuilder = $this->_getQueryBuilder();
             $insertQuery = $queryBuilder->insert($key, $row);
 
         }
@@ -605,7 +660,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
 
         } else { // input is key address
 
-            $queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
+            $queryBuilder = $this->_getQueryBuilder();
             $deleteQuery = $queryBuilder->remove($key, $where, $limit);
 
         }
@@ -639,7 +694,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             // build query
             try {
 
-                $queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
+                $queryBuilder = $this->_getQueryBuilder();
                 $countQuery = $queryBuilder->length($table, $where);
 
             } catch (\Yana\Core\Exceptions\NotFoundException $e) {
@@ -700,7 +755,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             return $this->getSchema()->isTable($key);
         }
         // build query to check key
-        $queryBuilder = new \Yana\Db\Queries\QueryBuilder($this);
+        $queryBuilder = $this->_getQueryBuilder();
         $existQuery = $queryBuilder->exists($key, $where);
 
         // check if address exists
@@ -873,6 +928,8 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      *
      * @name  AbstractConnection::reset()
      * @return \Yana\Db\AbstractConnection
+     *
+     * @internal  Note that this also removes any injected transaction handler.
      */
     public function reset()
     {
