@@ -47,6 +47,33 @@ abstract class AbstractEnumeration extends \StdClass
         // Cannot create an instance of a static 'enumeration' class
     }
 
+    /**
+     * Returns an associative array of valid enumeration items.
+     *
+     * The keys are the names of the class constants as strings.
+     * The values are the values of those constants.
+     *
+     * @return array
+     */
+    public static function getValidItems() {
+        $reflection = new \ReflectionClass(new static());
+        return $reflection->getConstants();
+    }
+
+    /**
+     * Check wether the item is a valid member of this enumeration.
+     *
+     * Returns bool(true), if the value equals the value of a constant of the enumeration class.
+     * Returns bool(false) otherwise.
+     *
+     * @param  string  $item  value of enumeration constant to check
+     * @return bool
+     */
+    public static function isValidItem($item) {
+        $validItems = static::getValidItems();
+        return in_array($item, $validItems);
+    }
+
 }
 
 ?>
