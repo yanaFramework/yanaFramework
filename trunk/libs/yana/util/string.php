@@ -235,13 +235,10 @@ class String extends \Yana\Core\AbstractUtility
         {
             case self::LEFT:
                 return ltrim($string);
-            break;
             case self::RIGHT:
                 return rtrim($string);
-            break;
             default:
                 return trim($string);
-            break;
         }
     }
 
@@ -409,11 +406,9 @@ class String extends \Yana\Core\AbstractUtility
                     $string[$i] = $string[$i] ^ $pass[$i % strlen($pass)];
                 }
                 return $string;
-            break;
             default:
                 $message = "Unsupported encryption method: '$encryption'.";
                 throw new \Yana\Core\Exceptions\NotImplementedException($message);
-            break;
         }
     }
 
@@ -478,19 +473,14 @@ class String extends \Yana\Core\AbstractUtility
             case 'utf':
             case 'utf8':
                 return utf8_encode($string);
-            break;
             case 'base64':
                 return base64_encode($string);
-            break;
             case 'url':
                 return urlencode($string);
-            break;
             case 'rawurl':
                 return rawurlencode($string);
-            break;
             case 'rot13':
                 return str_rot13($string);
-            break;
             case 'entities':
                 switch($style)
                 {
@@ -498,27 +488,21 @@ class String extends \Yana\Core\AbstractUtility
                     case ENT_QUOTES:
                     case ENT_NOQUOTES:
                         return htmlentities($string, $style, $charset);
-                    break;
                     case ENT_FULL:
                         return mb_encode_numericentity($string, array(0x0, 0xffff, 0, 0xffff), $charset);
-                    break;
                     default:
                         return htmlentities($string, ENT_COMPAT, $charset);
-                    break;
                 }
             break;
             case 'quote':
                 return quotemeta($string);
-            break;
             case 'regexp':
             case 'regular expression':
                 return preg_quote($string, '/');
-            break;
             default:
                 $message = "The value of the \$encoding parameter (argument 1) is invalid: '".$encoding."'.";
                 trigger_error($message, E_USER_WARNING);
                 return null;
-            break;
         }
     }
 
@@ -554,19 +538,14 @@ class String extends \Yana\Core\AbstractUtility
             case 'utf':
             case 'utf8':
                 return utf8_decode($string);
-            break;
             case 'base64':
                 return base64_decode($string);
-            break;
             case 'url':
                 return urldecode($string);
-            break;
             case 'rawurl':
                 return rawurldecode($string);
-            break;
             case 'rot13':
                 return str_rot13($string);
-            break;
             case 'entities':
                 if (($style == ENT_COMPAT || $style == ENT_QUOTES || $style == ENT_NOQUOTES)) {
                     if ($charset != "") {
@@ -580,12 +559,10 @@ class String extends \Yana\Core\AbstractUtility
             break;
             case 'rot13':
                 return str_rot13($string);
-            break;
             default:
                 $message = "The value of the \$encoding parameter (argument 1) is invalid: '".$encoding."'.";
                 trigger_error($message, E_USER_WARNING);
                 return null;
-            break;
         }
     }
 
@@ -1116,7 +1093,6 @@ class String extends \Yana\Core\AbstractUtility
         return strrpos($string, $needle, strlen($needle)) !== false;
     }
 
-
     /**
      * Replace each token within a text/template.
      *
@@ -1149,22 +1125,22 @@ class String extends \Yana\Core\AbstractUtility
                 /* if $tmp is NULL, the reference $match is pointing to a non-existing value */
                 if (is_null($tmp) || !is_scalar($tmp)) {
                     continue;
-                } else {
-                    $tmp = (string) $tmp;
-                    /**
-                     * if the content string we got from the reference array contains token as well,
-                     * we recursivle replace them.
-                     */
-                    if (mb_strpos($tmp, $lDelim) !== false) {
-                        assert('is_string($tmp); // Unexpected result: $tmp is supposed to be a string');
-                        self::replaceToken($tmp, $array, $lDelim, $rDelim);
-                    }
+                }
+
+                $tmp = (string) $tmp;
+                /**
+                 * if the content string we got from the reference array contains token as well,
+                 * we recursivle replace them.
+                 */
+                if (mb_strpos($tmp, $lDelim) !== false) {
                     assert('is_string($tmp); // Unexpected result: $tmp is supposed to be a string');
-                    $regExpMatch = preg_quote($currentMatch, '/');
-                    $string = preg_replace("/(<[^\!^>]+){$ldimRegExp}{$regExpMatch}{$rdimRegExp}([^>]+>)/Usi", '${1}'.
-                        addcslashes(htmlspecialchars($tmp, ENT_COMPAT, 'UTF-8'), '\\') . '${2}', $string);
-                    $string = str_replace($lDelim . $currentMatch . $rDelim, $tmp, $string);
-                } // end if
+                    self::replaceToken($tmp, $array, $lDelim, $rDelim);
+                }
+                assert('is_string($tmp); // Unexpected result: $tmp is supposed to be a string');
+                $regExpMatch = preg_quote($currentMatch, '/');
+                $string = preg_replace("/(<[^\!^>]+){$ldimRegExp}{$regExpMatch}{$rdimRegExp}([^>]+>)/Usi", '${1}'.
+                    addcslashes(htmlspecialchars($tmp, ENT_COMPAT, 'UTF-8'), '\\') . '${2}', $string);
+                $string = str_replace($lDelim . $currentMatch . $rDelim, $tmp, $string);
             } // end for
         } // end if
         assert('is_string($string); // Unexpected result: $string is supposed to be a string');
