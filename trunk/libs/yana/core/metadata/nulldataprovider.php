@@ -50,6 +50,16 @@ class NullDataProvider extends \Yana\Core\Object implements \Yana\Core\MetaData\
         return new \Yana\Core\MetaData\PackageMetaData();
     }
 
+    /**
+     * Returns an empty array.
+     *
+     * @return  array
+     */
+    public function getListOfValidIds()
+    {
+        return array();
+    }
+
 }
 
 ?>

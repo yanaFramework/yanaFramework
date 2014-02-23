@@ -47,6 +47,13 @@ interface IsDataProvider
      */
     public function loadOject($id);
 
+    /**
+     * Returns a list of all ids of objects that can be loaded.
+     *
+     * @return  array
+     */
+    public function getListOfValidIds();
+
 }
 
 ?>

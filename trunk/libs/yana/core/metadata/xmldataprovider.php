@@ -62,6 +62,13 @@ class XmlDataProvider extends \Yana\Core\Object implements \Yana\Core\MetaData\I
     private $_directory = "";
 
     /**
+     * list of valid meta packs.
+     *
+     * @var  array
+     */
+    private $_validIds = array();
+
+    /**
      * @param  string  $directory  base directory
      */
     public function __construct($directory)
@@ -69,6 +76,18 @@ class XmlDataProvider extends \Yana\Core\Object implements \Yana\Core\MetaData\I
         assert('is_string($directory); // Invalid argument $directory: string expected');
 
         $this->_directory = $directory;
+    }
+
+    /**
+     * Returns the XML-file extension.
+     *
+     * @internal Please overwrite in sub-classes where needed.
+     *
+     * @return  string
+     */
+    protected function _getFileExtension()
+    {
+        return '.xml';
     }
 
     /**
@@ -92,7 +111,7 @@ class XmlDataProvider extends \Yana\Core\Object implements \Yana\Core\MetaData\I
     protected function _convertIdToFilePath($id)
     {
         assert('is_string($id); // Invalid argument $id: string expected');
-        $file = $this->_getDirectory() .'/' . $id . ".xml";
+        $file = $this->_getDirectory() .'/' . $id . $this->_getFileExtension();
         return $file;
     }
 
@@ -167,15 +186,38 @@ class XmlDataProvider extends \Yana\Core\Object implements \Yana\Core\MetaData\I
     {
         assert('is_string($id); // Invalid argument $id: string expected');
 
-        $file = $this->_convertIdToFilePath($id);
+        $file = $this->_convertIdToFilePath((string) $id);
         if (!is_file($file)) {
             throw new \Yana\Core\Exceptions\NotFoundException("Configuration file not found: '{$file}'.");
         }
         $xml = $this->_loadXmlByFileName($file); // may throw NotFoundException
         $metaData = $this->_createMetaData();
-        $metaData = $this->_fillMetaData($metaData, $xml, $id);
+        $filledMetaData = $this->_fillMetaData($metaData, $xml, (string) $id);
+        assert($filledMetaData instanceof \Yana\Core\MetaData\IsPackageMetaData);
 
-        return $metaData;
+        return $filledMetaData;
+    }
+
+    /**
+     * Returns a list of all names of language pack that can be loaded.
+     *
+     * @return  array
+     */
+    public function getListOfValidIds()
+    {
+        assert('is_array($this->_validIds);');
+        if (empty($this->_validIds)) {
+            $this->_validIds = array();
+            assert('!isset($file); // Cannot redeclare var $file');
+            foreach (glob($this->_convertIdToFilePath('*')) as $file)
+            {
+                $id = basename($file, $this->_getFileExtension());
+                $this->_validIds[] = $id;
+            }
+            unset($file);
+        }
+        assert('is_array($this->_validIds);');
+        return $this->_validIds;
     }
 
 }
