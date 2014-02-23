@@ -40,13 +40,6 @@ class Menu extends \Yana\Core\AbstractSingleton
 {
 
     /**
-     * This is a place-holder for the singleton's instance
-     *
-     * @var  \Yana\Plugins\Menu
-     */
-    private static $_instance = null;
-
-    /**
      * @var  string
      */
     private static $_locale = null;
@@ -76,8 +69,9 @@ class Menu extends \Yana\Core\AbstractSingleton
      *
      * To prevent the constructor from being called directly
      */
-    private function __construct()
+    protected function __construct()
     {
+        parent::__construct();
         /**
          * initialize names
          */
@@ -155,34 +149,41 @@ class Menu extends \Yana\Core\AbstractSingleton
     }
 
     /**
-     * get instance of this class
+     * Overwrites parent-method to custom-load instance from Cache.
      *
-     * Creates an instance if there is none.
-     * Then it returns a reference to this (single) instance.
-     *
-     * @return  \Yana\Plugins\Menu
+     * @return \Yana\Plugins\Menu
      */
-    public static function &getInstance()
+    protected static function _createNewInstance()
     {
-        if (!isset(self::$_instance)) {
+        assert('!isset($id); // Cannot redeclare already declared variable $id');
+        $id = self::_getLocale();
 
-            $id = self::_getLocale();
-            /*
-             * load from cache
-             */
-            if (isset($_SESSION[__CLASS__][$id])) {
-                self::$_instance = unserialize($_SESSION[__CLASS__][$id]);
-                assert('self::$_instance instanceof self;');
+        assert('!isset($instance); // Cannot redeclare already declared variable $instance');
+        /*
+         * load from cache
+         */
+        if (isset($_SESSION[__CLASS__][$id])) {
+            $instance = unserialize($_SESSION[__CLASS__][$id]);
+            assert('$instance instanceof self;');
 
-                /*
-                 * create cache
-                 */
-            } else {
-                self::$_instance = new \Yana\Plugins\Menu();
-                $_SESSION[__CLASS__][$id] = serialize(self::$_instance);
-            }
+        /*
+         * create cache
+         */
+        } else {
+            $instance = new static();
+            $_SESSION[__CLASS__][$id] = serialize($instance);
         }
-        return self::$_instance;
+        return $instance;
+    }
+
+    /**
+     * Returns the class name of the called class.
+     *
+     * @return string
+     */
+    protected static function _getClassName()
+    {
+        return __CLASS__;
     }
 
     /**
@@ -217,8 +218,8 @@ class Menu extends \Yana\Core\AbstractSingleton
      *
      * If no menu-group is specified, the entry is added to the root-level.
      *
-     * @param   string  $action  name of action
-     * @param   \Yana\Plugins\MenuEntry  $title     
+     * @param   string                   $action     name of action
+     * @param   \Yana\Plugins\MenuEntry  $menuEntry  configuration object
      */
     public function setMenuEntry($action, \Yana\Plugins\MenuEntry $menuEntry)
     {
@@ -311,7 +312,6 @@ class Menu extends \Yana\Core\AbstractSingleton
     public function getTextMenu()
     {
         $pluginManager = \Yana\Plugins\Manager::getInstance();
-        $sessionManager = \SessionManager::getInstance();
         $isSafemode = \Yana::getId() === \Yana::getDefault('profile');
         $menu = array();
 
@@ -370,16 +370,6 @@ class Menu extends \Yana\Core\AbstractSingleton
 
             }
         }
-    }
-
-    /**
-     * Reinitialize instance.
-     *
-     * @access  public
-     */
-    public function __wakeup()
-    {
-        self::$_instance = $this;
     }
 
 }
