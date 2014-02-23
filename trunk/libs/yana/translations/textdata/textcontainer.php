@@ -34,7 +34,7 @@ namespace Yana\Translations\TextData;
  * @subpackage  translations
  * @ignore
  */
-class TextContainer extends \Yana\Core\Object implements \Yana\Translations\TextData\IsTextContainer
+class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translations\TextData\IsTextContainer
 {
 
     /**
@@ -45,12 +45,52 @@ class TextContainer extends \Yana\Core\Object implements \Yana\Translations\Text
     /**
      * @var  array
      */
-    private $_strings = array();
+    private $_groups = array();
 
     /**
-     * @var  array
+     * Convert a key name to a lower-cased offset string.
+     *
+     * @param   sclar  $key  some valid identifier, either a number or a non-empty text
+     * @return  string
      */
-    private $_groups = array();
+    protected function _toArrayOffset($key)
+    {
+        assert('is_scalar($key); // Invalid argument $key: string expected');
+        return (string) \mb_strtolower($key);;
+    }
+
+    /**
+     * Replace a token within a provided text.
+     *
+     * Note that this function replaces ALL entities found.
+     * If a token refers to a non-existing value it is removed.
+     *
+     * @param   string  $string  text containing tokens like {lang id="FOO"}
+     * @return  string
+     */
+    public function replaceToken($string)
+    {
+        assert('is_string($string); // Wrong argument type for argument 1. String expected.');
+
+        assert('!isset($pattern); // Cannot redeclare var $pattern');
+        $pattern = '/'. YANA_LEFT_DELIMITER_REGEXP . 'lang id=["\']([\w_\.]+)["\']' . YANA_RIGHT_DELIMITER_REGEXP .'/';
+        assert('!isset($matches); // Cannot redeclare var $matches');
+        $matches = array();
+        // Search for {lang id="($key)"} and replace with translation string
+        if (preg_match_all($pattern, $string, $matches)) {
+            assert('!isset($i); // Cannot redeclare var $i');
+            assert('!isset($key); // Cannot redeclare var $key');
+            foreach ($matches[1] as $i => $key)
+            {
+                assert('!isset($translation); // Cannot redeclare var $translation');
+                $translation = ($this->isVar($key)) ? $this->getVar($key) : $key;
+                $string = str_replace($matches[0][$i], $translation, $string);
+                unset($translation);
+            }
+            unset($i, $key);
+        }
+        return $string;
+    }
 
     /**
      * Checks wether the id is marked as loaded.
@@ -61,8 +101,8 @@ class TextContainer extends \Yana\Core\Object implements \Yana\Translations\Text
     public function isLoaded($id)
     {
         assert('is_string($id); // Invalid argument $id: string expected');
-
-        return !empty($this->_loaded[$id]);
+        $lowerCasedId = $this->_toArrayOffset($id);
+        return !empty($this->_loaded[$lowerCasedId]);
     }
 
     /**
@@ -74,8 +114,8 @@ class TextContainer extends \Yana\Core\Object implements \Yana\Translations\Text
     public function setLoaded($id)
     {
         assert('is_string($id); // Invalid argument $id: string expected');
-
-        $this->_loaded[$id] = true;
+        $lowerCasedId = $this->_toArrayOffset($id);
+        $this->_loaded[$lowerCasedId] = true;
         return $this;
     }
 
@@ -87,24 +127,16 @@ class TextContainer extends \Yana\Core\Object implements \Yana\Translations\Text
      * @param   array  $strings  list of translation strings
      * @return  \Yana\Translations\TextData\TextContainer
      */
-    public function addStrings(array $strings)
+    public function addVars(array $strings)
     {
+        assert('!isset($lcStrings); // Cannot redeclare var $lcStrings');
+        $lcStrings = \array_change_key_case($strings, CASE_LOWER);
         // This uses the union operator. It adds all elements of the right array, that are missing in the left array
         // The operator is diffrenent from array_merge() in the sense that it doesn't create duplicate values
-        $this->_strings = $strings + $this->_strings;
+        assert('!isset($combinedStrings); // Cannot redeclare var $combinedStrings');
+        $combinedStrings = $lcStrings + $this->getVars();
+        $this->setVars($combinedStrings);
         return $this;
-    }
-
-    /**
-     * Get translation strings.
-     *
-     * The keys are the translation-ids and the values are the translation strings.
-     * 
-     * @return  array
-     */
-    public function getStrings()
-    {
-        return $this->_strings;
     }
 
     /**
@@ -112,7 +144,7 @@ class TextContainer extends \Yana\Core\Object implements \Yana\Translations\Text
      *
      * A group is a container for multiple values.
      * The group names are used as array keys for better performance
-     * in case you wish to look-up a if a certain group exists.
+     * in case you wish to check if a certain group exists.
      *
      * Your groups should look like this:
      * <code>
@@ -132,8 +164,23 @@ class TextContainer extends \Yana\Core\Object implements \Yana\Translations\Text
      */
     public function addGroups(array $groups)
     {
-        $this->_groups = \Yana\Util\Hashtable::merge($this->_groups, $groups);
+        assert('!isset($lcGroups); // Cannot redeclare var $lcGroups');
+        $lcGroups = \array_change_key_case($groups, CASE_LOWER);
+        $this->_groups = \Yana\Util\Hashtable::merge($this->_groups, $lcGroups);
         return $this;
+    }
+
+    /**
+     * Check wether a given name is a valid group name.
+     *
+     * @param   string  $groupName  index to check for
+     * @return  bool
+     */
+    public function isGroup($groupName)
+    {
+        assert('is_string($groupName); // Invalid argument $groupName: string expected');
+        $lcGroupName = $this->_toArrayOffset($groupName);
+        return isset($this->_groups[$lcGroupName]);
     }
 
     /**
@@ -152,6 +199,37 @@ class TextContainer extends \Yana\Core\Object implements \Yana\Translations\Text
     public function getGroups()
     {
         return $this->_groups;
+    }
+
+    /**
+     * Returns group settings.
+     *
+     * The returned associative array has the names of the groups as keys.
+     * The values are (again) associative arrays with the fully qualified names of the members
+     * as keys and the local names of the group members as values.
+     *
+     * @param   string  $groupName  index to retrieve
+     * @return  array
+     */
+    public function getGroupMembers($groupName)
+    {
+        assert('is_string($groupName); // Invalid argument $groupName: string expected');
+        $lcGroupName = $this->_toArrayOffset($groupName);
+
+        $groupMembers = array();
+
+        $groups = $this->getGroups();
+        if (isset($groups[$lcGroupName]) && is_array($groups[$lcGroupName])) {
+
+            foreach ($groups[$lcGroupName] as $globalId => $localId)
+            {
+                $groupMembers[$localId] = $this->getVar($globalId);
+            }
+            unset($globalId, $localId);
+
+        }
+        assert('is_array($groupMembers)');
+        return $groupMembers;
     }
 
 }

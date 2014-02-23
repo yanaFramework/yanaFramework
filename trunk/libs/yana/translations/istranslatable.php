@@ -23,32 +23,37 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
-namespace Yana\Translations\MetaData;
+namespace Yana\Translations;
 
 /**
- * XML language description file.
+ * <<interface>> Classes having a translation manager.
+ *
+ * Use this interface to indicate that a class has getter/setter functions for a translation manager.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  translations
  */
-class XmlDataProvider extends \Yana\Core\MetaData\XmlDataProvider
+interface IsTranslatable
 {
 
     /**
-     * Returns the XML-file extension.
+     * Attach a translation manager.
      *
-     * @internal Please overwrite in sub-classes where needed.
-     *
-     * @return  string
+     * @param   \Yana\Translations\IsTranslationManager  $manager  loads and provides translation strings
+     * @return  self
      */
-    protected function _getFileExtension()
-    {
-        return '.language.xml';
-    }
+    public function setTranslationManager(\Yana\Translations\IsTranslationManager $manager);
+
+    /**
+     * Returns a translation manager instance.
+     *
+     * If none was given, an empty instance is provided.
+     *
+     * @return  \Yana\Translations\IsTranslationManager
+     */
+    public function getTranslationManager();
 
 }
 

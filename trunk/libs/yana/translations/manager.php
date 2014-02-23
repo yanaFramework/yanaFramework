@@ -32,10 +32,22 @@ namespace Yana\Translations;
  *
  * This class may be used to dynamically load additional language strings at runtime.
  *
+ * How to use:
+ * <code>
+ * $manager = new \Yana\Translations\Manager();
+ * $manager->attachLogger($logger);
+ * $manager->addMetaDataProvider($fileSystemLoader);
+ * $manager->addTextDataProvider($defaultLanguageSource);
+ * $manager->addTextDataProvider($pluginFooLanguageSource);
+ * $manager->addTextDataProvider($pluginBarLanguageSource);
+ * $manager->setLocale($selectedLanguage, $selectedCountry);
+ * $manager->loadTranslations('translation file or database id')
+ * </code>
+ *
  * @package     yana
  * @subpackage  translations
  */
-class Manager extends \Yana\Core\Object implements \Yana\Log\IsLogable
+class Manager extends \Yana\Translations\AbstractManager
 {
 
     /**
@@ -47,135 +59,6 @@ class Manager extends \Yana\Core\Object implements \Yana\Log\IsLogable
      * @var  string
      */
     private $_country = "";
-
-    /**
-     * @var  \Yana\Translations\TextData\DataProviderCollection
-     */
-    private $_contentDataProviders = null;
-
-    /**
-     * @var  \Yana\Core\MetaData\DataProviderCollection
-     */
-    private $_metaDataProviders = null;
-
-    /**
-     * Collection for keeping and calling loggers.
-     *
-     * @var  \Yana\Log\IsLogHandler
-     */
-    private $_loggers = null;
-
-    /**
-     * Initializes collections
-     */
-    public function __construct()
-    {
-        $this->_contentDataProviders = new \Yana\Translations\TextData\DataProviderCollection();
-        $this->_metaDataProviders = new \Yana\Core\MetaData\DataProviderCollection();
-    }
-
-    /**
-     * Get name of selected language.
-     *
-     * Returns the name of the currently selected
-     * language as a string, or bool(false) on error.
-     *
-     * Example:
-     * Returns 'en' for English, 'de' for German.
-     *
-     * Technically spoken, this is the name of the
-     * sub-directory, where the current language's
-     * files are stored. Check the directory
-     * "languages/" for a complete list.
-     *
-     * @return  string|bool(false)
-     * @since   2.9.6
-     * @name    Language::getLanguage()
-     * @see     Language::getCountry()
-     * @see     Language::getLocale()
-     */
-    public function getLanguage()
-    {
-        return (!empty($this->_language)) ? $this->_language : false;
-    }
-
-    /**
-     * Get name of selected country.
-     *
-     * Returns the name of the currently selected
-     * country as a string, or bool(false) on error.
-     *
-     * Locale settings may consist of two parts:
-     * a language plus a country. For example, 'en-US' for american English.
-     *
-     * This function returns the country part of the locale.
-     *
-     * Example:
-     * Returns 'en' for English, 'de' for German.
-     * May also return complete locales like 'en-US', if specified.
-     *
-     * @return  string|bool(false)
-     * @since   3.1.0
-     * @name    Language::getCountry()
-     * @see     Language::getLocale()
-     * @see     Language::getLanguage()
-     */
-    public function getCountry()
-    {
-        return (!empty($this->_country)) ? $this->_country : false;
-    }
-
-    /**
-     * Get name of selected locale.
-     *
-     * Returns the name of the currently selected
-     * locale as a string, or bool(false) on error.
-     *
-     * Example:
-     * Returns 'en' for English, 'de' for German, 'en-US' for american English,
-     * or 'de-AU' for austrian German. The country part of the locale is
-     * optional.
-     *
-     * @return  string|bool(false)
-     * @since   3.1.0
-     * @name    Language::getCountry()
-     * @see     Language::getLocale()
-     * @see     Language::getLanguage()
-     */
-    public function getLocale()
-    {
-        assert('!isset($locale); // Cannot redeclare var $locale');
-        $locale = false;
-
-        if (!empty($this->_country)) {
-            $locale = $this->_language . '-' . $this->_country;
-
-        } elseif (!empty($this->_language)) {
-            $locale = (string) $this->_language;
-        }
-
-        return $locale;
-    }
-
-    /**
-     * Returns the collection of content-data providers.
-     * 
-     * @return  \Yana\Translations\TextData\DataProviderCollection
-     */
-    public function getContentDataProviders()
-    {
-        return $this->_contentDataProviders;
-    }
-
-    /**
-     * Returns the collection of meta-data providers.
-     * 
-     * @return  \Yana\Core\MetaData\DataProviderCollection
-     */
-    public function getMetaDataProviders()
-    {
-        return $this->_metaDataProviders;
-    }
 
     /**
      * Returns the language pack's meta information.
@@ -194,34 +77,7 @@ class Manager extends \Yana\Core\Object implements \Yana\Log\IsLogable
             $locale = $this->getLocale();
         }
 
-        assert('!isset($metaData); // Cannot redeclare var $metaData');
-        $metaData = null;
-
-        // Iterate over all data sources and search for meta data
-        assert('!isset($provider); // Cannot redeclare var $provider');
-        foreach ($this->getMetaDataProviders() as $provider)
-        {
-            /* @var $provider \Yana\Core\MetaData\IsDataProvider */
-            try {
-                $metaData = $provider->loadOject($locale);
-                assert($metaData instanceof \Yana\Core\MetaData\IsPackageMetaData);
-                break; // Accept the first hit as result
-            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-                unset($e); // Not here: try the next one
-            }
-        }
-        unset($provider);
-        // $metaData may still be NULL here
-
-        if (!$metaData instanceof \Yana\Core\MetaData\IsPackageMetaData) {
-            assert('!isset($message); // Cannot redeclare var $message');
-            $message = "Unable to find language pack: '{$locale}'.";
-            assert('!isset($level); // Cannot redeclare var $level');
-            $level = \Yana\Log\TypeEnumeration::WARNING;
-            throw new \Yana\Core\Exceptions\NotFoundException($message, $level);
-        }
-
-        return $metaData;
+        return parent::getMetaData($locale);
     }
 
     /**
@@ -244,55 +100,117 @@ class Manager extends \Yana\Core\Object implements \Yana\Log\IsLogable
         assert('!isset($selectedCountryUppercased); // Cannot redeclare var $selectedCountryUppercased');
         $selectedCountryUppercased = mb_strtoupper($selectedCountry);
 
-        // convert to locale string
-        assert('!isset($locale); // Cannot redeclare var $locale');
-        $locale = "$selectedLanguageLowercased";
-        if ($selectedCountryUppercased != "") {
-            $locale .= "-" . $selectedCountryUppercased;
-        }
-
         // check if locale is valid
-        if (!preg_match('/^[a-z]{2}(-[A-Z]{2})?$/s', $locale)) {
-            assert('!isset($message); // Cannot redeclare var $message');
-            $message = "Invalid locale setting '{$selectedLanguage}'.";
-            assert('!isset($level); // Cannot redeclare var $level');
-            $level = \Yana\Log\TypeEnumeration::WARNING;
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, $level);
-        }
+        if (!preg_match('/^[a-z]{2}$/s', $selectedLanguageLowercased)) {
+            $message = "Invalid language string '$selectedLanguage'. Must be exactly 2 characters.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
 
-        // set system locale
-        setlocale(LC_ALL, $locale);
+        } elseif ("" === $country && !preg_match('/^[A-Z]{2}$/s', $selectedCountryUppercased)) {
+            $message = "Invalid country string '$selectedCountry'. Must be exactly 2 characters.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
+        }
 
         $this->_language = $selectedLanguageLowercased;
         $this->_country = $selectedCountryUppercased;
 
+        $this->_setSystemLocale();
+
         return $this;
     }
 
     /**
-     * Adds a logger to the class.
+     * Get name of selected locale.
      *
-     * @param  \Yana\Log\IsLogger  $logger  instance that will handle the logging
-     * @return \Yana\Translations\Language
+     * Returns the name of the currently selected locale as a string.
+     *
+     * Example:
+     * Returns 'en' for English, 'de' for German, 'en-US' for American English,
+     * or 'de-AU' for Austrian German. The country part of the locale is
+     * optional.
+     *
+     * @return  string
      */
-    public function attachLogger(\Yana\Log\IsLogger $logger)
+    public function getLocale()
     {
-        $collection = $this->getLogger();
-        $collection[] = $logger;
-        return $this;
-    }
+        assert('!isset($locale); // Cannot redeclare var $locale');
+        $locale = $this->_getLanguage();
 
-    /**
-     * Returns the attached loggers.
-     *
-     * @return  \Yana\Log\IsLogHandler
-     */
-    public function getLogger()
-    {
-        if (!isset($this->_loggers)) {
-            $this->_loggers = new \Yana\Log\LoggerCollection();
+        assert('!isset($country); // Cannot redeclare var $country');
+        $country = $this->_getCountry();
+        if (!empty($country)) {
+            $locale .= '-' . $country;
+
         }
-        return $this->_loggers;
+
+        return $locale;
+    }
+
+    /**
+     * Get name of selected language.
+     *
+     * Returns the name of the currently selected language as a string.
+     *
+     * Example:
+     * Returns 'en' for English, 'de' for German.
+     *
+     * @internal Technically spoken, this is the name of the sub-directory,
+     * where the current language's files are stored.
+     * Check the directory "languages/" for a complete list.
+     *
+     * @return  string
+     */
+    protected function _getLanguage()
+    {
+        return $this->_language;
+    }
+
+    /**
+     * Get name of selected country.
+     *
+     * Returns the name of the currently selected country as a string.
+     *
+     * Locale settings may consist of two parts:
+     * a language plus a country. For example, 'en-US' for american English.
+     *
+     * This function returns the country part of the locale.
+     *
+     * Example: Returns 'EN' for England or 'DE' for Germany.
+     *
+     * @return  string
+     */
+    protected function _getCountry()
+    {
+        return $this->_country;
+    }
+
+    /**
+     * Calls setlocale().
+     *
+     * @internal Since you may not want that in unit-tests, please overwrite this method as needed.
+     *
+     * @param  string  $locale  new system locale
+     * @return  \Yana\Translations\Manager
+     */
+    protected function _setSystemLocale($locale)
+    {
+        assert('is_string($locale); // Invalid argument $locale: string expected');
+
+        // set system locale
+        setlocale(LC_ALL, $locale);
+
+        return $this;
+    }
+
+    /**
+     * Replace a token within a provided text.
+     *
+     * If a token refers to a non-existing value it is removed.
+     *
+     * @param   string  $string  text including language ids
+     * @return  string
+     */
+    public function replaceToken($string) {
+        return $this->_getTranslations()->replaceToken($string);
     }
 
 }

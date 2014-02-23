@@ -41,11 +41,22 @@ interface IsDataProvider
     /**
      * Load text data.
      *
+     * If no text container is provided, a new container is created.
+     * The strings are then loaded and added to the text container.
+     * Already existing strings will be replaced.
+     * The container is returned.
+     *
+     * If the resource identified by the $id-parameter is not found,
+     * an exception is thrown.
+     *
+     * Other exceptions may be thrown, when the resource is found but not valid, aso.
+     *
      * @param   string  $id  name of the object to load
      * @return  \Yana\Translations\TextData\IsTextContainer
      * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the object for this id is not found
+     * @throws  \Yana\Core\Exceptions\Translations\TranslationException           for arbitrary errors
      */
-    public function loadOject($id);
+    public function loadOject($id, \Yana\Translations\TextData\IsTextContainer $container = null);
 
 }
 
