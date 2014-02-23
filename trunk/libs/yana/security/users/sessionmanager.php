@@ -41,15 +41,8 @@ namespace Yana\Security\Users;
  *
  * @ignore
  */
-class SessionManager extends \Yana\Core\AbstractSingleton implements \Serializable
+class SessionManager extends \Yana\Core\AbstractSingleton
 {
-
-    /**
-     * This is a place-holder for the singleton's instance
-     *
-     * @var  object
-     */
-    private static $_instance = null;
 
     /**
      * database connection
@@ -85,22 +78,30 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements \Serializab
      * Creates an instance if there is none.
      * Then it returns a reference to this (single) instance.
      *
-     * @return  \SessionManager
+     * @return  \Yana\Security\Users\SessionManager
      */
-    public static function &getInstance()
+    protected static function _createNewInstance()
     {
-        if (!isset(self::$_instance)) {
-            self::$_instance = new self();
-            $defaultProfileId = Yana::getDefault('profile');
-            if (is_string($defaultProfileId)) {
-                self::$_defaultProfileId = mb_strtoupper($defaultProfileId);
-            }
+        assert('!isset($defaultProfileId); // Cannot redeclare variable $defaultProfileId');
+        $defaultProfileId = Yana::getDefault('profile');
+        if (is_string($defaultProfileId)) {
+            self::$_defaultProfileId = mb_strtoupper($defaultProfileId);
         }
-        return self::$_instance;
+        return new static();
     }
 
     /**
-     * get user groups
+     * Returns the class name of the called class.
+     *
+     * @return string
+     */
+    protected static function _getClassName()
+    {
+        return __CLASS__;
+    }
+
+    /**
+     * Get user groups.
      *
      * Returns an array of group names, where the keys are the group ids and the values are
      * the human-readable group names.
@@ -132,17 +133,9 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements \Serializab
     }
 
     /**
-     * <<Singleton>> Creates a new instance of this class.
-     */
-    private function __construct()
-    {
-        /* intentionally left blank */
-    }
-
-    /**
      * Set datasource.
      *
-     * @param   \Yana\Db\IsConnection  $database     datasource
+     * @param  \Yana\Db\IsConnection  $database  data-source
      * @ignore
      */
     public static function setDatasource(\Yana\Db\IsConnection $database)
@@ -673,33 +666,6 @@ class SessionManager extends \Yana\Core\AbstractSingleton implements \Serializab
             return (int) Yana::getDefault('user.level');
 
         }
-    }
-
-    /**
-     * Returns the serialized object as a string.
-     *
-     * @return  string
-     */
-    public function serialize()
-    {
-        // returns a list of key => value pairs
-        $properties = get_object_vars($this);
-        // return the names
-        return serialize($properties);
-    }
-
-    /**
-     * Reinitializes the object.
-     *
-     * @param   string  $string  string to unserialize
-     */
-    public function unserialize($string)
-    {
-        foreach (unserialize($string) as $key => $value)
-        {
-            $this->$key = $value;
-        }
-        self::$_instance = $this;
     }
 
 }
