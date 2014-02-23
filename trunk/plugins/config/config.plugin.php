@@ -83,7 +83,7 @@ class plugin_config extends StdClass implements IsPlugin
 
         // create options for select-boxes
         $YANA->setVar('LANGUAGEFILES', $YANA->getLanguage()->getLanguages());
-        $YANA->setVar('SKINFILES', \Yana\Views\Skin::getSkins());
+        $YANA->setVar('SKINFILES', $YANA->getSkin()->getSkins());
         // create a list of profiles
         assert('!isset($profiles); // Cannot redeclare var $profiles');
         $profiles = array();
@@ -484,17 +484,18 @@ class plugin_config extends StdClass implements IsPlugin
                 $info['UPDATE'] = $metaData->getUrl();
             break;
             case "skin":
-                $metaData = new \Yana\Views\Skin($target);
+                $skin = new \Yana\Views\Skin($target);
+                $metaData = $skin->getMetaData();
                 $info['CONTACT'] = $metaData->getUrl();
             break;
             case "language":
-                $metaData = $YANA->getLanguage()->getInfo($target);
+                $metaData = $YANA->getLanguage()->getMetaData($target);
                 $info['CONTACT'] = $metaData->getUrl();
             break;
             default:
                 return false;
         }
-        $languageManager = \Yana\Translations\Language::getInstance();
+        $languageManager = $YANA->getLanguage();
         $language = $languageManager->getLanguage();
         $country = $languageManager->getCountry();
         // fill fields

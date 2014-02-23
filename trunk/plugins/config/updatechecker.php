@@ -47,7 +47,7 @@ class UpdateChecker extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
      *
      * This also loads the configuration.
      */
-    public function __construct(\Yana\Translations\Language $language)
+    public function __construct(\Yana\Translations\IsTranslationManager $language)
     {
         $cache = new \Yana\Data\Adapters\ArrayAdapter();
         $this->setCache($cache);
