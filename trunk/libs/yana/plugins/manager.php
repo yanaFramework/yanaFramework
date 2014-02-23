@@ -70,14 +70,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
 {
 
     /**
-     * This is a place-holder for the singleton's instance
-     *
-     * @var \Yana\Plugins\Manager
-     * @static
-     */
-    private static $_instance = null;
-
-    /**
      * @var string
      */
     private static $_pluginDir = "plugins/";
@@ -155,36 +147,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     const PREFIX = 'plugin_';
 
     /**#@-*/
-
-    /**
-     * Get instance of this class.
-     *
-     * Creates an instance if there is none.
-     * Then it returns a reference to this (single) instance.
-     *
-     * @return  \Yana\Plugins\Manager
-     */
-    public static function &getInstance()
-    {
-        assert('isset(self::$_pluginDir);');
-        assert('isset(self::$_path);');
-        if (!isset(self::$_instance)) {
-            self::$_instance = new \Yana\Plugins\Manager();
-        }
-        return self::$_instance;
-    }
-
-    /**
-     * <<Singleton>> Constructor
-     *
-     * Creates and initializes a new instance of this class.
-     * Note: this constructor is private. You may want to
-     * call the static \Yana\Plugins\Manager::getInstance() method instead.
-     */
-    private function __construct()
-    {
-        // intentionally left blank
-    }
 
     /**
      * Set path configuration.
@@ -763,8 +725,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     private function _loadPlugins(array $plugins)
     {
-        $pluginDir = $this->getPluginDir();
-
         foreach ($plugins as $name)
         {
             $this->_loadPlugin($name);
@@ -914,11 +874,13 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     }
 
     /**
-     * Reinitialize instance.
+     * Returns the class name of the called class.
+     *
+     * @return string
      */
-    public function __wakeup()
+    protected static function _getClassName()
     {
-        self::$_instance = $this;
+        return __CLASS__;
     }
 
 }
