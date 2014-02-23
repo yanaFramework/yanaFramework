@@ -45,17 +45,11 @@
  *
  * @package     yana
  * @subpackage  core
+ * @method \Yana getInstance()
  */
 final class Yana extends \Yana\Core\AbstractSingleton
     implements \Yana\Report\IsReportable, \Yana\Log\IsLogable, \Yana\Core\IsVarContainer
 {
-
-    /**
-     * This is a place-holder for the singleton's instance
-     *
-     * @var  Yana
-     */
-    private static $_instance = null;
 
     /**
      * System configuration file
@@ -153,8 +147,6 @@ final class Yana extends \Yana\Core\AbstractSingleton
     private static $_connections = array();
 
     /**
-     * get instance of this class
-     *
      * Creates an instance if there is none.
      * Then it returns a reference to this (single) instance.
      *
@@ -165,22 +157,25 @@ final class Yana extends \Yana\Core\AbstractSingleton
      * $YANA = Yana::getInstance();
      * </code>
      *
-     * Note: you only need to call Yana::setConfiguration() once, prior to the initialization of the framework
-     * and only if you wish to use other then the default values.
-     * Otherwise it's enough to use Yana::getInstance() without anything else.
-     *
-     * @return  Yana
+     * @return  \Yana
      */
-    public static function &getInstance()
+    protected static function _createNewInstance()
     {
-        if (!isset(self::$_instance)) {
-            /* auto-load configuration file */
-            if (empty(self::$_config)) {
-                self::setConfiguration();
-            }
-            self::$_instance = new self();
+        /* auto-load configuration file */
+        if (empty(self::$_config)) {
+            self::setConfiguration();
         }
-        return self::$_instance;
+        return new static();
+    }
+
+    /**
+     * Returns the class name of the called class.
+     *
+     * @return string
+     */
+    protected static function _getClassName()
+    {
+        return __CLASS__;
     }
 
     /**
@@ -189,7 +184,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
      * This function creates a new instance of the framework.
      * Note that you may only operate one instance at a time.
      */
-    private function __construct()
+    protected function __construct()
     {
         $this->_loggers = new \Yana\Log\LoggerCollection();
     }
