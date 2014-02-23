@@ -40,49 +40,49 @@ class Facade extends \Yana\Core\Object
     /**
      * List of sub-forms.
      *
-     * @var     array
+     * @var  array
      */
     private $_forms = array();
 
     /**
      * List of searchable fields.
      *
-     * @var     \Yana\Forms\Fields\FacadeCollection
+     * @var  \Yana\Forms\Fields\FacadeCollection
      */
     private $_searchForm = null;
 
     /**
      * List of updatable fields.
      *
-     * @var     \Yana\Forms\Fields\FacadeCollection
+     * @var  \Yana\Forms\Fields\FacadeCollection
      */
     private $_updateForm = null;
 
     /**
      * List of insertable fields.
      *
-     * @var     \Yana\Forms\Fields\FacadeCollection
+     * @var  \Yana\Forms\Fields\FacadeCollection
      */
     private $_insertForm = null;
 
     /**
      * Base table.
      *
-     * @var     \Yana\Db\Ddl\Table
+     * @var  \Yana\Db\Ddl\Table
      */
     private $_table = null;
 
     /**
      * Form definition
      *
-     * @var     \Yana\Db\Ddl\Form
+     * @var  \Yana\Db\Ddl\Form
      */
     private $_form = null;
 
     /**
      * Form setup
      *
-     * @var     \Yana\Forms\Setup
+     * @var  \Yana\Forms\Setup
      */
     private $_setup = null;
 
@@ -91,7 +91,7 @@ class Facade extends \Yana\Core\Object
      *
      * Leave blank if it is a root element.
      *
-     * @var     \Yana\Forms\Facade
+     * @var  \Yana\Forms\Facade
      */
     private $_parent = null;
 
