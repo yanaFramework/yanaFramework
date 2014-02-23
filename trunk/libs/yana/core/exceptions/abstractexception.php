@@ -82,6 +82,13 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
     protected $text = null;
 
     /**
+     * Used to translate error messages where needed.
+     *
+     * @var \Yana\Translations\IsTranslationManager
+     */
+    private static $_translationManager = null;
+
+    /**
      * Create a new instance, representing a system message.
      *
      * @param  string      $message   the message that should be reported
@@ -99,6 +106,30 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
         }
 
         parent::__construct($message, $code, $previous);
+    }
+
+    /**
+     * Get translation manager for exception messages.
+     *
+     * @return \Yana\Translations\IsTranslationManager
+     */
+    protected static function getTranslationManager() {
+        if (!isset(self::$_translationManager)) {
+            self::$_translationManager = \Yana::getInstance()->getLanguage();
+        }
+        self::$_translationManager->loadTranslations("message"); // may throw TranslationException
+        return self::$_translationManager;
+    }
+
+    /**
+     * Add a translation manager for exception messages.
+     *
+     * The manager will be asked to provide translations from the generic translation package "message".
+     *
+     * @param  \Yana\Translations\IsTranslationManager  $translationManager  provide translations for messages
+     */
+    public static function setTranslationManager(\Yana\Translations\IsTranslationManager $translationManager) {
+        self::$_translationManager = $translationManager;
     }
 
     /**
@@ -222,8 +253,7 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
             $this->header = "";
 
             try {
-                $language = \Yana\Translations\Language::getInstance();
-                $language->readFile('message'); // may throw TranslationException
+                $language = self::getTranslationManager(); // may throw TranslationException
 
                 $id = get_class($this);
                 if ($language->isVar($id . ".h")) {
@@ -254,8 +284,7 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
             $this->text = "";
 
             try {
-                $language = \Yana\Translations\Language::getInstance();
-                $language->readFile('message'); // may throw TranslationException
+                $language = self::getTranslationManager(); // may throw TranslationException
 
                 $id = get_class($this);
                 if ($language->isVar($id . ".p")) {
