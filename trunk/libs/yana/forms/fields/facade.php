@@ -30,7 +30,6 @@ namespace Yana\Forms\Fields;
 /**
  * <<facade>> Transparent field wrapper base class.
  *
- * @access      public
  * @package     yana
  * @subpackage  form
  * @ignore
@@ -41,50 +40,44 @@ class Facade extends \Yana\Core\Object
     /**
      * Form in which the field is defined.
      *
-     * @access  private
-     * @var     \Yana\Forms\ContextSensitiveWrapper
+     * @var  \Yana\Forms\ContextSensitiveWrapper
      */
     private $_form = null;
 
     /**
      * Structure definition of base column.
      *
-     * @access  private
-     * @var     \Yana\Db\Ddl\Column
+     * @var  \Yana\Db\Ddl\Column
      */
     private $_column = null;
 
     /**
      * Field to operate on
      *
-     * @access  private
-     * @var     \Yana\Db\Ddl\Field
+     * @var  \Yana\Db\Ddl\Field
      */
     private $_field = null;
 
     /**
      * Caches if the field can be used as a filter.
      *
-     * @access  private
-     * @var     bool
+     * @var  bool
      */
     private $_isFilterable = null;
 
     /**
      * Caches the filter (having clause) on this field.
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_filter = null;
 
     /**
      * Create new instance.
      *
-     * @access  public
-     * @param   \Yana\Forms\ContextSensitiveWrapper  $parentForm  form structure of configuration
-     * @param   \Yana\Db\Ddl\Field                     $field       wrapped field instance
-     * @param   \Yana\Db\Ddl\Column                    $column      base column definition
+     * @param  \Yana\Forms\ContextSensitiveWrapper  $parentForm  form structure of configuration
+     * @param  \Yana\Db\Ddl\Field                   $field       wrapped field instance
+     * @param  \Yana\Db\Ddl\Column                  $column      base column definition
      */
     public function __construct(\Yana\Forms\ContextSensitiveWrapper $parentForm, \Yana\Db\Ddl\Column $column, \Yana\Db\Ddl\Field $field = null)
     {
@@ -96,7 +89,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Transparent wrapping functions.
      *
-     * @access  public
      * @param   string  $name       function name
      * @param   array   $arguments  function arguments
      * @return  mixed
@@ -115,7 +107,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Get column definition.
      *
-     * @access  public
      * @return  \Yana\Db\Ddl\Column
      */
     public function getColumn()
@@ -126,7 +117,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Get field definition.
      *
-     * @access  public
      * @return  \Yana\Db\Ddl\Field
      */
     public function getField()
@@ -137,7 +127,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Get form context.
      *
-     * @access  public
      * @return  FormSetupContext
      */
     public function getContext()
@@ -148,7 +137,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Get form structure.
      *
-     * @access  public
      * @return  FormFacade
      */
     public function getForm()
@@ -161,7 +149,6 @@ class Facade extends \Yana\Core\Object
      *
      * The title is a label text that should be displayed in the UI when viewing this object.
      *
-     * @access  public
      * @return  string
      */
     public function getTitle()
@@ -187,7 +174,6 @@ class Facade extends \Yana\Core\Object
      *
      * Returns bool(true) if a filter has been set on the column and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function hasFilter()
@@ -205,7 +191,6 @@ class Facade extends \Yana\Core\Object
      * While an enumeration may be a complex type, it stores scalar values. A text-column is not
      * scalar in the sense that it may contain tags and line-breaks, making it complex content.
      *
-     * @access  public
      * @return  bool
      */
     public function isFilterable()
@@ -246,7 +231,6 @@ class Facade extends \Yana\Core\Object
      *
      * Therefore it must not be included in any queries on the database.
      *
-     * @access  public
      * @return  bool
      */
     public function refersToTable()
@@ -260,7 +244,6 @@ class Facade extends \Yana\Core\Object
      * Returns bool(true) if the current field can be displayed using an input element,
      * which requires no more than a single line of text. Returns bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isSingleLine()
@@ -295,7 +278,6 @@ class Facade extends \Yana\Core\Object
      * Returns bool(true) if the current field can be displayed using an input element,
      * which requires multiple lines. Returns bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isMultiLine()
@@ -322,7 +304,6 @@ class Facade extends \Yana\Core\Object
      *
      * If there is no filter on this column, the function returns NULL instead.
      *
-     * @access  public
      * @return  string
      */
     public function getFilterValue()
@@ -337,7 +318,6 @@ class Facade extends \Yana\Core\Object
      * If there is none this function falls back to a generic name: gui_generator_col_[name],
      * where [name] is the name attribute of the column.
      *
-     * @access  public
      * @return  string
      */
     public function getCssClass()
@@ -356,7 +336,6 @@ class Facade extends \Yana\Core\Object
     /**
      * Get form value.
      *
-     * @access  public
      * @return  mixed
      */
     public function getValue()
@@ -383,7 +362,6 @@ class Facade extends \Yana\Core\Object
      * If the field has a range of minimal and maximal value, this returns the minimal value of the field.
      * Otherwise it returns NULL.
      *
-     * @access  public
      * @return  scalar
      */
     public function getMinValue()
@@ -403,7 +381,6 @@ class Facade extends \Yana\Core\Object
      * If the field has a range of minimal and maximal value, this returns the maximal value of the field.
      * Otherwise it returns NULL.
      *
-     * @access  public
      * @return  scalar
      */
     public function getMaxValue()
@@ -424,7 +401,6 @@ class Facade extends \Yana\Core\Object
      *
      * If the value is empty, the function return NULL instead.
      *
-     * @access  public
      * @return  array
      */
     public function getValueAsWhereClause()
@@ -516,8 +492,8 @@ class Facade extends \Yana\Core\Object
     }
 
     /**
+     * Create HTML form for output.
      *
-     * @access  public
      * @return  string
      */
     public function __toString()
