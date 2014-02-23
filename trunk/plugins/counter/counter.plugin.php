@@ -76,7 +76,7 @@ class plugin_counter extends StdClass implements IsPlugin
     public static function visitorCount(array $params)
     {
         $count = self::$_counter->getCurrentValue();
-        $text = \Yana\Translations\Language::getInstance()->getVar("VISITOR_COUNT");
+        $text = \Yana::getInstance()->getLanguage()->getVar("VISITOR_COUNT");
 
         return $text . ' <span style="font-weight: bold;">' . $count . '</span>';
     }
