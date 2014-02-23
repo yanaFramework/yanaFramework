@@ -83,23 +83,38 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
         assert('is_string($skinName); // Wrong type for argument 1. String expected');
 
         $this->_name = "$skinName";
-        $this->_dataProvider = new \Yana\Views\MetaData\XmlDataProvider(self::$_baseDirectory);
     }
 
     /**
+     * Returns a helper class to load meta information for this package.
+     *
      * @return  \Yana\Views\MetaData\IsDataProvider
      */
     protected function _getDataProvider()
     {
+        if (!isset($this->_dataProvider)) {
+            $this->_dataProvider = new \Yana\Views\MetaData\XmlDataProvider(self::$_baseDirectory);
+        }
         return $this->_dataProvider;
     }
 
     /**
-     * set base directory
+     * Choose a provider to load meta-data.
      *
-     * Set the base directory from where to read skin files.
+     * @param   \Yana\Views\MetaData\IsDataProvider  $provider  designated meta-data provider
+     * @return  \Yana\Views\Skin
+     * @see     \Yana\Views\MetaData\XmlDataProvider
+     */
+    public function setMetaDataProvider(\Yana\Views\MetaData\IsDataProvider $provider)
+    {
+        $this->_dataProvider = $provider;
+        return $this;
+    }
+
+    /**
+     * Set base directory from where to read skin files.
      *
-     * @param  string $baseDirectory  base directory
+     * @param  string  $baseDirectory  base directory
      *
      * @ignore
      */
@@ -131,17 +146,43 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
         if (empty($this->_configurations)) {
 
             $skinName = $this->getName();
-            $dataProvider = $this->_getDataProvider();
 
             // Load Defaults first
             if ($skinName !== 'default') {
-                $this->_configurations['default'] = $dataProvider->loadOject('default');
+                $this->_configurations['default'] = $this->_loadConfiguration('default');
             }
 
             // Now load extensions where available
-            $this->_configurations[$skinName] = $dataProvider->loadOject($skinName);
+            $this->_configurations[$skinName] = $this->_loadConfiguration($skinName);
         }
         return $this->_configurations;
+    }
+
+    /**
+     * Read the skin definition file and return it.
+     *
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when the skin definition file is not found
+     * @return  \Yana\Views\MetaData\SkinMetaData
+     */
+    private function _loadConfiguration($skinName)
+    {
+        $dataProvider = $this->_getDataProvider();
+        return $dataProvider->loadOject($skinName);
+    }
+
+    /**
+     * Returns the skin's meta information.
+     *
+     * Use this to get more info on the skin pack's author, title or description.
+     *
+     * @return  \Yana\Views\MetaData\SkinMetaData
+     */
+    public function getMetaData()
+    {
+        $configs = $this->_getConfigurations();
+        $skinName = $this->getName();
+
+        return $configs[$skinName];
     }
 
     /**
@@ -156,6 +197,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
         assert('is_string($templateId); // Invalid argument $templateId: string expected');
 
         $templateId = mb_strtoupper("$templateId");
+        $templates = array();
 
         $configs = $this->_getConfigurations();
         foreach ($configs as $config)
@@ -164,51 +206,61 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
             if (isset($templates[$templateId])) {
                 $templateData = $templates[$templateId];
                 assert($templateData instanceof \Yana\Views\MetaData\TemplateMetaData);
-                return $templateData;
+                $templates[] = $templateData;
             }
         }
-        $message = "No template found with id '{$templateId}'.";
-        $level = \Yana\Log\TypeEnumeration::ERROR;
-        throw new \Yana\Core\Exceptions\NotFoundException($message, $level);
+        unset($config, $templateData);
+
+        if (empty($templates)) {
+            $message = "No template found with id '{$templateId}'.";
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\NotFoundException($message, $level);
+        }
+
+        // inherit settings from parent templates
+        $templateData = \array_shift($templates);
+        while (!empty($templates)) {
+            $newData = new \Yana\Views\MetaData\TemplateMetaData();
+            $moreData = \array_shift($templates);
+            /* @var $moreData \Yana\Views\MetaData\TemplateMetaData */
+            $newData->setId($templateId)
+                ->setFile((!$moreData->getFile()) ? $templateData->getFile() : $moreData->getFile())
+                ->setLanguages(\array_merge($templateData->getLanguages(), $moreData->getLanguages()))
+                ->setScripts(\array_merge($templateData->getScripts(), $moreData->getScripts()))
+                ->setStyles(\array_merge($templateData->getStyles(), $moreData->getStyles()));
+            $templateData = $newData;
+        }
+        return $templateData;
     }
 
     /**
-     * returns a list of all skins
+     * Returns a list of all skins.
      *
      * Returns an associative array with a list of ids and names for all installed skins.
      *
      * @return  array
      * @since   3.1.0
      */
-    public static function getSkins()
+    public function getSkins()
     {
-        if (!isset(self::$_skins)) {
-            self::$_skins = array();
-            $path = self::$_baseDirectory;
-            foreach (glob($path . "*" . self::$_fileExtension) as $file)
-            {
-                $id = basename($file, self::$_fileExtension);
-                $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
-                if (!empty($xml)) {
-                    $title = (string) $xml->head->title;
-                } else {
-                    $title = $id;
-                }
-                self::$_skins[$id] = $title;
+        $skins = array();
+        foreach (glob(self::$_baseDirectory . "*" . self::$_fileExtension) as $file)
+        {
+            $id = basename($file, self::$_fileExtension);
+            $configuration = $this->_loadConfiguration($id);
+            $title = $id;
+            if ($configuration->getTitle() > "") {
+                $title = $configuration->getTitle();
             }
+            $skins[$id] = $title;
         }
-        assert('is_array(self::$_skins);');
-        if (is_array(self::$_skins)) {
-            return self::$_skins;
-        } else {
-            return array();
-        }
+        assert('is_array($skins);');
+        return $skins;
     }
 
     /**
-     * get name of skin
+     * Returns the name of the skin.
      *
-     * Returns the name of the skin as a string.
      * The default is 'default'.
      *
      * @return  string
@@ -217,16 +269,6 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
     {
         assert('is_string($this->_name);');
         return $this->_name;
-    }
-
-    /**
-     * get path of skin's configuration file
-     *
-     * @return  string
-     */
-    public function getPath()
-    {
-        return self::_getSkinPath($this->_name);
     }
 
     /**
@@ -251,20 +293,6 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
     {
         assert('is_string($skinName); // Wrong type for argument 1. String expected');
         return self::$_baseDirectory . "$skinName/";
-    }
-
-    /**
-     * get name and path of skin's configuration file
-     *
-     * @param   string  $skinName  identifier for the skin
-     * @return  string
-     *
-     * @ignore
-     */
-    private static function _getSkinPath($skinName)
-    {
-        assert('is_string($skinName); // Wrong type for argument 1. String expected');
-        return self::$_baseDirectory . "$skinName" . self::$_fileExtension;
     }
 
     /**
@@ -341,17 +369,18 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
             assert('!isset($value); /* cannot redeclare variable $value */');
             foreach ($template->getLanguages() as $value)
             {
-                if (!empty($value)) {
-                    try {
+                if (empty($value)) {
+                    continue;
+                }
+                try {
 
-                        $language->readFile($value); // may throw exception
+                    $language->readFile($value); // may throw exception
 
-                    } catch (\Yana\Core\Exceptions\Translations\TranslationException $e) {
-                        $subReport->addWarning("A required language file '{$value}' is not available. " .
-                            "Please check if the chosen language file is correct and update your " .
-                            "language pack if needed. " . $e->getMessage());
-                        unset($e);
-                    }
+                } catch (\Yana\Core\Exceptions\Translations\TranslationException $e) {
+                    $subReport->addWarning("A required language file '{$value}' is not available. " .
+                        "Please check if the chosen language file is correct and update your " .
+                        "language pack if needed. " . $e->getMessage());
+                    unset($e);
                 }
             }
             unset($value);
