@@ -33,7 +33,7 @@ namespace Yana\Translations\TextData;
  * @package     yana
  * @subpackage  translations
  */
-interface IsTextContainer
+interface IsTextContainer extends \Yana\Core\IsVarContainer
 {
 
     /**
@@ -60,16 +60,7 @@ interface IsTextContainer
      * @param   array  $strings  list of translation strings
      * @return  \Yana\Translations\TextData\TextContainer
      */
-    public function addStrings(array $strings);
-
-    /**
-     * Get translation strings.
-     *
-     * The keys are the translation-ids and the values are the translation strings.
-     * 
-     * @return  array
-     */
-    public function getStrings();
+    public function addVars(array $strings);
 
     /**
      * Add translation groups.
@@ -97,6 +88,14 @@ interface IsTextContainer
     public function addGroups(array $groups);
 
     /**
+     * Check wether a given name is a valid group name.
+     *
+     * @param   string  $groupName  index to check for
+     * @return  bool
+     */
+    public function isGroup($groupName);
+
+    /**
      * Get translation groups.
      *
      * The group names are used as array keys for better performance
@@ -110,6 +109,29 @@ interface IsTextContainer
      * @return  array
      */
     public function getGroups();
+
+    /**
+     * Returns group settings.
+     *
+     * The returned associative array has the names of the groups as keys.
+     * The values are (again) associative arrays with the fully qualified names of the members
+     * as keys and the local names of the group members as values.
+     *
+     * @param   string  $groupName  index to retrieve
+     * @return  array
+     */
+    public function getGroupMembers($groupName);
+
+    /**
+     * Replace a token within a provided text.
+     *
+     * Note that this function replaces ALL entities found.
+     * If a token refers to a non-existing value it is removed.
+     *
+     * @param   string  $string  text containing tokens like {lang id="FOO"}
+     * @return  string
+     */
+    public function replaceToken($string);
 
 }
 
