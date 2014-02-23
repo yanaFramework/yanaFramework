@@ -42,6 +42,11 @@ abstract class AbstractHandler extends \Yana\Core\Object implements \Yana\Log\Er
     private $_isActive = false;
 
     /**
+     * @var int
+     */
+    private $_errorReportingLevel = null;
+
+    /**
      * This custom error handler implements logging of errors.
      *
      * Be aware that error logs can get very large very soon, if not reset or deleted frequently.
@@ -68,13 +73,12 @@ abstract class AbstractHandler extends \Yana\Core\Object implements \Yana\Log\Er
      *
      * @param   string  $pathToFile   file
      * @param   int     $lineNumber   line number
-     * @param   string  $description  description
+     * @param   string  $code         assertion code (note: can be empty)
+     * @param   string  $description  optional description
      *
      * @internal NOTE: this function is public for technical reasons. Don't call it yourself.
-     *
-     * @ignore
      */
-    abstract public function handleAssertion($pathToFile, $lineNumber, $description);
+    abstract public function handleAssertion($pathToFile, $lineNumber, $code, $description = "");
 
     /**
      * Handles uncaught exceptions.
@@ -108,6 +112,40 @@ abstract class AbstractHandler extends \Yana\Core\Object implements \Yana\Log\Er
             }
             $this->_isActive = (bool) $isActive;
         }
+        return $this;
+    }
+
+    /**
+     * Local error reporting level.
+     *
+     * Defaults to native PHP setting returned by error_reporting().
+     *
+     * @return int
+     */
+    public function getErrorReportingLevel()
+    {
+        if (!is_int($this->_errorReportingLevel)) {
+            $errorReportingLevel = (int) error_reporting();
+        } else {
+            $errorReportingLevel = $this->_errorReportingLevel;
+        }
+        return $errorReportingLevel;
+    }
+
+    /**
+     * Overwrite error reporting level.
+     *
+     * This falls back to PHP's native error_reporting() function.
+     * So you don't _have_ to set this manually.
+     * But you may - for example when writing unit-tests.
+     *
+     * @param int $newLevel
+     * @return \Yana\Log\Errors\AbstractHandler
+     */
+    public function setErrorReportingLevel($newLevel)
+    {
+        assert('is_int($newLevel); // Integer expected.');
+        $this->_errorReportingLevel = (int) $newLevel;
         return $this;
     }
 
