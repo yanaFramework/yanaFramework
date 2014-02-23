@@ -74,7 +74,7 @@ class plugin_sitemap extends StdClass implements IsPlugin
     {
         global $YANA;
 
-        $result = "<ul>\n";
+        $html = "<ul>\n";
         $dir = $YANA->getPlugins()->getPluginDir();
         $pluginMenu = \Yana\Plugins\Menu::getInstance();
         $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
@@ -86,22 +86,22 @@ class plugin_sitemap extends StdClass implements IsPlugin
             $title = $entry->getTitle();
 
             if (empty($image)) {
-                $result .= "\t<li>";
+                $html .= "\t<li>";
             } elseif (is_file($image)) {
-                $result .= "\t<li style=\"list-style-image: url('${image}')\">";
+                $html .= "\t<li style=\"list-style-image: url('${image}')\">";
             } elseif (is_file($dir . $image)) {
-                $result .= "\t<li style=\"list-style-image: url('${dir}${image}')\">";
+                $html .= "\t<li style=\"list-style-image: url('${dir}${image}')\">";
             } else {
                 $level = \Yana\Log\TypeEnumeration::WARNING;
                 \Yana\Log\LogManager::getLogger()->addLog("Sitemap icon not found: '{$image}'.", $level);
-                $result .= "\t<li>";
+                $html .= "\t<li>";
             }
-            $result .= '<a href="' . $formatter("action={$action}", false, false) . '">' . $title . "</a></li>\n";
+            $html .= '<a href="' . $formatter("action={$action}", false, false) . '">' . $title . "</a></li>\n";
         } // end foreach
 
-        $result .= "</ul>\n";
-        $result = $YANA->getLanguage()->replaceToken($result);
-        return $result;
+        $html .= "</ul>\n";
+        $resultWithLanguageTokensReplaced = $YANA->getLanguage()->replaceToken($html);
+        return $resultWithLanguageTokensReplaced;
     }
 
 }
