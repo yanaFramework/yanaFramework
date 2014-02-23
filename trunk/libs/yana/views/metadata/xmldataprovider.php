@@ -39,16 +39,15 @@ class XmlDataProvider extends \Yana\Core\MetaData\XmlDataProvider
 {
 
     /**
-     * Get path to configuration file.
+     * Returns the XML-file extension.
      *
-     * @param   string  $id  identifier for the file to be loaded
+     * @internal Please overwrite in sub-classes where needed.
+     *
      * @return  string
      */
-    protected function _convertIdToFilePath($id)
+    protected function _getFileExtension()
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
-        $file = $this->_getDirectory() .'/' . $id . ".skin.xml";
-        return $file;
+        return '.skin.xml';
     }
 
     /**
@@ -77,7 +76,7 @@ class XmlDataProvider extends \Yana\Core\MetaData\XmlDataProvider
      * Fill meta data object with infos.
      *
      * This fills information on the meta data object based on the given XML.
-     * It also adds the path to a preview image.
+     * It also adds the template meta data.
      *
      * @param   \Yana\Core\MetaData\IsPackageMetaData  $metaData  object that should be filled
      * @param   \Yana\Core\MetaData\XmlMetaData        $xml       provided XML meta data
@@ -91,10 +90,8 @@ class XmlDataProvider extends \Yana\Core\MetaData\XmlDataProvider
         $metaData = parent::_fillMetaData($metaData, $xml, $id);
 
         if (!empty($xml)) {
-            $directory = $this->_getDirectory() . '/';
-            $previewImage = $directory . '/' . $id . "/icon.png";
-            $metaData->setPreviewImage($previewImage);
 
+            $directory = $this->_getDirectory() . '/';
             assert('!isset($template); /* cannot redeclare variable $template */');
             foreach ($xml->getTemplates($directory) as $template)
             {
