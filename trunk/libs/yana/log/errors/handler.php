@@ -77,7 +77,7 @@ class Handler extends \Yana\Log\Errors\AbstractHandler
      */
     public function handleError($errorNumber, $description, $file, $lineNumber)
     {
-        $reportingLevel = error_reporting();
+        $reportingLevel = $this->getErrorReportingLevel();
         if (($reportingLevel & ~$errorNumber) !== $reportingLevel) {
             $message = $this->_formatter->format($errorNumber, $description, $file, $lineNumber);
             $this->_logger->addLog($message, $errorNumber);
@@ -94,14 +94,18 @@ class Handler extends \Yana\Log\Errors\AbstractHandler
      *
      * @param   string  $pathToFile   file
      * @param   int     $lineNumber   line number
-     * @param   string  $description  description
+     * @param   string  $code         assertion code (note: can be boolean)
+     * @param   string  $description  optional description
      *
      * @internal NOTE: this function is public for technical reasons. Don't call it yourself.
-     *
-     * @ignore
      */
-    public function handleAssertion($pathToFile, $lineNumber, $description)
+    public function handleAssertion($pathToFile, $lineNumber, $code, $description = "")
     {
+        // Can't put assertions here. This would risk an infinite loop.
+        if (empty($description)) {
+            $description = (string) $code;
+        }
+
         $message = $this->_formatter->format(\Yana\Log\TypeEnumeration::ASSERT, $description, $pathToFile, $lineNumber);
         $this->_logger->addLog($message, \Yana\Log\TypeEnumeration::ASSERT);
 
@@ -118,6 +122,8 @@ class Handler extends \Yana\Log\Errors\AbstractHandler
      */
     public function handleException(\Exception $e)
     {
+        // Can't throw exceptions here. This would risk an infinite loop.
+
         // move down to root exception
         $message = "";
         do
