@@ -85,7 +85,7 @@ class plugin_spellcheck extends StdClass implements IsPlugin
 
         // Configuration is invalid
         if (empty($config['general.engine'])) {
-            $language = \Yana\Translations\Language::getInstance();
+            $language = \Yana::getInstance()->getLanguage();
             $level = \Yana\Log\TypeEnumeration::ERROR;
             exit(json_encode(array(
                 "result" => null,
