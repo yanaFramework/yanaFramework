@@ -1,5 +1,0 @@
-<ROLE_ID>
-	<DEFAULT>
-		<ROLE_NAME>Default</ROLE_NAME>
-	</DEFAULT>
-</ROLE_ID>
