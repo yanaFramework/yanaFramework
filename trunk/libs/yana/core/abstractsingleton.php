@@ -28,59 +28,49 @@
 namespace Yana\Core;
 
 /**
- * <<abstract>> Singleton
+ * <<abstract>> Singleton.
  *
- * To create a Singleton class, simply add "extends Singleton" to your class definition
- * copy the pattern as defined here.
- *
- * Note: this class is abstract, because it extends an abstract super-class without
- * implementing all abstract functions - NOT because it declares any abstract members
- * itself.
+ * To create a Singleton class, simply add "extends Singleton" to your class definition.
  *
  * The PHP manual (like others) explains the singleton pattern as follows:
  *
- * (Citation) The Singleton pattern applies to situations in which there needs to be a
+ * Citation: "The Singleton pattern applies to situations in which there needs to be a
  * single instance of a class. The most common example of this is a database
  * connection. Implementing this pattern allows a programmer to make this single
- * instance easily accessible by many other objects.
+ * instance easily accessible by many other objects."
  *
- * Note that the full implementation of this pattern was not possible in PHP versions
- * prior PHP5.
+ * Note! This class comes with a __wakeup() method that is required to reinitialize
+ * self::$_instance if you serialized and then unserialized a singleton.
+ * As a result, your sub-classes may not implement the Serializable interface.
  *
- * Here is an example implementation, that you may copy for your singleton-class.
- * <code>
- * class Foo extends Singleton
- * {
- *     private static $instance = null;
- *     public static function &getInstance()
- *     {
- *         if (!isset(self::$_instance)) {
- *             self::$_instance = new Foo();
- *         }
- *         return self::$_instance;
- *     }
- * }
- * </code>
- *
- * Note! If you wish to serialize a singleton, be aware that you MUST
- * set the self::$_instance var when you unserialize the object.
+ * Also note: if you implement your own __wakeup() method, you MUST call parent::__wakeup() as well.
  * 
  * @package     yana
  * @subpackage  core
  */
 abstract class AbstractSingleton extends \Yana\Core\Object implements \Yana\Core\IsSingleton
 {
+
     /**
      * This is a place-holder for the singleton's instance
+     *
+     * @var  \Yana\Core\IsSingleton[]
      */
-    private static $_instance = null;
+    private static $_instances = array();
+
+    /**
+     * Returns the class name of the called class.
+     *
+     * @return string
+     */
+    abstract protected static function _getClassName();
 
     /**
      * Private constructor.
      *
      * To prevent the constructor from being called directly.
      */
-    private function __construct()
+    protected function __construct()
     {
         /* intentionally left blank */
     }
@@ -96,20 +86,39 @@ abstract class AbstractSingleton extends \Yana\Core\Object implements \Yana\Core
      * but takes no arguments, the constructor must also not
      * take any input arguments, unless they are static.
      *
-     * Also the function needs to be copied to each sub-class.
-     * This is due to the fact that the function cannot access
-     * a static attribute of a sub-class. This works for the
-     * current and it's parent classes only.
-     *
      * @return  \Yana\Core\AbstractSingleton
      */
-    public static function &getInstance()
+    public static function getInstance()
     {
-        if (!isset(self::$_instance)) {
-            $class = __CLASS__;
-            self::$_instance = new $class();
+        $callerClassName = static::_getClassName();
+        if (!isset(self::$_instances[$callerClassName])) {
+            self::$_instances[$callerClassName] = static::_createNewInstance();
         }
-        return self::$_instance;
+        return self::$_instances[$callerClassName];
+    }
+
+    /**
+     * Hook-method that allows you to create the instance yourself.
+     *
+     * Use this if you have to prepare the class prior to use.
+     * Or if you wish to custom-load the instance from cache.
+     * Note! This event does not fire, if you unserialize from cache, to prevent infinite loops.
+     *
+     * Please overwrite this in your sub-classes where needed.
+     *
+     * @return \Yana\Core\IsSingleton
+     */
+    protected static function _createNewInstance()
+    {
+        return new static();
+    }
+
+    /**
+     * Reinitialize instance.
+     */
+    public function __wakeup()
+    {
+        self::$_instances[$this->getClass()] = $this;
     }
 
 }
