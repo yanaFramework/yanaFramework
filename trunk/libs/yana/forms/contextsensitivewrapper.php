@@ -30,10 +30,9 @@ namespace Yana\Forms;
 /**
  * <<wrapper, facade>> A context-sensitive form wrapper.
  *
- * This class is meant to provide a context-aware form objects, by binding a form,
- * it's current context and identifying the fields that apply to it.
+ * This class is meant to provide a context-aware form object by binding a form to
+ * its current context and identifying the fields that apply to it.
  *
- * @access      public
  * @package     yana
  * @subpackage  form
  * @ignore
@@ -44,24 +43,21 @@ class ContextSensitiveWrapper extends \Yana\Forms\Fields\FacadeCollection implem
     /**
      * Form structure and setup.
      *
-     * @access  private
-     * @var     \Yana\Forms\Facade
+     * @var  \Yana\Forms\Facade
      */
     private $_form;
 
     /**
      * Form context to take the field list from.
      *
-     * @access  private
-     * @var     \Yana\Forms\Fields\FacadeCollection
+     * @var  \Yana\Forms\Fields\FacadeCollection
      */
     private $_context;
 
     /**
      * Initialize a field collection from a given context.
      *
-     * @access  public
-     * @param   \Yana\Forms\Facade        $form     form structure and setup
+     * @param   \Yana\Forms\Facade          $form     form structure and setup
      * @param   \Yana\Forms\Setups\Context  $context  form context to take the field list from
      */
     public function __construct(\Yana\Forms\Facade $form, \Yana\Forms\Setups\Context $context)
@@ -74,7 +70,6 @@ class ContextSensitiveWrapper extends \Yana\Forms\Fields\FacadeCollection implem
     /**
      * Relay function call to wrapped object.
      *
-     * @access  public
      * @param   string  $name       method name
      * @param   array   $arguments  list of arguments to pass to function
      * @return  mixed
@@ -92,7 +87,6 @@ class ContextSensitiveWrapper extends \Yana\Forms\Fields\FacadeCollection implem
     /**
      * Get form context.
      *
-     * @access  public
      * @return  \Yana\Forms\Setups\Context
      */
     public function getContext()
@@ -105,7 +99,6 @@ class ContextSensitiveWrapper extends \Yana\Forms\Fields\FacadeCollection implem
      *
      * If there is no current row, the function returns NULL instead.
      *
-     * @access  public
      * @return  scalar
      */
     public function getPrimaryKey()
@@ -116,7 +109,6 @@ class ContextSensitiveWrapper extends \Yana\Forms\Fields\FacadeCollection implem
     /**
      * Build a field collection from a given context.
      *
-     * @access  private
      * @param   \Yana\Forms\Setups\Context  $context  form context to take the field list from
      */
     private function _buildFormFieldCollection(\Yana\Forms\Setups\Context $context)
@@ -152,7 +144,6 @@ class ContextSensitiveWrapper extends \Yana\Forms\Fields\FacadeCollection implem
      * Always returns bool(false) if the form does not have rows at all,
      * e.g. if it is an insert- or search-form (this is: it is using an insert- or search-context).
      *
-     * @access  public
      * @return  bool
      */
     public function hasRows()
@@ -165,7 +156,6 @@ class ContextSensitiveWrapper extends \Yana\Forms\Fields\FacadeCollection implem
      *
      * If the form has no rows, the function returns int(0).
      *
-     * @access  public
      * @return  int
      */
     public function getRowCount()
@@ -175,8 +165,6 @@ class ContextSensitiveWrapper extends \Yana\Forms\Fields\FacadeCollection implem
 
     /**
      * Advances the pointer one row.
-     *
-     * @access  public
      */
     public function nextRow()
     {
