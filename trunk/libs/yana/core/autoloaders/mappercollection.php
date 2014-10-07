@@ -45,7 +45,7 @@ class MapperCollection extends \Yana\Core\AbstractCollection
     /**
      * Add a new mapper to the collection.
      *
-     * @param   string  $offset  mapper id (defaults to namespace)
+     * @param   scalar  $offset  mapper id
      * @param   \Yana\Core\Autoloaders\IsMapper  $value  mapper that shoud be added
      * @return  \Yana\Core\Autoloaders\IsMapper
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not a mapper
@@ -56,9 +56,6 @@ class MapperCollection extends \Yana\Core\AbstractCollection
             $message = "Instance of \Yana\Core\Autoloaders\IsMapper expected. " .
                 "Found " . gettype($value) . "(" . get_class($value) . ") instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
-        }
-        if (!is_string($offset)) {
-            $offset = \mb_strtolower($value->getNameSpace());
         }
         return $this->_offsetSet($offset, $value);
     }

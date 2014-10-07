@@ -629,7 +629,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
             /* String */ $type = $methodsConfig[$eventName]->getType();
         } else {
             assert('!isset($defaultEvent); // Cannot redeclare var $defaultEvent');
-            /* array */ $defaultEvent = \Yana::getDefault("EVENT");
+            /* array */ $defaultEvent = \Yana\Application::getDefault("EVENT");
             assert('is_array($defaultEvent);');
             if (is_array($defaultEvent) && isset($defaultEvent[\Yana\Plugins\Annotations\Enumeration::TYPE])) {
                 /* string */ $type = $defaultEvent[\Yana\Plugins\Annotations\Enumeration::TYPE];
@@ -819,7 +819,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
             $report->addWarning("Cannot perform check! No interface definitions found.");
 
         } else {
-            $skin = \Yana::getInstance()->getSkin();
+            $skin = \Yana\Application::getInstance()->getSkin();
 
             /**
              * loop through interface definitions

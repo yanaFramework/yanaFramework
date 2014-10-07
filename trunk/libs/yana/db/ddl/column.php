@@ -1649,10 +1649,10 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 switch ($this->name)
                 {
                     case 'profile_id':
-                        return \Yana::getId();
+                        return \Yana\Application::getId();
                     case 'user_created':
                     case 'user_modified':
-                        return \YanaUser::getUserName();
+                        return \Yana\User::getUserName();
                 }
                 return $default;
             // any other

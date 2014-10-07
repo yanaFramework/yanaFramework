@@ -32,7 +32,7 @@ namespace Yana\Db;
  *
  * Example of usage:
  * <code>
- * $db = Yana::connect('foo');
+ * $db = \Yana\Application::connect('foo');
  * $id = $db->select('foo.1.foo_file');
  *
  * $file = new \Yana\Db\Blob($id);

@@ -68,7 +68,7 @@ class ApplicationBar extends \Yana\Views\Helpers\AbstractViewHelper implements \
             $result .= sprintf($template, $action, $icon, $title, $title);
         } // end foreach
 
-        $language = \Yana::getInstance()->getLanguage();
+        $language = \Yana\Application::getInstance()->getLanguage();
         return $language->replaceToken($result);
     }
 

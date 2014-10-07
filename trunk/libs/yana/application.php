@@ -27,6 +27,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Yana;
+
 /**
  * <<Facade>> <<Singleton>> Yana
  *
@@ -46,7 +48,7 @@
  * @package     yana
  * @subpackage  core
  */
-final class Yana extends \Yana\Core\AbstractSingleton
+final class Application extends \Yana\Core\AbstractSingleton
     implements \Yana\Report\IsReportable, \Yana\Log\IsLogable, \Yana\Core\IsVarContainer
 {
 
@@ -151,12 +153,12 @@ final class Yana extends \Yana\Core\AbstractSingleton
      *
      * Example:
      * <code>
-     * Yana::setConfiguration("config/system.config");
+     * \Yana\Application::setConfiguration("config/system.config");
      * global $YANA;
-     * $YANA = Yana::getInstance();
+     * $YANA = \Yana\Application::getInstance();
      * </code>
      *
-     * @return  \Yana
+     * @return  \Yana\Application
      */
     protected static function _createNewInstance()
     {
@@ -258,7 +260,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
      *
      * Example:
      * <code>
-     * Yana::setConfiguration("config/system.config");
+     * \Yana\Application::setConfiguration("config/system.config");
      * </code>
      *
      * @param  string  $filename  path to system.config
@@ -522,7 +524,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
      * Get registry.
      *
      * This returns the registry. If none exists, a new instance is created.
-     * These settings may be read later by using Yana::getVar().
+     * These settings may be read later by using \Yana\Application::getVar().
      *
      * @return  \Yana\VDrive\Registry
      * @throws  \Yana\Core\Exceptions\NotReadableException    when Registry file is not readable
@@ -719,7 +721,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
      *     to changes by some plugin, e.g. to switch between
      *     profiles.
      *   </li>
-     *   <li> Yana::getId():
+     *   <li> \Yana\Application::getId():
      *     Always returns the original value, regardless of
      *     changes by plugins.
      *   </li>
@@ -774,9 +776,9 @@ final class Yana extends \Yana\Core\AbstractSingleton
      *
      * @param   string  $key  adress of data in memory (case insensitive)
      * @return  mixed
-     * @name    Yana::getVar()
-     * @see     Yana::setVarByReference()
-     * @see     Yana::setVar()
+     * @name    \Yana\Application::getVar()
+     * @see     \Yana\Application::setVarByReference()
+     * @see     \Yana\Application::setVar()
      */
     public function getVar($key)
     {
@@ -812,10 +814,10 @@ final class Yana extends \Yana\Core\AbstractSingleton
      *
      * @param   string  $key     adress of data in memory (case insensitive)
      * @param   mixed   &$value  new value (may be scalar value or array)
-     * @return  \Yana
-     * @name    Yana::setVarByReference()
-     * @see     Yana::setVar()
-     * @see     Yana::getVar()
+     * @return  \Yana\Application
+     * @name    \Yana\Application::setVarByReference()
+     * @see     \Yana\Application::setVar()
+     * @see     \Yana\Application::getVar()
      */
     public function setVarByReference($key, &$value)
     {
@@ -828,7 +830,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
      * Replace all vars in the global registry by reference.
      *
      * @param   array  &$values  new set of values
-     * @return  \Yana
+     * @return  \Yana\Application
      */
     public function setVarsByReference(array &$values)
     {
@@ -850,10 +852,10 @@ final class Yana extends \Yana\Core\AbstractSingleton
      *
      * @param   string  $key    adress of data in memory (case insensitive)
      * @param   mixed   $value  new value (may be scalar value or array)
-     * @return  \Yana
-     * @name    Yana::setVar()
-     * @see     Yana::setVarByReference()
-     * @see     Yana::getVar()
+     * @return  \Yana\Application
+     * @name    \Yana\Application::setVar()
+     * @see     \Yana\Application::setVarByReference()
+     * @see     \Yana\Application::getVar()
      */
     public function setVar($key, $value)
     {
@@ -865,7 +867,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
      * Replace all vars in the global registry.
      *
      * @param   array  $value  set of new values
-     * @return  \Yana
+     * @return  \Yana\Application
      */
     public function setVars(array $value)
     {
@@ -1148,13 +1150,13 @@ final class Yana extends \Yana\Core\AbstractSingleton
      *
      * Example 1:
      * <code>
-     * Yana::getDefault('CONTAINER1.CONTAINER2.DATA');
+     * \Yana\Application::getDefault('CONTAINER1.CONTAINER2.DATA');
      * </code>
      *
      * Example 2:
      * <code>
      * if (!isset($foo)) {
-     *     $foo = Yana::getDefault('FOO');
+     *     $foo = \Yana\Application::getDefault('FOO');
      * }
      * </code>
      *
@@ -1237,7 +1239,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
      * Example:
      * <code>
      * // Connect to database using 'config/db/user.config'
-     * $db = Yana::connect('user');
+     * $db = \Yana\Application::connect('user');
      * </code>
      *
      * @param   string|\Yana\Db\Ddl\Database  $schema  name of the database schema file (see config/db/*.xml),
@@ -1305,7 +1307,7 @@ final class Yana extends \Yana\Core\AbstractSingleton
      *
      * @param   \Yana\Report\IsReport  $report  base report
      * @return  \Yana\Report\IsReport
-     * @name    Yana::getReport()
+     * @name    \Yana\Application:getReport()
      * @ignore
      */
     public function getReport(\Yana\Report\IsReport $report = null)

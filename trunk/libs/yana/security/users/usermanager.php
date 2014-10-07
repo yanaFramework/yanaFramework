@@ -236,7 +236,7 @@ class UserManager extends \Yana\Core\Object implements \Yana\Data\Adapters\IsDat
     public function getDatasource()
     {
         if (!isset(self::$_database)) {
-            self::$_database = Yana::connect('user');
+            self::$_database = \Yana\Application::connect('user');
         }
         return self::$_database;
     }
@@ -623,7 +623,7 @@ class UserManager extends \Yana\Core\Object implements \Yana\Data\Adapters\IsDat
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\User\MissingNameException("No user name given.", $level);
         }
-        if (YanaUser::isUser($userName)) {
+        if (\Yana\User::isUser($userName)) {
             $message = "A user with the name '$userName' already exists.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\User\AlreadyExistsException($message, $level);
@@ -665,7 +665,7 @@ class UserManager extends \Yana\Core\Object implements \Yana\Data\Adapters\IsDat
         }
 
         // user does not exist
-        if (!YanaUser::isUser($userName)) {
+        if (!\Yana\User::isUser($userName)) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such user: '$userName'.", E_USER_WARNING);
         }
 

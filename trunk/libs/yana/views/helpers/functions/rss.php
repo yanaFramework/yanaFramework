@@ -49,7 +49,7 @@ class Rss extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\
      */
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
-        $yana = \Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
         if (isset($params['image'])) {
             $image = (string) $params['image'];
         } else {

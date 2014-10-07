@@ -134,14 +134,14 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
          */
 
         // get list of ODBC-settings
-        $requireOdbc = \Yana::getDefault('database.require_odbc');
+        $requireOdbc = \Yana\Application::getDefault('database.require_odbc');
         if (!is_array($requireOdbc)) {
             // no ODBC-settings available
             $requireOdbc = array();
         }
 
         // get list of default connection options
-        $this->_options = \Yana::getDefault('database.options');
+        $this->_options = \Yana\Application::getDefault('database.options');
         if (!is_array($this->_options)) {
             // no default options available
             $this->_options = array();

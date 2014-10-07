@@ -39,7 +39,7 @@ namespace Yana\Db\Export;
  * Example of usage:
  * <code>
  * // open new database connection
- * $db = Yana::connect('guestbook');
+ * $db = \Yana\Application::connect('guestbook');
  * // create new instance
  * $dbe = new \Yana\Db\Export\DataExporter($db);
  * // extract contents (here: use MySQL syntax)
@@ -482,7 +482,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
         /* @var $ddlFile string */
         foreach ($ddlFiles as $ddlFile)
         {
-            $db = \Yana::connect($ddlFile);
+            $db = \Yana\Application::connect($ddlFile);
             $dbSchema = $db->getSchema();
             $nodes = array();
 

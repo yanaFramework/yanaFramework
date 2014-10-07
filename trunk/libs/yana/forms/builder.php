@@ -667,7 +667,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
     {
         $this->_cache = new \Yana\Data\Adapters\SessionAdapter(__CLASS__);
         $this->_file = (string) $file;
-        $this->_database = \Yana::connect($this->_file);
+        $this->_database = \Yana\Application::connect($this->_file);
         $this->_schema = $this->_database->getSchema();
         $this->_facade = new \Yana\Forms\Facade();
         $this->_queryBuilder = new \Yana\Forms\Worker($this->_database, $this->_facade);

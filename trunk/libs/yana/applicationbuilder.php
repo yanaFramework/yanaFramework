@@ -173,7 +173,7 @@ class ApplicationBuilder extends \Yana\Core\Object
     private function _runOnCommandLine()
     {
         global $YANA;
-        $YANA = \Yana::getInstance();
+        $YANA = \Yana \Application::getInstance();
         // Handle the request
         $YANA->callAction();
 
@@ -260,7 +260,7 @@ class ApplicationBuilder extends \Yana\Core\Object
                 $outputCompressionActive = true;
             }
         }
-        $YANA = \Yana::getInstance(); // Get a yana-instance
+        $YANA = \Yana\Application::getInstance(); // Get a yana-instance
         $YANA->callAction();         // Handle the request
         $YANA->outputResults();      // Create the output
         // flush the output buffer (GZ-compression)

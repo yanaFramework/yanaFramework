@@ -34,7 +34,7 @@ namespace Yana\Db\Queries;
  *
  * Example:
  * <code>
- * $connection = \Yana::connect('my_database');
+ * $connection = \Yana\Application::connect('my_database');
  * $parser = new Parser($connection);
  * $selectQuery = $parser->parseSQL("Select * from myTable where id = 1;");
  * </code>

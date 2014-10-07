@@ -83,7 +83,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
     protected static function _createNewInstance()
     {
         assert('!isset($defaultProfileId); // Cannot redeclare variable $defaultProfileId');
-        $defaultProfileId = Yana::getDefault('profile');
+        $defaultProfileId = \Yana\Application::getDefault('profile');
         if (is_string($defaultProfileId)) {
             self::$_defaultProfileId = mb_strtoupper($defaultProfileId);
         }
@@ -152,7 +152,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
     public static function getDatasource()
     {
         if (!isset(self::$_database)) {
-            self::$_database = Yana::connect('user');
+            self::$_database = \Yana\Application::connect('user');
         }
         return self::$_database;
     }
@@ -194,7 +194,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
      *       <li> PluginAnnotationEnumeration::LEVEL  required security level </li>
      *     </ul>
      *   </li>
-     *   <li> string    $profileId   current application profile id, see: {@see Yana::getId()} </li>
+     *   <li> string    $profileId   current application profile id, see: {@see \Yana\Application::getId()} </li>
      *   <li> string    $actionName  name of requested action </li>
      *   <li> string    $userName    user name (may be empty if not logged in) </li>
      * </ol>
@@ -385,7 +385,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
 
         /* Argument 1 */
         if (empty($profileId)) {
-            $profileId = Yana::getId();
+            $profileId = \Yana\Application::getId();
         }
         $profileId = mb_strtoupper("$profileId");
         assert('is_string($profileId);');
@@ -409,7 +409,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
          * }}
          */
         if (empty($userName)) {
-            $userName = YanaUser::getUserName();
+            $userName = \Yana\User::getUserName();
 
             // if no value is provided, switch to default user
             if (empty($userName)) {
@@ -445,7 +445,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
         $requiredLevels = $database->select("securityactionrules", array('action_id', '=', $action));
         // if not defined, load defaults
         if (empty($requiredLevels)) {
-            $requiredLevels = Yana::getDefault('event.user');
+            $requiredLevels = \Yana\Application::getDefault('event.user');
             if (!empty($requiredLevels)) {
                 $requiredLevels = array($requiredLevels);
             }
@@ -536,7 +536,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
         assert('is_string($profileId); // Wrong type for argument 3. String expected');
 
         if (empty($profileId)) {
-            $profileId = mb_strtoupper(Yana::getId());
+            $profileId = mb_strtoupper(\Yana\Application::getId());
         } else {
             $profileId = mb_strtoupper($profileId);
         }
@@ -564,7 +564,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
             $userName = mb_strtoupper($currentUser);
         }
 
-        if (empty($userName) || !YanaUser::isUser($userName)) {
+        if (empty($userName) || !\Yana\User::isUser($userName)) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such user '$userName'.", E_USER_WARNING);
         }
 
@@ -612,7 +612,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
         assert('is_string($profileId); // Wrong type for argument 2. String expected');
         /* Argument 1 */
         if (empty($profileId)) {
-            $profileId = \Yana::getId();
+            $profileId = \Yana\Application::getId();
         }
         $profileId = mb_strtoupper($profileId);
 
@@ -624,7 +624,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
          * }}
          */
         if (empty($userName)) {
-            $userName = (string) \YanaUser::getUserName();
+            $userName = (string) \Yana\User::getUserName();
         }
 
         $level = 0;
@@ -655,7 +655,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
 
             // 3) fall-back to default security level
             if (empty($level) || !is_array($level)) {
-                return (int) Yana::getDefault('user.level');
+                return (int) \Yana\Application::getDefault('user.level');
             }
 
             $level = array_pop($level);
@@ -663,7 +663,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
             return (int) $level;
 
         } else {
-            return (int) Yana::getDefault('user.level');
+            return (int) \Yana\Application::getDefault('user.level');
 
         }
     }

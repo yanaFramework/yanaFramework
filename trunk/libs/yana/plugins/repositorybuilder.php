@@ -104,7 +104,7 @@ class RepositoryBuilder extends \Yana\Plugins\AbstractRepositoryBuilder
         $pluginsWithDefaultMethods = array();
 
         // clear cache
-        \Yana::getInstance()->clearCache();
+        \Yana\Application::getInstance()->clearCache();
 
         // list of subscribing methods
         $subscribers = array();
@@ -193,7 +193,7 @@ class RepositoryBuilder extends \Yana\Plugins\AbstractRepositoryBuilder
         /**
          * plugin multicast-groups configuration
          */
-        $mulitcastGroups = \Yana::getDefault("multicast_groups");
+        $mulitcastGroups = \Yana\Application::getDefault("multicast_groups");
         assert('is_array($mulitcastGroups);');
         // default value
         if (empty($mulitcastGroups)) {

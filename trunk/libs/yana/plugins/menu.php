@@ -106,7 +106,7 @@ class Menu extends \Yana\Core\AbstractSingleton
             } // end if
         } // end foreach
 
-        $sessionManager = \SessionManager::getInstance();
+        $sessionManager = \Yana\SessionManager::getInstance();
         /**
          * initialize entries
          */
@@ -312,7 +312,7 @@ class Menu extends \Yana\Core\AbstractSingleton
     public function getTextMenu()
     {
         $pluginManager = \Yana\Plugins\Manager::getInstance();
-        $isSafemode = \Yana::getId() === \Yana::getDefault('profile');
+        $isSafemode = \Yana\Application::getId() === \Yana\Application::getDefault('profile');
         $menu = array();
 
         foreach ($this->getMenuEntries() as $menuId => $menuEntries)

@@ -59,13 +59,6 @@ abstract class AbstractSingleton extends \Yana\Core\Object implements \Yana\Core
     private static $_instances = array();
 
     /**
-     * Returns the class name of the called class.
-     *
-     * @return string
-     */
-    abstract protected static function _getClassName();
-
-    /**
      * Private constructor.
      *
      * To prevent the constructor from being called directly.

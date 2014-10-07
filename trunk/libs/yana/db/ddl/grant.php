@@ -438,10 +438,10 @@ class Grant extends \Yana\Db\Ddl\DDL
                     \Yana\Plugins\Annotations\Enumeration::ROLE => $role,
                     \Yana\Plugins\Annotations\Enumeration::LEVEL => $level
                 );
-                $profileId = \Yana::getId();
+                $profileId = \Yana\Application::getId();
                 $action = \Yana\Plugins\Manager::getLastEvent();
-                $userName = (string) \YanaUser::getUserName();
-                return (bool) \SessionManager::checkRule($required, $profileId, $action, $userName);
+                $userName = (string) \Yana\User::getUserName();
+                return (bool) \Yana\SessionManager::checkRule($required, $profileId, $action, $userName);
         }
     }
 
