@@ -27,6 +27,8 @@
  * @ignore
  */
 
+namespace Yana;
+
 /**
  * User
  *
@@ -37,8 +39,9 @@
  *
  * @ignore
  */
-class YanaUser extends \Yana\Core\Object
+class User extends \Yana\Core\Object
 {
+
     /**
      * Name of currently selected user
      *
@@ -121,7 +124,7 @@ class YanaUser extends \Yana\Core\Object
      * selected main skin instead.
      *
      * @param   string  $userName  name of instance to get
-     * @return  YanaUser
+     * @return  \Yana\User
      * @throws  \Yana\Core\Exceptions\NotFoundException  if the requested user does not exist
      */
     public static function &getInstance($userName = null)
@@ -271,7 +274,7 @@ class YanaUser extends \Yana\Core\Object
     public static function getDatasource()
     {
         if (!isset(self::$_database)) {
-            self::$_database = Yana::connect('user');
+            self::$_database = \Yana\Application::connect('user');
         }
         return self::$_database;
     }
@@ -859,7 +862,7 @@ class YanaUser extends \Yana\Core\Object
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\User\MissingNameException("No user name given.", $level);
         }
-        if (YanaUser::isUser($userName)) {
+        if (\Yana\User::isUser($userName)) {
             $message = "A user with the name '$userName' already exists.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\User\AlreadyExistsException($message, $level);
@@ -901,7 +904,7 @@ class YanaUser extends \Yana\Core\Object
         }
 
         // user does not exist
-        if (!YanaUser::isUser($userName)) {
+        if (!\Yana\User::isUser($userName)) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such user: '$userName'.", E_USER_WARNING);
         }
 

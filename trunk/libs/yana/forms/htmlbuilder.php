@@ -72,7 +72,7 @@ class HtmlBuilder extends \Yana\Core\Object
     public function __invoke()
     {
         // setting up template
-        $yana = \Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
         $template = $yana->getView()->createContentTemplate('id:gui_form');
 
         $template->setVar('form', $this->_facade);

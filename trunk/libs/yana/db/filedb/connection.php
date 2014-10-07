@@ -38,7 +38,7 @@ namespace Yana\Db\FileDb;
  * </code>
  *
  * You might also want to see the factory function
- * {@link Yana::connect()}.
+ * {@link \Yana\Application::connect()}.
  *
  * @package     yana
  * @subpackage  db

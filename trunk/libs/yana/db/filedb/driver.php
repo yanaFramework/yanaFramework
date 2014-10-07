@@ -161,7 +161,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     protected function _newSqlParser()
     {
-        return \Yana\Db\Queries\Parser(\Yana::connect($this->_database));
+        return \Yana\Db\Queries\Parser(\Yana\Application::connect($this->_database));
     }
 
     /**

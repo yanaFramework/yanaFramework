@@ -138,7 +138,7 @@ class Sequence extends \Yana\Core\Object
         if (!is_null($db)) {
             self::$db = $db;
         } else {
-            self::$db = \Yana::connect('sequences');
+            self::$db = \Yana\Application::connect('sequences');
         }
     }
 

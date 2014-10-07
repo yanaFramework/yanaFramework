@@ -131,7 +131,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
      *
      * @var  string
      */
-    private $_defaultNamespaceForFileWrappers = '\\Yana\\Files\\';
+    private $_defaultNamespaceForFileWrappers = '\Yana\Files\\';
 
     /**
      * Creates a new virtual drive instance.
@@ -366,60 +366,61 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
         assert('!isset($node); // Cannot redeclare var $node');
         foreach ($content as $node)
         {
-            if ($node->isMountpoint()) {
+            if (!$node->isMountpoint()) {
+                continue;
+            }
 
-                // get the virtual path name
-                $name = $path . $node->getNodeName();
+            // get the virtual path name
+            $name = $path . $node->getNodeName();
 
-                // get the source path
-                $source = $this->_getSource($node);
+            // get the source path
+            $source = $this->_getSource($node);
 
-                if ($node->isDir()) {
+            if ($node->isDir()) {
 
-                    // create a new mount-point
-                    $this->_drive[$name] = new Dir($source);
+                // create a new mount-point
+                $this->_drive[$name] = new Dir($source);
 
-                    // set file filter
-                    $filter = $node->getNodeFilter();
-                    if (isset($filter)) {
-                        $this->_drive[$name]->setFilter($filter);
-                    }
-
-                    // recurse into directory
-                    $this->_readXML($node, $name . '/');
-
-                } elseif ($node->isFile()) {
-
-                    // get class name
-                    assert('!isset($namespace); // Cannot redeclare var $namespace');
-                    $namespace = ($node->getNodeNamespace()) ? ($node->getNodeNamespace()) :
-                        $this->_getDefaultNamespaceForFileWrappers();
-                    assert('!isset($type); // Cannot redeclare var $type');
-                    $type = '';
-                    assert('!isset($match); // Cannot redeclare var $match');
-                    $match = array();
-                    if (preg_match('/\.(\w+)$/', $name, $match)) {
-                        $type = $match[1];
-                    }
-                    unset($match);
-
-                    // create a new mount-point
-                    $this->_drive[$name] = new \Yana\VDrive\File($source, $namespace . $type);
-                    unset($type, $namespace);
-
-                } /* end if */
-
-                // mount the dir automatically when requested
-                if ($node->getNodeAutomount()) {
-                    $this->mount($name);
+                // set file filter
+                $filter = $node->getNodeFilter();
+                if (isset($filter)) {
+                    $this->_drive[$name]->setFilter($filter);
                 }
 
-                // set requirements
-                $this->_drive[$name]->setRequirements($node->nodeRequiresReadable(),
-                                                     $node->nodeRequiresWriteable(),
-                                                     $node->nodeRequiresExecutable());
+                // recurse into directory
+                $this->_readXML($node, $name . '/');
+
+            } elseif ($node->isFile()) {
+
+                // get class name
+                assert('!isset($namespace); // Cannot redeclare var $namespace');
+                $namespace = ($node->getNodeNamespace()) ? ($node->getNodeNamespace()) :
+                    $this->_getDefaultNamespaceForFileWrappers();
+                assert('!isset($type); // Cannot redeclare var $type');
+                $type = '';
+                assert('!isset($match); // Cannot redeclare var $match');
+                $match = array();
+                if (preg_match('/\.(\w+)$/', $name, $match)) {
+                    $type = $match[1];
+                }
+                unset($match);
+
+                // create a new mount-point
+                $this->_drive[$name] = new \Yana\VDrive\File($source, $namespace . $type);
+                unset($type, $namespace);
 
             } /* end if */
+
+            // mount the dir automatically when requested
+            if ($node->getNodeAutomount()) {
+                $this->mount($name);
+            }
+
+            // set requirements
+            $this->_drive[$name]->setRequirements($node->nodeRequiresReadable(),
+                                                 $node->nodeRequiresWriteable(),
+                                                 $node->nodeRequiresExecutable());
+
         } /* end foreach */
     }
 

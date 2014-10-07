@@ -56,10 +56,10 @@ class AjaxBridgeFilter extends \Yana\Views\Helpers\AbstractViewHelper implements
         if (mb_strpos($source, '<head') > -1) {
             assert('!isset($script); // Cannot redeclare var $script');
             $script = "\n        " . '<script type="text/javascript" language="javascript"><!--' . "\n" .
-                '        window.yanaProfileId="' . \Yana::getId() . '";' . "\n" .
+                '        window.yanaProfileId="' . \Yana\Application::getId() . '";' . "\n" .
                 '        window.yanaSessionName="{$SESSION_NAME}";' . "\n" .
                 '        window.yanaSessionId="{$SESSION_ID}";' . "\n" .
-                '        window.yanaLanguage="' . \Yana::getInstance()->getLanguage()->getLocale() . '";' . "\n" .
+                '        window.yanaLanguage="' . \Yana\Application::getInstance()->getLanguage()->getLocale() . '";' . "\n" .
                 '        var src="";' . "\n" .
                 '        var php_self="' . $templateClass->getTemplateVars('PHP_SELF') . '";' . "\n" .
                 '        //--></script>';

@@ -931,10 +931,10 @@ class MethodConfiguration extends \Yana\Core\Object
      * Executes the event on the provided instance and returns the result.
      *
      * @access  public
-     * @param   \IsPlugin  $instance  object to send event to
+     * @param   \Yana\IsPlugin  $instance  object to send event to
      * @return  mixed
      */
-    public function sendEvent(\IsPlugin $instance)
+    public function sendEvent(\Yana\IsPlugin $instance)
     {
         if ($this->hasMethod($instance)) {
             $methodName = $this->_methodName;
@@ -954,10 +954,10 @@ class MethodConfiguration extends \Yana\Core\Object
      * Returns bool(true) if the given plug-in implements this method and bool(false) otherwise.
      *
      * @access  public
-     * @param   \IsPlugin  $instance  object to send event to
+     * @param   \Yana\IsPlugin  $instance  object to send event to
      * @return  bool
      */
-    public function hasMethod(\IsPlugin $instance)
+    public function hasMethod(\Yana\IsPlugin $instance)
     {
         return method_exists($instance, $this->_methodName);
     }

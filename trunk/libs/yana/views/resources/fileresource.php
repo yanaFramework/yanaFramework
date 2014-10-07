@@ -74,7 +74,7 @@ class FileResource extends \Yana\Views\Resources\AbstractResource
     protected function _getSkin()
     {
         if (!isset($this->_skin)) {
-            $this->_skin = \Yana::getInstance()->getSkin();
+            $this->_skin = \Yana\Application::getInstance()->getSkin();
         }
         return $this->_skin;
     }

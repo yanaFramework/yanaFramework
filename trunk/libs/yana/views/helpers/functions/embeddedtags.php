@@ -88,7 +88,7 @@ class EmbeddedTags extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
         $tags = array_diff($show, $hide);
 
         /* create document */
-        $yana = \Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
         $document = $smarty->smarty->createTemplate("id:GUI_EMBEDDED_TAGS", null, null, $smarty);
         $document->assign('TAGS', $tags);
         $document->assign('USER_DEFINED', $yana->getVar('PROFILE.EMBTAG'));

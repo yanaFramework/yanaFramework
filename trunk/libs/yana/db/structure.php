@@ -505,7 +505,7 @@ class Structure extends \Yana\Files\SML
      * foo.config you may use the following code:
      * <code>
      * global $YANA;
-     * $parser = new DbQueryParser(Yana::connect('foo'));
+     * $parser = new DbQueryParser(\Yana\Application::connect('foo'));
      * foreach ($statements as $statement)
      * {
      *     if (!$parser->parseSQL($statement)) {

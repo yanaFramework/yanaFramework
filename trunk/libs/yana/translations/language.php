@@ -132,7 +132,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      *
      * @ignore
      */
-    private function __construct()
+    protected function __construct()
     {
         // intentionally left blank
     }
@@ -628,10 +628,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
     }
 
     /**
-     * Get list of info fields.
-     *
-     * Returns an array of language settings on success,
-     * or bool(false) on error.
+     * Get meta-info on a language packs.
      *
      * @param   string  $languageName  name of language pack
      * @return  \Yana\Core\MetaData\PackageMetaData
@@ -644,44 +641,60 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
         assert('is_string($languageName); // Wrong type for argument 1. String expected');
 
         if (!isset($this->_info[$languageName])) {
-            // get path to definition file
-            $file = $this->getDefaultDirectory() . "$languageName.language.xml";
-            if (!is_file($file)) {
-                throw new \Yana\Core\Exceptions\NotFoundException("Language definition not found: '$languageName'.");
-            }
-            // load definition
-            $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
-            $metaData = new \Yana\Core\MetaData\PackageMetaData();
-            // get information
-            if (!empty($xml)) {
-                $metaData->setPreviewImage($this->getDefaultDirectory() . "/$languageName/icon.png")
-                    ->setLastModified(filemtime($file))
-                    ->setTitle((string) $xml->title)
-                    ->setUrl((string) $xml->url);
-                // get list of authors
-                assert('!isset($author); /* cannot redeclare variable $author */');
-                $author = $xml->xpath('//author');
-                if (!empty($author)) {
-                    $metaData->setAuthor((string) implode(', ', $author));
-                }
-                unset($author);
-                // get translated description
-                assert('!isset($description); /* cannot redeclare variable $description */');
-                $description = $xml->xpath('//description[@lang="'. $this->getLocale() .'"]');
-                if (empty($description)) {
-                    $description = $xml->xpath('//description[@lang="'. $this->getLanguage() .'"]');
-                }
-                if (empty($description)) {
-                    $description = $xml->xpath('//description[not(@lang)]');
-                }
-                if (!empty($description)) {
-                    $metaData->setTexts((string) implode(', ', $description));
-                }
-                unset($description);
-            }
-            $this->_info[$languageName] = $metaData;
+            $this->_info[$languageName] = $this->_loadInfo($languageName);
         }
         return $this->_info[$languageName];
+    }
+
+    /**
+     * Load meta-info on a language pack from its configration file.
+     *
+     * @param   string  $languageName  name of language pack
+     * @return  \Yana\Core\MetaData\PackageMetaData
+     * @throws  \Yana\Core\Exceptions\NotFoundException  when requested file is not found
+     *
+     * @ignore
+     */
+    private function _loadInfo($languageName)
+    {
+        assert('is_string($languageName); // Wrong type for $languageName. String expected');
+
+        // get path to definition file
+        $file = $this->getDefaultDirectory() . "$languageName.language.xml";
+        if (!is_file($file)) {
+            throw new \Yana\Core\Exceptions\NotFoundException("Language definition not found: '$languageName'.");
+        }
+        // load definition
+        $xml = simplexml_load_file($file, null, LIBXML_NOWARNING | LIBXML_NOERROR);
+        $metaData = new \Yana\Core\MetaData\PackageMetaData();
+        // get information
+        if (!empty($xml)) {
+            $metaData->setPreviewImage($this->getDefaultDirectory() . "/$languageName/icon.png")
+                ->setLastModified(filemtime($file))
+                ->setTitle((string) $xml->title)
+                ->setUrl((string) $xml->url);
+            // get list of authors
+            assert('!isset($author); /* cannot redeclare variable $author */');
+            $author = $xml->xpath('//author');
+            if (!empty($author)) {
+                $metaData->setAuthor((string) implode(', ', $author));
+            }
+            unset($author);
+            // get translated description
+            assert('!isset($description); /* cannot redeclare variable $description */');
+            $description = $xml->xpath('//description[@lang="'. $this->getLocale() .'"]');
+            if (empty($description)) {
+                $description = $xml->xpath('//description[@lang="'. $this->getLanguage() .'"]');
+            }
+            if (empty($description)) {
+                $description = $xml->xpath('//description[not(@lang)]');
+            }
+            if (!empty($description)) {
+                $metaData->setTexts((string) implode(', ', $description));
+            }
+            unset($description);
+        }
+        return $metaData;
     }
 
     /**

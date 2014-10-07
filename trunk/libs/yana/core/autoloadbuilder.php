@@ -27,8 +27,13 @@
 
 namespace Yana\Core;
 
+require_once __DIR__ . '/isobject.php';
+require_once __DIR__ . '/iscloneable.php';
 require_once __DIR__ . '/object.php';
 require_once __DIR__ . '/autoloaders/ismapper.php';
+require_once __DIR__ . '/iscountablearray.php';
+require_once __DIR__ . '/iscollection.php';
+require_once __DIR__ . '/abstractcollection.php';
 require_once __DIR__ . '/autoloaders/mappercollection.php';
 require_once __DIR__ . '/autoloaders/abstractmapper.php';
 require_once __DIR__ . '/autoloaders/genericmapper.php';
@@ -37,7 +42,9 @@ require_once __DIR__ . '/autoloaders/directmapper.php';
 require_once __DIR__ . '/autoloaders/isloader.php';
 require_once __DIR__ . '/autoloaders/abstractloader.php';
 require_once __DIR__ . '/autoloaders/loader.php';
+require_once __DIR__ . '/autoloaders/wrapper.php';
 require_once __DIR__ . '/autoloaders/classnotfoundexception.php';
+require_once __DIR__ . '/../log/formatter/message.php';
 
 /**
  * <<utility>> YANA Automatic class loader.

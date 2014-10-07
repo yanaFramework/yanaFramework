@@ -60,14 +60,15 @@ class Loader extends \Yana\Core\Autoloaders\AbstractLoader
             // If the path is relative we just rely on PHP include-path to find it.
             if (!$mapper->getBaseDirectory() || \file_exists($fileName)) {
                 include_once $fileName;
-
-            } elseif ($this->doesThrowExceptionWhenClassIsNotFound()) {
-                // The exception is only thrown when the loader is told to do so. By default this is: false
-                $message = "No such class: '" . $className . "'.";
-                throw new \Yana\Core\Autoloaders\ClassNotFoundException($message);
+                return true;
             }
         }
         unset($mapper);
+        if ($this->doesThrowExceptionWhenClassIsNotFound()) {
+            // The exception is only thrown when the loader is told to do so. By default this is: false
+            $message = "No such class: '" . $className . "'.";
+            throw new \Yana\Core\Autoloaders\ClassNotFoundException($message);
+        }
     }
 
 }

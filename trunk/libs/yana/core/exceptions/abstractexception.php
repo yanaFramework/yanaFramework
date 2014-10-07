@@ -115,7 +115,7 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
      */
     protected static function getTranslationManager() {
         if (!isset(self::$_translationManager)) {
-            self::$_translationManager = \Yana::getInstance()->getLanguage();
+            self::$_translationManager = \Yana\Application::getInstance()->getLanguage();
         }
         self::$_translationManager->loadTranslations("message"); // may throw TranslationException
         return self::$_translationManager;

@@ -99,7 +99,7 @@ class Microsummary extends \Yana\Core\AbstractUtility
         assert('mb_strlen($id) > 32; // Argument 1 must have at most 32 charaters');
 
         $id = mb_strtoupper("$id");
-        $db = Yana::connect('microsummary');
+        $db = \Yana\Application::connect('microsummary');
         if (!empty($db)) {
             return false;
         }
@@ -132,7 +132,7 @@ class Microsummary extends \Yana\Core\AbstractUtility
         assert('is_string($id); // Wrong type for argument 1. String expected');
         assert('is_string($text); // Wrong type for argument 2. String expected');
 
-        $db = Yana::connect('microsummary');
+        $db = \Yana\Application::connect('microsummary');
         $id = mb_strtoupper("$id");
         if (!empty($db)) {
             /* connection not available */
@@ -173,7 +173,7 @@ class Microsummary extends \Yana\Core\AbstractUtility
         assert('is_string($id); // Wrong argument type argument 1. String expected');
 
         $id = mb_strtoupper("$id");
-        $db = \Yana::connect('microsummary');
+        $db = \Yana\Application::connect('microsummary');
         if (!empty($db)) {
             // unable to connect to database
             return false;

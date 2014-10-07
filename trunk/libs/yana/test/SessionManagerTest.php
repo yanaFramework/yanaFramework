@@ -36,7 +36,7 @@ require_once dirname(__FILE__) . '/include.php';
  * @package  test
  * @ignore
  */
-class MySessionManager extends SessionManager
+class MySessionManager extends \Yana\SessionManager
 {
 
     /**
@@ -44,8 +44,8 @@ class MySessionManager extends SessionManager
      */
     public static function dropSecurityRules()
     {
-        SessionManager::$rules = array();
-        SessionManager::getInstance()->cache = array();
+        \Yana\SessionManager::$rules = array();
+        \Yana\SessionManager::getInstance()->cache = array();
     }
 
 }
@@ -56,7 +56,7 @@ class MySessionManager extends SessionManager
  * @package  test
  * @ignore
  */
-class MyYanaUser extends YanaUser
+class MyYanaUser extends \Yana\User
 {
 
     /**
@@ -64,12 +64,12 @@ class MyYanaUser extends YanaUser
      */
     public static function dropChanges()
     {
-        foreach (YanaUser::$instances as $user)
+        foreach (\Yana\User::$instances as $user)
         {
             $user->updates = null;
         }
-        YanaUser::$instances = array();
-        YanaUser::$selectedUser = null;
+        \Yana\User::$instances = array();
+        \Yana\User::$selectedUser = null;
     }
 
 }
@@ -83,7 +83,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    SessionManager
+     * @var    \Yana\SessionManager
      * @access protected
      */
     protected $_sessionManager;
@@ -119,9 +119,9 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
         \Yana\Db\Ddl\DDL::setDirectory('config/db/');
         $schema = \Yana\Files\XDDL::getDatabase('user');
         $this->_database = new \Yana\Db\FileDb\Connection($schema);
-        SessionManager::setDatasource($this->_database);
-        YanaUser::setDatasource($this->_database);
-        $this->_sessionManager = SessionManager::getInstance();
+        \Yana\SessionManager::setDatasource($this->_database);
+        \Yana\User::setDatasource($this->_database);
+        $this->_sessionManager = \Yana\SessionManager::getInstance();
     }
 
     /**
@@ -143,13 +143,13 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testCheckLogin()
     {
-        $user = YanaUser::getInstance('administrator');
+        $user = \Yana\User::getInstance('administrator');
         $canLogin = $user->checkPassword('UNINITIALIZED');
         $this->assertTrue($canLogin, 'must provide login for unitialized password');
 
         // try to LogIn with a illegal (non exist) username and password
         // expecting false
-        $user = YanaUser::getInstance('testuser');
+        $user = \Yana\User::getInstance('testuser');
         $user->setPassword();
         $canLogin = $user->checkPassword('invalid_password');
         $this->assertFalse($canLogin, 'must not allow login with invalid password');
@@ -166,7 +166,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testIsLoggedIn()
     {
-        $user = YanaUser::getInstance('testuser');
+        $user = \Yana\User::getInstance('testuser');
         $this->assertFalse($user->isLoggedIn(), 'user should not be logged in');
     }
 
@@ -181,19 +181,19 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
         $language->addDirectory('languages');
         $language->setLocale('de');
 
-        $user = YanaUser::getInstance('administrator');
+        $user = \Yana\User::getInstance('administrator');
         $canLogin = $user->checkPassword('UNINITIALIZED');
         $this->assertTrue($canLogin, 'login as admin has failed, possible reason is, that the admin has set a password');
         $loginCount = $user->getLoginCount();
         $loginTime = $user->getLoginTime();
         $user->login();
-        $this->assertTrue(YanaUser::isLoggedIn(), 'login as admin has failed, possible reason is, that the admin has set a password');
-        $this->assertEquals($user->getName(), YanaUser::getUserName(), 'getUserName() must return name of logged-in user.');
+        $this->assertTrue(\Yana\User::isLoggedIn(), 'login as admin has failed, possible reason is, that the admin has set a password');
+        $this->assertEquals($user->getName(), \Yana\User::getUserName(), 'getUserName() must return name of logged-in user.');
         $this->assertTrue($user->getLoginCount() == $loginCount + 1, 'failed to increment login-count');
         $this->assertTrue($user->getLoginTime() > $loginTime, 'failed to set login-time');
 
         $user->logout();
-        $this->assertFalse(YanaUser::isLoggedIn(), 'Logout failed.');
+        $this->assertFalse(\Yana\User::isLoggedIn(), 'Logout failed.');
     }
 
     /**
@@ -203,7 +203,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     function testUserAccessFunctions()
     {
-        $user = YanaUser::getInstance('testuser');
+        $user = \Yana\User::getInstance('testuser');
 
         $active = $user->isActive();
         $user->setActive(!$active);
@@ -242,13 +242,13 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
         $language->addDirectory('languages/');
         $language->setLocale('de');
 
-        $user = YanaUser::getInstance('administrator');
+        $user = \Yana\User::getInstance('administrator');
         $user->login();
-        $this->assertTrue(YanaUser::isLoggedIn(), 'login failed');
+        $this->assertTrue(\Yana\User::isLoggedIn(), 'login failed');
         $this->assertTrue(isset($_SESSION['user_name']), 'for some reason there has been a login and no user_name in the global _SESSION');
         $user->logout();
         $this->assertFalse(isset($_SESSION['user_name']), 'after logout the name of the User has not been destroyed');
-        $this->assertFalse(YanaUser::isLoggedIn(), 'logout failed');
+        $this->assertFalse(\Yana\User::isLoggedIn(), 'logout failed');
     }
 
     /**
@@ -258,10 +258,10 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testChangePwd()
     {
-        $user = YanaUser::getInstance('administrator');
+        $user = \Yana\User::getInstance('administrator');
         $canLogin = $user->checkPassword('UNINITIALIZED');
         $this->assertTrue($canLogin, 'Login has failed, this is essntial for the following tests');
-        $user = YanaUser::getInstance('testuser');
+        $user = \Yana\User::getInstance('testuser');
         $user->login();
 
         $user->createPasswordRecoveryId();
@@ -284,14 +284,14 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateUser()
     {
-        $this->assertFalse(YanaUser::isUser('nonExistingUser'), 'test user should not yet exist');
-        YanaUser::createUser('nonExistingUser', 'mail@domain.tld');
-        $this->assertTrue(YanaUser::isUser('nonExistingUser'), 'failed to create user');
+        $this->assertFalse(\Yana\User::isUser('nonExistingUser'), 'test user should not yet exist');
+        \Yana\User::createUser('nonExistingUser', 'mail@domain.tld');
+        $this->assertTrue(\Yana\User::isUser('nonExistingUser'), 'failed to create user');
 
-        $result = YanaUser::getInstance('nonExistingUser');
+        $result = \Yana\User::getInstance('nonExistingUser');
         $this->assertEquals('mail@domain.tld', $result->getMail(), 'creating a new user has failed, the expected email address is incorrect');
 
-        $user = YanaUser::getUserNames();
+        $user = \Yana\User::getUserNames();
         $user = array_keys($user);
         $this->assertType('array', $user, 'the value should be an array');
         $this->assertNotEquals(0, count($user), 'the values cant be equal - expected an user array');
@@ -300,8 +300,8 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(in_array('MANAGER', $user), 'the value should be match a key in array');
         $this->assertTrue(in_array('USER', $user), 'the value should be match a key in array');
 
-        YanaUser::removeUser('nonExistingUser');
-        $this->assertFalse(YanaUser::isUser('nonExistingUser'), 'failed to remove user');
+        \Yana\User::removeUser('nonExistingUser');
+        $this->assertFalse(\Yana\User::isUser('nonExistingUser'), 'failed to remove user');
     }
 
     /**
@@ -311,7 +311,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSetPwd()
     {
-        $user = YanaUser::getInstance('testuser');
+        $user = \Yana\User::getInstance('testuser');
         // try to set a password before u sign in
         $set = $user->setPassword();
         $this->assertType('string', $set, 'the value must be from type string');
@@ -354,11 +354,11 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     public function testIsUser()
     {
         // expected false for nonexist User
-        $nonExist = YanaUser::isUser('bla');
+        $nonExist = \Yana\User::isUser('bla');
         $this->assertFalse($nonExist, 'the user is not exist');
 
         // expected true for an existing User
-        $exist = YanaUser::isUser('testuser');
+        $exist = \Yana\User::isUser('testuser');
         $this->assertTrue($exist, 'the user exists');
     }
 
@@ -373,7 +373,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     {
         require_once(CWD.'../../../plugins/user_group/user_group.plugin.php');
         MySessionManager::dropSecurityRules();
-        SessionManager::addSecurityRule(array('plugin_user_group', 'checkGroupsAndRoles'));
+        \Yana\SessionManager::addSecurityRule(array('plugin_user_group', 'checkGroupsAndRoles'));
 
         /**
          * check_addfoobar
@@ -443,7 +443,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     {
         require_once(CWD.'../../../plugins/user/user.plugin.php');
         MySessionManager::dropSecurityRules();
-        SessionManager::addSecurityRule(array('plugin_user', 'checkSecurityLevel'));
+        \Yana\SessionManager::addSecurityRule(array('plugin_user', 'checkSecurityLevel'));
         /**
          * check_baricons
          *
@@ -501,8 +501,8 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
         require_once(CWD.'../../../plugins/user_group/user_group.plugin.php');
         require_once(CWD.'../../../plugins/user/user.plugin.php');
         MySessionManager::dropSecurityRules();
-        SessionManager::addSecurityRule(array('plugin_user_group', 'checkGroupsAndRoles'));
-        SessionManager::addSecurityRule(array('plugin_user', 'checkSecurityLevel'));
+        \Yana\SessionManager::addSecurityRule(array('plugin_user_group', 'checkGroupsAndRoles'));
+        \Yana\SessionManager::addSecurityRule(array('plugin_user', 'checkSecurityLevel'));
 
         /**
          * check_foo
@@ -593,18 +593,18 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     public function testRemoveUser()
     {
         // create a user
-        YanaUser::createUser('usertodelete','mail@domain.tld');
+        \Yana\User::createUser('usertodelete','mail@domain.tld');
 
         // check if the user is really created
-        $getUser = YanaUser::getInstance('usertodelete');
+        $getUser = \Yana\User::getInstance('usertodelete');
         // valid user|sec_lvl|role
         $this->assertEquals('usertodelete', strtolower($getUser->getName()), 'the values should be equal - the expected username should be in that array');
         $this->assertEquals('mail@domain.tld', $getUser->getMail(), 'the values should be equal - the expected USER_MAIL should be match the user mail');
 
         // remove this user
-        $this->assertTrue(YanaUser::isUser('usertodelete'), 'expected user does not exist');
-        YanaUser::removeUser('usertodelete');
-        $this->assertFalse(YanaUser::isUser('usertodelete'), 'user was not deleted');
+        $this->assertTrue(\Yana\User::isUser('usertodelete'), 'expected user does not exist');
+        \Yana\User::removeUser('usertodelete');
+        $this->assertFalse(\Yana\User::isUser('usertodelete'), 'user was not deleted');
     }
 
     /**
@@ -616,7 +616,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     function testRemoveUserInvalidArgument()
     {
         // remove an non-exist user
-        YanaUser::removeUser('nonexist');
+        \Yana\User::removeUser('nonexist');
     }
 
     /**
@@ -627,7 +627,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     function testRemoveUserInvalidArgument1()
     {
-        YanaUser::removeUser('');
+        \Yana\User::removeUser('');
     }
 
     /**
@@ -643,7 +643,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
         $this->assertType('string', $serialize, 'the value should be of type string');
 
         $unserialize = unserialize($serialize);
-        $this->assertTrue($unserialize instanceof SessionManager, 'the value should be an instance of SessionManager');
+        $this->assertTrue($unserialize instanceof \Yana\SessionManager, 'the value should be an instance of SessionManager');
         $this->assertEquals($unserialize, $this->_sessionManager, 'assert failed , there are the same objects');
     }
 

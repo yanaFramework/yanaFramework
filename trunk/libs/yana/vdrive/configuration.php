@@ -156,8 +156,9 @@ class Configuration extends \Yana\Util\XmlArray
     public function getNodeName()
     {
         $name = null;
-        if (isset($this->attributes()->name)) {
-            $name = (string) $this->attributes()->name;
+        $attributes = $this->attributes();
+        if (isset($attributes['name'])) {
+            $name = (string) (is_scalar($attributes['name']) ? $attributes['name'] : current($attributes['name']));
         }
         return $name;
     }
@@ -170,8 +171,9 @@ class Configuration extends \Yana\Util\XmlArray
     public function getNodeValue()
     {
         $value = null;
-        if (isset($this->attributes()->value)) {
-            $value = (string) $this->attributes()->value;
+        $attributes = $this->attributes();
+        if (isset($attributes->value)) {
+            $value = (string) (is_scalar($attributes->value) ? $attributes->value :  current($attributes->value));
         }
         return $value;
     }

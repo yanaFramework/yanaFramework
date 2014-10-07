@@ -53,7 +53,7 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
     {
         assert('is_string($source); // Wrong type for argument 1. String expected');
 
-        if (!\YanaUser::isLoggedIn()) {
+        if (!\Yana\User::isLoggedIn()) {
             $replace = "<span class=\"yana_button\"><input type=\"text\" name=\"yana_url\"/></span>\n</form>";
             $source = str_replace("</form>", $replace, $source);
         }
