@@ -43,7 +43,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_user_registration extends StdClass implements IsPlugin
+class plugin_user_registration extends StdClass implements \Yana\IsPlugin
 {
 
     /**
@@ -73,7 +73,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
      */
     public function set_user_mail($username, $mail)
     {
-        $database = Yana::connect("user");
+        $database = \Yana\Application::connect("user");
 
         $mail = mb_substr(mb_strtolower($mail), 0, 255);
         if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
@@ -207,7 +207,7 @@ class plugin_user_registration extends StdClass implements IsPlugin
      */
     public function user_authentification($target)
     {
-        $database = Yana::connect("user");
+        $database = \Yana\Application::connect("user");
 
         if (!$database->exists('newuser', array(array('newuser_key', $target, '=')))) {
             $level = \Yana\Log\TypeEnumeration::WARNING;
@@ -229,12 +229,12 @@ class plugin_user_registration extends StdClass implements IsPlugin
         }
 
         // try to create user
-        YanaUser::createUser($entry['NEWUSER_NAME'], $entry['NEWUSER_MAIL']);
-        $user = YanaUser::getInstance($entry['NEWUSER_NAME']);
+        \Yana\User::createUser($entry['NEWUSER_NAME'], $entry['NEWUSER_MAIL']);
+        $user = \Yana\User::getInstance($entry['NEWUSER_NAME']);
         $password = $user->setPassword();
 
         // send password to user's mail account
-        $YANA = Yana::getInstance();
+        $YANA = \Yana\Application::getInstance();
         $YANA->setVar('PASSWORT', $password);
         $YANA->setVar('NAME', $user->getName());
 

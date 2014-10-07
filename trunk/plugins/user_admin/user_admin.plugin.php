@@ -35,7 +35,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_user_admin extends StdClass implements IsPlugin
+class plugin_user_admin extends StdClass implements \Yana\IsPlugin
 {
 
     /**
@@ -57,7 +57,7 @@ class plugin_user_admin extends StdClass implements IsPlugin
     protected static function getDatabase()
     {
         if (!isset(self::$database)) {
-            self::$database = Yana::connect("user_admin");
+            self::$database = \Yana\Application::connect("user_admin");
         }
         return self::$database;
     }
@@ -166,7 +166,7 @@ class plugin_user_admin extends StdClass implements IsPlugin
 
         $userName = (string) $target['user_id'];
         try {
-            $user = YanaUser::getInstance($userName);
+            $user = \Yana\User::getInstance($userName);
         } catch (\Yana\Core\Exceptions\NotFoundException $e) { // user not found
             return false;
         }
@@ -244,7 +244,7 @@ class plugin_user_admin extends StdClass implements IsPlugin
                 }
 
                 // before doing anything, check if entry exists
-                if (!YanaUser::isUser($id)) {
+                if (!\Yana\User::isUser($id)) {
                     $message = "No user found with id: " . \htmlentities($id);
                     $level = \Yana\Log\TypeEnumeration::ERROR;
                     throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
@@ -284,7 +284,7 @@ class plugin_user_admin extends StdClass implements IsPlugin
             }
 
             // try to remove user
-            YanaUser::removeUser($id);
+            \Yana\User::removeUser($id);
         }
         return true;
     }
@@ -308,13 +308,13 @@ class plugin_user_admin extends StdClass implements IsPlugin
     {
         global $YANA;
         // reset Id-setting (just in case some plugin changed this)
-        $YANA->setVar('ID', Yana::getId());
+        $YANA->setVar('ID', \Yana\Application::getId());
 
         $newUser = self::getUserForm()->getInsertValues();
         $userName = $newUser['user_id'];
 
-        YanaUser::createUser($userName, $newUser['user_mail']);
-        $db = SessionManager::getDatasource();
+        \Yana\User::createUser($userName, $newUser['user_mail']);
+        $db = \Yana\SessionManager::getDatasource();
         if (!$db->update("user.$userName", $newUser)) {
             return false;
         }

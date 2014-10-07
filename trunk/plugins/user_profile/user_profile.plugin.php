@@ -31,7 +31,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_user_profile extends StdClass implements IsPlugin
+class plugin_user_profile extends StdClass implements \Yana\IsPlugin
 {
 
     /**
@@ -51,7 +51,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
     protected static function getDatabase()
     {
         if (!isset(self::$database)) {
-            self::$database = Yana::connect("user_admin");
+            self::$database = \Yana\Application::connect("user_admin");
         }
         return self::$database;
     }
@@ -110,14 +110,14 @@ class plugin_user_profile extends StdClass implements IsPlugin
      */
     public function get_profile_edit()
     {
-        $YANA = Yana::getInstance();
+        $YANA = \Yana\Application::getInstance();
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_USER_EDIT"));
-        $YANA->setVar("USERNAME", YanaUser::getUserName());
+        $YANA->setVar("USERNAME", \Yana\User::getUserName());
         $builder = new \Yana\Forms\Builder('user_admin');
         $builder->setId('userdetails')
             ->setEntries(1)
             ->setLayout(1)
-            ->setWhere(array('USER_ID', '=', YanaUser::getUserName()));
+            ->setWhere(array('USER_ID', '=', \Yana\User::getUserName()));
         $YANA->setVar("USERFORM", $builder->__invoke());
     }
 
@@ -147,7 +147,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
         $worker->beforeCreate(
             function (&$id)
             {
-                $id = YanaUser::getUserName();
+                $id = \Yana\User::getUserName();
             }
         );
         return $worker->update();
@@ -212,9 +212,9 @@ class plugin_user_profile extends StdClass implements IsPlugin
         } elseif (isset($_SESSION['user'][__FUNCTION__])) {
             $userId = $_SESSION['user'][__FUNCTION__];
         } else {
-            $userId = YanaUser::getUserName();
+            $userId = \Yana\User::getUserName();
         }
-        if (YanaUser::isUser($userId)) {
+        if (\Yana\User::isUser($userId)) {
             $message = "No user found with id: " . \htmlentities($userId);
             $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
@@ -226,7 +226,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
             return false;
         }
 
-        $YANA = Yana::getInstance();
+        $YANA = \Yana\Application::getInstance();
         $YANA->setVar("USERNAME", $userId);
         $YANA->setVar("USER", $userData);
     }
@@ -253,7 +253,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
             throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
         }
 
-        $isOwnProfile = strcasecmp($target, YanaUser::getUserName()) === 0;
+        $isOwnProfile = strcasecmp($target, \Yana\User::getUserName()) === 0;
         if (!empty($userData['USER_IMAGE']) && ($isOwnProfile || $userData['USER_IMAGE_ACTIVE'])) {
             if (!$thumb) {
                 $image = new \Yana\Media\Image($userData['USER_IMAGE']);
@@ -261,7 +261,7 @@ class plugin_user_profile extends StdClass implements IsPlugin
                 $image = new \Yana\Media\Image(str_replace('/image.', '/thumb.', $userData['USER_IMAGE']));
             }
         } else {
-            $image = new \Yana\Media\Image(Yana::getInstance()->getVar('DATADIR') . 'userpic.gif');
+            $image = new \Yana\Media\Image(\Yana\Application::getInstance()->getVar('DATADIR') . 'userpic.gif');
         }
         $image->outputToScreen();
         exit;

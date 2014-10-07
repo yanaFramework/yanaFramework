@@ -34,7 +34,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_search extends StdClass implements IsPlugin
+class plugin_search extends StdClass implements \Yana\IsPlugin
 {
     /**
      * @access  private
@@ -83,7 +83,7 @@ class plugin_search extends StdClass implements IsPlugin
     public function search_stats()
     {
         \Yana\Util\Microsummary::publishSummary(__CLASS__);
-        $numbers = Yana::connect('search')->select('searchstats');
+        $numbers = \Yana\Application::connect('search')->select('searchstats');
         if (!empty($numbers)) {
             uasort($numbers, array($this, "_sortStatistics"));
             global $YANA;
@@ -120,7 +120,7 @@ class plugin_search extends StdClass implements IsPlugin
             if (empty($this->searchString)) {
                 return;
             }
-            $db = Yana::connect('search');
+            $db = \Yana\Application::connect('search');
             assert('!isset($temp);');
             $temp = explode(" ", mb_strtolower($this->searchString));
             for ($i = 0; $i < count($temp); $i++)
@@ -583,7 +583,7 @@ class plugin_search extends StdClass implements IsPlugin
     {
         assert('is_string($subject); // Wrong type for argument 1. String expected');
 
-        $yana = Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
         $plugins = $yana->getPlugins();
         $language = $yana->getLanguage();
         $found = false;
@@ -845,7 +845,7 @@ class plugin_search extends StdClass implements IsPlugin
         $inputString = str_replace('ß', 'ss', $inputString);
         $inputString = preg_replace('/[^a-zA-Z\s]/u', '', $inputString);
 
-        /* @var $YANA Yana */
+        /* @var $YANA \Yana\Application */
         global $YANA;
         $grammar = $YANA->getPlugins()->search->getVar('GRAMMAR');
         assert('is_array($grammar);');

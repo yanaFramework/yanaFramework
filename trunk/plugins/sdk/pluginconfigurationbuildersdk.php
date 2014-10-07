@@ -154,7 +154,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
             break;
 
             default:
-                $yana = Yana::getInstance();
+                $yana = \Yana\Application::getInstance();
                 $pluginManager = $yana->getPlugins();
                 $logoDir = $pluginManager->{'sdk:/images/logos'};
                 $iconDir = $pluginManager->{'sdk:/images/icons'};
@@ -185,7 +185,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
      */
     public function addSqlFile($dbms, $file)
     {
-        $yana = Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
         $installDirectory = $yana->getResource('system:/dbinstall/' . mb_strtolower($dbms));
         if (!is_object($installDirectory)) {
             $message = "Registry error: there is no registered install directory ".
@@ -223,7 +223,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
      */
     protected function addTemplate(\Yana\Db\Ddl\Form $form)
     {
-        $yana = Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
         $name = $form->getTable();
 
         // create HTML page
@@ -352,7 +352,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
         assert('is_string($source); // Wrong argument type argument 1. String expected');
         assert('is_string($target); // Wrong argument type argument 2. String expected');
 
-        $yana = Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
         /* @var $xliffTemplate \Yana\Files\File */
         $xliffTemplate = $yana->getPlugins()->{'sdk:/templates/language.file'};
         $xliffTemplate = $yana->getView()->createContentTemplate($xliffTemplate->getPath());
@@ -615,7 +615,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
      */
     protected function getJsApi()
     {
-        $yana = Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
         /* @var $apiTemplate \File */
         $apiTemplate = $yana->getPlugins()->{'sdk:/templates/jsapi.file'};
         $apiTemplate = $yana->getView()->createContentTemplate($apiTemplate->getPath());
@@ -634,7 +634,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
      */
     protected function getClassSkeleton()
     {
-        $yana = Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
         /* @var $phpTemplate \File */
         $phpTemplate = $yana->getPlugins()->{'sdk:/templates/class.file'};
         $phpTemplate = $yana->getView()->createContentTemplate($phpTemplate->getPath());

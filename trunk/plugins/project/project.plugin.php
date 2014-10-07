@@ -30,7 +30,7 @@
  * @package     plugins
  * @subpackage  project
  */
-class plugin_project extends StdClass implements IsPlugin
+class plugin_project extends StdClass implements \Yana\IsPlugin
 {
     /**
      * Connection to data source (API)
@@ -51,7 +51,7 @@ class plugin_project extends StdClass implements IsPlugin
     protected static function getDatabase()
     {
         if (!isset(self::$database)) {
-            self::$database = Yana::connect("project");
+            self::$database = \Yana\Application::connect("project");
         }
         return self::$database;
     }
@@ -119,7 +119,7 @@ class plugin_project extends StdClass implements IsPlugin
         $limit = 50;
         $desc = true;
         $rows = self::getDatabase()->select($key, $where, $orderBy, $offset, $limit, $desc);
-        Yana::getInstance()->setVar('PROJECT', $rows);
+        \Yana\Application::getInstance()->setVar('PROJECT', $rows);
     }
 
     /**
@@ -136,7 +136,7 @@ class plugin_project extends StdClass implements IsPlugin
      */
     public function project_sum($target)
     {
-        $language = \Yana::getInstance()->getLanguage();
+        $language = \Yana\Application::getInstance()->getLanguage();
         $database = self::getDatabase();
 
         /* get entries from database */

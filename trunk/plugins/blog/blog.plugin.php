@@ -29,7 +29,7 @@
  * @package     yana
  * @subpackage  plugins
  */
-class plugin_blog extends StdClass implements IsPlugin
+class plugin_blog extends StdClass implements \Yana\IsPlugin
 {
     /**
      * Connection to data source (API)
@@ -50,7 +50,7 @@ class plugin_blog extends StdClass implements IsPlugin
     protected static function getDatabase()
     {
         if (!isset(self::$database)) {
-            self::$database = Yana::connect("blog");
+            self::$database = \Yana\Application::connect("blog");
         }
         return self::$database;
     }

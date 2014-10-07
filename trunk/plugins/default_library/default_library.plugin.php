@@ -30,7 +30,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_default_library extends StdClass implements IsPlugin
+class plugin_default_library extends StdClass implements \Yana\IsPlugin
 {
 
     /**
@@ -60,7 +60,7 @@ class plugin_default_library extends StdClass implements IsPlugin
      */
     public function clear_server_cache()
     {
-        Yana::getInstance()->clearCache();
+        \Yana\Application::getInstance()->clearCache();
     }
 
     /**
@@ -89,7 +89,7 @@ class plugin_default_library extends StdClass implements IsPlugin
         if ($is_ajax_request) {
             exit($eintraege);
         } else {
-            $doc = Yana::getInstance()->getView()->createContentTemplate('id:blank');
+            $doc = \Yana\Application::getInstance()->getView()->createContentTemplate('id:blank');
             $content = '<div style="overflow: hidden; height: 100%;">' . $eintraege . '</div>';
             $doc->setVar('INSERT_CONTENT_HERE', $content);
             exit("$doc");
@@ -126,7 +126,7 @@ class plugin_default_library extends StdClass implements IsPlugin
      */
     public function chkembtags(array $text)
     {
-        $yana = Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
         $language = $yana->getLanguage();
         $tags = 'b|i|u|emp|h|c|small|big|code|hide|php|mark|color|mail|img|url';
         $userTags = $yana->getVar('PROFILE.EMBTAG');

@@ -27,7 +27,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_counter extends StdClass implements IsPlugin
+class plugin_counter extends StdClass implements \Yana\IsPlugin
 {
     /**
      * @access  private
@@ -53,13 +53,13 @@ class plugin_counter extends StdClass implements IsPlugin
      */
     public function catchAll($event, array $ARGS)
     {
-        self::$_id = __CLASS__ . '\\' . Yana::getId();
+        self::$_id = __CLASS__ . '\\' . \Yana\Application::getId();
         if (!\Yana\Db\FileDb\Counter::exists(self::$_id)) {
             \Yana\Db\FileDb\Counter::create(self::$_id);
         }
         self::$_counter = new \Yana\Db\FileDb\Counter(self::$_id);
         self::$_counter->getNextValue();
-        Yana::getInstance()->getView()->setFunction('visitorCount', array(__CLASS__, 'visitorCount'));
+        \Yana\Application::getInstance()->getView()->setFunction('visitorCount', array(__CLASS__, 'visitorCount'));
         return true;
     }
 
@@ -76,7 +76,7 @@ class plugin_counter extends StdClass implements IsPlugin
     public static function visitorCount(array $params)
     {
         $count = self::$_counter->getCurrentValue();
-        $text = \Yana::getInstance()->getLanguage()->getVar("VISITOR_COUNT");
+        $text = \Yana\Application::getInstance()->getLanguage()->getVar("VISITOR_COUNT");
 
         return $text . ' <span style="font-weight: bold;">' . $count . '</span>';
     }

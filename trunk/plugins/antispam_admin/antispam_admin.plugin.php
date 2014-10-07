@@ -29,7 +29,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_antispam_admin extends StdClass implements IsPlugin
+class plugin_antispam_admin extends StdClass implements \Yana\IsPlugin
 {
 
     /**

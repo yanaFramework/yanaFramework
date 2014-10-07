@@ -30,7 +30,7 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
     protected static function getDatabase()
     {
         if (!isset(self::$database)) {
-            self::$database = \Yana::connect("{$schema->getName()}");
+            self::$database = \Yana\Application::connect("{$schema->getName()}");
         }
         return self::$database;
     }

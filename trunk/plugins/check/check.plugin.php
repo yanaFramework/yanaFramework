@@ -19,7 +19,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_check extends StdClass implements IsPlugin
+class plugin_check extends StdClass implements \Yana\IsPlugin
 {
     /**
      * Default event handler

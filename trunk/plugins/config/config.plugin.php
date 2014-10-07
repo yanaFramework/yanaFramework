@@ -38,7 +38,7 @@ require_once __DIR__ . '/updatechecker.php';
  * @package    yana
  * @subpackage plugins
  */
-class plugin_config extends StdClass implements IsPlugin
+class plugin_config extends StdClass implements \Yana\IsPlugin
 {
 
     /**
@@ -79,7 +79,7 @@ class plugin_config extends StdClass implements IsPlugin
     public function index()
     {
         global $YANA;
-        /* @var $YANA \Yana */
+        /* @var $YANA \Yana\Application */
 
         // create options for select-boxes
         $YANA->setVar('LANGUAGEFILES', $YANA->getLanguage()->getLanguages());
@@ -124,10 +124,10 @@ class plugin_config extends StdClass implements IsPlugin
      */
     public function index_plugins()
     {
-        $yana = Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
 
         /* current state vars */
-        $isDefault = Yana::getId() === Yana::getDefault('profile');
+        $isDefault = \Yana\Application::getId() === \Yana\Application::getDefault('profile');
         $pluginManager = $yana->getPlugins();
 
         /**
@@ -235,7 +235,7 @@ class plugin_config extends StdClass implements IsPlugin
                 $userName = (string) $_SESSION['user_name'];
             }
             // get database connection
-            $database = SessionManager::getDatasource();
+            $database = \Yana\SessionManager::getDatasource();
             // get current user-mode
             if ($database->select("user.$userName.user_is_expert")) {
                 $this->_isExpert = true;
@@ -345,7 +345,7 @@ class plugin_config extends StdClass implements IsPlugin
     {
         $pluginManager = \Yana\Plugins\Manager::getInstance();
         if ($pluginManager->refreshPluginFile()) {
-            SessionManager::refreshPluginSecuritySettings();
+            \Yana\SessionManager::refreshPluginSecuritySettings();
             \Yana\Plugins\Menu::clearCache();
             return true;
         } else {
@@ -412,7 +412,7 @@ class plugin_config extends StdClass implements IsPlugin
         /* this function expects no arguments */
 
         // get database connection
-        $database = SessionManager::getDatasource();
+        $database = \Yana\SessionManager::getDatasource();
 
         // get current user name
         if (!isset($_SESSION['user_name'])) {
@@ -444,7 +444,7 @@ class plugin_config extends StdClass implements IsPlugin
         }
 
         // success
-        Yana::getInstance()->clearCache();
+        \Yana\Application::getInstance()->clearCache();
         return true;
     }
 
@@ -471,7 +471,7 @@ class plugin_config extends StdClass implements IsPlugin
      */
     public function about($type, $target)
     {
-        /* @var $YANA \Yana */
+        /* @var $YANA \Yana\Application */
         global $YANA;
         $info = array(
             'VERSION' => '1.0'
@@ -539,7 +539,7 @@ class plugin_config extends StdClass implements IsPlugin
         }
 
         /* create link to check for new version */
-        $url = Yana::getDefault('UPDATE_SERVER');
+        $url = \Yana\Application::getDefault('UPDATE_SERVER');
         $url = str_replace(YANA_LEFT_DELIMITER . '$VERSION' . YANA_RIGHT_DELIMITER, YANA_VERSION, $url);
         $url = str_replace(YANA_LEFT_DELIMITER . '$IS_STABLE' . YANA_RIGHT_DELIMITER, YANA_IS_STABLE, $url);
         $url = str_replace(YANA_LEFT_DELIMITER . '$LANG' . YANA_RIGHT_DELIMITER, @$_SESSION['language'], $url);

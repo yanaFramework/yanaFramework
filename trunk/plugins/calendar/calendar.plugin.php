@@ -36,7 +36,7 @@ require_once 'calendar.php';
  * @package    yana
  * @subpackage plugins
  */
-class plugin_calendar extends StdClass implements IsPlugin
+class plugin_calendar extends StdClass implements \Yana\IsPlugin
 {
     /**
      * @access  private
@@ -74,7 +74,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     private static function _getDatabase()
     {
         if (!isset(self::$database)) {
-            self::$database = Yana::connect('calendar');
+            self::$database = \Yana\Application::connect('calendar');
         }
         return self::$database;
     }
@@ -96,7 +96,7 @@ class plugin_calendar extends StdClass implements IsPlugin
                 $where = array(
                     array('calendar_default', '=', true),
                     'AND',
-                    array('user_created', '=', YanaUser::getUserName())
+                    array('user_created', '=', \Yana\User::getUserName())
                 );
                 $_SESSION[__CLASS__]['calendar_id'] = self::_getDatabase()->select("calendar.?.calendar_id", $where);
                 unset($where);
@@ -135,7 +135,7 @@ class plugin_calendar extends StdClass implements IsPlugin
      */
     protected static function getCategories()
     {
-        $yana = Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
         $categories = $yana->getPlugins()->calendar->getVar('categories');
         $result = array();
         if (!empty($categories['category'])) {
@@ -190,7 +190,7 @@ class plugin_calendar extends StdClass implements IsPlugin
      */
     public function get_calendar_input()
     {
-        $yana = Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
         // set default frequency
         $frequency = $yana->getPlugins()->calendar->getVar('frequency');
         if (!empty($frequency)) {
@@ -455,7 +455,7 @@ class plugin_calendar extends StdClass implements IsPlugin
             }
         }
         //add user created
-        $eventData['created_by'] = YanaUser::getUserName();
+        $eventData['created_by'] = \Yana\User::getUserName();
 
         // this contain the calendar ids which are updated too
         $calendarIDs = array();
@@ -688,7 +688,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     {
         // check if selected calendar exists and the crrent user is it's owner
         $db = self::_getDatabase();
-        $row = $db->select("calendar.$current_calendar", array('user_created', '=', YanaUser::getUserName()));
+        $row = $db->select("calendar.$current_calendar", array('user_created', '=', \Yana\User::getUserName()));
         if (empty($row)) {
             return false; // error - the calendar does not exist, or the user has no permission to view it
         } else {
@@ -709,7 +709,7 @@ class plugin_calendar extends StdClass implements IsPlugin
      */
     protected static function getCalendarList()
     {
-        $where = array('user_created', '=', YanaUser::getUserName());
+        $where = array('user_created', '=', \Yana\User::getUserName());
         $db = self::_getDatabase();
         $calendarList = $db->select("calendar", $where);
 
@@ -749,7 +749,7 @@ class plugin_calendar extends StdClass implements IsPlugin
      */
     protected static function insertCalendar($name, $filename, $url = "", $subscribe = false)
     {
-        $user = YanaUser::getUserName();
+        $user = \Yana\User::getUserName();
         if (empty($user)) {
             return false;
         }
@@ -799,7 +799,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     {
         global $YANA;
         $db = self::_getDatabase();
-        $data = $db->select("calendar.$key", array('user_created', '=', YanaUser::getUserName()));
+        $data = $db->select("calendar.$key", array('user_created', '=', \Yana\User::getUserName()));
         if (empty($data) || !isset($data['CALENDAR_URL']) || !isset($data['CALENDAR_FILENAME'])) {
             return false; // has no URL - nothing to refresh
         }
@@ -884,7 +884,7 @@ class plugin_calendar extends StdClass implements IsPlugin
         assert('is_string($content); // Wrong argument type argument 1. String expected');
         assert('is_string($filename); // Wrong argument type argument 2. String expected');
 
-        /* @var $YANA Yana */
+        /* @var $YANA \Yana\Application */
         global $YANA;
         /* @var $dir Dir */
         $dir = $YANA->getPlugins()->{'calendar:/xcal'};
@@ -915,7 +915,7 @@ class plugin_calendar extends StdClass implements IsPlugin
     {
         $calendarID = $key;
         self::removeCalendarFile($calendarID);
-        $where = array('user_created', '=', YanaUser::getUserName());
+        $where = array('user_created', '=', \Yana\User::getUserName());
         $db = self::_getDatabase();
         /* remove the row */
         if (!$db->remove("calendar.${calendarID}", $where)) {
@@ -1248,11 +1248,11 @@ class plugin_calendar extends StdClass implements IsPlugin
      */
     protected static function setICal($datasetID = null, $xmlContent = '')
     {
-        /* @var $YANA Yana */
+        /* @var $YANA \Yana\Application */
         global $YANA;
         $db = self::_getDatabase();
         if ($datasetID != null && is_int($datasetID)) {
-            $where = array('user_created', '=', YanaUser::getUserName());
+            $where = array('user_created', '=', \Yana\User::getUserName());
             $row = $db->select("calendar.{$datasetID}", $where);
 
             if (empty($row)) {
@@ -1466,7 +1466,7 @@ class plugin_calendar extends StdClass implements IsPlugin
      */
     protected static function removeXCalFile($fileName)
     {
-        /* @var $YANA Yana */
+        /* @var $YANA \Yana\Application */
         global $YANA;
         /* @var $dir Dir */
         $dir = $YANA->getPlugins()->{'calendar:/xcal'};

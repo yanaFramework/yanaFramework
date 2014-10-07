@@ -22,7 +22,7 @@
  * @package     yana
  * @subpackage  plugins
  */
-class plugin_pclzip extends StdClass implements IsPlugin
+class plugin_pclzip extends StdClass implements \Yana\IsPlugin
 {
 
     /**

@@ -244,7 +244,7 @@ class Calendar extends \Yana\Files\AbstractResource
     public function getOwner()
     {
         if (empty($this->owner)) {
-            return YanaUser::getUserName();
+            return \Yana\User::getUserName();
         } else {
             return $this->owner;
         }
@@ -574,7 +574,7 @@ class Calendar extends \Yana\Files\AbstractResource
                     $nr = $weekNr[0];
                 }
                 if (isset($nr)) {
-                    $yana = Yana::getInstance();
+                    $yana = \Yana\Application::getInstance();
                     $repeatMonthOptions = $yana->getPlugins()->calendar->getVar('repeat_month_options');
                     foreach ($repeatMonthOptions['option'] as $key => $data)
                     {
@@ -877,7 +877,7 @@ class Calendar extends \Yana\Files\AbstractResource
      */
     protected function calculateDataEntry($event)
     {
-        $yana = Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
         $plugins = $yana->getPlugins();
 
         // prapair the event for save or update

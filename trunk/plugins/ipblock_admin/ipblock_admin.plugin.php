@@ -29,7 +29,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_ipblock_admin extends StdClass implements IsPlugin
+class plugin_ipblock_admin extends StdClass implements \Yana\IsPlugin
 {
 
     /**#@+
@@ -201,14 +201,14 @@ class plugin_ipblock_admin extends StdClass implements IsPlugin
         $blacklistFile = self::_getBlacklist();
 
         if (!$whitelistFile->exists()) {
-            $whitelistFile = new \Yana\Files\Block(dirname($whitelistFile->getPath()) . '/' . Yana::getId() . '.whitelist');
+            $whitelistFile = new \Yana\Files\Block(dirname($whitelistFile->getPath()) . '/' . \Yana\Application::getId() . '.whitelist');
             $whitelistFile->create();
         } else {
             $whitelistFile->read();
         }
 
         if (!$blacklistFile->exists()) {
-            $blacklistFile = new \Yana\Files\Block(dirname($blacklistFile->getPath()) . '/' . Yana::getId() . '.blacklist');
+            $blacklistFile = new \Yana\Files\Block(dirname($blacklistFile->getPath()) . '/' . \Yana\Application::getId() . '.blacklist');
             $blacklistFile->create();
         } else {
             $blacklistFile->read();

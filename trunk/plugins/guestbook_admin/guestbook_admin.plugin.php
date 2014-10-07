@@ -33,7 +33,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_guestbook_admin extends StdClass implements IsPlugin
+class plugin_guestbook_admin extends StdClass implements \Yana\IsPlugin
 {
 
     /**

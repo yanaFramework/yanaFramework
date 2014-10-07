@@ -29,7 +29,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_user_group_admin extends StdClass implements IsPlugin
+class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
 {
     /**
      * Connection to data source (API)
@@ -46,7 +46,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
     protected static function getDatabase()
     {
         if (!isset(self::$database)) {
-            self::$database = Yana::connect("user_admin");
+            self::$database = \Yana\Application::connect("user_admin");
         }
         return self::$database;
     }
@@ -133,7 +133,7 @@ class plugin_user_group_admin extends StdClass implements IsPlugin
      */
     public function get_user_action_settings()
     {
-        Yana::getInstance()->setVar('WHERE', array('actionrule_predefined', '=', false));
+        \Yana\Application::getInstance()->setVar('WHERE', array('actionrule_predefined', '=', false));
         // Just views template - no further business logic required.
     }
 

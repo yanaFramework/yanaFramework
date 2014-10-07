@@ -28,7 +28,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_antispam extends StdClass implements IsPlugin
+class plugin_antispam extends StdClass implements \Yana\IsPlugin
 {
 
     /**
@@ -53,7 +53,7 @@ class plugin_antispam extends StdClass implements IsPlugin
     {
         assert('is_string($event); // Wrong type for argument 1. String expected');
 
-        $yana = Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
         $eventType = mb_strtolower($yana->getPlugins()->getEventType("$event"));
         unset($event);
 

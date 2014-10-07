@@ -30,7 +30,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_rss extends StdClass implements IsPlugin
+class plugin_rss extends StdClass implements \Yana\IsPlugin
 {
 
     /**#@+
