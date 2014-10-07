@@ -134,6 +134,9 @@ class ArrayValidator extends AbstractValidator
      */
     public static function sanitize($array, $maxCount = 0, $options = 0)
     {
+        assert('is_int($maxCount); // Invalid argument $options: int expected');
+        assert('is_int($options); // Invalid argument $options: int expected');
+
         $validator = new self();
         return $validator->setMaxCount($maxCount)
             ->addOption($options)
