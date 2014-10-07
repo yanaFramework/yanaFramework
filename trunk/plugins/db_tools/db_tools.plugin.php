@@ -42,7 +42,7 @@ require_once 'dbmdb2.php';
  * @package    yana
  * @subpackage plugins
  */
-class plugin_db_tools extends StdClass implements IsPlugin
+class plugin_db_tools extends StdClass implements \Yana\IsPlugin
 {
 
     /**

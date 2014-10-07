@@ -30,7 +30,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_user_group extends StdClass implements IsPlugin
+class plugin_user_group extends StdClass implements \Yana\IsPlugin
 {
 
     /**
@@ -58,8 +58,8 @@ class plugin_user_group extends StdClass implements IsPlugin
      */
     public function __construct()
     {
-        SessionManager::addSecurityRule(array(__CLASS__, 'checkGroupsAndRoles'));
-        self::$defaultProfileId = Yana::getDefault('profile');
+        \Yana\SessionManager::addSecurityRule(array(__CLASS__, 'checkGroupsAndRoles'));
+        self::$defaultProfileId = \Yana\Application::getDefault('profile');
     }
 
     /**

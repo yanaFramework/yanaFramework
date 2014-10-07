@@ -32,7 +32,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_about_config extends StdClass implements IsPlugin
+class plugin_about_config extends StdClass implements \Yana\IsPlugin
 {
 
     /**

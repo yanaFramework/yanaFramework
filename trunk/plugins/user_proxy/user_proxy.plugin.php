@@ -35,7 +35,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_user_proxy extends StdClass implements IsPlugin
+class plugin_user_proxy extends StdClass implements \Yana\IsPlugin
 {
 
     /**
@@ -83,11 +83,11 @@ class plugin_user_proxy extends StdClass implements IsPlugin
         // check user expert setting
         $YANA->setVar('USER_IS_EXPERT', $this->_getIsExpert());
 
-        $currentUser = YanaUser::getUserName();
+        $currentUser = \Yana\User::getUserName();
         /**
          * @var DBStream $db
          */
-        $db = SessionManager::getDatasource();
+        $db = \Yana\SessionManager::getDatasource();
 
         /**
          * get all Users Names
@@ -184,15 +184,15 @@ class plugin_user_proxy extends StdClass implements IsPlugin
             throw $warning->setField('rules/levels');
         }
 
-        $db = SessionManager::getDatasource();
-        $defaultProfile = Yana::getDefault('profile');
-        $currentUser = YanaUser::getUserName();
+        $db = \Yana\SessionManager::getDatasource();
+        $defaultProfile = \Yana\Application::getDefault('profile');
+        $currentUser = \Yana\User::getUserName();
 
         foreach ($rules as $i => $ruleId)
         {
             if (is_numeric($ruleId)) {
                 $where = array(
-                    array("USER_ID", '=', YanaUser::getUserName()),
+                    array("USER_ID", '=', \Yana\User::getUserName()),
                     'and',
                     array('USER_PROXY_ACTIVE', '=', true)
                 );
@@ -243,7 +243,7 @@ class plugin_user_proxy extends StdClass implements IsPlugin
             }
         }
 
-        $session = SessionManager::getInstance();
+        $session = \Yana\SessionManager::getInstance();
         foreach ($levels as $i => $profileId)
         {
 
@@ -331,8 +331,8 @@ class plugin_user_proxy extends StdClass implements IsPlugin
             $warning = new \Yana\Core\Exceptions\Forms\NothingSelectedException($message, $level);
             throw $warning->setField('rules/levels');
         }
-        $db = SessionManager::getDatasource();
-        $currentUser = YanaUser::getUserName();
+        $db = \Yana\SessionManager::getDatasource();
+        $currentUser = \Yana\User::getUserName();
 
         $where = array('USER_CREATED', '=', $currentUser);
         if (!empty($user)) {
@@ -371,12 +371,12 @@ class plugin_user_proxy extends StdClass implements IsPlugin
     private function _getIsExpert()
     {
         if (!isset($this->isExpert)) {
-            $currentUser = YanaUser::getUserName();
+            $currentUser = \Yana\User::getUserName();
             if (empty($currentUser)) {
                 return false;
             }
             // get database connection
-            $database = SessionManager::getDatasource();
+            $database = \Yana\SessionManager::getDatasource();
             // get current user-mode
             if ($database->select("user." . $currentUser . ".user_is_expert")) {
                 $this->isExpert = true;
@@ -401,7 +401,7 @@ class plugin_user_proxy extends StdClass implements IsPlugin
     private static function _getLevels(array $rows, array &$profiles, &$users = false)
     {
         $userLevels = array();
-        $defaultProfile = Yana::getDefault('profile');
+        $defaultProfile = \Yana\Application::getDefault('profile');
         foreach ($rows as $item)
         {
             if (!empty($item['PROFILE'])) {
@@ -447,7 +447,7 @@ class plugin_user_proxy extends StdClass implements IsPlugin
     private static function _getRules(array $rows, array &$profiles, &$users = false)
     {
         $userRules = array();
-        $defaultProfile = Yana::getDefault('profile');
+        $defaultProfile = \Yana\Application::getDefault('profile');
         foreach ($rows as $key => $item)
         {
             if (!empty($item['PROFILE'])) {

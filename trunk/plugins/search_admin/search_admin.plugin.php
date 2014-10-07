@@ -34,7 +34,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_search_admin extends StdClass implements IsPlugin
+class plugin_search_admin extends StdClass implements \Yana\IsPlugin
 {
 
     /**

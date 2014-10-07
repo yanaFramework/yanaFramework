@@ -31,7 +31,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_ipblock extends StdClass implements IsPlugin
+class plugin_ipblock extends StdClass implements \Yana\IsPlugin
 {
 
     /**

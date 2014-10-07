@@ -36,7 +36,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_guestbook extends StdClass implements IsPlugin
+class plugin_guestbook extends StdClass implements \Yana\IsPlugin
 {
 
     /**
@@ -86,7 +86,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
     protected static function getDatabase()
     {
         if (!isset(self::$database)) {
-            self::$database = Yana::connect("guestbook");
+            self::$database = \Yana\Application::connect("guestbook");
         }
         return self::$database;
     }
@@ -389,7 +389,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
      */
     public function guestbook_write_new($name, $message, $msgtyp, $messenger = "", $mail = "", $hometown = "", $homepage = "", $opinion = "")
     {
-        /* @var $YANA \Yana */
+        /* @var $YANA \Yana\Application */
         global $YANA;
         self::_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
 
@@ -421,10 +421,10 @@ class plugin_guestbook extends StdClass implements IsPlugin
         );
 
         /* set profile id (overwrite if already exists */
-        $entry['profile_id'] = Yana::getId();
+        $entry['profile_id'] = \Yana\Application::getId();
 
         /* mark registered users */
-        if (strcasecmp(YanaUser::getUserName(), $name) === 0) {
+        if (strcasecmp(\Yana\User::getUserName(), $name) === 0) {
             $entry['guestbook_is_registered'] = 1;
         }
 
@@ -441,7 +441,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
             throw new \Yana\Core\Exceptions\Forms\FloodException($message, $code);
         }
         assert('!isset($where); // Cannot redeclare var $where');
-        $where = array('profile_id', '=', Yana::getId());
+        $where = array('profile_id', '=', \Yana\Application::getId());
         $recent_entry = $database->select("guestbook.?.guestbook_message", $where);
         unset($where);
         if (!empty($entry['guestbook_message']) && $recent_entry == $entry['guestbook_message']) {
@@ -552,7 +552,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
         $YANA->setVar('ROWS', $rows);
         $YANA->setVar('DESCRIPTION', $YANA->getLanguage()->getVar('descr_show'));
         $useCaptcha = \Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA") &&
-            !YanaUser::isLoggedIn();
+            !\Yana\User::isLoggedIn();
         $YANA->setVar('USE_CAPTCHA', $useCaptcha);
     }
 
@@ -646,7 +646,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
             $entPerPage = 10;
         }
 
-        $where = array("profile_id", "=", Yana::getId());
+        $where = array("profile_id", "=", \Yana\Application::getId());
         $sortBy = "guestbook_date";
         $desc = true;
         /* get rows from database */
@@ -724,7 +724,7 @@ class plugin_guestbook extends StdClass implements IsPlugin
     private static function _securityCheck()
     {
         global $YANA;
-        $id = Yana::getId();
+        $id = \Yana\Application::getId();
         /* do not show new guestbooks, if Auto-Option is deactivated */
         $dir = $YANA->getResource('system:/config/profiledir');
         $file = new \Yana\Files\Readonly($dir->getPath() . $id . '.cfg');

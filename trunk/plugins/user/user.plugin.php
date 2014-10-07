@@ -31,7 +31,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_user extends StdClass implements IsPlugin
+class plugin_user extends StdClass implements \Yana\IsPlugin
 {
     /**
      * count boundary
@@ -84,17 +84,17 @@ class plugin_user extends StdClass implements IsPlugin
     {
         global $YANA;
         if (isset($YANA)) {
-            self::$userName = YanaUser::getUserName();
+            self::$userName = \Yana\User::getUserName();
             if (!empty(self::$userName)) {
                 self::$securityLevel = $YANA->getSession()->getSecurityLevel(self::$userName);
-                self::$profileId = Yana::getId();
+                self::$profileId = \Yana\Application::getId();
                 $YANA->setVar("SESSION_USER_ID", self::$userName);
                 $YANA->setVar("PERMISSION", self::$securityLevel);
             }
             $YANA->setVar("SESSION_ID", session_id());
             $YANA->setVar("SESSION_NAME", session_name());
         }
-        SessionManager::addSecurityRule(array(__CLASS__, 'checkSecurityLevel'));
+        \Yana\SessionManager::addSecurityRule(array(__CLASS__, 'checkSecurityLevel'));
     }
 
     /**
@@ -109,7 +109,7 @@ class plugin_user extends StdClass implements IsPlugin
      */
     public function catchAll($event, array $ARGS)
     {
-        /* @var $YANA Yana */
+        /* @var $YANA \Yana\Application */
         global $YANA;
         // Load translation strings
         try {
@@ -133,7 +133,7 @@ class plugin_user extends StdClass implements IsPlugin
              */
             $this->_addLoginMenuEntry();
             return true;
-        } elseif (!YanaUser::isLoggedIn()) {
+        } elseif (!\Yana\User::isLoggedIn()) {
             /**
              * Access denied.
              *
@@ -164,7 +164,7 @@ class plugin_user extends StdClass implements IsPlugin
         global $YANA;
         // Where the menu entry should go to
         $action = "login";
-        if (YanaUser::isLoggedIn()) {
+        if (\Yana\User::isLoggedIn()) {
             $action = "logout";
         }
         // What the name of the entry should be
@@ -203,7 +203,7 @@ class plugin_user extends StdClass implements IsPlugin
 
         $requiredLevel = (int) $required[\Yana\Plugins\Annotations\Enumeration::LEVEL];
 
-        if (!YanaUser::isLoggedIn()) {
+        if (!\Yana\User::isLoggedIn()) {
             return false;
         }
 
@@ -211,7 +211,7 @@ class plugin_user extends StdClass implements IsPlugin
             return $requiredLevel <= self::$securityLevel;
         }
 
-        $securityLevel = (int) SessionManager::getInstance()->getSecurityLevel($userName, $profileId);
+        $securityLevel = (int) \Yana\SessionManager::getInstance()->getSecurityLevel($userName, $profileId);
 
         return $requiredLevel <= $securityLevel;
     }
@@ -260,7 +260,7 @@ class plugin_user extends StdClass implements IsPlugin
     public function get_lost_pwd(array $ARGS)
     {
         global $YANA;
-        $database = SessionManager::getDatasource();
+        $database = \Yana\SessionManager::getDatasource();
         // check captcha field
         if (\Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
             if ($YANA->callAction("security_check_image", $ARGS) === false) {
@@ -323,7 +323,7 @@ class plugin_user extends StdClass implements IsPlugin
         assert('filter_var($sender, FILTER_VALIDATE_EMAIL); // $sender not a valid e-mail');
 
         // get the mail template
-        $viewManager = Yana::getInstance()->getView();
+        $viewManager = \Yana\Application::getInstance()->getView();
         $template = $viewManager->createContentTemplate('id:USER_LOST_PWD');
         $website = 'http://' . $_SERVER['SERVER_ADDR'] . $_SERVER['PHP_SELF'] .
             '?action=set_reset_pwd&key=' . $uniqueKey;
@@ -381,7 +381,7 @@ class plugin_user extends StdClass implements IsPlugin
         $isSuccess = true;
         try {
 
-            $user = YanaUser::getInstance($userName);
+            $user = \Yana\User::getInstance($userName);
             $this->_setPwd($user, $new_pwd, $repeat_pwd); // may throw exception
 
         } catch (\Yana\Core\Exceptions\NotFoundException $e) {
@@ -413,7 +413,7 @@ class plugin_user extends StdClass implements IsPlugin
         $isSuccess = true;
         try {
 
-            $user = YanaUser::getInstance();
+            $user = \Yana\User::getInstance();
             if (!$user->checkPassword($old_pwd)) {
                 $message = "Invalid name or password.";
                 $level = \Yana\Log\TypeEnumeration::ERROR;
@@ -438,13 +438,13 @@ class plugin_user extends StdClass implements IsPlugin
      * Set new password
      *
      * @access      private
-     * @param       YanaUser  $user         user instance
+     * @param       \Yana\User  $user         user instance
      * @param       string    $newPwd       new password
      * @param       string    $repeatPwd    new password
      * @throws      \Yana\Core\Exceptions\Security\PasswordDoesNotMatchException  when the passwords don't match
      * @throws      \Yana\Core\Exceptions\Security\PasswordException              when the password was not saved
      */
-    private function _setPwd(YanaUser $user, $newPwd, $repeatPwd)
+    private function _setPwd(\Yana\User $user, $newPwd, $repeatPwd)
     {
         if ($newPwd !== $repeatPwd) {
             $message ="The two new passwords entered do not match.";
@@ -472,7 +472,7 @@ class plugin_user extends StdClass implements IsPlugin
     {
         assert('is_string($recoveryId); // Invalid argument $recoveryId: string expected');
 
-        $database = SessionManager::getDatasource();
+        $database = \Yana\SessionManager::getDatasource();
         $user = $database->select('user', array('user_recover_id', '=', $recoveryId));
 
         assert('is_array($user); // $user must be of type array');
@@ -503,7 +503,7 @@ class plugin_user extends StdClass implements IsPlugin
     public function logout()
     {
         // Logout and destroy session
-        YanaUser::getInstance()->logout();
+        \Yana\User::getInstance()->logout();
         // Restart session with new session id
         session_start();
         session_regenerate_id(true);
@@ -525,7 +525,7 @@ class plugin_user extends StdClass implements IsPlugin
     {
         // get user instance
         try {
-            $userData = YanaUser::getInstance($user);
+            $userData = \Yana\User::getInstance($user);
         } catch (\Yana\Core\Exceptions\NotFoundException $e) {
             /* delay output if attempt failed to make brute-force attacks more difficult to commit */
             sleep(2);
@@ -571,7 +571,7 @@ class plugin_user extends StdClass implements IsPlugin
 
         /* route next action */
         if ($nextAction) {
-            Yana::getInstance()->exitTo($nextAction);
+            \Yana\Application::getInstance()->exitTo($nextAction);
         }
         return true;
     }

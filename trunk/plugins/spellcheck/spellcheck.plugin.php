@@ -35,7 +35,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_spellcheck extends StdClass implements IsPlugin
+class plugin_spellcheck extends StdClass implements \Yana\IsPlugin
 {
 
     /**
@@ -85,7 +85,7 @@ class plugin_spellcheck extends StdClass implements IsPlugin
 
         // Configuration is invalid
         if (empty($config['general.engine'])) {
-            $language = \Yana::getInstance()->getLanguage();
+            $language = \Yana\Application::getInstance()->getLanguage();
             $level = \Yana\Log\TypeEnumeration::ERROR;
             exit(json_encode(array(
                 "result" => null,

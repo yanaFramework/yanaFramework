@@ -58,7 +58,7 @@
  * @package     yana
  * @subpackage  plugins
  */
-class plugin_mediagallery extends StdClass implements IsPlugin
+class plugin_mediagallery extends StdClass implements \Yana\IsPlugin
 {
 
     /**
@@ -81,7 +81,7 @@ class plugin_mediagallery extends StdClass implements IsPlugin
     protected static function getDatabase()
     {
         if (!isset(self::$database)) {
-            self::$database = Yana::connect("mediagallery");
+            self::$database = \Yana\Application::connect("mediagallery");
         }
         return self::$database;
     }
@@ -115,13 +115,13 @@ class plugin_mediagallery extends StdClass implements IsPlugin
         $builder->setEntries(25);
         $builder->setLayout(6);
         $where = array(
-            array('user_created', '=', YanaUser::getUserName()),
+            array('user_created', '=', \Yana\User::getUserName()),
             'or',
             array('public', '=', true)
         );
         $builder->setWhere($where);
         $gallery = $builder->__invoke();
-        Yana::getInstance()->setVar('gallery', $gallery);
+        \Yana\Application::getInstance()->setVar('gallery', $gallery);
     }
 
 }

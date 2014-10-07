@@ -34,7 +34,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_diagnostics extends StdClass implements IsPlugin
+class plugin_diagnostics extends StdClass implements \Yana\IsPlugin
 {
 
     /**

@@ -28,7 +28,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_user_pwd_admin extends StdClass implements IsPlugin
+class plugin_user_pwd_admin extends StdClass implements \Yana\IsPlugin
 {
     /**
      * Default event handler
@@ -94,7 +94,7 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
      */
     public function check_login($user, $pass = "")
     {
-        /* @var $YANA Yana */
+        /* @var $YANA \Yana\Application */
         assert('!isset($YANA); // Cannot redeclare var $YANA');
         global $YANA;
         $timeDuration = (int) $YANA->getVar("PROFILE.USER.PASSWORD.TIME");
@@ -236,7 +236,7 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
         assert('is_string($userName); // $userName must be of type string');
         assert('!empty($userName); // $userName can not be empty');
         assert('is_int($timeDuration); // $timeDuration must be of type int');
-        $db = SessionManager::getDatasource();
+        $db = \Yana\SessionManager::getDatasource();
 
         /* get the current user password expiry time */
         $time = $db->select("user.$userName.user_pwd_time");
@@ -269,7 +269,7 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
         assert('is_string($new_password); // $new_password must be of type string');
         assert('!empty($new_password); // $new_password can not be empty');
         global $YANA;
-        $db = SessionManager::getDatasource();
+        $db = \Yana\SessionManager::getDatasource();
         
         /* get information how many passwords which was allready used will be needed for checking with the new one */
         $count_pwd = (int) $YANA->getVar("PROFILE.USER.PASSWORD.COUNT");
@@ -281,9 +281,9 @@ class plugin_user_pwd_admin extends StdClass implements IsPlugin
         $currentUserInformation = $db->select('user', array('USER_ID', '=', $user));
 
         $currentUserInformation = array_pop($currentUserInformation);
-        $new_password = YanaUser::calculatePassword($user, $new_password);
+        $new_password = \Yana\User::calculatePassword($user, $new_password);
         /* needed for equal with the actually password */
-        $old_password = YanaUser::calculatePassword($user, $old_password);
+        $old_password = \Yana\User::calculatePassword($user, $old_password);
          
         assert('is_array($currentUserInformation); // the value must be of type array');
         assert('!empty($currentUserInformation); //   the value can not be empty');

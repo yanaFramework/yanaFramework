@@ -28,7 +28,7 @@
  * @package     yana
  * @subpackage  plugins
  */
-class plugin_mediadb extends StdClass implements IsPlugin
+class plugin_mediadb extends StdClass implements \Yana\IsPlugin
 {
 
     /**
@@ -50,7 +50,7 @@ class plugin_mediadb extends StdClass implements IsPlugin
     private static function _getWhere()
     {
         return array(
-            array('user_created', '=', YanaUser::getUserName()),
+            array('user_created', '=', \Yana\User::getUserName()),
             'or',
             array('public', '=', true)
         );
@@ -67,7 +67,7 @@ class plugin_mediadb extends StdClass implements IsPlugin
     protected static function getDatabase()
     {
         if (!isset(self::$database)) {
-            self::$database = Yana::connect("mediadb");
+            self::$database = \Yana\Application::connect("mediadb");
         }
         return self::$database;
     }
@@ -192,7 +192,7 @@ class plugin_mediadb extends StdClass implements IsPlugin
      */
     public function mediadb()
     {
-        Yana::getInstance()->getView()->setFunction('folderList', 'plugin_mediadb::smartyFolderList');
+        \Yana\Application::getInstance()->getView()->setFunction('folderList', 'plugin_mediadb::smartyFolderList');
     }
 
     /**

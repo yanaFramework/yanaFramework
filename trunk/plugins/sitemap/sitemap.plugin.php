@@ -30,7 +30,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_sitemap extends StdClass implements IsPlugin
+class plugin_sitemap extends StdClass implements \Yana\IsPlugin
 {
 
     /**
@@ -58,7 +58,7 @@ class plugin_sitemap extends StdClass implements IsPlugin
      */
     public function sitemap()
     {
-        Yana::getInstance()->getView()->setFunction('sitemap', array(__CLASS__, 'createSitemap'));
+        \Yana\Application::getInstance()->getView()->setFunction('sitemap', array(__CLASS__, 'createSitemap'));
     }
 
     /**

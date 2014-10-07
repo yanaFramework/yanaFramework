@@ -29,7 +29,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_db_admin extends StdClass implements IsPlugin
+class plugin_db_admin extends StdClass implements \Yana\IsPlugin
 {
     /**
      * Constructor
@@ -73,7 +73,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
      */
     public function get_db_configuration()
     {
-        $yana = Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
 
         if (!class_exists("MDB2")) {
             throw new \Yana\Db\Mdb2\PearDbException();
@@ -515,7 +515,7 @@ class plugin_db_admin extends StdClass implements IsPlugin
         foreach ($list as $dbName)
         {
             if (is_string($dbName)) {
-                $db = Yana::connect($dbName);
+                $db = \Yana\Application::connect($dbName);
                 $dbc = new \Yana\Db\Export\DataFactory($db);
                 $arrayOfStmts = $dbc->$methodName($useStructure, $useData);
                 $fileContents .= implode("\n", $arrayOfStmts) . "\n";

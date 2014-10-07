@@ -29,7 +29,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_downloads extends StdClass implements IsPlugin
+class plugin_downloads extends StdClass implements \Yana\IsPlugin
 {
 
     /**

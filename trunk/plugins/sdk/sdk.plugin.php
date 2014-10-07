@@ -40,7 +40,7 @@ require_once 'pluginconfigurationbuildersdk.php';
  * @package    yana
  * @subpackage plugins
  */
-class plugin_sdk extends StdClass implements IsPlugin
+class plugin_sdk extends StdClass implements \Yana\IsPlugin
 {
 
     /**
@@ -93,7 +93,7 @@ class plugin_sdk extends StdClass implements IsPlugin
      */
     public function sdk()
     {
-        $yana = Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
         $dir = $yana->getPlugins()->{'sdk:/images/logos'};
         $dir->read();
         $yana->setVar('FILES', $dir->getContent());
@@ -101,8 +101,8 @@ class plugin_sdk extends StdClass implements IsPlugin
         if (isset($_SESSION[__CLASS__])) {
             $yana->setVar('PLUGIN', unserialize($_SESSION[__CLASS__]));
         }
-        $yana->setVar('GROUPS', SessionManager::getGroups());
-        $yana->setVar('ROLES', SessionManager::getRoles());
+        $yana->setVar('GROUPS', \Yana\SessionManager::getGroups());
+        $yana->setVar('ROLES', \Yana\SessionManager::getRoles());
 
         $yana->setVar('LIST_OF_DBMS', self::$_listOfDBMS);
     }
@@ -165,7 +165,7 @@ class plugin_sdk extends StdClass implements IsPlugin
         $pluginBuilder->buildPlugin($overwriteFiles);
 
         /* load new plugin */
-        $yana = Yana::getInstance();
+        $yana = \Yana\Application::getInstance();
         $yana->callAction('refresh_pluginlist');
         self::_createBackup($ARGS);
     }
