@@ -336,18 +336,6 @@ require_once 'config/dbconfig.php';
 
 /* [main class] */
 
-require_once 'libs/yana/core/object.php';
-require_once 'libs/yana/core/autoloaders/ismapper.php';
-require_once 'libs/yana/core/autoloaders/mappercollection.php';
-require_once 'libs/yana/core/autoloaders/abstractmapper.php';
-require_once 'libs/yana/core/autoloaders/genericmapper.php';
-require_once 'libs/yana/core/autoloaders/lowercasedmapper.php';
-require_once 'libs/yana/core/autoloaders/directmapper.php';
-require_once 'libs/yana/core/autoloaders/isloader.php';
-require_once 'libs/yana/core/autoloaders/abstractloader.php';
-require_once 'libs/yana/core/autoloaders/loader.php';
-require_once 'libs/yana/core/autoloaders/classnotfoundexception.php';
-require_once 'libs/yana/core/autoloaders/wrapper.php';
 require_once 'libs/yana/core/autoloadbuilder.php';
 
 /**#@-*/
@@ -359,12 +347,13 @@ $builder->addClassMapper(\Yana\Core\AutoLoadBuilder::DIRECT_MAPPER)
     ->setNameSpace('Smarty')
     ->setFileExtension('.class.php')
     ->setBaseDirectory(__DIR__ . '/libs/smarty/');
-$builder->addClassMapper(\Yana\Core\AutoLoadBuilder::LOWERCASED_MAPPER)
-    ->setNameSpace('Yana\\')
-    ->setBaseDirectory(__DIR__ . '/libs/yana/');
 $builder->addClassMapper(\Yana\Core\AutoLoadBuilder::GENERIC_MAPPER)
     ->setNameSpace('SQL_Parser')
     ->setBaseDirectory(__DIR__ . '/libs/');
+$builder->addClassMapper(\Yana\Core\AutoLoadBuilder::LOWERCASED_MAPPER)
+    ->setNameSpace('Yana\\')
+    ->setBaseDirectory(__DIR__ . '/libs/');
 $builder->registerLoader();
+unset($builder);
 
 ?>
