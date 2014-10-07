@@ -1,8 +1,0 @@
-PHPUnit 3.4.9 by Sebastian Bergmann.
-
-............................................................ 60 / 65
-.....
-
-Time: 1 second, Memory: 6.25Mb
-
-OK (65 tests, 65 assertions)
