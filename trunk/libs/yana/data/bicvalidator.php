@@ -28,7 +28,7 @@
 namespace Yana\Data;
 
 /**
- * Used for validating number input.
+ * Used for validating bank information.
  *
  * @package     yana
  * @subpackage  io
