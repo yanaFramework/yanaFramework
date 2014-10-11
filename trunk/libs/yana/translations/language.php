@@ -298,7 +298,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
                     try {
 
                         // LanguageInterchangeFile extends \SimpleXMLElement
-                        $xml = new \Yana\Translations\LanguageInterchangeFile($selectedFile, LIBXML_NOENT, true);
+                        $xml = new \Yana\Translations\TextData\LanguageInterchangeFile($selectedFile, LIBXML_NOENT, true);
                         $this->_strings = $xml->toArray($this->_strings);
                         $this->_groups = $xml->getGroups($this->_groups);
                         $this->_fileLoaded[$file] = true;
