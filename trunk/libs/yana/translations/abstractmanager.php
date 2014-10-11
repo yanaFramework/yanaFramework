@@ -35,7 +35,7 @@ namespace Yana\Translations;
  * @package     yana
  * @subpackage  translations
  */
-abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Log\IsLogable
+abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Log\IsLogable, \Yana\Translations\IsTranslationManager
 {
 
     /**
