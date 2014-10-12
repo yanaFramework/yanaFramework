@@ -182,7 +182,7 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Log\Is
      * It returns bool(true) on success and bool(false) on error.
      *
      * @param   string  $id  name of translation package that should be loaded
-     * @return  \Yana\Translations\Language
+     * @return  \Yana\Translations\IsTranslationManager
      * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException       when the given identifier is invalid
      * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                      when the give filename is invalid
      * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the language file is not found
