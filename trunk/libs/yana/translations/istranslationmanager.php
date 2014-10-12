@@ -81,7 +81,7 @@ interface IsTranslationManager
      * If you add multiple, only the first will be used.
      *
      * @param   \Yana\Core\MetaData\IsDataProvider  $provider  to load information about a language pack
-     * @return  \Yana\Translations\Manager
+     * @return  \Yana\Translations\IsTranslationManager
      */
     public function addMetaDataProvider(\Yana\Core\MetaData\IsDataProvider $provider);
 
@@ -89,7 +89,7 @@ interface IsTranslationManager
      * Adds a class that finds and loads translations.
      *
      * @param  \Yana\Translations\TextData\IsDataProvider  $provider  to load the contents of a language pack
-     * @return  \Yana\Translations\Manager
+     * @return  \Yana\Translations\IsTranslationManager
      */
     public function addTextDataProvider(\Yana\Translations\TextData\IsDataProvider $provider);
 
