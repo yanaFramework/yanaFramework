@@ -113,7 +113,7 @@ class Manager extends \Yana\Translations\AbstractManager
         $this->_language = $selectedLanguageLowercased;
         $this->_country = $selectedCountryUppercased;
 
-        $this->_setSystemLocale();
+        $this->_setSystemLocale($this->getLocale());
 
         return $this;
     }
