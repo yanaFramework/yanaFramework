@@ -180,7 +180,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      * files are stored. Check the directory
      * "languages/" for a complete list.
      *
-     * @return  string|bool(false)
+     * @return  string
      * @since   2.9.6
      * @name    Language::getLanguage()
      * @see     Language::getCountry()
@@ -188,7 +188,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      */
     public function getLanguage()
     {
-        return (!empty($this->_language)) ? $this->_language : false;
+        return $this->_language;
     }
 
     /**
@@ -206,7 +206,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      * Returns 'en' for English, 'de' for German.
      * May also return complete locales like 'en-US', if specified.
      *
-     * @return  string|bool(false)
+     * @return  string
      * @since   3.1.0
      * @name    Language::getCountry()
      * @see     Language::getLocale()
@@ -214,7 +214,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      */
     public function getCountry()
     {
-        return (!empty($this->_country)) ? $this->_country : false;
+        return $this->_country;
     }
 
     /**
@@ -228,7 +228,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      * or 'de-AU' for austrian German. The country part of the locale is
      * optional.
      *
-     * @return  string|bool(false)
+     * @return  string
      * @since   3.1.0
      * @name    Language::getCountry()
      * @see     Language::getLocale()
@@ -236,10 +236,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      */
     public function getLocale()
     {
-        if (empty($this->_language)) {
-            return false;
-
-        } elseif (!empty($this->_country)) {
+        if (!empty($this->_country)) {
             return $this->_language . '-' . $this->_country;
 
         } else {
@@ -636,7 +633,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
      *
      * @ignore
      */
-    public function getInfo($languageName)
+    public function getMetaData($languageName)
     {
         assert('is_string($languageName); // Wrong type for argument 1. String expected');
 
@@ -690,7 +687,7 @@ class Language extends \Yana\Core\AbstractSingleton implements \Serializable, \Y
                 $description = $xml->xpath('//description[not(@lang)]');
             }
             if (!empty($description)) {
-                $metaData->setTexts((string) implode(', ', $description));
+                $metaData->setTexts($description);
             }
             unset($description);
         }
