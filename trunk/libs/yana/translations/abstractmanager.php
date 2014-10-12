@@ -191,6 +191,15 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Log\Is
     {
         assert('is_string($id); // Invalid argument $id: string expected');
 
+        // check syntax of filename
+        if (!preg_match("/^[\w_-\d]+$/i", $id)) {
+            $message = "The provided language-file id contains illegal characters.".
+                " Be aware that only alphanumeric (a-z,0-9,-,_) characters are allowed.";
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            $e = new \Yana\Core\Exceptions\Translations\InvalidFileNameException($message, $level);
+            throw $e->setFilename($id);
+        }
+
         assert('!isset($knownTranslations); // Cannot redeclare var $knownTranslations');
         $knownTranslations = $this->_getTranslations();
 
