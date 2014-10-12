@@ -183,9 +183,9 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Log\Is
      *
      * @param   string  $id  name of translation package that should be loaded
      * @return  \Yana\Translations\Language
-     * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException  when the given identifier is invalid
-     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                 when the give filename is invalid
-     * @throws  \Yana\Core\Exceptions\Files\NotFoundException                when the language file is not found
+     * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException       when the given identifier is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                      when the give filename is invalid
+     * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the language file is not found
      */
     public function loadTranslations($id)
     {
