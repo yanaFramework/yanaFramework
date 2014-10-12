@@ -136,10 +136,10 @@ class Locale extends \Yana\Core\Object implements \Yana\Translations\IsLocale
     public function toString()
     {
         assert('!isset($locale); // Cannot redeclare var $locale');
-        $locale = $this->_getLanguage();
+        $locale = $this->getLanguage();
 
         assert('!isset($country); // Cannot redeclare var $country');
-        $country = $this->_getCountry();
+        $country = $this->getCountry();
         if (!empty($country)) {
             $locale .= '-' . $country;
 
