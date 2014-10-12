@@ -441,7 +441,7 @@ class Grant extends \Yana\Db\Ddl\DDL
                 $profileId = \Yana\Application::getId();
                 $action = \Yana\Plugins\Manager::getLastEvent();
                 $userName = (string) \Yana\User::getUserName();
-                return (bool) \Yana\SessionManager::checkRule($required, $profileId, $action, $userName);
+                return (bool) \Yana\Security\Users\SessionManager::checkRule($required, $profileId, $action, $userName);
         }
     }
 

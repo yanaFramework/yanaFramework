@@ -373,7 +373,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
             return true;
         }
 
-        $session = SessionManager::getInstance();
+        $session = \Yana\Security\Users\SessionManager::getInstance();
         switch (true)
         {
             case isset($value['profile_id']) && $session->checkPermission($value['profile_id']) !== true:

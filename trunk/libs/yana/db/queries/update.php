@@ -256,7 +256,7 @@ class Update extends \Yana\Db\Queries\Insert
         $resultRow = $result->fetchRow(0);
         assert('is_array($resultRow); /* unexpected result: $resultRow */');
         $profileId = array_pop($resultRow);
-        $session = SessionManager::getInstance();
+        $session = \Yana\Security\Users\SessionManager::getInstance();
         if ($session->checkPermission($profileId) !== true) {
             $message = "The login is valid, but the access rights are not enough to access the function.";
             $level = \E_USER_WARNING;
