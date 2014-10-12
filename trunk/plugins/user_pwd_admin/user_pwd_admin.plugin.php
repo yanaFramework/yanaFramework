@@ -236,7 +236,7 @@ class plugin_user_pwd_admin extends StdClass implements \Yana\IsPlugin
         assert('is_string($userName); // $userName must be of type string');
         assert('!empty($userName); // $userName can not be empty');
         assert('is_int($timeDuration); // $timeDuration must be of type int');
-        $db = \Yana\SessionManager::getDatasource();
+        $db = \Yana\Security\Users\SessionManager::getDatasource();
 
         /* get the current user password expiry time */
         $time = $db->select("user.$userName.user_pwd_time");
@@ -269,7 +269,7 @@ class plugin_user_pwd_admin extends StdClass implements \Yana\IsPlugin
         assert('is_string($new_password); // $new_password must be of type string');
         assert('!empty($new_password); // $new_password can not be empty');
         global $YANA;
-        $db = \Yana\SessionManager::getDatasource();
+        $db = \Yana\Security\Users\SessionManager::getDatasource();
         
         /* get information how many passwords which was allready used will be needed for checking with the new one */
         $count_pwd = (int) $YANA->getVar("PROFILE.USER.PASSWORD.COUNT");

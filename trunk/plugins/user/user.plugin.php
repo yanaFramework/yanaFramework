@@ -94,7 +94,7 @@ class plugin_user extends StdClass implements \Yana\IsPlugin
             $YANA->setVar("SESSION_ID", session_id());
             $YANA->setVar("SESSION_NAME", session_name());
         }
-        \Yana\SessionManager::addSecurityRule(array(__CLASS__, 'checkSecurityLevel'));
+        \Yana\Security\Users\SessionManager::addSecurityRule(array(__CLASS__, 'checkSecurityLevel'));
     }
 
     /**
@@ -211,7 +211,7 @@ class plugin_user extends StdClass implements \Yana\IsPlugin
             return $requiredLevel <= self::$securityLevel;
         }
 
-        $securityLevel = (int) \Yana\SessionManager::getInstance()->getSecurityLevel($userName, $profileId);
+        $securityLevel = (int) \Yana\Security\Users\SessionManager::getInstance()->getSecurityLevel($userName, $profileId);
 
         return $requiredLevel <= $securityLevel;
     }
@@ -260,7 +260,7 @@ class plugin_user extends StdClass implements \Yana\IsPlugin
     public function get_lost_pwd(array $ARGS)
     {
         global $YANA;
-        $database = \Yana\SessionManager::getDatasource();
+        $database = \Yana\Security\Users\SessionManager::getDatasource();
         // check captcha field
         if (\Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
             if ($YANA->callAction("security_check_image", $ARGS) === false) {
@@ -472,7 +472,7 @@ class plugin_user extends StdClass implements \Yana\IsPlugin
     {
         assert('is_string($recoveryId); // Invalid argument $recoveryId: string expected');
 
-        $database = \Yana\SessionManager::getDatasource();
+        $database = \Yana\Security\Users\SessionManager::getDatasource();
         $user = $database->select('user', array('user_recover_id', '=', $recoveryId));
 
         assert('is_array($user); // $user must be of type array');

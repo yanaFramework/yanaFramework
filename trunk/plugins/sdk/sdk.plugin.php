@@ -101,8 +101,8 @@ class plugin_sdk extends StdClass implements \Yana\IsPlugin
         if (isset($_SESSION[__CLASS__])) {
             $yana->setVar('PLUGIN', unserialize($_SESSION[__CLASS__]));
         }
-        $yana->setVar('GROUPS', \Yana\SessionManager::getGroups());
-        $yana->setVar('ROLES', \Yana\SessionManager::getRoles());
+        $yana->setVar('GROUPS', \Yana\Security\Users\SessionManager::getGroups());
+        $yana->setVar('ROLES', \Yana\Security\Users\SessionManager::getRoles());
 
         $yana->setVar('LIST_OF_DBMS', self::$_listOfDBMS);
     }
