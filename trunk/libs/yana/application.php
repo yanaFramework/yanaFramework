@@ -115,7 +115,7 @@ final class Application extends \Yana\Core\AbstractSingleton
     /**
      * to read and write user data and permissions
      *
-     * @var  SessionManager
+     * @var  \Yana\Security\Users\SessionManager
      */
     private $_session = null;
 
@@ -511,11 +511,13 @@ final class Application extends \Yana\Core\AbstractSingleton
      *
      * The SessionManager class is used to manage user information
      * and resolve permissions.
+     * 
+     * @return \Yana\Security\Users\SessionManager
      */
     public function getSession()
     {
         if (!isset($this->_session)) {
-            $this->_session = SessionManager::getInstance();
+            $this->_session = \Yana\Security\Users\SessionManager::getInstance();
         }
         return $this->_session;
     }

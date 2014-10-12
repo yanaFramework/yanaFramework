@@ -106,7 +106,7 @@ class Menu extends \Yana\Core\AbstractSingleton
             } // end if
         } // end foreach
 
-        $sessionManager = \Yana\SessionManager::getInstance();
+        $sessionManager = \Yana\Security\Users\SessionManager::getInstance();
         /**
          * initialize entries
          */

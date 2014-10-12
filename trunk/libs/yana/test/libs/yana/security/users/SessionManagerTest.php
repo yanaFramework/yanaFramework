@@ -36,7 +36,7 @@ require_once dirname(__FILE__) . '/include.php';
  * @package  test
  * @ignore
  */
-class MySessionManager extends \Yana\SessionManager
+class MySessionManager extends \Yana\Security\Users\SessionManager
 {
 
     /**
@@ -44,8 +44,8 @@ class MySessionManager extends \Yana\SessionManager
      */
     public static function dropSecurityRules()
     {
-        \Yana\SessionManager::$rules = array();
-        \Yana\SessionManager::getInstance()->cache = array();
+        \Yana\Security\Users\SessionManager::$rules = array();
+        \Yana\Security\Users\SessionManager::getInstance()->cache = array();
     }
 
 }
@@ -56,7 +56,7 @@ class MySessionManager extends \Yana\SessionManager
  * @package  test
  * @ignore
  */
-class MyYanaUser extends \Yana\User
+class MyYanaUser extends \Yana\Security\Users\User
 {
 
     /**
@@ -83,7 +83,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    \Yana\SessionManager
+     * @var    \Yana\Security\Users\SessionManager
      * @access protected
      */
     protected $_sessionManager;
@@ -119,9 +119,9 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
         \Yana\Db\Ddl\DDL::setDirectory('config/db/');
         $schema = \Yana\Files\XDDL::getDatabase('user');
         $this->_database = new \Yana\Db\FileDb\Connection($schema);
-        \Yana\SessionManager::setDatasource($this->_database);
+        \Yana\Security\Users\SessionManager::setDatasource($this->_database);
         \Yana\User::setDatasource($this->_database);
-        $this->_sessionManager = \Yana\SessionManager::getInstance();
+        $this->_sessionManager = \Yana\Security\Users\SessionManager::getInstance();
     }
 
     /**
@@ -373,7 +373,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     {
         require_once(CWD.'../../../plugins/user_group/user_group.plugin.php');
         MySessionManager::dropSecurityRules();
-        \Yana\SessionManager::addSecurityRule(array('plugin_user_group', 'checkGroupsAndRoles'));
+        \Yana\Security\Users\SessionManager::addSecurityRule(array('plugin_user_group', 'checkGroupsAndRoles'));
 
         /**
          * check_addfoobar
@@ -443,7 +443,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     {
         require_once(CWD.'../../../plugins/user/user.plugin.php');
         MySessionManager::dropSecurityRules();
-        \Yana\SessionManager::addSecurityRule(array('plugin_user', 'checkSecurityLevel'));
+        \Yana\Security\Users\SessionManager::addSecurityRule(array('plugin_user', 'checkSecurityLevel'));
         /**
          * check_baricons
          *
@@ -501,8 +501,8 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
         require_once(CWD.'../../../plugins/user_group/user_group.plugin.php');
         require_once(CWD.'../../../plugins/user/user.plugin.php');
         MySessionManager::dropSecurityRules();
-        \Yana\SessionManager::addSecurityRule(array('plugin_user_group', 'checkGroupsAndRoles'));
-        \Yana\SessionManager::addSecurityRule(array('plugin_user', 'checkSecurityLevel'));
+        \Yana\Security\Users\SessionManager::addSecurityRule(array('plugin_user_group', 'checkGroupsAndRoles'));
+        \Yana\Security\Users\SessionManager::addSecurityRule(array('plugin_user', 'checkSecurityLevel'));
 
         /**
          * check_foo
@@ -643,7 +643,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
         $this->assertType('string', $serialize, 'the value should be of type string');
 
         $unserialize = unserialize($serialize);
-        $this->assertTrue($unserialize instanceof \Yana\SessionManager, 'the value should be an instance of SessionManager');
+        $this->assertTrue($unserialize instanceof \Yana\Security\Users\SessionManager, 'the value should be an instance of SessionManager');
         $this->assertEquals($unserialize, $this->_sessionManager, 'assert failed , there are the same objects');
     }
 
