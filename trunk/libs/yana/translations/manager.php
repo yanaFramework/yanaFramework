@@ -105,7 +105,7 @@ class Manager extends \Yana\Translations\AbstractManager
             $message = "Invalid language string '$selectedLanguage'. Must be exactly 2 characters.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
 
-        } elseif ("" === $country && !preg_match('/^[A-Z]{2}$/s', $selectedCountryUppercased)) {
+        } elseif ("" === $selectedCountry && !preg_match('/^[A-Z]{2}$/s', $selectedCountryUppercased)) {
             $message = "Invalid country string '$selectedCountry'. Must be exactly 2 characters.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
         }
