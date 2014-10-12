@@ -314,7 +314,7 @@ class plugin_user_admin extends StdClass implements \Yana\IsPlugin
         $userName = $newUser['user_id'];
 
         \Yana\User::createUser($userName, $newUser['user_mail']);
-        $db = \Yana\SessionManager::getDatasource();
+        $db = \Yana\Security\Users\SessionManager::getDatasource();
         if (!$db->update("user.$userName", $newUser)) {
             return false;
         }

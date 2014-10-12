@@ -235,7 +235,7 @@ class plugin_config extends StdClass implements \Yana\IsPlugin
                 $userName = (string) $_SESSION['user_name'];
             }
             // get database connection
-            $database = \Yana\SessionManager::getDatasource();
+            $database = \Yana\Security\Users\SessionManager::getDatasource();
             // get current user-mode
             if ($database->select("user.$userName.user_is_expert")) {
                 $this->_isExpert = true;
@@ -345,7 +345,7 @@ class plugin_config extends StdClass implements \Yana\IsPlugin
     {
         $pluginManager = \Yana\Plugins\Manager::getInstance();
         if ($pluginManager->refreshPluginFile()) {
-            \Yana\SessionManager::refreshPluginSecuritySettings();
+            \Yana\Security\Users\SessionManager::refreshPluginSecuritySettings();
             \Yana\Plugins\Menu::clearCache();
             return true;
         } else {
@@ -412,7 +412,7 @@ class plugin_config extends StdClass implements \Yana\IsPlugin
         /* this function expects no arguments */
 
         // get database connection
-        $database = \Yana\SessionManager::getDatasource();
+        $database = \Yana\Security\Users\SessionManager::getDatasource();
 
         // get current user name
         if (!isset($_SESSION['user_name'])) {

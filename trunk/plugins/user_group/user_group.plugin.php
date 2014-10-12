@@ -58,7 +58,7 @@ class plugin_user_group extends StdClass implements \Yana\IsPlugin
      */
     public function __construct()
     {
-        \Yana\SessionManager::addSecurityRule(array(__CLASS__, 'checkGroupsAndRoles'));
+        \Yana\Security\Users\SessionManager::addSecurityRule(array(__CLASS__, 'checkGroupsAndRoles'));
         self::$defaultProfileId = \Yana\Application::getDefault('profile');
     }
 
