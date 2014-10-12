@@ -36,7 +36,7 @@ namespace Yana\Translations;
  * @subpackage  translations
  * @ignore
  */
-class Locale extends \Yana\Core\Object
+class Locale extends \Yana\Core\Object implements \Yana\Translations\IsLocale
 {
 
     /**
@@ -101,6 +101,27 @@ class Locale extends \Yana\Core\Object
     }
 
     /**
+     * Alias of toString().
+     *
+     * @return  string
+     * @ignore
+     */
+    public function __toString()
+    {
+        assert('!isset($locale); // Cannot redeclare var $locale');
+        $locale = $this->_getLanguage();
+
+        assert('!isset($country); // Cannot redeclare var $country');
+        $country = $this->_getCountry();
+        if (!empty($country)) {
+            $locale .= '-' . $country;
+
+        }
+
+        return $locale;
+    }
+
+    /**
      * Get name of selected locale.
      *
      * Returns the name of the currently selected locale as a string.
@@ -112,7 +133,7 @@ class Locale extends \Yana\Core\Object
      *
      * @return  string
      */
-    public function __toString()
+    public function toString()
     {
         assert('!isset($locale); // Cannot redeclare var $locale');
         $locale = $this->_getLanguage();
