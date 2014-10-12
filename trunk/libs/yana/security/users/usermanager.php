@@ -410,7 +410,7 @@ class UserManager extends \Yana\Core\Object implements \Yana\Data\Adapters\IsDat
                     "But the database entry could not be updated.";
                 $level = \Yana\Log\TypeEnumeration::WARNING;
                 throw new \Yana\Db\Queries\Exceptions\NotUpdatedException($message, $level);
-            break;
+
             default:
                 self::$_database->commit(); // may throw exception
                 $this->_passwords[] = $this->_getPassword();
@@ -422,7 +422,6 @@ class UserManager extends \Yana\Core\Object implements \Yana\Data\Adapters\IsDat
                 $this->_resetPasswordRecoveryId();
                 $this->_password = $newPwd;
                 return $password;
-            break;
         }
     }
 
@@ -473,6 +472,7 @@ class UserManager extends \Yana\Core\Object implements \Yana\Data\Adapters\IsDat
                 $_SESSION['language'] = $this->_language;
 
             } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
+                unset($e);
                 // ignore
             }
             unset($languageManager);
