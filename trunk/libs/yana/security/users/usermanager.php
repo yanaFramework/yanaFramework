@@ -465,7 +465,7 @@ class UserManager extends \Yana\Core\Object implements \Yana\Data\Adapters\IsDat
         // initialize language settings
         if (!empty($this->_language)) {
             assert('!isset($languageManager); // Cannot redeclare var $languageManager');
-            $languageManager = \Yana\Translations\Language::getInstance();
+            $languageManager = \Yana\Translations\Facade::getInstance();
             try {
 
                 $languageManager->setLocale($this->_language);

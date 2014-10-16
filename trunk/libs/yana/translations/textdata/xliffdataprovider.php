@@ -75,7 +75,7 @@ class XliffDataProvider extends \Yana\Core\Object implements \Yana\Translations\
      * @return  string
      * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException  when the given filename is invalid
      */
-    protected function _convertIdToFilePath($id)
+    protected function _convertIdToFilePath($id, \Yana\Translations\Locale $locale)
     {
         assert('is_string($id); // Invalid argument $id: string expected');
 
@@ -88,7 +88,14 @@ class XliffDataProvider extends \Yana\Core\Object implements \Yana\Translations\
             throw $exception->setFilename($id);
         }
 
+        // get the path to the directory of the used language pack
         $directory = $this->_getDirectory()->getPath() . '/';
+        // select language sub-directory based on current locale
+        if (is_dir($directory . $locale->toString())) {
+            $directory .= $locale->toString() . '/';
+        } else {
+            $directory .= $locale->getLanguage() . '/';
+        }
         return "{$directory}{$id}.xlf";
     }
 
@@ -142,14 +149,15 @@ class XliffDataProvider extends \Yana\Core\Object implements \Yana\Translations\
      * You may find valid filenames in the following directory 'languages/<locale>/*.xlf'.
      * Provide the file without path and file extension.
      *
-     * @param   string  $id  base-name of XLIFF file without file-ending and path
+     * @param   string                                       $id         base-name of XLIFF file without file-ending and path
+     * @param   \Yana\Translations\Locale                    $locale     Locale to get the translation for
      * @param   \Yana\Translations\TextData\IsTextContainer  $container  container to fill
      * @return  \Yana\Translations\TextData\IsTextContainer
      * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException  when the given filename is invalid
      * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the XLIFF file is not found
      * @throws  \Yana\Core\Exceptions\Translations\InvalidSyntaxException  when there is a problem with the file
      */
-    public function loadOject($id, \Yana\Translations\TextData\IsTextContainer $container = null)
+    public function loadOject($id, \Yana\Translations\Locale $locale, \Yana\Translations\TextData\IsTextContainer $container = null)
     {
         if (is_null($container)) {
             $container = new \Yana\Translations\TextData\TextContainer();
@@ -162,7 +170,7 @@ class XliffDataProvider extends \Yana\Core\Object implements \Yana\Translations\
         if (!$container->isLoaded($id)) {
 
             // build target path
-            $selectedFile = $this->_convertIdToFilePath($id); // may throw exception
+            $selectedFile = $this->_convertIdToFilePath($id, $locale); // may throw exception
 
             // check path
             if (!\file_exists($selectedFile)) {
@@ -185,7 +193,7 @@ class XliffDataProvider extends \Yana\Core\Object implements \Yana\Translations\
 
                 assert('!isset($xml); /* cannot redeclare variable $xml */');
                 $xml = $this->_loadXmlByFileName($selectedFile); // May throw exception if XML is invalid
-                $this->_fillContainer($xml, $id);
+                $this->_fillContainer($xml, $container, $id);
                 unset($xml);
 
             } catch (\Exception $e) {

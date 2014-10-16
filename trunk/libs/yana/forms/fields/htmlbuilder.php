@@ -117,7 +117,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
             . '<script type="text/javascript">yanaAddCalendar("' . $this->getId() . '", "' . $this->getId() . '_year", '
             . $day . ', ' . ($month - 1) . ', ' . $year . ');</script>'.
             '<script type="text/javascript" src=\'' . \Yana\Views\Skin::getSkinDirectory('default')
-            . 'scripts/calendar/' . \Yana\Translations\Language::getInstance()->getVar('calendar.js') . "'></script>";
+            . 'scripts/calendar/' . \Yana\Translations\Facade::getInstance()->getVar('calendar.js') . "'></script>";
         // Reset changed name and id.
         $this->setId($id)->setName($name);
         return $string;
@@ -334,7 +334,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     public function buildList(array $values = array(), $isNumeric = false)
     {
-        $lang = \Yana\Translations\Language::getInstance();
+        $lang = \Yana\Translations\Facade::getInstance();
         $template = '';
 
         if (!$isNumeric) {
@@ -419,7 +419,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
             $this->getName() . '"/>';
 
         if ($hasDelete) {
-            $lang = \Yana\Translations\Language::getInstance();
+            $lang = \Yana\Translations\Facade::getInstance();
             $result .= '<label class="gui_generator_file_delete">' .
                 '<input title="' . $lang->getVar('button_delete_one') . '" type="checkbox" ' .
                 'id="' . $this->getId() . '_delete" name="' . $this->getName() . '" value="1"/>' .
@@ -464,7 +464,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
         } else {
             assert('is_string($filename); // Invalid argument $filename: string expected');
             assert('is_string($downloadAction); // Invalid argument $downloadAction: string expected');
-            $lang = \Yana\Translations\Language::getInstance();
+            $lang = \Yana\Translations\Facade::getInstance();
             $fileId = \Yana\Db\Blob::storeFilenameInSession($filename);
             $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
             return '<a class="buttonize" title="' . $lang->getVar('title_download') . '" href="' .
@@ -538,7 +538,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     public function buildExternalLink($url)
     {
-        $lang = \Yana\Translations\Language::getInstance();
+        $lang = \Yana\Translations\Facade::getInstance();
 
         $class = ($this->getCssClass()) ? $this->getCssClass() : 'gui_generator_ext_link';
         $title = ($this->getTitle()) ? $this->getTitle() : $lang->getVar('ext_link');

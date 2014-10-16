@@ -35,10 +35,14 @@ require_once __DIR__ . '/../../../include.php';
 /**
  * @ignore
  */
-class MyLanguage extends \Yana\Translations\Language
+class MyLanguage extends \Yana\Translations\Facade
 {
 
     public function __construct()
+    {
+    }
+
+    protected function _setSystemLocale($locale)
     {
     }
 
@@ -52,7 +56,7 @@ class LanguageTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var Language
+     * @var \Yana\Translations\Facade
      */
     protected $object;
 
@@ -80,15 +84,6 @@ class LanguageTest extends \PHPUnit_Framework_TestCase
     public function test__get()
     {
         $this->assertEquals('test', $this->object->__get('test'));
-    }
-
-    /**
-     * @test
-     */
-    public function test__set()
-    {
-        $this->object->__set('test', 'translation');
-        $this->assertEquals('translation', $this->object->__get('test'));
     }
 
     /**
@@ -146,40 +141,9 @@ class LanguageTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testGetVars()
-    {
-        $this->assertEquals(array(), $this->object->getVars());
-        $this->object->setVar('test', 'translation');
-        $this->assertEquals(array('test' => 'translation'), $this->object->getVars());
-    }
-
-    /**
-     * @test
-     */
     public function testIsVar()
     {
         $this->assertFalse($this->object->isVar('test'));
-        $this->object->setVar('test', 'translation');
-        $this->assertTrue($this->object->isVar('test'));
-    }
-
-    /**
-     * @test
-     */
-    public function testSetVar()
-    {
-        $this->object->setVar('test', 'translation');
-        $this->assertEquals('translation', $this->object->getVar('test'));
-    }
-
-    /**
-     * @test
-     */
-    public function testSetVars()
-    {
-        $vars = array('test' => 'translation');
-        $this->object->setVars($vars);
-        $this->assertEquals('translation', $this->object->getVar('test'));
     }
 
     /**
@@ -195,7 +159,7 @@ class LanguageTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddDirectory()
     {
-        $this->assertEquals(array(__DIR__ . '/'), $this->object->addDirectory(__DIR__)->getDirectories());
+        $this->assertEquals($this->object, $this->object->addDirectory(__DIR__));
     }
 
     /**
@@ -208,19 +172,11 @@ class LanguageTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     */
-    public function testGetDirectories()
-    {
-        $this->assertEquals(array(), $this->object->getDirectories());
-    }
-
-    /**
-     * @test
      * @expectedException \Yana\Core\Exceptions\NotFoundException
      */
     public function testGetInfoNotFoundException()
     {
-        $this->object->getInfo('empty');
+        $this->object->getMetaData('empty');
     }
 
     /**
@@ -245,8 +201,7 @@ class LanguageTest extends \PHPUnit_Framework_TestCase
     public function testReplaceToken()
     {
         $test = 'test' . \YANA_LEFT_DELIMITER . 'lang id="test"' . \YANA_RIGHT_DELIMITER . 'test';
-        $this->object->test = 'translation';
-        $this->assertEquals('testtranslationtest', $this->object->replaceToken($test));
+        $this->assertEquals('testtesttest', $this->object->replaceToken($test));
     }
 
     /**

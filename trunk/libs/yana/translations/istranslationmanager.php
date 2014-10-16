@@ -51,28 +51,18 @@ interface IsTranslationManager
 {
 
     /**
-     * Set the system locale.
+     * Returns locale settings.
      *
-     * @param   string  $selectedLanguage  current language
-     * @param   string  $selectedCountry   current country (optional)
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the provided locale is not valid
-     * @return \Yana\Translations\Language
-     */
-    public function setLocale($selectedLanguage, $selectedCountry = "");
-
-    /**
-     * Get name of selected locale.
-     *
-     * Returns the name of the currently selected locale as a string.
-     *
-     * Example:
-     * Returns 'en' for English, 'de' for German, 'en-US' for American English,
-     * or 'de-AU' for Austrian German. The country part of the locale is
-     * optional.
-     *
-     * @return  string
+     * @return  \Yana\Translations\IsLocale
      */
     public function getLocale();
+
+    /**
+     * Returns a container with all known translations.
+     *
+     * @return  \Yana\Translations\TextData\IsTextContainer
+     */
+    public function getTranslations();
 
     /**
      * Adds a class that provides meta-information about a language package.
@@ -116,10 +106,10 @@ interface IsTranslationManager
      * It returns bool(true) on success and bool(false) on error.
      *
      * @param   string  $id  name of translation package that should be loaded
-     * @return  \Yana\Translations\Language
-     * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException  when the given identifier is invalid
-     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                 when the give filename is invalid
-     * @throws  \Yana\Core\Exceptions\Files\NotFoundException                when the language file is not found
+     * @return  \Yana\Translations\IsTranslationManager
+     * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException       when the given identifier is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                      when the give filename is invalid
+     * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the language file is not found
      */
     public function loadTranslations($id);
 

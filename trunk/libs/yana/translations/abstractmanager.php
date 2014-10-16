@@ -61,13 +61,36 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Log\Is
     private $_loggers = null;
 
     /**
+     * @var  \Yana\Translations\IsLocale
+     */
+    private $_locale = null;
+
+    /**
      * Initializes collections
      */
     public function __construct()
     {
         $this->_textDataProviders = new \Yana\Translations\TextData\DataProviderCollection();
         $this->_metaDataProviders = new \Yana\Core\MetaData\DataProviderCollection();
-        $this->_translationContainer = new \Yana\Translations\TextData\TextContainer();
+    }
+
+    public function getVars()
+    {
+        
+    }
+
+    /**
+     * Returns locale settings.
+     *
+     * @return  \Yana\Translations\IsLocale
+     */
+    public function getLocale()
+    {
+        if (!isset($this->_locale)) {
+            $this->_locale = new \Yana\Translations\Locale();
+        }
+
+        return $this->_locale;
     }
 
     /**
@@ -122,8 +145,11 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Log\Is
      *
      * @return  \Yana\Translations\TextData\IsTextContainer
      */
-    protected function _getTranslations()
+    public function getTranslations()
     {
+        if (!isset($this->_translationContainer)) {
+            $this->_translationContainer = new \Yana\Translations\TextData\TextContainer();
+        }
         return $this->_translationContainer;
     }
 
@@ -171,86 +197,6 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Log\Is
     }
 
     /**
-     * Read language strings.
-     *
-     * You may find valid filenames in the following directory 'languages/<locale>/*.xlf'.
-     * Provide the file without path and file extension.
-     *
-     * You may access the file contents via $language->getVar('some.value')
-     *
-     * This function issues an E_USER_NOTICE if the file does not exist.
-     * It returns bool(true) on success and bool(false) on error.
-     *
-     * @param   string  $id  name of translation package that should be loaded
-     * @return  \Yana\Translations\IsTranslationManager
-     * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException       when the given identifier is invalid
-     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                      when the give filename is invalid
-     * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the language file is not found
-     */
-    public function loadTranslations($id)
-    {
-        assert('is_string($id); // Invalid argument $id: string expected');
-
-        // check syntax of filename
-        if (!preg_match("/^[\w_-\d]+$/i", $id)) {
-            $message = "The provided language-file id contains illegal characters.".
-                " Be aware that only alphanumeric (a-z,0-9,-,_) characters are allowed.";
-            $level = \Yana\Log\TypeEnumeration::INFO;
-            $e = new \Yana\Core\Exceptions\Translations\InvalidFileNameException($message, $level);
-            throw $e->setFilename($id);
-        }
-
-        assert('!isset($knownTranslations); // Cannot redeclare var $knownTranslations');
-        $knownTranslations = $this->_getTranslations();
-
-        if (!$knownTranslations->isLoaded($id)) { // If pack is already loaded, do nothing.
-
-            // override defaults where available
-            assert('!isset($selectedFile); // Cannot redeclare var $selectedFile');
-            assert('!isset($provider); // Cannot redeclare var $provider');
-            foreach ($this->_getTextDataProviders() as $provider)
-            {
-                /* @var $provider \Yana\Translations\TextData\IsDataProvider */
-                assert($provider instanceof \Yana\Translations\TextData\IsDataProvider);
-                /* Try to read a given language pack.
-                 * If the id is not valid, write warnings to the logs.
-                 */
-                try {
-                    // The following loads and copies the translations to the container
-                    $knownTranslations = $provider->loadOject($id, $knownTranslations); // may throw exception
-
-                } catch (\Yana\Core\Exceptions\Translations\LanguageFileNotFoundException $e) {
-                    // Not all sources will have the requested pack.
-                    // This is normal as long as at least one has it.
-                    unset($e);
-
-                } catch (\Yana\Core\Exceptions\Translations\InvalidSyntaxException $e) {
-                    // When a source has been found, but the contents retrieved were invalid.
-                    assert('!isset($message); // Cannot redeclare var $message');
-                    $message = "Error in language source: '" . $id . "'.";
-                    assert('!isset($level); // Cannot redeclare variable $level');
-                    $level = \Yana\Log\TypeEnumeration::WARNING;
-                    $this->getLogger()->addLog($message, $level, $e->getMessage());
-                    unset($e, $message, $level);
-                }
-            }
-            unset($provider);
-
-            //  If the pack has not been found by any provider, we need to issue a notice
-            if (!$knownTranslations->isLoaded($id)) {
-                assert('!isset($message); // Cannot redeclare var $message');
-                $message = "No language-pack found for id '{$id}'.";
-                assert('!isset($level); // Cannot redeclare variable $level');
-                $level = \Yana\Log\TypeEnumeration::INFO;
-                assert('!isset($e); // Cannot redeclare variable $e');
-                $e = new \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException($message, $level);
-                throw $e->setFilename($id);
-            }
-        }
-        return $this;
-    }
-
-    /**
      * Returns a list of all languages.
      *
      * Returns an associative array where the keys are the ids
@@ -284,8 +230,8 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Log\Is
     /**
      * Adds a logger to the class.
      *
-     * @param  \Yana\Log\IsLogger  $logger  instance that will handle the logging
-     * @return \Yana\Translations\Language
+     * @param   \Yana\Log\IsLogger  $logger  instance that will handle the logging
+     * @return  \Yana\Translations\IsTranslationManager
      */
     public function attachLogger(\Yana\Log\IsLogger $logger)
     {
@@ -308,11 +254,10 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Log\Is
     }
 
     /**
-     * Alias of Language::getVar()
+     * Alias of getVar()
      *
      * @param   string  $id   id
      * @return  mixed
-     * @see     Language::getVar()
      */
     public function __get($id)
     {
@@ -332,9 +277,7 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Log\Is
     {
         assert('is_string($key); /* Wrong argument type for argument 1. String expected. */');
 
-        $translations = $this->_getTranslations();
-        $isVar = $translations->isVar($key) || $translations->isGroup($key);
-        return $isVar;
+        return $this->getTranslations()->isVar($key);
     }
 
     /**
@@ -350,24 +293,15 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Log\Is
     {
         assert('is_string($key); /* Wrong argument type for argument 1. String expected. */');
 
-        $translations = $this->_getTranslations();
+        try {
+            $translationResult = $this->getTranslations()->getVar($key);
 
-        $translationResult = "";
-        if ($translations->isVar($key)) {
+        } catch (\Yana\Core\Exceptions\Translations\NotFoundException $e) {
 
-            $translationResult = $translations->getVar($key);
-            assert('is_string($translationResult)');
-
-        } elseif ($translations->isGroup($key)) {
-
-            $translationResult = $translations->getGroupMembers($key);
-            assert('is_array($translationResult)');
-
-        } else {
-            $message = "No text found for key '{$key}'.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
-            $this->getLogger()->addLog($message, $level);
-            unset($message, $level);
+            $this->getLogger()->addLog($e->getMessage(), $level);
+            unset($level, $e);
+
             $translationResult = (string) $key;
         }
 
@@ -386,7 +320,7 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Log\Is
     {
         assert('is_string($string); // Wrong argument type for argument 1. String expected.');
 
-        return $this->_getTranslations()->replaceToken($string);
+        return $this->getTranslations()->replaceToken($string);
     }
 }
 

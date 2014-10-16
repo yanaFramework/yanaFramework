@@ -492,7 +492,7 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
 
         // get defaults
         if (is_null($language)) {
-            $languageManager = \Yana\Translations\Language::getInstance();
+            $languageManager = \Yana\Translations\Facade::getInstance();
             $language = $languageManager->getLanguage();
             $country = $languageManager->getCountry();
         }

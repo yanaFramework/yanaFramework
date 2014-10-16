@@ -365,7 +365,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
             /*
              * check language references
              */
-            $language = \Yana\Translations\Language::getInstance(); // get instance of language manager
+            $language = \Yana\Translations\Facade::getInstance(); // get instance of language manager
             assert('!isset($value); /* cannot redeclare variable $value */');
             foreach ($template->getLanguages() as $value)
             {

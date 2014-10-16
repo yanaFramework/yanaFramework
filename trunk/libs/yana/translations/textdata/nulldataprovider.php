@@ -42,11 +42,12 @@ class NullDataProvider extends \Yana\Core\Object implements \Yana\Translations\T
     /**
      * Returns a text container.
      *
-     * @param   string  $id  base-name of XLIFF translation file without file-ending and path
+     * @param   string                                       $id         name of the object to load
+     * @param   \Yana\Translations\Locale                    $locale     Locale to get the translation for
      * @param   \Yana\Translations\TextData\IsTextContainer  $container  container to fill
      * @return  \Yana\Translations\TextData\IsTextContainer
      */
-    public function loadOject($id, \Yana\Translations\TextData\IsTextContainer $container = null)
+    public function loadOject($id, \Yana\Translations\Locale $locale, \Yana\Translations\TextData\IsTextContainer $container = null)
     {
         if (!$container instanceof \Yana\Translations\TextData\IsTextContainer) {
             $container = new \Yana\Translations\TextData\TextContainer();

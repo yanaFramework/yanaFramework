@@ -161,7 +161,7 @@ class Feed extends \Yana\Core\Object
         $this->setDescription($description);
 
         // auto-generated fields
-        $language = \Yana\Translations\Language::getInstance();
+        $language = \Yana\Translations\Facade::getInstance();
         $this->_title = (string) $language->getVar('program_title');
         $this->_language = (string) $language->getLocale();
         $this->_link = \Yana\Core\Request::getUri();
@@ -260,9 +260,9 @@ class Feed extends \Yana\Core\Object
      *
      * This settings is auto-detected from the currently used locale. Only change it if needed.
      *
-     * @param  string  $language  valid language/locale string, e.g. en, en-US
-     * @return \Yana\RSS\Feed
-     * @see    \Yana\Translations\Language
+     * @param   string  $language  valid language/locale string, e.g. en, en-US
+     * @return  \Yana\RSS\Feed
+     * @see     \Yana\Translations\Facade
      */
     public function setLanguage($language)
     {

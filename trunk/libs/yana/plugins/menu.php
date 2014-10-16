@@ -208,7 +208,7 @@ class Menu extends \Yana\Core\AbstractSingleton
     private static function _getLocale()
     {
         if (!isset(self::$_locale)) {
-            self::$_locale = \Yana\Translations\Language::getInstance()->getLocale();
+            self::$_locale = \Yana\Translations\Facade::getInstance()->getLocale();
         }
         return self::$_locale;
     }
@@ -293,7 +293,7 @@ class Menu extends \Yana\Core\AbstractSingleton
     public function getMenuName($menuId)
     {
         if (isset($this->_names[$menuId])) {
-            $language = \Yana\Translations\Language::getInstance();
+            $language = \Yana\Translations\Facade::getInstance();
             return $language->replaceToken($this->_names[$menuId]);
         } else {
             return $menuId;
@@ -353,7 +353,7 @@ class Menu extends \Yana\Core\AbstractSingleton
                     continue;
                 }
                 $url = $urlFormatter("action=$action", true);
-                $label = \Yana\Translations\Language::getInstance()->replaceToken($entry->getTitle());
+                $label = \Yana\Translations\Facade::getInstance()->replaceToken($entry->getTitle());
                 if (!empty($name)) {
                     $menu[$name][$url] = $label;
                 } else {
