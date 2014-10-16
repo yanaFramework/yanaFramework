@@ -51,12 +51,14 @@ interface IsDataProvider
      *
      * Other exceptions may be thrown, when the resource is found but not valid, aso.
      *
-     * @param   string  $id  name of the object to load
+     * @param   string                                       $id         name of the object to load
+     * @param   \Yana\Translations\Locale                    $locale     Locale to get the translation for
+     * @param   \Yana\Translations\TextData\IsTextContainer  $container  container to fill
      * @return  \Yana\Translations\TextData\IsTextContainer
      * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the object for this id is not found
      * @throws  \Yana\Core\Exceptions\Translations\TranslationException           for arbitrary errors
      */
-    public function loadOject($id, \Yana\Translations\TextData\IsTextContainer $container = null);
+    public function loadOject($id, \Yana\Translations\Locale $locale, \Yana\Translations\TextData\IsTextContainer $container = null);
 
 }
 

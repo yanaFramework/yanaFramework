@@ -144,7 +144,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
     {
         $column = $field->getColumn();
 
-        $lang = \Yana\Translations\Language::getInstance();
+        $lang = \Yana\Translations\Facade::getInstance();
 
         // retrieve search arguments
         $value = $field->getValue();
@@ -410,7 +410,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
     {
         $column = $field->getColumn();
 
-        $lang = \Yana\Translations\Language::getInstance();
+        $lang = \Yana\Translations\Facade::getInstance();
 
         // retrieve search arguments
         $value = $field->getValue();
@@ -502,7 +502,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             if (empty($value) && $value !== false) {
                 return '';
             }
-            $lang = \Yana\Translations\Language::getInstance();
+            $lang = \Yana\Translations\Facade::getInstance();
             $form = $field->getForm();
             $table = $form->getTable();
             $id = 'id="' . $form->getName() . '-' . $table->getPrimaryKey() . '-' .

@@ -232,6 +232,55 @@ class TextContainer extends \Yana\Core\VarContainer implements \Yana\Translation
         return $groupMembers;
     }
 
+    /**
+     * Check if a translation exists.
+     *
+     * Returns bool(true) if the key can be translated and bool(false) otherwise.
+     *
+     * @param   string  $key  translation key (case insensitive)
+     * @return  bool
+     */
+    public function isVar($key)
+    {
+        assert('is_string($key); /* Wrong argument type for argument 1. String expected. */');
+
+        $isVar = parent::isVar($key) || $this->isGroup($key);
+        return $isVar;
+    }
+
+    /**
+     * Get language string.
+     *
+     * Note: the key may also refer to a group id. If so the function returns
+     * all members of the group as an array.
+     *
+     * @param   string  $key  translation key (case insensitive)
+     * @return  string|array
+     * @throws  \Yana\Core\Exceptions\Translations\NotFoundException  when the translation is not found
+     */
+    public function getVar($key)
+    {
+        assert('is_string($key); /* Wrong argument type for argument 1. String expected. */');
+
+        $translationResult = "";
+        if (parent::isVar($key)) {
+
+            $translationResult = parent::getVar($key);
+            assert('is_string($translationResult)');
+
+        } elseif ($this->isGroup($key)) {
+
+            $translationResult = $this->getGroupMembers($key);
+            assert('is_array($translationResult)');
+
+        } else {
+
+            throw new \Yana\Core\Exceptions\Translations\NotFoundException("No text found for key '{$key}'.");
+        }
+
+        return $translationResult;
+    }
+
 }
 
 ?>

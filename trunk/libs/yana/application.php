@@ -94,7 +94,7 @@ final class Application extends \Yana\Core\AbstractSingleton
     /**
      * to load language strings
      *
-     * @var  \Yana\Translations\Language
+     * @var  \Yana\Translations\Facade
      */
     private $_language = null;
 
@@ -440,9 +440,9 @@ final class Application extends \Yana\Core\AbstractSingleton
     protected function _getExceptionLogger()
     {
         if (!isset($this->_exceptionLogger)) {
-            $inputContainer = $this->getLanguage();
-            $inputContainer->readFile('message');
-            $this->_exceptionLogger = new \Yana\Log\ExceptionLogger($inputContainer);
+            $languageManager = $this->getLanguage();
+            $languageManager->loadTranslations('message');
+            $this->_exceptionLogger = new \Yana\Log\ExceptionLogger($languageManager->getTranslations());
         }
         return $this->_exceptionLogger;
     }
@@ -640,14 +640,17 @@ final class Application extends \Yana\Core\AbstractSingleton
      *
      * This returns the language component. If none exists, a new instance is created.
      *
-     * @return  \Yana\Translations\Language
+     * @return  \Yana\Translations\Facade
      */
     public function getLanguage()
     {
         if (!isset($this->_language)) {
             $languageDir = $this->getVar('LANGUAGEDIR');
-            $this->_language = \Yana\Translations\Language::getInstance();
-            $this->_language->addDirectory($languageDir);
+            $defaultProvider = new \Yana\Translations\TextData\XliffDataProvider(new \Yana\Files\Dir($languageDir));
+            $this->_language = \Yana\Translations\Facade::getInstance();
+            $this->_language->addTextDataProvider($defaultProvider);
+            unset($defaultProvider);
+
             $this->_language->setLocale((string) self::$_config->default->language);
             if (isset($_SESSION['language'])) {
                 try {
@@ -657,7 +660,7 @@ final class Application extends \Yana\Core\AbstractSingleton
                 }
             }
             try {
-                $this->_language->readFile('default');
+                $this->_language->loadTranslations('default');
             } catch (\Yana\Core\Exceptions\InvalidArgumentException $e){
                 unset($_SESSION['language']);
             }

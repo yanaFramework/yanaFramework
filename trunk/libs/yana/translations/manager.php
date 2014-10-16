@@ -51,16 +51,6 @@ class Manager extends \Yana\Translations\AbstractManager
 {
 
     /**
-     * @var  string
-     */
-    private $_language = "";
-
-    /**
-     * @var  string
-     */
-    private $_country = "";
-
-    /**
      * Returns the language pack's meta information.
      *
      * Use this to get more info on the language pack's author, title or description.
@@ -74,143 +64,90 @@ class Manager extends \Yana\Translations\AbstractManager
         assert('is_string($locale); // Invalid argument $locale: string expected');
     
         if (empty($locale)) {
-            $locale = $this->getLocale();
+            $locale = $this->getLocale()->__toString();
         }
 
         return parent::getMetaData($locale);
     }
 
     /**
-     * Set the system locale.
+     * Read language strings.
      *
-     * @param   string  $selectedLanguage  current language
-     * @param   string  $selectedCountry   current country (optional)
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the provided locale is not valid
-     * @return \Yana\Translations\Language
+     * You may find valid filenames in the following directory 'languages/<locale>/*.xlf'.
+     * Provide the file without path and file extension.
      *
-     * @ignore
+     * You may access the file contents via $language->getVar('some.value')
+     *
+     * This function issues an E_USER_NOTICE if the file does not exist.
+     * It returns bool(true) on success and bool(false) on error.
+     *
+     * @param   string  $id  name of translation package that should be loaded
+     * @return  \Yana\Translations\IsTranslationManager
+     * @throws  \Yana\Core\Exceptions\Translations\InvalidFileNameException       when the given identifier is invalid
+     * @throws  \Yana\Core\Exceptions\InvalidSyntaxException                      when the give filename is invalid
+     * @throws  \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException  when the language file is not found
      */
-    public function setLocale($selectedLanguage, $selectedCountry = "")
+    public function loadTranslations($id)
     {
-        assert('is_string($selectedLanguage); // Invalid argument $selectedLanguage: string expected');
-        assert('is_string($selectedCountry); // Invalid argument $selectedCountry: string expected');
+        assert('is_string($id); // Invalid argument $id: string expected');
 
-        assert('!isset($selectedLanguageLowercased); // Cannot redeclare var $selectedLanguageLowercased');
-        $selectedLanguageLowercased = mb_strtolower($selectedLanguage);
-        assert('!isset($selectedCountryUppercased); // Cannot redeclare var $selectedCountryUppercased');
-        $selectedCountryUppercased = mb_strtoupper($selectedCountry);
-
-        // check if locale is valid
-        if (!preg_match('/^[a-z]{2}$/s', $selectedLanguageLowercased)) {
-            $message = "Invalid language string '$selectedLanguage'. Must be exactly 2 characters.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
-
-        } elseif ("" === $selectedCountry && !preg_match('/^[A-Z]{2}$/s', $selectedCountryUppercased)) {
-            $message = "Invalid country string '$selectedCountry'. Must be exactly 2 characters.";
-            throw new \Yana\Core\Exceptions\InvalidArgumentException($message, \Yana\Log\TypeEnumeration::WARNING);
+        // check syntax of filename
+        if (!preg_match("/^[\w_-\d]+$/i", $id)) {
+            $message = "The provided language-file id contains illegal characters.".
+                " Be aware that only alphanumeric (a-z,0-9,-,_) characters are allowed.";
+            $level = \Yana\Log\TypeEnumeration::INFO;
+            $e = new \Yana\Core\Exceptions\Translations\InvalidFileNameException($message, $level);
+            throw $e->setFilename($id);
         }
 
-        $this->_language = $selectedLanguageLowercased;
-        $this->_country = $selectedCountryUppercased;
+        assert('!isset($knownTranslations); // Cannot redeclare var $knownTranslations');
+        $knownTranslations = $this->getTranslations();
 
-        $this->_setSystemLocale($this->getLocale());
+        if (!$knownTranslations->isLoaded($id)) { // If pack is already loaded, do nothing.
 
-        return $this;
-    }
+            // override defaults where available
+            assert('!isset($selectedFile); // Cannot redeclare var $selectedFile');
+            assert('!isset($provider); // Cannot redeclare var $provider');
+            foreach ($this->_getTextDataProviders() as $provider)
+            {
+                /* @var $provider \Yana\Translations\TextData\IsDataProvider */
+                assert($provider instanceof \Yana\Translations\TextData\IsDataProvider);
+                /* Try to read a given language pack.
+                 * If the id is not valid, write warnings to the logs.
+                 */
+                try {
+                    // The following loads and copies the translations to the container
+                    $knownTranslations = $provider->loadOject($id, $this->getLocale(), $knownTranslations); // may throw exception
 
-    /**
-     * Get name of selected locale.
-     *
-     * Returns the name of the currently selected locale as a string.
-     *
-     * Example:
-     * Returns 'en' for English, 'de' for German, 'en-US' for American English,
-     * or 'de-AU' for Austrian German. The country part of the locale is
-     * optional.
-     *
-     * @return  string
-     */
-    public function getLocale()
-    {
-        assert('!isset($locale); // Cannot redeclare var $locale');
-        $locale = $this->_getLanguage();
+                } catch (\Yana\Core\Exceptions\Translations\LanguageFileNotFoundException $e) {
+                    // Not all sources will have the requested pack.
+                    // This is normal as long as at least one has it.
+                    unset($e);
 
-        assert('!isset($country); // Cannot redeclare var $country');
-        $country = $this->_getCountry();
-        if (!empty($country)) {
-            $locale .= '-' . $country;
+                } catch (\Yana\Core\Exceptions\Translations\InvalidSyntaxException $e) {
+                    // When a source has been found, but the contents retrieved were invalid.
+                    assert('!isset($message); // Cannot redeclare var $message');
+                    $message = "Error in language source: '" . $id . "'.";
+                    assert('!isset($level); // Cannot redeclare variable $level');
+                    $level = \Yana\Log\TypeEnumeration::WARNING;
+                    $this->getLogger()->addLog($message, $level, $e->getMessage());
+                    unset($e, $message, $level);
+                }
+            }
+            unset($provider);
 
+            //  If the pack has not been found by any provider, we need to issue a notice
+            if (!$knownTranslations->isLoaded($id)) {
+                assert('!isset($message); // Cannot redeclare var $message');
+                $message = "No language-pack found for id '{$id}'.";
+                assert('!isset($level); // Cannot redeclare variable $level');
+                $level = \Yana\Log\TypeEnumeration::INFO;
+                assert('!isset($e); // Cannot redeclare variable $e');
+                $e = new \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException($message, $level);
+                throw $e->setFilename($id);
+            }
         }
-
-        return $locale;
-    }
-
-    /**
-     * Get name of selected language.
-     *
-     * Returns the name of the currently selected language as a string.
-     *
-     * Example:
-     * Returns 'en' for English, 'de' for German.
-     *
-     * @internal Technically spoken, this is the name of the sub-directory,
-     * where the current language's files are stored.
-     * Check the directory "languages/" for a complete list.
-     *
-     * @return  string
-     */
-    protected function _getLanguage()
-    {
-        return $this->_language;
-    }
-
-    /**
-     * Get name of selected country.
-     *
-     * Returns the name of the currently selected country as a string.
-     *
-     * Locale settings may consist of two parts:
-     * a language plus a country. For example, 'en-US' for american English.
-     *
-     * This function returns the country part of the locale.
-     *
-     * Example: Returns 'EN' for England or 'DE' for Germany.
-     *
-     * @return  string
-     */
-    protected function _getCountry()
-    {
-        return $this->_country;
-    }
-
-    /**
-     * Calls setlocale().
-     *
-     * @internal Since you may not want that in unit-tests, please overwrite this method as needed.
-     *
-     * @param  string  $locale  new system locale
-     * @return  \Yana\Translations\Manager
-     */
-    protected function _setSystemLocale($locale)
-    {
-        assert('is_string($locale); // Invalid argument $locale: string expected');
-
-        // set system locale
-        setlocale(LC_ALL, $locale);
-
         return $this;
-    }
-
-    /**
-     * Replace a token within a provided text.
-     *
-     * If a token refers to a non-existing value it is removed.
-     *
-     * @param   string  $string  text including language ids
-     * @return  string
-     */
-    public function replaceToken($string) {
-        return $this->_getTranslations()->replaceToken($string);
     }
 
 }

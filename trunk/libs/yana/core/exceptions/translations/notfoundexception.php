@@ -23,40 +23,20 @@
  *
  * @package  yana
  * @license  http://www.gnu.org/licenses/gpl.txt
- *
- * @ignore
  */
 
-namespace Yana\Views\Helpers\OutputFilters;
+namespace Yana\Core\Exceptions\Translations;
 
 /**
- * Smarty-compatible HTML-processors
- *
- * This class is registered when instantiating the Smarty Engine.
+ * <<exception>> When a translation string is not found.
  *
  * @package     yana
- * @subpackage  views
+ * @subpackage  core
  */
-class LanguageTokenFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Views\Helpers\IsOutputFilter
+class NotFoundException extends \Yana\Core\Exceptions\Translations\TranslationException
 {
 
-    /**
-     * <<smarty outputfilter>> outputfilter.
-     *
-     * Replaces all remaining language tokens.
-     *
-     * @param   string  $source  HTML code with PHP tags
-     * @return  string
-     */
-    public function __invoke($source)
-    {
-        assert('is_string($source); // Invalid argument $source: string expected');
-
-        $source = preg_replace('/\s*<\!--\s*-->\s*/s', '', $source);
-        $source = \Yana\Translations\Facade::getInstance()->replaceToken($source);
-
-        return $source;
-    }
+    // intenionally left blank
 
 }
 
