@@ -83,6 +83,24 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
     }
 
     /**
+     * Check for HTTPS vs HTTP.
+     *
+     * Returns bool(true) if $_SERVER settings suggest that the current request was made using HTTPS.
+     * Returns bool(false) otherwise.
+     *
+     * @internal  $_SERVER['HTTPS'] is "on" when PHP is installed as an Apache module.
+     *            Since this setting is webserver-specific $_SERVER['HTTPS'] may also be "1" or "0".
+     *            $_SERVER['HTTP_X_FORWARDED_PROTO'] is 'https' when PHP is installed as CGI for Apache.
+     *
+     * @return    bool
+     */
+    private function _isHttps()
+    {
+        return (!empty($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], "off") !== 0) ||
+            strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], "https") === 0;
+    }
+
+    /**
      * Creates an URL to the script itself from a search-string fragment.
      *
      * @param   string   $string           url parameter list
@@ -113,10 +131,10 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
          * This includes the current protocol, domain name and script path
          */
         if ($asAbsolutePath === true) {
-            if (isset($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], "on") === 0) {
-                $url = "https://";
+            if ($this->_isHttps() === true) {
+                $url .= "https://";
             } else {
-                $url = "http://";
+                $url .= "http://";
             }
             if (isset($_SERVER['HTTP_HOST'])) {
                 $url .= $_SERVER['HTTP_HOST'];
@@ -125,7 +143,7 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
             }
             $dirname = dirname($_SERVER['PHP_SELF']);
             if ($dirname !== DIRECTORY_SEPARATOR) {
-                $url .= dirname($_SERVER['PHP_SELF']). '/';
+                $url .= $dirname . '/';
             } else {
                 $url .= '/';
             }
