@@ -101,6 +101,33 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
     }
 
     /**
+     * Encode URL.
+     *
+     * Encodes the values in a search-string of a given URL so it can be safely output to HTML.
+     *
+     * @param   string  $parameterList  url parameter list
+     * @return  string
+     */
+    private function _encodeParameters($parameterList)
+    {
+        assert('is_string($parameterList); // Invalid argument $parameterList: string expected');
+
+        assert('!isset($m); // Cannot redeclare var $m');
+        $m = array();
+        preg_match_all("/(&|^)(.*)=(.*)(&|$)/U", $parameterList, $m);
+        assert('!isset($i); // Cannot redeclare var $i');
+        assert('!isset($replace); // Cannot redeclare var $replace');
+        for ($i = 0; $i < count($m[0]); $i++)
+        {
+            $replace = $m[1][$i] . urlencode($m[2][$i]) . "=" . urlencode($m[3][$i]) . $m[4][$i];
+            $parameterList = str_replace($m[0][$i], $replace, $parameterList);
+        }
+        unset($replace, $i);
+
+        return $parameterList;
+    }
+
+    /**
      * Creates an URL to the script itself from a search-string fragment.
      *
      * @param   string   $string           url parameter list
@@ -111,18 +138,10 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
     public function __invoke($string, $asString = false, $asAbsolutePath = true)
     {
         assert('is_string($string); // Wrong type for argument "string". String expected');
+        assert('is_bool($asString); // Invalid argument $asString: bool expected');
+        assert('is_bool($asAbsolutePath); // Invalid argument $asAbsolutePath: bool expected');
 
-        /**
-         * encode URL
-         */
-        $m = array();
-        preg_match_all("/(&|^)(.*)=(.*)(&|$)/U", $string, $m);
-        for ($i = 0; $i < count($m[0]); $i++)
-        {
-            $replace = $m[1][$i] . urlencode($m[2][$i]) . "=" . urlencode($m[3][$i]) . $m[4][$i];
-            $string = str_replace($m[0][$i], $replace, $string);
-        }
-
+        assert('!isset($url); // Cannot redeclare var $url');
         $url = "";
 
         /**
@@ -141,6 +160,7 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
             } else {
                 $url .= $_SERVER['SERVER_NAME'];
             }
+            assert('!isset($dirname); // Cannot redeclare var $dirname');
             $dirname = dirname($_SERVER['PHP_SELF']);
             if ($dirname !== DIRECTORY_SEPARATOR) {
                 $url .= $dirname . '/';
@@ -157,7 +177,7 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
          * depending on the $asString argument.
          */
         assert('!isset($urlPath); // Cannot redeclare var $urlPath');
-        $urlPath = $this->_getBaseUrl() . '&' . $string;
+        $urlPath = $this->_getBaseUrl() . '&' . $this->_encodeParameters($string);
         if ($asString === false) {
             $urlPath = \Yana\Util\String::htmlSpecialChars($urlPath);
         }
