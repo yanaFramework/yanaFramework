@@ -12,11 +12,6 @@ $$${VARIABLE variableFromNextAssignmentName default="variable"} = ${cursor};]]><
 ${cursor}]]></code>
         <description><![CDATA[parent constructor]]></description>
     </codetemplate>
-    <codetemplate abbreviation="param" xml:space="preserve">
-        <code><![CDATA[assert('is_${string}(${variable variableFromPreviousAssignment}); // Invalid argument ${variable}: ${string} expected');
-${cursor}]]></code>
-        <description><![CDATA[parameter type check]]></description>
-    </codetemplate>
     <codetemplate abbreviation="whilelist" xml:space="preserve">
         <code><![CDATA[reset($$${variable});
 assert('!isset($$${key}); // Cannot redeclare var $$${key}');
@@ -44,6 +39,11 @@ At the end of each iteration, expr3 is evaluated (executed).
 for (expr1; expr2; expr3)
     statement
 ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="param" xml:space="preserve">
+        <code><![CDATA[assert('is_${string}(${variable variableFromPreviousAssignment}); // Invalid argument ${variable}: ${string} expected');
+${cursor}]]></code>
+        <description><![CDATA[parameter type check]]></description>
     </codetemplate>
     <codetemplate abbreviation="var" xml:space="preserve">
         <code><![CDATA[/* @var $$${VARIABLE variableFromNextAssignmentName default="variable"} ${VAR_TYPE variableFromNextAssignmentType default="type"} */
@@ -82,17 +82,17 @@ ${cursor}]]></code>
 ${cursor}]]></code>
         <description><![CDATA[assert float]]></description>
     </codetemplate>
-    <codetemplate abbreviation="inst" xml:space="preserve">
-        <code><![CDATA[if (${VARIABLE variableFromPreviousAssignment default="$variable"} instanceof ${ClassName}) {
-    ${selection}${cursor}
-}]]></code>
-        <description><![CDATA[if statement with instanceOF variable check ]]></description>
-    </codetemplate>
     <codetemplate abbreviation="elif" contexts="php-code" uuid="org.netbeans.modules.php.editor.codetemplate.elif" xml:space="preserve">
         <code><![CDATA[elseif (${CONDITION variableFromPreviousAssignment instanceof="boolean" default="true"}) {
     ${selection}${cursor}
 }]]></code>
         <description><![CDATA[else if ]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="inst" xml:space="preserve">
+        <code><![CDATA[if (${VARIABLE variableFromPreviousAssignment default="$variable"} instanceof ${ClassName}) {
+    ${selection}${cursor}
+}]]></code>
+        <description><![CDATA[if statement with instanceOF variable check ]]></description>
     </codetemplate>
     <codetemplate abbreviation="while" xml:space="preserve">
         <code><![CDATA[while (${CONDITION variableFromPreviousAssignment instanceof="boolean" default="true"}) 
@@ -117,7 +117,6 @@ ${cursor}]]></code>
  *
  * <<<description>>>
  *
- * @access  public
  * @param   type  $$${param}
  * @return
  */
@@ -128,8 +127,7 @@ public function ${functionName}($$${param})
         <description><![CDATA[function declaration with docblock]]></description>
     </codetemplate>
     <codetemplate abbreviation="if" xml:space="preserve">
-        <code><![CDATA[assert('isset($$${variable}); // Cannot redeclare var $$${variable}');
-if ($$${variable}) {
+        <code><![CDATA[if ($$${variable}) {
     ${selection}${cursor}
 }]]></code>
         <description><![CDATA[if statment]]></description>
@@ -138,6 +136,10 @@ if ($$${variable}) {
         <code><![CDATA[assert('is_${bool}(${variable variableFromPreviousAssignment}); // Invalid argument ${variable}: ${bool} expected');
 ${cursor}]]></code>
         <description><![CDATA[assert bool]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="eol" xml:space="preserve">
+        <code><![CDATA[unset(${VARIABLE variableFromPreviousAssignment default="variable"});]]></code>
+        <description><![CDATA[destroy variable - end of life]]></description>
     </codetemplate>
     <codetemplate abbreviation="pclon" contexts="php-code" uuid="org.netbeans.modules.php.editor.codetemplate.pclon" xml:space="preserve">
         <code><![CDATA[parent::__clone();
@@ -170,7 +172,6 @@ unset($$${value});]]></code>
         <code><![CDATA[if (!defined(${CONST})) {
     /**
      * @name ${CONST}
-     * @ignore
      */
     define('${CONST}', 1);
 }]]></code>
@@ -212,7 +213,6 @@ ${cursor}]]></code>
         <code><![CDATA[/**
  * ${ClassName}
  *
- * @access      ${public}
  * @package     ${package}
  * @subpackage  ${subpackage}
  */
@@ -244,6 +244,10 @@ class ${ClassName}
     <codetemplate abbreviation="prs" contexts="php-code" uuid="org.netbeans.modules.php.editor.codetemplate.print.string" xml:space="preserve">
         <code><![CDATA[print "${cursor}";]]></code>
         <description><![CDATA[Output a string]]></description>
+    </codetemplate>
+    <codetemplate abbreviation="sol" xml:space="preserve">
+        <code><![CDATA[assert('!isset($$${VARIABLE variableFromNextAssignmentName default="variable"}); // Cannot redeclare var $$${VARIABLE variableFromNextAssignmentName default="variable"}');]]></code>
+        <description><![CDATA[new variable - start of life]]></description>
     </codetemplate>
     <codetemplate abbreviation="aarray" xml:space="preserve">
         <code><![CDATA[assert('is_${array}(${variable variableFromPreviousAssignment}); // Invalid argument ${variable}: ${array} expected');
@@ -287,6 +291,11 @@ if ($$${DIRH editable=false}) {
 }]]></code>
         <description><![CDATA[directory iteration ]]></description>
     </codetemplate>
+    <codetemplate abbreviation="eco" contexts="php-code" uuid="org.netbeans.modules.php.editor.codetemplate.echo" xml:space="preserve">
+        <code><![CDATA[echo "${cursor}";]]></code>
+        <description><![CDATA[Output a string
+]]></description>
+    </codetemplate>
     <codetemplate abbreviation="my_gc" contexts="php-code" uuid="org.netbeans.modules.php.editor.codetemplate.my_gc" xml:space="preserve">
         <code><![CDATA[ob_start();
 	
@@ -295,11 +304,6 @@ ${selection}${cursor}
 $$${contents} = ob_get_contents();
 ob_end_clean();]]></code>
         <description><![CDATA[Return the contents of the output buffer]]></description>
-    </codetemplate>
-    <codetemplate abbreviation="eco" contexts="php-code" uuid="org.netbeans.modules.php.editor.codetemplate.echo" xml:space="preserve">
-        <code><![CDATA[echo "${cursor}";]]></code>
-        <description><![CDATA[Output a string
-]]></description>
     </codetemplate>
     <codetemplate abbreviation="aint" xml:space="preserve">
         <code><![CDATA[assert('is_${int}(${variable variableFromPreviousAssignment}); // Invalid argument ${variable}: ${int} expected');
