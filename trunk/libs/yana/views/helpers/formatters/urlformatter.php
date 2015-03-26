@@ -97,7 +97,7 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
     private function _isHttps()
     {
         return (!empty($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], "off") !== 0) ||
-            strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], "https") === 0;
+            (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], "https") === 0);
     }
 
     /**
