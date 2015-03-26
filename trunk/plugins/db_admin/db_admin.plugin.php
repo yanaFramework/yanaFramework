@@ -537,7 +537,7 @@ class plugin_db_admin extends StdClass implements \Yana\IsPlugin
             $fileContents = gzencode($fileContents, 9);
             $filename .= '.gz';
         }
-        header("Content-Disposition: attachment; filename=${filename}");
+        header("Content-Disposition: attachment; filename={$filename}");
         header("Content-Length: " . strlen($fileContents));
         exit($fileContents);
     }

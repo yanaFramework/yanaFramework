@@ -918,7 +918,7 @@ class plugin_calendar extends StdClass implements \Yana\IsPlugin
         $where = array('user_created', '=', \Yana\User::getUserName());
         $db = self::_getDatabase();
         /* remove the row */
-        if (!$db->remove("calendar.${calendarID}", $where)) {
+        if (!$db->remove("calendar.{$calendarID}", $where)) {
             /* error - unable to perform update - possibly readonly */
             return false;
         }

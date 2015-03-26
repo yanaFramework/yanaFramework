@@ -273,7 +273,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
                 continue;
             }
 
-            print "(${i}) ${file}\n";
+            print "({$i}) {$file}\n";
 
             assert('!isset($docTitle); // Cannot redeclare var $docTitle');
             $docTitle = false;

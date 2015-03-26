@@ -160,7 +160,7 @@ class plugin_project extends StdClass implements \Yana\IsPlugin
             exit('Error: invalid data.');
         }
         $sum = (float) $sum;
-        $loan = $database->select("project.${projectId}.project_loan");
+        $loan = $database->select("project.{$projectId}.project_loan");
         if (is_numeric($loan)) {
             $loan = (float) $loan;
 

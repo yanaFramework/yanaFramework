@@ -271,7 +271,7 @@ class plugin_antispam extends StdClass implements \Yana\IsPlugin
                 $words = join('|', $settings['WORDS']);
                 $words = html_entity_decode($words);
                 $words = str_replace('||', '|', $words);
-                if (@preg_match("/${words}/Usi", print_r($ARGS, true), $m)) {
+                if (@preg_match("/{$words}/Usi", print_r($ARGS, true), $m)) {
 
                     if (!empty($settings['LOG'])) {
                         $log = "SPAM: blocked entry because a blacklisted phrase '" . $m[0]  .
@@ -296,7 +296,7 @@ class plugin_antispam extends StdClass implements \Yana\IsPlugin
 
                         if (!empty($settings['LOG'])) {
                             $log = "SPAM: blocked entry because a blacklisted phrase " .
-                                "'${words}' has been found.";
+                                "'{$words}' has been found.";
                             $level = \Yana\Log\TypeEnumeration::INFO;
                             \Yana\Log\LogManager::getLogger()->addLog($log, $level, $headerData);
                             unset($log);

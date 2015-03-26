@@ -600,7 +600,7 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
     {
         $database = self::getDatabase();
         // If the update operation was not successful, issue an error message and abort.
-        if (!$database->update("guestbook.${target}.guestbook_comment", $guestbook_comment)) {
+        if (!$database->update("guestbook.{$target}.guestbook_comment", $guestbook_comment)) {
             $message = "Unable to insert comment at 'guestbook.{$target}.'";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             \Yana\Log\LogManager::getLogger()->addLog($message, $level, array('guestbook_comment' => $guestbook_comment));
