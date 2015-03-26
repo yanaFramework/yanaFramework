@@ -24,7 +24,7 @@
       <tr>
         <td align="center" valign="middle">
 <!-- {if !empty($PROFILE.LOGO)} -->
-        <img id="message_pane_logo" border="0" alt="Logo" src='{$PROFILE.LOGO}'/>
+        <img id="message_pane_logo" border="0" alt="Logo" src='{$PROFILE.LOGO|entities}'/>
 <!-- {/if} -->
         <div id="message_pane_section">
 <!-- {if $STDOUT.LEVEL=='error'} -->
