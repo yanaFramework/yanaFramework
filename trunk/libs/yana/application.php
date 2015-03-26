@@ -942,9 +942,10 @@ final class Application extends \Yana\Core\AbstractSingleton
      * will never be executed.
      *
      * @param  string  $event  upcoming event to route to
+     * @param  array   $args   list of arguments to pass to the function
      * @since  2.9.0 RC2
      */
-    public function exitTo($event = 'null')
+    public function exitTo($event = 'null', array $args = array())
     {
         assert('is_string($event); // Invalid argument $event: string expected');
         $event = mb_strtolower("$event");
@@ -991,7 +992,8 @@ final class Application extends \Yana\Core\AbstractSingleton
         }
 
         $urlFormatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
-        header("Location: " . $urlFormatter("action=$event", true));
+        $args["action"] = $event;
+        header("Location: " . $urlFormatter(http_build_query($args), true));
         exit(0);
     }
 
