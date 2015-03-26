@@ -96,19 +96,19 @@ class plugin_downloads extends StdClass implements \Yana\IsPlugin
             {
                 case 0:
                     if (preg_match('/^[\w\.\d\-\_]+$/s', $buffer) && !headers_sent()) {
-                        header("Content-Disposition: attachment; filename=${buffer}");
+                        header("Content-Disposition: attachment; filename={$buffer}");
                     }
                 break;
 
                 case 1:
                     if (is_numeric($buffer) && !headers_sent()) {
-                        header("Content-Length: ${buffer}");
+                        header("Content-Length: {$buffer}");
                     }
                 break;
 
                 case 2:
                     if (preg_match('/^\w+\/[\w-]+$/s', $buffer) && !headers_sent()) {
-                        header("Content-type: ${buffer}");
+                        header("Content-type: {$buffer}");
                     }
                 break;
 
