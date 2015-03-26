@@ -26,7 +26,7 @@
       <div id="index_header" class="header">
           <div id="index_header_left"><div id="index_header_right"><div id="index_header_center" class="index_{if empty($PROFILE.LOGO)}default{else}custom{/if}_logo">
               <!-- {if !empty($PROFILE.LOGO)} Begin: logo -->
-              <div id="index_logo"><img alt="" src='{$PROFILE.LOGO}'/></div>
+              <div id="index_logo"><img alt="" src='{$PROFILE.LOGO|entities}'/></div>
               <!-- End: logo {/if} -->
               <div id="index_header_appbar">{applicationBar}</div>
 <!-- Begin: language block
