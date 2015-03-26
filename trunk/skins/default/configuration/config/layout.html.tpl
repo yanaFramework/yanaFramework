@@ -38,17 +38,17 @@
 
           <label class="optionitem">
             <span class="label">{lang id="ADMIN.76"}:</span>
-            <input id="bgcolor" type="color" size="8" name="bgcolor" value="{$PROFILE.BGCOLOR}"/>
+            <input id="bgcolor" type="color" size="8" name="bgcolor" value="{$PROFILE.BGCOLOR|entities}"/>
           </label>
 
           <label class="optionitem">
             <span class="label">{lang id="ADMIN.77"}:</span>
-            <input type="text" size="15" name="bgimage" value="{$PROFILE.BGIMAGE}"/>
+            <input type="text" size="15" name="bgimage" value="{$PROFILE.BGIMAGE|entities}"/>
           </label>
 
           <label class="optionitem">
             <span class="label">{lang id="ADMIN.78"}:</span>
-            <input type="text" size="15" name="logo" value="{$PROFILE.LOGO}"/>
+            <input type="text" size="15" name="logo" value="{$PROFILE.LOGO|entities}"/>
           </label>
 
         </div>
@@ -78,14 +78,14 @@
 
           <label class="optionitem">
             <span class="label">{lang id="ADMIN.80"}:</span>
-            <input id="hcolor" type="color" size="15" name="hcolor" value="{$PROFILE.HCOLOR}"/>
+            <input id="hcolor" type="color" size="15" name="hcolor" value="{$PROFILE.HCOLOR|entities}"/>
           </label>
 
           <label class="optionitem">
             <span class="label">{lang id="ADMIN.68"}:</span>
             <select name="hfont">
                 <optgroup label="{lang id="ADMIN.11"}">
-                  <option value="{$PROFILE.HFONT}" selected="selected">{if !empty($PROFILE.HFONT)}{$PROFILE.HFONT}{else}{lang id="ADMIN.46"}{/if}</option>
+                  <option value="{$PROFILE.HFONT|entities}" selected="selected">{if !empty($PROFILE.HFONT)}{$PROFILE.HFONT|entities}{else}{lang id="ADMIN.46"}{/if}</option>
                 </optgroup>
                 <optgroup label="{lang id="ADMIN.12"}">
                   <option value="">{lang id="ADMIN.46"}</option>
@@ -129,14 +129,14 @@
 
           <label class="optionitem">
             <span class="label">{lang id="ADMIN.80"}:</span>
-            <input id="pcolor" type="color" size="15" name="pcolor" value="{$PROFILE.PCOLOR}"/>
+            <input id="pcolor" type="color" size="15" name="pcolor" value="{$PROFILE.PCOLOR|entities}"/>
           </label>
 
           <label class="optionitem">
             <span class="label">{lang id="ADMIN.68"}:</span>
             <select name="pfont">
                 <optgroup label="{lang id="ADMIN.11"}">
-                  <option value="{$PROFILE.PFONT}" selected="selected">{if !empty($PROFILE.PFONT)}{$PROFILE.PFONT}{else}{lang id="ADMIN.46"}{/if}</option>
+                  <option value="{$PROFILE.PFONT|entities}" selected="selected">{if !empty($PROFILE.PFONT)}{$PROFILE.PFONT|entities}{else}{lang id="ADMIN.46"}{/if}</option>
                 </optgroup>
                 <optgroup label="{lang id="ADMIN.12"}">
                   <option value="">{lang id="ADMIN.46"}</option>
