@@ -40,7 +40,7 @@
 <!-- {if $ID != 'default'} -->
           <label class="optionitem">
             <span class="label">{lang id="ADMIN.65"}:</span>
-            <input type="text" size="25" name="profile_id" value="{$PROFILE.PROFILE_ID}" title="{lang id="PROFILE_ID"}"/>
+            <input type="text" size="25" name="profile_id" value="{$PROFILE.PROFILE_ID|entities}" title="{lang id="PROFILE_ID"}"/>
           </label>
 
           <div class="help">
@@ -51,7 +51,7 @@
 
           <label class="optionitem">
             <span class="label">{lang id="ADMIN.66"}:</span>
-            <input type="text" size="25" name="smileydir" value="{$PROFILE.SMILEYDIR}" title="{lang id="DIR"}"/>
+            <input type="text" size="25" name="smileydir" value="{$PROFILE.SMILEYDIR|entities}" title="{lang id="DIR"}"/>
           </label>
 
           <div class="help">
@@ -70,7 +70,7 @@
 
           <div class="optionitem">
             <span class="label">{lang id="ADMIN.75"}:</span>
-            <input type="text" title="{lang id="ADMIN.72"}" size="30" name="mail" value="{$PROFILE.MAIL}"/>
+            <input type="text" title="{lang id="ADMIN.72"}" size="30" name="mail" value="{$PROFILE.MAIL|entities}"/>
           </div>
 
         </div>
@@ -127,7 +127,7 @@
           <label class="optionitem" style="margin: auto;">
             <span class="label">{lang id="ADMIN.84"}:</span>
             <select name="log_length">
-              <option value="{$PROFILE.LOG_LENGTH}" selected="selected">{$PROFILE.LOG_LENGTH}</option>
+              <option value="{$PROFILE.LOG_LENGTH|entities}" selected="selected">{$PROFILE.LOG_LENGTH|entities}</option>
               <option value="10">10</option>
               <option value="20">20</option>
               <option value="30">30</option>
@@ -156,7 +156,7 @@
 
           <label class="optionitem" style="margin: auto;">
               <span class="label">{lang id="ADMIN.74"}:</span>
-              <input title="{lang id="ADMIN.70"}" type="text" name="log/mail" value="{$PROFILE.LOG.MAIL}"/>
+              <input title="{lang id="ADMIN.70"}" type="text" name="log/mail" value="{$PROFILE.LOG.MAIL|entities}"/>
           </label>
 
 
