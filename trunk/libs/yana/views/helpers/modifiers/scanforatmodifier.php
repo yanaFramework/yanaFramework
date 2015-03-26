@@ -50,11 +50,28 @@ class ScanForAtModifier extends \Yana\Views\Helpers\AbstractViewHelper implement
      */
     public function __invoke($source)
     {
+        $matches = array();
         if (is_string($source) && preg_match_all("/[\w\.\-_]+@[\w\.\-_]+/", $source, $matches)) {
+
+            assert('!isset($match); // $match already declared');
             foreach ($matches[0] as $match)
             {
-                $source = str_replace($match, htmlspecialchars($match, ENT_COMPAT, 'UTF-8'), $source);
+                assert('!isset($exceptionMatch); // $exceptionMatch already declared');
+                assert('!isset($encodedMatch); // $encodedMatch already declared');
+
+                $encodedMatch = \Yana\Util\String::htmlEntities($match); // the replacement string
+
+                // encode all mail addresses
+                $source = str_replace($match, $encodedMatch, $source);
+                // but avoid addresses in input fields
+                $exceptionMatch = array();
+                if (preg_match("/(\<input[^\>]+)" . preg_quote($encodedMatch, '/') . "/si", $source, $exceptionMatch)) {
+                    $source = str_replace($exceptionMatch[0], $exceptionMatch[1] . $match, $source);
+                }
+
+                unset($exceptionMatch, $encodedMatch);
             }
+            unset($match);
         }
         return $source;
     }
