@@ -57,6 +57,7 @@ class User extends \Yana\Core\Object implements IsUser
     /** @var int    */ private $_passwordTime = null;
     /** @var array  */ private $_recentPasswords = array();
     /** @var int    */ private $_timeCreated = null;
+    /** @var string */ private $_sessionCheckSum = null;
     /** @var array  */ private $_groups = array();
     /** @var array  */ private $_roles = array();
 
@@ -309,6 +310,35 @@ class User extends \Yana\Core\Object implements IsUser
     {
         $this->_roles = $roles;
         return $this;
+    }
+
+    /**
+     * Set session-checksum.
+     *
+     * The checksum should be a hexadecimal number represented as a string no longer than 32 chars.
+     *
+     * @param   string  $checkSum  MD5-checksum of session-id
+     * @return  \Yana\Security\Users\User
+     */
+    public function setSessionCheckSum($checkSum)
+    {
+        assert('is_string($checkSum); // Invalid argument $checkSum: string expected');
+
+        $this->_sessionCheckSum = (string) $checkSum;
+        return $this;
+    }
+
+    /**
+     * Get session-checksum.
+     *
+     * Will return NULL if the user never did a login before.
+     * Otherwise it will return the checksum of the least recently used session.
+     * 
+     * @return  string
+     */
+    public function getSessionCheckSum()
+    {
+        return $this->_sessionCheckSum;
     }
 
     /**

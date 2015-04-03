@@ -337,6 +337,47 @@ interface IsUser extends \Yana\Data\Adapters\IsEntity
      */
     public function createPasswordRecoveryId();
 
+    /**
+     * Set session-checksum.
+     *
+     * This is a secondary security feature meant as a fallback in case primary security is compromised.
+     *
+     * Yes, we actually are a little paranoid, aren't we?
+     *
+     * So what it does is:
+     * The session-id is converted to a checksum and saved to the user-database and the user's session array simultaneously.
+     *
+     * Why it does that is:
+     * So that we can compare the user's session data with the database record and determine, if the data he requested is
+     * actually his.
+     *
+     * What is supposed to happen is:
+     * If a user makes a request, claiming he is person X and the database states that he is not, then this user's session
+     * is invalidated. Thus preventing the attacker from impersonating another user.
+     *
+     * This is purely hypothetical of course. As far as we know, there is no way a user could impersonate another user
+     * and we sure as hell hope there never will be. But if you are being paranoid: at least do it properly.
+     *
+     * Consequences:
+     * As a side-effect a user can't log-in on two different browsers or systems simultaneously.
+     * If he does, his earlier session will be invalidated.
+     * We think this is acceptable since it also makes the user less vulnerable to session-riding-attacks.
+     *
+     * @param   string  $checkSum  MD5-checksum of session-id
+     * @return  \Yana\Security\Users\User
+     */
+    public function setSessionCheckSum($checkSum);
+
+    /**
+     * Get session-checksum.
+     *
+     * Will return NULL if the user never did a login before.
+     * Otherwise it will return the checksum of the least recently used session.
+     * 
+     * @return  string
+     */
+    public function getSessionCheckSum();
+
 }
 
 ?>
