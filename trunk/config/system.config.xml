@@ -193,7 +193,8 @@
             <phpfunction>is_array</phpfunction>
             <phpfunction>time</phpfunction>
             <phpfunction>nl2br</phpfunction>
-            <phpfunction>urlencode</phpfunction>
+            <phpfunction>max</phpfunction>
+            <phpfunction>min</phpfunction>
             <!--
                 Trusted PHP-functions that may be called from within templates as a modifier
             -->
