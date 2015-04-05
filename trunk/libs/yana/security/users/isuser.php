@@ -169,7 +169,7 @@ interface IsUser extends \Yana\Data\Adapters\IsEntity
      * Resets the number of times the user entered an invalid password back to 0.
      * Use this, when the maximum failure time has expired.
      *
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function resetFailureCount();
 
@@ -209,6 +209,16 @@ interface IsUser extends \Yana\Data\Adapters\IsEntity
      * @return  int
      */
     public function getLoginTime();
+
+    /**
+     * Get login count.
+     *
+     * Returns the number of times the user sucessfully logged-in.
+     *
+     * The default is 0.
+     * @return  int
+     */
+    public function getLoginCount();
 
     /**
      * Update mail.
@@ -364,7 +374,7 @@ interface IsUser extends \Yana\Data\Adapters\IsEntity
      * We think this is acceptable since it also makes the user less vulnerable to session-riding-attacks.
      *
      * @param   string  $checkSum  MD5-checksum of session-id
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setSessionCheckSum($checkSum);
 
@@ -377,6 +387,82 @@ interface IsUser extends \Yana\Data\Adapters\IsEntity
      * @return  string
      */
     public function getSessionCheckSum();
+
+    /**
+     * Set a hash-id for password recovery.
+     *
+     * The user must enter this id in order to reset the password.
+     *
+     * @param   string  $passwordRecoveryId  some identifier (preferably a hash value)
+     * @return  \Yana\Security\Users\IsUser
+     */
+    public function setPasswordRecoveryId($passwordRecoveryId);
+
+    /**
+     * Set time when the last password recovery request was made.
+     *
+     * @param   int $passwordRecoveryTime  a valid timestamp
+     * @return  \Yana\Security\Users\IsUser
+     */
+    public function setPasswordRecoveryTime($passwordRecoveryTime);
+
+    /**
+     * Set time when the user last changed his password.
+     *
+     * @param   int  $passwordTime  a valid timestamp
+     * @return  \Yana\Security\Users\IsUser
+     */
+    public function setPasswordTime($passwordTime);
+
+    /**
+     * Set a list of recent passwords.
+     *
+     * When a new password is set it must not be one of those.
+     *
+     * @param   array  $recentPasswords  list of password hashes
+     * @return  \Yana\Security\Users\IsUser
+     */
+    public function setRecentPasswords(array $recentPasswords);
+
+    /**
+     * Set the time when the user account was created.
+     *
+     * Should not be changed manually.
+     *
+     * @param   int  $timeCreated  valid timestamp
+     * @return  \Yana\Security\Users\IsUser
+     */
+    public function setTimeCreated($timeCreated);
+
+    /**
+     * Set user groups.
+     *
+     * An array of group names, where the keys are the group ids and the values are
+     * the human-readable group names.
+     *
+     * @param   array  $groups  list of names
+     * @return  \Yana\Security\Users\IsUser
+     */
+    public function setGroups(array $groups);
+
+    /**
+     * Set user roles.
+     *
+     * An array of role names, where the keys are the group ids and the values are
+     * the human-readable role names.
+     *
+     * @param   array  $roles  list of names
+     * @return  \Yana\Security\Users\IsUser
+     */
+    public function setRoles(array $roles);
+
+    /**
+     * Set login password to $password.
+     *
+     * @param   string  $password user password
+     * @return  \Yana\Security\Users\User
+     */
+    public function setPassword($password);
 
 }
 
