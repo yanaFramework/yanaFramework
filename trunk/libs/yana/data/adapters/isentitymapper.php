@@ -27,7 +27,7 @@
  * @ignore
  */
 
-namespace Yana\Security\Users;
+namespace Yana\Data\Adapters;
 
 /**
  * <<interface>> For mapping entity objects to arrays and vice-versa.
