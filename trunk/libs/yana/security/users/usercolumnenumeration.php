@@ -40,6 +40,7 @@ namespace Yana\Security\Users;
 class UserColumnEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
+    const TABLE = 'user';
     const ID = 'USER_ID';
     const PASSWORD = 'USER_PWD';
     const SESSION_CHECKSUM = 'USER_SESSION';
