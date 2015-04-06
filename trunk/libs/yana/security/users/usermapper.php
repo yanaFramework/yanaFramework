@@ -39,7 +39,7 @@ namespace Yana\Security\Users;
  *
  * @ignore
  */
-class UserMapper extends \Yana\Core\Object
+class UserMapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEntityMapper
 {
 
     /**
@@ -49,7 +49,7 @@ class UserMapper extends \Yana\Core\Object
      * @return  \Yana\Security\Users\IsUser
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given user has no name
      */
-    public function toUserEntity(array $databaseRow)
+    public function toEntity(array $databaseRow)
     {
         if (!isset($databaseRow[\Yana\Security\Users\UserColumnEnumeration::ID])) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Given user has no name.");
@@ -110,48 +110,52 @@ class UserMapper extends \Yana\Core\Object
      *
      * Note: groups and roles are not converted.
      *
-     * @param   \Yana\Security\Users\IsUser $user  entity containing user info
+     * @param   \Yana\Data\Adapters\IsEntity  $user  entity containing user info
      * @return  array
      */
-    public function toUserDatabaseRow(\Yana\Security\Users\IsUser $user)
+    public function toDatabaseRow(\Yana\Data\Adapters\IsEntity $user)
     {
         assert('!isset($row); // Cannot redeclare var $row');
-        $row = array(
-            \Yana\Security\Users\UserColumnEnumeration::ID => $user->getId(),
-            \Yana\Security\Users\UserColumnEnumeration::IS_ACTIVE => $user->getActive(),
-            \Yana\Security\Users\UserColumnEnumeration::LOGIN_FAILURE_COUNT => $user->getFailureCount(),
-            \Yana\Security\Users\UserColumnEnumeration::LOGIN_FAILURE_TIME => $user->getFailureTime(),
-            \Yana\Security\Users\UserColumnEnumeration::LOGIN_COUNT => $user->getLoginCount(),
-            \Yana\Security\Users\UserColumnEnumeration::LOGIN_TIME => $user->getLoginTime(),
-            \Yana\Security\Users\UserColumnEnumeration::IS_EXPERT_MODE => $user->getExpert(),
-            \Yana\Security\Users\UserColumnEnumeration::RECENT_PASSWORDS => $user->getRecentPasswords()
-        );
+        $row = array();
 
-        if ($user->getLanguage() !== null) {
-            $row[\Yana\Security\Users\UserColumnEnumeration::LANGUAGE] = $user->getLanguage();
+        if ($user instanceof \Yana\Security\Users\IsUser) {
+
+            $row = array(
+                \Yana\Security\Users\UserColumnEnumeration::ID => $user->getId(),
+                \Yana\Security\Users\UserColumnEnumeration::IS_ACTIVE => $user->getActive(),
+                \Yana\Security\Users\UserColumnEnumeration::LOGIN_FAILURE_COUNT => $user->getFailureCount(),
+                \Yana\Security\Users\UserColumnEnumeration::LOGIN_FAILURE_TIME => $user->getFailureTime(),
+                \Yana\Security\Users\UserColumnEnumeration::LOGIN_COUNT => $user->getLoginCount(),
+                \Yana\Security\Users\UserColumnEnumeration::LOGIN_TIME => $user->getLoginTime(),
+                \Yana\Security\Users\UserColumnEnumeration::IS_EXPERT_MODE => $user->getExpert(),
+                \Yana\Security\Users\UserColumnEnumeration::RECENT_PASSWORDS => $user->getRecentPasswords()
+            );
+            if ($user->getLanguage() !== null) {
+                $row[\Yana\Security\Users\UserColumnEnumeration::LANGUAGE] = $user->getLanguage();
+            }
+            if ($user->getPassword() !== null) {
+                $row[\Yana\Security\Users\UserColumnEnumeration::PASSWORD] = $user->getPassword();
+            }
+            if ($user->getMail() !== null) {
+                $row[\Yana\Security\Users\UserColumnEnumeration::MAIL] = $user->getMail();
+            }
+            if ($user->getPasswordRecoveryId() !== null) {
+                $row[\Yana\Security\Users\UserColumnEnumeration::PASSWORD_RECOVERY_ID] = $user->getPasswordRecoveryId();
+            }
+            if ($user->getPasswordRecoveryTime() !== null) {
+                $row[\Yana\Security\Users\UserColumnEnumeration::PASSWORD_RECOVERY_TIME] = $user->getPasswordRecoveryTime();
+            }
+            if ($user->getPasswordTime() !== null) {
+                $row[\Yana\Security\Users\UserColumnEnumeration::PASSWORD_TIME] = $user->getPasswordTime();
+            }
+            if ($user->getTimeCreated() !== null) {
+                $row[\Yana\Security\Users\UserColumnEnumeration::TIME_CREATED] = $user->getTimeCreated();
+            }
+            if ($user->getSessionCheckSum() !== null) {
+                $row[\Yana\Security\Users\UserColumnEnumeration::SESSION_CHECKSUM] = $user->getSessionCheckSum();
+            }   
         }
-        if ($user->getPassword() !== null) {
-            $row[\Yana\Security\Users\UserColumnEnumeration::PASSWORD] = $user->getPassword();
-        }
-        if ($user->getMail() !== null) {
-            $row[\Yana\Security\Users\UserColumnEnumeration::MAIL] = $user->getMail();
-        }
-        if ($user->getPasswordRecoveryId() !== null) {
-            $row[\Yana\Security\Users\UserColumnEnumeration::PASSWORD_RECOVERY_ID] = $user->getPasswordRecoveryId();
-        }
-        if ($user->getPasswordRecoveryTime() !== null) {
-            $row[\Yana\Security\Users\UserColumnEnumeration::PASSWORD_RECOVERY_TIME] = $user->getPasswordRecoveryTime();
-        }
-        if ($user->getPasswordTime() !== null) {
-            $row[\Yana\Security\Users\UserColumnEnumeration::PASSWORD_TIME] = $user->getPasswordTime();
-        }
-        if ($user->getTimeCreated() !== null) {
-            $row[\Yana\Security\Users\UserColumnEnumeration::TIME_CREATED] = $user->getTimeCreated();
-        }
-        if ($user->getSessionCheckSum() !== null) {
-            $row[\Yana\Security\Users\UserColumnEnumeration::SESSION_CHECKSUM] = $user->getSessionCheckSum();
-        }
-        return $user;
+        return $row;
     }
 
 }
