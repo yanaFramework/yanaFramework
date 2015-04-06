@@ -92,7 +92,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Update Invalid Argument Exception  
+     * Update Invalid Argument Exception
      *
      * @expectedException \Yana\Db\Queries\Exceptions\NotUpdatedException
      * @test
@@ -199,7 +199,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         } catch(InvalidValueException $e) {
             // success
         }
-        
+
         // supposed to fail
         $test = $this->dbsobj->insertOrUpdate('t.foo2', array('tvalue' => 1, 'ftid' => 2 ));
         $this->assertFalse($test, 'expected insert of t.foo2 to fail, due to a foreign-key constraint');
@@ -225,7 +225,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $test = $this->dbsobj->update('i.foo.ta.1.a', 2);
         $this->assertTrue($test, '"set array content" failed');
 
-        $this->assertTrue($this->dbsobj->commit(), 'commit() to database failed');
+        $this->dbsobj->commit();
 
         $test = new \Yana\Db\Queries\Select($this->dbsobj);
         $test->setTable('ft');
@@ -343,7 +343,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $test['ta'] = $temp1 ;
         $test['tvalue'] = $temp2;
         $this->assertTrue($this->dbsobj->update('i.foo', $test), '"update inheritance 1" test failed');
-        $this->assertTrue($this->dbsobj->commit(), '"update inheritance 1" test failed');
+        $this->dbsobj->commit();
 
         $this->assertEquals($this->dbsobj->select('i.foo.ta'), $temp1, '"update inheritance 2" test failed');
         $this->assertEquals($this->dbsobj->select('t.foo.tvalue'), $temp2, '"update inheritance 2" test failed');
@@ -385,7 +385,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         // test for property "zerofill"
         // column t.ti is a zerofilled integer with length 4
         $this->assertTrue($this->dbsobj->update('t.foo.ti', 1), '"set zerofill" test failed');
-        $this->assertTrue($this->dbsobj->commit(), '"set zerofill" test failed');
+        $this->dbsobj->commit();
 
         $this->assertEquals($this->dbsobj->select('t.foo.ti'), '0001', '"get zerofill" test failed');
 
@@ -400,8 +400,8 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
         $test = $this->dbsobj->importSQL(CWD.'resources/foo.sql');
         $this->assertTrue($test, 'The file is expected to be imported successfully.');
-        
-        $this->assertTrue($this->dbsobj->commit(), 'SQL file is expected to be committed successfully.');
+
+        $this->dbsobj->commit();
 
         $this->assertTrue($this->dbsobj->exists('t.FOO1'), 'Expect column "foo1" to exist in table "t".');
         $this->assertTrue($this->dbsobj->exists('t.FOO2'), 'Expect column "foo2" to exist in table "t".');
