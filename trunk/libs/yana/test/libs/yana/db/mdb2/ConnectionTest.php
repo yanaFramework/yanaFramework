@@ -234,11 +234,13 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $test, 'assert failed, the values should be equal');
 
         // supposed to fail
-        $test = @$this->dbsobj->insert('i.foo', array('ta' => array('1' => '1'))) && @$this->dbsobj->commit();
+        $test = @$this->dbsobj->insert('i.foo', array('ta' => array('1' => '1')));
+        $this->dbsobj->commit();
         $this->assertFalse($test, 'duplicate key test (1) failed');
 
         // supposed to fail
-        $test = @$this->dbsobj->insert('i', array('iid' => 'foo', 'ta' => array('1' => '1'))) && @$this->dbsobj->commit();
+        $test = @$this->dbsobj->insert('i', array('iid' => 'foo', 'ta' => array('1' => '1')));
+        $this->dbsobj->commit();
         $this->assertFalse($test, 'duplicate key test (2) failed');
 
         // exists table
