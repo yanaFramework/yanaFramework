@@ -497,6 +497,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * @see     AbstractConnection::update()
      * @since   2.9.5
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the query is neither an insert, nor an update statement
+     * @throws  \Yana\Core\Exceptions\NotWriteableException     when the table or database is locked
      */
     public function insertOrUpdate($key, $value = array())
     {
