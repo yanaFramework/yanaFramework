@@ -78,6 +78,28 @@ abstract class AbstractUserManager extends \Yana\Core\Object implements \Yana\Da
         $this->_entityMapper = $mapper;
     }
 
+    /**
+     * Returns the connection to the user database.
+     *
+     * @return  \Yana\Db\IsConnection
+     */
+    protected function _getConnection()
+    {
+        return $this->_connection;
+    }
+
+    /**
+     * Returns an instance of an OR-mappinging class.
+     *
+     * Use this to map database entries to objects and vice-versa.
+     *
+     * @return  \Yana\Data\Adapters\IsEntityMapper
+     */
+    protected function _getEntityMapper()
+    {
+        return $this->_entityMapper;
+    }
+
 }
 
 ?>
