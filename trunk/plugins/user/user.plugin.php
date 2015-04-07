@@ -307,14 +307,13 @@ class plugin_user extends StdClass implements \Yana\IsPlugin
         // update the user record with time() and uniqueID for verification
         assert('!isset($recovery) // Cannot redeclare var $recovery');
         $recovery = array("user_recover_id" => $uniqueKey, "user_recover_utc" => time());
-        $setRecoveryId = $database->update("user.{$userName}", $recovery);
-        unset($recovery);
-        $database->commit(); // may throw exception
-
-        // check for successful user record update
-        if ($setRecoveryId == false) {
-            return false;
+        try {
+            $database->update("user.{$userName}", $recovery)
+                ->commit();
+        } catch (\Exception $e) {
+            return false; // unsuccessful user record update
         }
+        unset($recovery);
 
         assert('isset($userName); // variable $userName is not set');
 
