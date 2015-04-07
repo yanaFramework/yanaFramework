@@ -1570,7 +1570,7 @@ class Calendar extends \Yana\Files\AbstractResource
         try {
             $events = $this->getEvents();
             return empty($events);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return true;
         }
 
