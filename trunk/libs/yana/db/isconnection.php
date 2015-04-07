@@ -112,7 +112,7 @@ interface IsConnection
      * @param   string|\Yana\Db\Queries\Delete  $key    the address of the row that should be removed
      * @param   array            $where  where clause
      * @param   int              $limit  maximum number of rows to remove
-     * @return  bool
+     * @return  \Yana\Db\IsConnection
      * @throws  \Yana\Core\Exceptions\NotWriteableException  when the table or database is locked
      */
     public function remove($key, array $where = array(), $limit = 1);
