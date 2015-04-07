@@ -189,8 +189,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($test, '"isEmpty" test failed, the expected result is true for no entries inside the table');
 
         // init database
-        $test = $this->dbsobj->insert('ft.1', array('ftvalue' => 1));
-        $this->assertTrue($test, 'init ft.1 failed');
+        $this->dbsobj->insert('ft.1', array('ftvalue' => 1));
 
         // supposed to fail
         try {
