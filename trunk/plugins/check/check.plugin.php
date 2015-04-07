@@ -85,26 +85,30 @@ class plugin_check extends StdClass implements \Yana\IsPlugin
                 $result = "Access denied.";
             } elseif ($query instanceof \Yana\Db\Queries\AbstractQuery) {
                 $result = (string) $query . "\n\n";
-                switch ($query->getType())
-                {
-                    case \Yana\Db\Queries\TypeEnumeration::SELECT:
-                        $result .= print_r($query->getResults(), true);
-                    break;
-                    case \Yana\Db\Queries\TypeEnumeration::COUNT:
-                        $result .= print_r($query->doesExist(), true);
-                    break;
-                    case \Yana\Db\Queries\TypeEnumeration::EXISTS:
-                        $result .= print_r($query->countResults(), true);
-                    break;
-                    case \Yana\Db\Queries\TypeEnumeration::UPDATE:
-                        $fileDb->update($query);
-                    break;
-                    case \Yana\Db\Queries\TypeEnumeration::INSERT:
-                        $fileDb->insert($query);
-                    break;
-                    case \Yana\Db\Queries\TypeEnumeration::DELETE:
-                        $fileDb->remove($query);
-                    break;
+                try {
+                    switch ($query->getType())
+                    {
+                        case \Yana\Db\Queries\TypeEnumeration::SELECT:
+                            $result .= print_r($query->getResults(), true);
+                        break;
+                        case \Yana\Db\Queries\TypeEnumeration::COUNT:
+                            $result .= print_r($query->doesExist(), true);
+                        break;
+                        case \Yana\Db\Queries\TypeEnumeration::EXISTS:
+                            $result .= print_r($query->countResults(), true);
+                        break;
+                        case \Yana\Db\Queries\TypeEnumeration::UPDATE:
+                            $fileDb->update($query);
+                        break;
+                        case \Yana\Db\Queries\TypeEnumeration::INSERT:
+                            $fileDb->insert($query);
+                        break;
+                        case \Yana\Db\Queries\TypeEnumeration::DELETE:
+                            $fileDb->remove($query);
+                        break;
+                    }
+                } catch (\Yana\Db\DatabaseException $e) {
+                    $result .= $e->getMessage();
                 }
             }
         } else {
