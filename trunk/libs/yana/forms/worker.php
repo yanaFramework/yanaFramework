@@ -395,7 +395,11 @@ class Worker extends \Yana\Forms\QueryBuilder
                 {
                     $callback($id); // may throw exception
                 }
-                $this->_db->remove("{$tableName}.{$id}");
+                try {
+                    $this->_db->remove("{$tableName}.{$id}");
+                } catch (\Yana\Core\Exceptions\NotWriteableException $e) {
+                    break 2;
+                }
 
                 // execute hooks
                 foreach ($this->afterDelete() as $callback)
