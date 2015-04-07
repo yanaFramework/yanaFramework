@@ -774,7 +774,9 @@ class plugin_calendar extends StdClass implements \Yana\IsPlugin
         $db = self::_getDatabase();
 
         if (isset($calendarData)) {
-            if (!$db->insert("calendar", $calendarData)) {
+            try {
+                $db->insert("calendar", $calendarData);
+            } catch (\Exception $e) {
                 return false;
             }
         }
