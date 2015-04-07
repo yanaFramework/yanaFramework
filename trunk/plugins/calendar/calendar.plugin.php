@@ -918,14 +918,14 @@ class plugin_calendar extends StdClass implements \Yana\IsPlugin
         $where = array('user_created', '=', \Yana\User::getUserName());
         $db = self::_getDatabase();
         /* remove the row */
-        if (!$db->remove("calendar.{$calendarID}", $where)) {
+        try {
+            $db->remove("calendar.{$calendarID}", $where)
+                ->commit(); // may throw exception
+            return true;
+        } catch (Exception $e) {
             /* error - unable to perform update - possibly readonly */
             return false;
         }
-
-        /* commit changes */
-        $db->commit(); // may throw exception
-        return true;
     }
 
     /**
