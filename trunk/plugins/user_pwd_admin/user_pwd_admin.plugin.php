@@ -301,7 +301,6 @@ class plugin_user_pwd_admin extends StdClass implements \Yana\IsPlugin
             $message = "Password is the same that you have used before. Please select another one.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\Security\PasswordDoesNotMatchException($message, $level);
-            return false;
         }
         /* check if the new password is the same like the last (max. 5)*/
         $currentPWDList = $currentUserInformation['USER_PWD_LIST'];
@@ -320,11 +319,15 @@ class plugin_user_pwd_admin extends StdClass implements \Yana\IsPlugin
             // create the list with the password
             $currentPWDList = array($currentUserInformation['USER_PWD']);
         }
-        $db->update("USER.$user.USER_PWD_LIST", $currentPWDList);
-        /* set pwd create date if not exist or update */
-        $db->update("USER.$user.USER_PWD_TIME", mktime());
-        $db->commit(); // may throw exception
-        return true;
+        try {
+            $db->update("USER.$user.USER_PWD_LIST", $currentPWDList);
+            /* set pwd create date if not exist or update */
+            $db->update("USER.$user.USER_PWD_TIME", mktime());
+            $db->commit(); // may throw exception
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
 }
