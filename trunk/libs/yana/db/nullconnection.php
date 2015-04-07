@@ -102,11 +102,11 @@ class NullConnection extends \Yana\Core\Object implements \Yana\Db\IsConnection
      *
      * @param   string|\Yana\Db\Queries\Update  $key    the address of the row that should be updated
      * @param   mixed                           $value  value
-     * @return  bool
+     * @return  \Yana\Db\IsConnection
      */
     public function update($key, $value = array())
     {
-        return true;
+        return $this;
     }
 
     /**
@@ -114,11 +114,11 @@ class NullConnection extends \Yana\Core\Object implements \Yana\Db\IsConnection
      *
      * @param   string|\Yana\Db\Queries\Insert  $key    the address of the row that should be inserted|updated
      * @param   mixed                           $value  value
-     * @return  bool
+     * @return  \Yana\Db\IsConnection
      */
     public function insertOrUpdate($key, $value = array())
     {
-        return true;
+        return $this;
     }
 
     /**
@@ -126,11 +126,11 @@ class NullConnection extends \Yana\Core\Object implements \Yana\Db\IsConnection
      *
      * @param   string|\Yana\Db\Queries\Insert  $key  the address of the row that should be inserted
      * @param   array                           $row  associative array of values
-     * @return  bool
+     * @return  \Yana\Db\IsConnection
      */
     public function insert($key, array $row = array())
     {
-        return true;
+        return $this;
     }
 
     /**
