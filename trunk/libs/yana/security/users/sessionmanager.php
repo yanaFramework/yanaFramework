@@ -241,15 +241,14 @@ class SessionManager extends \Yana\Core\AbstractSingleton
      */
     public static function refreshPluginSecuritySettings()
     {
-        // remove old predefined security settings
         $where = array('actionrule_predefined', '=', true);
         $database = self::getDatasource();
-        if (!$database->remove('securityactionrules', $where, 0)) {
-            $database->rollback();
-            throw new \Yana\Db\Queries\Exceptions\NotDeletedException("Unable to delete old entries.");
-        }
-        // remove old actions
-        if (!$database->remove('securityaction', array(), 0)) {
+        try {
+            // remove old predefined security settings
+            $database->remove('securityactionrules', $where, 0);
+            // remove old actions
+            $database->remove('securityaction', array(), 0);
+        } catch (\Yana\Core\Exceptions\NotWriteableException $e) {
             $database->rollback();
             throw new \Yana\Db\Queries\Exceptions\NotDeletedException("Unable to delete old entries.");
         }
@@ -310,7 +309,9 @@ class SessionManager extends \Yana\Core\AbstractSingleton
         assert('!isset($row); // Cannot redeclare var $row');
         foreach ($actions as $row)
         {
-            if (!$database->insert('securityaction', $row)) {
+            try {
+                $database->insert('securityaction', $row);
+            } catch (\Exception $e) {
                 $database->rollback();
                 throw new \Yana\Db\Queries\Exceptions\NotCreatedException("Unable to insert new action.");
             }
@@ -325,7 +326,9 @@ class SessionManager extends \Yana\Core\AbstractSingleton
                 continue;
             }
             $group = array('group_id' => $groupId, 'group_name' => $groupId);
-            if (!$database->insert("securitygroup.$groupId", $group)) {
+            try {
+                $database->insert("securitygroup.$groupId", $group);
+            } catch (\Exception $e) {
                 $database->rollback();
                 throw new \Yana\Db\Queries\Exceptions\NotCreatedException("Unable to insert new group.");
             }
@@ -341,7 +344,9 @@ class SessionManager extends \Yana\Core\AbstractSingleton
                 continue;
             }
             $role = array('role_id' => $roleId, 'role_name' => $roleId);
-            if (!$database->insert("securityrole.$roleId", $role)) {
+            try {
+                $database->insert("securityrole.$roleId", $role);
+            } catch (\Exception $e) {
                 $database->rollback();
                 throw new \Yana\Db\Queries\Exceptions\NotCreatedException("Unable to insert new role.");
             }
@@ -352,7 +357,9 @@ class SessionManager extends \Yana\Core\AbstractSingleton
         assert('!isset($row); // Cannot redeclare var $row');
         foreach ($rows as $row)
         {
-            if (!$database->insert('securityactionrules', $row)) {
+            try {
+                $database->insert('securityactionrules', $row);
+            } catch (\Exception $e) {
                 $database->rollback();
                 throw new \Yana\Db\Queries\Exceptions\NotCreatedException("Unable to insert new security setting.");
             }
@@ -568,32 +575,32 @@ class SessionManager extends \Yana\Core\AbstractSingleton
             throw new \Yana\Core\Exceptions\NotFoundException("No such user '$userName'.", E_USER_WARNING);
         }
 
-        $database = self::getDatasource();
-        $remove = $database->remove("securitylevel", array(
-                array("user_id", '=', $userName),
-                'and',
-                array(
-                    array("profile", '=', $profileId),
+        try {
+            $database = self::getDatasource();
+            $database->remove("securitylevel", array(
+                    array("user_id", '=', $userName),
                     'and',
-                    array("user_created", '=', $currentUser)
-                )
-            ), 1);
-        if ($remove) {
+                    array(
+                        array("profile", '=', $profileId),
+                        'and',
+                        array("user_created", '=', $currentUser)
+                    )
+                ), 1);
             $database->commit(); // may throw exception
-        }
-        $result = $database->insert("securitylevel", array(
-                "user_id" => $userName,
-                "profile" => $profileId,
-                "security_level" => $level,
-                "user_created" => $currentUser,
-                "user_proxy_active" => true
-            ));
-        if (!$result) {
+            $database->insert("securitylevel", array(
+                    "user_id" => $userName,
+                    "profile" => $profileId,
+                    "security_level" => $level,
+                    "user_created" => $currentUser,
+                    "user_proxy_active" => true
+                ));
+            $database->commit(); // may throw exception
+
+        } catch (\Exception $e) {
             $message = "Unable to commit changed security level for user '$userName'.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
-            throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level);
+            throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level, $e);
         }
-        $database->commit(); // may throw exception
     }
 
     /**
