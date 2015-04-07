@@ -376,9 +376,9 @@ class Sequence extends \Yana\Core\Object
         }
 
         // remove datbase entry
-        $success = self::$db->remove("sequences.$name");
         try {
-            self::$db->commit(); // may throw exception
+            self::$db->remove("sequences.$name")
+                ->commit(); // may throw exception
             $success = true;
         } catch (\Exception $e) {
             unset($e);
