@@ -196,30 +196,39 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         try {
             $this->dbsobj->insert('t.foo1', array('tvalue' => 1 ));
             $this->fail('expected insert of t.foo1 to fail');
-        } catch(InvalidValueException $e) {
+        } catch(\Exception $e) {
             // success
         }
 
         // supposed to fail
-        $test = $this->dbsobj->insertOrUpdate('t.foo2', array('tvalue' => 1, 'ftid' => 2 ));
-        $this->assertFalse($test, 'expected insert of t.foo2 to fail, due to a foreign-key constraint');
+        try {
+            $this->dbsobj->insertOrUpdate('t.foo2', array('tvalue' => 1, 'ftid' => 2 ));
+            $this->fail('expected insert of t.foo2 to fail, due to a foreign-key constraint');
+        } catch (\Exception $ex) {
+            // success
+        }
 
         // supposed to fail
-        $test = @$this->dbsobj->insertOrUpdate('t.foo2', array('tvalue' => 1, 'ftid' => 2 ));
-        $this->assertFalse($test, 'expected insert of t.foo2 to fail, due to a foreign-key constraint');
+        try {
+            $this->dbsobj->insertOrUpdate('t.foo2', array('tvalue' => 1, 'ftid' => 2 ));
+            $this->fail('expected insert of t.foo2 to fail, due to a foreign-key constraint');
+        } catch (\Exception $ex) {
+            // success
+        }
 
-        $test = $this->dbsobj->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true ));
-        $this->assertTrue($test, 'init t.foo failed');
+        $this->dbsobj->insert('t.foo', array('tvalue' => 1, 'ftid' => 1, 'tb' => true ));
 
-        $test = $this->dbsobj->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false ));
-        $this->assertTrue($test, 'init t.foo3 failed');
+        $this->dbsobj->insert('t.foo3', array('tvalue' => 3, 'ftid' => 1, 'tb' => false ));
 
         // supposed to fail
-        $test = @$this->dbsobj->insertOrUpdate('i.foo2', array('ta' => array(1 => 1 ) ));
-        $this->assertFalse($test, 'init i.foo2 failed');
+        try {
+            $this->dbsobj->insertOrUpdate('i.foo2', array('ta' => array(1 => 1 ) ));
+            $this->fail('init i.foo2 failed');
+        } catch (\Exception $ex) {
+            // success
+        }
 
-        $test = $this->dbsobj->insert('i.foo', array('ta' => array('1' => '1' ) ));
-        $this->assertTrue($test, 'init i.foo failed');
+        $this->dbsobj->insert('i.foo', array('ta' => array('1' => '1' ) ));
 
         // supposed to succeed
         $this->dbsobj->update('i.foo.ta.1.a', 2);
@@ -233,21 +242,29 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $test, 'assert failed, the values should be equal');
 
         // supposed to fail
-        $test = @$this->dbsobj->insert('i.foo', array('ta' => array('1' => '1')));
-        $this->dbsobj->commit();
-        $this->assertFalse($test, 'duplicate key test (1) failed');
+        try {
+            $this->dbsobj->insert('i.foo', array('ta' => array('1' => '1')));
+            $this->dbsobj->commit();
+            $this->fail('duplicate key test (1) failed');
+        } catch (\Exception $ex) {
+            // success
+        }
 
         // supposed to fail
-        $test = @$this->dbsobj->insert('i', array('iid' => 'foo', 'ta' => array('1' => '1')));
-        $this->dbsobj->commit();
-        $this->assertFalse($test, 'duplicate key test (2) failed');
+        try {
+            $this->dbsobj->insert('i', array('iid' => 'foo', 'ta' => array('1' => '1')));
+            $this->dbsobj->commit();
+            $this->fail('duplicate key test (2) failed');
+        } catch (\Exception $ex) {
+            // success
+        }
 
         // exists table
         $test = $this->dbsobj->exists('t');
         $this->assertTrue($test, '"exists table" test failed');
 
         try {
-            $test = $this->dbsobj->insert('t.foo', array('tvalue' => 1));
+            $this->dbsobj->insert('t.foo', array('tvalue' => 1));
         } catch (\Yana\Core\Exceptions\InvalidValueException $e) {
             // insert t.foo test" failed row with key already exist
         }
@@ -314,8 +331,12 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($test, 3, '"get last entry" test failed');
 
         // test foreign key constraint
-        $test = $this->dbsobj->insertOrUpdate('t.foo.ftid', 2); // supposed to fail
-        $this->assertFalse($test, '"foreign key" test failed');
+        try {
+            $this->dbsobj->insertOrUpdate('t.foo.ftid', 2); // supposed to fail
+            $this->fail('"foreign key" test failed');
+        } catch (\Exception $e) {
+            // success
+        }
 
         // test buffer
         $this->dbsobj->update('ft.3', array('ftvalue' => 3 ));
