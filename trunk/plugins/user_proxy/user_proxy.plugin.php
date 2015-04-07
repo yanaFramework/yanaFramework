@@ -234,7 +234,9 @@ class plugin_user_proxy extends StdClass implements \Yana\IsPlugin
                 unset($get, $key);
 
                 if (isset($rule)) {
-                    if (!$db->insert("securityrules", $rule)) {
+                    try {
+                        $db->insert("securityrules", $rule);
+                    } catch (\Exception $e) {
                         return false;
                     }
                 }
@@ -284,7 +286,9 @@ class plugin_user_proxy extends StdClass implements \Yana\IsPlugin
                 }
                 unset($get, $key);
                 if (isset($row)) {
-                    if (!$db->insert("securitylevel", $row)) {
+                    try {
+                        $db->insert("securitylevel", $row);
+                    } catch (\Exception $e) {
                         return false;
                     }
                 }
