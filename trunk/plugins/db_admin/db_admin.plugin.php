@@ -418,12 +418,15 @@ class plugin_db_admin extends StdClass implements \Yana\IsPlugin
                     $fileContent = $fileDb->select($fileSelectQuery);
                     foreach ($diff as $key)
                     {
-                        if (!$db->insert("$tableName.$key", $fileContent[$key])) {
+                        try {
+                            $db->insert("$tableName.$key", $fileContent[$key]);
+                        } catch (\Exception $e) {
                             $message = "Unable to copy value $tableName.$key from FileDB to database";
                             $level = \Yana\Log\TypeEnumeration::WARNING;
                             \Yana\Log\LogManager::getLogger()->addLog($message, $level);
                             throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level);
-                        } else if ($i > 20) {
+                        }
+                        if ($i > 20) { // safe point all 20 inserts
                             try {
                                 $db->commit(); // may throw exception
                                 $i = 0;
