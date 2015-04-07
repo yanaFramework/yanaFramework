@@ -908,29 +908,27 @@ class User extends \Yana\Core\Object
             throw new \Yana\Core\Exceptions\NotFoundException("No such user: '$userName'.", E_USER_WARNING);
         }
 
-        switch (false)
-        {
+        try {
             // delete profile
-            case self::$_database->remove("userprofile.$userName"):
+            self::$_database->remove("userprofile.$userName");
             // delete user's security level
-            case self::$_database->remove("securitylevel", array("user_id", "=", $userName), 0):
+            self::$_database->remove("securitylevel", array("user_id", "=", $userName), 0);
             // delete access permissions (temporarily) granted by this user
-            case self::$_database->remove("securityrules", array("user_created", "=", $userName), 0):
-            case self::$_database->remove("securitylevel.*", array("user_created", "=", $userName), 0):
+            self::$_database->remove("securityrules", array("user_created", "=", $userName), 0);
+            self::$_database->remove("securitylevel.*", array("user_created", "=", $userName), 0);
             // delete user settings
-            case self::$_database->remove("user.$userName"):
-                $message = "Unable to commit changes to the database server while trying to remove".
-                    "user '{$userName}'.";
-                $level = \Yana\Log\TypeEnumeration::WARNING;
-                throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level);
+            self::$_database->remove("user.$userName");
+            // commit changes
+            self::$_database->commit(); // may throw exception
+            if (isset(self::$instances[$userName])) {
+                unset(self::$instances[$userName]);
+            }
 
-            default:
-                // commit changes
-                self::$_database->commit(); // may throw exception
-                if (isset(self::$instances[$userName])) {
-                    unset(self::$instances[$userName]);
-                }
-            break;
+        } catch (\Exception $e) {
+            $message = "Unable to commit changes to the database server while trying to remove".
+                "user '{$userName}'.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level, $e);
         }
     }
 
