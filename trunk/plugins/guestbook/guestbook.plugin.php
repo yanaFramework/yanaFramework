@@ -449,17 +449,12 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
             $myFlood->set();
         }
         /* insert new entry into table */
-        if (!$database->insert('guestbook.*', $entry)) {
-            $message = 'Failed to insert entry.';
-            $level = \Yana\Log\TypeEnumeration::WARNING;
-            \Yana\Log\LogManager::getLogger()->addLog($message, $level, $entry);
-            throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level);
-        }
         try {
-            $database->commit(); // may throw exception
+            $database->insert('guestbook.*', $entry)
+                ->commit(); // may throw exception
         }
         catch (\Exception $e) {
-            $message = 'Unable to submit entry.';
+            $message = 'Failed to insert entry.';
             $level = \Yana\Log\TypeEnumeration::ERROR;
             \Yana\Log\LogManager::getLogger()->addLog($message, $level, $entry);
             throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level, $e);
