@@ -866,11 +866,11 @@ class User extends \Yana\Core\Object
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\User\AlreadyExistsException($message, $level);
         }
-        // insert user settings
-        self::$_database->insert("user.$userName", array('USER_MAIL' => $mail));
-        // initialize user profile
-        self::$_database->insert("userprofile.$userName", array("userprofile_modified" => time()));
         try {
+            // insert user settings
+            self::$_database->insert("user.$userName", array('USER_MAIL' => $mail));
+            // initialize user profile
+            self::$_database->insert("userprofile.$userName", array("userprofile_modified" => time()));
             self::$_database->commit(); // may throw exception
         } catch (\Exception $e) {
             $message = "Unable to commit changes to the database server while trying to update settings for user '{$userName}'.";
