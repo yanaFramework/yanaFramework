@@ -119,9 +119,8 @@ class Counter extends \Yana\Db\FileDb\Sequence
                 'ip' => $this->ip,
                 'info' => $this->info
             );
-            if (parent::$db->update("counter.{$this->name}", $row)) {
-                parent::$db->commit(); // may throw exception
-            }
+            parent::$db->update("counter.{$this->name}", $row)
+                ->commit(); // may throw exception
         } catch (\Exception $e) {
             unset($e); // Destructor may not throw exceptions
         }
