@@ -241,15 +241,23 @@ class Worker extends \Yana\Forms\QueryBuilder
                 $callback($newEntry); // may throw exception
             }
 
-            $this->_db->insert($tableName, $newEntry); // may throw exception
+            try {
+                $this->_db->insert($tableName, $newEntry); // may throw exception
+            } catch (\Yana\Core\Exceptions\NotWriteableException $e) {
+                return false; // error - unable to perform update - possibly readonly
+            }
 
             // execute hooks
             foreach ($this->afterCreate() as $callback)
             {
                 $callback($newEntry); // may throw exception
             }
-            $this->_db->commit(); // may throw exception
-            $result = true;
+            try {
+                $this->_db->commit(); // may throw exception
+                $result = true;
+            } catch (\Exception $e) {
+                $result = false;
+            }
         }
         return $result;
     }
@@ -349,7 +357,9 @@ class Worker extends \Yana\Forms\QueryBuilder
                     $callback($id, $entry); // may throw exception
                 }
 
-                if (!$this->_db->update("{$tableName}.{$id}", $entry)) { // update the row
+                try {
+                    $this->_db->update("{$tableName}.{$id}", $entry); // update the row
+                } catch (\Yana\Core\Exceptions\NotWriteableException $e) {
                     return false; // error - unable to perform update - possibly readonly
                 }
 
@@ -398,7 +408,7 @@ class Worker extends \Yana\Forms\QueryBuilder
                 try {
                     $this->_db->remove("{$tableName}.{$id}");
                 } catch (\Yana\Core\Exceptions\NotWriteableException $e) {
-                    break 2;
+                    return false;
                 }
 
                 // execute hooks
