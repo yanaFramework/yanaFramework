@@ -159,9 +159,8 @@ class Sequence extends \Yana\Core\Object
                 'max' => $this->max,
                 'cycle' => $this->cycle
             );
-            if (self::$db->update("sequences.{$this->name}", $row)) {
-                self::$db->commit(); // may throw exception
-            }
+            self::$db->update("sequences.{$this->name}", $row)
+                ->commit(); // may throw exception
         } catch (\Exception $e) { // Destructor may not throw exceptions
             unset($e);
         }
