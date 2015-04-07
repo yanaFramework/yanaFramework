@@ -341,7 +341,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $temp2 = 2;
         $test['ta'] = $temp1 ;
         $test['tvalue'] = $temp2;
-        $this->assertTrue($this->dbsobj->update('i.foo', $test), '"update inheritance 1" test failed');
+        $this->dbsobj->update('i.foo', $test);
         $this->dbsobj->commit();
 
         $this->assertEquals($this->dbsobj->select('i.foo.ta'), $temp1, '"update inheritance 2" test failed');
