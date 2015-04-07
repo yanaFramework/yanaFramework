@@ -78,7 +78,7 @@ interface IsConnection
      *
      * @param   string|\Yana\Db\Queries\Update  $key    the address of the row that should be updated
      * @param   mixed                           $value  value
-     * @return  bool
+     * @return  \Yana\Db\IsConnection
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when either the given $key or $value is invalid
      * @throws  \Yana\Core\Exceptions\NotWriteableException     when the table or database is locked
      */
@@ -89,7 +89,7 @@ interface IsConnection
      *
      * @param   string|\Yana\Db\Queries\Insert  $key    the address of the row that should be inserted|updated
      * @param   mixed                           $value  value
-     * @return  bool
+     * @return  \Yana\Db\IsConnection
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the query is neither an insert, nor an update statement
      * @throws  \Yana\Core\Exceptions\NotWriteableException     when the table or database is locked
      */
@@ -100,7 +100,7 @@ interface IsConnection
      *
      * @param   string|\Yana\Db\Queries\Insert  $key  the address of the row that should be inserted
      * @param   array                           $row  associative array of values
-     * @return  bool
+     * @return  \Yana\Db\IsConnection
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when either $key or $value is invalid
      * @throws  \Yana\Core\Exceptions\NotWriteableException     when the table or database is locked
      */
