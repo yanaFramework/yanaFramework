@@ -168,16 +168,14 @@ class Counter extends \Yana\Db\FileDb\Sequence
 
             );
 
-            $success = parent::$db->insert("counter.$name", $row);
             try {
-                if ($success) {
-                    parent::$db->commit(); // may throw exception
-                }
+                parent::$db->insert("counter.$name", $row)
+                    ->commit(); // may throw exception
             } catch (\Exception $e) {
                 unset($e);
                 return false;
             }
-            return $success;
+            return true;
         } else {
             return false;
         }
