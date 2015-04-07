@@ -228,11 +228,9 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($test, 3, '"get last entry" test failed');
 
         // test buffer
-        $test = $this->dbsobj->update('ft.3', array('ftvalue' => 3));
-        $this->assertTrue($test, '"buffer test" insert failed');
+        $this->dbsobj->update('ft.3', array('ftvalue' => 3));
 
-        $test = $this->dbsobj->update('t.FOO3.ftid', 3); // supposed to succeed
-        $this->assertTrue($test, '"buffer key" read of buffer content failed');
+        $this->dbsobj->update('t.FOO3.ftid', 3); // supposed to succeed
 
         $test = $this->dbsobj->select('i.foo.ta.1.a'); // supposed to succeed
         $this->assertEquals($test, 2, '"get array content" failed');
@@ -253,7 +251,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         // not stored in table "i", but in parent table "t"
         $test['tvalue'] = $temp2;
         // must update "i" AND "t" (not just "i" or "t")
-        $this->assertTrue($this->dbsobj->update('i.foo', $test), '"update inheritance 1" test failed, unable to update');
+        $this->dbsobj->update('i.foo', $test);
         $this->dbsobj->commit();
 
         // check if tables "i" and "t" have both been updated
@@ -332,7 +330,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
         // test for property "zerofill"
         // column t.ti is a zerofilled integer with length 4
-        $this->assertTrue($this->dbsobj->update('t.foo.ti', 1), '"set zerofill" test failed');
+        $this->dbsobj->update('t.foo.ti', 1);
         $this->dbsobj->commit();
 
         $this->assertEquals($this->dbsobj->select('t.foo.ti'), '0001', '"get zerofill" test failed');
