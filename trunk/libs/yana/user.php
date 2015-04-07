@@ -453,26 +453,25 @@ class User extends \Yana\Core\Object
         assert('is_string($password); // Wrong type for argument 1. String expected');
 
         $newPwd = self::calculatePassword($this->_name, $password);
-        switch (false)
-        {
-            case self::$_database->update("USER.{$this->_name}.USER_PWD", $newPwd):
-                $message = "A new password was requested for user '{$this->_name}'. " .
-                    "But the database entry could not be updated.";
-                $level = \Yana\Log\TypeEnumeration::WARNING;
-                throw new \Yana\Db\Queries\Exceptions\NotUpdatedException($message, $level);
-            break;
-            default:
-                self::$_database->commit(); // may throw exception
-                $this->_passwords[] = $this->_getPassword();
-                if (count($this->_passwords) > 10) {
-                    array_shift($this->_passwords);
-                }
-                $this->updates['USER_PWD_LIST'] = $this->_passwords;
-                $this->updates['USER_PWD_TIME'] = $this->_passwordTime = time();
-                $this->_resetPasswordRecoveryId();
-                $this->_password = $newPwd;
-                return $password;
-            break;
+        try {
+            self::$_database->update("USER.{$this->_name}.USER_PWD", $newPwd);
+            self::$_database->commit(); // may throw exception
+            $this->_passwords[] = $this->_getPassword();
+            if (count($this->_passwords) > 10) {
+                array_shift($this->_passwords);
+            }
+            $this->updates['USER_PWD_LIST'] = $this->_passwords;
+            $this->updates['USER_PWD_TIME'] = $this->_passwordTime = time();
+            $this->_resetPasswordRecoveryId();
+            $this->_password = $newPwd;
+            return $password;
+
+        } catch (\Exception $ex) {
+            $message = "A new password was requested for user '{$this->_name}'. " .
+                "But the database entry could not be updated.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Db\Queries\Exceptions\NotUpdatedException($message, $level);
+
         }
     }
 
