@@ -227,17 +227,11 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
          * message and abort. (will also forfeit all previously made,
          * uncommited changes)
          */
-        if (!$database->update("guestbook.{$target}", $entry)) {
-            $message = "The entry guestbook.{$target} could not be updated!";
-            $level = \Yana\Log\TypeEnumeration::WARNING;
-            throw new \Yana\Db\Queries\Exceptions\NotUpdatedException($message, $level);
-        }
-
-        /* don't forget to save your recent changes ;-) */
         try {
-            $database->commit(); // may throw exception
+            $database->update("guestbook.{$target}", $entry)
+                ->commit(); // may throw exception
         } catch (\Exception $e) {
-            $message = "Unable to commit changes.";
+            $message = "The entry guestbook.{$target} could not be updated!";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Db\Queries\Exceptions\NotUpdatedException($message, $level, $e);
         }
@@ -602,17 +596,12 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
     {
         $database = self::getDatabase();
         // If the update operation was not successful, issue an error message and abort.
-        if (!$database->update("guestbook.{$target}.guestbook_comment", $guestbook_comment)) {
-            $message = "Unable to insert comment at 'guestbook.{$target}.'";
-            $level = \Yana\Log\TypeEnumeration::WARNING;
-            \Yana\Log\LogManager::getLogger()->addLog($message, $level, array('guestbook_comment' => $guestbook_comment));
-            throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level);
-        }
         try {
-            $database->commit(); // may throw exception
+            $database->update("guestbook.{$target}.guestbook_comment", $guestbook_comment)
+                ->commit(); // may throw exception
         }
         catch (\Exception $e) {
-            $message = "Unable to commit changes to entry 'guestbook.{$target}.'";
+            $message = "Unable to insert comment at 'guestbook.{$target}.'";
             $level = \Yana\Log\TypeEnumeration::ERROR;
             \Yana\Log\LogManager::getLogger()->addLog($message, $level, array('guestbook_comment' => $guestbook_comment));
             throw new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level, $e);
