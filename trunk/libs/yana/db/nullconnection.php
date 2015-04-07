@@ -139,11 +139,11 @@ class NullConnection extends \Yana\Core\Object implements \Yana\Db\IsConnection
      * @param   string|\Yana\Db\Queries\Delete  $key    the address of the row that should be removed
      * @param   array            $where  where clause
      * @param   int              $limit  maximum number of rows to remove
-     * @return  bool
+     * @return  \Yana\Db\IsConnection
      */
     public function remove($key, array $where = array(), $limit = 1)
     {
-        return true;
+        return $this;
     }
 
     /**
