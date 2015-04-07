@@ -922,7 +922,7 @@ class plugin_calendar extends StdClass implements \Yana\IsPlugin
             $db->remove("calendar.{$calendarID}", $where)
                 ->commit(); // may throw exception
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             /* error - unable to perform update - possibly readonly */
             return false;
         }
