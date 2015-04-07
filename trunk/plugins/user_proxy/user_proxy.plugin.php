@@ -343,7 +343,9 @@ class plugin_user_proxy extends StdClass implements \Yana\IsPlugin
         }
         foreach ($rules as $key)
         {
-            if (!$db->remove('securityrules.' . $key, $where)) {
+            try {
+                $db->remove('securityrules.' . $key, $where);
+            } catch (\Exception $ex) {
                 return false;
             }
         }
@@ -351,13 +353,19 @@ class plugin_user_proxy extends StdClass implements \Yana\IsPlugin
 
         foreach ($levels as $key)
         {
-            if (!$db->remove('securitylevel.' . $key, $where)) {
+            try {
+                $db->remove('securitylevel.' . $key, $where);
+            } catch (\Exception $ex) {
                 return false;
             }
         }
         unset($key);
 
-        $db->commit(); // may throw exception
+        try {
+            $db->commit(); // may throw exception
+        } catch (\Exception $e) {
+            return false;
+        }
         return true;
     }
 
