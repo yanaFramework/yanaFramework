@@ -223,12 +223,10 @@ class Counter extends \Yana\Db\FileDb\Sequence
         }
 
         // remove database entry
-        $success = parent::$db->remove("counter.$name");
         try {
-            if ($success) {
-                parent::$db->commit(); // may throw exception
-                $success = parent::drop($name);
-            }
+            parent::$db->remove("counter.$name")
+                ->commit(); // may throw exception
+            $success = parent::drop($name);
         } catch (\Exception $e) {
             unset($e);
             return false;
