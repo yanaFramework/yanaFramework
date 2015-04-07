@@ -268,7 +268,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
                     $fileReader = new BufferedReader($file);
                 }
                 fwrite($hDocuments, $file);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 print "NOTICE: Unable to open file '$file'.\n";
                 continue;
             }
