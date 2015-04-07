@@ -156,7 +156,10 @@ class plugin_user_registration extends StdClass implements \Yana\IsPlugin
          * 4) add row to table
          */
         $row = array("newuser_name" => $name, "newuser_key" => $key, "newuser_mail" => $mail);
-        if (!$database->insert("newuser.*", $row)) {
+        try {
+            $database->insert("newuser.*", $row)
+                ->commit(); // may throw exception
+        } catch (\Exception $e) {
             $message = "Entry could not be created";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             $exception = new \Yana\Db\Queries\Exceptions\NotCreatedException($message, $level);
@@ -164,7 +167,6 @@ class plugin_user_registration extends StdClass implements \Yana\IsPlugin
             throw $exception;
 
         }
-        $database->commit(); // may throw exception
 
         global $YANA;
         $YANA->setVar('WEBSITE_URL', $YANA->getVar("REFERER"));
