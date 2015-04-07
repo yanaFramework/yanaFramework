@@ -108,7 +108,11 @@ class plugin_user_registration extends StdClass implements \Yana\IsPlugin
         if (is_array($duplicates)) {
             foreach ($duplicates as $newuser_id)
             {
-                $database->remove("newuser.$newuser_id");
+                try {
+                    $database->remove("newuser.$newuser_id");
+                } catch (\Exception $e) {
+                    unset($e); // worst case 2 codes are active - so what? We can live with that.
+                }
             }
         }
         unset($duplicates);
@@ -131,7 +135,11 @@ class plugin_user_registration extends StdClass implements \Yana\IsPlugin
             foreach ($old_entries as $row)
             {
                 if ($row['NEWUSER_UTC'] < $limit) {
-                    $database->remove("newuser.".$row['NEWUSER_ID']);
+                    try {
+                        $database->remove("newuser.".$row['NEWUSER_ID']);;
+                    } catch (\Exception $e) {
+                        unset($e); // we can do without this step if necessary
+                    }
                 }
             }
         }
