@@ -290,10 +290,12 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
              *    message and abort. (will also forfeit all previously made,
              *    uncommited changes)
              */
-            if (!$database->remove("guestbook.{$id}")) {
+            try {
+                $database->remove("guestbook.{$id}");
+            } catch (\Exception $e) {
                 $message = "The selected entry guestbook.{$id} could not be deleted.";
                 $level = \Yana\Log\TypeEnumeration::WARNING;
-                throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level);
+                throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level, $e);
             }
         } /* end foreach */
         /* now delete those entries */
