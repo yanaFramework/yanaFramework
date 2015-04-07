@@ -189,14 +189,19 @@ class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
     {
         $database = self::getDatabase();
 
-        /* remove entry from database */
-        foreach ($selected_entries as $id)
-        {
-            $database->remove("securityactionrules.{$id}");
-        } /* end for */
-        /* commit changes */
-        $database->commit(); // may throw exception
-        return true;
+        try {
+            /* remove entry from database */
+            foreach ($selected_entries as $id)
+            {
+                $database->remove("securityactionrules.{$id}");
+            }
+            $database->commit(); // may throw exception
+            return true;
+
+        } catch (\Exception $e) {
+            $database->rollback();
+            return false;
+        }
     }
 
     /**
