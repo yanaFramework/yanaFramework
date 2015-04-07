@@ -433,14 +433,14 @@ class plugin_config extends StdClass implements \Yana\IsPlugin
         }
 
         // error - update operation failed
-        if (!$database->update("user.$userName.user_is_expert", $userMode)) {
-            \Yana\Log\LogManager::getLogger()->addLog("Unable to update user '$userName'.");
-            return false;
-        }
+        try {
+            $database->update("user.$userName.user_is_expert", $userMode)
+                ->commit();
+        } catch (Exception $e) {
 
-        // error - unable to write changes
-        if (!$database->write()) {
-            \Yana\Log\LogManager::getLogger()->addLog("Unable to commit update to user '$userName'.");
+            // error - unable to write changes
+            $database->rollback();
+            \Yana\Log\LogManager::getLogger()->addLog("Unable to update user '$userName'.");
             return false;
         }
 
