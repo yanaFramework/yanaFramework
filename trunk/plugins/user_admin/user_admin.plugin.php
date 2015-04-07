@@ -315,10 +315,13 @@ class plugin_user_admin extends StdClass implements \Yana\IsPlugin
 
         \Yana\User::createUser($userName, $newUser['user_mail']);
         $db = \Yana\Security\Users\SessionManager::getDatasource();
-        if (!$db->update("user.$userName", $newUser)) {
+        try {
+            $db->update("user.$userName", $newUser)
+                ->commit(); // may throw exception
+        } catch (\Exception $e) {
+            $db->rollback();
             return false;
         }
-        $db->commit(); // may throw exception
         return $this->set_user_pwd(array('target' => array('user_id' => $userName)));
     }
 
