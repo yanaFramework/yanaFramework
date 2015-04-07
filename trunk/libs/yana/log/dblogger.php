@@ -194,16 +194,16 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      *
      * Called by destructor.
      *
-     * @param  int  $maxLogLength  maximum number of entries that will remain in the logs
+     * @param   int  $maxLogLength  maximum number of entries that will remain in the logs
+     * @throws  \Yana\Core\Exceptions\NotWriteableException  when database is set to read-only
      */
     protected function _cleanUpDatabase($maxLogLength)
     {
         $oldLogEntry = $this->_database->select("log.*.log_id", array(), array('LOG_ID'), $maxLogLength, 1, true);
         $oldId = array_pop($oldLogEntry);
 
-        if ($this->_database->remove("log", array('LOG_ID', '<=', $oldId), 0)) {
-            $this->_database->commit(); // may throw exception
-        }
+        $this->_database->remove("log", array('LOG_ID', '<=', $oldId), 0)
+            ->commit(); // may throw exception
     }
 
     /**
@@ -223,7 +223,8 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      *
      * Called by destructor.
      *
-     * @param  string  $recipient  valid e-mail address
+     * @param   string  $recipient  valid e-mail address
+     * @throws  \Yana\Core\Exceptions\NotWriteableException  when database is set to read-only
      */
     protected function _flushDatabaseToMail($recipient)
     {
@@ -236,9 +237,8 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
         $mail->send($recipient, 'JOURNAL', $oldLogEntries);
 
         // truncate table log
-        if ($this->_database->remove("log", array(), 0) === false) {
-            $this->_database->commit(); // may throw exception
-        }
+        $this->_database->remove("log", array(), 0)
+            ->commit(); // may throw exception
     }
 
     /**
