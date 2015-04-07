@@ -97,13 +97,13 @@ class plugin_check extends StdClass implements \Yana\IsPlugin
                         $result .= print_r($query->countResults(), true);
                     break;
                     case \Yana\Db\Queries\TypeEnumeration::UPDATE:
-                        $result .= print_r($fileDb->update($query), true);
+                        $fileDb->update($query);
                     break;
                     case \Yana\Db\Queries\TypeEnumeration::INSERT:
-                        $result .= print_r($fileDb->insert($query), true);
+                        $fileDb->insert($query);
                     break;
                     case \Yana\Db\Queries\TypeEnumeration::DELETE:
-                        $result .= print_r($fileDb->remove($query), true);
+                        $fileDb->remove($query);
                     break;
                 }
             }
