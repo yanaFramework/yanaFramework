@@ -365,7 +365,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      *
      * @param   string|\Yana\Db\Queries\Update  $key    the address of the row that should be updated
      * @param   mixed            $value  value
-     * @return  bool
+     * @return  \Yana\Db\IsConnection
      * @name    AbstractConnection::update()
      * @see     AbstractConnection::insertOrUpdate()
      * @see     AbstractConnection::insert()
@@ -391,7 +391,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
 
 
             if ($key == '') {
-                return false;
+                throw new \Yana\Core\Exceptions\InvalidArgumentException("An empty key was given. Need at least a table-name.");
             } else {
                 $key = mb_strtolower("$key");
             }
@@ -458,7 +458,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
         }
 
         $transaction->update($updateQuery);
-        return true;
+        return $this;
     }
 
     /**
@@ -491,7 +491,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      *
      * @param   string|\Yana\Db\Queries\Insert  $key    the address of the row that should be inserted|updated
      * @param   mixed            $value  value
-     * @return  bool
+     * @return  \Yana\Db\IsConnection
      * @name    AbstractConnection::insertOrUpdate()
      * @see     AbstractConnection::insert()
      * @see     AbstractConnection::update()
@@ -506,10 +506,10 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             assert('func_num_args() === 1; // Too many arguments in ' .__METHOD__ . '(). Only 1 argument expected.');
             $dbQuery =& $key;
             if ($dbQuery instanceof \Yana\Db\Queries\Update) {
-                return $this->update($dbQuery);
+                $this->update($dbQuery);
 
             } elseif ($dbQuery instanceof \Yana\Db\Queries\Insert) {
-                return $this->insert($dbQuery);
+                $this->insert($dbQuery);
 
             } else {
                 $message = "Unable to insert or update row. Invalid query.";
@@ -541,14 +541,15 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             $queryBuilder = $this->_getQueryBuilder();
             if ($row !== '*' && (isset($this->_cache[$table][$row]) || $this->exists("$table.$row"))) {
                 $dbQuery = $queryBuilder->update($key, $value);
-                return $this->update($dbQuery);
+                $this->update($dbQuery);
 
             } else {
                 $dbQuery = $queryBuilder->insert($key, $value);
-                return $this->insert($dbQuery);
+                $this->insert($dbQuery);
             }
 
         }
+        return $this;
     }
 
     /**
@@ -569,7 +570,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      *
      * @param   string|\Yana\Db\Queries\Insert  $key  the address of the row that should be inserted
      * @param   array                           $row  associative array of values
-     * @return  bool
+     * @return  \Yana\Db\IsConnection
      * @name    AbstractConnection::insert()
      * @see     AbstractConnection::insertOrUpdate()
      * @see     AbstractConnection::update()
@@ -596,7 +597,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
         }
 
         $transaction->insert($insertQuery);
-        return true;
+        return $this;
     }
 
     /**
@@ -644,7 +645,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * @param   string|\Yana\Db\Queries\Delete  $key    the address of the row that should be removed
      * @param   array            $where  where clause
      * @param   int              $limit  maximum number of rows to remove
-     * @return  bool
+     * @return  \Yana\Db\IsConnection
      * @throws  \Yana\Core\Exceptions\NotWriteableException  when the table or database is locked
      */
     public function remove($key, array $where = array(), $limit = 1)
@@ -665,7 +666,8 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             $deleteQuery = $queryBuilder->remove($key, $where, $limit);
 
         }
-        return $transaction->remove($deleteQuery);
+        $transaction->remove($deleteQuery);
+        return $this;
     }
 
     /**
