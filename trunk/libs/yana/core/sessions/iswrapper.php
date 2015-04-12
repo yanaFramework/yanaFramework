@@ -27,7 +27,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Core;
+namespace Yana\Core\Sessions;
 
 /**
  * <<interface>> Session wrapper.
@@ -37,7 +37,7 @@ namespace Yana\Core;
  * @package     yana
  * @subpackage  core
  */
-interface IsSessionWrapper extends \Yana\Core\IsCountableArray
+interface IsWrapper extends \Yana\Core\IsCountableArray
 {
 
     /**
