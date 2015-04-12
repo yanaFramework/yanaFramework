@@ -52,7 +52,7 @@ class UserAdapter extends \Yana\Security\Users\AbstractUserManager implements \Y
     {
         assert('is_string($userId); // Invalid argument $userId: string expected');
 
-        return \Yana\Security\Users\UserColumnEnumeration::TABLE . '.' . $userId;
+        return \Yana\Security\Users\Tables\UserEnumeration::TABLE . '.' . $userId;
     }
 
     /**
@@ -111,10 +111,11 @@ class UserAdapter extends \Yana\Security\Users\AbstractUserManager implements \Y
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
 
-        if (\is_null($userId)) {
+        if (is_null($userId) || $userId == '') {
             $userId = $userEntity->getId();
         }
         assert('is_string($userId); // Invalid argument $userId: string expected');
+        $userId = \Yana\Util\String::toUpperCase($userId);
 
         assert('!isset($db); // Cannot redeclare var $db');
         $db = $this->_getConnection();
@@ -137,23 +138,45 @@ class UserAdapter extends \Yana\Security\Users\AbstractUserManager implements \Y
      * Tries to delete the user from the database.
      *
      * @param   string  $userId  the account name
-     * @throws \Yana\Core\Exceptions\User\UserException  when there was a problem with the database
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException     when no such user exists
+     * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  when there was a problem with the database
      */
     public function offsetUnset($userId)
     {
         assert('is_string($userId); // Invalid argument $userId: string expected');
 
+        // user does not exist
+        if (!$this->offsetExists($userId)) {
+            throw new \Yana\Core\Exceptions\User\NotFoundException("No such user: '$userId'.", E_USER_WARNING);
+        }
+
+        $userId = \Yana\Util\String::toUpperCase($userId);
+
         assert('!isset($db); // Cannot redeclare var $db');
         $db = $this->_getConnection();
         try {
-            $db->remove($this->_toDatabaseKey($userId));
-            $db->commit();
 
-        } catch (\Yana\Db\DatabaseException $e) {
+            $db // delete profile
+                ->remove(\Yana\Security\Users\Tables\ProfileEnumeration::TABLE . "." . $userId)
+                // delete user's security level
+                ->remove(\Yana\Security\Users\Tables\LevelEnumeration::TABLE,
+                    array(\Yana\Security\Users\Tables\LevelEnumeration::USER, "=", $userId), 0)
+                // delete access permissions (temporarily) granted by this user
+                ->remove(\Yana\Security\Users\Tables\RuleEnumeration::TABLE,
+                    array(\Yana\Security\Users\Tables\RuleEnumeration::GRANTED_BY_USER, "=", $userId), 0)
+                ->remove(\Yana\Security\Users\Tables\LevelEnumeration::TABLE . ".*",
+                    array("user_created", "=", $userId), 0)
+                // delete user settings
+                ->remove($this->_toDatabaseKey($userId))
+                // commit changes
+                ->commit(); // may throw exception
 
-            $message = "User not deleted due to a database error.";
-            $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \Yana\Core\Exceptions\User\UserException($level, $message, $e);
+        } catch (\Exception $e) {
+
+            $message = "Unable to commit changes to the database server while trying to remove".
+                "user '{$userId}'.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level, $e);
         }
     }
 
@@ -170,7 +193,7 @@ class UserAdapter extends \Yana\Security\Users\AbstractUserManager implements \Y
      */
     public function count()
     {
-        return $this->_getConnection()->length(\Yana\Security\Users\UserColumnEnumeration::TABLE);
+        return $this->_getConnection()->length(\Yana\Security\Users\Tables\UserEnumeration::TABLE);
     }
 
     /**
@@ -181,7 +204,7 @@ class UserAdapter extends \Yana\Security\Users\AbstractUserManager implements \Y
     public function getIds()
     {
         assert('!isset($key); // Cannot redeclare var $key');
-        $key = \Yana\Security\Users\UserColumnEnumeration::TABLE . '.*.' . \Yana\Security\Users\UserColumnEnumeration::ID;
+        $key = \Yana\Security\Users\Tables\UserEnumeration::TABLE . '.*.' . \Yana\Security\Users\Tables\UserEnumeration::ID;
         return $this->_getConnection()->select($key);
     }
 
