@@ -92,12 +92,12 @@ class UserBuilder extends \Yana\Core\Object
     /**
      * Build an user object from the current user name saved in the session data.
      *
-     * Returns a \Yana\Security\Users\GuestUser if the session contains no username,
-     * or if the user isn't found in the database.
+     * Returns a \Yana\Security\Users\GuestUser if the session contains no username.
      * Returns an \Yana\Security\Users\User otherwise.
      *
      * @param   array  $sessionData  with the user name at index 'user_name'
      * @return  \Yana\Security\Users\IsUser
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if no such user is found in the database
      */
     public function buildFromSession(array $sessionData = null)
     {
@@ -118,11 +118,9 @@ class UserBuilder extends \Yana\Core\Object
     /**
      * Build an user object based on a given name.
      *
-     * Returns a \Yana\Security\Users\GuestUser if no user with the given name is found in the database.
-     * Returns an \Yana\Security\Users\User otherwise.
-     *
      * @param   string  $userId  the name/id of the user as it is stored in the database
      * @return  \Yana\Security\Users\IsUser
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if no such user is found in the database
      */
     public function buildFromName($userId)
     {
@@ -132,7 +130,7 @@ class UserBuilder extends \Yana\Core\Object
         $adapter = $this->_getUserAdapter();
 
         if (!isset($adapter[$userId])) {
-            return new \Yana\Security\Users\GuestUser();
+            throw new \Yana\Core\Exceptions\NotFoundException("User '" . $userId . "' not found.");;
         }
         assert('!isset($userAccount); // Cannot redeclare var $userAccount');
         $userAccount = $adapter[$userId];
