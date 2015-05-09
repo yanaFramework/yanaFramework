@@ -70,20 +70,42 @@ class UserBuilder extends \Yana\Core\Object
     /**
      * Build an user object from the current user name saved in the session data.
      *
+     * Returns a \Yana\Security\Users\GuestUser if the session contains no username,
+     * or if the user isn't found in the database.
+     * Returns an \Yana\Security\Users\User otherwise.
+     *
      * @param   array  $sessionData  with the user name at index 'user_name'
-     * @return  \Yana\Security\Users\GuestUser
+     * @return  \Yana\Security\Users\IsUser
      */
     public function buildFromSession(array $sessionData = null)
     {
         if (\is_null($sessionData)) {
             $sessionData = $_SESSION;
         }
-        if (!isset($sessionData['user_name'])) {
+        if (isset($sessionData['user_name'])) {
             return new \Yana\Security\Users\GuestUser();
         }
 
-        assert('!isset($userId); // Cannot redeclare var $userId');
-        $userId = $sessionData['user_name'];
+        assert('!isset($userAccount); // Cannot redeclare var $userAccount');
+        $userAccount = $this->buildFromName($sessionData['user_name']);
+        assert('$userAccount instanceof \Yana\Security\Users\IsUser; // Return value must be an instance of IsUser');
+
+        return $userAccount;
+    }
+
+    /**
+     * Build an user object based on a given name.
+     *
+     * Returns a \Yana\Security\Users\GuestUser if no user with the given name is found in the database.
+     * Returns an \Yana\Security\Users\User otherwise.
+     *
+     * @param   string  $userId  the name/id of the user as it is stored in the database
+     * @return  \Yana\Security\Users\IsUser
+     */
+    public function buildFromName($userId)
+    {
+        assert('is_string($userId); // Invalid argument $userId: string expected');
+
         assert('!isset($adapter); // Cannot redeclare var $adapter');
         $adapter = $this->_getUserAdapter();
 
