@@ -30,9 +30,31 @@
 namespace Yana\Security\Users;
 
 /**
- * User manager.
+ * <<builder>> Produces instances of IsUser.
  *
- * This persistent class provides access to user data and function to set logins and passwords.
+ * Meant to help with retrieving user-objects from the database.
+ *
+ * Example:
+ * <code>
+ * $builder = new UserBuilder();
+ * $user = $builder->buildFromSession();
+ * </code>
+ *
+ * Alternative:
+ * <code>
+ * $builder = new UserBuilder();
+ * $user = $builder->buildFromName('administrator');
+ * </code>
+ *
+ * For unit-tests provide the optional paramters:
+ * <code>
+ * $nullAdapter = new \Yana\Data\Adapters\ArrayAdapter();
+ * $nullAdapter['user'] = new User();
+ * $builder = new UserBuilder($nullAdapter);
+ * $user = $builder->buildFromSession(array('user_name' => 'user'));
+ * // or
+ * $user = $builder->buildFromName('user');
+ * </code>
  *
  * @package     yana
  * @subpackage  security
