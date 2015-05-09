@@ -27,10 +27,10 @@
  * @ignore
  */
 
-namespace Yana\Security\Users;
+namespace Yana\Security\SessionIds;
 
 /**
- * <<interface>> Session id generator.
+ * Session id generator.
  *
  * Used to create random session-ids.
  *
@@ -39,8 +39,25 @@ namespace Yana\Security\Users;
  *
  * @ignore
  */
-interface IsSessionIdGenerator
+class Generator extends \Yana\Core\Object implements \Yana\Security\SessionIds\IsGenerator
 {
+
+    /**
+     * Get IP from SERVER array.
+     *
+     * Returns the 'REMOTE_ADDR' setting. If no such setting exists, returns 127.0.0.1 instead.
+     *
+     * @return  string
+     */
+    protected function _getRemoteAddress()
+    {
+        assert('!isset($remoteAddress); // Cannot redeclare var $remoteAddress');
+        $remoteAddress = '127.0.0.1';
+        if (isset($_SERVER['REMOTE_ADDR'])) {
+            $remoteAddress = $_SERVER['REMOTE_ADDR'];
+        }
+        return $remoteAddress;
+    }
 
     /**
      * Application instance id.
@@ -51,14 +68,20 @@ interface IsSessionIdGenerator
      * @return  string
      * @ignore
      */
-    public function createApplicationUserId();
+    public function createApplicationUserId()
+    {
+        return $this->_getRemoteAddress() . '@' . dirname(__FILE__);
+    }
 
     /**
      * Create a random session id for user BEFORE login.
      *
      * @return  string
      */
-    public function createUnauthenticatedSessionId();
+    public function createUnauthenticatedSessionId()
+    {
+        return (string) md5(uniqid());
+    }
 
     /**
      * Create a random session id for authenticated users AFTER successful login.
@@ -67,7 +90,19 @@ interface IsSessionIdGenerator
      *
      * @return  string
      */
-    public function createAuthenticatedSessionId();
+    public function createAuthenticatedSessionId()
+    {
+        assert('!isset($sessionId); // Cannot redeclare var $sessionId');
+        $sessionId = uniqid($this->createApplicationUserId(), true);
+        assert('!isset($encryptedId); // Cannot redeclare var $encryptedId');
+        if (function_exists('sha1')) {
+            $encryptedId = sha1($sessionId);
+        } else {
+            /* if sha1 is not supported, fall back to default encryption method */
+            $encryptedId = md5($sessionId);
+        }
+        return (string) $encryptedId;
+    }
 
 }
 
