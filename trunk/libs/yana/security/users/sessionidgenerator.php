@@ -39,7 +39,7 @@ namespace Yana\Security\Users;
  *
  * @ignore
  */
-class SessionIdGenerator extends \Yana\Core\Object
+class SessionIdGenerator extends \Yana\Core\Object implements \Yana\Security\Users\IsSessionIdGenerator
 {
 
     /**
