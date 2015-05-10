@@ -123,7 +123,7 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
      * Set new session-id.
      *
      * @param   string  $newId  new session-id
-     * @return  \Yana\Core\SessionWrapper
+     * @return  \Yana\Core\Sessions\IsWrapper
      */
     public function setId($newId)
     {
@@ -136,7 +136,7 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
     /**
      * Resets all session-data and clears the session array.
      *
-     * @return \Yana\Core\SessionWrapper
+     * @return  \Yana\Core\Sessions\IsWrapper
      */
     public function unsetAll()
     {
@@ -148,7 +148,7 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
      * Replace the session-id without destroying session-data.
      *
      * @param   string  $newId  new session-id
-     * @return  \Yana\Core\SessionWrapper
+     * @return  \Yana\Core\Sessions\IsWrapper
      */
     public function regeneratId($newId)
     {
@@ -171,7 +171,8 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
     /**
      * Replaces the name of the session-id variable.
      *
-     * @param  string  $name  new session name
+     * @param   string  $name  new session name
+     * @return  \Yana\Core\Sessions\IsWrapper
      */
     public function setName($name)
     {
