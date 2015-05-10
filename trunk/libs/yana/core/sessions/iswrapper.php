@@ -51,14 +51,14 @@ interface IsWrapper extends \Yana\Core\IsCountableArray
      * Set new session-id.
      *
      * @param   string  $newId  new session-id
-     * @return  \Yana\Core\SessionWrapper
+     * @return  \Yana\Core\Sessions\IsWrapper
      */
     public function setId($newId);
 
     /**
      * Resets all session-data and clears the session array.
      *
-     * @return \Yana\Core\SessionWrapper
+     * @return \Yana\Core\Sessions\IsWrapper
      */
     public function unsetAll();
 
@@ -66,7 +66,7 @@ interface IsWrapper extends \Yana\Core\IsCountableArray
      * Replace the session-id without destroying session-data.
      *
      * @param   string  $newId  new session-id
-     * @return  \Yana\Core\SessionWrapper
+     * @return  \Yana\Core\Sessions\IsWrapper
      */
     public function regeneratId($newId);
 
@@ -81,6 +81,7 @@ interface IsWrapper extends \Yana\Core\IsCountableArray
      * Replaces the name of the session-id variable.
      *
      * @param  string  $name  new session name
+     * @return \Yana\Core\Sessions\IsWrapper
      */
     public function setName($name);
 
