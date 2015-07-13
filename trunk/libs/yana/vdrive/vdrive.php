@@ -435,7 +435,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
      */
     private function _getSource(\Yana\VDrive\Configuration $content)
     {
-        $sources = $content->getNodeSources();
+        $sources = (array) $content->getNodeSources();
 
         /* default mode
          *
