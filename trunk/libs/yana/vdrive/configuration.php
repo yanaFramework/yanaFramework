@@ -447,7 +447,7 @@ class Configuration extends \Yana\Util\XmlArray
     }
 
     /**
-     * Returns a list of source for the mountpoint, sorted by priority.
+     * Returns a list of sources for the mountpoint, sorted by priority.
      *
      * @return  \Yana\VDrive\Configuration
      */
@@ -542,17 +542,6 @@ class Configuration extends \Yana\Util\XmlArray
             $isExecutable = $this->requirements->attributes()->executable == 'yes';
         }
         return $isExecutable;
-    }
-
-    /**
-     * <<magic>> Outputs the contents as an XML string.
-     *
-     * @return  string
-     * @ignore
-     */
-    public function __toString()
-    {
-        return $this->asXML();
     }
 
     /**
