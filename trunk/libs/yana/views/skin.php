@@ -48,7 +48,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
     /**
      * some data provider
      *
-     * @var  \Yana\Views\MetaData\IsDataProvider
+     * @var  \Yana\Core\MetaData\IsDataProvider
      */
     private $_dataProvider = null;
 
@@ -88,7 +88,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
     /**
      * Returns a helper class to load meta information for this package.
      *
-     * @return  \Yana\Views\MetaData\IsDataProvider
+     * @return  \Yana\Core\MetaData\IsDataProvider
      */
     protected function _getDataProvider()
     {
