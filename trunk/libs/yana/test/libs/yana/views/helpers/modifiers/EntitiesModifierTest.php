@@ -51,7 +51,7 @@ class EntitiesModifierTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $smarty = new \Smarty();
-        $manager = new \Yana\Views\Manager($smarty);
+        $manager = new \Yana\Views\Managers\Manager($smarty);
         $this->object = new \Yana\Views\Helpers\Modifiers\EntitiesModifier($manager);
     }
 

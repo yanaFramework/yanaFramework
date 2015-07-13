@@ -27,7 +27,7 @@
  * @ignore
  */
 
-namespace Yana\Views;
+namespace Yana\Views\Managers;
 
 /**
  * Manager class to automate searching and loading of templates, belonging to view layer.
@@ -44,9 +44,9 @@ namespace Yana\Views;
  * }}
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  views
  */
-class Manager extends \Yana\Views\AbstractManager
+class Manager extends \Yana\Views\Managers\AbstractManager
 {
 
     /**
@@ -86,7 +86,7 @@ class Manager extends \Yana\Views\AbstractManager
      * @param   string  $filename                 path to template file that hold the page layout (usually: index.tpl)
      * @param   string  $mainContentTemplateName  path to another template file that renders the page content
      * @param   array   $templateVars             possibly multi-dimensional, associative array of template variables
-     * @return  \Yana\Views\Template
+     * @return  \Yana\Views\Templates\Template
      */
     public function createLayoutTemplate($filename, $mainContentTemplateName, array $templateVars)
     {
@@ -132,7 +132,7 @@ class Manager extends \Yana\Views\AbstractManager
      * If a base-layout is defined already, it will be set up as the parent template.
      *
      * @param   string  $filename  path to template file
-     * @return  \Yana\Views\Template 
+     * @return  \Yana\Views\Templates\Template 
      */
     public function createContentTemplate($filename)
     {
@@ -164,11 +164,11 @@ class Manager extends \Yana\Views\AbstractManager
      * Wraps the given template using a Template class.
      *
      * @param   \Smarty_Internal_Template  $internalTemplate  smarty template instance
-     * @return  \Yana\Views\Template
+     * @return  \Yana\Views\Templates\Template
      */
     private function _wrapTemplate(\Smarty_Internal_Template $internalTemplate)
     {
-        $wrappedTemplate = new \Yana\Views\Template($internalTemplate);
+        $wrappedTemplate = new \Yana\Views\Templates\Template($internalTemplate);
         return $wrappedTemplate;
     }
 
@@ -266,7 +266,7 @@ class Manager extends \Yana\Views\AbstractManager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  \Yana\Views\Manager
+     * @return  \Yana\Views\Managers\Manager
      */
     public function setFunction($name, $code)
     {
@@ -289,7 +289,7 @@ class Manager extends \Yana\Views\AbstractManager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  \Yana\Views\Manager
+     * @return  \Yana\Views\Managers\Manager
      */
     public function setModifier($name, $code)
     {
@@ -312,7 +312,7 @@ class Manager extends \Yana\Views\AbstractManager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  \Yana\Views\Manager
+     * @return  \Yana\Views\Managers\Manager
      */
     public function setBlockFunction($name, $code)
     {
@@ -332,7 +332,7 @@ class Manager extends \Yana\Views\AbstractManager
      * and possibly cause your application to exit.
      *
      * @param   string  $name  name of the function
-     * @return  \Yana\Views\Manager
+     * @return  \Yana\Views\Managers\Manager
      */
     public function unsetFunction($name)
     {
@@ -352,7 +352,7 @@ class Manager extends \Yana\Views\AbstractManager
      * and possibly cause your application to exit.
      *
      * @param   string  $name  name of the function
-     * @return  \Yana\Views\Manager
+     * @return  \Yana\Views\Managers\Manager
      */
     public function unsetModifier($name)
     {
@@ -372,7 +372,7 @@ class Manager extends \Yana\Views\AbstractManager
      * and possibly cause your application to exit.
      *
      * @param   string  $name  name of the function
-     * @return  \Yana\Views\Manager
+     * @return  \Yana\Views\Managers\Manager
      */
     public function unsetBlockFunction($name)
     {

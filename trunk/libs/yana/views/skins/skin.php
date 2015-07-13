@@ -27,7 +27,7 @@
  * @ignore
  */
 
-namespace Yana\Views;
+namespace Yana\Views\Skins;
 
 /**
  * Skin Manager class.
@@ -35,7 +35,7 @@ namespace Yana\Views;
  * @package     yana
  * @subpackage  views
  */
-class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
+class Skin extends \Yana\Core\Object implements \Yana\Views\Skins\IsSkin
 {
 
     /**
@@ -82,7 +82,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
     {
         assert('is_string($skinName)', ' Wrong type for argument 1. String expected');
 
-        $this->_name = "$skinName";
+        $this->_name = (string) $skinName;
     }
 
     /**
@@ -102,7 +102,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
      * Choose a provider to load meta-data.
      *
      * @param   \Yana\Views\MetaData\IsDataProvider  $provider  designated meta-data provider
-     * @return  \Yana\Views\Skin
+     * @return  \Yana\Views\Skins\Skin
      * @see     \Yana\Views\MetaData\XmlDataProvider
      */
     public function setMetaDataProvider(\Yana\Views\MetaData\IsDataProvider $provider)
@@ -197,31 +197,30 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
         assert('is_string($templateId)', ' Invalid argument $templateId: string expected');
 
         $templateId = mb_strtoupper("$templateId");
-        $templates = array();
+        $templatesFound = array();
 
-        $configs = $this->_getConfigurations();
-        foreach ($configs as $config)
+        assert('!isset($templates)', 'Cannot redeclare var $templates');
+        foreach ($this->_getConfigurations() as $config)
         {
             $templates = $config->getTemplates();
             if (isset($templates[$templateId])) {
-                $templateData = $templates[$templateId];
-                assert($templateData instanceof \Yana\Views\MetaData\TemplateMetaData);
-                $templates[] = $templateData;
+                assert($templates[$templateId] instanceof \Yana\Views\MetaData\TemplateMetaData);
+                $templatesFound[] = $templates[$templateId];
             }
         }
-        unset($config, $templateData);
+        unset($config);
 
-        if (empty($templates)) {
+        if (empty($templatesFound)) {
             $message = "No template found with id '{$templateId}'.";
             $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\NotFoundException($message, $level);
         }
 
         // inherit settings from parent templates
-        $templateData = \array_shift($templates);
-        while (!empty($templates)) {
+        $templateData = \array_shift($templatesFound);
+        while (!empty($templatesFound)) {
             $newData = new \Yana\Views\MetaData\TemplateMetaData();
-            $moreData = \array_shift($templates);
+            $moreData = \array_shift($templatesFound);
             /* @var $moreData \Yana\Views\MetaData\TemplateMetaData */
             $newData->setId($templateId)
                 ->setFile((!$moreData->getFile()) ? $templateData->getFile() : $moreData->getFile())
@@ -331,95 +330,13 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
         $skinName = $this->getName();
         $report->addText("Skin directory: {$skinName}");
 
-        /*
-         * loop through template definition and create a report for each
-         */
         $configurations = $this->_getConfigurations();
         assert('isset($configurations[$skinName]);');
-        $configuration = $configurations[$skinName];
+        $configuration = $configurations[$this->getName()];
         /* @var $configuration \Yana\Views\MetaData\SkinMetaData */
         assert($configuration instanceof \Yana\Views\MetaData\SkinMetaData);
-        unset($configurations);
 
-        assert('!isset($template)', ' Cannot redeclare var $template');
-        foreach ($configuration->getTemplates() as $key => $template)
-        {
-            /* @var $template \Yana\Views\MetaData\TemplateMetaData */
-            $subReport = $report->addReport("$key");
-            $hasError = false;
-
-            /*
-             * check if template file exists
-             */
-            $filename = $template->getFile();
-            if (!file_exists($filename)) {
-                $subReport->addError("File '{$filename}' does not exist. " .
-                    "Please make sure this path and filename is correct " .
-                    "and you have all files installed. Reinstall if necessary.");
-                $hasError = true;
-            } else {
-                $subReport->addText("File: {$filename}");
-            }
-            unset($filename);
-
-            /*
-             * check language references
-             */
-            $language = \Yana\Translations\Facade::getInstance(); // get instance of language manager
-            assert('!isset($value)', 'cannot redeclare variable $value');
-            foreach ($template->getLanguages() as $value)
-            {
-                if (empty($value)) {
-                    continue;
-                }
-                try {
-
-                    $language->readFile($value); // may throw exception
-
-                } catch (\Yana\Core\Exceptions\Translations\TranslationException $e) {
-                    $subReport->addWarning("A required language file '{$value}' is not available. " .
-                        "Please check if the chosen language file is correct and update your " .
-                        "language pack if needed. " . $e->getMessage());
-                    unset($e);
-                }
-            }
-            unset($value);
-
-            /*
-             * check stylesheet references
-             */
-            assert('!isset($value)', 'cannot redeclare variable $value');
-            foreach ($template->getStyles() as $value)
-            {
-                if (!file_exists($value)) {
-                    $subReport->addError("A required stylesheet is not available." .
-                        "This template may not be displayed correctly.");
-                    $hasError = true;
-                }
-            }
-            unset($value);
-
-            /*
-             * check script references
-             */
-            assert('!isset($value)', 'cannot redeclare variable $value');
-            foreach ($template->getScripts() as $value)
-            {
-                if (!file_exists($value)) {
-                    $subReport->addError("A required javascript file is not available." .
-                        "This template may not be displayed correctly.");
-                    $hasError = true;
-                }
-            }
-            unset($value);
-
-            if ($hasError !== true) {
-                $subReport->addText("No problems found.");
-            }
-        } // end foreach
-        unset($template);
-
-        return $report;
+        return $configuration->getReport($report);
     }
 
 }

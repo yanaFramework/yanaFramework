@@ -50,7 +50,7 @@ class TemplateMessageTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $template = new \Yana\Views\NullTemplate();
+        $template = new \Yana\Views\Templates\NullTemplate();
         $this->object = new \Yana\Mails\Messages\TemplateMessage($template);
     }
 

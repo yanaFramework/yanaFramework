@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -28,42 +27,41 @@
  * @ignore
  */
 
-namespace Yana\Views\Helpers;
+namespace Yana\Views\MetaData\Reporting;
 
 /**
- * <<abstract>> Basic Helper class.
+ * Helper class that creates reporting objects for managers.
  *
  * @package     yana
  * @subpackage  views
+ * @ignore
  */
-abstract class AbstractViewHelper extends \Yana\Core\Object implements \Yana\Views\Managers\IsManageable
+abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Views\MetaData\Reporting\IsBuilder
 {
 
     /**
-     * @var \Yana\Views\Managers\IsManager
+     * @var  \Yana\Report\IsReport
      */
-    private $_manager = null;
+    private $_report = null;
 
     /**
-     * Create a new instance.
+     * Initializes the manager class
      *
-     * This also loads the configuration.
+     * @param  \Yana\Report\IsReport  $report  inject base report class
      */
-    public function __construct(\Yana\Views\Managers\IsManager $manager)
+    public function __construct(\Yana\Report\IsReport $report)
     {
-        $this->_manager = $manager;
+        $this->_report = $report;
     }
 
     /**
-     * Returns a reference to the registered view manager.
+     * Returns the report object.
      *
-     * You may use this to modify settings of the view layer and access the template engine.
-     *
-     * @return \Yana\Views\Managers\IsManager
+     * @return  \Yana\Report\IsReport
      */
-    protected function _getViewManager()
+    protected function _getReport()
     {
-        return $this->_manager;
+        return $this->_report;
     }
 
 }

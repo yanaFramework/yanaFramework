@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -28,23 +27,32 @@
  * @ignore
  */
 
-namespace Yana\Views;
+namespace Yana\Views\MetaData\Reporting;
 
 /**
- * <<interface>> For any classes that may accept a view manager.
+ * <<interface>> Helper class that creates reporting objects for templates.
  *
  * @package     yana
  * @subpackage  views
+ * @ignore
  */
-interface IsManageable
+interface IsTemplateReportBuilder extends \Yana\Views\MetaData\Reporting\IsBuilder
 {
 
     /**
-     * Assign the view manager.
+     * Get the template configuration.
      *
-     * @param  \Yana\Views\IsManager  $manager  View manager instance
+     * @return \Yana\Views\MetaData\TemplateMetaData
      */
-    public function __construct(\Yana\Views\IsManager $manager);
+    public function getTemplateConfiguration();
+
+    /**
+     * Set the template configuration object.
+     *
+     * @param   \Yana\Views\MetaData\TemplateMetaData  $templateConfiguration  template configuration
+     * @return  \Yana\Views\MetaData\IsTemplateReportBuilder
+     */
+    public function setTemplateConfiguration(\Yana\Views\MetaData\TemplateMetaData $templateConfiguration);
 
 }
 

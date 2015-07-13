@@ -37,16 +37,16 @@ class TemplateMessage extends \Yana\Mails\Messages\Message implements \Yana\Core
 {
 
     /**
-     * @var \Yana\Views\IsTemplate
+     * @var \Yana\Views\Templates\IsTemplate
      */
     private $_template = null;
 
     /**
      * This sets up the content of the E-Mail from a template of your choice.
      *
-     * @param  \Yana\Views\IsTemplate  $template  E-Mail template
+     * @param  \Yana\Views\Templates\IsTemplate  $template  E-Mail template
      */
-    public function __construct(\Yana\Views\IsTemplate $template)
+    public function __construct(\Yana\Views\Templates\IsTemplate $template)
     {
         $this->_setTemplate($template);
     }
@@ -54,7 +54,7 @@ class TemplateMessage extends \Yana\Mails\Messages\Message implements \Yana\Core
     /**
      * Get mail template.
      * 
-     * @return  \Yana\Views\IsTemplate
+     * @return  \Yana\Views\Templates\IsTemplate
      */
     protected function _getTemplate()
     {
@@ -64,10 +64,10 @@ class TemplateMessage extends \Yana\Mails\Messages\Message implements \Yana\Core
     /**
      * Set mail template.
      *
-     * @param   \Yana\Views\IsTemplate  $template  some mail template
+     * @param   \Yana\Views\Templates\IsTemplate  $template  some mail template
      * @return  \Yana\Mails\Messages\TemplateMessage
      */
-    protected function _setTemplate(\Yana\Views\IsTemplate $template)
+    protected function _setTemplate(\Yana\Views\Templates\IsTemplate $template)
     {
         $this->_template = $template;
         return $this;

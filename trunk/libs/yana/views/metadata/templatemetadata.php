@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -36,7 +35,7 @@ namespace Yana\Views\MetaData;
  * @package     yana
  * @subpackage  views
  */
-class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData\IsTemplateMetaData
+class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData\IsTemplateMetaData, \Yana\Report\IsReportable
 {
 
     /**
@@ -194,6 +193,22 @@ class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData
     public function getStyles()
     {
         return $this->_styles;
+    }
+
+    /**
+     * Check this object for errors and return a report.
+     *
+     * Returns the a report object.
+     * The report is expected to be a valid XML document.
+     *
+     * @param   \Yana\Report\IsReport  $report  base report
+     * @return  \Yana\Report\IsReport
+     */
+    public function getReport(\Yana\Report\IsReport $report = null)
+    {
+        $reportBuilder = new \Yana\Views\MetaData\Reporting\TemplateReportBuilder($report);
+        $reportBuilder->setTemplateConfiguration($this);
+        return $reportBuilder->buildReport();
     }
 
 }

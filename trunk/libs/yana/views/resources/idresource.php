@@ -56,7 +56,7 @@ namespace Yana\Views\Resources;
  * </code>
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  views
  */
 class IdResource extends \Yana\Views\Resources\FileResource
 {

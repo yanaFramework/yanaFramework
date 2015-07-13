@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Views;
+namespace Yana\Views\Templates;
 
 /**
  * <<interace>> Use this to implement an entity representing a template.
