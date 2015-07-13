@@ -32,7 +32,6 @@ namespace Yana\Report;
  *
  * Identifies classes the are able to create a report
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */
@@ -40,15 +39,14 @@ interface IsReportable
 {
 
     /**
-     * check this object for errors and return a report
+     * Check this object for errors and return a report.
      *
      * Returns the a report object.
      * The report is expected to be a valid XML document.
      * For details see: config/dtd/report.dtd
      *
-     * @access  public
-     * @param   IsReport  $report  base report
-     * @return  IsReport
+     * @param   \Yana\Report\IsReport  $report  base report
+     * @return  \Yana\Report\IsReport
      */
     public function getReport(IsReport $report = null);
 
