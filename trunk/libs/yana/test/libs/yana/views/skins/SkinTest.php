@@ -56,6 +56,11 @@ class SkinTest extends \PHPUnit_Framework_TestCase
     protected $_testDir;
 
     /**
+     * @var  string
+     */
+    protected $_baseDir;
+
+    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      *
@@ -67,7 +72,8 @@ class SkinTest extends \PHPUnit_Framework_TestCase
         $this->_defaultDir->setFilter('*.skin.xml');
         $this->_testDir = new \Yana\Files\Dir(CWD . '/resources/skin/test');
         $this->_testDir->setFilter('*.skin.xml');
-        \Yana\Views\Skins\Skin::setBaseDirectory(CWD . '/resources/skin');
+        $this->_baseDir = CWD . '/resources/skin';
+        \Yana\Views\Skins\Skin::setBaseDirectory($this->_baseDir);
         $this->_object = new \Yana\Views\Skins\Skin('test');
     }
 
@@ -107,7 +113,7 @@ class SkinTest extends \PHPUnit_Framework_TestCase
     {
         $fooData = $this->_object->getTemplateData('foo');
 
-        $file =  $this->_defaultDir->getPath() . 'default.txt';
+        $file = str_replace($this->_baseDir . '/', '', $this->_defaultDir->getPath() . 'default.txt');
         $this->assertEquals(array($file, $file), $fooData->getScripts(), "read script failed");
     }
 
