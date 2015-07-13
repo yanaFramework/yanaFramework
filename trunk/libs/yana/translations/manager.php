@@ -92,7 +92,7 @@ class Manager extends \Yana\Translations\AbstractManager
         assert('is_string($id)', ' Invalid argument $id: string expected');
 
         // check syntax of filename
-        if (!preg_match("/^[\w_-\d]+$/i", $id)) {
+        if (!preg_match("/^[\w_\-\d]+$/i", $id)) {
             $message = "The provided language-file id contains illegal characters.".
                 " Be aware that only alphanumeric (a-z,0-9,-,_) characters are allowed.";
             $level = \Yana\Log\TypeEnumeration::INFO;
