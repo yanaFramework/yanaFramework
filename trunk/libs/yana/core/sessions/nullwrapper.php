@@ -76,7 +76,7 @@ class NullWrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWra
      */
     public function offsetExists($offset)
     {
-        assert('is_scalar($offset); // Invalid argument $offset: scalar expected');
+        assert('is_scalar($offset)', ' Invalid argument $offset: scalar expected');
         return isset($this->_data[$offset]);
     }
 
@@ -90,7 +90,7 @@ class NullWrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWra
      */
     public function offsetGet($offset)
     {
-        assert('is_scalar($offset); // Invalid argument $offset: scalar expected');
+        assert('is_scalar($offset)', ' Invalid argument $offset: scalar expected');
         return $this->_data[$offset];
     }
 
@@ -104,7 +104,7 @@ class NullWrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWra
     public function offsetSet($offset, $value)
     {
         if (!\is_null($offset)) {
-            assert('is_scalar($offset); // Invalid argument $offset: scalar expected');
+            assert('is_scalar($offset)', ' Invalid argument $offset: scalar expected');
             $this->_data[$offset] = $value;
         } else {
             $this->_data[] = $value;
@@ -119,7 +119,7 @@ class NullWrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWra
      */
     public function offsetUnset($offset)
     {
-        assert('is_scalar($offset); // Invalid argument $offset: scalar expected');
+        assert('is_scalar($offset)', ' Invalid argument $offset: scalar expected');
 
         unset($this->_data[$offset]);
     }
@@ -152,7 +152,7 @@ class NullWrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWra
      */
     public function setId($newId)
     {
-        assert('is_string($newId); // Invalid argument $newId: string expected');
+        assert('is_string($newId)', ' Invalid argument $newId: string expected');
 
         $this->_id = (string) $newId;
         return $this;
@@ -177,7 +177,7 @@ class NullWrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWra
      */
     public function regeneratId($newId)
     {
-        assert('is_string($newId); // Invalid argument $newId: string expected');
+        assert('is_string($newId)', ' Invalid argument $newId: string expected');
 
         $this->_id = (string) $newId;
         return $this;
@@ -200,7 +200,7 @@ class NullWrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWra
      */
     public function setName($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
 
         $this->_name = (string) $name;
         return $this;
@@ -280,7 +280,7 @@ class NullWrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWra
      */
     public function fromString($serializedArray)
     {
-        assert('is_string($serializedArray); // Invalid argument $serializedArray: string expected');
+        assert('is_string($serializedArray)', ' Invalid argument $serializedArray: string expected');
         $this->_data = \unserialize($serializedArray);
         return true;
     }

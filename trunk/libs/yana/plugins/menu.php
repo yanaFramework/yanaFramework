@@ -155,10 +155,10 @@ class Menu extends \Yana\Core\AbstractSingleton
      */
     protected static function _createNewInstance()
     {
-        assert('!isset($id); // Cannot redeclare already declared variable $id');
+        assert('!isset($id)', ' Cannot redeclare already declared variable $id');
         $id = self::_getLocale();
 
-        assert('!isset($instance); // Cannot redeclare already declared variable $instance');
+        assert('!isset($instance)', ' Cannot redeclare already declared variable $instance');
         /*
          * load from cache
          */
@@ -223,7 +223,7 @@ class Menu extends \Yana\Core\AbstractSingleton
      */
     public function setMenuEntry($action, \Yana\Plugins\MenuEntry $menuEntry)
     {
-        assert('is_string($action); // Invalid argument $action: string expected');
+        assert('is_string($action)', ' Invalid argument $action: string expected');
         \Yana\Util\Hashtable::set($this->_entries, $menuEntry->getGroup() . ".$action", $menuEntry);
     }
 
@@ -238,8 +238,8 @@ class Menu extends \Yana\Core\AbstractSingleton
      */
     public function unsetMenuEntry($action, $menuName = "")
     {
-        assert('is_string($action); // Invalid argument $action: string expected');
-        assert('is_string($menuName); // Invalid argument $menuName: string expected');
+        assert('is_string($action)', ' Invalid argument $action: string expected');
+        assert('is_string($menuName)', ' Invalid argument $menuName: string expected');
         return \Yana\Util\Hashtable::remove($this->_entries, $menuName . "." . $action);
     }
 
@@ -251,8 +251,8 @@ class Menu extends \Yana\Core\AbstractSingleton
      */
     public function setMenuName($menu, $name = "")
     {
-        assert('is_string($menu); // Invalid argument $menu: string expected');
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($menu)', ' Invalid argument $menu: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $this->_names[$menu] = $name;
     }
 
@@ -268,7 +268,7 @@ class Menu extends \Yana\Core\AbstractSingleton
      */
     public function getMenuEntries($menuName = null)
     {
-        assert('is_null($menuName) || is_string($menuName); // Wrong type for argument 1. String expected');
+        assert('is_null($menuName) || is_string($menuName)', ' Wrong type for argument 1. String expected');
         if (empty($menuName)) {
             return $this->_entries;
         } else {

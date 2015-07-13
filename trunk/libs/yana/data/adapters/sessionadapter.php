@@ -55,7 +55,7 @@ class SessionAdapter extends \Yana\Data\Adapters\ArrayAdapter implements \Yana\D
      */
     public function __construct($index = __CLASS__)
     {
-        assert('is_string($index); // Wrong argument type argument 1. String expected');
+        assert('is_string($index)', ' Wrong argument type argument 1. String expected');
         $this->_index = "$index";
         if (!isset($_SESSION[$this->_index]) || !is_array($_SESSION[$this->_index])) {
             $_SESSION[$this->_index] = array();

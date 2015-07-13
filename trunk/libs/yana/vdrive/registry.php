@@ -132,8 +132,8 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\Core\IsVarContainer
      */
     public function getVar($key)
     {
-        assert('is_string($key); // Wrong type for argument 1. String expected');
-        assert('is_array($this->vars); // Unexpected type for instance property "vars". Array expected');
+        assert('is_string($key)', ' Wrong type for argument 1. String expected');
+        assert('is_array($this->vars)', ' Unexpected type for instance property "vars". Array expected');
 
         if (!$this->isVar($key)) {
             $value = false;
@@ -142,7 +142,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\Core\IsVarContainer
             $value = $this->vars[$key];
 
         } else {
-            assert('isset($this->cache[$key]); // Expected key to exist, but it was not loaded');
+            assert('isset($this->cache[$key])', ' Expected key to exist, but it was not loaded');
             $value = $this->cache[$key];
         }
         return $value;
@@ -158,7 +158,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\Core\IsVarContainer
      */
     public function isVar($key)
     {
-        assert('is_string($key); // Wrong type for argument 1. String expected');
+        assert('is_string($key)', ' Wrong type for argument 1. String expected');
 
         $isVar = isset($this->vars[$key]) || (isset($this->cache[$key]) && !is_null($this->cache[$key]));
         if (!$isVar) {
@@ -226,7 +226,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\Core\IsVarContainer
      */
     public function setVarByReference($key, &$value)
     {
-        assert('is_string($key); // wrong argument type for argument 1, string expected');
+        assert('is_string($key)', ' wrong argument type for argument 1, string expected');
         /* settype to STRING */
         $key = (string) $key;
 
@@ -265,7 +265,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\Core\IsVarContainer
      */
     public function setVar($key, $value)
     {
-        assert('is_string($key); // Wrong argument type for argument 1. String expected');
+        assert('is_string($key)', ' Wrong argument type for argument 1. String expected');
         $this->setVarByReference($key, $value);
         return $this;
     }
@@ -295,8 +295,8 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\Core\IsVarContainer
      */
     public function mergeVars($key, array $array, $overwrite = true)
     {
-        assert('is_string($key);  // Wrong argument type for argument 1, string expected');
-        assert('is_bool($overwrite); // Wrong argument type for argument 3, boolean expected');
+        assert('is_string($key)', ' Wrong argument type for argument 1, string expected');
+        assert('is_bool($overwrite)', ' Wrong argument type for argument 3, boolean expected');
 
         if ($key == "" || $key == "*") {
             $this->vars = \Yana\Util\Hashtable::merge($this->vars, $array);
@@ -347,7 +347,7 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\Core\IsVarContainer
      */
     public function unsetVar($key)
     {
-        assert('is_string($key);   // wrong argument type for argument 1, string expected');
+        assert('is_string($key)', ' wrong argument type for argument 1, string expected');
         $key = (string) $key;
 
         if (isset($this->cache[$key])) {
@@ -369,8 +369,8 @@ class Registry extends \Yana\VDrive\VDrive implements \Yana\Core\IsVarContainer
      */
     public function setType($key, $type)
     {
-        assert('is_string($key);   // wrong argument type for argument 1, string expected');
-        assert('is_string($type);  // wrong argument type for argument 2, string expected');
+        assert('is_string($key)', ' wrong argument type for argument 1, string expected');
+        assert('is_string($type)', ' wrong argument type for argument 2, string expected');
         \Yana\Util\Hashtable::setType($this->vars, "$key", "$type");
         return $this;
     }

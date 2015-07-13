@@ -100,7 +100,7 @@ abstract class AbstractHelper extends \Yana\Core\Object
      */
     public function setId($id)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert('is_string($id)', ' Invalid argument $id: string expected');
         $this->_id = \Yana\Util\String::htmlSpecialChars($id, ENT_QUOTES);
         return $this;
     }
@@ -123,7 +123,7 @@ abstract class AbstractHelper extends \Yana\Core\Object
      */
     public function setName($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $this->_name = \Yana\Util\String::htmlSpecialChars($name, ENT_QUOTES);
         return $this;
     }
@@ -146,7 +146,7 @@ abstract class AbstractHelper extends \Yana\Core\Object
      */
     public function setCssClass($class)
     {
-        assert('is_string($class); // Invalid argument $class: string expected');
+        assert('is_string($class)', ' Invalid argument $class: string expected');
         $this->_class = \Yana\Util\String::htmlSpecialChars($class, ENT_QUOTES);
         return $this;
     }
@@ -169,7 +169,7 @@ abstract class AbstractHelper extends \Yana\Core\Object
      */
     public function setTitle($title)
     {
-        assert('is_string($title); // Invalid argument $id: string expected');
+        assert('is_string($title)', ' Invalid argument $id: string expected');
         $this->_title = \Yana\Util\String::htmlSpecialChars($title, ENT_QUOTES);
         return $this;
     }
@@ -196,8 +196,8 @@ abstract class AbstractHelper extends \Yana\Core\Object
      */
     public function setMaxLength($maxLength)
     {
-        assert('is_int($maxLength); // Invalid argument $maxLength: int expected');
-        assert('$maxLength >= 0; // Invalid argument $maxLength: must be >= 0');
+        assert('is_int($maxLength)', ' Invalid argument $maxLength: int expected');
+        assert('$maxLength >= 0', ' Invalid argument $maxLength: must be >= 0');
         $this->_maxLength = (int) $maxLength;
         return $this;
     }
@@ -220,7 +220,7 @@ abstract class AbstractHelper extends \Yana\Core\Object
      */
     public function setAttr($attr)
     {
-        assert('is_string($attr); // Invalid argument $attr: string expected');
+        assert('is_string($attr)', ' Invalid argument $attr: string expected');
         $this->_attr = \Yana\Util\String::htmlSpecialChars($attr, ENT_NOQUOTES);
         return $this;
     }

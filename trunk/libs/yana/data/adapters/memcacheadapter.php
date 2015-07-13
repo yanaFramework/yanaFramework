@@ -70,8 +70,8 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
      */
     public function __construct(\Yana\Data\Adapters\MemCache\IsWrapper $memCache, $prefix = __CLASS__, $lifetime = 0)
     {
-        assert('is_string($prefix); // Invalid argument $prefix: string expected');
-        assert('is_int($lifetime); // Invalid argument $lifetime: int expected');
+        assert('is_string($prefix)', ' Invalid argument $prefix: string expected');
+        assert('is_int($lifetime)', ' Invalid argument $lifetime: int expected');
 
         $this->_prefix = (string) $prefix;
         $this->_memCache = $memCache;
@@ -178,7 +178,7 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
      */
     private function _toMemCacheKey($offset)
     {
-        assert('is_scalar($offset); // Invalid argument $offset: string expected');
+        assert('is_scalar($offset)', ' Invalid argument $offset: string expected');
 
         return md5($this->_getPrefix() . (string) $offset);
     }
@@ -221,7 +221,7 @@ class MemCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yana
 
         // determine key if none is given (simulates auto-increment)
         if (\is_null($offset)) {
-            assert('!isset($_keys); // Cannot redeclare var $_keys');
+            assert('!isset($_keys)', ' Cannot redeclare var $_keys');
             $_keys = \array_keys(parent::_getItems());
             $offset = (string) \array_pop($_keys);
             unset($_keys);

@@ -113,11 +113,11 @@ class SXML extends \Yana\Core\Object implements \Yana\Files\Decoders\IsDecoder
      */
     public function encode($data, $name = null, $caseSensitive = CASE_MIXED, $indent = 0)
     {
-        assert('is_array($data) || is_scalar($data); /* Wrong argument type for argument 1. Array expected. */');
-        assert('is_null($name) || is_string($name); /* Wrong argument type for argument 2. String expected. */');
+        assert('is_array($data) || is_scalar($data)', 'Wrong argument type for argument 1. Array expected.');
+        assert('is_null($name) || is_string($name)', 'Wrong argument type for argument 2. String expected.');
         assert('$caseSensitive === CASE_MIXED || $caseSensitive === CASE_LOWER || $caseSensitive === CASE_UPPER; /* '.
             'Invalid argument 3. Expected one of the following constants: CASE_MIXED, CASE_LOWER, CASE_UPPER. */');
-        assert('is_int($indent); /* Wrong argument type for argument 4. Integer expected. */');
+        assert('is_int($indent)', 'Wrong argument type for argument 4. Integer expected.');
 
         if (is_null($data)) {
             return "";
@@ -204,7 +204,7 @@ class SXML extends \Yana\Core\Object implements \Yana\Files\Decoders\IsDecoder
      */
     public function decode($input, $caseSensitive = CASE_MIXED)
     {
-        assert('is_string($input); /* Wrong argument type for argument 1. String expected. */');
+        assert('is_string($input)', 'Wrong argument type for argument 1. String expected.');
         $input = explode("\n", "$input");
         return self::getFile($input, $caseSensitive);
     }

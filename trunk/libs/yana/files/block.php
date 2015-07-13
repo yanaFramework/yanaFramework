@@ -53,7 +53,7 @@ class Block extends \Yana\Files\File
     public function setContent($input)
     {
         if (!is_array($input)) {
-            assert('is_string($input); // Wrong type for argument 1. String expected');
+            assert('is_string($input)', ' Wrong type for argument 1. String expected');
             $input = preg_replace("/[;,\s]+/s", "\n", "$input");
             $input = explode("\n", $input);
         }
@@ -101,8 +101,8 @@ class Block extends \Yana\Files\File
      */
     public function isBlocked($remoteAddress)
     {
-        assert('is_string($remoteAddress); // Invalid argument $remoteAddress: string expected');
-        assert('filter_var($remoteAddress, FILTER_VALIDATE_IP); // Not a valid IP-address');
+        assert('is_string($remoteAddress)', ' Invalid argument $remoteAddress: string expected');
+        assert('filter_var($remoteAddress, FILTER_VALIDATE_IP)', ' Not a valid IP-address');
 
         assert('is_array($this->content);');
 
@@ -110,7 +110,7 @@ class Block extends \Yana\Files\File
             $this->read();
         }
 
-        assert('!isset($line); /* cannot redeclare variable $line */');
+        assert('!isset($line)', 'cannot redeclare variable $line');
         foreach ((array) $this->content as $line)
         {
             // convert to regular expression

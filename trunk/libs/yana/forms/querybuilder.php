@@ -166,8 +166,8 @@ class QueryBuilder extends \Yana\Core\Object
      * @return  \D\Yana\Db\Queries\Select     */
     public function buildAutocompleteQuery(\Yana\Db\Ddl\Reference $targetReference, $searchTerm, $limit)
     {
-        assert('is_string($searchTerm); // Invalid argument $searchTerm: string expected');
-        assert('is_int($limit); // Invalid argument $limit: int expected');
+        assert('is_string($searchTerm)', ' Invalid argument $searchTerm: string expected');
+        assert('is_int($limit)', ' Invalid argument $limit: int expected');
 
         $query = new \Yana\Db\Queries\Select($this->_db);
         $query->setTable($targetReference->getTable());
@@ -257,7 +257,7 @@ class QueryBuilder extends \Yana\Core\Object
     {
         $setup = $this->_form->getSetup();
         if ($setup->hasFilter()) {
-            assert('!isset($updateForm); // Cannot redeclare var $updateForm');
+            assert('!isset($updateForm)', ' Cannot redeclare var $updateForm');
             $updateForm = $this->_form->getUpdateForm();
             foreach ($setup->getFilters() as $columnName => $filter)
             {

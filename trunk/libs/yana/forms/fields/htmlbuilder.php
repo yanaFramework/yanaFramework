@@ -387,8 +387,8 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     public function buildTextfield($value, $type = 'text')
     {
-        assert('is_string($type); // Invalid argument $text: string expected');
-        assert('preg_match("/^[a-z]+$/", $type); // Invalid argument $text: must only contain characters a-z');
+        assert('is_string($type)', ' Invalid argument $text: string expected');
+        assert('preg_match("/^[a-z]+$/", $type)', ' Invalid argument $text: must only contain characters a-z');
         $maxLength = (int) $this->getMaxLength();
         return '<input' . $this->getAttr() .' id="' . $this->getId() . '" name="' . $this->getName() . '" ' .
             'class="' . $this->getCssClass() . '" type="' . $type . '" value="' . $value .
@@ -406,8 +406,8 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
      */
     public function buildFilefield($hasDelete, $mimeType = '')
     {
-        assert('is_bool($hasDelete); // Invalid argument $hasDelete: bool expected');
-        assert('is_string($mimeType); // Invalid argument $mimeType: string expected');
+        assert('is_bool($hasDelete)', ' Invalid argument $hasDelete: bool expected');
+        assert('is_string($mimeType)', ' Invalid argument $mimeType: string expected');
         $attr = $this->getAttr();
         if ($mimeType) {
             $attr .= ' accept="' . \Yana\Util\String::htmlSpecialChars($mimeType) . '"';
@@ -462,8 +462,8 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
         if (empty($filename) || !is_string($filename) || empty($downloadAction)) {
             return '<span class="icon_blank">&nbsp;</span>';
         } else {
-            assert('is_string($filename); // Invalid argument $filename: string expected');
-            assert('is_string($downloadAction); // Invalid argument $downloadAction: string expected');
+            assert('is_string($filename)', ' Invalid argument $filename: string expected');
+            assert('is_string($downloadAction)', ' Invalid argument $downloadAction: string expected');
             $lang = \Yana\Translations\Facade::getInstance();
             $fileId = \Yana\Db\Blob::storeFilenameInSession($filename);
             $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
@@ -485,8 +485,8 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
         if (empty($filename) || empty($downloadAction)) {
             return '<span class="icon_blank">&nbsp;</span>';
         } else {
-            assert('is_string($filename); // Invalid argument $filename: string expected');
-            assert('is_string($downloadAction); // Invalid argument $downloadAction: string expected');
+            assert('is_string($filename)', ' Invalid argument $filename: string expected');
+            assert('is_string($downloadAction)', ' Invalid argument $downloadAction: string expected');
             $fileId = \Yana\Db\Blob::storeFilenameInSession($filename);
             $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
             return '<a href="' . $formatter("action={$downloadAction}&target={$fileId}&fullsize=true", false, false) . '">' .

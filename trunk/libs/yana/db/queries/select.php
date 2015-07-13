@@ -176,7 +176,7 @@ class Select extends \Yana\Db\Queries\SelectCount
          */
         if (count($columns) === 1) {
             $column = array_pop($columns);
-            assert('is_string($column); /* String expected */');
+            assert('is_string($column)', 'String expected');
             $this->setColumn($column);
             return;
 
@@ -192,8 +192,8 @@ class Select extends \Yana\Db\Queries\SelectCount
         }
 
         $result = array();
-        assert('!isset($column); // Cannot redeclare var $column');
-        assert('!isset($alias); // Cannot redeclare var $alias');
+        assert('!isset($column)', ' Cannot redeclare var $column');
+        assert('!isset($alias)', ' Cannot redeclare var $alias');
         foreach ($columns as $alias => $column)
         {
             $alias = mb_strtoupper($alias);
@@ -229,7 +229,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      */
     public function addColumn($column, $alias = "")
     {
-        assert('is_string($column); // Wrong argument type argument 1. String expected');
+        assert('is_string($column)', ' Wrong argument type argument 1. String expected');
 
         // reset query id
         $this->id = null;
@@ -270,7 +270,7 @@ class Select extends \Yana\Db\Queries\SelectCount
         if (is_array($column)) {
             return $column;
         }
-        assert('is_string($column); // Wrong argument type argument 1. String expected');
+        assert('is_string($column)', ' Wrong argument type argument 1. String expected');
         if (strpos($column, '.')) {
             list($tableName, $column) = explode('.', $column);
         } else {
@@ -431,7 +431,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      */
     public function addHaving(array $having, $isMandatory = true)
     {
-        assert('is_bool($isMandatory); // Wrong type for argument 2. Boolean expected');
+        assert('is_bool($isMandatory)', ' Wrong type for argument 2. Boolean expected');
         // clear cached query id
         $this->id = null;
         $having = $this->parseWhereArray($having); // throws exception
@@ -500,7 +500,7 @@ class Select extends \Yana\Db\Queries\SelectCount
      */
     public function setOffset($offset)
     {
-        assert('is_int($offset); // Wrong argument type for argument 1. Integer expected.');
+        assert('is_int($offset)', ' Wrong argument type for argument 1. Integer expected.');
         $this->id = null;
         if ($offset >= 0) {
             $this->offset = (int) $offset;
@@ -528,7 +528,7 @@ class Select extends \Yana\Db\Queries\SelectCount
             } else {
                 $having = "";
             }
-            assert('is_string($having); // Unexpected value $having');
+            assert('is_string($having)', ' Unexpected value $having');
             if (!empty($having)) {
                 $stmt = str_replace('%HAVING%', trim($having), $stmt);
             } else {
@@ -574,9 +574,9 @@ class Select extends \Yana\Db\Queries\SelectCount
      */
     public function toCSV($colSep = ';', $rowSep = "\n", $hasHeader = true)
     {
-        assert('is_string($colSep); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($rowSep); // Wrong argument type for argument 2. String expected.');
-        assert('is_bool($hasHeader); // Wrong argument type for argument 4. Boolean expected.');
+        assert('is_string($colSep)', ' Wrong argument type for argument 1. String expected.');
+        assert('is_string($rowSep)', ' Wrong argument type for argument 2. String expected.');
+        assert('is_bool($hasHeader)', ' Wrong argument type for argument 4. Boolean expected.');
         $csv = "";
         $resultset = $this->getResults(); // array of data
         switch ($this->getExpectedResult())
@@ -649,8 +649,8 @@ class Select extends \Yana\Db\Queries\SelectCount
      */
     private static function _rowToCsv(array $row, $colSep, $rowSep)
     {
-        assert('is_string($colSep); // Wrong argument type for argument 2. String expected.');
-        assert('is_string($rowSep); // Wrong argument type for argument 3. String expected.');
+        assert('is_string($colSep)', ' Wrong argument type for argument 2. String expected.');
+        assert('is_string($rowSep)', ' Wrong argument type for argument 3. String expected.');
         $csv = "";
         foreach ($row as $value)
         {
@@ -764,7 +764,7 @@ class Select extends \Yana\Db\Queries\SelectCount
         $table = $this->db->getSchema()->getTable($this->getTable());
         assert('$table instanceof \Yana\Db\Ddl\Table;');
 
-        assert('!isset($output); // Cannot redeclare var $output');
+        assert('!isset($output)', ' Cannot redeclare var $output');
         $output = array();
         $id = $table->getPrimaryKey();
 
@@ -783,13 +783,13 @@ class Select extends \Yana\Db\Queries\SelectCount
             switch ($returnedType)
             {
                 case \Yana\Db\ResultEnumeration::TABLE:
-                    assert('!isset($rowId); // Cannot redeclare var $rowId');
+                    assert('!isset($rowId)', ' Cannot redeclare var $rowId');
                     if (isset($row[$id])) {
                         $rowId = mb_strtoupper($row[$id]);
                     } else {
                         $rowId = $i;
                     }
-                    assert('!isset($refKey); /* Cannot redeclare var $refKey */');
+                    assert('!isset($refKey)', 'Cannot redeclare var $refKey');
                     if (!empty($output[$rowId])) {
                         $output[$rowId] = array($output[$rowId]);
                         $output[$rowId][1] = false;
@@ -810,11 +810,11 @@ class Select extends \Yana\Db\Queries\SelectCount
                     }
                 break;
             }
-            assert('!isset($alias); // Cannot redeclare var $alias');
-            assert('!isset($columnName); // Cannot redeclare var $columnName');
-            assert('!isset($value); // Cannot redeclare var $value');
-            assert('!isset($column); // Cannot redeclare var $column');
-            assert('!isset($arrayAddress); // Cannot redeclare var $arrayAddress');
+            assert('!isset($alias)', ' Cannot redeclare var $alias');
+            assert('!isset($columnName)', ' Cannot redeclare var $columnName');
+            assert('!isset($value)', ' Cannot redeclare var $value');
+            assert('!isset($column)', ' Cannot redeclare var $column');
+            assert('!isset($arrayAddress)', ' Cannot redeclare var $arrayAddress');
             foreach ($row as $alias => $value)
             {
                 if (!is_null($value)) {
@@ -827,7 +827,7 @@ class Select extends \Yana\Db\Queries\SelectCount
                         case \Yana\Db\ResultEnumeration::ROW:
                             // get name of parent table (if any)
                             try {
-                                assert('!isset($currentTable); // Cannot redeclare var $currentTable');
+                                assert('!isset($currentTable)', ' Cannot redeclare var $currentTable');
                                 $currentTable = $this->getTableByColumn($columnName);
                                 assert('$currentTable instanceof \Yana\Db\Ddl\Table;');
                                 // get column definition

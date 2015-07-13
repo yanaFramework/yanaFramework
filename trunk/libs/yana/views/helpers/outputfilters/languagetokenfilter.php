@@ -50,7 +50,7 @@ class LanguageTokenFilter extends \Yana\Views\Helpers\AbstractViewHelper impleme
      */
     public function __invoke($source)
     {
-        assert('is_string($source); // Invalid argument $source: string expected');
+        assert('is_string($source)', ' Invalid argument $source: string expected');
 
         $source = preg_replace('/\s*<\!--\s*-->\s*/s', '', $source);
         $source = \Yana\Translations\Facade::getInstance()->replaceToken($source);

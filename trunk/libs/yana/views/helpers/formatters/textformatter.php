@@ -70,7 +70,7 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
      */
     public function __invoke($string)
     {
-        assert('is_string($string); // Invalid argument $string: string expected');
+        assert('is_string($string)', ' Invalid argument $string: string expected');
 
         /*
          * if not necessary -> skip the whole section for better performance
@@ -294,10 +294,10 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
                      * load and apply embedded tags from system configuration
                      */
                     default:
-                        assert('!isset($userTag); // Cannot redeclare var $userTag');
-                        assert('!isset($opt); // Cannot redeclare var $opt');
-                        assert('!isset($regExp); // Cannot redeclare var $regExp');
-                        assert('!isset($replace); // Cannot redeclare var $replace');
+                        assert('!isset($userTag)', ' Cannot redeclare var $userTag');
+                        assert('!isset($opt)', ' Cannot redeclare var $opt');
+                        assert('!isset($regExp)', ' Cannot redeclare var $regExp');
+                        assert('!isset($replace)', ' Cannot redeclare var $replace');
                         foreach ((array) self::$_userDefinedTags as $tagName => $opt)
                         {
                             $tagName = mb_strtolower($tagName);
@@ -340,7 +340,7 @@ class TextFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
 
         } // end if
 
-        assert('is_string($string); // Unexpected result: $txt is supposed to be a string.');
+        assert('is_string($string)', ' Unexpected result: $txt is supposed to be a string.');
         return $string;
     }
 

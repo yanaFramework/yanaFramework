@@ -110,8 +110,8 @@ class LoopBlock extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\
     private function _loop($key, $item, array &$array, &$template)
     {
         $list = '';
-        assert('!isset($id);      // Cannot redeclare $id');
-        assert('!isset($element); // Cannot redeclare $element');
+        assert('!isset($id)', ' Cannot redeclare $id');
+        assert('!isset($element)', ' Cannot redeclare $element');
         foreach ($array as $id => $element)
         {
             if (is_array($element)) {

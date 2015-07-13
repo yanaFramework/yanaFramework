@@ -58,7 +58,7 @@ class Dir extends AbstractMountpoint
      */
     public function __construct($path)
     {
-        assert('is_string($path); // Wrong type for argument 1. String expected');
+        assert('is_string($path)', ' Wrong type for argument 1. String expected');
         $this->mountpoint = new \Yana\Files\Dir($path);
         $this->path = $path;
     }
@@ -71,7 +71,7 @@ class Dir extends AbstractMountpoint
      */
     public function setFilter($filter = "")
     {
-        assert('is_string($filter); // Wrong type for argument 3. String expected');
+        assert('is_string($filter)', ' Wrong type for argument 3. String expected');
         $this->mountpoint->setFilter($filter);
     }
 

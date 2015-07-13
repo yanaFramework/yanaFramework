@@ -84,7 +84,7 @@ class TypeEnumeration extends \Yana\Core\AbstractEnumeration
      */
     public static function fromString($string)
     {
-        assert('is_string($string); // Wrong type for argument 1. String expected');
+        assert('is_string($string)', ' Wrong type for argument 1. String expected');
 
         switch (mb_strtolower($string))
         {

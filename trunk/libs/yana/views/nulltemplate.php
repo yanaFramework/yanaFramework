@@ -95,7 +95,7 @@ class NullTemplate extends \Yana\Core\Object implements \Yana\Views\IsTemplate
      */
     public function isVar($key)
     {
-        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+        assert('is_scalar($key)', ' Invalid argument $key: scalar expected');
 
         return isset($this->_vars[$key]);
     }

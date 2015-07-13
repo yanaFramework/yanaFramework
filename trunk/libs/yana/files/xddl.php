@@ -61,23 +61,23 @@ class XDDL extends \Yana\Files\File
     public function toXML()
     {
         if (isset($this->ddl) && $this->ddl->isModified()) {
-            assert('!isset($xddl); // Cannot redeclare var $xddl');
+            assert('!isset($xddl)', ' Cannot redeclare var $xddl');
             $xddl = $this->ddl->serializeToXDDL();
-            assert('$xddl instanceof \SimpleXMLElement; // Expecting serializeToXDDL() to return a \SimpleXMLElement.');
-            assert('!isset($xml); // Cannot redeclare var $xml');
+            assert('$xddl instanceof \SimpleXMLElement', ' Expecting serializeToXDDL() to return a \SimpleXMLElement.');
+            assert('!isset($xml)', ' Cannot redeclare var $xml');
             $xml = $xddl->asXML();
-            assert('is_string($xml); // Expecting function toXML() to return a string.');
+            assert('is_string($xml)', ' Expecting function toXML() to return a string.');
             unset($xddl);
             // store content
             $this->content = explode("\n", $xml);
-            assert('is_array($this->content); // Property "content" is expected to be an array.');
+            assert('is_array($this->content)', ' Property "content" is expected to be an array.');
             // reset database definition to "unmodified"
             $this->ddl->setModified(false);
             // return result
             return $xml;
 
         } else {
-            assert('is_array($this->content); // Property "content" is expected to be an array.');
+            assert('is_array($this->content)', ' Property "content" is expected to be an array.');
             return implode("\n", $this->content);
         }
     }
@@ -123,7 +123,7 @@ class XDDL extends \Yana\Files\File
      */
     public static function getDatabase($databaseName)
     {
-        assert('is_string($databaseName); // Wrong type for argument 1. String expected');
+        assert('is_string($databaseName)', ' Wrong type for argument 1. String expected');
         $path = \Yana\Db\Ddl\DDL::getPath($databaseName);
         return self::_getDatabaseFromPath($path);
     }
@@ -144,7 +144,7 @@ class XDDL extends \Yana\Files\File
 
         $ddl = null;
 
-        assert('!isset($simpleXml); // Cannot redeclare var $simpleXml');
+        assert('!isset($simpleXml)', ' Cannot redeclare var $simpleXml');
         try {
 
             $simpleXml = simplexml_load_file($path);
@@ -153,7 +153,7 @@ class XDDL extends \Yana\Files\File
         } catch (\Exception $e) {
             throw new \Yana\Core\Exceptions\InvalidSyntaxException("Error in XDDL-file.", E_USER_WARNING, $e);
         }
-        assert('$ddl instanceof \Yana\Db\Ddl\Database; // Invalid return value. \Yana\Db\Ddl\Database expected');
+        assert('$ddl instanceof \Yana\Db\Ddl\Database', ' Invalid return value. \Yana\Db\Ddl\Database expected');
         return $ddl;
     }
 

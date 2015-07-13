@@ -57,7 +57,7 @@ class DebugUtility extends \Yana\Core\AbstractUtility
         /* var dumps */
         if (func_num_args() > 0) {
             print "<h2>Var-Dumps</h2>\n<ol>\n";
-            assert('!isset($element); // Cannot redeclare var $element');
+            assert('!isset($element)', ' Cannot redeclare var $element');
             foreach (func_get_args() as $element)
             {
                 print "<li><pre>";
@@ -73,7 +73,7 @@ class DebugUtility extends \Yana\Core\AbstractUtility
         print "<ol>\n";
 
         $smarty = null;
-        assert('!isset($element); /* Cannot redeclare variable $element */');
+        assert('!isset($element)', 'Cannot redeclare variable $element');
         foreach (debug_backtrace() as $element)
         {
             // ignore class ErrorUtility
@@ -93,7 +93,7 @@ class DebugUtility extends \Yana\Core\AbstractUtility
                 /* function arguments */
                 $element['function'] .= '( ';
                 if (!empty($element['args'])) {
-                    assert('!isset($arg); // Cannot redeclare var $arg');
+                    assert('!isset($arg)', ' Cannot redeclare var $arg');
                     foreach ($element['args'] as $arg)
                     {
                         $element['function'] .= gettype($arg) . ' ';

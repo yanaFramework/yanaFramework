@@ -84,7 +84,7 @@ class MenuEntry
      */
     public function setGroup($group)
     {
-        assert('is_string($group); // Invalid argument $group: string expected');
+        assert('is_string($group)', ' Invalid argument $group: string expected');
         $this->_group = (string) $group;
         return $this;
     }
@@ -107,7 +107,7 @@ class MenuEntry
      */
     public function setTitle($title)
     {
-        assert('is_string($title); // Invalid argument $title: string expected');
+        assert('is_string($title)', ' Invalid argument $title: string expected');
         $this->_title = (string) $title;
         return $this;
     }
@@ -130,7 +130,7 @@ class MenuEntry
      */
     public function setIcon($icon)
     {
-        assert('is_string($icon); // Invalid argument $icon: string expected');
+        assert('is_string($icon)', ' Invalid argument $icon: string expected');
         $this->_icon = (string) $icon;
         return $this;
     }
@@ -155,7 +155,7 @@ class MenuEntry
      */
     public function setSafeMode($safeMode = null)
     {
-        assert('is_null($safeMode) || is_bool($safeMode); // Invalid argument $safeMode: bool expected');
+        assert('is_null($safeMode) || is_bool($safeMode)', ' Invalid argument $safeMode: bool expected');
         $this->_safeMode = $safeMode;
         return $this;
     }

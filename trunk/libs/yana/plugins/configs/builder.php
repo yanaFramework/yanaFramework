@@ -89,11 +89,11 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             $this->object->setLastModified($this->_class->getLastModified());
             $activityString = $parser->getTag(\Yana\Plugins\Annotations\Enumeration::ACTIVE, '0');
             $this->object->setActive(\Yana\Plugins\ActivityEnumeration::getActiveState($activityString));
-            assert('!isset($tags); // Cannot redeclare var $tags');
-            assert('!isset($tag); // Cannot redeclare var $tag');
+            assert('!isset($tags)', ' Cannot redeclare var $tags');
+            assert('!isset($tag)', ' Cannot redeclare var $tag');
             $tags = $parser->getTags(\Yana\Plugins\Annotations\Enumeration::MENU);
             foreach ($tags as $tag) {
-                assert('!isset($menu); // Cannot redeclare var $menu');
+                assert('!isset($menu)', ' Cannot redeclare var $menu');
                 $menu = new \Yana\Plugins\MenuEntry();
                 if (isset($tag[\Yana\Plugins\Annotations\Enumeration::GROUP])) {
                     $menu->setGroup($tag[\Yana\Plugins\Annotations\Enumeration::GROUP]);
@@ -138,10 +138,10 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             $method->setTitle($parser->getTag(\Yana\Plugins\Annotations\Enumeration::TITLE));
             $method->setReturn($parser->getTag(\Yana\Plugins\Annotations\Enumeration::RETURN_VALUE));
             $method->setTemplate(mb_strtolower($parser->getTag(\Yana\Plugins\Annotations\Enumeration::TEMPLATE, 'null')));
-            assert('!isset($users); // Cannot redeclare var $users');
+            assert('!isset($users)', ' Cannot redeclare var $users');
             $users = array();
-            assert('!isset($item); // Cannot redeclare var $item');
-            assert('!isset($tag); // Cannot redeclare var $tag');
+            assert('!isset($item)', ' Cannot redeclare var $item');
+            assert('!isset($tag)', ' Cannot redeclare var $tag');
             foreach ($parser->getTags(\Yana\Plugins\Annotations\Enumeration::USER, array()) as $tag)
             {
                 $user = new \Yana\Plugins\UserLevel();
@@ -158,10 +158,10 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             }
             unset($item, $tag);
             $method->setUserLevels($users);
-            assert('!isset($tag); // Cannot redeclare var $tag');
+            assert('!isset($tag)', ' Cannot redeclare var $tag');
             $tag = $parser->getTag(\Yana\Plugins\Annotations\Enumeration::MENU);
             if (!empty($tag)) {
-                assert('!isset($menu); // Cannot redeclare var $menu');
+                assert('!isset($menu)', ' Cannot redeclare var $menu');
                 $menu = new \Yana\Plugins\MenuEntry();
                 if (isset($tag[\Yana\Plugins\Annotations\Enumeration::GROUP])) {
                     $menu->setGroup($tag[\Yana\Plugins\Annotations\Enumeration::GROUP]);
@@ -174,7 +174,7 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             }
             $tag = $parser->getTag(\Yana\Plugins\Annotations\Enumeration::ONERROR);
             if (!empty($tag)) {
-                assert('!isset($event); // Cannot redeclare var $event');
+                assert('!isset($event)', ' Cannot redeclare var $event');
                 $event = new \Yana\Plugins\Configs\EventRoute();
                 if (isset($tag[\Yana\Plugins\Annotations\Enumeration::GO])) {
                     $event->setTarget($tag[\Yana\Plugins\Annotations\Enumeration::GO]);
@@ -187,7 +187,7 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             }
             $tag = $parser->getTag(\Yana\Plugins\Annotations\Enumeration::ONSUCCESS);
             if (!empty($tag)) {
-                assert('!isset($event); // Cannot redeclare var $event');
+                assert('!isset($event)', ' Cannot redeclare var $event');
                 $event = new \Yana\Plugins\Configs\EventRoute();
                 if (isset($tag[\Yana\Plugins\Annotations\Enumeration::GO])) {
                     $event->setTarget($tag[\Yana\Plugins\Annotations\Enumeration::GO]);
@@ -207,9 +207,9 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             $method->setSubscribe((bool) $parser->getTag(\Yana\Plugins\Annotations\Enumeration::SUBSCRIBE, '0'));
             $method->setLanguages($parser->getTags(\Yana\Plugins\Annotations\Enumeration::LANGUAGE));
             // process and add scripts
-            assert('!isset($scripts); // Cannot redeclare var $scripts');
+            assert('!isset($scripts)', ' Cannot redeclare var $scripts');
             $scripts = array();
-            assert('!isset($script); // Cannot redeclare var $script');
+            assert('!isset($script)', ' Cannot redeclare var $script');
             foreach ($parser->getTags(\Yana\Plugins\Annotations\Enumeration::SCRIPT, array()) as $script)
             {
                 if (!is_string($script)) {
@@ -222,9 +222,9 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             $method->setScripts($scripts);
             unset($scripts, $script);
             // process and add styles
-            assert('!isset($styles); // Cannot redeclare var $scripts');
+            assert('!isset($styles)', ' Cannot redeclare var $scripts');
             $styles = array();
-            assert('!isset($style); // Cannot redeclare var $style');
+            assert('!isset($style)', ' Cannot redeclare var $style');
             foreach ($parser->getTags(\Yana\Plugins\Annotations\Enumeration::STYLE, array()) as $style)
             {
                 if (!is_string($style)) {
@@ -237,19 +237,19 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             $method->setStyles($styles);
             unset($styles, $style);
             // process template
-            assert('!isset($template); // Cannot redeclare var $template');
+            assert('!isset($template)', ' Cannot redeclare var $template');
             $template = $classPath . "/" . $parser->getTag(\Yana\Plugins\Annotations\Enumeration::TEMPLATE);
             if (is_file($template)) {
                 $method->setTemplate($template);
             }
             unset($template);
             // process params
-            assert('!isset($params); // Cannot redeclare var $params');
+            assert('!isset($params)', ' Cannot redeclare var $params');
             $params = array();
-            assert('!isset($param); // Cannot redeclare var $param');
-            assert('!isset($match); // Cannot redeclare var $match');
-            assert('!isset($name); // Cannot redeclare var $name');
-            assert('!isset($type); // Cannot redeclare var $type');
+            assert('!isset($param)', ' Cannot redeclare var $param');
+            assert('!isset($match)', ' Cannot redeclare var $match');
+            assert('!isset($name)', ' Cannot redeclare var $name');
+            assert('!isset($type)', ' Cannot redeclare var $type');
             foreach ($parser->getTags(\Yana\Plugins\Annotations\Enumeration::PARAM, array()) as $param)
             {
                 if (!is_string($param)) {
@@ -267,9 +267,9 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
             $method->setHasGenericParams(isset($params['ARGS']));
             unset($params, $match, $name, $type, $param);
             /* @var $param \ReflectionParameter */
-            assert('!isset($defaults); // Cannot redeclare var $defaults');
+            assert('!isset($defaults)', ' Cannot redeclare var $defaults');
             $defaults = array();
-            assert('!isset($param); // Cannot redeclare var $param');
+            assert('!isset($param)', ' Cannot redeclare var $param');
             foreach($this->_method->getParameters() as $i => $param)
             {
                 if ($param->isDefaultValueAvailable()) {

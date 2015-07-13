@@ -50,7 +50,7 @@ class XmlMetaData extends \SimpleXMLElement
      */
     private function _getItemAsString($xpath)
     {
-        assert('is_string($xpath); // Invalid argument $xpath: string expected');
+        assert('is_string($xpath)', ' Invalid argument $xpath: string expected');
 
         $item = "";
 

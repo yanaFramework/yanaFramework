@@ -111,13 +111,13 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
             /*
              * get column information
              */
-            assert('!isset($columns); // Cannot redeclare var $columns');
+            assert('!isset($columns)', ' Cannot redeclare var $columns');
             $columns = $connection->listTableFields($tableName);
             if ($columns instanceof \MDB2_Error) {
                 throw new \Yana\Db\DatabaseException($columns->getMessage());
             }
-            assert('!isset($info); // Cannot redeclare var $info');
-            assert('!isset($name); // Cannot redeclare var $name');
+            assert('!isset($info)', ' Cannot redeclare var $info');
+            assert('!isset($name)', ' Cannot redeclare var $name');
             /* @var $name string */
             foreach ($columns as $name)
             {
@@ -137,13 +137,13 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
             /*
              * get index information
              */
-            assert('!isset($indexes); // Cannot redeclare var $indexes');
+            assert('!isset($indexes)', ' Cannot redeclare var $indexes');
             $indexes = $connection->listTableIndexes($tableName);
             if ($indexes instanceof \MDB2_Error) {
                 throw new \Yana\Db\DatabaseException($indexes->getMessage());
             }
-            assert('!isset($info); // Cannot redeclare var $info');
-            assert('!isset($name); // Cannot redeclare var $name');
+            assert('!isset($info)', ' Cannot redeclare var $info');
+            assert('!isset($name)', ' Cannot redeclare var $name');
             /* @var $name string */
             foreach ($indexes as $name)
             {
@@ -159,13 +159,13 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
             /*
              * get constraint/foreign key information
              */
-            assert('!isset($constraints); // Cannot redeclare var $constraints');
+            assert('!isset($constraints)', ' Cannot redeclare var $constraints');
             $constraints = $connection->listTableConstraints($tableName);
             if ($constraints instanceof \MDB2_Error) {
                 throw new \Yana\Db\DatabaseException($constraints->getMessage());
             }
-            assert('!isset($info); // Cannot redeclare var $info');
-            assert('!isset($name); // Cannot redeclare var $name');
+            assert('!isset($info)', ' Cannot redeclare var $info');
+            assert('!isset($name)', ' Cannot redeclare var $name');
             /* @var $name string */
             foreach ($constraints as $name)
             {

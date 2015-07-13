@@ -52,8 +52,8 @@ class Sha1Algorithm extends \Yana\Security\Users\Md5Algorithm
      */
     public function __invoke($userName, $password)
     {
-        assert('is_scalar($userName); // Wrong argument type for argument 1. String expected.');
-        assert('is_scalar($password); // Wrong argument type for argument 2. String expected.');
+        assert('is_scalar($userName)', ' Wrong argument type for argument 1. String expected.');
+        assert('is_scalar($password)', ' Wrong argument type for argument 2. String expected.');
 
         $hashString = "";
         if (function_exists('sha1')) {

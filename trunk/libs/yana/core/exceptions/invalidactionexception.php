@@ -44,7 +44,7 @@ class InvalidActionException extends \Yana\Core\Exceptions\BadFunctionCallExcept
      */
     public function setAction($actionName)
     {
-        assert('is_scalar($actionName); // Invalid argument $actionName: scalar expected');
+        assert('is_scalar($actionName)', ' Invalid argument $actionName: scalar expected');
 
         $this->data['ACTION'] = (string) $actionName;
         return $this;

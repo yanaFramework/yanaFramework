@@ -194,9 +194,9 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function __construct($name = "", $path = "")
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
-        assert('is_string($path); // Invalid argument $path: string expected');
-        assert('empty($path) || is_file($path); // Invalid argument $path. File expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($path)', ' Invalid argument $path: string expected');
+        assert('empty($path) || is_file($path)', ' Invalid argument $path. File expected');
         parent::__construct($name);
         $this->changelog = new \Yana\Db\Ddl\ChangeLog($this);
         // save path information
@@ -225,7 +225,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
             throw new \Yana\Core\Exceptions\NotFoundException('No directory defined for this database');
         }
         $directory = dirname($this->path) . '/';
-        assert('is_dir($directory); // Database base-directory not found');
+        assert('is_dir($directory)', ' Database base-directory not found');
         return $directory;
     }
 
@@ -259,7 +259,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function setModified($isModified = true)
     {
-        assert('is_bool($isModified); // Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isModified)', ' Wrong type for argument 1. Boolean expected');
         if ($isModified) {
             // clear the cache (so new instances won't copy the modified version)
             if (isset($_SESSION[__CLASS__ . "/" . $this->name])) {
@@ -360,7 +360,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function addInclude($include)
     {
-        assert('is_string($include); // Wrong type for argument 1. String expected');
+        assert('is_string($include)', ' Wrong type for argument 1. String expected');
         $this->includes[] = "$include";
     }
 
@@ -512,7 +512,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function setDescription($description = "")
     {
-        assert('is_string($description); // Wrong type for argument 1. String expected');
+        assert('is_string($description)', ' Wrong type for argument 1. String expected');
         if (empty($description)) {
             $this->description = null;
         } else {
@@ -550,7 +550,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function setTitle($title = "")
     {
-        assert('is_string($title); // Wrong type for argument 1. String expected');
+        assert('is_string($title)', ' Wrong type for argument 1. String expected');
         if (empty($title)) {
             $this->title = null;
         } else {
@@ -596,7 +596,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function setCharset($charset = "")
     {
-        assert('is_string($charset); // Wrong type for argument 1. String expected');
+        assert('is_string($charset)', ' Wrong type for argument 1. String expected');
         if (empty($charset)) {
             $this->charset = null;
         } else {
@@ -648,7 +648,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function setDataSource($dataSource = "")
     {
-        assert('is_string($dataSource); // Wrong type for argument 1. String expected');
+        assert('is_string($dataSource)', ' Wrong type for argument 1. String expected');
         $this->datasource = (empty($dataSource)) ? null : "$dataSource";
         return $this;
     }
@@ -682,7 +682,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function setReadonly($isReadonly = false)
     {
-        assert('is_bool($isReadonly); // Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isReadonly)', ' Wrong type for argument 1. Boolean expected');
         $this->readonly = (bool) $isReadonly;
         return $this;
     }
@@ -699,7 +699,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getTable($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
 
         $table = null;
@@ -726,7 +726,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function addTable($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->tables[$name])) {
             $message = "Another table with the name '$name' is already defined.";
@@ -755,7 +755,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getTables()
     {
-        assert('is_array($this->tables); // member "tables" is expected to be an array');
+        assert('is_array($this->tables)', ' member "tables" is expected to be an array');
         return $this->tables;
     }
 
@@ -768,7 +768,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getTableNames()
     {
-        assert('is_array($this->tables); // member "tables" is expected to be an array');
+        assert('is_array($this->tables)', ' member "tables" is expected to be an array');
         return array_keys($this->tables);
     }
 
@@ -784,7 +784,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getView($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
 
         $view = null;
@@ -813,7 +813,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function addView($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->views[$name])) {
             $message = "Another view with the name '$name' is already defined.";
@@ -840,7 +840,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getViews()
     {
-        assert('is_array($this->views); // member "views" is expected to be an array');
+        assert('is_array($this->views)', ' member "views" is expected to be an array');
         return $this->views;
     }
 
@@ -853,7 +853,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getViewNames()
     {
-        assert('is_array($this->views); // member "views" is expected to be an array');
+        assert('is_array($this->views)', ' member "views" is expected to be an array');
         return array_keys($this->views);
     }
 
@@ -897,7 +897,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function addFunction($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->functions[$name])) {
             $message = "Another function with the name '$name' is already defined.";
@@ -925,7 +925,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getFunctions()
     {
-        assert('is_array($this->functions); // $this->functions is expected to be an array');
+        assert('is_array($this->functions)', ' $this->functions is expected to be an array');
         return $this->functions;
     }
 
@@ -938,7 +938,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getFunctionNames()
     {
-        assert('is_array($this->functions); // member "functions" is expected to be an array');
+        assert('is_array($this->functions)', ' member "functions" is expected to be an array');
         return array_keys($this->functions);
     }
 
@@ -982,7 +982,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function addSequence($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->sequences[$name])) {
             $message = "Another sequence with the name '$name' is already defined.";
@@ -1010,7 +1010,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getSequences()
     {
-        assert('is_array($this->sequences); // member "sequences" is expected to be an array');
+        assert('is_array($this->sequences)', ' member "sequences" is expected to be an array');
         return $this->sequences;
     }
 
@@ -1023,7 +1023,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getSequenceNames()
     {
-        assert('is_array($this->sequences); // member "sequences" is expected to be an array');
+        assert('is_array($this->sequences)', ' member "sequences" is expected to be an array');
         return array_keys($this->sequences);
     }
 
@@ -1038,9 +1038,9 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getInit($dbms = "generic")
     {
-        assert('is_string($dbms); // Wrong type for argument 1. String expected');
+        assert('is_string($dbms)', ' Wrong type for argument 1. String expected');
         $dbms = strtolower($dbms);
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
+        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS())', ' Unsupported DBMS');
         if (empty($this->initialization)) {
             return array();
         }
@@ -1087,7 +1087,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function dropTable($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (!isset($this->tables[$name])) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such table '$name'.");
@@ -1108,7 +1108,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function dropView($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (!isset($this->views[$name])) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such view '$name'.");
@@ -1129,7 +1129,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function dropForm($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (!isset($this->forms[$name])) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such form '$name'.");
@@ -1150,7 +1150,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function dropFunction($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (!isset($this->functions[$name])) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such function '$name'.");
@@ -1171,7 +1171,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function dropSequence($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (!isset($this->sequences[$name])) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such sequence '$name'.");
@@ -1198,7 +1198,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
     public function addInit($sql, $dbms = "generic")
     {
         $dbms = strtolower($dbms);
-        assert('is_string($dbms); // Wrong type for argument 2. String expected');
+        assert('is_string($dbms)', ' Wrong type for argument 2. String expected');
         assert('preg_match("/^db2|dbase|frontbase|informix|interbase|msaccess|mssql|mysql|oracle|postgresql|sybase|' .
             'sqlite|generic$/s", $dbms); // Unsupported DBMS');
         $init = new \Yana\Db\Ddl\DatabaseInit();
@@ -1219,7 +1219,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function isTable($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         return isset($this->tables[$name]);
     }
@@ -1235,7 +1235,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function isView($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         return isset($this->views[$name]);
     }
@@ -1251,7 +1251,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function isFunction($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         return isset($this->functions[$name]);
     }
@@ -1267,7 +1267,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function isSequence($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         return isset($this->sequences[$name]);
     }
@@ -1283,7 +1283,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function isForm($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         return isset($this->forms[$name]);
     }
@@ -1300,7 +1300,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getForm($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
 
         $form = null;
@@ -1328,7 +1328,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function addForm($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             $message = "Another form with the name '$name' already exists in database '{$this->getName()}'.";
@@ -1357,7 +1357,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getForms()
     {
-        assert('is_array($this->forms); // member "forms" is expected to be an array');
+        assert('is_array($this->forms)', ' member "forms" is expected to be an array');
         return $this->forms;
     }
 
@@ -1370,7 +1370,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function getFormNames()
     {
-        assert('is_array($this->forms); // member "forms" is expected to be an array');
+        assert('is_array($this->forms)', ' member "forms" is expected to be an array');
         return array_keys($this->forms);
     }
 
@@ -1430,7 +1430,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public function __get($name)
     {
-        assert('is_string($name); // Invalid argument $name: string expected');
+        assert('is_string($name)', ' Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         switch (true)
         {
@@ -1476,7 +1476,7 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      */
     public static function unserializeFromXDDL(\SimpleXMLElement $node, $parent = null, $path = "")
     {
-        assert('is_string($path); // Invalid argument $path: string expected');
+        assert('is_string($path)', ' Invalid argument $path: string expected');
         $attributes = $node->attributes();
         $name = "";
         if (isset($attributes['name'])) {

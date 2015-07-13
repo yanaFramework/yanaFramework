@@ -94,7 +94,7 @@ class UserLevel extends \Yana\Core\Object
      */
     public function setRole($role)
     {
-        assert('is_string($role); // Wrong type for argument 1. String expected');
+        assert('is_string($role)', ' Wrong type for argument 1. String expected');
         if (!preg_match('/^[\d\w-_]*$/si', $role)) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid characters in role '$role'.", E_USER_WARNING);
         }
@@ -135,7 +135,7 @@ class UserLevel extends \Yana\Core\Object
      */
     public function setGroup($group)
     {
-        assert('is_string($group); // Invalid argument $group: string expected');
+        assert('is_string($group)', ' Invalid argument $group: string expected');
         if (!preg_match('/^[\d\w-_]*$/si', $group)) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid characters in group '$group'.", E_USER_WARNING);
         }
@@ -172,7 +172,7 @@ class UserLevel extends \Yana\Core\Object
      */
     public function setLevel($level)
     {
-        assert('is_int($level); // Wrong type for argument 1. Integer expected');
+        assert('is_int($level)', ' Wrong type for argument 1. Integer expected');
         if ($level < 0 || $level > 100) {
             $message = "Security level '$level' outside range [0,100].";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);

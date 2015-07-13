@@ -75,7 +75,7 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function __construct($userName)
     {
-        assert('is_string($userName); // Wrong type for argument 1. String expected');
+        assert('is_string($userName)', ' Wrong type for argument 1. String expected');
 
         $this->_name = (string) $userName;
     }
@@ -98,7 +98,7 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function setId($userName)
     {
-        assert('is_string($userName); // Wrong type for argument 1. String expected');
+        assert('is_string($userName)', ' Wrong type for argument 1. String expected');
         $this->_name = (string) $userName;
         return $this;
     }
@@ -160,8 +160,8 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function setFailureCount($failureCount)
     {
-        assert('is_int($failureCount); // Wrong type for argument 1. Integer expected');
-        assert('$failureCount >= 0; // Integer must be positive');
+        assert('is_int($failureCount)', ' Wrong type for argument 1. Integer expected');
+        assert('$failureCount >= 0', ' Integer must be positive');
         $this->_failureCount = (int) $failureCount;
         return $this;
     }
@@ -176,7 +176,7 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function setFailureTime($failureTime)
     {
-        assert('is_int($failureTime); // Wrong type for argument 1. Integer expected');
+        assert('is_int($failureTime)', ' Wrong type for argument 1. Integer expected');
         $this->_failureTime = (int) $failureTime;
         return $this;
     }
@@ -191,8 +191,8 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function setLoginCount($loginCount)
     {
-        assert('is_int($loginCount); // Wrong type for argument 1. Integer expected');
-        assert('$loginCount >= 0; // Integer must be positive');
+        assert('is_int($loginCount)', ' Wrong type for argument 1. Integer expected');
+        assert('$loginCount >= 0', ' Integer must be positive');
         $this->_loginCount = (int) $loginCount;
         return $this;
     }
@@ -207,7 +207,7 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function setLoginTime($loginTime)
     {
-        assert('is_int($loginTime); // Wrong type for argument 1. Integer expected');
+        assert('is_int($loginTime)', ' Wrong type for argument 1. Integer expected');
         $this->_loginTime = (int) $loginTime;
         return $this;
     }
@@ -222,7 +222,7 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function setPasswordRecoveryId($passwordRecoveryId)
     {
-        assert('is_string($passwordRecoveryId); // Wrong type for argument 1. String expected');
+        assert('is_string($passwordRecoveryId)', ' Wrong type for argument 1. String expected');
         $this->_passwordRecoveryId = (string) $passwordRecoveryId;
         return $this;
     }
@@ -235,7 +235,7 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function setPasswordRecoveryTime($passwordRecoveryTime)
     {
-        assert('is_int($passwordRecoveryTime); // Wrong type for argument 1. Integer expected');
+        assert('is_int($passwordRecoveryTime)', ' Wrong type for argument 1. Integer expected');
         $this->_passwordRecoveryTime = (int) $passwordRecoveryTime;
         return $this;
     }
@@ -248,7 +248,7 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function setPasswordTime($passwordTime)
     {
-        assert('is_int($passwordTime); // Wrong type for argument 1. Integer expected');
+        assert('is_int($passwordTime)', ' Wrong type for argument 1. Integer expected');
         $this->_passwordTime = (int) $passwordTime;
         return $this;
     }
@@ -277,7 +277,7 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function setTimeCreated($timeCreated)
     {
-        assert('is_int($timeCreated); // Wrong type for argument 1. Integer expected');
+        assert('is_int($timeCreated)', ' Wrong type for argument 1. Integer expected');
         $this->_timeCreated = (int) $timeCreated;
         return $this;
     }
@@ -322,7 +322,7 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function setSessionCheckSum($checkSum)
     {
-        assert('is_string($checkSum); // Invalid argument $checkSum: string expected');
+        assert('is_string($checkSum)', ' Invalid argument $checkSum: string expected');
 
         $this->_sessionCheckSum = (string) $checkSum;
         return $this;
@@ -389,7 +389,7 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function setPassword($password)
     {
-        assert('is_string($password); // Wrong type for argument 1. String expected');
+        assert('is_string($password)', ' Wrong type for argument 1. String expected');
 
         $this->_password = "$password";
         return $this;
@@ -404,7 +404,7 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function setLanguage($language)
     {
-        assert('is_string($language); // Wrong type for argument 1. String expected');
+        assert('is_string($language)', ' Wrong type for argument 1. String expected');
 
         $this->_language = "$language";
     }
@@ -514,7 +514,7 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function setMail($mail)
     {
-        assert('is_string($mail); // Wrong type for argument 1. String expected');
+        assert('is_string($mail)', ' Wrong type for argument 1. String expected');
 
         $this->_mail = "$mail";
         return $this;
@@ -541,7 +541,7 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function setExpert($isExpert)
     {
-        assert('is_bool($isExpert); // Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isExpert)', ' Wrong type for argument 1. Boolean expected');
 
         $this->_isExpert = !empty($isExpert);
         return $this;
@@ -571,7 +571,7 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function setActive($isActive)
     {
-        assert('is_bool($isActive); // Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isActive)', ' Wrong type for argument 1. Boolean expected');
 
         $this->_isActive = (bool) $isActive;
         return $this;

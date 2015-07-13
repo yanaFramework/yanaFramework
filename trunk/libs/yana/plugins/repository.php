@@ -151,7 +151,7 @@ class Repository extends \Yana\Core\Object
      */
     public function getImplementations($methodName)
     {
-        assert('is_string($methodName); // Invalid argument $methodName: string expected');
+        assert('is_string($methodName)', ' Invalid argument $methodName: string expected');
         return (isset($this->_implementations[$methodName])) ? $this->_implementations[$methodName] : array();
     }
 
