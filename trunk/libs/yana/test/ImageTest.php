@@ -155,7 +155,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testGetPath()
     {
         $path = $this->_image->getPath();
-        $this->assertType('string', $path, 'assert failed, return value of getPath() has wrong type');
+        $this->assertInternalType('string', $path, 'assert failed, return value of getPath() has wrong type');
         $this->assertTrue(is_file($path), 'assert failed,path doesnt exist');
 
         $noExist = $this->_emptyImage->getPath();
@@ -221,11 +221,11 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testCloneObject()
     {
         $cloneObject = clone $this->_image;
-        $this->assertType('object', $cloneObject, 'assert failed , value is not from type object');
+        $this->assertInternalType('object', $cloneObject, 'assert failed , value is not from type object');
 
         $clone = clone $this->_brokenImage;
         $this->assertEquals($this->_brokenImage, $clone,  'assert failed , the two variables are not equal');
-        $this->assertType('object', $clone, 'assert failed, value is not from type object');
+        $this->assertInternalType('object', $clone, 'assert failed, value is not from type object');
         unset($clone);
     }
 
@@ -253,7 +253,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testEqualsResoure()
     {
         $resource = $this->_image->getResource();
-        $this->assertType('resource', $resource, 'assert failed, value is not from type resource');
+        $this->assertInternalType('resource', $resource, 'assert failed, value is not from type resource');
         $equalsResource = $this->_image->equalsResoure($resource);
         $this->assertTrue($equalsResource, 'assert "equalsResoure()" failed, invalid resource');
 
@@ -272,7 +272,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testGetResource()
     {
         $resource = $this->_image->getResource();
-        $this->assertType('resource', $resource, 'assert failed, value is not from type resource');
+        $this->assertInternalType('resource', $resource, 'assert failed, value is not from type resource');
 
         $resource = $this->_brokenImage->getResource();
         $this->assertFalse($resource, 'assert failed, invalid resource');
@@ -299,7 +299,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testGetWidth()
     {
         $width = $this->_image->getWidth();
-        $this->assertType('integer', $width, 'assert "getWidth()" failed, value is not from type integer');
+        $this->assertInternalType('integer', $width, 'assert "getWidth()" failed, value is not from type integer');
 
         $width = $this->_brokenImage->getWidth();
         $this->assertFalse($width, 'assert failed , image is broken');
@@ -315,7 +315,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testGetHeight()
     {
         $height = $this->_image->getHeight();
-        $this->assertType('integer', $height, 'assert "getHeight()" failed, value is not from type integer');
+        $this->assertInternalType('integer', $height, 'assert "getHeight()" failed, value is not from type integer');
 
         $height = $this->_brokenImage->getHeight();
         $this->assertFalse($height, 'assert failed , image is broken');
@@ -544,7 +544,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testGetFontWidth()
     {
         $fontWidth = $this->_image->getFontWidth(3);
-        $this->assertType('integer', $fontWidth, 'assert failed - "$fontWidth" is not from type integer');
+        $this->assertInternalType('integer', $fontWidth, 'assert failed - "$fontWidth" is not from type integer');
     }
 
     /**
@@ -557,7 +557,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testGetFontHeight()
     {
         $fontHeight = $this->_image->getFontHeight(3);
-        $this->assertType('integer', $fontHeight, 'assert failed, value is not from type integer');
+        $this->assertInternalType('integer', $fontHeight, 'assert failed, value is not from type integer');
     }
 
     /**
@@ -574,9 +574,9 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($isBroken, 'assert "getColorValues()" failed, image is broken');
 
         $color = $this->_image->getColor(153, 50, 204);
-        $this->assertType('integer', $color, 'assert "getColor()" failed, value is not from type integer');
+        $this->assertInternalType('integer', $color, 'assert "getColor()" failed, value is not from type integer');
         $colorValues = $this->_image->getColorValues($color);
-        $this->assertType('array', $colorValues, 'assert "getColorValues()" failed, value is not from type array');
+        $this->assertInternalType('array', $colorValues, 'assert "getColorValues()" failed, value is not from type array');
     }
 
     /**
@@ -604,7 +604,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($isBroken, 'assert "getColorAt()" failed, image is broken');
 
         $colorAt = $this->_image->getColorAt(80, 80);
-        $this->assertType('integer', $colorAt, 'assert "getColorAt()" failed, value is not from type integer');
+        $this->assertInternalType('integer', $colorAt, 'assert "getColorAt()" failed, value is not from type integer');
 
         $colorAt = $this->_image->getColorAt(-80, 80);
         $this->assertFalse($colorAt, 'assert failed - the first argument must be > than 0 ');
@@ -628,7 +628,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testGetSize()
     {
         $size = $this->_image->getSize(CWD . $this->_imageSource);
-        $this->assertType('array', $size , 'assert "getSize()" failed, value is not from type array');
+        $this->assertInternalType('array', $size , 'assert "getSize()" failed, value is not from type array');
     }
 
     /**
@@ -653,7 +653,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testGetColor()
     {
         $color = $this->_image->getColor(153, 50, 204);
-        $this->assertType('integer', $color, 'assert "getColor()" failed, value is not from type integer');
+        $this->assertInternalType('integer', $color, 'assert "getColor()" failed, value is not from type integer');
     }
 
     /**
@@ -673,7 +673,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($setLine, 'assert "setLineWidth()" failed');
 
         $lineWidth = $this->_image->getLineWidth();
-        $this->assertType('integer', $lineWidth, 'assert "getLineWidth()" failed, value is not from type integer');
+        $this->assertInternalType('integer', $lineWidth, 'assert "getLineWidth()" failed, value is not from type integer');
     }
 
     /**
@@ -872,7 +872,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $setBgColor = $this->_image->setBackgroundColor($color);
 
         $backgroundColor = $this->_image->getBackgroundColor();
-        $this->assertType('integer', $backgroundColor, 'assert "getBackgroundColor()"failed, value is not from type integer');
+        $this->assertInternalType('integer', $backgroundColor, 'assert "getBackgroundColor()"failed, value is not from type integer');
     }
 
     /**
@@ -1126,7 +1126,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($isBroken, 'assert "getTransparency()" failed, image is broken');
 
         $transparency = $this->_image->getTransparency();
-        $this->assertType('integer', $transparency, 'assert "getTransparency()" failed, value is from type integer');
+        $this->assertInternalType('integer', $transparency, 'assert "getTransparency()" failed, value is from type integer');
     }
 
     /**
@@ -1143,7 +1143,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($isBroken, 'assert "setTransparency()" failed, image is broken');
 
         $color = $this->_image->getColor(0, 205, 0);
-        $this->assertType('integer', $color, 'assert "getColor()" failed, value is not from type integer');
+        $this->assertInternalType('integer', $color, 'assert "getColor()" failed, value is not from type integer');
         $setTransparency = $this->_image->setTransparency($color);
         $this->assertTrue($setTransparency, 'assert "setTransparency()" failed, assert is false');
 
@@ -1166,7 +1166,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($isBroken, 'assert "getPaletteSize()" failed, image is broken');
 
         $paletteSize = $this->_image->getPaletteSize();
-        $this->assertType('integer', $paletteSize, 'assert "getPaletteSize()" failed, value is not from type integer');
+        $this->assertInternalType('integer', $paletteSize, 'assert "getPaletteSize()" failed, value is not from type integer');
     }
 
     /**
@@ -1634,7 +1634,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $outputToFile = $this->_image->outputToFile($filename, 'png');
         $isFile = is_file($outputToFile);
         $isDeleted = unlink($outputToFile);
-        $this->assertType('string', $outputToFile, 'unable to create output file');
+        $this->assertInternalType('string', $outputToFile, 'unable to create output file');
         $this->assertTrue($isFile, 'returned image-path is not a valid');
         $this->assertTrue($isDeleted, 'unable to delete file');
     }
@@ -1649,7 +1649,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testCompareImage()
     {
         $compareImage = $this->_image->compareImage($this->_dummyImage);
-        $this->assertType('float', $compareImage, 'assert "compareImage()" failed, value is not from type float');
+        $this->assertInternalType('float', $compareImage, 'assert "compareImage()" failed, value is not from type float');
     }
 
     /**
@@ -1674,7 +1674,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function test1()
     {
         $color = $this->_image->getColorAt(90, 90);
-        $this->assertType('integer', $color, 'assert failed "$color" is not from type integer');
+        $this->assertInternalType('integer', $color, 'assert failed "$color" is not from type integer');
 
         $setTransparency0 = $this->_image->setTransparency($color);
         $this->assertTrue($setTransparency0, 'assert failed "$setTransparency0" is false');
@@ -1729,7 +1729,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $r = $this->_emptyImage->red;
         $l = $this->_emptyImage->lime;
         $w = $this->_emptyImage->getBackgroundColor();
-        $this->assertType('integer', $w, 'asssert failed "$w" is not from typ integer');
+        $this->assertInternalType('integer', $w, 'asssert failed "$w" is not from typ integer');
 
         $setLineStyle0 = $this->_emptyImage->setLineStyle($r, $l, $w);
         $this->assertTrue($setLineStyle0, 'assert failed "$setLineStyle0" is false');
@@ -1797,10 +1797,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($drawString2, 'assert failed "$drawString2" is false');
 
         $h = $this->_emptyImage->getFontHeight(2);
-        $this->assertType('integer', $h, 'assert failed "$h" is not from type integer');
+        $this->assertInternalType('integer', $h, 'assert failed "$h" is not from type integer');
 
         $w = $this->_emptyImage->getFontWidth(2);
-        $this->assertType('integer', $w, 'assert failed "$w" is not from type integer');
+        $this->assertInternalType('integer', $w, 'assert failed "$w" is not from type integer');
 
         $drawString3 = $this->_emptyImage->drawString('_____', 50, 200 - (int) floor($h / 3), $this->_emptyImage->red);
         $this->assertTrue($drawString3, 'assert failed "$drawString3" is false');

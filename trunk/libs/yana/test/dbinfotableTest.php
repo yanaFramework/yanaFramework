@@ -90,7 +90,7 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
     {
         $name = $this->dbinfotable->getName();
         // expected foo
-        $this->assertType('string', $name, 'assert failed, the expected value is not of type String');
+        $this->assertInternalType('string', $name, 'assert failed, the expected value is not of type String');
         $this->assertEquals('foo', $name, 'assert failed, the expected value is "foo"');
     }
 
@@ -321,7 +321,7 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
         // set init
         $getInit = $this->dbinfotable->getInit();
         // expected false - no initialization record is set
-        $this->assertType('array', $getInit, 'assert failed, the value is not of type array');
+        $this->assertInternalType('array', $getInit, 'assert failed, the value is not of type array');
         $this->assertEquals(0, count($getInit), 'assert failed, no initialization record is set');
         unset($getInit);
         $array = array(1 =>'select * from foo', 2=>'select * from bar');
@@ -347,7 +347,7 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($add, 'assert failed, the column4 is not added');
         // toArray
         $array = $this->dbinfotable->toArray();
-        $this->assertType('array', $array, 'assert failed, the expected value is not of type array');
+        $this->assertInternalType('array', $array, 'assert failed, the expected value is not of type array');
         $this->assertEquals('foo', $array['name'], 'assert failed, the expected value "name" is different from the tabel name');
     }
 
