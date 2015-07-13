@@ -449,13 +449,15 @@ class Configuration extends \Yana\Util\XmlArray
     /**
      * Returns a list of source for the mountpoint, sorted by priority.
      *
-     * @return  array
+     * @return  \Yana\VDrive\Configuration
      */
     public function getNodeSources()
     {
-        $sources = array();
+        $sources = null;
         if (isset($this->source)) {
-            $sources = (array) $this->source;
+            $sources = $this->source;
+        } else {
+            $sources = new \Yana\VDrive\Configuration('<source/>');
         }
         return $sources;
     }
