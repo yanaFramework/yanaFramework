@@ -79,7 +79,7 @@ namespace Yana\VDrive;
  * @subpackage vdrive
  * @name       VDrive
  */
-class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsReportable, \Serializable
+class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDrive, \Yana\Report\IsReportable, \Serializable
 {
 
     /**
@@ -100,7 +100,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
     /**
      * @var  \Yana\VDrive\Configuration
      */
-    private $_content = null;
+    private $_configuration = null;
 
     /**
      * local directory settings
@@ -170,6 +170,36 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
     protected function _getDefaultNamespaceForFileWrappers()
     {
         return $this->_defaultNamespaceForFileWrappers;
+    }
+
+    /**
+     * Returns the contents of the virtual drive configuration file.
+     *
+     * @return  \Yana\VDrive\Configuration
+     */
+    protected function _getConfiguration()
+    {
+        if (!isset($this->_configuration)) {
+            /* get file content */
+            $rawContent = file_get_contents($this->path);
+            if (empty($rawContent)) {
+                $message = "VDrive configuration file is empty or not readable: '{$this->getPath()}'.";
+                throw new \Yana\Core\Exceptions\NotReadableException($message, E_USER_WARNING);
+            }
+            /* apply default settings */
+            $content = \Yana\Util\String::replaceToken($rawContent, self::$_defaultSettings);
+            unset($rawContent);
+
+            /* create configuration */
+            $this->_configuration = \Yana\VDrive\Configuration::loadString($content);
+            /* read XML */
+            if (!($this->_configuration instanceOf \Yana\VDrive\Configuration)) {
+                $message = "Not a valid VDrive configuration file: '{$this->getPath()}'";
+                throw new \Yana\Core\Exceptions\InvalidSyntaxException($message, E_USER_WARNING);
+            }
+            $this->_readXML($this->_configuration);
+        }
+        return $this->_configuration;
     }
 
     /**
@@ -283,25 +313,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
      */
     public function read()
     {
-        if (isset($this->_content)) {
-            return;
-        }
-        /* get file content */
-        $content = file_get_contents($this->path);
-        if (empty($content)) {
-            $message = "VDrive configuration file is empty or not readable: '{$this->getPath()}'.";
-            throw new \Yana\Core\Exceptions\NotReadableException($message, E_USER_WARNING);
-        }
-        /* apply default settings */
-        $content = \Yana\Util\String::replaceToken($content, self::$_defaultSettings);
-        /* create configuration */
-        $this->_content = \Yana\VDrive\Configuration::loadString($content);
-        /* read XML */
-        if (!($this->_content instanceOf \Yana\VDrive\Configuration)) {
-            $message = "Not a valid VDrive configuration file: '{$this->getPath()}'";
-            throw new \Yana\Core\Exceptions\InvalidSyntaxException($message, E_USER_WARNING);
-        }
-        $this->_readXML($this->_content);
+        $this->_getConfiguration();
     }
 
     /**
@@ -488,9 +500,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
      */
     public function getContent()
     {
-        // read file if not already read
-        $this->read();
-        return $this->_content->__toString();
+        return $this->_getConfiguration()->asXML();
     }
 
     /**
@@ -599,7 +609,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
         }
         $report->addText("Base directory: {$this->_baseDir}");
 
-        if (!isset($this->_content)) {
+        if (!isset($this->_configuration)) {
             $report->addWarning("Cannot perform check! Drive is not mounted.");
         } else {
             foreach ($this->_drive as $name => $node)
@@ -621,7 +631,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
         // returns a list of key => value pairs
         $properties = get_object_vars($this);
         // remove the \SimpleXML object (throws an exception when trying to serialize)
-        unset($properties['_content']);
+        unset($properties['_configuration']);
         return serialize($properties);
     }
 
@@ -636,7 +646,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\Report\IsRepo
         {
             $this->$key = $value;
         }
-        $this->_content = Configuration::loadFile($this->path);
+        $this->_configuration = \Yana\VDrive\Configuration::loadFile($this->path);
     }
 
 }
