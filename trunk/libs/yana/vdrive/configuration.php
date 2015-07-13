@@ -455,7 +455,7 @@ class Configuration extends \Yana\Util\XmlArray
     {
         $sources = array();
         if (isset($this->source)) {
-            $sources = $this->source;
+            $sources = (array) $this->source;
         }
         return $sources;
     }
