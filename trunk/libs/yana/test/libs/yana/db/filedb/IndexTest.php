@@ -141,7 +141,7 @@ class IndexTest extends \PHPUnit_Framework_TestCase
         $this->_object->rollback();
 
         $get = $this->_object->getVar('FVALUE');
-        $this->assertType('array', $get, 'the value is not of type array');
+        $this->assertInternalType('array', $get, 'the value is not of type array');
         $this->assertArrayHasKey('FVALUE', $get, 'index is missing key after create');
         $this->assertEquals('FOO', $get['FVALUE'], 'index is missing value after create');
     }

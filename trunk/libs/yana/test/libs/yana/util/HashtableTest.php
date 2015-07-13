@@ -80,20 +80,20 @@ class HashtableTest extends \PHPUnit_Framework_TestCase
     public function testGet()
     {
         $get = Hashtable::get($this->array, '*');
-        $this->assertType('array', $get);
+        $this->assertInternalType('array', $get);
 
         $get = Hashtable::get($this->array, 'ID2');
-        $this->assertType('string', $get);
+        $this->assertInternalType('string', $get);
         //expected string "def"
         $this->assertEquals('def', $get, 'expected result "def" has failed wrong value given');
 
         $get = Hashtable::get($this->array, 'ID3.test');
-        $this->assertType('string', $get);
+        $this->assertInternalType('string', $get);
         //expected string "result"
         $this->assertEquals('result', $get, 'expected result "result" has failed wrong value given');
 
         $get = Hashtable::get($this->array, 'ID3.idks');
-        $this->assertType('null', $get);
+        $this->assertInternalType('null', $get);
         //expected null
         $this->assertEquals(null, $get, 'expected result "result" has failed wrong value given');
     }
@@ -166,12 +166,12 @@ class HashtableTest extends \PHPUnit_Framework_TestCase
         $setType = Hashtable::setType($this->array, 'ID1', 'integer');
         $this->assertTrue($setType, 'change type for given value has failed');
         $get = Hashtable::get($this->array, '*');
-        $this->assertType('integer', $get['ID1']);
+        $this->assertInternalType('integer', $get['ID1']);
 
         $setType = Hashtable::setType($this->array, 'ID4', 'string');
         $get = Hashtable::get($this->array, '*');
         $this->assertTrue($setType, 'set type for value failed, value doesnt exist');
-        $this->assertType('string', $get['ID4']);
+        $this->assertInternalType('string', $get['ID4']);
     }
 
     /**
@@ -225,22 +225,22 @@ class HashtableTest extends \PHPUnit_Framework_TestCase
     {
         // success default CASE_LOWER
         $changeCase = Hashtable::changeCase($this->array);
-        $this->assertType('array', $changeCase);
+        $this->assertInternalType('array', $changeCase);
         $this->assertNotEquals($changeCase, $this->array);
 
         // success CASE_LOWER
         $changeCase = Hashtable::changeCase($this->array, 0);
-        $this->assertType('array', $changeCase);
+        $this->assertInternalType('array', $changeCase);
         $this->assertNotEquals($changeCase, $this->array);
 
         // success CASE_UPPER
         $changeCase = Hashtable::changeCase($this->array, CASE_UPPER);
-        $this->assertType('array', $changeCase);
+        $this->assertInternalType('array', $changeCase);
         $this->assertNotEquals($changeCase, $this->array);
 
         // success CASE_UPPER
         $changeCase = Hashtable::changeCase($this->array, 1);
-        $this->assertType('array', $changeCase);
+        $this->assertInternalType('array', $changeCase);
         $this->assertNotEquals($changeCase, $this->array);
     }
 
@@ -307,11 +307,11 @@ class HashtableTest extends \PHPUnit_Framework_TestCase
         );
 
         $result = Hashtable::cloneArray($array1);
-        $this->assertType('array', $result);
+        $this->assertInternalType('array', $result);
         $this->assertEquals($array1, $result);
 
         $result = Hashtable::cloneArray($array2);
-        $this->assertType('array', $result);
+        $this->assertInternalType('array', $result);
         $this->assertEquals($array2, $result);
     }
 
@@ -339,14 +339,14 @@ class HashtableTest extends \PHPUnit_Framework_TestCase
         );
 
         $caseUpper = Hashtable::changeCase($array2, 1);
-        $this->assertType('array', $caseUpper);
+        $this->assertInternalType('array', $caseUpper);
         $this->assertNotEquals($caseUpper, $array2);
 
         $value = 'blue';
         Hashtable::set($caseUpper, 'LKJH', $value);
 
         $caseLower = Hashtable::changeCase($caseUpper, 0);
-        $this->assertType('array', $caseLower);
+        $this->assertInternalType('array', $caseLower);
         $this->assertNotEquals($caseLower, $array2);
 
         // check if color sets to blue
@@ -360,7 +360,7 @@ class HashtableTest extends \PHPUnit_Framework_TestCase
         // set type for one key and try to write/ set a value with a different data type
         $setType = Hashtable::setType($caseLower, 'id1', 'integer');
         $this->assertTrue($setType, 'the typ of the key doesnt change');
-        $this->assertType('integer', $caseLower['id1'], 'the value is not from type integer');
+        $this->assertInternalType('integer', $caseLower['id1'], 'the value is not from type integer');
 
         $value = 'description';
         Hashtable::set($caseLower, 'id1', $value);
@@ -385,7 +385,7 @@ class HashtableTest extends \PHPUnit_Framework_TestCase
         $remove = Hashtable::remove($caseLower, 'id1');
         $this->assertTrue($remove, 'remove all entries has failed');
 
-        $this->assertType('array', $caseLower);
+        $this->assertInternalType('array', $caseLower);
         $this->assertEquals(count($caseLower), 0, 'remove all entries from the array has failed');
 
         $merge = Hashtable::merge($array1, $caseLower);
@@ -448,20 +448,20 @@ class HashtableTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($result, 'Testing array with 1 element. Needle should not be found.');
 
         $result = Hashtable::quickSearch($array1, 'abcd');
-        $this->assertType('integer', $result);
+        $this->assertInternalType('integer', $result);
         //expected integer 0 - searching word is in the row[0]
         $this->assertEquals($result, 0);
         $this->assertEquals('abcd', $array1[$result]);
 
         $result = Hashtable::quickSearch($array2, 'abcdabcd');
-        $this->assertType('integer', $result);
+        $this->assertInternalType('integer', $result);
         // expected integer 0
         $this->assertEquals(0, $result);
         $this->assertEquals('abcdabcd', $array2[$result]);
 
 
         $result = Hashtable::quickSearch($array3, 'y');
-        $this->assertType('integer', $result);
+        $this->assertInternalType('integer', $result);
         //expected integer 1
         $this->assertEquals($result, 1);
         $this->assertEquals('y', $array3[$result]);

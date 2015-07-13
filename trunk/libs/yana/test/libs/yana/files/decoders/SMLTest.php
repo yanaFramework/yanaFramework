@@ -112,7 +112,7 @@ class SMLTest extends \PHPUnit_Framework_TestCase
     public function testDecodeInvalidArgument()
     {
         $decode = $this->object->decode(541);
-        $this->assertType('null', $decode, 'assert failed, first argument must be a string');
+        $this->assertInternalType('null', $decode, 'assert failed, first argument must be a string');
     }
 
 }

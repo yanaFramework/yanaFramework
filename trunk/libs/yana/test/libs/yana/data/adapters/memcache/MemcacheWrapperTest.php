@@ -151,7 +151,7 @@ class MemcacheWrapperTest extends \PHPUnit_Framework_TestCase
         $stats = $this->object->getStats();
         $this->assertArrayHasKey($key1, $stats);
         $this->assertArrayHasKey($key2, $stats);
-        $this->assertType('array', $stats[$key2]);
+        $this->assertInternalType('array', $stats[$key2]);
         $this->assertFalse($stats[$key1]);
     }
 

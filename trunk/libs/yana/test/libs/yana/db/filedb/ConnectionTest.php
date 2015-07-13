@@ -196,13 +196,13 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
         // get table
         $table = $this->dbsobj->select('T');
-        $this->assertType('array', $table, '"get table" test failed');
+        $this->assertInternalType('array', $table, '"get table" test failed');
         $this->assertArrayHasKey('FOO', $table, '"get table" test failed');
-        $this->assertType('array', $table['FOO'], '"get table" test failed');
+        $this->assertInternalType('array', $table['FOO'], '"get table" test failed');
 
         // get row
         $row = $this->dbsobj->select('t.fOo');
-        $this->assertType('array', $row, '"get table" test failed');
+        $this->assertInternalType('array', $row, '"get table" test failed');
         $this->assertArrayHasKey('TVALUE', $row, '"get table" test failed');
 
         // get cell (1)
@@ -220,7 +220,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         // get column
         $column = $this->dbsobj->select('T.*.fTid');
         $length = $this->dbsobj->length('t');
-        $this->assertType('array', $column, '"get column" test failed');
+        $this->assertInternalType('array', $column, '"get column" test failed');
         $this->assertEquals(count($column), $length, '"get column" test failed');
 
         // get last entry

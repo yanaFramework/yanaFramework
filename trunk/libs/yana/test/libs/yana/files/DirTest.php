@@ -122,11 +122,11 @@ class DirTest extends \PHPUnit_Framework_TestCase
     {
         // get list of all files
         $get = $this->existingDir->getContent();
-        $this->assertType('array', $get, 'assert "$get" failed , value is not from type array');
+        $this->assertInternalType('array', $get, 'assert "$get" failed , value is not from type array');
 
         // get file name by position 3 
         $selectedGet = $this->existingDir->getContent(3);
-        $this->assertType('string', $selectedGet, 'assert "$selectedGet" failed, value is not from type string');
+        $this->assertInternalType('string', $selectedGet, 'assert "$selectedGet" failed, value is not from type string');
     }
 
     /**
@@ -137,7 +137,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
     public function testGetFilter()
     {
         $getfilter = $this->existingDir->getFilter();
-        $this->assertType('string', $getfilter, 'assert "$getfilter" failed, value is not from type string');
+        $this->assertInternalType('string', $getfilter, 'assert "$getfilter" failed, value is not from type string');
     }
 
     /**
@@ -231,10 +231,10 @@ class DirTest extends \PHPUnit_Framework_TestCase
     public function testToString()
     {
         $getAll = $this->existingDir->getContent();
-        $this->assertType('array', $getAll, '"$getAll" is not of type array - assert failed');
+        $this->assertInternalType('array', $getAll, '"$getAll" is not of type array - assert failed');
 
         $toString = (string) $this->existingDir;
-        $this->assertType('string', $toString, '"toString" is not of type string - assert failed');
+        $this->assertInternalType('string', $toString, '"toString" is not of type string - assert failed');
         
         // try with non exist Dir
         $newDir = new Dir('nonexistDir');
@@ -254,7 +254,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
        $this->assertTrue($isEmpty, 'assert "$isEmpty" failed -  value is false');
 
        $getSelected = $this->existingDir->getContent();
-       $this->assertType('array', $getSelected, '"getSelected" is not from type array - assert failed');
+       $this->assertInternalType('array', $getSelected, '"getSelected" is not from type array - assert failed');
        $empty = $this->existingDir->isEmpty();
        //expected false
        $this->assertFalse($empty, 'assert "$empty" failed - value is true' );
@@ -276,12 +276,12 @@ class DirTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEquals($length, $testLength, 'assert failed, the two variables cant be valid');
 
         $getSelected = $this->existingDir->getContent($testLength);
-        $this->assertType('null', $getSelected, 'assert "$getSelected" failed, value is not from type null');
+        $this->assertInternalType('null', $getSelected, 'assert "$getSelected" failed, value is not from type null');
         
         //expected last file
         $testLength -= 1;
         $getLast = $this->existingDir->getContent($testLength);
-        $this->assertType('string', $getLast, 'assert "getLast" failed, value is not from type string');
+        $this->assertInternalType('string', $getLast, 'assert "getLast" failed, value is not from type string');
     }
 
     /**
@@ -298,7 +298,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
         {
             $expected[] = basename($path);
         }
-        $this->assertType('array', $dirList);
+        $this->assertInternalType('array', $dirList);
         $this->assertGreaterThanOrEqual(1, count($dirList));
         $this->assertEquals($expected, $dirList, 'directory listing with filter *.txt should match directory contents');
 
@@ -311,7 +311,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
                 $expected[] = $path;
             }
         }
-        $this->assertType('array', $dirList);
+        $this->assertInternalType('array', $dirList);
         $this->assertGreaterThanOrEqual(1, count($dirList));
         $this->assertEquals($expected, $dirList, 'directory listing should match directory contents');
 
@@ -323,7 +323,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
             $expected[] = basename($path);
         }
         sort($expected);
-        $this->assertType('array', $dirList);
+        $this->assertInternalType('array', $dirList);
         $this->assertGreaterThanOrEqual(1, count($dirList));
         $this->assertEquals($expected, $dirList, 'directory listing with filter *.txt, *.xml, *.dat should match directory contents');
 
@@ -346,7 +346,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
                 $scanDirSize += filesize($file);
             }
         }
-        $this->assertType('int', $size, 'expecting getSize() to return result of type integer');
+        $this->assertInternalType('int', $size, 'expecting getSize() to return result of type integer');
         $this->assertEquals($size, $scanDirSize, "Size does not match the size of the files in the directory");
     }
 

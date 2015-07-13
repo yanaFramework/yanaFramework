@@ -114,7 +114,7 @@ class VDriveTest extends \PHPUnit_Framework_TestCase
     {
         $vDrive = new VDrive(CWD . $this->_path);
         $content = $vDrive->getContent();
-        $this->assertType('string', $content, 'the value should be of type string');
+        $this->assertInternalType('string', $content, 'the value should be of type string');
         unset($vDrive, $content);
     }
 
@@ -147,13 +147,13 @@ class VDriveTest extends \PHPUnit_Framework_TestCase
         // expected an object instanceof \Yana\Report\Xml without errors and warnings
         $this->_object->read();
         $getReport = $this->_object->getReport();
-        $this->assertType('object', $getReport, 'the value should be of type object');
+        $this->assertInternalType('object', $getReport, 'the value should be of type object');
         $this->assertTrue($getReport instanceof \Yana\Report\Xml, 'the value should be an instance of \Yana\Report\Xml');
         $this->assertEquals(0, count($getReport->getErrors()), 'there should be no errors');
         $this->assertEquals(0, count($getReport->getWarnings()), 'there should be no warnings');
 
         $string = (string) $this->_object;
-        $this->assertType('string', $string, 'assert faield, the value should be of type string');
+        $this->assertInternalType('string', $string, 'assert faield, the value should be of type string');
         $this->assertNotEquals(0, strlen($string), 'the value cannot be empty');
     }
 
@@ -164,11 +164,11 @@ class VDriveTest extends \PHPUnit_Framework_TestCase
     {
         $this->_object->read();
         $serialize = $this->_object->serialize();
-        $this->assertType('string', $serialize, 'assert faield, the value should be of type string');
+        $this->assertInternalType('string', $serialize, 'assert faield, the value should be of type string');
 
         // expected an object
         $unserialize = unserialize(serialize($this->_object));
-        $this->assertType('object', $unserialize, 'the value should be of type object');
+        $this->assertInternalType('object', $unserialize, 'the value should be of type object');
         $this->assertEquals($this->_object, $unserialize, 'both ojects must be the same');
     }
 
@@ -188,30 +188,30 @@ class VDriveTest extends \PHPUnit_Framework_TestCase
         // expected an object from element name default_config.sml
         $get = $this->_object->getResource('system:/config/profiledir/default_config.sml');
         //$get = $this->object->getResource('config/profiles/default.sml');
-        $this->assertType('object', $get, 'the value should be of type object');
+        $this->assertInternalType('object', $get, 'the value should be of type object');
         $this->assertEquals(CWD . $this->_baseDir . '{$CONFIGDIR}profiles/default.config', $get->getPath(), 'the given path should be match the expected');
 
         // expected the same result like in get() function
         $_get = $this->_object->__get('system:/config/profiledir/default_config.sml');
-        $this->assertType('object', $_get, 'the value should be of type object');
+        $this->assertInternalType('object', $_get, 'the value should be of type object');
         $this->assertEquals($get, $_get, 'the values should be equal');
 
         unset($get, $_get);
 
         $get = $this->_object->__get('system:/config/profiledir/config.sml');
-        $this->assertType('object', $get, 'the value should be of type object');
+        $this->assertInternalType('object', $get, 'the value should be of type object');
         $this->assertEquals(CWD . $this->_baseDir . '{$CONFIGDIR}profiles/default.config', $get->getPath(), 'the given path should be match the expected');
         unset($get);
 
         // get content of the xml file - xml string expected
         $getContent = $this->_object->getContent();
-        $this->assertType('string', $getContent, 'the value should be of type string');
+        $this->assertInternalType('string', $getContent, 'the value should be of type string');
         $this->assertNotEquals(0, strlen($getContent), 'the expected value should be not empty');
 
 
         // array of an xml file
         $get = $this->_object->getMountpoints();
-        $this->assertType('array', $get, 'the value should be of type array');
+        $this->assertInternalType('array', $get, 'the value should be of type array');
         $this->assertArrayHasKey('system:/skin/skindir', $get, 'the expected key should be in array');
         $this->assertArrayHasKey('system:/smile', $get, 'the expected key should be in array');
 
@@ -219,7 +219,7 @@ class VDriveTest extends \PHPUnit_Framework_TestCase
         VDrive::useDefaults(true);
         // expected the last path in source
         $get = $this->_object->__get('system:/config/profiledir/config.sml');
-        $this->assertType('object', $get, 'the value should be of type object');
+        $this->assertInternalType('object', $get, 'the value should be of type object');
         $this->assertEquals(CWD . $this->_baseDir . '{$CONFIGDIR}profiles/default.config', $get->getPath(), 'the given path should be match the expected');
         unset($vDrive);
     }

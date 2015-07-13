@@ -80,7 +80,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     public function testToString()
     {
         $string = $this->object->__toString();
-        $this->assertType('string', $string, 'value is not from type string');
+        $this->assertInternalType('string', $string, 'value is not from type string');
         $string2 = (string) $this->object;
         $this->assertEquals($string, $string2);
         $this->assertEquals("Instance of '" . get_class($this->object). "'.", $string);
@@ -117,7 +117,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     public function testGetClass()
     {
         $getClass = $this->object->getClass();
-        $this->assertType('string', $getClass, 'asserft faield, the value is not from type string');
+        $this->assertInternalType('string', $getClass, 'asserft faield, the value is not from type string');
         // expected Object as a string
         $this->assertEquals(__NAMESPACE__ . '\\Object', $getClass, ' the values should be equal');
     }

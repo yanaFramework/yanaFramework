@@ -152,7 +152,7 @@ class ReadonlyTest extends \PHPUnit_Framework_TestCase
     public function testGetContent()
     {
         $fileContent = $this->object->getContent();
-        $this->assertType('string', $fileContent, '"$fileContent" is not from type string');
+        $this->assertInternalType('string', $fileContent, '"$fileContent" is not from type string');
 
         $nonExistFile = new Readonly('resources/nonExistfile.txt');
         $fileContent = $nonExistFile->getContent();
@@ -185,7 +185,7 @@ class ReadonlyTest extends \PHPUnit_Framework_TestCase
     public function testGetCrc32()
     {
         $crc = $this->object->getCrc32();
-        $this->assertType('integer', $crc, 'Returned checksum must be an integer.');
+        $this->assertInternalType('integer', $crc, 'Returned checksum must be an integer.');
         
         // valid 
         $validcrc = crc32(file_get_contents($this->object->getPath()));
@@ -213,7 +213,7 @@ class ReadonlyTest extends \PHPUnit_Framework_TestCase
     public function testGetMd5()
     {
         $md5 = $this->object->getMd5();
-        $this->assertType('string', $md5, 'getMd5() is expected to return a string');
+        $this->assertInternalType('string', $md5, 'getMd5() is expected to return a string');
 
         // valid
         $validmd5 = md5_file($this->object->getPath());

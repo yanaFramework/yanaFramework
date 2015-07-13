@@ -119,7 +119,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
     {
         $content = $this->object->getStructure();
         // Should be empty at this stage
-        $this->assertType('array', $content, 'getStructure result should be of the type array');
+        $this->assertInternalType('array', $content, 'getStructure result should be of the type array');
         $this->assertTrue(empty($content), 'getStructure result should be empty before a read');
 
     }
@@ -133,7 +133,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
     {
         $source = $this->object->getSource();
         // is like XML
-        $this->assertType('string', $source, 'getSource result should be of the type string');
+        $this->assertInternalType('string', $source, 'getSource result should be of the type string');
         $this->assertFalse(empty($source), 'getSource result should not be empty');
         $message = "Returned source must be equal to original file in file system.";
         $this->assertEquals(file_get_contents($this->object->getPath()), $source, $message);
@@ -408,7 +408,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, 'ftab', 'get "table by foreign key" failed');
 
         $result = $db->getForeignKeys('test');
-        $this->assertType('array', $result, 'assert failed, the value should be of type array');
+        $this->assertInternalType('array', $result, 'assert failed, the value should be of type array');
         $this->assertTrue(count($result)!=0, 'assert failed, the given array must have an entrie');
         foreach ($result as $key)
         {

@@ -78,7 +78,7 @@ class DatTest extends \PHPUnit_Framework_TestCase
     public function testGetLines()
     {
         $validate = $this->object->getLines();
-        $this->assertType('array', $validate, 'getLines() is expected to return a value of type array.');
+        $this->assertInternalType('array', $validate, 'getLines() is expected to return a value of type array.');
         $testArray = array('name' => 'a', 'test' => 'ewa', 'soMething' => 2);
         $this->object->removeLine();
         $this->object->appendLine($testArray);
@@ -112,7 +112,7 @@ class DatTest extends \PHPUnit_Framework_TestCase
     function testGetLineInvalidArgument()
     {
         $selectrow = $this->object->getLine(10);
-        $this->assertType('array', $selectrow, 'assert failed, value is not from type array');
+        $this->assertInternalType('array', $selectrow, 'assert failed, value is not from type array');
         $this->assertEquals(count($selectrow), 0, 'assert failed, there is no line 10 in file');
     }
 

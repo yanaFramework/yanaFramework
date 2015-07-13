@@ -118,7 +118,7 @@ class TextTest extends \PHPUnit_Framework_TestCase
     public function testAppendLine()
     {
         $getBefore = $this->_object->getContent();
-        $this->assertType('string', $getBefore, 'there is no content');
+        $this->assertInternalType('string', $getBefore, 'there is no content');
 
         $content = 'this is the yana description';
         $this->_object->appendLine($content);
@@ -200,7 +200,7 @@ class TextTest extends \PHPUnit_Framework_TestCase
     public function testLength()
     {
        $length = $this->_object->length();
-       $this->assertType('integer', $length, 'not valid type "integer"');
+       $this->assertInternalType('integer', $length, 'not valid type "integer"');
 
        // try with non existing path
        $newFile = new Text('resources/nonExistfile.txt');
