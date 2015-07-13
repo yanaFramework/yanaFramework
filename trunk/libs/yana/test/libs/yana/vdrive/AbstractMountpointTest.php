@@ -122,7 +122,7 @@ class AbstractMountpointTest extends \PHPUnit_Framework_TestCase
     public function testGetPath()
     {
         $getPath = $this->object->getPath();
-        $this->assertType('string', $getPath, 'the value should be of type string');
+        $this->assertInternalType('string', $getPath, 'the value should be of type string');
         $this->assertEquals(CWD.'resources/file.txt', $getPath, 'the given path should be the same as the expected');
     }
 
@@ -134,7 +134,7 @@ class AbstractMountpointTest extends \PHPUnit_Framework_TestCase
     public function testGetType()
     {
         $type = $this->object->getType();
-        $this->assertType('string', $type, 'the value should be of type string');
+        $this->assertInternalType('string', $type, 'the value should be of type string');
         $this->assertEquals('file', $type, 'the value of the given variable should be "file"');
     }
 

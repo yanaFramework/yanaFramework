@@ -426,7 +426,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(20, $this->query->getOffset());
         $this->query->setInnerJoin('ft');
         $getJoins = $this->query->getJoins();
-        $this->assertType('array', $getJoins, 'assert failed, the expected value should be of type array');
+        $this->assertInternalType('array', $getJoins, 'assert failed, the expected value should be of type array');
         $this->assertArrayHasKey('ft', $getJoins, 'assert failed, the array shuld have the expected key "ft"');
         $this->assertTrue(in_array('ftid', $getJoins['ft']), 'assert failed, the value ftid must be match an entrie in givin array');
         $this->query->unsetJoin('ft');
@@ -473,7 +473,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $values = array('ftid' => 2,'ftvalue' => '50');
         $this->query->setValues($values);
         $getValues = $this->query->getValues();
-        $this->assertType('array', $getValues, 'assert failed, the value should be of type array');
+        $this->assertInternalType('array', $getValues, 'assert failed, the value should be of type array');
         $this->assertTrue(in_array(50, $getValues), 'assert failed, the expected value 50 should be match an enry in givin array');
         $s6 = (string) $this->query;
         $valid = 'INSERT INTO ft (ftid, ftvalue) VALUES ("2", "50")';

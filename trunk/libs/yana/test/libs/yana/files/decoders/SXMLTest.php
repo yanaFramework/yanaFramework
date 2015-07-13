@@ -119,7 +119,7 @@ class SXMLTest extends \PHPUnit_Framework_TestCase
     function testDecodeInvalidArgument()
     {
         $testArray = $this->object->decode(array());
-        $this->assertType('null', $testArray, 'assert failed, first argument need to be a string');
+        $this->assertInternalType('null', $testArray, 'assert failed, first argument need to be a string');
     }
 
     /**

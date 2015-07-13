@@ -69,11 +69,11 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
     {
         // use an integer
         $untaintInput = IntegerValidator::sanitize(60, 1);
-        $this->assertType('int', $untaintInput);
+        $this->assertInternalType('int', $untaintInput);
         $this->assertEquals($untaintInput, 9, 'the integer value must have 1 digit');
 
         $untaintInput = IntegerValidator::sanitize(100, 2);
-        $this->assertType('int', $untaintInput);
+        $this->assertInternalType('int', $untaintInput);
         $this->assertEquals($untaintInput, 99, 'the integer value must have 2 digits');
     }
 
@@ -111,11 +111,11 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
     public function testIntegerValidatorToInteger()
     {
         $untaintInput = IntegerValidator::sanitize(100.05, 2);
-        $this->assertType('int', $untaintInput);
+        $this->assertInternalType('int', $untaintInput);
         $this->assertEquals($untaintInput, 99, 'the integer value must have 2 digits');
 
         $untaintInput = IntegerValidator::sanitize(120.52, 3);
-        $this->assertType('int', $untaintInput);
+        $this->assertInternalType('int', $untaintInput);
         $this->assertEquals($untaintInput, 121);
     }
 
@@ -305,26 +305,26 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
         $string = 'Integer $placerat egestas cursus.';
         $untaintInput = StringValidator::sanitize($string, 40, StringValidator::TOKEN);
         $this->assertNotEquals($string, $untaintInput);
-        $this->assertType('string', $untaintInput);
+        $this->assertInternalType('string', $untaintInput);
         $this->assertEquals('Integer &#36;placerat egestas cursus.', $untaintInput);
 
         $string = 'Integer placerat egestas cursus.';
         $untaintInput = StringValidator::sanitize($string, 2);
         $this->assertNotEquals($string, $untaintInput);
-        $this->assertType('string', $untaintInput);
+        $this->assertInternalType('string', $untaintInput);
 
         $untaintInput = StringValidator::sanitize("1", 0, StringValidator::LINEBREAK);
         $this->assertEquals($untaintInput, '1');
-        $this->assertType('string', $untaintInput);
+        $this->assertInternalType('string', $untaintInput);
 
         $untaintInput = StringValidator::sanitize('1', 0, StringValidator::LINEBREAK);
         $this->assertEquals($untaintInput, 1);
-        $this->assertType('string', $untaintInput);
+        $this->assertInternalType('string', $untaintInput);
 
         // allow more digits than string have
         $untaintInput = StringValidator::sanitize($string, 100);
         $this->assertEquals($string, $untaintInput);
-        $this->assertType('string', $untaintInput);
+        $this->assertInternalType('string', $untaintInput);
 
         // check stripping of white-space
         $untaintInput = StringValidator::sanitize("foo \n\x00bar");
@@ -351,7 +351,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
         $ip = '127.0.0.1';
         $untaintInput = IpValidator::sanitize($ip);
         $this->assertEquals($ip, $untaintInput);
-        $this->assertType('string', $ip);
+        $this->assertInternalType('string', $ip);
 
         // expected null for a bad ip adress
         $this->assertNull(IpValidator::sanitize('1.2.3.4.5'));

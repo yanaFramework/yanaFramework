@@ -91,7 +91,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
     public function testGetVars()
     {
        $var = $this->registry->getVars();
-       $this->assertType('array', $var, 'assert failed, the value should be of type array');
+       $this->assertInternalType('array', $var, 'assert failed, the value should be of type array');
     }
 
     /**
@@ -167,7 +167,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
     {
         // get all elements of the registry path
         $getAll = $this->registry->getVars();
-        $this->assertType('array', $getAll, 'assert failed, the value is not of type array');
+        $this->assertInternalType('array', $getAll, 'assert failed, the value is not of type array');
         $this->assertNotEquals(0, count($getAll), 'assert failed , the array can not be empty');
 
         // select one and manipulate the entries
@@ -187,7 +187,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
 
         // check for modifications
         $getVar = $this->registry->getVar($key);
-        $this->assertType('array', $getVar, 'assert failed, the expected value should be of type array');
+        $this->assertInternalType('array', $getVar, 'assert failed, the expected value should be of type array');
         $this->assertEquals('foo/', $getVar[0], 'assert failed, the expected value must be "foo/"');
         $this->assertEquals('bar/', $getVar[1], 'assert failed, the expected value must be "bar/"');
 
@@ -238,7 +238,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
 
         // verify the instance
         $getInstance = Registry::getGlobalInstance();
-        $this->assertType('object', $getInstance, 'assert failed, the value should be of type object');
+        $this->assertInternalType('object', $getInstance, 'assert failed, the value should be of type object');
         $this->assertTrue($getInstance instanceof Registry, 'assert failed, the expected value should be an instance of Registry');
         $this->assertEquals($this->registry, $getInstance, 'assert failed, sdfsd');
 

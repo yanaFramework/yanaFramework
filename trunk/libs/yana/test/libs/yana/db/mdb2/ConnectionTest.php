@@ -287,14 +287,14 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
         // get table
         $test = $this->dbsobj->select('T');
-        $this->assertType('array', $test, '"get table" the value should be of type array');
+        $this->assertInternalType('array', $test, '"get table" the value should be of type array');
         $this->assertTrue(in_array('FOO', array_keys($test)), '"get table" the value should be contain the string name "FOO"');
-        $this->assertType('array', $test['FOO'], '"get table" the value should be of type array');
+        $this->assertInternalType('array', $test['FOO'], '"get table" the value should be of type array');
 
 
         // get row
         $test = $this->dbsobj->select('t.fOo');
-        $this->assertType('array', $test, '"get table" value should be of type array');
+        $this->assertInternalType('array', $test, '"get table" value should be of type array');
         $this->assertTrue(in_array('TVALUE', array_keys($test)), '"get table" test failed');
 
         // get cell (1)
@@ -315,13 +315,13 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         // get column
         $test = $this->dbsobj->select('T.*.fTid');
         $test2 = $this->dbsobj->length('t');
-        $this->assertType('array', $test, '"get column" test failed');
+        $this->assertInternalType('array', $test, '"get column" test failed');
         $this->assertEquals(count($test), $test2, '"get column" test failed');
 
         // get primary key column
         $test = $this->dbsobj->select('T.*.tid');
         $test2 = $this->dbsobj->length('t');
-        $this->assertType('array', $test, '"get column" test failed');
+        $this->assertInternalType('array', $test, '"get column" test failed');
         $this->assertEquals(count($test), $test2, '"get column" test failed');
 
 

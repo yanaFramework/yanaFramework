@@ -98,7 +98,7 @@ class SXMLTest extends \PHPUnit_Framework_TestCase
     function testGetFileInvalidArgument()
     {
         $test1 = SXML::getFile(array(), CASE_UPPER);
-        $this->assertType('array', $test1, 'assert failed, the value is not from type array');
+        $this->assertInternalType('array', $test1, 'assert failed, the value is not from type array');
     }
 
     /**
@@ -146,7 +146,7 @@ class SXMLTest extends \PHPUnit_Framework_TestCase
     function testDecodeInvalidArgument()
     {
         $testArray = SXML::decode(array());
-        $this->assertType('null', $testArray, 'assert failed, first argument need to be a string');
+        $this->assertInternalType('null', $testArray, 'assert failed, first argument need to be a string');
     }
 
     /**

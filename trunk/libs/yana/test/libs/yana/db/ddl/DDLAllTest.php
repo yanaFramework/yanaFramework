@@ -987,13 +987,13 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $get = $this->column->getImageSettings();
 
         $expected = array('width' => $width, 'height' => $height, 'ratio' => $ratio, 'background' => $background);
-        $this->assertType('array', $get, 'assert failed, \Yana\Db\Ddl\Column : the value is not from type Array');
+        $this->assertInternalType('array', $get, 'assert failed, \Yana\Db\Ddl\Column : the value is not from type Array');
         $this->assertEquals($expected, $get, 'assert failed, \Yana\Db\Ddl\Column : the image settings are not set');
 
         $expected = array('width' => '', 'height' => '', 'ratio' => '', 'background' => '');
         $this->column->setImageSettings();
         $get = $this->column->getImageSettings();
-        $this->assertType('array', $get, 'assert failed, \Yana\Db\Ddl\Column : the value is not from type Array');
+        $this->assertInternalType('array', $get, 'assert failed, \Yana\Db\Ddl\Column : the value is not from type Array');
         $this->assertEquals($expected, $get, 'assert failed, \Yana\Db\Ddl\Column : the image settings are not set');
     }
 
@@ -1027,10 +1027,10 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->column->setDefault('a');
         $this->column->setDefault('b', 'mysql');
         $getAll = $this->column->getDefaults();
-        $this->assertType('array', $getAll, 'assert failed, \Yana\Db\Ddl\Column : the value is not from type array');
+        $this->assertInternalType('array', $getAll, 'assert failed, \Yana\Db\Ddl\Column : the value is not from type array');
         $this->assertEquals(2, count($getAll), 'assert failed, \Yana\Db\Ddl\Column :the values should be equal - expected number 2');
         $get = $this->column->getDefault('mysql');
-        $this->assertType('string', $get, 'assert failed, \Yana\Db\Ddl\Column : the value is not from type string');
+        $this->assertInternalType('string', $get, 'assert failed, \Yana\Db\Ddl\Column : the value is not from type string');
         $this->assertEquals('b', $get, 'assert failed, \Yana\Db\Ddl\Column : the variables should be equal - expected key of value "mysql"');
 
         $get = $this->column->getDefault('oracle');
@@ -1075,7 +1075,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
 
         $this->column->dropEnumerationItems();
         $get = $this->column->getEnumerationItems();
-        $this->assertType('array', $get, 'assert failed, \Yana\Db\Ddl\Column : the value should be from type array');
+        $this->assertInternalType('array', $get, 'assert failed, \Yana\Db\Ddl\Column : the value should be from type array');
         $this->assertEquals(0, count($get), 'assert failed, \Yana\Db\Ddl\Column : the values should be equal, all entries are removed before');
     }
 
@@ -1159,7 +1159,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($result1);
 
         $get = $this->column->getConstraints('odbc');
-        $this->assertType('array', $get, 'assert failed, the value should be from type array');
+        $this->assertInternalType('array', $get, 'assert failed, the value should be from type array');
 
         // DDL Table
         $testArray1 = array("someConstraints 1", "someConstraints 2", "someConstraints 3");
@@ -1197,8 +1197,8 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $uniqueCol = $this->table->addColumn('unique','integer');
         $uniqueCol->setUnique();
         $result2 = $this->table->getUniqueConstraints();
-        $this->assertType('array',$result1, '\Yana\Db\Ddl\Table::');
-        $this->assertType('array',$result2, '\Yana\Db\Ddl\Table::');
+        $this->assertInternalType('array',$result1, '\Yana\Db\Ddl\Table::');
+        $this->assertInternalType('array',$result2, '\Yana\Db\Ddl\Table::');
         $this->assertTrue(empty($result1), '\Yana\Db\Ddl\Table::');
         $this->assertFalse(empty($result2), '\Yana\Db\Ddl\Table::');
 
@@ -1299,7 +1299,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $getAll = $this->database->getTables();
         $this->assertArrayHasKey('newtable', $getAll, 'assert failed, the value should be match a key in array');
         $result = $this->database->getTable('newtable');
-        $this->assertType('object', $result, 'assert failed, the value should be from type object');
+        $this->assertInternalType('object', $result, 'assert failed, the value should be from type object');
 
         $valid = $this->database->isTable('newtable');
         $this->assertTrue($valid, 'assert failed, expected true, the value "newtable" is a Table');
@@ -1431,24 +1431,24 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($valid, 'assert failed, the value should be false, "qwerty" is not a view');
 
         $add = $this->database->addView('qwerty');
-        $this->assertType('object', $add, 'assert failed, the value should be from type object');
+        $this->assertInternalType('object', $add, 'assert failed, the value should be from type object');
         $this->assertEquals('qwerty', $add->getName(), 'assert failed, the values should be equal, "qwerty" is a view');
 
         $add = $this->database->addView('trewq');
-        $this->assertType('object', $add, 'assert failed, the value should be from type object');
+        $this->assertInternalType('object', $add, 'assert failed, the value should be from type object');
         $this->assertEquals('trewq', $add->getName(), 'assert failed, the values should be equal, "trewq" is a view');
 
         $get = $this->database->getView('qwerty');
-        $this->assertType('object', $get, 'assert failed, the value should be from type object');
+        $this->assertInternalType('object', $get, 'assert failed, the value should be from type object');
         $this->assertEquals('qwerty', $get->getName(), 'assert failed, the values should be equal, the name of the view should be the same as expected');
 
         $getAll = $this->database->getViews();
-        $this->assertType('array', $getAll, 'assert failed, the value should be from type array');
+        $this->assertInternalType('array', $getAll, 'assert failed, the value should be from type array');
         $this->assertArrayHasKey('qwerty', $getAll, 'assert failed, the value should be match a entry in array');
         $this->assertArrayHasKey('trewq', $getAll, 'assert failed, the value should be match a entry in array');
 
         $getNames = $this->database->getViewNames();
-        $this->assertType('array', $getNames, 'assert failed, the values should be from type array');
+        $this->assertInternalType('array', $getNames, 'assert failed, the values should be from type array');
         $this->assertTrue(in_array('qwerty', $getNames), 'assert failed, the value should be match a entry in array');
         $this->assertTrue(in_array('trewq', $getNames), 'assert failed, the value should be match a entry in array');
 
@@ -1504,24 +1504,24 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($valid, 'assert failed, "\Yana\Db\Ddl\Database" the value should be false, "qwerty" is not a function');
 
         $add = $this->database->addFunction('qwerty');
-        $this->assertType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertInternalType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
         $this->assertEquals('qwerty', $add->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, "qwerty" is a function');
 
         $add = $this->database->addFunction('trewq');
-        $this->assertType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertInternalType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
         $this->assertEquals('trewq', $add->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, the name of the view should be the same as expected');
 
         $get = $this->database->getFunction('qwerty');
-        $this->assertType('object', $get, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertInternalType('object', $get, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
         $this->assertEquals('qwerty', $get->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, the name of the view should be the same as expected');
 
         $getAll = $this->database->getFunctions();
-        $this->assertType('array', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type array');
+        $this->assertInternalType('array', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type array');
         $this->assertArrayHasKey('qwerty', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
         $this->assertArrayHasKey('trewq', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
 
         $getNames = $this->database->getFunctionNames();
-        $this->assertType('array', $getNames, 'assert failed, "\Yana\Db\Ddl\Database" the values should be from type array');
+        $this->assertInternalType('array', $getNames, 'assert failed, "\Yana\Db\Ddl\Database" the values should be from type array');
         $this->assertTrue(in_array('qwerty', $getNames), 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
         $this->assertTrue(in_array('trewq', $getNames), 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
 
@@ -1574,11 +1574,11 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     {
        // \Yana\Db\Ddl\Views\View
        $set = $this->view->setQuery('');
-       $this->assertType('array', $set, 'assert failed, the value is not from type array');
+       $this->assertInternalType('array', $set, 'assert failed, the value is not from type array');
        $this->assertEquals(0, count($set), 'assert failed, expected an array with 0 entries , no query is set');
 
        $get = $this->view->getQueries();
-       $this->assertType('array', $get, 'assert failed, the value is not from type array');
+       $this->assertInternalType('array', $get, 'assert failed, the value is not from type array');
        $this->assertEquals(0, count($get), 'assert failed, expected an array with 0 entries , no query is set');
 
        $get = $this->view->getQuery('mysql');
@@ -1703,14 +1703,14 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->view->addField('qwerty');
 
         $get = $this->view->getFields();
-        $this->assertType('array', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value is not from type array');
+        $this->assertInternalType('array', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value is not from type array');
 
         $this->assertArrayHasKey('name', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
         $this->assertArrayHasKey('abcd', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
         $this->assertArrayHasKey('qwerty', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
 
         $get = $this->view->getField('abcd');
-        $this->assertType('object', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value is not from type object');
+        $this->assertInternalType('object', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value is not from type object');
         $this->assertTrue($get instanceof \Yana\Db\Ddl\Views\Field, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value should be an instance of \Yana\Db\Ddl\Views\Field');
 
         $this->view->dropField('abcd');
@@ -1737,14 +1737,14 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->form->addField('qwerty');
 
         $get = $this->form->getFields();
-        $this->assertType('array', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value is not from type array');
+        $this->assertInternalType('array', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value is not from type array');
 
         $this->assertArrayHasKey('name', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
         $this->assertArrayHasKey('abcd', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
         $this->assertArrayHasKey('qwerty', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : expected true - the value should be match a key in array');
 
         $get = $this->form->getField('abcd');
-        $this->assertType('object', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value is not from type object');
+        $this->assertInternalType('object', $get, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value is not from type object');
         $this->assertTrue($get instanceof \Yana\Db\Ddl\Field, 'assert failed, "\Yana\Db\Ddl\Views\View" : the value should be an instance of \Yana\Db\Ddl\Field');
 
         $this->form->dropField('abcd');
@@ -1858,24 +1858,24 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($valid, 'assert failed, "\Yana\Db\Ddl\Database" the value should be false, "qwerty" is not a sequence');
 
         $add = $this->database->addSequence('qwerty');
-        $this->assertType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertInternalType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
         $this->assertEquals('qwerty', $add->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, the name of the view should be the same as expected');
 
         $add = $this->database->addSequence('trewq');
-        $this->assertType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertInternalType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
         $this->assertEquals('trewq', $add->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, the name of the view should be the same as expected');
 
         $get = $this->database->getSequence('qwerty');
-        $this->assertType('object', $get, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertInternalType('object', $get, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
         $this->assertEquals('qwerty', $get->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, the name of the view should be the same as expected');
 
         $getAll = $this->database->getSequences();
-        $this->assertType('array', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type array');
+        $this->assertInternalType('array', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type array');
         $this->assertArrayHasKey('qwerty', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
         $this->assertArrayHasKey('trewq', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
 
         $getNames = $this->database->getSequenceNames();
-        $this->assertType('array', $getNames, 'assert failed, "\Yana\Db\Ddl\Database" the values should be from type array');
+        $this->assertInternalType('array', $getNames, 'assert failed, "\Yana\Db\Ddl\Database" the values should be from type array');
         $this->assertTrue(in_array('qwerty', $getNames), 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
         $this->assertTrue(in_array('trewq', $getNames), 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
 
@@ -1968,7 +1968,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     public function testAddInit()
     {
         $get = $this->database->getInit('oracle');
-        $this->assertType('array', $get, 'assert failed, the value should be from type array');
+        $this->assertInternalType('array', $get, 'assert failed, the value should be from type array');
         $this->assertEquals(0, count($get), 'assert failed, the values should be equal');
 
         $dbms = 'mysql';
@@ -1978,7 +1978,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($sql, $get[0], 'assert failed, the values should be equal');
 
         $get = $this->database->getInit('oracle');
-        $this->assertType('array', $get, 'assert failed, the value should be from type array');
+        $this->assertInternalType('array', $get, 'assert failed, the value should be from type array');
         $this->assertEquals(0, count($get), 'assert failed, the values should be equal');
     }
 
@@ -1992,7 +1992,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $get = \Yana\Db\Ddl\DDL::getListOfFiles();
         $this->assertFalse(in_array('config/db/user.db.xml', $get), 'assert failed, the value can not be exist in array');
         $this->assertTrue(in_array('user', $get), 'assert failed, the value must be exist in array');
-        $this->assertType('array', $get, 'assert failed, the value should be from type array');
+        $this->assertInternalType('array', $get, 'assert failed, the value should be from type array');
 
         $get = \Yana\Db\Ddl\DDL::getListOfFiles(true);
         $this->assertTrue(count($get) > 0, 'assert failed, the value must be exist in array');
@@ -2001,7 +2001,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue(is_file($file));
         }
         $this->assertFalse(in_array('user', $get), 'assert failed, the value can not be exist in array');
-        $this->assertType('array', $get, 'assert failed, the value should be from type array');
+        $this->assertInternalType('array', $get, 'assert failed, the value should be from type array');
     }
 
     /**
@@ -2016,24 +2016,24 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($valid, 'assert failed, "\Yana\Db\Ddl\Database" the value should be false, "qwerty" is not a form');
 
         $add = $this->database->addForm('qwerty');
-        $this->assertType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertInternalType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
         $this->assertEquals('qwerty', $add->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, the name of the view should be the same as expected');
 
         $add = $this->database->addForm('trewq');
-        $this->assertType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertInternalType('object', $add, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
         $this->assertEquals('trewq', $add->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, the name of the view should be the same as expected');
 
         $get = $this->database->getForm('qwerty');
-        $this->assertType('object', $get, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
+        $this->assertInternalType('object', $get, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type object');
         $this->assertEquals('qwerty', $get->getName(), 'assert failed, "\Yana\Db\Ddl\Database" the values should be equal, the name of the view should be the same as expected');
 
         $getAll = $this->database->getForms();
-        $this->assertType('array', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type array');
+        $this->assertInternalType('array', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be from type array');
         $this->assertArrayHasKey('qwerty', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
         $this->assertArrayHasKey('trewq', $getAll, 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
 
         $getNames = $this->database->getFormNames();
-        $this->assertType('array', $getNames, 'assert failed, "\Yana\Db\Ddl\Database" the values should be from type array');
+        $this->assertInternalType('array', $getNames, 'assert failed, "\Yana\Db\Ddl\Database" the values should be from type array');
         $this->assertTrue(in_array('qwerty', $getNames), 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
         $this->assertTrue(in_array('trewq', $getNames), 'assert failed, "\Yana\Db\Ddl\Database" the value should be match a entry in array');
 
@@ -2132,7 +2132,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->table->addColumn($someNames[2], 'integer');
 
         $result = $this->index->addColumn($someNames[0]);
-        $this->assertType('\Yana\Db\Ddl\IndexColumn', $result, "unexpectet Returntype from addcolumn");
+        $this->assertInternalType('\Yana\Db\Ddl\IndexColumn', $result, "unexpectet Returntype from addcolumn");
 
         $result = $this->index->addColumn($someNames[1]);
         $result = $this->index->addColumn($someNames[2]);
@@ -2839,7 +2839,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $event = $this->form->addEvent('test');
         $event->setAction('bla');
         $getAll = $this->form->getEvents();
-        $this->assertType('array', $getAll, 'assert failed, the value is not from type array');
+        $this->assertInternalType('array', $getAll, 'assert failed, the value is not from type array');
         $this->assertArrayHasKey('test', $getAll, 'assert failed, the value "test" should be match a key in array');
 
         $get = $this->form->getEvent('test');
@@ -3378,7 +3378,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $fk = $table->addForeignKey('table_target', 'cfkey');
         $fk->setColumn('testcolumn');
         $getAll = $table->getForeignKeys();
-        $this->assertType('array', $getAll, 'assert failed the values is not an array');
+        $this->assertInternalType('array', $getAll, 'assert failed the values is not an array');
 
         foreach($getAll as $key =>$value)
         {
@@ -3862,7 +3862,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $icon = CWD.'resources/image/logo.png';
         $this->event->setIcon($icon);
         $get = $this->event->getIcon();
-        $this->assertType('string', $get, 'assert failed, "\Yana\Db\Ddl\Event:getIcon" the value should be from type string');
+        $this->assertInternalType('string', $get, 'assert failed, "\Yana\Db\Ddl\Event:getIcon" the value should be from type string');
         $this->assertEquals($icon, $get, 'assert failed, "\Yana\Db\Ddl\Event:getIcon" the values should be equal - expected the same path to a file');
 
         $this->event->setIcon('');

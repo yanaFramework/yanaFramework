@@ -85,7 +85,7 @@ class SMLTest extends \PHPUnit_Framework_TestCase
     public function testGetVarByReference()
     {
         $test1 = $this->instance->getVarByReference();
-        $this->assertType('array', $test1, '"assert failed , value is not from type array');
+        $this->assertInternalType('array', $test1, '"assert failed , value is not from type array');
 
         $test2 = $this->instance->getVarByReference('array');
         $this->assertEquals(count($test2), 2, 'assert failed , expected array with 2 values');
@@ -148,7 +148,7 @@ class SMLTest extends \PHPUnit_Framework_TestCase
     public function testdecodeInvalidArgument()
     {
         $decode = $this->instance->decode(541);
-        $this->assertType('null', $decode, 'assert failed, first argument must be a string');
+        $this->assertInternalType('null', $decode, 'assert failed, first argument must be a string');
     }
 
     /**
@@ -161,7 +161,7 @@ class SMLTest extends \PHPUnit_Framework_TestCase
         $this->instance->setVars(array('fo' => 'bar', 'FOO' => 'FOO', 'TEST' => 'description'));
         $valid = mb_strlen((string) $this->instance);
         $getFileContent = $this->instance->getFileContent();
-        $this->assertType('string', $getFileContent, 'assert failed, value is not from type string');
+        $this->assertInternalType('string', $getFileContent, 'assert failed, value is not from type string');
         $this->assertEquals(mb_strlen($getFileContent), $valid, 'assert failed, expected that the 2 variables are equal');
     }
 
@@ -246,7 +246,7 @@ class SMLTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("", $toString, 'Should return empty string if file does not exist');
 
         $string = (string) $this->instance;
-        $this->assertType('string', $string, 'assert failed, valueis not from type string');
+        $this->assertInternalType('string', $string, 'assert failed, valueis not from type string');
         $this->assertNotEquals(0, mb_strlen($string), 'assert failed , value is not empty');
     }
 
@@ -261,7 +261,7 @@ class SMLTest extends \PHPUnit_Framework_TestCase
 
         // supposed to return the whole array by reference
         $test = & $sml->getVarByReference();
-        $this->assertType('array', $test, 'assert failed, get by reference" test failed');
+        $this->assertInternalType('array', $test, 'assert failed, get by reference" test failed');
 
         $test['FOO'] = 'bar';
         $test['foo'] = 'error';

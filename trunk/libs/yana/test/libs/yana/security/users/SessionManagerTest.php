@@ -293,7 +293,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
 
         $user = \Yana\User::getUserNames();
         $user = array_keys($user);
-        $this->assertType('array', $user, 'the value should be an array');
+        $this->assertInternalType('array', $user, 'the value should be an array');
         $this->assertNotEquals(0, count($user), 'the values cant be equal - expected an user array');
         $this->assertTrue(in_array('ADMINISTRATOR', $user), 'the value should be match a key in array');
         $this->assertTrue(in_array('NONEXISTINGUSER', $user), 'the value should be match a key in array');
@@ -314,7 +314,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
         $user = \Yana\User::getInstance('testuser');
         // try to set a password before u sign in
         $set = $user->setPassword();
-        $this->assertType('string', $set, 'the value must be from type string');
+        $this->assertInternalType('string', $set, 'the value must be from type string');
         $this->assertEquals(10, strlen($set), 'the expected value should have 10 digits.');
     }
 
@@ -640,7 +640,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     public function testSerialize()
     {
         $serialize = serialize($this->_sessionManager);
-        $this->assertType('string', $serialize, 'the value should be of type string');
+        $this->assertInternalType('string', $serialize, 'the value should be of type string');
 
         $unserialize = unserialize($serialize);
         $this->assertTrue($unserialize instanceof \Yana\Security\Users\SessionManager, 'the value should be an instance of SessionManager');

@@ -253,7 +253,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
         $this->_object = new \Yana\Db\Export\SqlFactory($db);
         $result = $this->_object->createMySQL();
         //foreach($result as $t) print "$t\n";
-        $this->assertType('array', $result, 'assert failed, the value should be of type array');
+        $this->assertInternalType('array', $result, 'assert failed, the value should be of type array');
         $this->assertNotEquals(0, count($result), 'assert failed, the expected value must have some entries');
     }
 
@@ -301,7 +301,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
 
         $obj = new \Yana\Db\Export\SqlFactory($db);
         $result = $obj->createMySQL();
-        $this->assertType('array', $result, 'assert failed the result should be of type array');
+        $this->assertInternalType('array', $result, 'assert failed the result should be of type array');
         $this->assertNotEquals(0, count($result), 'assert failed, the expected value must have some entries');
     }
 
@@ -314,7 +314,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $sqlFactory = new \Yana\Db\Export\SqlFactory(\Yana\Files\XDDL::getDatabase(CWD.'resources/check.db.xml'));
         $result = $sqlFactory->createMySQL();
-        $this->assertType('array', $result, 'assert failed the result should be of type array');
+        $this->assertInternalType('array', $result, 'assert failed the result should be of type array');
         $this->assertNotEquals(0, count($result), 'assert failed, the expected value must have some entries');
     }
 
@@ -330,7 +330,7 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
         // invalid sql code because some tabels missing in the current file
         // it does not work on because the preset foreignKeys has an non existing tabels
         $result = $sqlFactory->createMySQL();
-        $this->assertType('array', $result, 'assert failed the result should be of type array');
+        $this->assertInternalType('array', $result, 'assert failed the result should be of type array');
         $this->assertNotEquals(0, count($result), 'assert failed, the expected value must have some entries');
     }
 

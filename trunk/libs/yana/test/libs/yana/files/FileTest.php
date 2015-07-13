@@ -116,7 +116,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
     public function testGetFilesize()
     {
         $filesize = $this->object->getFilesize();
-        $this->assertType('integer', $filesize, 'not valid type for "$filesize" expecting "integer"');
+        $this->assertInternalType('integer', $filesize, 'not valid type for "$filesize" expecting "integer"');
 
         // try with non existing path
         $newFile = new File('resources/nonExistfile.txt');
