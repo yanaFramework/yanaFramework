@@ -51,7 +51,7 @@ namespace Yana\VDrive;
  * @package    yana
  * @subpackage vdrive
  */
-class Registry extends \Yana\VDrive\VDrive implements \Yana\Core\IsVarContainer
+class Registry extends \Yana\VDrive\VDrive implements \Yana\VDrive\IsRegistry
 {
 
     /**
