@@ -261,12 +261,12 @@ class plugin_user_registration extends StdClass implements \Yana\IsPlugin
     /**
      * Send some e-mail.
      *
-     * @param   string                  $recipient  mail address
-     * @param   \Yana\Views\IsTemplate  $template   template
-     * @param   string                  $sender     mail address
+     * @param   string                            $recipient  mail address
+     * @param   \Yana\Views\Templates\IsTemplate  $template   template
+     * @param   string                            $sender     mail address
      * @ignore
      */
-    private static function _sendMail($recipient, \Yana\Views\IsTemplate $template, $sender = "")
+    private static function _sendMail($recipient, \Yana\Views\Templates\IsTemplate $template, $sender = "")
     {
         assert('is_string($recipient); // Invalid argument $recipient: string expected');
         assert('is_string($sender); // Invalid argument $sender: string expected');

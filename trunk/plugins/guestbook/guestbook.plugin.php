@@ -727,10 +727,10 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
      *
      * @access  private
      * @static
-     * @param   \Yana\Views\IsTemplate  $template  mail template
-     * @param   array                   $vars      input data
+     * @param   \Yana\Views\Templates\IsTemplate  $template  mail template
+     * @param   array                             $vars      input data
      */
-    private static function _sendMail(\Yana\Views\IsTemplate $template, array $vars)
+    private static function _sendMail(\Yana\Views\Templates\IsTemplate $template, array $vars)
     {
         global $YANA;
         $sender = $YANA->getVar("PROFILE.MAIL");

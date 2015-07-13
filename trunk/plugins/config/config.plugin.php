@@ -485,7 +485,7 @@ class plugin_config extends StdClass implements \Yana\IsPlugin
                 $info['UPDATE'] = $metaData->getUrl();
             break;
             case "skin":
-                $skin = new \Yana\Views\Skin($target);
+                $skin = new \Yana\Views\Skins\Skin($target);
                 $metaData = $skin->getMetaData();
                 $info['CONTACT'] = $metaData->getUrl();
             break;
