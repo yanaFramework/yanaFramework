@@ -98,17 +98,6 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testToString()
-    {
-        $xml = simplexml_load_file(CWD . '/resources/test.drive.xml');
-
-        // test file loading
-        $this->assertEquals($this->object->__toString(), $xml->asXML(), '"file loading" test failed');
-    }
-
-    /**
-     * @test
-     */
     public function testFunctions()
     {
         // test includes
