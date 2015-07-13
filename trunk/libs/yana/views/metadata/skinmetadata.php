@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -36,7 +35,7 @@ namespace Yana\Views\MetaData;
  * @package     yana
  * @subpackage  views
  */
-class SkinMetaData extends \Yana\Core\MetaData\PackageMetaData implements \Yana\Views\MetaData\IsSkinMetaData
+class SkinMetaData extends \Yana\Core\MetaData\PackageMetaData implements \Yana\Views\MetaData\IsSkinMetaData, \Yana\Report\IsReportable
 {
 
     /**
@@ -64,6 +63,25 @@ class SkinMetaData extends \Yana\Core\MetaData\PackageMetaData implements \Yana\
     public function getTemplates()
     {
         return $this->_templates;
+    }
+
+    /**
+     * Check this object for errors and return a report.
+     *
+     * Returns the a report object.
+     * The report is expected to be a valid XML document.
+     *
+     * @param   \Yana\Report\IsReport  $report  base report
+     * @return  \Yana\Report\IsReport
+     */
+    public function getReport(\Yana\Report\IsReport $report = null)
+    {
+        $reportBuilder = new \Yana\Views\MetaData\Reporting\SkinReportBuilder($report);
+        $reportBuilder
+            ->setSkinDirectoryName($this->getTitle())
+            ->setSkinConfiguration($this);
+
+        return $reportBuilder->buildReport();
     }
 
 }

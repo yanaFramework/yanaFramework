@@ -57,7 +57,7 @@ namespace Yana\Views\Resources;
  * </code>
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  views
  */
 class StringResource extends \Yana\Views\Resources\AbstractResource
 {

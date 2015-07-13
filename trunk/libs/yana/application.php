@@ -102,7 +102,7 @@ final class Application extends \Yana\Core\AbstractSingleton
     /**
      * to load skins and templates
      *
-     * @var  \Yana\Views\Skin
+     * @var  \Yana\Views\Skins\Skin
      */
     private $_skin = null;
 
@@ -123,7 +123,7 @@ final class Application extends \Yana\Core\AbstractSingleton
     /**
      * the currently selected template
      *
-     * @var  \Yana\Views\Manager
+     * @var  \Yana\Views\Managers\IsManager
      */
     private $_view = null;
 
@@ -284,7 +284,7 @@ final class Application extends \Yana\Core\AbstractSingleton
         }
         // initialize directories
         if (!empty(self::$_config->skindir) && is_dir(self::$_config->skindir)) {
-            \Yana\Views\Skin::setBaseDirectory((string) self::$_config->skindir);
+            \Yana\Views\Skins\Skin::setBaseDirectory((string) self::$_config->skindir);
         }
         if (isset(self::$_config->pluginfile)) {
             \Yana\Plugins\Manager::setPath((string) self::$_config->pluginfile, (string) self::$_config->plugindir);
@@ -624,7 +624,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      * This returns the view component. If none exists, a new instance is created.
      * This is an auxiliary class that provides access to output-specific functions.
      *
-     * @return  \Yana\Views\Manager
+     * @return  \Yana\Views\Managers\IsManager
      */
     public function getView()
     {
@@ -683,7 +683,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      *
      * This returns the skin component. If none exists, a new instance is created.
      *
-     * @return  \Yana\Views\Skin
+     * @return  \Yana\Views\Skins\Skin
      */
     public function getSkin()
     {
@@ -698,7 +698,7 @@ final class Application extends \Yana\Core\AbstractSingleton
                 assert('$this->_skin instanceof Skin;');
 
             } else {
-                $this->_skin = new \Yana\Views\Skin($this->getVar('PROFILE.SKIN'));
+                $this->_skin = new \Yana\Views\Skins\Skin($this->getVar('PROFILE.SKIN'));
 
                 if (YANA_CACHE_ACTIVE === true) {
                     $cacheFile->create();

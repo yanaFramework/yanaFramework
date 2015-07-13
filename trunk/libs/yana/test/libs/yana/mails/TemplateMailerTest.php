@@ -46,7 +46,7 @@ class TemplateMailerTest extends \PHPUnit_Framework_TestCase
     protected $strategy;
 
     /**
-     * @var  \Yana\Views\NullTemplate
+     * @var  \Yana\Views\Templates\NullTemplate
      */
     protected $template;
 
@@ -75,7 +75,7 @@ class TemplateMailerTest extends \PHPUnit_Framework_TestCase
     {
         $this->strategy = new \Yana\Mails\Strategies\NullStrategy();
         $context = new \Yana\Mails\Strategies\Contexts\UserInputContext($this->strategy);
-        $this->template = new \Yana\Views\NullTemplate();
+        $this->template = new \Yana\Views\Templates\NullTemplate();
         $this->template->setPath(CWD . 'resources/mail.tpl');
         $this->object = new \Yana\Mails\TemplateMailer($this->template, $context);
     }

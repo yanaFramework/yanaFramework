@@ -27,13 +27,13 @@
  * @ignore
  */
 
-namespace Yana\Views;
+namespace Yana\Views\Managers;
 
 /**
  * <<interface>> Manager class to automate searching and loading of templates, belonging to view layer.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  views
  */
 interface IsManager
 {
@@ -46,7 +46,7 @@ interface IsManager
      * @param   string  $filename             path to template file that hold the page layout (usually: index.tpl)
      * @param   string  $mainContentTemplate  path to another template file that renders the page content
      * @param   string  $mainContentTemplate  path to another template file that renders the page content
-     * @return  \Yana\Views\Template
+     * @return  \Yana\Views\Templates\Template
      */
     public function createLayoutTemplate($filename, $mainContentTemplate, array $templateVars);
 
@@ -57,7 +57,7 @@ interface IsManager
      * If a base-layout is defined already, it will be set up as the parent template.
      *
      * @param   string  $filename  path to template file
-     * @return  \Yana\Views\Template 
+     * @return  \Yana\Views\Templates\Template 
      */
     public function createContentTemplate($filename);
 
@@ -65,7 +65,7 @@ interface IsManager
      * Add path to CSS stylesheet file.
      *
      * @param  string  $file  path and file name
-     * @return \Yana\Views\Manager
+     * @return \Yana\Views\Managers\IsManager
      */
     public function addStyle($file);
 
@@ -73,7 +73,7 @@ interface IsManager
      * Add path to javascript file.
      *
      * @param  string  $file  path and file name
-     * @return \Yana\Views\Manager
+     * @return \Yana\Views\Managers\IsManager
      */
     public function addScript($file);
 
@@ -81,7 +81,7 @@ interface IsManager
      * Add multiple CSS files.
      *
      * @param  array  $files  path and file names
-     * @return \Yana\Views\Manager
+     * @return \Yana\Views\Managers\IsManager
      */
     public function addStyles(array $files);
 
@@ -89,7 +89,7 @@ interface IsManager
      * Add multiple JavaScript files.
      *
      * @param  array  $files  path and file names
-     * @return \Yana\Views\Manager
+     * @return \Yana\Views\Managers\IsManager
      */
     public function addScripts(array $files);
 
@@ -150,7 +150,7 @@ interface IsManager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  \Yana\Views\Manager
+     * @return  \Yana\Views\Managers\IsManager
      */
     public function setFunction($name, $code);
 
@@ -166,7 +166,7 @@ interface IsManager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  \Yana\Views\Manager
+     * @return  \Yana\Views\Managers\IsManager
      */
     public function setModifier($name, $code);
 
@@ -182,7 +182,7 @@ interface IsManager
      *
      * @param   string  $name  name of the function
      * @param   mixed   $code  a callable resource
-     * @return  \Yana\Views\Manager
+     * @return  \Yana\Views\Managers\IsManager
      */
     public function setBlockFunction($name, $code);
 
@@ -195,7 +195,7 @@ interface IsManager
      * and possibly cause your application to exit.
      *
      * @param   string  $name  name of the function
-     * @return  \Yana\Views\Manager
+     * @return  \Yana\Views\Managers\IsManager
      */
     public function unsetFunction($name);
 
@@ -208,7 +208,7 @@ interface IsManager
      * and possibly cause your application to exit.
      *
      * @param   string  $name  name of the function
-     * @return  \Yana\Views\Manager
+     * @return  \Yana\Views\Managers\IsManager
      */
     public function unsetModifier($name);
 
@@ -221,7 +221,7 @@ interface IsManager
      * and possibly cause your application to exit.
      *
      * @param   string  $name  name of the function
-     * @return  \Yana\Views\Manager
+     * @return  \Yana\Views\Managers\IsManager
      */
     public function unsetBlockFunction($name);
 

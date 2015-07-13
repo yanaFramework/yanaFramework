@@ -44,10 +44,10 @@ class TemplateMailer extends \Yana\Mails\AbstractMailerFacade
     /**
      * Create new mailer facade.
      *
-     * @param  \Yana\Views\IsTemplate                     $template  the mail contents
+     * @param  \Yana\Views\Templates\IsTemplate                     $template  the mail contents
      * @param  \Yana\Mails\Strategies\Contexts\IsContext  $context   a callable class used to send e-mails
      */
-    public function __construct(\Yana\Views\IsTemplate $template,
+    public function __construct(\Yana\Views\Templates\IsTemplate $template,
         \Yana\Mails\Strategies\Contexts\IsContext $context = null)
     {
         $message = new \Yana\Mails\Messages\TemplateMessage($template);

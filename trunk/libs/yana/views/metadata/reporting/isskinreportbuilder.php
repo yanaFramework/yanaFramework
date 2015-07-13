@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -28,43 +27,32 @@
  * @ignore
  */
 
-namespace Yana\Views\Helpers;
+namespace Yana\Views\MetaData\Reporting;
 
 /**
- * <<abstract>> Basic Helper class.
+ * <<interface>> Helper class that creates reporting objects for skins.
  *
  * @package     yana
  * @subpackage  views
+ * @ignore
  */
-abstract class AbstractViewHelper extends \Yana\Core\Object implements \Yana\Views\Managers\IsManageable
+interface IsSkinReportBuilder extends \Yana\Views\MetaData\Reporting\IsBuilder
 {
 
     /**
-     * @var \Yana\Views\Managers\IsManager
+     * Returns a list of SkinMetaData objects.
+     *
+     * @return  \Yana\Views\MetaData\SkinMetaData
      */
-    private $_manager = null;
+    public function getSkinConfiguration();
 
     /**
-     * Create a new instance.
+     * Adds a configuration object.
      *
-     * This also loads the configuration.
+     * @param \Yana\Views\MetaData\SkinMetaData $skinConfiguration
+     * @return \Yana\Views\Skins\IsReportBuilder
      */
-    public function __construct(\Yana\Views\Managers\IsManager $manager)
-    {
-        $this->_manager = $manager;
-    }
-
-    /**
-     * Returns a reference to the registered view manager.
-     *
-     * You may use this to modify settings of the view layer and access the template engine.
-     *
-     * @return \Yana\Views\Managers\IsManager
-     */
-    protected function _getViewManager()
-    {
-        return $this->_manager;
-    }
+    public function setSkinConfiguration(\Yana\Views\MetaData\SkinMetaData $skinConfiguration);
 
 }
 

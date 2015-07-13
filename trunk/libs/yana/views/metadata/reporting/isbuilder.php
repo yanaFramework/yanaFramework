@@ -1,5 +1,4 @@
 <?php
-
 /**
  * YANA library
  *
@@ -28,43 +27,27 @@
  * @ignore
  */
 
-namespace Yana\Views\Helpers;
+namespace Yana\Views\MetaData\Reporting;
 
 /**
- * <<abstract>> Basic Helper class.
+ * <<interface>> Helper class that creates reporting objects.
  *
  * @package     yana
  * @subpackage  views
+ * @ignore
  */
-abstract class AbstractViewHelper extends \Yana\Core\Object implements \Yana\Views\Managers\IsManageable
+interface IsBuilder
 {
 
     /**
-     * @var \Yana\Views\Managers\IsManager
-     */
-    private $_manager = null;
-
-    /**
-     * Create a new instance.
+     * Builds the report.
      *
-     * This also loads the configuration.
-     */
-    public function __construct(\Yana\Views\Managers\IsManager $manager)
-    {
-        $this->_manager = $manager;
-    }
-
-    /**
-     * Returns a reference to the registered view manager.
+     * Returns a \Yana\Report\Xml object, which you may print, transform or output to a file.
+     * Informs about configuration issues or errors.
      *
-     * You may use this to modify settings of the view layer and access the template engine.
-     *
-     * @return \Yana\Views\Managers\IsManager
+     * @return  \Yana\Report\IsReport
      */
-    protected function _getViewManager()
-    {
-        return $this->_manager;
-    }
+    public function buildReport();
 
 }
 

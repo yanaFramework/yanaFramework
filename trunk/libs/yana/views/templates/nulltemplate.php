@@ -25,73 +25,54 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Views;
+namespace Yana\Views\Templates;
 
 /**
- * <<decorator>> Template.
+ * Null-template for testing purposes.
  *
- * This implements a decorator class for Smarty templates.
- * It provides a cleaned up, simple interface targeted for ease of use.
+ * Use this to mock a template where necessary.
  *
  * @package     yana
  * @subpackage  views
  */
-class Template extends \Yana\Core\Object implements \Yana\Views\IsTemplate
+class NullTemplate extends \Yana\Core\Object implements \Yana\Views\Templates\IsTemplate
 {
 
     /**
-     * local Smarty instance
-     *
-     * @var  \Smarty_Internal_Template
-     * @ignore
+     * @var array
      */
-    protected $template = null;
+    private $_vars = array();
 
     /**
-     * create an instance
-     *
-     * You may enter a filename of a template you want to use.
-     *
-     * @param  \Smarty_Internal_Template $template
+     * @var string
      */
-    public function __construct(\Smarty_Internal_Template $template)
-    {
-        $this->template = $template;
-    }
+    private $_path = "";
 
     /**
-     * fetch a template
-     *
-     * This function will fetch the current template and return it
-     * as a string.
-     *
-     * Predefined variables may be imported from the global registry
-     * to the template.
-     * Existing template vars will be replaced.
+     * Returns an empty string.
      *
      * @return  string
-     * @throws  \SmartyException  when template is not found
      */
     public function fetch()
     {
-        return $this->template->fetch();
+        $path = $this->getPath();
+        $string = "";
+        if (is_file($path)) {
+            $string = \file_get_contents($path);
+        } elseif (preg_match('/^string:/', $path)) {
+            $string = preg_replace('/^string:/', '', $path);
+        }
+        return $string;
     }
 
     /**
-     * Fetch the current template and return it as a string.
-     *
-     * Predefined variables may be imported from the global registry to the template.
-     * Existing template vars will be replaced.
+     * Returns an empty string.
      *
      * @return  string
      */
     public function __toString()
     {
-        try {
-            return $this->fetch();
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
+        return $this->fetch();
     }
 
     /**
@@ -101,7 +82,7 @@ class Template extends \Yana\Core\Object implements \Yana\Views\IsTemplate
      */
     public function getVars()
     {
-        return $this->template->getTemplateVars();
+        return $this->_vars;
     }
 
     /**
@@ -116,24 +97,18 @@ class Template extends \Yana\Core\Object implements \Yana\Views\IsTemplate
     {
         assert('is_scalar($key)', ' Invalid argument $key: scalar expected');
 
-        return !is_null($this->getVar($key));
+        return isset($this->_vars[$key]);
     }
 
     /**
      * Get template var.
-     *
-     * If you call $template->getVar($varName) it will get the template var $varName and return it.
      *
      * @param   string  $key  variable-name
      * @return  mixed
      */
     public function getVar($key)
     {
-        assert('is_string($key)', ' Wrong argument type for argument 1. String expected.');
-
-        $resource = $this->getVars();
-        assert('is_array($resource)', 'unexpected result: $resource should be an array');
-        return \Yana\Util\Hashtable::get($resource, "$key");
+        return (isset($this->_vars[$key])) ? $this->_vars[$key] : null;
     }
 
     /**
@@ -141,12 +116,11 @@ class Template extends \Yana\Core\Object implements \Yana\Views\IsTemplate
      *
      * @param   string  $varName  address
      * @param   mixed   $var      some new value
-     * @return  \Yana\Views\Template
+     * @return  \Yana\Views\Templates\NullTemplate
      */
     public function setVar($varName, $var)
     {
-        assert('is_string($varName)', ' Wrong argument type for argument 1. String expected.');
-        $this->template->assign($varName, $var);
+        $this->_vars[$varName] = $var;
         return $this;
     }
 
@@ -156,11 +130,11 @@ class Template extends \Yana\Core\Object implements \Yana\Views\IsTemplate
      * This replaces all template vars with new ones.
      *
      * @param   array  $vars  associative array containg new set of template vars
-     * @return  \Yana\Views\Template
+     * @return  \Yana\Views\Templates\NullTemplate
      */
     public function setVars(array $vars)
     {
-        $this->template->assign((array) $vars);
+        $this->_vars = $vars;
         return $this;
     }
 
@@ -172,13 +146,11 @@ class Template extends \Yana\Core\Object implements \Yana\Views\IsTemplate
      *
      * @param   string  $varName  address
      * @param   mixed   &$var     some new value
-     * @return  \Yana\Views\Template
+     * @return  \Yana\Views\Templates\NullTemplate
      */
     public function setVarByReference($varName, &$var)
     {
-        assert('is_string($varName)', ' Invalid argument $varName: string expected');
-
-        $this->template->assignByRef($varName, $var);
+        $this->_vars[$varName] =& $var;
         return $this;
     }
 
@@ -190,15 +162,34 @@ class Template extends \Yana\Core\Object implements \Yana\Views\IsTemplate
      *
      * @param   string  $varName  address
      * @param   mixed   &$var     some new value
-     * @return  \Yana\Views\Template
+     * @return  \Yana\Views\Templates\NullTemplate
      */
     public function setVarsByReference(array &$vars)
     {
-        foreach (array_keys((array) $vars) as $key)
-        {
-            $this->template->assignByRef($key, $vars[$key]); // assign contents to global namespace
-        }
+        $this->_vars =& $vars;
         return $this;
+    }
+
+    /**
+     * Set filename to fetch.
+     *
+     * @param   string  $filename  name of the template file
+     * @return  \Yana\Views\Templates\NullTemplate
+     */
+    public function setPath($filename)
+    {
+        $this->_path = (string) $filename;
+        return $this;
+    }
+
+    /**
+     * Returns a string with the path and name of the current template.
+     *
+     * @return  string
+     */
+    public function getPath()
+    {
+        return $this->_path;
     }
 
 }

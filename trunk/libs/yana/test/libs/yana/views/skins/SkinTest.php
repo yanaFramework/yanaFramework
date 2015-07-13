@@ -25,12 +25,12 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Views;
+namespace Yana\Views\Skins;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../include.php';
+require_once __DIR__ . '/../../../../include.php';
 
 /**
  * Test class for Skin
@@ -41,7 +41,7 @@ class SkinTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var  \Yana\Views\Skin
+     * @var  \Yana\Views\Skins\Skin
      */
     protected $_object;
 
@@ -67,8 +67,8 @@ class SkinTest extends \PHPUnit_Framework_TestCase
         $this->_defaultDir->setFilter('*.skin.xml');
         $this->_testDir = new \Yana\Files\Dir(CWD . '/resources/skin/test');
         $this->_testDir->setFilter('*.skin.xml');
-        \Yana\Views\Skin::setBaseDirectory(CWD . '/resources/skin/');
-        $this->_object = new \Yana\Views\Skin('test');
+        \Yana\Views\Skins\Skin::setBaseDirectory(CWD . '/resources/skin');
+        $this->_object = new \Yana\Views\Skins\Skin('test');
     }
 
     /**
@@ -90,9 +90,8 @@ class SkinTest extends \PHPUnit_Framework_TestCase
     {
         $fooData = $this->_object->getTemplateData('foo');
 
-        $file =  $this->_testDir->getPath() . '/test.txt';
+        $file =  $this->_testDir->getPath() . 'test.txt';
         $this->assertEquals(array('test' => $file), $fooData->getStyles(), "read stylesheet failed");
-        $fooData->setStyle('foo');
 
         // add stylesheet
         $fooData->setStyles(array('foo.css'));

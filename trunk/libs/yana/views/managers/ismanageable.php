@@ -28,43 +28,23 @@
  * @ignore
  */
 
-namespace Yana\Views\Helpers;
+namespace Yana\Views\Managers;
 
 /**
- * <<abstract>> Basic Helper class.
+ * <<interface>> For any classes that may accept a view manager.
  *
  * @package     yana
  * @subpackage  views
  */
-abstract class AbstractViewHelper extends \Yana\Core\Object implements \Yana\Views\Managers\IsManageable
+interface IsManageable
 {
 
     /**
-     * @var \Yana\Views\Managers\IsManager
-     */
-    private $_manager = null;
-
-    /**
-     * Create a new instance.
+     * Assign the view manager.
      *
-     * This also loads the configuration.
+     * @param  \Yana\Views\Managers\IsManager  $manager  View manager instance
      */
-    public function __construct(\Yana\Views\Managers\IsManager $manager)
-    {
-        $this->_manager = $manager;
-    }
-
-    /**
-     * Returns a reference to the registered view manager.
-     *
-     * You may use this to modify settings of the view layer and access the template engine.
-     *
-     * @return \Yana\Views\Managers\IsManager
-     */
-    protected function _getViewManager()
-    {
-        return $this->_manager;
-    }
+    public function __construct(\Yana\Views\Managers\IsManager $manager);
 
 }
 

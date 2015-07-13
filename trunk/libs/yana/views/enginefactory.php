@@ -35,7 +35,7 @@ namespace Yana\Views;
  *
  * @access      public
  * @package     yana
- * @subpackage  core
+ * @subpackage  views
  */
 class EngineFactory extends \Yana\Core\Object
 {
@@ -43,7 +43,7 @@ class EngineFactory extends \Yana\Core\Object
     /**
      * global Smarty instance
      *
-     * @var  Smarty
+     * @var  \Yana\Views\Managers\IsManager
      */
     private static $_instance = null;
 
@@ -391,13 +391,13 @@ class EngineFactory extends \Yana\Core\Object
     /**
      * Builds a new Smarty instance based on the given configuration.
      *
-     * @return  \Yana\Views\Manager
+     * @return  \Yana\Views\Managers\IsManager
      */
     public function createInstance()
     {
-        if (!self::$_instance instanceof \Yana\Views\Manager) {
+        if (!self::$_instance instanceof \Yana\Views\Managers\IsManager) {
             $smarty = new \Smarty();
-            self::$_instance = new \Yana\Views\Manager($smarty);
+            self::$_instance = new \Yana\Views\Managers\Manager($smarty);
             $config = $this->_getConfiguration();
             $this->_configureGeneralSettings($smarty, $config)
                     ->_configurePlugins($smarty, $config);

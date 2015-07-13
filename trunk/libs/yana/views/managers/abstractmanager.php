@@ -27,15 +27,15 @@
  * @ignore
  */
 
-namespace Yana\Views;
+namespace Yana\Views\Managers;
 
 /**
  * Manager class to automate searching and loading of templates, belonging to view layer.
  *
  * @package     yana
- * @subpackage  core
+ * @subpackage  views
  */
-abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Views\IsManager
+abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Views\Managers\IsManager
 {
 
     /**
@@ -56,7 +56,7 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Views\
      * Add path to CSS stylesheet file.
      *
      * @param  string  $file  path and file name
-     * @return \Yana\Views\Manager
+     * @return \Yana\Views\Managers\IsManager
      */
     public function addStyle($file)
     {
@@ -69,7 +69,7 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Views\
      * Add path to javascript file.
      *
      * @param  string  $file  path and file name
-     * @return \Yana\Views\Manager
+     * @return \Yana\Views\Managers\IsManager
      */
     public function addScript($file)
     {
@@ -82,7 +82,7 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Views\
      * Add multiple CSS files.
      *
      * @param  array  $files  path and file names
-     * @return \Yana\Views\Manager
+     * @return \Yana\Views\Managers\IsManager
      */
     public function addStyles(array $files)
     {
@@ -95,7 +95,7 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Views\
      * Add multiple JavaScript files.
      *
      * @param  array  $files  path and file names
-     * @return \Yana\Views\Manager
+     * @return \Yana\Views\Managers\IsManager
      */
     public function addScripts(array $files)
     {
