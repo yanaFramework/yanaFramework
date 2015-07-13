@@ -60,7 +60,7 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yan
      */
     public function __construct(\Yana\Db\IsConnection $db, $table)
     {
-        assert('is_string($table); // Wrong argument type argument 1. String expected');
+        assert('is_string($table)', ' Wrong argument type argument 1. String expected');
         if (!$db->getSchema()->isTable($table)) {
             $message = "Table not found: '$table' in database '{$db->schema->getName()}'.";
             throw new \Yana\Core\Exceptions\NotFoundException($message);

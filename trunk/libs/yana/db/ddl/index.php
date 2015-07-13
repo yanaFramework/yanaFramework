@@ -136,7 +136,7 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      */
     public function setTitle($title = "")
     {
-        assert('is_string($title); // Wrong type for argument 1. String expected');
+        assert('is_string($title)', ' Wrong type for argument 1. String expected');
         if (empty($title)) {
             $this->title = null;
         } else {
@@ -188,7 +188,7 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      */
     public function setDescription($description = "")
     {
-        assert('is_string($description); // Wrong type for argument 1. String expected');
+        assert('is_string($description)', ' Wrong type for argument 1. String expected');
         if (empty($description)) {
             $this->description = null;
         } else {
@@ -225,7 +225,7 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      */
     public function getColumns()
     {
-        assert('is_array($this->columns); // member "columns" is expected to be an array');
+        assert('is_array($this->columns)', ' member "columns" is expected to be an array');
         return $this->columns;
     }
 
@@ -245,8 +245,8 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      */
     public function addColumn($name, $isAscending = true)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
-        assert('is_bool($isAscending); // Wrong type for argument 2. Boolean expected');
+        assert('is_string($name)', ' Wrong type for argument 1. String expected');
+        assert('is_bool($isAscending)', ' Wrong type for argument 2. Boolean expected');
 
         if (isset($this->parent) && !$this->parent->isColumn($name)) {
             $message = "No such column '$name' in table '{$this->parent->getName()}'.";
@@ -278,7 +278,7 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      */
     public function dropColumn($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name)', ' Wrong type for argument 1. String expected');
         $name = strtolower($name);
         if (isset($this->columns[$name])) {
             unset($this->columns[$name]);
@@ -311,7 +311,7 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      */
     public function setUnique($isUnique)
     {
-        assert('is_bool($isUnique); // Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isUnique)', ' Wrong type for argument 1. Boolean expected');
         $this->unique = (bool) $isUnique;
         return $this;
     }
@@ -355,7 +355,7 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      */
     public function setClustered($isClustered)
     {
-        assert('is_bool($isClustered); // Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isClustered)', ' Wrong type for argument 1. Boolean expected');
         if ($isClustered) {
 
             $this->clustered = true;

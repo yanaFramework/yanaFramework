@@ -129,7 +129,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
 
         $this->_schema = $schema;
         $this->_database = $schema->getName();
-        assert('!empty($this->_database); // database name must not be empty');
+        assert('!empty($this->_database)', ' database name must not be empty');
 
         if (!is_dir(self::$_baseDir . $this->_database)) {
             mkdir(self::$_baseDir . $this->_database);
@@ -152,7 +152,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         if (empty($directory)) {
             $directory = \Yana\Db\Ddl\DDL::getDirectory();
         }
-        assert('is_dir($directory); // Wrong type for argument 1. Directory expected');
+        assert('is_dir($directory)', ' Wrong type for argument 1. Directory expected');
         self::$_baseDir = "$directory";
     }
 
@@ -363,14 +363,14 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         if (!is_null($columnName)) {
             $row = array($columnName => $value);
         } else {
-            assert('is_array($value); // Invalid argument $value: array expected');
+            assert('is_array($value)', ' Invalid argument $value: array expected');
             $row = (array) $value;
         }
         assert('is_array($row);');
         $row = \array_change_key_case($row, \CASE_LOWER);
 
         /* @var $foreign \Yana\Db\Ddl\ForeignKey */
-        assert('!isset($foreign); /* Cannot redeclare var $fkey */');
+        assert('!isset($foreign)', 'Cannot redeclare var $fkey');
         foreach ($table->getForeignKeys() as $foreign)
         {
             $isPartialMatch = !is_null($columnName) || $foreign->getMatch() === \Yana\Db\Ddl\KeyMatchStrategyEnumeration::PARTIAL;
@@ -411,13 +411,13 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
                         assert($sml instanceof \Yana\Files\SML);
 
                         assert('isset($row[$sourceColumn]);');
-                        assert('is_scalar($row[$sourceColumn]); // Value for foreign key must be scalar');
+                        assert('is_scalar($row[$sourceColumn])', ' Value for foreign key must be scalar');
 
                         if ($isPrimaryKey && $sml->getVar($targetColumn . '.' . $row[$sourceColumn])) {
                             $isMatch = true;
                         } else {
-                            assert('!isset($_id); // Cannot redeclare var $_id');
-                            assert('!isset($_row); // Cannot redeclare var $_row');
+                            assert('!isset($_id)', ' Cannot redeclare var $_id');
+                            assert('!isset($_row)', ' Cannot redeclare var $_row');
                             foreach ((array) $sml->getVar($fTable->getPrimaryKey()) as $_id => $_row)
                             {
                                 $_row[$fTable->getPrimaryKey()] = $_id;
@@ -518,10 +518,10 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
             /*
              * 1.2.3.1) resolve where clause
              */
-            assert('!isset($tableB); // Cannot redeclare var $tableB');
-            assert('!isset($clause); // Cannot redeclare var $tableB');
-            assert('!isset($resultset); // Cannot redeclare var $resultset');
-            assert('!isset($listOfResultSets); // Cannot redeclare var $listOfResultSets');
+            assert('!isset($tableB)', ' Cannot redeclare var $tableB');
+            assert('!isset($clause)', ' Cannot redeclare var $tableB');
+            assert('!isset($resultset)', ' Cannot redeclare var $resultset');
+            assert('!isset($listOfResultSets)', ' Cannot redeclare var $listOfResultSets');
             $listOfResultSets = array();
             foreach ($joins as $tableB => $clause)
             {
@@ -536,7 +536,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
              */
             $result = array();
             if (!empty($listOfResultSets)) {
-                assert('!isset($item); // Cannot redeclare var $item');
+                assert('!isset($item)', ' Cannot redeclare var $item');
                 foreach ($listOfResultSets as $item)
                 {
                     if (!empty($item)) {
@@ -701,15 +701,15 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
             $set = \Yana\Util\Hashtable::changeCase($set, CASE_UPPER);
         }
 
-        assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
+        assert('!isset($primaryKey)', ' Cannot redeclare var $primaryKey');
         $primaryKey = mb_strtoupper($this->_table->getPrimaryKey());
 
         /* get reference to Index file */
-        assert('!isset($idxfile); // Cannot redeclare var $idxfile');
+        assert('!isset($idxfile)', ' Cannot redeclare var $idxfile');
         $idxfile = $this->_getIndexFile();
 
-        assert('!isset($columnName); // Cannot redeclare var $columnName');
-        assert('!isset($column); // Cannot redeclare var $column');
+        assert('!isset($columnName)', ' Cannot redeclare var $columnName');
+        assert('!isset($column)', ' Cannot redeclare var $column');
         foreach ($this->_table->getColumns() as $column)
         {
             $columnName = mb_strtoupper($column->getName());
@@ -723,7 +723,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
                  *    is currently being updated
                  */
                 if ($column->isUnique() === true) {
-                    assert('!isset($tmp); // Cannot redeclare var $tmp');
+                    assert('!isset($tmp)', ' Cannot redeclare var $tmp');
                     $tmp = $idxfile->getVar($column, $set[$column]);
                     /*
                      * Error - unique constraint has already been breached by some
@@ -732,7 +732,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
                      * didn't exis before.
                      */
                     if (is_array($tmp) && count($tmp) > 1) {
-                        assert('!isset($log); // Cannot redeclare var $log');
+                        assert('!isset($log)', ' Cannot redeclare var $log');
                         $log = "SQL WARNING: The column {$column} " .
                                 "has an unique constraint, but multiple " .
                                 "rows with the same name have been found. " .
@@ -776,8 +776,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
          * remove old array values -
          * but only if a new value is set
          */
-        assert('!isset($columnName); // Cannot redeclare var $columnName');
-        assert('!isset($column); // Cannot redeclare var $column');
+        assert('!isset($columnName)', ' Cannot redeclare var $columnName');
+        assert('!isset($column)', ' Cannot redeclare var $column');
         foreach ($set[$row] as $columnName => $column)
         {
             if (is_array($column)) {
@@ -789,7 +789,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         unset($column, $columnName);
 
         // get row
-        assert('!isset($currentRow); // Cannot redeclare var $currentRow');
+        assert('!isset($currentRow)', ' Cannot redeclare var $currentRow');
         $currentRow = & $smlfile->getVarByReference($primaryKey);
         if (empty($currentRow)) {
             $message = "Unable to save changes because the selected row was not found. Table may be corrupt.";
@@ -822,7 +822,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
             throw new \Yana\Db\Queries\Exceptions\InconsistencyException($message);
         }
 
-        assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
+        assert('!isset($primaryKey)', ' Cannot redeclare var $primaryKey');
         $primaryKey = $this->_table->getPrimaryKey();
         if (empty($set)) {
             $message = 'The statement contains illegal values.';
@@ -845,15 +845,15 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         }
 
         /* get reference to SML file */
-        assert('!isset($smlfile); // Cannot redeclare var $smlfile');
+        assert('!isset($smlfile)', ' Cannot redeclare var $smlfile');
         $smlfile = $this->_getSmlFile();
         /* get reference to Index file */
-        assert('!isset($idxfile); // Cannot redeclare var $idxfile');
+        assert('!isset($idxfile)', ' Cannot redeclare var $idxfile');
         $idxfile = $this->_getIndexFile();
 
         /* create column */
-        assert('!isset($column); // Cannot redeclare var $column');
-        assert('!isset($columnName); // Cannot redeclare var $columnName');
+        assert('!isset($column)', ' Cannot redeclare var $column');
+        assert('!isset($columnName)', ' Cannot redeclare var $columnName');
         foreach ($this->_table->getColumns() as $column)
         {
             $columnName = mb_strtoupper($column->getName());
@@ -865,7 +865,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
                  * 1) an entry with the same key already exists
                  */
                 if ($column->isUnique() === true) {
-                    assert('!isset($tmp); /* Cannot redeclare var $tmp */');
+                    assert('!isset($tmp)', 'Cannot redeclare var $tmp');
                     $tmp = $idxfile->getVar($column, $set[$column]);
                     /*
                      * Error - unique constraint has already been breached by some
@@ -874,7 +874,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
                      * exist before.
                      */
                     if (is_array($tmp) && count($tmp) > 1) {
-                        assert('!isset($log); // Cannot redeclare var $log');
+                        assert('!isset($log)', ' Cannot redeclare var $log');
                         $log = "SQL WARNING: The column {$column} " .
                                 "has an unique constraint, but multiple " .
                                 "rows with the same name have been found. " .
@@ -937,7 +937,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         $smlfile = $this->_getSmlFile();
         $idxfile = $this->_getIndexFile();
 
-        assert('!isset($rows); // Cannot redeclare var $rows');
+        assert('!isset($rows)', ' Cannot redeclare var $rows');
         $rows = $this->_get(array($this->_table->getPrimaryKey()), $where, array(), 0, $limit);
 
         if (empty($rows)) {
@@ -950,9 +950,9 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
             return new \Yana\Db\FileDb\Result(array());
         }
 
-        assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
+        assert('!isset($primaryKey)', ' Cannot redeclare var $primaryKey');
         $primaryKey = mb_strtoupper($this->_table->getPrimaryKey());
-        assert('!isset($row); // Cannot redeclare var $row');
+        assert('!isset($row)', ' Cannot redeclare var $row');
         foreach ($rows as $row)
         {
             if (!$smlfile->remove($primaryKey . '.' . $row[$primaryKey])) {
@@ -999,7 +999,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     public function sendQueryString($sqlStmt)
     {
-        assert('is_string($sqlStmt); // Wrong type for argument 1. String expected');
+        assert('is_string($sqlStmt)', ' Wrong type for argument 1. String expected');
         $offset = (int) $this->_offset;
         $limit = (int) $this->_limit;
         $this->_offset = $this->_limit = 0; // reset for next query
@@ -1026,8 +1026,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     public function setLimit($limit, $offset = null)
     {
-        assert('is_string($limit); // Wrong type for argument 1. Integer expected');
-        assert('is_null($offset) || is_int($offset); // Wrong type for argument 2. Integer expected');
+        assert('is_string($limit)', ' Wrong type for argument 1. Integer expected');
+        assert('is_null($offset) || is_int($offset)', ' Wrong type for argument 2. Integer expected');
         if ($limit >= 0) {
             $this->_limit = (int) $limit;
         }
@@ -1064,7 +1064,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     public function quoteIdentifier($value)
     {
-        assert('is_string($value); // Invalid argument 1 in ' . __METHOD__ . '(). String expected.');
+        assert('is_string($value)', ' Invalid argument 1 in ' . __METHOD__ . '(). String expected.');
         return (string) $value;
     }
 
@@ -1079,22 +1079,22 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     private function _select($tableName)
     {
-        assert('is_string($tableName); // Wrong type for argument 1. String expected');
-        assert('!empty($tableName); // Wrong type for argument 1. String must not be empty');
+        assert('is_string($tableName)', ' Wrong type for argument 1. String expected');
+        assert('!empty($tableName)', ' Wrong type for argument 1. String must not be empty');
         $tableName = mb_strtolower(trim("$tableName"));
 
         // if is cached, set current table from cache
         if (isset($this->_src[$this->_database][$tableName])) {
             $this->_tableName = $tableName;
             $this->_table = $this->_schema->getTable($tableName);
-            assert('$this->_table instanceof \Yana\Db\Ddl\Table; // Table not found in Schema');
+            assert('$this->_table instanceof \Yana\Db\Ddl\Table', ' Table not found in Schema');
             return $this;
         }
 
         /*
          * get associated data-source for selected table
          */
-        assert('!isset($table); // Cannot redeclare $table');
+        assert('!isset($table)', ' Cannot redeclare $table');
         $table = $this->_schema->getTable($tableName);
 
         if (!$table instanceof \Yana\Db\Ddl\Table) {
@@ -1112,9 +1112,9 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         $this->_setSmlFile($database);
         $this->_setIndexFile($database);
 
-        assert('$this->_table instanceof \Yana\Db\Ddl\Table; // Table not found in Schema');
-        assert('is_string($this->_tableName); // Unexpected result: $this->_tableName must be a string');
-        assert('$this->_tableName !== ""; // Unexpected result: $this->_tableName must not be empty');
+        assert('$this->_table instanceof \Yana\Db\Ddl\Table', ' Table not found in Schema');
+        assert('is_string($this->_tableName)', ' Unexpected result: $this->_tableName must be a string');
+        assert('$this->_tableName !== ""', ' Unexpected result: $this->_tableName must not be empty');
         return $this;
     }
 
@@ -1136,18 +1136,18 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     private function _getSourceDatabaseNameForTable(\Yana\Db\Ddl\Table $table)
     {
-        assert('!isset($parent); // Cannot redeclare $parent');
+        assert('!isset($parent)', ' Cannot redeclare $parent');
         $parent = $table->getParent();
-        assert('!isset($database); // Cannot redeclare $database');
+        assert('!isset($database)', ' Cannot redeclare $database');
         // get data source from parent (if it exists)
         $databaseName = ($parent instanceof \Yana\Db\Ddl\Database) ? $parent->getName() : $this->_schema->getName();
         unset($parent);
 
         if (is_null($databaseName)) {
-            assert('!empty($this->_database); // Unexpected result: $database must not be empty');
+            assert('!empty($this->_database)', ' Unexpected result: $database must not be empty');
             $databaseName = $this->_database;
         }
-        assert('is_string($databaseName); // Unexpected result: $databaseName must be a string');
+        assert('is_string($databaseName)', ' Unexpected result: $databaseName must be a string');
         return $databaseName;
     }
 
@@ -1222,10 +1222,10 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     private function _get(array $columns = array(), array $where = array(), array $having = array(), $offset = 0, $limit = 0)
     {
-        assert('is_int($offset); // Wrong type for argument 3. Integer expected');
-        assert('is_int($limit);  // Wrong type for argument 4. Integer expected');
-        assert('$offset >= 0;    // Invalid argument 3. Must be a positive integer');
-        assert('$limit >= 0;     // Invalid argument 4. Must be a positive integer');
+        assert('is_int($offset)', ' Wrong type for argument 3. Integer expected');
+        assert('is_int($limit)', ' Wrong type for argument 4. Integer expected');
+        assert('$offset >= 0', ' Invalid argument 3. Must be a positive integer');
+        assert('$limit >= 0', ' Invalid argument 4. Must be a positive integer');
 
         $limit = (int) $limit;
         $offset = (int) $offset;
@@ -1247,7 +1247,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         }
 
         // 1) add primary key column
-        assert('!isset($i); // Cannot redeclare var $i');
+        assert('!isset($i)', ' Cannot redeclare var $i');
         // implements a table-scan
         foreach (array_keys($data) as $i)
         {
@@ -1269,7 +1269,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
                 $doCollapse = false;
             break;
         }
-        assert('!isset($current); // Cannot redeclare var $current');
+        assert('!isset($current)', ' Cannot redeclare var $current');
         foreach ($data as $current)
         {
             if (!is_array($current)) {
@@ -1314,8 +1314,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         if ($collapse) {
             $lastResult = count($result);
         }
-        assert('!isset($alias); // Cannot redeclare var $alias');
-        assert('!isset($column); // Cannot redeclare var $column');
+        assert('!isset($alias)', ' Cannot redeclare var $alias');
+        assert('!isset($column)', ' Cannot redeclare var $column');
         foreach ($columns as $alias => $column)
         {
             if (is_array($column)) {
@@ -1426,7 +1426,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
 
         } // end switch
 
-        assert('is_int($result) && $result >= -1 && $result <= 1; // unexpected result');
+        assert('is_int($result) && $result >= -1 && $result <= 1', ' unexpected result');
 
         return ($isDescending) ? - $result : $result;
     }
@@ -1460,7 +1460,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
     private function _write($commit = false)
     {
         /* pessimistic scanning */
-        assert('is_bool($commit); /* Wrong argument type for argument 1. Boolean expected. */');
+        assert('is_bool($commit)', 'Wrong argument type for argument 1. Boolean expected.');
 
         /* optimistic type casting */
         /* settype to BOOLEAN */
@@ -1513,10 +1513,10 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     private function _join($tableA, $tableB, $columnA, $columnB, array $columns, array $where, $isLeftJoin)
     {
-        assert('is_string($tableA);  // Wrong argument type for argument 1. String expected.');
-        assert('is_string($tableB);  // Wrong argument type for argument 2. String expected.');
-        assert('is_string($columnA); // Wrong argument type for argument 3. String expected.');
-        assert('is_string($columnB); // Wrong argument type for argument 4. String expected.');
+        assert('is_string($tableA)', ' Wrong argument type for argument 1. String expected.');
+        assert('is_string($tableB)', ' Wrong argument type for argument 2. String expected.');
+        assert('is_string($columnA)', ' Wrong argument type for argument 3. String expected.');
+        assert('is_string($columnB)', ' Wrong argument type for argument 4. String expected.');
 
         /* prepare input */
         $tableA  = mb_strtoupper("$tableA");
@@ -1556,10 +1556,10 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         $cursorB = $SMLB->getVarByReference($pkB);
 
         /* notify me if results are not valid */
-        assert('is_bool($aIsPk); // unexpected result $aIsPk must be a boolean');
-        assert('is_bool($bIsPk); // unexpected result $bIsPk must be a boolean');
-        assert('is_string($pkA); // unexpected result $pkA must be a string');
-        assert('is_string($pkB); // unexpected result $pkB must be a string');
+        assert('is_bool($aIsPk)', ' unexpected result $aIsPk must be a boolean');
+        assert('is_bool($bIsPk)', ' unexpected result $bIsPk must be a boolean');
+        assert('is_string($pkA)', ' unexpected result $pkA must be a string');
+        assert('is_string($pkB)', ' unexpected result $pkB must be a string');
 
         /* clean up */
         $this->_select($tableA);
@@ -1580,11 +1580,11 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         }
 
         /* $columnA must be foreign key */
-        assert('$columnADef->isForeignKey() ||$columnBDef->isForeignKey() ; // ' .
+        assert('$columnADef->isForeignKey() ||$columnBDef->isForeignKey() ', ' ' .
             "Joining table '{$tableA}' with '{$tableB}' might fail. " .
             "Column '{$columnA}' is not a foreign key in table '{$tableA}'.");
         /* $columnB must be a key */
-        assert('$bIsPk || $columnBDef->IsUnique() || $aIsPk || $columnADef->IsUnique(); // ' .
+        assert('$bIsPk || $columnBDef->IsUnique() || $aIsPk || $columnADef->IsUnique()', ' ' .
             "Joining table '{$tableA}' with '{$tableB}' might return ambigious results. ".
             "Column '{$columnB}' is not unique in table '{$tableB}'.");
         /* $columnA and $columnB must be of same type */
@@ -1614,8 +1614,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
          * }}
          */
         $resultSet = array();
-        assert('!isset($row); /* Cannot redeclare var $row */');
-        assert('!isset($id);  /* Cannot redeclare var $id */');
+        assert('!isset($row)', 'Cannot redeclare var $row');
+        assert('!isset($id)', 'Cannot redeclare var $id');
         foreach ($cursorA as $id => $row) // get next row from table A
         {
             $value = array();
@@ -1642,7 +1642,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
             } elseif ($bIsPk === true) {
                 if (isset($cursorB[$keyA])) {
                     $joinedValueExists = true;
-                    assert('!isset($_value); /* Cannot redeclare var $_value */');
+                    assert('!isset($_value)', 'Cannot redeclare var $_value');
                     $_value = \Yana\Util\Hashtable::merge($row, $cursorB[$keyA]);
                     $_value[$columnB] = $keyA;
                     $value[] = $_value;
@@ -1723,8 +1723,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     private function _doHaving(array &$result, array &$having)
     {
-        assert('!isset($i); // Cannot redeclare var $i');
-        assert('!isset($current); // Cannot redeclare var $current');
+        assert('!isset($i)', ' Cannot redeclare var $i');
+        assert('!isset($current)', ' Cannot redeclare var $current');
         foreach ($result as $i => $current)
         {
             if ($this->_doWhere($current, $having) !== true) {
@@ -1783,7 +1783,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
             return true;
         }
         /* if all required information is provided */
-        assert('count($where) === 3; // Where clause must have exactly 3 items: left + right operands + operator');
+        assert('count($where) === 3', ' Where clause must have exactly 3 items: left + right operands + operator');
         $leftOperand = array_shift($where);
         $operator = array_shift($where);
         $rightOperand = array_shift($where);
@@ -1809,7 +1809,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
             $tableName = array_shift($leftOperand); // get table name
             $leftOperand = array_shift($leftOperand); // get just the column
             $table = $this->_schema->getTable($tableName);
-            assert('$table instanceof \Yana\Db\Ddl\Table; // Table not found: ' . $tableName);
+            assert('$table instanceof \Yana\Db\Ddl\Table', ' Table not found: ' . $tableName);
             unset($tableName);
         } else {
             $table = $this->_table;
@@ -1835,7 +1835,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
                 // fall through
             case '=':
                 $column = $table->getColumn($leftOperand);
-                assert('$column instanceof \Yana\Db\Ddl\Column; // Column not found: ' . $leftOperand);
+                assert('$column instanceof \Yana\Db\Ddl\Column', ' Column not found: ' . $leftOperand);
                 if (is_null($rightOperand)) {
                     return is_null($value) xor $operator === '!=';
                 }
@@ -1957,7 +1957,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     private function _createSmlFile($filename, &$isCreated = false)
     {
-        assert('is_string($filename); // Invalid argument $filename: string expected');
+        assert('is_string($filename)', ' Invalid argument $filename: string expected');
 
         $smlfile = new \Yana\Files\SML($filename, CASE_UPPER);
         if (!$smlfile->exists()) {
@@ -1977,9 +1977,9 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     private function _getFilename($database, $extension, $tableName = "")
     {
-        assert('is_string($database); // Invalid argument $database: string expected');
-        assert('is_string($extension); // Invalid argument $extension: string expected');
-        assert('is_string($tableName); // Invalid argument $tableName: string expected');
+        assert('is_string($database)', ' Invalid argument $database: string expected');
+        assert('is_string($extension)', ' Invalid argument $extension: string expected');
+        assert('is_string($tableName)', ' Invalid argument $tableName: string expected');
 
         if (empty($tableName)) {
             $tableName = $this->_tableName;

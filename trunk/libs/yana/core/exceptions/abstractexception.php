@@ -97,9 +97,9 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
      */
     public function __construct($message = "", $code = \Yana\Log\TypeEnumeration::ERROR, \Exception $previous = null)
     {
-        assert('is_string($message); // Wrong argument type for argument 1, String expected');
-        assert('is_int($code); // Wrong argument type for argument 2, Integer expected');
-        assert('is_array(self::$queue); // Static member "queue" is expected to be an array.');
+        assert('is_string($message)', ' Wrong argument type for argument 1, String expected');
+        assert('is_int($code)', ' Wrong argument type for argument 2, Integer expected');
+        assert('is_array(self::$queue)', ' Static member "queue" is expected to be an array.');
         self::$queue[] = $this;
         if (!empty($message)) {
             $this->data['MESSAGE'] = $message;
@@ -142,7 +142,7 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
      */
     public static function getMessages()
     {
-        assert('is_array(self::$queue); // Static member "queue" is expected to be an array.');
+        assert('is_array(self::$queue)', ' Static member "queue" is expected to be an array.');
         return self::$queue;
     }
 
@@ -156,7 +156,7 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
      */
     public static function countMessages()
     {
-        assert('is_array(self::$queue); // Static member "queue" is expected to be an array.');
+        assert('is_array(self::$queue)', ' Static member "queue" is expected to be an array.');
         return count(self::$queue);
     }
 
@@ -206,7 +206,7 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
      */
     protected function setHeader($header)
     {
-        assert('is_string($header); // Wrong argument type argument 1. String expected');
+        assert('is_string($header)', ' Wrong argument type argument 1. String expected');
         $this->header = (string) $header;
         return $this;
     }
@@ -220,7 +220,7 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
      */
     protected function setText($text)
     {
-        assert('is_string($text); // Wrong argument type argument 1. String expected');
+        assert('is_string($text)', ' Wrong argument type argument 1. String expected');
         $this->text = (string) $text;
         return $this;
     }

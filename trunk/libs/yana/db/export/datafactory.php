@@ -453,9 +453,9 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      */
     public static function createXML($useForeignKeys = false, $ddlFile = null, $table = null, array $rows = null)
     {
-        assert('is_null($ddlFile) || is_string($ddlFile) || is_array($ddlFile); // '.
+        assert('is_null($ddlFile) || is_string($ddlFile) || is_array($ddlFile)', ' '.
             'Wrong type for argument 1. String expected');
-        assert('is_null($table) || is_string($table) || is_array($table); // '.
+        assert('is_null($table) || is_string($table) || is_array($table)', ' '.
             'Wrong type for argument 2. String expected');
 
         $data = array(); // declare output variable of type array
@@ -478,7 +478,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
         /*
          * loop through files
          */
-        assert('!isset($structure); // Cannot redeclare var $structure');
+        assert('!isset($structure)', ' Cannot redeclare var $structure');
         /* @var $ddlFile string */
         foreach ($ddlFiles as $ddlFile)
         {
@@ -525,7 +525,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
                         $nodes[$table] =& $data[$table];
 
                         /* add entries */
-                        assert('!isset($i); // Cannot redeclare var $i');
+                        assert('!isset($i)', ' Cannot redeclare var $i');
                         foreach ($rows[$table] as $i)
                         {
                             $data[$table][$i] = $db->select("$table.$i");
@@ -550,14 +550,14 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
                     /**
                      * loop through tables
                      */
-                    assert('!isset($tableName); // Cannot redeclare var $tableName');
-                    assert('!isset($table); // Cannot redeclare var $table');
-                    assert('!isset($hasFKey); // Cannot redeclare var $hasFKey');
+                    assert('!isset($tableName)', ' Cannot redeclare var $tableName');
+                    assert('!isset($table)', ' Cannot redeclare var $table');
+                    assert('!isset($hasFKey)', ' Cannot redeclare var $hasFKey');
                     /* declare temporary variables */
-                    assert('!isset($_attr); // Cannot redeclare var $_attr');
-                    assert('!isset($_fKey); // Cannot redeclare var $_fKey');
-                    assert('!isset($_fTable); // Cannot redeclare var $_fTable');
-                    assert('!isset($_row); // Cannot redeclare var $_row');
+                    assert('!isset($_attr)', ' Cannot redeclare var $_attr');
+                    assert('!isset($_fKey)', ' Cannot redeclare var $_fKey');
+                    assert('!isset($_fTable)', ' Cannot redeclare var $_fTable');
+                    assert('!isset($_row)', ' Cannot redeclare var $_row');
                     foreach (array_keys($nodes) as $tableName)
                     {
                         $_attr = "@$tableName";
@@ -570,13 +570,13 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
                         /**
                          * loop through foreign keys
                          */
-                        assert('!isset($fCol); // Cannot redeclare var $fCol');
-                        assert('!isset($fTableName); // Cannot redeclare var $fTable');
-                        assert('!isset($column); // Cannot redeclare var $column');
+                        assert('!isset($fCol)', ' Cannot redeclare var $fCol');
+                        assert('!isset($fTableName)', ' Cannot redeclare var $fTable');
+                        assert('!isset($column)', ' Cannot redeclare var $column');
                         foreach ($table->getForeignKeys() as $column)
                         {
                             /* @var $column \Yana\Db\Ddl\ForeignKey */
-                            assert('!isset($_fKeys); // Cannot redeclare var $_fKeys');
+                            assert('!isset($_fKeys)', ' Cannot redeclare var $_fKeys');
                             $_fKeys = $column->getColumns();
                             $fTableName = $column->getTargetTable();
                             if (count($_fKeys) > 1) {
@@ -604,7 +604,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
                             /**
                              * loop through rows in foreign table
                              */
-                            assert('!isset($pKey); // Cannot redeclare var $pKey');
+                            assert('!isset($pKey)', ' Cannot redeclare var $pKey');
                             foreach (array_keys($nodes[$tableName]) as $pKey)
                             {
                                 $_row =& $nodes[$tableName][$pKey];
@@ -646,7 +646,7 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
          * encode data array to xml string
          */
         $data = self::_xmlEncode($data);
-        assert('is_string($data); // Unexpected argument type. String expected');
+        assert('is_string($data)', ' Unexpected argument type. String expected');
         return "<?xml version=\"1.0\"?>\n" . $data;
     }
 
@@ -661,9 +661,9 @@ class DataFactory extends \Yana\Db\Export\SqlFactory
      */
     private static function _xmlEncode(array $table, $tableName = "", $prefix = "", $indent = 0)
     {
-        assert('is_string($tableName); /* Wrong argument type for argument 2. String expected. */');
-        assert('is_string($prefix); /* Wrong argument type for argument 3. String expected. */');
-        assert('is_int($indent); /* Wrong argument type for argument 4. Integer expected. */');
+        assert('is_string($tableName)', 'Wrong argument type for argument 2. String expected.');
+        assert('is_string($prefix)', 'Wrong argument type for argument 3. String expected.');
+        assert('is_int($indent)', 'Wrong argument type for argument 4. Integer expected.');
 
         /*
          * settype to STRING

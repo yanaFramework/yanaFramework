@@ -88,7 +88,7 @@ class FileResource extends \Yana\Views\Resources\AbstractResource
      */
     protected function fetch($filename, &$output, &$mtime)
     {
-        assert('is_string($filename); // Wrong argument type argument 1. String expected');
+        assert('is_string($filename)', ' Wrong argument type argument 1. String expected');
         if (is_file($filename)) {
             $mtime = filemtime($filename);
             $fileContents = file_get_contents($filename);
@@ -108,7 +108,7 @@ class FileResource extends \Yana\Views\Resources\AbstractResource
      */
     protected function fetchTimestamp($filename)
     {
-        assert('is_string($filename); // Wrong argument type argument 1. String expected');
+        assert('is_string($filename)', ' Wrong argument type argument 1. String expected');
         if (is_file($filename)) {
             return filemtime($filename);
         } else {

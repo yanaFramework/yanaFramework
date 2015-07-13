@@ -92,12 +92,12 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
      */
     public function getTags($tagName, array $default = array())
     {
-        assert('is_string($tagName); // Wrong type for argument 2. String expected');
+        assert('is_string($tagName)', ' Wrong type for argument 2. String expected');
 
         $resultWithSimpleTags = $this->_parseSimpleTag($tagName);           // simple tags: @foo
         $result = $this->_parseComplexTag($tagName, $resultWithSimpleTags); // complex tags: {@foo ... }
 
-        assert('is_array($result); // result is expected to be an array');
+        assert('is_array($result)', ' result is expected to be an array');
         if (!empty($result)) {
             return $result;
         } else {
@@ -117,8 +117,8 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
      */
     public function getTag($tagName, $default = "")
     {
-        assert('is_string($tagName); // Wrong type for argument 2. String expected');
-        assert('is_string($default); // Wrong type for argument 3. String expected');
+        assert('is_string($tagName)', ' Wrong type for argument 2. String expected');
+        assert('is_string($default)', ' Wrong type for argument 3. String expected');
         $result = $this->getTags($tagName);
         if (count($result) === 1) {
             return $result[0];
@@ -142,7 +142,7 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
      */
     private function _parseSimpleTag($tagName, array &$result = array())
     {
-        assert('is_string($tagName); // Invalid argument $tagName: string expected');
+        assert('is_string($tagName)', ' Invalid argument $tagName: string expected');
 
         /**
          * 1) simple tags: @foo
@@ -150,8 +150,8 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
         $match = array();
         if (preg_match_all('/ @' . preg_quote($tagName, '/') . '(\s.*|)$/mi', $this->getText(), $match)) {
 
-            assert('!isset($i); // Cannot redeclare var $i');
-            assert('!isset($tagContent); // Cannot redeclare var $tagContent');
+            assert('!isset($i)', ' Cannot redeclare var $i');
+            assert('!isset($tagContent)', ' Cannot redeclare var $tagContent');
             foreach ($match[1] as $i => $tagContent)
             {
                 $count = count($result);
@@ -160,15 +160,15 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
                 /**
                  * 2) get list of values
                  */
-                assert('!isset($match2); // Cannot redeclare var $match2');
+                assert('!isset($match2)', ' Cannot redeclare var $match2');
                 $match2 = array(); // for use in reg-exp.
                 if ($tagContent === "") {
                     $result[$count] = true;
                 } elseif (preg_match_all('/([\w-]+)\:\s+([^,]*)/', $match[1][$i], $match2)) {
                     $result[$count] = array();
-                    assert('!isset($key); // Cannot redeclare var $key');
-                    assert('!isset($value); // Cannot redeclare var $value');
-                    assert('!isset($j); // Cannot redeclare var $j');
+                    assert('!isset($key)', ' Cannot redeclare var $key');
+                    assert('!isset($value)', ' Cannot redeclare var $value');
+                    assert('!isset($j)', ' Cannot redeclare var $j');
                     for ($j = 0; $j < count($match2[0]); $j++)
                     {
                         /**
@@ -215,7 +215,7 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
         $match = array();
         if (preg_match_all('/\{@' . preg_quote($tagName, '/') . '\s*([^\}]*)/si', $this->getText(), $match)) {
 
-            assert('!isset($tagContent); // Cannot redeclare var $tagContent');
+            assert('!isset($tagContent)', ' Cannot redeclare var $tagContent');
             foreach ($match[1] as $tagContent)
             {
                 $count = count($result);
@@ -224,14 +224,14 @@ class Parser extends \Yana\Plugins\Annotations\AbstractParser
                 /**
                  * 2) get list of values
                  */
-                assert('!isset($match2); // Cannot redeclare var $match2');
+                assert('!isset($match2)', ' Cannot redeclare var $match2');
                 $match2 = array();
                 if ($tagContent === "") {
                     $result[$count] = true;
                 } elseif (preg_match('/([\w-]+)\:\s+/', $tagContent)) {
                     $result[$count] = array();
-                    assert('!isset($key); // Cannot redeclare var $key');
-                    assert('!isset($value); // Cannot redeclare var $value');
+                    assert('!isset($key)', ' Cannot redeclare var $key');
+                    assert('!isset($value)', ' Cannot redeclare var $value');
                     while (preg_match('/(([\w-]+)\:\s+(.*?))(?:,?\s*?[\w-]+\:|$)/s', $tagContent, $match2))
                     {
                         $tagContent = str_replace($match2[1], '', $tagContent);

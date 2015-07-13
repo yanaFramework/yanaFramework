@@ -59,7 +59,7 @@ class InvalidSyntaxException extends \Yana\Core\Exceptions\Forms\InvalidValueExc
      */
     public function setValid($valid)
     {
-        assert('is_string($valid); // Invalid argument $valid: string expected');
+        assert('is_string($valid)', ' Invalid argument $valid: string expected');
         $this->data['VALID'] = $valid;
         return $this;
     }

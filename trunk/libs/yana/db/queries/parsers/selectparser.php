@@ -79,8 +79,8 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
          * Resolve natural join to inner joins by automatically finding appropriate keys.
          */
         if (!empty($syntaxTree['table_join'])) {
-            assert('!isset($i); // Cannot redeclare variable $i');
-            assert('!isset($join); // Cannot redeclare variable $join');
+            assert('!isset($i)', ' Cannot redeclare variable $i');
+            assert('!isset($join)', ' Cannot redeclare variable $join');
             $dbSchema = $database->getSchema();
             $i = 0;
             foreach ($syntaxTree['table_join'] as $join)
@@ -102,9 +102,9 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
                         if (! $tableB instanceof \Yana\Db\Ddl\Table) {
                             throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Table '{$tableNameB}' not found.");
                         }
-                        assert('!isset($columnsB); // Cannot redeclare variable $columnsB');
+                        assert('!isset($columnsB)', ' Cannot redeclare variable $columnsB');
                         $columnsB = $tableB->getColumnNames();
-                        assert('!isset($colA); // Cannot redeclare variable $colA');
+                        assert('!isset($colA)', ' Cannot redeclare variable $colA');
                         foreach ($tableA->getColumnNames() as $columnA)
                         {
                             if (in_array($columnA, $columnsB)) {
@@ -116,7 +116,7 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
                     case 'right join':
                     case 'right outer join':
                         // flip operands: $tableA <-> $tableB
-                        assert('!isset($_); // Cannot redeclare var $_');
+                        assert('!isset($_)', ' Cannot redeclare var $_');
                         // $tableNameA <-> $tableNameB
                         $_ = $tableNameA;
                         $tableNameA = $tableNameB;
@@ -152,8 +152,8 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
         if (!empty($orderBy)) {
             $orderByColumns = array();
             $orderByDirections = array();
-            assert('!isset($columnName); // Cannot redeclare variable $columnName');
-            assert('!isset($direction); // Cannot redeclare variable $direction');
+            assert('!isset($columnName)', ' Cannot redeclare variable $columnName');
+            assert('!isset($direction)', ' Cannot redeclare variable $direction');
             foreach ($orderBy as $columnName => $direction)
             {
                 $orderByColumns[] = $columnName;
@@ -190,9 +190,9 @@ class SelectParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
      */
     private function _parseJoin(\Yana\Db\Queries\Select $query, $leftTable, $rightTable, array $where, $isLeftJoin = false)
     {
-        assert('is_string($leftTable); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($rightTable); // Wrong argument type for argument 2. String expected.');
-        assert('is_bool($isLeftJoin); // Wrong argument type for argument 4. String expected.');
+        assert('is_string($leftTable)', ' Wrong argument type for argument 1. String expected.');
+        assert('is_string($rightTable)', ' Wrong argument type for argument 2. String expected.');
+        assert('is_bool($isLeftJoin)', ' Wrong argument type for argument 4. String expected.');
         if (empty($where)) {
             return false; // not found
         }

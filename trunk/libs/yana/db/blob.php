@@ -180,8 +180,8 @@ class Blob extends \Yana\Files\Readonly
      */
     public static function getFilenameFromSession($id, $fullsize = false)
     {
-        assert('is_int($id); // Wrong type for argument 1. Integer expected');
-        assert('is_bool($fullsize); // Wrong type for argument 2. Boolean expected');
+        assert('is_int($id)', ' Wrong type for argument 1. Integer expected');
+        assert('is_bool($fullsize)', ' Wrong type for argument 2. Boolean expected');
 
         $id = (int) $id;
 
@@ -216,7 +216,7 @@ class Blob extends \Yana\Files\Readonly
      */
     public static function storeFilenameInSession($file)
     {
-        assert('is_string($file); // Wrong argument type argument 1. String expected');
+        assert('is_string($file)', ' Wrong argument type argument 1. String expected');
         if (!is_file($file)) {
             $message = "File was not found '{$file}'.";
             $code = \Yana\Log\TypeEnumeration::ERROR;
@@ -246,8 +246,8 @@ class Blob extends \Yana\Files\Readonly
      */
     public function copy($destFile, $overwrite = true)
     {
-        assert('is_string($destFile); // Wrong type for argument 1. String expected');
-        assert('is_bool($overwrite); // Wrong type for argument 2. Boolean expected');
+        assert('is_string($destFile)', ' Wrong type for argument 1. String expected');
+        assert('is_bool($overwrite)', ' Wrong type for argument 2. Boolean expected');
 
         /* validity checking */
         if (mb_strlen($destFile) > 512 || !preg_match('/^[\w\d-_\.][\w\d-_\/\.]*$/', $destFile)) {
@@ -310,7 +310,7 @@ class Blob extends \Yana\Files\Readonly
      */
     public static function getFileIdFromFilename($filename)
     {
-        assert('is_string($filename); // Wrong argument type for argument 1. String expected');
+        assert('is_string($filename)', ' Wrong argument type for argument 1. String expected');
         return preg_replace('/^.*?([\w-_]+)\.\w+$/', '$1', $filename);
     }
 
@@ -323,8 +323,8 @@ class Blob extends \Yana\Files\Readonly
      */
     public static function getFilenameFromFileId($id, $type = '')
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
-        assert('is_string($type); // Invalid argument $type: string expected');
+        assert('is_string($id)', ' Invalid argument $id: string expected');
+        assert('is_string($type)', ' Invalid argument $type: string expected');
 
         $file = self::getDirectory() . $id;
         switch ($type)
@@ -358,7 +358,7 @@ class Blob extends \Yana\Files\Readonly
      */
     public static function getThumbnailFromFileId($id)
     {
-        assert('is_string($id); // Wrong argument type argument 1. String expected');
+        assert('is_string($id)', ' Wrong argument type argument 1. String expected');
         return self::getDirectory() . "thumb.{$id}.png";
     }
 
@@ -380,7 +380,7 @@ class Blob extends \Yana\Files\Readonly
      */
     public static function removeFile($fileToDelete)
     {
-        assert('is_string($fileToDelete);  // Wrong type for argument 1. String expected.');
+        assert('is_string($fileToDelete)', ' Wrong type for argument 1. String expected.');
 
         if (empty($fileToDelete)) {
             return;
@@ -396,12 +396,12 @@ class Blob extends \Yana\Files\Readonly
 
         // delete file
         unlink($fileToDelete);
-        assert('!is_file($fileToDelete); // file was not deleted');
+        assert('!is_file($fileToDelete)', ' file was not deleted');
 
         // applies to images only:
         if (is_file($thumbFile)) {
             unlink($thumbFile);
-            assert('!is_file($thumbFile); // file was not deleted');
+            assert('!is_file($thumbFile)', ' file was not deleted');
             /* Note: we intentionally (and silently) ignore the case,
              * that an image file exists, but no thumbnail is found.
              */
@@ -415,7 +415,7 @@ class Blob extends \Yana\Files\Readonly
      */
     public static function getDirectory()
     {
-        assert('is_dir(self::$blobDir); // Blob-dir does not exist');
+        assert('is_dir(self::$blobDir)', ' Blob-dir does not exist');
         return self::$blobDir;
     }
 
@@ -426,7 +426,7 @@ class Blob extends \Yana\Files\Readonly
      */
     public static function setDirectory($directory)
     {
-        assert('is_dir($directory); // Directory does not exist');
+        assert('is_dir($directory)', ' Directory does not exist');
         self::$blobDir = realpath($directory) . DIRECTORY_SEPARATOR;
     }
 
@@ -580,9 +580,9 @@ class Blob extends \Yana\Files\Readonly
      */
     public static function uploadFile(array $file, $fileId)
     {
-        assert('is_string($fileId); // Wrong argument type for argument 3. String expected');
+        assert('is_string($fileId)', ' Wrong argument type for argument 3. String expected');
 
-        assert('!isset($dir); // Cannot redeclare var $dir');
+        assert('!isset($dir)', ' Cannot redeclare var $dir');
         $dir = self::getDirectory();
 
         $fileTempName = self::_getTempName($file);
@@ -599,14 +599,14 @@ class Blob extends \Yana\Files\Readonly
 
         /* name of output file */
         $path = "{$dir}/{$fileId}.gz";
-        assert('is_string($path); // Wrong argument type for argument 2. String expected');
+        assert('is_string($path)', ' Wrong argument type for argument 2. String expected');
 
         /*
          * mime-type
          *
          * The Mime-type is saved, so it may be sent to the client on download.
          */
-        assert('!isset($mimetype); // Cannot redeclare var $mimetype');
+        assert('!isset($mimetype)', ' Cannot redeclare var $mimetype');
         if (!empty($file['type'])) {
             $mimetype = $file['type'];
             $mimetype = preg_replace('/\s/', ' ', $mimetype);
@@ -615,7 +615,7 @@ class Blob extends \Yana\Files\Readonly
         /*
          * create zip file
          */
-        assert('!isset($gz); // Cannot redeclare var $gz');
+        assert('!isset($gz)', ' Cannot redeclare var $gz');
         $gz = gzopen($path, 'w9');
         /*
          * insert Header information
@@ -693,8 +693,8 @@ class Blob extends \Yana\Files\Readonly
         /* name of output files */
         $path = "{$dir}/{$fileId}";
         $thumbnailPath = "{$dir}/thumb.{$fileId}";
-        assert('is_string($path); // Wrong argument type for argument 2. String expected');
-        assert('is_string($thumbnailPath); // Wrong argument type for argument 3. String expected');
+        assert('is_string($path)', ' Wrong argument type for argument 2. String expected');
+        assert('is_string($thumbnailPath)', ' Wrong argument type for argument 3. String expected');
 
         $fileTempName = $file['tmp_name'];
 

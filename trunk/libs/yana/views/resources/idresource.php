@@ -70,7 +70,7 @@ class IdResource extends \Yana\Views\Resources\FileResource
      */
     protected function fetch($id, &$output, &$mtime)
     {
-        assert('is_string($id); // Wrong argument type argument 1. String expected');
+        assert('is_string($id)', ' Wrong argument type argument 1. String expected');
 
         try {
 
@@ -90,7 +90,7 @@ class IdResource extends \Yana\Views\Resources\FileResource
      */
     protected function fetchTimestamp($id)
     {
-        assert('is_string($id); // Wrong argument type argument 1. String expected');
+        assert('is_string($id)', ' Wrong argument type argument 1. String expected');
 
         $fileName = $id;
         try {

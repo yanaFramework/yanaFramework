@@ -184,7 +184,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
      */
     public function unsetJoin($table)
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected');
+        assert('is_string($table)', ' Wrong type for argument 1. String expected');
         $table = mb_strtolower($table);
 
         if (YANA_DB_STRICT && !$this->db->getSchema()->isTable($table)) {
@@ -208,7 +208,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
      */
     public function getJoin($table)
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected');
+        assert('is_string($table)', ' Wrong type for argument 1. String expected');
         $table = mb_strtolower($table);
 
         if (YANA_DB_STRICT && !$this->db->getSchema()->isTable($table)) {
@@ -284,11 +284,11 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
         if (!empty($this->joins)) {
             $table = $this->db->quoteId(YANA_DATABASE_PREFIX.$this->getTable());
 
-            assert('!isset($_where);    /* cannot redeclare variable $_where    */');
+            assert('!isset($_where)', 'cannot redeclare variable $_where   ');
             $_where = array();
 
-            assert('!isset($tableName); /* cannot redeclare variable $tableName */');
-            assert('!isset($join);      /* cannot redeclare variable $join      */');
+            assert('!isset($tableName)', 'cannot redeclare variable $tableName');
+            assert('!isset($join)', 'cannot redeclare variable $join     ');
             foreach ($this->joins as $tableName => $join)
             {
                 /* collect tables */
@@ -305,7 +305,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
             unset($tableName, $join);
 
             if (count($_where) > 0) {
-                assert('!isset($clause); // Cannot redeclare $clause');
+                assert('!isset($clause)', ' Cannot redeclare $clause');
                 foreach ($_where as $clause)
                 {
                     if ($where === '') {
@@ -324,7 +324,7 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
         }
 
         /* 2. replace %WHERE% */
-        assert('is_string($where); // Unexpected value $where');
+        assert('is_string($where)', ' Unexpected value $where');
         if (!empty($where)) {
             $stmt = str_replace('%WHERE%', trim($where), $stmt);
         } else {

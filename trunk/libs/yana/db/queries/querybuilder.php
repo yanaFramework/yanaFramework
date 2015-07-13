@@ -109,7 +109,7 @@ class QueryBuilder extends \Yana\Core\Object implements \Yana\Db\Queries\IsQuery
      */
     public function select($key, array $where = array(), $orderBy = array(), $offset = 0, $limit = 0, $desc = false)
     {
-        assert('is_string($key); // Wrong argument type for argument 1. String expected.');
+        assert('is_string($key)', ' Wrong argument type for argument 1. String expected.');
         $selectQuery = new \Yana\Db\Queries\Select($this->_connection);
 
         $selectQuery->setKey($key);
@@ -142,7 +142,7 @@ class QueryBuilder extends \Yana\Core\Object implements \Yana\Db\Queries\IsQuery
      */
     public function update($key, $value = array())
     {
-        assert('is_string($key); // wrong argument type for argument 1, string expected');
+        assert('is_string($key)', ' wrong argument type for argument 1, string expected');
 
         $updateQuery = new \Yana\Db\Queries\Update($this->_connection);
         $updateQuery->setKey($key);
@@ -159,7 +159,7 @@ class QueryBuilder extends \Yana\Core\Object implements \Yana\Db\Queries\IsQuery
      */
     public function insert($key, $value = array())
     {
-        assert('is_string($key); // wrong argument type for argument 1, string expected');
+        assert('is_string($key)', ' wrong argument type for argument 1, string expected');
 
         $insertQuery = new \Yana\Db\Queries\Insert($this->_connection);
         $insertQuery->setKey($key);
@@ -203,10 +203,10 @@ class QueryBuilder extends \Yana\Core\Object implements \Yana\Db\Queries\IsQuery
      */
     public function remove($key, array $where = array(), $limit = 1)
     {
-        assert('is_int($limit); // Wrong argument type $limit. Integer expected.');
-        assert('$limit >= 0; // Invalid argument $limit. Value must be greater or equal 0.');
-        assert('is_string($key); // Wrong argument type $key. String expected.');
-        assert('!isset($deleteQuery); // Cannot redeclare var $deleteQuery');
+        assert('is_int($limit)', ' Wrong argument type $limit. Integer expected.');
+        assert('$limit >= 0', ' Invalid argument $limit. Value must be greater or equal 0.');
+        assert('is_string($key)', ' Wrong argument type $key. String expected.');
+        assert('!isset($deleteQuery)', ' Cannot redeclare var $deleteQuery');
         $deleteQuery = new \Yana\Db\Queries\Delete($this->_connection);
         $deleteQuery->setLimit((int) $limit);
         $deleteQuery->setKey($key);
@@ -224,7 +224,7 @@ class QueryBuilder extends \Yana\Core\Object implements \Yana\Db\Queries\IsQuery
      */
     public function length($table, array $where = array())
     {
-        assert('is_string($table); // Wrong argument type $table. String expected.');
+        assert('is_string($table)', ' Wrong argument type $table. String expected.');
 
         $countQuery = new \Yana\Db\Queries\SelectCount($this->_connection);
         $countQuery->setTable($table); // throws Exception
@@ -242,7 +242,7 @@ class QueryBuilder extends \Yana\Core\Object implements \Yana\Db\Queries\IsQuery
      */
     public function exists($key, array $where = array())
     {
-        assert('is_string($key); // Wrong argument type for argument 1. String expected');
+        assert('is_string($key)', ' Wrong argument type for argument 1. String expected');
         $key = \mb_strtolower($key);
 
         // build query to check key

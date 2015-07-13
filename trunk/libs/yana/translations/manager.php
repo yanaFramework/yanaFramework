@@ -61,7 +61,7 @@ class Manager extends \Yana\Translations\AbstractManager
      */
     public function getMetaData($locale = "")
     {
-        assert('is_string($locale); // Invalid argument $locale: string expected');
+        assert('is_string($locale)', ' Invalid argument $locale: string expected');
     
         if (empty($locale)) {
             $locale = $this->getLocale()->__toString();
@@ -89,7 +89,7 @@ class Manager extends \Yana\Translations\AbstractManager
      */
     public function loadTranslations($id)
     {
-        assert('is_string($id); // Invalid argument $id: string expected');
+        assert('is_string($id)', ' Invalid argument $id: string expected');
 
         // check syntax of filename
         if (!preg_match("/^[\w_-\d]+$/i", $id)) {
@@ -100,14 +100,14 @@ class Manager extends \Yana\Translations\AbstractManager
             throw $e->setFilename($id);
         }
 
-        assert('!isset($knownTranslations); // Cannot redeclare var $knownTranslations');
+        assert('!isset($knownTranslations)', ' Cannot redeclare var $knownTranslations');
         $knownTranslations = $this->getTranslations();
 
         if (!$knownTranslations->isLoaded($id)) { // If pack is already loaded, do nothing.
 
             // override defaults where available
-            assert('!isset($selectedFile); // Cannot redeclare var $selectedFile');
-            assert('!isset($provider); // Cannot redeclare var $provider');
+            assert('!isset($selectedFile)', ' Cannot redeclare var $selectedFile');
+            assert('!isset($provider)', ' Cannot redeclare var $provider');
             foreach ($this->_getTextDataProviders() as $provider)
             {
                 /* @var $provider \Yana\Translations\TextData\IsDataProvider */
@@ -126,9 +126,9 @@ class Manager extends \Yana\Translations\AbstractManager
 
                 } catch (\Yana\Core\Exceptions\Translations\InvalidSyntaxException $e) {
                     // When a source has been found, but the contents retrieved were invalid.
-                    assert('!isset($message); // Cannot redeclare var $message');
+                    assert('!isset($message)', ' Cannot redeclare var $message');
                     $message = "Error in language source: '" . $id . "'.";
-                    assert('!isset($level); // Cannot redeclare variable $level');
+                    assert('!isset($level)', ' Cannot redeclare variable $level');
                     $level = \Yana\Log\TypeEnumeration::WARNING;
                     $this->getLogger()->addLog($message, $level, $e->getMessage());
                     unset($e, $message, $level);
@@ -138,11 +138,11 @@ class Manager extends \Yana\Translations\AbstractManager
 
             //  If the pack has not been found by any provider, we need to issue a notice
             if (!$knownTranslations->isLoaded($id)) {
-                assert('!isset($message); // Cannot redeclare var $message');
+                assert('!isset($message)', ' Cannot redeclare var $message');
                 $message = "No language-pack found for id '{$id}'.";
-                assert('!isset($level); // Cannot redeclare variable $level');
+                assert('!isset($level)', ' Cannot redeclare variable $level');
                 $level = \Yana\Log\TypeEnumeration::INFO;
-                assert('!isset($e); // Cannot redeclare variable $e');
+                assert('!isset($e)', ' Cannot redeclare variable $e');
                 $e = new \Yana\Core\Exceptions\Translations\LanguageFileNotFoundException($message, $level);
                 throw $e->setFilename($id);
             }

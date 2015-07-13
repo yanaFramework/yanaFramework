@@ -117,7 +117,7 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setSorting($isAscending = true)
     {
-        assert('is_bool($isAscending); // Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isAscending)', ' Wrong type for argument 1. Boolean expected');
         $this->isAscending = (bool) $isAscending;
         return $this;
     }
@@ -174,7 +174,7 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setLength($length)
     {
-        assert('is_int($length); // Wrong type for argument 1. Integer expected');
+        assert('is_int($length)', ' Wrong type for argument 1. Integer expected');
         if (empty($length)) {
             $this->length = null;
         } else {

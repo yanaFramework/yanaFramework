@@ -143,8 +143,8 @@ abstract class AbstractContext extends \Yana\Core\Object implements \Yana\Mails\
     {
         $restrictedHeaders = array();
 
-        assert('!isset($key); /* cannot redeclare variable $key */');
-        assert('!isset($value); /* cannot redeclare variable $value */');
+        assert('!isset($key)', 'cannot redeclare variable $key');
+        assert('!isset($value)', 'cannot redeclare variable $value');
         foreach ($headers as $key => $value)
         {
             switch ($key)
@@ -154,7 +154,7 @@ abstract class AbstractContext extends \Yana\Core\Object implements \Yana\Mails\
                 case 'reply-to':
                     $restrictedHeaders[$key] = "";
 
-                    assert('!isset($mail); /* cannot redeclare variable $mail */');
+                    assert('!isset($mail)', 'cannot redeclare variable $mail');
                     foreach ((array) $value as $mail)
                     {
                         if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
@@ -227,7 +227,7 @@ abstract class AbstractContext extends \Yana\Core\Object implements \Yana\Mails\
      */
     protected function _sanitizeSubject($subject)
     {
-        assert('is_string($subject); // Invalid argument $subject: string expected');
+        assert('is_string($subject)', ' Invalid argument $subject: string expected');
 
         return strip_tags(\Yana\Data\StringValidator::sanitize($subject, 128, \Yana\Data\StringValidator::LINEBREAK));
     }

@@ -66,7 +66,7 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
      */
     public function write()
     {
-        assert('is_array($this->content); // Member "content" has illegal type. Array expected.');
+        assert('is_array($this->content)', ' Member "content" has illegal type. Array expected.');
         $this->content = (array) $this->content;
 
         if (!$this->isWriteable()) {
@@ -223,10 +223,10 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
      */
     public function copy($destFile, $overwrite = true, $isRecursive = false, $mode = 0766)
     {
-        assert('is_string($destFile); // Wrong argument type argument 1. String expected');
-        assert('is_bool($overwrite); // Wrong argument type argument 2. Boolean expected');
-        assert('is_bool($isRecursive); // Wrong argument type argument 3. Boolean expected');
-        assert('is_int($mode); // Wrong argument type argument 4. Integer expected');
+        assert('is_string($destFile)', ' Wrong argument type argument 1. String expected');
+        assert('is_bool($overwrite)', ' Wrong argument type argument 2. Boolean expected');
+        assert('is_bool($isRecursive)', ' Wrong argument type argument 3. Boolean expected');
+        assert('is_int($mode)', ' Wrong argument type argument 4. Integer expected');
 
         if ($mode > 0777 || $mode < 1) {
             $message = "Argument mode must be an octal number in range: [1,0777].";
@@ -261,8 +261,8 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
             throw new \Yana\Core\Exceptions\NotWriteableException($message, E_USER_NOTICE);
         }
 
-        assert('is_string($destDir); // Unexpected result: $destDir. String expected.');
-        assert('is_string($destFile); // Unexpected result: $destFile. String expected.');
+        assert('is_string($destDir)', ' Unexpected result: $destDir. String expected.');
+        assert('is_string($destFile)', ' Unexpected result: $destFile. String expected.');
 
         /* recursively create directories */
         if (!empty($destDir) && !is_dir($destDir)) {
@@ -270,10 +270,10 @@ class File extends \Yana\Files\Readonly implements \Yana\Files\IsWritable
                 $message = "Unable to copy file '{$destFile}'. The directory '{$destDir}' does not exist.";
                 throw new \Yana\Core\Exceptions\NotFoundException($message, E_USER_NOTICE);
             }
-            assert('!isset($currentDir); // cannot redeclare variable $currentDir');
+            assert('!isset($currentDir)', ' cannot redeclare variable $currentDir');
             $currentDir = '';
-            assert('!isset($current); // cannot redeclare variable $current');
-            assert('!isset($dir); // cannot redeclare variable $dir');
+            assert('!isset($current)', ' cannot redeclare variable $current');
+            assert('!isset($dir)', ' cannot redeclare variable $dir');
             foreach (explode('/', $destDir) as $dir)
             {
                 if (!is_dir($currentDir . $dir)) {

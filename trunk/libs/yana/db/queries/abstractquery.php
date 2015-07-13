@@ -219,7 +219,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     public function __get($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name)', ' Wrong type for argument 1. String expected');
         return $this->db->getSchema()->{$name};
     }
 
@@ -234,7 +234,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     public function __call($name, array $arguments)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name)', ' Wrong type for argument 1. String expected');
         return call_user_func_array(array($this->db->getSchema(), $name), $arguments);
     }
 
@@ -356,7 +356,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     public function getType()
     {
-        assert('is_int($this->type); // Expecting member "type" to be an integer');
+        assert('is_int($this->type)', ' Expecting member "type" to be an integer');
         return $this->type;
     }
 
@@ -383,7 +383,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     public function getExpectedResult()
     {
-        assert('is_int($this->type); // Expecting member "expectedResult" to be an integer');
+        assert('is_int($this->type)', ' Expecting member "expectedResult" to be an integer');
         return $this->expectedResult;
     }
 
@@ -411,7 +411,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     public function useInheritance($state)
     {
-        assert('is_bool($state); // Invalid argument $state: bool expected');
+        assert('is_bool($state)', ' Invalid argument $state: bool expected');
         $this->useInheritance = (bool) $state;
         return $this;
     }
@@ -469,7 +469,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     protected function getParentByColumn($columnName)
     {
-        assert('is_string($columnName); // Wrong type for argument 1. String expected');
+        assert('is_string($columnName)', ' Wrong type for argument 1. String expected');
         $columnName = mb_strtoupper($columnName);
         if (isset($this->tableByColumn[$columnName])) {
             return $this->tableByColumn[$columnName];
@@ -516,7 +516,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     public function getTableByColumn($columnName)
     {
-        assert('is_string($columnName); // Wrong type for argument 1. String expected');
+        assert('is_string($columnName)', ' Wrong type for argument 1. String expected');
         $columnName = $this->getColumnByAlias($columnName);
         $dbSchema = $this->db->getSchema();
 
@@ -527,8 +527,8 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         } elseif ($this->currentTable()->isColumn($columnName)) {
             $table = $this->currentTable();
         } elseif (!empty($this->joins)) {
-            assert('!isset($tableName); // Cannot redeclare var $tableName');
-            assert('!isset($joinedTable); // Cannot redeclare var $joinedTable');
+            assert('!isset($tableName)', ' Cannot redeclare var $tableName');
+            assert('!isset($joinedTable)', ' Cannot redeclare var $joinedTable');
             foreach (array_keys($this->joins) as $tableName)
             {
                 $joinedTable = $dbSchema->getTable($tableName);
@@ -569,7 +569,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     public function getParent($table = "")
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected');
+        assert('is_string($table)', ' Wrong type for argument 1. String expected');
 
         if ($table === "") {
             $table = $this->tableName;
@@ -604,7 +604,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
          */
         $primaryKey = mb_strtoupper($table->getPrimaryKey());
         $primaryKeyColumn = $table->getColumn($primaryKey);
-        assert('$primaryKeyColumn instanceof \Yana\Db\Ddl\Column; // Misspelled primary key column: ' . $primaryKey);
+        assert('$primaryKeyColumn instanceof \Yana\Db\Ddl\Column', ' Misspelled primary key column: ' . $primaryKey);
         while ($primaryKeyColumn->isForeignKey())
         {
             $fTableKey = mb_strtoupper($table->getTableByForeignKey($primaryKey));
@@ -614,7 +614,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             }
 
             $foreignTable = $dbSchema->getTable($fTableKey);
-            assert('$foreignTable instanceof \Yana\Db\Ddl\Table; // Misspelled foreign key in table: ' . $tableName);
+            assert('$foreignTable instanceof \Yana\Db\Ddl\Table', ' Misspelled foreign key in table: ' . $tableName);
             $foreignKey = mb_strtoupper($foreignTable->getPrimaryKey());
             $this->setJoin($fTableKey, $primaryKey, $foreignKey);
             $this->_setParentTable($table, $foreignTable);
@@ -651,10 +651,10 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     protected function setJoin($tableName, $key1 = null, $key2 = null, $isLeftJoin = false)
     {
-        assert('is_string($tableName); // Wrong type for argument 1. String expected');
-        assert('is_null($key1) || is_string($key1); // Wrong type for argument 2. String expected');
-        assert('is_null($key2) || is_string($key2); // Wrong type for argument 3. String expected');
-        assert('is_bool($isLeftJoin); // Wrong type for argument 4. Boolean expected');
+        assert('is_string($tableName)', ' Wrong type for argument 1. String expected');
+        assert('is_null($key1) || is_string($key1)', ' Wrong type for argument 2. String expected');
+        assert('is_null($key2) || is_string($key2)', ' Wrong type for argument 3. String expected');
+        assert('is_bool($isLeftJoin)', ' Wrong type for argument 4. Boolean expected');
 
         $this->id = null;
         $tableName = mb_strtolower($tableName);
@@ -666,11 +666,11 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         }
 
         // error - no such column in current table
-        assert('is_null($key1) || $sourceTable->isColumn($key1); // ' .
+        assert('is_null($key1) || $sourceTable->isColumn($key1)', ' ' .
             "Cannot join tables '{$this->tableName}' and '{$tableName}'. " .
             "Field '{$key1}' does not exist in table '{$this->tableName}'.");
         // error - no such column in referenced table
-        assert('is_null($key2) || $table->isColumn($key2); // ' .
+        assert('is_null($key2) || $table->isColumn($key2)', ' ' .
             "Cannot join tables '{$this->tableName}' and '{$tableName}'. " .
             "Field '{$key2}' does not exist in table '{$tableName}'.");
 
@@ -730,17 +730,17 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
 
             /* if no key is provided, take the first association available */
 
-            assert('!isset($foreignKeys); /* Cannot redeclare variable $foreignKeys */');
+            assert('!isset($foreignKeys)', 'Cannot redeclare variable $foreignKeys');
             $foreignKeys = $sourceTable->getForeignKeys();
 
             if (empty($foreignKeys)) {
                 return false;
             }
-            assert('!isset($foreignTable); // Cannot redeclare variable $foreignTable');
-            assert('!isset($foreignKey); // Cannot redeclare variable $foreignKey');
-            assert('!isset($foreignPrimaryKey); // Cannot redeclare variable $foreignPrimaryKey');
-            assert('!isset($baseColumn); // Cannot redeclare variable $baseColumn');
-            assert('!isset($foreignColumn); // Cannot redeclare variable $foreignColumn');
+            assert('!isset($foreignTable)', ' Cannot redeclare variable $foreignTable');
+            assert('!isset($foreignKey)', ' Cannot redeclare variable $foreignKey');
+            assert('!isset($foreignPrimaryKey)', ' Cannot redeclare variable $foreignPrimaryKey');
+            assert('!isset($baseColumn)', ' Cannot redeclare variable $baseColumn');
+            assert('!isset($foreignColumn)', ' Cannot redeclare variable $foreignColumn');
             /* @var $foreignKey \Yana\Db\Ddl\ForeignKey */
             foreach ($foreignKeys as $foreignKey)
             {
@@ -796,7 +796,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     public function setTable($table)
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected');
+        assert('is_string($table)', ' Wrong type for argument 1. String expected');
         $this->id = null;
 
         $tableName = mb_strtolower($table);
@@ -877,7 +877,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     protected function setColumn($column = '*')
     {
-        assert('is_string($column); // Wrong type for argument 1. String expected');
+        assert('is_string($column)', ' Wrong type for argument 1. String expected');
         $this->id = null;
 
         /**
@@ -913,7 +913,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             /*
              * 3.1) extract table, where provided
              */
-            assert('!isset($table); // Cannot redeclare var $table');
+            assert('!isset($table)', ' Cannot redeclare var $table');
             if (strpos($column, '.')) {
                 list($table, $column) = explode('.', $column);
                 $this->setTable($table);
@@ -971,7 +971,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     protected function setArrayAddress($arrayAddress = "")
     {
-        assert('is_string($arrayAddress); // Wrong type for argument 1. String expected');
+        assert('is_string($arrayAddress)', ' Wrong type for argument 1. String expected');
 
         if (YANA_DB_STRICT && !empty($arrayAddress)) {
             /**
@@ -1101,7 +1101,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     public function setRow($row)
     {
-        assert('is_scalar($row); // Wrong argument type for argument 1. Scalar expected.');
+        assert('is_scalar($row)', ' Wrong argument type for argument 1. Scalar expected.');
         $this->id = null;
 
         /*
@@ -1201,17 +1201,17 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     public function setKey($key)
     {
-        assert('is_scalar($key); // Wrong argument type for argument 1. String expected.');
+        assert('is_scalar($key)', ' Wrong argument type for argument 1. String expected.');
         assert('preg_match("/^[\w\d-_]+(\.(\w[^\.]*|\*|\?)){0,}(\.\*)?$/i", $key);'
             . " // Syntax error. The key '{$key}' is not valid.");
 
         $key = preg_replace("/\.(\*)?$/", '', $key);
         $array = explode(".", $key);
-        assert('!empty($array); // Invalid argument $key');
+        assert('!empty($array)', ' Invalid argument $key');
         $dbSchema = $this->db->getSchema();
 
         // get table definition
-        assert('!isset($table); /* cannot redeclare variable $table */');
+        assert('!isset($table)', 'cannot redeclare variable $table');
         $table = $dbSchema->getTable($array[0]);
         if (! $table instanceof \Yana\Db\Ddl\Table) {
             $message = "Table not found '{$array[0]}' in schema '{$dbSchema->getName()}'.";
@@ -1224,16 +1224,16 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
          * 2.1) resolve foreign keys to get true adress
          */
         if (count($array) > 3) {
-            assert('!isset($column); /* cannot redeclare variable $column */');
+            assert('!isset($column)', 'cannot redeclare variable $column');
             $column = $table->getColumn($array[2]);
             if (! $column instanceof \Yana\Db\Ddl\Column) {
                 throw new \Yana\Db\Queries\Exceptions\ColumnNotFoundException("Column not found '{$array[2]}'", E_USER_WARNING);
             }
-            assert('!isset($isArray); /* cannot redeclare variable $isArray */');
+            assert('!isset($isArray)', 'cannot redeclare variable $isArray');
             $isArray = ($column->getType() === 'array');
 
-            assert('!isset($a); /* cannot redeclare variable $a */');
-            assert('!isset($foreignTable); /* cannot redeclare variable $foreignTable */');
+            assert('!isset($a)', 'cannot redeclare variable $a');
+            assert('!isset($foreignTable)', 'cannot redeclare variable $foreignTable');
             while (!$isArray && count($array) > 3 && $column->isForeignKey())
             {
                 $a = $this->db->select($array[0] . "." . $array[1] . "." . $array[2]);
@@ -1250,9 +1250,9 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
                 array_unshift($array, $a);
                 array_unshift($array, $foreignTable);
                 $table = $dbSchema->getTable($array[0]);
-                assert('$table instanceof \Yana\Db\Ddl\Table; // Table not found');
+                assert('$table instanceof \Yana\Db\Ddl\Table', ' Table not found');
                 $column = $table->getColumn($array[2]);
-                assert('$column instanceof \Yana\Db\Ddl\Column; // Column not found');
+                assert('$column instanceof \Yana\Db\Ddl\Column', ' Column not found');
                 $isArray = ($column->getType() === 'array');
             }
             unset($a, $foreignTable, $column);
@@ -1315,8 +1315,8 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     protected function addOrderBy($column, $desc = false)
     {
-        assert('is_string($column); // Wrong argument type for argument 1. String expected.');
-        assert('is_bool($desc); // Wrong argument type for argument 2. Boolean expected.');
+        assert('is_string($column)', ' Wrong argument type for argument 1. String expected.');
+        assert('is_bool($desc)', ' Wrong argument type for argument 2. Boolean expected.');
 
         /*
          * 2.2.1) get base table
@@ -1417,7 +1417,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             return "";
         }
         /* if all required information is provided */
-        assert('count($where) === 3; // Where clause must have exactly 3 items: left + right operands + operator');
+        assert('count($where) === 3', ' Where clause must have exactly 3 items: left + right operands + operator');
         $leftOperand = $where[0];
         $operator = $where[1];
         $rightOperand = $where[2];
@@ -1448,8 +1448,8 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
                 $rightOperand = "($rightOperand)";
             }
         } elseif ($operator === 'in' || $operator === 'not in') {
-            assert('!isset($value); // cannot redeclare variable $value');
-            assert('!isset($list); // cannot redeclare variable $list');
+            assert('!isset($value)', ' cannot redeclare variable $value');
+            assert('!isset($list)', ' cannot redeclare variable $list');
             if ($rightOperand instanceof \Yana\Db\Queries\Select) {
                 $list = (string) $rightOperand;
             } else {
@@ -1547,7 +1547,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
          */
         if (YANA_DB_STRICT) {
             $table = $this->db->getSchema()->getTable($tableName);
-            assert('is_string($column); // Unexpected result: $column. String expected.');
+            assert('is_string($column)', ' Unexpected result: $column. String expected.');
 
             if (! $table instanceof \Yana\Db\Ddl\Table) {
                 throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("Invalid where clause. " .
@@ -1778,7 +1778,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
             }
         }
         if ($this->type === \Yana\Db\Queries\TypeEnumeration::EXISTS && !empty($this->column)) {
-            assert('!isset($column); // Cannot redeclare var $column');
+            assert('!isset($column)', ' Cannot redeclare var $column');
             foreach ($this->getColumns() as $column)
             {
                 if (empty($where)) {
@@ -1810,7 +1810,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     public function getLimit()
     {
-        assert('is_int($this->limit); // Expecting member "limit" to be an integer.');
+        assert('is_int($this->limit)', ' Expecting member "limit" to be an integer.');
         return (int) $this->limit;
     }
 
@@ -1827,7 +1827,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     public function getOffset()
     {
-        assert('is_int($this->offset); // Expecting member "offset" to be an integer');
+        assert('is_int($this->offset)', ' Expecting member "offset" to be an integer');
         return (int) $this->offset;
     }
 
@@ -1847,7 +1847,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      */
     protected function setLimit($limit)
     {
-        assert('is_int($limit); // Wrong argument type for argument 1. Integer expected.');
+        assert('is_int($limit)', ' Wrong argument type for argument 1. Integer expected.');
         $this->id = null;
         if ($limit < 0) {
             $message = "Limit must not be negative: '$limit'";
@@ -1996,7 +1996,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
 
         /* 2. replace %WHERE% */
         if (strpos($stmt, '%WHERE%') !== false) {
-            assert('!isset($where); // Cannot redeclare var $where');
+            assert('!isset($where)', ' Cannot redeclare var $where');
             $where = $this->getWhere();
 
             if (is_array($where) && count($where) > 0) {
@@ -2017,14 +2017,14 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
 
         /* 3. replace %ORDERBY% */
         if (strpos($stmt, '%ORDERBY%') !== false) {
-            assert('!isset($orderBy); // Cannot redeclare $orderBy');
+            assert('!isset($orderBy)', ' Cannot redeclare $orderBy');
             $orderBy = $this->getOrderBy();
             $desc = $this->getDescending();
             if (is_array($orderBy) && !empty($orderBy)) {
-                assert('!isset($_orderBy); // Cannot redeclare var $_orderBy');
+                assert('!isset($_orderBy)', ' Cannot redeclare var $_orderBy');
                 $_orderBy = 'ORDER BY ';
-                assert('!isset($i); // Cannot redeclare var $i');
-                assert('!isset($element); // Cannot redeclare var $element');
+                assert('!isset($i)', ' Cannot redeclare var $i');
+                assert('!isset($element)', ' Cannot redeclare var $element');
                 foreach ($orderBy as $i => $element)
                 {
                     if (is_array($element)) {

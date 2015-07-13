@@ -96,7 +96,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setTable($table)
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected');
+        assert('is_string($table)', ' Wrong type for argument 1. String expected');
         if (empty($table)) {
             $this->table = null;
         } else {
@@ -129,7 +129,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setAlias($alias)
     {
-        assert('is_string($alias); // Wrong type for argument 1. String expected');
+        assert('is_string($alias)', ' Wrong type for argument 1. String expected');
         if (empty($alias)) {
             $this->alias = null;
         } else {

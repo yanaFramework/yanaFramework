@@ -185,7 +185,7 @@ class Feed extends \Yana\Core\Object
      */
     public function setTitle($title)
     {
-        assert('is_string($title); // Invalid argument $title: string expected');
+        assert('is_string($title)', ' Invalid argument $title: string expected');
 
         $this->_title = $title;
         return $this;
@@ -209,7 +209,7 @@ class Feed extends \Yana\Core\Object
      */
     public function setLink($link)
     {
-        assert('is_string($link); // Invalid argument $link: string expected');
+        assert('is_string($link)', ' Invalid argument $link: string expected');
 
         $this->_link = $link;
         return $this;
@@ -233,7 +233,7 @@ class Feed extends \Yana\Core\Object
      */
     public function setDescription($description)
     {
-        assert('is_string($description); // Invalid argument $description: string expected');
+        assert('is_string($description)', ' Invalid argument $description: string expected');
 
         $this->_description = $description;
         return $this;
@@ -266,8 +266,8 @@ class Feed extends \Yana\Core\Object
      */
     public function setLanguage($language)
     {
-        assert('is_string($language); // Invalid argument $language: string expected');
-        assert('preg_match("/^(?:|\w{2}(?:-\w{2})?)$/s", $language); // Invalid syntax: $language');
+        assert('is_string($language)', ' Invalid argument $language: string expected');
+        assert('preg_match("/^(?:|\w{2}(?:-\w{2})?)$/s", $language)', ' Invalid syntax: $language');
 
         $this->_language = $language;
         return $this;
@@ -293,7 +293,7 @@ class Feed extends \Yana\Core\Object
      */
     public function setCopyright($copyright)
     {
-        assert('is_string($copyright); // Invalid argument $copyright: string expected');
+        assert('is_string($copyright)', ' Invalid argument $copyright: string expected');
 
         $this->_copyright = $copyright;
         return $this;
@@ -326,7 +326,7 @@ class Feed extends \Yana\Core\Object
      */
     public function setManagingEditor($managingEditor)
     {
-        assert('is_string($managingEditor); // Invalid argument $managingEditor: string expected');
+        assert('is_string($managingEditor)', ' Invalid argument $managingEditor: string expected');
 
         $this->_managingEditor = (string) filter_var($managingEditor, FILTER_SANITIZE_EMAIL);
         return $this;
@@ -358,7 +358,7 @@ class Feed extends \Yana\Core\Object
      */
     public function setWebMaster($webMaster)
     {
-        assert('is_string($webMaster); // Invalid argument $webMaster: string expected');
+        assert('is_string($webMaster)', ' Invalid argument $webMaster: string expected');
 
         $this->_webMaster = (string) filter_var($webMaster, FILTER_SANITIZE_EMAIL);
         return $this;
@@ -387,8 +387,8 @@ class Feed extends \Yana\Core\Object
      */
     public function setTimeToLive($ttl)
     {
-        assert('is_int($ttl); // Invalid argument $ttl: int expected');
-        assert('$ttl >= 0; // Invalid argument $ttl: must be positive');
+        assert('is_int($ttl)', ' Invalid argument $ttl: int expected');
+        assert('$ttl >= 0', ' Invalid argument $ttl: must be positive');
 
         $this->_ttl = $ttl;
         return $this;
@@ -414,7 +414,7 @@ class Feed extends \Yana\Core\Object
      */
     public function setImage($image)
     {
-        assert('is_string($image); // Invalid argument $image: string expected');
+        assert('is_string($image)', ' Invalid argument $image: string expected');
 
         $this->_image = $image;
         return $this;
@@ -470,7 +470,7 @@ class Feed extends \Yana\Core\Object
      */
     public function setCss($css)
     {
-        assert('is_string($css); // Invalid argument $css: string expected');
+        assert('is_string($css)', ' Invalid argument $css: string expected');
 
         $this->_css = $css;
         return $this;
@@ -497,7 +497,7 @@ class Feed extends \Yana\Core\Object
      */
     public function setXslt($xslt)
     {
-        assert('is_string($xslt); // Invalid argument $xslt: string expected');
+        assert('is_string($xslt)', ' Invalid argument $xslt: string expected');
 
         $this->_xslt = $xslt;
         return $this;
@@ -568,10 +568,10 @@ class Feed extends \Yana\Core\Object
         $channel->addChild('pubDate', date('r'));
         $channel->addChild('generator', "Yana Framework " . YANA_VERSION);
 
-        assert('!isset($lastBuildDate); // Cannot redeclare var $lastBuildDate');
+        assert('!isset($lastBuildDate)', ' Cannot redeclare var $lastBuildDate');
         $lastBuildDate = 0;
         $items = $this->getItems();
-        assert('!isset($item); // Cannot redeclare var $item');
+        assert('!isset($item)', ' Cannot redeclare var $item');
         foreach ($items as $item)
         {
             $tmp = strtotime($item->getPubDate());
@@ -600,14 +600,14 @@ class Feed extends \Yana\Core\Object
             $channel->addChild('ttl', $this->getTimeToLive());
         }
 
-        assert('!isset($category); // Cannot redeclare var $category');
+        assert('!isset($category)', ' Cannot redeclare var $category');
         foreach ($this->getCategory() as $category)
         {
             $channel->addChild('category', $category);
         }
         unset($category);
 
-        assert('!isset($imageXML); // Cannot redeclare var $imageXML');
+        assert('!isset($imageXML)', ' Cannot redeclare var $imageXML');
         if ($this->getImage()) {
             $imageXML = $channel->addChild('image');
             $imageXML->addChild('title', $this->getTitle());
@@ -616,7 +616,7 @@ class Feed extends \Yana\Core\Object
         }
         unset($imageXML);
 
-        assert('!isset($item); // Cannot redeclare var $item');
+        assert('!isset($item)', ' Cannot redeclare var $item');
         /* @var $item Item */
         foreach ($items as $item)
         {

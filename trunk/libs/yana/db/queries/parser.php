@@ -84,7 +84,7 @@ class Parser extends \Yana\Core\Object implements \Yana\Db\Queries\IsParser
      */
     public function parseSQL($sqlStmt)
     {
-        assert('is_string($sqlStmt); // Wrong argument type argument 1. String expected');
+        assert('is_string($sqlStmt)', ' Wrong argument type argument 1. String expected');
         $sqlStmt = trim($sqlStmt);
         $parser = new \SQL_Parser();
         $syntaxTree = $parser->parse($sqlStmt); // get abstract syntax tree (AST)

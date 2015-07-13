@@ -62,8 +62,8 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     private function _registerCallback($event, $callback = null)
     {
-        assert('is_string($event); // Invalid argument $event: string expected');
-        assert('is_null($callback) || is_callable($callback);; // Invalid argument $callback: callable function expected');
+        assert('is_string($event)', ' Invalid argument $event: string expected');
+        assert('is_null($callback) || is_callable($callback);', ' Invalid argument $callback: callable function expected');
         $cachedCallbacks = array();
         if (!empty($callback)) {
             $cachedCallbacks = $this->_cache['callback'][$event][] = $callback;
@@ -284,8 +284,8 @@ class Worker extends \Yana\Forms\QueryBuilder
      */
     public function autocomplete($columnName, $searchTerm = "", $limit = 50)
     {
-        assert('is_string($columnName); // Invalid argument $columnName: string expected');
-        assert('is_string($searchTerm); // Invalid argument $searchTerm: string expected');
+        assert('is_string($columnName)', ' Invalid argument $columnName: string expected');
+        assert('is_string($searchTerm)', ' Invalid argument $searchTerm: string expected');
         $referenceValues = array();
         if ($this->_form) {
             $references = $this->_form->getSetup()->getForeignKeys();

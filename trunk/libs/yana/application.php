@@ -218,7 +218,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     private static function _activateCDApplication()
     {
-        assert('isset(self::$_config); // Configuration must be loaded first');
+        assert('isset(self::$_config)', ' Configuration must be loaded first');
         if (!file_exists(YANA_CDROM_DIR)) {
             mkdir(YANA_CDROM_DIR);
             chmod(YANA_CDROM_DIR, 0777);
@@ -271,9 +271,9 @@ final class Application extends \Yana\Core\AbstractSingleton
         if ($filename === null) {
             $filename = __DIR__ . "/../../config/system.config.xml";
         }
-        assert('is_string($filename);   // Wrong type for argument 1. String expected');
-        assert('is_file($filename);     // Invalid argument 1. Input is not a file.');
-        assert('is_readable($filename); // Invalid argument 1. Configuration file is not readable.');
+        assert('is_string($filename)', ' Wrong type for argument 1. String expected');
+        assert('is_file($filename)', ' Invalid argument 1. Input is not a file.');
+        assert('is_readable($filename)', ' Invalid argument 1. Configuration file is not readable.');
         // get System Config file
         self::$_config = simplexml_load_file($filename, '\Yana\Util\XmlArray');
         // load CD-ROM application settings on demand
@@ -322,7 +322,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     public function callAction($action = "", array $args = null)
     {
-        assert('is_string($action); // Invalid argument $action: string expected');
+        assert('is_string($action)', ' Invalid argument $action: string expected');
 
         /**
          * 1) check for default arguments
@@ -337,8 +337,8 @@ final class Application extends \Yana\Core\AbstractSingleton
         /**
          * 2) load language strings
          */
-        assert('!isset($eventConfiguration); // Cannot redeclare var $eventConfiguration');
-        assert('!isset($plugins); // Cannot redeclare var $plugins');
+        assert('!isset($eventConfiguration)', ' Cannot redeclare var $eventConfiguration');
+        assert('!isset($plugins)', ' Cannot redeclare var $plugins');
         $plugins = $this->getPlugins();
         $eventConfiguration = $plugins->getEventConfiguration($action);
         if (!($eventConfiguration instanceof \Yana\Plugins\Configs\MethodConfiguration)) {
@@ -347,13 +347,13 @@ final class Application extends \Yana\Core\AbstractSingleton
             return false;
         }
 
-        assert('!isset($paths); // Cannot redeclare var $paths');
+        assert('!isset($paths)', ' Cannot redeclare var $paths');
         $paths = $eventConfiguration->getPaths();
         if ($paths) {
-            assert('!isset($language); // Cannot redeclare var $language');
+            assert('!isset($language)', ' Cannot redeclare var $language');
             $language = $this->getLanguage();
             // mount language directory, if it exists
-            assert('!isset($langDir); // Cannot redeclare var $langDir');
+            assert('!isset($langDir)', ' Cannot redeclare var $langDir');
             foreach ($eventConfiguration->getPaths() as $langDir)
             {
                 $langDir = $langDir . "/languages/";
@@ -365,12 +365,12 @@ final class Application extends \Yana\Core\AbstractSingleton
         }
         unset($paths);
         // load language files
-        assert('!isset($languages); // Cannot redeclare var $languages');
+        assert('!isset($languages)', ' Cannot redeclare var $languages');
         $languages = $eventConfiguration->getLanguages();
         if ($languages) {
-            assert('!isset($language); // Cannot redeclare var $language');
+            assert('!isset($language)', ' Cannot redeclare var $language');
             $language = $this->getLanguage();
-            assert('!isset($languageId); // Cannot redeclare var $languageId');
+            assert('!isset($languageId)', ' Cannot redeclare var $languageId');
             foreach ($languages as $languageId)
             {
                 try {
@@ -390,13 +390,13 @@ final class Application extends \Yana\Core\AbstractSingleton
             unset($language, $languageId);
         }
         unset($languages);
-        assert('!isset($styles); // Cannot redeclare var $styles');
+        assert('!isset($styles)', ' Cannot redeclare var $styles');
         $styles = $eventConfiguration->getStyles();
         if ($styles) {
             $this->getView()->addStyles($styles);
         }
         unset($styles);
-        assert('!isset($scripts); // Cannot redeclare var $scripts');
+        assert('!isset($scripts)', ' Cannot redeclare var $scripts');
         $scripts = $eventConfiguration->getScripts();
         if ($scripts) {
             $this->getView()->addScripts($scripts);
@@ -495,7 +495,7 @@ final class Application extends \Yana\Core\AbstractSingleton
                     $error->setAction($action);
                 // fall through
                 case empty($action):
-                    assert('!empty(self::$_config->default->homepage); // Configuration missing default homepage.');
+                    assert('!empty(self::$_config->default->homepage)', ' Configuration missing default homepage.');
                     $action = (string) self::$_config->default->homepage;
                 // fall through
                 default:
@@ -693,7 +693,7 @@ final class Application extends \Yana\Core\AbstractSingleton
             $cacheFile = $registry->getResource('system:/skincache.text');
 
             if (YANA_CACHE_ACTIVE === true && $cacheFile->exists()) {
-                assert('!isset($skin); // Cannot redeclare var $skin');
+                assert('!isset($skin)', ' Cannot redeclare var $skin');
                 $this->_skin = unserialize(file_get_contents($cacheFile->getPath()));
                 assert('$this->_skin instanceof Skin;');
 
@@ -765,7 +765,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     public function isVar($key)
     {
-        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+        assert('is_scalar($key)', ' Invalid argument $key: scalar expected');
         $registry = $this->getRegistry();
         return $registry->isVar("$key");
     }
@@ -788,7 +788,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     public function getVar($key)
     {
-        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+        assert('is_scalar($key)', ' Invalid argument $key: scalar expected');
         $registry = $this->getRegistry();
         return $registry->getVar("$key");
     }
@@ -827,7 +827,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     public function setVarByReference($key, &$value)
     {
-        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+        assert('is_scalar($key)', ' Invalid argument $key: scalar expected');
         $this->getRegistry()->setVarByReference((string) $key, $value);
         return $this;
     }
@@ -896,7 +896,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     public function getResource($path)
     {
-        assert('is_string($path); // Invalid argument $path: string expected');
+        assert('is_string($path)', ' Invalid argument $path: string expected');
         return $this->getRegistry()->getResource($path);
     }
 
@@ -948,7 +948,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     public function exitTo($event = 'null', array $args = array())
     {
-        assert('is_string($event); // Invalid argument $event: string expected');
+        assert('is_string($event)', ' Invalid argument $event: string expected');
         $event = mb_strtolower("$event");
 
         /**
@@ -958,7 +958,7 @@ final class Application extends \Yana\Core\AbstractSingleton
          */
         $view = $this->getView();
 
-        assert('!isset($template); // Cannot redeclare var $template');
+        assert('!isset($template)', ' Cannot redeclare var $template');
         $templateName = 'id:MESSAGE';
 
         /**
@@ -1109,8 +1109,8 @@ final class Application extends \Yana\Core\AbstractSingleton
         if (empty($target)) {
             // if no other destination is defined, route back to default homepage
             $target = self::getDefault("homepage");
-            assert('!empty($target); // Configuration error: No default homepage set.');
-            assert('is_string($target); // Configuration error: Default homepage invalid.');
+            assert('!empty($target)', ' Configuration error: No default homepage set.');
+            assert('is_string($target)', ' Configuration error: Default homepage invalid.');
         }
         $this->setVar('STDOUT', $logger->getMessages());
 
@@ -1124,7 +1124,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     private function _outputAsTemplate($template)
     {
-        assert('is_string($template); // Invalid argument $template: string expected');
+        assert('is_string($template)', ' Invalid argument $template: string expected');
         $view = $this->getView();
 
         $baseTemplate = 'id:INDEX';
@@ -1176,7 +1176,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     public static function getDefault($key)
     {
-        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+        assert('is_scalar($key)', ' Invalid argument $key: scalar expected');
         $result = null;
         if (isset(self::$_config->default)) {
             $key = mb_strtolower("$key");
@@ -1429,7 +1429,7 @@ final class Application extends \Yana\Core\AbstractSingleton
         $iconIntegrityReport = $report->addReport('Searching for icon images');
         $registry = $this->getRegistry();
         /* @var $dir \Dir */
-        assert('!isset($dir); // Cannot redeclare var $dir');
+        assert('!isset($dir)', ' Cannot redeclare var $dir');
         $dir = $registry->getResource('system:/smile');
         $smilies = $dir->dirlist();
         if (count($smilies)==0) {

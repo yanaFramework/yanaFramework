@@ -50,7 +50,7 @@ class UserManager extends \Yana\Security\Users\AbstractUserManager implements \Y
      */
     protected function _toDatabaseKey($userId)
     {
-        assert('is_string($userId); // Invalid argument $userId: string expected');
+        assert('is_string($userId)', ' Invalid argument $userId: string expected');
 
         return \Yana\Security\Users\UserColumnEnumeration::TABLE . '.' . $userId;
     }
@@ -63,7 +63,7 @@ class UserManager extends \Yana\Security\Users\AbstractUserManager implements \Y
      */
     public function offsetExists($userId)
     {
-        assert('is_string($userId); // Invalid argument $userId: string expected');
+        assert('is_string($userId)', ' Invalid argument $userId: string expected');
 
         return $this->_getConnection()->exists($this->_toDatabaseKey($userId));
     }
@@ -77,11 +77,11 @@ class UserManager extends \Yana\Security\Users\AbstractUserManager implements \Y
      */
     public function offsetGet($userId)
     {
-        assert('is_string($userId); // Invalid argument $userId: string expected');
+        assert('is_string($userId)', ' Invalid argument $userId: string expected');
 
         $userId = \Yana\Util\String::toUpperCase($userId);
 
-        assert('!isset($row); // Cannot redeclare var $row');
+        assert('!isset($row)', ' Cannot redeclare var $row');
         $row = $this->_getConnection()->select($this->_toDatabaseKey($userId));
 
         try {
@@ -114,9 +114,9 @@ class UserManager extends \Yana\Security\Users\AbstractUserManager implements \Y
         if (\is_null($userId)) {
             $userId = $userEntity->getId();
         }
-        assert('is_string($userId); // Invalid argument $userId: string expected');
+        assert('is_string($userId)', ' Invalid argument $userId: string expected');
 
-        assert('!isset($db); // Cannot redeclare var $db');
+        assert('!isset($db)', ' Cannot redeclare var $db');
         $db = $this->_getConnection();
 
         try {
@@ -141,9 +141,9 @@ class UserManager extends \Yana\Security\Users\AbstractUserManager implements \Y
      */
     public function offsetUnset($userId)
     {
-        assert('is_string($userId); // Invalid argument $userId: string expected');
+        assert('is_string($userId)', ' Invalid argument $userId: string expected');
 
-        assert('!isset($db); // Cannot redeclare var $db');
+        assert('!isset($db)', ' Cannot redeclare var $db');
         $db = $this->_getConnection();
         try {
             $db->remove($this->_toDatabaseKey($userId));
@@ -180,7 +180,7 @@ class UserManager extends \Yana\Security\Users\AbstractUserManager implements \Y
      */
     public function getIds()
     {
-        assert('!isset($key); // Cannot redeclare var $key');
+        assert('!isset($key)', ' Cannot redeclare var $key');
         $key = \Yana\Security\Users\UserColumnEnumeration::TABLE . '.*.' . \Yana\Security\Users\UserColumnEnumeration::ID;
         return $this->_getConnection()->select($key);
     }

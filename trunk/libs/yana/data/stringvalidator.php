@@ -105,8 +105,8 @@ class StringValidator extends AbstractValidator
      */
     public function setMaxLength($length)
     {
-        assert('is_int($length); // Invalid argument $length: int expected');
-        assert('$length >= 0; // $length must not be negative');
+        assert('is_int($length)', ' Invalid argument $length: int expected');
+        assert('$length >= 0', ' $length must not be negative');
         $this->_length = (int) $length;
         return $this;
     }
@@ -131,7 +131,7 @@ class StringValidator extends AbstractValidator
      */
     public function addOption($option)
     {
-        assert('is_int($option); // Invalid argument $option: int expected');
+        assert('is_int($option)', ' Invalid argument $option: int expected');
         $this->_options = $this->_options | $option;
         return $this;
     }

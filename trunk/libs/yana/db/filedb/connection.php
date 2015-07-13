@@ -112,9 +112,9 @@ class Connection extends \Yana\Db\AbstractConnection
      */
     public function sendQueryString($sqlStmt, $offset = 0, $limit = 0)
     {
-        assert('is_string($sqlStmt); // Invalid argument $sqlStmt: string expected');
-        assert('is_int($offset) && $offset >= 0; // Invalid argument $offset. Must be a positive integer.');
-        assert('is_int($limit) && $limit >= 0; // Invalid argument $limit. Must be a positive integer.');
+        assert('is_string($sqlStmt)', ' Invalid argument $sqlStmt: string expected');
+        assert('is_int($offset) && $offset >= 0', ' Invalid argument $offset. Must be a positive integer.');
+        assert('is_int($limit) && $limit >= 0', ' Invalid argument $limit. Must be a positive integer.');
 
         // send query to database
         $connection = $this->_getConnection();

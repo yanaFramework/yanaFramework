@@ -80,7 +80,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
      */
     public function __construct($skinName)
     {
-        assert('is_string($skinName); // Wrong type for argument 1. String expected');
+        assert('is_string($skinName)', ' Wrong type for argument 1. String expected');
 
         $this->_name = "$skinName";
     }
@@ -120,7 +120,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
      */
     public static function setBaseDirectory($baseDirectory)
     {
-        assert('is_string($baseDirectory); // Wrong argument type argument 1. String expected');
+        assert('is_string($baseDirectory)', ' Wrong argument type argument 1. String expected');
         assert('is_dir($baseDirectory);');
         self::$_baseDirectory = $baseDirectory;
     }
@@ -194,7 +194,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
      */
     public function getTemplateData($templateId)
     {
-        assert('is_string($templateId); // Invalid argument $templateId: string expected');
+        assert('is_string($templateId)', ' Invalid argument $templateId: string expected');
 
         $templateId = mb_strtoupper("$templateId");
         $templates = array();
@@ -291,7 +291,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
      */
     public static function getSkinDirectory($skinName)
     {
-        assert('is_string($skinName); // Wrong type for argument 1. String expected');
+        assert('is_string($skinName)', ' Wrong type for argument 1. String expected');
         return self::$_baseDirectory . "$skinName/";
     }
 
@@ -341,7 +341,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
         assert($configuration instanceof \Yana\Views\MetaData\SkinMetaData);
         unset($configurations);
 
-        assert('!isset($template); // Cannot redeclare var $template');
+        assert('!isset($template)', ' Cannot redeclare var $template');
         foreach ($configuration->getTemplates() as $key => $template)
         {
             /* @var $template \Yana\Views\MetaData\TemplateMetaData */
@@ -366,7 +366,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
              * check language references
              */
             $language = \Yana\Translations\Facade::getInstance(); // get instance of language manager
-            assert('!isset($value); /* cannot redeclare variable $value */');
+            assert('!isset($value)', 'cannot redeclare variable $value');
             foreach ($template->getLanguages() as $value)
             {
                 if (empty($value)) {
@@ -388,7 +388,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
             /*
              * check stylesheet references
              */
-            assert('!isset($value); /* cannot redeclare variable $value */');
+            assert('!isset($value)', 'cannot redeclare variable $value');
             foreach ($template->getStyles() as $value)
             {
                 if (!file_exists($value)) {
@@ -402,7 +402,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Report\IsReportable
             /*
              * check script references
              */
-            assert('!isset($value); /* cannot redeclare variable $value */');
+            assert('!isset($value)', 'cannot redeclare variable $value');
             foreach ($template->getScripts() as $value)
             {
                 if (!file_exists($value)) {

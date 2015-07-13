@@ -110,13 +110,13 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
      */
     private function _encodeParameters($parameterList)
     {
-        assert('is_string($parameterList); // Invalid argument $parameterList: string expected');
+        assert('is_string($parameterList)', ' Invalid argument $parameterList: string expected');
 
-        assert('!isset($m); // Cannot redeclare var $m');
+        assert('!isset($m)', ' Cannot redeclare var $m');
         $m = array();
         preg_match_all("/(&|^)(.*)=(.*)(&|$)/U", $parameterList, $m);
-        assert('!isset($i); // Cannot redeclare var $i');
-        assert('!isset($replace); // Cannot redeclare var $replace');
+        assert('!isset($i)', ' Cannot redeclare var $i');
+        assert('!isset($replace)', ' Cannot redeclare var $replace');
         for ($i = 0; $i < count($m[0]); $i++)
         {
             $replace = $m[1][$i] . urlencode($m[2][$i]) . "=" . urlencode($m[3][$i]) . $m[4][$i];
@@ -137,11 +137,11 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
      */
     public function __invoke($string, $asString = false, $asAbsolutePath = true)
     {
-        assert('is_string($string); // Wrong type for argument "string". String expected');
-        assert('is_bool($asString); // Invalid argument $asString: bool expected');
-        assert('is_bool($asAbsolutePath); // Invalid argument $asAbsolutePath: bool expected');
+        assert('is_string($string)', ' Wrong type for argument "string". String expected');
+        assert('is_bool($asString)', ' Invalid argument $asString: bool expected');
+        assert('is_bool($asAbsolutePath)', ' Invalid argument $asAbsolutePath: bool expected');
 
-        assert('!isset($url); // Cannot redeclare var $url');
+        assert('!isset($url)', ' Cannot redeclare var $url');
         $url = "";
 
         /**
@@ -160,7 +160,7 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
             } else {
                 $url .= $_SERVER['SERVER_NAME'];
             }
-            assert('!isset($dirname); // Cannot redeclare var $dirname');
+            assert('!isset($dirname)', ' Cannot redeclare var $dirname');
             $dirname = dirname($_SERVER['PHP_SELF']);
             if ($dirname !== DIRECTORY_SEPARATOR) {
                 $url .= $dirname . '/';
@@ -176,7 +176,7 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
          * This encodes special characters found in the fragment,
          * depending on the $asString argument.
          */
-        assert('!isset($urlPath); // Cannot redeclare var $urlPath');
+        assert('!isset($urlPath)', ' Cannot redeclare var $urlPath');
         $urlPath = $this->_getBaseUrl() . '&' . $this->_encodeParameters($string);
         if ($asString === false) {
             $urlPath = \Yana\Util\String::htmlSpecialChars($urlPath);

@@ -96,7 +96,7 @@ class Item extends \Yana\Core\Object
      */
     public function __construct($title)
     {
-        assert('is_string($title); // Invalid argument $title: string expected');
+        assert('is_string($title)', ' Invalid argument $title: string expected');
 
         $this->_title = (string) $title;
 
@@ -145,7 +145,7 @@ class Item extends \Yana\Core\Object
      */
     public function setLink($link)
     {
-        assert('is_string($link); // Invalid argument $link: string expected');
+        assert('is_string($link)', ' Invalid argument $link: string expected');
 
         $this->_link = (string) $link;
         return $this;
@@ -169,7 +169,7 @@ class Item extends \Yana\Core\Object
      */
     public function setDescription($description)
     {
-        assert('is_string($description); // Invalid argument $description: string expected');
+        assert('is_string($description)', ' Invalid argument $description: string expected');
 
         $this->_description = (string) $description;
         return $this;
@@ -193,7 +193,7 @@ class Item extends \Yana\Core\Object
      */
     public function setAuthor($author)
     {
-        assert('is_string($author); // Invalid argument $author: string expected');
+        assert('is_string($author)', ' Invalid argument $author: string expected');
 
         $this->_author = (string) filter_var($author, FILTER_SANITIZE_EMAIL);
         return $this;
@@ -247,7 +247,7 @@ class Item extends \Yana\Core\Object
      */
     public function setComments($comments)
     {
-        assert('is_string($comments); // Invalid argument $comments: string expected');
+        assert('is_string($comments)', ' Invalid argument $comments: string expected');
 
         $this->_comments = (string) filter_var($comments, FILTER_SANITIZE_URL);
         return $this;
@@ -276,7 +276,7 @@ class Item extends \Yana\Core\Object
      */
     public function setPubDate($pubDate)
     {
-        assert('is_string($pubDate); // Invalid argument $pubDate: string expected');
+        assert('is_string($pubDate)', ' Invalid argument $pubDate: string expected');
 
         $this->_pubDate = $pubDate;
         return $this;

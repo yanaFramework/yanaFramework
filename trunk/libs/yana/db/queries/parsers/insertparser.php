@@ -93,8 +93,8 @@ class InsertParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
     {
         assert('count($keys) == count($values);');
         // prepare values
-        assert('!isset($value); // Cannot redeclare var $value');
-        assert('!isset($i); // Cannot redeclare var $i');
+        assert('!isset($value)', ' Cannot redeclare var $value');
+        assert('!isset($i)', ' Cannot redeclare var $i');
         foreach ($values as $i => $value)
         {
             if (array_key_exists('value', $value)) {
@@ -105,8 +105,8 @@ class InsertParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
         // combine keys and values
         $set = array();
         $table = $this->_getDatabase()->getSchema()->getTable($query->getTable());
-        assert('!isset($column); // Cannot redeclare var $column');
-        assert('!isset($i); // Cannot redeclare var $i');
+        assert('!isset($column)', ' Cannot redeclare var $column');
+        assert('!isset($i)', ' Cannot redeclare var $i');
         for ($i = 0; $i < count($keys); $i++)
         {
             $column = $table->getColumn($keys[$i]);

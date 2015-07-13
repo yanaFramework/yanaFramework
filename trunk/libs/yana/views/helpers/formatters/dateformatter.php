@@ -62,7 +62,7 @@ class DateFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
                 $profileTimeFormat = 0;
             }
             $timeformat = $YANA->getVar("DATE." . $profileTimeFormat);
-            assert('is_array($timeformat); // Time-format is expected to be an array.');
+            assert('is_array($timeformat)', ' Time-format is expected to be an array.');
             unset($profileTimeFormat);
             self::setFormat($timeformat['PHP'], $timeformat['JS']);
         }

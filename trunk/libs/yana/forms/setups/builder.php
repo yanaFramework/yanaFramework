@@ -283,10 +283,10 @@ class Builder extends \Yana\Core\Object
         $lastPage = $pageCount - 1;
         $entryCount = $this->object->getEntryCount();
 
-        assert('$entriesPerPage > 0; // invalid number of entries to view per page');
+        assert('$entriesPerPage > 0', ' invalid number of entries to view per page');
         $currentPage = $this->object->getPage();
         $listOfEntries = "";
-        assert('!isset($pluginManager); // Cannot redeclare var $pluginManager');
+        assert('!isset($pluginManager)', ' Cannot redeclare var $pluginManager');
         $pluginManager = \Yana\Plugins\Manager::getInstance();
         $action = $pluginManager->getFirstEvent();
         $lang = \Yana\Translations\Facade::getInstance();

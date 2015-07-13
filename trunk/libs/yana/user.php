@@ -155,7 +155,7 @@ class User extends \Yana\Core\Object
      */
     public static function isUser($userName)
     {
-        assert('is_string($userName); // Wrong type for argument 1. String expected');
+        assert('is_string($userName)', ' Wrong type for argument 1. String expected');
 
         $db = self::getDatasource();
         return $db->exists("user.$userName");
@@ -206,7 +206,7 @@ class User extends \Yana\Core\Object
      */
     private function __construct($userName)
     {
-        assert('is_string($userName); // Wrong type for argument 1. String expected');
+        assert('is_string($userName)', ' Wrong type for argument 1. String expected');
 
         $db = self::getDatasource();
         $userInfo = $db->select("user.$userName");
@@ -343,7 +343,7 @@ class User extends \Yana\Core\Object
      */
     public function checkPassword($userPwd)
     {
-        assert('is_string($userPwd); // Wrong type for argument 1. String expected');
+        assert('is_string($userPwd)', ' Wrong type for argument 1. String expected');
 
         $savedPwd = $this->_getPassword();
 
@@ -450,7 +450,7 @@ class User extends \Yana\Core\Object
             $password = substr(md5(uniqid()), 0, 10);
         }
 
-        assert('is_string($password); // Wrong type for argument 1. String expected');
+        assert('is_string($password)', ' Wrong type for argument 1. String expected');
 
         $newPwd = self::calculatePassword($this->_name, $password);
         try {
@@ -514,7 +514,7 @@ class User extends \Yana\Core\Object
 
         // initialize language settings
         if (!empty($this->_language)) {
-            assert('!isset($languageManager); // Cannot redeclare var $languageManager');
+            assert('!isset($languageManager)', ' Cannot redeclare var $languageManager');
             $languageManager = \Yana\Translations\Facade::getInstance();
             try {
 
@@ -573,7 +573,7 @@ class User extends \Yana\Core\Object
      */
     public function setLanguage($language)
     {
-        assert('is_string($language); // Wrong type for argument 1. String expected');
+        assert('is_string($language)', ' Wrong type for argument 1. String expected');
 
         $this->_language = "$language";
         $this->updates['USER_LANGUAGE'] = $this->_language;
@@ -677,7 +677,7 @@ class User extends \Yana\Core\Object
      */
     public function setMail($mail)
     {
-        assert('is_string($mail); // Wrong type for argument 1. String expected');
+        assert('is_string($mail)', ' Wrong type for argument 1. String expected');
 
         $this->_mail = "$mail";
         $this->updates['USER_MAIL'] = $this->_mail;
@@ -703,7 +703,7 @@ class User extends \Yana\Core\Object
      */
     public function setExpert($isExpert)
     {
-        assert('is_bool($isExpert); // Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isExpert)', ' Wrong type for argument 1. Boolean expected');
 
         $this->_isExpert = !empty($isExpert);
         $this->updates['USER_IS_EXPERT'] = $this->_isExpert;
@@ -732,7 +732,7 @@ class User extends \Yana\Core\Object
      */
     public function setActive($isActive)
     {
-        assert('is_bool($isActive); // Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isActive)', ' Wrong type for argument 1. Boolean expected');
 
         $this->_isActive = !empty($isActive);
         $this->updates['USER_ACTIVE'] = $this->_isActive;
@@ -852,8 +852,8 @@ class User extends \Yana\Core\Object
      */
     public static function createUser($userName, $mail)
     {
-        assert('is_string($userName); // Wrong type for argument 1. String expected');
-        assert('is_string($mail); // Wrong type for argument 2. String expected');
+        assert('is_string($userName)', ' Wrong type for argument 1. String expected');
+        assert('is_string($mail)', ' Wrong type for argument 2. String expected');
 
         $userName = mb_strtoupper("$userName");
 
@@ -890,7 +890,7 @@ class User extends \Yana\Core\Object
      */
     public static function removeUser($userName)
     {
-        assert('is_string($userName); // Wrong type for argument 1. String expected');
+        assert('is_string($userName)', ' Wrong type for argument 1. String expected');
 
         if (empty($userName)) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("No user name given.", E_USER_WARNING);
@@ -943,8 +943,8 @@ class User extends \Yana\Core\Object
      */
     public static function calculatePassword($salt, $text)
     {
-        assert('is_scalar($salt); // Wrong argument type for argument 1. String expected.');
-        assert('is_scalar($text); // Wrong argument type for argument 2. String expected.');
+        assert('is_scalar($salt)', ' Wrong argument type for argument 1. String expected.');
+        assert('is_scalar($text)', ' Wrong argument type for argument 2. String expected.');
         $salt = mb_substr(mb_strtoupper("$salt"), 0, 2);
 
         $string = "{$salt}{$text}";

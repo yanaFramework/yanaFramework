@@ -82,7 +82,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
      */
     protected static function _createNewInstance()
     {
-        assert('!isset($defaultProfileId); // Cannot redeclare variable $defaultProfileId');
+        assert('!isset($defaultProfileId)', ' Cannot redeclare variable $defaultProfileId');
         $defaultProfileId = \Yana\Application::getDefault('profile');
         if (is_string($defaultProfileId)) {
             self::$_defaultProfileId = mb_strtoupper($defaultProfileId);
@@ -275,8 +275,8 @@ class SessionManager extends \Yana\Core\AbstractSingleton
                     'action_title' => $title
                 );
             }
-            assert('!isset($row); // Cannot redeclare var $row');
-            assert('!isset($level); // Cannot redeclare var $level');
+            assert('!isset($row)', ' Cannot redeclare var $row');
+            assert('!isset($level)', ' Cannot redeclare var $level');
             foreach ($configuration->getUserLevels() as $level)
             {
                 /* @var $level PluginUserLevel */
@@ -306,7 +306,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
         }
         unset($configuration);
         // insert new actions
-        assert('!isset($row); // Cannot redeclare var $row');
+        assert('!isset($row)', ' Cannot redeclare var $row');
         foreach ($actions as $row)
         {
             try {
@@ -318,8 +318,8 @@ class SessionManager extends \Yana\Core\AbstractSingleton
         }
         unset($actions, $row);
         // insert new groups
-        assert('!isset($groupId); // Cannot redeclare var $groupId');
-        assert('!isset($group); // Cannot redeclare var $group');
+        assert('!isset($groupId)', ' Cannot redeclare var $groupId');
+        assert('!isset($group)', ' Cannot redeclare var $group');
         foreach (array_unique($groups) as $groupId)
         {
             if ($database->exists("securitygroup.$groupId")) {
@@ -336,8 +336,8 @@ class SessionManager extends \Yana\Core\AbstractSingleton
         }
         unset($groupId, $groups);
         // insert new roles
-        assert('!isset($roleId); // Cannot redeclare var $roleId');
-        assert('!isset($role); // Cannot redeclare var $role');
+        assert('!isset($roleId)', ' Cannot redeclare var $roleId');
+        assert('!isset($role)', ' Cannot redeclare var $role');
         foreach (array_unique($roles) as $roleId)
         {
             if ($database->exists("securityrole.$roleId")) {
@@ -354,7 +354,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
         }
         unset($roleId, $roles);
         // insert new security settings
-        assert('!isset($row); // Cannot redeclare var $row');
+        assert('!isset($row)', ' Cannot redeclare var $row');
         foreach ($rows as $row)
         {
             try {
@@ -386,9 +386,9 @@ class SessionManager extends \Yana\Core\AbstractSingleton
      */
     public function checkPermission($profileId = null, $action = null, $userName = null)
     {
-        assert('is_null($profileId) || is_string($profileId); // Wrong type for argument 1. String expected');
-        assert('is_null($action) || is_string($action); // Wrong type for argument 2. String expected');
-        assert('is_null($userName) || is_string($userName); // Wrong type for argument 3. String expected');
+        assert('is_null($profileId) || is_string($profileId)', ' Wrong type for argument 1. String expected');
+        assert('is_null($action) || is_string($action)', ' Wrong type for argument 2. String expected');
+        assert('is_null($userName) || is_string($userName)', ' Wrong type for argument 3. String expected');
 
         /* Argument 1 */
         if (empty($profileId)) {
@@ -448,7 +448,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
             return false;
         }
         // find out what the required permission level is to perform the current action
-        assert('!isset($requiredLevels); // Cannot redeclare var $requiredLevels');
+        assert('!isset($requiredLevels)', ' Cannot redeclare var $requiredLevels');
         $requiredLevels = $database->select("securityactionrules", array('action_id', '=', $action));
         // if not defined, load defaults
         if (empty($requiredLevels)) {
@@ -464,9 +464,9 @@ class SessionManager extends \Yana\Core\AbstractSingleton
         }
 
         // ... else check user permissions
-        assert('!isset($result); // Cannot redeclare var $result');
+        assert('!isset($result)', ' Cannot redeclare var $result');
         $result = false;
-        assert('!isset($required); // cannot redeclare $required');
+        assert('!isset($required)', ' cannot redeclare $required');
         foreach ($requiredLevels as $required)
         {
             if (self::checkRule($required, $profileId, $action, $userName)) {
@@ -478,7 +478,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
 
         /* cache the result and return it */
         $this->cache["$profileId\\$userName\\$action"] = $result;
-        assert('is_bool($result); // return type should be boolean');
+        assert('is_bool($result)', ' return type should be boolean');
         return $result;
     }
 
@@ -494,9 +494,9 @@ class SessionManager extends \Yana\Core\AbstractSingleton
      */
     public static function checkRule(array $required, $profileId, $action, $userName)
     {
-        assert('is_string($profileId); // Wrong argument type argument 2. String expected');
-        assert('is_string($action); // Wrong argument type argument 3. String expected');
-        assert('is_string($userName); // Wrong argument type argument 4. String expected');
+        assert('is_string($profileId)', ' Wrong argument type argument 2. String expected');
+        assert('is_string($action)', ' Wrong argument type argument 3. String expected');
+        assert('is_string($userName)', ' Wrong argument type argument 4. String expected');
 
         if (empty($required)) {
             return true;
@@ -505,7 +505,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
         $required = array_change_key_case($required, CASE_LOWER);
         $database = self::getDatasource();
         // loop through rules
-        assert('!isset($function); // cannot redeclare $function');
+        assert('!isset($function)', ' cannot redeclare $function');
         foreach (self::$rules as $function)
         {
             $allowed = call_user_func($function, $database, $required, $profileId, $action, $userName);
@@ -536,11 +536,11 @@ class SessionManager extends \Yana\Core\AbstractSingleton
      */
     public function setSecurityLevel($level, $userName = '', $profileId = '')
     {
-        assert('is_int($level); // Wrong type for argument 1. Integer expected');
-        assert('$level >= 0; // Argument 1 must not be lesser 0');
-        assert('$level <= 100; // Argument 1 must not be greater 100');
-        assert('is_string($userName); // Wrong type for argument 2. String expected');
-        assert('is_string($profileId); // Wrong type for argument 3. String expected');
+        assert('is_int($level)', ' Wrong type for argument 1. Integer expected');
+        assert('$level >= 0', ' Argument 1 must not be lesser 0');
+        assert('$level <= 100', ' Argument 1 must not be greater 100');
+        assert('is_string($userName)', ' Wrong type for argument 2. String expected');
+        assert('is_string($profileId)', ' Wrong type for argument 3. String expected');
 
         if (empty($profileId)) {
             $profileId = mb_strtoupper(\Yana\Application::getId());
@@ -555,7 +555,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
          * in a session var called "user_name", so other plugins can look it up.
          * }}
          */
-        assert('!isset($currentUser); // Cannot redeclare variable $currentUser');
+        assert('!isset($currentUser)', ' Cannot redeclare variable $currentUser');
         if (!empty($_SESSION['user_name'])) {
             $currentUser = $_SESSION['user_name'];
 
@@ -615,8 +615,8 @@ class SessionManager extends \Yana\Core\AbstractSingleton
      */
     public function getSecurityLevel($userName = '', $profileId = '')
     {
-        assert('is_string($userName); // Wrong type for argument 1. String expected');
-        assert('is_string($profileId); // Wrong type for argument 2. String expected');
+        assert('is_string($userName)', ' Wrong type for argument 1. String expected');
+        assert('is_string($profileId)', ' Wrong type for argument 2. String expected');
         /* Argument 1 */
         if (empty($profileId)) {
             $profileId = \Yana\Application::getId();

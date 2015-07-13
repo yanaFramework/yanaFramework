@@ -48,8 +48,8 @@ class RelativePathsFilter extends \Yana\Views\Helpers\AbstractViewHelper
      */
     public function __invoke($source, $basedir)
     {
-        assert('is_string($source); // Wrong type for argument 1. String expected');
-        assert('is_string($basedir); // Invalid argument $basedir: string expected');
+        assert('is_string($source)', ' Wrong type for argument 1. String expected');
+        assert('is_string($basedir)', ' Invalid argument $basedir: string expected');
 
         $smarty = $this->_getViewManager()->getSmarty();
         $lDelim = preg_quote($smarty->left_delimiter, '/');

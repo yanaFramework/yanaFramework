@@ -47,7 +47,7 @@ class IconFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
      */
     public function __invoke($string)
     {
-        assert('is_string($string); // Invalid argument $string: string expected');
+        assert('is_string($string)', ' Invalid argument $string: string expected');
 
         /* if not necessary -> skip the whole section for better performance */
         if (mb_strpos($string, ':') !== false) {

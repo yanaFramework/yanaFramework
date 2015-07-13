@@ -79,7 +79,7 @@ class Message extends \Yana\Core\Object
      */
     public function setLevel($level)
     {
-        assert('is_int($level); // Invalid argument $level: int expected');
+        assert('is_int($level)', ' Invalid argument $level: int expected');
 
         $this->_level = (int) $level;
         return $this;
@@ -103,7 +103,7 @@ class Message extends \Yana\Core\Object
      */
     public function setDescription($description)
     {
-        assert('is_string($description); // Invalid argument $description: string expected');
+        assert('is_string($description)', ' Invalid argument $description: string expected');
 
         $this->_description = (string) $description;
         return $this;
@@ -129,7 +129,7 @@ class Message extends \Yana\Core\Object
      */
     public function setFilename($filename)
     {
-        assert('is_string($filename); // Invalid argument $filename: string expected');
+        assert('is_string($filename)', ' Invalid argument $filename: string expected');
 
         $this->_filename = (string) $filename;
         return $this;
@@ -155,7 +155,7 @@ class Message extends \Yana\Core\Object
      */
     public function setLineNumber($lineNumber)
     {
-        assert('is_int($lineNumber); // Invalid argument $lineNumber: int expected');
+        assert('is_int($lineNumber)', ' Invalid argument $lineNumber: int expected');
 
         $this->_lineNumber = (int) $lineNumber;
         return $this;

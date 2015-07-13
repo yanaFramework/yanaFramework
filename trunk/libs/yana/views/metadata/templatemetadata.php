@@ -72,7 +72,7 @@ class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData
      */
     public function setId($id)
     {
-        assert('is_string($id); // Invalid argument $id. String expected');
+        assert('is_string($id)', ' Invalid argument $id. String expected');
         $this->_id = $id;
         return $this;
     }
@@ -95,7 +95,7 @@ class TemplateMetaData extends \Yana\Core\Object implements \Yana\Views\MetaData
      */
     public function setFile($file)
     {
-        assert('is_string($file); // Invalid argument $file. String expected');
+        assert('is_string($file)', ' Invalid argument $file. String expected');
         $this->_file = $file;
         return $this;
     }

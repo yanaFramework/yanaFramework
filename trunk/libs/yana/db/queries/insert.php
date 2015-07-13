@@ -190,16 +190,16 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 "Database values must be an array or scalar.");
         }
         $tableName = $this->getTable();
-        assert('!empty($tableName); // Cannot set values - need to set table first!');
+        assert('!empty($tableName)', ' Cannot set values - need to set table first!');
 
         /*
          * 1.d) handle table inheritance
          */
         if ($this->getParent()) {
-            assert('!isset($columns); // Cannot redeclare var $columns');
+            assert('!isset($columns)', ' Cannot redeclare var $columns');
             $columns = $this->getColumns();
             if (empty($columns)) {
-                assert('!isset($columnName); // Cannot redeclare var $columnName');
+                assert('!isset($columnName)', ' Cannot redeclare var $columnName');
                 foreach (array_keys($values) as $columnName)
                 {
                     $columns[] = array($tableName, $columnName);
@@ -207,12 +207,12 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                 unset($columnName);
             }
 
-            assert('!isset($column); // Cannot redeclare var $column');
+            assert('!isset($column)', ' Cannot redeclare var $column');
             foreach ($columns as $column)
             {
-                assert('is_array($column); // Invalid property "column". Two-dimensional array expected.');
-                assert('!isset($parent); // Cannot redeclare var $parent');
-                assert('!isset($columnName); // Cannot redeclare var $columnName');
+                assert('is_array($column)', ' Invalid property "column". Two-dimensional array expected.');
+                assert('!isset($parent)', ' Cannot redeclare var $parent');
+                assert('!isset($columnName)', ' Cannot redeclare var $columnName');
                 $columnName = $column[1];
                 $parent = $this->getParentByColumn($columnName);
                 if (false !== $parent && isset($values[$columnName])) {
@@ -229,7 +229,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
         /*
          * 2.a) inserting a row
          */
-        assert('!isset($primaryKey); /* Cannot redeclare var $primaryKey */');
+        assert('!isset($primaryKey)', 'Cannot redeclare var $primaryKey');
         $primaryKey = $table->getPrimaryKey();
 
         // copy primary key to row property
@@ -237,7 +237,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
             $this->setRow($values[$primaryKey]);
         }
 
-        assert('!isset($isInsert); // Cannot redeclare var $isInsert');
+        assert('!isset($isInsert)', ' Cannot redeclare var $isInsert');
         $isInsert = false;
         if ($this->type === \Yana\Db\Queries\TypeEnumeration::INSERT) {
             $isInsert = true;
@@ -272,7 +272,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
         {
             // INSERT and UPDATE statements
             case \Yana\Db\ResultEnumeration::ROW:
-                assert('is_array($values); // Row must be an array');
+                assert('is_array($values)', ' Row must be an array');
                 // upper-case primary key
                 if (isset($values[$primaryKey])) {
                     $values[$primaryKey] = mb_strtoupper($values[$primaryKey]);
@@ -288,14 +288,14 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
                     $_message = "You may only insert rows - not cells or columns.";
                     throw new \Yana\Db\Queries\Exceptions\InvalidResultTypeException($_message);
                 }
-                assert('!$isInsert; // May only insert rows, not tables, cells or columns');
+                assert('!$isInsert', ' May only insert rows, not tables, cells or columns');
                 if (empty($this->arrayAddress) && isset($this->column[0]) && is_array($this->column[0])) {
                     assert('count($this->column) === 1;');
                     assert('count($this->column[0]) === 2;');
                     assert('isset($this->column[0][1]);');
                     assert('$this->tableName === $this->column[0][0];');
                     assert('$table->isColumn($this->column[0][1]);');
-                    assert('!isset($column); // Cannot redeclare var $column');
+                    assert('!isset($column)', ' Cannot redeclare var $column');
                     $column = $table->getColumn($this->column[0][1]);
                     assert('$column instanceof \Yana\Db\Ddl\Column;');
                     $values = $this->_getSanitizer()->sanitizeValueByColumn($column, $values, $this->files);
@@ -343,8 +343,8 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
      */
     private function _appendValue($table, $column, $value)
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected');
-        assert('is_string($column); // Wrong type for argument 2. String expected');
+        assert('is_string($table)', ' Wrong type for argument 1. String expected');
+        assert('is_string($column)', ' Wrong type for argument 2. String expected');
 
         if (!isset($this->queue[$table])) {
             $this->queue[$table] = array();
@@ -410,8 +410,8 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
             $prevSetting = $this->useInheritance;
             $this->useInheritance(false);
             $result = null;
-            assert('!isset($table); // Cannot redeclare var $table');
-            assert('!isset($values); // Cannot redeclare var $values');
+            assert('!isset($table)', ' Cannot redeclare var $table');
+            assert('!isset($values)', ' Cannot redeclare var $values');
             foreach ($this->queue as $table => $values)
             {
                 // Table not found
@@ -501,11 +501,11 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
             if (!is_array($this->values) || count($this->values) === 0) {
                 return "";
             }
-            assert('!isset($keys);   // Cannot redeclare $keys');
-            assert('!isset($values); // Cannot redeclare $values');
+            assert('!isset($keys)', ' Cannot redeclare $keys');
+            assert('!isset($values)', ' Cannot redeclare $values');
             $keys = "";
             // quote id's to avoid conflicts with reserved keywords
-            assert('!isset($value); // Cannot redeclare var $value');
+            assert('!isset($value)', ' Cannot redeclare var $value');
             foreach (array_keys($this->values) as $value)
             {
                 if ($keys != "") {
@@ -515,7 +515,7 @@ class Insert extends \Yana\Db\Queries\AbstractQuery
             }
             unset($value);
             $values = '';
-            assert('!isset($value); // Cannot redeclare $values');
+            assert('!isset($value)', ' Cannot redeclare $values');
             foreach ($this->values as $value)
             {
                 $values .= (($values !== '') ? ', ' : '' );
