@@ -30,7 +30,7 @@ namespace Yana\Plugins;
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../include.php';
+require_once __DIR__ . '/../../../../include.php';
 
 /**
  * Test class for PluginMenuEntry.
@@ -38,7 +38,7 @@ require_once __DIR__ . '/../../../include.php';
  *
  * @package  test
  */
-class MenuEntryTest extends \PHPUnit_Framework_TestCase
+class EntryTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -52,7 +52,7 @@ class MenuEntryTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Plugins\MenuEntry();
+        $this->object = new \Yana\Plugins\Menus\Entry();
     }
 
     /**

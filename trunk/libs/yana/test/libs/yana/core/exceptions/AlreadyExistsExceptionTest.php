@@ -63,14 +63,12 @@ class AlreadyExistsExceptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testSetId().
+     * @test
      */
     public function testSetId()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $id = 'Test äß';
+        $this->assertEquals(array('ID' => $id),$this->object->setId('Test äß')->getData(), 'Getter/Setter test failed for setId()');
     }
 
 }

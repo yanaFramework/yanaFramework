@@ -303,8 +303,8 @@ class MethodConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetUserLevels()
     {
-        $levelA = new \Yana\Plugins\UserLevel();
-        $levelB = new \Yana\Plugins\UserLevel();
+        $levelA = new \Yana\Plugins\Configs\UserPermissionRule();
+        $levelB = new \Yana\Plugins\Configs\UserPermissionRule();
         $levelA->setGroup('A')->setLevel(75);
         $levelB->setRole('B')->setLevel(50);
         $users = array($levelA, $levelB);

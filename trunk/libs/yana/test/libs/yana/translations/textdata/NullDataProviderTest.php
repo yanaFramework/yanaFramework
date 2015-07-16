@@ -70,7 +70,7 @@ class NullDataProviderTest extends \PHPUnit_Framework_TestCase
     public function testLoadOject()
     {
         $expected = new \Yana\Translations\TextData\TextContainer();
-        $this->assertEquals($expected, $this->object->loadOject(1));
+        $this->assertEquals($expected, $this->object->loadOject(1, new \Yana\Translations\Locale()));
     }
 
 }

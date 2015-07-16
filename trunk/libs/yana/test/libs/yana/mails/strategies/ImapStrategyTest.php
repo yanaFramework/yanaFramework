@@ -74,7 +74,11 @@ class ImapStrategyTest extends \PHPUnit_Framework_TestCase
         $subject = "Some subject";
         $text = "Some text";
         $header = array("some" => "header");
-        $this->assertFalse($this->object->__invoke($recipient, $subject, $text, $header = array()));
+        try {
+            $this->assertFalse($this->object->__invoke($recipient, $subject, $text, $header = array()));
+        } catch (\Yana\Core\Exceptions\Mails\NotSupportedException $ex) {
+            $this->markTestSkipped($ex->getMessage());
+        }
     }
 
 }

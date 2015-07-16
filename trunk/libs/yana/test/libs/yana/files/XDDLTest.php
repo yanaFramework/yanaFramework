@@ -340,7 +340,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
     {
         $name = "new_table";
         $table = $this->_object->addTable($name);
-        $this->assertInternalType('\Yana\Db\Ddl\Table', $table, "Expected addTable() to return an instance of \Yana\Db\Ddl\Table.");
+        $this->assertTrue($table instanceof \Yana\Db\Ddl\Table, "Expected addTable() to return an instance of \Yana\Db\Ddl\Table.");
         $this->assertEquals($name, $table->getName(), "Expected returned table to have given name.");
     }
 
@@ -355,7 +355,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($array), "Returned list of tables should not be empty");
         foreach ($array as $item)
         {
-            $this->assertInternalType('\Yana\Db\Ddl\Table', $item, "Every returned table is expected to be an instance of \Yana\Db\Ddl\Table.");
+            $this->assertTrue($item instanceof \Yana\Db\Ddl\Table, "Every returned table is expected to be an instance of \Yana\Db\Ddl\Table.");
         }
     }
 
@@ -384,7 +384,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
     {
         $name = "test_view";
         $view = $this->_object->getView($name);
-        $this->assertInternalType('\Yana\Db\Ddl\Views\View', $view, "Expected getView() to return an instance of \Yana\Db\Ddl\Views\View.");
+        $this->assertTrue($view instanceof \Yana\Db\Ddl\Views\View, "Expected getView() to return an instance of \Yana\Db\Ddl\Views\View.");
         $this->assertEquals($name, $view->getName(), "Expected returned view to have given name.");
     }
 
@@ -397,7 +397,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
     {
         $name = "new_view";
         $view = $this->_object->addView($name);
-        $this->assertInternalType('\Yana\Db\Ddl\Views\View', $view, "Expected addView() to return an instance of \Yana\Db\Ddl\Views\View.");
+        $this->assertTrue($view instanceof \Yana\Db\Ddl\Views\View, "Expected addView() to return an instance of \Yana\Db\Ddl\Views\View.");
         $this->assertEquals($name, $view->getName(), "Expected returned view to have given name.");
     }
 
@@ -412,7 +412,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($array), "Returned list of views should not be empty");
         foreach ($array as $item)
         {
-            $this->assertInternalType('\Yana\Db\Ddl\Views\View', $item, "Every returned view is expected to be an instance of \Yana\Db\Ddl\Views\View.");
+            $this->assertTrue($item instanceof \Yana\Db\Ddl\Views\View, "Every returned view is expected to be an instance of \Yana\Db\Ddl\Views\View.");
         }
     }
 
@@ -441,7 +441,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
     {
         $name = "test_function";
         $function = $this->_object->getFunction($name);
-        $this->assertInternalType('\Yana\Db\Ddl\Functions\Object', $function, "Expected getFunction() to return an instance of \Yana\Db\Ddl\Functions\Object.");
+        $this->assertTrue($function instanceof \Yana\Db\Ddl\Functions\Object, "Expected getFunction() to return an instance of \Yana\Db\Ddl\Functions\Object.");
         $this->assertEquals($name, $function->getName(), "Expected returned function to have given name.");
     }
 
@@ -454,7 +454,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
     {
         $name = "new_function";
         $function = $this->_object->addFunction($name);
-        $this->assertInternalType('\Yana\Db\Ddl\Functions\Object', $function, "Expected addFunction() to return an instance of \Yana\Db\Ddl\Functions\Object.");
+        $this->assertTrue($function instanceof \Yana\Db\Ddl\Functions\Object, "Expected addFunction() to return an instance of \Yana\Db\Ddl\Functions\Object.");
         $this->assertEquals($name, $function->getName(), "Expected returned function to have given name.");
     }
 
@@ -469,7 +469,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($array), "Returned list of functions should not be empty");
         foreach ($array as $item)
         {
-            $this->assertInternalType('\Yana\Db\Ddl\Functions\Object', $item, "Every returned function is expected to be an instance of \Yana\Db\Ddl\Functions\Object.");
+            $this->assertTrue($item instanceof \Yana\Db\Ddl\Functions\Object, "Every returned function is expected to be an instance of \Yana\Db\Ddl\Functions\Object.");
         }
     }
 
@@ -498,7 +498,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
     {
         $name = "test_sequence";
         $view = $this->_object->getSequence($name);
-        $this->assertInternalType('\Yana\Db\Ddl\Sequence', $view, "Expected getSequence() to return an instance of \Yana\Db\Ddl\Sequence.");
+        $this->assertTrue($view instanceof \Yana\Db\Ddl\Sequence, "Expected getSequence() to return an instance of \Yana\Db\Ddl\Sequence.");
         $this->assertEquals($name, $view->getName(), "Expected returned sequence to have given name.");
     }
 
@@ -511,7 +511,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
     {
         $name = "new_sequence";
         $sequence = $this->_object->addSequence($name);
-        $this->assertInternalType('\Yana\Db\Ddl\Sequence', $sequence, "Expected addSequence() to return an instance of \Yana\Db\Ddl\Sequence.");
+        $this->assertTrue($sequence instanceof \Yana\Db\Ddl\Sequence, "Expected addSequence() to return an instance of \Yana\Db\Ddl\Sequence.");
         $this->assertEquals($name, $sequence->getName(), "Expected returned sequence to have given name.");
     }
 
@@ -526,7 +526,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($array), "Returned list of sequences should not be empty");
         foreach ($array as $item)
         {
-            $this->assertInternalType('\Yana\Db\Ddl\Sequence', $item, "Every returned sequence is expected to be an instance of \Yana\Db\Ddl\Sequence.");
+            $this->assertTrue($item instanceof \Yana\Db\Ddl\Sequence, "Every returned sequence is expected to be an instance of \Yana\Db\Ddl\Sequence.");
         }
     }
 
@@ -687,7 +687,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
     {
         $name = "test_new";
         $form = $this->_object->getForm($name);
-        $this->assertInternalType('\Yana\Db\Ddl\Form', $form, "Expected getForm() to return an instance of \Yana\Db\Ddl\Form.");
+        $this->assertTrue($form instanceof \Yana\Db\Ddl\Form, "Expected getForm() to return an instance of \Yana\Db\Ddl\Form.");
         $this->assertEquals($name, $form->getName(), "Expected returned form to have given name.");
     }
 
@@ -702,7 +702,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($array), "Returned list of forms should not be empty");
         foreach ($array as $item)
         {
-            $this->assertInternalType('\Yana\Db\Ddl\Form', $item, "Every returned form is expected to be an instance of \Yana\Db\Ddl\Form.");
+            $this->assertTrue($item instanceof \Yana\Db\Ddl\Form, "Every returned form is expected to be an instance of \Yana\Db\Ddl\Form.");
         }
     }
 
@@ -731,7 +731,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
     {
         $name = "new_form";
         $form = $this->_object->addForm($name);
-        $this->assertInternalType('\Yana\Db\Ddl\Form', $form, "Expected addForm() to return an instance of \Yana\Db\Ddl\Form.");
+        $this->assertTrue($form instanceof \Yana\Db\Ddl\Form, "Expected addForm() to return an instance of \Yana\Db\Ddl\Form.");
         $this->assertEquals($name, $form->getName(), "Expected returned form to have given name.");
     }
 
@@ -884,7 +884,7 @@ class XDDLTest extends \PHPUnit_Framework_TestCase
 
         $columns = $foreignKey->getColumns();
         $this->assertTrue(isset($columns['testcmt_id']), "Expected foreignKey for column 'testcmt_id' does not exists.");
-        $this->assertEquals(isset($columns['testcmt_id']), "test_id", "Expected returned sourceTable in foreignKey does not match.");
+        $this->assertEquals($columns['testcmt_id'], "test_id", "Expected returned sourceTable in foreignKey does not match.");
 
         // First Table
         $name = "test";
