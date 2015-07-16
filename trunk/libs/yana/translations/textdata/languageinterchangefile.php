@@ -71,7 +71,7 @@ class LanguageInterchangeFile extends \SimpleXMLElement implements \Yana\Transla
      */
     public function setSourceLanguage($languageCode)
     {
-        assert('is_string($languageCode)', ' Wrong argument type for argument 1. String expected.');
+        assert('is_string($languageCode); // Wrong argument type for argument 1. String expected.');
         foreach ($this->xpath("//file") as $node)
         {
             /* @var $node SimpleXMLElement */
@@ -93,7 +93,7 @@ class LanguageInterchangeFile extends \SimpleXMLElement implements \Yana\Transla
      */
     public function setTargetLanguage($languageCode)
     {
-        assert('is_string($languageCode)', ' Wrong argument type for argument 1. String expected.');
+        assert('is_string($languageCode); // Wrong argument type for argument 1. String expected.');
         foreach ($this->xpath("//file") as $node)
         {
             /* @var $node SimpleXMLElement */

@@ -70,9 +70,9 @@ class BicValidator extends \Yana\Data\AbstractValidator
      */
     public function __invoke($value)
     {
-        assert('!isset($trimmedString)', ' Cannot redeclare var $trimmedString');
+        assert('!isset($trimmedString); // Cannot redeclare var $trimmedString');
         $trimmedString = $this->sanitize($value);
-        assert('!isset($result)', ' Cannot redeclare var $result');
+        assert('!isset($result); // Cannot redeclare var $result');
         $result = $this->validate($trimmedString) ? $trimmedString : null;
         return $result;
     }

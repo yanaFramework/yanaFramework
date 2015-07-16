@@ -179,7 +179,7 @@ class Setup extends \Yana\Core\Object
      */
     public function getContext($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (!isset($this->_contexts[$name])) {
             $this->_contexts[$name] = new \Yana\Forms\Setups\Context($name);
         }
@@ -213,7 +213,7 @@ class Setup extends \Yana\Core\Object
      */
     public function setContext($name, \Yana\Forms\Setups\Context $context)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (!isset($this->_contexts[$name])) {
             $this->_contexts[$name] = new \Yana\Forms\Setups\Context($name);
         }
@@ -245,7 +245,7 @@ class Setup extends \Yana\Core\Object
      */
     public function addForeignKeyReference($columnName, \Yana\Db\Ddl\Reference $foreignKey)
     {
-        assert('is_string($columnName)', ' Invalid argument $columnName: string expected');
+        assert('is_string($columnName); // Invalid argument $columnName: string expected');
         $this->_foreignKeyRefrences[$columnName] = $foreignKey;
         return $this;
     }
@@ -264,7 +264,7 @@ class Setup extends \Yana\Core\Object
      */
     public function setPage($page = 0)
     {
-        assert('is_int($page)', ' Wrong type for argument 1. Integer expected');
+        assert('is_int($page); // Wrong type for argument 1. Integer expected');
 
         /* default values */
         if ($page < 0) {
@@ -300,7 +300,7 @@ class Setup extends \Yana\Core\Object
      */
     public function setEntryCount($entryCount)
     {
-        assert('is_int($entryCount)', ' Invalid argument $entryCount: int expected');
+        assert('is_int($entryCount); // Invalid argument $entryCount: int expected');
 
         /* default values */
         if ($entryCount < 0) {
@@ -350,7 +350,7 @@ class Setup extends \Yana\Core\Object
      */
     public function setEntriesPerPage($entries = 5)
     {
-        assert('is_int($entries)', ' Wrong type for argument 1. Integer expected');
+        assert('is_int($entries); // Wrong type for argument 1. Integer expected');
 
         if ($entries < 1) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Number of entries per page must be an integer > 0.");
@@ -397,7 +397,7 @@ class Setup extends \Yana\Core\Object
      */
     public function getFilter($columnName)
     {
-        assert('is_string($columnName)', ' Wrong argument type argument 1. String expected');
+        assert('is_string($columnName); // Wrong argument type argument 1. String expected');
         return isset($this->_filters[$columnName]) ? $this->_filters[$columnName] : "";
     }
 
@@ -411,7 +411,7 @@ class Setup extends \Yana\Core\Object
      */
     public function getFilters()
     {
-        assert('is_array($this->_filters)', ' Member "filters" is expected to be an array.');
+        assert('is_array($this->_filters); // Member "filters" is expected to be an array.');
         return $this->_filters;
     }
 
@@ -428,8 +428,8 @@ class Setup extends \Yana\Core\Object
      */
     public function setFilter($columnName, $value = "")
     {
-        assert('is_string($columnName)', ' Wrong argument type argument 1. String expected');
-        assert('is_string($value)', ' Wrong argument type argument 2. String expected');
+        assert('is_string($columnName); // Wrong argument type argument 1. String expected');
+        assert('is_string($value); // Wrong argument type argument 2. String expected');
         if (!empty($value)) {
             $value = strtr($value, '*?', '%_'); // translate wildcards
             $value = \Yana\Util\String::htmlSpecialChars($value);
@@ -483,7 +483,7 @@ class Setup extends \Yana\Core\Object
      */
     public function getReferenceValues($columnName)
     {
-        assert('is_string($columnName)', ' Invalid argument $name: string expected');
+        assert('is_string($columnName); // Invalid argument $name: string expected');
         $columnName = strtoupper($columnName);
         $values = array();
         if (isset($this->_referenceValues[$columnName]) && is_array($this->_referenceValues[$columnName])) {
@@ -504,8 +504,8 @@ class Setup extends \Yana\Core\Object
      */
     public function setLayout($layout = 0)
     {
-        assert('is_int($layout)', ' Wrong type for argument 1. Integer expected');
-        assert('$layout >= 0', ' Invalid argument. Layout must be a positive integer');
+        assert('is_int($layout); // Wrong type for argument 1. Integer expected');
+        assert('$layout >= 0; // Invalid argument. Layout must be a positive integer');
         $this->_layout = (int) $layout;
         return $this;
     }
@@ -522,7 +522,7 @@ class Setup extends \Yana\Core\Object
      */
     public function getLayout()
     {
-        assert('is_int($this->_layout)', ' Member "layout" is expected to be an integer.');
+        assert('is_int($this->_layout); // Member "layout" is expected to be an integer.');
         return $this->_layout;
     }
 
@@ -536,7 +536,7 @@ class Setup extends \Yana\Core\Object
      */
     public function getOrderByField()
     {
-        assert('is_string($this->_orderByField)', ' Member "orderByField" is expected to be a string.');
+        assert('is_string($this->_orderByField); // Member "orderByField" is expected to be a string.');
         return $this->_orderByField;
     }
 
@@ -551,7 +551,7 @@ class Setup extends \Yana\Core\Object
      */
     public function setOrderByField($fieldName = "")
     {
-        assert('is_string($fieldName)', ' Wrong argument type argument 1. String expected');
+        assert('is_string($fieldName); // Wrong argument type argument 1. String expected');
         $this->_orderByField = $fieldName;
         return $this;
     }
@@ -565,7 +565,7 @@ class Setup extends \Yana\Core\Object
      */
     public function setSortOrder($isDescending = false)
     {
-        assert('is_bool($isDescending)', ' Wrong argument type argument 1. Boolean expected');
+        assert('is_bool($isDescending); // Wrong argument type argument 1. Boolean expected');
         $this->_isDescending = !empty($isDescending);
         return $this;
     }
@@ -581,7 +581,7 @@ class Setup extends \Yana\Core\Object
      */
     public function isDescending()
     {
-        assert('is_bool($this->_isDescending)', ' Member "isDescending" is expected to be bool.');
+        assert('is_bool($this->_isDescending); // Member "isDescending" is expected to be bool.');
         return !empty($this->_isDescending);
     }
 
@@ -598,7 +598,7 @@ class Setup extends \Yana\Core\Object
      */
     public function setSearchTerm($searchTerm = "")
     {
-        assert('is_string($searchTerm)', ' Wrong argument type argument 1. String expected');
+        assert('is_string($searchTerm); // Wrong argument type argument 1. String expected');
         $this->_searchTerm = $searchTerm;
         return $this;
     }
@@ -625,7 +625,7 @@ class Setup extends \Yana\Core\Object
      */
     public function setDownloadAction($action)
     {
-        assert('is_string($action)', ' Wrong type for argument 1. String expected');
+        assert('is_string($action); // Wrong type for argument 1. String expected');
         $this->_downloadAction = $action;
         return $this;
     }
@@ -654,7 +654,7 @@ class Setup extends \Yana\Core\Object
      */
     public function setSearchAction($action)
     {
-        assert('is_string($action)', ' Wrong type for argument 1. String expected');
+        assert('is_string($action); // Wrong type for argument 1. String expected');
         $this->getContext('search')->setAction($action);
         return $this;
     }
@@ -679,7 +679,7 @@ class Setup extends \Yana\Core\Object
      */
     public function setInsertAction($action)
     {
-        assert('is_string($action)', ' Wrong type for argument 1. String expected');
+        assert('is_string($action); // Wrong type for argument 1. String expected');
         $this->getContext('insert')->setAction($action);
         return $this;
     }
@@ -704,7 +704,7 @@ class Setup extends \Yana\Core\Object
      */
     public function setUpdateAction($action)
     {
-        assert('is_string($action)', ' Wrong type for argument 1. String expected');
+        assert('is_string($action); // Wrong type for argument 1. String expected');
         $this->getContext('update')->setAction($action);
         return $this;
     }
@@ -729,7 +729,7 @@ class Setup extends \Yana\Core\Object
      */
     public function setDeleteAction($action)
     {
-        assert('is_string($action)', ' Wrong type for argument 1. String expected');
+        assert('is_string($action); // Wrong type for argument 1. String expected');
         $this->_deleteAction = $action;
         return $this;
     }
@@ -754,7 +754,7 @@ class Setup extends \Yana\Core\Object
      */
     public function setExportAction($action)
     {
-        assert('is_string($action)', ' Wrong type for argument 1. String expected');
+        assert('is_string($action); // Wrong type for argument 1. String expected');
         $this->_exportAction = $action;
         return $this;
     }

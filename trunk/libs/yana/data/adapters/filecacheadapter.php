@@ -61,7 +61,7 @@ class FileCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yan
      */
     public function __construct(\Yana\Files\IsDir $directory, $lifetime = 0)
     {
-        assert('is_int($lifetime)', ' Invalid argument $lifetime: int expected');
+        assert('is_int($lifetime); // Invalid argument $lifetime: int expected');
 
         $this->_directory = $directory;
         $this->_lifetime = (int) $lifetime;
@@ -190,7 +190,7 @@ class FileCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yan
      */
     protected function _toFile($id)
     {
-        assert('is_scalar($id)', ' Invalid argument $id: string expected');
+        assert('is_scalar($id); // Invalid argument $id: string expected');
 
         $path = $this->_getPath() . '/' . $id . ".tmp";
         return new \Yana\Files\Text($path);
@@ -241,7 +241,7 @@ class FileCacheAdapter extends \Yana\Core\AbstractCountableArray implements \Yan
 
         // determine key if none is given (simulates auto-increment)
         if (\is_null($offset)) {
-            assert('!isset($_keys)', ' Cannot redeclare var $_keys');
+            assert('!isset($_keys); // Cannot redeclare var $_keys');
             $_keys = \array_keys(parent::_getItems());
             $offset = (string) \array_pop($_keys);
             unset($_keys);

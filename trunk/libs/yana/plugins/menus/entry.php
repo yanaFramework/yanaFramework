@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins;
+namespace Yana\Plugins\Menus;
 
 /**
  * Menu information.
@@ -36,7 +36,7 @@ namespace Yana\Plugins;
  * @subpackage  plugins
  * @ignore
  */
-class MenuEntry
+class Entry extends \Yana\Core\Object implements \Yana\Plugins\Menus\IsEntry
 {
 
     /**
@@ -80,11 +80,11 @@ class MenuEntry
      * Meaning, foo is the top-menu, with bar as the second-level entry.
      *
      * @param   string  $group  
-     * @return  \Yana\Plugins\MenuEntry
+     * @return  \Yana\Plugins\Menus\Entry
      */
     public function setGroup($group)
     {
-        assert('is_string($group)', ' Invalid argument $group: string expected');
+        assert('is_string($group); // Invalid argument $group: string expected');
         $this->_group = (string) $group;
         return $this;
     }
@@ -103,11 +103,11 @@ class MenuEntry
      * Set title of the menu entry.
      *
      * @param   string  $title  a text or a translation token
-     * @return  \Yana\Plugins\MenuEntry
+     * @return  \Yana\Plugins\Menus\Entry
      */
     public function setTitle($title)
     {
-        assert('is_string($title)', ' Invalid argument $title: string expected');
+        assert('is_string($title); // Invalid argument $title: string expected');
         $this->_title = (string) $title;
         return $this;
     }
@@ -126,11 +126,11 @@ class MenuEntry
      * Set icon path.
      *
      * @param   string  $icon  path to image file
-     * @return  \Yana\Plugins\MenuEntry
+     * @return  \Yana\Plugins\Menus\Entry
      */
     public function setIcon($icon)
     {
-        assert('is_string($icon)', ' Invalid argument $icon: string expected');
+        assert('is_string($icon); // Invalid argument $icon: string expected');
         $this->_icon = (string) $icon;
         return $this;
     }
@@ -150,12 +150,12 @@ class MenuEntry
      * Set safemode setting.
      *
      * @param   bool  $safeMode  true = requires safe-mode, false = disallows safe-mode, null = don't care
-     * @return  \Yana\Plugins\MenuEntry
+     * @return  \Yana\Plugins\Menus\Entry
      * @ignore
      */
     public function setSafeMode($safeMode = null)
     {
-        assert('is_null($safeMode) || is_bool($safeMode)', ' Invalid argument $safeMode: bool expected');
+        assert('is_null($safeMode) || is_bool($safeMode); // Invalid argument $safeMode: bool expected');
         $this->_safeMode = $safeMode;
         return $this;
     }

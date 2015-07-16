@@ -80,7 +80,7 @@ abstract class AbstractLoader extends \Yana\Core\Object implements \Yana\Core\Au
      */
     public function setThrowExceptionWhenClassIsNotFound($throwException)
     {
-        assert('is_bool($throwException)', ' Invalid input $throwException. Boolean expected');
+        assert('is_bool($throwException); // Invalid input $throwException. Boolean expected');
         $this->_throwExceptionWhenClassIsNotFound = $throwException;
         return $this;
     }

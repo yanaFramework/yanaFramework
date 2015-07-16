@@ -50,7 +50,7 @@ class JsFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\V
      */
     public function __invoke($source)
     {
-        assert('is_string($source)', ' Invalid argument $source: string expected');
+        assert('is_string($source); // Invalid argument $source: string expected');
 
         if (mb_strpos($source, '</head>') > -1) {
 

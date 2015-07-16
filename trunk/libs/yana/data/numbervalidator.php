@@ -75,8 +75,8 @@ abstract class NumberValidator extends AbstractValidator
      */
     protected function setMaxLength($length)
     {
-        assert('is_int($length)', ' Invalid argument $length: int expected');
-        assert('$length >= 0', ' $length must not be negative');
+        assert('is_int($length); // Invalid argument $length: int expected');
+        assert('$length >= 0; // $length must not be negative');
         $this->_length = (int) $length;
         return $this;
     }
@@ -99,7 +99,7 @@ abstract class NumberValidator extends AbstractValidator
      */
     protected function setUnsigned($isUnsigned)
     {
-        assert('is_bool($isUnsigned)', ' Invalid argument $isUnsigned: bool expected');
+        assert('is_bool($isUnsigned); // Invalid argument $isUnsigned: bool expected');
         $this->_isUnsigned = (bool) $isUnsigned;
         return $this;
     }
@@ -122,7 +122,7 @@ abstract class NumberValidator extends AbstractValidator
      */
     protected function setPrecision($precision)
     {
-        assert('is_int($precision)', ' Invalid argument $precision: int expected');
+        assert('is_int($precision); // Invalid argument $precision: int expected');
         $this->_precision = (int) $precision;
         return $this;
     }

@@ -49,8 +49,8 @@ class NullDecoder extends \Yana\Core\Object implements IsDecoder
      */
     public function getFile($input, $caseSensitive = CASE_MIXED)
     {
-        if (is_file("$input")) {
-            $result = file("$input");
+        if (is_string($input) && is_file($input)) {
+            $result = file($input);
         } elseif (is_array($input)) {
             $result = $input;
         } else {

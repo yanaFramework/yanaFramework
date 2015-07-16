@@ -84,46 +84,69 @@ class Parser extends \Yana\Core\Object implements \Yana\Db\Queries\IsParser
      */
     public function parseSQL($sqlStmt)
     {
-        assert('is_string($sqlStmt)', ' Wrong argument type argument 1. String expected');
+        assert('is_string($sqlStmt); // Wrong argument type argument 1. String expected');
         $sqlStmt = trim($sqlStmt);
-        $parser = new \SQL_Parser();
-        $syntaxTree = $parser->parse($sqlStmt); // get abstract syntax tree (AST)
+        $sqlParser = new \SQL_Parser();
+        $syntaxTree = $sqlParser->parse($sqlStmt); // get abstract syntax tree (AST)
+        unset($sqlParser);
+
         /* @var $parser \Yana\Db\Queries\Parsers\IsParser */
         $parser = null;
         if (is_array($syntaxTree) && !empty($syntaxTree['command'])) {
-            switch ($syntaxTree['command'])
-            {
-                case 'select':
-                    switch (true)
-                    {
-                        case preg_match('/^select\s+1\s+/i', $sqlStmt):
-                            $parser = new \Yana\Db\Queries\Parsers\SelectExistParser($this->_getDatabase());
-                            break;
-                        case preg_match('/^select\s+count\(/i', $sqlStmt):
-                            $parser = new \Yana\Db\Queries\Parsers\SelectCountParser($this->_getDatabase());
-                            break;
-                        default:
-                            $parser = new \Yana\Db\Queries\Parsers\SelectParser($this->_getDatabase());
-                            break;
-                    }
-                    break;
-                case 'insert':
-                    $parser = new \Yana\Db\Queries\Parsers\InsertParser($this->_getDatabase());
-                    break;
-                case 'update':
-                    $parser = new \Yana\Db\Queries\Parsers\UpdateParser($this->_getDatabase());
-                    break;
-                case 'delete':
-                    $parser = new \Yana\Db\Queries\Parsers\DeleteParser($this->_getDatabase());
-                    break;
-            }
-        }
+            $parser = $this->_selectParser($syntaxTree['command'], $sqlStmt);
+        } // else this is no valid SQL
+
         if (!$parser) {
             $message = "Invalid or unknown SQL statement: $sqlStmt.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);
         }
         assert('is_array($syntaxTree)');
         return $parser->parseStatement($syntaxTree);
+    }
+
+    /**
+     * Select the appropriate SQL parser for the command and return in.
+     *
+     * When none can be found this function returns NULL instead.
+     *
+     * @param   string  $command       type of SQL command (SELECT, INSERT aso)
+     * @param   string  $sqlStatement  the SQL statement in full
+     * @return  \Yana\Db\Queries\Parsers\IsParser
+     */
+    private function _selectParser($command, $sqlStatement)
+    {
+        assert('is_string($command); // Wrong argument type argument 1. String expected');
+        assert('is_string($sqlStatement); // Wrong argument type argument 2. String expected');
+        /* @var $parser \Yana\Db\Queries\Parsers\IsParser */
+        switch ($command)
+        {
+            case 'select':
+                switch (true)
+                {
+                    case preg_match('/^select\s+1\s+/i', $sqlStatement):
+                        $parser = new \Yana\Db\Queries\Parsers\SelectExistParser($this->_getDatabase());
+                        break;
+                    case preg_match('/^select\s+count\(/i', $sqlStatement):
+                        $parser = new \Yana\Db\Queries\Parsers\SelectCountParser($this->_getDatabase());
+                        break;
+                    default:
+                        $parser = new \Yana\Db\Queries\Parsers\SelectParser($this->_getDatabase());
+                        break;
+                }
+                break;
+            case 'insert':
+                $parser = new \Yana\Db\Queries\Parsers\InsertParser($this->_getDatabase());
+                break;
+            case 'update':
+                $parser = new \Yana\Db\Queries\Parsers\UpdateParser($this->_getDatabase());
+                break;
+            case 'delete':
+                $parser = new \Yana\Db\Queries\Parsers\DeleteParser($this->_getDatabase());
+                break;
+            default:
+                $parser = null;
+        }
+        return $parser;
     }
 
 }

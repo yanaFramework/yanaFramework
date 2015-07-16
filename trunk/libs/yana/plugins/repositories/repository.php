@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins;
+namespace Yana\Plugins\Repositories;
 
 use Yana\Plugins\Configs;
 
@@ -85,7 +85,7 @@ class Repository extends \Yana\Core\Object
      * Add plugin configuration.
      *
      * @param   \Yana\Plugins\Configs\ClassConfiguration  $plugin  configuration to add
-     * @return  \Yana\Plugins\Repository
+     * @return  \Yana\Plugins\Repositories\Repository
      */
     public function addPlugin($plugin)
     {
@@ -120,7 +120,7 @@ class Repository extends \Yana\Core\Object
      * Add plugin-method configuration.
      *
      * @param   \Yana\Plugins\Configs\MethodConfiguration  $method  configuration to add
-     * @return  \Yana\Plugins\Repository
+     * @return  \Yana\Plugins\Repositories\Repository
      */
     public function addMethod($method)
     {
@@ -151,7 +151,7 @@ class Repository extends \Yana\Core\Object
      */
     public function getImplementations($methodName)
     {
-        assert('is_string($methodName)', ' Invalid argument $methodName: string expected');
+        assert('is_string($methodName); // Invalid argument $methodName: string expected');
         return (isset($this->_implementations[$methodName])) ? $this->_implementations[$methodName] : array();
     }
 
@@ -160,7 +160,7 @@ class Repository extends \Yana\Core\Object
      * 
      * @param   \Yana\Plugins\Configs\ClassConfiguration  $class    implements the given method
      * @param   \Yana\Plugins\Configs\MethodConfiguration $method   implemented by the given class
-     * @return  \Yana\Plugins\Repository 
+     * @return  \Yana\Plugins\Repositories\Repository 
      */
     public function setImplementation(Configs\MethodConfiguration $method, Configs\ClassConfiguration $class)
     {
@@ -174,7 +174,7 @@ class Repository extends \Yana\Core\Object
      * 
      * @param   \Yana\Plugins\Configs\MethodConfiguration $method   remove the implementation of this function
      * @param   string                    $classId  plugin identifier
-     * @return  \Yana\Plugins\Repository 
+     * @return  \Yana\Plugins\Repositories\Repository 
      */
     public function unsetImplementation(Configs\MethodConfiguration $method, $classId)
     {

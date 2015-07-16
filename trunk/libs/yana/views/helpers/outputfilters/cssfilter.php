@@ -50,14 +50,14 @@ class CssFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\
      */
     public function __invoke($source)
     {
-        assert('is_string($source)', ' Wrong type for argument 1. String expected');
+        assert('is_string($source); // Wrong type for argument 1. String expected');
 
         if (mb_strpos($source, '</head>') > -1) {
 
             $htmlHead = "";
 
             $styleList = array_reverse((array) $this->_getViewManager()->getStyles(), true);
-            assert('!isset($stylesheet)', 'cannot redeclare variable $stylesheet');
+            assert('!isset($stylesheet); // cannot redeclare variable $stylesheet');
             foreach ($styleList as $stylesheet)
             {
                 $htmlHead = "        " . $this->_css($stylesheet) . "\n" . $htmlHead;

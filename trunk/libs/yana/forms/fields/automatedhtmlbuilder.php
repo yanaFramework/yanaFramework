@@ -241,7 +241,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 $items = $field->getForm()->getSetup()->getReferenceValues($column->getName());
                 return $this->buildSelect($items, $value, $null);
             case 'set':
-                assert('!isset($items)', ' Cannot redeclare var $items');
+                assert('!isset($items); // Cannot redeclare var $items');
                 $items = $column->getEnumerationItems();
                 if (empty($value)) {
                     $value = array();
@@ -441,7 +441,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 if (empty($value)) {
                     $value = array();
                 }
-                assert('!isset($items)', ' Cannot redeclare var $items');
+                assert('!isset($items); // Cannot redeclare var $items');
                 $items = $column->getEnumerationItems();
                 $this->setCssClass("gui_generator_set");
                 $result = "";

@@ -153,7 +153,7 @@ class Flood extends \Yana\Files\File
      */
     public function setMax($max)
     {
-        assert('is_int($max)', ' Wrong argument type argument 1. Integer expected');
+        assert('is_int($max); // Wrong argument type argument 1. Integer expected');
 
         if ($max >= 0) {
             $this->_max = (int) $max;

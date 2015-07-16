@@ -98,9 +98,9 @@ class Constraint extends \Yana\Db\Ddl\AbstractObject
      */
     public function setDBMS($dbms = "generic")
     {
-        assert('is_string($dbms)', ' Wrong type for argument 1. String expected');
+        assert('is_string($dbms); // Wrong type for argument 1. String expected');
         $dbms = strtolower($dbms);
-        assert('empty($dbms) || in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS())', ' Unsupported DBMS');
+        assert('empty($dbms) || in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
         if (empty($dbms)) {
             $this->dbms = null;
         } else {
@@ -142,7 +142,7 @@ class Constraint extends \Yana\Db\Ddl\AbstractObject
      */
     public function setConstraint($constraint = "")
     {
-        assert('is_string($constraint)', ' Wrong type for argument 1. String expected');
+        assert('is_string($constraint); // Wrong type for argument 1. String expected');
         if (empty($constraint)) {
             $this->constraint = null;
         } else {

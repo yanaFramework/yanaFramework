@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins;
+namespace Yana\Plugins\Annotations;
 
 /**
  * Plugin information
@@ -95,18 +95,18 @@ class ReflectionClass extends \ReflectionClass
      * Get method reflection.
      *
      * @param   string  $methodName   method name
-     * @return  \Yana\Plugins\ReflectionMethod
+     * @return  \Yana\Plugins\Annotations\ReflectionMethod
      */
     public function getMethod($methodName)
     {
-        return new \Yana\Plugins\ReflectionMethod($this->_className, $methodName);
+        return new \Yana\Plugins\Annotations\ReflectionMethod($this->_className, $methodName);
     }
 
     /**
      * Get methods as reflections.
      *
      * @param   int  $filter    filter
-     * @return  \Yana\Plugins\ReflectionMethod[]
+     * @return  \Yana\Plugins\Annotations\ReflectionMethod[]
      */
     public function getMethods($filter = \ReflectionProperty::IS_PUBLIC)
     {

@@ -50,7 +50,7 @@ class GuestUser extends \Yana\Security\Users\User
      */
     public function __construct($userName = "")
     {
-        assert('is_string($userName)', ' Wrong type for argument 1. String expected');
+        assert('is_string($userName); // Wrong type for argument 1. String expected');
 
         parent::__construct('');
     }

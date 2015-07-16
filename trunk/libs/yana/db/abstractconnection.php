@@ -140,7 +140,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public static function setTempDir($dir)
     {
-        assert('is_string($dir)', ' Invalid argument $dir: string expected');
+        assert('is_string($dir); // Invalid argument $dir: string expected');
         self::$_tempDir = $dir . '/';
     }
 
@@ -181,7 +181,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function __get($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
 
         return $this->getSchema()->{$name};
     }
@@ -195,7 +195,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function __call($name, array $arguments)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
 
         return call_user_func_array(array($this->getSchema(), $name), $arguments);
     }
@@ -208,7 +208,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function __isset($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
 
         return ($this->__get($name) !== null);
     }
@@ -336,7 +336,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     {
         if (is_object($key) && $key instanceof \Yana\Db\Queries\Select) {
 
-            assert('func_num_args() === 1', ' Too many arguments. Only 1 argument expected.');
+            assert(func_num_args() === 1);
             $selectQuery = $key;
 
         } else {
@@ -379,7 +379,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
 
         if (is_object($key) && $key instanceof \Yana\Db\Queries\Update) { // input is query object
 
-            assert('func_num_args() === 1', ' Too many arguments in ' . __METHOD__ . '(). Only 1 argument expected.');
+            assert(func_num_args() === 1);
             $updateQuery = $key;
 
         } else { // input is key address
@@ -387,7 +387,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
             /*
              * 2.1) check input
              */
-            assert('is_string($key)', ' wrong argument type for argument 1, string expected');
+            assert('is_string($key); // wrong argument type for argument 1, string expected');
 
 
             if ($key == '') {
@@ -425,11 +425,11 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
          * If true, get the previous array and merge both.
          */
         if ($updateQuery->getExpectedResult() === \Yana\Db\ResultEnumeration::CELL) {
-            assert('!isset($arrayAddress)', ' Cannot redeclare var $arrayAddress');
+            assert('!isset($arrayAddress); // Cannot redeclare var $arrayAddress');
             $arrayAddress = $updateQuery->getArrayAddress();
             if (!empty($arrayAddress)) {
-                assert('!isset($_value)', ' Cannot redeclare var $_value');
-                assert('!isset($_col)', ' Cannot redeclare var $_col');
+                assert('!isset($_value); // Cannot redeclare var $_value');
+                assert('!isset($_col); // Cannot redeclare var $_col');
                 $_col = mb_strtoupper($column);
                 if (isset($this->_cache[$tableName][$row][$_col])) {
                     $_value = \Yana\Util\Hashtable::get($this->_cache[$tableName][$row][$_col], $arrayAddress);
@@ -503,7 +503,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     {
         if (is_object($key)) { // input is query object
 
-            assert('func_num_args() === 1', ' Too many arguments in ' .__METHOD__ . '(). Only 1 argument expected.');
+            assert(func_num_args() === 1);
             $dbQuery =& $key;
             if ($dbQuery instanceof \Yana\Db\Queries\Update) {
                 $this->update($dbQuery);
@@ -518,7 +518,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
 
         } else { // input is key address
 
-            assert('is_string($key)', ' wrong argument type for argument 1, string expected');
+            assert('is_string($key); // wrong argument type for argument 1, string expected');
 
             if ($key == '') {
                 return false;
@@ -529,9 +529,9 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
 
             // extract primary key portion of $key
             $_key = explode('.', $key);
-            assert('!isset($table)', 'Cannot redeclare var $table');
+            assert('!isset($table); // Cannot redeclare var $table');
             $table = $_key[0];
-            assert('!isset($row)', 'Cannot redeclare var $row');
+            assert('!isset($row); // Cannot redeclare var $row');
             $row = '*';
             if (isset($_key[1])) {
                 $row = $_key[1];
@@ -583,13 +583,12 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
         $transaction = $this->_getTransaction(); // throws NotWriteableException
 
         if (is_object($key) && $key instanceof \Yana\Db\Queries\Insert) { // input is query object
-
-            assert('func_num_args() === 1', ' Too many arguments. Only 1 argument expected.');
+            assert(func_num_args() === 1);
             $insertQuery = $key;
 
         } else { // input is key address
 
-            assert('is_string($key)', ' Invalid argument $key: string expected');
+            assert('is_string($key); // Invalid argument $key: string expected');
 
             $queryBuilder = $this->_getQueryBuilder();
             $insertQuery = $queryBuilder->insert($key, $row);
@@ -650,14 +649,14 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function remove($key, array $where = array(), $limit = 1)
     {
-        assert('is_int($limit)', ' Wrong argument type for argument 3. Integer expected.');
-        assert('$limit >= 0', ' Invalid argument 3. Value must be greater or equal 0.');
+        assert('is_int($limit); // Wrong argument type for argument 3. Integer expected.');
+        assert('$limit >= 0; // Invalid argument 3. Value must be greater or equal 0.');
 
         $transaction = $this->_getTransaction(); // throws NotWriteableException
 
         if (is_object($key) && $key instanceof \Yana\Db\Queries\Delete) { // input is query object
 
-            assert('func_num_args() === 1', ' Too many arguments in ' . __METHOD__ . '(). Only 1 argument expected.');
+            assert(func_num_args() === 1);
             $deleteQuery = $key;
 
         } else { // input is key address
@@ -687,12 +686,12 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     {
         if (is_object($table) && $table instanceof \Yana\Db\Queries\SelectCount) { // input is query object
 
-            assert('func_num_args() === 1', ' Too many arguments in ' . __METHOD__ . '(). Only 1 argument expected.');
+            assert(func_num_args() === 1);
             $countQuery =& $table;
 
         } else { // input is table name
 
-            assert('is_string($table)', ' Wrong argument type $table. String expected.');
+            assert('is_string($table); // Wrong argument type $table. String expected.');
 
             // build query
             try {
@@ -718,7 +717,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     public function isEmpty($table)
     {
-        assert('is_string($table)', ' Wrong argument type $table. String expected.');
+        assert('is_string($table); // Wrong argument type $table. String expected.');
         return ($this->length($table) == 0);
     }
 
@@ -743,14 +742,14 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
          * 1) input is query object
          */
         if ($key instanceof \Yana\Db\Queries\SelectExist) {
-            assert('func_num_args() === 1', ' Too many arguments in ' . __METHOD__ . '(). Only 1 argument expected.');
+            assert(func_num_args() === 1);
             return $key->doesExist();
         }
 
         /*
          * 2) input is key address
          */
-        assert('is_string($key)', ' Wrong argument type for argument 1. String expected');
+        assert('is_string($key); // Wrong argument type for argument 1. String expected');
         $key = (string) $key;
 
         // check table
@@ -854,8 +853,8 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      */
     private function _getLastModified($table, $row)
     {
-        assert('is_string($table)', ' Wrong type for argument 1. String expected.');
-        assert('is_string($row)', ' Wrong type for argument 2. String expected.');
+        assert('is_string($table); // Wrong type for argument 1. String expected.');
+        assert('is_string($row); // Wrong type for argument 2. String expected.');
 
         /* settype to STRING */
         $table = (string) $table;
@@ -866,7 +865,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
          * 1) load file
          */
         if (empty($this->_lastModified) && file_exists($path)) {
-            assert('!isset($lastModified)', ' Cannot redeclare var $lastModified');
+            assert('!isset($lastModified); // Cannot redeclare var $lastModified');
             $lastModified = unserialize(file_get_contents($path));
             if (!is_array($lastModified)) {
                 $lastModified = array();
@@ -890,13 +889,13 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
         /*
          * 3) get time
          */
-        assert('!isset($lastModified)', ' Cannot redeclare var $lastModified');
+        assert('!isset($lastModified); // Cannot redeclare var $lastModified');
         $lastModified = 0;
         if (!empty($this->_lastModified) && isset($this->_lastModified[$table][$row])) {
-            assert('!isset($array)', ' Cannot redeclare var $array');
+            assert('!isset($array); // Cannot redeclare var $array');
             $array = $this->_lastModified[$table][$row];
-            assert('is_array($array)', ' $array should be an array');
-            assert('count($array) === 2', ' $array should have 2 values: timestamp and user id');
+            assert('is_array($array); // $array should be an array');
+            assert('count($array) === 2; // $array should have 2 values: timestamp and user id');
             // check if row has been changed by a different user
             if ($userId !== array_pop($array)) {
                 $lastModified = array_pop($array);

@@ -44,9 +44,9 @@ class Loader extends \Yana\Core\Autoloaders\AbstractLoader
      */
     public function loadClassFile($className)
     {
-        assert('!isset($fileName)', ' Cannot redeclare var $fileName');
+        assert('!isset($fileName); // Cannot redeclare var $fileName');
         $fileName = "";
-        assert('!isset($mapper)', ' Cannot redeclare var $mapper');
+        assert('!isset($mapper); // Cannot redeclare var $mapper');
         foreach ($this->getMaps() as $mapper)
         {
             assert($mapper instanceof \Yana\Core\Autoloaders\IsMapper);

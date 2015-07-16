@@ -79,7 +79,7 @@ class Structure extends \Yana\Files\SML
      */
     public function __construct($filename)
     {
-        assert('is_string($filename)', ' Wrong type for argument 1. String expected');
+        assert('is_string($filename); // Wrong type for argument 1. String expected');
         $filename = \Yana\Db\Structure::_getFilename($filename);
         parent::__construct($filename, CASE_UPPER);
 
@@ -119,8 +119,8 @@ class Structure extends \Yana\Files\SML
             {
                 $this->content['TABLES'][$k]['PRIMARY_KEY'] = mb_strtolower($v['PRIMARY_KEY']);
                 if (isset($v['FOREIGN_KEYS'])) {
-                    assert('!isset($k1)', 'cannot redeclare variable $k1');
-                    assert('!isset($v1)', 'cannot redeclare variable $v1');
+                    assert('!isset($k1); // cannot redeclare variable $k1');
+                    assert('!isset($v1); // cannot redeclare variable $v1');
                     foreach ($v['FOREIGN_KEYS'] as $k1 => $v1)
                     {
                         $this->content['TABLES'][$k]['FOREIGN_KEYS'][$k1] = mb_strtolower($v1);
@@ -187,7 +187,7 @@ class Structure extends \Yana\Files\SML
 
         } else {
             $source = implode("", $source);
-            assert('is_string($source)', ' Unexpected result $source. String expected');
+            assert('is_string($source); // Unexpected result $source. String expected');
             if (empty($source)) {
                 return false;
             } else {
@@ -260,8 +260,8 @@ class Structure extends \Yana\Files\SML
      */
     public function renameTable($oldTable, $newTable)
     {
-        assert('is_string($oldTable)', ' Wrong type for argument 1. String expected');
-        assert('is_string($newTable)', ' Wrong type for argument 2. String expected');
+        assert('is_string($oldTable); // Wrong type for argument 1. String expected');
+        assert('is_string($newTable); // Wrong type for argument 2. String expected');
         $newTable = mb_strtoupper("$newTable");
         $oldTable = mb_strtoupper("$oldTable");
 
@@ -305,7 +305,7 @@ class Structure extends \Yana\Files\SML
      */
     public function dropTable($table)
     {
-        assert('is_string($table)', ' Wrong type for argument 1. String expected');
+        assert('is_string($table); // Wrong type for argument 1. String expected');
         $table = mb_strtoupper("$table");
 
         if (!isset($this->content['TABLES'][$table])) {
@@ -396,9 +396,9 @@ class Structure extends \Yana\Files\SML
      */
     public function renameColumn($table, $oldColumn, $newColumn)
     {
-        assert('is_string($table)', ' Invalid argument $table: string expected');
-        assert('is_string($oldColumn)', ' Invalid argument $oldColumn: string expected');
-        assert('is_string($newColumn)', ' Invalid argument $newColumn: string expected');
+        assert('is_string($table); // Invalid argument $table: string expected');
+        assert('is_string($oldColumn); // Invalid argument $oldColumn: string expected');
+        assert('is_string($newColumn); // Invalid argument $newColumn: string expected');
 
         $oldColumn = mb_strtoupper($oldColumn);
         $newColumn = mb_strtoupper($newColumn);
@@ -448,8 +448,8 @@ class Structure extends \Yana\Files\SML
      */
     public function dropColumn($table, $column)
     {
-        assert('is_string($table)', ' Invalid argument $table: string expected');
-        assert('is_string($column)', ' Invalid argument $column: string expected');
+        assert('is_string($table); // Invalid argument $table: string expected');
+        assert('is_string($column); // Invalid argument $column: string expected');
 
         $column = mb_strtoupper($column);
 
@@ -2416,7 +2416,7 @@ class Structure extends \Yana\Files\SML
      */
     public function getAssociation($table)
     {
-        assert('is_string($table)', 'Wrong argument type for argument 1. String expected.');
+        assert('is_string($table); // Wrong argument type for argument 1. String expected.');
         $table = mb_strtoupper($table);
 
         /*
@@ -2446,7 +2446,7 @@ class Structure extends \Yana\Files\SML
      */
     public function hasAssociation($table)
     {
-        assert('is_string($table)', 'Wrong argument type for argument 1. String expected.');
+        assert('is_string($table); // Wrong argument type for argument 1. String expected.');
 
         if (!isset($this->content['ASSOCIATIONS'])) {
             return false;
@@ -2474,8 +2474,8 @@ class Structure extends \Yana\Files\SML
      */
     public function setAssociation($dbName, $table)
     {
-        assert('is_string($dbName)', 'Wrong argument type for argument 1. String expected.');
-        assert('is_string($table)', 'Wrong argument type for argument 2. String expected.');
+        assert('is_string($dbName); // Wrong argument type for argument 1. String expected.');
+        assert('is_string($table); // Wrong argument type for argument 2. String expected.');
 
         if (!isset($this->content['ASSOCIATIONS']) || !is_array($this->content['ASSOCIATIONS'])) {
             $this->content['ASSOCIATIONS'] = array();
@@ -2512,7 +2512,7 @@ class Structure extends \Yana\Files\SML
      */
     public function unsetAssociation($table = "")
     {
-        assert('is_string($table)', 'Wrong argument type for argument 1. String expected.');
+        assert('is_string($table); // Wrong argument type for argument 1. String expected.');
 
         if ($table == "") {
             if (isset($this->content['ASSOCIATIONS'])) {
@@ -2577,9 +2577,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setConstraint($constraint, $table, $column = null)
     {
-        assert('is_string($constraint)', ' Invalid argument $constraint: string expected');
-        assert('is_string($table)', ' Invalid argument $table: string expected');
-        assert('is_null($column) || is_string($column)', ' Invalid argument $column: string expected');
+        assert('is_string($constraint); // Invalid argument $constraint: string expected');
+        assert('is_string($table); // Invalid argument $table: string expected');
+        assert('is_null($column) || is_string($column); // Invalid argument $column: string expected');
 
         if (!preg_match(\Yana\Db\Helpers\ConstraintCollection::CONSTRAINT_SYNTAX, $constraint)) {
             trigger_error("Syntax error in constraint: '".trim($constraint)."'.", E_USER_WARNING);
@@ -2648,13 +2648,13 @@ class Structure extends \Yana\Files\SML
      */
     public function setTrigger($trigger, $operation, $table, $column = null)
     {
-        assert('is_string($name)', ' Wrong type for argument 1. String expected');
-        assert('is_string($operation)', ' Wrong type for argument 2. String expected');
-        assert('is_string($table) || is_null($table)', ' Wrong type for argument 3. String expected');
-        assert('is_string($column) || is_null($column)', ' Wrong type for argument 4. String expected');
+        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($operation); // Wrong type for argument 2. String expected');
+        assert('is_string($table) || is_null($table); // Wrong type for argument 3. String expected');
+        assert('is_string($column) || is_null($column); // Wrong type for argument 4. String expected');
 
         $operation = mb_strtoupper("$operation");
-        assert('preg_match("/^(BEFORE|AFTER)_(INSERT|UPDATE|DELETE)$/", $operation)', ' Invalid operation');
+        assert('preg_match("/^(BEFORE|AFTER)_(INSERT|UPDATE|DELETE)$/", $operation); // Invalid operation');
 
         if (!is_null($column)) {
             $col =& $this->_getColumn($table, $column);
@@ -3472,10 +3472,10 @@ class Structure extends \Yana\Files\SML
      */
     public function setAction($table, $column, $action = null, $namespace = 'DEFAULT', $linkText = '', $tooltip = '')
     {
-        assert('is_null($action) || is_string($action)', ' Invalid argument $action: string expected');
-        assert('is_string($namespace)', ' Invalid argument $namespace: string expected');
-        assert('is_string($linkText)', ' Invalid argument $linkText: string expected');
-        assert('is_string($tooltip)', ' Invalid argument $tooltip: string expected');
+        assert('is_null($action) || is_string($action); // Invalid argument $action: string expected');
+        assert('is_string($namespace); // Invalid argument $namespace: string expected');
+        assert('is_string($linkText); // Invalid argument $linkText: string expected');
+        assert('is_string($tooltip); // Invalid argument $tooltip: string expected');
 
         $col =& $this->_getColumn($table, $column);
         $namespace = mb_strtoupper("$namespace");
@@ -3718,7 +3718,7 @@ class Structure extends \Yana\Files\SML
                 $columns = array_keys($this->content['TABLES'][$table]['CONTENT']);
             }
 
-            assert('is_array($columns)', ' the table '.$table.' has no contents');
+            assert('is_array($columns); // the table '.$table.' has no contents');
             if (is_array($columns)) {
                 foreach ($columns as $column)
                 {
@@ -3786,12 +3786,12 @@ class Structure extends \Yana\Files\SML
      */
     public function includeFile($filename)
     {
-        assert('is_string($filename)', ' Wrong argument type argument 1. String expected');
+        assert('is_string($filename); // Wrong argument type argument 1. String expected');
         $file = new \Yana\Db\Structure($filename);
         $file->read();
-        assert('!isset($current_list)', ' cannot redeclare $current_list');
-        assert('!isset($import_list)', ' cannot redeclare $import_list');
-        assert('!isset($intersection)', ' cannot redeclare $intersection');
+        assert('!isset($current_list); // cannot redeclare $current_list');
+        assert('!isset($import_list); // cannot redeclare $import_list');
+        assert('!isset($intersection); // cannot redeclare $intersection');
         $current_list = array_keys($this->content['TABLES']);
         $import_list  = array_keys($file->content['TABLES']);
         $intersection = array_intersect($current_list, $import_list);
@@ -3802,7 +3802,7 @@ class Structure extends \Yana\Files\SML
             trigger_error($message, E_USER_WARNING);
             return false;
         }
-        assert('!isset($table)', ' cannot redeclare $table');
+        assert('!isset($table); // cannot redeclare $table');
         /* $this->unsetAssociation(); */
         $databaseName = $file->getDatabaseName();
         foreach ($import_list as $table)
@@ -3836,7 +3836,7 @@ class Structure extends \Yana\Files\SML
      */
     public function addStructure($table, array $array)
     {
-        assert('is_string($table)', ' Wrong type for argument 1. String expected');
+        assert('is_string($table); // Wrong type for argument 1. String expected');
 
         /* init header */
         if (empty($this->content)) {
@@ -4069,9 +4069,9 @@ class Structure extends \Yana\Files\SML
             if ($col['foreignkey'] === true && $this->getType($table, $name) !== 'select') {
                 $this->setType($table, $name, 'select');
                 if (is_array($col['references'])) {
-                    assert('!isset($fTable)', ' Cannot redeclare var $fTable');
-                    assert('!isset($fId)', ' Cannot redeclare var $fId');
-                    assert('!isset($fName)', ' Cannot redeclare var $fName');
+                    assert('!isset($fTable); // Cannot redeclare var $fTable');
+                    assert('!isset($fId); // Cannot redeclare var $fId');
+                    assert('!isset($fName); // Cannot redeclare var $fName');
                     $fTable = array_shift($col['references']);
                     $fId = array_shift($col['references']);
                     if ($this->isColumn($fTable, 'name')) {
@@ -4132,7 +4132,7 @@ class Structure extends \Yana\Files\SML
          * set foreign key
          */
         if (isset($array['foreignkeys']) && is_array($array['foreignkeys'])) {
-            assert('!isset($element)', ' Cannot redeclare var $element');
+            assert('!isset($element); // Cannot redeclare var $element');
             foreach ($array['foreignkeys'] as $element)
             {
                 $this->setForeignKey($table, $element['column'], $element['foreigntable'], $element['foreigncolumn']);
@@ -4155,7 +4155,7 @@ class Structure extends \Yana\Files\SML
      */
     private static function _getFilename($databaseName)
     {
-        assert('is_string($databaseName)', ' Wrong argument type argument 1. String expected');
+        assert('is_string($databaseName); // Wrong argument type argument 1. String expected');
         if (preg_match('/^([\w\d_]+)$/', $databaseName)) {
             $databaseName = self::getDirectory() . "$databaseName" . self::$_extension;
         }
@@ -4387,10 +4387,10 @@ class Structure extends \Yana\Files\SML
      */
     private function &_getColumnProperty(&$table, &$column, $property, $namespace = '')
     {
-        assert('is_string($table)', ' Wrong type for argument 1. String expected');
-        assert('is_string($column)', ' Wrong type for argument 2. String expected');
-        assert('is_string($property)', ' Wrong type for argument 3. String expected');
-        assert('is_string($namespace)', ' Wrong type for argument 4. String expected');
+        assert('is_string($table); // Wrong type for argument 1. String expected');
+        assert('is_string($column); // Wrong type for argument 2. String expected');
+        assert('is_string($property); // Wrong type for argument 3. String expected');
+        assert('is_string($namespace); // Wrong type for argument 4. String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -4428,9 +4428,9 @@ class Structure extends \Yana\Files\SML
      */
     private function _setColumnProperty(&$table, &$column, $property, $value)
     {
-        assert('is_string($table)', ' Wrong type for argument 1. String expected');
-        assert('is_string($column)', ' Wrong type for argument 2. String expected');
-        assert('is_string($property)', ' Wrong type for argument 3. String expected');
+        assert('is_string($table); // Wrong type for argument 1. String expected');
+        assert('is_string($column); // Wrong type for argument 2. String expected');
+        assert('is_string($property); // Wrong type for argument 3. String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -4457,11 +4457,11 @@ class Structure extends \Yana\Files\SML
      */
     private function _logChanges($table, $column, $comment, $function, $renamedObject = '')
     {
-        assert('is_string($table)', ' Wrong type for argument 1. String expected');
-        assert('is_string($column) || is_null($column)', ' Wrong type for argument 2. String expected');
-        assert('is_string($comment)', ' Wrong type for argument 3. String expected');
-        assert('is_string($function)', ' Wrong type for argument 4. String expected');
-        assert('is_string($renamedObject)', ' Wrong type for argument 5. String expected');
+        assert('is_string($table); // Wrong type for argument 1. String expected');
+        assert('is_string($column) || is_null($column); // Wrong type for argument 2. String expected');
+        assert('is_string($comment); // Wrong type for argument 3. String expected');
+        assert('is_string($function); // Wrong type for argument 4. String expected');
+        assert('is_string($renamedObject); // Wrong type for argument 5. String expected');
 
         $table = mb_strtolower("$table");
         $column = mb_strtolower("$column");

@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins;
+namespace Yana\Plugins\Repositories;
 
 /**
  * <<abstract>> Plugin configuration repository builder.
@@ -35,13 +35,13 @@ namespace Yana\Plugins;
  * @package     yana
  * @subpackage  plugins
  */
-abstract class AbstractRepositoryBuilder extends \Yana\Core\Object
+abstract class AbstractBuilder extends \Yana\Core\Object
 {
 
     /**
      * Plugin repository raw object.
      *
-     * @var  \Yana\Plugins\Repository
+     * @var  \Yana\Plugins\Repositories\Repository
      */
     protected $object = null;
 
@@ -58,7 +58,7 @@ abstract class AbstractRepositoryBuilder extends \Yana\Core\Object
      */
     public function createNewRepository()
     {
-        $this->object = new \Yana\Plugins\Repository();
+        $this->object = new \Yana\Plugins\Repositories\Repository();
     }
 
     /**

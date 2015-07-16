@@ -80,7 +80,7 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
      */
     public function __construct($name, \Yana\Db\Ddl\ChangeLog $parent = null)
     {
-        assert('is_string($name)', ' Wrong type for argument 1. String expected');
+        assert('is_string($name); // Wrong type for argument 1. String expected');
         $this->setName($name);
         $this->parent = $parent;
     }
@@ -115,8 +115,8 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
      */
     public function setSubject($subject = "")
     {
-        assert('is_string($subject)', ' Wrong type for argument 1. String expected');
-        assert('preg_match("/^(table|column|index|view|sequence|trigger|constraint)\$/", $subject)', 'Invalid subject');
+        assert('is_string($subject); // Wrong type for argument 1. String expected');
+        assert('preg_match("/^(table|column|index|view|sequence|trigger|constraint)\$/", $subject); // Invalid subject');
         
         if (empty($subject)) {
             $this->subject = null;
@@ -153,7 +153,7 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
      */
     public function setName($name)
     {
-        assert('is_string($name)', ' Wrong type for argument 1. String expected');
+        assert('is_string($name); // Wrong type for argument 1. String expected');
         if (!preg_match('/^[a-z]\w+$/is', $name)) {
             $message = "Not a valid object name: '$name'. " .
                 "Must start with a letter and may only contain: a-z, 0-9, '-' and '_'.";

@@ -59,7 +59,7 @@ class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
         switch (true)
         {
             case !empty($params['file']):
-                assert('is_string($params["file"])', ' Wrong argument type: file. String expected');
+                assert('is_string($params["file"]); // Wrong argument type: file. String expected');
                 $filename = $params['file'];
                 if (!\Yana\Util\String::startsWith($filename, 'template:')) {
                     $filename = 'template:' . $filename;
@@ -68,7 +68,7 @@ class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
             break;
 
             case !empty($params['id']):
-                assert('is_string($params["id"])', ' Wrong argument type: id. String expected');
+                assert('is_string($params["id"]); // Wrong argument type: id. String expected');
                 $filename = $params['id'];
                 if (!\Yana\Util\String::startsWith($filename, 'id:')) {
                     $filename = 'id:' . $filename;
@@ -77,7 +77,7 @@ class Import extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
             break;
 
             case !empty($params['template']):
-                assert('is_string($params["template"])', ' Wrong argument type: template. String expected');
+                assert('is_string($params["template"]); // Wrong argument type: template. String expected');
                 $filename = $params['template'];
                 if (!\Yana\Util\String::startsWith($filename, 'id:') && !\Yana\Util\String::startsWith($filename, 'template:')) {
                     $filename = ((\is_file($filename)) ? 'template:' : 'id:') . $filename;

@@ -49,7 +49,7 @@ class IncludeFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Y
      */
     public function __invoke($source, \Smarty_Internal_Template $templateClass)
     {
-        assert('is_string($source)', ' Wrong type for argument 1. String expected');
+        assert('is_string($source); // Wrong type for argument 1. String expected');
         if ($templateClass->getTemplateVars('FILE_IS_INCLUDE')) {
             $source = preg_replace("/^.*<body(.*)>(.*)<\/body>.*$/Usi", "<div\\1>\\2</div>", $source);
         }

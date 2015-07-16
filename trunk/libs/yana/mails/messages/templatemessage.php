@@ -104,7 +104,7 @@ class TemplateMessage extends \Yana\Mails\Messages\Message implements \Yana\Core
      */
     public function getVar($key)
     {
-        assert('is_string($key)', ' Wrong argument type for argument 1. String expected.');
+        assert('is_string($key); // Wrong argument type for argument 1. String expected.');
 
         return $this->_getTemplate()->getVar($key);
     }
@@ -118,7 +118,7 @@ class TemplateMessage extends \Yana\Mails\Messages\Message implements \Yana\Core
      */
     public function setVar($varName, $var)
     {
-        assert('is_string($varName)', ' Wrong argument type for argument 1. String expected.');
+        assert('is_string($varName); // Wrong argument type for argument 1. String expected.');
         $this->_getTemplate()->setVar($varName, $var);
         return $this;
     }
@@ -149,7 +149,7 @@ class TemplateMessage extends \Yana\Mails\Messages\Message implements \Yana\Core
      */
     public function setVarByReference($varName, &$var)
     {
-        assert('is_string($varName)', ' Invalid argument $varName: string expected');
+        assert('is_string($varName); // Invalid argument $varName: string expected');
 
         $this->_getTemplate()->setVarByReference($varName, $var);
         return $this;

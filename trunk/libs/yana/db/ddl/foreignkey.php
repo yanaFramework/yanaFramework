@@ -151,7 +151,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      */
     public function setTargetTable($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (empty($name)) {
             $this->targetTable = null;
         } else {
@@ -188,7 +188,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      */
     public function getColumns()
     {
-        assert('is_array($this->columns)', ' member "columns" is expected to be an array');
+        assert('is_array($this->columns); // member "columns" is expected to be an array');
         return $this->columns;
     }
 
@@ -240,8 +240,8 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      */
     public function setColumn($source, $target = "")
     {
-        assert('is_string($source)', ' Wrong type for argument 1. String expected');
-        assert('is_string($target)', ' Wrong type for argument 2. String expected');
+        assert('is_string($source); // Wrong type for argument 1. String expected');
+        assert('is_string($target); // Wrong type for argument 2. String expected');
 
         $source = mb_strtolower($source);
         // set target column to primary key
@@ -306,7 +306,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      */
     public function getMatch()
     {
-        assert('is_int($this->match)', ' Member "match" is expected to be an integer');
+        assert('is_int($this->match); // Member "match" is expected to be an integer');
         return $this->match;
     }
 
@@ -327,7 +327,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      */
     public function setMatch($match)
     {
-        assert('is_numeric($match)', ' Wrong type for argument 1. Integer expected');
+        assert('is_numeric($match); // Wrong type for argument 1. Integer expected');
         switch($match)
         {
             case \Yana\Db\Ddl\KeyMatchStrategyEnumeration::SIMPLE:
@@ -389,7 +389,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      */
     public function getOnDelete()
     {
-        assert('is_int($this->onDelete)', ' Member "onDelete" is expected to be an integer');
+        assert('is_int($this->onDelete); // Member "onDelete" is expected to be an integer');
         return $this->onDelete;
     }
 
@@ -414,7 +414,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      */
     public function setOnDelete($match)
     {
-        assert('is_int($match)', ' Wrong type for argument 1. Integer expected');
+        assert('is_int($match); // Wrong type for argument 1. Integer expected');
 
         switch($match)
         {
@@ -452,7 +452,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      */
     public function getOnUpdate()
     {
-        assert('is_int($this->onUpdate)', ' Member "onUpdate" is expected to be an integer');
+        assert('is_int($this->onUpdate); // Member "onUpdate" is expected to be an integer');
         return $this->onUpdate;
     }
 
@@ -477,7 +477,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      */
     public function setOnUpdate($match)
     {
-        assert('is_int($match)', ' Wrong type for argument 1. Integer expected');
+        assert('is_int($match); // Wrong type for argument 1. Integer expected');
         switch($match)
         {
             case \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION:
@@ -540,7 +540,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      */
     public function setDeferrable($isDeferrable)
     {
-        assert('is_bool($isDeferrable)', ' Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isDeferrable); // Wrong type for argument 1. Boolean expected');
         $this->deferrable = (bool) $isDeferrable;
         return $this;
     }

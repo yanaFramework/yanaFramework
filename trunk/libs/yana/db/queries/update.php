@@ -240,7 +240,7 @@ class Update extends \Yana\Db\Queries\Insert
         /*
          * build query: select profile_id from table where id = "foo"
          */
-        assert('!isset($select)', 'Cannot redeclare variable $select');
+        assert('!isset($select); // Cannot redeclare variable $select');
         $select = new \Yana\Db\Queries\Select($this->db);
         $select->setTable($table);
         $select->setRow($row);
@@ -254,7 +254,7 @@ class Update extends \Yana\Db\Queries\Insert
         unset($select);
 
         $resultRow = $result->fetchRow(0);
-        assert('is_array($resultRow)', 'unexpected result: $resultRow');
+        assert('is_array($resultRow); // unexpected result: $resultRow');
         $profileId = array_pop($resultRow);
         $session = \Yana\Security\Users\SessionManager::getInstance();
         if ($session->checkPermission($profileId) !== true) {
@@ -329,12 +329,12 @@ class Update extends \Yana\Db\Queries\Insert
          * of statements do not have this token.
          */
         if (strpos($stmt, '%SET%') !== false) {
-            assert('!isset($set)', ' Cannot redeclare $set');
+            assert('!isset($set); // Cannot redeclare $set');
             $set = "";
             if ($this->expectedResult === \Yana\Db\ResultEnumeration::ROW) {
                 if (is_array($this->values)) {
-                    assert('!isset($column)', ' Cannot redeclare $column');
-                    assert('!isset($value)', ' Cannot redeclare $value');
+                    assert('!isset($column); // Cannot redeclare $column');
+                    assert('!isset($value); // Cannot redeclare $value');
                     foreach ($this->values as $column => $value)
                     {
                         if (is_null($value)) {

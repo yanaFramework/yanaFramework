@@ -173,7 +173,7 @@ class ApplicationBuilder extends \Yana\Core\Object
     private function _runOnCommandLine()
     {
         global $YANA;
-        $YANA = \Yana \Application::getInstance();
+        $YANA = $this->_createApplication();
         // Handle the request
         $YANA->callAction();
 
@@ -260,13 +260,71 @@ class ApplicationBuilder extends \Yana\Core\Object
                 $outputCompressionActive = true;
             }
         }
-        $YANA = \Yana\Application::getInstance(); // Get a yana-instance
+        $YANA = $this->_createApplication();
         $YANA->callAction();         // Handle the request
         $YANA->outputResults();      // Create the output
         // flush the output buffer (GZ-compression)
         if ($outputCompressionActive && ob_get_length() !== false) {
             ob_end_flush();
         }
+    }
+
+    /**
+     * Build and return the application object.
+     *
+     * @return  \Yana\Application
+     */
+    private function _createApplication()
+    {
+        $configuration = $this->_loadConfiguration();
+        \Yana\Application::setConfiguration($configuration);
+        $application = \Yana\Application::getInstance(); // Get a yana-instance
+        $application->setCache($this->_loadApplicationCache($configuration));
+        return $application;
+    }
+
+    /**
+     * Create file cache in a temporary directory.
+     * 
+     * @return  \Yana\Data\Adapters\IsDataAdapter
+     */
+    private function _loadApplicationCache(\Yana\Util\XmlArray $configuration)
+    {
+        if (!empty($configuration->tempdir) && is_dir((string) $configuration->tempdir)) {
+            $temporaryDirectory = new \Yana\Files\Dir((string) $configuration->tempdir);
+            $adapter = new \Yana\Data\Adapters\FileCacheAdapter($temporaryDirectory);
+        } else {
+            $adapter = new \Yana\Data\Adapters\ArrayAdapter();
+        }
+        return $adapter;
+    }
+
+    /**
+     * Load a system configuration file.
+     *
+     * Also uses the file (if found) to initialize some default directories important to the application.
+     * 
+     * @return  \Yana\Util\XmlArray
+     */
+    private function _loadConfiguration()
+    {
+        $configurationFactory = new \Yana\ConfigurationFactory();
+        $configuration = $configurationFactory->loadConfiguration(__DIR__ . "/../../config/system.config.xml");
+
+        \Yana\Db\AbstractConnection::setTempDir((string) $configuration->tempdir);
+
+        // initialize directories
+        if (!empty($configuration->skindir) && is_dir($configuration->skindir)) {
+            \Yana\Views\Skins\Skin::setBaseDirectory((string) $configuration->skindir);
+        }
+        if (isset($configuration->pluginfile)) {
+            \Yana\Plugins\Manager::setPath((string) $configuration->pluginfile, (string) $configuration->plugindir);
+        }
+        if (!empty($configuration->blobdir)) {
+            \Yana\Db\Blob::setDirectory((string) $configuration->blobdir);
+        }
+
+        return $configuration;
     }
 
 }

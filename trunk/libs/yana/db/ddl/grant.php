@@ -138,7 +138,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      */
     public function setRole($role = "")
     {
-        assert('is_string($role)', ' Wrong type for argument 1. String expected');
+        assert('is_string($role); // Wrong type for argument 1. String expected');
         if (empty($role)) {
             $this->role = null;
         } else {
@@ -183,7 +183,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      */
     public function setUser($user = "")
     {
-        assert('is_string($user)', ' Wrong type for argument 1. String expected');
+        assert('is_string($user); // Wrong type for argument 1. String expected');
         if (empty($user)) {
             $this->user = null;
         } else {
@@ -226,7 +226,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      */
     public function setLevel($level = null)
     {
-        assert('is_null($level) || is_int($level)', ' Wrong type for argument 1. Integer expected');
+        assert('is_null($level) || is_int($level); // Wrong type for argument 1. Integer expected');
         if (is_null($level)) {
             $this->level = null;
         } elseif ($level < 0 || $level > 100) {
@@ -264,7 +264,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      */
     public function setSelect($isSelectable = true)
     {
-        assert('is_bool($isSelectable)', ' Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isSelectable); // Wrong type for argument 1. Boolean expected');
         $this->select = (bool) $isSelectable;
         return $this;
     }
@@ -295,7 +295,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      */
     public function setInsert($isInsertable = true)
     {
-        assert('is_bool($isInsertable)', ' Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isInsertable); // Wrong type for argument 1. Boolean expected');
         $this->insert = (bool) $isInsertable;
         return $this;
     }
@@ -326,7 +326,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      */
     public function setUpdate($isUpdatable = true)
     {
-        assert('is_bool($isUpdatable)', ' Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isUpdatable); // Wrong type for argument 1. Boolean expected');
         $this->update = (bool) $isUpdatable;
         return $this;
     }
@@ -357,7 +357,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      */
     public function setDelete($isDeletable = true)
     {
-        assert('is_bool($isDeletable)', ' Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isDeletable); // Wrong type for argument 1. Boolean expected');
         $this->delete = (bool) $isDeletable;
         return $this;
     }
@@ -390,7 +390,7 @@ class Grant extends \Yana\Db\Ddl\DDL
      */
     public function setGrantOption($isGrantable = true)
     {
-        assert('is_bool($isGrantable)', ' Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isGrantable); // Wrong type for argument 1. Boolean expected');
         $this->grant = (bool) $isGrantable;
         return $this;
     }
@@ -413,11 +413,11 @@ class Grant extends \Yana\Db\Ddl\DDL
      */
     public function checkPermission($select = false, $insert = false, $update = false, $delete = false, $grant = false)
     {
-        assert('is_bool($select)', ' Wrong type for argument 1. Boolean expected');
-        assert('is_bool($insert)', ' Wrong type for argument 2. Boolean expected');
-        assert('is_bool($update)', ' Wrong type for argument 3. Boolean expected');
-        assert('is_bool($delete)', ' Wrong type for argument 4. Boolean expected');
-        assert('is_bool($grant)', ' Wrong type for argument 5. Boolean expected');
+        assert('is_bool($select); // Wrong type for argument 1. Boolean expected');
+        assert('is_bool($insert); // Wrong type for argument 2. Boolean expected');
+        assert('is_bool($update); // Wrong type for argument 3. Boolean expected');
+        assert('is_bool($delete); // Wrong type for argument 4. Boolean expected');
+        assert('is_bool($grant); // Wrong type for argument 5. Boolean expected');
         switch (true)
         {
             case $select && !$this->isSelectable():

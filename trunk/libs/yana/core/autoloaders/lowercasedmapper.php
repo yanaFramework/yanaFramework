@@ -43,7 +43,7 @@ class LowerCasedMapper extends \Yana\Core\Autoloaders\GenericMapper
      */
     public function mapClassNameToFilePath($className)
     {
-        assert('is_string($className)', ' Invalid input $className. String expected');
+        assert('is_string($className); // Invalid input $className. String expected');
 
         return parent::mapClassNameToFilePath(strtolower($className));
     }

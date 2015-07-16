@@ -143,7 +143,7 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      */
     public function setDescription($description)
     {
-        assert('is_string($description)', ' Wrong type for argument 1. String expected');
+        assert('is_string($description); // Wrong type for argument 1. String expected');
         if (empty($description)) {
             $this->description = null;
         } else {
@@ -190,7 +190,7 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      */
     public function setStart($start = null)
     {
-        assert('is_null($start) || is_int($start)', ' Wrong type for argument 1. Integer expected');
+        assert('is_null($start) || is_int($start); // Wrong type for argument 1. Integer expected');
         if (empty($start)) {
             $this->start = null;
 
@@ -244,7 +244,7 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      */
     public function setIncrement($increment = 1)
     {
-        assert('is_int($increment)', ' Wrong type for argument 1. Integer expected');
+        assert('is_int($increment); // Wrong type for argument 1. Integer expected');
         if (!empty($increment)) {
             $this->increment = (int) $increment;
 
@@ -288,7 +288,7 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      */
     public function setMin($min = null)
     {
-        assert('is_null($min) || is_int($min)', ' Wrong type for argument 1. Integer expected');
+        assert('is_null($min) || is_int($min); // Wrong type for argument 1. Integer expected');
         if (is_null($min)) {
             $this->min = null;
 
@@ -336,7 +336,7 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      */
     public function setMax($max = null)
     {
-        assert('is_null($max) || is_int($max)', ' Wrong type for argument 1. Integer expected');
+        assert('is_null($max) || is_int($max); // Wrong type for argument 1. Integer expected');
         if (empty($max)) {
             $this->max = null;
 
@@ -381,7 +381,7 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      */
     public function setCycle($isCycle = false)
     {
-        assert('is_bool($isCycle)', ' Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isCycle); // Wrong type for argument 1. Boolean expected');
         $this->cycle = (bool) $isCycle;
         return $this;
     }

@@ -104,9 +104,9 @@ class DatabaseInit extends \Yana\Db\Ddl\DDL
      */
     public function setDBMS($dbms = "generic")
     {
-        assert('is_string($dbms)', ' Wrong type for argument 1. String expected');
+        assert('is_string($dbms); // Wrong type for argument 1. String expected');
         $dbms = strtolower($dbms);
-        assert('empty($dbms) || in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS())', ' Unsupported DBMS');
+        assert('empty($dbms) || in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
         if (empty($dbms)) {
             $this->dbms = null;
         } else {
@@ -141,7 +141,7 @@ class DatabaseInit extends \Yana\Db\Ddl\DDL
      */
     public function setSQL($sql)
     {
-        assert('is_string($sql)', ' Wrong type for argument 1. String expected');
+        assert('is_string($sql); // Wrong type for argument 1. String expected');
         if (empty($sql)) {
             $this->sql = null;
         } else {

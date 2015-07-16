@@ -148,7 +148,7 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
      */
     public function setTitle($title = "")
     {
-        assert('is_string($title)', ' Wrong type for argument 1. String expected');
+        assert('is_string($title); // Wrong type for argument 1. String expected');
         if (empty($title)) {
             $this->title = null;
         } else {
@@ -200,7 +200,7 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
      */
     public function setDescription($description)
     {
-        assert('is_string($description)', ' Wrong type for argument 1. String expected');
+        assert('is_string($description); // Wrong type for argument 1. String expected');
         if (empty($description)) {
             $this->description = null;
         } else {
@@ -222,9 +222,9 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
      */
     public function getImplementation($dbms = "generic")
     {
-        assert('is_string($dbms)', ' Wrong type for argument 1. String expected');
+        assert('is_string($dbms); // Wrong type for argument 1. String expected');
         $dbms = strtolower($dbms);
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS())', ' Unsupported DBMS');
+        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
         if (!isset($this->implementations[$dbms])) {
             return null;
         } else {
@@ -262,7 +262,7 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
      */
     public function addImplementation($dbms = "generic")
     {
-        assert('is_string($dbms)', ' Wrong type for argument 1. String expected');
+        assert('is_string($dbms); // Wrong type for argument 1. String expected');
         if (!isset($this->implementations[$dbms])) {
             $implementation = new \Yana\Db\Ddl\Functions\Implementation($dbms);
             $this->implementations[$dbms] = $implementation;

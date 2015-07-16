@@ -115,7 +115,7 @@ class UserMapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEnti
      */
     public function toDatabaseRow(\Yana\Data\Adapters\IsEntity $user)
     {
-        assert('!isset($row)', ' Cannot redeclare var $row');
+        assert('!isset($row); // Cannot redeclare var $row');
         $row = array();
 
         if ($user instanceof \Yana\Security\Users\IsUser) {

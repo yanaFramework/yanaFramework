@@ -50,8 +50,8 @@ class File extends AbstractMountpoint
      */
     public function __construct($path, $className = '')
     {
-        assert('is_string($path)', ' Wrong type for argument 1. String expected');
-        assert('is_string($className)', ' Wrong type for argument 2. String expected');
+        assert('is_string($path); // Wrong type for argument 1. String expected');
+        assert('is_string($className); // Wrong type for argument 2. String expected');
 
         $this->type = (!$className) ? '\Yana\Files\Readonly' : (string) $className;
         $this->path = (string) $path;
@@ -65,7 +65,7 @@ class File extends AbstractMountpoint
 
         /* all fine - proceed */
         $this->type = $className;
-        assert('class_exists($this->type)', ' The value $this->type is expected to be a valid class name.');
+        assert('class_exists($this->type); // The value $this->type is expected to be a valid class name.');
         $this->mountpoint = new $this->type($this->path);
     }
 

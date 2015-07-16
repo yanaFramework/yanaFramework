@@ -61,7 +61,7 @@ class FormMessage extends \Yana\Mails\Messages\Message
      */
     public function composeTextFromFormData($formName, array $formData)
     {
-        assert('is_string($formName)', ' Invalid argument $formName: string expected');
+        assert('is_string($formName); // Invalid argument $formName: string expected');
 
         $mailText = "==========================================\n";
         $mailText .= "  " . $formName . "\n";
@@ -69,7 +69,7 @@ class FormMessage extends \Yana\Mails\Messages\Message
 
         foreach ($formData as $key => $value)
         {
-            assert('is_scalar($value) || is_array($value)', ' form value has unexpected type');
+            assert('is_scalar($value) || is_array($value); // form value has unexpected type');
             $sanitizedKey = \preg_replace('/[^\w\döäüß\/\-\. ]/i', '_', $key);
             $readableValue = \print_r($value, true);
             $mailText .= "    " . $sanitizedKey . ":\t" . $readableValue . "\n";

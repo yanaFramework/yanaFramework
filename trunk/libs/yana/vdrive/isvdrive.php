@@ -36,7 +36,7 @@ namespace Yana\VDrive;
  * @package    yana
  * @subpackage vdrive
  */
-interface IsVDrive
+interface IsVDrive extends \Yana\Files\IsResource
 {
 
     /**
@@ -130,17 +130,6 @@ interface IsVDrive
      * @return  array
      */
     public function getMountpoints();
-
-    /**
-     * Check if drive is empty.
-     *
-     * Returns true if the file containing the VDrive-definition does not exist,
-     * is not readable, or is empty.
-     * Returns false otherwise.
-     *
-     * @return  bool
-     */
-    public function isEmpty();
 
 }
 

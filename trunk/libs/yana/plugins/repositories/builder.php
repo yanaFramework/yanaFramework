@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins;
+namespace Yana\Plugins\Repositories;
 
 /**
  * <<builder>> Plugin configuration repository builder.
@@ -35,7 +35,7 @@ namespace Yana\Plugins;
  * @package     yana
  * @subpackage  plugins
  */
-class RepositoryBuilder extends \Yana\Plugins\AbstractRepositoryBuilder
+class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
 {
 
     /**
@@ -57,7 +57,7 @@ class RepositoryBuilder extends \Yana\Plugins\AbstractRepositoryBuilder
      */
     public function createNewRepository()
     {
-        $this->_oldRepository = new \Yana\Plugins\Repository();
+        $this->_oldRepository = new \Yana\Plugins\Repositories\Repository();
         parent::createNewRepository();
     }
 
@@ -85,9 +85,9 @@ class RepositoryBuilder extends \Yana\Plugins\AbstractRepositoryBuilder
     /**
      * Set base repository to compare the plugin list with.
      *
-     * @param  \Yana\Plugins\Repository  $repository  old repository for comparison
+     * @param  \Yana\Plugins\Repositories\Repository  $repository  old repository for comparison
      */
-    public function setBaseRepository(\Yana\Plugins\Repository $repository)
+    public function setBaseRepository(\Yana\Plugins\Repositories\Repository $repository)
     {
         $this->_oldRepository = $repository;
     }
@@ -113,14 +113,14 @@ class RepositoryBuilder extends \Yana\Plugins\AbstractRepositoryBuilder
         /**
          * 1) build plugin repository
          */
-        assert('!isset($reflectionClass)', ' Cannot redeclare var $reflectionClass');
-        assert('!isset($className)', ' Cannot redeclare var $className');
-        assert('!isset($config)', ' Cannot redeclare var $config');
-        assert('!isset($id)', ' Cannot redeclare var $id');
+        assert('!isset($reflectionClass); // Cannot redeclare var $reflectionClass');
+        assert('!isset($className); // Cannot redeclare var $className');
+        assert('!isset($config); // Cannot redeclare var $config');
+        assert('!isset($id); // Cannot redeclare var $id');
         foreach ($this->_plugins as $id => $className)
         {
             $builder->createNewConfiguration();
-            $builder->setReflection(new \Yana\Plugins\ReflectionClass($className));
+            $builder->setReflection(new \Yana\Plugins\Annotations\ReflectionClass($className));
             $pluginId = preg_replace('/^plugin_/', '', strtolower($className));
             $config = $builder->getPluginConfigurationClass();
             $config->setId($id);
@@ -245,8 +245,8 @@ class RepositoryBuilder extends \Yana\Plugins\AbstractRepositoryBuilder
         } // end if
 
         // load configuration settings for each method and build list of implementing classes
-        assert('!isset($methodName)', ' Cannot redeclare var $methodName');
-        assert('!isset($methodConfig)', ' Cannot redeclare var $methodConfig');
+        assert('!isset($methodName); // Cannot redeclare var $methodName');
+        assert('!isset($methodConfig); // Cannot redeclare var $methodConfig');
         foreach ($this->object->getMethods() as $methodName => $methodConfig)
         {
             // get type of current event
@@ -255,7 +255,7 @@ class RepositoryBuilder extends \Yana\Plugins\AbstractRepositoryBuilder
 
             // copy properties from subscribers
             if (!empty($subscribers[$methodName])) {
-                assert('!isset($subscriberConfig)', ' Cannot redeclare var $subscriberConfig');
+                assert('!isset($subscriberConfig); // Cannot redeclare var $subscriberConfig');
                 foreach ($subscribers[$methodName] as $subscriberConfig)
                 {
                     $methodConfig->addSubscription($subscriberConfig);
@@ -263,8 +263,8 @@ class RepositoryBuilder extends \Yana\Plugins\AbstractRepositoryBuilder
                 unset($subscriberConfig);
             }
 
-            assert('!isset($pluginName)', ' Cannot redeclare var $pluginName');
-            assert('!isset($pluginConfig)', ' Cannot redeclare var $pluginConfig');
+            assert('!isset($pluginName); // Cannot redeclare var $pluginName');
+            assert('!isset($pluginConfig); // Cannot redeclare var $pluginConfig');
             foreach ($pluginsWithDefaultMethods as $pluginName => $pluginConfig)
             {
                 // get type of current plugin
