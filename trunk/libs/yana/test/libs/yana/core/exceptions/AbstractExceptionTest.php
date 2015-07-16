@@ -72,6 +72,7 @@ class AbstractExceptionTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->object = new \Yana\Core\Exceptions\ExceptionTest($this->message, $this->code);
+        \Yana\Core\Exceptions\ExceptionTest::setTranslationManager(new \Yana\Translations\Manager());
     }
 
     /**

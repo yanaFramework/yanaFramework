@@ -30,7 +30,7 @@ namespace Yana\Plugins;
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../include.php';
+require_once __DIR__ . '/../../../../include.php';
 
 /**
  * Test class for UserLevel.
@@ -38,11 +38,11 @@ require_once __DIR__ . '/../../../include.php';
  *
  * @package  test
  */
-class UserLevelTest extends \PHPUnit_Framework_TestCase
+class UserPermissionRuleTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Plugins\UserLevel
+     * @var \Yana\Plugins\Configs\UserPermissionRule
      */
     protected $object;
 
@@ -52,7 +52,7 @@ class UserLevelTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Plugins\UserLevel();
+        $this->object = new \Yana\Plugins\Configs\UserPermissionRule();
     }
 
     /**

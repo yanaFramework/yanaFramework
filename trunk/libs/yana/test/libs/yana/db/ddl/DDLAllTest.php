@@ -2132,7 +2132,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $this->table->addColumn($someNames[2], 'integer');
 
         $result = $this->index->addColumn($someNames[0]);
-        $this->assertInternalType('\Yana\Db\Ddl\IndexColumn', $result, "unexpectet Returntype from addcolumn");
+        $this->assertInstanceOf('\Yana\Db\Ddl\IndexColumn', $result, "unexpectet Returntype from addcolumn");
 
         $result = $this->index->addColumn($someNames[1]);
         $result = $this->index->addColumn($someNames[2]);
@@ -2905,17 +2905,13 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $object = $this->$propertyName;
         $grant = new \Yana\Db\Ddl\Grant();
         $grant2 = new \Yana\Db\Ddl\Grant();
-        $grant3 = new \Yana\Db\Ddl\Grant();
-        $grant4 = new \Yana\Db\Ddl\Grant();
 
         $grants = array($grant, $grant2);
 
         $object->setGrant($grant);
         $object->setGrant($grant2);
 
-        $get = $object->getGrants();
-        $this->assertEquals($grants, $get, 'assert failed, the values should be equal, expected the same arrays');
-        $this->assertEquals($grants[0] instanceof \Yana\Db\Ddl\Grant, 'assert failed, the value should be an instance of \Yana\Db\Ddl\Grant');
+        $this->assertEquals($grants, $object->getGrants(), 'assert failed, the values should be equal, expected the same arrays');
 
         $add = $object->addGrant('user', 'role', 10);
         $this->assertTrue($add instanceof \Yana\Db\Ddl\Grant, 'Function addGrant() should return instance of \Yana\Db\Ddl\Grant.');

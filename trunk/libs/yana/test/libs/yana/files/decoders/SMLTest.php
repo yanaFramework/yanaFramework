@@ -100,7 +100,7 @@ class SMLTest extends \PHPUnit_Framework_TestCase
         $inputBool = true;
         $encoded = $this->object->encode($inputBool, 'MY_VAR');
         $decode = $this->object->decode($encoded);
-        $this->assertEquals($encoded, $decode['MY_VAR'], 'assert failed, the two variables are equal');
+        $this->assertEquals($inputBool, $decode['MY_VAR'], 'assert failed, the two variables are equal');
     }
 
     /**

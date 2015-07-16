@@ -79,7 +79,7 @@ class TextContainerCollectionTest extends \PHPUnit_Framework_TestCase
     public function testOffsetSet()
     {
         $object = new \Yana\Translations\TextData\TextContainer();
-        $object->addStrings(array('test'));
+        $object->addVars(array('test'));
         $returned = $this->object[1] = $object;
         $this->assertEquals($object, $returned);
         $this->assertEquals($object, $this->object[1]);
