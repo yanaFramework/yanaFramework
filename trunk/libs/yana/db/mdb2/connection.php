@@ -154,9 +154,9 @@ class Connection extends \Yana\Db\AbstractConnection
      */
     public function sendQueryString($sqlStmt, $offset = 0, $limit = 0)
     {
-        assert('is_string($sqlStmt)', ' Invalid argument $sqlStmt: string expected');
-        assert('is_int($offset) && $offset >= 0', ' Invalid argument $offset. Must be a positive integer.');
-        assert('is_int($limit) && $limit >= 0', ' Invalid argument $limit. Must be a positive integer.');
+        assert('is_string($sqlStmt); // Invalid argument $sqlStmt: string expected');
+        assert('is_int($offset) && $offset >= 0; // Invalid argument $offset. Must be a positive integer.');
+        assert('is_int($limit) && $limit >= 0; // Invalid argument $limit. Must be a positive integer.');
 
         /* Add this line for debugging purposes:
          * error_log($sqlStmt . " LIMIT $offset, $limit\n", 3, 'test.log');
@@ -252,8 +252,8 @@ class Connection extends \Yana\Db\AbstractConnection
      */
     public function importSQL($sqlFile)
     {
-        assert('is_string($sqlFile) || is_array($sqlFile)', ' Wrong argument type: $sqlFile. String or array expected');
-        assert('!empty($sqlFile)', ' Argument \$sqlFile must not be empty.');
+        assert('is_string($sqlFile) || is_array($sqlFile); // Wrong argument type: $sqlFile. String or array expected');
+        assert('!empty($sqlFile); // Argument \$sqlFile must not be empty.');
         if (!empty($this->_queue)) {
             $message = "Cannot import SQL statements.\n\t\tThere is a pending transaction that needs to be committed " .
                 "before proceeding.";
@@ -286,7 +286,7 @@ class Connection extends \Yana\Db\AbstractConnection
             // add items
             $sqlFile = explode("[NEXT_COMMAND]", $rawData);
         }
-        assert('\is_array($sqlFile)', ' Invalid result. Array expected for $sqlFile');
+        assert('\is_array($sqlFile); // Invalid result. Array expected for $sqlFile');
         $this->_queue = $sqlFile;
 
         try {
@@ -318,7 +318,7 @@ class Connection extends \Yana\Db\AbstractConnection
      */
     public function quoteId($value)
     {
-        assert('is_string($value)', ' Wrong argument type for argument 1. String expected.');
+        assert('is_string($value); // Wrong argument type for argument 1. String expected.');
         $value = (string) $value;
 
         /*
@@ -370,7 +370,7 @@ class Connection extends \Yana\Db\AbstractConnection
      */
     private function _isSqlKeyword($name)
     {
-        assert('is_string($value)', ' Wrong argument type for argument 1. String expected.');
+        assert('is_string($value); // Wrong argument type for argument 1. String expected.');
 
         if (is_null($this->_reservedSqlKeywords)) {
             global $YANA;

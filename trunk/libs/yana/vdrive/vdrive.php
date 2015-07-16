@@ -142,8 +142,8 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      */
     public function __construct($path, $baseDir = "")
     {
-        assert('is_string($path)', ' Wrong type for argument 1. String expected');
-        assert('is_string($baseDir)', ' Wrong type for argument 2. String expected');
+        assert('is_string($path); // Wrong type for argument 1. String expected');
+        assert('is_string($baseDir); // Wrong type for argument 2. String expected');
         parent::__construct($path);
         $this->_baseDir = (string) $baseDir;
     }
@@ -158,7 +158,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      */
     public function __get($name)
     {
-        assert('is_string($name)', ' Wrong type for argument 1. String expected');
+        assert('is_string($name); // Wrong type for argument 1. String expected');
         return $this->getResource($name);
     }
 
@@ -275,21 +275,21 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      */
     public function mount($name)
     {
-        assert('is_string($name)', ' Wrong argument type for argument 1. String expected.');
+        assert('is_string($name); // Wrong argument type for argument 1. String expected.');
 
         /* try to mounting the file */
         if (!isset($this->_drive["$name"]) || !$this->_drive["$name"]->mount()) {
             return false;
         }
-        assert('!isset($file)', ' Cannot redeclare var $file');
+        assert('!isset($file); // Cannot redeclare var $file');
         $file = $this->_files["$name"] = $this->_drive["$name"]->getMountpoint();
 
         /* if it is a SML file, load the configuration */
         if ($file instanceOf \Yana\Core\IsVarContainer && $file->exists()) {
-            assert('!isset($array)', ' Cannot redeclare var $array');
+            assert('!isset($array); // Cannot redeclare var $array');
             /* @var $file \Yana\Core\IsVarContainer */
             $array = $file->getVars();
-            assert('is_null($array) || is_array($array)', 'unexpected result: $array');
+            assert('is_null($array) || is_array($array); // unexpected result: $array');
             if (is_array($array)) {
                 $this->vars = \Yana\Util\Hashtable::merge($this->vars, $array);
             }
@@ -327,7 +327,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      */
     private function _readXML(\Yana\VDrive\Configuration $content, $path = "")
     {
-        assert('is_string($path)', ' Wrong type for argument 2. String expected');
+        assert('is_string($path); // Wrong type for argument 2. String expected');
 
         if ($content->isDrive()) {
 
@@ -336,7 +336,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
             }
 
             /* 1) handle vars */
-            assert('!isset($node)', ' Cannot redeclare var $node');
+            assert('!isset($node); // Cannot redeclare var $node');
             foreach ($content->getNodeVars() as $node)
             {
                 $name = $node->getNodeName();
@@ -356,7 +356,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
             unset($node);
 
             /* 2) handle includes */
-            assert('!isset($node)', ' Cannot redeclare var $node');
+            assert('!isset($node); // Cannot redeclare var $node');
             foreach ($content->getNodeIncludes() as $node)
             {
                 $file = (string) $node->attributes()->path;
@@ -375,7 +375,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
 
         } /* end if */
 
-        assert('!isset($node)', ' Cannot redeclare var $node');
+        assert('!isset($node); // Cannot redeclare var $node');
         foreach ($content as $node)
         {
             if (!$node->isMountpoint()) {
@@ -405,12 +405,12 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
             } elseif ($node->isFile()) {
 
                 // get class name
-                assert('!isset($namespace)', ' Cannot redeclare var $namespace');
+                assert('!isset($namespace); // Cannot redeclare var $namespace');
                 $namespace = ($node->getNodeNamespace()) ? ($node->getNodeNamespace()) :
                     $this->_getDefaultNamespaceForFileWrappers();
-                assert('!isset($type)', ' Cannot redeclare var $type');
+                assert('!isset($type); // Cannot redeclare var $type');
                 $type = '';
-                assert('!isset($match)', ' Cannot redeclare var $match');
+                assert('!isset($match); // Cannot redeclare var $match');
                 $match = array();
                 if (preg_match('/\.(\w+)$/', $name, $match)) {
                     $type = $match[1];
@@ -518,7 +518,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      */
     public function getResource($path)
     {
-        assert('is_string($path)', ' Wrong argument type for argument 1. String expected.');
+        assert('is_string($path); // Wrong argument type for argument 1. String expected.');
         // read file if not already read
         $this->read();
         if (!isset($this->_drive[$path])) {
@@ -539,7 +539,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
      */
     public function getResourcePath($virtualPath)
     {
-        assert('is_string($virtualPath)', ' Invalid argument $virtualPath: string expected');
+        assert('is_string($virtualPath); // Invalid argument $virtualPath: string expected');
 
         return $this->getResource($virtualPath)->getPath();
     }

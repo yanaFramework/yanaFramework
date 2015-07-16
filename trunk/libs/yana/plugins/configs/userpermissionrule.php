@@ -25,12 +25,10 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins;
+namespace Yana\Plugins\Configs;
 
 /**
- * Grant structure
- *
- * This wrapper class represents the user rights management information.
+ * <<entity>> User permission management information.
  *
  * Rights management comes in 3-layer, each of which is optional in this document.
  * <ul>
@@ -39,29 +37,25 @@ namespace Yana\Plugins;
  *  <li> Security level: an integer of 0 through 100 </li>
  * </ul>
  *
- * @access      public
  * @package     yana
  * @subpackage  plugins
  * @ignore
  */
-class UserLevel extends \Yana\Core\Object
+class UserPermissionRule extends \Yana\Core\Object
 {
 
     /**
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_role = "";
 
     /**
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_group = "";
 
     /**
-     * @access  private
-     * @var     int
+     * @var  int
      */
     private $_level = 0;
 
@@ -71,7 +65,6 @@ class UserLevel extends \Yana\Core\Object
      * The role a user plays inside a user group.
      * This may be any string value.
      *
-     * @access  public
      * @return  string
      */
     public function getRole()
@@ -87,14 +80,13 @@ class UserLevel extends \Yana\Core\Object
      *
      * Note that it is not checked wether the role is in use ore not.
      *
-     * @access  public
      * @param   string  $role  new value of this property, allowed characters: 0-9, a-z, -, _
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when parameter is not alpha-numeric
-     * @return  \Yana\Plugins\UserLevel
+     * @return  \Yana\Plugins\Configs\UserPermissionRule
      */
     public function setRole($role)
     {
-        assert('is_string($role)', ' Wrong type for argument 1. String expected');
+        assert('is_string($role); // Wrong type for argument 1. String expected');
         if (!preg_match('/^[\d\w-_]*$/si', $role)) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid characters in role '$role'.", E_USER_WARNING);
         }
@@ -110,7 +102,6 @@ class UserLevel extends \Yana\Core\Object
      *
      * You may additionally define security levels to check.
      *
-     * @access  public
      * @return  string
      */
     public function getGroup()
@@ -128,14 +119,13 @@ class UserLevel extends \Yana\Core\Object
      *
      * Note that it is not checked wether the group is in use ore not.
      *
-     * @access  public
      * @param   string  $group  new value of this property, allowed characters: 0-9, a-z, -, _
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when parameter is not alpha-numeric
-     * @return  \Yana\Plugins\UserLevel
+     * @return  \Yana\Plugins\Configs\UserPermissionRule
      */
     public function setGroup($group)
     {
-        assert('is_string($group)', ' Invalid argument $group: string expected');
+        assert('is_string($group); // Invalid argument $group: string expected');
         if (!preg_match('/^[\d\w-_]*$/si', $group)) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Invalid characters in group '$group'.", E_USER_WARNING);
         }
@@ -150,7 +140,6 @@ class UserLevel extends \Yana\Core\Object
      * You may translate this to 0-100 percent, where 0 is the lowest level of access and 100 is the
      * highest.
      *
-     * @access  public
      * @return  int
      */
     public function getLevel()
@@ -165,14 +154,13 @@ class UserLevel extends \Yana\Core\Object
      * You may translate this to 0-100 percent, where 0 is the lowest level of access and 100 is the
      * highest.
      *
-     * @access  public
      * @param   string  $level  new value of this property
-     * @return  \Yana\Plugins\UserLevel
+     * @return  \Yana\Plugins\Configs\UserPermissionRule
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given security level is outside range [0,100]
      */
     public function setLevel($level)
     {
-        assert('is_int($level)', ' Wrong type for argument 1. Integer expected');
+        assert('is_int($level); // Wrong type for argument 1. Integer expected');
         if ($level < 0 || $level > 100) {
             $message = "Security level '$level' outside range [0,100].";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message, E_USER_WARNING);

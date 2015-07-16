@@ -161,7 +161,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
             /*
              *  Create Column
              */
-            assert('!isset($i)', 'cannot redeclare variable $i');
+            assert('!isset($i); // cannot redeclare variable $i');
             for ($i = 0; $i < count($listOfColumns); $i++)
             {
                 /* @var $column \Yana\Db\Ddl\Column */
@@ -225,7 +225,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
              *  Create Indexes
              */
             if (!empty($listOfIndexes)) {
-                assert('!isset($index)', 'cannot redeclare variable $index');
+                assert('!isset($index); // cannot redeclare variable $index');
                 foreach ($listOfIndexes as $index)
                 {
                     assert('is_array($SQL);');
@@ -268,7 +268,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
         /*
          *  Create Table
          */
-        assert('!isset($table)', 'cannot redeclare variable $table');
+        assert('!isset($table); // cannot redeclare variable $table');
         foreach ($this->structure->getTables() as $table)
         {
             assert('is_string($table) && !empty($table);');
@@ -280,7 +280,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
             /*
              *  Create Column
              */
-            assert('!isset($i)', 'cannot redeclare variable $i');
+            assert('!isset($i); // cannot redeclare variable $i');
             for ($i = 0; $i < count($listOfColumns); $i++)
             {
                 $column = $listOfColumns[$i];
@@ -452,7 +452,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
              *  Create Indexes
              */
             if (!empty($listOfIndexes)) {
-                assert('!isset($index)', 'cannot redeclare variable $index');
+                assert('!isset($index); // cannot redeclare variable $index');
                 foreach ($listOfIndexes as $index)
                 {
                     assert('is_array($SQL);');
@@ -466,7 +466,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
         unset($table);
 
         assert('is_array($lastSQL);');
-        assert('!isset($stmt)', 'cannot redeclare variable $stmt');
+        assert('!isset($stmt); // cannot redeclare variable $stmt');
         foreach ($lastSQL as $stmt)
         {
             assert('is_array($SQL);');
@@ -519,7 +519,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
         /*
          *  Create Table
          */
-        assert('!isset($table)', 'cannot redeclare variable $table');
+        assert('!isset($table); // cannot redeclare variable $table');
         foreach ($this->structure->getTables() as $table)
         {
             assert('is_string($table) && !empty($table);');
@@ -537,7 +537,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
             /*
              *  Create Column
              */
-            assert('!isset($i)', 'cannot redeclare variable $i');
+            assert('!isset($i); // cannot redeclare variable $i');
             for ($i = 0; $i < count($listOfColumns); $i++)
             {
                 $column = $listOfColumns[$i];
@@ -673,9 +673,9 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
                 if ($this->structure->isPrimaryKey($table, $column) === true) {
                     $constraintName = "{$table}_pk";
                     if (mb_strlen($constraintName) > 18) {
-                        assert('!isset($constStart)', ' Cannot redeclare var $constStart');
+                        assert('!isset($constStart); // Cannot redeclare var $constStart');
                         $constStart = mb_strlen($constraintName)-18;
-                        assert('!isset($constLength)', ' Cannot redeclare var $constLength');
+                        assert('!isset($constLength); // Cannot redeclare var $constLength');
                         $constLength = mb_strlen($constraintName);
                         $constraintName = mb_substr($constraintName, $constStart, $constLength);
                         unset($constStart, $constLength);
@@ -692,9 +692,9 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
                         $constraintName = "{$column}_uq";
                     }
                     if (mb_strlen($constraintName) > 18) {
-                        assert('!isset($constStart)', ' Cannot redeclare var $constStart');
+                        assert('!isset($constStart); // Cannot redeclare var $constStart');
                         $constStart = mb_strlen($constraintName)-18;
-                        assert('!isset($constLength)', ' Cannot redeclare var $constLength');
+                        assert('!isset($constLength); // Cannot redeclare var $constLength');
                         $constLength = mb_strlen($constraintName);
                         $constraintName = mb_substr($constraintName, $constStart, $constLength);
                         unset($constStart, $constLength);
@@ -727,7 +727,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
              *  Create Indexes
              */
             if (!empty($listOfIndexes)) {
-                assert('!isset($index)', 'cannot redeclare variable $index');
+                assert('!isset($index); // cannot redeclare variable $index');
                 foreach ($listOfIndexes as $index)
                 {
                     if (\Yana\Util\Hashtable::quickSearch($sql_keywords, $index) !== false) {
@@ -745,7 +745,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
              *  Create Foreign Key Constraints
              */
             if (!empty($listOfForeignKeys)) {
-                assert('!isset($i)', ' Cannot redeclare variable $i');
+                assert('!isset($i); // Cannot redeclare variable $i');
                 $i = 0;
                 foreach ($listOfForeignKeys as $foreignKey => $foreignTable)
                 {
@@ -776,7 +776,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
         unset($table);
 
         assert('is_array($lastSQL);');
-        assert('!isset($stmt)', 'cannot redeclare variable $stmt');
+        assert('!isset($stmt); // cannot redeclare variable $stmt');
         foreach ($lastSQL as $stmt)
         {
             assert('is_array($SQL);');
@@ -810,7 +810,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
         /*
          *  Create Table
          */
-        assert('!isset($table)', 'cannot redeclare variable $table');
+        assert('!isset($table); // cannot redeclare variable $table');
         foreach ($this->structure->getTables() as $table)
         {
             assert('is_string($table) && !empty($table);');
@@ -824,7 +824,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
             /*
              *  Create Column
              */
-            assert('!isset($i)', 'cannot redeclare variable $i');
+            assert('!isset($i); // cannot redeclare variable $i');
             for ($i = 0; $i < count($listOfColumns); $i++)
             {
                 $column = $listOfColumns[$i];
@@ -923,7 +923,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
                  */
                 if ($this->structure->isAutonumber($table, $column) === true) {
                     $lastSQL[] = "CREATE SEQUENCE \"{$table}_sq{$seq_cnt}\";";
-                    assert('!isset($tmp)', 'cannot redeclare variable $tmp');
+                    assert('!isset($tmp); // cannot redeclare variable $tmp');
                     $tmp  = "CREATE OR REPLACE TRIGGER \"{$table}_{$column}_inc\"\n";
                     $tmp .= "\tBEFORE INSERT ON \"{$table}\"\n";
                     $tmp .= "\tFOR EACH ROW BEGIN\n";
@@ -982,7 +982,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
              *  Create Indexes
              */
             if (!empty($listOfIndexes)) {
-                assert('!isset($index)', 'cannot redeclare variable $index');
+                assert('!isset($index); // cannot redeclare variable $index');
                 $i = 0;
                 foreach ($listOfIndexes as $index)
                 {
@@ -1017,7 +1017,7 @@ class SqlFactory extends \Yana\Db\Export\AbstractSqlFactory
         unset($table);
 
         assert('is_array($lastSQL);');
-        assert('!isset($stmt)', 'cannot redeclare variable $stmt');
+        assert('!isset($stmt); // cannot redeclare variable $stmt');
         foreach ($lastSQL as $stmt)
         {
             assert('is_array($SQL);');

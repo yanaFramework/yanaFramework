@@ -51,8 +51,8 @@ class EmbeddedTags extends \Yana\Views\Helpers\AbstractViewHelper implements \Ya
     {
         $listOfTags = array('b','i','u','h','emp','c','small','big','hide',
                             'code','img','url','mail','color','mark','smilies');
-        assert('!isset($params["show"]) || is_string($params["show"])', ' Invalid argument "show": string expected');
-        assert('!isset($params["hide"]) || is_string($params["hide"])', ' Invalid argument "hide": string expected');
+        assert('!isset($params["show"]) || is_string($params["show"]); // Invalid argument "show": string expected');
+        assert('!isset($params["hide"]) || is_string($params["hide"]); // Invalid argument "hide": string expected');
         $show = array();
         $hide = array();
 

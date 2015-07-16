@@ -154,13 +154,13 @@ abstract class AbstractFormatter extends \Yana\Core\Object implements \Yana\Log\
         }
 
         /* Note: for readability assertions can have a description in form of a comment.
-         * Example: assert('some_test', ' comment');
+         * Example: assert('some_test; // comment');
          *
          * Where a comment is provided, this function will show the comment rather than
          * the assert code.
          *
          * Example of usage:
-         * assert('$input >= 3 and $input <= 15', ' argument '$input' is out of range [3..15]');
+         * assert('$input >= 3 and $input <= 15; // argument '$input' is out of range [3..15]');
          */
         if ($level === \Yana\Log\TypeEnumeration::ASSERT) {
             $description = preg_replace('/^.*;\s*(?:\/\/|\/\*|#)\s*(\S+.*)\s*(?:\*\/)?\s*$/Us', '$1', $description);

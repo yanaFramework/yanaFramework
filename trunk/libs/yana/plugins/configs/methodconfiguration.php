@@ -130,7 +130,7 @@ class MethodConfiguration extends \Yana\Core\Object
 
     /**
      * @access  private
-     * @var     \Yana\Plugins\MenuEntry
+     * @var     \Yana\Plugins\Menus\IsEntry
      */
     private $_menu = null;
 
@@ -204,7 +204,7 @@ class MethodConfiguration extends \Yana\Core\Object
      */
     public function setType($type)
     {
-        assert('is_string($type)', ' Invalid argument $type: string expected');
+        assert('is_string($type); // Invalid argument $type: string expected');
         $this->_type = \Yana\Plugins\TypeEnumeration::fromString($type);
         return $this;
     }
@@ -217,7 +217,7 @@ class MethodConfiguration extends \Yana\Core\Object
      */
     public function addPath($path)
     {
-        assert('is_string($path)', ' Invalid argument $path: string expected');
+        assert('is_string($path); // Invalid argument $path: string expected');
         $this->_paths[] = $path;
     }
 
@@ -412,7 +412,7 @@ class MethodConfiguration extends \Yana\Core\Object
      */
     public function setReturn($return)
     {
-        assert('is_string($return)', ' Invalid argument $return: string expected');
+        assert('is_string($return); // Invalid argument $return: string expected');
         $this->_return = (string) $return;
         return $this;
     }
@@ -444,7 +444,7 @@ class MethodConfiguration extends \Yana\Core\Object
      */
     public function setGroup($group)
     {
-        assert('is_string($group)', ' Invalid argument $group: string expected');
+        assert('is_string($group); // Invalid argument $group: string expected');
         $this->_group = (string) $group;
         return $this;
     }
@@ -459,7 +459,7 @@ class MethodConfiguration extends \Yana\Core\Object
      * Use this function to get the menu entry defined by the method (if any).
      *
      * @access  public
-     * @return  \Yana\Plugins\MenuEntry
+     * @return  \Yana\Plugins\Menus\IsEntry
      */
     public function getMenu()
     {
@@ -470,10 +470,10 @@ class MethodConfiguration extends \Yana\Core\Object
      * Set menu entry.
      *
      * @access  public
-     * @param   \Yana\Plugins\MenuEntry  $menu  menu configuration
+     * @param   \Yana\Plugins\Menus\IsEntry  $menu  menu configuration
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
-    public function setMenu(\Yana\Plugins\MenuEntry $menu)
+    public function setMenu(\Yana\Plugins\Menus\IsEntry $menu)
     {
         $this->_menu = $menu;
         return $this;
@@ -551,7 +551,7 @@ class MethodConfiguration extends \Yana\Core\Object
      */
     public function setTitle($title)
     {
-        assert('is_string($title)', ' Invalid argument $title: string expected');
+        assert('is_string($title); // Invalid argument $title: string expected');
         $this->_title = $title;
         return $this;
     }
@@ -605,7 +605,7 @@ class MethodConfiguration extends \Yana\Core\Object
                     break;
             }
         }
-        assert('is_null($safeMode) || is_bool($safeMode)', ' Invalid argument $safeMode: bool expected');
+        assert('is_null($safeMode) || is_bool($safeMode); // Invalid argument $safeMode: bool expected');
         $this->_safeMode = $safeMode;
         return $this;
     }
@@ -630,7 +630,7 @@ class MethodConfiguration extends \Yana\Core\Object
      */
     public function setTemplate($template)
     {
-        assert('is_string($template)', ' Invalid argument $template: string expected');
+        assert('is_string($template); // Invalid argument $template: string expected');
         $this->_template = strip_tags($template);
         return $this;
     }
@@ -641,7 +641,7 @@ class MethodConfiguration extends \Yana\Core\Object
      * Returns a list of instances of PluginUserLevel.
      *
      * @access  public
-     * @return  \Yana\Plugins\UserLevel[]
+     * @return  \Yana\Plugins\Configs\UserPermissionRule[]
      */
     public function getUserLevels()
     {
@@ -654,7 +654,7 @@ class MethodConfiguration extends \Yana\Core\Object
      * All elements must be instances of PluginUserLevel.
      *
      * @access  public
-     * @param   \Yana\Plugins\UserLevel[]  $users  list of user level definitions
+     * @param   \Yana\Plugins\Configs\UserPermissionRule[]  $users  list of user level definitions
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function setUserLevels(array $users)
@@ -671,10 +671,10 @@ class MethodConfiguration extends \Yana\Core\Object
      * Add user user level rule.
      *
      * @access  public
-     * @param   \Yana\Plugins\UserLevel  $user  user level definition
+     * @param   \Yana\Plugins\Configs\UserPermissionRule  $user  user level definition
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
-    public function addUserLevel(\Yana\Plugins\UserLevel $user)
+    public function addUserLevel(\Yana\Plugins\Configs\UserPermissionRule $user)
     {
         $this->_users[] = $user;
         return $this;
@@ -708,7 +708,7 @@ class MethodConfiguration extends \Yana\Core\Object
      */
     public function setOverwrite($overwrite)
     {
-        assert('is_bool($overwrite)', ' Invalid argument $overwrite: bool expected');
+        assert('is_bool($overwrite); // Invalid argument $overwrite: bool expected');
         $this->_overwrite = (bool) $overwrite;
         return $this;
     }
@@ -742,7 +742,7 @@ class MethodConfiguration extends \Yana\Core\Object
      */
     public function setSubscribe($subscribe)
     {
-        assert('is_bool($subscribe)', ' Invalid argument $subscribe: bool expected');
+        assert('is_bool($subscribe); // Invalid argument $subscribe: bool expected');
         $this->_subscribe = (bool) $subscribe;
         return $this;
     }
@@ -767,7 +767,7 @@ class MethodConfiguration extends \Yana\Core\Object
      */
     public function setClassName($className)
     {
-        assert('is_string($className)', ' Invalid argument $className: string expected');
+        assert('is_string($className); // Invalid argument $className: string expected');
         $this->_className = $className;
         return $this;
     }
@@ -792,7 +792,7 @@ class MethodConfiguration extends \Yana\Core\Object
      */
     public function setMethodName($methodName)
     {
-        assert('is_string($methodName)', ' Invalid argument $methodName: string expected');
+        assert('is_string($methodName); // Invalid argument $methodName: string expected');
         $this->_methodName = $methodName;
         return $this;
     }
@@ -909,7 +909,7 @@ class MethodConfiguration extends \Yana\Core\Object
      */
     public function setHasGenericParams($hasGenericParams)
     {
-        assert('is_bool($hasGenericParams)', ' Invalid argument $hasGenericParams: bool expected');
+        assert('is_bool($hasGenericParams); // Invalid argument $hasGenericParams: bool expected');
         $this->_hasGenericParams = (bool) $hasGenericParams;
         return $this;
     }

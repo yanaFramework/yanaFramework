@@ -833,13 +833,13 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
         $form->setTitle($title);
 
         // copy security settings from table to form
-        assert('!isset($grant)', ' Cannot redeclare var $grant');
+        assert('!isset($grant); // Cannot redeclare var $grant');
         foreach ($table->getGrants() as $grant)
         {
             $form->setGrant($grant);
         }
         unset($grant);
-        assert('!isset($column)', ' Cannot redeclare var $column');
+        assert('!isset($column); // Cannot redeclare var $column');
         foreach ($table->getColumns() as $column)
         {
             $this->_addFieldByColumn($form, $column);
@@ -866,7 +866,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
         }
 
         // set the column title (aka "label")
-        assert('!isset($title)', ' Cannot redeclare var $title');
+        assert('!isset($title); // Cannot redeclare var $title');
         $title = $column->getTitle();
         if (!empty($title)) {
             $field->setTitle($title);
@@ -879,7 +879,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
         unset($title);
 
         // copy column grants to field
-        assert('!isset($grant)', ' Cannot redeclare var $grant');
+        assert('!isset($grant); // Cannot redeclare var $grant');
         foreach ($column->getGrants() as $grant)
         {
             $field->setGrant($grant);

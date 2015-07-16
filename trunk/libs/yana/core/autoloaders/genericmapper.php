@@ -49,7 +49,7 @@ class GenericMapper extends \Yana\Core\Autoloaders\AbstractMapper
      */
     public function mapClassNameToFilePath($className)
     {
-        assert('is_string($className)', ' Invalid input $className. String expected');
+        assert('is_string($className); // Invalid input $className. String expected');
 
         $path = $this->getBaseDirectory()
                 . $this->getFilePrefix()

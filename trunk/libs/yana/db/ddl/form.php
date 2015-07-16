@@ -250,7 +250,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
         if ($database instanceof \Yana\Db\Ddl\Database) {
             return $database->getName();
         } else {
-            assert('is_null($database)', ' Expecting return value to be instance of \Yana\Db\Ddl\Database or NULL.');
+            assert('is_null($database); // Expecting return value to be instance of \Yana\Db\Ddl\Database or NULL.');
             return null;
         }
     }
@@ -288,7 +288,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function setTable($table)
     {
-        assert('is_string($table)', ' Wrong type for argument 1. String expected');
+        assert('is_string($table); // Wrong type for argument 1. String expected');
         $this->table = "$table";
         return $this;
     }
@@ -324,7 +324,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function setTitle($title = "")
     {
-        assert('is_string($title)', ' Wrong type for argument 1. String expected');
+        assert('is_string($title); // Wrong type for argument 1. String expected');
         if (empty($title)) {
             $this->title = null;
         } else {
@@ -376,7 +376,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function setDescription($description)
     {
-        assert('is_string($description)', ' Wrong type for argument 1. String expected');
+        assert('is_string($description); // Wrong type for argument 1. String expected');
         if (empty($description)) {
             $this->description = null;
         } else {
@@ -415,7 +415,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function setTemplate($template)
     {
-        assert('is_string($template)', ' Wrong type for argument 1. String expected');
+        assert('is_string($template); // Wrong type for argument 1. String expected');
         if (empty($template)) {
             $this->template = null;
         } else {
@@ -455,7 +455,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function setKey($key)
     {
-        assert('is_string($key)', ' Wrong type for argument 1. String expected');
+        assert('is_string($key); // Wrong type for argument 1. String expected');
         if (empty($key)) {
             $this->key = null;
         } else {
@@ -480,7 +480,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function getGrants()
     {
-        assert('is_array($this->grants)', ' Member "grants" is expected to be an array.');
+        assert('is_array($this->grants); // Member "grants" is expected to be an array.');
         return $this->grants;
     }
 
@@ -535,9 +535,9 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function addGrant($user = null, $role = null, $level = null)
     {
-        assert('is_null($user) || is_string($user)', ' Wrong type for argument 1. String expected');
-        assert('is_null($role) || is_string($role)', ' Wrong type for argument 2. String expected');
-        assert('is_null($level) || is_int($level)', ' Wrong type for argument 3. Integer expected');
+        assert('is_null($user) || is_string($user); // Wrong type for argument 1. String expected');
+        assert('is_null($role) || is_string($role); // Wrong type for argument 2. String expected');
+        assert('is_null($level) || is_int($level); // Wrong type for argument 3. Integer expected');
         $grant = new \Yana\Db\Ddl\Grant();
         if (!empty($user)) {
             $grant->setUser($user);
@@ -565,7 +565,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function isForm($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         return isset($this->forms[$name]);
     }
@@ -583,7 +583,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function getForm($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             return $this->forms[$name];
@@ -605,7 +605,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function addForm($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             $message = "Another form with the name '$name' already exists in form '{$this->getName()}'.";
@@ -648,7 +648,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function dropForm($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->forms[$name])) {
             unset($this->forms[$name]);
@@ -667,7 +667,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function isField($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         return isset($this->fields[$name]);
     }
 
@@ -684,7 +684,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function getField($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (isset($this->fields[$name])) {
             return $this->fields[$name];
         } else {
@@ -721,7 +721,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function addField($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (isset($this->fields[$name])) {
             $message = "Another field with the name '$name' already exists in form '" . $this->getName() . "'.";
             $level = E_USER_WARNING;
@@ -746,7 +746,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function dropField($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (!isset($this->fields[$name])) {
             $message = "No such field '$name' in form '" . $this->getName() . "'.";
@@ -785,7 +785,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function getEvent($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (isset( $this->events[$name])) {
             return $this->events[$name];
         } else {
@@ -809,7 +809,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function addEvent($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->events[$name])) {
             $message = "Another action with the name '$name' is already defined.";
@@ -835,7 +835,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function dropEvent($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (isset($this->events["$name"])) {
             unset($this->events["$name"]);
             return true;
@@ -948,7 +948,7 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      */
     public function setAllInput($allinput)
     {
-        assert('is_bool($allinput)', ' Wrong argument type argument 1. Boolean expected');
+        assert('is_bool($allinput); // Wrong argument type argument 1. Boolean expected');
         $this->allinput = !empty($allinput);
         return $this;
     }

@@ -51,7 +51,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
      */
     public function __construct($dbms = "generic")
     {
-        assert('is_string($dbms)', ' Invalid argument $dbms: string expected');
+        assert('is_string($dbms); // Invalid argument $dbms: string expected');
 
         $this->_dbms = (string) $dbms;
     }
@@ -86,7 +86,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
      */
     public function sanitizeRowByTable(\Yana\Db\Ddl\Table $table, array $row, $isInsert = true, array &$files = array())
     {
-        assert('is_bool($isInsert)', ' Wrong type for argument 2. Boolean expected');
+        assert('is_bool($isInsert); // Wrong type for argument 2. Boolean expected');
         /* @var $column \Yana\Db\Ddl\Column */
         foreach ($table->getColumns() as $column)
         {
@@ -382,7 +382,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
                 }
             break;
             default:
-                assert('!in_array($value, self::getSupportedTypes())', ' Unhandled column type. ');
+                assert('!in_array($value, self::getSupportedTypes()); // Unhandled column type. ');
                 throw new \Yana\Core\Exceptions\NotImplementedException("Type '$type' not implemented.", E_USER_ERROR);
         }
         $error = new \Yana\Core\Exceptions\Forms\InvalidValueException();

@@ -109,7 +109,7 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
      */
     public function mount()
     {
-        assert('is_bool($this->isMounted)', ' Unexpected member type for $this->isMounted. Boolean expected.');
+        assert('is_bool($this->isMounted); // Unexpected member type for $this->isMounted. Boolean expected.');
 
         // check if resource is already mounted
         if ($this->isMounted === true) {
@@ -151,7 +151,7 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
      */
     public function getPath()
     {
-        assert('is_string($this->path)', ' Unexpected member type for $this->path. String expected.');
+        assert('is_string($this->path); // Unexpected member type for $this->path. String expected.');
         if (!empty($this->path)) {
             return (string) $this->path;
         } else {
@@ -169,7 +169,7 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
      */
     public function getType()
     {
-        assert('is_string($this->type)', ' Unexpected member type for $this->type. String expected.');
+        assert('is_string($this->type); // Unexpected member type for $this->type. String expected.');
         if (!empty($this->type)) {
             return (string) $this->type;
         } else {
@@ -247,7 +247,7 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
      */
     public function isMounted()
     {
-        assert('is_bool($this->isMounted)', ' Unexpected member type for $this->isMounted. Boolean expected.');
+        assert('is_bool($this->isMounted); // Unexpected member type for $this->isMounted. Boolean expected.');
         return (bool) $this->isMounted;
     }
 
@@ -263,9 +263,9 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
      */
     public function setRequirements($readable = false, $writeable = false, $executable = false)
     {
-        assert('is_bool($readable)', ' Invalid argument $readable: bool expected');
-        assert('is_bool($writeable)', ' Invalid argument $writeable: bool expected');
-        assert('is_bool($executable)', ' Invalid argument $executable: bool expected');
+        assert('is_bool($readable); // Invalid argument $readable: bool expected');
+        assert('is_bool($writeable); // Invalid argument $writeable: bool expected');
+        assert('is_bool($executable); // Invalid argument $executable: bool expected');
         $this->_requiresReadable = (bool) $readable;
         $this->_requiresWriteable = (bool) $writeable;
         $this->_requiresExecutable = (bool) $executable;
@@ -282,7 +282,7 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
      */
     public function requiresReadable()
     {
-        assert('is_bool($this->_requiresReadable)', ' Unexpected type for instance property "requiresReadable". '.
+        assert('is_bool($this->_requiresReadable); // Unexpected type for instance property "requiresReadable". '.
             'Boolean expected');
         return (bool) $this->_requiresReadable;
     }
@@ -298,7 +298,7 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
      */
     public function requiresWriteable()
     {
-        assert('is_bool($this->_requiresWriteable)', ' Unexpected type for instance property "requiresWriteable". '.
+        assert('is_bool($this->_requiresWriteable); // Unexpected type for instance property "requiresWriteable". '.
             'Boolean expected');
         return (bool) $this->_requiresWriteable;
     }
@@ -314,7 +314,7 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
      */
     public function requiresExecutable()
     {
-        assert('is_bool($this->_requiresExecutable)', ' Unexpected type for instance property "requiresExecutable". '.
+        assert('is_bool($this->_requiresExecutable); // Unexpected type for instance property "requiresExecutable". '.
             'Boolean expected');
         return (bool) $this->_requiresExecutable;
     }

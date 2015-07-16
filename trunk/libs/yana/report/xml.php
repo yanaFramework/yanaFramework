@@ -66,7 +66,7 @@ class Xml extends \SimpleXMLElement implements IsReport
      */
     public static function loadFile($path)
     {
-        assert('is_string($path)', ' Wrong type for argument 1. String expected');
+        assert('is_string($path); // Wrong type for argument 1. String expected');
         return \simplexml_load_file($path, __CLASS__);
     }
 
@@ -82,7 +82,7 @@ class Xml extends \SimpleXMLElement implements IsReport
      */
     public static function createReport($title = "")
     {
-        assert('is_string($title)', ' Wrong type for argument 1. String expected');
+        assert('is_string($title); // Wrong type for argument 1. String expected');
         $content = "";
         if (!empty($title)) {
             $content = "<title>$title</title>";
@@ -101,7 +101,7 @@ class Xml extends \SimpleXMLElement implements IsReport
      */
     public function addReport($title = "")
     {
-        assert('is_string($title)', ' Wrong type for argument 1. String expected');
+        assert('is_string($title); // Wrong type for argument 1. String expected');
         if ($this->getName() === 'report') {
             $report = $this->addChild("report");
             if (!empty($title)) {
@@ -152,8 +152,8 @@ class Xml extends \SimpleXMLElement implements IsReport
      */
     public function addText($message)
     {
-        assert('is_string($message)', ' Wrong type for argument 1. String expected');
-        assert('!empty($message)', ' Argument 1 should not be empty');
+        assert('is_string($message); // Wrong type for argument 1. String expected');
+        assert('!empty($message); // Argument 1 should not be empty');
         if ($this->getName() === 'report') {
             $this->addChild("text", (string) $message);
         }
@@ -192,8 +192,8 @@ class Xml extends \SimpleXMLElement implements IsReport
      */
     public function addNotice($message)
     {
-        assert('is_string($message)', ' Wrong type for argument 1. String expected');
-        assert('!empty($message)', ' Argument 1 should not be empty');
+        assert('is_string($message); // Wrong type for argument 1. String expected');
+        assert('!empty($message); // Argument 1 should not be empty');
         if ($this->getName() === 'report') {
             $this->addChild("notice", (string) $message);
         }
@@ -230,8 +230,8 @@ class Xml extends \SimpleXMLElement implements IsReport
      */
     public function addWarning($message)
     {
-        assert('is_string($message)', ' Wrong type for argument 1. String expected');
-        assert('!empty($message)', ' Argument 1 should not be empty');
+        assert('is_string($message); // Wrong type for argument 1. String expected');
+        assert('!empty($message); // Argument 1 should not be empty');
         if ($this->getName() === 'report') {
             $this->addChild("warning", (string) $message);
         }
@@ -270,8 +270,8 @@ class Xml extends \SimpleXMLElement implements IsReport
      */
     public function addError($message)
     {
-        assert('is_string($message)', ' Wrong type for argument 1. String expected');
-        assert('!empty($message)', ' Argument 1 should not be empty');
+        assert('is_string($message); // Wrong type for argument 1. String expected');
+        assert('!empty($message); // Argument 1 should not be empty');
         if ($this->getName() === 'report') {
             $this->addChild("error", (string) $message);
         }

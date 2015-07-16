@@ -144,7 +144,7 @@ abstract class AbstractHandler extends \Yana\Core\Object implements \Yana\Log\Er
      */
     public function setErrorReportingLevel($newLevel)
     {
-        assert('is_int($newLevel)', ' Integer expected.');
+        assert('is_int($newLevel); // Integer expected.');
         $this->_errorReportingLevel = (int) $newLevel;
         return $this;
     }

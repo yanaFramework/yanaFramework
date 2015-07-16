@@ -103,7 +103,7 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setAction($action = "")
     {
-        assert('is_string($action)', ' Wrong type for argument 1. String expected');
+        assert('is_string($action); // Wrong type for argument 1. String expected');
         $this->action = "$action";
         return $this;
     }
@@ -141,7 +141,7 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setLanguage($language = "")
     {
-        assert('is_string($language)', ' Wrong type for argument 1. String expected');
+        assert('is_string($language); // Wrong type for argument 1. String expected');
         if (empty($language)) {
             $this->language = null;
         } else {
@@ -179,7 +179,7 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setLabel($label = "")
     {
-        assert('is_string($label)', ' Wrong type for argument 1. String expected');
+        assert('is_string($label); // Wrong type for argument 1. String expected');
         if (empty($label)) {
             $this->label = null;
         } else {
@@ -218,7 +218,7 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setTitle($title = "")
     {
-        assert('is_string($title)', ' Wrong type for argument 1. String expected');
+        assert('is_string($title); // Wrong type for argument 1. String expected');
         if (empty($title)) {
             $this->title = null;
         } else {
@@ -256,8 +256,8 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setIcon($icon = "")
     {
-        assert('is_string($icon)', ' Wrong type for argument 1. String expected');
-        assert('empty($icon) || is_file($icon)', ' Invalid argument type argument 1. File expected');
+        assert('is_string($icon); // Wrong type for argument 1. String expected');
+        assert('empty($icon) || is_file($icon); // Invalid argument type argument 1. File expected');
         if (empty($icon)) {
             $this->icon = null;
         } else {

@@ -156,11 +156,11 @@ class SelectCount extends \Yana\Db\Queries\SelectExist
             $stmt = str_replace('%COLUMN%', '*', $stmt);
 
         } else {
-            assert('!isset($column)', ' Cannot redeclare $column');
+            assert('!isset($column); // Cannot redeclare $column');
             $column = "";
 
-            assert('!isset($alias)', ' Cannot redeclare var $alias');
-            assert('!isset($item)', ' Cannot redeclare var $item');
+            assert('!isset($alias); // Cannot redeclare var $alias');
+            assert('!isset($item); // Cannot redeclare var $item');
             foreach ($this->getColumns() as $alias => $item)
             {
                 if (is_array($item)) {

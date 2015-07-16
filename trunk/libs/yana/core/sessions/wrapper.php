@@ -51,7 +51,7 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
      */
     public function offsetExists($offset)
     {
-        assert('is_scalar($offset)', ' Invalid argument $offset: scalar expected');
+        assert('is_scalar($offset); // Invalid argument $offset: scalar expected');
         return isset($_SESSION[$offset]);
     }
 
@@ -65,7 +65,7 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
      */
     public function offsetGet($offset)
     {
-        assert('is_scalar($offset)', ' Invalid argument $offset: scalar expected');
+        assert('is_scalar($offset); // Invalid argument $offset: scalar expected');
         return $_SESSION[$offset];
     }
 
@@ -79,7 +79,7 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
     public function offsetSet($offset, $value)
     {
         if (!\is_null($offset)) {
-            assert('is_scalar($offset)', ' Invalid argument $offset: scalar expected');
+            assert('is_scalar($offset); // Invalid argument $offset: scalar expected');
             $_SESSION[$offset] = $value;
         } else {
             $_SESSION[] = $value;
@@ -94,7 +94,7 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
      */
     public function offsetUnset($offset)
     {
-        assert('is_scalar($offset)', ' Invalid argument $offset: scalar expected');
+        assert('is_scalar($offset); // Invalid argument $offset: scalar expected');
 
         unset($_SESSION[$offset]);
     }
@@ -127,7 +127,7 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
      */
     public function setId($newId)
     {
-        assert('is_string($newId)', ' Invalid argument $newId: string expected');
+        assert('is_string($newId); // Invalid argument $newId: string expected');
 
         \session_id($newId);
         return $this;
@@ -152,7 +152,7 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
      */
     public function regeneratId($newId)
     {
-        assert('is_string($newId)', ' Invalid argument $newId: string expected');
+        assert('is_string($newId); // Invalid argument $newId: string expected');
 
         \session_regenerate_id($newId);
         return $this;
@@ -176,7 +176,7 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
      */
     public function setName($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
 
         \session_name((string) $name);
         return $this;
@@ -256,7 +256,7 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
      */
     public function fromString($serializedArray)
     {
-        assert('is_string($serializedArray)', ' Invalid argument $serializedArray: string expected');
+        assert('is_string($serializedArray); // Invalid argument $serializedArray: string expected');
         return \session_decode($serializedArray);
     }
 

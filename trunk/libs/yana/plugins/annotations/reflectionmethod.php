@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Plugins;
+namespace Yana\Plugins\Annotations;
 
 /**
  * Plugin information

@@ -142,7 +142,7 @@ class MenuHelper extends \Yana\Core\Object
      */
     public function setUseKeys($useKeys)
     {
-        assert('is_int($useKeys)', ' Invalid argument $useKeys: int expected');
+        assert('is_int($useKeys); // Invalid argument $useKeys: int expected');
 
         $this->_useKeys = (int) $useKeys;
         return $this;
@@ -172,7 +172,7 @@ class MenuHelper extends \Yana\Core\Object
      */
     public function setAllowHtml($allowHtml)
     {
-        assert('is_bool($allowHtml)', ' Invalid argument $allowHtml: bool expected');
+        assert('is_bool($allowHtml); // Invalid argument $allowHtml: bool expected');
 
         $this->_allowHtml = (bool) $allowHtml;
         return $this;

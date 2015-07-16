@@ -28,7 +28,7 @@
 namespace Yana\Plugins;
 
 /**
- * <<Singleton>> <<Mediator>> PluginManager
+ * <<Singleton>> <<Mediator>> Plugin-manager.
  *
  * This class implements communication between plugins and provides access to virtual drives
  * and local registries which may be defined on a per plugin basis.
@@ -134,9 +134,14 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     private $_loadedPlugins = array();
 
     /**
-     * @var \Yana\Plugins\Repository
+     * @var \Yana\Plugins\Repositories\Repository
      */
     private $_repository = null;
+
+    /**
+     * @var \Yana\Plugins\DependencyContainer
+     */
+    private $_dependencies = null;
 
     /**#@+
      * class constants
@@ -146,7 +151,33 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
 
     const PREFIX = 'plugin_';
 
-    /**#@-*/
+    /** #@- */
+
+    /**
+     * Get dependency injection container.
+     *
+     * Defaults to NULL.
+     *
+     * @return  \Yana\Plugins\DependencyContainer
+     */
+    public function getDependencies()
+    {
+        return $this->_dependencies;
+    }
+
+    /**
+     * Inject a dependency container.
+     *
+     * The container and its dependencies will be passed on to any plugins the manager loads.
+     *
+     * @param   \Yana\Plugins\DependencyContainer  $dependencies  to inject
+     * @return  \Yana\Plugins\Manager
+     */
+    public function attachDependencies(\Yana\Plugins\DependencyContainer $dependencies)
+    {
+        $this->_dependencies = $dependencies;
+        return $this;
+    }
 
     /**
      * Set path configuration.
@@ -156,7 +187,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      *
      * Example:
      * <code>
-     *\Yana\Plugins\Manager::setPath("config/plugins.cfg", "plugins/");
+     * \Yana\Plugins\Manager::setPath("config/plugins.cfg", "plugins/");
      * </code>
      *
      * @param   string  $configurationFile  path to plugin configuration file (plugins.cfg)
@@ -166,9 +197,9 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     public static function setPath($configurationFile, $pluginDirectory)
     {
-        assert('is_string($configurationFile)', ' Wrong type for argument 1. String expected');
-        assert('is_string($pluginDirectory)', ' Invalid argument 2. String expected');
-        assert('is_dir($pluginDirectory)', ' Invalid argument 2. Directory expected');
+        assert('is_string($configurationFile); // Wrong type for argument 1. String expected');
+        assert('is_string($pluginDirectory); // Invalid argument 2. String expected');
+        assert('is_dir($pluginDirectory); // Invalid argument 2. Directory expected');
 
         if (!is_dir($pluginDirectory)) {
             throw new \Yana\Core\Exceptions\NotFoundException("No such directory: '$pluginDirectory'.", E_USER_ERROR);
@@ -194,7 +225,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     /**
      * Get configuration manager.
      *
-     * @return  \Yana\Plugins\Repository
+     * @return  \Yana\Plugins\Repositories\Repository
      */
     private function _getRepository()
     {
@@ -202,7 +233,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
             if (file_exists(self::$_path)) {
                 $this->_repository = unserialize(file_get_contents(self::$_path));
             } else {
-                $this->_repository = new \Yana\Plugins\Repository();
+                $this->_repository = new \Yana\Plugins\Repositories\Repository();
             }
         }
         return $this->_repository;
@@ -255,7 +286,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     public function broadcastEvent($event, array $args)
     {
-        assert('is_string($event)', ' Invalid argument $event: string expected');
+        assert('is_string($event); // Invalid argument $event: string expected');
 
         // event must be defined
         $config = $this->getEventConfiguration($event);
@@ -275,7 +306,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
 
         $config->setEventArguments($args);
 
-        assert('!isset($element)', 'cannot redeclare variable $element');
+        assert('!isset($element); // cannot redeclare variable $element');
         foreach ($this->_plugins as $element)
         {
             $lastResult = $config->sendEvent($element);
@@ -373,7 +404,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     public function refreshPluginFile()
     {
-        $builder = new \Yana\Plugins\RepositoryBuilder();
+        $builder = new \Yana\Plugins\Repositories\Builder();
         $builder->addDirectory($this->getPluginDir());
         $builder->setBaseRepository($this->_getRepository());
         $repository = $builder->getRepository();
@@ -403,7 +434,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     public function isActive($pluginName)
     {
-        assert('is_string($pluginName)', ' Invalid argument $pluginName: string expected');
+        assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
         $plugins = $this->_getRepository()->getPlugins();
         $active = null;
         if ($plugins->offsetExists($pluginName)) {
@@ -427,7 +458,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     public function isDefaultActive($pluginName)
     {
-        assert('is_string($pluginName)', ' Wrong type for argument 1. String expected');
+        assert('is_string($pluginName); // Wrong type for argument 1. String expected');
         $plugins = $this->_getRepository()->getPlugins();
         $active = null;
         if ($plugins->offsetExists($pluginName)) {
@@ -476,8 +507,8 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     public function get($pluginName, $key)
     {
-        assert('is_string($key)', ' Invalid argument $key: string expected');
-        assert('is_string($pluginName)', ' Invalid argument $pluginName: string expected');
+        assert('is_string($key); // Invalid argument $key: string expected');
+        assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
 
         $pluginName = (string) $pluginName;
         $key = (string) $key;
@@ -498,7 +529,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     public function __get($name)
     {
-        assert('is_string($name)', ' Wrong type for argument 1. String expected');
+        assert('is_string($name); // Wrong type for argument 1. String expected');
         if (!isset($this->_drive[$name])) {
             // recursive search
             $drive = substr($name, 0, strpos($name, ':/'));
@@ -581,7 +612,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     public function getPluginConfiguration($pluginName)
     {
-        assert('is_string($pluginName)', ' Wrong type for argument 1. String expected');
+        assert('is_string($pluginName); // Wrong type for argument 1. String expected');
 
         $this->_loadPlugin($pluginName); /** @todo check if this is necessary */
         $pluginConfig = $this->getPluginConfigurations();
@@ -622,13 +653,13 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
         if (is_null($eventName)) {
             $eventName = self::$_lastEvent;
         }
-        assert('is_string($eventName)', ' Wrong type for argument 1. String expected');
+        assert('is_string($eventName); // Wrong type for argument 1. String expected');
 
         $methodsConfig = $this->getEventConfigurations();
         if (isset($methodsConfig[$eventName])) {
             /* String */ $type = $methodsConfig[$eventName]->getType();
         } else {
-            assert('!isset($defaultEvent)', ' Cannot redeclare var $defaultEvent');
+            assert('!isset($defaultEvent); // Cannot redeclare var $defaultEvent');
             /* array */ $defaultEvent = \Yana\Application::getDefault("EVENT");
             assert('is_array($defaultEvent);');
             if (is_array($defaultEvent) && isset($defaultEvent[\Yana\Plugins\Annotations\Enumeration::TYPE])) {
@@ -638,7 +669,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
             }
             unset($defaultEvent);
         }
-        assert('is_scalar($type)', ' Postcondition mismatch. Return type is supposed to be a string.');
+        assert('is_scalar($type); // Postcondition mismatch. Return type is supposed to be a string.');
         return "$type";
     }
 
@@ -650,7 +681,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     public function getEventConfiguration($eventName)
     {
-        assert('is_string($eventName)', ' Invalid argument $eventName: string expected');
+        assert('is_string($eventName); // Invalid argument $eventName: string expected');
         return $this->getEventConfigurations()->offsetGet($eventName);
     }
 
@@ -675,7 +706,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     public function isEvent($eventName)
     {
-        assert('is_string($eventName)', ' Invalid argument $eventName: string expected');
+        assert('is_string($eventName); // Invalid argument $eventName: string expected');
         return $this->_getRepository()->isMethod($eventName);
     }
 
@@ -687,7 +718,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     public function isLoaded($pluginName)
     {
-        assert('is_string($pluginName)', ' Invalid argument $pluginName: string expected');
+        assert('is_string($pluginName); // Invalid argument $pluginName: string expected');
         return isset($this->_loadedPlugins[mb_strtolower("$pluginName")]);
     }
 
@@ -701,7 +732,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     private function _getEventSubscribers($event)
     {
-        assert('is_string($event)', ' Invalid argument $event: string expected');
+        assert('is_string($event); // Invalid argument $event: string expected');
         $this->_loadedPlugins = array();
 
         $config = $this->_getRepository()->getImplementations($event);
@@ -741,11 +772,11 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     private function _loadPlugin($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (!isset($this->_plugins[$name])) {
             $pluginDir = $this->getPluginDir();
             // load virtual drive, if it exists
-            assert('!isset($driveFile)', ' Cannot redeclare var $driveFile');
+            assert('!isset($driveFile); // Cannot redeclare var $driveFile');
             $driveFile = "$pluginDir$name/$name.drive.xml";
             if (is_file($driveFile)) {
                 $this->_drive[$name] = new \Yana\VDrive\Registry($driveFile, $this->getPluginDir() . $name . "/");
@@ -753,16 +784,12 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
             }
             unset($driveFile);
             // load base class, if it exists
-            assert('!isset($classFile)', ' Cannot redeclare var $classFile');
-            $classFile = "$pluginDir$name/$name.plugin.php";
-            if (is_file($classFile)) {
-                include_once "$classFile";
-            }
-            unset($classFile);
-            // instantiate class, if it exists
-            if (class_exists(\Yana\Plugins\Manager::PREFIX . $name)) {
-                $class = \Yana\Plugins\Manager::PREFIX . $name;
-                $this->_plugins[$name] = new $class();
+            try {
+                $this->_plugins[$name] =
+                    \Yana\Plugins\AbstractPlugin::loadPlugin($name, $this->getPluginDir(), $this->getDependencies());
+
+            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
+                unset($e); // ignore plugins that are not found
             }
         } else {
             /* plugin is already loaded */
@@ -836,7 +863,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
                 /**
                  * check for type attribute
                  */
-                assert('!isset($type)', ' Cannot redeclare var $type');
+                assert('!isset($type); // Cannot redeclare var $type');
                 $type = $element->getType();
                 if (empty($type)) {
                     $subReport->addWarning("The mandatory attribute 'type' is missing.");
@@ -848,7 +875,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
                 /**
                  * check if template file exists
                  */
-                assert('!isset($template)', ' Cannot redeclare var $template');
+                assert('!isset($template); // Cannot redeclare var $template');
                 $template = $element->getTemplate();
                 $tplMessage = strcasecmp($template, "message");
                 if (!empty($template) && strcasecmp($template, "null") !== 0 && $tplMessage !== 0) {

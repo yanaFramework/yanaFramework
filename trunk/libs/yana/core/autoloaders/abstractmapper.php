@@ -115,7 +115,7 @@ abstract class AbstractMapper extends \Yana\Core\Object
      */
     public function setBaseDirectory($baseDirectory)
     {
-        assert('is_string($baseDirectory)', ' Invalid input $baseDirectory. String expected');
+        assert('is_string($baseDirectory); // Invalid input $baseDirectory. String expected');
         $this->_baseDirectory = (string) $baseDirectory;
         return $this;
     }
@@ -130,7 +130,7 @@ abstract class AbstractMapper extends \Yana\Core\Object
      */
     public function setFileExtension($fileExtension)
     {
-        assert('is_string($fileExtension)', ' Invalid input $fileExtension. String expected');
+        assert('is_string($fileExtension); // Invalid input $fileExtension. String expected');
         $this->_fileExtension = (string) $fileExtension;
         return $this;
     }
@@ -146,7 +146,7 @@ abstract class AbstractMapper extends \Yana\Core\Object
      */
     public function setFilePrefix($filePrefix)
     {
-        assert('is_string($filePrefix)', ' Invalid input $filePrefix. String expected');
+        assert('is_string($filePrefix); // Invalid input $filePrefix. String expected');
         $this->_filePrefix = (string) $filePrefix;
         return $this;
     }
@@ -159,7 +159,7 @@ abstract class AbstractMapper extends \Yana\Core\Object
      */
     public function setNameSpace($nameSpace)
     {
-        assert('is_string($nameSpace)', ' Invalid input $nameSpace. String expected');
+        assert('is_string($nameSpace); // Invalid input $nameSpace. String expected');
         $this->_nameSpace = (string) $nameSpace;
         return $this;
     }

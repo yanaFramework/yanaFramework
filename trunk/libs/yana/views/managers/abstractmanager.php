@@ -60,7 +60,7 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Views\
      */
     public function addStyle($file)
     {
-        assert('is_string($file)', ' Wrong argument type argument 1. String expected');
+        assert('is_string($file); // Wrong argument type argument 1. String expected');
         $this->_styles[] = "$file";
         return $this;
     }
@@ -73,7 +73,7 @@ abstract class AbstractManager extends \Yana\Core\Object implements \Yana\Views\
      */
     public function addScript($file)
     {
-        assert('is_string($file)', ' Wrong argument type argument 1. String expected');
+        assert('is_string($file); // Wrong argument type argument 1. String expected');
         $this->_scripts[] = "$file";
         return $this;
     }

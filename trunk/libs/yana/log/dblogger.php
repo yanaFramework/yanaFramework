@@ -95,7 +95,7 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      */
     public function setMaxNumerOfEntries($max = 0)
     {
-        assert('is_int($max)', ' Invalid argument $max: int expected');
+        assert('is_int($max); // Invalid argument $max: int expected');
         $this->_maxNumberOfEntries = $max;
         return $this;
     }
@@ -119,7 +119,7 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      */
     public function setMailRecipient($recipient = "")
     {
-        assert('filter_var($recipient, FILTER_VALIDATE_EMAIL)', ' Invalid argument $recipient: must be a valid mail address');
+        assert('filter_var($recipient, FILTER_VALIDATE_EMAIL); // Invalid argument $recipient: must be a valid mail address');
 
         $this->_mailRecipient = $recipient;
         return $this;
@@ -155,10 +155,10 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
 
         $previousLog = '';
 
-        assert('!isset($newLog)', ' Cannot redeclare var $newLog');
+        assert('!isset($newLog); // Cannot redeclare var $newLog');
         foreach ($this->_messages as $newLog)
         {
-            assert('is_array($newLog)', ' unexpected result: Log entry is expected to be an array');
+            assert('is_array($newLog); // unexpected result: Log entry is expected to be an array');
 
             // check if new log entry is valid
             if (empty($newLog)) {
@@ -228,7 +228,7 @@ class DbLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      */
     protected function _flushDatabaseToMail($recipient)
     {
-        assert('is_string($recipient)', ' Invalid argument $recipient: string expected');
+        assert('is_string($recipient); // Invalid argument $recipient: string expected');
 
         $oldLogEntries = $this->_database->select("log", array(), array('LOG_ID'));
 

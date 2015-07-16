@@ -116,7 +116,7 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      */
     public function setMaxNumerOfEntries($max = 0)
     {
-        assert('is_int($max)', ' Invalid argument $max: int expected');
+        assert('is_int($max); // Invalid argument $max: int expected');
         $this->_maxNumberOfEntries = $max;
         return $this;
     }
@@ -140,7 +140,7 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      */
     public function setMailRecipient($recipient = "")
     {
-        assert('filter_var($recipient, FILTER_VALIDATE_EMAIL)', ' Invalid argument $recipient: must be a valid mail address');
+        assert('filter_var($recipient, FILTER_VALIDATE_EMAIL); // Invalid argument $recipient: must be a valid mail address');
 
         $this->_mailRecipient = $recipient;
         return $this;
@@ -163,7 +163,7 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      */
     protected function _cleanUp($maxLogLength)
     {
-        assert('is_int($maxLogLength)', ' Invalid argument $maxLogLength: int expected');
+        assert('is_int($maxLogLength); // Invalid argument $maxLogLength: int expected');
 
         // finished, if number of log entries is still smaller than maximum
         if ($this->_file->length() <= $maxLogLength) {
@@ -198,7 +198,7 @@ class FileLogger extends \Yana\Log\AbstactLogger implements \Yana\Log\IsLogger
      */
     protected function _flushToMail($recipient)
     {
-        assert('is_string($recipient)', ' Invalid argument $recipient: string expected');
+        assert('is_string($recipient); // Invalid argument $recipient: string expected');
 
         $oldLogEntries = $this->_file->getContent();
 

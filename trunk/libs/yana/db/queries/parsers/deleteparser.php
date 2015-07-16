@@ -62,8 +62,8 @@ class DeleteParser extends \Yana\Db\Queries\Parsers\AbstractParser implements \Y
          * 2) set order by + direction
          */
         if (!empty($orderBy)) {
-            assert('!isset($columnName)', ' Cannot redeclare variable $columnName');
-            assert('!isset($direction)', ' Cannot redeclare variable $direction');
+            assert('!isset($columnName); // Cannot redeclare variable $columnName');
+            assert('!isset($direction); // Cannot redeclare variable $direction');
             foreach ($orderBy as $columnName => $direction)
             {
                 $query->addOrderBy($columnName, $direction == 'desc');

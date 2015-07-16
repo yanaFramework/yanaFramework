@@ -101,7 +101,7 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
         // start transaction
         $driver->beginTransaction();
 
-        assert('!isset($i)', 'Cannot redeclare $i');
+        assert('!isset($i); // Cannot redeclare $i');
         for ($i = 0; $i < count($this->_queue); $i++)
         {
             /*
@@ -146,7 +146,7 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
 
                 } catch (\Yana\Db\DatabaseException $rollBackException) { // when rollback failed, create log-entry
 
-                    assert('!isset($message)', ' Cannot redefine var $message');
+                    assert('!isset($message); // Cannot redefine var $message');
                     $message = "Unable to rollback changes. Database might contain corrupt data. "
                         . $rollBackException->getMessage();
                     \Yana\Log\LogManager::getLogger()->addLog($message, \Yana\Log\TypeEnumeration::ERROR);
@@ -198,11 +198,11 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
         $column = $updateQuery->getColumn();
         $value = $updateQuery->getValues(); // get values by reference
 
-        assert('!isset($table)', 'Cannot redeclare var $table');
+        assert('!isset($table); // Cannot redeclare var $table');
         $table = $this->_getSchema()->getTable($tableName);
 
         // updating table / column is illegal
-        assert('!isset($expectedResult)', 'Cannot redeclare var $expectedResult');
+        assert('!isset($expectedResult); // Cannot redeclare var $expectedResult');
         $expectedResult = $updateQuery->getExpectedResult();
         if ($expectedResult !== \Yana\Db\ResultEnumeration::ROW && $expectedResult !== \Yana\Db\ResultEnumeration::CELL) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Query is invalid. " .
@@ -210,11 +210,11 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
         }
 
         //before update: check constraints and triggers
-        assert('!isset($constraint)', ' Cannot redeclare var $constraint');
+        assert('!isset($constraint); // Cannot redeclare var $constraint');
         $constraint = ($column === '*') ? $value : array($column => $value);
-        assert('is_array($constraint)', 'Array expected for values to update');
+        assert('is_array($constraint); // Array expected for values to update');
 
-        assert('!isset($constraints)', ' Cannot redeclare var $constraints');
+        assert('!isset($constraints); // Cannot redeclare var $constraints');
         $constraints = new \Yana\Db\Helpers\ConstraintCollection($table->getConstraints(), $constraint);
         if ($constraints() === false) {
             $_message = "Update on table '{$tableName}' failed. Constraint check failed for statement '$updateQuery'.";
@@ -226,7 +226,7 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
         $trigger = new \Yana\Db\Helpers\Triggers\BeforeUpdate($triggerContainer);
         $trigger(); // fire trigger
 
-        assert('!isset($triggerCollection)', 'Cannot redeclare var $triggerCollection');
+        assert('!isset($triggerCollection); // Cannot redeclare var $triggerCollection');
         $triggerCollection = new \Yana\Db\Helpers\Triggers\TriggerCollection();
         $triggerCollection[] = new \Yana\Db\Helpers\Triggers\AfterUpdate($triggerContainer);
 
@@ -250,7 +250,7 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
         $tableName = $insertQuery->getTable();
         $value = $insertQuery->getValues();
 
-        assert('!isset($table)', 'Cannot redeclare var $table');
+        assert('!isset($table); // Cannot redeclare var $table');
         $table = $this->_getSchema()->getTable($tableName);
 
         // inserting or updating table or column is illegal
@@ -261,7 +261,7 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
         }
 
         // constraint check failed
-        assert('!isset($constraints)', ' Cannot redeclare var $constraints');
+        assert('!isset($constraints); // Cannot redeclare var $constraints');
         $constraints = new \Yana\Db\Helpers\ConstraintCollection($table->getConstraints(), $value);
         if ($constraints() === false) {
             throw new \Yana\Db\Queries\Exceptions\ConstraintException("Insert on table '{$tableName}' failed. " .
@@ -272,7 +272,7 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
         $trigger = new \Yana\Db\Helpers\Triggers\BeforeInsert($triggerContainer);
         $trigger(); // fire trigger
 
-        assert('!isset($triggerCollection)', 'Cannot redeclare var $triggerCollection');
+        assert('!isset($triggerCollection); // Cannot redeclare var $triggerCollection');
         $triggerCollection = new \Yana\Db\Helpers\Triggers\TriggerCollection();
         $triggerCollection[] = new \Yana\Db\Helpers\Triggers\AfterInsert($triggerContainer);
 
@@ -299,7 +299,7 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
     {
         $tableName = $deleteQuery->getTable();
 
-        assert('!isset($table)', ' Cannot redeclare var $table');
+        assert('!isset($table); // Cannot redeclare var $table');
         $table = $this->_getSchema()->getTable($tableName);
 
         // loop through deleted rows
@@ -308,7 +308,7 @@ class Transaction extends \Yana\Core\Object implements \Yana\Db\IsTransaction
         $trigger(); // fire trigger
 
         // save trigger settings for onAfterDelete
-        assert('!isset($triggerCollection)', 'Cannot redeclare var $triggerCollection');
+        assert('!isset($triggerCollection); // Cannot redeclare var $triggerCollection');
         $triggerCollection = new \Yana\Db\Helpers\Triggers\TriggerCollection();
         $triggerCollection[] = new \Yana\Db\Helpers\Triggers\AfterDelete($triggerContainer);
 

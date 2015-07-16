@@ -50,7 +50,10 @@ class ApplicationBar extends \Yana\Views\Helpers\AbstractViewHelper implements \
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
         $result = "";
-        $pluginMenu = \Yana\Plugins\Menu::getInstance();
+
+        $builder = new \Yana\Plugins\Menus\Builder();
+        $pluginMenu = $builder->buildMenu(); // using default settings
+        unset($builder);
 
         $formatter = new \Yana\Views\Helpers\Formatters\UrlFormatter();
         $template = '<a class="applicationBar" href="' . $formatter("action=", false, false) . '%s">' .

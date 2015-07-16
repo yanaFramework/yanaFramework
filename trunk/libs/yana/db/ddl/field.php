@@ -149,7 +149,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setDescription($description = "")
     {
-        assert('is_string($description)', ' Wrong type for argument 1. String expected');
+        assert('is_string($description); // Wrong type for argument 1. String expected');
         if ($this->column instanceof \Yana\Db\Ddl\Column) {
             $this->column->setDescription($description);
         } elseif (empty($description)) {
@@ -199,7 +199,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setTitle($title = "")
     {
-        assert('is_string($title)', ' Wrong type for argument 1. String expected');
+        assert('is_string($title); // Wrong type for argument 1. String expected');
         if (empty($title)) {
             $this->title = null;
         } else {
@@ -236,7 +236,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function getEvent($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (isset( $this->events[$name])) {
             return $this->events[$name];
         } else {
@@ -260,7 +260,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function addEvent($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         $name = mb_strtolower($name);
         if (isset($this->events[$name])) {
             $message = "Another action with the name '$name' is already defined.";
@@ -286,7 +286,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function dropEvent($name)
     {
-        assert('is_string($name)', ' Invalid argument $name: string expected');
+        assert('is_string($name); // Invalid argument $name: string expected');
         if (isset($this->events["$name"])) {
             unset($this->events["$name"]);
             return true;
@@ -322,7 +322,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setVisible($isVisible)
     {
-        assert('is_bool($isVisible)', ' Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isVisible); // Wrong type for argument 1. Boolean expected');
         $this->hidden = ! (bool) $isVisible;
         return $this;
     }
@@ -455,7 +455,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setReadonly($isReadonly)
     {
-        assert('is_bool($isReadonly)', ' Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isReadonly); // Wrong type for argument 1. Boolean expected');
         $this->readonly = (bool) $isReadonly;
         return $this;
     }
@@ -491,7 +491,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setCssClass($class = "")
     {
-        assert('is_string($class)', ' Wrong type for argument 1. String expected');
+        assert('is_string($class); // Wrong type for argument 1. String expected');
         if (empty($class)) {
             $this->cssClass = null;
         } else {
@@ -531,7 +531,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function setTabIndex($index = null)
     {
-        assert('is_null($index) || is_int($index)', ' Wrong type for argument 1. Integer expected');
+        assert('is_null($index) || is_int($index); // Wrong type for argument 1. Integer expected');
         if (is_null($index)) {
             $this->tabIndex = null;
         } else {
@@ -556,7 +556,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function getGrants()
     {
-        assert('is_array($this->grants)', ' Member "grants" is expected to be an array.');
+        assert('is_array($this->grants); // Member "grants" is expected to be an array.');
         if ($this->column instanceof \Yana\Db\Ddl\Column) {
             // if a column is present, the field must not have any grants itself
             return $this->column->getGrants();
@@ -604,9 +604,9 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      */
     public function addGrant($user = null, $role = null, $level = null)
     {
-        assert('is_null($user) || is_string($user)', ' Wrong type for argument 1. String expected');
-        assert('is_null($role) || is_string($role)', ' Wrong type for argument 2. String expected');
-        assert('is_null($level) || is_int($level)', ' Wrong type for argument 3. Integer expected');
+        assert('is_null($user) || is_string($user); // Wrong type for argument 1. String expected');
+        assert('is_null($role) || is_string($role); // Wrong type for argument 2. String expected');
+        assert('is_null($level) || is_int($level); // Wrong type for argument 3. Integer expected');
         if ($this->column instanceof \Yana\Db\Ddl\Column) {
             // if a column is present, the field must not have any grants itself
             return $this->column->addGrant($user, $role, $level);

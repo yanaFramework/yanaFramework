@@ -117,9 +117,9 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      */
     public function setDBMS($dbms = "generic")
     {
-        assert('is_string($dbms)', ' Wrong type for argument 1. String expected');
+        assert('is_string($dbms); // Wrong type for argument 1. String expected');
         $dbms = strtolower($dbms);
-        assert('empty($dbms) || in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS())', ' Unsupported DBMS');
+        assert('empty($dbms) || in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
         if (empty($dbms)) {
             $this->dbms = null;
         } else {
@@ -168,7 +168,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      */
     public function setTrigger($trigger)
     {
-        assert('is_string($trigger)', ' Wrong type for argument 1. String expected');
+        assert('is_string($trigger); // Wrong type for argument 1. String expected');
         $this->trigger = "$trigger";
         return $this;
     }
@@ -335,7 +335,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      */
     public function setInsert($isInsert = true)
     {
-        assert('is_bool($isInsert)', ' Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isInsert); // Wrong type for argument 1. Boolean expected');
         $this->insert = (bool) $isInsert;
         return $this;
     }
@@ -355,7 +355,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      */
     public function setUpdate($isUpdate = true)
     {
-        assert('is_bool($isUpdate)', ' Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isUpdate); // Wrong type for argument 1. Boolean expected');
         $this->update = (bool) $isUpdate;
         return $this;
     }
@@ -375,7 +375,7 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      */
     public function setDelete($isDelete = true)
     {
-        assert('is_bool($isDelete)', ' Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isDelete); // Wrong type for argument 1. Boolean expected');
         $this->delete = (bool) $isDelete;
         return $this;
     }

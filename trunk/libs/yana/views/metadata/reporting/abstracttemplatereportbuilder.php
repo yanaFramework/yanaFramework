@@ -79,7 +79,7 @@ abstract class AbstractTemplateReportBuilder extends \Yana\Views\MetaData\Report
      */
     public function buildReport()
     {
-        assert('!isset($hasError)', 'Cannot redeclare var $hasError');
+        assert('!isset($hasError); // Cannot redeclare var $hasError');
         $hasError =
             !$this->_checkTemplateFileExists() ||
             !$this->_checkLanguageFilesExist() ||

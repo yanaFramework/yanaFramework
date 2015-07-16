@@ -95,8 +95,8 @@ class Microsummary extends \Yana\Core\AbstractUtility
      */
     public static function getText($id)
     {
-        assert('is_string($id)', ' Wrong type for argument 1. String expected');
-        assert('mb_strlen($id) > 32', ' Argument 1 must have at most 32 charaters');
+        assert('is_string($id); // Wrong type for argument 1. String expected');
+        assert('mb_strlen($id) > 32; // Argument 1 must have at most 32 charaters');
 
         $id = mb_strtoupper("$id");
         $db = \Yana\Application::connect('microsummary');
@@ -129,8 +129,8 @@ class Microsummary extends \Yana\Core\AbstractUtility
      */
     public static function setText($id, $text)
     {
-        assert('is_string($id)', ' Wrong type for argument 1. String expected');
-        assert('is_string($text)', ' Wrong type for argument 2. String expected');
+        assert('is_string($id); // Wrong type for argument 1. String expected');
+        assert('is_string($text); // Wrong type for argument 2. String expected');
 
         $db = \Yana\Application::connect('microsummary');
         $id = mb_strtoupper("$id");
@@ -167,7 +167,7 @@ class Microsummary extends \Yana\Core\AbstractUtility
      */
     public static function publishSummary($id)
     {
-        assert('is_string($id)', ' Wrong argument type argument 1. String expected');
+        assert('is_string($id); // Wrong argument type argument 1. String expected');
 
         $id = mb_strtoupper("$id");
         $db = \Yana\Application::connect('microsummary');
@@ -191,7 +191,7 @@ class Microsummary extends \Yana\Core\AbstractUtility
      */
     public static function getSummaries()
     {
-        assert('is_array(self::$microsummaries)', ' Member "microsummaries" should be an array.');
+        assert('is_array(self::$microsummaries); // Member "microsummaries" should be an array.');
         return self::$microsummaries;
     }
 

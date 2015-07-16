@@ -49,7 +49,7 @@ class MethodCollection extends \Yana\Core\AbstractCollection
      */
     public function offsetUnset($offset)
     {
-        assert('is_string($offset)', ' Invalid argument $offset: string expected');
+        assert('is_string($offset); // Invalid argument $offset: string expected');
         parent::offsetUnset(mb_strtolower($offset));
     }
 
@@ -62,7 +62,7 @@ class MethodCollection extends \Yana\Core\AbstractCollection
      */
     public function offsetExists($offset)
     {
-        assert('is_string($offset)', ' Invalid argument $offset: string expected');
+        assert('is_string($offset); // Invalid argument $offset: string expected');
         return parent::offsetExists(mb_strtolower($offset));
     }
 
@@ -74,7 +74,7 @@ class MethodCollection extends \Yana\Core\AbstractCollection
      */
     public function offsetGet($offset)
     {
-        assert('is_string($offset)', ' Invalid argument $offset: string expected');
+        assert('is_string($offset); // Invalid argument $offset: string expected');
         return parent::offsetGet(mb_strtolower($offset));
     }
 
@@ -93,7 +93,7 @@ class MethodCollection extends \Yana\Core\AbstractCollection
             if (!is_string($offset)) {
                 $offset = $value->getMethodName();
             }
-            assert('is_string($offset)', ' Invalid argument $offset: string expected');
+            assert('is_string($offset); // Invalid argument $offset: string expected');
             return $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
             $message = "Instance of MethodConfiguration expected. " .

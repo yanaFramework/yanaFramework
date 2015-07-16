@@ -69,7 +69,7 @@ class Dat extends \Yana\Files\Text
      */
     public function getLine($lineNr)
     {
-        assert('is_int($lineNr)', ' Invalid argument type argument 1. Integer expected.');
+        assert('is_int($lineNr); // Invalid argument type argument 1. Integer expected.');
         if (isset($this->content[$lineNr])) {
             return self::_parseLine($this->content[$lineNr]);
         } else {
@@ -110,7 +110,7 @@ class Dat extends \Yana\Files\Text
      */
     private static function _parseLine($line)
     {
-        assert('is_string($line)', ' Wrong type for argument 1. String expected');
+        assert('is_string($line); // Wrong type for argument 1. String expected');
         $array = array();
         $matches = array();
         preg_match_all("/<(.*)>(.*)<\/.*>/Ui", $line, $matches);
@@ -119,7 +119,7 @@ class Dat extends \Yana\Files\Text
             $matches[2][$i] = preg_replace("/(\S{80})(\S*)/i", "\\1<wbr>\\2", $matches[2][$i]);
             $array[mb_strtoupper($matches[1][$i])] = $matches[2][$i];
         }
-        assert('is_array($array)', ' Returned type must be an array');
+        assert('is_array($array); // Returned type must be an array');
         return $array;
     }
 
@@ -139,8 +139,8 @@ class Dat extends \Yana\Files\Text
      */
     public function appendLine($content, $append = false)
     {
-        assert('is_array($content)', ' Wrong type for argument 1. Array expected');
-        assert('is_bool($append)', ' Wrong type for argument 2. Boolean expected');
+        assert('is_array($content); // Wrong type for argument 1. Array expected');
+        assert('is_bool($append); // Wrong type for argument 2. Boolean expected');
 
         $txt = self::_encodeEntry($content);
         if (!$this->isEmpty()) {
@@ -168,8 +168,8 @@ class Dat extends \Yana\Files\Text
      */
     public function setLine($lineNr, $newEntry)
     {
-        assert('is_int($lineNr)', ' Wrong type for argument 1. Integer expected');
-        assert('is_array($newEntry)', ' Wrong type for argument 1. Integer expected');
+        assert('is_int($lineNr); // Wrong type for argument 1. Integer expected');
+        assert('is_array($newEntry); // Wrong type for argument 1. Integer expected');
 
         $txt = self::_encodeEntry($newEntry);
         parent::setLine($lineNr, $txt);

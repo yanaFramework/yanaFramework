@@ -139,7 +139,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function setTitle($title = "")
     {
-        assert('is_string($title)', ' Wrong type for argument 1. String expected');
+        assert('is_string($title); // Wrong type for argument 1. String expected');
         if (empty($title)) {
             $this->title = null;
         } else {
@@ -189,7 +189,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function setDescription($description = "")
     {
-        assert('is_string($description)', ' Wrong type for argument 1. String expected');
+        assert('is_string($description); // Wrong type for argument 1. String expected');
         if (empty($description)) {
             $this->description = null;
         } else {
@@ -223,7 +223,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function setReadonly($isReadonly = false)
     {
-        assert('is_bool($isReadonly)', ' Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isReadonly); // Wrong type for argument 1. Boolean expected');
         $this->readonly = (bool) $isReadonly;
         return $this;
     }
@@ -240,7 +240,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function getColumn($name)
     {
-        assert('is_string($name)', ' Wrong type for argument 1. String expected');
+        assert('is_string($name); // Wrong type for argument 1. String expected');
         $name = mb_strtolower($name);
         if (isset($this->columns[$name])) {
             return $this->columns[$name];
@@ -257,9 +257,9 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function getColumnsByType($type)
     {
-        assert('is_string($type)', ' Wrong type for argument 1. String expected');
-        assert('in_array($type, \Yana\Db\Ddl\Column::getSupportedTypes())', ' Undefined column type "' . $type . '". ');
-        assert('is_array($this->columns)', ' Member "columns" is expected to be an array.');
+        assert('is_string($type); // Wrong type for argument 1. String expected');
+        assert('in_array($type, \Yana\Db\Ddl\Column::getSupportedTypes()); // Undefined column type "' . $type . '". ');
+        assert('is_array($this->columns); // Member "columns" is expected to be an array.');
         $columns = array();
         foreach ($this->columns as $column)
         {
@@ -280,7 +280,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function getColumns()
     {
-        assert('is_array($this->columns)', ' Member "columns" is expected to be an array.');
+        assert('is_array($this->columns); // Member "columns" is expected to be an array.');
         return $this->columns;
     }
 
@@ -293,7 +293,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function getColumnNames()
     {
-        assert('is_array($this->columns)', ' Member "columns" is expected to be an array.');
+        assert('is_array($this->columns); // Member "columns" is expected to be an array.');
         return array_keys($this->columns);
     }
 
@@ -307,7 +307,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function getFileColumns()
     {
-        assert('is_array($this->columns)', ' Member "columns" is expected to be an array.');
+        assert('is_array($this->columns); // Member "columns" is expected to be an array.');
         $columns = array();
         foreach ($this->columns as $column)
         {
@@ -400,7 +400,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function isColumn($columnName)
     {
-        assert('is_string($columnName)', ' Wrong type for argument 1. String expected');
+        assert('is_string($columnName); // Wrong type for argument 1. String expected');
         return isset($this->columns[mb_strtolower($columnName)]);
     }
 
@@ -417,8 +417,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function addColumn($columnName, $type)
     {
-        assert('is_string($columnName)', ' Wrong type for argument 1. String expected');
-        assert('in_array($type, \Yana\Db\Ddl\Column::getSupportedTypes())', ' Undefined column type "' . $type . '". ');
+        assert('is_string($columnName); // Wrong type for argument 1. String expected');
+        assert('in_array($type, \Yana\Db\Ddl\Column::getSupportedTypes()); // Undefined column type "' . $type . '". ');
         $columnName = mb_strtolower($columnName);
         if (isset($this->columns[$columnName])) {
             $message = "Another column with the name '$columnName' already exists in table '{$this->getName()}'.";
@@ -463,7 +463,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function setProfile($hasProfileConstraint)
     {
-        assert('is_bool($hasProfileConstraint)', ' Wrong type for argument 1. Boolean expected');
+        assert('is_bool($hasProfileConstraint); // Wrong type for argument 1. Boolean expected');
         if ($this->hasProfile()) {
             // remove profile
             if (!$hasProfileConstraint) {
@@ -486,7 +486,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function dropColumn($columnName)
     {
-        assert('is_string($columnName)', ' Wrong type for argument 1. String expected');
+        assert('is_string($columnName); // Wrong type for argument 1. String expected');
         $columnName = mb_strtolower($columnName);
         if (isset($this->columns[$columnName])) {
             unset($this->columns[$columnName]);
@@ -522,7 +522,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function hasVersionCheck($lastModified = true)
     {
-        assert('is_bool($lastModified)', ' Wrong type for argument 1. Boolean expected');
+        assert('is_bool($lastModified); // Wrong type for argument 1. Boolean expected');
         if ($lastModified) {
             if (isset($this->columns['time_modified'])) {
                 return true;
@@ -553,8 +553,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function setVersionCheck($hasVersionCheck, $lastModified = true)
     {
-        assert('is_bool($hasVersionCheck)', ' Wrong type for argument 1. Boolean expected');
-        assert('is_bool($lastModified)', ' Wrong type for argument 2. Boolean expected');
+        assert('is_bool($hasVersionCheck); // Wrong type for argument 1. Boolean expected');
+        assert('is_bool($lastModified); // Wrong type for argument 2. Boolean expected');
         if ($this->hasVersionCheck($lastModified)) {
             // remove version check
             if (!$hasVersionCheck) {
@@ -587,7 +587,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function hasAuthorLog($lastModified = true)
     {
-        assert('is_bool($lastModified)', ' Wrong type for argument 1. Boolean expected');
+        assert('is_bool($lastModified); // Wrong type for argument 1. Boolean expected');
         if ($lastModified) {
             return isset($this->columns['user_modified']);
         } else {
@@ -606,8 +606,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function setAuthorLog($hasAuthorLog, $lastModified = true)
     {
-        assert('is_bool($hasAuthorLog)', ' Wrong type for argument 1. Boolean expected');
-        assert('is_bool($lastModified)', ' Wrong type for argument 2. Boolean expected');
+        assert('is_bool($hasAuthorLog); // Wrong type for argument 1. Boolean expected');
+        assert('is_bool($lastModified); // Wrong type for argument 2. Boolean expected');
         if ($this->hasAuthorLog($lastModified)) {
             // remove version check
             if (!$hasAuthorLog) {
@@ -635,7 +635,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function getForeignKeys()
     {
-        assert('is_array($this->foreignKeys)', ' Member "foreignKeys" is expected to be an array.');
+        assert('is_array($this->foreignKeys); // Member "foreignKeys" is expected to be an array.');
         return $this->foreignKeys;
     }
 
@@ -650,7 +650,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function getForeignKey($name)
     {
-        assert('is_string($name)', ' Wrong type for argument 1. String expected');
+        assert('is_string($name); // Wrong type for argument 1. String expected');
         $name = mb_strtolower($name);
         if (isset($this->foreignKeys[$name])) {
             return $this->foreignKeys[$name];
@@ -673,8 +673,8 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function addForeignKey($table, $constraintName = "")
     {
-        assert('is_string($table)', ' Wrong type for argument 1. String expected');
-        assert('is_string($constraintName)', ' Wrong type for argument 2. String expected');
+        assert('is_string($table); // Wrong type for argument 1. String expected');
+        assert('is_string($constraintName); // Wrong type for argument 2. String expected');
 
         if (isset($this->parent)) {
             if (!$this->parent->isTable($table)) {
@@ -724,7 +724,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function setPrimaryKey($columnName)
     {
-        assert('is_string($columnName)', ' Wrong type for argument 1. String expected');
+        assert('is_string($columnName); // Wrong type for argument 1. String expected');
         $name = mb_strtolower($columnName);
         if (isset($this->columns[$name])) {
             $this->primaryKey = $name;
@@ -780,7 +780,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function getIndexes()
     {
-        assert('is_array($this->indexes)', ' Member "columns" is expected to be an array.');
+        assert('is_array($this->indexes); // Member "columns" is expected to be an array.');
         return $this->indexes;
     }
 
@@ -794,7 +794,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function getIndex($name)
     {
-        assert('is_string($name)', ' Wrong type for argument 1. String expected');
+        assert('is_string($name); // Wrong type for argument 1. String expected');
         $name = mb_strtolower($name);
         if (isset($this->indexes[$name])) {
             return $this->indexes[$name];
@@ -815,7 +815,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function addIndex($indexName = "")
     {
-        assert('is_string($indexName)', ' Wrong type for argument 1. String expected');
+        assert('is_string($indexName); // Wrong type for argument 1. String expected');
 
         $newIndex = new \Yana\Db\Ddl\Index($indexName, $this); // may throw InvalidArgumenException
         if (empty($indexName)) {
@@ -885,9 +885,9 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function getConstraints($dbms = "generic")
     {
-        assert('is_string($dbms)', ' Wrong type for argument 1. String expected');
+        assert('is_string($dbms); // Wrong type for argument 1. String expected');
         $dbms = strtolower($dbms);
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS())', ' Unsupported DBMS');
+        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
 
         $constraints = array();
         foreach ($this->constraints as $constraint)
@@ -915,9 +915,9 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function getConstraint($name, $dbms = "generic")
     {
-        assert('is_string($name)', ' Wrong type for argument 1. String expected');
-        assert('is_string($dbms)', ' Wrong type for argument 2. String expected');
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS())', ' Unsupported DBMS');
+        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($dbms); // Wrong type for argument 2. String expected');
+        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
         $dbms = strtolower($dbms);
 
         foreach ((array) $this->constraints as $constraint)
@@ -955,11 +955,11 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function addConstraint($constraint, $name = "", $dbms = "generic")
     {
-        assert('is_string($constraint)', ' Wrong type for argument 1. String expected');
-        assert('is_string($name)', ' Wrong type for argument 2. String expected');
-        assert('is_string($dbms)', ' Wrong type for argument 3. String expected');
+        assert('is_string($constraint); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Wrong type for argument 2. String expected');
+        assert('is_string($dbms); // Wrong type for argument 3. String expected');
         $dbms = strtolower($dbms);
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS())', ' Unsupported DBMS');
+        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
         $object = new \Yana\Db\Ddl\Constraint($name);
         $object->setDBMS($dbms);
         $object->setConstraint($constraint);
@@ -1240,7 +1240,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     private function _getTrigger($dbms, $on, $event)
     {
-        assert('is_string($dbms)', ' Wrong type for argument 1. String expected');
+        assert('is_string($dbms); // Wrong type for argument 1. String expected');
         $dbms = strtolower($dbms);
 
         foreach ((array) $this->triggers as $trigger)
@@ -1278,9 +1278,9 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     private function _setTrigger($trigger, $dbms, $name, $on, $event)
     {
-        assert('is_string($trigger)', ' Wrong type for argument 1. String expected');
-        assert('is_string($name)', ' Wrong type for argument 2. String expected');
-        assert('is_string($dbms)', ' Wrong type for argument 3. String expected');
+        assert('is_string($trigger); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Wrong type for argument 2. String expected');
+        assert('is_string($dbms); // Wrong type for argument 3. String expected');
         $dbms = strtolower($dbms);
         $object = new \Yana\Db\Ddl\Trigger($name);
         $object->setDBMS($dbms);
@@ -1328,7 +1328,7 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function getGrants()
     {
-        assert('is_array($this->grants)', ' Member "grants" is expected to be an array.');
+        assert('is_array($this->grants); // Member "grants" is expected to be an array.');
         return $this->grants;
     }
 
@@ -1366,9 +1366,9 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function addGrant($user = null, $role = null, $level = null)
     {
-        assert('is_string($user)', ' Wrong type for argument 1. String expected');
-        assert('is_string($role)', ' Wrong type for argument 2. String expected');
-        assert('is_null($level) || is_int($level)', ' Wrong type for argument 3. Integer expected');
+        assert('is_string($user); // Wrong type for argument 1. String expected');
+        assert('is_string($role); // Wrong type for argument 2. String expected');
+        assert('is_null($level) || is_int($level); // Wrong type for argument 3. Integer expected');
         $grant = new \Yana\Db\Ddl\Grant();
         if (!empty($user)) {
             $grant->setUser($user);

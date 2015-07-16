@@ -64,7 +64,7 @@ class Slider extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vie
      */
     public function __invoke(array $params, \Smarty_Internal_Template $smarty)
     {
-        assert('is_string($params["inputName"])', ' Invalid argument $params["inputName"]: string expected');
+        assert('is_string($params["inputName"]); // Invalid argument $params["inputName"]: string expected');
 
         $htmlResult = "";
 

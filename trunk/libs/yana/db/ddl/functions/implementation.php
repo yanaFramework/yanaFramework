@@ -124,9 +124,9 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function __construct($dbms = "generic")
     {
-        assert('is_string($dbms)', ' Wrong type for argument 1. String expected');
+        assert('is_string($dbms); // Wrong type for argument 1. String expected');
         $dbms = strtolower($dbms);
-        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS())', ' Unsupported DBMS');
+        assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
         $this->dbms = "$dbms";
     }
 
@@ -159,7 +159,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function setReturn($type = "")
     {
-        assert('is_string($type)', ' Wrong type for argument 1. String expected');
+        assert('is_string($type); // Wrong type for argument 1. String expected');
         if (empty($type)) {
             $this->return = null;
         } else {
@@ -181,7 +181,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function getParameter($name)
     {
-        assert('is_string($name)', ' Wrong type for argument 1. String expected');
+        assert('is_string($name); // Wrong type for argument 1. String expected');
         $tableName = mb_strtolower($name);
         if (isset($this->parameters[$tableName])) {
             return $this->parameters[$tableName];
@@ -205,7 +205,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function getParameters()
     {
-        assert('is_array($this->parameters)', ' member "parameters" is expected to be an array');
+        assert('is_array($this->parameters); // member "parameters" is expected to be an array');
         return $this->parameters;
     }
 
@@ -219,7 +219,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function getParameterNames()
     {
-        assert('is_array($this->parameters)', ' member "parameters" is expected to be an array');
+        assert('is_array($this->parameters); // member "parameters" is expected to be an array');
         return array_keys($this->parameters);
     }
 
@@ -241,7 +241,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function addParameter($name)
     {
-        assert('is_string($name)', ' Wrong type for argument 1. String expected');
+        assert('is_string($name); // Wrong type for argument 1. String expected');
         $name = mb_strtolower($name);
         if (isset($this->parameters[$name])) {
             $message = "Another parameter with the name '$name' is already defined.";
@@ -266,7 +266,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function dropParameter($name)
     {
-        assert('is_string($name)', ' Wrong type for argument 1. String expected');
+        assert('is_string($name); // Wrong type for argument 1. String expected');
         if (isset($this->parameters[$name])) {
             unset($this->parameters[$name]);
         }
@@ -282,7 +282,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function getCode()
     {
-        assert('is_string($this->code)', ' Wrong type for argument 1. String expected');
+        assert('is_string($this->code); // Wrong type for argument 1. String expected');
         return $this->code;
     }
 
@@ -298,7 +298,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function setCode($code)
     {
-        assert('is_string($code)', ' Wrong type for argument 1. String expected');
+        assert('is_string($code); // Wrong type for argument 1. String expected');
         $this->code = "$code";
         return $this;
     }
@@ -344,7 +344,7 @@ class Implementation extends \Yana\Db\Ddl\DDL
      */
     public function setLanguage($language)
     {
-        assert('is_string($language)', ' Wrong type for argument 1. String expected');
+        assert('is_string($language); // Wrong type for argument 1. String expected');
         $this->language = "$language";
         return $this;
     }
