@@ -20,33 +20,29 @@
  * @subpackage plugins
  */
 
+namespace Plugins\Counter;
+
 /**
  * adds a counter as template engine extension
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_counter extends StdClass implements \Yana\IsPlugin
+class CounterPlugin extends \Yana\Plugins\AbstractPlugin
 {
     /**
-     * @access  private
-     * @static
-     * @var     \Yana\Db\FileDb\Counter
+     * @var  \Yana\Db\FileDb\Counter
      */
     private static $_counter = null;
 
     /**
-     * @access  private
-     * @static
-     * @var     string
+     * @var  string
      */
     private static $_id = "default";
 
     /**
      * Calculates and displays visitor count.
      *
-     * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
@@ -59,7 +55,7 @@ class plugin_counter extends StdClass implements \Yana\IsPlugin
         }
         self::$_counter = new \Yana\Db\FileDb\Counter(self::$_id);
         self::$_counter->getNextValue();
-        \Yana\Application::getInstance()->getView()->setFunction('visitorCount', array(__CLASS__, 'visitorCount'));
+        $this->_getApplication()->getView()->setFunction('visitorCount', array(__CLASS__, 'visitorCount'));
         return true;
     }
 
@@ -68,15 +64,14 @@ class plugin_counter extends StdClass implements \Yana\IsPlugin
      *
      * Outputs the number of unique visitors
      *
-     * @static
-     * @access  public
      * @param   array   $params   params
      * @return  string
      */
     public static function visitorCount(array $params)
     {
+        global $YANA;
         $count = self::$_counter->getCurrentValue();
-        $text = \Yana\Application::getInstance()->getLanguage()->getVar("VISITOR_COUNT");
+        $text = $YANA->getLanguage()->getVar("VISITOR_COUNT");
 
         return $text . ' <span style="font-weight: bold;">' . $count . '</span>';
     }
@@ -94,8 +89,6 @@ class plugin_counter extends StdClass implements \Yana\IsPlugin
      *
      * @type        primary
      * @template    null
-     *
-     * @access      public
      */
     public function graphic_counter()
     {

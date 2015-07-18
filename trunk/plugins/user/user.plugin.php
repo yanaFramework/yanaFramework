@@ -24,14 +24,15 @@
  * @subpackage plugins
  */
 
+namespace Plugins\User;
+
 /**
  * user authentification plugin
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_user extends StdClass implements \Yana\IsPlugin
+class UserPlugin extends \Yana\Plugins\AbstractPlugin
 {
     /**
      * count boundary
@@ -110,7 +111,7 @@ class plugin_user extends StdClass implements \Yana\IsPlugin
     public function catchAll($event, array $ARGS)
     {
         /* @var $YANA \Yana\Application */
-        global $YANA;
+        $YANA = $this->_getApplication();
         // Load translation strings
         try {
 
@@ -161,7 +162,7 @@ class plugin_user extends StdClass implements \Yana\IsPlugin
      */
     private function _addLoginMenuEntry()
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         // Where the menu entry should go to
         $action = "login";
         if (\Yana\User::isLoggedIn()) {
@@ -170,11 +171,13 @@ class plugin_user extends StdClass implements \Yana\IsPlugin
         // What the name of the entry should be
         $title = $YANA->getLanguage()->getVar($action);
         // Create entry for login or logout
-        $menuEntry = new \Yana\Plugins\MenuEntry();
+        $menuEntry = new \Yana\Plugins\Menus\Entry();
         $menuEntry->setTitle($title);
         // Add entry to menu
-        $menu = \Yana\Plugins\Menu::getInstance();
-        $menu->setMenuEntry($action, $menuEntry);
+
+        $builder = new \Yana\Plugins\Menus\Builder();
+        $builder->buildMenu() // using default settings
+            ->setMenuEntry($action, $menuEntry);
     }
 
     /**
@@ -259,7 +262,7 @@ class plugin_user extends StdClass implements \Yana\IsPlugin
      */
     public function get_lost_pwd(array $ARGS)
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         $database = \Yana\Security\Users\SessionManager::getDatasource();
         // check captcha field
         if (\Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
@@ -322,7 +325,7 @@ class plugin_user extends StdClass implements \Yana\IsPlugin
         assert('filter_var($sender, FILTER_VALIDATE_EMAIL); // $sender not a valid e-mail');
 
         // get the mail template
-        $viewManager = \Yana\Application::getInstance()->getView();
+        $viewManager = $this->_getApplication()->getView();
         $template = $viewManager->createContentTemplate('id:USER_LOST_PWD');
         $website = 'http://' . $_SERVER['SERVER_ADDR'] . $_SERVER['PHP_SELF'] .
             '?action=set_reset_pwd&key=' . $uniqueKey;
@@ -570,7 +573,7 @@ class plugin_user extends StdClass implements \Yana\IsPlugin
 
         /* route next action */
         if ($nextAction) {
-            \Yana\Application::getInstance()->exitTo($nextAction);
+            $this->_getApplication()->exitTo($nextAction);
         }
         return true;
     }

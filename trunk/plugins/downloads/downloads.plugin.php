@@ -19,17 +19,18 @@
  * @subpackage plugins
  */
 
+namespace Plugins\Downloads;
+
 /**
  * Default library for common functions
  *
  * This plugin is important. It provides functionality
  * that might be usefull for other plugins.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_downloads extends StdClass implements \Yana\IsPlugin
+class DownloadsPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
@@ -71,7 +72,7 @@ class plugin_downloads extends StdClass implements \Yana\IsPlugin
             $error->setFilename((string) $target);
             throw $error;
         } elseif (preg_match('/\.gz$/', $source)) {
-            $this->_downloadFile($source);
+            $this->_downloadDocument($source);
         } else {
             $this->_downloadImage($source);
         }
@@ -81,10 +82,9 @@ class plugin_downloads extends StdClass implements \Yana\IsPlugin
     /**
      * Transmit headers and pass file contents through to client.
      *
-     * @access  private
-     * @param   string  $source  file path
+     * @param  string  $source  file path
      */
-    private function _downloadFile($source)
+    private function _downloadDocument($source)
     {
         $i = 0;
 

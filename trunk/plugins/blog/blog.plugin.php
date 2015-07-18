@@ -22,14 +22,15 @@
  * @subpackage  plugins
  */
 
+namespace Plugins\Blog;
+
 /**
  * <<plugin>> class "plugin_blog"
  *
- * @access      public
  * @package     yana
  * @subpackage  plugins
  */
-class plugin_blog extends StdClass implements \Yana\IsPlugin
+class BlogPlugin extends \Yana\Plugins\AbstractPlugin
 {
     /**
      * Connection to data source (API)
@@ -50,7 +51,7 @@ class plugin_blog extends StdClass implements \Yana\IsPlugin
     protected static function getDatabase()
     {
         if (!isset(self::$database)) {
-            self::$database = \Yana\Application::connect("blog");
+            self::$database = $this->_connectToDatabase("blog");
         }
         return self::$database;
     }
@@ -221,7 +222,7 @@ class plugin_blog extends StdClass implements \Yana\IsPlugin
     public function blog_new_blogcmt (array $ARGS)
     {
         /* global variables */
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         /* avoid spamming */
         $permission = $YANA->getVar("PERMISSION");
@@ -303,7 +304,7 @@ class plugin_blog extends StdClass implements \Yana\IsPlugin
      */
     public function blog_rss ()
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         /* get entries from database */
         $key = 'blog';
         $where = array();

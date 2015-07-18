@@ -15,20 +15,23 @@
  * @subpackage plugins
  */
 
+namespace Plugins\PclZip;
+
 /**
- * <<plugin>> class "plugin_katalog"
+ * <<plugin>> Loads the PCL-ZIP library.
  *
- * @access      public
+ * This is a demo plugin that shows how to integrate libraries into
+ * the structure of the plugin system.
+ *
  * @package     yana
  * @subpackage  plugins
  */
-class plugin_pclzip extends StdClass implements \Yana\IsPlugin
+class PclZipPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
      * Loads library.
      *
-     * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function

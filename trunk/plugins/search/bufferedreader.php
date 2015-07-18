@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Plugins\Search;
+
 /**
  * Use this class to read a buffer of text from a file.
  *
@@ -37,7 +39,6 @@
  * }
  * </code>
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */

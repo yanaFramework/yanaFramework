@@ -25,16 +25,17 @@
  * @subpackage plugins
  */
 
+namespace Plugins\Search;
+
 /**
  * Search plugin
  *
  * This plugin searches an index for words.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_search extends StdClass implements \Yana\IsPlugin
+class SearchPlugin extends \Yana\Plugins\AbstractPlugin
 {
     /**
      * @access  private
@@ -47,13 +48,6 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
      * @var     string
      */
     private $cache = array();
-
-    /**
-     * @access  private
-     * @static
-     * @var     string
-     */
-    private static $name = "search";
 
     /**
      * Default event handler
@@ -83,11 +77,10 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
     public function search_stats()
     {
         \Yana\Util\Microsummary::publishSummary(__CLASS__);
-        $numbers = \Yana\Application::connect('search')->select('searchstats');
+        $numbers = $this->_connectToDatabase('search')->select('searchstats');
         if (!empty($numbers)) {
             uasort($numbers, array($this, "_sortStatistics"));
-            global $YANA;
-            $YANA->setVar("STATS", $numbers);
+            $this->_getApplication()->setVar("STATS", $numbers);
         }
     }
 
@@ -112,7 +105,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
      */
     public function search_start($target = "")
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         $results = array();
         if ($target) {
             $this->searchString = preg_replace("/[^\s\w\däöüß&;]/ui", "", $target);
@@ -120,7 +113,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
             if (empty($this->searchString)) {
                 return;
             }
-            $db = \Yana\Application::connect('search');
+            $db = $this->_connectToDatabase('search');
             assert('!isset($temp);');
             $temp = explode(" ", mb_strtolower($this->searchString));
             for ($i = 0; $i < count($temp); $i++)
@@ -131,7 +124,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
                 assert('!isset($counterValue);');
                 assert('!isset($statistics);');
                 $dummy = null;
-                $counterId = self::_applyStemming($temp[$i], $dummy);
+                $counterId = $this->_applyStemming($temp[$i], $dummy);
                 unset($dummy);
                 $counterInfo = $temp[$i];
                 $statistics = (array) $db->select("searchstats.$counterId");
@@ -220,7 +213,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
         include_once dirname(__FILE__) . '/bufferedreader.php';
         include_once dirname(__FILE__) . '/pdftextreader.php';
 
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         if (!headers_sent()) {
             header("Content-type: text/plain");
@@ -237,7 +230,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
          * 2) cache input values for later use
          */
         $YANA->callAction('set_config_default',
-                array(self::$name => array('dir' => $dir, 'recurse' => $recurse, 'meta' => $meta)));
+            array("search" => array('dir' => $dir, 'recurse' => $recurse, 'meta' => $meta)));
 
         /*
          * 3) Open document list for output
@@ -259,13 +252,13 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
          */
         assert('!isset($i); // Cannot redeclare var $i');
         assert('!isset($file); // Cannot redeclare var $file');
-        foreach (self::_getListOfFiles($dir, '*.htm,*.html,*.xml,*.shtml,*.pdf', $recurse) as $i =>  $file)
+        foreach ($this->_getListOfFiles($dir, '*.htm,*.html,*.xml,*.shtml,*.pdf', $recurse) as $i =>  $file)
         {
             try {
                 if (preg_match('/\.pdf$/', $file)) {
-                    $fileReader = new PdfTextReader($file);
+                    $fileReader = new \Plugins\Search\PdfTextReader($file);
                 } else {
-                    $fileReader = new BufferedReader($file);
+                    $fileReader = new \Plugins\Search\BufferedReader($file);
                 }
                 fwrite($hDocuments, $file);
             } catch (\Exception $e) {
@@ -291,7 +284,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
             {
                 $fileReader->read();
                 $content .= $fileReader->getContent();
-                if (!$fileReader instanceof PdfTextReader) {
+                if (!$fileReader instanceof \Plugins\Search\PdfTextReader) {
                     $h = null;
                     if ($docTitle === false) {
                         $isTitle = preg_match('/<title>\s*([^<]+)\s*<\/title>/Usi', $content, $docTitle);
@@ -406,7 +399,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
                 unset($resultKeywords[$keyword]);
                 continue;
             }
-            $newKeyword = self::_applyStemming($keyword, $compare);
+            $newKeyword = $this->_applyStemming($keyword, $compare);
 
             if ($newKeyword === '') {
                 unset($resultKeywords[$keyword]);
@@ -504,7 +497,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
      */
     public function search_write_upload()
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         /*
          * 1) get path of target files
@@ -574,16 +567,14 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
     /**
      * search for a subject
      *
-     * @access  private
      * @param   string  $subject    subject
      * @return  array
-     * @ignore
      */
     private function _commit($subject)
     {
         assert('is_string($subject); // Wrong type for argument 1. String expected');
 
-        $yana = \Yana\Application::getInstance();
+        $yana = $this->_getApplication();
         $plugins = $yana->getPlugins();
         $language = $yana->getLanguage();
         $found = false;
@@ -609,7 +600,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
         for ($i = 0; $i < count($request); $i++)
         {
             $dummy = null;
-            $enc_string = self::_applyStemming($request[$i], $dummy);
+            $enc_string = $this->_applyStemming($request[$i], $dummy);
             unset($dummy);
             $found = false;
             $max = count($KEYS)-1;
@@ -734,7 +725,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
     {
         assert('is_string($subject); // Wrong type for argument 1. String expected');
 
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         $id = $YANA->getVar('ID');
         if (empty($id)) {
@@ -745,7 +736,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
             array_pop($this->cache);
         }
 
-        $subject = self::_getCacheId($subject);
+        $subject = $this->_getCacheId($subject);
         $text = $subject.'='.rawurlencode($this->searchString).";";
 
         for ($i = 0; $i < count($value); $i++)
@@ -781,20 +772,18 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
     /**
      * calculate cache-id
      *
-     * @access  private
-     * @static
      * @param   string  &$subject  list of search terms
      * @return  string
      * @ignore
      */
-    private static function _getCacheId(&$subject)
+    private function _getCacheId(&$subject)
     {
         assert('is_string($subject); // Wrong type for argument 1. String expected');
         $temp = explode(" ", "$subject");
         $dummy = null;
         for ($i = 0; $i < sizeOf($temp); $i++)
         {
-            $temp[$i] = self::_applyStemming($temp[$i], $dummy);
+            $temp[$i] = $this->_applyStemming($temp[$i], $dummy);
         }
         sort($temp);
         return implode(" ", $temp);
@@ -832,7 +821,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
      * @param   string  &$compare     output var
      * @return  string
      */
-    private static function _applyStemming($inputString, &$compare)
+    private function _applyStemming($inputString, &$compare)
     {
         assert('is_string($inputString); // Wrong type for argument 1. String expected');
         $compare = "";
@@ -846,7 +835,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
         $inputString = preg_replace('/[^a-zA-Z\s]/u', '', $inputString);
 
         /* @var $YANA \Yana\Application */
-        global $YANA;
+        $YANA = $this->_getApplication();
         $grammar = $YANA->getPlugins()->search->getVar('GRAMMAR');
         assert('is_array($grammar);');
 
@@ -891,14 +880,12 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
     /**
      * get list of files
      *
-     * @access  private
-     * @static
      * @param   string  $dir      directory
      * @param   string  $filter   filter
      * @param   bool    $recurse  recurse
      * @return  array
      */
-    private static function _getListOfFiles($dir, $filter, $recurse)
+    private function _getListOfFiles($dir, $filter, $recurse)
     {
         assert('is_string($dir); // Wrong type for argument 1. String expected');
         assert('is_dir($dir); // Invalid argument 1. Directory expected');
@@ -917,7 +904,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
                 if (\Yana\Util\String::startsWith(basename($subdir), '_')) {
                     continue;
                 }
-                $list = array_merge($list, self::_getListOfFiles($dir . $subdir, $filter, true));
+                $list = array_merge($list, $this->_getListOfFiles($dir . $subdir, $filter, true));
             }
             unset($subdir);
         }
@@ -941,14 +928,13 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
     /**
      * load from cache
      *
-     * @access  private
      * @param   string  $subject    subject
      * @return  array|bool(false)
      */
     private function _getFromCache($subject)
     {
         assert('is_string($subject); // Wrong type for argument 1. String expected');
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         $id = $YANA->getVar('ID');
         if (empty($id)) {
@@ -963,7 +949,7 @@ class plugin_search extends StdClass implements \Yana\IsPlugin
             return false;
         }
 
-        $subject = self::_getCacheId($subject);
+        $subject = $this->_getCacheId($subject);
         $temp = "";
         for ($i = 0; $i < sizeOf($this->cache); $i++)
         {

@@ -12,13 +12,15 @@
  * @subpackage plugins
  */
 
+namespace Plugins\HelloWorld;
+
 /**
  * <<plugin>> Example plugin
  *
  * @package     yana
  * @subpackage  plugins
  */
-class Plugin_HelloWorld extends StdClass implements \Yana\IsPlugin
+class HelloWorldPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
@@ -93,7 +95,7 @@ class Plugin_HelloWorld extends StdClass implements \Yana\IsPlugin
     public function exampleTemplate()
     {
         // sets the template var $world to 'PHP-World'
-        \Yana\Application::getInstance()->setVar('world', 'PHP-World!');
+        $this->_getApplication()->setVar('world', 'PHP-World!');
     }
 
     /**
@@ -115,7 +117,7 @@ class Plugin_HelloWorld extends StdClass implements \Yana\IsPlugin
     public function exampleDatabase()
     {
         // Open connection to database "log"
-        $connection = \Yana\Application::connect('log');
+        $connection = $this->_connectToDatabase('log');
 
         // Select contents of table "log"
         $rows = $connection->select('log');

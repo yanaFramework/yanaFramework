@@ -23,6 +23,8 @@
  * @subpackage plugins
  */
 
+namespace Plugins\Diagnostics;
+
 /**
  * Self-diagnosis plug-in
  *
@@ -30,11 +32,10 @@
  * and displays the results.
  * It informs about found problems and provides hints on how to solve them.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_diagnostics extends StdClass implements \Yana\IsPlugin
+class DiagnosticsPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
@@ -70,7 +71,7 @@ class plugin_diagnostics extends StdClass implements \Yana\IsPlugin
      */
     public function test($details = false, $xml = false)
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         /* get report */
         assert('!isset($report); // Cannot redeclare var $report');

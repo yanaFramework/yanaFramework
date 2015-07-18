@@ -23,38 +23,16 @@
  * @subpackage plugins
  */
 
+namespace Plugins\Project;
+
 /**
- * <<plugin>> class "plugin_project"
+ * <<plugin>> demo plugin for a (very) simple project management software
  *
- * @access      public
  * @package     plugins
  * @subpackage  project
  */
-class plugin_project extends StdClass implements \Yana\IsPlugin
+class Plugin extends \Yana\Plugins\AbstractPlugin
 {
-    /**
-     * Connection to data source (API)
-     *
-     * @access  private
-     * @static
-     * @var     DbStream
-     */
-    private static $database = null;
-
-    /**
-     * get database connection
-     *
-     * @access  protected
-     * @static
-     * @return  DbStream
-     */
-    protected static function getDatabase()
-    {
-        if (!isset(self::$database)) {
-            self::$database = \Yana\Application::connect("project");
-        }
-        return self::$database;
-    }
 
     /**
      * get form definition
@@ -118,8 +96,8 @@ class plugin_project extends StdClass implements \Yana\IsPlugin
         $offset = 0;
         $limit = 50;
         $desc = true;
-        $rows = self::getDatabase()->select($key, $where, $orderBy, $offset, $limit, $desc);
-        \Yana\Application::getInstance()->setVar('PROJECT', $rows);
+        $rows = $this->_connectToDatabase('project')->select($key, $where, $orderBy, $offset, $limit, $desc);
+        $this->_getApplication()->setVar('PROJECT', $rows);
     }
 
     /**
@@ -136,8 +114,8 @@ class plugin_project extends StdClass implements \Yana\IsPlugin
      */
     public function project_sum($target)
     {
-        $language = \Yana\Application::getInstance()->getLanguage();
-        $database = self::getDatabase();
+        $language = $this->_getApplication()->getLanguage();
+        $database = $this->_connectToDatabase('project');
 
         /* get entries from database */
         $key = 'effort.*.effort_duration';
@@ -200,7 +178,7 @@ class plugin_project extends StdClass implements \Yana\IsPlugin
     public function project_edit_project()
     {
         $form = self::getProjectForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('project'), $form);
         return $worker->update();
     }
 
@@ -221,7 +199,7 @@ class plugin_project extends StdClass implements \Yana\IsPlugin
     public function project_delete_project(array $selected_entries)
     {
         $form = self::getProjectForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('project'), $form);
         return $worker->delete($selected_entries);
     }
 
@@ -241,7 +219,7 @@ class plugin_project extends StdClass implements \Yana\IsPlugin
     public function project_new_project()
     {
         $form = self::getProjectForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('project'), $form);
         return $worker->create();
     }
 
@@ -261,7 +239,7 @@ class plugin_project extends StdClass implements \Yana\IsPlugin
     public function project_edit_effort()
     {
         $form = self::getEffortForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('project'), $form);
         return $worker->update();
     }
 
@@ -282,7 +260,7 @@ class plugin_project extends StdClass implements \Yana\IsPlugin
     public function project_delete_effort(array $selected_entries)
     {
         $form = self::getEffortForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('project'), $form);
         return $worker->delete($selected_entries);
     }
 
@@ -302,7 +280,7 @@ class plugin_project extends StdClass implements \Yana\IsPlugin
     public function project_new_effort()
     {
         $form = self::getEffortForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('project'), $form);
         return $worker->create();
     }
 
