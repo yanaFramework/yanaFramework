@@ -25,6 +25,8 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Plugins\DbTools;
+
 /**
  * column information
  *
@@ -52,12 +54,11 @@
  *     [select] => 1
  * )
  *
- * @access      public
  * @package     yana
  * @subpackage  database
  * @ignore
  */
-class DbInfoColumn extends \Yana\Core\Object
+class InfoColumn extends \Yana\Core\Object
 {
     /**#@+
      * @access  private
@@ -235,7 +236,7 @@ class DbInfoColumn extends \Yana\Core\Object
      * @param   string  $column  column name
      * @access  public
      */
-    public function DbInfoColumn($column = null)
+    public function __construct($column = null)
     {
         assert('is_null($column) || is_string($column); // Wrong type for argument 1. String expected');
         $this->setName($column);

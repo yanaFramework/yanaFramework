@@ -15,48 +15,28 @@
  *
  * @author     Thomas Meyer
  * @type       config
- * @extends    user_group
+ * @extends    usergroup
  * @license    http://www.gnu.org/licenses/gpl.txt
  *
  * @package    yana
  * @subpackage plugins
  */
 
+namespace Plugins\UserGroupAdmin;
+
 /**
  * user group setup
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
+class UserGroupAdminPlugin extends \Yana\Plugins\AbstractPlugin
 {
-    /**
-     * Connection to data source (API)
-     *
-     * @var  \Yana\Db\IsConnection
-     */
-    private static $database = null;
-
-    /**
-     * get database connection
-     *
-     * @return  \Yana\Db\IsConnection
-     */
-    protected static function getDatabase()
-    {
-        if (!isset(self::$database)) {
-            self::$database = \Yana\Application::connect("user_admin");
-        }
-        return self::$database;
-    }
 
     /**
      * get form definition
      *
-     * @access  protected
-     * @static
-     * @return  FormFacade
+     * @return  \Yana\Forms\Facade
      */
     protected static function getActionForm()
     {
@@ -67,9 +47,7 @@ class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
     /**
      * get form definition
      *
-     * @access  protected
-     * @static
-     * @return  FormFacade
+     * @return  \Yana\Forms\Facade
      */
     protected static function getGroupForm()
     {
@@ -80,9 +58,7 @@ class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
     /**
      * get form definition
      *
-     * @access  protected
-     * @static
-     * @return  FormFacade
+     * @return  \Yana\Forms\Facade
      */
     protected static function getRoleForm()
     {
@@ -93,10 +69,9 @@ class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
     /**
      * Default event handler.
      *
-     * @access  public
-     * @return  bool
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
+     * @return  bool
      * @ignore
      */
     public function catchAll($event, array $ARGS)
@@ -112,8 +87,6 @@ class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
      * @user        group: admin, level: 100
      * @menu        group: setup
      * @title       {lang id="USER.OPTION.26"}
-     *
-     * @access      public
      */
     public function get_usergroups()
     {
@@ -128,12 +101,10 @@ class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
      * @user        group: admin, level: 100
      * @menu        group: setup
      * @title       {lang id="USER.OPTION.32"}
-     *
-     * @access      public
      */
     public function get_user_action_settings()
     {
-        \Yana\Application::getInstance()->setVar('WHERE', array('actionrule_predefined', '=', false));
+        $this->_getApplication()->setVar('WHERE', array('actionrule_predefined', '=', false));
         // Just views template - no further business logic required.
     }
 
@@ -147,14 +118,12 @@ class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
      * @template    message
      * @onsuccess   goto: GET_USER_ACTION_SETTINGS
      * @onerror     goto: GET_USER_ACTION_SETTINGS
-     *
-     * @access      public
      * @return      bool
      */
     public function set_user_action_settings_edit()
     {
         $form = self::getActionForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         $worker->beforeUpdate(
             function (&$id, &$entry)
             {
@@ -180,14 +149,12 @@ class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
      * @template    message
      * @onsuccess   goto: GET_USER_ACTION_SETTINGS
      * @onerror     goto: GET_USER_ACTION_SETTINGS
-     *
-     * @access      public
      * @param       array  $selected_entries  array of params passed to the function
      * @return      bool
      */
     public function set_user_action_settings_delete(array $selected_entries)
     {
-        $database = self::getDatabase();
+        $database = $this->_connectToDatabase('user_admin');
 
         try {
             /* remove entry from database */
@@ -212,14 +179,12 @@ class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
      * @template    message
      * @onsuccess   goto: GET_USER_ACTION_SETTINGS
      * @onerror     goto: GET_USER_ACTION_SETTINGS
-     *
-     * @access      public
      * @return      bool
      */
     public function set_user_action_settings_new()
     {
         $form = self::getActionForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         $worker->beforeCreate(
             function (&$newEntry)
             {
@@ -242,14 +207,12 @@ class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
      * @template    message
      * @onsuccess   goto: GET_USERGROUPS
      * @onerror     goto: GET_USERGROUPS
-     *
-     * @access      public
      * @return      bool
      */
     public function set_usergroup_edit()
     {
         $form = self::getGroupForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         $worker->beforeUpdate(
             function (&$id)
             {
@@ -267,15 +230,13 @@ class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
      * @template    message
      * @onsuccess   goto: GET_USERGROUPS
      * @onerror     goto: GET_USERGROUPS
-     *
-     * @access      public
      * @param       array  $selected_entries  array of params passed to the function
      * @return      bool
      */
     public function set_usergroup_delete(array $selected_entries)
     {
         $form = self::getGroupForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->delete($selected_entries);
     }
 
@@ -287,14 +248,12 @@ class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
      * @template    message
      * @onsuccess   goto: GET_USERGROUPS
      * @onerror     goto: GET_USERGROUPS
-     *
-     * @access      public
      * @return      bool
      */
     public function set_usergroup_new()
     {
         $form = self::getGroupForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->create();
     }
 
@@ -306,8 +265,6 @@ class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
      * @user        group: admin, level: 100
      * @menu        group: setup
      * @title       {lang id="USER.OPTION.25"}
-     *
-     * @access      public
      */
     public function get_userroles()
     {
@@ -322,14 +279,12 @@ class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
      * @template    message
      * @onsuccess   goto: GET_USERROLES
      * @onerror     goto: GET_USERROLES
-     *
-     * @access      public
      * @return      bool
      */
     public function set_userrole_edit()
     {
         $form = self::getRoleForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         $worker->beforeUpdate(
             function (&$id)
             {
@@ -347,15 +302,13 @@ class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
      * @template    message
      * @onsuccess   goto: GET_USERROLES
      * @onerror     goto: GET_USERROLES
-     *
-     * @access      public
      * @param       array  $selected_entries  array of params passed to the function
      * @return      bool
      */
     public function set_userrole_delete(array $selected_entries)
     {
         $form = self::getRoleForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->delete($selected_entries);
     }
 
@@ -369,14 +322,12 @@ class plugin_user_group_admin extends StdClass implements \Yana\IsPlugin
      * @template    message
      * @onsuccess   goto: GET_USERROLES
      * @onerror     goto: GET_USERROLES
-     *
-     * @access      public
      * @return      bool
      */
     public function set_userrole_new()
     {
         $form = self::getRoleForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->create();
     }
 

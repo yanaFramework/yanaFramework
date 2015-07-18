@@ -22,14 +22,15 @@
  * @subpackage plugins
  */
 
+namespace Plugins\AntiSpamAdmin;
+
 /**
  * automated spam protection administration menu
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_antispam_admin extends StdClass implements \Yana\IsPlugin
+class AntiSpamAdminPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
@@ -61,7 +62,7 @@ class plugin_antispam_admin extends StdClass implements \Yana\IsPlugin
     {
         /* this function expects no arguments */
 
-        global $YANA;
+        $YANA = $this->_getApplication();
         $configFile = $YANA->getResource('system:/config');
         $YANA->setVar("WRITEABLE", $configFile->isWriteable());
         $YANA->setVar("NEXT_ACTION", 'set_setup_global_antispam');
@@ -83,7 +84,7 @@ class plugin_antispam_admin extends StdClass implements \Yana\IsPlugin
      */
     public function set_setup_global_antispam(array $ARGS)
     {
-        return $GLOBALS['YANA']->callAction('set_config_default', $this->_getArguments($ARGS));
+        return $this->_getApplication()->callAction('set_config_default', $this->_getArguments($ARGS));
     }
 
     /**
@@ -101,7 +102,7 @@ class plugin_antispam_admin extends StdClass implements \Yana\IsPlugin
     {
         /* this function expects no arguments */
 
-        global $YANA;
+        $YANA = $this->_getApplication();
         $configFile = $YANA->getResource('system:/config');
         $YANA->setVar("WRITEABLE", $configFile->isWriteable());
         $YANA->setVar("NEXT_ACTION", 'set_setup_antispam');
@@ -123,7 +124,7 @@ class plugin_antispam_admin extends StdClass implements \Yana\IsPlugin
      */
     public function set_setup_antispam(array $ARGS)
     {
-        return $GLOBALS['YANA']->callAction('set_config_profile', $this->_getArguments($ARGS));
+        return $this->_getApplication()->callAction('set_config_profile', $this->_getArguments($ARGS));
     }
 
     /**
@@ -152,7 +153,7 @@ class plugin_antispam_admin extends StdClass implements \Yana\IsPlugin
                 unset($ARGS['spam/words']);
             }
             if (isset($settings['spam/words'])) {
-                $oldWords = $GLOBALS['YANA']->getVar('PROFILE.SPAM.WORDS');
+                $oldWords = $this->_getApplication()->getVar('PROFILE.SPAM.WORDS');
                 foreach (array_keys($oldWords) as $word)
                 {
                     if (!isset($settings['spam/words'][$word])) {

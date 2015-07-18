@@ -25,6 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Plugins\DbTools;
 
 /**
  * import class interface
@@ -32,16 +33,15 @@
  * Minimal interface to implemen if you wish to write an import adapter for
  * structure files.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-interface IsDbImport
+interface IsImport
 {
+
     /**
      * Return table info for current data
      *
-     * @access  public
      * @param   string  $table  table name
      * @return  array
      */
@@ -59,18 +59,15 @@ interface IsDbImport
      * The function returns an instance of class DbStructure, or bool(false)
      * on error.
      *
-     * @access  public
-     * @static
-     * @param   string   $schema    file name or XML file content
-     * @return  DbStructure
+     * @param   string   $schema  file name or XML file content
+     * @return  \Yana\Db\Structure
      */
     public static function getStructureFromString($schema);
 
     /**
      * Return database structure for current data
      *
-     * @access  public
-     * @return  DbStructure
+     * @return  \Yana\Db\Structure
      */
     public function &getStructure();
 

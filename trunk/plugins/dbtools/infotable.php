@@ -25,10 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-/**
- * @ignore
- */
-require_once 'dbinfocolumn.php';
+namespace Plugins\DbTools;
 
 /**
  * Table information.
@@ -67,7 +64,7 @@ require_once 'dbinfocolumn.php';
  * @subpackage  database
  * @ignore
  */
-class DbInfoTable extends \Yana\Core\Object
+class InfoTable extends \Yana\Core\Object
 {
 
     /**
@@ -143,7 +140,7 @@ class DbInfoTable extends \Yana\Core\Object
      * Note: this does not check the syntax of the statements.
      *
      * @param   array  $init  numeric list of sql statements
-     * @return  \DbInfoTable
+     * @return  \Plugins\DbTools\InfoTable
      */
     public function setInit(array $init)
     {
@@ -165,7 +162,7 @@ class DbInfoTable extends \Yana\Core\Object
      * Set comment.
      *
      * @param   string  $comment  set comment
-     * @return  \DbInfoTable
+     * @return  \Plugins\DbTools\InfoTable
      */
     public function setComment($comment)
     {
@@ -276,10 +273,10 @@ class DbInfoTable extends \Yana\Core\Object
     /**
      * Add column object.
      *
-     * @param   DbInfoColumn  $column info object
+     * @param   \Plugins\DbTools\InfoColumn  $column  info object
      * @return  bool
      */
-    public function addColumn(DbInfoColumn $column)
+    public function addColumn(\Plugins\DbTools\InfoColumn $column)
     {
         $this->columns[$column->getName()] = $column;
         $column->setTable($this->table);
@@ -295,11 +292,9 @@ class DbInfoTable extends \Yana\Core\Object
     }
 
     /**
-     * get list of columns
+     * Returns a numeric array of \Plugins\DbTools\InfoColumn objects.
      *
-     * Returns a numeric array of DbInfoColumn objects
-     *
-     * @return  array
+     * @return  \Plugins\DbTools\InfoColumn[]
      */
     public function getColumns()
     {

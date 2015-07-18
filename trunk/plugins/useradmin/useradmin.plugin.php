@@ -26,48 +26,23 @@
  * @subpackage plugins
  */
 
+namespace Plugins\UserAdmin;
+
 /**
  * User management plugin.
  *
  * This creates forms and implements functions to manage user data.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_user_admin extends StdClass implements \Yana\IsPlugin
+class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
 {
-
-    /**
-     * Connection to data source (API)
-     *
-     * @access  private
-     * @static
-     * @var     DbStream
-     */
-    private static $database = null;
-
-    /**
-     * get database connection
-     *
-     * @access  protected
-     * @static
-     * @return  DbStream
-     */
-    protected static function getDatabase()
-    {
-        if (!isset(self::$database)) {
-            self::$database = \Yana\Application::connect("user_admin");
-        }
-        return self::$database;
-    }
 
     /**
      * get form definition
      *
-     * @access  protected
-     * @static
-     * @return  FormFacade
+     * @return  \Yana\Forms\Facade
      */
     protected static function getAccessForm()
     {
@@ -77,9 +52,7 @@ class plugin_user_admin extends StdClass implements \Yana\IsPlugin
     /**
      * get form definition
      *
-     * @access  protected
-     * @static
-     * @return  FormFacade
+     * @return  \Yana\Forms\Facade
      */
     protected static function getLevelForm()
     {
@@ -89,9 +62,7 @@ class plugin_user_admin extends StdClass implements \Yana\IsPlugin
     /**
      * get form definition
      *
-     * @access  protected
-     * @static
-     * @return  FormFacade
+     * @return  \Yana\Forms\Facade
      */
     protected static function getUserForm()
     {
@@ -100,22 +71,18 @@ class plugin_user_admin extends StdClass implements \Yana\IsPlugin
     }
 
     /**
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $visibleColumns = array('user_id', 'user_mail', 'user_active', 'user_inserted', 'user_login_last');
 
     /**
-     * @access  private
-     * @static
-     * @var     string
+     * @var  string
      */
     private static $userName = "";
 
     /**
      * Constructor
      *
-     * @access  public
      * @ignore
      */
     public function __construct()
@@ -130,7 +97,6 @@ class plugin_user_admin extends StdClass implements \Yana\IsPlugin
      *
      * returns bool(true) on success and bool(false) on error
      *
-     * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
@@ -162,7 +128,7 @@ class plugin_user_admin extends StdClass implements \Yana\IsPlugin
             return false;
         }
 
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         $userName = (string) $target['user_id'];
         try {
@@ -208,7 +174,7 @@ class plugin_user_admin extends StdClass implements \Yana\IsPlugin
      */
     public function get_user_list()
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_USER_CONFIGURATION"));
         $YANA->setVar("VISIBLE_COLUMNS", $this->visibleColumns);
         return true;
@@ -229,7 +195,7 @@ class plugin_user_admin extends StdClass implements \Yana\IsPlugin
     public function set_user_edit()
     {
         $form = self::getUserForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         $visibleColumns = $this->visibleColumns;
         $worker->beforeUpdate(
             function ($id, $entry) use ($visibleColumns)
@@ -306,7 +272,7 @@ class plugin_user_admin extends StdClass implements \Yana\IsPlugin
      */
     public function set_user_new()
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         // reset Id-setting (just in case some plugin changed this)
         $YANA->setVar('ID', \Yana\Application::getId());
 
@@ -342,7 +308,7 @@ class plugin_user_admin extends StdClass implements \Yana\IsPlugin
     public function set_access_edit()
     {
         $form = self::getAccessForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->update();
     }
 
@@ -364,7 +330,7 @@ class plugin_user_admin extends StdClass implements \Yana\IsPlugin
     public function set_access_delete(array $selected_entries)
     {
         $form = self::getAccessForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->delete($selected_entries);
     }
 
@@ -385,7 +351,7 @@ class plugin_user_admin extends StdClass implements \Yana\IsPlugin
     public function set_access_new()
     {
         $form = self::getAccessForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->create();
     }
 
@@ -406,7 +372,7 @@ class plugin_user_admin extends StdClass implements \Yana\IsPlugin
     public function set_securitylevel_edit()
     {
         $form = self::getLevelForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->update();
     }
 
@@ -428,7 +394,7 @@ class plugin_user_admin extends StdClass implements \Yana\IsPlugin
     public function set_securitylevel_delete(array $selected_entries)
     {
         $form = self::getLevelForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->delete($selected_entries);
     }
 
@@ -449,7 +415,7 @@ class plugin_user_admin extends StdClass implements \Yana\IsPlugin
     public function set_securitylevel_new()
     {
         $form = self::getLevelForm();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->create();
     }
 
