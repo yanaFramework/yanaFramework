@@ -20,17 +20,18 @@
  * @subpackage plugins
  */
 
+namespace Plugins\DefaultLibrary;
+
 /**
  * Default library for common functions
  *
  * This plugin is important. It provides functionality
  * that might be usefull for other plugins.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_default_library extends StdClass implements \Yana\IsPlugin
+class DefaultLibraryPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
@@ -60,7 +61,7 @@ class plugin_default_library extends StdClass implements \Yana\IsPlugin
      */
     public function clear_server_cache()
     {
-        \Yana\Application::getInstance()->clearCache();
+        $this->_getApplication()->clearCache();
     }
 
     /**
@@ -89,7 +90,7 @@ class plugin_default_library extends StdClass implements \Yana\IsPlugin
         if ($is_ajax_request) {
             exit($eintraege);
         } else {
-            $doc = \Yana\Application::getInstance()->getView()->createContentTemplate('id:blank');
+            $doc = $this->_getApplication()->getView()->createContentTemplate('id:blank');
             $content = '<div style="overflow: hidden; height: 100%;">' . $eintraege . '</div>';
             $doc->setVar('INSERT_CONTENT_HERE', $content);
             exit("$doc");
@@ -126,7 +127,7 @@ class plugin_default_library extends StdClass implements \Yana\IsPlugin
      */
     public function chkembtags(array $text)
     {
-        $yana = \Yana\Application::getInstance();
+        $yana = $this->_getApplication();
         $language = $yana->getLanguage();
         $tags = 'b|i|u|emp|h|c|small|big|code|hide|php|mark|color|mail|img|url';
         $userTags = $yana->getVar('PROFILE.EMBTAG');

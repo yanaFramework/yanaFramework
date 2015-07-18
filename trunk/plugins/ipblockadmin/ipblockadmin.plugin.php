@@ -20,16 +20,17 @@
  * @subpackage plugins
  */
 
+namespace Plugins\IpBlockAdmin;
+
 /**
  * IP block setup
  *
  * This implements basic setup functions for the IP block plugin.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_ipblock_admin extends StdClass implements \Yana\IsPlugin
+class IpBlockAdminPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**#@+
@@ -128,7 +129,7 @@ class plugin_ipblock_admin extends StdClass implements \Yana\IsPlugin
      */
     private function _getBlock()
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         $whitelist = self::_getWhitelist();
         $blacklist = self::_getBlacklist();
         if ($whitelist->exists()) {

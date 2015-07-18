@@ -22,6 +22,8 @@
  * @subpackage plugins
  */
 
+namespace Plugins\DbAdmin;
+
 /**
  * database administration tool
  *
@@ -29,7 +31,7 @@
  * @package    yana
  * @subpackage plugins
  */
-class plugin_db_admin extends StdClass implements \Yana\IsPlugin
+class DbAdminPlugin extends \Yana\Plugins\AbstractPlugin
 {
     /**
      * Constructor
@@ -73,7 +75,7 @@ class plugin_db_admin extends StdClass implements \Yana\IsPlugin
      */
     public function get_db_configuration()
     {
-        $yana = \Yana\Application::getInstance();
+        $yana = $this->_getApplication();
 
         if (!class_exists("MDB2")) {
             throw new \Yana\Db\Mdb2\PearDbException();
@@ -110,7 +112,7 @@ class plugin_db_admin extends StdClass implements \Yana\IsPlugin
      */
     public function db_install($dbms, array $list)
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         if (!class_exists("MDB2")) {
             throw new \Yana\Db\Mdb2\PearDbException();
@@ -521,7 +523,7 @@ class plugin_db_admin extends StdClass implements \Yana\IsPlugin
         foreach ($list as $dbName)
         {
             if (is_string($dbName)) {
-                $db = \Yana\Application::connect($dbName);
+                $db = $this->_connectToDatabase($dbName);
                 $dbc = new \Yana\Db\Export\DataFactory($db);
                 $arrayOfStmts = $dbc->$methodName($useStructure, $useData);
                 $fileContents .= implode("\n", $arrayOfStmts) . "\n";
@@ -657,7 +659,7 @@ class plugin_db_admin extends StdClass implements \Yana\IsPlugin
         if (!defined('YANA_DATABASE_NAME'))     define('YANA_DATABASE_NAME', \"$name\");\n?>";
         assert('!isset($file); // Cannot redeclare var $file');
         /* @var $file \Yana\Files\Text */
-        $file = $GLOBALS['YANA']->getPlugins()->{"db_admin:/dbconfig.text"};
+        $file = $this->_getApplication()->getPlugins()->{"dbadmin:/dbconfig.text"};
         if (!$file->exists()) {
             $file->create();
         }

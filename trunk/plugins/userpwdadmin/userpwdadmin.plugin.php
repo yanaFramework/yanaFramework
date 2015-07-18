@@ -19,16 +19,17 @@
  * @subpackage plugins
  */
 
+namespace Plugins\UserPwdAdmin;
+
 /**
  * password quality
  *
  * This implements setup functions for the password quality plugin.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_user_pwd_admin extends StdClass implements \Yana\IsPlugin
+class UserPwdAdminPlugin extends \Yana\Plugins\AbstractPlugin
 {
     /**
      * Default event handler
@@ -57,7 +58,7 @@ class plugin_user_pwd_admin extends StdClass implements \Yana\IsPlugin
      */
     public function get_pwd_quality_default()
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         $YANA->setVar("ON_SUBMIT", "set_config_default");
         $configFile = $YANA->getResource('system:/config');
         $YANA->setVar("WRITEABLE", $configFile->isWriteable());
@@ -76,7 +77,7 @@ class plugin_user_pwd_admin extends StdClass implements \Yana\IsPlugin
      */
     public function get_pwd_quality_profile()
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         $YANA->setVar("ON_SUBMIT", "set_config_profile");
         $configFile = $YANA->getResource('system:/config');
         $YANA->setVar("WRITEABLE", $configFile->isWriteable());
@@ -96,10 +97,10 @@ class plugin_user_pwd_admin extends StdClass implements \Yana\IsPlugin
     {
         /* @var $YANA \Yana\Application */
         assert('!isset($YANA); // Cannot redeclare var $YANA');
-        global $YANA;
+        $YANA = $this->_getApplication();
         $timeDuration = (int) $YANA->getVar("PROFILE.USER.PASSWORD.TIME");
         if ($timeDuration > 0) {
-            if (self::_isExpired($user, $timeDuration)) {
+            if ($this->_isExpired($user, $timeDuration)) {
                 $message = "Your password has expired.";
                 $level = \Yana\Log\TypeEnumeration::WARNING;
                 new \Yana\Core\Exceptions\Security\PasswordExpiredException($message, $level);
@@ -122,7 +123,7 @@ class plugin_user_pwd_admin extends StdClass implements \Yana\IsPlugin
      */
     public function set_pwd($old_pwd, $new_pwd, $repeat_pwd)
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         /* get the minimum quality which is defined in profile */
         $min_quality = (int) $YANA->getVar("PROFILE.USER.PASSWORD.QUALITY");
@@ -132,13 +133,13 @@ class plugin_user_pwd_admin extends StdClass implements \Yana\IsPlugin
         if ($min_quality > 100) {
             $min_quality = 100;
         }
-        if (self::_getQuality($new_pwd) < $min_quality) {
+        if ($this->_getQuality($new_pwd) < $min_quality) {
             $message = "Password is not complex enough.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\Security\LowPasswordQualityException($message, $level);
         }
         // check if the password does not match the last (max. 5) used passwords
-        plugin_user_pwd_admin::_isAllowedPwd($old_pwd, $new_pwd); // may throw exception
+        self::_isAllowedPwd($old_pwd, $new_pwd); // may throw exception
         return true;
     }
 
@@ -147,12 +148,10 @@ class plugin_user_pwd_admin extends StdClass implements \Yana\IsPlugin
      *
      * This function returns an integer of (0-100).
      *
-     * @access      private
-     * @static
-     * @param       string  $password  user's new password
-     * @return      int
+     * @param   string  $password  user's new password
+     * @return  int
      */
-    private static function _getQuality($password)
+    private function _getQuality($password)
     {
         assert('is_string($password); // $password must be of type string');
         assert('!empty($password); // $password can not be empty');
@@ -225,13 +224,11 @@ class plugin_user_pwd_admin extends StdClass implements \Yana\IsPlugin
      * This function checks the date of expiration and returns bool(true)
      * if the password has expired, and bool(false) otherwise.
      *
-     * @access  private
-     * @static
      * @param   string  $userName       user name
      * @param   int     $timeDuration   number of months a password is valid
      * @return  bool
      */
-    private static function _isExpired($userName, $timeDuration)
+    private function _isExpired($userName, $timeDuration)
     {
         assert('is_string($userName); // $userName must be of type string');
         assert('!empty($userName); // $userName can not be empty');
@@ -257,18 +254,16 @@ class plugin_user_pwd_admin extends StdClass implements \Yana\IsPlugin
      * The maximum number of past passwords is stored in the profile settings at
      * key $PROFILE.USER.PASSWORD.COUNT.
      *
-     * @access      private
-     * @static
-     * @param       string  $old_password  old password
-     * @param       string  $new_password  new password
-     * @return      bool
-     * @throws      \Yana\Core\Exceptions\Security\InvalidLoginException  when name or password are invalid
+     * @param   string  $old_password  old password
+     * @param   string  $new_password  new password
+     * @return  bool
+     * @throws  \Yana\Core\Exceptions\Security\InvalidLoginException  when name or password are invalid
      */
-    private static function _isAllowedPwd($old_password, $new_password)
+    private function _isAllowedPwd($old_password, $new_password)
     {
         assert('is_string($new_password); // $new_password must be of type string');
         assert('!empty($new_password); // $new_password can not be empty');
-        global $YANA;
+        $YANA = $this->_getApplication();
         $db = \Yana\Security\Users\SessionManager::getDatasource();
         
         /* get information how many passwords which was allready used will be needed for checking with the new one */

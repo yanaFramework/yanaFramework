@@ -24,16 +24,17 @@
  * @subpackage plugins
  */
 
+namespace Plugins\GuestbookAdmin;
+
 /**
  * guestbook setup
  *
  * This implements basic setup functions for the guestbook plugin.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_guestbook_admin extends StdClass implements \Yana\IsPlugin
+class GuestbookAdminPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
@@ -70,7 +71,7 @@ class plugin_guestbook_admin extends StdClass implements \Yana\IsPlugin
     {
         /* this function expects no arguments */
 
-        global $YANA;
+        $YANA = $this->_getApplication();
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_ADMIN"));
         $configFile = $YANA->getResource('system:/config');
         $YANA->setVar("WRITEABLE", $configFile->isWriteable());
@@ -96,7 +97,7 @@ class plugin_guestbook_admin extends StdClass implements \Yana\IsPlugin
     {
         /* this function expects no arguments */
 
-        global $YANA;
+        $YANA = $this->_getApplication();
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_MOD"));
         $configFile = $YANA->getResource('system:/config');
         $YANA->setVar("WRITEABLE", $configFile->isWriteable());

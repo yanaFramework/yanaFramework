@@ -33,17 +33,18 @@
  * @subpackage plugins
  */
 
+namespace Plugins\UserRegistration;
+
 /**
  * user management plugin
  *
  * This creates forms and implements functions to
  * manage user data.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_user_registration extends StdClass implements \Yana\IsPlugin
+class UserRegistrationPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
@@ -73,7 +74,7 @@ class plugin_user_registration extends StdClass implements \Yana\IsPlugin
      */
     public function set_user_mail($username, $mail)
     {
-        $database = \Yana\Application::connect("user");
+        $database = $this->_connectToDatabase("user");
 
         $mail = mb_substr(mb_strtolower($mail), 0, 255);
         if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
@@ -168,12 +169,12 @@ class plugin_user_registration extends StdClass implements \Yana\IsPlugin
 
         }
 
-        global $YANA;
+        $YANA = $this->_getApplication();
         $YANA->setVar('WEBSITE_URL', $YANA->getVar("REFERER"));
         $YANA->setVar('KEY', $key);
         $YANA->setVar('MAIL', $mail);
         $template = $YANA->getView()->createContentTemplate("id:USER_CONFIRM_MAIL");
-        self::_sendMail($mail, $template);
+        $this->_sendMail($mail, $template);
     }
 
     /**
@@ -217,7 +218,7 @@ class plugin_user_registration extends StdClass implements \Yana\IsPlugin
      */
     public function user_authentification($target)
     {
-        $database = \Yana\Application::connect("user");
+        $database = $this->_connectToDatabase('user');
 
         if (!$database->exists('newuser', array(array('newuser_key', $target, '=')))) {
             $level = \Yana\Log\TypeEnumeration::WARNING;
@@ -244,7 +245,7 @@ class plugin_user_registration extends StdClass implements \Yana\IsPlugin
         $password = $user->setPassword();
 
         // send password to user's mail account
-        $YANA = \Yana\Application::getInstance();
+        $YANA = $this->_getApplication();
         $YANA->setVar('PASSWORT', $password);
         $YANA->setVar('NAME', $user->getName());
 
@@ -253,7 +254,7 @@ class plugin_user_registration extends StdClass implements \Yana\IsPlugin
         if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
             $recipient = $user->getMail();
             $template = $YANA->getView()->createContentTemplate("id:USER_CONFIRM_MAIL");
-            self::_sendMail($recipient, $template, $sender);
+            $this->_sendMail($recipient, $template, $sender);
         }
         unset($sender);
     }
@@ -266,11 +267,11 @@ class plugin_user_registration extends StdClass implements \Yana\IsPlugin
      * @param   string                            $sender     mail address
      * @ignore
      */
-    private static function _sendMail($recipient, \Yana\Views\Templates\IsTemplate $template, $sender = "")
+    private function _sendMail($recipient, \Yana\Views\Templates\IsTemplate $template, $sender = "")
     {
         assert('is_string($recipient); // Invalid argument $recipient: string expected');
         assert('is_string($sender); // Invalid argument $sender: string expected');
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         $templateMailer = new \Yana\Mails\TemplateMailer($template);
         $subject = $YANA->getLanguage()->getVar("user.mail_subject");

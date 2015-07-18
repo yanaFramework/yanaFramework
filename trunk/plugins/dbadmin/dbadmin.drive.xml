@@ -6,7 +6,7 @@
 	This file contains a list of mount points for a virtual drive!
 	The contained entries may not be changed at any case.
 -->
-<drive name="db_admin">
+<drive name="dbadmin">
     <file name="dbconfig.text">
     	<source>{$CONFIGDIR}dbconfig.php</source>
     	<requirements readable="yes" writeable="yes" executable="yes"/>

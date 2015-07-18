@@ -24,17 +24,18 @@
  * @subpackage plugins
  */
 
+namespace Plugins\SearchAdmin;
+
 /**
  * Search plugin setup
  *
  * This implements basic setup functions for
  * the search plugin
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_search_admin extends StdClass implements \Yana\IsPlugin
+class SearchAdminPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**

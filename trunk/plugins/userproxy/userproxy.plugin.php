@@ -25,17 +25,18 @@
  * @subpackage plugins
  */
 
+namespace Plugins\UserProxy;
+
 /**
  * user management plugin
  *
  * This creates forms and implements functions to
  * manage user data.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_user_proxy extends StdClass implements \Yana\IsPlugin
+class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
@@ -78,7 +79,7 @@ class plugin_user_proxy extends StdClass implements \Yana\IsPlugin
      */
     public function get_user_proxy()
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         // check user expert setting
         $YANA->setVar('USER_IS_EXPERT', $this->_getIsExpert());

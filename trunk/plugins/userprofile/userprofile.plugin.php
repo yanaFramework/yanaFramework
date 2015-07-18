@@ -21,40 +21,19 @@
  * @subpackage plugins
  */
 
+namespace Plugins\UserProfile;
+
 /**
  * user management plugin
  *
  * This creates forms and implements functions to
  * manage user data.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_user_profile extends StdClass implements \Yana\IsPlugin
+class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
 {
-
-    /**
-     * @access  private
-     * @static
-     * @var     DBStream;
-     */
-    private static $database = null;
-
-    /**
-     * Get database connection.
-     *
-     * @access  protected
-     * @static
-     * @return  DbStream
-     */
-    protected static function getDatabase()
-    {
-        if (!isset(self::$database)) {
-            self::$database = \Yana\Application::connect("user_admin");
-        }
-        return self::$database;
-    }
 
     /**
      * Get form definition.
@@ -110,7 +89,7 @@ class plugin_user_profile extends StdClass implements \Yana\IsPlugin
      */
     public function get_profile_edit()
     {
-        $YANA = \Yana\Application::getInstance();
+        $YANA = $this->_getApplication();
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_USER_EDIT"));
         $YANA->setVar("USERNAME", \Yana\User::getUserName());
         $builder = new \Yana\Forms\Builder('user_admin');
@@ -143,7 +122,7 @@ class plugin_user_profile extends StdClass implements \Yana\IsPlugin
             throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
         }
 
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         $worker->beforeCreate(
             function (&$id)
             {
@@ -175,7 +154,7 @@ class plugin_user_profile extends StdClass implements \Yana\IsPlugin
             throw new \Yana\Core\Exceptions\Forms\MissingInputException($message, $level);
         }
 
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         return $worker->update();
     }
 
@@ -220,13 +199,13 @@ class plugin_user_profile extends StdClass implements \Yana\IsPlugin
             throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
         }
 
-        $userData = self::getDatabase()->select("userprofile." . $userId);
+        $userData = $this->_connectToDatabase('user_admin')->select("userprofile." . $userId);
 
         if (empty($userData['USER_ID']) || empty($userData['USER_ACTIVE'])) {
             return false;
         }
 
-        $YANA = \Yana\Application::getInstance();
+        $YANA = $this->_getApplication();
         $YANA->setVar("USERNAME", $userId);
         $YANA->setVar("USER", $userData);
     }
@@ -244,7 +223,7 @@ class plugin_user_profile extends StdClass implements \Yana\IsPlugin
      */
     public function get_profile_image($target, $thumb = false)
     {
-        $userData = self::getDatabase()->select("userprofile.$target");
+        $userData = $this->_connectToDatabase('user_admin')->select("userprofile.$target");
 
         // user not found or not active
         if (empty($userData['USER_ID']) || empty($userData['USER_ACTIVE'])) {
@@ -261,7 +240,7 @@ class plugin_user_profile extends StdClass implements \Yana\IsPlugin
                 $image = new \Yana\Media\Image(str_replace('/image.', '/thumb.', $userData['USER_IMAGE']));
             }
         } else {
-            $image = new \Yana\Media\Image(\Yana\Application::getInstance()->getVar('DATADIR') . 'userpic.gif');
+            $image = new \Yana\Media\Image($this->_getApplication()->getVar('DATADIR') . 'userpic.gif');
         }
         $image->outputToScreen();
         exit;

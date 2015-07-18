@@ -24,25 +24,17 @@
  * @subpackage plugins
  */
 
-/**
- * class to handle imports from DB-Designer 4
- */
-require_once 'dbdesigner4.php';
-/**
- * class to handle imports from PEAR MDB2 Schema
- */
-require_once 'dbmdb2.php';
+namespace Plugins\DbTools;
 
 /**
  * Database tools
  *
  * This implements a several database modeling and maintenance utilities
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_db_tools extends StdClass implements \Yana\IsPlugin
+class DbToolsPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
@@ -106,7 +98,7 @@ class plugin_db_tools extends StdClass implements \Yana\IsPlugin
      */
     public function db_tools_config_export()
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         $YANA->setVar('SELECTED_DBMS', YANA_DATABASE_DBMS);
         $YANA->setVar('LIST_OF_EXPORTABLE_DBMS', $this->listOfExportableDBMS);
         $YANA->setVar("DATABASE_LIST", \Yana\Db\Ddl\DDL::getListOfFiles());
@@ -148,16 +140,15 @@ class plugin_db_tools extends StdClass implements \Yana\IsPlugin
     /**
      * export database content to xml
      *
-     * @type        config
-     * @user        group: admin, level: 100
-     * @template    message
-     * @onsuccess   goto: DB_TOOLS_CONFIG_EXPORT
-     * @onerror     goto: DB_TOOLS_CONFIG_EXPORT
-     * @safemode    true
+     * @type       config
+     * @user       group: admin, level: 100
+     * @template   message
+     * @onsuccess  goto: DB_TOOLS_CONFIG_EXPORT
+     * @onerror    goto: DB_TOOLS_CONFIG_EXPORT
+     * @safemode   true
      *
-     * @access      public
-     * @param       array  $list  list of database schemas
-     * @throws      \Yana\Core\Exceptions\Forms\NothingSelectedException  when nothing was selected to export
+     * @param      array  $list  list of database schemas
+     * @throws     \Yana\Core\Exceptions\Forms\NothingSelectedException  when nothing was selected to export
      */
     public function db_tools_exportxml(array $list)
     {
@@ -200,7 +191,7 @@ class plugin_db_tools extends StdClass implements \Yana\IsPlugin
     public function db_tools_importmdb2()
     {
         if (!empty($_FILES['mdb2']['tmp_name'])) {
-            $structure = DbMDB2::getStructureFromString($_FILES['mdb2']['tmp_name']);
+            $structure = \Plugins\DbTools\MDB2::getStructureFromString($_FILES['mdb2']['tmp_name']);
             if (empty($structure)) {
                 return false;
             } else {
@@ -248,7 +239,7 @@ class plugin_db_tools extends StdClass implements \Yana\IsPlugin
         if (empty($_FILES['dbdesigner4']['tmp_name'])) {
             return false;
         }
-        $structure = DbDesigner4::DbDesigner4($_FILES['dbdesigner4']['tmp_name']);
+        $structure = \Plugins\DbTools\DbDesigner4::DbDesigner4($_FILES['dbdesigner4']['tmp_name']);
         if (empty($structure)) {
             return false;
         } else {

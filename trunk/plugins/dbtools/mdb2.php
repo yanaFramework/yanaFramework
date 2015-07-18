@@ -25,14 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-/**
- * @ignore
- */
-require_once 'isdbimport.php';
-/**
- * @ignore
- */
-require_once 'dbinfotable.php';
+namespace Plugins\DbTools;
 
 /**
  * MDB2 import class
@@ -43,7 +36,7 @@ require_once 'dbinfotable.php';
  *
  * Example:
  * <code>
- * $schema = new DbMDB2('schema.xml');
+ * $schema = new \Plugins\DbTools\MDB2('schema.xml');
  * $structure = $schema->getStructure();
  * $structure->write();
  * </code>
@@ -72,11 +65,10 @@ require_once 'dbinfotable.php';
  * translation for any SQL dialect you wish to support and place it in the corresponding sub-directory
  * of directory "config/db/.install/".
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class DbMDB2 extends \Yana\Files\File implements IsDbImport
+class MDB2 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
 {
     /**#@+
      * @ignore
@@ -153,10 +145,10 @@ class DbMDB2 extends \Yana\Files\File implements IsDbImport
     {
         assert('is_string($mdb2Schema); // Wrong argument type $dbDesignerConfig. String expected.');
         if (is_file($mdb2Schema)) {
-            $MDB2 = new DbMDB2($mdb2Schema);
+            $MDB2 = new \Plugins\DbTools\MDB2($mdb2Schema);
             $MDB2->read();
         } else {
-            $MDB2 = new DbMDB2('');
+            $MDB2 = new \Plugins\DbTools\MDB2('');
             assert('empty($MDB2->content);');
             $MDB2->content = explode("\n", $mdb2Schema);
             assert('is_array($MDB2->content);');
@@ -173,7 +165,6 @@ class DbMDB2 extends \Yana\Files\File implements IsDbImport
     /**
      * Return database structure for current data
      *
-     * @access  public
      * @return  \Yana\Db\Structure
      */
     public function &getStructure()
@@ -189,7 +180,6 @@ class DbMDB2 extends \Yana\Files\File implements IsDbImport
     /**
      * _startElement
      *
-     * @access  private
      * @param   int     $parser   parser
      * @param   string  $name     name
      * @param   array   $attrs    attributes
@@ -205,7 +195,6 @@ class DbMDB2 extends \Yana\Files\File implements IsDbImport
     /**
      * _endElement
      *
-     * @access  private
      * @param   int     $parser   parser
      * @param   string  $name     name
      * @return  bool
@@ -217,7 +206,7 @@ class DbMDB2 extends \Yana\Files\File implements IsDbImport
         switch (true)
         {
             case $name === 'table':
-                $table = new DbInfoTable($this->currentTable['name']);
+                $table = new \Plugins\DbTools\InfoTable($this->currentTable['name']);
                 foreach ($this->currentTable['columns'] as $column)
                 {
                     $table->addColumn($column);
@@ -235,7 +224,7 @@ class DbMDB2 extends \Yana\Files\File implements IsDbImport
             break;
             case $name === 'field' && $this->_xPath('//table/declaration/field'):
                 if (!empty($this->currentColumn['name'])) {
-                    $column = new DbInfoColumn($this->currentColumn['name']);
+                    $column = new \Plugins\DbTools\InfoColumn($this->currentColumn['name']);
                     if (!empty($this->currentColumn['type'])) {
                         $column->setType($this->currentColumn['type']);
                     }

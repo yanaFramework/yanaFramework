@@ -23,14 +23,15 @@
  * @subpackage plugins
  */
 
+namespace Plugins\UserGroup;
+
 /**
  * user authentification plugin
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_user_group extends StdClass implements \Yana\IsPlugin
+class UserGroupPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**

@@ -21,17 +21,18 @@
  * @subpackage plugins
  */
 
+namespace Plugins\RssAdmin;
+
 /**
  * RSS to HTML factory setup
  *
  * This implements basic setup functions for
  * the RSS to HTML factory plugin
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_rss_admin extends StdClass implements \Yana\IsPlugin
+class RssAdminPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
@@ -61,7 +62,7 @@ class plugin_rss_admin extends StdClass implements \Yana\IsPlugin
      */
     public function get_rss_to_html_config($id = "")
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         $YANA->setVar("ID", $id);
     }
 
@@ -86,7 +87,7 @@ class plugin_rss_admin extends StdClass implements \Yana\IsPlugin
      */
     public function set_rss_to_html_config(array $ARGS)
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         if ($ARGS['rss/file'] && !file_exists($ARGS['rss/file'])) {
             return false;
         }
