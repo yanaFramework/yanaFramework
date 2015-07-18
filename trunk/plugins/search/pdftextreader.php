@@ -25,16 +25,17 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Plugins\Search;
+
 /**
  * Use this class to read the text-content of a PDF file.
  *
  * Note: this does not check for images. It extracts paragraphs and text-lines only.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class PdfTextReader extends BufferedReader
+class PdfTextReader extends \Plugins\Search\BufferedReader
 {
 
     /**

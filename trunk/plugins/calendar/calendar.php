@@ -26,10 +26,7 @@
  * @subpackage plugins
  */
 
-/**
- * @ignore
- */
-require_once 'recurrance.php';
+namespace Plugins\Calendar;
 
 /**
  * Calendar handling class
@@ -39,26 +36,66 @@ require_once 'recurrance.php';
  */
 class Calendar extends \Yana\Files\AbstractResource
 {
-    /**#@+
-     * calendar default properties
-     *
-     * @ignore
+
+    /**
+     * @var string
      */
+    private $name = "";
 
-    /* @var string            */ protected $name      = "";
-    /* @var string            */ protected $id        = "";
-    /* @var \SimpleXMLElement */ protected $content   = null;
-    /* @var array             */ protected $vevents   = null;
-    /* @var array             */ protected $eventList = null;
-    /* @var string            */ protected $owner     = "";
-    /* @var bool              */ protected $readonly  = false;
-    /* @var string            */ protected $className = '';
-    /* @var \SimpleXMLElement */ protected $eventByID = null;
+    /**
+     * @var string
+     */
+    private $id = "";
 
-    /* @var array             */ private static $categories = array();
+    /**
+     * @var \SimpleXMLElement
+     */
+    private $content = null;
 
-    /* @var array */
-    protected static $eventKeys = array(
+    /**
+     * @var array
+     */
+    private $vevents = null;
+
+    /**
+     * @var array
+     */
+    private $eventList = null;
+
+    /**
+     * @var string
+     */
+    private $owner = "";
+
+    /**
+     * @var bool
+     */
+    private $readonly = false;
+
+    /**
+     * @var string
+     */
+    private $className = '';
+
+    /**
+     * @var \SimpleXMLElement
+     */
+    protected $eventByID = null;
+
+    /**
+     * @var \Yana\Core\IsVarContainer
+     */
+    private $varContainer = null;
+
+    /**
+     * @var array
+     */
+    private static $categories = array();
+
+    /**
+     * @var array
+     */
+    private static $eventKeys = array(
         'uid' => 'id',
         'summary' => 'title',
         'location' => 'location',
@@ -73,25 +110,35 @@ class Calendar extends \Yana\Files\AbstractResource
         'rrule' => 'rrule'
     );
 
-    /* @var array */
+    /**
+     * @var array
+     */
     protected static $additionalEventKeys = array();
 
-    /**#@-*/
-
     /**
-     * constructor
-     *
      * Create a new instance of this class.
      *
-     * @param  string  $filename  filename
-     * @param  int     $id        unique identifier
+     * @param  string                     $filename   to calendar ical file
+     * @param  \Yana\Core\IsVarContainer  $container  holds calendar settings
+     * @param  int                        $id         unique identifier
      */
-    public function __construct($filename, $id = 0)
+    public function __construct($filename, \Yana\Core\IsVarContainer $container, $id = 0)
     {
         assert('is_int($id); // Wrong argument type argument 2. Integer expected');
 
         parent::__construct($filename);
+        $this->varContainer = $container;
         $this->id = (int) $id;
+    }
+
+    /**
+     * Get container with calendar settings.
+     *
+     * @return  \Yana\Core\IsVarContainer
+     */
+    protected function _getVarContainer()
+    {
+        return $this->varContainer;
     }
 
     /**
@@ -304,7 +351,7 @@ class Calendar extends \Yana\Files\AbstractResource
                 }
             }
             if ($key == 'rrule' && !empty($xml->{$key})) {
-                $event['rrule'] = new RecurranceRule(
+                $event['rrule'] = new \Plugins\Calendar\RecurranceRule(
                     $xml->uid,
                     $xml->dtstart,
                     $xml->dtend,
@@ -574,8 +621,7 @@ class Calendar extends \Yana\Files\AbstractResource
                     $nr = $weekNr[0];
                 }
                 if (isset($nr)) {
-                    $yana = \Yana\Application::getInstance();
-                    $repeatMonthOptions = $yana->getPlugins()->calendar->getVar('repeat_month_options');
+                    $repeatMonthOptions = $this->_getVarContainer()->getVar('repeat_month_options');
                     foreach ($repeatMonthOptions['option'] as $key => $data)
                     {
                         if ($data['default'] == $nr) {
@@ -877,9 +923,6 @@ class Calendar extends \Yana\Files\AbstractResource
      */
     protected function calculateDataEntry($event)
     {
-        $yana = \Yana\Application::getInstance();
-        $plugins = $yana->getPlugins();
-
         // prapair the event for save or update
         $dataset = array();
         foreach ($event as $key => $value)
@@ -921,9 +964,9 @@ class Calendar extends \Yana\Files\AbstractResource
                         }
                         $repeat = 'UNTIL='.$until.';';
                     }
-                    $days = $plugins->calendar->getVar('days');
+                    $days = $this->_getVarContainer()->getVar('days');
                     $days = $days['day'];
-                    $repeatMonthOptions = $plugins->calendar->getVar('repeat_month_options');
+                    $repeatMonthOptions = $this->_getVarContainer()->getVar('repeat_month_options');
                     $repeatMonthOptions = $repeatMonthOptions['option'];
 
                     if ($value == 'DAILY') {

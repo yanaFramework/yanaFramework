@@ -26,23 +26,19 @@
  * @subpackage plugins
  */
 
+namespace Plugins\Guestbook;
+
 /**
  * guestbook plugin
  *
  * This implements a guestbook application, including the ability to add comments and notification
  * on new entries via e-mail.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_guestbook extends StdClass implements \Yana\IsPlugin
+class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
 {
-
-    /**
-     * @var \Yana\Db\IsConnection
-     */
-    private static $database = null;
 
     /**
      * @var string (readonly)
@@ -79,16 +75,13 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
     private $actionCommentWrite = "guestbook_write_comment";
 
     /**
-     * get database connection
+     * Get database connection.
      *
      * @return  \Yana\Db\IsConnection
      */
-    protected static function getDatabase()
+    protected function _getDatabase()
     {
-        if (!isset(self::$database)) {
-            self::$database = \Yana\Application::connect("guestbook");
-        }
-        return self::$database;
+        return $this->_connectToDatabase("guestbook");
     }
 
     /**
@@ -143,9 +136,9 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
      */
     public function guestbook_read_edit($target)
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
 
-        $row = self::getDatabase()->select("guestbook.{$target}");
+        $row = $this->_getDatabase()->select("guestbook.{$target}");
 
         /* check if target row exists */
         if (empty($row)) {
@@ -183,7 +176,7 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
      */
     public function guestbook_write_edit($target, $name, $message, $msgtyp, $messenger = "", $mail = "", $hometown = "", $homepage = "", $opinion = "")
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         $permission = $YANA->getVar("PERMISSION");
         /* avoid spamming */
@@ -211,7 +204,7 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
             'GUESTBOOK_OPINION' => $opinion
         );
 
-        $database = self::getDatabase();
+        $database = $this->_getDatabase();
 
         /* before doing anything, check if entry exists */
         if (!$database->exists("guestbook.{$target}")) {
@@ -262,7 +255,7 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
             $level = \Yana\Log\TypeEnumeration::INFO;
             throw new \Yana\Core\Exceptions\Forms\NothingSelectedException($message, $level);
         }
-        $database = self::getDatabase();
+        $database = $this->_getDatabase();
         /* loop through selected entries */
         foreach($selected_entries as $id)
         {
@@ -314,8 +307,8 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
      */
     public function guestbook_read_rss()
     {
-        global $YANA;
-        self::_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
+        $YANA = $this->_getApplication();
+        $this->_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
 
         /* get entries */
         $rows = $this->_getTable();
@@ -386,8 +379,8 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
     public function guestbook_write_new($name, $message, $msgtyp, $messenger = "", $mail = "", $hometown = "", $homepage = "", $opinion = "")
     {
         /* @var $YANA \Yana\Application */
-        global $YANA;
-        self::_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
+        $YANA = $this->_getApplication();
+        $this->_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
 
         $permission = $YANA->getVar("PERMISSION");
         /* avoid spamming */
@@ -403,7 +396,7 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
             }
         }
 
-        $database = self::getDatabase();
+        $database = $this->_getDatabase();
         /* values to create new entry */
         $entry = array(
             'guestbook_name' => $name,
@@ -463,7 +456,7 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
         if ($YANA->getVar("PROFILE.GUESTBOOK.MAIL") && $YANA->getVar("PROFILE.GUESTBOOK.NOTIFICATION")) {
             $templateFile = $YANA->getPlugins()->{"guestbook:/notification.file"};
             $template = $YANA->getView()->createContentTemplate($templateFile->getPath());
-            self::_sendMail($template, $entry);
+            $this->_sendMail($template, $entry);
         }
         \Yana\Util\Microsummary::setText(__CLASS__, 'Guestbook, update ' . date('d M y G:s', time()));
     }
@@ -483,8 +476,8 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
      */
     public function guestbook_entry($target)
     {
-        global $YANA;
-        self::_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
+        $YANA = $this->_getApplication();
+        $this->_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
 
         // create link to user profile (if profile viewer is installed)
         if ($YANA->getPlugins()->isActive('user_admin')) {
@@ -495,7 +488,7 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
         }
 
         /* get entries */
-        $row = self::getDatabase()->select("guestbook.$target");
+        $row = $this->_getDatabase()->select("guestbook.$target");
         if (empty($row)) {
             return false;
         } else {
@@ -523,8 +516,8 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
      */
     public function guestbook_read($page = 0, $entries = null)
     {
-        global $YANA;
-        self::_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
+        $YANA = $this->_getApplication();
+        $this->_securityCheck(); // throws \Yana\Core\Exceptions\Files\NotFoundException
 
         \Yana\Util\Microsummary::publishSummary(__CLASS__);
         \Yana\RSS\Publisher::publishFeed('guestbook_read_rss');
@@ -565,8 +558,8 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
      */
     public function guestbook_default_comment($target)
     {
-        global $YANA;
-        $guestbook_comment = self::getDatabase()->select('guestbook.'.$target.'.guestbook_comment');
+        $YANA = $this->_getApplication();
+        $guestbook_comment = $this->_getDatabase()->select('guestbook.'.$target.'.guestbook_comment');
         if (!empty($guestbook_comment)) {
              $YANA->setVar('GUESTBOOK_COMMENT', $guestbook_comment);
         }
@@ -589,7 +582,7 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
      */
     public function guestbook_write_comment($target, $guestbook_comment = "")
     {
-        $database = self::getDatabase();
+        $database = $this->_getDatabase();
         // If the update operation was not successful, issue an error message and abort.
         try {
             $database->update("guestbook.{$target}.guestbook_comment", $guestbook_comment)
@@ -614,9 +607,9 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
      */
     private function _getTable($page = 0, $entPerPage = null)
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
 
-        $database = self::getDatabase();
+        $database = $this->_getDatabase();
         /* check if $table really is a table */
         $table = $database->getSchema()->getTable("guestbook");
         assert('$table instanceof \Yana\Db\Ddl\Table;');
@@ -703,13 +696,11 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
     /**
      * _securityCheck
      *
-     * @access  private
-     * @static
      * @throws  \Yana\Core\Exceptions\Files\NotFoundException
      */
-    private static function _securityCheck()
+    private function _securityCheck()
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         $id = \Yana\Application::getId();
         /* do not show new guestbooks, if Auto-Option is deactivated */
         $dir = $YANA->getResource('system:/config/profiledir');
@@ -725,14 +716,12 @@ class plugin_guestbook extends StdClass implements \Yana\IsPlugin
     /**
      * send mail
      *
-     * @access  private
-     * @static
      * @param   \Yana\Views\Templates\IsTemplate  $template  mail template
      * @param   array                             $vars      input data
      */
-    private static function _sendMail(\Yana\Views\Templates\IsTemplate $template, array $vars)
+    private function _sendMail(\Yana\Views\Templates\IsTemplate $template, array $vars)
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         $sender = $YANA->getVar("PROFILE.MAIL");
         $recipient = $YANA->getVar("PROFILE.GUESTBOOK.MAIL");
 

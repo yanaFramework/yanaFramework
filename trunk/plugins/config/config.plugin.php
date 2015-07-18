@@ -23,10 +23,7 @@
  * @subpackage plugins
  */
 
-/**
- * @ignore
- */
-require_once __DIR__ . '/updatechecker.php';
+namespace Plugins\Config;
 
 /**
  * Configration menu
@@ -38,7 +35,7 @@ require_once __DIR__ . '/updatechecker.php';
  * @package    yana
  * @subpackage plugins
  */
-class plugin_config extends StdClass implements \Yana\IsPlugin
+class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
@@ -78,7 +75,7 @@ class plugin_config extends StdClass implements \Yana\IsPlugin
      */
     public function index()
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         /* @var $YANA \Yana\Application */
 
         // create options for select-boxes
@@ -124,7 +121,7 @@ class plugin_config extends StdClass implements \Yana\IsPlugin
      */
     public function index_plugins()
     {
-        $yana = \Yana\Application::getInstance();
+        $yana = $this->_getApplication();
 
         /* current state vars */
         $isDefault = \Yana\Application::getId() === \Yana\Application::getDefault('profile');
@@ -346,7 +343,8 @@ class plugin_config extends StdClass implements \Yana\IsPlugin
         $pluginManager = \Yana\Plugins\Manager::getInstance();
         if ($pluginManager->refreshPluginFile()) {
             \Yana\Security\Users\SessionManager::refreshPluginSecuritySettings();
-            \Yana\Plugins\Menu::clearCache();
+            $builder = new \Yana\Plugins\Menus\Builder();
+            $builder->clearMenuCache(); // uses session cache adapter by default
             return true;
         } else {
             return false;
@@ -368,7 +366,7 @@ class plugin_config extends StdClass implements \Yana\IsPlugin
      */
     public function config_create_profile($id)
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         $configFile = $YANA->getResource('system:/config/profiledir/default_config.sml');
         $REF = $configFile->getVars();
         $profileDir = $YANA->getResource("system:/config/profiledir");
@@ -445,7 +443,7 @@ class plugin_config extends StdClass implements \Yana\IsPlugin
         }
 
         // success
-        \Yana\Application::getInstance()->clearCache();
+        $this->_getApplication()->clearCache();
         return true;
     }
 
@@ -473,7 +471,7 @@ class plugin_config extends StdClass implements \Yana\IsPlugin
     public function about($type, $target)
     {
         /* @var $YANA \Yana\Application */
-        global $YANA;
+        $YANA = $this->_getApplication();
         $info = array(
             'VERSION' => '1.0'
         );
@@ -508,139 +506,6 @@ class plugin_config extends StdClass implements \Yana\IsPlugin
 
         $YANA->setVar("INFO", $info);
         return true;
-    }
-
-    /**
-     * <<smarty function>> updateCheck
-     *
-     * This checks for updates and returns the result.
-     * If the server is not reachable it returns a link instead.
-     *
-     * Note: since version look-ups can be very time consuming
-     * (e.g. if the server is slow or temporarily unreachable)
-     * this function caches the results for 8 hours before
-     * searching for updates again.
-     *
-     * @static
-     * @access  public
-     * @return  string
-     * @since   2.9.11
-     * @ignore
-     */
-    public static function updateCheck()
-    {
-        assert('isset($GLOBALS["YANA"]); // Global var $YANA not set');
-        global $YANA;
-
-        /* cache results */
-        $tempDir = $YANA->getVar('TEMPDIR');
-        $tempFile = "{$tempDir}updatecheck." . @$_SESSION['language'] . ".tmp";
-        if (is_file($tempFile) && filemtime($tempFile) > time() - 28800 /* = 8h */) {
-            return file_get_contents($tempFile);
-        }
-
-        /* create link to check for new version */
-        $url = \Yana\Application::getDefault('UPDATE_SERVER');
-        $url = str_replace(YANA_LEFT_DELIMITER . '$VERSION' . YANA_RIGHT_DELIMITER, YANA_VERSION, $url);
-        $url = str_replace(YANA_LEFT_DELIMITER . '$IS_STABLE' . YANA_RIGHT_DELIMITER, YANA_IS_STABLE, $url);
-        $url = str_replace(YANA_LEFT_DELIMITER . '$LANG' . YANA_RIGHT_DELIMITER, @$_SESSION['language'], $url);
-        $href = str_replace(YANA_LEFT_DELIMITER . '$AS_NUMBER' . YANA_RIGHT_DELIMITER, '', $url);
-        $url = str_replace(YANA_LEFT_DELIMITER . '$AS_NUMBER' . YANA_RIGHT_DELIMITER, 'true', $url);
-        $url = html_entity_decode($url);
-        $link = '<a href="' . $href .  '" target="_blank">' . $YANA->getLanguage()->getVar('INDEX_13') . '</a>';
-
-        assert('!isset($urlInfo); // Cannot redeclare var $urlInfo');
-        assert('!isset($errno); // Cannot redeclare var $errno');
-        assert('!isset($errstr); // Cannot redeclare var $errstr');
-        assert('!isset($latestVersion); // Cannot redeclare var $latestVersion');
-        $latestVersion = "";
-
-        /*
-         * 1) try using url_fopen
-         */
-        if (!ini_get('allow_url_fopen') == true) {
-            $latestVersion = mb_substr(file_get_contents($url), 0, 20);
-            if (empty($latestVersion)) {
-
-                file_put_contents($tempFile, $link);
-                return $link;
-            }
-
-        /*
-         * 2) try to connect using a socket
-         *
-         * this will only be done if step 1) failed
-         */
-        } else {
-
-            $urlInfo = parse_url($url);
-
-            if ($urlInfo !== false) {
-                $fsock = @fsockopen($urlInfo['host'], 80, $errno, $errstr, 30);
-            }
-
-            if ($urlInfo !== false && ($fsock) != false) {
-                if (!empty($errno)) {
-                    $message = 'Update-check failed to open connection to server. Reason: ' . $errstr;
-                    $level = \Yana\Log\TypeEnumeration::WARNING;
-                    \Yana\Log\LogManager::getLogger()->addLog($message, $level);
-                    @fclose($fsock);
-                    file_put_contents($tempFile, $link);
-                    return $link;
-                }
-                unset($errno, $errstr);
-
-                /* send request header */
-                @fputs($fsock, "GET " . (isset($urlInfo['path']) ? $urlInfo['path'] : '/') . (isset($urlInfo['query']) ? '?' . $urlInfo['query'] : '') . " HTTP/1.0\r\n");
-                @fputs($fsock, "HOST: " . $urlInfo['host'] . "\r\n");
-                @fputs($fsock, "Connection: close\r\n\r\n");
-
-                /* read response */
-                while (!@feof($fsock))
-                {
-                    $latestVersion .= @fread($fsock, 1024);
-                }
-                @fclose($fsock);
-                unset($fsock);
-
-                /* cut off header data */
-                $latestVersion = preg_replace('/^.*?\r\n\r\n(.*)$/si', '$1', $latestVersion);
-                $latestVersion = mb_substr($latestVersion, 0, 20);
-
-                /* print reply */
-                if (empty($latestVersion)) {
-                    file_put_contents($tempFile, $link);
-                    return $link;
-                }
-                unset($urlInfo);
-
-            /*
-             * 3) return link, users will have to click it
-             *
-             * this will only be done if steps 1) and 2) failed
-             */
-            } else {
-                file_put_contents($tempFile, $link);
-                return $link;
-            }
-        } // end if
-
-        /**
-         * Compare versions and return result;
-         */
-        if (version_compare(YANA_VERSION, $latestVersion) < 0) {
-            $link = $YANA->getLanguage()->getVar('INDEX_15') . ': ' .
-                    htmlspecialchars($latestVersion, ENT_COMPAT, 'UTF-8') .
-                    ' <a href="' . $href .  '" target="_blank">' . $YANA->getLanguage()->getVar('INDEX_16') . '</a>';
-            file_put_contents($tempFile, $link);
-            return $link;
-
-        } else {
-            $link = $YANA->getLanguage()->getVar('INDEX_14') . ': ' . YANA_VERSION;
-            file_put_contents($tempFile, $link);
-            return $link;
-        }
-
     }
 
 }

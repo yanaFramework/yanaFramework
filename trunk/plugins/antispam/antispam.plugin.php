@@ -21,14 +21,15 @@
  * @subpackage plugins
  */
 
+namespace Plugins\AntiSpam;
+
 /**
  * automated spam protection
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_antispam extends StdClass implements \Yana\IsPlugin
+class AntiSpamPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
@@ -38,22 +39,22 @@ class plugin_antispam extends StdClass implements \Yana\IsPlugin
      *
      * {@internal
      *
-     * The corresponding form fields are created in SmartUtility::htmlPostProcessor();
+     * The corresponding form fields are created in \Yana\Views\Helpers\PostFilters\SpamFilter;
      *
      * }}
      *
-     * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
      * @throws  \Yana\Core\Exceptions\Forms\SuspendedException  when form is committed too soon
      * @throws  \Yana\Core\Exceptions\Forms\TimeoutException    when form is committed too late
+     * @see     \Yana\Views\Helpers\PostFilters\SpamFilter
      */
     public function catchAll($event, array $ARGS)
     {
         assert('is_string($event); // Wrong type for argument 1. String expected');
 
-        $yana = \Yana\Application::getInstance();
+        $yana = $this->_getApplication();
         $eventType = mb_strtolower($yana->getPlugins()->getEventType("$event"));
         unset($event);
 
@@ -357,7 +358,7 @@ class plugin_antispam extends StdClass implements \Yana\IsPlugin
      */
     public function security_get_image($security_image_index)
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         $imagesrc = __DIR__ . "captchas/security_image" . rand(0, 9) . ".png";
         /* @var $file \Yana\Files\Dat */
         $file = $YANA->getPlugins()->default_library->getResource('antispam:/security.dat');
@@ -450,7 +451,7 @@ class plugin_antispam extends StdClass implements \Yana\IsPlugin
      */
     public function security_check_image($security_image_index, $security_image)
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         $permission = $YANA->getVar("PERMISSION");
         if (is_int($permission) && $permission > 0) {

@@ -26,30 +26,23 @@
  * @subpackage plugins
  */
 
-/**
- * @ignore
- */
-require_once 'pluginconfigurationbuildersdk.php';
+namespace Plugins\SDK;
 
 /**
  * Software Developement Kit
  *
  * This implements a code generator utility
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_sdk extends StdClass implements \Yana\IsPlugin
+class SdkPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
      * List of DBMS ids and names
      *
-     * @access  private
-     * @static
-     * @var     array
-     * @ignore
+     * @var  array
      */
     private static $_listOfDBMS = array(
         'mysql'  => 'MySQL',
@@ -64,7 +57,6 @@ class plugin_sdk extends StdClass implements \Yana\IsPlugin
      *
      * returns bool(true) on success and bool(false) on error
      *
-     * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
@@ -88,12 +80,10 @@ class plugin_sdk extends StdClass implements \Yana\IsPlugin
      * @language    sdk
      * @menu        group: start
      * @safemode    true
-     *
-     * @access  public
      */
     public function sdk()
     {
-        $yana = \Yana\Application::getInstance();
+        $yana = $this->_getApplication();
         $dir = $yana->getPlugins()->{'sdk:/images/logos'};
         $dir->read();
         $yana->setVar('FILES', $dir->getContent());
@@ -118,13 +108,11 @@ class plugin_sdk extends StdClass implements \Yana\IsPlugin
      * @onsuccess   goto: sdk
      * @onerror     goto: sdk
      * @safemode    true
-     *
-     * @access      public
      * @param       array $ARGS array of params passed to the function
      */
     public function sdk_write_plugin(array $ARGS)
     {
-        $pluginBuilder = new PluginConfigurationBuilderSdk();
+        $pluginBuilder = new \Plugins\SDK\ConfigurationBuilder();
         $pluginBuilder->createNewConfiguration();
         $pluginBuilder->setSdkConfiguration($ARGS);
         $plugin = $pluginBuilder->getPluginConfigurationClass();
@@ -165,18 +153,14 @@ class plugin_sdk extends StdClass implements \Yana\IsPlugin
         $pluginBuilder->buildPlugin($overwriteFiles);
 
         /* load new plugin */
-        $yana = \Yana\Application::getInstance();
-        $yana->callAction('refresh_pluginlist');
+        $this->_getApplication()->callAction('refresh_pluginlist');
         self::_createBackup($ARGS);
     }
 
     /**
      * Backup current settings
      *
-     * @access  private
-     * @static
-     * @param   array  $arguments  form arguments
-     * @ignore
+     * @param  array  $arguments  form arguments
      */
     private static function _createBackup(array $arguments)
     {

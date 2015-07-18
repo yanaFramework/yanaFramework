@@ -25,10 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-/**
- * @ignore
- */
-require_once 'pluginconfigurationclasssdk.php';
+namespace Plugins\SDK;
 
 /**
  * <<worker>> Plugin generator
@@ -38,18 +35,16 @@ require_once 'pluginconfigurationclasssdk.php';
  * not too much - data itself.
  * Instead it "works" on a given object and provides functions to manipulate it.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilder
+class ConfigurationBuilder extends \Yana\Plugins\Configs\AbstractBuilder
 {
 
     /**
      * plugin configuration
      *
-     * @access  protected
-     * @var     PluginConfigurationClassSdk
+     * @var  \Plugins\SDK\ClassConfiguration
      * @ignore
      */
     protected $object = null;
@@ -57,32 +52,28 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     /**
      * directory
      *
-     * @access  private
-     * @var     \Yana\Files\Dir
+     * @var  \Yana\Files\Dir
      */
     private $_pluginDir = null;
 
     /**
      * list of files to copy
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_filesToCopy = array();
 
     /**
      * list of templates to create
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_templates = array();
 
     /**
      * database schema
      *
-     * @access  private
-     * @var     \Yana\Db\Ddl\Database
+     * @var  \Yana\Db\Ddl\Database
      */
     private $_schema = null;
 
@@ -91,16 +82,14 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
      *
      * Syntax: array('id' => array('source' => string, 'target' => string))
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_translations = array();
 
     /**
      * SDK configuration
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_sdkConfiguration = array();
 
@@ -110,16 +99,14 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
      * Numeric array containing method head.
      * Used by buildMethod().
      *
-     * @access  private
-     * @var     array
-     * @see     PluginConfigurationBuilderSdk::buildMethod()
+     * @var  array
+     * @see  \Plugins\SDK\ConfigurationBuilder::buildMethod()
      */
     private $_methodConfiguration = array();
 
     /**
      * get plugin directory
      *
-     * @access  protected
      * @return  \Yana\Files\Dir
      * @ignore
      */
@@ -135,9 +122,8 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     /**
      * set image
      *
-     * @access  public
      * @param   string  $image  image path
-     * @return  PluginConfigurationBuilderSdk
+     * @return  \Plugins\SDK\ConfigurationBuilder
      * @throws  \Yana\Core\Exceptions\Files\InvalidImageException  when the image has no valid type
      */
     public function setImage($image)
@@ -154,7 +140,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
             break;
 
             default:
-                $yana = \Yana\Application::getInstance();
+                $yana = $this->_getApplication();
                 $pluginManager = $yana->getPlugins();
                 $logoDir = $pluginManager->{'sdk:/images/logos'};
                 $iconDir = $pluginManager->{'sdk:/images/icons'};
@@ -178,14 +164,13 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     /**
      * add SQL file
      *
-     * @access  public
      * @param   string  $dbms  name of dbms
      * @param   string  $file  sql file
-     * @return  PluginConfigurationBuilderSdk
+     * @return  \Plugins\SDK\ConfigurationBuilder
      */
     public function addSqlFile($dbms, $file)
     {
-        $yana = \Yana\Application::getInstance();
+        $yana = $this->_getApplication();
         $installDirectory = $yana->getResource('system:/dbinstall/' . mb_strtolower($dbms));
         if (!is_object($installDirectory)) {
             $message = "Registry error: there is no registered install directory ".
@@ -215,15 +200,14 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     }
 
     /**
-     * add an HTML template file
+     * Add a HTML template file.
      *
-     * @access  protected
      * @param   \Yana\Db\Ddl\Form $form  form object the template is based on
-     * @return  PluginConfigurationBuilderSdk
+     * @return  \Plugins\SDK\ConfigurationBuilder
      */
     protected function addTemplate(\Yana\Db\Ddl\Form $form)
     {
-        $yana = \Yana\Application::getInstance();
+        $yana = $this->_getApplication();
         $name = $form->getTable();
 
         // create HTML page
@@ -237,11 +221,10 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     }
 
     /**
-     * set schema from XML
+     * Set schema from XML.
      *
-     * @access  public
      * @param   \SimpleXMLElement  $node  database root node
-     * @return  PluginConfigurationBuilderSdk
+     * @return  \Plugins\SDK\ConfigurationBuilder
      */
     public function setSchemaXml(\SimpleXMLElement $node)
     {
@@ -260,10 +243,9 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     }
 
     /**
-     * auto-create forms
+     * Auto-create forms.
      *
-     * @access  protected
-     * @param   \Yana\Db\Ddl\Database  $schema  schema definition
+     * @param  \Yana\Db\Ddl\Database  $schema  schema definition
      */
     protected function buildForms(\Yana\Db\Ddl\Database $schema)
     {
@@ -288,7 +270,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
             {
                 $action = self::_buildActionName($this->object->getId(), $actionId, $tableName);
                 $form->addEvent($actionId)->setAction($action);
-                $method = new PluginConfigurationMethodSdk();
+                $method = new \Plugins\SDK\MethodConfiguration();
                 $method->setAutoGenerated()->setMethodName($action)->setTitle($action);
                 $this->object->addMethod($method);
             }
@@ -337,11 +319,10 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     }
 
     /**
-     * get XLIFF file
+     * Get XML Language Interchange Format File content.
      *
      * Creates the content of a XLIFF file and returns it as a string.
      *
-     * @access  protected
      * @param   string  $source  source language
      * @param   string  $target  target language
      * @return  string
@@ -352,7 +333,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
         assert('is_string($source); // Wrong argument type argument 1. String expected');
         assert('is_string($target); // Wrong argument type argument 2. String expected');
 
-        $yana = \Yana\Application::getInstance();
+        $yana = $this->_getApplication();
         /* @var $xliffTemplate \Yana\Files\File */
         $xliffTemplate = $yana->getPlugins()->{'sdk:/templates/language.file'};
         $xliffTemplate = $yana->getView()->createContentTemplate($xliffTemplate->getPath());
@@ -363,9 +344,8 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     }
 
     /**
-     * create plugin
+     * Create plugin.
      *
-     * @access  public
      * @param   bool  $overwrite  Replace existing files? True = yes, false = no.
      * @throws  \Yana\Core\Exceptions\Files\NotWriteableException  when a plugin file could not be copied
      * @throws  \Yana\Core\Exceptions\Files\NotCreatedException    when a plugin file could not be created
@@ -490,11 +470,10 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     }
 
     /**
-     * add translation
+     * Add translation.
      *
      * Returns the appropriate language token or an empty string if the source was empty.
      *
-     * @access  protected
      * @param   string  $id      translation unit identifier
      * @param   string  $source  source text
      * @param   string  $target  target translation
@@ -528,10 +507,9 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     }
 
     /**
-     * find translation strings in database schema
+     * Find translation strings in database schema.
      *
-     * @access  protected
-     * @param   \Yana\Db\Ddl\Database  $schema  database schema
+     * @param  \Yana\Db\Ddl\Database  $schema  database schema
      * @ignore
      */
     protected function findTranslations(\Yana\Db\Ddl\Database $schema)
@@ -582,11 +560,10 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     }
 
     /**
-     * recursively find translation candidates in list of enumeration options
+     * Recursively find translation candidates in list of enumeration options.
      *
      * Returns the scanned/modified list.
      *
-     * @access  private
      * @param   string  $id       translation identifier
      * @param   array   $options  list of enumeration options
      * @return  array
@@ -607,15 +584,14 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     }
 
     /**
-     * create javascript Ajax Api
+     * Create javascript Ajax Api.
      *
-     * @access  protected
      * @access  string
      * @ignore
      */
     protected function getJsApi()
     {
-        $yana = \Yana\Application::getInstance();
+        $yana = $this->_getApplication();
         /* @var $apiTemplate \File */
         $apiTemplate = $yana->getPlugins()->{'sdk:/templates/jsapi.file'};
         $apiTemplate = $yana->getView()->createContentTemplate($apiTemplate->getPath());
@@ -626,15 +602,14 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     }
 
     /**
-     * create PHP class skeleton
+     * Create PHP class skeleton.
      *
-     * @access  protected
      * @access  string
      * @ignore
      */
     protected function getClassSkeleton()
     {
-        $yana = \Yana\Application::getInstance();
+        $yana = $this->_getApplication();
         /* @var $phpTemplate \File */
         $phpTemplate = $yana->getPlugins()->{'sdk:/templates/class.file'};
         $phpTemplate = $yana->getView()->createContentTemplate($phpTemplate->getPath());
@@ -648,10 +623,8 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     }
 
     /**
-     * create action name
+     * Create action name.
      *
-     * @access  private
-     * @static
      * @param   scalar  $id     plugin id
      * @param   scalar  $name   action name
      * @param   scalar  $table  target table
@@ -684,12 +657,13 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
                     }
                     $this->object->setDefaultTitle($value);
                     $id = ucwords($value);
-                    $id = preg_replace('/[^\d\w_]/', '', $id);
+                    $id = preg_replace('/[^\d\w]/', '', $id);
                     $this->object->setId($id);
-                    $this->object->setClassName('Plugin_' . $id);
+                    $this->object->setClassName($id . 'Plugin');
+                    $this->object->setNamespace('Plugins\\' . $id);
                     break;
                 case 'parent':
-                    if (!preg_match('/^[\d\w-_]*$/si', $value)) {
+                    if (!preg_match('/^[\d\w-]*$/si', $value)) {
                         $message = 'Not a valid plugin name.';
                         $errorLevel = \Yana\Log\TypeEnumeration::WARNING;
                         $error = new \Yana\Core\Exceptions\Forms\InvalidCharacterException($message, $errorLevel);
@@ -742,8 +716,6 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
 
     /**
      * Build method object.
-     *
-     * @access protected
      */
     protected function buildMethod()
     {
@@ -752,13 +724,13 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
         if(empty($methodName)) {
             return;
         }
-        $method = new PluginConfigurationMethodSdk();
+        $method = new \Plugins\SDK\MethodConfiguration();
         $method->setMethodName($methodName)
             ->setTitle($methodName)
             ->setType(array_shift($action))
             ->setTemplate(array_shift($action));
 
-        $user = new \Yana\Plugins\UserLevel();
+        $user = new \Yana\Plugins\Configs\UserPermissionRule();
         $group = array_shift($action);
         $role = array_shift($action);
         $level = array_shift($action);
@@ -794,7 +766,7 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
 
         $group = array_shift($action);
         if (!empty($group)) {
-            $menu = new \Yana\Plugins\MenuEntry();
+            $menu = new \Yana\Plugins\Menus\Entry();
             $menu->setGroup($group);
             $method->setMenu($menu);
         }
@@ -804,12 +776,10 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
 
     /**
      * Resets the instance that is currently build.
-     *
-     * @access  public
      */
     public function createNewConfiguration()
     {
-        $this->object = new PluginConfigurationClassSdk();
+        $this->object = new \Plugins\SDK\ClassConfiguration();
         $this->_filesToCopy = array();
         $this->_templates = array();
         $this->_translations = array();
@@ -818,9 +788,8 @@ class PluginConfigurationBuilderSdk extends \Yana\Plugins\Configs\AbstractBuilde
     /**
      * Set SDK configuration form values.
      *
-     * @access  public
      * @param   array  $sdkConfiguration  user input taken from HTML form
-     * @return  PluginConfigurationBuilderSdk
+     * @return  \Plugins\SDK\ConfigurationBuilder
      */
     public function setSdkConfiguration(array $sdkConfiguration)
     {

@@ -12,13 +12,15 @@
  * @subpackage plugins
  */
 
+namespace Plugins\Calendar;
+
 /**
  * Recurrance rules
  *
  * @package    yana
  * @subpackage plugins
  */
-class RecurranceRule extends StdClass
+class RecurranceRule extends \Yana\Core\Object
 {
 
     /* @var  string  */ protected  $id               = null;
@@ -2295,6 +2297,7 @@ class RecurranceRule extends StdClass
      * @param       integer   $byMonth     event month
      * @param       integer   $byMonthDay  event month day
      * @return      array
+     * @todo  analyze and fix errors
      */
     protected function calculateYearlyDateOptions($begin, $end, $interval = 0, $byMonth = 0, $byMonthDay = 0)
     {

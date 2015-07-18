@@ -12,14 +12,15 @@
  * @subpackage plugins
  */
 
+namespace Plugins\Check;
+
 /**
  * collection of unit- and performance-tests
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_check extends StdClass implements \Yana\IsPlugin
+class CheckPlugin extends \Yana\Plugins\AbstractPlugin
 {
     /**
      * Default event handler

@@ -13,6 +13,8 @@
  * @subpackage plugins
  */
 
+namespace Plugins\MediaGallery;
+
 /**
  * <<plugin>> class "plugin_mediagallery"
  *
@@ -58,33 +60,8 @@
  * @package     yana
  * @subpackage  plugins
  */
-class plugin_mediagallery extends StdClass implements \Yana\IsPlugin
+class MediaGalleryPlugin extends \Yana\Plugins\AbstractPlugin
 {
-
-    /**
-     * Connection to data source (API)
-     *
-     * @access  private
-     * @static
-     * @var     DBStream  Database-API with Query-Builder (also works with text-files)
-     */
-    private static $database = null;
-
-    /**
-     * Returns the database connection
-     *
-     * @access  protected
-     * @static
-     * @return  DBStream
-     * @ignore
-     */
-    protected static function getDatabase()
-    {
-        if (!isset(self::$database)) {
-            self::$database = \Yana\Application::connect("mediagallery");
-        }
-        return self::$database;
-    }
 
     /**
      * Default event handler.
@@ -121,7 +98,7 @@ class plugin_mediagallery extends StdClass implements \Yana\IsPlugin
         );
         $builder->setWhere($where);
         $gallery = $builder->__invoke();
-        \Yana\Application::getInstance()->setVar('gallery', $gallery);
+        $this->_getApplication()->setVar('gallery', $gallery);
     }
 
 }

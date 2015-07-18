@@ -28,20 +28,20 @@
  * @subpackage plugins
  */
 
+namespace Plugins\Spellcheck;
+
 /**
  * TinyMCE spellchecker interface
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_spellcheck extends StdClass implements \Yana\IsPlugin
+class SpellcheckPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
      * Default event handler
      *
-     * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
@@ -63,7 +63,6 @@ class plugin_spellcheck extends StdClass implements \Yana\IsPlugin
      *
      * @group     default
      * @template  NULL
-     * @access    public
      * @return    array
      */
     public function spellcheck()
@@ -85,7 +84,7 @@ class plugin_spellcheck extends StdClass implements \Yana\IsPlugin
 
         // Configuration is invalid
         if (empty($config['general.engine'])) {
-            $language = \Yana\Application::getInstance()->getLanguage();
+            $language = $this->_getApplication()->getLanguage();
             $level = \Yana\Log\TypeEnumeration::ERROR;
             exit(json_encode(array(
                 "result" => null,
@@ -100,7 +99,7 @@ class plugin_spellcheck extends StdClass implements \Yana\IsPlugin
             )));
         }
         $spellchecker = new $config['general.engine']($config);
-        $result = call_user_func_array(array($spellchecker, $input['method']), $input['params']);
+        $result = call_user_func_array(array('\\' . $spellchecker, $input['method']), $input['params']);
 
         // Return JSON encoded string
         exit(json_encode(array(

@@ -21,17 +21,18 @@
  * @subpackage plugins
  */
 
+namespace Plugins\IpBlock;
+
 /**
  * IP-Blocker utility
  *
  * Security plugin that automatically blocks
  * banned IPs via configurable black- and whitelists.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_ipblock extends StdClass implements \Yana\IsPlugin
+class IpBlockPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
@@ -49,7 +50,7 @@ class plugin_ipblock extends StdClass implements \Yana\IsPlugin
      */
     public function catchAll($event, array $ARGS)
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         $plugins = $YANA->getPlugins();
         $whitelist = $plugins->{"ipblock:/dir/whitelist.block"};
         /** @var $whitelist \Yana\Files\Block */

@@ -1,79 +1,35 @@
 <?php{$plugin}
 
+namespace {$plugin->getNamespace()};
+
 /**
  * <<plugin>> Class "{$plugin->getClassName()}"
  *
  * @package     yana
  * @subpackage  plugins
  */
-class {$plugin->getClassName()} extends StdClass implements IsPlugin
+class {$plugin->getClassName()} extends \Yana\Plugins\AbstractPlugin
 {
 
 {if $schema}
     /**
      * Connection to data source (API)
      *
-     * @access  private
-     * @static
-     * @var     DBStream  Database-API with Query-Builder (also works with text-files)
+     * @var  \Yana\Db\IsConnection  Database-API with Query-Builder (also works with text-files)
      */
-    private static $database = null;
+    private $_database = null;
 
     /**
      * Return database connection.
      *
-     * @access  protected
-     * @static
-     * @return  DBStream
-     * @ignore
+     * @return  \Yana\Db\IsConnection
      */
-    protected static function getDatabase()
+    protected function _getDatabase()
     {
-        if (!isset(self::$database)) {
-            self::$database = \Yana\Application::connect("{$schema->getName()}");
+        if (!isset($this->_database)) {
+            $this->_database = $this->_connectToDatabase('{$schema->getName()}');
         }
-        return self::$database;
-    }
-
-    /**
-     * Download a file.
-     *
-     * This function will automatically determine the requested resource. It will
-     * check whether it is of type "image" or "file" and handle the request
-     * accordingly. This means it will be sending appropriate headers,
-     * retrieving and outputting the contents of the resource and terminating
-     * the program.
-     *
-     * @access  protected
-     * @static
-     */
-    protected static function downloadFile()
-    {
-        $source = \Yana\Db\Blob::getFileId();
-        if ($source === false) {
-            exit("Error: invalid resource.");
-        }
-        $dir = preg_quote(\Yana\Db\Blob::getDirectory(), '/');
-        // downloading a file
-        if (preg_match('/^' . $dir . 'file\.\w+\.gz$/', $source)) {
-
-            $dbBlob = new \Yana\Db\Blob($source);
-            $dbBlob->read();
-            header("Cache-Control: maxage=1"); // Bug in IE8 with HTTPS-downloads
-            header("Pragma: public");
-            header('Content-Disposition: attachment; filename=' . $dbBlob->getPath());
-            header('Content-Length: ' . $dbBlob->getFilesize());
-            header('Content-type: ' . $dbBlob->getMimeType());
-            print $dbBlob->getContent();
-
-        // downloading an image
-        } elseif (preg_match('/^' . $dir . '(image|thumb)\.\w+\.png$/', $source)) {
-            $image = new Image($source);
-            $image->outputToScreen();
-        } else {
-            print "Error: invalid resource.";
-        }
-        exit;
+        return $this->_database;
     }
 
 {foreach item="form" from=$schema->getForms()}
@@ -81,11 +37,9 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
     /**
      * Get form definition.
      *
-     * @access  protected
-     * @static
      * @return  FormFacade
      */
-    protected static function get{$form->getName()|capitalize}Form()
+    protected function _get{$form->getName()|capitalize}Form()
     {
         $builder = new \Yana\Forms\Builder('{$schema->getName()}');
         $builder->setId('{$form->getName()}');
@@ -101,7 +55,6 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * The default event handler catches all events, whatever they might be.
      * If you don't need it, you may deactive it by adding an @ignore to the annotations below.
      *
-     * @access  public
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
      * @return  bool
@@ -144,7 +97,6 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @title     {$form->getName()}
      * @template  templates/{$form->getName()}.html.tpl
      * @language  {$plugin->getId()}
-     * @access    public
      */
     public function {$plugin->getId()}{ucfirst($form->getName())}()
     {
@@ -160,7 +112,6 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @user      group: admin, level: 1
      * @template  templates/{$form->getName()}.html.tpl
      * @language  {$plugin->getId()}
-     * @access    public
      */
     public function {$form->getEvent('search')->getAction()}()
     {
@@ -179,13 +130,12 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @language   {$plugin->getId()}
      * @onsuccess  goto: {$plugin->getId()}{$form->getName()}
      * @onerror    goto: {$plugin->getId()}{$form->getName()}
-     * @access     public
      * @return     bool
      */
     public function {$form->getEvent('update')->getAction()}()
     {
-        $form = self::get{$form->getName()|capitalize}Form();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $form = $this->_get{$form->getName()|capitalize}Form();
+        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
         return $worker->update();
     }
 
@@ -203,14 +153,13 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @language   {$plugin->getId()}
      * @onsuccess  goto: {$plugin->getId()}{$form->getName()}
      * @onerror    goto: {$plugin->getId()}{$form->getName()}
-     * @access     public
      * @param      array  $selected_entries  array of entries to delete
      * @return     bool
      */
     public function {$form->getEvent('delete')->getAction()}(array $selected_entries)
     {
-        $form = self::get{$form->getName()|capitalize}Form();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $form = $this->_get{$form->getName()|capitalize}Form();
+        $worker = new \Yana\Forms\Worker($this->_getDatabase(), $form);
         return $worker->delete($selected_entries);
     }
 
@@ -228,13 +177,12 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @language   {$plugin->getId()}
      * @onsuccess  goto: {$plugin->getId()}{$form->getName()}
      * @onerror    goto: {$plugin->getId()}{$form->getName()}
-     * @access     public
      * @return     bool
      */
     public function {$form->getEvent('insert')->getAction()}()
     {
-        $form = self::get{$form->getName()|capitalize}Form();
-        $worker = new \Yana\Forms\Worker(self::getDatabase(), $form);
+        $form = $this->_get{$form->getName()|capitalize}Form();
+        $worker = new \Yana\Forms\Worker($this->_getDatabase(), $form);
         return $worker->create();
     }
 
@@ -249,13 +197,12 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @user       group: {$plugin->getId()}, role: moderator
      * @user       group: admin, level: 75
      * @template   NULL
-     * @access     public
      * @return     string
      */
     public function {$form->getEvent('export')->getAction()}()
     {
-        $form = self::get{$form->getName()|capitalize}Form();
-        $worker = new FormWorker(self::getDatabase(), $form);
+        $form = $this->_get{$form->getName()|capitalize}Form();
+        $worker = new \Yana\Forms\Worker($this->_getDatabase(), $form);
         return $worker->export();
     }
 
@@ -272,11 +219,10 @@ class {$plugin->getClassName()} extends StdClass implements IsPlugin
      * @type    read
      * @user    group: {$plugin->getId()}
      * @user    group: admin, level: 100
-     * @access  public
      */
     public function {$form->getEvent('download')->getAction()}()
     {
-        self::downloadFile();
+        $this->_downloadFile();
     }
 {/if}
 {/if}

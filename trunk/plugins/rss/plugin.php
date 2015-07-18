@@ -21,16 +21,17 @@
  * @subpackage plugins
  */
 
+namespace Plugins\Rss;
+
 /**
  * RSS to HTML factory plugin
  *
  * creates HTML from RSS files
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_rss extends StdClass implements \Yana\IsPlugin
+class RssPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**#@+
@@ -105,7 +106,7 @@ class plugin_rss extends StdClass implements \Yana\IsPlugin
     {
         /* this function expects no arguments */
 
-        global $YANA;
+        $YANA = $this->_getApplication();
         $parser = xml_parser_create();
         xml_set_element_handler($parser, array(&$this, "_startElement"), array(&$this, "_endElement"));
         xml_set_character_data_handler($parser, array(&$this, "_characterData"));

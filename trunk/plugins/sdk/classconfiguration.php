@@ -25,27 +25,20 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-/**
- * @ignore
- */
-require_once 'pluginconfigurationmethodsdk.php';
+namespace Plugins\SDK;
 
 /**
  * Plugin configurator for creating manual configurations
  *
- * @access     public
- * @package    yana
- * @subpackage plugins
+ * @package     yana
+ * @subpackage  plugins
  */
-class PluginConfigurationClassSdk extends \Yana\Plugins\Configs\ClassConfiguration
+class ClassConfiguration extends \Yana\Plugins\Configs\ClassConfiguration
 {
 
     /**
-     * convert to string
+     * Outputs the method doc-header as a PHP-Doc comment with annotations.
      *
-     * Outputs the results as a PHP-Doc comment
-     *
-     * @access  public
      * @return  string
      */
     public function __toString()
