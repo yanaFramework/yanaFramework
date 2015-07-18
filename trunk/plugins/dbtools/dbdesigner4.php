@@ -25,14 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-/**
- * @ignore
- */
-require_once 'isdbimport.php';
-/**
- * @ignore
- */
-require_once 'dbinfotable.php';
+namespace Plugins\DbTools;
 
 /**
  * DBDesigner 4 import class
@@ -44,7 +37,7 @@ require_once 'dbinfotable.php';
  *
  * Example:
  * <code>
- * $schema = new DbDesigner4('schema.xml');
+ * $schema = new \Plugins\DbTools\DbDesigner4('schema.xml');
  * $schema->read();
  * $structure = $schema->getStructure();
  * $structure->create();
@@ -55,11 +48,10 @@ require_once 'dbinfotable.php';
  * you can open and query it easily, by using the
  * functions provided by DbStructure.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class DbDesigner4 extends \Yana\Files\File implements \IsDbImport
+class DbDesigner4 extends \Yana\Files\File implements \Plugins\DbTools\IsImport
 {
     /**#@+
      * @ignore
@@ -68,8 +60,8 @@ class DbDesigner4 extends \Yana\Files\File implements \IsDbImport
 
     /** @var string       */ private $name = "";
     /** @var array        */ private $info = array();
-    /** @var DbInfoTable  */ private $currentTable = array('columns' => array());
-    /** @var DbInfoColumn */ private $currentColumn = array();
+    /** @var Plugins\DbTools\InfoTable  */ private $currentTable = array('columns' => array());
+    /** @var Plugins\DbTools\InfoColumn */ private $currentColumn = array();
     /** @var array        */ private $currentIndex = array();
     /** @var array        */ private $dataTypes = "";
     /** @var array        */ private $columns = array();
@@ -136,10 +128,10 @@ class DbDesigner4 extends \Yana\Files\File implements \IsDbImport
     {
         assert('is_string($dbDesignerConfig); // Wrong argument type $dbDesignerConfig. String expected.');
         if (is_file($dbDesignerConfig)) {
-            $DbDesigner4 = new self($dbDesignerConfig);
+            $DbDesigner4 = new \Plugins\DbTools\DbDesigner4($dbDesignerConfig);
             $DbDesigner4->read();
         } else {
-            $DbDesigner4 = new self('');
+            $DbDesigner4 = new \Plugins\DbTools\DbDesigner4('');
             assert('empty($DbDesigner4->content);');
             $DbDesigner4->content = explode("\n", $dbDesignerConfig);
             assert('is_array($DbDesigner4->content);');
@@ -197,7 +189,7 @@ class DbDesigner4 extends \Yana\Files\File implements \IsDbImport
             break;
 
             case 'table':
-                $this->currentTable = new DbInfoTable($attrs['TABLENAME']);
+                $this->currentTable = new \Plugins\DbTools\InfoTable($attrs['TABLENAME']);
                 $this->currentTable->setComment($attrs['TABLENAME']);
                 $this->tableNames[$attrs['ID']] = $attrs['TABLENAME'];
                 /**
@@ -229,7 +221,7 @@ class DbDesigner4 extends \Yana\Files\File implements \IsDbImport
             break;
 
             case 'column':
-                $this->currentColumn = new \DbInfoColumn($attrs['COLNAME']);
+                $this->currentColumn = new \Plugins\DbTools\InfoColumn($attrs['COLNAME']);
                 $this->currentColumn->setTable($this->currentTable->getName());
                 if (isset($this->dataTypes[$attrs['IDDATATYPE']])) {
 
@@ -404,8 +396,8 @@ class DbDesigner4 extends \Yana\Files\File implements \IsDbImport
             case 'table':
                 foreach ($this->columns as $column)
                 {
-                    assert($column instanceof \DbInfoColumn);
-                    /* @var $column \DbInfoColumn */
+                    assert($column instanceof \Plugins\DbTools\InfoColumn);
+                    /* @var $column \Plugins\DbTools\InfoColumn */
 
                     if (!empty($column->name)) {
                         $this->currentTable->addColumn($column);
