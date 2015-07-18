@@ -351,8 +351,11 @@ $builder->addClassMapper(\Yana\Core\AutoLoadBuilder::GENERIC_MAPPER)
     ->setNameSpace('SQL_Parser')
     ->setBaseDirectory(__DIR__ . '/libs/');
 $builder->addClassMapper(\Yana\Core\AutoLoadBuilder::LOWERCASED_MAPPER)
-    ->setNameSpace('Yana\\')
+    ->setNameSpace('Yana')
     ->setBaseDirectory(__DIR__ . '/libs/');
+$builder->addClassMapper(\Yana\Core\AutoLoadBuilder::LOWERCASED_MAPPER)
+    ->setNameSpace('Plugins')
+    ->setBaseDirectory(__DIR__ . '/');
 $builder->registerLoader();
 unset($builder);
 
