@@ -97,7 +97,8 @@ class SkinTest extends \PHPUnit_Framework_TestCase
         $fooData = $this->_object->getTemplateData('foo');
 
         $file =  $this->_testDir->getPath() . 'test.txt';
-        $this->assertEquals(array('test' => $file), $fooData->getStyles(), "read stylesheet failed");
+        $file2 = $this->_defaultDir->getPath() .  'default_1.txt';
+        $this->assertEquals(array('test' => $file, $file2), $fooData->getStyles(), "read stylesheet failed");
 
         // add stylesheet
         $fooData->setStyles(array('foo.css'));
@@ -113,7 +114,7 @@ class SkinTest extends \PHPUnit_Framework_TestCase
     {
         $fooData = $this->_object->getTemplateData('foo');
 
-        $file = str_replace($this->_baseDir . '/', '', $this->_defaultDir->getPath() . 'default.txt');
+        $file = $this->_defaultDir->getPath() . 'default.txt';
         $this->assertEquals(array($file, $file), $fooData->getScripts(), "read script failed");
     }
 

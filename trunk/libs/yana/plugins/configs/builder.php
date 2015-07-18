@@ -62,6 +62,7 @@ class Builder extends \Yana\Plugins\Configs\AbstractBuilder
     protected function buildClass()
     {
         if ($this->_class) {
+            $this->object->setNamespace($this->_class->getNamespaceName());
             $this->object->setClassName($this->_class->getClassName());
             $parser = $this->getAnnotationParser();
             $parser->setText($this->_class->getPageComment());

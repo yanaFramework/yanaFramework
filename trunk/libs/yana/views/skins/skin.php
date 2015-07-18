@@ -202,7 +202,7 @@ class Skin extends \Yana\Core\Object implements \Yana\Views\Skins\IsSkin
         assert('!isset($templates); // Cannot redeclare var $templates');
         foreach ($this->_getConfigurations() as $config)
         {
-            $templates = $config->getTemplates();
+            $templates = $config->getTemplates();;
             if (isset($templates[$templateId])) {
                 assert($templates[$templateId] instanceof \Yana\Views\MetaData\TemplateMetaData);
                 $templatesFound[] = $templates[$templateId];

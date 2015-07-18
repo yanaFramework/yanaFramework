@@ -150,10 +150,13 @@ class Builder extends \Yana\Plugins\Menus\AbstractBuilder implements \Yana\Log\I
         }
 
         // If the instance is not yet in cache, put it there for later use
+        if (!isset($menus[$locale])) {
+
+            $menus[$locale] = $menu;
+        }
         if (!isset($cache[$locale])) {
 
             $cache[$locale] = serialize($menu);
-
         }
 
         return $menu;

@@ -42,7 +42,7 @@ interface IsSkinMetaData extends \Yana\Core\MetaData\IsPackageMetaData
     /**
      * Get list of template data objects.
      *
-     * @return  \Yana\Views\MetaData\TemplateMetaData[] 
+     * @return  \Yana\Views\MetaData\IsTemplateMetaData[] 
      */
     public function getTemplates();
 

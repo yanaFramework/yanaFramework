@@ -40,7 +40,7 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    dbinfocolumn
+     * @var    Plugins\DbTools\InfoColumn
      * @access protected
      */
     protected $dbinfocolumn;
@@ -66,7 +66,7 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->dbinfocolumn = new DbInfoColumn('columnname');
+        $this->dbinfocolumn = new Plugins\DbTools\InfoColumn('columnname');
     }
 
     /**

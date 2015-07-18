@@ -48,14 +48,6 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
     private $_dependencyContainer = null;
 
     /**
-     * Protected constructor so that it can't be called directly, thus leaving the dependency container uninitialized.
-     */
-    protected function __construct()
-    {
-        // intentionally left blank
-    }
-
-    /**
      * <<factory>> Load plugin.
      *
      * Creates an instance of the desired plugin and creates and injects a dependency injection container,
@@ -73,7 +65,7 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
 
         // load base class, if it exists
         assert('!isset($classFile); // Cannot redeclare var $classFile');
-        $classFile = $fromDirectory . $name . "/" . $name . ".plugin.php";
+        $classFile = \Yana\Plugins\PluginNameMapper::toClassFilenameWithDirectory($name, $fromDirectory);
         if (is_file($classFile)) {
             include_once "$classFile";
         }
@@ -81,7 +73,7 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
 
         // instantiate class, if it exists
         assert('!isset($className); // Cannot redeclare var $className');
-        $className = \Yana\Plugins\Manager::PREFIX . $name;
+        $className = \Yana\Plugins\PluginNameMapper::toClassNameWithNamespace($name);
         if (!class_exists($className)) {
             throw new \Yana\Core\Exceptions\NotFoundException("Plugin base-class not found: " . $className);
         }
@@ -119,6 +111,46 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
     protected function _connectToDatabase($schema)
     {
         return $this->_dependencyContainer->getConnectionFactory()->createConnection($schema);
+    }
+
+    /**
+     * Download a file.
+     *
+     * This function will automatically determine the requested resource. It will
+     * check whether it is of type "image" or "file" and handle the request
+     * accordingly. This means it will be sending appropriate headers,
+     * retrieving and outputting the contents of the resource and terminating
+     * the program.
+     */
+    protected function _downloadFile()
+    {
+        $source = \Yana\Db\Blob::getFileId();
+        if ($source === false) {
+            exit("Error: invalid resource.");
+        }
+        $directory = preg_quote(\Yana\Db\Blob::getDirectory(), '/');
+        // downloading a file
+        if (preg_match('/^' . $directory . 'file\.\w+\.gz$/', $source)) {
+
+            $dbBlob = new \Yana\Db\Blob($source);
+            $dbBlob->read();
+            header("Cache-Control: maxage=1"); // Workaround for a Bug in IE8 with HTTPS-downloads
+            header("Pragma: public");
+            header('Content-Disposition: attachment; filename=' . $dbBlob->getPath());
+            header('Content-Length: ' . $dbBlob->getFilesize());
+            header('Content-type: ' . $dbBlob->getMimeType());
+            print $dbBlob->getContent();
+
+        // downloading an image
+        } elseif (preg_match('/^' . $directory . '(image|thumb)\.\w+\.png$/', $source)) {
+
+            $image = new Image($source);
+            $image->outputToScreen();
+
+        } else {
+            print "Error: invalid resource.";
+        }
+        exit;
     }
 
 }

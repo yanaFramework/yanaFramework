@@ -49,7 +49,7 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
     /**
      * @var  \Yana\Plugins\Menus\MenuCollection
      */
-    private $_menus = null;
+    private static $_menus = null;
 
     /**
      * Returns the menu collection.
@@ -58,10 +58,10 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
      */
     protected function _getMenus()
     {
-        if (!isset($this->_menus)) {
-            $this->_menus = new \Yana\Plugins\Menus\MenuCollection();
+        if (!isset(self::$_menus)) {
+            self::$_menus = new \Yana\Plugins\Menus\MenuCollection();
         }
-        return $this->_menus;
+        return self::$_menus;
     }
 
     /**
