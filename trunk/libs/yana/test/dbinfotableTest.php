@@ -39,7 +39,7 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    dbinfotable
+     * @var    Plugins\DbTools\InfoTable
      * @access protected
      */
     protected $dbinfotable;
@@ -66,7 +66,7 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
         if (!class_exists("DbInfoTable")) {
             $this->markTestSkipped();
         } else {
-            $this->dbinfotable = new DbInfoTable('foo');
+            $this->dbinfotable = new \Plugins\DbTools\InfoTable('foo');
         }
     }
 
@@ -275,14 +275,14 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
      public function test1()
      {
         // create column1
-        $column1 = new DbInfoColumn('id');
+        $column1 = new Plugins\DbTools\InfoColumn('id');
         $column1->setTable('bar');
         $column1->setLength(10);
         // add column
         $add = $this->dbinfotable->addColumn($column1);
         $this->assertTrue($add, 'assert failed, the column1 is not added');
         // create column2
-        $column2 = new DbInfoColumn('name');
+        $column2 = new Plugins\DbTools\InfoColumn('name');
         $column2->setTable('bar');
         $column2->setLength(20);
         // add column
@@ -329,7 +329,7 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(in_array($array[1], $getInit), 'assert failed, the expected value is not in array');
         $this->assertTrue(in_array($array[2], $getInit), 'assert failed, the expected value is not in array');
         // create column3
-        $column3 = new DbInfoColumn('pid');
+        $column3 = new Plugins\DbTools\InfoColumn('pid');
         $column3->setTable('fooo');
         $column3->setLength(10);
         $column3->setPrimaryKey(true);
@@ -337,7 +337,7 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
         $add = $this->dbinfotable->addColumn($column3);
         $this->assertTrue($add, 'assert failed, the column3 is not added');
         // create column4
-        $column4 = new DbInfoColumn('tt');
+        $column4 = new Plugins\DbTools\InfoColumn('tt');
         $column4->setTable('barr');
         $column4->setLength(10);
         $column4->setForeignKey(true);

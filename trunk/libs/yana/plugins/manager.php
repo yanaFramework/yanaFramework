@@ -143,16 +143,6 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      */
     private $_dependencies = null;
 
-    /**#@+
-     * class constants
-     *
-     * @ignore
-     */
-
-    const PREFIX = 'plugin_';
-
-    /** #@- */
-
     /**
      * Get dependency injection container.
      *
@@ -474,12 +464,13 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
      * @param   int     $state        ActivityEnumeration::INACTIVE = off, ActivityEnumeration::ACTIVE = on
      * @throws  \Yana\Core\Exceptions\NotFoundException     when no plugin with the given name is found
      * @throws  \Yana\Core\Exceptions\InvalidValueException when trying to change a default plugin
+     * @return  \Yana\Plugins\Manager
      */
     public function setActive($pluginName, $state = \Yana\Plugins\ActivityEnumeration::ACTIVE)
     {
         $plugins = $this->_getRepository()->getPlugins();
-        if ($plugins->offsetExists($pluginName)) {
-            $plugin = $plugins->offsetGet($pluginName);
+        if (isset($plugins[$pluginName])) {
+            $plugin = $plugins[$pluginName];
             if ($plugin->getActive() === \Yana\Plugins\ActivityEnumeration::DEFAULT_ACTIVE) {
                 $message = "Changing activity state of plugin '$pluginName' with setting: 'always active' is not allowed.";
                 throw new \Yana\Core\Exceptions\InvalidValueException($message);
@@ -488,6 +479,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
         } else {
             throw new \Yana\Core\Exceptions\NotFoundException("No such plugin: '$pluginName'.");
         }
+        return $this;
     }
 
     /**
@@ -619,7 +611,8 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
         if (isset($pluginConfig[$pluginName])) {
             return $pluginConfig[$pluginName];
         } else {
-            return new \Yana\Plugins\Configs\ClassConfiguration(self::PREFIX . $pluginName);
+            $className = \Yana\Plugins\PluginNameMapper::toClassNameWithNamespace($pluginName);
+            return new \Yana\Plugins\Configs\ClassConfiguration($className);
         }
     }
 
@@ -775,9 +768,11 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
         assert('is_string($name); // Invalid argument $name: string expected');
         if (!isset($this->_plugins[$name])) {
             $pluginDir = $this->getPluginDir();
+
             // load virtual drive, if it exists
             assert('!isset($driveFile); // Cannot redeclare var $driveFile');
-            $driveFile = "$pluginDir$name/$name.drive.xml";
+            $driveFile = \Yana\Plugins\PluginNameMapper::toVDriveFilenameWithDirectory($name, $pluginDir);
+
             if (is_file($driveFile)) {
                 $this->_drive[$name] = new \Yana\VDrive\Registry($driveFile, $this->getPluginDir() . $name . "/");
                 $this->_drive[$name]->read();

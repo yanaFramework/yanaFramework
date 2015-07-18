@@ -258,7 +258,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Example: "form.subform".
      *
      * @param   string  $id  valid form name
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder
      */
     public function setId($id)
     {
@@ -280,7 +280,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Set table to choose from database.
      *
      * @param   string  $table  valid table name
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder 
      */
     public function setTable($table)
     {
@@ -302,7 +302,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Set list of columns, that should be shown in the form.
      *
      * @param   array  $show  white-listed column names.
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder 
      */
     public function setShow(array $show)
     {
@@ -324,7 +324,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Set list of columns, that should NOT be shown in the form.
      *
      * @param   array  $hide  black-listed column names.
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder 
      */
     public function setHide(array $hide)
     {
@@ -372,7 +372,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * </code>
      *
      * @param   array  $where  valid where clause
-     * @return  SmartFormUtility
+     * @return  \Yana\Forms\Builder
      * @see     \Yana\Db\Queries\SelectExist::setWhere()
      */
     public function setWhere(array $where)
@@ -395,7 +395,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Set name of column to sort entries by.
      *
      * @param   string  $sort  valid column name
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder 
      */
     public function setSort($sort)
     {
@@ -417,7 +417,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Set sorting order for entries.
      *
      * @param   bool  $desc  true = descending, false = ascending
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder 
      */
     public function setDescending($desc)
     {
@@ -439,7 +439,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Set number of 1st page to show.
      *
      * @param   int  $page  positive number (default = 0)
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder 
      */
     public function setPage($page)
     {
@@ -461,7 +461,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Set number of entries to view per page.
      *
      * @param   int  $entries  positive number (default = 20)
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder 
      */
     public function setEntries($entries)
     {
@@ -485,7 +485,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Name of action (plugin-function) to execute on the event
      *
      * @param   string  $oninsert  form action name
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder 
      */
     public function setOninsert($oninsert)
     {
@@ -509,7 +509,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Name of action (plugin-function) to execute on the event
      *
      * @param   string  $onupdate  form action name
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder 
      */
     public function setOnupdate($onupdate)
     {
@@ -533,7 +533,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Name of action (plugin-function) to execute on the event
      *
      * @param   string  $ondownload  form action name
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder 
      */
     public function setOndelete($ondelete)
     {
@@ -557,7 +557,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Name of action (plugin-function) to execute on the event
      *
      * @param   string  $ondownload  form action name
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder 
      */
     public function setOnsearch($onsearch)
     {
@@ -581,7 +581,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Name of action (plugin-function) to execute on the event
      *
      * @param   string  $ondownload  form action name
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder 
      */
     public function setOndownload($ondownload)
     {
@@ -605,7 +605,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Name of action (plugin-function) to execute on the event
      *
      * @param   string  $onexport  form action name
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder 
      */
     public function setOnexport($onexport)
     {
@@ -629,7 +629,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Where multiple layouts are available to present the result, this allows to choose the prefered one.
      *
      * @param   int  $layout  positive number (default = 0)
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder 
      */
     public function setLayout($layout)
     {
@@ -641,7 +641,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      * Set bsae \Yana\Db\Ddl\Form.
      *
      * @param   \Yana\Db\Ddl\Form $form  base form definition
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder 
      */
     protected function setForm(\Yana\Db\Ddl\Form $form, \Yana\Forms\Facade $parentForm = null)
     {
@@ -956,7 +956,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      *
      * @param   mixed  $showColumns  whitelist
      * @param   mixed  $hideColumns  blacklist
-     * @return  SmartFormUtility 
+     * @return  \Yana\Forms\Builder 
      */
     private function _selectColumns($showColumns, $hideColumns)
     {

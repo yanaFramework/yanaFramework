@@ -9,6 +9,7 @@
             <script>default/default.txt</script>
             <script>default/default.txt</script>
             <style id="test">default/default.txt</style>
+            <style>default/default_1.txt</style>
             <language>default</language>
         </template>
     </body>

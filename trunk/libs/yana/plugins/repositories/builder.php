@@ -71,12 +71,13 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
         if (is_dir($directory)) {
             foreach (scandir($directory) as $plugin)
             {
-                if ($plugin[0] !== '.' && is_dir($directory . '/' . $plugin)) {
-                    $classFile = $directory . $plugin . "/" . $plugin . ".plugin.php";
-                    if (is_file($classFile)) {
-                        $this->_plugins[$plugin] = \Yana\Plugins\Manager::PREFIX . $plugin;
-                        include_once "$classFile";
-                    }
+                if ($plugin[0] === '.' || !is_dir($directory . '/' . $plugin)) {
+                    continue;
+                }
+                $classFile = \Yana\Plugins\PluginNameMapper::toClassFilenameWithDirectory($plugin, $directory);
+                if (is_file($classFile)) {
+                    $this->_plugins[$plugin] = \Yana\Plugins\PluginNameMapper::toClassNameWithNamespace($plugin);
+                    include_once "$classFile";
                 }
             }
         }

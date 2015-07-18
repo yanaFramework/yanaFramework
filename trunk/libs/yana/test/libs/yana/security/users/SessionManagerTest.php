@@ -104,7 +104,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
         \Yana\Db\Ddl\DDL::setDirectory(CWD . '/../../../config/db/');
         \Yana\Db\FileDb\Driver::setBaseDirectory(CWD . '/resources/db/');
         // path to plugins configuration file
-        \Yana\Plugins\Manager::setPath(CWD . '/resources/db/user/plugins.cfg', CWD . '/../../../plugins/');
+        \Yana\Plugins\Manager::setPath(CWD . '/resources/plugins.cfg', CWD . '/../../../plugins/');
     }
 
     /**

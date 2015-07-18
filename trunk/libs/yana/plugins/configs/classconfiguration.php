@@ -28,7 +28,7 @@
 namespace Yana\Plugins\Configs;
 
 /**
- * Plugin information
+ * Plugin information.
  *
  * This class represents a plugin's meta information.
  * This is it's interface, name and description plus and more.
@@ -48,6 +48,13 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
      * @var  string
      */
     private $_className = "";
+
+    /**
+     * namespace name
+     *
+     * @var  string
+     */
+    private $_namespace = "\\";
 
     /**
      * Path to plugin file.
@@ -210,6 +217,19 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
     public function getId()
     {
         return $this->_id;
+    }
+
+    /**
+     * Set class namespace name.
+     *
+     * @param   string  $namespace  as declared for this class
+     * @return  \Yana\Plugins\Configs\ClassConfiguration
+     */
+    public function setNamespace($namespace)
+    {
+        assert('is_string($namespace); // Invalid argument $namespace: string expected');
+        $this->_className = $namespace;
+        return $this;
     }
 
     /**
@@ -765,6 +785,16 @@ class ClassConfiguration extends \Yana\Core\Object implements \Yana\Core\MetaDat
     public function getIcon()
     {
         return $this->getDirectory() . '/icon.png';
+    }
+
+    /**
+     * Get namespace name.
+     *
+     * @return  string
+     */
+    public function getNamespace()
+    {
+        return $this->_namespace;
     }
 
     /**

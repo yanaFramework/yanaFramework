@@ -87,6 +87,9 @@ abstract class AbstractDependencyContainer extends \Yana\Core\Object
      */
     protected function _getApplication()
     {
+        if (!isset($this->_application)) {
+            $this->_application = \Yana\Application::getInstance();
+        }
         return $this->_application;
     }
 
@@ -97,6 +100,9 @@ abstract class AbstractDependencyContainer extends \Yana\Core\Object
      */
     protected function _getConnectionFactory()
     {
+        if (!isset($this->_connectionFactory)) {
+            $this->_connectionFactory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory());
+        }
         return $this->_connectionFactory;
     }
 

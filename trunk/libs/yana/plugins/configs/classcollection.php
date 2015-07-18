@@ -87,7 +87,7 @@ class ClassCollection extends \Yana\Core\AbstractCollection
     {
         if ($value instanceof \Yana\Plugins\Configs\ClassConfiguration) {
             if (!is_string($offset)) {
-                $offset = preg_replace('/^Plugin_/i', '', $value->getClassName());
+                $offset = \Yana\Plugins\PluginNameMapper::fromClassname($value->getClassName());
             }
             return $this->_offsetSet(mb_strtolower($offset), $value);
         } else {
