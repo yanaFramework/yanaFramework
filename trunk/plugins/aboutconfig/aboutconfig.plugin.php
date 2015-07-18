@@ -22,17 +22,18 @@
  * @subpackage plugins
  */
 
+namespace Plugins\AboutConfig;
+
 /**
  * Configration profiles
  *
  * This plugin provides the basic functions to create
  * and modify custom profile settings.
  *
- * @access     public
  * @package    yana
  * @subpackage plugins
  */
-class plugin_about_config extends StdClass implements \Yana\IsPlugin
+class AboutConfigPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
@@ -71,7 +72,7 @@ class plugin_about_config extends StdClass implements \Yana\IsPlugin
     {
         /* this function expects no arguments */
 
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         /* set a description text */
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_ADMIN"));
@@ -103,7 +104,7 @@ class plugin_about_config extends StdClass implements \Yana\IsPlugin
     {
         /* this function expects no arguments */
 
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         /* set a description text */
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_ADMIN"));
@@ -138,7 +139,7 @@ class plugin_about_config extends StdClass implements \Yana\IsPlugin
     {
         /* this function expects no arguments */
 
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         /* set a description text */
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_MOD"));
@@ -173,7 +174,7 @@ class plugin_about_config extends StdClass implements \Yana\IsPlugin
     {
         /* this function expects no arguments */
 
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         /* set a description text */
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_MOD"));
@@ -204,7 +205,7 @@ class plugin_about_config extends StdClass implements \Yana\IsPlugin
      */
     public function set_config_default (array $ARGS)
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
 
         /* first reinitialize the config file, so we can be sure it contains the most recent data */
         /* @var $configFile SML */
@@ -213,7 +214,7 @@ class plugin_about_config extends StdClass implements \Yana\IsPlugin
         $configFile->read();
 
         /* then overwrite previous settings with new settings provided by the user form */
-        $array = self::_genProfile($ARGS);
+        $array = $this->_genProfile($ARGS);
         assert('is_array($array); /* unexpected result: $array */');
         if (!is_array($array)) {
             return false;
@@ -251,10 +252,10 @@ class plugin_about_config extends StdClass implements \Yana\IsPlugin
      */
     public function set_config_profile (array $ARGS)
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         $configFile = $YANA->getResource('system:/config/profiledir/config.sml');
         $configFile->read();
-        $profile = self::_genProfile($ARGS);
+        $profile = $this->_genProfile($ARGS);
         $configFile->setVar('PROFILE', $profile);
         $YANA->clearCache();
 
@@ -286,15 +287,9 @@ class plugin_about_config extends StdClass implements \Yana\IsPlugin
     }
 
     /**
-     * _genAdminFile
-     *
-     * array _genAdminFile(array $input)
-     *
-     * @access  private
-     * @param   array   $input
-     * @ignore
+     * @param  array  $input
      */
-    private static function _genProfile(array $input)
+    private function _genProfile(array $input)
     {
         $input = array_change_key_case($input, CASE_UPPER);
 
@@ -304,7 +299,7 @@ class plugin_about_config extends StdClass implements \Yana\IsPlugin
         unset($input['YANA_FORM_ID']);
         unset($input[mb_strtoupper(session_name())]);
 
-        $profile = $GLOBALS['YANA']->getVar('PROFILE');
+        $profile = $this->_getApplication()->getVar('PROFILE');
         foreach ($input as $key => $element)
         {
             if (preg_match("/\//", $key)) {
