@@ -30,38 +30,47 @@
 namespace Yana\Security\Users;
 
 /**
- * User manager.
- *
- * This persistent class provides access to user data and function to set logins and passwords.
+ * <<facade>> Simplifies dealing with user information.
  *
  * @package     yana
  * @subpackage  security
- *
- * @ignore
  */
-class UserManager extends \Yana\Core\Object
+class Facade extends \Yana\Core\Object
 {
 
     /**
-     * Name of currently selected user
-     *
      * @var  \Yana\Security\Users\IsUser
      */
-    private $_selectedUser = null;
+    private $_currentUser = null;
 
     /**
-     * database connection
+     * get instance of this class
      *
-     * @var  \Yana\Security\Users\UserAdapter
+     * Looks up an returns the instance by the given name.
+     * If there is none, it creates a new one.
+     *
+     * If $skinName is NULL the function will return the currently
+     * selected main skin instead.
+     *
+     * @param   string  $userName  name of instance to get
+     * @return  \Yana\User
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if the requested user does not exist
      */
-    private $_userAdapter = null;
-
-    /**
-     * @return  \Yana\Security\Users\IsUser
-     */
-    protected function _getSelectedUser()
+    public static function &getInstance($userName = null)
     {
-        return $this->_selectedUser;
+        if (empty($userName)) {
+            $userName = self::getUserName();
+            if (empty($userName)) {
+                throw new \Yana\Core\Exceptions\NotFoundException();
+            }
+        } else {
+            $userName = mb_strtoupper($userName);
+        }
+
+        if (!isset(self::$instances[$userName])) {
+            self::$instances[$userName] = new self($userName);
+        }
+        return self::$instances[$userName];
     }
 
     /**
@@ -73,7 +82,7 @@ class UserManager extends \Yana\Core\Object
      * @param   string  $userName   user name
      * @return  bool
      */
-    public function isUser($userName)
+    public static function isUser($userName)
     {
         assert('is_string($userName); // Wrong type for argument 1. String expected');
 
@@ -89,7 +98,7 @@ class UserManager extends \Yana\Core\Object
      *
      * @return  string
      */
-    public function getUserName()
+    public static function getUserName()
     {
         if (!isset(self::$selectedUser)) {
             if (isset($_SESSION['user_name'])) {
@@ -106,7 +115,7 @@ class UserManager extends \Yana\Core\Object
      *
      * @return  array
      */
-    public function getUserNames()
+    public static function getUserNames()
     {
         if (!isset(self::$_userNames)) {
             $db = self::getDatasource();
@@ -133,6 +142,45 @@ class UserManager extends \Yana\Core\Object
         if (empty($userInfo)) {
             throw new \Yana\Core\Exceptions\NotFoundException("User '$userName' not found.");
         }
+
+        $this->_name = "$userName";
+        if (isset($userInfo['USER_LANGUAGE'])) {
+            $this->_language = $userInfo['USER_LANGUAGE'];
+        }
+        $this->_password = $userInfo['USER_PWD'];
+        $this->_mail = $userInfo['USER_MAIL'];
+        $this->_isActive = !empty($userInfo['USER_ACTIVE']);
+        if (isset($userInfo['USER_FAILURE_COUNT'])) {
+            $this->_failureCount = $userInfo['USER_FAILURE_COUNT'];
+        }
+        if (isset($userInfo['USER_FAILURE_TIME'])) {
+            $this->_failureTime = $userInfo['USER_FAILURE_TIME'];
+        }
+        if (isset($userInfo['USER_LOGIN_COUNT'])) {
+            $this->_loginCount = $userInfo['USER_LOGIN_COUNT'];
+        }
+        if (isset($userInfo['USER_LOGIN_LAST'])) {
+            $this->_loginTime = $userInfo['USER_LOGIN_LAST'];
+        }
+        $this->_isExpert = !empty($userInfo['USER_IS_EXPERT']);
+        if (isset($userInfo['USER_RECOVER_ID'])) {
+            $this->_passwordRecoveryId = $userInfo['USER_RECOVER_ID'];
+        }
+        if (isset($userInfo['USER_RECOVER_UTC'])) {
+            $this->_passwordRecoveryTime = $userInfo['USER_RECOVER_UTC'];
+        }
+        if (isset($userInfo['USER_PWD_TIME'])) {
+            $this->_passwordTime = $userInfo['USER_PWD_TIME'];
+        }
+        if (isset($userInfo['USER_PWD_LIST'])) {
+            $this->_passwords = (array) $userInfo['USER_PWD_LIST'];
+        }
+        if (isset($userInfo['USER_SESSION'])) {
+            $this->_session = $userInfo['USER_SESSION'];
+        }
+        if (isset($userInfo['USER_INSERTED'])) {
+            $this->_timeCreated = $userInfo['USER_INSERTED'];
+        }
     }
 
     /**
@@ -141,7 +189,7 @@ class UserManager extends \Yana\Core\Object
      * @param   \Yana\Db\IsConnection  $database     datasource
      * @ignore
      */
-    public function setDatasource(\Yana\Db\IsConnection $database)
+    public static function setDatasource(\Yana\Db\IsConnection $database)
     {
         self::$_database = $database;
     }
@@ -152,7 +200,7 @@ class UserManager extends \Yana\Core\Object
      * @return  \Yana\Db\IsConnection
      * @ignore
      */
-    public function getDatasource()
+    public static function getDatasource()
     {
         if (!isset(self::$_database)) {
             self::$_database = \Yana\Application::connect('user');
@@ -290,6 +338,18 @@ class UserManager extends \Yana\Core\Object
     }
 
     /**
+     * get user name
+     *
+     * Returns the name of the user as a string.
+     *
+     * @return  string
+     */
+    public function getName()
+    {
+        return $this->_name;
+    }
+
+    /**
      * get password
      *
      * @return  string
@@ -391,7 +451,6 @@ class UserManager extends \Yana\Core\Object
                 $_SESSION['language'] = $this->_language;
 
             } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
-                unset($e);
                 // ignore
             }
             unset($languageManager);
@@ -435,6 +494,61 @@ class UserManager extends \Yana\Core\Object
     }
 
     /**
+     * update language
+     *
+     * Sets prefered language of the user, that is used to provide translates GUI elements.
+     *
+     * @param   string  $language  language or locale string
+     */
+    public function setLanguage($language)
+    {
+        assert('is_string($language); // Wrong type for argument 1. String expected');
+
+        $this->_language = "$language";
+        $this->updates['USER_LANGUAGE'] = $this->_language;
+    }
+
+    /**
+     * get prefered language
+     *
+     * @return  string
+     */
+    public function getLanguage()
+    {
+        return $this->_language;
+    }
+
+    /**
+     * get failure count
+     *
+     * Returns the number of times the user entered an invalid password recently.
+     * Note: This number is reset, when the user inserts a valid password.
+     *
+     * The default is 0.
+     *
+     * @return  int
+     */
+    public function getFailureCount()
+    {
+        return (int) $this->_failureCount;
+    }
+
+    /**
+     * get failure time
+     *
+     * Returns the timestamp when user last entered an invalid password.
+     * Note: This number is reset, when the user inserts a valid password.
+     *
+     * The default is 0.
+     *
+     * @return  int
+     */
+    public function getFailureTime()
+    {
+        return (int) $this->_failureTime;
+    }
+
+    /**
      * reset failure count
      *
      * Resets the number of times the user entered an invalid password back to 0.
@@ -456,6 +570,34 @@ class UserManager extends \Yana\Core\Object
     }
 
     /**
+     * get login count
+     *
+     * Returns the number of times the user sucessfully logged-in.
+     *
+     * The default is 0.
+     * @return  int
+     */
+    public function getLoginCount()
+    {
+        return (int) $this->_loginCount;
+    }
+
+    /**
+     * Get the timestamp when user last sucessfully logged-in.
+     *
+     * Note: This number is not reset on log-out.
+     * Thus you cannot use this settings to check if a user is currently logged-in.
+     *
+     * The default is 0.
+     *
+     * @return  int
+     */
+    public function getLoginTime()
+    {
+        return (int) $this->_loginTime;
+    }
+
+    /**
      * update mail
      *
      * Sets the user's mail address. This information is required to send the user a password.
@@ -468,6 +610,16 @@ class UserManager extends \Yana\Core\Object
 
         $this->_mail = "$mail";
         $this->updates['USER_MAIL'] = $this->_mail;
+    }
+
+    /**
+     * get mail address
+     *
+     * @return  string
+     */
+    public function getMail()
+    {
+        return $this->_mail;
     }
 
     /**
@@ -487,6 +639,19 @@ class UserManager extends \Yana\Core\Object
     }
 
     /**
+     * user prefers expert settings
+     *
+     * Returns bool(true) if the user prefers to see expert applications settings and bool(false)
+     * if a simpler GUI is prefered.
+     *
+     * @return  string
+     */
+    public function isExpert()
+    {
+        return !empty($this->_isExpert);
+    }
+
+    /**
      * update expert setting
      *
      * Set to bool(true) if the user should be able to log-in or to bool(false) if the user
@@ -503,6 +668,109 @@ class UserManager extends \Yana\Core\Object
     }
 
     /**
+     * user is active
+     *
+     * Returns bool(true) if the user is activated and bool(false) otherwise.
+     *
+     * @return  bool
+     */
+    public function isActive()
+    {
+        return (bool) $this->_isActive;
+    }
+
+    /**
+     * get the time when the user was created
+     *
+     * @return  string
+     */
+    public function getTimeCreated()
+    {
+        return $this->_timeCreated;
+    }
+
+    /**
+     * get time when password was last changed
+     *
+     * This returns the timestamp for when the password was last updated.
+     * You may use this to determine if the password hasn't changed within a long time and prompt
+     * the user to enter a new one.
+     *
+     * The default is 0.
+     *
+     * @return  int
+     */
+    public function getPasswordChangedTime()
+    {
+        return (int) $this->_passwordTime;
+    }
+
+    /**
+     * get list of 10 recent passwords
+     *
+     * This returns a list of MD5-encoded password strings that the user used recently.
+     * The list does NOT include the current password.
+     *
+     * Use this to enforce that the user does not reuse a password multiple times.
+     *
+     * If there are have been no other passwords then the current, this returns an empty list.
+     *
+     * @return  array
+     */
+    public function getRecentPasswords()
+    {
+        return (int) $this->_passwords;
+    }
+
+    /**
+     * get password recovery id
+     *
+     * When the user requests a new password, a recovery id is created and sent to his mail address.
+     * This is to ensure that the user is a allowed to reset the password.
+     *
+     * @return  string
+     */
+    public function getPasswordRecoveryId()
+    {
+        return $this->_passwordRecoveryId;
+    }
+
+    /**
+     * get password recovery time
+     *
+     * When the user requests a new password, the time is stored.
+     * This is meant to check, wether the password recovery request has expired.
+     *
+     * The default is 0.
+     *
+     * @return  int
+     */
+    public function getPasswordRecoveryTime()
+    {
+        return (int) $this->_passwordRecoveryTime;
+    }
+
+    /**
+     * create new password recovery id
+     *
+     * When the user requests a new password, a recovery id is created and the time is stored.
+     * This is to ensure that the user is a allowed to reset the password and determine, when the
+     * request has expired.
+     *
+     * Returns the new recovery id.
+     *
+     * @return  string
+     */
+    public function createPasswordRecoveryId()
+    {
+        $this->_passwordRecoveryId = uniqid(substr(md5($this->getMail()), 0, 3));
+        $this->updates['USER_RECOVER_ID'] = $this->_passwordRecoveryId;
+        $this->_passwordRecoveryTime = time();
+        $this->updates['USER_RECOVER_UTC'] = $this->_passwordRecoveryTime;
+        return $this->_passwordRecoveryId;
+    }
+
+    /**
      * Create a new user.
      *
      * @param   string  $userName  user name
@@ -511,7 +779,7 @@ class UserManager extends \Yana\Core\Object
      * @throws  \Yana\Core\Exceptions\User\AlreadyExistsException  if another user with the same name already exists
      * @throws  \Yana\Db\CommitFailedException                     when the database entry could not be created
      */
-    public function createUser($userName, $mail)
+    public static function createUser($userName, $mail)
     {
         assert('is_string($userName); // Wrong type for argument 1. String expected');
         assert('is_string($mail); // Wrong type for argument 2. String expected');
@@ -549,18 +817,39 @@ class UserManager extends \Yana\Core\Object
      * @throws  \Yana\Core\Exceptions\NotFoundException          when the given user does not exist
      * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  when the user may not be deleted for other reasons
      */
-    public function removeUser($userName)
+    public static function removeUser($userName)
     {
         assert('is_string($userName); // Wrong type for argument 1. String expected');
 
-        $userName = \Yana\Util\String::toUpperCase($userName);
+        if (empty($userName)) {
+            throw new \Yana\Core\Exceptions\InvalidArgumentException("No user name given.", E_USER_WARNING);
+        }
+        $userName = mb_strtoupper($userName);
 
         // user should not delete himself
         if ($userName === self::getUserName()) {
             throw new \Yana\Core\Exceptions\User\DeleteSelfException();
         }
 
-        $this->_userAdapter->offsetUnset($userName);
+        // user does not exist
+        if (!\Yana\User::isUser($userName)) {
+            throw new \Yana\Core\Exceptions\NotFoundException("No such user: '$userName'.", E_USER_WARNING);
+        }
+
+        // delete profile
+        self::$_database->remove("userprofile.$userName");
+        // delete user's security level
+        self::$_database->remove("securitylevel", array("user_id", "=", $userName), 0);
+        // delete access permissions (temporarily) granted by this user
+        self::$_database->remove("securityrules", array("user_created", "=", $userName), 0);
+        self::$_database->remove("securitylevel.*", array("user_created", "=", $userName), 0);
+        // delete user settings
+        self::$_database->remove("user.$userName");
+        // commit changes
+        self::$_database->commit(); // may throw exception
+        if (isset(self::$instances[$userName])) {
+            unset(self::$instances[$userName]);
+        }
     }
 
     /**
@@ -573,7 +862,7 @@ class UserManager extends \Yana\Core\Object
      * @param   string  $text   password (clear text)
      * @return  string
      */
-    public function calculatePassword($salt, $text)
+    public static function calculatePassword($salt, $text)
     {
         assert('is_scalar($salt); // Wrong argument type for argument 1. String expected.');
         assert('is_scalar($text); // Wrong argument type for argument 2. String expected.');
@@ -597,7 +886,7 @@ class UserManager extends \Yana\Core\Object
      * @return  string
      * @ignore
      */
-    protected function getApplicationId()
+    protected static function getApplicationId()
     {
         if (!isset(self::$applicationId)) {
             $remoteAddr = '127.0.0.1';
