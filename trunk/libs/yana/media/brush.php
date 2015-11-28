@@ -36,7 +36,6 @@ namespace Yana\Media;
  * Brush images need to be 2-colored black/white images with color index 0 being black and index 1 being
  * the transparent color and width == height.
  *
- * @access      public
  * @package     yana
  * @subpackage  utilities
  * @since       2.8.7
@@ -50,25 +49,21 @@ class Brush extends \Yana\Core\Object
      *
      * This is part of the file name.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_brushname = null;
 
     /**
      * Global directory where brush-images are stored.
      *
-     * @access  private
-     * @static
-     * @var     string
+     * @var  string
      */
     private static $_brushdir = null;
 
     /**
      * Integer index of image resource.
      *
-     * @access  private
-     * @var     resource
+     * @var  resource
      */
     private $_image = null;
 
@@ -92,9 +87,9 @@ class Brush extends \Yana\Core\Object
      * <li> point (default) </li>
      * </ul>
      *
-     * @param  string  $brushname  see list
-     * @throws \Yana\Core\Exceptions\NotImplementedException  if the GD-library is not available
-     * @throws \Yana\Core\Exceptions\InvalidArgumentException when the requested brush is not found
+     * @param   string  $brushname  see list
+     * @throws  \Yana\Core\Exceptions\NotImplementedException  if the GD-library is not available
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException when the requested brush is not found
      */
     public function __construct($brushname = 'point')
     {
@@ -128,7 +123,6 @@ class Brush extends \Yana\Core\Object
     /**
      * Get name of this brush.
      *
-     * @access  public
      * @return  string
      */
     public function getName()
@@ -144,9 +138,7 @@ class Brush extends \Yana\Core\Object
      * will automatically be searched for in the directory
      * you provided here.
      *
-     * @access  public
-     * @static
-     * @param   string  $directory  new source directory
+     * @param  string  $directory  new source directory
      */
     public static function setDirectory($directory)
     {
@@ -159,9 +151,6 @@ class Brush extends \Yana\Core\Object
      * Reset the path to the brush-directory to the default.
      *
      * By default this will look for files in the "brush" sub-directory at the path where this class is stored.
-     *
-     * @access  public
-     * @static
      */
     public static function resetDirectory()
     {
@@ -173,8 +162,6 @@ class Brush extends \Yana\Core\Object
      *
      * This function will return the path to source directory for brushes.
      *
-     * @access  public
-     * @static
      * @return  string
      */
     public static function getDirectory()
@@ -187,11 +174,8 @@ class Brush extends \Yana\Core\Object
     }
 
     /**
-     * get brush size
+     * Returns brush's dimension in pixel or bool(false) on error.
      *
-     * Returns the brush's dimension in pixel or bool(false) on error.
-     *
-     * @access  public
      * @return  int|bool(false)
      */
     public function getSize()
@@ -205,7 +189,6 @@ class Brush extends \Yana\Core\Object
      * The argument $size is the new size in pixel.
      * Returns bool(false) on error.
      *
-     * @access  public
      * @param   int  $size  brush size in pixel
      * @return  \Yana\Media\Brush
      */
@@ -235,7 +218,6 @@ class Brush extends \Yana\Core\Object
      * the red, green and blue values of this color.
      * The palette index is detected automatically.
      *
-     * @access  public
      * @param   int  $red    0 - 255 (255 = 100% red)
      * @param   int  $green  0 - 255 (255 = 100% green)
      * @param   int  $blue   0 - 255 (255 = 100% blue)
@@ -254,13 +236,12 @@ class Brush extends \Yana\Core\Object
     }
 
     /**
-     * get the color of this brush
+     * Get the color of this brush.
      *
      * Returns an associative array of the red, green and blue
      * values of the current brush color.
      * Returns bool(false) on error.
      *
-     * @access   public
      * @return   array
      */
     public function getColor()
@@ -274,7 +255,6 @@ class Brush extends \Yana\Core\Object
      * This function is intended to be called when the object
      * is used in a string context.
      *
-     * @access   public
      * @return   string
      */
     public function __toString()
@@ -288,12 +268,11 @@ class Brush extends \Yana\Core\Object
     }
 
     /**
-     * clone this object
+     * Clone this object.
      *
      * Creates a copy of this object.
      * You are encouraged to reimplement this for each subclass.
      *
-     * @access public
      * @return Brush
      */
     public function __clone()
@@ -324,7 +303,6 @@ class Brush extends \Yana\Core\Object
      * Returns bool(true) if this object and $anotherObject have an image resource that is the same.
      * Returns bool(false) otherwise.
      *
-     * @access  public
      * @param   \Yana\Core\IsObject  $anotherObject  any object or var you want to compare
      * @return  bool
      */
@@ -334,14 +312,13 @@ class Brush extends \Yana\Core\Object
     }
 
     /**
-     * compare with another resource
+     * Compare with another resource.
      *
      * Returns bool(true) if the given parameter is an image resource and
      * is identical to the image resource of this object.
      *
      * Returns bool(false) otherwise.
      *
-     * @access  public
      * @param   resource  $resource  any other resource
      * @return  bool
      * @since   3.1.0
@@ -353,12 +330,11 @@ class Brush extends \Yana\Core\Object
     }
 
     /**
-     * get the image resource
+     * Get the image resource.
      *
      * This returns the image resource of the object,
      * or bool(false) on error.
      *
-     * @access public
      * @return resource|bool(false)
      */
     public function getResource()
@@ -381,7 +357,6 @@ class Brush extends \Yana\Core\Object
      * Note that this is a PHP 5 feature. In PHP 4 you had to call
      * this function by hand.
      *
-     * @access public
      * @ignore
      */
     public function __destruct()
