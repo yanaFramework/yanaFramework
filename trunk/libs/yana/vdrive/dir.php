@@ -32,7 +32,6 @@ namespace Yana\VDrive;
  *
  * class representing virtual directories
  *
- * @access     public
  * @package    yana
  * @subpackage vdrive
  *
@@ -44,41 +43,37 @@ class Dir extends AbstractMountpoint
     /**
      * Note: this overwrites the variable of the parent class
      *
-     * @access  protected
-     * @var     string
+     * @var  string
      * @ignore
      */
     protected $type = "Dir";
 
     /**
-     * constructor
+     * Constructor.
      *
-     * @access  public
      * @param   string  $path   path
      */
     public function __construct($path)
     {
-        assert('is_string($path); // Wrong type for argument 1. String expected');
+        assert('is_string($path); // Invalid argument $path: string expected');
         $this->mountpoint = new \Yana\Files\Dir($path);
         $this->path = $path;
     }
 
     /**
-     * set directory's file filter
+     * Set directory's file filter.
      *
-     * @access  public
-     * @param   string  $filter   directory's file filter
+     * @param  string  $filter   directory's file filter
      */
     public function setFilter($filter = "")
     {
-        assert('is_string($filter); // Wrong type for argument 3. String expected');
+        assert('is_string($filter); // Invalid argument $filter: string expected');
         $this->mountpoint->setFilter($filter);
     }
 
     /**
-     * get directory's file filter
+     * Get directory's file filter.
      *
-     * @access  public
      * @return  string
      */
     public function getFilter()

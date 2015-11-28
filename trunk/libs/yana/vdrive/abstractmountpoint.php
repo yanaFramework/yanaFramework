@@ -28,12 +28,10 @@
 namespace Yana\VDrive;
 
 /**
- * <<abstract>> Virtual Drive Mountpoint
+ * <<abstract>> Virtual Drive Mountpoint.
  *
  * An abstract super class for all mountpoints.
  *
- * @access     public
- * @abstract
  * @package    yana
  * @subpackage vdrive
  *
@@ -82,7 +80,7 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
     private $_requiresExecutable = false;
 
     /**
-     * constructor
+     * Constructor.
      *
      * Should initialize the following properties:
      * <ul>
@@ -91,20 +89,18 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
      *   <li> mountpoint </li>
      * </ul>
      *
-     * @access  public
      * @param   string  $path  path to the source file
      * @return  bool
      */
     abstract public function __construct($path);
 
     /**
-     * mount the current resource
+     * Mount the current resource.
      *
      * Returns bool(true) on success and bool(false) on error.
      * In this case "mounting" means, it calls the function "read()"
      * on the resource object, if it has it.
      *
-     * @access  public
      * @return  bool
      */
     public function mount()
@@ -129,7 +125,6 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
     /**
      * Returns the mounted file resource or bool(false) if none is present.
      *
-     * @access  public
      * @return  AbstractObject|bool(false)
      */
     public function getMountpoint()
@@ -142,11 +137,10 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
     }
 
     /**
-     * get source-path attribute
+     * Get source-path attribute.
      *
      * Return the source-path of the file represented by this mountpoint as a string or bool(false) on error.
      *
-     * @access  public
      * @return  string|bool(false)
      */
     public function getPath()
@@ -160,11 +154,10 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
     }
 
     /**
-     * get type attribute
+     * Get type attribute.
      *
      * Return the class-name (type) of the implementing class of this mountpoint as a string or bool(false) on error.
      *
-     * @access  public
      * @return  string|bool(false)
      */
     public function getType()
@@ -178,11 +171,10 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
     }
 
     /**
-     * get a report of this mountpoint
+     * Get a report of this mountpoint.
      *
      * Returns a report, which you may print, transform or output to a file.
      *
-     * @access  public
      * @param   \Yana\Report\IsReport  $report  base report
      * @return  \Yana\Report\IsReport
      */
@@ -226,9 +218,8 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
     }
 
     /**
-     * return a textual representation
+     * Return a textual representation.
      *
-     * @access  public
      * @return  string
      */
     public function __toString()
@@ -237,12 +228,11 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
     }
 
     /**
-     * check if mountpoint has been mounted
+     * Check if mountpoint has been mounted.
      *
      * Return bool(true) if mount() has been called on the object
      * and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isMounted()
@@ -252,11 +242,10 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
     }
 
     /**
-     * set requirements
+     * Set requirements.
      *
      * Sets wether the resource must be read-, write, and/or executable.
      *
-     * @access  public
      * @param   bool  $readable       (true = is readable, false otherweise)
      * @param   bool  $writeable      (true = is writeable, false otherweise)
      * @param   bool  $executable     (true = is executable, false otherweise)
@@ -272,12 +261,11 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
     }
 
     /**
-     * must be readable?
+     * Must be readable?
      *
      * Returns wether or not the resource must be readable.
      * Default is bool(false).
      *
-     * @access  public
      * @return  bool
      */
     public function requiresReadable()
@@ -288,12 +276,11 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
     }
 
     /**
-     * must be writeable?
+     * Must be writeable?
      *
      * Returns wether or not the resource must be writeable.
      * Default is bool(false).
      *
-     * @access  public
      * @return  bool
      */
     public function requiresWriteable()
@@ -304,12 +291,11 @@ abstract class AbstractMountpoint extends \Yana\Core\Object implements \Yana\Rep
     }
 
     /**
-     * must be executable?
+     * Must be executable?
      *
      * Returns wether or not the resource must be executable.
      * Default is bool(false).
      *
-     * @access  public
      * @return  bool
      */
     public function requiresExecutable()
