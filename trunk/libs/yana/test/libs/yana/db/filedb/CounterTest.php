@@ -41,26 +41,22 @@ class CounterTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    Counter
-     * @access protected
+     * @var  \Yana\Db\FileDb\Counter
      */
     protected $_object;
 
     /**
-     * @var    Counter
-     * @access protected
+     * @var  \Yana\Db\FileDb\Counter
      */
     protected $_objectNoIP;
 
     /**
-     * @var    string
-     * @access protected
+     * @var  string
      */
     protected $_counterId = "";
 
     /**
-     * @var    string
-     * @access protected
+     * @var  string
      */
     protected $_counterNoIPId = "";
 
@@ -71,7 +67,6 @@ class CounterTest extends \PHPUnit_Framework_TestCase
      * Note: Counter class encourages the use of namespaces, seperated by backslashes, as introduced
      * in PHP 5.3.
      *
-     * @access public
      * @ignore
      */
     public function __construct()
@@ -83,8 +78,6 @@ class CounterTest extends \PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     *
-     * @access protected
      */
     protected function setUp()
     {
@@ -110,8 +103,6 @@ class CounterTest extends \PHPUnit_Framework_TestCase
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
-     *
-     * @access protected
      */
     protected function tearDown()
     {

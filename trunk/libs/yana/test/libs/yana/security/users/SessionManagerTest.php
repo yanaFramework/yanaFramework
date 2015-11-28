@@ -28,7 +28,7 @@
 /**
  * @ignore
  */
-require_once dirname(__FILE__) . '/include.php';
+require_once __DIR__ . '/../../../../include.php';
 
 /**
  * SessionManager test class
@@ -83,14 +83,12 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    \Yana\Security\Users\SessionManager
-     * @access protected
+     * @var  \Yana\Security\Users\SessionManager
      */
     protected $_sessionManager;
 
     /**
-     * @var    FileDb
-     * @access protected
+     * @var  \Yana\Db\FileDb
      */
     protected $_database;
 
@@ -110,8 +108,6 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     *
-     * @access protected
      */
     protected function setUp()
     {
@@ -127,8 +123,6 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
-     *
-     * @access protected
      */
     protected function tearDown()
     {

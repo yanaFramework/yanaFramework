@@ -41,15 +41,13 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    \Yana\Db\Export\SqlFactory
-     * @access protected
+     * @var  \Yana\Db\Export\SqlFactory
      */
     protected $_object;
 
     /**
      * constructor
      *
-     * @access public
      * @ignore
      */
     public function __construct()
@@ -61,8 +59,6 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     *
-     * @access protected
      */
     protected function setUp()
     {
@@ -73,8 +69,6 @@ class SqlFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
-     *
-     * @access protected
      */
     protected function tearDown()
     {
