@@ -6,7 +6,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <title>{lang id="PROGRAM_TITLE"}</title>
         <style type="text/css">
-{import file="default.css"}
+{import file="default.css.tpl"}
         </style>
 <!-- {if $ACTION !== 'null'}    -->
 <!-- {if $STDOUT.LEVEL=='error'} -->
