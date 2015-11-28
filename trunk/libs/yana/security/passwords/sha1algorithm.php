@@ -37,7 +37,7 @@ namespace Yana\Security\Passwords;
  *
  * @ignore
  */
-class Sha1Algorithm extends \Yana\Security\Users\Md5Algorithm
+class Sha1Algorithm extends \Yana\Security\Passwords\Md5Algorithm
 {
 
     /**
