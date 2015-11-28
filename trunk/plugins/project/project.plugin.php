@@ -31,7 +31,7 @@ namespace Plugins\Project;
  * @package     plugins
  * @subpackage  project
  */
-class Plugin extends \Yana\Plugins\AbstractPlugin
+class ProjectPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
