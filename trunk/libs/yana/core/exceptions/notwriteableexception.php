@@ -32,7 +32,6 @@ namespace Yana\Core\Exceptions;
  *
  * Thrown when you try to modify a resource, but you are denied permission to do so.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */

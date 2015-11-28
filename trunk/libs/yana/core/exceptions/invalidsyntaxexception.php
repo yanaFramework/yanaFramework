@@ -33,7 +33,6 @@ namespace Yana\Core\Exceptions;
  * Thrown when a certain syntax is expected for a given value or resource and the input
  * does not satisfy this constraint.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */

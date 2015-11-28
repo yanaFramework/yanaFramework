@@ -207,6 +207,7 @@ final class Request extends \Yana\Core\AbstractUtility
      */
     public static function getGet($key = '*')
     {
+        assert('is_string($key); // $key expected to be String');
         if (is_null(self::$get)) {
             self::$get = self::_untaintRequest($_GET, YANA_AUTODEQUOTE && get_magic_quotes_gpc());
         }
@@ -224,6 +225,7 @@ final class Request extends \Yana\Core\AbstractUtility
      */
     public static function getPost($key = '*')
     {
+        assert('is_string($key); // $key expected to be String');
         if (is_null(self::$post)) {
             self::$post = self::_untaintRequest($_POST, YANA_AUTODEQUOTE && get_magic_quotes_gpc());
         }
@@ -242,6 +244,7 @@ final class Request extends \Yana\Core\AbstractUtility
      */
     public static function getCookie($key = '*')
     {
+        assert('is_string($key); // $key expected to be String');
         if (is_null(self::$cookie)) {
             self::$cookie = self::_untaintRequest($_COOKIE, YANA_AUTODEQUOTE && get_magic_quotes_gpc());
         }
@@ -277,6 +280,7 @@ final class Request extends \Yana\Core\AbstractUtility
      */
     public static function getVars($key = '*')
     {
+        assert('is_string($key); // $key expected to be String');
         if (is_null(self::$request)) {
             self::$request = array();
 
@@ -374,6 +378,7 @@ final class Request extends \Yana\Core\AbstractUtility
      */
     public static function getFiles($key = '*')
     {
+        assert('is_string($key); // $key expected to be String');
         if (is_null(self::$files)) {
             self::$files = array();
             if (!empty($_FILES)) {
@@ -432,6 +437,7 @@ final class Request extends \Yana\Core\AbstractUtility
      */
     private static function _buildFileArray($files, $property)
     {
+        assert('is_array($files) || is_scalar($files); // $files expected to be Array or Scalar');
         if (is_array($files)) {
             $result = array();
             $files = array_change_key_case($files, CASE_LOWER);
@@ -483,6 +489,7 @@ final class Request extends \Yana\Core\AbstractUtility
      */
     private static function _untaintRequest(array $value, $unquote = false)
     {
+        assert('is_bool($unquote); // $unquote expected to be Boolean');
         $value = array_change_key_case($value, CASE_LOWER);
         $sanitizer = new \Yana\Data\StringValidator();
         $sanitizer->setMaxLength(50000)

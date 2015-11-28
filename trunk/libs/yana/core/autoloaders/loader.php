@@ -44,6 +44,7 @@ class Loader extends \Yana\Core\Autoloaders\AbstractLoader
      */
     public function loadClassFile($className)
     {
+        assert('is_string($className); // $className expected to be String');
         assert('!isset($fileName); // Cannot redeclare var $fileName');
         $fileName = "";
         assert('!isset($mapper); // Cannot redeclare var $mapper');

@@ -63,6 +63,7 @@ class Object extends \StdClass implements \Yana\Core\IsObject, \Yana\Core\IsClon
      */
     public function __call($name, array $arguments)
     {
+        assert('is_string($name); // $name expected to be String');
         throw new \Yana\Core\Exceptions\UndefinedMethodException($name . " in " . $this->getClass());
     }
 
@@ -76,6 +77,7 @@ class Object extends \StdClass implements \Yana\Core\IsObject, \Yana\Core\IsClon
      */
     public function __get($name)
     {
+        assert('is_string($name); // $name expected to be String');
         throw new \Yana\Core\Exceptions\UndefinedPropertyException($name);
     }
 
@@ -90,6 +92,7 @@ class Object extends \StdClass implements \Yana\Core\IsObject, \Yana\Core\IsClon
      */
     public function __set($name, $value)
     {
+        assert('is_string($name); // $name expected to be String');
         throw new \Yana\Core\Exceptions\UndefinedPropertyException($name);
     }
 

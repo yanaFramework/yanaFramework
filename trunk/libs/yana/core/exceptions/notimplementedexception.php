@@ -33,7 +33,6 @@ namespace Yana\Core\Exceptions;
  * Thrown when you try to use a function in a context, where it is not intended to be used, or if
  * you try to use a functionality, which is (intentionally) not there.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */

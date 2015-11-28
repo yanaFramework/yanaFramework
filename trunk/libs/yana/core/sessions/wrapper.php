@@ -147,14 +147,14 @@ class Wrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWrapper
     /**
      * Replace the session-id without destroying session-data.
      *
-     * @param   string  $newId  new session-id
+     * @param   bool  $deleteOldSession  Whether to delete the old associated session file or not.
      * @return  \Yana\Core\Sessions\IsWrapper
      */
-    public function regeneratId($newId)
+    public function regeneratId($deleteOldSession = false)
     {
-        assert('is_string($newId); // Invalid argument $newId: string expected');
+        assert('is_bool($deleteOldSession); // Invalid argument $deleteOldSession: bool expected');
 
-        \session_regenerate_id($newId);
+        \session_regenerate_id($deleteOldSession);
         return $this;
     }
 

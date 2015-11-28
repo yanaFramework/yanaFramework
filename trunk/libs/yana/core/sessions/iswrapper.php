@@ -65,10 +65,10 @@ interface IsWrapper extends \Yana\Core\IsCountableArray
     /**
      * Replace the session-id without destroying session-data.
      *
-     * @param   string  $newId  new session-id
+     * @param   bool  $deleteOldSession  Whether to delete the old associated session file or not.
      * @return  \Yana\Core\Sessions\IsWrapper
      */
-    public function regeneratId($newId);
+    public function regeneratId($deleteOldSession = false);
 
     /**
      * Returns the name of the session-id variable.

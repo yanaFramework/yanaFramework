@@ -172,14 +172,14 @@ class NullWrapper extends \Yana\Core\Object implements \Yana\Core\Sessions\IsWra
     /**
      * Replace the session-id without destroying session-data.
      *
-     * @param   string  $newId  new session-id
-     * @return  \Yana\Core\SessionWrapper
+     * @param   bool  $deleteOldSession  Whether to delete the old associated session file or not.
+     * @return  \Yana\Core\Sessions\NullWrapper
      */
-    public function regeneratId($newId)
+    public function regeneratId($deleteOldSession = false)
     {
-        assert('is_string($newId); // Invalid argument $newId: string expected');
+        assert('is_bool($deleteOldSession); // Invalid argument $deleteOldSession: bool expected');
 
-        $this->_id = (string) $newId;
+        $this->_id = "";
         return $this;
     }
 

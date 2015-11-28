@@ -85,6 +85,7 @@ class AutoLoadBuilder extends \Yana\Core\Object
      */
     public function addClassMapper($mapperType = self::GENERIC_MAPPER)
     {
+        assert('is_int($mapperType); // $mapperType expected to be Integer');
         switch ($mapperType)
         {
             case self::DIRECT_MAPPER:
