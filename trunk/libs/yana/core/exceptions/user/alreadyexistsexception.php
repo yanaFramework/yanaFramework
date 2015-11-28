@@ -33,7 +33,6 @@ namespace Yana\Core\Exceptions\User;
  * Thrown when user trying to create an user account when another user by the same name
  * already exists.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */

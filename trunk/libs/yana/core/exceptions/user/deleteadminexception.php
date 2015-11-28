@@ -34,7 +34,6 @@ namespace Yana\Core\Exceptions\User;
  * This is not allowed as it effectively may block access to function required to
  * set up and maintain the application.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */

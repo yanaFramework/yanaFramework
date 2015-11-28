@@ -98,6 +98,7 @@ class VarContainer extends \Yana\Core\Object implements \Yana\Core\IsVarContaine
      */
     public function getVar($key)
     {
+        assert('is_string($key); // $key expected to be String');
         assert('!isset($offset); // Cannot redeclare var $offset');
         $offset = $this->_toArrayOffset($key);
         return (isset($this->_contents[$offset])) ? $this->_contents[$offset] : null;
@@ -123,6 +124,7 @@ class VarContainer extends \Yana\Core\Object implements \Yana\Core\IsVarContaine
      */
     public function isVar($key)
     {
+        assert('is_string($key); // $key expected to be String');
         assert('!isset($offset); // Cannot redeclare var $offset');
         $offset = $this->_toArrayOffset($key);
         return (isset($this->_contents[$offset]));
@@ -134,12 +136,13 @@ class VarContainer extends \Yana\Core\Object implements \Yana\Core\IsVarContaine
      * If the value does not exist it gets inserted.
      * If a previous value existed the value gets updated.
      *
-     * @param   string  $key        key of updated element
-     * @param   mixed   &$value     new value
+     * @param   string  $key     key of updated element
+     * @param   mixed   &$value  new value
      * @return  \Yana\Core\VarContainer
      */
     public function setVarByReference($key, &$value)
     {
+        assert('is_string($key); // $key expected to be String');
         assert('!isset($offset); // Cannot redeclare var $offset');
         $offset = $this->_toArrayOffset($key);
         $this->_contents[$offset] =& $value;
@@ -164,12 +167,13 @@ class VarContainer extends \Yana\Core\Object implements \Yana\Core\IsVarContaine
      * If the value does not exist it gets inserted.
      * If a previous value existed the value gets updated.
      *
-     * @param   string  $key        key of updated element
-     * @param   mixed   $value      new value
+     * @param   string  $key    key of updated element
+     * @param   mixed   $value  new value
      * @return  \Yana\Core\VarContainer
      */
     public function setVar($key, $value)
     {
+        assert('is_string($key); // $key expected to be String');
         return $this->setVarByReference($key, $value);
     }
 

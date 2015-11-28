@@ -45,13 +45,14 @@ class MapperCollection extends \Yana\Core\AbstractCollection
     /**
      * Add a new mapper to the collection.
      *
-     * @param   scalar  $offset  mapper id
-     * @param   \Yana\Core\Autoloaders\IsMapper  $value  mapper that shoud be added
+     * @param   scalar                           $offset  mapper id
+     * @param   \Yana\Core\Autoloaders\IsMapper  $value   mapper that shoud be added
      * @return  \Yana\Core\Autoloaders\IsMapper
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not a mapper
      */
     public function offsetSet($offset, $value)
     {
+        assert('is_null($offset) || is_scalar($offset); // $offset expected to be Scalar');
         if (!$value instanceof \Yana\Core\Autoloaders\IsMapper) {
             $message = "Instance of \Yana\Core\Autoloaders\IsMapper expected. " .
                 "Found " . gettype($value) . "(" . get_class($value) . ") instead.";

@@ -32,7 +32,6 @@ namespace Yana\Core\Exceptions;
  *
  * Thrown when a user-generated value is validated and found to be invalid.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */

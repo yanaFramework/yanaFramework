@@ -35,7 +35,6 @@ namespace Yana\Core;
  * open connection is an external resource that cannot be stored into
  * a string.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */
@@ -47,9 +46,6 @@ interface IsSingleton
      *
      * Creates an instance if there is none.
      * Then it returns a reference to this (single) instance.
-     *
-     * @access public
-     * @static
      */
     public static function getInstance();
 

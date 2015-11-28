@@ -32,7 +32,6 @@ namespace Yana\Core\Exceptions\User;
  *
  * Thrown when user tries to delete his own account.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */

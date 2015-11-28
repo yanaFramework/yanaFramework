@@ -33,7 +33,6 @@ namespace Yana\Core\Exceptions;
  * Thrown when you try to read from a resource, but fail: due to missing privileges, resource is
  * busy, or locked, or simply does not exist.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */

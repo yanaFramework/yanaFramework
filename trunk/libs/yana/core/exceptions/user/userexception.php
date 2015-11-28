@@ -32,7 +32,6 @@ namespace Yana\Core\Exceptions\User;
  *
  * Used as base-class for exceptions related to user management.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */

@@ -55,7 +55,8 @@ abstract class AbstractLoader extends \Yana\Core\Object implements \Yana\Core\Au
      *
      * @return  \Yana\Core\Autoloaders\MapperCollection
      */
-    public function getMaps() {
+    public function getMaps()
+    {
         if (!isset($this->_maps)) {
             $this->_maps = new \Yana\Core\Autoloaders\MapperCollection();
         }

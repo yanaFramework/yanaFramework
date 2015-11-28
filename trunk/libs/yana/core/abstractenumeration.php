@@ -39,7 +39,6 @@ abstract class AbstractEnumeration extends \StdClass
     /**
      * Prevent instantiation.
      *
-     * @access  private
      * @final
      */
     final private function __construct()
@@ -55,7 +54,8 @@ abstract class AbstractEnumeration extends \StdClass
      *
      * @return array
      */
-    public static function getValidItems() {
+    public static function getValidItems()
+    {
         $reflection = new \ReflectionClass(new static());
         return $reflection->getConstants();
     }
@@ -69,7 +69,8 @@ abstract class AbstractEnumeration extends \StdClass
      * @param  string  $item  value of enumeration constant to check
      * @return bool
      */
-    public static function isValidItem($item) {
+    public static function isValidItem($item)
+    {
         $validItems = static::getValidItems();
         return in_array($item, $validItems);
     }

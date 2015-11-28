@@ -32,7 +32,6 @@ namespace Yana\Core\Exceptions;
  *
  * Thrown when you try to access a named item, but no item with the given name is found.
  *
- * @access      public
  * @package     yana
  * @subpackage  core
  */

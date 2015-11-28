@@ -57,10 +57,11 @@ class Manager extends \Yana\Core\Object implements \Yana\Core\Sessions\IsManager
      * Registers a new session save handler.
      *
      * @param  \Yana\Core\Sessions\IsSessionSaveHandler  $handler   new session safe handler
-     * @param  bool                                  $autoSave  additionally registers session_write_close() as shutdown function
+     * @param  bool                                      $autoSave  also register session_write_close() as shutdown function
      */
     public function setSaveHandler(\Yana\Core\Sessions\IsSessionSaveHandler $handler, $autoSave = false)
     {
+        assert('is_bool($autoSave); // $autoSave expected to be Boolean');
         // Register a custom session save handler
         session_set_save_handler(array($handler, 'open'), array($handler, 'close'), array($handler, 'read'),
             array($handler, 'write'), array($handler, 'destroy'), array($handler, 'gc'));
