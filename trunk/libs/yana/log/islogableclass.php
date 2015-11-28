@@ -32,7 +32,6 @@ namespace Yana\Log;
  *
  * A class may have mutliple loggers.
  *
- * @access      public
  * @package     yana
  * @subpackage  log
  */
