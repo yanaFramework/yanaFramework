@@ -33,7 +33,6 @@ namespace Yana\Views;
  * This implements a configuration loader and factory class for the smarty template engine.
  * Note that this class does not extend or change the engine itself.
  *
- * @access      public
  * @package     yana
  * @subpackage  views
  */
