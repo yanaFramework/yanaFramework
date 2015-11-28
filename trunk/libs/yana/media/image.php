@@ -52,16 +52,12 @@ namespace Yana\Media;
  * <li> png </li>
  * </ul>
  *
- * @access      public
  * @package     yana
  * @subpackage  utilities
  * @since       2.8.7
  */
 class Image extends \Yana\Core\Object
 {
-    /**#@+
-     * @access  private
-     */
 
     /**
      * Path to image file.
@@ -162,7 +158,6 @@ class Image extends \Yana\Core\Object
         'gif'  => array('image/gif',          'imagegif',  'imagecreatefromgif' ),
         'bmp'  => array('image/vnd.wap.wbmp', 'imagewbmp', 'imagecreatefromwbmp')
     );
-    /**#@-*/
 
     /**#@+
      * Color.
@@ -171,8 +166,7 @@ class Image extends \Yana\Core\Object
      * The class itself initializes, but doesn't use them.
      * Note: if the palette does not have the exact color, a similar color is used instead.
      *
-     * @access  public
-     * @var     int
+     * @var  int
      */
 
     /** aqua = #00ffff */
@@ -213,7 +207,7 @@ class Image extends \Yana\Core\Object
     /**#@-*/
 
     /**
-     * create a new instance of this class
+     * Create a new instance of this class.
      *
      * The argument $filename determines wich file to take the input from.
      * If $filename is not provided, an empty truecolor image with white background and
@@ -388,9 +382,8 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * get filename
+     * Get filename.
      *
-     * @access public
      * @return string
      */
     public function getPath()
@@ -405,7 +398,6 @@ class Image extends \Yana\Core\Object
     /**
      * Returns bool(true), if the image exists.
      *
-     * @access public
      * @return bool
      */
     public function exists()
@@ -416,7 +408,6 @@ class Image extends \Yana\Core\Object
     /**
      * Returns bool(true) if the image type was not recognized.
      *
-     * @access public
      * @return bool
      */
     public function isBroken()
@@ -431,7 +422,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * check if image is truecolor
+     * Check if image is truecolor.
      *
      * Returns bool(true) if the image is truecolor and
      * bool(false) otherwise.
@@ -440,8 +431,7 @@ class Image extends \Yana\Core\Object
      * GIF is not. Some functions won't work with
      * non-truecolor images.
      *
-     * @access public
-     * @return bool
+     * @return  bool
      */
     public function isTruecolor()
     {
@@ -460,13 +450,12 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * clone this object
+     * Clone this object.
      *
      * Creates a copy of this object.
      * You are encouraged to reimplement this for each subclass.
      *
-     * @access public
-     * @return Image
+     * @return  \Yana\Media\Image
      */
     public function __clone()
     {
@@ -496,7 +485,6 @@ class Image extends \Yana\Core\Object
      * Returns bool(true) if this object and $anotherObject have an image resource that is the same.
      * Returns bool(false) otherwise.
      *
-     * @access  public
      * @param   \Yana\Core\IsObject  $anotherObject  any object or var you want to compare
      * @return  bool
      */
@@ -506,14 +494,13 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * compare with another resource
+     * Compare with another resource.
      *
      * Returns bool(true) if the given parameter is an image resource and
      * is identical to the image resource of this object.
      *
      * Returns bool(false) otherwise.
      *
-     * @access  public
      * @param   resource  $resource  any other resource
      * @return  bool
      * @since   3.1.0
@@ -529,13 +516,12 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * get the image resource
+     * Get the image resource.
      *
      * This returns the image resource of the object,
      * or bool(false) on error.
      *
-     * @access public
-     * @return resource|bool(false)
+     * @return  resource|bool(false)
      */
     public function getResource()
     {
@@ -551,9 +537,8 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * This function produces a new image
+     * Produces a new image.
      *
-     * @access  private
      * @param   int  $width      horizontal dimension in pixel
      * @param   int  $height     vertical dimension in pixel
      * @ignore
@@ -634,10 +619,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * This function initializes reserved palette colors
-     *
-     * @access  private
-     * @ignore
+     * Initializes reserved palette colors.
      */
     private function _initColors()
     {
@@ -667,12 +649,10 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * This function produces a new image
+     * Produces a new image.
      *
      * The old image is deleted and replaced by a new one.
      * Be warned: all previous changes to the image will be lost!
-     *
-     * @access  public
      */
     public function clearCanvas()
     {
@@ -690,9 +670,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * This function produces an error image
-     *
-     * @access private
+     * Produces an error image.
      */
     private function _createErrorImage()
     {
@@ -727,11 +705,10 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * get image width
+     * Get image width.
      *
      * Returns the image's horizontal dimension in pixel or bool(false) on error.
      *
-     * @access  public
      * @return  int|bool(false)
      */
     public function getWidth()
@@ -751,11 +728,10 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * get image height
+     * Get image height.
      *
      * Returns the image's vertical dimension in pixel or bool(false) on error.
      *
-     * @access  public
      * @return  int|bool(false)
      */
     public function getHeight()
@@ -775,20 +751,19 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * draw a point (aka paint a pixel)
+     * Draw a point (aka paint a pixel).
      *
      * This paints the pixel at position ($x px, $y px) with a $color.
      * This color defaults to black.
      *
-     * @access  public
-     * @param   int       $x      horizontal position (left value)
-     * @param   int       $y      vertical position (top value)
-     * @param   int       $color  the point color
+     * @param   int  $x      horizontal position (left value)
+     * @param   int  $y      vertical position (top value)
+     * @param   int  $color  the point color
      * @return  bool
      */
     public function drawPoint($x, $y, $color = null)
     {
-        assert('is_int($x); // Wrong type for argument 1. Integer expected');
+        assert('is_int($x); // Invalid argument $x: Integer expected');
         assert('$x >= 0; // $x must not be negative.');
         assert('$y >= 0; // $y must not be negative.');
         assert('is_null($color) || is_int($color); // Wrong type for argument 3. Integer expected');
@@ -817,19 +792,18 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * draw a line
+     * Draw a line.
      *
      * This draws a straight line at position ($x px, $y px).
      *
      * The line has the color set by the argument $color.
      * This defaults to black.
      *
-     * @access  public
-     * @param   int       $x1     horizontal position (start)
-     * @param   int       $y1     vertical position (start)
-     * @param   int       $x2     horizontal position (end)
-     * @param   int       $y2     vertical position (end)
-     * @param   int       $color  the line color
+     * @param   int  $x1     horizontal position (start)
+     * @param   int  $y1     vertical position (start)
+     * @param   int  $x2     horizontal position (end)
+     * @param   int  $y2     vertical position (end)
+     * @param   int  $color  the line color
      * @return  bool
      */
     public function drawLine($x1, $y1, $x2, $y2, $color = null)
@@ -868,9 +842,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * draw a text string
-     *
-     * This draws a text string at position ($x px, $y px).
+     * Draws a text string at position ($x px, $y px).
      *
      * The string has the color set by the argument $color.
      * This defaults to black.
@@ -903,7 +875,6 @@ class Image extends \Yana\Core\Object
      *
      * All arguments except $text may be skipped by assigning the NULL value.
      *
-     * @access  public
      * @param   string    $text              the text to draw
      * @param   int       $x                 horizontal position
      * @param   int       $y                 vertical position
@@ -969,7 +940,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * draw a formatted text string with a true-type font
+     * Draw a formatted text string with a true-type font.
      *
      * This is the same as Image::drawString() except, that it allows
      * some true-type font of your choosing to be used, accepts a custom
@@ -990,7 +961,6 @@ class Image extends \Yana\Core\Object
      *
      * This function requires GD and FreeType libraries.
      *
-     * @access  public
      * @param   string    $text       the text to draw
      * @param   int       $x          horizontal position
      * @param   int       $y          vertical position
@@ -1059,7 +1029,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * draw an ellipse
+     * Draw an ellipse.
      *
      * This draws an ellipse at position ($x px, $y px).
      *
@@ -1088,7 +1058,6 @@ class Image extends \Yana\Core\Object
      * $start degrees and goes to $end degrees. Both values can be NULLed.
      * Note that $start and $end can also be negative.
      *
-     * @access  public
      * @param   int  $x          horizontal position
      * @param   int  $y          vertical position
      * @param   int  $width      horizontal dimension in pixel
@@ -1177,9 +1146,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * draw a rectangle
-     *
-     * This draws a rectangle at position ($x px, $y px).
+     * Draws a rectangle at position ($x px, $y px).
      *
      * With the dimensions $width px to $height px.
      * Note that you can set $width = $height to create a square.
@@ -1202,7 +1169,6 @@ class Image extends \Yana\Core\Object
      * object is created. You can create object that are not filled,
      * by setting this to NULL.
      *
-     * @access  public
      * @param   int  $x          horicontal position in pixel
      * @param   int  $y          vertical position in pixel
      * @param   int  $width      horizontal dimension in pixel
@@ -1263,9 +1229,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * draw a polygon
-     *
-     * This draws a polygon at position ($x px, $y px).
+     * Draws a polygon at position ($x px, $y px).
      *
      * $points is a two dimensional array of the vertices.
      * Example:
@@ -1298,7 +1262,6 @@ class Image extends \Yana\Core\Object
      * object is created. You can create object that are not filled,
      * by setting this to NULL.
      *
-     * @access  public
      * @param   array  $points     a list of vertices
      * @param   int    $x          horicontal position
      * @param   int    $y          vertical position
@@ -1365,7 +1328,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * fill with a color
+     * Fill with a color.
      *
      * This does a flood fill at position ($x px, $y px).
      *
@@ -1386,7 +1349,6 @@ class Image extends \Yana\Core\Object
      * this color, otherwise it will stop at any color that is
      * different from pixel ($x px, $y px).
      *
-     * @access  public
      * @param   int  $fillColor    the filled area will get this color
      * @param   int  $x            horicontal position
      * @param   int  $y            vertical position
@@ -1425,7 +1387,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * enable / disable alpha blending
+     * Enable / disable alpha blending.
      *
      * Enables alpha blending if set to bool(true) and
      * disables it when set to bool(false).
@@ -1442,7 +1404,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   bool  $isEnabled  on / off
      * @param   bool  $saveAlpha  on / off
      * @return  bool
@@ -1502,7 +1463,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * enable / disable antialiasing
+     * Enable / disable antialiasing.
      *
      * Enables antialiasing if set to bool(true) and
      * disables it when set to bool(false).
@@ -1511,7 +1472,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   bool  $isEnabled  on / off
      * @return  bool
      */
@@ -1538,7 +1498,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * get font width
+     * Get font width.
      *
      * This is an OO-style alias of PHP's imagefontheight() function.
      * See the PHP manual for a full description.
@@ -1553,8 +1513,6 @@ class Image extends \Yana\Core\Object
      * This function is usefull to calculate how much space a string
      * is going to take on the picture when using this font.
      *
-     * @access  public
-     * @static
      * @param   int  $font   a font resource
      * @return  int|bool(false)
      */
@@ -1570,7 +1528,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * get font width
+     * Get font height.
      *
      * This is an OO-style alias of PHP's imagefontheight() function.
      * See the PHP manual for a full description.
@@ -1585,8 +1543,6 @@ class Image extends \Yana\Core\Object
      * This function is usefull to calculate how much space a string
      * is going to take on the picture when using this font.
      *
-     * @access  public
-     * @static
      * @param   int  $font   a font resource
      * @return  int|bool(false)
      */
@@ -1602,7 +1558,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * get color values (red,green,blue,alpha)
+     * Get color values (red,green,blue,alpha).
      *
      * This is an OO-style alias of PHP's imagecolorsforindex() function.
      * See the PHP manual for a full description.
@@ -1623,7 +1579,6 @@ class Image extends \Yana\Core\Object
      * )
      * </code>
      *
-     * @access  public
      * @param   int  $color   a color resource
      * @return  array|bool(false)
      */
@@ -1645,14 +1600,13 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * get color at pixel ($x,$y)
+     * Get color at pixel ($x,$y).
      *
      * This is an OO-style alias of PHP's imagecolorat() function.
      * See the PHP manual for a full description.
      *
      * This function returns bool(false) on error.
      *
-     * @access  public
      * @param   int  $x  horicontal position
      * @param   int  $y  vertical position
      * @return  int|bool(false)
@@ -1695,7 +1649,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * get image info
+     * Get image info.
      *
      * This is an OO-style alias of PHP's getimagesize() function.
      * See the PHP manual for a full description.
@@ -1708,8 +1662,6 @@ class Image extends \Yana\Core\Object
      *
      * Just choose the style that you prefer.
      *
-     * @access  public
-     * @static
      * @param   string  $filename  relative file path
      * @return  array
      */
@@ -1730,7 +1682,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * get a color for the current index
+     * Get a color for the current index.
      *
      * This is an OO-style alias of PHP's imagecolorallocate() function.
      * See the PHP manual for a full description.
@@ -1749,7 +1701,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(false) on error.
      *
-     * @access  public
      * @param   int    $r        red value
      * @param   int    $g        green value
      * @param   int    $b        blue value
@@ -1805,13 +1756,10 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * get current line width
-     *
-     * Returns the current line width in pixel as an integer value.
+     * Get current line width in pixel as an integer value.
      *
      * Returns bool(false) on error.
      *
-     * @access  public
      * @return  int|bool(false)
      */
     public function getLineWidth()
@@ -1832,7 +1780,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * set line width
+     * Set line width.
      *
      * Sets the line width of the current brush to $width.
      * The setting will apply to whatever you draw, until you
@@ -1840,7 +1788,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   int  $width  size in pixel
      * @return  bool
      */
@@ -1874,7 +1821,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * set line style
+     * Set line style.
      *
      * This is an OO-style alias of PHP's imagesetstyle() function.
      * See the PHP manual for details.
@@ -1891,7 +1838,6 @@ class Image extends \Yana\Core\Object
      *
      * To reset the line style, call this function with no arguments.
      *
-     * @access  public
      * @return  bool
      */
     public function setLineStyle()
@@ -1934,7 +1880,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * replace one palette color by another
+     * Replace one palette color by another.
      *
      * This replaces the palette color with the index $replacedColor
      * by the color with the index $newColor.
@@ -1956,7 +1902,6 @@ class Image extends \Yana\Core\Object
      * $image->replaceIndexColor(2, array('red'=>0,'green'=>255,'blue'=>100));
      * </code>
      *
-     * @access  public
      * @param   int        $replacedColor   index of replaced color
      * @param   array|int  $newColor        the color that should be assigned
      * @return  bool
@@ -2019,9 +1964,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * replace a color
-     *
-     * This replaces the replaced color by a new color.
+     * Replaces a color by a new one.
      *
      * To be more technical, this is done by setting the replaced
      * color as transparent, setting the new color as background
@@ -2034,7 +1977,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   int  $replacedColor   index of replaced color
      * @param   int  $newColor        index of the new color
      * @return  bool
@@ -2083,7 +2025,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * set current brush
+     * Set current brush.
      *
      * Sets the brush used by imageline(), imagepolygon() et cetera
      * to the image $brush.
@@ -2094,7 +2036,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   string|Image|Brush|resource  $brush  a brush resource
      * @return  bool
      */
@@ -2145,7 +2086,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * set current background color
+     * Set current background color.
      *
      * If you don't specify a background color, than the color
      * is reset.
@@ -2160,7 +2101,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   int   $backgroundColor  index of new background color
      * @param   bool  $replaceOldColor  set true for replace old color , false otherweise
      * @return  bool
@@ -2217,11 +2157,10 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * get current background color
+     * Get current background color.
      *
      * Returns the current background color as an integer or bool(false) on error.
      *
-     * @access  public
      * @return  int|bool(false)
      */
     public function getBackgroundColor()
@@ -2238,12 +2177,11 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * Check if image is interlaced
+     * Check if image is interlaced.
      *
      * This returns bool(true) if interlacing is turned on for the current image.
      * Returns bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isInterlaced()
@@ -2260,7 +2198,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * switch interlacing on / off
+     * Switch interlacing on / off.
      *
      * If $isInterlaced is true, interlacing is set to on,
      * otherwise set to off.
@@ -2270,7 +2208,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   bool  $isInterlaced   on / off
      * @return  bool
      */
@@ -2304,7 +2241,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * Check if image has alpha channel
+     * Check if image has alpha channel.
      *
      * This returns bool(true) if alpha channel is turned on for the current image.
      * Returns bool(false) otherwise.
@@ -2313,7 +2250,6 @@ class Image extends \Yana\Core\Object
      * This function has been renamed in version 2.8.8
      * from "hasAlphaChannel()" to "hasAlpha()".
      *
-     * @access  public
      * @return  bool
      */
     public function hasAlpha()
@@ -2331,7 +2267,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * set gamma correction
+     * Set gamma correction.
      *
      * Gamma can be any positive float 0.1 trough 10.0
      * The base is always 1.0 (100%). So e.g. calling setGamma(0.1)
@@ -2343,7 +2279,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   float  $gamma  effect strength
      * @return  bool
      */
@@ -2375,13 +2310,10 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * Rotate the image
+     * Rotate the image.
      *
      * This rotates the image anticlockwise by $angle degrees.
      *
-     * This function became available with PHP 4.3.
-     *
-     * @access  public
      * @param   float  $angle   angle of rotation in degree
      * @return  bool
      */
@@ -2415,7 +2347,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * Resize the canvas
+     * Resize the canvas.
      *
      * This resizes the canvas to $width x $height.
      *
@@ -2465,7 +2397,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(false) on error.
      *
-     * @access  public
      * @param   int       $width        horizontal dimension in pixel
      * @param   int       $height       vertical dimension in pixel
      * @param   int       $paddingLeft  horizontal offset
@@ -2632,15 +2563,13 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * Resize the image
+     * Resize the image.
      *
      * alias of Image::resize()
      *
-     * @access  public
      * @param   int  $width      horizontal dimension in pixel
      * @param   int  $height     vertical dimension in pixel
      * @return  bool
-     * @see     Image::resize()
      * @since   2.8.8
      */
     public function resizeImage($width = null, $height = null)
@@ -2651,7 +2580,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * Resize the image
+     * Resize the image.
      *
      * This resizes the image to $width x $height.
      *
@@ -2662,7 +2591,6 @@ class Image extends \Yana\Core\Object
      * IMPORTANT NOTE: this function resets some settings.
      * E.g. transparency, color depth a.s.o. will be lost.
      *
-     * @access  public
      * @param   int  $width      horizontal dimension in pixel
      * @param   int  $height     vertical dimension in pixel
      * @return  bool
@@ -2732,11 +2660,10 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * get current transparency color
+     * Get current transparency color.
      *
      * Returns bool(false) on error.
      *
-     * @access  public
      * @return  int|bool(false)
      */
     public function getTransparency()
@@ -2758,7 +2685,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * set transparency to a color
+     * Set transparency to a color.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -2778,7 +2705,6 @@ class Image extends \Yana\Core\Object
      * If $transparency is not set, the current background color
      * will be used instead.
      *
-     * @access  public
      * @param   int|array    $transparency  new transparent color
      * @return  bool
      */
@@ -2838,7 +2764,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * get number of colors in palette
+     * Get number of colors in palette.
      *
      * Returns bool(false) on error.
      *
@@ -2849,7 +2775,6 @@ class Image extends \Yana\Core\Object
      * This function may NOT return $number, but instead the number of colors that are actually used
      * in the image, which may be less then $number.
      *
-     * @access  public
      * @return  int|bool(false)
      */
     public function getPaletteSize()
@@ -2875,7 +2800,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * reduce color depth to value
+     * Reduce color depth to value.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -2885,7 +2810,6 @@ class Image extends \Yana\Core\Object
      * The argument $dither triggers whether or not dithering is used
      * while reducing the colors for the current image.
      *
-     * @access  public
      * @param   int     $ammount    effect strength
      * @param   bool    $dither     on / off
      * @return  bool
@@ -2949,7 +2873,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * copy one portion of an image to another
+     * Copy one portion of an image to another.
      *
      * This is an OO-style alias of PHP's imagecopymerge() function.
      * See the PHP manual for a full description.
@@ -2983,7 +2907,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   Image|string|resource    $sourceImage  filename or image resource
      * @param   int                      $sourceX      horizontal position in pixel
      * @param   int                      $sourceY      vertical position in pixel
@@ -3081,11 +3004,10 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * convert a colored image to grayscale
+     * Convert a colored image to grayscale.
      *
      * This converts the palette colors to gray values.
      *
-     * @access  public
      * @see     Image::toGrayscale()
      * @return  bool
      */
@@ -3115,10 +3037,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * alias of Image::toGrayscale()
-     *
-     * @access  public
-     * @see     Image::toGrayscale()
+     * Alias of Image::toGrayscale().
      */
     public function toGreyscale()
     {
@@ -3126,7 +3045,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * create a monochromatic image
+     * Create a monochromatic image.
      *
      * This produces a monochromatic version of the image,
      * shaded in the color provided.
@@ -3135,7 +3054,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   int    $r        red value
      * @param   int    $g        green value
      * @param   int    $b        blue value
@@ -3245,7 +3163,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * brighten / darken the image
+     * Brighten / darken the image.
      *
      * Adds or removes white from the image.
      *
@@ -3257,7 +3175,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   float    $ammount    effect strength
      * @return  bool
      */
@@ -3287,7 +3204,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * add / remove contrast from the image
+     * Raise / lower contrast of the image.
      *
      * Adds or removes grey from the image.
      *
@@ -3296,7 +3213,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   float    $ammount    effect strength
      * @return  bool
      */
@@ -3346,13 +3262,12 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * procude negative image
+     * Procude negative image.
      *
      * This function negates all colors.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @return  bool
      */
     public function negate()
@@ -3383,7 +3298,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * apply a filter
+     * Apply a filter.
      *
      * This is an OO-style alias of PHP's imagefilter() function.
      * See the PHP manual for a full description.
@@ -3411,7 +3326,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   int    $filter   a constant (see list)
      * @return  bool
      *
@@ -3458,7 +3372,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * colorize the image
+     * Colorize the image.
      *
      * This adds the specified color to the image,
      * shaded in the color provided.
@@ -3467,10 +3381,9 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
-     * @param   int    $r        red value
-     * @param   int    $g        green value
-     * @param   int    $b        blue value
+     * @param   int  $r  red value
+     * @param   int  $g  green value
+     * @param   int  $b  blue value
      * @return  bool
      */
     public function colorize($r, $g, $b)
@@ -3515,7 +3428,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * multiply the palette values with a color
+     * Multiply the palette values with a color.
      *
      * The color provided multiplies with each color in the palette.
      * For example, this is usefull to filter colors.
@@ -3540,7 +3453,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   int    $r        red value
      * @param   int    $g        green value
      * @param   int    $b        blue value
@@ -3582,13 +3494,12 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * blur the image
+     * Blur the image.
      *
      * This makes the image look smoother.
      * The argument $ammount is any float 0.0 through 1.0,
      * which translates to 0% through 100%.
      *
-     * @access  public
      * @param   float  $ammount  effect strength
      * @return  bool
      */
@@ -3646,13 +3557,12 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * sharpen the image
+     * Sharpen the image.
      *
      * This sharpens the image.
      * The argument $ammount is any float 0.0 through 1.0,
      * which translates to 0% through 100%.
      *
-     * @access  public
      * @param   float  $ammount  effect strength
      * @return  bool
      */
@@ -3725,7 +3635,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * flip the image horizontally
+     * Flip the image horizontally.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -3736,7 +3646,6 @@ class Image extends \Yana\Core\Object
      *
      * }}
      *
-     * @access  public
      * @return  bool
      */
     public function flipX()
@@ -3793,7 +3702,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * flip the image vertically
+     * Flip the image vertically.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -3804,7 +3713,6 @@ class Image extends \Yana\Core\Object
      *
      * }}
      *
-     * @access  public
      * @return  bool
      */
     public function flipY()
@@ -3872,7 +3780,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * copy palette
+     * Copy palette.
      *
      * This copies the palette from the source image
      * to this image.
@@ -3882,7 +3790,6 @@ class Image extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   Image|string|resource    $sourceImage    the image to copy the palette from
      * @return  bool
      */
@@ -3911,7 +3818,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * output image to browser
+     * Output image to browser.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -3923,7 +3830,6 @@ class Image extends \Yana\Core\Object
      * PNG will fall back to JPEG, JPEG to GIF, GIF to BMP.
      * If nothing of the above worked it gives up and returns bool(false).
      *
-     * @access  public
      * @param   string  $imageType  can be on of "png", "jpg", "gif", "bmp"
      * @return  bool
      */
@@ -3985,7 +3891,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * output image to a file
+     * Output image to a file.
      *
      * Returns the name of the output file on success and bool(false) on error.
      *
@@ -4004,7 +3910,6 @@ class Image extends \Yana\Core\Object
      * Only if nothing of the above worked, it will give up and returns bool(false).
      * Otherwise bool(true) is returned.
      *
-     * @access  public
      * @param   string  $filename   name of the output file
      * @param   string  $imageType  can be on of "png", "jpg", "gif", "bmp"
      * @return  string|bool(false)
@@ -4056,7 +3961,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * create thumbnail from image file
+     * Create thumbnail from image file.
      *
      * The image is resized to the dimensions given by the arguments $width x $height.
      * If you set one of these to NULL, the other one will be determined automatically.
@@ -4090,7 +3995,6 @@ class Image extends \Yana\Core\Object
      * $image->createThumbnail($width, $height, $ratio, $color);
      * </code>
      *
-     * @access  public
      * @param   int     $width            horizontal dimension of the output image in pixel
      * @param   int     $height           vertical dimension of the output image in pixel
      * @param   bool    $keepAspectRatio  vertical dimension of the output image in pixel
@@ -4160,7 +4064,7 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * compare this image to another
+     * Compare this image to another.
      *
      * This function compare the image to another image on a pixel by pixel
      * basis. It returns the difference between booth images in percent.
@@ -4182,7 +4086,6 @@ class Image extends \Yana\Core\Object
      * large images. It's use is suggested for testing and debugging issues
      * only.
      *
-     * @access  public
      * @param   Image|string  $comparedImage  filename or image object
      * @return  float
      * @since   2.9.9
@@ -4258,12 +4161,11 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * get a string representation of this object
+     * Get a string representation of this object.
      *
      * This function is intended to be called when the object
      * is used in a string context.
      *
-     * @access  public
      * @return  string
      */
     public function __toString()
@@ -4285,11 +4187,10 @@ class Image extends \Yana\Core\Object
     }
 
     /**
-     * Destructor
+     * Destructor.
      *
      * Automatically free memory for the image if object gets deleted.
      *
-     * @access public
      * @ignore
      */
     public function __destruct()
@@ -4303,6 +4204,7 @@ class Image extends \Yana\Core\Object
             }
         }
     }
+
 }
 
 ?>
