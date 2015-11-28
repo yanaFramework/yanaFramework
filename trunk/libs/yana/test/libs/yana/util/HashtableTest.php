@@ -41,8 +41,7 @@ class HashtableTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    array
-     * @access protected
+     * @var  array
      */
     protected $array = array(
         'ID1' => 'abc',
@@ -55,8 +54,6 @@ class HashtableTest extends \PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     *
-     * @access protected
      */
     protected function setUp()
     {
@@ -66,8 +63,6 @@ class HashtableTest extends \PHPUnit_Framework_TestCase
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
-     *
-     * @access protected
      */
     protected function tearDown()
     {

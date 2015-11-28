@@ -41,16 +41,13 @@ class SXMLTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    SXML
-     * @access protected
+     * @var  \Yana\Files\Decoders\SXML
      */
     protected $object = null;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     *
-     * @access protected
      */
     protected function setUp()
     {
@@ -60,8 +57,6 @@ class SXMLTest extends \PHPUnit_Framework_TestCase
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
-     *
-     * @access protected
      */
     protected function tearDown()
     {
