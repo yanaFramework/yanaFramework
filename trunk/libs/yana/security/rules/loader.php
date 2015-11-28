@@ -172,7 +172,7 @@ class Loader extends \Yana\Core\Object implements \Yana\Log\IsLogable
     /**
      * Rescan plugin list and refresh the action security settings.
      *
-     * @param \Yana\Plugins\Configs\MethodCollection  $eventConfigurations  list of methods for which to load the security settings
+     * @param   \Yana\Plugins\Configs\MethodCollection  $eventConfigurations  methods for which to load the security settings
      * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  if the existing entries could not be deleted
      * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if the new entries could not be inserted
      */
