@@ -28,11 +28,8 @@
 namespace Yana\VDrive;
 
 /**
- * Virtual Drive File
+ * Virtual Drive File.
  *
- * class representing virtual files
- *
- * @access     public
  * @package    yana
  * @subpackage vdrive
  *
