@@ -45,8 +45,6 @@ class SuiteFull extends PHPUnit_Framework_TestSuite
      * adds all test-cases found and then returns
      * a test-suite containing all available tests.
      *
-     * @access  public
-     * @static
      * @return  SuiteFull
      */
     public static function suite()
@@ -69,8 +67,6 @@ class SuiteFull extends PHPUnit_Framework_TestSuite
      * Each file is given with full path and file
      * name.
      *
-     * @access  private
-     * @static
      * @param   string  $directory  base directory
      * @param   array   &$files     used for recursion only
      * @return  array
@@ -103,6 +99,7 @@ class SuiteFull extends PHPUnit_Framework_TestSuite
             return array();
         }
     }
+
 }
 
 ?>
