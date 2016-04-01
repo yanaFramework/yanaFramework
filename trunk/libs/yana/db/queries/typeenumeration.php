@@ -32,7 +32,6 @@ namespace Yana\Db\Queries;
  *
  * Values for possible database statements.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  *

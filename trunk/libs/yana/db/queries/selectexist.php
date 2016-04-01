@@ -244,7 +244,6 @@ class SelectExist extends \Yana\Db\Queries\AbstractQuery
      * This sends the query statement to the database and returns bool(true)
      * if the requested database object exists and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function doesExist()
