@@ -37,7 +37,7 @@ namespace Yana\RSS;
  * @package     yana
  * @subpackage  rss
  */
-class Item extends \Yana\Core\Object
+class Item extends \Yana\Core\Object implements \Yana\RSS\IsItem
 {
 
     /**
