@@ -39,7 +39,6 @@ namespace Yana\RSS;
  * You are to implement the code for the action (=plugin function) yourself.
  * To find out how to do that, see the documentation to class {@see Feed}.
  *
- * @access      public
  * @package     yana
  * @subpackage  rss
  */
