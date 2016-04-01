@@ -32,7 +32,6 @@ namespace Yana\Db;
  *
  * This wrapper class represents the structure of a database
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  * @deprecated  since 3.1.0
@@ -42,23 +41,29 @@ class Structure extends \Yana\Files\SML
     /**
      * File extensions
      *
-     * @access  private
-     * @static
-     * @var     string
+     * @var  string
      */
     private static $_extension = ".config";
 
-    /**#@+
-     * @ignore
-     * @access  private
+    /**
+     * @var  array
      */
+    private $_cachedFields = array();
 
-    /** @var  array  */   private $_cachedFields = array();
-    /** @var  array  */   private $_changedItems = array();
-    /** @var  string */   private $_logText = "";
-    /** @var  string */   private $_dbName = null;
+    /**
+     * @var  array
+     */
+    private $_changedItems = array();
 
-    /**#@-*/
+    /**
+     * @var  string
+     */
+    private $_logText = "";
+
+    /**
+     * @var  string
+     */
+    private $_dbName = null;
 
     /**
      * @ignore
@@ -66,8 +71,6 @@ class Structure extends \Yana\Files\SML
     const AUTO = "auto";
 
     /**
-     * constructor
-     *
      * Create a new instance of this class.
      *
      * The argument $filename may either be a path to a structure file, or,
@@ -87,11 +90,8 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get database name
-     *
      * Returns the name of the database file.
      *
-     * @access  public
      * @return  string
      * @since   3.1.0
      */
@@ -104,12 +104,10 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * read and initialize the file
+     * Read and initialize the file.
      *
      * Always call this first before anything else.
      * Returns the file content on success and bool(false) on error.
-     *
-     * @access  public
      */
     public function read()
     {
@@ -159,9 +157,8 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get the compiled structure of the database
+     * Get the compiled structure of the database.
      *
-     * @access  public
      * @return  mixed
      */
     public function getStructure()
@@ -170,13 +167,12 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get the file source
+     * Get the file source.
      *
      * Returns the text of the source file containing
      * the database structure as a string or bool(false)
      * on error.
      *
-     * @access  public
      * @return  mixed
      */
     public function getSource()
@@ -197,13 +193,12 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether a table exists in the current structure
+     * Check whether a table exists in the current structure.
      *
      * Returns bool(true) if a table with the given name is listed
      * in the current structure file and bool(false) otherwise.
      * Note that this operation is not case sensitive.
      *
-     * @access  public
      * @param   string  $table  name of table
      * @return  bool
      */
@@ -213,11 +208,10 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * add a new table
+     * Add a new table.
      *
      * Returns bool(true) on success and bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $table  name of table
      * @return  bool
      * @since   2.9
@@ -245,11 +239,10 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * rename a table
+     * Rename a table.
      *
      * Returns bool(true) on success and bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $oldTable   previous name of table
      * @param   string  $newTable   new name of table
      * @return  bool
@@ -290,12 +283,11 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * drop a table
+     * Drop a table.
      *
      * Removes a table definition from the database.
      * Returns bool(true) on success and bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $table  previous name of table
      * @return  bool
      * @since   2.9.7
@@ -305,7 +297,7 @@ class Structure extends \Yana\Files\SML
      */
     public function dropTable($table)
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected');
+        assert('is_string($table); // Invalid argument $table: String expected');
         $table = mb_strtoupper("$table");
 
         if (!isset($this->content['TABLES'][$table])) {
@@ -326,29 +318,29 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether a column exists in the current structure
+     * Check whether a column exists in the current structure.
      *
      * Returns bool(true) if a table named $table is listed
      * in the current structure file and it has a column named $column
      * in its list of contents. Returns bool(false) otherwise.
      * Note that this operation is not case sensitive.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  bool
      */
     public function isColumn($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         return is_array($this->_getColumn($table, $column));
     }
 
     /**
-     * add a new column
+     * Add a new column.
      *
      * Returns bool(true) on success and bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  bool
@@ -359,6 +351,8 @@ class Structure extends \Yana\Files\SML
      */
     public function addColumn($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $tbl =& $this->_getTable($table);
         if (!is_array($tbl)) {
             /* error: table not found */
@@ -380,11 +374,10 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * rename a column
+     * Rename a column.
      *
      * Returns bool(true) on success and bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $table      name of table
      * @param   string  $oldColumn  previous name of column
      * @param   string  $newColumn  new name of column
@@ -433,11 +426,10 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * drop a column
+     * Drop a column.
      *
      * Returns bool(true) on success and bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  previous name of column
      * @return  bool
@@ -448,8 +440,8 @@ class Structure extends \Yana\Files\SML
      */
     public function dropColumn($table, $column)
     {
-        assert('is_string($table); // Invalid argument $table: string expected');
-        assert('is_string($column); // Invalid argument $column: string expected');
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
 
         $column = mb_strtoupper($column);
 
@@ -476,7 +468,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * set sql statements for initialization of a table
+     * Set sql statements for initialization of a table.
      *
      * This adds a list of standard SQL statements to a table,
      * that will be auto-run, when the database is installed.
@@ -529,7 +521,6 @@ class Structure extends \Yana\Files\SML
      * for MySQL, "config/db/.install/postgresql/foo.sql" for
      * PostgreSQL aso.
      *
-     * @access  public
      * @param   string  $table       name of table
      * @param   array   $statements  list of sql statements
      * @return  bool
@@ -539,6 +530,7 @@ class Structure extends \Yana\Files\SML
      */
     public function setInit($table, array $statements = null)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
         $tbl =& $this->_getTable($table);
         if (!is_array($tbl)) {
             /* error: table not found */
@@ -575,7 +567,6 @@ class Structure extends \Yana\Files\SML
      * You may leave argument $table blank to get all statements
      * for all tables.
      *
-     * @access  public
      * @param   string  $table  name of table
      * @return  bool
      * @name    DbStructure::getInit()
@@ -584,6 +575,7 @@ class Structure extends \Yana\Files\SML
      */
     public function getInit($table = null)
     {
+        assert('is_null($table) || is_string($table); // Invalid argument $table: String expected');
         if (is_null($table)) {
             $tables = (array) $this->getTables();
         } elseif (is_string($table)) {
@@ -622,14 +614,13 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether a column allows NULL values
+     * Check whether a column allows NULL values.
      *
      * Returns bool(true) if a table named $table is listed
      * in the current structure file and it has a column named $column
      * that allows undefined values (NULL). Returns bool(false) otherwise.
      * Note that this operation is not case sensitive.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  bool
@@ -639,6 +630,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isNullable($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -664,7 +657,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * choose wether a column should be nullable
+     * Choose wether a column should be nullable.
      *
      * Sets the "required" property of the column.
      * If the argument $isNullable is bool(true), then
@@ -675,7 +668,6 @@ class Structure extends \Yana\Files\SML
      * returns bool(false).
      * Otherwise it returns bool(true).
      *
-     * @access  public
      * @param   string  $table       name of table
      * @param   string  $column      name of column
      * @param   bool    $isNullable  new value of this property
@@ -686,6 +678,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setNullable($table, $column, $isNullable)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_bool($isNullable); // Invalid argument $isNullable: Boolean expected');
         $col =& $this->_getColumn($table, $column);
 
         /*
@@ -715,7 +710,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * make a column use auto-number / auto-filled values
+     * Make a column use auto-number / auto-filled values.
      *
      * Sets the property "required" of the selected column to
      * the value "auto".
@@ -744,7 +739,6 @@ class Structure extends \Yana\Files\SML
      *
      * Returns bool(false) if the table or column does not exist.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @param   bool    $isAuto  new value of this property
@@ -757,6 +751,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setAuto($table, $column, $isAuto = true)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_bool($isAuto); // Invalid argument $isAuto: Boolean expected');
         $col =& $this->_getColumn($table, $column);
 
         /*
@@ -785,7 +782,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether a column uses the "autofill" feature
+     * Check whether a column uses the "autofill" feature.
      *
      * Returns bool(true) if a table named $table is listed
      * in the current structure file and it has a column named $column
@@ -795,7 +792,6 @@ class Structure extends \Yana\Files\SML
      * Autofill is activated by setting the property "REQUIRED"
      * to "AUTO".
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  bool
@@ -805,6 +801,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isAuto($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -823,14 +821,13 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether a column is autonumber/autoincrement
+     * Check whether a column is autonumber/autoincrement.
      *
      * Returns bool(true) if a table named $table is listed
      * in the current structure file and it has a column named $column
      * that is an autonumber colummn. Returns bool(false) otherwise.
      * Note that this operation is not case sensitive.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  bool
@@ -839,6 +836,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isAutonumber($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $type = $this->getType($table, $column);
         $type = mb_strtolower($type);
         if ($type !== 'int' && $type !== 'integer') {
@@ -849,14 +848,13 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether a column is indexed in the current structure
+     * Check whether a column is indexed in the current structure.
      *
      * Returns bool(true) if a table named $table is listed
      * in the current structure file and it has a column named $column,
      * which has an index. Returns bool(false) otherwise.
      * Note that this operation is not case sensitive.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  bool
@@ -866,6 +864,8 @@ class Structure extends \Yana\Files\SML
      */
     public function hasIndex($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -892,11 +892,10 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * add/remove an index on a column
+     * Add/remove an index on a column.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   string  $table     name of table
      * @param   string  $column    name of column
      * @param   bool    $hasIndex  new value of this property
@@ -907,6 +906,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setIndex($table, $column, $hasIndex)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_bool($hasIndex); // Invalid argument $hasIndex: Boolean expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -930,7 +932,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether the table has a column containing a profile id
+     * Check whether the table has a column containing a profile id.
      *
      * Returns the name of a column that is supposed to contain the
      * profile id (if any).
@@ -939,8 +941,7 @@ class Structure extends \Yana\Files\SML
      * or $table does not have a column using a profile id, or the
      * specified column does not exist, the function returns bool(false).
      *
-     * @access  public
-     * @param   string  $table   name of table
+     * @param   string  $table  name of table
      * @return  string
      * @since   2.9
      * @name    DbStructure::getProfile()
@@ -948,7 +949,7 @@ class Structure extends \Yana\Files\SML
      */
     public function getProfile($table)
     {
-
+        assert('is_string($table); // Invalid argument $table: String expected');
         $tbl =& $this->_getTable($table);
 
         if (!is_array($tbl)) {
@@ -970,13 +971,12 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * add/remove a profile reference on a column
+     * Add/remove a profile reference on a column.
      *
      * To unset, leave $column blank.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  bool
@@ -986,6 +986,8 @@ class Structure extends \Yana\Files\SML
      */
     public function setProfile($table, $column = null)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_null($column) || is_string($column); // Invalid argument $column: String expected');
         $tbl =& $this->_getTable($table);
 
         if (!is_array($tbl)) {
@@ -1012,20 +1014,21 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether a foreign key exists in the current structure
+     * Check whether a foreign key exists in the current structure.
      *
      * Returns bool(true) if a table named $table is listed
      * in the current structure file and it has a column named $column
      * in its list of foreign keys. Returns bool(false) otherwise.
      * Note that this operation is not case sensitive.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  bool
      */
     public function isForeignKey($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         /* settype to STRING */
         $column = (string) $column;
         $column = mb_strtoupper($column);
@@ -1045,7 +1048,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * add a foreign key constraint
+     * Add a foreign key constraint.
      *
      * Sets a foreign key constraint on a $column in $table.
      * The foreign key will point to table $ftable.
@@ -1054,7 +1057,6 @@ class Structure extends \Yana\Files\SML
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   string  $table   name of base table
      * @param   string  $column  name of column
      * @param   string  $ftable  name of target table
@@ -1062,6 +1064,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setForeignKey($table, $column, $ftable = null)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_null($ftable) || is_string($ftable); // Invalid argument $ftable: String expected');
         /* settype to STRING */
         $column = (string) $column;
         $column = mb_strtoupper($column);
@@ -1110,20 +1115,21 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether a primary key exists in the current structure
+     * Check whether a primary key exists in the current structure.
      *
      * Returns bool(true) if a table named $table is listed
      * in the current structure file and its primary key is named $column.
      * Returns bool(false) otherwise.
      * Note that this operation is not case sensitive.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  bool
      */
     public function isPrimaryKey($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         /* settype to STRING */
         $column = (string) $column;
         if (strcasecmp($this->getPrimaryKey($table), $column) === 0) {
@@ -1135,7 +1141,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether a column has a unique constraint
+     * Check whether a column has a unique constraint.
      *
      * Returns bool(true) if a table named $table is listed
      * in the current structure file, it has a column named $column
@@ -1143,7 +1149,6 @@ class Structure extends \Yana\Files\SML
      * Returns bool(false) otherwise.
      * Note that this operation is not case sensitive.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  bool
@@ -1153,6 +1158,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isUnique($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1172,7 +1179,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * add/remove a unique constraint on a column
+     * Add/remove a unique constraint on a column.
      *
      * Returns bool(true) on success and bool(false) otherwise.
      *
@@ -1182,7 +1189,6 @@ class Structure extends \Yana\Files\SML
      *
      * Primary keys implicitely have a unique constraint.
      *
-     * @access  public
      * @param   string  $table     name of table
      * @param   string  $column    name of column
      * @param   bool    $isUnique  new value of this property
@@ -1194,6 +1200,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setUnique($table, $column, $isUnique)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_bool($isUnique); // Invalid argument $isUnique: Boolean expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1213,7 +1222,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether a column is an unsigned number
+     * Check whether a column is an unsigned number.
      *
      * Returns bool(true) if a table named $table is listed
      * in the current structure file, it has a column named $column
@@ -1227,7 +1236,6 @@ class Structure extends \Yana\Files\SML
      * Important note: if unsigned is not supported by your DBMS, it is
      * emulated by the framework's database API.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  bool
@@ -1237,6 +1245,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isUnsigned($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1256,7 +1266,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * set a column to an unsigned number
+     * Set a column to an unsigned number.
      *
      * Returns bool(true) on success and bool(false) otherwise.
      *
@@ -1273,7 +1283,6 @@ class Structure extends \Yana\Files\SML
      * replaces an invalid value by 0 - which *MIGHT* lead to an error or unexpected
      * behavior of an application working on the database.
      *
-     * @access  public
      * @param   string  $table       name of table
      * @param   string  $column      name of column
      * @param   bool    $isUnsigned  new value of this property
@@ -1285,6 +1294,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setUnsigned($table, $column, $isUnsigned)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_bool($isUnsigned); // Invalid argument $isUnsigned: Boolean expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1316,7 +1328,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether a column is a number with the zerofill flag set
+     * Check whether a column is a number with the zerofill flag set.
      *
      * Returns bool(true) if a table named $table is listed
      * in the current structure file, it has a column named $column
@@ -1335,7 +1347,6 @@ class Structure extends \Yana\Files\SML
      * Important note: if zerofill is not supported by your DBMS, it is
      * emulated by the framework's database API.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  bool
@@ -1345,6 +1356,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isZerofill($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1365,7 +1378,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * set a numeric column to zerofill
+     * Set a numeric column to zerofill.
      *
      * Returns bool(true) on success and bool(false) otherwise.
      *
@@ -1377,7 +1390,6 @@ class Structure extends \Yana\Files\SML
      * Important note: if zerofill is not supported by your DBMS, it is
      * emulated by the framework's database API.
      *
-     * @access  public
      * @param   string  $table       name of table
      * @param   string  $column      name of column
      * @param   bool    $isZerofill  new value of this property (true = use zerofill feature, false = don't use it)
@@ -1388,6 +1400,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setZerofill($table, $column, $isZerofill)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_bool($isZerofill); // Invalid argument $isZerofill: Boolean expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1418,12 +1433,11 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check if column has a numeric data type
+     * Check if column has a numeric data type.
      *
      * Returns bool(true) if the table and colum exist and the type of the column is numeric.
      * Returns bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $table     name of table
      * @param   string  $column    name of column
      * @return  bool
@@ -1431,6 +1445,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isNumber($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1465,7 +1481,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * return a list of foreign keys defined on a table
+     * Return a list of foreign keys defined on a table.
      *
      * Returns an associative array of foreign keys.
      * If $table is not specified in the current structure file,
@@ -1490,12 +1506,12 @@ class Structure extends \Yana\Files\SML
      * }
      * </code>
      *
-     * @access  public
      * @param   string  $table   name of table
      * @return  array
      */
     public function getForeignKeys($table)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
         $tbl =& $this->_getTable($table);
 
         if (!is_array($tbl)) {
@@ -1513,7 +1529,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get the primary key of a table
+     * Get the primary key of a table.
      *
      * Returns the name of the primary key column of $table as a
      * lower-cased string.
@@ -1521,12 +1537,12 @@ class Structure extends \Yana\Files\SML
      * structure file.
      * Returns NULL and issues an E_USER_WARNING if there is no primary key for $table.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @return  string
      */
     public function getPrimaryKey($table)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
         $tbl =& $this->_getTable($table);
 
         if (!is_array($tbl)) {
@@ -1545,18 +1561,19 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * set the primary key of a table
+     * Set the primary key of a table.
      *
      * Select $column as the primary key of $table.
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  bool
      */
     public function setPrimaryKey($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         /* settype to STRING */
         $column = (string) $column;
         $column = mb_strtolower($column);
@@ -1584,12 +1601,11 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get the user description of a column
+     * Get the user description of a column.
      *
      * Returns the description text (=comment) of $column in $table as a string or bool(false) if
      * none exists.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  string
@@ -1599,6 +1615,8 @@ class Structure extends \Yana\Files\SML
      */
     public function getDescription($table = null, $column = null)
     {
+        assert('is_null($table) || is_string($table); // Invalid argument $table: String expected');
+        assert('is_null($column) || is_string($column); // Invalid argument $column: String expected');
         /*
          * get description on database
          */
@@ -1644,7 +1662,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * set the description property of a column
+     * Set the description property of a column.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -1660,7 +1678,6 @@ class Structure extends \Yana\Files\SML
      * To set the property of a database,
      * set the argument $table to NULL.
      *
-     * @access  public
      * @param   string  $table        name of table
      * @param   string  $column       name of column (set to NULL to modify the description property of a table)
      * @param   string  $description  new value of this property
@@ -1671,6 +1688,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setDescription($table, $column, $description)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_string($description); // Invalid argument $description: String expected');
         /*
          * set description on database
          */
@@ -1710,14 +1730,13 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get the maximum length of a column as specified in the structure
+     * Get the maximum length of a column as specified in the structure.
      *
      * Returns the 'length' attribute of $column in $table.
      * Returns int(0) if there is no $table, or the table has no
      * column named $column, or the column does not have a 'length'
      * attribute.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  int
@@ -1726,6 +1745,8 @@ class Structure extends \Yana\Files\SML
      */
     public function getLength($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1752,14 +1773,13 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get the maximum length of the decimal fraction of a float
+     * Get the maximum length of the decimal fraction of a float.
      *
      * Returns the 'precision' attribute of $column in $table.
      * Returns int(0) if there is no $table, or the table has no
      * column named $column, or the column does not have a 'precision'
      * attribute.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  int
@@ -1770,6 +1790,8 @@ class Structure extends \Yana\Files\SML
      */
     public function getPrecision($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1804,7 +1826,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * set the maximum length property of a column
+     * Set the maximum length property of a column.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -1814,7 +1836,6 @@ class Structure extends \Yana\Files\SML
      * It applies to floating point values only and defines the
      * length of the decimal fraction of the input number.
      *
-     * @access  public
      * @param   string  $table      name of table
      * @param   string  $column     name of column
      * @param   int     $length     new value of this property
@@ -1827,6 +1848,10 @@ class Structure extends \Yana\Files\SML
      */
     public function setLength($table, $column, $length, $precision = -1)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_int($length); // Invalid argument $length: Integer expected');
+        assert('is_int($precision); // Invalid argument $precision: Integer expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1859,14 +1884,13 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get the data type of a field as specified in the structure
+     * Get the data type of a field as specified in the structure.
      *
      * Returns the 'type' attribute of $column in $table as a lower-cased string.
      * Returns string("") if there is no $table, or the table has no
      * column named $column, or the column does not have a 'type'
      * attribute.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  string
@@ -1875,6 +1899,8 @@ class Structure extends \Yana\Files\SML
      */
     public function getType($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1889,12 +1915,11 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * set the type of a field as specified in the structure
+     * Set the type of a field as specified in the structure.
      *
      * Note: this function does not check if the provided
      * string is a valid type name.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @param   midex   $value   new value of this property
@@ -1905,6 +1930,8 @@ class Structure extends \Yana\Files\SML
      */
     public function setType($table, $column, $value)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -1924,7 +1951,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get the properties of a field of type 'image'
+     * Get the properties of a field of type 'image'.
      *
      * Returns an array of the following values:
      * <code>
@@ -1939,7 +1966,6 @@ class Structure extends \Yana\Files\SML
      * If one of the values above does not exist,
      * the field is set to 'null'.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  array
@@ -1949,6 +1975,8 @@ class Structure extends \Yana\Files\SML
      */
     public function getImageSettings($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -2003,7 +2031,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * set the properties of a field of type 'image'
+     * Set the properties of a field of type 'image'.
      *
      * The argument $settings is an array of the following values:
      * <code>
@@ -2018,7 +2046,6 @@ class Structure extends \Yana\Files\SML
      * If one of the values above does not exist,
      * the field is set to 'null'.
      *
-     * @access  public
      * @param   string  $table     name of table
      * @param   string  $column    name of column
      * @param   array   $settings  new set of image settings
@@ -2029,6 +2056,8 @@ class Structure extends \Yana\Files\SML
      */
     public function setImageSettings($table, $column, array $settings)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -2076,12 +2105,11 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get a list of all columns that match a certain type
+     * Get a list of all columns that match a certain type.
      *
      * Returns false if the table does not exist.
      * Otherwise it returns a list of column names.
      *
-     * @access  public
      * @param   string  $table  name of table
      * @param   string  $type   datatype ('string', 'text', 'int', ...)
      * @return  array
@@ -2089,6 +2117,8 @@ class Structure extends \Yana\Files\SML
      */
     public function getColumnsByType($table, $type)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($type); // Invalid argument $type: String expected');
         /* settype to STRING */
         $table = (string) $table;
         $type  = (string) $type;
@@ -2112,7 +2142,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get a list of all columns that contain blobs
+     * Get a list of all columns that contain blobs.
      *
      * This function provides a list of all columns,
      * which are of type "image" or "file" in $table
@@ -2121,13 +2151,13 @@ class Structure extends \Yana\Files\SML
      * It returns bool(false) if the table does not
      * exist.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @return  array
      * @since   2.8.9
      */
     public function getFiles($table)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
         /* settype to STRING */
         $table  = (string) $table;
         /* get list of all columns */
@@ -2149,7 +2179,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get the default value of a field as specified in the structure
+     * Get the default value of a field as specified in the structure.
      *
      * Returns the default value of $column in $table (where available).
      * The type of the default value returned depends on the type of the
@@ -2159,13 +2189,14 @@ class Structure extends \Yana\Files\SML
      * specified, or the table/column does not exist.
      * Use is_null($result) to test for existance, don't use empty($result).
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  mixed
      */
     public function getDefault($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $property =& $this->_getColumnProperty($table, $column, 'DEFAULT');
         $type = $this->getType($table, $column);
 
@@ -2195,9 +2226,8 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * set the default value of a field as specified in the structure
+     * Set the default value of a field as specified in the structure.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @param   mixed   $value   new value of this property
@@ -2206,6 +2236,8 @@ class Structure extends \Yana\Files\SML
      */
     public function setDefault($table, $column, $value)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         if ($this->_setColumnProperty($table, $column, 'DEFAULT', $value)) {
             /*
              * write protocol to keep track of changes
@@ -2219,18 +2251,18 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get the names of all columns in a table
+     * Get the names of all columns in a table.
      *
      * Returns a numeric array of all columns in $table.
      * Issues an E_USER_NOTICE and returns an empty array, if $table does not exist
      * in current structure file.
      *
-     * @access  public
      * @param   string  $table  name of table
      * @return  array
      */
     public function getColumns($table)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
         $tbl =& $this->_getTable($table);
 
         if (!is_array($tbl)) {
@@ -2243,18 +2275,19 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get the name of the table, a foreign key points to
+     * Get the name of the table, a foreign key points to.
      *
      * Returns the lower-cased table name. If the foreign
      * key does not exist, an empty string is returned.
      *
-     * @access  public
      * @param   string  $table       name of base table
      * @param   string  $foreignKey  name of column containing the foreign key
      * @return  string
      */
     public function getTableByForeignKey($table, $foreignKey)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($foreignKey); // Invalid argument $foreignKey: String expected');
         $foreignKey = mb_strtoupper("$foreignKey");
 
         $tbl =& $this->_getTable($table);
@@ -2268,12 +2301,11 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether the structure defines the "USE_STRICT" setting as bool(true)
+     * Check whether the structure defines the "USE_STRICT" setting as bool(true).
      *
      * Returns bool(true) if the "USE_STRICT" property
      * of the database is true and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      * @name    DbStructure::isStrict()
      * @see     DbStructure::setStrict()
@@ -2289,12 +2321,11 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * select whether the structure should use the "strict" directive
+     * Select whether the structure should use the "strict" directive.
      *
      * Set the property "USE_STRICT" of the database file to
      * the argument $isStrict;
      *
-     * @access  public
      * @param   bool  $isStrict  new value of this property
      * @since   2.9
      * @name    DbStructure::setStrict()
@@ -2303,6 +2334,7 @@ class Structure extends \Yana\Files\SML
      */
     public function setStrict($isStrict)
     {
+        assert('is_bool($isStrict); // Invalid argument $isStrict: Boolean expected');
         if ($isStrict) {
             $this->content['USE_STRICT'] = true;
         } else {
@@ -2311,13 +2343,12 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get a list of all tables in the current database
+     * Get a list of all tables in the current database.
      *
      * Returns a numeric array of all tables in the current structure file.
      * Issues an E_USER_NOTICE and returns an empty array, if the list of
      * tables is empty.
      *
-     * @access  public
      * @return  array
      */
     public function getTables()
@@ -2331,18 +2362,18 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get a list of all indexed columns in a table
+     * Get a list of all indexed columns in a table.
      *
      * Returns a numeric array of all columns in $table, that are marked with the
      * option INDEX => true (which means, all columns that have an index).
      *
-     * @access  public
      * @param   string  $table  name of table
      * @return  array
      * @since   2.8.5
      */
     public function getIndexes($table)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
         if (!isset($this->content['TABLES'])) {
             trigger_error("The list of tables is empty.", E_USER_NOTICE);
             return array();
@@ -2364,18 +2395,18 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get a list of all unique columns of a table
+     * Get a list of all unique columns of a table.
      *
      * Returns a numeric array of all columns in $table, that are marked with the
      * option UNQIUE => true (which means, all columns that have an unique constraint).
      *
-     * @access  public
      * @param   string  $table  name of table
      * @return  array
      * @since   2.8.5
      */
     public function getUniqueConstraints($table)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
         if (!isset($this->content['TABLES'])) {
             trigger_error("The list of tables is empty.", E_USER_NOTICE);
             return array();
@@ -2397,7 +2428,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get the database name associated with a table
+     * Get the database name associated with a table.
      *
      * Returns the associated database name as string or null if no
      * association is found.
@@ -2409,14 +2440,13 @@ class Structure extends \Yana\Files\SML
      * Currently this is used by the FileDB driver to determine in
      * which directory a table's source file is to be placed.
      *
-     * @access  public
      * @param   string  $table  name of table
      * @return  string
      * @ignore
      */
     public function getAssociation($table)
     {
-        assert('is_string($table); // Wrong argument type for argument 1. String expected.');
+        assert('is_string($table); // Invalid argument $table: String expected');
         $table = mb_strtoupper($table);
 
         /*
@@ -2434,19 +2464,18 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check if a table is associated with another data source
+     * Check if a table is associated with another data source.
      *
      * Return bool(true) if an association on the given table exists
      * and bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $table  name of table
      * @return  bool
      * @ignore
      */
     public function hasAssociation($table)
     {
-        assert('is_string($table); // Wrong argument type for argument 1. String expected.');
+        assert('is_string($table); // Invalid argument $table: String expected');
 
         if (!isset($this->content['ASSOCIATIONS'])) {
             return false;
@@ -2460,13 +2489,12 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * set the database name associated with a table
+     * Set the database name associated with a table.
      *
      * This is meant to be used when one structure file includes
      * another and you need to know in which file a certain table is
      * defined.
      *
-     * @access  public
      * @param   string  $dbName  name of database
      * @param   string  $table   name of table
      * @return  bool
@@ -2474,8 +2502,8 @@ class Structure extends \Yana\Files\SML
      */
     public function setAssociation($dbName, $table)
     {
-        assert('is_string($dbName); // Wrong argument type for argument 1. String expected.');
-        assert('is_string($table); // Wrong argument type for argument 2. String expected.');
+        assert('is_string($dbName); // Invalid argument $dbName: String expected');
+        assert('is_string($table); // Invalid argument $table: String expected');
 
         if (!isset($this->content['ASSOCIATIONS']) || !is_array($this->content['ASSOCIATIONS'])) {
             $this->content['ASSOCIATIONS'] = array();
@@ -2498,21 +2526,20 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * unset the database name associated with a table
+     * Unset the database name associated with a table.
      *
      * Removes an association.
      *
      * Returns bool(true) on success and bool(false),
      * if no such association exists.
      *
-     * @access  public
      * @param   string  $table  name of table
      * @return  bool
      * @ignore
      */
     public function unsetAssociation($table = "")
     {
-        assert('is_string($table); // Wrong argument type for argument 1. String expected.');
+        assert('is_string($table); // Invalid argument $table: String expected');
 
         if ($table == "") {
             if (isset($this->content['ASSOCIATIONS'])) {
@@ -2534,15 +2561,14 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get all constraints for an address
+     * Get all constraints for an address.
      *
      * Retrieves all "constraint" entries that apply to the given
      * operation on the dataset and returns the results as an numeric
      * array.
      *
-     * @access  public
-     * @param   string  $table      name of table
-     * @param   array   $columns    list of columns
+     * @param   string  $table    name of table
+     * @param   array   $columns  list of columns
      * @return  array
      * @since   version 2.8.4
      * @name    DbStructure::getConstraint()
@@ -2550,11 +2576,12 @@ class Structure extends \Yana\Files\SML
      */
     public function getConstraint($table, array $columns = array())
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
         return $this->getFields('constraint', '', $table, $columns, true);
     }
 
     /**
-     * set constraint
+     * Set constraint.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -2566,7 +2593,6 @@ class Structure extends \Yana\Files\SML
      * BE WARNED: As always - do NOT use this function with any
      * unchecked user input.
      *
-     * @access  public
      * @param   string  $constraint  PHP-Code
      * @param   string  $table       name of table
      * @param   string  $column      name of column
@@ -2609,12 +2635,11 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get all triggers for an address
+     * Get all triggers for an address.
      *
      * Retrieves all "trigger" entries that apply to the given operation on the dataset
      * and returns the results as an numeric array.
      *
-     * @access  public
      * @param   string  $operation  one of insert, update, delete
      * @param   string  $table      name of table
      * @param   array   $columns    list of columns
@@ -2625,18 +2650,19 @@ class Structure extends \Yana\Files\SML
      */
     public function getTrigger($operation, $table, array $columns = array())
     {
+        assert('is_string($operation); // Invalid argument $operation: String expected');
+        assert('is_string($table); // Invalid argument $table: String expected');
         return $this->getFields('trigger', $operation, $table, $columns);
     }
 
     /**
-     * set trigger
+     * Set trigger.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
      * BE WARNED: As always - do NOT use this function with any
      * unchecked user input.
      *
-     * @access  public
      * @param   string  $trigger    PHP-Code
      * @param   string  $operation  one of insert, update, delete
      * @param   string  $table      name of table
@@ -2648,10 +2674,10 @@ class Structure extends \Yana\Files\SML
      */
     public function setTrigger($trigger, $operation, $table, $column = null)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
-        assert('is_string($operation); // Wrong type for argument 2. String expected');
-        assert('is_string($table) || is_null($table); // Wrong type for argument 3. String expected');
-        assert('is_string($column) || is_null($column); // Wrong type for argument 4. String expected');
+        assert('is_string($name); // Invalid argument $name: String expected');
+        assert('is_string($operation); // Invalid argument $operation: String expected');
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
 
         $operation = mb_strtoupper("$operation");
         assert('preg_match("/^(BEFORE|AFTER)_(INSERT|UPDATE|DELETE)$/", $operation); // Invalid operation');
@@ -2685,7 +2711,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether the "READONLY" flag is set to bool(true)
+     * Check whether the "READONLY" flag is set to bool(true).
      *
      * Returns bool(true) if:
      * <ol>
@@ -2696,7 +2722,6 @@ class Structure extends \Yana\Files\SML
      *
      * Returns bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  bool
@@ -2707,6 +2732,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isReadonly($table = "", $column = "")
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         /* 1) the database is set to readonly */
         if (!empty($this->content['READONLY'])) {
             return true;
@@ -2753,11 +2780,10 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * set the "readonly" property
+     * Set the "readonly" property.
      *
      * Returns bool(true) on success and bool(false) otherwise.
      *
-     * @access  public
      * @param   bool    $isReadonly  new value of this property
      * @param   string  $table       name of table
      * @param   string  $column      name of column
@@ -2768,6 +2794,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setReadonly($isReadonly, $table = null, $column = null)
     {
+        assert('is_bool($isReadonly); // Invalid argument $isReadonly: Boolean expected');
+        assert('is_null($table) || is_string($table); // Invalid argument $table: String expected');
+        assert('is_null($column) || is_string($column); // Invalid argument $column: String expected');
         if (!is_null($column)) {
             $col =& $this->_getColumn($table, $column);
             if (!is_array($col)) {
@@ -2796,7 +2825,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether the column should be visible
+     * Check whether the column should be visible.
      *
      * Returns bool(true) if:
      * <ol>
@@ -2809,7 +2838,6 @@ class Structure extends \Yana\Files\SML
      *
      * If the argument $action is not provided, the last two do not apply.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @param   string  $action  namespace of form ('SELECT', 'EDIT', 'NEW', 'SEARCH')
@@ -2821,6 +2849,9 @@ class Structure extends \Yana\Files\SML
      */
     public function isVisible($table, $column, $action = "")
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_string($action); // Invalid argument $action: String expected');
         $action = mb_strtoupper("$action");
 
         $col =& $this->_getColumn($table, $column);
@@ -2882,7 +2913,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * select whether the column should be visible
+     * Select whether the column should be visible.
      *
      * This sets the property "display.hidden" of the column
      * to bool(true), if $isVisible is bool(false) and vice versa.
@@ -2903,7 +2934,6 @@ class Structure extends \Yana\Files\SML
      * settings will apply to all actions. Otherwise you need
      * to set the display property for all actions separately.
      *
-     * @access  public
      * @param   bool|int  $isVisible  new value of this property
      * @param   string    $table      name of table
      * @param   string    $column     name of column
@@ -2915,6 +2945,10 @@ class Structure extends \Yana\Files\SML
      */
     public function setVisible($isVisible, $table, $column, $action = "")
     {
+        assert('is_bool($isVisible); // Invalid argument $isVisible: Boolean expected');
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_string($action); // Invalid argument $action: String expected');
         $action = mb_strtoupper("$action");
 
         $col =& $this->_getColumn($table, $column);
@@ -2978,7 +3012,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether the column has a list-style type
+     * Check whether the column has a list-style type.
      *
      * Returns bool(true) if:
      * <ol>
@@ -2988,7 +3022,6 @@ class Structure extends \Yana\Files\SML
      * </ol>
      * Returns bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  bool
@@ -2996,6 +3029,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isNumericArray($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $col =& $this->_getColumn($table, $column);
 
         /*
@@ -3037,7 +3072,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * set's the type of the column to be a numeric array
+     * Set's the type of the column to be a numeric array.
      *
      * This sets the type property of the column to 'array'
      * and sets the display property of the column to
@@ -3062,7 +3097,6 @@ class Structure extends \Yana\Files\SML
      * Use this feature for lists, where you just don't
      * care about the keys of the array.
      *
-     * @access  public
      * @param   string  $table      name of table
      * @param   string  $column     name of column
      * @param   bool    $isNumeric  turn on / off
@@ -3071,6 +3105,9 @@ class Structure extends \Yana\Files\SML
      */
     public function setNumericArray($table, $column, $isNumeric = true)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_bool($isNumeric); // Invalid argument $isNumeric: Boolean expected');
         $col =& $this->_getColumn($table, $column);
 
         /*
@@ -3107,7 +3144,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check whether the column should be editable
+     * Check whether the column should be editable.
      *
      * Returns bool(true) if:
      * <ol>
@@ -3122,7 +3159,6 @@ class Structure extends \Yana\Files\SML
      *
      * If the argument $action is not provided, the last two do not apply.
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @param   string  $action  namespace of form ('SELECT', 'EDIT', 'NEW', 'SEARCH')
@@ -3135,6 +3171,9 @@ class Structure extends \Yana\Files\SML
      */
     public function isEditable($table, $column, $action = "")
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_string($action); // Invalid argument $action: String expected');
         $action = mb_strtoupper("$action");
 
         $col =& $this->_getColumn($table, $column);
@@ -3194,7 +3233,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * select whether the column should be editable
+     * Select whether the column should be editable.
      *
      * This sets the "display.readonly" property of the column
      * to bool(false), if $isEditable is bool(true) and vice versa.
@@ -3215,7 +3254,6 @@ class Structure extends \Yana\Files\SML
      * settings will apply to all actions. Otherwise you need
      * to set the display property for all actions separately.
      *
-     * @access  public
      * @param   bool|int  $isEditable  new value of this property
      * @param   string    $table       name of table
      * @param   string    $column      name of column
@@ -3227,6 +3265,10 @@ class Structure extends \Yana\Files\SML
      */
     public function setEditable($isEditable, $table, $column, $action = "")
     {
+        assert('is_bool($isEditable); // Invalid argument $isEditable: Boolean expected');
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_string($action); // Invalid argument $action: String expected');
         $action = mb_strtoupper("$action");
 
         $col =& $this->_getColumn($table, $column);
@@ -3290,7 +3332,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * check if column is a scalar type
+     * Check if column is a scalar type.
      *
      * Returns bool(true) if the column exists and has a scalar type,
      * which's values can be displayed without line-breaks.
@@ -3299,7 +3341,6 @@ class Structure extends \Yana\Files\SML
      * Note that this returns bool(false) for type "text" and bool(true)
      * for type "select".
      *
-     * @access  public
      * @param   string  $table   name of table
      * @param   string  $column  name of column
      * @return  bool
@@ -3310,6 +3351,8 @@ class Structure extends \Yana\Files\SML
      */
     public function isScalar($table, $column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         switch ($this->getType($table, $column))
         {
             case 'file':
@@ -3326,7 +3369,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get the action property of a field as specified in the structure
+     * Get the action property of a field as specified in the structure.
      *
      * Returns constant NULL (not bool(false)) if value is not specified.
      * Use is_null($result) to test for existance, don't use empty($result).
@@ -3334,7 +3377,6 @@ class Structure extends \Yana\Files\SML
      * The argument $namespace can be either 'edit', 'select',
      * or empty. See {@link FormCreator::getNamespace()} for details.
      *
-     * @access  public
      * @param   string  $table      name of table
      * @param   string  $column     name of column
      * @param   string  $namespace  namespace of form
@@ -3347,6 +3389,9 @@ class Structure extends \Yana\Files\SML
      */
     public function getAction($table, $column, $namespace = 'DEFAULT')
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_string($namespace); // Invalid argument $namespace: String expected');
         $col =& $this->_getColumn($table, $column);
         $namespace = mb_strtoupper("$namespace");
 
@@ -3387,7 +3432,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get all columns of a table, where the action property is set
+     * Get all columns of a table, where the action property is set.
      *
      * Returns the list of columns as an associative array, where
      * the names of the columns will be the array keys and the value
@@ -3414,7 +3459,6 @@ class Structure extends \Yana\Files\SML
      * );
      * </code>
      *
-     * @access  public
      * @param   string  $table  name of table
      * @return  array
      * @since   2.9.4
@@ -3425,6 +3469,7 @@ class Structure extends \Yana\Files\SML
      */
     public function getActions($table)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
         $result = array();
         foreach ($this->getColumns($table) as $column)
         {
@@ -3437,7 +3482,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * set the action property of a field
+     * Set the action property of a field.
      *
      * This property can be used to tell the form generator
      * to produce a clickable link on this column.
@@ -3456,7 +3501,6 @@ class Structure extends \Yana\Files\SML
      *
      * Returns constant bool(false) on error.
      *
-     * @access  public
      * @param   string  $table      name of table to modify
      * @param   string  $column     name of column to modify
      * @param   string  $action     name of action to link to
@@ -3545,7 +3589,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get the title property of a field as specified in the structure
+     * Get the title property of a field as specified in the structure.
      *
      * Returns constant NULL (not bool(false)) if value is not specified.
      * Use is_null($result) to test for existance, don't use empty($result).
@@ -3553,7 +3597,6 @@ class Structure extends \Yana\Files\SML
      * The argument $namespace can be either 'edit', 'select',
      * or empty. See {@link FormCreator::getNamespace()} for details.
      *
-     * @access  public
      * @param   string  $table      name of table
      * @param   string  $column     name of column
      * @param   string  $namespace  namespace of form
@@ -3566,6 +3609,9 @@ class Structure extends \Yana\Files\SML
      */
     public function getTitle($table, $column, $namespace = 'DEFAULT')
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_string($namespace); // Invalid argument $namespace: String expected');
         $col =& $this->_getColumn($table, $column);
         $namespace = mb_strtoupper("$namespace");
 
@@ -3593,7 +3639,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get the tooltip property of a field as specified in the structure
+     * Get the tooltip property of a field as specified in the structure.
      *
      * Returns constant NULL (not bool(false)) if value is not specified.
      * Use is_null($result) to test for existance, don't use empty($result).
@@ -3601,7 +3647,6 @@ class Structure extends \Yana\Files\SML
      * The argument $namespace can be either 'edit', 'select',
      * or empty. See {@link FormCreator::getNamespace()} for details.
      *
-     * @access  public
      * @param   string  $table      name of table
      * @param   string  $column     name of column
      * @param   string  $namespace  namespace of form
@@ -3614,6 +3659,9 @@ class Structure extends \Yana\Files\SML
      */
     public function getLinkText($table, $column, $namespace = 'DEFAULT')
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_string($namespace); // Invalid argument $namespace: String expected');
         $col =& $this->_getColumn($table, $column);
         $namespace = mb_strtoupper("$namespace");
 
@@ -3641,7 +3689,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get all fields for an address
+     * Get all fields for an address.
      *
      * Retrieves all "$fieldname" entries that apply to the given
      * operation on the dataset and returns the results as an numeric
@@ -3650,7 +3698,6 @@ class Structure extends \Yana\Files\SML
      * If the optional parameter $assoc is set to true, the result
      * will be an associative array.
      *
-     * @access  public
      * @param   string  $fieldname  e.g. 'constraint', or 'trigger'
      * @param   string  $operation  one of select, insert, update, delete
      * @param   string  $table      name of table
@@ -3661,6 +3708,10 @@ class Structure extends \Yana\Files\SML
      */
     public function getFields($fieldname, $operation, $table, array $columns = array(), $as_assoc = false)
     {
+        assert('is_string($fieldname); // Invalid argument $fieldname: String expected');
+        assert('is_string($operation); // Invalid argument $operation: String expected');
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_bool($as_assoc); // Invalid argument $as_assoc: Boolean expected');
         $fieldname = mb_strtoupper("$fieldname");
         $operation = mb_strtoupper("$operation");
         $table = mb_strtoupper("$table");
@@ -3770,14 +3821,13 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * include structure file
+     * Include structure file.
      *
      * This function merges the contents of another file with the current structure.
      *
      * Note that you can reach the same result by using the 'INCLUDE' tag in the
      * structure file. See the developer's cookbook for an example.
      *
-     * @access  public
      * @param   string  $filename  path to another structure file
      * @return  bool
      * @throws  \Yana\Core\Exceptions\NotFoundException         when the included file is not found
@@ -3786,7 +3836,7 @@ class Structure extends \Yana\Files\SML
      */
     public function includeFile($filename)
     {
-        assert('is_string($filename); // Wrong argument type argument 1. String expected');
+        assert('is_string($filename); // Invalid argument $filename: String expected');
         $file = new \Yana\Db\Structure($filename);
         $file->read();
         assert('!isset($current_list); // cannot redeclare $current_list');
@@ -3819,7 +3869,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * addStructure
+     * Add structure.
      *
      * Try to extract some information on the structure of
      * a database from the information provided by PEAR-DB's
@@ -3828,7 +3878,6 @@ class Structure extends \Yana\Files\SML
      * see DbStream::buildStructure() for additional
      * information on the input
      *
-     * @access  public
      * @param   string  $table     current table name
      * @param   array   $array     value returned by getTableInfo() -function
      * @see     DbStream::buildStructure()
@@ -3836,7 +3885,7 @@ class Structure extends \Yana\Files\SML
      */
     public function addStructure($table, array $array)
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected');
+        assert('is_string($table); // Invalid argument $table: String expected');
 
         /* init header */
         if (empty($this->content)) {
@@ -4143,19 +4192,15 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get filename
+     * Check input $filename.
      *
-     * check input $filename
-     *
-     * @static
-     * @access  private
      * @param   string  $databaseName  name of database structure file
      * @return  string
      * @ignore
      */
     private static function _getFilename($databaseName)
     {
-        assert('is_string($databaseName); // Wrong argument type argument 1. String expected');
+        assert('is_string($databaseName); // Invalid argument $databaseName: String expected');
         if (preg_match('/^([\w\d_]+)$/', $databaseName)) {
             $databaseName = self::getDirectory() . "$databaseName" . self::$_extension;
         }
@@ -4163,12 +4208,10 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get database directory
+     * Get database directory.
      *
      * Returns the path to the directory where Structure files are to be stored.
      *
-     * @access  public
-     * @static
      * @return  string
      * @ignore
      */
@@ -4178,7 +4221,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * return list of known structure files
+     * Return list of known structure files.
      *
      * This function returns a numeric list of filenames of known structure files.
      * Each item is a valid argument for calling the constructor of this class.
@@ -4190,14 +4233,13 @@ class Structure extends \Yana\Files\SML
      *
      * In case of an unexpected error, this function returns an empty array.
      *
-     * @static
-     * @access  public
      * @param   bool  $fullFilename  return items as full filenames (true = yes, false = no)
      * @return  array
      * @since   2.9.7
      */
     public static function getListOfFiles($fullFilename = false)
     {
+        assert('is_bool($fullFilename); // Invalid argument $fullFilename: Boolean expected');
         $directory = self::getDirectory();
         $dir = new \Yana\Files\Dir($directory);
         $list = array();
@@ -4219,7 +4261,7 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get list of changes for your documentation purposes
+     * Get list of changes for your documentation purposes.
      *
      * This class automatically logs changes to the data model, which
      * have been introduced by using functions of this class.
@@ -4273,7 +4315,6 @@ class Structure extends \Yana\Files\SML
      * also decide to loop through the array and output all entries
      * directly as (X)HTML.
      *
-     * @access  public
      * @return  array
      * @since   2.9.7
      * @name    DbStructure::getChangelog()
@@ -4290,14 +4331,13 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * flush the changelog
+     * Flush the changelog.
      *
      * This clears all entries in the changelog.
      *
      * The function returns bool(true) on succes.
      * If the log is already empty, it returns bool(false) instead.
      *
-     * @access  public
      * @return  bool
      * @since   2.9.7
      * @name    DbStructure::dropChangelog()
@@ -4314,14 +4354,10 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * _getTable
-     *
-     * Check if table exists and if so
-     * return a reference to it.
+     * Check if table exists and if so return a reference to it.
      *
      * Returns bool(false) on error.
      *
-     * @access  private
      * @param   string  &$table  table name
      * @return  array
      * @since   2.9
@@ -4329,7 +4365,8 @@ class Structure extends \Yana\Files\SML
      */
     private function &_getTable(&$table)
     {
-        $table  = mb_strtoupper("$table");
+        assert('is_string($table); // Invalid argument $table: String expected');
+        $table = mb_strtoupper("$table");
         if (isset($this->content['TABLES'][$table])) {
             return $this->content['TABLES'][$table];
         } else {
@@ -4340,14 +4377,10 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * _getColumn
-     *
-     * Check if column exists and if so
-     * return a reference to it.
+     * Check if column exists and if so return a reference to it.
      *
      * Returns bool(false) on error.
      *
-     * @access  private
      * @param   string  &$table   table name
      * @param   string  &$column  column name
      * @return  array
@@ -4356,6 +4389,8 @@ class Structure extends \Yana\Files\SML
      */
     private function &_getColumn(&$table, &$column)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
         $column = mb_strtoupper("$column");
 
         $tbl =& $this->_getTable($table);
@@ -4372,9 +4407,8 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * get specified property
+     * Get specified property.
      *
-     * @access  private
      * @param   string  &$table      table name
      * @param   string  &$column     column name
      * @param   string  $property    property name
@@ -4387,10 +4421,10 @@ class Structure extends \Yana\Files\SML
      */
     private function &_getColumnProperty(&$table, &$column, $property, $namespace = '')
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected');
-        assert('is_string($column); // Wrong type for argument 2. String expected');
-        assert('is_string($property); // Wrong type for argument 3. String expected');
-        assert('is_string($namespace); // Wrong type for argument 4. String expected');
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_string($property); // Invalid argument $property: String expected');
+        assert('is_string($namespace); // Invalid argument $namespace: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -4414,9 +4448,8 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * set specified property
+     * Set specified property.
      *
-     * @access  private
      * @param   string  &$table      table name
      * @param   string  &$column     column name
      * @param   string  $property    property name
@@ -4428,9 +4461,9 @@ class Structure extends \Yana\Files\SML
      */
     private function _setColumnProperty(&$table, &$column, $property, $value)
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected');
-        assert('is_string($column); // Wrong type for argument 2. String expected');
-        assert('is_string($property); // Wrong type for argument 3. String expected');
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column); // Invalid argument $column: String expected');
+        assert('is_string($property); // Invalid argument $property: String expected');
         $col =& $this->_getColumn($table, $column);
 
         if (!is_array($col)) {
@@ -4444,9 +4477,8 @@ class Structure extends \Yana\Files\SML
     }
 
     /**
-     * add a new entry to changelog
+     * Add a new entry to changelog.
      *
-     * @access  private
      * @param   string  $table          table name
      * @param   string  $column         column name
      * @param   string  $comment        log comment
@@ -4457,11 +4489,11 @@ class Structure extends \Yana\Files\SML
      */
     private function _logChanges($table, $column, $comment, $function, $renamedObject = '')
     {
-        assert('is_string($table); // Wrong type for argument 1. String expected');
-        assert('is_string($column) || is_null($column); // Wrong type for argument 2. String expected');
-        assert('is_string($comment); // Wrong type for argument 3. String expected');
-        assert('is_string($function); // Wrong type for argument 4. String expected');
-        assert('is_string($renamedObject); // Wrong type for argument 5. String expected');
+        assert('is_string($table); // Invalid argument $table: String expected');
+        assert('is_string($column) || is_null($column); // Invalid argument $column: String expected');
+        assert('is_string($comment); // Invalid argument $comment: String expected');
+        assert('is_string($function); // Invalid argument $function: String expected');
+        assert('is_string($renamedObject); // Invalid argument $renamedObject: String expected');
 
         $table = mb_strtolower("$table");
         $column = mb_strtolower("$column");
