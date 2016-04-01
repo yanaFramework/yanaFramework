@@ -33,7 +33,6 @@ namespace Yana\Db;
  * Values for possible database results.
  * Including: whole table, rows, columns and cells.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  *
