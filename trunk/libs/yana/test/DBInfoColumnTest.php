@@ -33,15 +33,14 @@ require_once dirname(__FILE__) . '/include.php';
 /**
  * DbInfoColumn test-case
  *
- * @covers DbInfoColumn
+ * @covers \Plugins\DbTools\InfoColumn
  * @package  test
  */
 class DbInfoColumnTest extends PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var    Plugins\DbTools\InfoColumn
-     * @access protected
+     * @var  \Plugins\DbTools\InfoColumn
      */
     protected $dbinfocolumn;
 
@@ -61,8 +60,6 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
-     *
-     * @access protected
      */
     protected function setUp()
     {
@@ -72,8 +69,6 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
-     *
-     * @access protected
      */
     protected function tearDown()
     {
