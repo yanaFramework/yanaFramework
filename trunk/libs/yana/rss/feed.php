@@ -28,7 +28,7 @@
 namespace Yana\RSS;
 
 /**
- * <<entity>> RSS feed
+ * <<entity>> RSS feed.
  *
  * This class represents a RSS feed.
  *
@@ -57,11 +57,10 @@ namespace Yana\RSS;
  *  }
  * </code>
  *
- * @access      public
  * @package     yana
  * @subpackage  rss
  */
-class Feed extends \Yana\Core\Object
+class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
 {
 
     /**
@@ -158,6 +157,7 @@ class Feed extends \Yana\Core\Object
      */
     public function __construct($description)
     {
+        assert('is_string($description); // Invalid argument $description: String expected');
         $this->setDescription($description);
 
         // auto-generated fields
