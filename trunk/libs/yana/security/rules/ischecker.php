@@ -51,27 +51,40 @@ interface IsChecker
      * The rules are executed in the order in which they were added.
      *
      * @param   \Yana\Security\Rules\IsRule  $rule  must be a valid callback
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException when the function is not callable
      * @return  \Yana\Security\Rules\Checker
      */
     public function addSecurityRule(\Yana\Security\Rules\IsRule $rule);
 
     /**
-     * Check permission.
+     * Check rules.
      *
-     * Check if user has permission to apply changes to the profile identified
-     * by the argument $profileId.
+     * Check if user meets on of the applicable rules to apply changes to the profile identified by the argument $profileId.
      *
      * Returns bool(true) if the user's permission level is high enough to
      * execute the changes and bool(false) otherwise.
      *
-     * @param   string  $profileId  profile id
-     * @param   string  $action     action
-     * @param   string  $userName   user name
+     * @param   string                       $profileId  profile id in upper-case
+     * @param   string                       $action     action parameter in lower-case
+     * @param   \Yana\Security\Users\IsUser  $user       user information to check
      * @return  bool
-     * @ignore
+     * @throws  \Yana\Security\Rules\Requirements\NotFoundException  when no requirements are found
      */
-    public function checkPermission($profileId = null, $action = null, $userName = null);
+    public function checkRules($profileId, $action, \Yana\Security\Users\IsUser $user);
+
+    /**
+     * Check rules by requirement.
+     *
+     * Check if user does meet the given requirement to apply changes to the profile identified by the argument $profileId.
+     *
+     * Returns bool(true) if the user may execute the changes and bool(false) otherwise.
+     *
+     * @param   \Yana\Security\Rules\Requirements\IsRequirement  $requirement  to check for
+     * @param   string                                           $profileId    profile id in upper-case
+     * @param   string                                           $action       action parameter in lower-case
+     * @param   \Yana\Security\Users\IsUser                      $user         user information to check
+     * @return  bool
+     */
+    public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, \Yana\Security\Users\IsUser $user);
 
 }
 

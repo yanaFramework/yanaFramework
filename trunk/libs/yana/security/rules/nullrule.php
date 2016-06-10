@@ -30,45 +30,28 @@
 namespace Yana\Security\Rules;
 
 /**
- * <<interface>> Security rule.
+ * For unit tests.
  *
  * @package     yana
  * @subpackage  security
+ * @ignore
  */
-interface IsRule
+class NullRule extends \Yana\Security\Rules\AbstractRule
 {
 
     /**
-     * Rule implementation.
-     *
-     * When called, rules must return bool(true) if the user ist granted permission
-     * to proceed with the requested action and bool(false) if not.
-     *
-     * If the function returns anything else than a boolean value, it will be considered invalid and ignored.
-     *
-     * Rules may not throw any exceptions or errors.
-     *
-     * It is considered to NOT grant permission, when any of the rules return bool(false).
-     * An empty set of rules is considered to always grant permission.
-     * A set of rules is considered to grant permission, when all rules return bool(true).
-     *
-     * The list of $required permissions contains the following information:
-     * <ul>
-     *   <li> required user group </li>
-     *   <li> required user role </li>
-     *   <li> required security level </li>
-     * </ul>
-     *
-     * Note: Rules do NOT implement password checks.
-     * Those are implemented elsewhere ({@see \Yana\Security\Passwords\Checks\IsCheck}).
-     *
+     * Always returns bool(true).
+     * 
      * @param   \Yana\Security\Rules\Requirements\IsRequirement  $required   list of required permissions
      * @param   string                                           $profileId  current application-profile id
      * @param   string                                           $action     name of the action the user tries to execute
      * @param   \Yana\Security\Users\IsUser                      $user       user information to check
      * @return  bool
      */
-    public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, $profileId, $action, \Yana\Security\Users\IsUser $user);
+    public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, $profileId, $action, \Yana\Security\Users\IsUser $user)
+    {
+        return true;
+    }
 
 }
 
