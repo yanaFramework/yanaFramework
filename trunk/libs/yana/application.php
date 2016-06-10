@@ -306,7 +306,7 @@ final class Application extends \Yana\Core\AbstractSingleton
             $action = $this->_getAction();
         }
         if (is_null($args)) {
-            $args = \Yana\Core\Request::getVars();
+            $args = \Yana\Http\Requests\Builder::buildFromSuperGlobals()->all()->asArrayOfStrings();
         }
 
         /**
@@ -452,7 +452,7 @@ final class Application extends \Yana\Core\AbstractSingleton
     protected function _getAction()
     {
         if (!isset(self::$_action)) {
-            $action = \Yana\Core\Request::getVars('action');
+            $action = \Yana\Http\Requests\Builder::buildFromSuperGlobals()->all()->value('action')->asSafeString();
             // work-around for IE-bug
             if (is_array($action)) {
                 if (count($action) === 1) {
@@ -525,7 +525,7 @@ final class Application extends \Yana\Core\AbstractSingleton
                 $this->_registry->setVar("ID", self::getId());
                 $this->_registry->mergeVars('*', \Yana\Util\Hashtable::changeCase(self::$_config->toArray(), \CASE_UPPER));
             }
-            $request = \Yana\Core\Request::getVars();
+            $request = \Yana\Http\Requests\Builder::buildFromSuperGlobals()->all()->asArrayOfStrings();
             $this->_registry->mergeVars('*', $request);
             $this->_registry->setAsGlobal();
 
@@ -580,7 +580,7 @@ final class Application extends \Yana\Core\AbstractSingleton
 
             if (YANA_CACHE_ACTIVE === true && file_exists($cacheFile)) {
                 $this->_plugins = unserialize(file_get_contents($cacheFile));
-                assert('$this->_plugins instanceof PluginManager;');
+                assert($this->_plugins instanceof \Yana\Plugins\Manager);
 
             } else {
                 $this->_plugins = \Yana\Plugins\Manager::getInstance();
@@ -718,7 +718,7 @@ final class Application extends \Yana\Core\AbstractSingleton
     public static function getId()
     {
         if (!isset(self::$_id)) {
-            $id = \Yana\Core\Request::getVars('id');
+            $id = \Yana\Http\Requests\Builder::buildFromSuperGlobals()->all()->value('id')->asSafeString();
             if (!empty($id)) {
                 self::$_id = mb_strtolower($id);
             } elseif (!empty(self::$_config->default->profile)) {
@@ -941,7 +941,7 @@ final class Application extends \Yana\Core\AbstractSingleton
         /**
          * is an AJAX request
          */
-        if (\Yana\Core\Request::getVars('is_ajax_request')) {
+        if (\Yana\Http\Requests\Builder::buildFromSuperGlobals()->isAjaxRequest()) {
             $event = 'null';
             $templateName = 'id:STDOUT';
         }
@@ -1195,7 +1195,7 @@ final class Application extends \Yana\Core\AbstractSingleton
         $this->getView()->clearCache();
 
         // Get name of cache directory
-        $dir = 'cache/';
+        $dir = YANA_INSTALL_DIR . '/cache/';
         $registry = $this->getRegistry();
 
         if (isset($registry)) {
