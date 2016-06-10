@@ -92,7 +92,7 @@ abstract class AbstractDecorator extends \Yana\Core\Object
      * Set a new object that will be decorated.
      *
      * @param   object  $object the new decorated object
-     * @return  AbstractDecorator
+     * @return  \Yana\Core\AbstractDecorator
      */
     protected function _setDecoratedObject($object)
     {
