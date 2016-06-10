@@ -48,7 +48,7 @@ class FacadeCollection extends \Yana\Core\AbstractCollection
      */
     public function offsetSet($offset, $value)
     {
-        if ($value instanceof Facade) {
+        if ($value instanceof \Yana\Forms\Fields\Facade) {
             if (!is_string($offset)) {
                 $offset = $value->getName();
             }

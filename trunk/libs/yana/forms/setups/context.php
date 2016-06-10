@@ -33,7 +33,6 @@ namespace Yana\Forms\Setups;
  * A context is a number of settings that apply to a form in a specified scenario.
  * E.g. using an insert-context a form may have other contents than in an edit- or search-context.
  *
- * @access      public
  * @package     yana
  * @subpackage  form
  */
@@ -43,48 +42,42 @@ class Context extends \Yana\Core\Object
     /**
      * Context name.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_contextName = "";
 
     /**
      * Form action name.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_action = "";
 
     /**
      * Footer text.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_footer = "";
 
     /**
      * Header text.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_header = "";
 
     /**
      * Rows with values.
      *
-     * @access  private
-     * @var     \Yana\Forms\RowIterator
+     * @var  \Yana\Forms\RowIterator
      */
     private $_rows = null;
 
     /**
      * Values if there are no rows.
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_values = array();
 
@@ -93,16 +86,14 @@ class Context extends \Yana\Core\Object
      *
      * Empty = all.
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_columnNames = array();
 
     /**
      * Initialize instance.
      *
-     * @accesss  public
-     * @param    string  $name  context id
+     * @param   string  $name  context id
      */
     public function __construct($name)
     {
@@ -114,8 +105,7 @@ class Context extends \Yana\Core\Object
     /**
      * Get context name.
      *
-     * @accesss  public
-     * @return   string
+     * @return  string
      */
     public function getContextName()
     {
@@ -125,7 +115,6 @@ class Context extends \Yana\Core\Object
     /**
      * get form value
      *
-     * @access  public
      * @param   string  $key  id of value to retrieve
      * @return  mixed
      */
@@ -138,7 +127,6 @@ class Context extends \Yana\Core\Object
     /**
      * Get form values.
      *
-     * @access  public
      * @return  array
      */
     public function getValues()
@@ -150,7 +138,6 @@ class Context extends \Yana\Core\Object
     /**
      * Set form value.
      *
-     * @access  public
      * @param   string  $key    id of value to set
      * @param   mixed   $value  new value
      * @return  FormSetup
@@ -165,7 +152,6 @@ class Context extends \Yana\Core\Object
     /**
      * Set form values.
      *
-     * @access  public
      * @param   array  $values  new values
      * @return  FormSetup
      */
@@ -180,7 +166,6 @@ class Context extends \Yana\Core\Object
      *
      * Replaces existing values, adds new values and keeps values that haven't been changed in the request.
      *
-     * @access  public
      * @param   array  $values  new values
      * @return  FormSetup
      */
@@ -196,7 +181,6 @@ class Context extends \Yana\Core\Object
      * Replaces existing values, adds new values and keeps values that haven't been changed in the request.
      * If the row does not exist, it is created.
      *
-     * @access  public
      * @param   array  $row  new values
      * @return  FormSetup
      */
@@ -211,7 +195,6 @@ class Context extends \Yana\Core\Object
     /**
      * Replace form rows.
      *
-     * @access  public
      * @param   array  $rows  new values
      * @return  FormSetup
      */
@@ -224,7 +207,6 @@ class Context extends \Yana\Core\Object
     /**
      * Get rows.
      *
-     * @access  public
      * @return  \Yana\Forms\RowIterator
      */
     public function getRows()
@@ -235,7 +217,6 @@ class Context extends \Yana\Core\Object
     /**
      * Get rows.
      *
-     * @access  public
      * @return  array
      */
     public function getRow()
@@ -246,7 +227,6 @@ class Context extends \Yana\Core\Object
     /**
      * Set footer text.
      *
-     * @access  public
      * @param   string  $footer  any text or HTML
      * @return  \Yana\Forms\Setups\Context
      */
@@ -260,7 +240,6 @@ class Context extends \Yana\Core\Object
     /**
      * Get footer text.
      *
-     * @access  public
      * @return  string
      */
     public function getFooter()
@@ -271,7 +250,6 @@ class Context extends \Yana\Core\Object
     /**
      * Set header text.
      *
-     * @access  public
      * @param   string  $header  any text or HTML
      * @return  \Yana\Forms\Setups\Context
      */
@@ -285,7 +263,6 @@ class Context extends \Yana\Core\Object
     /**
      * Get header text.
      *
-     * @access  public
      * @return  string
      */
     public function getHeader()
@@ -296,7 +273,6 @@ class Context extends \Yana\Core\Object
     /**
      * set export action
      *
-     * @access  public
      * @param   string  $action action name
      * @return  FormSetup
      */
@@ -310,7 +286,6 @@ class Context extends \Yana\Core\Object
     /**
      * get export action
      *
-     * @access  public
      * @return  string
      */
     public function getAction()
@@ -321,7 +296,6 @@ class Context extends \Yana\Core\Object
     /**
      * Get unique list of column names.
      *
-     * @access  public
      * @return  array
      */
     public function getColumnNames()
@@ -335,7 +309,6 @@ class Context extends \Yana\Core\Object
      * This does not check if the columns do exist.
      * If the list is left empty. The form is meant to auto-detect the abvailable columns.
      *
-     * @access  public
      * @param   array  $columnNames  list of identifiers
      * @return  FormSetup
      */
