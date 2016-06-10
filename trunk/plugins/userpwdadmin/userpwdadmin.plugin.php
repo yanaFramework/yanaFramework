@@ -276,9 +276,9 @@ class UserPwdAdminPlugin extends \Yana\Plugins\AbstractPlugin
         $currentUserInformation = $db->select('user', array('USER_ID', '=', $user));
 
         $currentUserInformation = array_pop($currentUserInformation);
-        $new_password = \Yana\User::calculatePassword($user, $new_password);
+        $new_password = $this->_getSecurityFacade()->calculatePassword($user, $new_password);
         /* needed for equal with the actually password */
-        $old_password = \Yana\User::calculatePassword($user, $old_password);
+        $old_password = $this->_getSecurityFacade()->calculatePassword($user, $old_password);
          
         assert('is_array($currentUserInformation); // the value must be of type array');
         assert('!empty($currentUserInformation); //   the value can not be empty');
