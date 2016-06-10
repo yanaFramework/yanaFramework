@@ -32,12 +32,11 @@ namespace Yana\Plugins\Configs;
  *
  * This class informs the framework what to do, if a plugin triggers a certain event.
  *
- * @access      public
  * @package     yana
  * @subpackage  plugins
  * @ignore
  */
-class EventRoute
+class EventRoute extends \Yana\Core\Object
 {
 
     /**
@@ -63,16 +62,14 @@ class EventRoute
      *
      * E.g. success, error, exception, warning, ...
      *
-     * @access private
-     * @var    string
+     * @var  string
      */
     private $_code = self::CODE_SUCCESS;
 
     /**
      * Name of plugin-method to route to.
      *
-     * @access private
-     * @var    string
+     * @var  string
      */
     private $_target = "";
 
@@ -82,15 +79,13 @@ class EventRoute
      * May be a language token.
      * Might be left emtpy to trigger auto-detect.
      *
-     * @access private
-     * @var    string
+     * @var  string
      */
     private $_message = "";
 
     /**
      * Get type of event triggered.
      *
-     * @access  public
      * @return  int
      */
     public function getCode()
@@ -105,7 +100,6 @@ class EventRoute
      * Error codes should be > 0.
      * Success code should be 0.
      *
-     * @access  public
      * @param   int  $code  unsigned small int, defaults: CODE_SUCCESS, CODE_ERROR
      * @return  \Yana\Plugins\Configs\EventRoute
      */
@@ -119,7 +113,6 @@ class EventRoute
     /**
      * Get name of plugin-method to route to.
      *
-     * @access  public
      * @return  string
      */
     public function getTarget()
@@ -130,7 +123,6 @@ class EventRoute
     /**
      * Set name of plugin-method to route to.
      *
-     * @access  public
      * @param   string  $target  PHP method name
      * @return  \Yana\Plugins\Configs\EventRoute
      */
@@ -144,7 +136,6 @@ class EventRoute
     /**
      * Get message to display in GUI.
      *
-     * @access  public
      * @return  string
      */
     public function getMessage()
@@ -159,7 +150,6 @@ class EventRoute
      * you are best advised to use a class-name that is derived from class Report.
      * These class names should be mapped to appropriate translations using the "message" translation files.
      *
-     * @access  public
      * @param   string  $message  default messages: MSG_SUCCESS and MSG_ERROR
      * @return  \Yana\Plugins\Configs\EventRoute
      */

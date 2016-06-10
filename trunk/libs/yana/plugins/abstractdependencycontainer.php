@@ -56,6 +56,16 @@ abstract class AbstractDependencyContainer extends \Yana\Core\Object
     private $_connectionFactory = null;
 
     /**
+     * @var  \Yana\Core\Sessions\IsWrapper
+     */
+    private $_session = null;
+
+    /**
+     * @var  \Yana\Security\Facade
+     */
+    private $_securityFacade = null;
+
+    /**
      * Add application settings to the container.
      *
      * @param   \Yana\Application  $application  representing the currently running application and its settings
@@ -79,6 +89,29 @@ abstract class AbstractDependencyContainer extends \Yana\Core\Object
         return $this;
     }
 
+    /**
+     * Add session object.
+     *
+     * @param   \Yana\Core\Sessions\IsWrapper  $session  to access session data
+     * @return  \Yana\Plugins\AbstractDependencyContainer
+     */
+    protected function _setSessionWrapper(\Yana\Core\Sessions\IsWrapper $session)
+    {
+        $this->_session = $session;
+        return $this;
+    }
+
+    /**
+     * Add security facade.
+     *
+     * @param   \Yana\Security\Facade  $facade  to access user data
+     * @return  \Yana\Plugins\AbstractDependencyContainer
+     */
+    protected function _setSecurityFacade(\Yana\Security\Facade $facade)
+    {
+        $this->_securityFacade = $facade;
+        return $this;
+    }
 
     /**
      * Get application settings.
@@ -104,6 +137,32 @@ abstract class AbstractDependencyContainer extends \Yana\Core\Object
             $this->_connectionFactory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory());
         }
         return $this->_connectionFactory;
+    }
+
+    /**
+     * Get a session object.
+     *
+     * @return  \Yana\Core\Sessions\IsWrapper
+     */
+    protected function _getSessionWrapper()
+    {
+        if (!isset($this->_session)) {
+            $this->_session = new \Yana\Core\Sessions\Wrapper();
+        }
+        return $this->_session;
+    }
+
+    /**
+     * Get security facade.
+     *
+     * @return  \Yana\Security\Facade
+     */
+    protected function _getSecurityFacade()
+    {
+        if (!isset($this->_securityFacade)) {
+            $this->_securityFacade = \Yana\Security\Facade::getInstance();
+        }
+        return $this->_securityFacade;
     }
 
 }
