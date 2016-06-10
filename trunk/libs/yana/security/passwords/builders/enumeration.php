@@ -27,37 +27,24 @@
  * @ignore
  */
 
-namespace Yana\Security\Passwords;
+namespace Yana\Security\Passwords\Builders;
 
 /**
- * <<interface>> Password hashing algorithm.
+ * <<enumeration>> Of algorithm names.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-interface IsAlgorithm
+class Enumeration extends \Yana\Core\Object
 {
 
-    /**
-     * Calculate password hash.
-     *
-     * @param   string  $password  password (clear text)
-     * @return  string
-     */
-    public function __invoke($password);
-
-    /**
-     * Compare hash with password.
-     *
-     * Returns bool(true) if the password matches the given hash and bool(false) otherwise.
-     *
-     * @param   string  $password  password (clear text)
-     * @param   string  $hash      hashed password
-     * @return  bool
-     */
-    public function isEqual($password, $hash);
+    const SHA256 = 'sha256';
+    const SHA512 = 'sha512';
+    const BLOWFISH = 'blowfish';
+    const BASIC = 'des';
+    const BCRYPT = 'bcrypt';
 
 }
 

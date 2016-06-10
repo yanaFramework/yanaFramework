@@ -27,37 +27,22 @@
  * @ignore
  */
 
-namespace Yana\Security\Passwords;
+namespace Yana\Security\Passwords\Generators;
 
 /**
- * <<interface>> Password hashing algorithm.
+ * Password generator.
+ *
+ * Generates a random password.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-interface IsAlgorithm
+abstract class AbstractAlgorithm extends \Yana\Core\Object implements \Yana\Security\Passwords\Generators\IsAlgorithm
 {
 
-    /**
-     * Calculate password hash.
-     *
-     * @param   string  $password  password (clear text)
-     * @return  string
-     */
-    public function __invoke($password);
-
-    /**
-     * Compare hash with password.
-     *
-     * Returns bool(true) if the password matches the given hash and bool(false) otherwise.
-     *
-     * @param   string  $password  password (clear text)
-     * @param   string  $hash      hashed password
-     * @return  bool
-     */
-    public function isEqual($password, $hash);
+    // intentionally left blank
 
 }
 

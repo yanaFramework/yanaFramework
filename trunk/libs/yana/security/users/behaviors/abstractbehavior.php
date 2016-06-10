@@ -27,50 +27,56 @@
  * @ignore
  */
 
-namespace Yana\Security\SessionIds;
+namespace Yana\Security\Users\Behaviors;
 
 /**
- * For unit-tests only!
+ * <<abstract>> User behavior facade.
  *
- * Always returns an empty session-id.
+ * Holds user data and function to set logins and passwords.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-class NullGenerator extends \Yana\Core\Object implements \Yana\Security\SessionIds\IsGenerator
+abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Security\Users\Behaviors\IsBehavior
 {
 
     /**
-     * Application instance id.
+     * Handles the changing of passwords.
      *
-     * @return  string
-     * @ignore
+     * @var  \Yana\Security\Passwords\Behaviors\IsBehavior
      */
-    public function createApplicationUserId()
+    private $_passwordBehavior = null;
+
+    /**
+     * Creates an user by name.
+     *
+     * @param  \Yana\Security\Passwords\Behaviors\IsBehavior  $behavior  password behavior, wrapping user
+     */
+    public function __construct(\Yana\Security\Passwords\Behaviors\IsBehavior $behavior)
     {
-        return '';
+        $this->_passwordBehavior = $behavior;
     }
 
     /**
-     * Create session id BEFORE login.
+     * Returns User entity.
      *
-     * @return  string
+     * @return  \Yana\Security\Users\IsUser
      */
-    public function createUnauthenticatedSessionId()
+    protected function _getEntity()
     {
-        return '';
+        return $this->_getPasswordBehavior()->getUser();
     }
 
     /**
-     * Create session id AFTER login.
+     * Returns password behavior.
      *
-     * @return  string
+     * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
      */
-    public function createAuthenticatedSessionId()
+    protected function _getPasswordBehavior()
     {
-        return '';
+        return $this->_passwordBehavior;
     }
 
 }

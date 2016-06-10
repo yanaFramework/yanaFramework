@@ -30,27 +30,36 @@
 namespace Yana\Security\Passwords;
 
 /**
- * For testing purposes only.
+ * Password hashing algorithm.
+ *
+ * This class uses the basic DES algorithm which is always available but is not very safe and thus unfit for important systems.
+ * Don't use it except for testing or in a safe environment where you really don't care about secure passwords.
+ *
+ * If you find yourself in a situation where you <i>have</i> to use this algorithm in a productive environment because you
+ * got no other options, please reconsider your environment rather than using the DES algorithm.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-class NullAlgorithm extends \Yana\Security\Passwords\AbstractAlgorithm
+class BasicAlgorithm extends \Yana\Security\Passwords\AbstractAlgorithm
 {
 
     /**
-     * Returns the password as given.
+     * Calculate password.
      *
-     * @param   string  $password   password (clear text)
+     * This function takes user name and password phrase as clear text and returns the
+     * hash-code for this password.
+     *
+     * @param   string  $password  password (clear text)
      * @return  string
      */
     public function __invoke($password)
     {
-        assert('is_scalar($password); // Wrong argument type for argument $password. String expected.');
+        assert('is_scalar($password); // Wrong argument type for argument 2. String expected.');
 
-        return (string) $password;
+        return crypt($password);
     }
 
     /**
@@ -64,7 +73,22 @@ class NullAlgorithm extends \Yana\Security\Passwords\AbstractAlgorithm
      */
     public function isEqual($password, $hash)
     {
-        return $password === $hash;
+        $isEqual = false;
+        $hashedInput = $this->__invoke($password);
+        if (function_exists('hash_equals')) {
+            $isEqual = hash_equals($hash, $hashedInput);
+
+        } elseif(strlen($hashedInput) === strlen($hash)) {
+            $string = $hash ^ $hashedInput;
+            $result = 0;
+            for ($i = strlen($string) - 1; $i >= 0; $i--)
+            {
+                $result |= ord($string[$i]);
+            }
+            $isEqual = !$result;
+        }
+
+        return $isEqual;
     }
 
 }

@@ -39,7 +39,7 @@ namespace Yana\Security\Users;
  *
  * @ignore
  */
-abstract class AbstractUserManager extends \Yana\Core\Object implements \Yana\Data\Adapters\IsDataAdapter
+abstract class AbstractUserAdapter extends \Yana\Core\Object implements \Yana\Security\Users\IsDataAdapter
 {
 
     /**

@@ -27,10 +27,13 @@
  * @ignore
  */
 
-namespace Yana\Security\Passwords;
+
+namespace Yana\Security\Passwords\Generators;
 
 /**
- * <<interface>> Password hashing algorithm.
+ * <<interface>> Password generator.
+ *
+ * Generates a random password.
  *
  * @package     yana
  * @subpackage  security
@@ -41,23 +44,12 @@ interface IsAlgorithm
 {
 
     /**
-     * Calculate password hash.
+     * Generate a random password.
      *
-     * @param   string  $password  password (clear text)
+     * @param   int  $length  must be 8 or greater
      * @return  string
      */
-    public function __invoke($password);
-
-    /**
-     * Compare hash with password.
-     *
-     * Returns bool(true) if the password matches the given hash and bool(false) otherwise.
-     *
-     * @param   string  $password  password (clear text)
-     * @param   string  $hash      hashed password
-     * @return  bool
-     */
-    public function isEqual($password, $hash);
+    public function __invoke($length = 8);
 
 }
 

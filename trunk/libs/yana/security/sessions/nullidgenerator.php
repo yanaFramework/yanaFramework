@@ -27,37 +27,51 @@
  * @ignore
  */
 
-namespace Yana\Security\Passwords;
+namespace Yana\Security\Sessions;
 
 /**
- * <<interface>> Password hashing algorithm.
+ * For unit-tests only!
+ *
+ * Always returns an empty session-id.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-interface IsAlgorithm
+class NullIdGenerator extends \Yana\Core\Object implements \Yana\Security\Sessions\IsIdGenerator
 {
 
     /**
-     * Calculate password hash.
+     * Application instance id.
      *
-     * @param   string  $password  password (clear text)
      * @return  string
+     * @ignore
      */
-    public function __invoke($password);
+    public function createApplicationUserId()
+    {
+        return '';
+    }
 
     /**
-     * Compare hash with password.
+     * Create session id BEFORE login.
      *
-     * Returns bool(true) if the password matches the given hash and bool(false) otherwise.
-     *
-     * @param   string  $password  password (clear text)
-     * @param   string  $hash      hashed password
-     * @return  bool
+     * @return  string
      */
-    public function isEqual($password, $hash);
+    public function createUnauthenticatedSessionId()
+    {
+        return '';
+    }
+
+    /**
+     * Create session id AFTER login.
+     *
+     * @return  string
+     */
+    public function createAuthenticatedSessionId()
+    {
+        return '';
+    }
 
 }
 

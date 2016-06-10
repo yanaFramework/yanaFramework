@@ -27,37 +27,50 @@
  * @ignore
  */
 
-namespace Yana\Security\Passwords;
+namespace Yana\Security\Sessions;
 
 /**
- * <<interface>> Password hashing algorithm.
+ * Adds functionality to set and retrieve the user name.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-interface IsAlgorithm
+class Wrapper extends \Yana\Core\Sessions\Wrapper
 {
 
     /**
-     * Calculate password hash.
      *
-     * @param   string  $password  password (clear text)
-     * @return  string
+     * @var  string
      */
-    public function __invoke($password);
+    private $_key = "user_name";
 
     /**
-     * Compare hash with password.
+     * Retrieve the currently logged-in user's name.
      *
-     * Returns bool(true) if the password matches the given hash and bool(false) otherwise.
+     * Note that this function does not check if the user is actually logged in!
      *
-     * @param   string  $password  password (clear text)
-     * @param   string  $hash      hashed password
-     * @return  bool
+     * @return  string
      */
-    public function isEqual($password, $hash);
+    public function getCurrentUserName()
+    {
+        return $this->offsetExists($this->_key) ? $this->offsetGet($this->_key) : "";
+    }
+
+    /**
+     * Overwrite the currently selected user name.
+     *
+     * Note that this function does not check if the user is actually logged in!
+     *
+     * @param   \Yana\Security\Users\IsUser $user
+     * @return  self
+     */
+    public function setCurrentUserName(\Yana\Security\Users\IsUser $user)
+    {
+        $this->offsetSet($this->_key, $user->getId());
+        return $this;
+    }
 
 }
 

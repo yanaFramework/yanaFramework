@@ -37,28 +37,30 @@ namespace Yana\Security\Passwords;
  *
  * @ignore
  */
-class Md5Algorithm extends \Yana\Security\Passwords\AbstractAlgorithm
+class Sha512Algorithm extends \Yana\Security\Passwords\BasicAlgorithm
 {
 
     /**
-     * calculate password
+     * Calculate password.
      *
      * This function takes user name and password phrase as clear text and returns the
      * hash-code for this password.
      *
-     * @param   string  $userName   user name
-     * @param   string  $password   password (clear text)
+     * @param   string  $password  password (clear text)
      * @return  string
      */
-    public function __invoke($userName, $password)
+    public function __invoke($password)
     {
-        assert('is_scalar($userName); // Wrong argument type for argument 1. String expected.');
         assert('is_scalar($password); // Wrong argument type for argument 2. String expected.');
-        $salt = mb_substr(mb_strtoupper("$userName"), 0, 2);
 
-        $string = "{$salt}{$password}";
+        if (CRYPT_SHA512 === 1) {
+            $salt = mcrypt_create_iv(16, \MCRYPT_DEV_URANDOM);
+            $hashString = crypt($password, '$6$rounds=5000$' . $salt . '$');
+        } else {
+            $hashString = $this->_getFallback()->__invoke($password);
+        }
 
-        return md5($string);
+        return $hashString;
     }
 
 }

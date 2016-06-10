@@ -39,7 +39,7 @@ namespace Yana\Security\Users;
  *
  * @ignore
  */
-class User extends \Yana\Core\Object implements IsUser
+class Entity extends \Yana\Security\Users\AbstractEntity
 {
 
     /** @var string */ private $_name = null;
@@ -60,13 +60,6 @@ class User extends \Yana\Core\Object implements IsUser
     /** @var string */ private $_sessionCheckSum = null;
     /** @var array  */ private $_groups = array();
     /** @var array  */ private $_roles = array();
-
-    /**
-     * data adapter used to load and save the entity's contents.
-     *
-     * @var  \Yana\Data\Adapters\IsDataAdapter
-     */
-    private $_dataAdapter = null;
 
     /**
      * Creates an user by name.
@@ -104,59 +97,12 @@ class User extends \Yana\Core\Object implements IsUser
     }
 
     /**
-     * This sets the data adapter used to persist the entity
-     *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $adapter  object that should be used
-     * @return  \Yana\Security\Users\User
-     */
-    public function setDataAdapter(\Yana\Data\Adapters\IsDataAdapter $adapter)
-    {
-        $this->_dataAdapter = $adapter;
-        return $this;
-    }
-
-    /**
-     * Returns a data adapter.
-     *
-     * If there is none, the function returns NULL instead.
-     *
-     * @return  \Yana\Data\Adapters\IsDataAdapter
-     */
-    protected function _getDataAdapter()
-    {
-        return $this->_dataAdapter;
-    }
-
-    /**
-     * Returns bool(true) if the instance has a valid data adapter.
-     *
-     * Returns bool(false) otherwise.
-     *
-     * @return  bool
-     */
-    protected function _hasDataAdapter()
-    {
-        return $this->_getDataAdapter() instanceof \Yana\Data\Adapters\IsDataAdapter;
-    }
-
-    /**
-     * Calls the assigned data adapter to persist the entity.
-     */
-    public function saveEntity()
-    {
-        if ($this->_hasDataAdapter()) {
-            $adapter = $this->_getDataAdapter();
-            $adapter->saveEntity($this);
-        }
-    }
-
-    /**
      * Password failure count.
      *
      * Set number of times user entered the password incorrectly.
      *
      * @param   int  $failureCount  must be positive
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setFailureCount($failureCount)
     {
@@ -172,7 +118,7 @@ class User extends \Yana\Core\Object implements IsUser
      * Set the last time when the user entered a password incorrectly.
      *
      * @param   int  $failureTime  valid timestamp
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setFailureTime($failureTime)
     {
@@ -187,7 +133,7 @@ class User extends \Yana\Core\Object implements IsUser
      * Set the number of times the user successfully logged in.
      *
      * @param   int  $loginCount  must be positive
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setLoginCount($loginCount)
     {
@@ -203,7 +149,7 @@ class User extends \Yana\Core\Object implements IsUser
      * Set the time the user last successfully logged in.
      *
      * @param   int  $loginTime  a valid timestamp
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setLoginTime($loginTime)
     {
@@ -218,7 +164,7 @@ class User extends \Yana\Core\Object implements IsUser
      * The user must enter this id in order to reset the password.
      *
      * @param   string  $passwordRecoveryId  some identifier (preferably a hash value)
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setPasswordRecoveryId($passwordRecoveryId)
     {
@@ -231,7 +177,7 @@ class User extends \Yana\Core\Object implements IsUser
      * Set time when the last password recovery request was made.
      *
      * @param   int $passwordRecoveryTime  a valid timestamp
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setPasswordRecoveryTime($passwordRecoveryTime)
     {
@@ -244,7 +190,7 @@ class User extends \Yana\Core\Object implements IsUser
      * Set time when the user last changed his password.
      *
      * @param   int  $passwordTime  a valid timestamp
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setPasswordTime($passwordTime)
     {
@@ -259,7 +205,7 @@ class User extends \Yana\Core\Object implements IsUser
      * When a new password is set it must not be one of those.
      *
      * @param   array  $recentPasswords  list of password hashes
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setRecentPasswords(array $recentPasswords)
     {
@@ -273,7 +219,7 @@ class User extends \Yana\Core\Object implements IsUser
      * Should not be changed manually.
      *
      * @param   int  $timeCreated  valid timestamp
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setTimeCreated($timeCreated)
     {
@@ -289,7 +235,7 @@ class User extends \Yana\Core\Object implements IsUser
      * the human-readable group names.
      *
      * @param   array  $groups  list of names
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setGroups(array $groups)
     {
@@ -304,7 +250,7 @@ class User extends \Yana\Core\Object implements IsUser
      * the human-readable role names.
      *
      * @param   array  $roles  list of names
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setRoles(array $roles)
     {
@@ -318,7 +264,7 @@ class User extends \Yana\Core\Object implements IsUser
      * The checksum should be a hexadecimal number represented as a string no longer than 32 chars.
      *
      * @param   string  $checkSum  MD5-checksum of session-id
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setSessionCheckSum($checkSum)
     {
@@ -353,6 +299,9 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function getGroups()
     {
+        if (count($this->_groups) === 0 && $this->_hasDataAdapter()) {
+            $this->_groups = $this->_getDataAdapter()->getGroups($this->getId());
+        }
         return $this->_groups;
     }
 
@@ -368,6 +317,9 @@ class User extends \Yana\Core\Object implements IsUser
      */
     public function getRoles()
     {
+        if (count($this->_roles) === 0 && $this->_hasDataAdapter()) {
+            $this->_roles = $this->_getDataAdapter()->getRoles($this->getId());
+        }
         return $this->_roles;
     }
 
@@ -385,7 +337,7 @@ class User extends \Yana\Core\Object implements IsUser
      * Set login password to $password.
      *
      * @param   string  $password user password
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setPassword($password)
     {
@@ -450,33 +402,6 @@ class User extends \Yana\Core\Object implements IsUser
     }
 
     /**
-     * Reset failure count.
-     *
-     * Resets the number of times the user entered an invalid password back to 0.
-     * Use this, when the maximum failure time has expired.
-     *
-     * @return  \Yana\Security\Users\User
-     */
-    public function resetFailureCount()
-    {
-        $this->_failureCount = 0;
-        $this->_failureTime = 0;
-        return $this;
-    }
-
-    /**
-     * Reset password recovery id.
-     *
-     * @return  \Yana\Security\Users\User
-     */
-    public function resetPasswordRecoveryId()
-    {
-        $this->_passwordRecoveryId = "";
-        $this->_passwordRecoveryTime = 0;
-        return this;
-    }
-
-    /**
      * Get login count.
      *
      * Returns the number of times the user sucessfully logged-in.
@@ -510,7 +435,7 @@ class User extends \Yana\Core\Object implements IsUser
      * Sets the user's mail address. This information is required to send the user a password.
      *
      * @param   string  $mail  e-mail address
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setMail($mail)
     {
@@ -537,7 +462,7 @@ class User extends \Yana\Core\Object implements IsUser
      * if a simpler GUI is prefered.
      *
      * @param   bool  $isExpert  use expert settings (yes/no)
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setExpert($isExpert)
     {
@@ -567,7 +492,7 @@ class User extends \Yana\Core\Object implements IsUser
      * should be deactivated (suspended) without permanently deleting the user settings.
      *
      * @param   bool  $isActive  use expert settings (yes/no)
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setActive($isActive)
     {
@@ -683,40 +608,12 @@ class User extends \Yana\Core\Object implements IsUser
      *
      * Call this if the user successfully logged in.
      *
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function addLoginSuccess()
     {
         $this->_loginCount++;
         $this->_loginTime = time();
-        return $this;
-    }
-
-    /**
-     * Add failed login.
-     *
-     * Call this if the user successfully logged in.
-     *
-     * @return  \Yana\Security\Users\IsUser
-     */
-    public function addLoginFailure()
-    {
-        $this->_failureCount++;
-        $this->_failureTime = time();
-        return $this;
-    }
-
-    /**
-     * Update login password.
-     *
-     * @param   string  $password  user password
-     * @return  \Yana\Security\Users\User
-     */
-    public function changePassword($password)
-    {
-        $this->_recentPasswords[] = $this->getPassword();
-        $this->setPassword($password);
-        $this->_passwordTime = time();
         return $this;
     }
 

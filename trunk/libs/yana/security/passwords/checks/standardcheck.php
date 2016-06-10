@@ -38,7 +38,7 @@ namespace Yana\Security\Passwords\Checks;
  * @package     yana
  * @subpackage  security
  *
- * @ignore
+ * @deprecated
  */
 class StandardCheck extends \Yana\Security\Passwords\Checks\PasswordCheck
 {

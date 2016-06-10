@@ -40,7 +40,7 @@ namespace Yana\Security\Users;
  *
  * @ignore
  */
-class CurrentUser extends \Yana\Security\Users\User
+class CurrentUser extends \Yana\Security\Users\Entity
 {
 
     /**

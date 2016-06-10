@@ -35,7 +35,7 @@ namespace Yana\Security\Passwords\Checks;
  * @package     yana
  * @subpackage  security
  *
- * @ignore
+ * @deprecated
  */
 class NullCheck extends \Yana\Security\Passwords\Checks\AbstractCheck
 {

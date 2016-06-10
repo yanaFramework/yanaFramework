@@ -30,34 +30,38 @@
 namespace Yana\Security\Passwords;
 
 /**
- * <<interface>> Password hashing algorithm.
+ * Password hashing algorithm.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-interface IsAlgorithm
+class BlowfishAlgorithm extends \Yana\Security\Passwords\BasicAlgorithm
 {
 
     /**
-     * Calculate password hash.
+     * Calculate password.
+     *
+     * This function takes user name and password phrase as clear text and returns the
+     * hash-code for this password.
      *
      * @param   string  $password  password (clear text)
      * @return  string
      */
-    public function __invoke($password);
+    public function __invoke($password)
+    {
+        assert('is_scalar($password); // Wrong argument type for argument 2. String expected.');
 
-    /**
-     * Compare hash with password.
-     *
-     * Returns bool(true) if the password matches the given hash and bool(false) otherwise.
-     *
-     * @param   string  $password  password (clear text)
-     * @param   string  $hash      hashed password
-     * @return  bool
-     */
-    public function isEqual($password, $hash);
+        if (CRYPT_BLOWFISH === 1) {
+            $salt = mcrypt_create_iv(16, \MCRYPT_DEV_URANDOM);
+            $hashString = crypt($password, '$2a$07$' . $salt . '$');
+        } else {
+            $hashString = $this->_getFallback()->__invoke($password);
+        }
+
+        return $hashString;
+    }
 
 }
 

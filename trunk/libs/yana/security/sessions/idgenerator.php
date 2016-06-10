@@ -27,7 +27,7 @@
  * @ignore
  */
 
-namespace Yana\Security\SessionIds;
+namespace Yana\Security\Sessions;
 
 /**
  * Session id generator.
@@ -39,7 +39,7 @@ namespace Yana\Security\SessionIds;
  *
  * @ignore
  */
-class Generator extends \Yana\Core\Object implements \Yana\Security\SessionIds\IsGenerator
+class IdGenerator extends \Yana\Core\Object implements \Yana\Security\Sessions\IsIdGenerator
 {
 
     /**
@@ -53,7 +53,7 @@ class Generator extends \Yana\Core\Object implements \Yana\Security\SessionIds\I
     {
         assert('!isset($remoteAddress); // Cannot redeclare var $remoteAddress');
         $remoteAddress = '127.0.0.1';
-        if (isset($_SERVER['REMOTE_ADDR'])) {
+        if (isset($_SERVER['REMOTE_ADDR']) && is_string($_SERVER['REMOTE_ADDR'])) {
             $remoteAddress = $_SERVER['REMOTE_ADDR'];
         }
         return $remoteAddress;

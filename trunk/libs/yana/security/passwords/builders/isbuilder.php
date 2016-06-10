@@ -27,47 +27,35 @@
  * @ignore
  */
 
-namespace Yana\Security\SessionIds;
+namespace Yana\Security\Passwords\Builders;
 
 /**
- * <<interface>> Session id generator.
- *
- * Used to create random session-ids.
+ * <<interface>> Helps creating password-algorithm instances.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-interface IsGenerator
+interface IsBuilder
 {
 
     /**
-     * Application instance id.
+     * Make this algorithm the new main and any previous the fallback.
      *
-     * The instance-id identifies the current instance of the installation,
-     * where multiple instances of the framework are available on the same server.
-     *
-     * @return  string
-     * @ignore
+     * @param   string  $algorithm  hash-algorithm instance
+     * @return  \Yana\Security\Passwords\Builders\IsBuilder
      */
-    public function createApplicationUserId();
+    public function add($algorithm);
 
     /**
-     * Create a random session id for user BEFORE login.
+     * Return algorithm.
      *
-     * @return  string
+     * Default is NullAlgorithm.
+     *
+     * @return  \Yana\Security\Passwords\IsAlgorithm
      */
-    public function createUnauthenticatedSessionId();
-
-    /**
-     * Create a random session id for authenticated users AFTER successful login.
-     *
-     * Uses SHA1 where available and MD5 as fallback.
-     *
-     * @return  string
-     */
-    public function createAuthenticatedSessionId();
+    public function __invoke();
 
 }
 
