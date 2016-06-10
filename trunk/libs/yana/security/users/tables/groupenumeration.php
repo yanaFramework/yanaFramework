@@ -30,21 +30,19 @@
 namespace Yana\Security\Users\Tables;
 
 /**
- * <<enumeration>> Column names for table securityrules.
+ * <<enumeration>> Column names for table securityaction.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-class RuleEnumeration extends \Yana\Core\AbstractEnumeration
+class GroupEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
-    const TABLE = 'securityrules';
-    const GRANTED_BY_USER = 'user_created';
-    const USER = 'user_id';
-    const GROUP = 'group_id';
-    const ROLE = 'role_id';
+    const TABLE = 'securitygroup';
+    const ID = 'group_id';
+    const NAME = 'group_name';
 
 }
 
