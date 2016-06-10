@@ -182,7 +182,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
         /* avoid spamming */
         if (!is_int($permission) || $permission < 1) {
             if (\Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
-                if ($YANA->callAction("security_check_image", \Yana\Core\Request::getPost()) === false) {
+                if ($YANA->callAction("security_check_image", \Yana\Http\Requests\Builder::buildFromSuperGlobals()->post()->asArrayOfStrings()) === false) {
                     $message = 'CAPTCHA not solved, entry has not been created.';
                     $level = \Yana\Log\TypeEnumeration::DEBUG;
                     \Yana\Log\LogManager::getLogger()->addLog($message, $level);
@@ -386,7 +386,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
         /* avoid spamming */
         if (!is_int($permission) || $permission < 1) {
             if (\Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
-                if ($YANA->callAction("security_check_image", \Yana\Core\Request::getPost()) === false) {
+                if ($YANA->callAction("security_check_image", \Yana\Http\Requests\Builder::buildFromSuperGlobals()->post()->asArrayOfStrings()) === false) {
                     $message = 'CAPTCHA not solved, entry has not been created.';
                     $level = \Yana\Log\TypeEnumeration::DEBUG;
                     \Yana\Log\LogManager::getLogger()->addLog($message, $level);
