@@ -32,26 +32,25 @@ namespace Yana\Db\Ddl\Logs;
  *
  * This wrapper class represents the structure of a database
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class Rename extends \Yana\Db\Ddl\Logs\Create
 {
-    /**#@+
-     * @ignore
-     * @access  protected
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "rename";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'name'        => array('name',        'nmtoken'),
@@ -63,22 +62,25 @@ class Rename extends \Yana\Db\Ddl\Logs\Create
 
     /**
      * tags for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlTags = array(
         'description' => array('description', 'string')
     );
 
-    /** @var string */ protected $oldName = null;
-
-    /**#@-*/
+    /**
+     * @var string
+     * @ignore
+     */
+    protected $oldName = null;
 
     /**
      * Returns the old name of the object that has changed.
      *
      * Note: For columns the returned name includes the table ("table.column").
      *
-     * @access  public
      * @return  string
      */
     public function getOldName()
@@ -93,7 +95,6 @@ class Rename extends \Yana\Db\Ddl\Logs\Create
     /**
      * Set the old name of the object that has changed.
      *
-     * @access  public
      * @param   string  $oldName  old name of changed object
      * @return  \Yana\Db\Ddl\Logs\Rename
      */
@@ -109,7 +110,7 @@ class Rename extends \Yana\Db\Ddl\Logs\Create
     }
 
     /**
-     * carry out the update
+     * Carry out the update.
      *
      * Calls the provided handler function.
      * Provided arguments:
@@ -119,7 +120,6 @@ class Rename extends \Yana\Db\Ddl\Logs\Create
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @return  bool
      */
     public function commitUpdate()
@@ -134,8 +134,6 @@ class Rename extends \Yana\Db\Ddl\Logs\Create
     /**
      * Unserializes a XDDL-node to an instance of this class and returns it.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Logs\Rename

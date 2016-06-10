@@ -1278,9 +1278,12 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     private function _setTrigger($trigger, $dbms, $name, $on, $event)
     {
-        assert('is_string($trigger); // Wrong type for argument 1. String expected');
-        assert('is_string($name); // Wrong type for argument 2. String expected');
-        assert('is_string($dbms); // Wrong type for argument 3. String expected');
+        assert('is_string($trigger); // Invalid argument $trigger: String expected');
+        assert('is_string($dbms); // Invalid argument $dbms: String expected');
+        assert('is_string($name); // Invalid argument $name: String expected');
+        assert('is_int($on); // Invalid argument $on: Integer expected');
+        assert('is_int($event); // Invalid argument $event: Integer expected');
+
         $dbms = strtolower($dbms);
         $object = new \Yana\Db\Ddl\Trigger($name);
         $object->setDBMS($dbms);
@@ -1341,8 +1344,6 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * If at least one grant is set, any user that does not match the given
      * restrictions is not permitted to access the form.
-     *
-     * @access  public
      */
     public function dropGrants()
     {
@@ -1357,7 +1358,6 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * This function adds a new grant to the form settings by using the given
      * options and returns it as an \Yana\Db\Ddl\Grant object.
      *
-     * @access  public
      * @param   string  $user   user group
      * @param   string  $role   user role
      * @param   int     $level  security level
@@ -1366,9 +1366,9 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      */
     public function addGrant($user = null, $role = null, $level = null)
     {
-        assert('is_string($user); // Wrong type for argument 1. String expected');
-        assert('is_string($role); // Wrong type for argument 2. String expected');
-        assert('is_null($level) || is_int($level); // Wrong type for argument 3. Integer expected');
+        assert('is_null($user) || is_string($user); // Invalid argument $user: String expected');
+        assert('is_null($role) || is_string($role); // Invalid argument $role: String expected');
+        assert('is_null($level) || is_int($level); // Invalid argument $level: Integer expected');
         $grant = new \Yana\Db\Ddl\Grant();
         if (!empty($user)) {
             $grant->setUser($user);
@@ -1391,7 +1391,6 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      *
      * This function adds a new grant to the configuration.
      *
-     * @access  public
      * @param   \Yana\Db\Ddl\Grant  $grant    expected an grand object ( rights management)
      * @return  \Yana\Db\Ddl\Table 
      */
@@ -1411,7 +1410,6 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
      * Meant to be called from underlying function {@see \Yana\Db\Ddl\Index::setClustered()}.
      * Do not call directly.
      *
-     * @access  public
      * @param   \Yana\Db\Ddl\Index $index primary/clustered index
      * @return  \Yana\Db\Ddl\Table 
      */
@@ -1429,7 +1427,6 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
     /**
      * <<magic>> Returns a column with the given name.
      *
-     * @access  public
      * @param   string $name   name
      * @return  \Yana\Db\Ddl\Column
      */
@@ -1439,12 +1436,10 @@ class Table extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsI
     }
 
     /**
-     * unserialize a XDDL-node to an object
+     * Unserialize a XDDL-node to an object.
      *
      * Returns the unserialized object.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed             $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Table

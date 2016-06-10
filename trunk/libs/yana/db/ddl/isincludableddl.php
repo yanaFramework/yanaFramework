@@ -28,9 +28,8 @@
 namespace Yana\Db\Ddl;
 
 /**
- * <<Interface>> includable DDL object
+ * <<Interface>> includable DDL object.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
@@ -38,21 +37,19 @@ interface IsIncludableDDL
 {
 
     /**
-     * get parent
+     * Get parent.
      *
      * @return  \Yana\Db\Ddl\Database
      */
     public function getParent();
 
     /**
-     * get object name
-     *
      * Returns the object name.
      *
-     * @access  public
      * @return  string
      */
     public function getName();
+
 }
 
 ?>

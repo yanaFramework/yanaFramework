@@ -28,7 +28,7 @@
 namespace Yana\Db\Ddl;
 
 /**
- * database foreign-key constraints
+ * Database foreign-key constraints.
  *
  * Indexes are meant to improve the performance of select-statements. An index is a sorted list
  * of column values. Scanning an index is usually faster than scanning a whole table.
@@ -36,26 +36,25 @@ namespace Yana\Db\Ddl;
  * will be slower when using an index. Also some DBMS may require that you update your indexes quite
  * often.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class Index extends \Yana\Db\Ddl\AbstractObject
 {
-    /**#@+
-     * @ignore
-     * @access  protected
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var string
+     * @ignore
      */
     protected $xddlTag = "index";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'name'      => array('name',      'nmtoken'),
@@ -66,31 +65,61 @@ class Index extends \Yana\Db\Ddl\AbstractObject
 
     /**
      * tags for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlTags = array(
         'description' => array('description', 'string'),
         'column'      => array('columns',     'array', 'Yana\Db\Ddl\IndexColumn')
     );
 
-    /** @var string           */ protected $description = null;
-    /** @var string           */ protected $title = null;
-    /** @var bool             */ protected $clustered = null;
-    /** @var bool             */ protected $unique = null;
-    /** @var \Yana\Db\Ddl\IndexColumn[] */ protected $columns = array();
-    /** @var \Yana\Db\Ddl\Table         */ protected $parent = null;
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $description = null;
 
-    /**#@-*/
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $title = null;
+
+    /**
+     * @var  bool
+     * @ignore
+     */
+    protected $clustered = null;
+
+    /**
+     * @var  bool
+     * @ignore
+     */
+    protected $unique = null;
+
+    /**
+     * @var  \Yana\Db\Ddl\IndexColumn[]
+     * @ignore
+     */
+    protected $columns = array();
+
+    /**
+     * @var  \Yana\Db\Ddl\Table
+     * @ignore
+     */
+    protected $parent = null;
 
     /**
      * Initialize instance.
      *
-     * @access  public
-     * @param   string    $name     index name
-     * @param   \Yana\Db\Ddl\Table  $parent   parent
+     * @param  string              $name    index name
+     * @param  \Yana\Db\Ddl\Table  $parent  parent
      */
     public function __construct($name = "", \Yana\Db\Ddl\Table $parent = null)
     {
+        assert('is_string($name); // Invalid argument $name: String expected');
+
         $this->setName($name);
         $this->parent = $parent;
     }
@@ -112,7 +141,6 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      *
      * It is optional. If it is not set, the function returns NULL instead.
      *
-     * @access  public
      * @return  string
      */
     public function getTitle()
@@ -130,13 +158,13 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      * Sets the title used to display the object in the UI.
      * To reset the property, leave the parameter empty.
      *
-     * @access  public
      * @param   string  $title  any text is valid
      * @return  \Yana\Db\Ddl\Index
      */
     public function setTitle($title = "")
     {
-        assert('is_string($title); // Wrong type for argument 1. String expected');
+        assert('is_string($title); // Invalid argument $title: String expected');
+
         if (empty($title)) {
             $this->title = null;
         } else {
@@ -159,7 +187,6 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      * NULL instead. Note that the description may also contain an identifier
      * for automatic translation.
      *
-     * @access  public
      * @return  string
      */
     public function getDescription()
@@ -182,13 +209,13 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      *
      * To reset the property, leave the parameter $description empty.
      *
-     * @access  public
      * @param   string  $description  new value of this property
      * @return  \Yana\Db\Ddl\Index
      */
     public function setDescription($description = "")
     {
-        assert('is_string($description); // Wrong type for argument 1. String expected');
+        assert('is_string($description); // Invalid argument $description: String expected');
+
         if (empty($description)) {
             $this->description = null;
         } else {
@@ -202,7 +229,6 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      *
      * The source table is where the foreign-key-constraint is defined.
      *
-     * @access  public
      * @return  string
      */
     public function getSourceTable()
@@ -220,7 +246,6 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      * Returns an associative array of indexed columns, where the keys are
      * the column names and the values are instances of \Yana\Db\Ddl\IndexColumn.
      *
-     * @access  public
      * @return  array
      */
     public function getColumns()
@@ -235,7 +260,6 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      * The argument $isAscending may be set to false, to create an index that
      * is sorted in descending order for the given column.
      *
-     * @access  public
      * @param   string  $name             name of indexed column
      * @param   bool    $isAscending      optional sorting argument
      * @return  \Yana\Db\Ddl\IndexColumn
@@ -245,8 +269,8 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      */
     public function addColumn($name, $isAscending = true)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
-        assert('is_bool($isAscending); // Wrong type for argument 2. Boolean expected');
+        assert('is_string($name); // Invalid argument $name: String expected');
+        assert('is_bool($isAscending); // Invalid argument $isAscending: Boolean expected');
 
         if (isset($this->parent) && !$this->parent->isColumn($name)) {
             $message = "No such column '$name' in table '{$this->parent->getName()}'.";
@@ -273,12 +297,12 @@ class Index extends \Yana\Db\Ddl\AbstractObject
     /**
      * Removes the column from the index, if it is defined.
      *
-     * @access  public
      * @param   string  $name name of indexed column
      */
     public function dropColumn($name)
     {
-        assert('is_string($name); // Wrong type for argument 1. String expected');
+        assert('is_string($name); // Invalid argument $name: String expected');
+
         $name = strtolower($name);
         if (isset($this->columns[$name])) {
             unset($this->columns[$name]);
@@ -291,7 +315,6 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      * Note: a unique index demands an unique-constraint on the column and vice
      * versa.
      *
-     * @access  public
      * @return  bool
      */
     public function isUnique()
@@ -305,13 +328,13 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      * Note: a unique index demands an unique-constraint on the column and vice
      * versa.
      *
-     * @access  public
      * @param   bool  $isUnique   new value of this property
      * @return  \Yana\Db\Ddl\Index 
      */
     public function setUnique($isUnique)
     {
-        assert('is_bool($isUnique); // Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isUnique); // Invalid argument $isUnique: Boolean expected');
+
         $this->unique = (bool) $isUnique;
         return $this;
     }
@@ -325,7 +348,6 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      * tablespace, so that they fit inside the same memory page, when retrieving
      * data from a table.
      *
-     * @access  public
      * @return  bool
      */
     public function isClustered()
@@ -349,13 +371,13 @@ class Index extends \Yana\Db\Ddl\AbstractObject
      * index to be clustered, any previously clustered index will become
      * unclustered.
      *
-     * @access  public
      * @param   bool  $isClustered  new value of this property
      * @return  \Yana\Db\Ddl\Index
      */
     public function setClustered($isClustered)
     {
-        assert('is_bool($isClustered); // Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isClustered); // Invalid argument $isClustered: Boolean expected');
+
         if ($isClustered) {
 
             $this->clustered = true;
@@ -373,8 +395,6 @@ class Index extends \Yana\Db\Ddl\AbstractObject
     /**
      * Unserializes a XDDL-node to an instance of this class and returns it.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Index

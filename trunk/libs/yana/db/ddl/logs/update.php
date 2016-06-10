@@ -32,26 +32,25 @@ namespace Yana\Db\Ddl\Logs;
  *
  * This wrapper class represents the structure of a database
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class Update extends \Yana\Db\Ddl\Logs\Create
 {
-    /**#@+
-     * @ignore
-     * @access  protected
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "update";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'name'        => array('name',             'nmtoken'),
@@ -65,17 +64,31 @@ class Update extends \Yana\Db\Ddl\Logs\Create
 
     /**
      * tags for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlTags = array(
         'description' => array('description', 'string')
     );
 
-    /** @var string */ protected $propertyName = null;
-    /** @var string */ protected $propertyValue = null;
-    /** @var string */ protected $oldPropertyValue = null;
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $propertyName = null;
 
-    /**#@-*/
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $propertyValue = null;
+
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $oldPropertyValue = null;
 
     /**
      * Get name of updated property.
@@ -83,7 +96,6 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      * Specifies which property of the object has been updated.
      * Returns the name of the property.
      *
-     * @access  public
      * @return  string
      */
     public function getPropertyName()
@@ -100,7 +112,6 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      *
      * Specifies which property of the object has been updated.
      *
-     * @access  public
      * @param   string  $name  name of updated property
      * @return  \Yana\Db\Ddl\Logs\Update
      */
@@ -122,7 +133,6 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      * Note that the value may be a serialized string, depending on the
      * implementation you use.
      *
-     * @access  public
      * @return  string
      */
     public function getPropertyValue()
@@ -139,7 +149,6 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      *
      * Note that the value may be a serialized string, depending on the implementation you use.
      *
-     * @access  public
      * @param   string  $value  value of updated property
      * @return  \Yana\Db\Ddl\Logs\Update
      */
@@ -159,7 +168,6 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      *
      * Note that the value may be a serialized string, depending on the implementation you use.
      *
-     * @access  public
      * @return  string
      */
     public function getOldPropertyValue()
@@ -177,7 +185,6 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      * Note that the value may be a serialized string, depending on the
      * implementation you use.
      *
-     * @access  public
      * @param   string  $oldValue   old value of updated property
      * @return  \Yana\Db\Ddl\Logs\Update
      */
@@ -197,7 +204,6 @@ class Update extends \Yana\Db\Ddl\Logs\Create
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @return  bool
      */
     public function commitUpdate()
@@ -214,8 +220,6 @@ class Update extends \Yana\Db\Ddl\Logs\Create
     /**
      * Unserializes a XDDL-node to an instance of this class and returns it.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed             $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Logs\Update

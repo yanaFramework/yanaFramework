@@ -28,7 +28,7 @@
 namespace Yana\Db\Ddl;
 
 /**
- * database foreign-key constraints
+ * Database foreign-key constraints.
  *
  * Foreign-key constraints are meant to ensure referential integrity between tables.
  * This feature is not supported by all DBMS but may be emulated using software.
@@ -37,27 +37,25 @@ namespace Yana\Db\Ddl;
  * Note that the types of the source columns of a foreign-key depend on the type of the target
  * columns.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class ForeignKey extends \Yana\Db\Ddl\AbstractObject
 {
 
-    /**#@+
-     * @ignore
-     * @access  protected
-     */
-
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "foreign";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'name'       => array('name',        'nmtoken'),
@@ -70,33 +68,86 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
 
     /**
      * tags for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlTags = array(
         'description' => array('description', 'string'),
         'key'         => array('columns',     'array', null, 'name', 'column')
     );
 
-    /** @var string   */ protected $description = null;
-    /** @var string   */ protected $targetTable = null;
-    /** @var array    */ protected $columns = array();
-    /** @var int      */ protected $match = \Yana\Db\Ddl\KeyMatchStrategyEnumeration::SIMPLE;
-    /** @var int      */ protected $onDelete = \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION;
-    /** @var int      */ protected $onUpdate = \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION;
-    /** @var bool     */ protected $deferrable = null;
-    /** @var \Yana\Db\Ddl\Table */ protected $parent = null;
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $description = null;
 
-    /**#@-*/
-    /**#@+
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $targetTable = null;
+
+    /**
+     * @var  array
+     * @ignore
+     */
+    protected $columns = array();
+
+    /**
+     * @var  int
+     * @ignore
+     */
+    protected $match = \Yana\Db\Ddl\KeyMatchStrategyEnumeration::SIMPLE;
+
+    /**
+     * @var  int
+     * @ignore
+     */
+    protected $onDelete = \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION;
+
+    /**
+     * @var  int
+     * @ignore
+     */
+    protected $onUpdate = \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION;
+
+    /**
+     * @var  bool
+     * @ignore
+     */
+    protected $deferrable = null;
+
+    /**
+     * @var  \Yana\Db\Ddl\Table
+     * @ignore
+     */
+    protected $parent = null;
+
+    /**
      * properties for persistance mapping: object <-> XDDL
      *
+     * @var  string
      * @ignore
-     * @access  protected
      */
+    protected $_match = null;
 
-    /** @var string  */ protected $_match = null;
-    /** @var string  */ protected $_onDelete = null;
-    /** @var string  */ protected $_onUpdate = null;
+    /**
+     * properties for persistance mapping: object <-> XDDL
+     *
+     * @var  string
+     * @ignore
+     */
+    protected $_onDelete = null;
+
+    /**
+     * properties for persistance mapping: object <-> XDDL
+     *
+     * @var  string
+     * @ignore
+     */
+    protected $_onUpdate = null;
 
     /**
      * Initialize instance.
@@ -106,6 +157,7 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      */
     public function __construct($name = "", \Yana\Db\Ddl\Table $parent = null)
     {
+        assert('is_string($name); // Invalid argument $name: string expected');
         parent::__construct($name);
         $this->parent = $parent;
     }
@@ -125,7 +177,6 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      *
      * The target table is where the foreign-keys refer to.
      *
-     * @access  public
      * @return  string
      */
     public function getTargetTable()
@@ -145,7 +196,6 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      * Not that reseting the name of the target table also resets the list
      * of referencing columns.
      *
-     * @access  public
      * @param   string  $name  name of target table
      * @return  \Yana\Db\Ddl\ForeignKey
      */
@@ -165,7 +215,6 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      *
      * The source table is where the foreign-key-constraint is defined.
      *
-     * @access  public
      * @return  string
      */
     public function getSourceTable()
@@ -183,7 +232,6 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      * Returns an associative array of referencing columns, where the keys are
      * the source columns and the values are the target columns.
      *
-     * @access  public
      * @return  array
      */
     public function getColumns()
@@ -205,7 +253,6 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      *
      * Use an empty array to reset the column references.
      *
-     * @access  public
      * @param   array  $columns list of columns in current table
      * @return  \Yana\Db\Ddl\ForeignKey
      * @throws  \Yana\Core\Exceptions\NotFoundException  if any of the targets does not exists
@@ -232,7 +279,6 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      * target table. If you leave the second parameter off, it will be set to
      * the primary-key of the target table.
      *
-     * @access  public
      * @param   string  $source  name of source column in current table
      * @param   string  $target  name of target column in referenced table
      * @return  \Yana\Db\Ddl\ForeignKey
@@ -240,8 +286,8 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      */
     public function setColumn($source, $target = "")
     {
-        assert('is_string($source); // Wrong type for argument 1. String expected');
-        assert('is_string($target); // Wrong type for argument 2. String expected');
+        assert('is_string($source); // Invalid argument $source: String expected');
+        assert('is_string($target); // Invalid argument $target: String expected');
 
         $source = mb_strtolower($source);
         // set target column to primary key
@@ -300,7 +346,6 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      *
      * Note that not all DBMS may implement all or any of these options.
      *
-     * @access  public
      * @return  int
      * @name    \Yana\Db\Ddl\ForeignKey::getMatch()
      */
@@ -320,14 +365,13 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      *   <li> \Yana\Db\Ddl\KeyMatchStrategyEnumeration::PARTIAL </li>
      * </ul>
      *
-     * @access  public
-     * @param   int  $match     match type
+     * @param   int  $match  match type
      * @return  \Yana\Db\Ddl\ForeignKey
      * @see     \Yana\Db\Ddl\ForeignKey::getMatch()
      */
     public function setMatch($match)
     {
-        assert('is_numeric($match); // Wrong type for argument 1. Integer expected');
+        assert('is_numeric($match); // Invalid argument $match: Integer expected');
         switch($match)
         {
             case \Yana\Db\Ddl\KeyMatchStrategyEnumeration::SIMPLE:
@@ -383,7 +427,6 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      *   <li> Yana Framework's FileDB implements NOACTION </li>
      * </ul>
      *
-     * @access  public
      * @return  int
      * @name    \Yana\Db\Ddl\ForeignKey::getOnDelete()
      */
@@ -407,14 +450,13 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      *
      * The default is NOACTION.
      *
-     * @access  public
-     * @param   int  $match     type name (allowed params are on the top of this comment)
+     * @param   int  $match  type name (allowed params are on the top of this comment)
      * @return  \Yana\Db\Ddl\ForeignKey
      * @see     \Yana\Db\Ddl\ForeignKey::getOnDelete()
      */
     public function setOnDelete($match)
     {
-        assert('is_int($match); // Wrong type for argument 1. Integer expected');
+        assert('is_int($match); // Invalid argument $match: Integer expected');
 
         switch($match)
         {
@@ -446,7 +488,6 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      *
      * The default is NOACTION.
      *
-     * @access  public
      * @return  int
      * @see     \Yana\Db\Ddl\ForeignKey::getOnDelete()
      */
@@ -470,14 +511,13 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      *
      * The default is NOACTION.
      *
-     * @access  public
      * @param   int  $match  type name (allowed params are on the top of this comment)
      * @return  \Yana\Db\Ddl\ForeignKey
      * @see     \Yana\Db\Ddl\ForeignKey::getOnDelete()
      */
     public function setOnUpdate($match)
     {
-        assert('is_int($match); // Wrong type for argument 1. Integer expected');
+        assert('is_int($match); // Invalid argument $match: Integer expected');
         switch($match)
         {
             case \Yana\Db\Ddl\KeyUpdateStrategyEnumeration::NOACTION:
@@ -518,7 +558,6 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      * For DB2 and others you would instead temporarily deactivate
      * constraint-checks while insterting or updating rows.
      *
-     * @access  public
      * @return  bool
      * @name    \Yana\Db\Ddl\ForeignKey::isDeferrable()
      */
@@ -533,24 +572,22 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
      * Deferrable means, the DBS should wait till the end of a transaction
      * before it check inserted or updated foreign keys.
      *
-     * @access  public
      * @param   bool  $isDeferrable  true = is deferable, false = is not deferable
      * @return  \Yana\Db\Ddl\ForeignKey
      * @see     \Yana\Db\Ddl\ForeignKey::isDeferrable()
      */
     public function setDeferrable($isDeferrable)
     {
-        assert('is_bool($isDeferrable); // Wrong type for argument 1. Boolean expected');
+        assert('is_bool($isDeferrable); // Invalid argument $isDeferrable: Boolean expected');
         $this->deferrable = (bool) $isDeferrable;
         return $this;
     }
 
     /**
-     * serialize this object to XDDL
+     * Serialize this object to XDDL.
      *
      * Returns the serialized object as a string in XML-DDL format.
      *
-     * @access  public
      * @param   \SimpleXMLElement $parentNode  parent node
      * @return  \SimpleXMLElement
      */
@@ -608,12 +645,10 @@ class ForeignKey extends \Yana\Db\Ddl\AbstractObject
     }
 
     /**
-     * unserialize a XDDL-node to an object
+     * Unserialize a XDDL-node to an object.
      *
      * Returns the unserialized object.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\ForeignKey

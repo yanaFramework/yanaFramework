@@ -28,7 +28,7 @@
 namespace Yana\Db\Ddl\Functions;
 
 /**
- * database function structure
+ * Database function structure.
  *
  * This wrapper class represents the structure of a database
  *
@@ -45,19 +45,20 @@ namespace Yana\Db\Ddl\Functions;
  */
 class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIncludableDDL
 {
-    /**#@+
-     * @ignore
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "function";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'name'  => array('name',  'nmtoken'),
@@ -66,7 +67,9 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
 
     /**
      * tags for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlTags = array(
         'description'    => array('description',     'string'),
@@ -75,25 +78,27 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
 
     /**
      * @var string
+     * @ignore
      */
     protected $description = null;
 
     /**
      * @var string
+     * @ignore
      */
     protected $title = null;
 
     /**
      * @var \Yana\Db\Ddl\Functions\Implementation[]
+     * @ignore
      */
     protected $implementations = array();
 
     /**
      * @var \Yana\Db\Ddl\Database
+     * @ignore
      */
     protected $parent = null;
-
-    /** #@- */
 
     /**
      * constructor
@@ -103,6 +108,7 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
      */
     public function __construct($name, \Yana\Db\Ddl\Database $parent = null)
     {
+        assert('is_string($name); // Invalid argument $name: string expected');
         parent::__construct($name);
         $this->parent = $parent;
     }
@@ -124,7 +130,6 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
      *
      * It is optional. If it is not set, the function returns NULL instead.
      *
-     * @access  public
      * @return  string
      */
     public function getTitle()
@@ -142,13 +147,12 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
      * Sets the title used to display the object in the UI.
      * To reset the property, leave the parameter empty.
      *
-     * @access  public
      * @param   string  $title  any text is valid
      * @return  \Yana\Db\Ddl\Functions\Object
      */
     public function setTitle($title = "")
     {
-        assert('is_string($title); // Wrong type for argument 1. String expected');
+        assert('is_string($title); // Invalid argument $title: string expected');
         if (empty($title)) {
             $this->title = null;
         } else {
@@ -171,7 +175,6 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
      * NULL instead. Note that the description may also contain an identifier
      * for automatic translation.
      *
-     * @access  public
      * @return  string
      */
     public function getDescription()
@@ -194,13 +197,12 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
      *
      * To reset the property, leave the parameter $description empty.
      *
-     * @access  public
      * @param   string  $description  any text is valid
      * @return  \Yana\Db\Ddl\Functions\Object
      */
     public function setDescription($description)
     {
-        assert('is_string($description); // Wrong type for argument 1. String expected');
+        assert('is_string($description); // Invalid argument $description: string expected');
         if (empty($description)) {
             $this->description = null;
         } else {
@@ -210,19 +212,18 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
     }
 
     /**
-     * get function implementation
+     * Get function implementation.
      *
      * Get the function implementation for the given DBMS.
      *
      * Returns NULL if no implementation is available.
      *
-     * @access  public
      * @param   string  $dbms   target DBMS, defaults to "generic"
      * @return  \Yana\Db\Ddl\Functions\Implementation
      */
     public function getImplementation($dbms = "generic")
     {
-        assert('is_string($dbms); // Wrong type for argument 1. String expected');
+        assert('is_string($dbms); // Invalid argument $dbms: string expected');
         $dbms = strtolower($dbms);
         assert('in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
         if (!isset($this->implementations[$dbms])) {
@@ -233,13 +234,12 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
     }
 
     /**
-     * get function implementations
+     * Get function implementations.
      *
      * Returns the list of function implementations for all DBMS.
      *
      * Returns an empty array if no implementation is available.
      *
-     * @access  public
      * @return  array
      */
     public function getImplementations()
@@ -248,21 +248,20 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
     }
 
     /**
-     * set function implementation
+     * Set function implementation.
      *
      * This adds an implementation for a given DBMS.
      * Returns the implementation as an object.
      *
      * An exception is thrown if the implementation already exists.
      *
-     * @access  public
      * @param   string $dbms    target DBMS, defaults to "generic"
      * @return  \Yana\Db\Ddl\Functions\Implementation
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException  when an implementation for the chosen DBMS already exists
      */
     public function addImplementation($dbms = "generic")
     {
-        assert('is_string($dbms); // Wrong type for argument 1. String expected');
+        assert('is_string($dbms); // Invalid argument $dbms: string expected');
         if (!isset($this->implementations[$dbms])) {
             $implementation = new \Yana\Db\Ddl\Functions\Implementation($dbms);
             $this->implementations[$dbms] = $implementation;
@@ -279,8 +278,6 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
     /**
      * Unserializes a XDDL-node to an instance of this class and returns it.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Functions\Object
@@ -304,6 +301,7 @@ class Object extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\Is
         }
         return $ddl;
     }
+
 }
 
 ?>

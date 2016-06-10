@@ -75,7 +75,6 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
      *
      * Returns bool(true) if $row is valid and bool(false) otherwise.
      *
-     * @access  public
      * @param   array   $row       values of the inserted/updated row
      * @param   bool    $isInsert  type of operation (true = insert, false = update)
      * @param   array   &$files    list of modified or inserted columns of type file or image

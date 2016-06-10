@@ -41,19 +41,19 @@ namespace Yana\Db\Ddl\Functions;
 class Parameter extends \Yana\Db\Ddl\AbstractNamedObject
 {
 
-    /**#@+
-     * @ignore
-     */
-
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "param";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'name' => array('name', 'nmtoken'),
@@ -63,33 +63,29 @@ class Parameter extends \Yana\Db\Ddl\AbstractNamedObject
 
     /**
      * @var int
+     * @ignore
      */
     protected $mode = \Yana\Db\Ddl\Functions\ParameterTypeEnumeration::IN;
-
-    /**
-     *
-     * @var string
-     */
-    protected $type = "";
-
-    /**#@-*/
-    /**#@+
-     * properties for persistance mapping: object <-> XDDL
-     */
 
     /**
      * @var string
      * @ignore
      */
+    protected $type = "";
+
+    /**
+     * properties for persistance mapping: object <-> XDDL
+     *
+     * @var string
+     * @ignore
+     */
     protected $_mode = null;
-    /**#@-*/
 
     /**
      * Get data type.
      *
      * Returns the data type of the parameter as a string.
      *
-     * @access  public
      * @return  string
      */
     public function getType()
@@ -104,13 +100,12 @@ class Parameter extends \Yana\Db\Ddl\AbstractNamedObject
      * DBMS. For "generic" it is equivalent to all simple data types known in PHP.
      * The setting is mandatory.
      *
-     * @access  public
      * @param   string  $type   data type of the parameter
      * @return  \Yana\Db\Ddl\Functions\Parameter 
      */
     public function setType($type)
     {
-        assert('is_string($type); // Wrong type for argument 1. String expected');
+        assert('is_string($type); // Invalid argument $type: string expected');
         $this->type = "$type";
         return $this;
     }
@@ -125,7 +120,6 @@ class Parameter extends \Yana\Db\Ddl\AbstractNamedObject
      *   <li> \Yana\Db\Ddl\Functions\ParameterTypeEnumeration::INOUT </li>
      * </ul>
      *
-     * @access  public
      * @return  int
      */
     public function getMode()
@@ -145,13 +139,12 @@ class Parameter extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * The default is \Yana\Db\Ddl\Functions\ParameterTypeEnumeration::IN.
      *
-     * @access  public
      * @param   int  $mode  parameter input mode
      * @return  \Yana\Db\Ddl\Functions\Parameter 
      */
     public function setMode($mode = \Yana\Db\Ddl\Functions\ParameterTypeEnumeration::IN)
     {
-        assert('is_int($mode); // Wrong type for argument 1. Integer expected');
+        assert('is_int($mode); // Invalid argument $mode: integer expected');
         switch($mode)
         {
             case \Yana\Db\Ddl\Functions\ParameterTypeEnumeration::IN:
@@ -169,7 +162,6 @@ class Parameter extends \Yana\Db\Ddl\AbstractNamedObject
     /**
      * Returns the serialized object as a string in XML-DDL format.
      *
-     * @access  public
      * @param   \SimpleXMLElement $parentNode  parent node
      * @return  \SimpleXMLElement
      */
@@ -193,8 +185,6 @@ class Parameter extends \Yana\Db\Ddl\AbstractNamedObject
     /**
      * Unserializes a XDDL-node to an instance of this class and returns it.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Functions\Parameter

@@ -28,7 +28,7 @@
 namespace Yana\Db\Ddl;
 
 /**
- * database event declaration
+ * Database event declaration.
  *
  * This wrapper class represents the structure of a database
  *
@@ -36,26 +36,25 @@ namespace Yana\Db\Ddl;
  * They may have an icon and/or label. The event is fired when the user clicks the link.
  * The type of the event and the syntax is dependent on the chosen language.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class Event extends \Yana\Db\Ddl\AbstractNamedObject
 {
-    /**#@+
-     * @ignore
-     * @access  protected
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "event";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'name'     => array('name',     'nmtoken'),
@@ -66,13 +65,35 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
         '#pcdata'  => array('action',   'string')
     );
 
-    /** @var string */ protected $action = "";
-    /** @var string */ protected $language = null;
-    /** @var string */ protected $title = null;
-    /** @var string */ protected $label = null;
-    /** @var string */ protected $icon = null;
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $action = "";
 
-    /**#@-*/
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $language = null;
+
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $title = null;
+
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $label = null;
+
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $icon = null;
 
     /**
      * Get action code.
@@ -80,7 +101,6 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * The code or function name that should be executed when the event is fired.
      * The syntax is dependent on the chosen language.
      *
-     * @access  public
      * @return  string
      */
     public function getAction()
@@ -97,7 +117,6 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * Set the code or function name that should be executed when the event is fired.
      * The syntax is dependent on the chosen language.
      *
-     * @access  public
      * @param   string  $action  function name (if language = php) or program code (if language = javascript)
      * @return  \Yana\Db\Ddl\Event 
      */
@@ -114,7 +133,6 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * Returns the programming language of the event-implementation as a string or NULL if the
      * option is not set.
      *
-     * @access  public
      * @return  string
      */
     public function getLanguage()
@@ -135,7 +153,6 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * To reset the property, leave the parameter empty.
      *
-     * @access  public
      * @param   string  $language   name of programming language (currently just "javascript" and "php" are supported)
      * @return  \Yana\Db\Ddl\Event 
      */
@@ -151,11 +168,10 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
     }
 
     /**
-     * get label
+     * Get label.
      *
      * Returns the label used for the clickable link as a string or NULL if the property is not set.
      *
-     * @access  public
      * @return  string
      */
     public function getLabel()
@@ -173,7 +189,6 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * Sets the label used for the clickable link.
      * To reset the property, leave the parameter empty.
      *
-     * @access  public
      * @param   string  $label  any text
      * @return  \Yana\Db\Ddl\Event 
      */
@@ -189,12 +204,11 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
     }
 
     /**
-     * get title
+     * Get title.
      *
      * Returns the title-attribute used for the clickable link as a string or NULL if the property
      * is not set.
      *
-     * @access  public
      * @return  string
      */
     public function getTitle()
@@ -212,7 +226,6 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * Sets the title-attribute used for the clickable link.
      * To reset the property, leave the parameter empty.
      *
-     * @access  public
      * @param   string  $title  any text, but no HTML
      * @return  \Yana\Db\Ddl\Event 
      */
@@ -233,7 +246,6 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * Returns the file path for the icon image that should be displayed on the clickable link
      * or NULL if the property is not set.
      *
-     * @access  public
      * @return  string
      */
     public function getIcon()
@@ -251,7 +263,6 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
      * Sets the source file for the image used to create the clickable link.
      * To reset the property, leave the parameter empty.
      *
-     * @access  public
      * @param   string  $icon   icon image
      */
     public function setIcon($icon = "")
@@ -267,12 +278,10 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
     }
 
     /**
-     * unserialize a XDDL-node to an object
+     * Unserialize a XDDL-node to an object.
      *
      * Returns the unserialized object.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Event
@@ -288,6 +297,7 @@ class Event extends \Yana\Db\Ddl\AbstractNamedObject
         $ddl->_unserializeFromXDDL($node);
         return $ddl;
     }
+
 }
 
 ?>

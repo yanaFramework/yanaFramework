@@ -32,26 +32,25 @@ namespace Yana\Db\Ddl\Logs;
  *
  * This wrapper class represents the structure of a database
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class Change extends \Yana\Db\Ddl\Logs\AbstractLog
 {
-    /**#@+
-     * @ignore
-     * @access  protected
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "change";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'version'     => array('version',     'string'),
@@ -62,18 +61,32 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
 
     /**
      * tags for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlTags = array(
         'description' => array('description', 'string'),
         'logparam'    => array('parameters',  'array', null, 'name'),
     );
 
-    /** @var string */ protected $dbms = null;
-    /** @var string */ protected $type = null;
-    /** @var array  */ protected $parameters = array();
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $dbms = null;
 
-    /**#@-*/
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $type = null;
+
+    /**
+     * @var  array
+     * @ignore
+     */
+    protected $parameters = array();
 
     /**
      * list of functions to apply changes to the database structure
@@ -81,8 +94,6 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      * Note: the implementation, number and type of arguments depend on the
      * type of changes that have to be carried out.
      *
-     * @access  protected
-     * @static
      * @var array
      * @ignore
      */
@@ -104,7 +115,6 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      * Returns the name of the target DBMS for this definition as a lower-cased string.
      * The default is "generic".
      *
-     * @access  public
      * @return  string
      */
     public function getDBMS()
@@ -126,7 +136,6 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      * The special "generic" DBMS-value means that the constraint is suitable for any DBMS.
      * Any DBMS other than "generic" will limit the setting to that DBMS only.
      *
-     * @access  public
      * @param   string  $dbms   target DBMS, defaults to "generic"
      * @return  \Yana\Db\Ddl\Logs\Change
      */
@@ -149,7 +158,6 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      * Returns the type of this operation.
      * This also sets which handler to use, as the handler is associated with a certain type.
      *
-     * @access  public
      * @return  string
      */
     public function getType()
@@ -167,7 +175,6 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      * Set the type the type of this operation.
      * This also sets which handler to use, as the handler is associated with a certain type.
      *
-     * @access  public
      * @param   string  $type   type of this operation
      * @return  \Yana\Db\Ddl\Logs\Change
      */
@@ -188,7 +195,6 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      * Returns an associative array of parameters for this change.
      * These parameters are passed to the handler function.
      *
-     * @access  public
      * @return  array
      */
     public function getParameters()
@@ -202,7 +208,6 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * These parameters are passed to the handler function.
      *
-     * @access  public
      * @param   string  $value  parameter value
      * @param   string  $name   parameter name
      */
@@ -220,8 +225,6 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
 
     /**
      * Drops and resets the current list of parameters.
-     *
-     * @access  public
      */
     public function dropParameters()
     {
@@ -233,7 +236,6 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * Provided arguments for handler are the object's parameter list.
      *
-     * @access  public
      * @param   string|array  $functionName     name of the function which is called
      * @param   string        $functionType     function type
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given function is not callable
@@ -255,7 +257,6 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
      * Provided arguments are the object's parameter list.
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @return  bool
      */
     public function commitUpdate()
@@ -274,8 +275,6 @@ class Change extends \Yana\Db\Ddl\Logs\AbstractLog
     /**
      * Unserializes a XDDL-node to an instance of this class and returns it.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\LogSql

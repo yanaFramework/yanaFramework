@@ -63,26 +63,25 @@ namespace Yana\Db\Ddl;
  * Application profiles may define different subsidiaries inside your company. E.g. Europe or Asia.
  * Note that you can't define profile-access using grants as these provide a partition of your data.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class Grant extends \Yana\Db\Ddl\DDL
 {
-    /**#@+
-     * @ignore
-     * @access  protected
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var string
+     * @ignore
      */
     protected $xddlTag = "grant";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'role'   => array('role',   'string'),
@@ -95,16 +94,49 @@ class Grant extends \Yana\Db\Ddl\DDL
         'grant'  => array('grant',  'bool')
     );
 
-    /** @var string */ protected $role = null;
-    /** @var string */ protected $user = null;
-    /** @var int    */ protected $level = null;
-    /** @var bool   */ protected $select = true;
-    /** @var bool   */ protected $insert = true;
-    /** @var bool   */ protected $update = true;
-    /** @var bool   */ protected $delete = true;
-    /** @var bool   */ protected $grant = true;
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $role = null;
 
-    /**#@-*/
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $user = null;
+
+    /**
+     * @var  int
+     * @ignore
+     */
+    protected $level = null;
+
+    /**
+     * @var  bool
+     * @ignore
+     */
+    protected $select = true;
+
+    /**
+     * @var  bool
+     * @ignore
+     */protected $insert = true;
+
+    /**
+     * @var  bool
+     * @ignore
+     */protected $update = true;
+
+    /**
+     * @var  bool
+     * @ignore
+     */protected $delete = true;
+
+    /**
+     * @var  bool
+     * @ignore
+     */protected $grant = true;
 
     /**
      * Get user role.
@@ -112,7 +144,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      * The role a user plays inside a user group.
      * This may be any string value.
      *
-     * @access  public
      * @return  string
      */
     public function getRole()
@@ -132,7 +163,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * Note that it is not checked wether the role is in use ore not.
      *
-     * @access  public
      * @param   string  $role  new value of this property
      * @return  \Yana\Db\Ddl\Grant
      */
@@ -155,7 +185,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * You may additionally define security levels to check.
      *
-     * @access  public
      * @return  string
      */
     public function getUser()
@@ -177,7 +206,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * Note that it is not checked wether the group is in use ore not.
      *
-     * @access  public
      * @param   string  $user  new value of this property
      * @return  \Yana\Db\Ddl\Grant
      */
@@ -200,7 +228,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      * highest.
      * If there is no restriction, the function returns NULL.
      *
-     * @access  public
      * @return  int
      */
     public function getLevel()
@@ -219,7 +246,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      * You may translate this to 0-100 percent, where 0 is the lowest level of access and 100 is the
      * highest.
      *
-     * @access  public
      * @param   string  $level  new value of this property
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given security level is outside range [0,100]
      * @return  \Yana\Db\Ddl\Grant
@@ -243,7 +269,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * Tells whether the user is granted to issue a select-statement on the database object.
      *
-     * @access  public
      * @return  bool
      */
     public function isSelectable()
@@ -258,7 +283,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * This value defaults to bool(true).
      *
-     * @access  public
      * @param   bool  $isSelectable  true: selectable, false: not selectable
      * @return  \Yana\Db\Ddl\Grant
      */
@@ -274,7 +298,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * Tells whether the user is granted to issue an insert-statement on the database object.
      *
-     * @access  public
      * @return  bool
      */
     public function isInsertable()
@@ -289,7 +312,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * This value defaults to bool(true).
      *
-     * @access  public
      * @param   bool  $isInsertable  true = allow, false = disallow insert statements
      * @return  \Yana\Db\Ddl\Grant
      */
@@ -305,7 +327,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * Tells whether the user is granted to issue an update-statement on the database object.
      *
-     * @access  public
      * @return  bool
      */
     public function isUpdatable()
@@ -320,7 +341,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * This value defaults to bool(true).
      *
-     * @access  public
      * @param   bool  $isUpdatable  new value of this property
      * @return  \Yana\Db\Ddl\Grant
      */
@@ -336,7 +356,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * Tells whether the user is granted to issue a delete-statement on the database object.
      *
-     * @access  public
      * @return  bool
      */
     public function isDeletable()
@@ -351,7 +370,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * This value defaults to bool(true).
      *
-     * @access  public
      * @param   bool  $isDeletable  new value of this property
      * @return  \Yana\Db\Ddl\Grant
      */
@@ -371,7 +389,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      * person, to any other user. So a manager may grant (and later revoke) all his rights to an
      * assistant while he is on vacation.
      *
-     * @access  public
      * @return  bool
      */
     public function isGrantable()
@@ -384,7 +401,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      *
      * Tells whether the user may temporarily grant his security permissions to other users.
      *
-     * @access  public
      * @param   bool  $isGrantable  true: may grant, false: may not grant
      * @return  \Yana\Db\Ddl\Grant
      */
@@ -402,7 +418,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      * or a certain combination of actions.
      * Returns bool(false) otherwise.
      *
-     * @access  public
      * @param   bool  $select  must be selectable
      * @param   bool  $insert  must be insertable
      * @param   bool  $update  must be updatable
@@ -454,8 +469,6 @@ class Grant extends \Yana\Db\Ddl\DDL
      * or a certain combination of actions.
      * Returns bool(false) otherwise.
      *
-     * @access  public
-     * @static
      * @param   array  $grants  list of \Yana\Db\Ddl\Grant objects
      * @param   bool   $select  must be selectable
      * @param   bool   $insert  must be insertable
@@ -482,8 +495,6 @@ class Grant extends \Yana\Db\Ddl\DDL
     /**
      * Unserializes a XDDL-node to an instance of this class and returns it.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Grant

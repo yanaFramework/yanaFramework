@@ -47,13 +47,17 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "column";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'name'          => array('name',            'nmtoken'),
@@ -82,7 +86,9 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
 
     /**
      * tags for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlTags = array(
         'description' => array('description', 'string'),
@@ -125,13 +131,14 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
     /**#@-*/
 
     /**
-     * @access  \Yana\Db\Ddl\Column    * @var     bool
+     * @var  bool
      * @ignore
      */
     private $hasIndex = null;
 
     /**
      * @var  bool
+     * @ignore
      */
     private $isForeignKey = null;
 
@@ -139,6 +146,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
      * cached grant-value
      *
      * @var  bool
+     * @ignore
      */
     private $isUpdatable = null;
 

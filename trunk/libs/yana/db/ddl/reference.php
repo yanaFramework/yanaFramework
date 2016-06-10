@@ -39,31 +39,27 @@ class Reference extends \Yana\Core\Object
     /**
      * Target table.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_table = "";
 
     /**
      * Key column in target table.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_column = "";
 
     /**
      * Label column in target table.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_label = "";
 
     /**
-     * Initialize instance
+     * Initialize instance.
      *
-     * @access  public
      * @param   string  $table   name of target table
      * @param   string  $column  name of key column in target table
      * @param   string  $label   name of label column in target table
@@ -78,7 +74,6 @@ class Reference extends \Yana\Core\Object
     /**
      * Get name of target table.
      *
-     * @access  public
      * @return  string
      */
     public function getTable()
@@ -89,7 +84,6 @@ class Reference extends \Yana\Core\Object
     /**
      * Get name of key column in target table.
      *
-     * @access  public
      * @return  string
      */
     public function getColumn()
@@ -100,7 +94,6 @@ class Reference extends \Yana\Core\Object
     /**
      * Get name of label column in target table.
      *
-     * @access  public
      * @return  string
      */
     public function getLabel()
@@ -111,7 +104,6 @@ class Reference extends \Yana\Core\Object
     /**
      * Set table.
      *
-     * @access  public
      * @param   string  $table  name of target table
      * @return  \Yana\Db\Ddl\Reference
      */
@@ -125,7 +117,6 @@ class Reference extends \Yana\Core\Object
     /**
      * Set column.
      *
-     * @access  public
      * @param   string  $column  name of key column in target table
      * @return  \Yana\Db\Ddl\Reference
      */
@@ -139,7 +130,6 @@ class Reference extends \Yana\Core\Object
     /**
      * Set label.
      *
-     * @access  public
      * @param   string  $label  name of label column in target table
      * @return  \Yana\Db\Ddl\Reference
      */

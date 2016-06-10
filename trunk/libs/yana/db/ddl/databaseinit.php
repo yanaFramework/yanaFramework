@@ -34,36 +34,43 @@ namespace Yana\Db\Ddl;
  * published on a database.
  * The syntax may either be portable or DBMS-sepcific.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class DatabaseInit extends \Yana\Db\Ddl\DDL
 {
-    /**#@+
-     * @ignore
-     * @access  protected
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "initialization";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @var  string
+     * @ignore
      */
     protected $xddlAttributes = array(
         'dbms'    => array('dbms', 'string'),
         '#pcdata' => array('sql',  'string')
     );
 
-    /** @var string */ protected $dbms = "generic";
-    /** @var string */ protected $sql = null;
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $dbms = "generic";
 
-    /**#@-*/
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $sql = null;
 
     /**
      * Get target DBMS.
@@ -75,7 +82,6 @@ class DatabaseInit extends \Yana\Db\Ddl\DDL
      * Usually this is used as a fall-back option for DBMS you haven't thought of when creating the
      * database structure or for those that simply doesn't have the feature in question.
      *
-     * @access  public
      * @return  string
      */
     public function getDBMS()
@@ -98,7 +104,6 @@ class DatabaseInit extends \Yana\Db\Ddl\DDL
      * Usually this is used as a fall-back option for DBMS you haven't thought of when creating the
      * database structure or for those that simply doesn't have the feature in question.
      *
-     * @access  public
      * @param   string  $dbms  target DBMS, defaults to "generic"
      * @return  \Yana\Db\Ddl\DatabaseInit
      */
@@ -120,7 +125,6 @@ class DatabaseInit extends \Yana\Db\Ddl\DDL
      *
      * Returns the SQL statement for this operation.
      *
-     * @access  public
      * @return  string
      */
     public function getSQL()
@@ -135,7 +139,6 @@ class DatabaseInit extends \Yana\Db\Ddl\DDL
     /**
      * Set the SQL statement for this operation.
      *
-     * @access  public
      * @param   string  $sql  SQL statement
      * @return  \Yana\Db\Ddl\DatabaseInit
      */
@@ -151,12 +154,10 @@ class DatabaseInit extends \Yana\Db\Ddl\DDL
     }
 
     /**
-     * unserialize a XDDL-node to an object
+     * Unserialize a XDDL-node to an object.
      *
      * Returns the unserialized object.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\DatabaseInit

@@ -45,26 +45,25 @@ namespace Yana\Db\Ddl;
  * are encouraged NOT to create sequences that may containg the value 0 at any time.
  * In addition, some applications may reserve index 0 for default values (as in data-warehousing).
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIncludableDDL
 {
-    /**#@+
-     * @ignore
-     * @access  protected
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "sequence";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'name'      => array('name',      'nmtoken'),
@@ -77,21 +76,55 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
 
     /**
      * tags for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlTags = array(
         'description' => array('description', 'string')
     );
 
-    /** @var string      */ protected $description = null;
-    /** @var int         */ protected $increment = 1;
-    /** @var bool        */ protected $cycle = null;
-    /** @var int         */ protected $start = null;
-    /** @var int         */ protected $min = null;
-    /** @var int         */ protected $max = null;
-    /** @var \Yana\Db\Ddl\Database */ protected $parent = null;
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $description = null;
 
-    /**#@-*/
+    /**
+     * @var  int
+     * @ignore
+     */
+    protected $increment = 1;
+
+    /**
+     * @var  bool
+     * @ignore
+     */
+    protected $cycle = null;
+
+    /**
+     * @var  int
+     * @ignore
+     */
+    protected $start = null;
+
+    /**
+     * @var  int
+     * @ignore
+     */
+    protected $min = null;
+
+    /**
+     * @var  int
+     * @ignore
+     */
+    protected $max = null;
+
+    /**
+     * @var  \Yana\Db\Ddl\Database
+     * @ignore
+     */
+    protected $parent = null;
 
     /**
      * Initialize instance.
@@ -120,7 +153,6 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      *
      * The description is used for your documentation purposes only.
      *
-     * @access  public
      * @return  string
      */
     public function getDescription()
@@ -137,7 +169,6 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      *
      * The description is used for your documentation purposes only.
      *
-     * @access  public
      * @param   string  $description  new value of this property
      * @return  \Yana\Db\Ddl\Sequence
      */
@@ -160,7 +191,6 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * The value defaults to the minimal value for ascending sequences and to the maximal value for
      * descending sequences.
      *
-     * @access  public
      * @return  int
      */
     public function getStart()
@@ -184,7 +214,6 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * Note: the start value must lay within range of the minimal and maximal sequence number.
      * To reset the value, leave the argument $start empty.
      *
-     * @access  public
      * @param   int  $start  start value
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the start value is not within the min and max values
      */
@@ -213,7 +242,6 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      *
      * The default value is 1.
      *
-     * @access  public
      * @return  int
      */
     public function getIncrement()
@@ -237,7 +265,6 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      *
      * To reset the value, leave the argument $increment empty.
      *
-     * @access  public
      * @param   int  $increment  increment value
      * @return  \Yana\Db\Ddl\Sequence
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the increment value equals 0.
@@ -261,7 +288,6 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * The minimal value is a lower boundary for a sequence.
      * All sequence values must be larger or equal the minimal value.
      *
-     * @access  public
      * @return  int
      */
     public function getMin()
@@ -281,7 +307,6 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * Note: the start value may not be lower than the minimal value.
      * The minimal value may not be larger than the maximal value.
      *
-     * @access  public
      * @param   int  $min  minimum value
      * @return  \Yana\Db\Ddl\Sequence
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the min value is greater than the current max value
@@ -309,7 +334,6 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * The maximum value is an upper boundary for a sequence.
      * All sequence values must be smaller or equal the maximum value.
      *
-     * @access  public
      * @return  int
      */
     public function getMax()
@@ -329,7 +353,6 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * Note: the start value may not be larger than the maximum value.
      * The maximum value may not be smaller or equal the minimum value.
      *
-     * @access  public
      * @param   int  $max  maximum value
      * @return  \Yana\Db\Ddl\Sequence
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the max value is smaller than the current min value
@@ -358,7 +381,6 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      * an upper- or lower-boundary, it will be reset to the minimum value for
      * an ascenindg sequence or the maximum value for a descending sequence.
      *
-     * @access  public
      * @return  bool
      */
     public function isCycle()
@@ -375,7 +397,6 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
      *
      * The default is false.
      *
-     * @access  public
      * @param   bool  $isCycle  new value of this property
      * @return  \Yana\Db\Ddl\Sequence
      */
@@ -389,8 +410,6 @@ class Sequence extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\
     /**
      * Unserializes a XDDL-node to an instance of this class and returns it.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed             $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Sequence

@@ -28,12 +28,11 @@
 namespace Yana\Db\Ddl;
 
 /**
- * <<Enumeration>> Foreign key matching strategy Enumeration
+ * <<Enumeration>> Foreign key matching strategy Enumeration.
  *
  * Values for possible matching strategies.
  * Either full, partial, or simple matches.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  *

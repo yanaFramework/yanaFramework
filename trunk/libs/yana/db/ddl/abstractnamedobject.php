@@ -61,7 +61,6 @@ abstract class AbstractNamedObject extends \Yana\Db\Ddl\DDL
     /**
      * Returns the object name.
      *
-     * @access  public
      * @return  string
      */
     public function getName()
@@ -74,7 +73,6 @@ abstract class AbstractNamedObject extends \Yana\Db\Ddl\DDL
      *
      * The name is mandatory.
      *
-     * @access  public
      * @param   string  $name  object name
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when name is invalid
      * @return  \Yana\Db\Ddl\AbstractNamedObject 
