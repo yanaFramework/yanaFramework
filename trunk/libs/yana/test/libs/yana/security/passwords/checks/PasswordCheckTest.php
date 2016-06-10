@@ -41,7 +41,7 @@ class PasswordCheckTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var  \Yana\Security\Users\User
+     * @var  \Yana\Security\Users\IsUser
      */
     protected $_user;
 
@@ -56,7 +56,7 @@ class PasswordCheckTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_user = new \Yana\Security\Users\User("name");
+        $this->_user = new \Yana\Security\Users\Entity("name");
         $this->_object = new \Yana\Security\Passwords\Checks\PasswordCheck(new \Yana\Security\Passwords\NullAlgorithm());
     }
 
