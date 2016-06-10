@@ -32,20 +32,18 @@ namespace Yana\Plugins\Configs;
  *
  * This class is a type-safe collection of instances of {@see PluginConfigurationMethod}.
  *
- * @access      public
  * @package     yana
  * @subpackage  plugins
  *
  * @ignore
  */
-class MethodCollection extends \Yana\Core\AbstractCollection
+class MethodCollection extends \Yana\Core\AbstractCollection implements \Yana\Report\IsReportable
 {
 
     /**
      * Unset item.
      *
-     * @access  public
-     * @param   string  $offset  lower-cased method-name
+     * @param  string  $offset  lower-cased method-name
      */
     public function offsetUnset($offset)
     {
@@ -56,7 +54,6 @@ class MethodCollection extends \Yana\Core\AbstractCollection
     /**
      * Check if item exists.
      *
-     * @access  public
      * @param   scalar  $offset  index of item to test
      * @return  bool
      */
@@ -69,7 +66,6 @@ class MethodCollection extends \Yana\Core\AbstractCollection
     /**
      * Get item.
      *
-     * @access  public
      * @param   string  $offset  lower-cased method-name
      */
     public function offsetGet($offset)
@@ -81,7 +77,6 @@ class MethodCollection extends \Yana\Core\AbstractCollection
     /**
      * Insert or replace item.
      *
-     * @access  public
      * @param   string               $offset  ignored
      * @param   MethodConfiguration  $value   newly added instance
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not a valid item of the collection
@@ -100,6 +95,32 @@ class MethodCollection extends \Yana\Core\AbstractCollection
                 "Found " . gettype($value) . "(" . ((is_object($value)) ? get_class($value) : $value) . ") instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
+    }
+
+    /**
+     * Returns a xml-report object, which you may print, transform or output to a file.
+     *
+     * @param   \Yana\Report\IsReport  $report  base report
+     * @return  \Yana\Report\IsReport
+     */
+    public function getReport(\Yana\Report\IsReport $report = null)
+    {
+        if (is_null($report)) {
+            $report = \Yana\Report\Xml::createReport(__CLASS__);
+        }
+
+        /**
+         * loop through interface definitions
+         */
+        assert('!isset($key); // Cannot redeclare var $key.');
+        assert('!isset($element); // Cannot redeclare var $element.');
+        foreach ($this->toArray() as $key => $element)
+        {
+            assert($element instanceof \Yana\Plugins\Configs\MethodConfiguration);
+            $element->getReport($report->addReport("$key"));
+        } // end foreach
+
+        return $report;
     }
 
 }

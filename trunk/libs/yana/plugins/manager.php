@@ -606,7 +606,10 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     {
         assert('is_string($pluginName); // Wrong type for argument 1. String expected');
 
-        $this->_loadPlugin($pluginName); /** @todo check if this is necessary */
+        /**
+         * @todo check if this is necessary
+         * $this->_loadPlugin($pluginName); 
+         */
         $pluginConfig = $this->getPluginConfigurations();
         if (isset($pluginConfig[$pluginName])) {
             return $pluginConfig[$pluginName];
@@ -681,7 +684,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
     /**
      * Get list of event configurations.
      *
-     * @return  PluginMethodCollection
+     * @return  \Yana\Plugins\Configs\MethodCollection
      */
     public function getEventConfigurations()
     {
@@ -834,63 +837,11 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
         if (is_null($report)) {
             $report = \Yana\Report\Xml::createReport(__CLASS__);
         }
-        $report->addText("Plugin directory: " . \Yana\Plugins\Manager::$_pluginDir);
+        $report->addText("Plugin directory: " . $this->getPluginDir());
         $methodsConfig = $this->getEventConfigurations();
 
-        if (empty($methodsConfig)) {
-            $report->addWarning("Cannot perform check! No interface definitions found.");
-
-        } else {
-            $skin = \Yana\Application::getInstance()->getSkin();
-
-            /**
-             * loop through interface definitions
-             */
-            foreach ($methodsConfig as $key => $element)
-            {
-                // @todo  check if $element is really an array (and not a \Yana\Plugins\Configs\MethodConfiguration)
-                if (!is_array($element)) {
-                    continue;
-                }
-
-                $subReport = $report->addReport("$key");
-
-                /**
-                 * check for type attribute
-                 */
-                assert('!isset($type); // Cannot redeclare var $type');
-                $type = $element->getType();
-                if (empty($type)) {
-                    $subReport->addWarning("The mandatory attribute 'type' is missing.");
-                } else {
-                    $subReport->addText('Type: ' . $type);
-                }
-                unset($type);
-
-                /**
-                 * check if template file exists
-                 */
-                assert('!isset($template); // Cannot redeclare var $template');
-                $template = $element->getTemplate();
-                $tplMessage = strcasecmp($template, "message");
-                if (!empty($template) && strcasecmp($template, "null") !== 0 && $tplMessage !== 0) {
-                    try {
-                        $filename = $skin->getFile($template);
-                        if (!file_exists($filename)) {
-                            $subReport->addError("The chosen template '" . $template . "' is not available. " .
-                                "Please check if reference and filename for this template are correct and " .
-                                "all files have been installed correctly.");
-                        } else {
-                            $subReport->addText("Template: {$filename}");
-                        }
-                    } catch (\Yana\Core\Exceptions\NotFoundException $e) {
-                        $subReport->addError("The definition of template '" . $template . "' contains errors: " .
-                            $e->getMessage());
-                    }
-                }
-                unset($template);
-            } // end foreach
-        } // end if
+        assert($methodsConfig instanceof \Yana\Plugins\Configs\MethodCollection);
+        $methodsConfig->getReport($report);
 
         return $report;
     }

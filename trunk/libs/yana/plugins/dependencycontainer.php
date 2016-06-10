@@ -58,6 +58,26 @@ class DependencyContainer extends \Yana\Plugins\AbstractDependencyContainer
         return $this->_getConnectionFactory();
     }
 
+    /**
+     * Get session data.
+     *
+     * @return  \Yana\Core\Sessions\IsWrapper
+     */
+    public function getSession()
+    {
+        return $this->_getSessionWrapper();
+    }
+
+    /**
+     * Get security facade.
+     *
+     * @return  \Yana\Security\Facade
+     */
+    public function getSecurityFacade()
+    {
+        return $this->_getSecurityFacade();
+    }
+
 }
 
 ?>

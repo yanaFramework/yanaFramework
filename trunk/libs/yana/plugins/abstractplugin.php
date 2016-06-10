@@ -96,6 +96,22 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
     }
 
     /**
+     * @return  \Yana\Core\Sessions\IsWrapper
+     */
+    protected function _getSession()
+    {
+        return $this->_dependencyContainer->getSession();
+    }
+
+    /**
+     * @return  \Yana\Security\Facade
+     */
+    protected function _getSecurityFacade()
+    {
+        return $this->_dependencyContainer->getSecurityFacade();
+    }
+
+    /**
      * <<factory>> Returns a ready-to-use database connection.
      *
      * Example:

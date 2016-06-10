@@ -33,159 +33,136 @@ namespace Yana\Plugins\Configs;
  * This class represents a plugin method's meta information.
  * This is it's interface, name and description and more.
  *
- * @access      public
  * @name        PluginConfigurationMethod
  * @package     yana
  * @subpackage  plugins
  *
  * @ignore
  */
-class MethodConfiguration extends \Yana\Core\Object
+class MethodConfiguration extends \Yana\Core\Object implements \Yana\Report\IsReportable
 {
+
     /**
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_className = "";
 
     /**
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_methodName = "";
 
     /**
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_args = array();
 
     /**
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_params = array();
 
     /**
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_return = "";
 
     /**
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_defaults = array();
 
     /**
-     * @access  private
-     * @var     bool
+     * @var  bool
      */
     private $_hasGenericParams = false;
 
     /**
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_paths = array();
 
     /**
      * Method title.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_title = "";
 
     /**
      * Plugin method type.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_type = \Yana\Plugins\TypeEnumeration::DEFAULT_SETTING;
 
     /**
      * Template identifier.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_template = "";
 
     /**
      * User settings.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_users = array();
 
     /**
-     * @access  private
-     * @var     bool
+     * @var  bool
      */
     private $_safeMode = null;
 
     /**
-     * @access  private
-     * @var     \Yana\Plugins\Menus\IsEntry
+     * @var  \Yana\Plugins\Menus\IsEntry
      */
     private $_menu = null;
 
     /**
-     * @access  private
-     * @var     \Yana\Plugins\Configs\EventRoute
+     * @var  \Yana\Plugins\Configs\EventRoute
      */
     private $_onError = null;
 
     /**
-     * @access  private
-     * @var     \Yana\Plugins\Configs\EventRoute
+     * @var  \Yana\Plugins\Configs\EventRoute
      */
     private $_onSuccess = null;
 
     /**
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_group = "";
 
     /**
-     * @access  private
-     * @var     bool
+     * @var  bool
      */
     private $_overwrite = false;
 
     /**
-     * @access  private
-     * @var     bool
+     * @var  bool
      */
     private $_subscribe = false;
 
     /**
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_languages = array();
 
     /**
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_scripts = array();
 
     /**
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_styles = array();
 
     /**
      * Get method type.
      *
-     * @access  public
      * @return  string
      */
     public function getType()
@@ -198,7 +175,6 @@ class MethodConfiguration extends \Yana\Core\Object
      *
      * Valid types are: default, config, read, write, security, library.
      *
-     * @access  public
      * @param   string  $type  valid method type
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -212,7 +188,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Add directory.
      *
-     * @access  public
      * @param   string  $path  absolute path to plugin class file
      */
     public function addPath($path)
@@ -224,7 +199,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Get directory.
      *
-     * @access  public
      * @return  string
      */
     public function getPath()
@@ -241,7 +215,6 @@ class MethodConfiguration extends \Yana\Core\Object
      *
      * This includes the path of the implementing method, as it always subscribes to itself.
      *
-     * @access  public
      * @return  array
      */
     public function getPaths()
@@ -250,9 +223,8 @@ class MethodConfiguration extends \Yana\Core\Object
     }
 
     /**
-     * get directory
+     * Add Configuration.
      *
-     * @access  public
      * @param   \Yana\Plugins\Configs\MethodConfiguration $subscriberConfig  configuration of subscribing method
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      * @ignore
@@ -272,7 +244,6 @@ class MethodConfiguration extends \Yana\Core\Object
      * Returns a list of all associated javascript files.
      * These are loaded together with the template.
      *
-     * @access  public
      * @return  array
      */
     public function getScripts()
@@ -283,7 +254,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Set Javascript files.
      *
-     * @access  public
      * @param   array  $scripts  list of paths to javascript files.
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -299,7 +269,6 @@ class MethodConfiguration extends \Yana\Core\Object
      * Returns a list of all associated CSS files.
      * These are loaded together with the template.
      *
-     * @access  public
      * @return  array
      */
     public function getStyles()
@@ -310,7 +279,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Set CSS styles.
      *
-     * @access  public
      * @param   array  $styles  list of paths to CSS files.
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -326,7 +294,6 @@ class MethodConfiguration extends \Yana\Core\Object
      * Returns a list of all associated XLIFF files.
      * These are loaded together with the template.
      *
-     * @access  public
      * @return  array
      */
     public function getLanguages()
@@ -337,7 +304,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Set language files.
      *
-     * @access  public
      * @param   array  $languages  list of names of XLIFF files.
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -361,7 +327,6 @@ class MethodConfiguration extends \Yana\Core\Object
      * );
      * </code>
      *
-     * @access  public
      * @return  array
      */
     public function getParams()
@@ -380,7 +345,6 @@ class MethodConfiguration extends \Yana\Core\Object
      * );
      * </code>
      *
-     * @access  public
      * @param   array  $params  keys are the param-names and the values are the param-types
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -395,7 +359,6 @@ class MethodConfiguration extends \Yana\Core\Object
      *
      * Returns the methods return value.
      *
-     * @access  public
      * @return  string
      */
     public function getReturn()
@@ -406,7 +369,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Set return value.
      *
-     * @access  public
      * @param   string  $return  valid PHP type - or empty string, if the function doesn't return a value
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -425,7 +387,6 @@ class MethodConfiguration extends \Yana\Core\Object
      *
      * A group may have multiple plugins, but a plugin may only be a member of one group.
      *
-     * @access  public
      * @return  string
      */
     public function getGroup()
@@ -438,7 +399,6 @@ class MethodConfiguration extends \Yana\Core\Object
      *
      * A group may have multiple plugins, but a plugin may only be a member of one group.
      *
-     * @access  public
      * @param   string  $group  unique name
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -458,7 +418,6 @@ class MethodConfiguration extends \Yana\Core\Object
      *
      * Use this function to get the menu entry defined by the method (if any).
      *
-     * @access  public
      * @return  \Yana\Plugins\Menus\IsEntry
      */
     public function getMenu()
@@ -469,7 +428,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Set menu entry.
      *
-     * @access  public
      * @param   \Yana\Plugins\Menus\IsEntry  $menu  menu configuration
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -482,7 +440,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Get settings on how to react on success.
      *
-     * @access  public
      * @return  \Yana\Plugins\Configs\EventRoute
      */
     public function getOnSuccess()
@@ -493,7 +450,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Set settings on how to react on success.
      *
-     * @access  public
      * @param   \Yana\Plugins\Configs\EventRoute  $onSuccess  event configuration
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -507,7 +463,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Get settings on how to react on error.
      *
-     * @access  public
      * @return  \Yana\Plugins\Configs\EventRoute
      */
     public function getOnError()
@@ -518,7 +473,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Set settings on how to react on error.
      *
-     * @access  public
      * @param   \Yana\Plugins\Configs\EventRoute  $onError  event configuration
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -534,7 +488,6 @@ class MethodConfiguration extends \Yana\Core\Object
      *
      * Returns the name (title) as defined in the method's doc block.
      *
-     * @access  public
      * @return  string
      */
     public function getTitle()
@@ -545,7 +498,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Set title.
      *
-     * @access  public
      * @param   string  $title  human readable name
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -566,7 +518,6 @@ class MethodConfiguration extends \Yana\Core\Object
      *  bool(false) for "safemode must NOT be active",
      *  or NULL for "don't care".
      *
-     * @access  public
      * @return  bool
      */
     public function getSafeMode()
@@ -583,7 +534,6 @@ class MethodConfiguration extends \Yana\Core\Object
      *
      * Any other value will reset the setting to NULL.
      *
-     * @access  public
      * @param   bool  $safeMode  true = requires safe-mode, false = disallows safe-mode, null = don't care
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -613,7 +563,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Get template path.
      *
-     * @access  public
      * @return  string
      */
     public function getTemplate()
@@ -624,7 +573,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Set template path.
      *
-     * @access  public
      * @param   string  $template  relative path to template file
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -640,7 +588,6 @@ class MethodConfiguration extends \Yana\Core\Object
      *
      * Returns a list of instances of PluginUserLevel.
      *
-     * @access  public
      * @return  \Yana\Plugins\Configs\UserPermissionRule[]
      */
     public function getUserLevels()
@@ -653,7 +600,6 @@ class MethodConfiguration extends \Yana\Core\Object
      *
      * All elements must be instances of PluginUserLevel.
      *
-     * @access  public
      * @param   \Yana\Plugins\Configs\UserPermissionRule[]  $users  list of user level definitions
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -670,7 +616,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Add user user level rule.
      *
-     * @access  public
      * @param   \Yana\Plugins\Configs\UserPermissionRule  $user  user level definition
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -691,7 +636,6 @@ class MethodConfiguration extends \Yana\Core\Object
      *
      * This has no effect if the plugin does not define a parent.
      *
-     * @access  public
      * @return  bool
      */
     public function getOverwrite()
@@ -702,7 +646,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Set overwrite setting of method.
      *
-     * @access  public
      * @param   bool  $overwrite  true = overwrite parent declaration, false = default
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -725,7 +668,6 @@ class MethodConfiguration extends \Yana\Core\Object
      * Note: you may NOT use the annotations "overwrite" and "subscribe" at
      * the same time.
      *
-     * @access  public
      * @return  bool
      */
     public function getSubscribe()
@@ -736,7 +678,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Set subscribe setting of method.
      *
-     * @access  public
      * @param   bool  $subscribe  true = extend parent, false = implement yourself
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -750,7 +691,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Get class name.
      *
-     * @access  public
      * @return  string
      */
     public function getClassName()
@@ -761,7 +701,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Set class name
      *
-     * @access  public
      * @param   string  $className  case-sensitive identifier
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -775,7 +714,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Get method name.
      *
-     * @access  public
      * @return  string
      */
     public function getMethodName()
@@ -786,7 +724,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Set method name.
      *
-     * @access  public
      * @param   string  $methodName  case-sensitive text
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -800,7 +737,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Set event arguments.
      *
-     * @access  public
      * @param   array  $args  list of arguments
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      * @throws  Warning       when a provided argument is missing or not valid
@@ -879,7 +815,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Set default values for method params.
      *
-     * @access  public
      * @param   array  $defaults  list of default arguments
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -892,7 +827,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Get default values for method params.
      *
-     * @access  public
      * @return  array
      */
     public function getDefaults()
@@ -903,7 +837,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Set if the function uses a generic, unchecked parameter list.
      *
-     * @access  public
      * @param   bool  $hasGenericParams  true = parameter list is generic, false = parameter list explicitely given
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
@@ -917,7 +850,6 @@ class MethodConfiguration extends \Yana\Core\Object
     /**
      * Check if the function uses a generic, unchecked parameter list.
      *
-     * @access  public
      * @return  bool
      */
     public function hasGenericParams()
@@ -926,11 +858,8 @@ class MethodConfiguration extends \Yana\Core\Object
     }
 
     /**
-     * send event
-     *
      * Executes the event on the provided instance and returns the result.
      *
-     * @access  public
      * @param   \Yana\IsPlugin  $instance  object to send event to
      * @return  mixed
      */
@@ -949,11 +878,10 @@ class MethodConfiguration extends \Yana\Core\Object
     }
 
     /**
-     * plug-in has method
+     * Plug-in has method?
      *
      * Returns bool(true) if the given plug-in implements this method and bool(false) otherwise.
      *
-     * @access  public
      * @param   \Yana\IsPlugin  $instance  object to send event to
      * @return  bool
      */
@@ -964,12 +892,68 @@ class MethodConfiguration extends \Yana\Core\Object
 
     /**
      * Reinitialize instance.
-     *
-     * @access  public
      */
     public function __wakeup()
     {
         $this->_args = array();
+    }
+
+    /**
+     * Returns a xml-report object, which you may print, transform or output to a file.
+     *
+     * @param   \Yana\Report\IsReport  $report  base report
+     * @return  \Yana\Report\IsReport
+     */
+    public function getReport(\Yana\Report\IsReport $report = null)
+    {
+        if (is_null($report)) {
+            $report = \Yana\Report\Xml::createReport(__CLASS__);
+        }
+
+        /**
+         * check for type attribute
+         */
+        assert('!isset($type); // Cannot redeclare var $type');
+        $type = $this->getType();
+        if (empty($type)) {
+            $report->addWarning("The mandatory attribute 'type' is missing.");
+        } else {
+            $report->addText('Type: ' . $type);
+        }
+        unset($type);
+
+        /**
+         * check if template file exists
+         */
+        assert('!isset($template); // Cannot redeclare var $template');
+        $template = $this->getTemplate();
+        assert('is_string($template); // Unexpected value: $template. String expected');
+        $tplMessage = strcasecmp($template, "message");
+        if (!empty($template) && strcasecmp($template, "null") !== 0 && $tplMessage !== 0) {
+
+            $filename = $template;
+            assert('!isset($filename); // Cannot redeclare var $filename');
+            try {
+
+                $filename = file_exists($filename) ? $filename :
+                    \Yana\Application::getInstance()->getSkin()->getTemplateData($template)->getFile();
+            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
+                $report->addError("The definition of template '" . $template . "' contains errors: " .
+                    $e->getMessage());
+            }
+
+            if (!file_exists($filename)) {
+                $report->addError("The chosen template '" . $template . "' is not available. " .
+                    "Please check if reference and filename for this template are correct and " .
+                    "all files have been installed correctly.");
+            } else {
+                $report->addText("Template: {$filename}");
+            }
+            unset($filename);
+        }
+        unset($template);
+
+        return $report;
     }
 
 }

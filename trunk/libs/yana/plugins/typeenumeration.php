@@ -32,7 +32,6 @@ namespace Yana\Plugins;
  *
  * The type depicts the semantic of a plugin.
  *
- * @access      public
  * @package     yana
  * @subpackage  plugins
  * @ignore
@@ -77,14 +76,12 @@ class TypeEnumeration extends \Yana\Core\AbstractEnumeration
      * Every enumeration item has an equivalent string representation that can be used within
      * annotation inside a PHP doc block.
      *
-     * @access  public
-     * @static
      * @param   string  $string  text representation to convert
      * @return  string
      */
     public static function fromString($string)
     {
-        assert('is_string($string); // Wrong type for argument 1. String expected');
+        assert('is_string($string); // Invalid argument $string: String expected');
 
         switch (mb_strtolower($string))
         {
