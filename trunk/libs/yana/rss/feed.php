@@ -164,7 +164,7 @@ class Feed extends \Yana\Core\Object implements \Yana\RSS\IsFeed
         $language = \Yana\Translations\Facade::getInstance();
         $this->_title = (string) $language->getVar('program_title');
         $this->_language = (string) $language->getLocale();
-        $this->_link = \Yana\Core\Request::getUri();
+        $this->_link = \Yana\Http\Uris\CanonicalUrlBuilder::buildFromSuperGlobals();
     }
 
     /**
