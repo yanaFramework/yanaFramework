@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Security\SessionIds;
+namespace Yana\Security\Rules;
 
 /**
  * @ignore
@@ -37,13 +37,13 @@ require_once __DIR__ . '/../../../../include.php';
  *
  * @package  test
  */
-class NullGeneratorTest extends \PHPUnit_Framework_TestCase
+class NullRuleTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var  \Yana\Security\SessionIds\NullGenerator
+     * @var \Yana\Security\Rules\NullRule
      */
-    protected $_object;
+    protected $object;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -51,33 +51,24 @@ class NullGeneratorTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_object = new \Yana\Security\SessionIds\NullGenerator();
+        $this->object = new \Yana\Security\Rules\NullRule();
+    }
+
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown()
+    {
+        
     }
 
     /**
      * @test
      */
-    public function testCreateApplicationUserId()
+    public function test__invoke()
     {
-        $this->assertEquals("", $this->_object->createApplicationUserId());
-    }
-
-    /**
-     * @test
-     */
-    public function testCreateUnauthenticatedSessionId()
-    {
-        $this->assertEquals("", $this->_object->createUnauthenticatedSessionId());
-    }
-
-    /**
-     * @test
-     */
-    public function testCreateAuthenticatedSessionId()
-    {
-        $this->assertEquals("", $this->_object->createAuthenticatedSessionId());
+        $this->assertTrue($this->object->__invoke(new \Yana\Security\Rules\Requirements\Requirement("", "", 0), "profileId", "action", "userName"));
     }
 
 }
-
-?>

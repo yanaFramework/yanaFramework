@@ -25,7 +25,7 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Security\SessionIds;
+namespace Yana\Security\Sessions;
 
 /**
  * @ignore
@@ -37,11 +37,11 @@ require_once __DIR__ . '/../../../../include.php';
  *
  * @package  test
  */
-class GeneratorTest extends \PHPUnit_Framework_TestCase
+class NullIdGeneratorTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var  \Yana\Security\SessionIds\Generator
+     * @var  \Yana\Security\Sessions\NullIdGenerator
      */
     protected $_object;
 
@@ -51,7 +51,7 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_object = new \Yana\Security\SessionIds\Generator();
+        $this->_object = new \Yana\Security\Sessions\NullIdGenerator();
     }
 
     /**
@@ -59,9 +59,7 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateApplicationUserId()
     {
-        $this->assertGreaterThan("", $this->_object->createApplicationUserId());
-        $this->assertStringStartsWith("127.0.0.1@", $this->_object->createApplicationUserId());
-        $this->assertEquals(1, preg_match('/^127\.0\.0\.1\@[\w \:\\\\\/]+$/s', $this->_object->createApplicationUserId()));
+        $this->assertEquals("", $this->_object->createApplicationUserId());
     }
 
     /**
@@ -69,8 +67,7 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateUnauthenticatedSessionId()
     {
-        $this->assertGreaterThan("", $this->_object->createUnauthenticatedSessionId());
-        $this->assertEquals(1, preg_match('/^[a-f\d]{10,}$/s', $this->_object->createUnauthenticatedSessionId()));
+        $this->assertEquals("", $this->_object->createUnauthenticatedSessionId());
     }
 
     /**
@@ -78,9 +75,7 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateAuthenticatedSessionId()
     {
-        $this->assertGreaterThan("", $this->_object->createAuthenticatedSessionId());
-        $this->assertEquals(1, preg_match('/^[a-f\d]{10,}$/s', $this->_object->createAuthenticatedSessionId()));
-        $this->assertGreaterThanOrEqual(strlen($this->_object->createUnauthenticatedSessionId()), strlen($this->_object->createAuthenticatedSessionId()));
+        $this->assertEquals("", $this->_object->createAuthenticatedSessionId());
     }
 
 }

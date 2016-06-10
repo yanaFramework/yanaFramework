@@ -67,10 +67,10 @@ class AbstractCheckTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvoke()
     {
-        $this->assertTrue($this->_object->__invoke(new \Yana\Security\Users\User("Test"), "Test", "Password!"));
-        $this->assertTrue($this->_object->__invoke(new \Yana\Security\Users\User("Test"), "test", "Password!"));
-        $this->assertTrue($this->_object->__invoke(new \Yana\Security\Users\User("test"), "Test", "Password!"));
-        $this->assertFalse($this->_object->__invoke(new \Yana\Security\Users\User("Test"), "Rest", "Password!"));
+        $this->assertTrue($this->_object->__invoke(new \Yana\Security\Users\Entity("Test"), "Test", "Password!"));
+        $this->assertTrue($this->_object->__invoke(new \Yana\Security\Users\Entity("Test"), "test", "Password!"));
+        $this->assertTrue($this->_object->__invoke(new \Yana\Security\Users\Entity("test"), "Test", "Password!"));
+        $this->assertFalse($this->_object->__invoke(new \Yana\Security\Users\Entity("Test"), "Rest", "Password!"));
     }
 
 }

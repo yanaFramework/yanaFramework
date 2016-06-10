@@ -56,7 +56,7 @@ class MySessionManager extends \Yana\Security\Users\SessionManager
  * @package  test
  * @ignore
  */
-class MyYanaUser extends \Yana\Security\Users\User
+class MyYanaUser extends \Yana\User
 {
 
     /**
