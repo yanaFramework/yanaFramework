@@ -37,35 +37,63 @@ namespace Yana\Security\Passwords;
  *
  * @ignore
  */
-class Sha1Algorithm extends \Yana\Security\Passwords\Md5Algorithm
+class BcryptAlgorithm extends \Yana\Security\Passwords\AbstractAlgorithm
 {
 
     /**
-     * calculate password
+     * Check wether to use this algorithm or the fallback.
+     *
+     * @return  bool
+     */
+    protected function _isAvailableAlgorithm()
+    {
+        return function_exists('password_hash') && function_exists('password_verify');
+    }
+
+    /**
+     * Calculate password.
      *
      * This function takes user name and password phrase as clear text and returns the
      * hash-code for this password.
      *
-     * @param   string  $userName   user name
      * @param   string  $password   password (clear text)
      * @return  string
      */
-    public function __invoke($userName, $password)
+    public function __invoke($password)
     {
-        assert('is_scalar($userName); // Wrong argument type for argument 1. String expected.');
         assert('is_scalar($password); // Wrong argument type for argument 2. String expected.');
 
         $hashString = "";
-        if (function_exists('sha1')) {
-            $salt = mb_substr(mb_strtoupper("$userName"), 0, 2);
-            $string = "{$salt}{$password}";
-            $hashString = sha1($string);
+        if ($this->_isAvailableAlgorithm()) {
+            $hashString = password_hash($password, \PASSWORD_BCRYPT);
 
         } else {
-            $hashString = parent::__invoke($userName, $password);
+            $hashString = $this->_getFallback()->__invoke($password);
         }
 
         return $hashString;
+    }
+
+    /**
+     * Compare hash with password.
+     *
+     * Returns bool(true) if the password matches the given hash and bool(false) otherwise.
+     *
+     * @param   string  $password  password (clear text)
+     * @param   string  $hash      hashed password
+     * @return  bool
+     */
+    public function isEqual($password, $hash)
+    {
+        $isEqual = false;
+        if ($this->_isAvailableAlgorithm()) {
+            $isEqual = \password_verify($password, $hash);
+
+        } else {
+            $isEqual = $this->_getFallback()->isEqual($password, $hash);
+        }
+
+        return $isEqual;
     }
 
 }

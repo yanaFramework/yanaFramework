@@ -114,14 +114,6 @@ interface IsUser extends \Yana\Data\Adapters\IsEntity
     public function getPassword();
 
     /**
-     * Update login password.
-     *
-     * @param   string  $password  user password
-     * @return  \Yana\Security\Users\IsUser
-     */
-    public function changePassword($password);
-
-    /**
      * Update language.
      *
      * Sets prefered language of the user, that is used to provide translates GUI elements.
@@ -161,41 +153,6 @@ interface IsUser extends \Yana\Data\Adapters\IsEntity
      * @return  int
      */
     public function getFailureTime();
-
-    /**
-     * Reset failure count.
-     *
-     * Resets the number of times the user entered an invalid password back to 0.
-     * Use this, when the maximum failure time has expired.
-     *
-     * @return  \Yana\Security\Users\IsUser
-     */
-    public function resetFailureCount();
-
-    /**
-     * Reset password recovery id.
-     *
-     * @return  \Yana\Security\Users\IsUser
-     */
-    public function resetPasswordRecoveryId();
-
-    /**
-     * Add successful login.
-     *
-     * Call this if the user successfully logged in.
-     *
-     * @return  \Yana\Security\Users\IsUser
-     */
-    public function addLoginSuccess();
-
-    /**
-     * Add failed login.
-     *
-     * Call this if the user successfully logged in.
-     *
-     * @return  \Yana\Security\Users\IsUser
-     */
-    public function addLoginFailure();
 
     /**
      * Get the timestamp when user last sucessfully logged-in.
@@ -459,7 +416,7 @@ interface IsUser extends \Yana\Data\Adapters\IsEntity
      * Set login password to $password.
      *
      * @param   string  $password user password
-     * @return  \Yana\Security\Users\User
+     * @return  \Yana\Security\Users\IsUser
      */
     public function setPassword($password);
 

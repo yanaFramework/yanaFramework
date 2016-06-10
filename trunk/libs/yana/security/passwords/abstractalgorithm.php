@@ -40,7 +40,38 @@ namespace Yana\Security\Passwords;
 abstract class AbstractAlgorithm extends \Yana\Core\Object implements \Yana\Security\Passwords\IsAlgorithm
 {
 
-    // intentionally left blank
+    /**
+     * @var  \Yana\Security\Passwords\IsAlgorithm 
+     */
+    private $_fallback = null;
+
+    /**
+     * <<constructor>> Set a fallback algorithm.
+     *
+     * Leave blank for none. Will throw exception if a fallback is requested but not set.
+     *
+     * Carefull! Doesn't check for circular dependencies.
+     *
+     * @param  \Yana\Security\Passwords\IsAlgorithm  $fallback  another algorithm
+     */
+    public function __construct(\Yana\Security\Passwords\IsAlgorithm $fallback = null)
+    {
+        $this->_fallback = $fallback;
+    }
+
+    /**
+     * Get fallback algorithm.
+     *
+     * @return  \Yana\Security\Passwords\IsAlgorithm
+     * @throws  \Yana\Core\Exceptions\NotImplementedException  when no algorithm is set
+     */
+    protected function _getFallback()
+    {
+        if (!isset($this->_fallback)) {
+            throw new \Yana\Core\Exceptions\NotImplementedException("No suitable hash algorithm found");
+        }
+        return $this->_fallback;
+    }
 
 }
 

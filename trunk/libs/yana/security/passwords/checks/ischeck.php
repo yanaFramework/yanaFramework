@@ -35,7 +35,7 @@ namespace Yana\Security\Passwords\Checks;
  * @package     yana
  * @subpackage  security
  *
- * @ignore
+ * @deprecated
  */
 interface IsCheck
 {

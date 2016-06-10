@@ -27,41 +27,44 @@
  * @ignore
  */
 
-namespace Yana\Security\Users;
+namespace Yana\Security\Users\Logins;
 
 /**
- * User manager.
+ * Login manager.
  *
- * This persistent class provides access to user data and function to set logins and passwords.
+ * To handle logins and logouts of users by adjusting the session settings and cookies that go with them.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-class LoginManager extends \Yana\Core\Object
+class Manager extends \Yana\Core\Object implements \Yana\Security\Users\Logins\IsManager
 {
 
     /**
-     * @var  \Yana\Core\Sessions\IsWrapper
+     * @var  \Yana\Security\Sessions\IsWrapper
      */
     private $_session = null;
 
     /**
-     * @var  \Yana\Security\SessionIds\IsGenerator
+     * @var  \Yana\Security\Sessions\IsIdGenerator
      */
     private $_sessionIdGenerator = null;
 
     /**
      * Create new instance.
      *
-     * @param  \Yana\Core\Sessions\IsWrapper          $session    some session wrapper
-     * @param  \Yana\Security\SessionIds\IsGenerator  $generator  provide your own only when doing unit-tests
+     * @param  \Yana\Security\Sessions\IsWrapper      $session    some session wrapper
+     * @param  \Yana\Security\Sessions\IsIdGenerator  $generator  provide your own only when doing unit-tests
      */
-    public function __construct(\Yana\Core\Sessions\IsWrapper $session, \Yana\Security\SessionIds\IsGenerator $generator = null)
+    public function __construct(\Yana\Security\Sessions\IsWrapper $session = null, \Yana\Security\Sessions\IsIdGenerator $generator = null)
     {
+        if (!isset($session)) {
+            $generator = new \Yana\Security\Sessions\Wrapper();
+        }
         if (!isset($generator)) {
-            $generator = new \Yana\Security\SessionIds\Generator();
+            $generator = new \Yana\Security\Sessions\IdGenerator();
         }
         $this->_session = $session;
         $this->_sessionIdGenerator = $generator;
@@ -70,7 +73,7 @@ class LoginManager extends \Yana\Core\Object
     /**
      * Returns a session wrapper.
      *
-     * @return  \Yana\Core\Sessions\IsWrapper
+     * @return  \Yana\Security\Sessions\IsWrapper
      */
     protected function _getSession()
     {
@@ -80,7 +83,7 @@ class LoginManager extends \Yana\Core\Object
     /**
      * Returns class to generate new session ids.
      *
-     * @return  \Yana\Security\SessionIds\IsGenerator
+     * @return  \Yana\Security\Sessions\IsIdGenerator
      */
     protected function _getSessionIdGenerator()
     {
@@ -107,6 +110,8 @@ class LoginManager extends \Yana\Core\Object
     {
         assert('!isset($session); // Cannot redeclare var $session');
         $session = $this->_getSession();
+        assert('!isset($isLoggedIn); // Cannot redeclare var $isLoggedIn');
+        $isLoggedIn = true;
         switch (true)
         {
             case $user->getId() == "":
@@ -114,12 +119,12 @@ class LoginManager extends \Yana\Core\Object
             case !$this->_getSession()->offsetExists('prog_id'):
             case !$this->_getSession()->offsetExists('user_name'):
             case !$this->_getSession()->offsetExists('user_session'):
-            case $this->_getSession()->offsetGet('prog_id') !== self::getApplicationId():
+            case $this->_getSession()->offsetGet('prog_id') !== $this->_getSessionIdGenerator()->createApplicationUserId():
             case $this->_getSession()->offsetGet('user_name') !== $user->getId():
             case $this->_getSession()->offsetGet('user_session') !== $user->getSessionCheckSum():
-                return false;
+                $isLoggedIn = false;
         }
-        return true;
+        return $isLoggedIn;
     }
 
     /**
@@ -130,9 +135,11 @@ class LoginManager extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
+     * @param   \Yana\Security\Users\IsUser  $user  which is to be logged in
+     * @return  \Yana\Security\Users\Logins\Manager
      * @throws  \Yana\Core\Exceptions\Security\InvalidLoginException  when access is denied
      */
-    public function login(\Yana\Security\Users\IsUser $user)
+    public function handleLogin(\Yana\Security\Users\IsUser $user)
     {
         assert('!isset($session); // Cannot redeclare var $session');
         $session = $this->_getSession();
@@ -141,61 +148,87 @@ class LoginManager extends \Yana\Core\Object
             throw new \Yana\Core\Exceptions\Security\InvalidLoginException();
         }
         /* never reuse old sessions, to prevent injection of data or session id */
-        $this->logout();
+        $this->handleLogout($user);
 
         /* create new session with new session id */
         $sessionId = $this->_getSessionIdGenerator()->createAuthenticatedSessionId();
-        $session
-            ->setId($sessionId) // overwrites the session id
-            ->start()
-            ->unsetAll();
+        $session->setId($sessionId)->start(); // overwrites the session id
+        $session->unsetAll();
 
-        $session['user_name'] = $user->getName();
+        /* initiate session and user database entry */
+        $this
+            ->_setupSessionDataOnLogin($session, $user)
+            ->_updateUserDataOnLogin($user, $session['user_session']);
+
+        return $this;
+    }
+
+    /**
+     * Initializes session values like prefered language and aut
+     *
+     * @param   \Yana\Core\Sessions\IsWrapper  $session  some session wrapper
+     * @param   \Yana\Security\Users\IsUser   $user     which is to be logged in
+     * @return  \Yana\Security\Users\Logins\Manager
+     */
+    private function _setupSessionDataOnLogin(\Yana\Core\Sessions\IsWrapper $session, \Yana\Security\Users\IsUser $user)
+    {
+        $session['user_name'] = $user->getId();
         $session['prog_id'] = $this->_getSessionIdGenerator()->createApplicationUserId();
         $session['user_session'] = md5($session->getId());
 
         // initialize language settings
-        if (!empty($this->_language)) {
-            assert('!isset($languageManager); // Cannot redeclare var $languageManager');
-            $languageManager = \Yana\Translations\Facade::getInstance();
+        if ($user->getLanguage() > '') {
             try {
 
-                $languageManager->setLocale($this->_language);
-                $session['language'] = $this->_language;
+                \Yana\Translations\Facade::getInstance()->setLocale($user->getLanguage());
+                $session['language'] = $user->getLanguage();
 
             } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
-                unset($e);
-                // ignore
+                unset($e); // the user's prefered language isn't installed (anymore)
             }
-            unset($languageManager);
         } // end if
 
+        return $this;
+    }
+
+    /**
+     * Updates user entity with login time and login count.
+     *
+     * @param   \Yana\Security\Users\IsUser  $user             which is to be logged in
+     * @param   string                       $sessionCheckSum  hashed session-id (or other unique value) based on session-id
+     * @return  \Yana\Security\Users\Logins\Manager
+     */
+    private function _updateUserDataOnLogin(\Yana\Security\Users\IsUser $user, $sessionCheckSum)
+    {
+        assert('is_string($sessionCheckSum); // Invalid argument: $sessionCheckSum. String expected.');
         $user
             // set time of last login to current timestamp
             ->setLoginTime(time())
             // mark user as logged-in in database
-            ->setSessionCheckSum($session['user_session'])
+            ->setSessionCheckSum($sessionCheckSum)
             // increment login count
             ->setLoginCount($user->getLoginCount() + 1)
             // save changes
             ->saveEntity();
+        return $this;
     }
 
     /**
-     * logout
-     *
      * Destroy the current session and clear all session data.
+     *
+     * @param   \Yana\Security\Users\IsUser  $user  which is to be logged out
+     * @return  \Yana\Security\Users\Logins\Manager
      */
-    public function logout()
+    public function handleLogout(\Yana\Security\Users\IsUser $user)
     {
         assert('!isset($session); // Cannot redeclare var $session');
         $session = $this->_getSession();
         // backup language setting before destroying old session
-        if (isset($session['language'])) {
-            $this->setLanguage($session['language']);
+        if (isset($session['language']) && \is_string($session['language'])) {
+            $user->setLanguage($session['language']);
         }
         // make session cookie expire (get's deleted)
-        if (isset($_COOKIE[$session->getName()])) {
+        if (\filter_has_var(\INPUT_COOKIE, $session->getName())) {
             setcookie($session->getName(), '', time() - 42000, '/');
         }
         // unset session data
@@ -204,8 +237,12 @@ class LoginManager extends \Yana\Core\Object
         @$session->destroy();
         // get rid of the old sesion id - just in case
         @$session->regeneratId();
-        // mark user as logged-out in database
-        $this->updates["USER_SESSION"] = "";
+
+        // reset session-checksum to mark user as logged-out in database
+        $user->setSessionCheckSum("")->saveEntity();
+        // Note: the session data has already been purged,
+        // so we don't need to reset $session['user_session'] at this point.
+        return $this;
     }
 
 }

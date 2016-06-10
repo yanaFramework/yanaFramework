@@ -61,7 +61,7 @@ namespace Yana\Security\Users;
  *
  * @ignore
  */
-class UserBuilder extends \Yana\Core\Object
+class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Users\IsUserBuilder
 {
 
     /**
@@ -70,23 +70,45 @@ class UserBuilder extends \Yana\Core\Object
     private $_userAdapter = null;
 
     /**
-     * <<constructor>> Set up and initialize database connection.
+     * <<constructor>> Set up and initialize user adapter.
      *
      * @param  \Yana\Data\Adapters\IsDataAdapter  $userAdapter  inject a NULL-adapter for Unit-tests
      */
     public function __construct(\Yana\Data\Adapters\IsDataAdapter $userAdapter = null)
     {
-        if (!isset($userAdapter)) {
-            $userAdapter = new \Yana\Security\Users\UserAdapter(\Yana\Application::connect('user'));
-        }
         $this->_userAdapter = $userAdapter;
     }
+
     /**
+     * Returns a user adapter.
+     *
+     * If there is none, it will create a fitting adapter automatically.
+     *
      * @return  \Yana\Data\Adapters\IsDataAdapter
      */
     protected function _getUserAdapter()
     {
+        if (!isset($this->_userAdapter)) {
+            assert('!isset($factory); // Cannot redeclare var $factory.');
+            $factory = new \Yana\Db\ConnectionFactory(new \Yana\Db\SchemaFactory());
+            $this->_userAdapter = new \Yana\Security\Users\UserAdapter($factory->createConnection('user'));
+            unset($factory);
+        }
         return $this->_userAdapter;
+    }
+
+    /**
+     * Check if a given user name is registered in the database.
+     *
+     * Returns bool(true) if the name is found and bool(false) otherwise.
+     *
+     * @param   string  $userName  may contain only A-Z, 0-9, '-' and '_'
+     * @return  bool
+     */
+    public function isExistingUserName($userName)
+    {
+        assert('is_string($userName); // Invalid argument $userName: string expected');
+        return $this->_getUserAdapter()->offsetExists((string) $userName);
     }
 
     /**
@@ -95,21 +117,23 @@ class UserBuilder extends \Yana\Core\Object
      * Returns a \Yana\Security\Users\GuestUser if the session contains no username.
      * Returns an \Yana\Security\Users\User otherwise.
      *
-     * @param   array  $sessionData  with the user name at index 'user_name'
+     * @param   \Yana\Security\Sessions\IsWrapper  $session  with the user name at index 'user_name'
      * @return  \Yana\Security\Users\IsUser
      * @throws  \Yana\Core\Exceptions\NotFoundException  if no such user is found in the database
      */
-    public function buildFromSession(array $sessionData = null)
+    public function buildFromSession(\Yana\Security\Sessions\IsWrapper $session = null)
     {
-        if (\is_null($sessionData)) {
-            $sessionData = $_SESSION;
+        if (\is_null($session)) {
+            $session = new \Yana\Security\Sessions\Wrapper();
         }
-        if (isset($sessionData['user_name'])) {
+        assert('!isset($userName); // Cannot redeclare var $userName');
+        $userName = $session->getCurrentUserName();
+        if ($userName === "") {
             return new \Yana\Security\Users\GuestUser();
         }
 
         assert('!isset($userAccount); // Cannot redeclare var $userAccount');
-        $userAccount = $this->buildFromName($sessionData['user_name']);
+        $userAccount = $this->buildFromUserName($userName);
         assert('$userAccount instanceof \Yana\Security\Users\IsUser; // Return value must be an instance of IsUser');
 
         return $userAccount;
@@ -120,23 +144,48 @@ class UserBuilder extends \Yana\Core\Object
      *
      * @param   string  $userId  the name/id of the user as it is stored in the database
      * @return  \Yana\Security\Users\IsUser
-     * @throws  \Yana\Core\Exceptions\NotFoundException  if no such user is found in the database
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
      */
-    public function buildFromName($userId)
+    public function buildFromUserName($userId)
     {
         assert('is_string($userId); // Invalid argument $userId: string expected');
 
         assert('!isset($adapter); // Cannot redeclare var $adapter');
         $adapter = $this->_getUserAdapter();
 
-        if (!isset($adapter[$userId])) {
-            throw new \Yana\Core\Exceptions\NotFoundException("User '" . $userId . "' not found.");;
+        if (!$this->isExistingUserName($userId)) {
+            throw new \Yana\Core\Exceptions\User\NotFoundException("User '" . $userId . "' not found.");;
         }
         assert('!isset($userAccount); // Cannot redeclare var $userAccount');
         $userAccount = $adapter[$userId];
 
         assert('$userAccount instanceof \Yana\Security\Users\IsUser; // Return value must be an instance of IsUser');
         return $userAccount;
+    }
+
+    /**
+     * Build an user object based on a given name.
+     *
+     * @param   string  $userId  the name/id of the user as it is stored in the database
+     * @param   string  $mail    the user's e-mail address (must be unique)
+     * @return  \Yana\Security\Users\IsUser
+     */
+    public function buildNewUser($userId, $mail)
+    {
+        assert('is_string($userId); // Invalid argument $userId: string expected');
+        assert('is_string($mail); // Invalid argument $mail: string expected');
+
+
+        if ($this->isExistingUserName($userId)) {
+            throw new \Yana\Core\Exceptions\User\AlreadyExistsException(
+                "A user with the name '$userId' already exists.", \Yana\Log\TypeEnumeration::WARNING
+            );
+        }
+
+        $user = new \Yana\Security\Users\Entity(\Yana\Util\String::toUpperCase((string) $userId));
+        $user->setMail((string) $mail);
+        $user->setDataAdapter($this->_getUserAdapter());
+        return $user;
     }
 
 }

@@ -35,7 +35,7 @@ namespace Yana\Security\Passwords\Checks;
  * @package     yana
  * @subpackage  security
  *
- * @ignore
+ * @deprecated
  */
 class PasswordCheck extends \Yana\Security\Passwords\Checks\AbstractCheck
 {
@@ -58,15 +58,13 @@ class PasswordCheck extends \Yana\Security\Passwords\Checks\AbstractCheck
     /**
      * Calculate encoded password.
      *
-     * @param   string  $userName   user name
-     * @param   string  $password   password (clear text)
+     * @param   string  $password  password (clear text)
      * @return  string
      */
-    protected function _calculatePassword($userName, $password)
+    protected function _calculatePassword($password)
     {
-        assert('is_string($userName); // Invalid argument $userName: string expected');
         assert('is_string($password); // Invalid argument $password: string expected');
-        return $this->_passwordAlgorithm->__invoke($userName, $password);
+        return $this->_passwordAlgorithm->__invoke($password);
     }
 
     /**
@@ -79,9 +77,8 @@ class PasswordCheck extends \Yana\Security\Passwords\Checks\AbstractCheck
      */
     protected function _isValidPassword(\Yana\Security\Users\IsUser $user, $userName, $password)
     {
-        assert('is_string($userName); // Invalid argument $userName: string expected');
         assert('is_string($password); // Invalid argument $password: string expected');
-        return $this->_calculatePassword($userName, $password) === $user->getPassword();
+        return $this->_passwordAlgorithm->isEqual($password, $user->getPassword());
     }
 
     /**

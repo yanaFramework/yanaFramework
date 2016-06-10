@@ -55,7 +55,7 @@ class UserMapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEnti
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Given user has no name.");
         }
 
-        $user = new \Yana\Security\Users\User($databaseRow[\Yana\Security\Users\Tables\UserEnumeration::ID]);
+        $user = new \Yana\Security\Users\Entity($databaseRow[\Yana\Security\Users\Tables\UserEnumeration::ID]);
 
         if (isset($databaseRow[\Yana\Security\Users\Tables\UserEnumeration::LANGUAGE])) {
             $user->setLanguage($databaseRow[\Yana\Security\Users\Tables\UserEnumeration::LANGUAGE]);
@@ -82,7 +82,7 @@ class UserMapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEnti
             $user->setLoginTime((int) $databaseRow[\Yana\Security\Users\Tables\UserEnumeration::LOGIN_TIME]);
         }
         if (isset($databaseRow[\Yana\Security\Users\Tables\UserEnumeration::IS_EXPERT_MODE])) {
-            $user->setExpert((int) $databaseRow[\Yana\Security\Users\Tables\UserEnumeration::IS_EXPERT_MODE]);
+            $user->setExpert((bool) $databaseRow[\Yana\Security\Users\Tables\UserEnumeration::IS_EXPERT_MODE]);
         }
         if (isset($databaseRow[\Yana\Security\Users\Tables\UserEnumeration::PASSWORD_RECOVERY_ID])) {
             $user->setPasswordRecoveryId((int) $databaseRow[\Yana\Security\Users\Tables\UserEnumeration::PASSWORD_RECOVERY_ID]);
@@ -97,10 +97,10 @@ class UserMapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEnti
             $user->setRecentPasswords((array) $databaseRow[\Yana\Security\Users\Tables\UserEnumeration::RECENT_PASSWORDS]);
         }
         if (isset($databaseRow[\Yana\Security\Users\Tables\UserEnumeration::TIME_CREATED])) {
-            $user->setTimeCreated((array) $databaseRow[\Yana\Security\Users\Tables\UserEnumeration::TIME_CREATED]);
+            $user->setTimeCreated((int) $databaseRow[\Yana\Security\Users\Tables\UserEnumeration::TIME_CREATED]);
         }
         if (isset($databaseRow[\Yana\Security\Users\Tables\UserEnumeration::SESSION_CHECKSUM])) {
-            $user->setSessionCheckSum((array) $databaseRow[\Yana\Security\Users\Tables\UserEnumeration::SESSION_CHECKSUM]);
+            $user->setSessionCheckSum((string) $databaseRow[\Yana\Security\Users\Tables\UserEnumeration::SESSION_CHECKSUM]);
         }
         return $user;
     }
@@ -122,12 +122,12 @@ class UserMapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEnti
 
             $row = array(
                 \Yana\Security\Users\Tables\UserEnumeration::ID => $user->getId(),
-                \Yana\Security\Users\Tables\UserEnumeration::IS_ACTIVE => $user->getActive(),
+                \Yana\Security\Users\Tables\UserEnumeration::IS_ACTIVE => $user->isActive(),
                 \Yana\Security\Users\Tables\UserEnumeration::LOGIN_FAILURE_COUNT => $user->getFailureCount(),
                 \Yana\Security\Users\Tables\UserEnumeration::LOGIN_FAILURE_TIME => $user->getFailureTime(),
                 \Yana\Security\Users\Tables\UserEnumeration::LOGIN_COUNT => $user->getLoginCount(),
                 \Yana\Security\Users\Tables\UserEnumeration::LOGIN_TIME => $user->getLoginTime(),
-                \Yana\Security\Users\Tables\UserEnumeration::IS_EXPERT_MODE => $user->getExpert(),
+                \Yana\Security\Users\Tables\UserEnumeration::IS_EXPERT_MODE => $user->isExpert(),
                 \Yana\Security\Users\Tables\UserEnumeration::RECENT_PASSWORDS => $user->getRecentPasswords()
             );
             if ($user->getLanguage() !== null) {
@@ -145,15 +145,15 @@ class UserMapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEnti
             if ($user->getPasswordRecoveryTime() !== null) {
                 $row[\Yana\Security\Users\Tables\UserEnumeration::PASSWORD_RECOVERY_TIME] = $user->getPasswordRecoveryTime();
             }
-            if ($user->getPasswordTime() !== null) {
-                $row[\Yana\Security\Users\Tables\UserEnumeration::PASSWORD_TIME] = $user->getPasswordTime();
+            if ($user->getPasswordChangedTime() !== null) {
+                $row[\Yana\Security\Users\Tables\UserEnumeration::PASSWORD_TIME] = $user->getPasswordChangedTime();
             }
             if ($user->getTimeCreated() !== null) {
                 $row[\Yana\Security\Users\Tables\UserEnumeration::TIME_CREATED] = $user->getTimeCreated();
             }
             if ($user->getSessionCheckSum() !== null) {
                 $row[\Yana\Security\Users\Tables\UserEnumeration::SESSION_CHECKSUM] = $user->getSessionCheckSum();
-            }   
+            }
         }
         return $row;
     }

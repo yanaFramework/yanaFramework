@@ -35,7 +35,7 @@ namespace Yana\Security\Passwords\Checks;
  * @package     yana
  * @subpackage  security
  *
- * @ignore
+ * @deprecated
  */
 abstract class AbstractCheck extends \Yana\Core\Object implements \Yana\Security\Passwords\Checks\IsCheck
 {
