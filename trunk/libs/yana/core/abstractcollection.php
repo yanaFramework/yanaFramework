@@ -46,12 +46,13 @@ abstract class AbstractCollection extends \Yana\Core\Object implements \Yana\Cor
     /**
      * Set a list of items
      *
-     * @param   array $items  list of items to work on
+     * @param  array  $items  list of items to work on
      */
     public function setItems(array $items = array())
     {
         $this->_items = array();
-        foreach ($items as $offset => $value) {
+        foreach ($items as $offset => $value)
+        {
             $this->_offsetSet($offset, $value);
         }
     }
