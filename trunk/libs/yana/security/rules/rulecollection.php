@@ -37,15 +37,15 @@ namespace Yana\Security\Rules;
  *
  * @ignore
  */
-class Collection extends \Yana\Core\AbstractCollection
+class RuleCollection extends \Yana\Core\AbstractCollection
 {
 
     /**
      * Add a new rule to the collection.
      *
-     * @param   scalar                           $offset  rule id
-     * @param   \Yana\Core\Autoloaders\IsMapper  $value   rule that shoud be added
-     * @return  \Yana\Core\Autoloaders\IsMapper
+     * @param   scalar                       $offset  rule id
+     * @param   \Yana\Security\Rules\IsRule  $value   rule that shoud be added
+     * @return  \Yana\Security\Rules\IsRule
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not a mapper
      */
     public function offsetSet($offset, $value)
@@ -62,42 +62,38 @@ class Collection extends \Yana\Core\AbstractCollection
     /**
      * Check requirements against given rules.
      *
-     * @param   \Yana\Db\IsConnection                       $database   open connection to user database
-     * @param   \Yana\Security\Rules\Requirements\Collection  $required   list of required privileges
-     * @param   string                                      $profileId  profile id
-     * @param   string                                      $action     action name
-     * @param   string                                      $userName   user name
+     * @param   \Yana\Security\Rules\Requirements\Collection  $requirements  list of required privileges
+     * @param   string                                        $profileId     profile id
+     * @param   string                                        $action        action name
+     * @param   string                                        $userName      user name
      * @return  bool
      */
-    public function checkRules(\Yana\Db\IsConnection $database, \Yana\Security\Rules\Requirements\Collection $required, $profileId, $action, $userName)
+    public function checkRules(\Yana\Security\Rules\Requirements\Collection $requirements, $profileId, $action, $userName)
     {
         assert('is_string($profileId); // Wrong argument type argument 2. String expected');
         assert('is_string($action); // Wrong argument type argument 3. String expected');
         assert('is_string($userName); // Wrong argument type argument 4. String expected');
 
-        if (empty($required)) {
-            return true; // if there are no requirements, always return TRUE
-        }
         assert('!isset($result); // cannot redeclare $result');
         $result = false; // By default we always deny permission
-        assert('!isset($requiredLowerCase); // cannot redeclare $requiredLowerCase');
-        $requiredLowerCase = array_change_key_case($required, CASE_LOWER);
 
         // loop through rules
         assert('!isset($rule); // cannot redeclare $rule');
-        foreach ($this->_rules as $rule)
+        foreach ($this->toArray() as $rule)
         {
-            assert('!isset($allowed); // cannot redeclare $allowed');
-            $allowed = $rule($database, $requiredLowerCase, $profileId, $action, $userName);
-            if ($allowed === false) {
-                $result = false;
-                break;
-            } elseif ($allowed === true) {
-                $result = true;
-            } else {
-                // rule does not apply
+            assert('!isset($requirement); // cannot redeclare $requirement');
+            foreach ($requirements as $requirement)
+            {
+                switch ($rule($requirement, $profileId, $action, $userName))
+                {
+                    case false:
+                        return false;
+                    case true:
+                        $result = true;
+                    // else: rule does not apply
+                }
             }
-            unset($allowed);
+            unset($requirement);
         }
         unset($rule);
 
