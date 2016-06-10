@@ -34,8 +34,6 @@ namespace Yana\Forms;
  *
  * This class is meant to create HTML fields for forms.
  *
- * @static
- * @access      public
  * @package     yana
  * @subpackage  form
  */
@@ -45,16 +43,14 @@ class HtmlBuilder extends \Yana\Core\Object
     /**
      * Form facade.
      *
-     * @access  private
-     * @var     \Yana\Forms\Facade
+     * @var  \Yana\Forms\Facade
      */
     private $_facade = null;
 
     /**
      * Initialize new instance.
      *
-     * @access  public
-     * @param   \Yana\Forms\Facade  $facade  the form that is used for building HTML
+     * @param  \Yana\Forms\Facade  $facade  the form that is used for building HTML
      */
     public function __construct(\Yana\Forms\Facade $facade)
     {
@@ -62,11 +58,10 @@ class HtmlBuilder extends \Yana\Core\Object
     }
 
     /**
-     * create a form from the current instance and return it
+     * Create a form from the current instance and return it.
      *
      * Returns the HTML-code for this form.
      *
-     * @access  public
      * @return  string
      */
     public function __invoke()

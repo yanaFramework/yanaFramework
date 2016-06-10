@@ -30,7 +30,6 @@ namespace Yana\Forms\Setups;
 /**
  * <<builder>> Build a form using a form object and settings.
  *
- * @access      public
  * @package     yana
  * @subpackage  form
  */
@@ -40,48 +39,43 @@ class Builder extends \Yana\Core\Object
     /**
      * Builder product.
      *
-     * @access  protected
-     * @var     \Yana\Forms\Setup
+     * @var  \Yana\Forms\Setup
+     * @ignore
      */
     protected $object = null;
 
     /**
      * DDL definition object of selected table
      *
-     * @access  private
-     * @var     \Yana\Db\Ddl\Table
+     * @var  \Yana\Db\Ddl\Table
      */
     private $_table = null;
 
     /**
      * DDL definition object of selected table
      *
-     * @access  private
-     * @var     \Yana\Db\Ddl\Form
+     * @var  \Yana\Db\Ddl\Form
      */
     private $_form = null;
 
     /**
      * Whitelist of column names.
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_whitelistColumnNames = array();
 
     /**
      * Blacklist of column names.
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_blacklistColumnNames = array();
 
     /**
      * Initialize instance.
      *
-     * @access  public
-     * @param   \Yana\Db\Ddl\Form  $form  base form defintion that the setup will apply to
+     * @param  \Yana\Db\Ddl\Form  $form  base form defintion that the setup will apply to
      */
     public function __construct(\Yana\Db\Ddl\Form $form)
     {
@@ -94,8 +88,7 @@ class Builder extends \Yana\Core\Object
      *
      * Set your own predefined setup, to modify it.
      *
-     * @access  public
-     * @param   \Yana\Forms\Setup  $setup  basic setup to modify
+     * @param  \Yana\Forms\Setup  $setup  basic setup to modify
      */
     public function setSetup(\Yana\Forms\Setup $setup)
     {
@@ -105,7 +98,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Build facade object.
      * 
-     * @access  public
      * @return  \Yana\Forms\Setup
      */
     public function __invoke()
@@ -117,7 +109,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Get form object.
      *
-     * @access  public
      * @return  \Yana\Db\Ddl\Form
      */
     public function getForm()
@@ -128,7 +119,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Set form object.
      *
-     * @access  public
      * @param   \Yana\Db\Ddl\Form  $form  configuring the contents of the form
      * @return  \Yana\Forms\Setups\Builder
      */
@@ -141,7 +131,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Update setup with request array.
      *
-     * @access  public
      * @param   array  $request  initial values (e.g. Request array)
      * @return  \Yana\Forms\Setups\Builder
      */
@@ -183,7 +172,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Update values with request array.
      *
-     * @access  public
      * @param   array  $request  initial values (e.g. Request array)
      * @return  \Yana\Forms\Setups\Builder
      */
@@ -204,24 +192,25 @@ class Builder extends \Yana\Core\Object
 
         foreach ($contextNames as $name)
         {
-            if (isset($request[$name]) && is_array($request[$name])) {
-                $context = $setup->getContext($name);
-                if ($name == 'update') {
-                    $columnNames = array_flip($setup->getContext('editable')->getColumnNames());
-                    foreach ($request[$name] as $key => $row)
-                    {
-                        if (is_array($row)) {
-                            // security check: allow only fields, that exist in the form
-                            $row = array_intersect_key($row, $columnNames);
-                            $context->updateRow($key, $row);
-                        }
+            if (!isset($request[$name]) || !is_array($request[$name])) {
+                continue;
+            }
+            $context = $setup->getContext($name);
+            if ($name == 'update') {
+                $columnNames = array_flip($setup->getContext('editable')->getColumnNames());
+                foreach ($request[$name] as $key => $row)
+                {
+                    if (is_array($row)) {
+                        // security check: allow only fields, that exist in the form
+                        $row = array_intersect_key($row, $columnNames);
+                        $context->updateRow($key, $row);
                     }
-                } else {
-                    $columnNames = array_flip($context->getColumnNames());
-                    // security check: allow only fields, that exist in the form
-                    $values = array_intersect_key($request[$name], $columnNames);
-                    $context->setValues($values);
                 }
+            } else {
+                $columnNames = array_flip($context->getColumnNames());
+                // security check: allow only fields, that exist in the form
+                $values = array_intersect_key($request[$name], $columnNames);
+                $context->setValues($values);
             }
         }
         return $this;
@@ -230,7 +219,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Overwrite row values.
      *
-     * @access  public
      * @param   array  $rows  initial values
      * @return  \Yana\Forms\Setups\Builder
      */
@@ -245,7 +233,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Create info on visible entries.
      *
-     * @access  protected
      * @return  \Yana\Forms\Setups\Builder
      */
     private function _buildHeader()
@@ -272,7 +259,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Create links to other pages.
      *
-     * @access  protected
      * @return  \Yana\Forms\Setups\Builder
      */
     private function _buildFooter()
@@ -371,7 +357,6 @@ class Builder extends \Yana\Core\Object
     /**
      * Scans the actions and removes those to whom the current user has no access.
      *
-     * @access  private
      * @return  \Yana\Forms\Setups\Builder
      */
     private function _buildActions()

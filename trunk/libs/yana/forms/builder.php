@@ -65,8 +65,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
     /**
      * Form facade.
      *
-     * @access  private
-     * @var     \Yana\Forms\Facade
+     * @var  \Yana\Forms\Facade
      */
     private $_facade;
 
@@ -101,8 +100,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
     /**
      * (optional) table to choose from structure file
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_table = "";
 
@@ -262,6 +260,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      */
     public function setId($id)
     {
+        assert('is_string($id); // Invalid argument $id: String expected');
         $this->_id = (string) $id;
         return $this;
     }
@@ -284,6 +283,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      */
     public function setTable($table)
     {
+        assert('is_string($table); // Invalid argument $table: String expected');
         $this->_table = (string) $table;
         return $this;
     }
@@ -399,6 +399,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      */
     public function setSort($sort)
     {
+        assert('is_string($sort); // Invalid argument $sort: String expected');
         $this->_sort = (string) $sort;
         return $this;
     }
@@ -421,6 +422,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      */
     public function setDescending($desc)
     {
+        assert('is_scalar($desc); // Invalid argument $desc: Scalar expected');
         $this->_desc = (bool) $desc;
         return $this;
     }
@@ -443,6 +445,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      */
     public function setPage($page)
     {
+        assert('is_numeric($page); // Invalid argument $page: Number expected');
         $this->_page = (int) $page;
         return $this;
     }
@@ -465,6 +468,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      */
     public function setEntries($entries)
     {
+        assert('is_numeric($entries); // Invalid argument $entries: Number expected');
         $this->_entries = (int) $entries;
         return $this;
     }
@@ -489,6 +493,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      */
     public function setOninsert($oninsert)
     {
+        assert('is_string($oninsert); // Invalid argument $oninsert: String expected');
         $this->_oninsert = (string) $oninsert;
         return $this;
     }
@@ -513,6 +518,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      */
     public function setOnupdate($onupdate)
     {
+        assert('is_string($onupdate); // Invalid argument $onupdate: String expected');
         $this->_onupdate = (string) $onupdate;
         return $this;
     }
@@ -537,6 +543,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      */
     public function setOndelete($ondelete)
     {
+        assert('is_string($ondelete); // Invalid argument $ondelete: String expected');
         $this->_ondelete = (string) $ondelete;
         return $this;
     }
@@ -561,6 +568,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      */
     public function setOnsearch($onsearch)
     {
+        assert('is_string($onsearch); // Invalid argument $onsearch: String expected');
         $this->_onsearch = (string) $onsearch;
         return $this;
     }
@@ -585,6 +593,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      */
     public function setOndownload($ondownload)
     {
+        assert('is_string($ondownload); // Invalid argument $ondownload: String expected');
         $this->_ondownload = (string) $ondownload;
         return $this;
     }
@@ -609,6 +618,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      */
     public function setOnexport($onexport)
     {
+        assert('is_string($onexport); // Invalid argument $onexport: String expected');
         $this->_onexport = (string) $onexport;
         return $this;
     }
@@ -633,6 +643,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
      */
     public function setLayout($layout)
     {
+        assert('is_numeric($layout); // Invalid argument $layout: Integer expected');
         $this->_layout = (int) $layout;
         return $this;
     }
@@ -659,12 +670,13 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
     }
 
     /**
-     * Initialize instance
+     * Initialize instance.
      *
-     * @param   string  $file  name of database to connect to
+     * @param  string  $file  name of database to connect to
      */
     public function __construct($file)
     {
+        assert('is_string($file); // Invalid argument $file: String expected');
         $this->_cache = new \Yana\Data\Adapters\SessionAdapter(__CLASS__);
         $this->_file = (string) $file;
         $this->_database = \Yana\Application::connect($this->_file);
@@ -731,11 +743,12 @@ class Builder extends \Yana\Core\Object implements \Yana\Data\Adapters\IsCacheab
             $formSetup->setSearchTerm($this->_facade->getParent()->getSetup()->getSearchTerm());
         }
 
-        $request = (array) \Yana\Core\Request::getVars($form->getName());
+        $request = (array) \Yana\Http\Requests\Builder::buildFromSuperGlobals()->all()->value($form->getName())->all()->asArrayOfStrings();
         $files = (array) \Yana\Core\Request::getFiles($form->getName());
         if (!empty($files)) {
             $request = \Yana\Util\Hashtable::merge($request, $files);
         }
+        unset($files);
         if (!empty($request)) {
             $this->_setupBuilder->updateSetup($request);
         }

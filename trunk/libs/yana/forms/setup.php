@@ -25,10 +25,10 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 namespace Yana\Forms;
+
 /**
  * Abstract form settings
  *
- * @access      public
  * @package     yana
  * @subpackage  form
  */
@@ -38,48 +38,42 @@ class Setup extends \Yana\Core\Object
     /**
      * currently selected page (for multi-page layout)
      *
-     * @access  private
-     * @var     int
+     * @var  int
      */
     private $_page = 0;
 
     /**
      * number of viewable pages (for multi-page layout)
      *
-     * @access  private
-     * @var     int
+     * @var  int
      */
     private $_pageCount = 0;
 
     /**
      * number of viewable entries (for multi-page layout)
      *
-     * @access  private
-     * @var     int
+     * @var  int
      */
     private $_entryCount = 0;
 
     /**
      * number of entries per page (for multi-page layout)
      *
-     * @access  private
-     * @var     int
+     * @var  int
      */
     private $_entriesPerPage = 5;
 
     /**
      * selected layout
      *
-     * @access  private
-     * @var     int
+     * @var  int
      */
     private $_layout = 0;
 
     /**
      * Columns filters (used in query's having-clause)
      *
-     * @access  private
-     * @var     array
+     * @var  array
      */
     private $_filters = array();
 
@@ -88,40 +82,35 @@ class Setup extends \Yana\Core\Object
      *
      * Contains a field name.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_orderByField = "";
 
     /**
      * order ascending or descending
      *
-     * @access  private
-     * @var     bool
+     * @var  bool
      */
     private $_isDescending = false;
 
     /**
      * search term used
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_searchTerm = "";
 
     /**
      * Context setups.
      *
-     * @access  private
-     * @var     \Yana\Forms\Setups\Context[]
+     * @var  \Yana\Forms\Setups\Context[]
      */
     private $_contexts = array();
 
     /**
      * Defined list of auto-replaced references.
      *
-     * @access  private
-     * @var     \Yana\Db\Ddl\Reference[]
+     * @var  \Yana\Db\Ddl\Reference[]
      */
     private $_foreignKeyRefrences = array();
 
@@ -130,8 +119,7 @@ class Setup extends \Yana\Core\Object
      *
      * This global definition applies to all contexts.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_downloadAction = "";
 
@@ -140,8 +128,7 @@ class Setup extends \Yana\Core\Object
      *
      * This global definition applies to all contexts.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_deleteAction = "";
 
@@ -150,16 +137,14 @@ class Setup extends \Yana\Core\Object
      *
      * This global definition applies to all contexts.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_exportAction = "";
 
     /**
      * Index of autocomplete values stored for column-names.
      *
-     * @access  private
-     * @var     string
+     * @var  string
      */
     private $_referenceValues = array();
 
@@ -173,7 +158,6 @@ class Setup extends \Yana\Core\Object
      * Returns the context settings with the specified name.
      * If the context does not exist, it is created.
      *
-     * @access  public
      * @param   string  $name  context name
      * @return  \Yana\Forms\Setups\Context
      */
@@ -192,7 +176,6 @@ class Setup extends \Yana\Core\Object
      * Returns an associative array where the keys are the context names,
      * the values are instances of {@see FormSetupContext}.
      *
-     * @access  public
      * @return  array
      */
     public function getContexts()
@@ -206,7 +189,6 @@ class Setup extends \Yana\Core\Object
      * Stores the given context settings under the specified name.
      * If the context does not exist, it is created.
      *
-     * @access  public
      * @param   string            $name     context name
      * @param   \Yana\Forms\Setups\Context  $context  context settings
      * @return  \Yana\Forms\Setup 
@@ -223,7 +205,6 @@ class Setup extends \Yana\Core\Object
     /**
      * This returns an array of foreign-key reference settings.
      *
-     * @access  public
      * @return  \Yana\Db\Ddl\Reference[]
      */
     public function getForeignKeys()
@@ -238,7 +219,6 @@ class Setup extends \Yana\Core\Object
      * To do this, just add a foreign-key reference by naming the source and target column,
      * plus the column you wish to use as a label.
      *
-     * @access  public
      * @param   string       $columnName  name of source column
      * @param   \Yana\Db\Ddl\Reference $foreignKey  settings of source reference
      * @return  \Yana\Forms\Setup 
@@ -257,7 +237,6 @@ class Setup extends \Yana\Core\Object
      * This function does not check if the page number is beyond the last viewable page.
      * In that case your implementation should check and correct the value before using it.
      *
-     * @access  public
      * @param   int  $page  number of start page
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if $page is < 0
      * @return  \Yana\Forms\Setup
@@ -279,7 +258,6 @@ class Setup extends \Yana\Core\Object
      *
      * Expected to default to 0.
      *
-     * @access  public
      * @return  int
      */
     public function getPage()
@@ -293,7 +271,6 @@ class Setup extends \Yana\Core\Object
      * This function sets the number of viewable rows and pages.
      * If the current page lies beyond the last page, it is reset to 0 (the first page).
      *
-     * @access  public
      * @param   int  $entryCount  number of entry
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if $entryCount is < 0
      * @return  \Yana\Forms\Setup
@@ -319,7 +296,6 @@ class Setup extends \Yana\Core\Object
      *
      * Expected to default to 0.
      *
-     * @access  public
      * @return  int
      */
     public function getEntryCount()
@@ -332,7 +308,6 @@ class Setup extends \Yana\Core\Object
      *
      * Expected to default to 0.
      *
-     * @access  public
      * @return  int
      */
     public function getPageCount()
@@ -343,7 +318,6 @@ class Setup extends \Yana\Core\Object
     /**
      * Set number of entries per page.
      *
-     * @access  public
      * @param   int  $entries  number of entries per page, must be >= 1
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if $entries is < 1
      * @return  \Yana\Forms\Setup
@@ -364,7 +338,6 @@ class Setup extends \Yana\Core\Object
      *
      * Expected to default to 5.
      *
-     * @access  public
      * @return  int
      */
     public function getEntriesPerPage()
@@ -378,7 +351,6 @@ class Setup extends \Yana\Core\Object
      * This funciton returns bool(true) if a filter has been set on any of the forms columns,
      * and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function hasFilter()
@@ -391,7 +363,6 @@ class Setup extends \Yana\Core\Object
      *
      * Returns an empty string, if there is no filter.
      *
-     * @access  public
      * @param   string  $columnName  where to apply the filter on
      * @return  string
      */
@@ -406,7 +377,6 @@ class Setup extends \Yana\Core\Object
      *
      * Returns an associative array, where the keys are the colum names and the values are the filter strings.
      *
-     * @access  public
      * @return  array
      */
     public function getFilters()
@@ -421,7 +391,6 @@ class Setup extends \Yana\Core\Object
      * Leave the second argument empty to reset the value.
      * You may use the chars '?', '_' as wild-cards for 1 char and '*', '%' as wild-cards for multiple chars.
      *
-     * @access  public
      * @param   string  $columnName  where to apply the filter on
      * @param   string  $value       new filter value
      * @return  \Yana\Forms\Setup
@@ -445,7 +414,6 @@ class Setup extends \Yana\Core\Object
      *
      * Leave the parameter empty to reset all filters.
      *
-     * @access  public
      * @param   array  $filters  associative array, where keys are the colum names and values are the filter strings
      * @return  \Yana\Forms\Setup
      */
@@ -462,7 +430,6 @@ class Setup extends \Yana\Core\Object
     /**
      * Set values for autocompletion of columns.
      *
-     * @access  public
      * @param   array  $values  associative array, where keys are the colum names and values rows
      * @return  \Yana\Forms\Setup
      */
@@ -477,7 +444,6 @@ class Setup extends \Yana\Core\Object
      *
      * Returns an empty array if the column is not found or has no references.
      *
-     * @access  public
      * @param   string  $columnName  name of column-index to look up
      * @return  array
      */
@@ -498,7 +464,6 @@ class Setup extends \Yana\Core\Object
      * Forms offer mulitple alternative form layouts to choose from.
      * These are numbered (0..n), where 0 is always the default.
      *
-     * @access  public
      * @param   int  $layout  template settings (int 0...n)
      * @return  \Yana\Forms\Setup
      */
@@ -517,7 +482,6 @@ class Setup extends \Yana\Core\Object
      * These are numbered (0..n), where 0 is always the default.
      * This function returns the currently selected number.
      *
-     * @access  public
      * @return  int
      */
     public function getLayout()
@@ -531,7 +495,6 @@ class Setup extends \Yana\Core\Object
      *
      * Returns empty string if the table is expected to be sorted by primary key.
      *
-     * @access  public
      * @return  string
      */
     public function getOrderByField()
@@ -545,7 +508,6 @@ class Setup extends \Yana\Core\Object
      *
      * Call this without input to reset the value.
      *
-     * @access  public
      * @param   string  $fieldName  name of field to order by
      * @return  \Yana\Forms\Setup
      */
@@ -559,7 +521,6 @@ class Setup extends \Yana\Core\Object
     /**
      * Set order in which the resultset should be sorted.
      *
-     * @access  public
      * @param   bool $isDescending  True = descending, False = ascending order
      * @return  \Yana\Forms\Setup
      */
@@ -576,7 +537,6 @@ class Setup extends \Yana\Core\Object
      * True = descending, False = ascending order.
      * Defaults to false.
      *
-     * @access  public
      * @return  bool
      */
     public function isDescending()
@@ -592,7 +552,6 @@ class Setup extends \Yana\Core\Object
      * the values of the form and all subforms.
      * To reset the value, leave the parameter empty.
      *
-     * @access  public
      * @param   string  $searchTerm  term entered in global search box
      * @return  \Yana\Forms\Setup
      */
@@ -608,7 +567,6 @@ class Setup extends \Yana\Core\Object
      *
      * Returns an empty string if no search term was set.
      *
-     * @access  public
      * @return  bool
      */
     public function getSearchTerm()
@@ -617,9 +575,8 @@ class Setup extends \Yana\Core\Object
     }
 
     /**
-     * set download action
+     * Set download action.
      *
-     * @access  public
      * @param   string  $action action name
      * @return  \Yana\Forms\Setup
      */
@@ -631,13 +588,12 @@ class Setup extends \Yana\Core\Object
     }
 
     /**
-     * get download action
+     * Get download action.
      *
      * Returns the lower-cased name of the currently selected action.
      *
      * The default is 'download_file'.
      *
-     * @access  public
      * @return  string
      */
     public function getDownloadAction()
@@ -646,9 +602,8 @@ class Setup extends \Yana\Core\Object
     }
 
     /**
-     * set search action
+     * Set search action.
      *
-     * @access  public
      * @param   string  $action  action name
      * @return  \Yana\Forms\Setup
      */
@@ -660,9 +615,8 @@ class Setup extends \Yana\Core\Object
     }
 
     /**
-     * get search action
+     * Get search action.
      *
-     * @access  public
      * @return  string
      */
     public function getSearchAction()
@@ -671,9 +625,8 @@ class Setup extends \Yana\Core\Object
     }
 
     /**
-     * set insert action
+     * Set insert action.
      *
-     * @access  public
      * @param   string  $action  action name
      * @return  \Yana\Forms\Setup
      */
@@ -685,9 +638,8 @@ class Setup extends \Yana\Core\Object
     }
 
     /**
-     * get insert action
+     * Get insert action.
      *
-     * @access  public
      * @return  string
      */
     public function getInsertAction()
@@ -696,9 +648,8 @@ class Setup extends \Yana\Core\Object
     }
 
     /**
-     * set update action
+     * Set update action.
      *
-     * @access  public
      * @param   string  $action  action name
      * @return  \Yana\Forms\Setup
      */
@@ -710,9 +661,8 @@ class Setup extends \Yana\Core\Object
     }
 
     /**
-     * get update action
+     * Get update action.
      *
-     * @access  public
      * @return  string
      */
     public function getUpdateAction()
@@ -721,9 +671,8 @@ class Setup extends \Yana\Core\Object
     }
 
     /**
-     * set delete action
+     * Set delete action.
      *
-     * @access  public
      * @param   string  $action action name
      * @return  \Yana\Forms\Setup
      */
@@ -737,7 +686,6 @@ class Setup extends \Yana\Core\Object
     /**
      * Get delete action.
      *
-     * @access  public
      * @return  string
      */
     public function getDeleteAction()
@@ -746,9 +694,8 @@ class Setup extends \Yana\Core\Object
     }
 
     /**
-     * set export action
+     * Set export action.
      *
-     * @access  public
      * @param   string  $action action name
      * @return  \Yana\Forms\Setup
      */
@@ -760,9 +707,8 @@ class Setup extends \Yana\Core\Object
     }
 
     /**
-     * get export action
+     * Get export action.
      *
-     * @access  public
      * @return  string
      */
     public function getExportAction()

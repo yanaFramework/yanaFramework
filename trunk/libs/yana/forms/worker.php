@@ -185,7 +185,6 @@ class Worker extends \Yana\Forms\QueryBuilder
      * If the function throws an exception,
      * the execution will be terminated and the changes are not written to the database.
      *
-     * @access  public
      * @param   callable  $callback  some call-back function
      * @return  \Yana\Forms\Worker 
      */

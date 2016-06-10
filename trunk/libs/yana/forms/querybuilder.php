@@ -28,7 +28,6 @@ namespace Yana\Forms;
 /**
  * <<builder>> Build a queries based on a given form.
  *
- * @access      public
  * @package     yana
  * @subpackage  form
  */
@@ -38,32 +37,31 @@ class QueryBuilder extends \Yana\Core\Object
     /**
      * Database connection used to create the querys.
      *
-     * @access  protected
-     * @var     \Yana\Db\IsConnection
+     * @var  \Yana\Db\IsConnection
+     * @ignore
      */
     protected $_db = null;
 
     /**
      * Definition of form.
      *
-     * @access  protected
-     * @var     \Yana\Forms\Facade
+     * @var  \Yana\Forms\Facade
+     * @ignore
      */
     protected $_form = null;
 
     /**
      * Object cache.
      *
-     * @access  protected
-     * @var     array
+     * @var  array
+     * @ignore
      */
     protected $_cache = array();
 
     /**
      * Initialize instance.
      *
-     * @access  public
-     * @param   \Yana\Db\IsConnection  $db  database connection used to create the querys
+     * @param  \Yana\Db\IsConnection  $db  database connection used to create the querys
      */
     public function __construct(\Yana\Db\IsConnection $db)
     {
@@ -73,7 +71,6 @@ class QueryBuilder extends \Yana\Core\Object
     /**
      * Set form object.
      *
-     * @access  public
      * @param   \Yana\Forms\Facade  $form  configuring the contents of the form
      * @return  \Yana\Forms\QueryBuilder
      */
@@ -87,7 +84,6 @@ class QueryBuilder extends \Yana\Core\Object
     /**
      * Get form object.
      *
-     * @access  public
      * @return  \Yana\Forms\Facade
      */
     public function getForm()
@@ -98,7 +94,6 @@ class QueryBuilder extends \Yana\Core\Object
     /**
      * Get database connection
      *
-     * @access  public
      * @return  \Yana\Db\IsConnection
      */
     public function getDatabase()
@@ -112,8 +107,8 @@ class QueryBuilder extends \Yana\Core\Object
      * This returns the query object which is bound to the form.
      * You can modify this to filter the visible results.
      *
-     * @access  public
-     * @return  \D\Yana\Db\Queries\Select     * @throws  \Yana\Core\Exceptions\NotFoundException  if the selected table or one of the selected columns is not found
+     * @return  \Yana\Db\Queries\Select
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if the selected table or one of the selected columns is not found
      */
     public function buildSelectQuery()
     {
@@ -159,11 +154,11 @@ class QueryBuilder extends \Yana\Core\Object
      * Allows you to search a specific column of the table for any values that start with a given search-term.
      * The returned query uses the aliases "VALUE" and "LABEL" for the target value-column and target label-column.
      *
-     * @access  public
      * @param   \Yana\Db\Ddl\Reference  $targetReference  defining the target table and columns
-     * @param   string        $searchTerm       find all entries that start with ...
-     * @param   int           $limit            maximum number of hits, set to 0 to get all
-     * @return  \D\Yana\Db\Queries\Select     */
+     * @param   string                  $searchTerm       find all entries that start with ...
+     * @param   int                     $limit            maximum number of hits, set to 0 to get all
+     * @return  \Yana\Db\Queries\Select
+     */
     public function buildAutocompleteQuery(\Yana\Db\Ddl\Reference $targetReference, $searchTerm, $limit)
     {
         assert('is_string($searchTerm); // Invalid argument $searchTerm: string expected');
@@ -184,8 +179,7 @@ class QueryBuilder extends \Yana\Core\Object
      * It creates a new having clause and adds it to the select query.
      * The new clause will use fuzzy-search with wildcards and be appended using the "OR" operator.
      *
-     * @access  protected
-     * @param   \D\Yana\Db\Queries\Select $select  query that is to be modified
+     * @param  \Yana\Db\Queries\Select $select  query that is to be modified
      */
     protected function _processSearchTerm(\Yana\Db\Queries\Select $select)
     {
@@ -218,8 +212,7 @@ class QueryBuilder extends \Yana\Core\Object
      * It creates a new where clause and adds it to the select query.
      * The new clause will be appended using the "AND" operator.
      *
-     * @access  protected
-     * @param   \D\Yana\Db\Queries\Select $select  query that is to be modified
+     * @param  \Yana\Db\Queries\Select $select  query that is to be modified
      */
     protected function _processSearchValues(\Yana\Db\Queries\Select $select)
     {
@@ -250,8 +243,7 @@ class QueryBuilder extends \Yana\Core\Object
      * It creates a new having clause and adds it to the select query.
      * The new clause will be appended using the "AND" operator.
      *
-     * @access  protected
-     * @param   \D\Yana\Db\Queries\Select $select  query that is to be modified
+     * @param  \Yana\Db\Queries\Select $select  query that is to be modified
      */
     protected function _processFilters(\Yana\Db\Queries\Select $select)
     {
@@ -275,9 +267,9 @@ class QueryBuilder extends \Yana\Core\Object
     /**
      * Checks if a parent form exists and modifies the query accordingly.
      *
-     * @access  private
-     * @param   \D\Yana\Db\Queries\Select $select  base query for current form
-     * @return  \D\Yana\Db\Queries\Select     */
+     * @param   \Yana\Db\Queries\Select $select  base query for current form
+     * @return  \Yana\Db\Queries\Select
+     */
     private function _buildSelectForSubForm(\Yana\Db\Queries\Select $select)
     {
         $parentForm = $this->_form->getParent();
@@ -316,7 +308,6 @@ class QueryBuilder extends \Yana\Core\Object
      *
      * This returns a query object bound to the form, that can be used to count the pages.
      *
-     * @access  protected
      * @return  \Yana\Db\Queries\SelectCount
      */
     public function buildCountQuery()
@@ -342,7 +333,6 @@ class QueryBuilder extends \Yana\Core\Object
      * The return value is an array of the source-column in the table of the subform and
      * the target-column in the table of the base-form.
      *
-     * @access  protected
      * @return  array
      * @throws  \Yana\Db\Queries\Exceptions\NotFoundException  when no foreign key is found
      */
