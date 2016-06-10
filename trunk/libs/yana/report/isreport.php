@@ -32,7 +32,6 @@ namespace Yana\Report;
  *
  * This defines the methods a reporting-class must implement.
  *
- * @access     public
  * @package    yana
  * @subpackage report
  * @name       IsReport
@@ -47,8 +46,6 @@ interface IsReport
      *
      * A report may have a title and contains a number of sub-reports or messages.
      *
-     * @access  public
-     * @static
      * @param   string  $title  report title
      * @return  IsReport
      */
@@ -59,7 +56,6 @@ interface IsReport
      *
      * It may have a title, contain more sub-reports or messages.
      *
-     * @access  public
      * @param   string  $title  report title
      * @return  IsReport
      */
@@ -68,7 +64,6 @@ interface IsReport
     /**
      * Returns a list of sub-reports.
      *
-     * @access  public
      * @return  array
      */
     public function getReports();
@@ -76,7 +71,6 @@ interface IsReport
     /**
      * Returns the title of a report.
      *
-     * @access  public
      * @return  string
      */
     public function getTitle();
@@ -84,7 +78,6 @@ interface IsReport
     /**
      * Adds a neutral text to the report.
      *
-     * @access  public
      * @param   string  $message  text of message
      * @return  IsReport
      */
@@ -93,7 +86,6 @@ interface IsReport
     /**
      * Returns a list of texts.
      *
-     * @access  public
      * @return  array
      */
     public function getTexts();
@@ -109,7 +101,6 @@ interface IsReport
      * left the door open, but you might also have forgotten to lock it.
      * So this notice is meant to remind you - just in case.
      *
-     * @access  public
      * @param   string  $message  text of message
      * @return  IsReport
      */
@@ -118,7 +109,6 @@ interface IsReport
     /**
      * Returns a list of notices.
      *
-     * @access  public
      * @return  array
      */
     public function getNotices();
@@ -132,7 +122,6 @@ interface IsReport
      * If a warning is not solved, it may cause loss of functionality or
      * the software may not react as expected.
      *
-     * @access  public
      * @param   string  $message  text of message
      * @return  IsReport
      */
@@ -141,7 +130,6 @@ interface IsReport
     /**
      * Returns a list of warnings.
      *
-     * @access  public
      * @return  array
      */
     public function getWarnings();
@@ -157,7 +145,6 @@ interface IsReport
      * including all the well known side-effects that may result from
      * a software crash, e.g. possible loss of data.
      *
-     * @access  public
      * @param   string  $message  text of message
      * @return  IsReport
      */
@@ -166,7 +153,6 @@ interface IsReport
     /**
      * Returns a list of errors.
      *
-     * @access  public
      * @return  array
      */
     public function getErrors();

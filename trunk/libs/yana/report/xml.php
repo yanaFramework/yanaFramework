@@ -43,7 +43,6 @@ namespace Yana\Report;
  * $group = $report->addGroup("");
  * </code>
  *
- * @access     public
  * @package    yana
  * @subpackage report
  * @name       Xml
@@ -59,8 +58,6 @@ class Xml extends \SimpleXMLElement implements IsReport
      * Returns the file identified by $path as a Xml object.
      * Returns NULL on error.
      *
-     * @access  public
-     * @static
      * @param   string  $path  file path
      * @return  \Yana\Report\Xml
      */
@@ -75,8 +72,6 @@ class Xml extends \SimpleXMLElement implements IsReport
      *
      * A report may have a title and contains a number of sub-reports or messages.
      *
-     * @access  public
-     * @static
      * @param   string  $title  report title
      * @return  \Yana\Report\Xml
      */
@@ -95,7 +90,6 @@ class Xml extends \SimpleXMLElement implements IsReport
      *
      * It may have a title, contain more sub-reports or messages.
      *
-     * @access  public
      * @param   string  $title  report title
      * @return  \Yana\Report\Xml
      */
@@ -116,7 +110,6 @@ class Xml extends \SimpleXMLElement implements IsReport
     /**
      * Returns a list of reports.
      *
-     * @access  public
      * @return  array
      */
     public function getReports()
@@ -131,7 +124,6 @@ class Xml extends \SimpleXMLElement implements IsReport
     /**
      * Returns the title of a report.
      *
-     * @access  public
      * @return  string
      */
     public function getTitle()
@@ -146,7 +138,6 @@ class Xml extends \SimpleXMLElement implements IsReport
     /**
      * Adds a neutral text to the report.
      *
-     * @access  public
      * @param   string  $message  text of message
      * @return  \Yana\Report\Xml
      */
@@ -163,7 +154,6 @@ class Xml extends \SimpleXMLElement implements IsReport
     /**
      * Returns a list of texts.
      *
-     * @access  public
      * @return  array
      */
     public function getTexts()
@@ -186,7 +176,6 @@ class Xml extends \SimpleXMLElement implements IsReport
      * left the door open, but you might also have forgotten to lock it.
      * So this notice is meant to remind you - just in case.
      *
-     * @access  public
      * @param   string  $message  text of message
      * @return  \Yana\Report\Xml
      */
@@ -203,7 +192,6 @@ class Xml extends \SimpleXMLElement implements IsReport
     /**
      * Returns a list of notices.
      *
-     * @access  public
      * @return  array
      */
     public function getNotices()
@@ -224,7 +212,6 @@ class Xml extends \SimpleXMLElement implements IsReport
      * If a warning is not solved, it may cause loss of functionality or
      * the software may not react as expected.
      *
-     * @access  public
      * @param   string  $message  text of message
      * @return  \Yana\Report\Xml
      */
@@ -241,7 +228,6 @@ class Xml extends \SimpleXMLElement implements IsReport
     /**
      * Returns a list of warnings.
      *
-     * @access  public
      * @return  array
      */
     public function getWarnings()
@@ -264,7 +250,6 @@ class Xml extends \SimpleXMLElement implements IsReport
      * including all the well known side-effects that may result from
      * a software crash, e.g. possible loss of data.
      *
-     * @access  public
      * @param   string  $message  text of message
      * @return  \Yana\Report\Xml
      */
@@ -281,7 +266,6 @@ class Xml extends \SimpleXMLElement implements IsReport
     /**
      * Returns a list of errors.
      *
-     * @access  public
      * @return  array
      */
     public function getErrors()
@@ -296,7 +280,6 @@ class Xml extends \SimpleXMLElement implements IsReport
     /**
      * <<magic>> Outputs the contents as an XML string.
      *
-     * @access  public
      * @return  string
      * @ignore
      */
@@ -308,7 +291,6 @@ class Xml extends \SimpleXMLElement implements IsReport
     /**
      * Returns bool(true) if the node is 'report'.
      *
-     * @access  public
      * @return  bool
      */
     public function isReport()
@@ -319,7 +301,6 @@ class Xml extends \SimpleXMLElement implements IsReport
     /**
      * Returns bool(true) if the node is 'title'.
      *
-     * @access  public
      * @return  bool
      */
     public function isTitle()
@@ -330,7 +311,6 @@ class Xml extends \SimpleXMLElement implements IsReport
     /**
      * Returns bool(true) if the node is 'text'.
      *
-     * @access  public
      * @return  bool
      */
     public function isText()
@@ -341,7 +321,6 @@ class Xml extends \SimpleXMLElement implements IsReport
     /**
      * Returns bool(true) if the node is 'notice'.
      *
-     * @access  public
      * @return  bool
      */
     public function isNotice()
@@ -352,7 +331,6 @@ class Xml extends \SimpleXMLElement implements IsReport
     /**
      * Returns bool(true) if the node is 'warning'.
      *
-     * @access  public
      * @return  bool
      */
     public function isWarning()
@@ -363,7 +341,6 @@ class Xml extends \SimpleXMLElement implements IsReport
     /**
      * Returns bool(true) if the node is 'error'.
      *
-     * @access  public
      * @return  bool
      */
     public function isError()
