@@ -76,13 +76,19 @@ class UrlValidator extends AbstractValidator
      */
     public static function validate($url, $maxLength = 0)
     {
-        return filter_var($url, FILTER_VALIDATE_URL) && (!$maxLength || mb_strlen($url) <= $maxLength);
+        assert('is_int($maxLength); // Invalid argument $maxLength: int expected');
+        return filter_var($url, FILTER_VALIDATE_URL) && (!$maxLength || mb_strlen($url) <= $maxLength) && !self::_hasJavaScriptScheme($url)
+            && !self::_hasFileScheme($url);
     }
 
     /**
      * Sanitize URL.
      *
      * Returns NULL for invalid values.
+     *
+     * This function will try to disallow "javascript" as URL scheme in order to reduce the risk of JS-injections.
+     * However, be warned, that this is a black-list approach and is most probably not enough for sensitive applications.
+     * You should thus implement additional checks on your own.
      *
      * @param   mixed  $url  value to sanitize
      * @return  string
@@ -97,10 +103,32 @@ class UrlValidator extends AbstractValidator
         if ($maxLength > 0) {
             $url = mb_substr($url, 0, $maxLength);
         }
-        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+        if (!self::validate($url)) {
             $url = null;
         }
         return $url;
+    }
+
+    /**
+     * Returns bool(true) if input seems to use file as scheme.
+     *
+     * @param   mixed  $url  value to validate
+     * @return  bool
+     */
+    private static function _hasFileScheme($url)
+    {
+        return preg_match('/^\s*f\s*i\s*l\s*e\s*/i', parse_url($url, PHP_URL_SCHEME)) === 1;
+    }
+
+    /**
+     * Returns bool(true) if input seems to use javascript as scheme.
+     *
+     * @param   mixed  $url  value to validate
+     * @return  bool
+     */
+    private static function _hasJavaScriptScheme($url)
+    {
+        return preg_match('/^\s*j\s*a\s*v\s*a\s*s\s*c\s*r\s*i\s*p\s*t\s*/i', parse_url($url, PHP_URL_SCHEME)) === 1;
     }
 
     /**
@@ -114,6 +142,7 @@ class UrlValidator extends AbstractValidator
      */
     public static function sanitize($url, $maxLength = 0)
     {
+        assert('is_int($maxLength); // Invalid argument $maxLength: int expected');
         $validator = new self();
         return $validator->setMaxLength($maxLength)
             ->__invoke($url, $maxLength);

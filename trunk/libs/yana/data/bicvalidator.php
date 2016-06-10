@@ -46,7 +46,7 @@ class BicValidator extends \Yana\Data\AbstractValidator
      */
     public static function validate($bic)
     {
-        return 1 === preg_match('/^[A-Z]{4}[A-Z]{2}[A-Z2-9][A-NP-Z12](XXX|[A-WYZ0-9][A-Z0-9]{2})?$/', (string) $bic);
+        return is_string($bic) && 1 === preg_match('/^[A-Z]{4}[A-Z]{2}[A-Z2-9][A-NP-Z12](XXX|[A-WYZ0-9][A-Z0-9]{2})?$/', (string) $bic);
     }
 
     /**
