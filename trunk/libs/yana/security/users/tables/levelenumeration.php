@@ -41,8 +41,11 @@ class LevelEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     const TABLE = 'securitylevel';
-    const USER = 'USER_ID';
-    const GRANTED_BY_USER = 'USER_CREATED';
+    const USER = 'user_id';
+    const GRANTED_BY_USER = 'user_created';
+    const PROFILE = 'user_created';
+    const LEVEL = 'security_level';
+    const IS_PROXY = 'user_proxy_active';
 
 }
 
