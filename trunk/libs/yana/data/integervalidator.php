@@ -44,6 +44,7 @@ class IntegerValidator extends NumberValidator
      */
     public function setMaxLength($length)
     {
+        assert('is_int($length); // Invalid argument $length: integer expected');
         parent::setMaxLength($length);
         return $this;
     }
@@ -56,6 +57,7 @@ class IntegerValidator extends NumberValidator
      */
     public function setUnsigned($isUnsigned)
     {
+        assert('is_bool($isUnsigned); // Invalid argument $isUnsigned: bool expected');
         parent::setUnsigned($isUnsigned);
         return $this;
     }
@@ -72,6 +74,8 @@ class IntegerValidator extends NumberValidator
      */
     public static function validate($integer, $maxLength = 0, $isUnsigned = false)
     {
+        assert('is_int($maxLength); // Invalid argument $maxLength: integer expected');
+        assert('is_bool($isUnsigned); // Invalid argument $isUnsigned: bool expected');
         return filter_var($integer, FILTER_VALIDATE_INT) !== false &&
             !self::_exceedsMaxLength($integer, $maxLength) && (!$isUnsigned || $integer >= 0);
     }
@@ -99,6 +103,8 @@ class IntegerValidator extends NumberValidator
      */
     public static function sanitize($integer, $maxLength = 0, $isUnsigned = false)
     {
+        assert('is_int($maxLength); // Invalid argument $maxLength: integer expected');
+        assert('is_bool($isUnsigned); // Invalid argument $isUnsigned: bool expected');
         $validator = new self();
         return $validator->setMaxLength($maxLength)
             ->setUnsigned($isUnsigned)

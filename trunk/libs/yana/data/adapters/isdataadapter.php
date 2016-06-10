@@ -52,7 +52,7 @@ interface IsDataAdapter extends \Yana\Core\IsCountableArray
      *
      * @param  \Yana\Data\Adapters\IsEntity  $entity  object to persist
      */
-	public function saveEntity(\Yana\Data\Adapters\IsEntity $entity);
+    public function saveEntity(\Yana\Data\Adapters\IsEntity $entity);
 
 }
 

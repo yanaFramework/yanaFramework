@@ -214,6 +214,8 @@ abstract class NumberValidator extends AbstractValidator
      */
     protected static function _exceedsMaxLength($value, $length, $precision = 0)
     {
+        assert('is_int($length); // Invalid argument $length: int expected');
+        assert('is_int($precision); // Invalid argument $precision: int expected');
         $test = false;
         if ($length > 0) {
             if ($precision > 0) {

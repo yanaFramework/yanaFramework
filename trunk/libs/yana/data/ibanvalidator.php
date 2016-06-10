@@ -109,6 +109,7 @@ class IbanValidator extends \Yana\Data\AbstractValidator
      */
     public function setAllowInvalidCountryCode($allowInvalidCountryCode)
     {
+        assert('is_bool($allowInvalidCountryCode); // Invalid argument $allowInvalidCountryCode: bool expected');
         $this->_allowInvalidCountryCode = (bool) $allowInvalidCountryCode;
         return $this;
     }
@@ -261,7 +262,7 @@ class IbanValidator extends \Yana\Data\AbstractValidator
         assert('is_string($iban); // Invalid argument $iban: string expected');
 
         $string = strtoupper($iban);
-        $country = $string[0] . $string[1];
+        $country = (strlen($string) > 1) ? $string[0] . $string[1] : "";
 
         assert('!isset($isValid); // Cannot redeclare var $isValid');
         try {
@@ -344,8 +345,8 @@ class IbanValidator extends \Yana\Data\AbstractValidator
 
         $validator = new self();
         $validator->setAllowInvalidCountryCode($allowInvalidCountryCode)->setLimitCountries($limitCountries);
-        $validStructure = $validator->_isStructureValid($iban);
-        $validChecksum = $validator->_isChecksumValid($iban);
+        $validStructure = is_string($iban) && $validator->_isStructureValid($iban);
+        $validChecksum = is_string($iban) && $validator->_isChecksumValid($iban);
 
         return $validStructure && $validChecksum;
     }

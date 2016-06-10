@@ -44,6 +44,7 @@ class FloatValidator extends NumberValidator
      */
     public function setPrecision($precision)
     {
+        assert('is_int($precision); // $precision expected to be Integer');
         parent::setPrecision($precision);
         return $this;
     }
@@ -56,6 +57,7 @@ class FloatValidator extends NumberValidator
      */
     public function setMaxLength($length)
     {
+        assert('is_int($length); // $length expected to be Integer');
         parent::setMaxLength($length);
         return $this;
     }
@@ -68,6 +70,7 @@ class FloatValidator extends NumberValidator
      */
     public function setUnsigned($isUnsigned)
     {
+        assert('is_bool($isUnsigned); // $isUnsigned expected to be Boolean');
         parent::setUnsigned($isUnsigned);
         return $this;
     }
@@ -84,6 +87,8 @@ class FloatValidator extends NumberValidator
      */
     public static function validate($float, $maxFloat = 0, $isUnsigned = false)
     {
+        assert('is_int($maxFloat) || is_float($maxFloat); // $maxFloat expected to be Float or Integer');
+        assert('is_bool($isUnsigned); // $isUnsigned expected to be Boolean');
         return filter_var($float, FILTER_VALIDATE_FLOAT) !== false &&
             !self::_exceedsMaxLength($float, $maxFloat) && (!$isUnsigned || $float >= 0);
     }
@@ -112,6 +117,9 @@ class FloatValidator extends NumberValidator
      */
     public static function sanitize($float, $maxLength = 0, $precision = -1, $isUnsigned = false)
     {
+        assert('is_int($maxLength); // $maxLength expected to be Integer');
+        assert('is_int($precision); // $precision expected to be Integer');
+        assert('is_bool($isUnsigned); // $isUnsigned expected to be Boolean');
         $validator = new self();
         return $validator->setMaxLength($maxLength)
             ->setPrecision($precision)

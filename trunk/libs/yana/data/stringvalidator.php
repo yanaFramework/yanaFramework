@@ -147,6 +147,7 @@ class StringValidator extends AbstractValidator
      */
     public static function validate($string, $maxLength = 0)
     {
+        assert('is_int($maxLength); // Invalid argument $maxLength: int expected');
         return is_string($string) && (!$maxLength || mb_strlen($string) <= $maxLength);
     }
 
@@ -155,11 +156,13 @@ class StringValidator extends AbstractValidator
      *
      * @param   mixed  $string     value to sanitize
      * @param   int    $maxLength  maximum count of characters
-     * @param   int    $option     any of the class' constants, use bitwise OR to chain options
+     * @param   int    $options    any of the class' constants, use bitwise OR to chain options
      * @return  mixed 
      */
     public static function sanitize($string, $maxLength = 0, $options = 0)
     {
+        assert('is_int($maxLength); // Invalid argument $maxLength: int expected');
+        assert('is_int($options); // Invalid argument $options: int expected');
         $validator = new self();
         return $validator->setMaxLength($maxLength)
             ->addOption($options)

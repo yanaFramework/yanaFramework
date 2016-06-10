@@ -59,10 +59,12 @@ abstract class AbstractEntity extends \Yana\Core\Object implements \Yana\Data\Ad
      * This sets the data adapter used to persist the entity
      *
      * @param  \Yana\Data\Adapters\IsDataAdapter  $adapter  object that should be used
+     * @return  \Yana\Data\Adapters\IsEntity
      */
     public function setDataAdapter(\Yana\Data\Adapters\IsDataAdapter $adapter)
     {
         $this->_adapter = $adapter;
+        return $this;
     }
 
     /**
@@ -82,7 +84,7 @@ abstract class AbstractEntity extends \Yana\Core\Object implements \Yana\Data\Ad
      */
     public function saveEntity()
     {
-        $this->_getDataAdapter()->saveEntity($entity);
+        $this->_getDataAdapter()->saveEntity($this);
     }
 
 }
