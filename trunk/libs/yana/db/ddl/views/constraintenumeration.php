@@ -33,7 +33,6 @@ namespace Yana\Db\Ddl\Views;
  * Values describing the match type of a check constraint.
  * Eihter: local, cascaded or none.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  *

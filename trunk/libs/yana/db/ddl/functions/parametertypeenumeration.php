@@ -33,7 +33,6 @@ namespace Yana\Db\Ddl\Functions;
  * Values describing the possible types of parameters.
  * Eihter: input, output or both.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  *

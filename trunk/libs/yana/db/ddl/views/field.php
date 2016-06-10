@@ -33,26 +33,25 @@ namespace Yana\Db\Ddl\Views;
  * A column reference that identifies the name of a column in the view (see attribute "alias")
  * with the names of the physical table and column they are based on.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class Field extends \Yana\Db\Ddl\AbstractNamedObject
 {
-    /**#@+
-     * @ignore
-     * @access  protected
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "field";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'column' => array('name',  'nmtoken'),
@@ -70,12 +69,9 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      */
     protected $alias = null;
 
-    /**#@-*/
-
     /**
      * Get table name.
      *
-     * @access  public
      * @return  string
      */
     public function getTable()
@@ -90,7 +86,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
     /**
      * Set table name.
      *
-     * @access  public
      * @param   string  $table  table name
      * @return  \Yana\Db\Ddl\Views\Field
      */
@@ -108,7 +103,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
     /**
      * Get column alias.
      *
-     * @access  public
      * @return  string
      */
     public function getAlias()
@@ -123,7 +117,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
     /**
      * Set column alias.
      *
-     * @access  public
      * @param   string  $alias  column alias
      * @return  \Yana\Db\Ddl\Views\Field
      */
@@ -139,12 +132,10 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
     }
 
     /**
-     * unserialize a XDDL-node to an object
+     * Unserialize a XDDL-node to an object.
      *
      * Returns the unserialized object.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  Field

@@ -37,20 +37,20 @@ namespace Yana\Db\Ddl\Logs;
  */
 class Create extends \Yana\Db\Ddl\Logs\AbstractLog
 {
-    /**#@+
-     * @ignore
-     * @access  protected
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "create";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'name'        => array('name',        'nmtoken'),
@@ -61,22 +61,31 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
 
     /**
      * tags for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlTags = array(
         'description' => array('description', 'string')
     );
 
-    /** @var string */ protected $subject = null;
-    /** @var string */ protected $name = null;
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $subject = null;
 
-    /**#@-*/
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $name = null;
 
     /**
      * Initialize instance.
      *
-     * @param  string        $name      name of logcreate
-     * @param  \Yana\Db\Ddl\ChangeLog  $parent    parent
+     * @param  string                  $name    name of logcreate
+     * @param  \Yana\Db\Ddl\ChangeLog  $parent  parent
      */
     public function __construct($name, \Yana\Db\Ddl\ChangeLog $parent = null)
     {
@@ -92,7 +101,6 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * Note: For columns the returned name includes the table ("table.column").
      *
-     * @access  public
      * @return  string
      */
     public function getSubject()
@@ -109,7 +117,6 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * Subject may be: "table", "column", "index", "sequence", "trigger", "constraint", "view".
      *
-     * @access  public
      * @param   string  $subject  new value of this property
      * @return  \Yana\Db\Ddl\Logs\Create 
      */
@@ -131,7 +138,6 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * Note: For columns the returned name includes the table ("table.column").
      *
-     * @access  public
      * @return  string
      */
     public function getName()
@@ -146,7 +152,6 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
     /**
      * Set (mandatory) name of changed object.
      *
-     * @access  public
      * @param   string  $name   name of changed object
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when name is empty or invalid
      * @return  \Yana\Db\Ddl\Logs\Create
@@ -171,7 +176,6 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
      * Provided arguments are the object's parameter list.
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @return  bool
      */
     public function commitUpdate()
@@ -186,8 +190,6 @@ class Create extends \Yana\Db\Ddl\Logs\AbstractLog
     /**
      * Unserializes a XDDL-node to an instance of this class and returns it.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Logs\Create

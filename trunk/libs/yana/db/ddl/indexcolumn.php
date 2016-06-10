@@ -33,26 +33,25 @@ namespace Yana\Db\Ddl;
  * The column list of an index specifies which columns of a table are indexed and how these values
  * are stored.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
 {
-    /**#@+
-     * @ignore
-     * @access  protected
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var string
+     * @ignore
      */
     protected $xddlTag = "column";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'name'    => array('name',    'nmtoken'),
@@ -60,11 +59,23 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
         'length'  => array('length',  'int')
     );
 
-    /** @var string */ protected $sorting = null;
-    /** @var bool   */ protected $isAscending = true;
-    /** @var int    */ protected $length = null;
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $sorting = null;
 
-    /**#@-*/
+    /**
+     * @var  bool
+     * @ignore
+     */
+    protected $isAscending = true;
+
+    /**
+     * @var  int
+     * @ignore
+     */
+    protected $length = null;
 
     /**
      * Check if column is sorted in ascending order.
@@ -74,7 +85,6 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * The default is true.
      *
-     * @access  public
      * @return  bool
      * @name    \Yana\Db\Ddl\IndexColumn::isAscendingOrder()
      * @see     \Yana\Db\Ddl\IndexColumn::isDescendingOrder()
@@ -91,7 +101,6 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * The default is false.
      *
-     * @access  public
      * @return  bool
      * @name    \Yana\Db\Ddl\IndexColumn::isDescendingOrder()
      * @see     \Yana\Db\Ddl\IndexColumn::isAscendingOrder()
@@ -109,7 +118,6 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * The default is true.
      *
-     * @access  public
      * @param   bool  $isAscending  true: sort ascending, false: sort descending
      * @name    \Yana\Db\Ddl\IndexColumn::isDescendingOrder()
      * @see     \Yana\Db\Ddl\IndexColumn::isAscendingOrder()
@@ -147,7 +155,6 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
      * So you are best adviced to check in detail if you really need a full-text
      * index or not.
      *
-     * @access  public
      * @return  int
      * @name    \Yana\Db\Ddl\IndexColumn::getLength()
      * @see     \Yana\Db\Ddl\IndexColumn::setLength()
@@ -166,7 +173,6 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * This applies to full-text indexes in MySQL only.
      *
-     * @access  public
      * @param   int  $length    maximum length of index values
      * @name    \Yana\Db\Ddl\IndexColumn::setLength()
      * @see     \Yana\Db\Ddl\IndexColumn::getLength()
@@ -186,7 +192,6 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
     /**
      * Returns the serialized object as a string in XML-DDL format.
      *
-     * @access  public
      * @param   \SimpleXMLElement $parentNode  parent node
      * @return  \SimpleXMLElement
      */
@@ -203,8 +208,6 @@ class IndexColumn extends \Yana\Db\Ddl\AbstractNamedObject
     /**
      * Unserializes a XDDL-node to an instance of this class and returns it.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\IndexColumn

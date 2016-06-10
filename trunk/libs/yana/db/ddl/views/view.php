@@ -42,26 +42,25 @@ namespace Yana\Db\Ddl\Views;
  * The where-clause of the statement specifies some sort of constraint and a view may demand, that
  * every updated or inserted column is still part of the view and thus justifying this constraint.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIncludableDDL
 {
-    /**#@+
-     * @ignore
-     * @access  protected
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "view";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'name'        => array('name',         'nmtoken'),
@@ -76,7 +75,9 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
 
     /**
      * tags for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlTags = array(
         'description' => array('description', 'string'),
@@ -85,30 +86,93 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
         'select'      => array('queries',     'array', null,           'dbms')
     );
 
-    /** @var string         */ protected $description = null;
-    /** @var string         */ protected $title = null;
-    /** @var bool           */ protected $readonly = null;
-    /** @var int            */ protected $checkOption = null;
-    /** @var array          */ protected $tables = array();
-    /** @var array          */ protected $orderBy = array();
-    /** @var \Yana\Db\Ddl\Views\Field[] */ protected $fields = array();
-    /** @var array          */ protected $queries = array();
-    /** @var string         */ protected $where = null;
-    /** @var bool           */ protected $descendingOrder = null;
-    /** @var \Yana\Db\Ddl\Grant[]     */ protected $grants = array();
-    /** @var \Yana\Db\Ddl\Database    */ protected $parent = null;
-
-    /**#@-*/
-    /**#@+
-     * properties for persistance mapping: object <-> XDDL
-     *
+    /**
+     * @var  string
      * @ignore
-     * @access  protected
      */
+    protected $description = null;
 
-    /** @var string  */ protected $_checkOption = null;
-    /** @var string  */ protected $_sorting = null;
-    /**#@-*/
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $title = null;
+
+    /**
+     * @var  bool
+     * @ignore
+     */
+    protected $readonly = null;
+
+    /**
+     * @var  int
+     * @ignore
+     */
+    protected $checkOption = null;
+
+    /**
+     * @var  array
+     * @ignore
+     */
+    protected $tables = array();
+
+    /**
+     * @var  array
+     * @ignore
+     */
+    protected $orderBy = array();
+
+    /**
+     * @var \Yana\Db\Ddl\Views\Field[]
+     * @ignore
+     */
+    protected $fields = array();
+
+    /**
+     * @var  array
+     * @ignore
+     */
+    protected $queries = array();
+
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $where = null;
+
+    /**
+     * @var  bool
+     * @ignore
+     */
+    protected $descendingOrder = null;
+
+    /**
+     * @var  \Yana\Db\Ddl\Grant[]
+     * @ignore
+     */
+    protected $grants = array();
+
+    /**
+     * @var  \Yana\Db\Ddl\Database
+     * @ignore
+     */
+    protected $parent = null;
+
+    /**
+     * property for persistance mapping: object <-> XDDL
+     *
+     * @var string
+     * @ignore
+     */
+    protected $_checkOption = null;
+
+    /**
+     * property for persistance mapping: object <-> XDDL
+     *
+     * @var string
+     * @ignore
+     */
+    protected $_sorting = null;
 
     /**
      * Initialize instance.
@@ -139,7 +203,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * It is optional. If it is not set, the function returns NULL instead.
      *
-     * @access  public
      * @return  string
      */
     public function getTitle()
@@ -157,7 +220,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Sets the title used to display the object in the UI.
      * To reset the property, leave the parameter empty.
      *
-     * @access  public
      * @param   string  $title  some text
      * @return  \Yana\Db\Ddl\Views\View
      */
@@ -186,7 +248,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * NULL instead. Note that the description may also contain an identifier
      * for automatic translation.
      *
-     * @access  public
      * @return  string
      */
     public function getDescription()
@@ -209,7 +270,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * To reset the property, leave the parameter $description empty.
      *
-     * @access  public
      * @param   string  $description  new value of this property
      * @return  \Yana\Db\Ddl\Views\View
      */
@@ -231,7 +291,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * The default is bool(false).
      *
-     * @access  public
      * @return  bool
      */
     public function isReadonly()
@@ -246,7 +305,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * bool(true).
      * A view that is "read-only" is not updatable.
      *
-     * @access  public
      * @param   bool  $isReadonly   new value of this property
      * @return  \Yana\Db\Ddl\Views\View
      */
@@ -264,7 +322,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * check-constraint. All input will be validated against the where-clause
      * and rejected, if it doesn't satisfy the constraint.
      *
-     * @access  public
      * @return  bool
      * @see     \Yana\Db\Ddl\Views\View::getCheckOption()
      */
@@ -296,7 +353,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * while both \Yana\Db\Ddl\Views\ConstraintEnumeration::CASCADED and
      * \Yana\Db\Ddl\Views\ConstraintEnumeration::LOCAL evaluate to bool(true).
      *
-     * @access  public
      * @return  int
      * @name    \Yana\Db\Ddl\Views\View::getCheckOption()
      */
@@ -306,7 +362,7 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     }
 
     /**
-     * set read-only access
+     * Set read-only access.
      *
      * The parameter $checkOption may be one of the following constants:
      * <ul>
@@ -315,7 +371,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *   <li> \Yana\Db\Ddl\Views\ConstraintEnumeration::LOCAL - local checks only </li>
      * </ul>
      *
-     * @access  public
      * @param   int  $checkOption   new value of this property
      * @see     \Yana\Db\Ddl\Views\View::getCheckOption()
      * @return  \Yana\Db\Ddl\Views\View 
@@ -342,7 +397,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Returns the \Yana\Db\Ddl\Views\Field item with the given name from the current view.
      * If no such item can be found, an exception will be thrown.
      *
-     * @access  public
      * @param   string  $name   field name
      * @return  \Yana\Db\Ddl\Views\Field
      * @throws  \Yana\Core\Exceptions\NotFoundException  when the given field does not exist
@@ -364,7 +418,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * The keys are the unique names of the fields.
      * If no field has been defined, the returned array will be empty.
      *
-     * @access  public
      * @return  array
      */
     public function getFields()
@@ -383,7 +436,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Adds a field element by the given name and returns it.
      * Throws an exception if a field with the given name already exists.
      *
-     * @access  public
      * @param   string  $name   field name
      * @return  \Yana\Db\Ddl\Views\Field
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException  when another field with the same name already exists
@@ -406,7 +458,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     /**
      * Removes a field element by the given name if it exists.
      *
-     * @access  public
      * @param   string  $name  name of the droped field
      */
     public function dropField($name)
@@ -422,7 +473,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * Returns the source code of the SQL query as a string or NULL if none has been defined.
      *
-     * @access  public
      * @param   string  $dbms  target DBMS, defaults to "generic"
      * @return  string
      */
@@ -446,7 +496,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * If there are none defined, the function returns an empty array.
      *
-     * @access  public
      * @return  array
      */
     public function getQueries()
@@ -464,7 +513,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * Sets the source code of the SQL query. The syntax depends on the chosen DBMS.
      *
-     * @access  public
      * @param   string  $query  sql query
      * @param   string  $dbms   target DBMS, defaults to "generic"
      */
@@ -485,7 +533,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     /**
      * Drops the SQL-query for the chosen DBMS if there is any.
      *
-     * @access  public
      * @param   string  $dbms  target DBMS, defaults to "generic"
      */
     public function dropQuery($dbms = "generic")
@@ -509,7 +556,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * For joined table, don't forget to define a where-clause.
      *
-     * @access  public
      * @return  array
      */
     public function getTables()
@@ -532,7 +578,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Note the array may not be empty. All given tables must be defined in the
      * current database structure definition.
      *
-     * @access  public
      * @param   array  $tables  list of tables
      * @throws  \Yana\Core\Exceptions\NotFoundException         when a table does not exist
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the list of tables is empty
@@ -565,7 +610,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Returns the where-clause of the view if there is one, or NULL if not
      * defined.
      *
-     * @access  public
      * @return  string
      */
     public function getWhere()
@@ -595,7 +639,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Also you may not use sub-expressions, for this is not (yet) supported by
      * the generic interpreter.
      *
-     * @access  public
      * @param   string  $where  where clausel
      */
     public function setWhere($where)
@@ -614,7 +657,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Returns a list of columns for sorting the output.
      * If no order-by-clause has been defined, the returned array is empty.
      *
-     * @access  public
      * @return  array
      */
     public function getOrderBy()
@@ -635,7 +677,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * Throws an exception if one or more columns don't exist.
      *
-     * @access  public
      * @param   array  $orderBy  list of column names
      * @param   bool   $isDesc   sorting order (false = ascending, true = descending)
      * @return  \Yana\Db\Ddl\Views\View
@@ -656,7 +697,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Returns bool(false) for ascending, and bool(true) for descending order.
      * The default is bool(false).
      *
-     * @access  public
      * @return  bool
      */
     public function isDescendingOrder()
@@ -675,7 +715,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * If at least one grant is set, any user that does not match the given
      * restrictions is not permitted to access the form.
      *
-     * @access  public
      * @return  array
      */
     public function getGrants()
@@ -693,8 +732,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * If at least one grant is set, any user that does not match the given
      * restrictions is not permitted to access the form.
-     *
-     * @access  public
      */
     public function dropGrants()
     {
@@ -708,7 +745,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * This function adds a new grant to the configuration.
      *
-     * @access  public
      * @param   \Yana\Db\Ddl\Grant  $grant    new grant object (rights management)
      * @return  \Yana\Db\Ddl\Views\View
      */
@@ -726,7 +762,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * This function adds a new grant to the configuration by using the given
      * options and returns it as an \Yana\Db\Ddl\Grant object.
      *
-     * @access  public
      * @param   string  $user   user group
      * @param   string  $role   user role
      * @param   int     $level  security level
@@ -756,7 +791,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     /**
      * <<magic>> Returns a ViewField, with the given attribute name.
      *
-     * @access  public
      * @param   string $name  name
      */
     public function __get($name)
@@ -769,7 +803,6 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * Returns the serialized object as a string in XML-DDL format.
      *
-     * @access  public
      * @param   \SimpleXMLElement $parentNode  parent node
      * @return  \SimpleXMLElement
      */
@@ -796,12 +829,10 @@ class View extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     }
 
     /**
-     * unserialize a XDDL-node to an object
+     * Unserialize a XDDL-node to an object.
      *
      * Returns the unserialized object.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Views\View

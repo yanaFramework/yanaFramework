@@ -41,19 +41,20 @@ namespace Yana\Db\Ddl;
  */
 class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIncludableDDL
 {
-    /**#@+
-     * @ignore
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "form";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'name'     => array('name',     'nmtoken'),
@@ -66,7 +67,9 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
 
     /**
      * tags for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlTags = array(
         'description' => array('description', 'string'),
@@ -77,116 +80,115 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     );
 
     /**
-     * @var string        
+     * @var string
+     * @ignore
      */
     protected $description = null;
 
     /**
-     * @var string        
+     * @var string
+     * @ignore
      */
     protected $title = null;
 
     /**
-     * @var string        
+     * @var string
+     * @ignore
      */
     protected $table = null;
 
     /**
-     * @var string        
+     * @var string
+     * @ignore
      */
     protected $template = null;
 
     /**
-     * @var string        
+     * @var string
+     * @ignore
      */
     protected $key = null;
 
     /**
-     * @var \Yana\Db\Ddl\Event[]    
+     * @var \Yana\Db\Ddl\Event[]
+     * @ignore
      */
     protected $events = array();
 
     /**
-     * @var \Yana\Db\Ddl\Grant[]    
+     * @var \Yana\Db\Ddl\Grant[]
+     * @ignore
      */
     protected $grants = array();
 
     /**
-     * @var \Yana\Db\Ddl\Form[]     
+     * @var \Yana\Db\Ddl\Form[]
+     * @ignore
      */
     protected $forms = array();
 
     /**
-     * @var \Yana\Db\Ddl\Field[]    
+     * @var \Yana\Db\Ddl\Field[]
+     * @ignore
      */
     protected $fields = array();
 
     /**
-     * @var \Yana\Db\Ddl\Database   
+     * @var \Yana\Db\Ddl\Database
+     * @ignore
      */
     protected $parent = null;
 
     /**
-     * @var bool          
+     * @var bool
+     * @ignore
      */
     protected $isInitialized = false;
 
     /**
-     * @var bool          
+     * @var bool
+     * @ignore
      */
     protected $allinput = null;
-
-    /**#@-*/
 
     /**
      * cached value
      *
-     * @access  private
-     * @var     bool
-     * @ignore
+     * @var  bool
      */
     private $_selectable = null;
 
     /**
      * cached value
      *
-     * @access  private
-     * @var     bool
-     * @ignore
+     * @var  bool
      */
     private $_insertable = null;
 
     /**
      * cached value
      *
-     * @access  private
-     * @var     bool
-     * @ignore
+     * @var  bool
      */
     private $_updatable = null;
 
     /**
      * cached value
      *
-     * @access  private
-     * @var     bool
-     * @ignore
+     * @var  bool
      */
     private $_deletable = null;
 
     /**
      * cached value
      *
-     * @access  private
-     * @var     bool
-     * @ignore
+     * @var  bool
      */
     private $_grantable = null;
 
     /**
      * Initialize instance.
      *
-     * @access  public
      * @param   string  $name    form name
      * @param   \Yana\Db\Ddl\DDL     $parent  parent form or parent database
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given parent is not valid
@@ -211,7 +213,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * Thus you should check the result object by using instanceof.
      *
-     * @access  public
      * @return  \Yana\Db\Ddl\DDL
      */
     public function getParent()
@@ -222,7 +223,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     /**
      * Get database.
      *
-     * @access  public
      * @return  \Yana\Db\Ddl\Database
      */
     public function getDatabase()
@@ -240,7 +240,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Returns NULL if the schema name is unknown or an empty string if the schema name is
      * undefined.
      *
-     * @access  public
      * @return  string
      * @ignore
      */
@@ -261,7 +260,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Returns the name of the source table or view.
      * If none has been defined the function returns NULL instead.
      *
-     * @access  public
      * @return  string
      */
     public function getTable()
@@ -282,7 +280,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * This setting is mandatory.
      *
-     * @access  public
      * @param   string  $table  table name
      * @return  \Yana\Db\Ddl\Form
      */
@@ -300,7 +297,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * It is optional. If it is not set, the function returns NULL instead.
      *
-     * @access  public
      * @return  string
      */
     public function getTitle()
@@ -318,7 +314,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Sets the title used to display the object in the UI.
      * To reset the property, leave the parameter empty.
      *
-     * @access  public
      * @param   string  $title  some text
      * @return  \Yana\Db\Ddl\Form
      */
@@ -347,7 +342,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * NULL instead. Note that the description may also contain an identifier
      * for automatic translation.
      *
-     * @access  public
      * @return  string
      */
     public function getDescription()
@@ -370,7 +364,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * To reset the property, leave the parameter $description empty.
      *
-     * @access  public
      * @param   string  $description  new value of this property
      * @return  \Yana\Db\Ddl\Form
      */
@@ -391,7 +384,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * The template may be any value supported by a form-generator class.
      * It informs the generator how present the contents of the form.
      *
-     * @access  public
      * @return  string
      */
     public function getTemplate()
@@ -409,7 +401,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * The template may be any value supported by a form-generator class.
      * It informs the generator how present the contents of the form.
      *
-     * @access  public
      * @param   string  $template  name or id of template to use
      * @return  \Yana\Db\Ddl\Form
      */
@@ -430,7 +421,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * If the form is associated with the parent form via a foreign key,
      * this function will return it. If there is none, it will return NULL instead.
      *
-     * @access  public
      * @return  string
      */
     public function getKey()
@@ -449,7 +439,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * form and the parent form inherit from different base tables.
      * If so, a foreign key must exist linking both tables.
      *
-     * @access  public
      * @param   string  $key  name of foreign key column
      * @return  \Yana\Db\Ddl\Form
      */
@@ -475,7 +464,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * If at least one grant is set, any user that does not match the given
      * restrictions is not permitted to access the form.
      *
-     * @access  public
      * @return  array
      */
     public function getGrants()
@@ -493,8 +481,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * If at least one grant is set, any user that does not match the given
      * restrictions is not permitted to access the form.
-     *
-     * @access  public
      */
     public function dropGrants()
     {
@@ -508,7 +494,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * This function adds a new grant to the configuration.
      *
-     * @access  public
      * @param   \Yana\Db\Ddl\Grant  $grant  grant object expected (rights managment)
      * @return  \Yana\Db\Ddl\Form
      */
@@ -526,7 +511,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * This function adds a new grant to the form settings by using the given
      * options and returns it as an \Yana\Db\Ddl\Grant object.
      *
-     * @access  public
      * @param   string  $user   user group
      * @param   string  $role   user role
      * @param   int     $level  security level
@@ -559,7 +543,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Returns bool(true) if a form with the given name is registered and bool(false) otherwise.
      * Note that this operation is not case sensitive.
      *
-     * @access  public
      * @param   string  $name   new value of this property
      * @return  bool
      */
@@ -576,7 +559,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Returns the \Yana\Db\Ddl\Form sub-form with the given name from the current form.
      * If no such item can be found, an exception will be thrown.
      *
-     * @access  public
      * @param   string  $name  form name
      * @return  \Yana\Db\Ddl\Form
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when form does not exist
@@ -598,7 +580,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * Adds a form element by the given name and returns it.
      *
-     * @access  public
      * @param   string  $name  form name
      * @return  \Yana\Db\Ddl\Form
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException  when a sub-form with the same name already exists
@@ -621,7 +602,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     /**
      * Returns an array of sub-forms as \Yana\Db\Ddl\Form elements.
      *
-     * @access  public
      * @return  array
      */
     public function getForms()
@@ -632,7 +612,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     /**
      * Get list of form names as an array of strings.
      *
-     * @access  public
      * @return  array
      */
     public function getFormNames()
@@ -643,7 +622,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     /**
      * Drop the sub-form with the specified name.
      *
-     * @access  public
      * @param   string  $name  form name
      */
     public function dropForm($name)
@@ -661,7 +639,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Returns bool(true) if a field with the given name is already defined.
      * Returns bool(false) otherwise.
      *
-     * @access  public
      * @param   string  $name  name of a field
      * @return  bool
      */
@@ -677,7 +654,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Returns the \Yana\Db\Ddl\Field item with the given name from the current view.
      * If no such item can be found, an exception will be thrown.
      *
-     * @access  public
      * @param   string  $name   name of a field
      * @return  \Yana\Db\Ddl\Field
      * @throws  \Yana\Core\Exceptions\NotFoundException when field does not exist.
@@ -700,7 +676,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * The keys are the unique names of the fields.
      * If no field has been defined, the returned array will be empty.
      *
-     * @access  public
      * @return  array
      */
     public function getFields()
@@ -714,7 +689,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * Adds a field element by the given name and returns it.
      * Throws an exception if a field with the given name already exists.
      *
-     * @access  public
      * @param   string  $name  name of a new field
      * @return  \Yana\Db\Ddl\Field
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException  when a field with the same name already exists
@@ -739,7 +713,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * Throws an exception if a field with the given name does not exist.
      *
-     * @access  public
      * @param   string  $name  name of a field which would be droped
      * @return  \Yana\Db\Ddl\Field
      * @throws  \Yana\Core\Exceptions\NotFoundException  when field does not exist
@@ -764,7 +737,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * Returns an array of {@see \Yana\Db\Ddl\Event} instances.
      *
-     * @access  public
      * @return  array
      */
     public function getEvents()
@@ -779,7 +751,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * depend on the UI-implementation and the form template.
      * See the manual for more details.
      *
-     * @access  public
      * @param   string  $name  event name
      * @return  \Yana\Db\Ddl\Event
      */
@@ -801,7 +772,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * If another event with the same name already exists, it throws an AlreadyExistsException.
      * The name must start with a letter and may only contain: a-z, 0-9, '-' and '_'.
      *
-     * @access  public
      * @param   string  $name   event name
      * @return  \Yana\Db\Ddl\Event
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when an event with the same name already exists
@@ -829,7 +799,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * Returns bool(true) on success and bool(false) if there is no such event to drop.
      *
-     * @access  public
      * @param   string  $name  event name
      * @return bool
      */
@@ -849,7 +818,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * Returns bool(true) if form is selectable to the current user and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isSelectable()
@@ -869,7 +837,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * Returns bool(true) if form is insertable to the current user and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isInsertable()
@@ -889,7 +856,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * Returns bool(true) if form is updatable to the current user and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isUpdatable()
@@ -917,7 +883,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * This is the opposite of the default approach, where only the explicitely defined input fields
      * are used and any unmentioned column is ignored (whitelist).
      *
-     * @access  public
      * @return  bool
      */
     public function hasAllInput()
@@ -942,7 +907,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      * This is the opposite of the default approach, where only the explicitely defined input fields
      * are used and any unmentioned column is ignored (whitelist).
      *
-     * @access  public
      * @param   bool  $allinput  use all table columns (true = yes, false = no)
      * @return  \Yana\Db\Ddl\Form
      */
@@ -958,7 +922,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * Returns bool(true) if form is deletable to the current user and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isDeletable()
@@ -978,7 +941,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
      *
      * Returns bool(true) if form is grantable to the current user and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isGrantable()
@@ -996,7 +958,6 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     /**
      * <<magic>> Returns a sub-form or field, with the given attribute name.
      *
-     * @access  public
      * @param   string  $name  sub-form or field name
      * @return  \Yana\Db\Ddl\Field
      */
@@ -1014,12 +975,10 @@ class Form extends \Yana\Db\Ddl\AbstractNamedObject implements \Yana\Db\Ddl\IsIn
     }
 
     /**
-     * unserialize a XDDL-node to an object
+     * Unserialize a XDDL-node to an object.
      *
      * Returns the unserialized object.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Form

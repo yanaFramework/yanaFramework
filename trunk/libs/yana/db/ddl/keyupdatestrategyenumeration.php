@@ -28,12 +28,11 @@
 namespace Yana\Db\Ddl;
 
 /**
- * <<Enumeration>> Foreign key update strategy Enumeration
+ * <<Enumeration>> Foreign key update strategy Enumeration.
  *
  * Values for possible update strategies.
  * Either no-action, restrict, cascade, set-null, set-default.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  *

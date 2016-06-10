@@ -32,13 +32,12 @@ namespace Yana\Db\Ddl\Logs;
  *
  * This wrapper class represents the structure of a database
  *
- * @access      public
- * @abstract
  * @package     yana
  * @subpackage  db
  */
 abstract class AbstractLog extends \Yana\Db\Ddl\DDL
 {
+
     /**
      * class name must match exactly
      *
@@ -49,8 +48,7 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
     /**
      * version string
      *
-     * @access  protected
-     * @var     string
+     * @var  string
      * @ignore
      */
     protected $version = null;
@@ -58,8 +56,7 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
     /**
      * ignore errors
      *
-     * @access  protected
-     * @var     bool
+     * @var  bool
      * @ignore
      */
     protected $ignoreError = false;
@@ -70,9 +67,7 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
      * Note: the implementation, number and type of arguments depend on the
      * type of changes that have to be carried out.
      *
-     * @access  protected
-     * @static
-     * @var string
+     * @var  string
      * @ignore
      */
     protected static $handler = null;
@@ -80,14 +75,14 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
     /**
      * Parent element
      *
-     * @access  protected
-     * @var     \Yana\Db\Ddl\ChangeLog
+     * @var  \Yana\Db\Ddl\ChangeLog
      * @ignore
      */
     protected $parent = null;
 
     /**
      * tags for persistance mapping: object <-> XDDL
+     *
      * @var  array
      */
     protected $xddlTags = array(
@@ -95,8 +90,7 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
     );
 
     /** 
-     * @access  protected
-     * @var     string
+     * @var  string
      * @ignore
      */
     protected $description = null;
@@ -117,7 +111,6 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
      * The data-type returned by the function.
      * Will return NULL if no version is set.
      *
-     * @access  public
      * @return  string
      */
     public function getVersion()
@@ -132,7 +125,6 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
      *
      * To reset this option, call the function with an empty parameter.
      *
-     * @access  public
      * @param   string  $version  new value of this property
      * @return  \Yana\Db\Ddl\Logs\AbstractLog
      */
@@ -152,7 +144,6 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
      *
      * Note that this is free-text that may contain any format.
      *
-     * @access  public
      * @return  string
      */
     public function getDescription()
@@ -167,7 +158,6 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
     /**
      * Set description.
      *
-     * @access  public
      * @param   string  $description  a log-message of your choice
      * @return  \Yana\Db\Ddl\Logs\AbstractLog
      */
@@ -185,7 +175,6 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
     /**
      * Check wether to ignore errors.
      *
-     * @access  public
      * @return  bool
      */
     public function ignoreError()
@@ -196,7 +185,6 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
     /**
      * Set wether to ignore errors.
      *
-     * @access  public
      * @param   bool  $ignoreError  ignore errors
      * @return  \Yana\Db\Ddl\Logs\AbstractLog
      */
@@ -210,7 +198,6 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
     /**
      * Set function to handle updates.
      *
-     * @access  public
      * @param   string|array  $functionName   name of the function which is called
      * @throws   \Yana\Core\Exceptions\InvalidArgumentException  when the given function is not callable
      */
@@ -229,8 +216,6 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
-     * @abstract
      * @return  bool
      */
     abstract public function commitUpdate();
@@ -240,7 +225,6 @@ abstract class AbstractLog extends \Yana\Db\Ddl\DDL
      *
      * Returns a string that is equivalent to the XDDL tag of this object.
      *
-     * @access  public
      * @return  string
      */
     public function getType()

@@ -44,26 +44,25 @@ namespace Yana\Db\Ddl;
  * the trigger should be a valid callback. See the manual of the database-API for more details on
  * that topic.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class Trigger extends \Yana\Db\Ddl\AbstractObject
 {
-    /**#@+
-     * @ignore
-     * @access  protected
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "trigger";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'name'    => array('name',    'nmtoken'),
@@ -75,14 +74,41 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
         '#pcdata' => array('trigger', 'string')
     );
 
-    /** @var string */ protected $dbms = "generic";
-    /** @var string */ protected $trigger = null;
-    /** @var string */ protected $on = "before";
-    /** @var bool   */ protected $insert = false;
-    /** @var bool   */ protected $update = null;
-    /** @var bool   */ protected $delete = null;
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $dbms = "generic";
 
-    /**#@-*/
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $trigger = null;
+
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $on = "before";
+
+    /**
+     * @var  bool
+     * @ignore
+     */
+    protected $insert = false;
+
+    /**
+     * @var  bool
+     * @ignore
+     */
+    protected $update = null;
+
+    /**
+     * @var  bool
+     * @ignore
+     */
+    protected $delete = null;
 
     /**
      * Get target DBMS.
@@ -90,7 +116,6 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      * Returns the name of the target DBMS for this definition as a lower-cased string.
      * The default is "generic".
      *
-     * @access  public
      * @return  string
      */
     public function getDBMS()
@@ -111,7 +136,6 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      *
      * Generic values are usually simulated using PHP-code.
      *
-     * @access  public
      * @param   string  $dbms  target DBMS, defaults to "generic"
      * @return  \Yana\Db\Ddl\Trigger
      */
@@ -134,7 +158,6 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      * Retrieve the trigger code and return it.
      * The syntax of the code depends on the type of DBMS used.
      *
-     * @access  public
      * @return  string
      */
     public function getTrigger()
@@ -162,7 +185,6 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      *
      * This setting is mandatory.
      *
-     * @access  public
      * @param   string  $trigger  code that should be executed (possibly a function call)
      * @return  \Yana\Db\Ddl\Trigger
      */
@@ -178,7 +200,6 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      *
      * Before refers to triggers that fire BEFORE the statement is carried out.
      *
-     * @access  public
      * @return  bool
      */
     public function isBefore()
@@ -192,7 +213,6 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      * After refers to triggers that fire AFTER the statement or transaction has been successfully
      * carried out. It is not fired if the statement results in an error.
      *
-     * @access  public
      * @return  bool
      */
     public function isAfter()
@@ -207,7 +227,6 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      * executed. This option is not supported by all DBMS. However: if it is not, you may emulate
      * this (with some limitations) by using PHP code.
      *
-     * @access  public
      * @return  bool
      */
     public function isInstead()
@@ -223,7 +242,6 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      * A trigger may either fire before, after or instead of a statement, but not on a combination
      * of these. This setting is mandatory. There is no default value.
      *
-     * @access  public
      * @return  \Yana\Db\Ddl\Trigger
      */
     public function setBefore()
@@ -241,7 +259,6 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      * A trigger may either fire before, after or instead of a statement, but not on a combination
      * of these. This setting is mandatory. There is no default value.
      *
-     * @access  public
      * @return  \Yana\Db\Ddl\Trigger
      */
     public function setAfter()
@@ -260,7 +277,6 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      * A trigger may either fire before, after or instead of a statement, but not on a combination
      * of these. This setting is mandatory. There is no default value.
      *
-     * @access  public
      * @return  \Yana\Db\Ddl\Trigger
      */
     public function setInstead()
@@ -278,7 +294,6 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      * Note though, that not all DBMS support triggers that react on multiple events.
      * The API will create seperate triggers for each event in that case.
      *
-     * @access  public
      * @return  bool
      */
     public function isInsert()
@@ -295,7 +310,6 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      * Note though, that not all DBMS support triggers that react on multiple events.
      * The API will create seperate triggers for each event in that case.
      *
-     * @access  public
      * @return  bool
      */
     public function isUpdate()
@@ -312,7 +326,6 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      * Note though, that not all DBMS support triggers that react on multiple events.
      * The API will create seperate triggers for each event in that case.
      *
-     * @access  public
      * @return  bool
      */
     public function isDelete()
@@ -329,7 +342,6 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      * Note though, that not all DBMS support triggers that react on multiple events.
      * The API will create seperate triggers for each event in that case.
      *
-     * @access  public
      * @param   bool  $isInsert  true: fire on insert, false: ignore insert
      * @return  \Yana\Db\Ddl\Trigger
      */
@@ -349,7 +361,6 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      * Note though, that not all DBMS support triggers that react on multiple events.
      * The API will create seperate triggers for each event in that case.
      *
-     * @access  public
      * @param   bool  $isUpdate  true: fire on update, false: ignore update
      * @return  \Yana\Db\Ddl\Trigger
      */
@@ -369,7 +380,6 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
      * Note though, that not all DBMS support triggers that react on multiple events.
      * The API will create seperate triggers for each event in that case.
      *
-     * @access  public
      * @param   bool  $isDelete  true: fire on delete, false: ignore delete
      * @return  \Yana\Db\Ddl\Trigger
      */
@@ -381,12 +391,10 @@ class Trigger extends \Yana\Db\Ddl\AbstractObject
     }
 
     /**
-     * unserialize a XDDL-node to an object
+     * Unserialize a XDDL-node to an object.
      *
      * Returns the unserialized object.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed             $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Trigger

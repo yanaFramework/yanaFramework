@@ -1467,8 +1467,6 @@ class Database extends \Yana\Db\Ddl\AbstractObject
      *
      * Returns the unserialized object.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @param   string             $path    file path

@@ -28,7 +28,7 @@
 namespace Yana\Db\Ddl;
 
 /**
- * database structure
+ * Database structure.
  *
  * This wrapper class represents the structure of a database.
  *
@@ -41,7 +41,6 @@ namespace Yana\Db\Ddl;
  * as information for the client and applications that may connect with the
  * database.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
@@ -54,8 +53,6 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
      * Try to extract some information on the structure of a database from the
      * information provided by PEAR-MDB2's Reverse module.
      *
-     * @access  public
-     * @static
      * @param   \MDB2_Driver_Common  $connection  MDB2 database connection
      * @return  \Yana\Db\Ddl\Database
      * @throws  \Yana\Db\ConnectionException  when unable to open connection to database
@@ -184,7 +181,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
     }
 
     /**
-     * add a sequence to database
+     * Add a sequence to database.
      *
      * Info contains these elements:
      * <code>
@@ -193,8 +190,6 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
      * );
      * </code>
      *
-     * @access  protected
-     * @static
      * @param   \Yana\Db\Ddl\Database  $database  database to add sequence to
      * @param   array        $info      sequence information
      * @param   string       $name      sequence name
@@ -223,7 +218,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
     }
 
     /**
-     * add a index to table
+     * Add a index to table.
      *
      * Info contains these elements:
      * <code>
@@ -235,8 +230,6 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
      * );
      * </code>
      *
-     * @access  protected
-     * @static
      * @param   \Yana\Db\Ddl\Table  $table  table to add index to
      * @param   array     $info   index information
      * @param   string    $name   index name
@@ -257,7 +250,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
     }
 
     /**
-     * add a constraint to table
+     * Add a constraint to table.
      *
      * Info contains these elements:
      * <code>
@@ -289,8 +282,6 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
      *  );
      * </code>
      *
-     * @access  protected
-     * @static
      * @param   \Yana\Db\Ddl\Table  $table  table to add constraint to
      * @param   array     $info   constraint information
      * @param   string    $name   constraint name
@@ -411,7 +402,7 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
 
 
     /**
-     * add a column to table
+     * Add a column to table.
      *
      * Info contains these elements:
      * <code>
@@ -426,8 +417,6 @@ class DatabaseFactory extends \Yana\Db\Ddl\Database
      *  );
      * </code>
      *
-     * @access  protected
-     * @static
      * @param   \Yana\Db\Ddl\Table  $table  table to add column to
      * @param   array     $info   column information
      * @param   string    $name   column name

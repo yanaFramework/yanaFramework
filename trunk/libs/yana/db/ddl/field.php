@@ -28,33 +28,32 @@
 namespace Yana\Db\Ddl;
 
 /**
- * database form field structure
+ * Database form field structure.
  *
  * A field represents an UI input-element inside a form.
  * Each field has a source column and several attributes to change it's representation.
  *
  * The type of the input-element depends on the type of the source column.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class Field extends \Yana\Db\Ddl\AbstractNamedObject
 {
-    /**#@+
-     * @access  protected
-     * @ignore
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "input";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'name'     => array('name', 'nmtoken'),
@@ -67,7 +66,9 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
 
     /**
      * tags for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlTags = array(
         'description'   => array('description', 'string'),
@@ -76,33 +77,99 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
         'event'         => array('events',      'array', 'Yana\Db\Ddl\Event')
     );
 
-    /** @var string      */ protected $description = null;
-    /** @var string      */ protected $title = null;
-    /** @var bool        */ protected $hidden = null;
-    /** @var bool        */ protected $readonly = null;
-    /** @var string      */ protected $cssClass = null;
-    /** @var int         */ protected $tabIndex = null;
-    /** @var \Yana\Db\Ddl\Grant[]  */ protected $grants = array();
-    /** @var \Yana\Db\Ddl\Event[]  */ protected $events = array();
-    /** @var \Yana\Db\Ddl\Column   */ protected $column = null;
-
-    /**#@-*/
-
-    /**#@+
-     * cached value
-     *
-     * @access  protected
-     * @var     bool
+    /**
+     * @var  string
      * @ignore
      */
+    protected $description = null;
 
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $title = null;
+
+    /**
+     * @var  bool
+     * @ignore
+     */
+    protected $hidden = null;
+
+    /**
+     * @var  bool
+     * @ignore
+     */
+    protected $readonly = null;
+
+    /**
+     * @var  string
+     * @ignore
+     */
+    protected $cssClass = null;
+
+    /**
+     * @var  int
+     * @ignore
+     */
+    protected $tabIndex = null;
+
+    /**
+     * @var  \Yana\Db\Ddl\Grant[]
+     * @ignore
+     */
+    protected $grants = array();
+
+    /**
+     * @var  \Yana\Db\Ddl\Event[]
+     * @ignore
+     */
+    protected $events = array();
+
+    /**
+     * @var  \Yana\Db\Ddl\Column
+     * @ignore
+     */
+    protected $column = null;
+
+    /**
+     * cached value
+     *
+     * @var  bool
+     * @ignore
+     */
     protected $isSelectable = null;
-    protected $isInsertable = null;
-    protected $isUpdatable = null;
-    protected $isDeletable = null;
-    protected $isGrantable = null;
 
-    /**#@-*/
+    /**
+     * cached value
+     *
+     * @var  bool
+     * @ignore
+     */
+    protected $isInsertable = null;
+
+    /**
+     * cached value
+     *
+     * @var  bool
+     * @ignore
+     */
+    protected $isUpdatable = null;
+
+    /**
+     * cached value
+     *
+     * @var  bool
+     * @ignore
+     */
+    protected $isDeletable = null;
+
+    /**
+     * cached value
+     *
+     * @var  bool
+     * @ignore
+     */
+    protected $isGrantable = null;
 
     /**
      * Get the user description.
@@ -118,7 +185,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * NULL instead. Note that the description may also contain an identifier
      * for automatic translation.
      *
-     * @access  public
      * @return  string
      */
     public function getDescription()
@@ -143,13 +209,12 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * To reset the property, leave the parameter $description empty.
      *
-     * @access  public
      * @param   string  $description  new value of this property
      * @return  \Yana\Db\Ddl\Field
      */
     public function setDescription($description = "")
     {
-        assert('is_string($description); // Wrong type for argument 1. String expected');
+        assert('is_string($description); // Invalid argument $description: string expected');
         if ($this->column instanceof \Yana\Db\Ddl\Column) {
             $this->column->setDescription($description);
         } elseif (empty($description)) {
@@ -171,7 +236,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * Returns the label as a string or NULL, if it is undefined. If no label is defined, it should
      * default to the name of the field.
      *
-     * @access  public
      * @return  string
      */
     public function getTitle()
@@ -193,13 +257,12 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * To reset this property, leave the parameter empty.
      *
-     * @access  public
      * @param   string  $title  title 
      * @return  \Yana\Db\Ddl\Field
      */
     public function setTitle($title = "")
     {
-        assert('is_string($title); // Wrong type for argument 1. String expected');
+        assert('is_string($title); // Invalid argument $title: string expected');
         if (empty($title)) {
             $this->title = null;
         } else {
@@ -216,7 +279,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * Returns an array of {@see \Yana\Db\Ddl\Event} instances.
      *
-     * @access  public
      * @return  array
      */
     public function getEvents()
@@ -230,7 +292,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * Actions are (Javascript) functions that are fired when the user clicks the field.
      * See the manual for more details.
      *
-     * @access  public
      * @param   string  $name    event name
      * @return  \Yana\Db\Ddl\Event
      */
@@ -252,7 +313,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * If another event with the same name already exists, it throws an AlreadyExistsException.
      * The name must start with a letter and may only contain: a-z, 0-9, '-' and '_'.
      *
-     * @access  public
      * @param   string  $name   event name
      * @return  \Yana\Db\Ddl\Event
      * @throws  \Yana\Core\Exceptions\AlreadyExistsException    when an event with the same name already exists
@@ -280,7 +340,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * Returns bool(true) on success and bool(false) if there is no such event to drop.
      *
-     * @access  public
      * @param   string  $name  event name
      * @return  bool
      */
@@ -302,7 +361,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * Note that an element may also not be visible due to the fact, that the user has no permission
      * to see it, because he is not granted to do so.
      *
-     * @access  public
      * @return  bool
      */
     public function isVisible()
@@ -316,7 +374,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * A field may be hidden, in which case it is not to be shown in the UI.
      * Set this to bool(false) to hide the field or bool(true) to make it visible.
      *
-     * @access  public
      * @param   bool  $isVisible  new value of this property
      * @return  \Yana\Db\Ddl\Field
      */
@@ -332,7 +389,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * Returns bool(true) if form is selectable to the current user and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isSelectable()
@@ -352,7 +408,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * Returns bool(true) if form is insertable to the current user and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isInsertable()
@@ -371,8 +426,7 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * Check if form is updatable.
      *
      * Returns bool(true) if form is updatable to the current user and bool(false) otherwise.
-     *
-     * @access  public
+     
      * @return  bool
      */
     public function isUpdatable()
@@ -392,7 +446,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * Returns bool(true) if form is deletable to the current user and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isDeletable()
@@ -412,7 +465,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * Returns bool(true) if form is grantable to the current user and bool(false) otherwise.
      *
-     * @access  public
      * @return  bool
      */
     public function isGrantable()
@@ -435,7 +487,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * The default is bool(false).
      *
-     * @access  public
      * @return  bool
      */
     public function isReadonly()
@@ -449,7 +500,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * You may set the field to be read-only to prevent any changes to it by setting this to
      * bool(true).
      *
-     * @access  public
      * @param   bool  $isReadonly   new value of this property
      * @return  \Yana\Db\Ddl\Field
      */
@@ -465,7 +515,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * Returns the prefered CSS-class for this field as a string or NULL if there is none.
      *
-     * @access  public
      * @return  string
      */
     public function getCssClass()
@@ -485,7 +534,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * To reset the property, leave the parameter empty.
      *
-     * @access  public
      * @param   string  $class  name of a css class
      * @return  \Yana\Db\Ddl\Field
      */
@@ -505,7 +553,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * Returns the prefered tab-index for this field as an integer or NULL if there is none.
      *
-     * @access  public
      * @return  int
      */
     public function getTabIndex()
@@ -525,7 +572,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * To reset the property, leave the parameter empty.
      *
-     * @access  public
      * @param   int  $index  tab-index
      * @return  \Yana\Db\Ddl\Field
      */
@@ -551,7 +597,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * If at least one grant is set, any user that does not match the given
      * restrictions is not permitted to access the form.
      *
-     * @access  public
      * @return  array
      */
     public function getGrants()
@@ -574,8 +619,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * If at least one grant is set, any user that does not match the given
      * restrictions is not permitted to access the form.
-     *
-     * @access  public
      */
     public function dropGrants()
     {
@@ -595,7 +638,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * This function adds a new grant to the configuration by using the given
      * options and returns it as an \Yana\Db\Ddl\Grant object.
      *
-     * @access  public
      * @param   string  $user   user group
      * @param   string  $role   user role
      * @param   int     $level  security level
@@ -633,7 +675,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * This function adds a new grant to the configuration.
      *
-     * @access  public
      * @param   \Yana\Db\Ddl\Grant  $grant  new grant object
      * @return  \Yana\Db\Ddl\Field
      */
@@ -655,7 +696,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      * If such a column element exists, this function returns it.
      * If not, it returns NULL instead.
      *
-     * @access  public
      * @return  \Yana\Db\Ddl\Column
      */
     public function getColumn()
@@ -668,8 +708,6 @@ class Field extends \Yana\Db\Ddl\AbstractNamedObject
      *
      * Returns the unserialized object.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node  XML node
      * @return  \Yana\Db\Ddl\Field
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the name attribute is missing

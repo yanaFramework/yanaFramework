@@ -28,13 +28,12 @@
 namespace Yana\Db\Ddl;
 
 /**
- * database constraint definition
+ * Database constraint definition.
  *
  * A constraint is a boolean expression that must evaluate to true at all times for the row to
  * be valid. The database should ensure that. For databases that don't have that feature, you
  * may use the vendor-independent type "generic" to simluate it.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */

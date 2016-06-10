@@ -39,52 +39,53 @@ namespace Yana\Db\FileDb;
  * Note: the optional data type argument as defined in SQL 2003 is not supported by any vendor yet,
  * so we won't support it here either. It defaults to 'integer'.
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class Sequence extends \Yana\Core\Object
 {
-    /**#@+
-     * @ignore
-     */
 
     /**
      * @var string
+     * @ignore
      */
     protected $name = "";
 
     /**
      * @var int
+     * @ignore
      */
     protected $value = 1;
 
     /**
      * @var int
+     * @ignore
      */
     protected $increment = 1;
 
     /**
      * @var int
+     * @ignore
      */
     protected $min = 1;
 
     /**
      * @var int
+     * @ignore
      */
     protected $max = PHP_INT_MAX;
 
     /**
      * @var bool
+     * @ignore
      */
     protected $cycle = false;
 
     /**
      * @var \Yana\Db\IsConnection
+     * @ignore
      */
     protected static $db = null;
-
-    /**#@-*/
 
     /**
      * Reads all sequence information from the database and initializes a new instance.
@@ -127,9 +128,8 @@ class Sequence extends \Yana\Core\Object
     }
 
     /**
-     * establish database connection
+     * Establish database connection.
      *
-     * @access  protected
      * @param   \Yana\Db\IsConnection $db database connection
      * @ignore
      */
@@ -143,9 +143,8 @@ class Sequence extends \Yana\Core\Object
     }
 
     /**
-     * persist object properties to database
+     * Persist object properties to database.
      *
-     * @access  protected
      * @ignore
      */
     public function __destruct()
@@ -167,9 +166,8 @@ class Sequence extends \Yana\Core\Object
     }
 
     /**
-     * get increment
+     * Get increment value.
      *
-     * @access  public
      * @return  int
      */
     public function getIncrement()
@@ -178,10 +176,9 @@ class Sequence extends \Yana\Core\Object
     }
 
     /**
-     * set increment
+     * Set increment value.
      *
-     * @access  public
-     * @param   int  $increment  new value of this property
+     * @param  int  $increment  new value of this property
      */
     public function setIncrement($increment)
     {
@@ -190,9 +187,8 @@ class Sequence extends \Yana\Core\Object
     }
 
     /**
-     * get maximum
+     * Get maximum sequence value.
      *
-     * @access  public
      * @return  int
      */
     public function getMax()
@@ -201,9 +197,8 @@ class Sequence extends \Yana\Core\Object
     }
 
     /**
-     * set maximum
+     * Set maximum sequence value.
      *
-     * @access  public
      * @param   int  $max   maximal value
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when $max is smaller then minimum value
      */
@@ -222,7 +217,6 @@ class Sequence extends \Yana\Core\Object
     /**
      * Get minimum value.
      *
-     * @access  public
      * @return  int
      */
     public function getMin()
@@ -233,7 +227,6 @@ class Sequence extends \Yana\Core\Object
     /**
      * Set minimum value.
      *
-     * @access  public
      * @param   int  $min   minimal value
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when $min is bigger then maximum value
      */
@@ -252,7 +245,6 @@ class Sequence extends \Yana\Core\Object
     /**
      * Is cyclic.
      *
-     * @access  public
      * @return  bool
      */
     public function isCycle()
@@ -261,10 +253,9 @@ class Sequence extends \Yana\Core\Object
     }
 
     /**
-     * set cyclic
+     * Set cyclic.
      *
-     * @access  public
-     * @param   bool  $cycle    new value of this property
+     * @param  bool  $cycle  new value of this property
      */
     public function setCycle($cycle)
     {
@@ -273,7 +264,7 @@ class Sequence extends \Yana\Core\Object
     }
 
     /**
-     * create new sequence
+     * Create new sequence.
      *
      * Create a sequence with the given name and arguments.
      *
@@ -281,8 +272,6 @@ class Sequence extends \Yana\Core\Object
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
-     * @static
      * @param   string  $name       unique name for this sequence
      * @param   int     $increment  must not be 0
      * @param   int     $start      must be within range [$min, $max]
@@ -354,14 +343,10 @@ class Sequence extends \Yana\Core\Object
     }
 
     /**
-     * drop sequence
-     *
      * Drop an existing sequence with the given name.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
-     * @static
      * @param   string  $name   sequence name
      * @return  bool
      */
@@ -387,9 +372,8 @@ class Sequence extends \Yana\Core\Object
     }
 
     /**
-     * get next sequence value
+     * Get next sequence value.
      *
-     * @access  public
      * @return  int
      * @throws  \Yana\Core\Exceptions\OutOfBoundsException  when new value is < minimum or > maximum
      */
@@ -421,9 +405,8 @@ class Sequence extends \Yana\Core\Object
     }
 
     /**
-     * get current sequence value
+     * Get current sequence value.
      *
-     * @access  public
      * @return  int
      */
     public function getCurrentValue()
@@ -432,12 +415,10 @@ class Sequence extends \Yana\Core\Object
     }
 
     /**
-     * check if sequence exists
+     * Check if sequence exists.
      *
      * Returns bool(true) if a sequence with the given name exists and bool(false) otherwise.
      *
-     * @access  public
-     * @static
      * @param   string  $name  sequence name
      * @return  bool
      */
@@ -454,9 +435,8 @@ class Sequence extends \Yana\Core\Object
     }
 
     /**
-     * set current sequence value
+     * Set current sequence value.
      *
-     * @access  public
      * @param   int  $value     current sequence value
      * @throws  \Yana\Core\Exceptions\OutOfBoundsException  when $value < minimum or $value > maximum
      */
@@ -472,7 +452,7 @@ class Sequence extends \Yana\Core\Object
     }
 
     /**
-     * compare with another object
+     * Compare with another object.
      *
      * Returns bool(true) if this object and $anotherObject
      * are equal and bool(false) otherwise.
@@ -482,7 +462,6 @@ class Sequence extends \Yana\Core\Object
      * both refer to the same filesystem resource and use
      * the same IP settings.
      *
-     * @access   public
      * @param    \Yana\Core\IsObject  $anotherObject  any object or var you want to compare
      * @return   string
      */

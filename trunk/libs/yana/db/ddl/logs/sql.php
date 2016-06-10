@@ -32,26 +32,25 @@ namespace Yana\Db\Ddl\Logs;
  *
  * This wrapper class represents the structure of a database
  *
- * @access      public
  * @package     yana
  * @subpackage  db
  */
 class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
 {
-    /**#@+
-     * @ignore
-     * @access  protected
-     */
 
     /**
      * tag name for persistance mapping: object <-> XDDL
+     *
      * @var  string
+     * @ignore
      */
     protected $xddlTag = "sql";
 
     /**
      * attributes for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlAttributes = array(
         'version'     => array('version',     'string'),
@@ -61,18 +60,32 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
 
     /**
      * tags for persistance mapping: object <-> XDDL
+     *
      * @var  array
+     * @ignore
      */
     protected $xddlTags = array(
         'description' => array('description', 'string'),
         'code'        => array('sql',         'string')
     );
 
-    /** @var string */ protected $dbms = null;
-    /** @var string */ protected $sql = null;
-    /** @var string */ protected $description = null;
+    /**
+     * @var string
+     * @ignore
+     */
+    protected $dbms = null;
 
-    /**#@-*/
+    /**
+     * @var string
+     * @ignore
+     */
+    protected $sql = null;
+
+    /**
+     * @var string
+     * @ignore
+     */
+    protected $description = null;
 
     /**
      * Initialize instance.
@@ -90,7 +103,6 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
      * Returns the name of the target DBMS for this definition as a lower-cased string.
      * The default is "generic".
      *
-     * @access  public
      * @return  string
      */
     public function getDBMS()
@@ -112,13 +124,12 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
      * The special "generic" DBMS-value means that the constraint is suitable for any DBMS.
      * Any DBMS other than "generic" will limit the setting to that DBMS only.
      *
-     * @access  public
      * @param   string  $dbms   target DBMS, defaults to "generic"
      * @return  \Yana\Db\Ddl\Logs\Sql
      */
     public function setDBMS($dbms = "generic")
     {
-        assert('is_string($dbms); // Wrong type for argument 1. String expected');
+        assert('is_string($dbms); // Invalid argument $dbms: String expected');
         $dbms = strtolower($dbms);
         assert('empty($dbms) || in_array($dbms, \Yana\Db\Ddl\Database::getSupportedDBMS()); // Unsupported DBMS');
         if (empty($dbms)) {
@@ -132,7 +143,6 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
     /**
      * Returns the SQL statement for this operation.
      *
-     * @access  public
      * @return  string
      */
     public function getSQL()
@@ -147,13 +157,12 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
     /**
      * Set the SQL statement for this operation.
      *
-     * @access  public
      * @param   string  $sql  sql statement
      * @return  \Yana\Db\Ddl\Logs\Sql
      */
     public function setSQL($sql)
     {
-        assert('is_string($sql); // Wrong type for argument 1. String expected');
+        assert('is_string($sql); // Invalid argument $sql: String expected');
         if (empty($sql)) {
             $this->sql = null;
         } else {
@@ -171,7 +180,6 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @return  bool
      */
     public function commitUpdate()
@@ -186,8 +194,6 @@ class Sql extends \Yana\Db\Ddl\Logs\AbstractLog
     /**
      * Unserializes a XDDL-node to an instance of this class and returns it.
      *
-     * @access  public
-     * @static
      * @param   \SimpleXMLElement  $node    XML node
      * @param   mixed              $parent  parent node (if any)
      * @return  \Yana\Db\Ddl\Logs\Sql
