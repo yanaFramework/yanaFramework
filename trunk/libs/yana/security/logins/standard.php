@@ -69,12 +69,12 @@ class Standard extends \Yana\Security\Users\Logins\AbstractBehavior
         {
             case $user->getId() == "":
             case function_exists('sha1') && strlen($session->getId()) < 20:
-            case !$this->_getSession()->offsetExists('prog_id'):
-            case !$this->_getSession()->offsetExists('user_name'):
-            case !$this->_getSession()->offsetExists('user_session'):
-            case $this->_getSession()->offsetGet('prog_id') !== $this->_getSessionIdGenerator()->createApplicationUserId():
-            case $this->_getSession()->offsetGet('user_name') !== $user->getId():
-            case $this->_getSession()->offsetGet('user_session') !== $user->getSessionCheckSum():
+            case !$this->_getSession()->getApplicationUserId():
+            case !$this->_getSession()->getCurrentUserName():
+            case !$this->_getSession()->getSessionUserId():
+            case $this->_getSession()->getApplicationUserId() !== $this->_getSessionIdGenerator()->createApplicationUserId():
+            case $this->_getSession()->getCurrentUserName() !== $user->getId():
+            case $this->_getSession()->getSessionUserId() !== $user->getSessionCheckSum():
                 $isLoggedIn = false;
         }
         return $isLoggedIn;
@@ -111,30 +111,48 @@ class Standard extends \Yana\Security\Users\Logins\AbstractBehavior
         /* initiate session and user database entry */
         $this
             ->_setupSessionDataOnLogin($session, $user)
-            ->_updateUserDataOnLogin($user, $session['user_session']);
+            ->_updateUserDataOnLogin($user, $session->getSessionUserId())
+            ->_setupSessionUserId($session, $user);
 
         return $this;
     }
 
     /**
-     * Initializes session values like prefered language and aut
+     * Initializes session user id.
      *
-     * @param   \Yana\Core\Sessions\IsWrapper  $session  some session wrapper
-     * @param   \Yana\Security\Users\IsUser   $user     which is to be logged in
+     * @param   \Yana\Security\Sessions\IsWrapper  $session  some session wrapper
+     * @param   \Yana\Security\Users\IsUser        $user     which is to be logged in
      * @return  \Yana\Security\Users\Logins\Standard
      */
-    private function _setupSessionDataOnLogin(\Yana\Core\Sessions\IsWrapper $session, \Yana\Security\Users\IsUser $user)
+    private function _setupSessionUserId(\Yana\Security\Sessions\IsWrapper $session, \Yana\Security\Users\IsUser $user)
     {
-        $session['user_name'] = $user->getId();
-        $session['prog_id'] = $this->_getSessionIdGenerator()->createApplicationUserId();
-        $session['user_session'] = md5($session->getId());
+        $sessionUserId = md5($session->getId());
+        // save a copy to check validity of session against data-source later
+        $session->setSessionUserId($sessionUserId);
+        // mark user as logged-in in database
+        $user->setSessionCheckSum($sessionUserId);
+
+        return $this;
+    }
+
+    /**
+     * Initializes session values like prefered language.
+     *
+     * @param   \Yana\Security\Sessions\IsWrapper  $session  some session wrapper
+     * @param   \Yana\Security\Users\IsUser        $user     which is to be logged in
+     * @return  \Yana\Security\Users\Logins\Standard
+     */
+    private function _setupSessionDataOnLogin(\Yana\Security\Sessions\IsWrapper $session, \Yana\Security\Users\IsUser $user)
+    {
+        $session->setCurrentUserName($user);
+        $session->setApplicationUserId($this->_getSessionIdGenerator()->createApplicationUserId());
 
         // initialize language settings
         if ($user->getLanguage() > '') {
             try {
 
                 \Yana\Translations\Facade::getInstance()->setLocale($user->getLanguage());
-                $session['language'] = $user->getLanguage();
+                $session->setCurrentLanguage($user->getLanguage());
 
             } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
                 unset($e); // the user's prefered language isn't installed (anymore)
@@ -147,18 +165,14 @@ class Standard extends \Yana\Security\Users\Logins\AbstractBehavior
     /**
      * Updates user entity with login time and login count.
      *
-     * @param   \Yana\Security\Users\IsUser  $user             which is to be logged in
-     * @param   string                       $sessionCheckSum  hashed session-id (or other unique value) based on session-id
+     * @param   \Yana\Security\Users\IsUser  $user  which is to be logged in
      * @return  \Yana\Security\Users\Logins\Standard
      */
-    private function _updateUserDataOnLogin(\Yana\Security\Users\IsUser $user, $sessionCheckSum)
+    private function _updateUserDataOnLogin(\Yana\Security\Users\IsUser $user)
     {
-        assert('is_string($sessionCheckSum); // Invalid argument: $sessionCheckSum. String expected.');
         $user
             // set time of last login to current timestamp
             ->setLoginTime(time())
-            // mark user as logged-in in database
-            ->setSessionCheckSum($sessionCheckSum)
             // increment login count
             ->setLoginCount($user->getLoginCount() + 1)
             // save changes
@@ -177,8 +191,8 @@ class Standard extends \Yana\Security\Users\Logins\AbstractBehavior
         assert('!isset($session); // Cannot redeclare var $session');
         $session = $this->_getSession();
         // backup language setting before destroying old session
-        if (isset($session['language']) && \is_string($session['language'])) {
-            $user->setLanguage($session['language']);
+        if ($session->getCurrentLanguage() > "") {
+            $user->setLanguage($session->getCurrentLanguage());
         }
         // make session cookie expire (get's deleted)
         if (\filter_has_var(\INPUT_COOKIE, $session->getName())) {

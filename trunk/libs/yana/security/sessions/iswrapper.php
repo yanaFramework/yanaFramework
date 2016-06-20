@@ -55,9 +55,54 @@ interface IsWrapper extends \Yana\Core\Sessions\IsWrapper
      * Note that this function does not check if the user is actually logged in!
      *
      * @param   \Yana\Security\Users\IsUser $user
-     * @return  self
+     * @return  \Yana\Security\Sessions\IsWrapper
      */
     public function setCurrentUserName(\Yana\Security\Users\IsUser $user);
+
+    /**
+     * Retrieve the current user's application id.
+     *
+     * @return  string
+     */
+    public function getApplicationUserId();
+
+    /**
+     * Set current user's application id.
+     *
+     * @param   string  $applicationUserId  some string
+     * @return  \Yana\Security\Sessions\IsWrapper
+     */
+    public function setApplicationUserId($applicationUserId);
+
+    /**
+     * Retrieve the current user's session id.
+     *
+     * @return  string
+     */
+    public function getSessionUserId();
+
+    /**
+     * Set current user's session id.
+     *
+     * @param   string  $sessionUserId  some string
+     * @return  \Yana\Security\Sessions\IsWrapper
+     */
+    public function setSessionUserId($sessionUserId);
+
+    /**
+     * Retrieve the current user's selected language id.
+     *
+     * @return  string
+     */
+    public function getCurrentLanguage();
+
+    /**
+     * Set current user's selected language id.
+     *
+     * @param   string  $language  some string
+     * @return  \Yana\Security\Sessions\IsWrapper
+     */
+    public function setCurrentLanguage($language);
 
 }
 
