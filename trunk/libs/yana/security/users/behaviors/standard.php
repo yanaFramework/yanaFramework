@@ -352,19 +352,6 @@ class Standard extends \Yana\Security\Users\Behaviors\AbstractBehavior
     }
 
     /**
-     * Change password.
-     *
-     * Set login password to $password for current user.
-     *
-     * @param   string  $password  non-empty alpha-numeric text with optional special characters
-     * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
-     */
-    public function setPassword($password)
-    {
-        return $this->_getPasswordBehavior()->changePassword($password);
-    }
-
-    /**
      * Reset to new random password and return it.
      *
      * A new random password is auto-generated, applied to the user and then returned.
@@ -412,6 +399,62 @@ class Standard extends \Yana\Security\Users\Behaviors\AbstractBehavior
             $this->_roles = $this->_getDataAdapter()->getRoles($this->getId());
         }
         return $this->_roles;
+    }
+
+    /**
+     * Handle user logins.
+     *
+     * Checks the password.
+     * Destroys any previous session (to prevent session fixation).
+     * Creates new session id and updates the user's session information in the database.
+     *
+     * @param   string  $password  user password
+     * @throws  \Yana\Core\Exceptions\Security\PermissionDeniedException  when the user is temporarily blocked
+     * @throws  \Yana\Core\Exceptions\Security\InvalidLoginException      when the credentials are invalid
+     */
+    public function login($password)
+    {
+        assert('is_string($userName); // Invalid argument $userName: string expected');
+        assert('is_string($password); // Invalid argument $password: string expected');
+
+        assert('!isset($user); // Cannot redeclare var $userEntity');
+        $user = $this->_getEntity();
+
+        /* 1. reset failure count if failure time has expired */
+        if ($this->_getMaxFailureTime() > 0 && $user->getFailureTime() < time() - $this->_getMaxFailureTime()) {
+            $user->resetFailureCount();
+        }
+        /* 2. exit if the user has 3 times tried to login with a wrong password in last 5 minutes */
+        if ($this->_getMaxFailureCount() > 0 && $user->getFailureCount() >= $this->_getMaxFailureCount()) {
+            throw new \Yana\Core\Exceptions\Security\PermissionDeniedException();
+        }
+        /* 3. error - login has failed */
+        if (!$this->_getPasswordBehavior()->checkPassword($password)) {
+
+            throw new \Yana\Core\Exceptions\Security\InvalidLoginException();
+        }
+        $this->_getLoginBehavior()->handleLogin($user); // creates new session
+    }
+
+    /**
+     * Destroy the current session and clear all session data.
+     */
+    public function logout()
+    {
+        $this->_getLoginBehavior()->handleLogout($this->_getEntity());
+    }
+
+    /**
+     * Check if user is logged in.
+     *
+     * Returns bool(true) if the user is currently
+     * logged in and bool(false) otherwise.
+     *
+     * @return  bool
+     */
+    public function isLoggedIn()
+    {
+        $this->_getLoginBehavior()->isLoggedIn($this->_getEntity());
     }
 
 }

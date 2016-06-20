@@ -27,33 +27,27 @@
  * @ignore
  */
 
-namespace Yana\Security\Users;
+namespace Yana\Security\Users\Behaviors;
 
 /**
- * <<entity>> A guest-user.
- *
- * An empty user that has not logged in.
- * You may use this class to register new users.
+ * <<interface>> Helps building the behavior facade.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-class CurrentUser extends \Yana\Security\Users\Entity
+interface IsBuilder
 {
 
     /**
-     * Check if user is logged in.
+     * Build new user behavior facade.
      *
-     * For authenticated users this always returns true.
-     *
-     * @return  bool
+     * @param   \Yana\Security\Users\IsUser  $user  entity
+     * @return  \Yana\Security\Users\Behaviors\IsBehavior
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
      */
-    public function isLoggedIn()
-    {
-        return true;
-    }
+    public function __invoke(\Yana\Security\Users\IsUser $user);
 
 }
 

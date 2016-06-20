@@ -278,16 +278,6 @@ interface IsBehavior
     public function checkRecoveryId($recoveryId);
 
     /**
-     * Change password.
-     *
-     * Set login password to $password for current user.
-     *
-     * @param   string  $password  non-empty alpha-numeric text with optional special characters
-     * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
-     */
-    public function setPassword($password);
-
-    /**
      * Reset to new random password and return it.
      *
      * A new random password is auto-generated, applied to the user and then returned.

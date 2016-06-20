@@ -39,7 +39,7 @@ namespace Yana\Security\Users\Logins;
  *
  * @ignore
  */
-interface IsManager
+interface IsBehavior
 {
 
     /**
@@ -48,6 +48,7 @@ interface IsManager
      * Returns bool(true) if the user is currently
      * logged in and bool(false) otherwise.
      *
+     * @param   \Yana\Security\Users\IsUser  $user  entity
      * @return  bool
      */
     public function isLoggedIn(\Yana\Security\Users\IsUser $user);
@@ -60,8 +61,8 @@ interface IsManager
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @param   \Yana\Security\Users\IsUser  $user  which is to be logged in
-     * @return  \Yana\Security\Users\Logins\Manager
+     * @param   \Yana\Security\Users\IsUser  $user  entity
+     * @return  \Yana\Security\Users\Logins\IsBehavior
      * @throws  \Yana\Core\Exceptions\Security\InvalidLoginException  when access is denied
      */
     public function handleLogin(\Yana\Security\Users\IsUser $user);
@@ -69,8 +70,8 @@ interface IsManager
     /**
      * Destroy the current session and clear all session data.
      *
-     * @param   \Yana\Security\Users\IsUser  $user  which is to be logged out
-     * @return  \Yana\Security\Users\Logins\Manager
+     * @param   \Yana\Security\Users\IsUser  $user  entity
+     * @return  \Yana\Security\Users\Logins\IsBehavior
      */
     public function handleLogout(\Yana\Security\Users\IsUser $user);
 

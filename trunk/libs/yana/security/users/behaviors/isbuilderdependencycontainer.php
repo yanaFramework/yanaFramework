@@ -27,33 +27,32 @@
  * @ignore
  */
 
-namespace Yana\Security\Users;
+namespace Yana\Security\Users\Behaviors;
 
 /**
- * <<entity>> A guest-user.
- *
- * An empty user that has not logged in.
- * You may use this class to register new users.
+ * <<interface>> Defines dependencies required by behavior-builder.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-class GuestUser extends \Yana\Security\Users\Entity
+interface IsBuilderDependencyContainer
 {
 
     /**
-     * Creates an user by name.
+     * Retrieve password behavior dependency.
      *
-     * @param  string  $userName  current user name
+     * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
      */
-    public function __construct($userName = "")
-    {
-        assert('is_string($userName); // Wrong type for argument 1. String expected');
+    public function getPasswordBehavior();
 
-        parent::__construct('');
-    }
+    /**
+     * Retrieve login behavior dependency.
+     *
+     * @return  \Yana\Security\Users\Logins\IsBehavior
+     */
+    public function getLoginBehavior();
 
 }
 

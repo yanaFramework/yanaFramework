@@ -47,30 +47,6 @@ class Facade extends \Yana\Core\Object
 {
 
     /**
-     * Count boundary.
-     *
-     * Maximum number of times a user may enter
-     * a wrong password before its account
-     * is suspended for $maxFailureTime seconds.
-     *
-     * @var  int
-     */
-    private $_maxFailureCount = 3;
-
-    /**
-     * Time boundary.
-     *
-     * Maximum time in seconds a user's login
-     * is blocked after entering a wrong password
-     * $maxFailureCount times.
-     *
-     * E.g. 300 sec. = 5 minutes.
-     *
-     * @var  int
-     */
-    private $_maxFailureTime = 300;
-
-    /**
      * @var  \Yana\Security\Rules\CacheableChecker
      */
     private $_rulesChecker = null;
@@ -94,55 +70,6 @@ class Facade extends \Yana\Core\Object
     }
 
     /**
-     * @return  \Yana\Security\Users\Logins\Manager
-     */
-    private function _createLoginManager()
-    {
-        return new \Yana\Security\Users\Logins\Manager($this->_getSession());
-    }
-
-    /**
-     * @return  \Yana\Security\Passwords\Checks\IsCheck
-     */
-    private function _createPasswordCheck()
-    {
-        return new \Yana\Security\Passwords\Checks\StandardCheck($this->_createPasswordAlgorithm());
-    }
-
-    /**
-     * @return  \Yana\Security\Passwords\IsAlgorithm
-     */
-    private function _createPasswordAlgorithm()
-    {
-        $builder = new \Yana\Security\Passwords\Builders\Builder();
-        return $builder
-            ->add(\Yana\Security\Passwords\Builders\Enumeration::BASIC)
-            ->add(\Yana\Security\Passwords\Builders\Enumeration::BLOWFISH)
-            ->add(\Yana\Security\Passwords\Builders\Enumeration::SHA256)
-            ->add(\Yana\Security\Passwords\Builders\Enumeration::SHA512)
-            ->add(\Yana\Security\Passwords\Builders\Enumeration::BCRYPT)
-            ->__invoke();
-    }
-
-    /**
-     * @return  \Yana\Security\Passwords\Generators\IsAlgorithm
-     */
-    private function _createPasswordGenerator()
-    {
-        return new \Yana\Security\Passwords\Generators\StandardAlgorithm();
-    }
-
-    /**
-     * @return  \Yana\Security\Passwords\IsAlgorithm
-     */
-    private function _createPasswordBehavior()
-    {
-        return new \Yana\Security\Passwords\Behaviors\StandardBehavior(
-            $this->_createPasswordAlgorithm(), $this->_createPasswordCheck(), $this->_createPasswordGenerator()
-        );
-    }
-
-    /**
      * Builds and returns a rule-checker object.
      *
      * @return  \Yana\Security\Rules\CacheableChecker
@@ -150,11 +77,7 @@ class Facade extends \Yana\Core\Object
     protected function _getRulesChecker()
     {
         if (!isset($this->_rulesChecker)) {
-            $default = \Yana\Application::getDefault('event.user');
-            if (!is_array($default)) {
-                $default = array();
-            }
-            $this->_rulesChecker = new \Yana\Security\Rules\CacheableChecker(new \Yana\Security\Rules\Requirements\DefaultableDataReader($default));
+            $this->_rulesChecker = new \Yana\Security\Rules\CacheableChecker($this->_createDataReader());
         }
         return $this->_rulesChecker;
     }
@@ -164,7 +87,11 @@ class Facade extends \Yana\Core\Object
      */
     protected function _createDataReader()
     {
-        return new \Yana\Security\Rules\Requirements\DataReader($this->_getDataSource());
+        $default = \Yana\Application::getDefault('event.user');
+        if (!is_array($default)) {
+            $default = array();
+        }
+        return new \Yana\Security\Rules\Requirements\DefaultableDataReader($this->_getDataSource(), $default);
     }
 
     /**
@@ -188,7 +115,7 @@ class Facade extends \Yana\Core\Object
      * @return  \Yana\Security\Users\IsUser
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
      */
-    protected function _loadUser($userName = "")
+    protected function _buildUserEntity($userName = "")
     {
         assert('is_string($userName); // Invalid argument $userName: string expected');
         $builder = $this->_createUserBuilder();
@@ -233,109 +160,6 @@ class Facade extends \Yana\Core\Object
             $this->_cache = new \Yana\Data\Adapters\ArrayAdapter();
         }
         return $this->_cache;
-    }
-
-    /**
-     * Handle user logins.
-     *
-     * This is handling the interaction between various classes of the security sub-system, in order
-     * to implement the standard behavior for checking password and handling logins.
-     *
-     * It destroys any previous session (to prevent session fixation).
-     * Creates new session id and updates the user's session information in the database.
-     *
-     * @param   string  $userName  may contain only A-Z, 0-9, '-' and '_'
-     * @param   string  $password  user password
-     * @throws  \Yana\Core\Exceptions\Security\PermissionDeniedException  when the user is temporarily blocked
-     * @throws  \Yana\Core\Exceptions\Security\InvalidLoginException      when the credentials are invalid
-     * @throws  \Yana\Core\Exceptions\NotFoundException                   when the user name is unknown
-     */
-    public function login($userName, $password)
-    {
-        assert('is_string($userName); // Invalid argument $userName: string expected');
-        assert('is_string($password); // Invalid argument $password: string expected');
-
-        assert('!isset($userEntity); // Cannot redeclare var $userEntity');
-        $userEntity = $this->_loadUser($userName); // throws \Yana\Core\Exceptions\NotFoundException
-
-        /* 1. reset failure count if failure time has expired */
-        if ($this->getMaxFailureTime() > 0 && $userEntity->getFailureTime() < time() - $this->getMaxFailureTime()) {
-            $userEntity->resetFailureCount();
-        }
-        /* 2. exit if the user has 3 times tried to login with a wrong password in last 5 minutes */
-        if ($this->getMaxFailureCount() > 0 && $userEntity->getFailureCount() >= $this->getMaxFailureCount()) {
-            throw new \Yana\Core\Exceptions\Security\PermissionDeniedException();
-        }
-        /* 3. error - login has failed */
-        if (!$this->_createPasswordCheck()->__invoke($userEntity, $userName, $password)) {
-
-            throw new \Yana\Core\Exceptions\Security\InvalidLoginException();
-        }
-        $this->_createLoginManager()->handleLogin($userEntity); // creates new session
-    }
-
-    /**
-     * Destroy the current session and clear all session data.
-     */
-    public function logout()
-    {
-        $this->_createLoginManager()->handleLogout($this->_loadUser());
-    }
-
-    /**
-     * Set count boundary.
-     *
-     * Maximum number of times a user may enter a wrong password before its account is suspended for x seconds.
-     *
-     * @param   int  $maxFailureCount  1 = block on first invalid password, 0 = never block user
-     * @return  \Yana\Security\Facade
-     */
-    public function setMaxFailureCount($maxFailureCount = 3)
-    {
-        assert('is_int($maxFailureCount); // Invalid argument $maxFailureCount: integer expected');
-        assert('$maxFailureCount >= 0; // Invalid argument $maxFailureCount: must not be negative');
-        $this->_maxFailureCount = (int) $maxFailureCount;
-        return $this;
-    }
-
-    /**
-     * Set time boundary.
-     *
-     * Maximum time in seconds a user's login is blocked after entering a wrong password x times.
-     *
-     * @param   int  $maxFailureTime  in seconds (0 = keep blocked forever)
-     * @return  \Yana\Security\Facade
-     */
-    public function setMaxFailureTime($maxFailureTime = 300)
-    {
-        assert('is_int($maxFailureTime); // Invalid argument $maxFailureTime: integer expected');
-        assert('$maxFailureTime >= 0; // Invalid argument $maxFailureTime: must not be negative');
-        $this->_maxFailureTime = (int) $maxFailureTime;
-        return $this;
-    }
-
-    /**
-     * Get count boundary.
-     *
-     * Maximum number of times a user may enter a wrong password before its account is suspended for x seconds.
-     *
-     * @return  int
-     */
-    public function getMaxFailureCount()
-    {
-        return (int) $this->_maxFailureCount;
-    }
-
-    /**
-     * Get time boundary.
-     *
-     * Maximum time in seconds a user's login is blocked after entering a wrong password x times.
-     *
-     * @return  int
-     */
-    public function getMaxFailureTime()
-    {
-        return (int) $this->_maxFailureTime;
     }
 
     /**
@@ -436,7 +260,7 @@ class Facade extends \Yana\Core\Object
         }
 
         assert('!isset($user); // Cannot redeclare $user');
-        $user = empty($userName) ? new \Yana\Security\Users\GuestUser() : $this->_loadUser((string) $userName);
+        $user = empty($userName) ? new \Yana\Security\Users\GuestUser() : $this->_buildUserEntity((string) $userName);
 
         assert('!isset($e); // Cannot redeclare $e');
         try {
@@ -469,42 +293,7 @@ class Facade extends \Yana\Core\Object
         assert('is_string($action); // Wrong type for argument $action. String expected');
         assert('is_string($userName); // Wrong type for argument $userName. String expected');
 
-        return (bool) $this->_getRulesChecker()->checkByRequirement($requirement, $profileId, $action, $this->_loadUser($userName));
-    }
-
-    /**
-     * Change password.
-     *
-     * Set login password to $password for current user.
-     *
-     * @param   \Yana\Security\Users\IsUser  $user      entity
-     * @param   string                       $password  non-empty alpha-numeric text with optional special characters
-     * @return  self
-     * @throws  \Yana\Core\Exceptions\User\UserException  when there was a problem with the database
-     */
-    public function changePassword(\Yana\Security\Users\IsUser $user, $password)
-    {
-        assert('is_string($password); // Wrong type for argument $password. String expected');
-
-        $this->_createPasswordBehavior()->setUser($user)->changePassword($password);
-        $user->saveEntity(); // may throw exception
-        return $this;
-    }
-
-    /**
-     * Reset password with random string.
-     *
-     * A new random password is auto-generated, applied to the user and then returned.
-     *
-     * @param   \Yana\Security\Users\IsUser  $user  entity
-     * @return  string
-     * @throws  \Yana\Core\Exceptions\User\UserException  when there was a problem with the database
-     */
-    public function resetPassword(\Yana\Security\Users\IsUser $user)
-    {
-        $password = $this->_createPasswordBehavior()->setUser($user)->generateRandomPassword();
-        $user->saveEntity(); // may throw exception
-        return $password;
+        return (bool) $this->_getRulesChecker()->checkByRequirement($requirement, $profileId, $action, $this->_buildUserEntity($userName));
     }
 
     /**
@@ -533,6 +322,23 @@ class Facade extends \Yana\Core\Object
     public function loadListOfRoles()
     {
         return $this->_createDataReader()->loadListOfRoles();
+    }
+
+    /**
+     * 
+     * @param   string  $userName  identifies user
+     * @return  \Yana\Security\Users\IsUser
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
+     */
+    public function loadUser($userName)
+    {
+        $entity = $this->_buildUserEntity($userName);
+        
+        $passwords = new \Yana\Security\Passwords\Behaviors\StandardBehavior(
+            //$this->_createPasswordAlgorithm(), $this->_createPasswordCheck(), $this->_createPasswordGenerator()
+        );
+        $behavior = new \Yana\Security\Users\Behaviors\Standard($passwords, $logins);
+        return $behavior;
     }
 
     /**
@@ -567,7 +373,7 @@ class Facade extends \Yana\Core\Object
      * Remove the chosen user from the database.
      *
      * @param   string  $userName  user name
-     * @return  bool
+     * @return  \Yana\Security\Facade
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException   when no valid user name given
      * @throws  \Yana\Core\Exceptions\NotFoundException          when the given user does not exist
      * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  when the user may not be deleted for other reasons
@@ -577,11 +383,12 @@ class Facade extends \Yana\Core\Object
         assert('is_string($userName); // Wrong type for argument $userName. String expected');
         $upperCaseUserName = \Yana\Util\String::toUpperCase($userName);
         // user should not delete himself
-        if ($this->_createLoginManager()->isLoggedIn($this->_loadUser($upperCaseUserName))) {
+        if ($this->_buildUserEntity($upperCaseUserName)->isLoggedIn()) { // throws NotFoundException
             throw new \Yana\Core\Exceptions\User\DeleteSelfException();
         }
 
-        $this->_createUserAdapter()->offsetUnset($upperCaseUserName); // may throw NotFoundException or NotDeletedException
+        $this->_createUserAdapter()->offsetUnset($upperCaseUserName); // throws NotDeletedException
+        return $this;
     }
 
     /**
