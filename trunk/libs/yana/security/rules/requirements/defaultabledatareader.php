@@ -48,10 +48,12 @@ class DefaultableDataReader extends \Yana\Security\Rules\Requirements\DataReader
     /**
      * Initialize defaults.
      *
-     * @param  array  $default  added default settings
+     * @param  \Yana\Db\IsConnection  $datasource  a database connection to where the table 'securityactionrules' is stored
+     * @param  array                  $default     added default settings
      */
-    public function __construct(array $default = array())
+    public function __construct(\Yana\Db\IsConnection $datasource, array $default = array())
     {
+        parent::__construct($datasource);
         $this->_default = $default;
     }
 

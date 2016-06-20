@@ -39,56 +39,8 @@ namespace Yana\Security\Users\Logins;
  *
  * @ignore
  */
-class Manager extends \Yana\Core\Object implements \Yana\Security\Users\Logins\IsManager
+class Standard extends \Yana\Security\Users\Logins\AbstractBehavior
 {
-
-    /**
-     * @var  \Yana\Security\Sessions\IsWrapper
-     */
-    private $_session = null;
-
-    /**
-     * @var  \Yana\Security\Sessions\IsIdGenerator
-     */
-    private $_sessionIdGenerator = null;
-
-    /**
-     * Create new instance.
-     *
-     * @param  \Yana\Security\Sessions\IsWrapper      $session    some session wrapper
-     * @param  \Yana\Security\Sessions\IsIdGenerator  $generator  provide your own only when doing unit-tests
-     */
-    public function __construct(\Yana\Security\Sessions\IsWrapper $session = null, \Yana\Security\Sessions\IsIdGenerator $generator = null)
-    {
-        if (!isset($session)) {
-            $generator = new \Yana\Security\Sessions\Wrapper();
-        }
-        if (!isset($generator)) {
-            $generator = new \Yana\Security\Sessions\IdGenerator();
-        }
-        $this->_session = $session;
-        $this->_sessionIdGenerator = $generator;
-    }
-
-    /**
-     * Returns a session wrapper.
-     *
-     * @return  \Yana\Security\Sessions\IsWrapper
-     */
-    protected function _getSession()
-    {
-        return $this->_session;
-    }
-
-    /**
-     * Returns class to generate new session ids.
-     *
-     * @return  \Yana\Security\Sessions\IsIdGenerator
-     */
-    protected function _getSessionIdGenerator()
-    {
-        return $this->_sessionIdGenerator;
-    }
 
     /**
      * check if user is logged in
@@ -104,6 +56,7 @@ class Manager extends \Yana\Core\Object implements \Yana\Security\Users\Logins\I
      * Thus: if a session-id is shorter than 20 bytes (40 digits) this is an obvious hint that
      * either the user has not logged-in, or the session id is not valid.
      *
+     * @param   \Yana\Security\Users\IsUser  $user  entity
      * @return  bool
      */
     public function isLoggedIn(\Yana\Security\Users\IsUser $user)
@@ -135,8 +88,8 @@ class Manager extends \Yana\Core\Object implements \Yana\Security\Users\Logins\I
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @param   \Yana\Security\Users\IsUser  $user  which is to be logged in
-     * @return  \Yana\Security\Users\Logins\Manager
+     * @param   \Yana\Security\Users\IsUser  $user  entity
+     * @return  \Yana\Security\Users\Logins\IsBehavior
      * @throws  \Yana\Core\Exceptions\Security\InvalidLoginException  when access is denied
      */
     public function handleLogin(\Yana\Security\Users\IsUser $user)
@@ -168,7 +121,7 @@ class Manager extends \Yana\Core\Object implements \Yana\Security\Users\Logins\I
      *
      * @param   \Yana\Core\Sessions\IsWrapper  $session  some session wrapper
      * @param   \Yana\Security\Users\IsUser   $user     which is to be logged in
-     * @return  \Yana\Security\Users\Logins\Manager
+     * @return  \Yana\Security\Users\Logins\Standard
      */
     private function _setupSessionDataOnLogin(\Yana\Core\Sessions\IsWrapper $session, \Yana\Security\Users\IsUser $user)
     {
@@ -196,7 +149,7 @@ class Manager extends \Yana\Core\Object implements \Yana\Security\Users\Logins\I
      *
      * @param   \Yana\Security\Users\IsUser  $user             which is to be logged in
      * @param   string                       $sessionCheckSum  hashed session-id (or other unique value) based on session-id
-     * @return  \Yana\Security\Users\Logins\Manager
+     * @return  \Yana\Security\Users\Logins\Standard
      */
     private function _updateUserDataOnLogin(\Yana\Security\Users\IsUser $user, $sessionCheckSum)
     {
@@ -216,8 +169,8 @@ class Manager extends \Yana\Core\Object implements \Yana\Security\Users\Logins\I
     /**
      * Destroy the current session and clear all session data.
      *
-     * @param   \Yana\Security\Users\IsUser  $user  which is to be logged out
-     * @return  \Yana\Security\Users\Logins\Manager
+     * @param   \Yana\Security\Users\IsUser  $user  entity
+     * @return  \Yana\Security\Users\Logins\IsBehavior
      */
     public function handleLogout(\Yana\Security\Users\IsUser $user)
     {

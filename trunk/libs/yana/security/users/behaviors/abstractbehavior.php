@@ -43,6 +43,13 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
 {
 
     /**
+     * User entity.
+     *
+     * @var  \Yana\Security\Users\IsUser
+     */
+    private $_entity = null;
+
+    /**
      * Handles the changing of passwords.
      *
      * @var  \Yana\Security\Passwords\Behaviors\IsBehavior
@@ -50,13 +57,52 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
     private $_passwordBehavior = null;
 
     /**
+     * Handles the login- and logout-functionality.
+     *
+     * @var  \Yana\Security\Users\Logins\IsBehavior
+     */
+    private $_loginBehavior = null;
+
+    /**
+     * Count boundary.
+     *
+     * Maximum number of times a user may enter
+     * a wrong password before its account
+     * is suspended for $maxFailureTime seconds.
+     *
+     * @var  int
+     */
+    private $_maxFailureCount = 3;
+
+    /**
+     * Time boundary.
+     *
+     * Maximum time in seconds a user's login
+     * is blocked after entering a wrong password
+     * $maxFailureCount times.
+     *
+     * E.g. 300 sec. = 5 minutes.
+     *
+     * @var  int
+     */
+    private $_maxFailureTime = 300;
+
+    /**
      * Creates an user by name.
      *
-     * @param  \Yana\Security\Passwords\Behaviors\IsBehavior  $behavior  password behavior, wrapping user
+     * @param  \Yana\Security\Users\IsUser                    $user             entity
+     * @param  \Yana\Security\Passwords\Behaviors\IsBehavior  $passwords        behavior
+     * @param  \Yana\Security\Users\Logins\IsBehavior         $logins           behavior
+     * @param   int                                           $maxFailureCount  1 = block on first invalid password, 0 = never block user
+     * @param   int                                           $maxFailureTime   in seconds (0 = keep blocked forever)
      */
-    public function __construct(\Yana\Security\Passwords\Behaviors\IsBehavior $behavior)
+    public function __construct(\Yana\Security\Users\IsUser $user, \Yana\Security\Passwords\Behaviors\IsBehavior $passwords, \Yana\Security\Users\Logins\IsBehavior $logins, $maxFailureCount = 3, $maxFailureTime = 300)
     {
-        $this->_passwordBehavior = $behavior;
+        $this->_entity = $user;
+        $this->_passwordBehavior = $passwords;
+        $this->_loginBehavior = $logins;
+        $this->_setMaxFailureCount($maxFailureCount);
+        $this->_setMaxFailureTime($maxFailureTime);
     }
 
     /**
@@ -66,7 +112,7 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
      */
     protected function _getEntity()
     {
-        return $this->_getPasswordBehavior()->getUser();
+        return $this->_entity;
     }
 
     /**
@@ -77,6 +123,72 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
     protected function _getPasswordBehavior()
     {
         return $this->_passwordBehavior;
+    }
+
+    /**
+     * Returns password behavior.
+     *
+     * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
+     */
+    protected function _getLoginBehavior()
+    {
+        return $this->_loginBehavior;
+    }
+
+    /**
+     * Get count boundary.
+     *
+     * Maximum number of times a user may enter a wrong password before its account is suspended for x seconds.
+     *
+     * @return  int
+     */
+    protected function _getMaxFailureCount()
+    {
+        return (int) $this->_maxFailureCount;
+    }
+
+    /**
+     * Get time boundary.
+     *
+     * Maximum time in seconds a user's login is blocked after entering a wrong password x times.
+     *
+     * @return  int
+     */
+    protected function _getMaxFailureTime()
+    {
+        return (int) $this->_maxFailureTime;
+    }
+
+    /**
+     * Set count boundary.
+     *
+     * Maximum number of times a user may enter a wrong password before its account is suspended for x seconds.
+     *
+     * @param   int  $maxFailureCount  1 = block on first invalid password, 0 = never block user
+     * @return  \Yana\Security\Facade
+     */
+    private function _setMaxFailureCount($maxFailureCount)
+    {
+        assert('is_int($maxFailureCount); // Invalid argument $maxFailureCount: integer expected');
+        assert('$maxFailureCount >= 0; // Invalid argument $maxFailureCount: must not be negative');
+        $this->_maxFailureCount = (int) $maxFailureCount;
+        return $this;
+    }
+
+    /**
+     * Set time boundary.
+     *
+     * Maximum time in seconds a user's login is blocked after entering a wrong password x times.
+     *
+     * @param   int  $maxFailureTime  in seconds (0 = keep blocked forever)
+     * @return  \Yana\Security\Facade
+     */
+    private function _setMaxFailureTime($maxFailureTime)
+    {
+        assert('is_int($maxFailureTime); // Invalid argument $maxFailureTime: integer expected');
+        assert('$maxFailureTime >= 0; // Invalid argument $maxFailureTime: must not be negative');
+        $this->_maxFailureTime = (int) $maxFailureTime;
+        return $this;
     }
 
 }
