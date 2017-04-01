@@ -99,6 +99,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     public function __construct()
     {
+        parent::__construct();
         \Yana\Db\Ddl\DDL::setDirectory(CWD . '/../../../config/db/');
         \Yana\Db\FileDb\Driver::setBaseDirectory(CWD . '/resources/db/');
         // path to plugins configuration file
