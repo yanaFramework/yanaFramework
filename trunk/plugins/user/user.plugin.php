@@ -531,11 +531,11 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * @return  \Yana\Security\Users\Logins\Standard
+     * @return  \Yana\Security\Logins\StandardBehavior
      */
     private function _createLoginManager()
     {
-        return new \Yana\Security\Users\Logins\Standard();
+        return new \Yana\Security\Logins\StandardBehavior();
     }
 
     /**

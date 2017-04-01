@@ -35,8 +35,6 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     /**
      * Connection to data source (API)
      *
-     * @access  private
-     * @static
      * @var     \Yana\Db\IsConnection
      */
     private static $database = null;
@@ -44,8 +42,6 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     /**
      * get database connection
      *
-     * @access  protected
-     * @static
      * @return  \Yana\Db\IsConnection
      */
     protected static function getDatabase()
@@ -59,8 +55,6 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     /**
      * get form definition
      *
-     * @access  protected
-     * @static
      * @return  FormFacade
      */
     protected static function getBlogForm()
@@ -72,8 +66,6 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     /**
      * get form definition
      *
-     * @access  protected
-     * @static
      * @return  FormFacade
      */
     protected static function getCommentForm()
@@ -83,11 +75,10 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * Default event handler
+     * Default event handler.
      *
-     * returns bool(true) on success and bool(false) on error
+     * Returns bool(true) on success and bool(false) on error.
      *
-     * @access  public
      * @return  bool
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
@@ -99,14 +90,12 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * provide edit-form
+     * Provide edit-form.
      *
      * @type        read
      * @menu        group: start
      * @template    templates/blog.html.tpl
      * @language    blog
-     *
-     * @access  public
      */
     public function blog()
     {
@@ -115,7 +104,7 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * process search query
+     * Process search query.
      *
      * @type        read
      * @user        group: blog, role: moderator
@@ -123,7 +112,6 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
      * @template    templates/blog.html.tpl
      * @language    blog
      *
-     * @access  public
      * @return  bool
      */
     public function blog_search_blog()
@@ -132,7 +120,7 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * save changes made in edit-form
+     * Save changes made in edit-form.
      *
      * @type        write
      * @user        group: blog, role: moderator
@@ -142,7 +130,6 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
      * @onsuccess   goto: blog
      * @onerror     goto: blog
      *
-     * @access  public
      * @return  bool
      * @name    plugin_blog::blog_write_edit_blog()
      */
@@ -154,7 +141,7 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * delete a blog-entry
+     * Delete a blog-entry.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -166,7 +153,6 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
      * @onsuccess   goto: blog
      * @onerror     goto: blog
      *
-     * @access  public
      * @param   array  $selected_entries  array of entries to delete
      * @return  bool
      */
@@ -178,7 +164,7 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * write new blog-entry to database
+     * Write new blog-entry to database.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -190,7 +176,6 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
      * @onsuccess   goto: blog
      * @onerror     goto: blog
      *
-     * @access  public
      * @return  bool
      */
     public function blog_new_blog()
@@ -205,7 +190,7 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * write new blog-comment to database
+     * Write new blog-comment to database.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -215,7 +200,6 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
      * @onsuccess   goto: blog
      * @onerror     goto: blog
      *
-     * @access  public
      * @param   array  $ARGS  array of params passed to the function
      * @return  bool
      */
@@ -243,7 +227,7 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * update a blog-comment in database
+     * Update a blog-comment in database.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -255,7 +239,6 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
      * @onsuccess   goto: blog
      * @onerror     goto: blog
      *
-     * @access  public
      * @return  bool
      */
     public function blog_edit_blogcmt()
@@ -266,7 +249,7 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * remove blog-comment from database
+     * Remove blog-comment from database.
      *
      * Returns bool(true) on success and bool(false) on error.
      *
@@ -278,7 +261,6 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
      * @onsuccess   goto: blog
      * @onerror     goto: blog
      *
-     * @access  public
      * @param   array  $selected_entries  list of entries to delete
      * @return  bool
      */
@@ -290,15 +272,14 @@ class BlogPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * produce RSS-feed
+     * Produce RSS-feed.
      *
-     * returns bool(true) on success and bool(false) on error
+     * Returns bool(true) on success and bool(false) on error.
      *
      * @type        read
      * @template    NULL
      * @language    blog
      *
-     * @access  public
      * @return  bool
      * @name    plugin_blog::blog_rss()
      */
