@@ -135,7 +135,7 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
      */
     protected function _isUserLoggedIn()
     {
-        $loginManager = new \Yana\Security\Users\Logins\Standard();
+        $loginManager = new \Yana\Security\Logins\StandardBehavior();
         $user = $this->getUser();
         return $loginManager->isLoggedIn($user);
     }
