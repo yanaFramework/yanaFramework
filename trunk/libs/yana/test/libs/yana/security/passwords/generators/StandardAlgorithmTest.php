@@ -25,25 +25,26 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Security\Passwords;
+namespace Yana\Security\Passwords\Generators;
+
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../include.php';
+require_once __DIR__ . '/../../../../../include.php';
 
 /**
  * Test-case
  *
  * @package  test
  */
-class NullAlgorithmTest extends \PHPUnit_Framework_TestCase
+class StandardAlgorithmTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var  \Yana\Security\Passwords\NullAlgorithm
+     * @var \Yana\Security\Passwords\Generators\StandardAlgorithm
      */
-    protected $_object;
+    protected $object;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -51,19 +52,28 @@ class NullAlgorithmTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_object = new \Yana\Security\Passwords\NullAlgorithm();
+        $this->object = new \Yana\Security\Passwords\Generators\StandardAlgorithm();
     }
+
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown()
+    {
+        
+    }
+
 
     /**
      * @test
      */
-    public function testInvoke()
+    public function test__invoke()
     {
-        $password = "Password!Äüß";
-        $this->assertEquals($password, $this->_object->__invoke($password));
-        $this->assertEquals("", $this->_object->__invoke(""));
+        $this->assertEquals(8, strlen($this->object->__invoke()));
+        $this->assertEquals(10, strlen($this->object->__invoke(10)));
+        $this->assertEquals(23, strlen($this->object->__invoke(23)));
+        $this->assertTrue(1 === preg_match('/^[a-zA-Z0-9=]{8}$/', $this->object->__invoke()));
     }
 
 }
-
-?>

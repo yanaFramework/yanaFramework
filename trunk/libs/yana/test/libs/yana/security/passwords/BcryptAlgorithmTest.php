@@ -25,31 +25,25 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Security\Passwords\Checks;
+namespace Yana\Security\Passwords;
+
+require_once __DIR__ . '/AbstractAlgorithmTest.php';
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../../include.php';
-
-class MyAbstractCheck extends \Yana\Security\Passwords\Checks\AbstractCheck
-{
-    public function __invoke(\Yana\Security\Users\IsUser $user, $userName, $password)
-    {
-        return $this->_isValidUserName($user, $userName);
-    }
-}
+require_once __DIR__ . '/../../../../include.php';
 
 /**
  * Test-case
  *
  * @package  test
  */
-class AbstractCheckTest extends \PHPUnit_Framework_TestCase
+class BcryptAlgorithmTest extends AbstractAlgorithmTest
 {
 
     /**
-     * @var  \Yana\Security\Passwords\Checks\MyAbstractCheck
+     * @var  \Yana\Security\Passwords\BasicAlgorithm
      */
     protected $_object;
 
@@ -59,20 +53,8 @@ class AbstractCheckTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_object = new \Yana\Security\Passwords\Checks\MyAbstractCheck();
+        $this->_object = new \Yana\Security\Passwords\BcryptAlgorithm();
     }
-
-    /**
-     * @test
-     */
-    public function testInvoke()
-    {
-        $this->assertTrue($this->_object->__invoke(new \Yana\Security\Users\Entity("Test"), "Test", "Password!"));
-        $this->assertTrue($this->_object->__invoke(new \Yana\Security\Users\Entity("Test"), "test", "Password!"));
-        $this->assertTrue($this->_object->__invoke(new \Yana\Security\Users\Entity("test"), "Test", "Password!"));
-        $this->assertFalse($this->_object->__invoke(new \Yana\Security\Users\Entity("Test"), "Rest", "Password!"));
-    }
-
 }
 
 ?>

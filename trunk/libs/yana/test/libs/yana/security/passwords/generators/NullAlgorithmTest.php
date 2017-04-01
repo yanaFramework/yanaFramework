@@ -25,25 +25,26 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Security\Passwords;
+namespace Yana\Security\Passwords\Generators;
+
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../include.php';
+require_once __DIR__ . '/../../../../../include.php';
 
 /**
  * Test-case
  *
  * @package  test
  */
-class Md5AlgorithmTest extends \PHPUnit_Framework_TestCase
+class NullAlgorithmTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var  \Yana\Security\Passwords\Md5Algorithm
+     * @var \Yana\Security\Passwords\Generators\NullAlgorithm
      */
-    protected $_object;
+    protected $object;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -51,23 +52,25 @@ class Md5AlgorithmTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_object = new \Yana\Security\Passwords\Md5Algorithm();
+        $this->object = new \Yana\Security\Passwords\Generators\NullAlgorithm();
+    }
+
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown()
+    {
+        
     }
 
     /**
      * @test
      */
-    public function testInvoke()
+    public function test__invoke()
     {
-        $password = "Password!Äüß";
-        $this->assertEquals(md5($password), $this->_object->__invoke("", $password));
-        // First 2 letters of user name should be used as salt
-        $this->assertEquals(md5("12" . $password), $this->_object->__invoke("123", $password));
-        $this->assertEquals(md5("AB" . $password), $this->_object->__invoke("abc", $password));
-        $this->assertEquals(md5("Äß" . $password), $this->_object->__invoke("äßc", $password));
-        $this->assertNotEquals(md5("ab" . $password), $this->_object->__invoke("abc", $password));
+        $this->assertEquals("        ", $this->object->__invoke());
+        $this->assertEquals("          ", $this->object->__invoke(10));
     }
 
 }
-
-?>
