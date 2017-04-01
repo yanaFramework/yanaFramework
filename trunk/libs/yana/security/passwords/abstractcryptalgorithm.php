@@ -30,37 +30,42 @@
 namespace Yana\Security\Passwords;
 
 /**
- * Password hashing algorithm.
+ * <<abstract>> For password hashing algorithms based on Crypt().
+ *
+ * This class provides standard helper functions to create salt-strings.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-class BlowfishAlgorithm extends \Yana\Security\Passwords\BasicAlgorithm
+abstract class AbstractCryptAlgorithm extends \Yana\Security\Passwords\AbstractAlgorithm
 {
 
     /**
-     * Calculate password.
+     * Creates and returns a random string of 16 byte.
      *
-     * This function takes user name and password phrase as clear text and returns the
-     * hash-code for this password.
-     *
-     * @param   string  $password  password (clear text)
      * @return  string
      */
-    public function __invoke($password)
+    protected function _createSalt()
     {
-        assert('is_scalar($password); // Wrong argument type for argument 2. String expected.');
+        return (\function_exists('random_bytes')) ? random_bytes(16) : mcrypt_create_iv(16, \MCRYPT_DEV_URANDOM);
+    }
 
-        if (CRYPT_BLOWFISH === 1) {
-            $salt = mcrypt_create_iv(16, \MCRYPT_DEV_URANDOM);
-            $hashString = crypt($password, '$2a$07$' . $salt . '$');
-        } else {
-            $hashString = $this->_getFallback()->__invoke($password);
-        }
-
-        return $hashString;
+    /**
+     * Compare hash with password.
+     *
+     * Returns bool(true) if the password matches the given hash and bool(false) otherwise.
+     *
+     * @param   string  $password  password (clear text)
+     * @param   string  $hash      hashed password
+     * @return  bool
+     */
+    public function isEqual($password, $hash)
+    {
+        assert('is_string($password); // Wrong argument type for argument $password. String expected.');
+        assert('is_string($hash); // Wrong argument type for argument $hash. String expected.');
+        return \password_verify($password, $hash);
     }
 
 }

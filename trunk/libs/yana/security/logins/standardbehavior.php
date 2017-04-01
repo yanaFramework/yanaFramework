@@ -27,7 +27,7 @@
  * @ignore
  */
 
-namespace Yana\Security\Users\Logins;
+namespace Yana\Security\Logins;
 
 /**
  * Login manager.
@@ -39,7 +39,7 @@ namespace Yana\Security\Users\Logins;
  *
  * @ignore
  */
-class Standard extends \Yana\Security\Users\Logins\AbstractBehavior
+class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
 {
 
     /**
@@ -89,7 +89,7 @@ class Standard extends \Yana\Security\Users\Logins\AbstractBehavior
      * Returns bool(true) on success and bool(false) on error.
      *
      * @param   \Yana\Security\Users\IsUser  $user  entity
-     * @return  \Yana\Security\Users\Logins\IsBehavior
+     * @return  self
      * @throws  \Yana\Core\Exceptions\Security\InvalidLoginException  when access is denied
      */
     public function handleLogin(\Yana\Security\Users\IsUser $user)
@@ -122,7 +122,7 @@ class Standard extends \Yana\Security\Users\Logins\AbstractBehavior
      *
      * @param   \Yana\Security\Sessions\IsWrapper  $session  some session wrapper
      * @param   \Yana\Security\Users\IsUser        $user     which is to be logged in
-     * @return  \Yana\Security\Users\Logins\Standard
+     * @return  \Yana\Security\Logins\StandardBehavior
      */
     private function _setupSessionUserId(\Yana\Security\Sessions\IsWrapper $session, \Yana\Security\Users\IsUser $user)
     {
@@ -140,7 +140,7 @@ class Standard extends \Yana\Security\Users\Logins\AbstractBehavior
      *
      * @param   \Yana\Security\Sessions\IsWrapper  $session  some session wrapper
      * @param   \Yana\Security\Users\IsUser        $user     which is to be logged in
-     * @return  \Yana\Security\Users\Logins\Standard
+     * @return  \Yana\Security\Logins\StandardBehavior
      */
     private function _setupSessionDataOnLogin(\Yana\Security\Sessions\IsWrapper $session, \Yana\Security\Users\IsUser $user)
     {
@@ -166,7 +166,7 @@ class Standard extends \Yana\Security\Users\Logins\AbstractBehavior
      * Updates user entity with login time and login count.
      *
      * @param   \Yana\Security\Users\IsUser  $user  which is to be logged in
-     * @return  \Yana\Security\Users\Logins\Standard
+     * @return  \Yana\Security\Logins\StandardBehavior
      */
     private function _updateUserDataOnLogin(\Yana\Security\Users\IsUser $user)
     {
@@ -184,7 +184,7 @@ class Standard extends \Yana\Security\Users\Logins\AbstractBehavior
      * Destroy the current session and clear all session data.
      *
      * @param   \Yana\Security\Users\IsUser  $user  entity
-     * @return  \Yana\Security\Users\Logins\IsBehavior
+     * @return  self
      */
     public function handleLogout(\Yana\Security\Users\IsUser $user)
     {

@@ -39,14 +39,6 @@ interface IsBuilder
 {
 
     /**
-     * Set password checker dependency.
-     *
-     * @param   \Yana\Security\Passwords\Checks\IsCheck  $passwordCheck  dependency
-     * @return  self
-     */
-    public function setPasswordCheck(\Yana\Security\Passwords\Checks\IsCheck $passwordCheck);
-
-    /**
      * Set password algorithm builder dependency.
      *
      * @param   \Yana\Security\Passwords\Builders\Builder  $passwordAlgorithmBuilder  dependency

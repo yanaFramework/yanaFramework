@@ -65,14 +65,13 @@ class RuleCollection extends \Yana\Core\AbstractCollection
      * @param   \Yana\Security\Rules\Requirements\Collection  $requirements  list of required privileges
      * @param   string                                        $profileId     profile id
      * @param   string                                        $action        action name
-     * @param   string                                        $userName      user name
+     * @param   \Yana\Security\Users\IsUser                   $user          user information to check
      * @return  bool
      */
-    public function checkRules(\Yana\Security\Rules\Requirements\Collection $requirements, $profileId, $action, $userName)
+    public function checkRules(\Yana\Security\Rules\Requirements\Collection $requirements, $profileId, $action, \Yana\Security\Users\IsUser $user)
     {
         assert('is_string($profileId); // Wrong argument type argument 2. String expected');
         assert('is_string($action); // Wrong argument type argument 3. String expected');
-        assert('is_string($userName); // Wrong argument type argument 4. String expected');
 
         assert('!isset($result); // cannot redeclare $result');
         $result = false; // By default we always deny permission
@@ -84,7 +83,7 @@ class RuleCollection extends \Yana\Core\AbstractCollection
             assert('!isset($requirement); // cannot redeclare $requirement');
             foreach ($requirements as $requirement)
             {
-                switch ($rule($requirement, $profileId, $action, $userName))
+                switch ($rule($requirement, $profileId, $action, $user))
                 {
                     case false:
                         return false;

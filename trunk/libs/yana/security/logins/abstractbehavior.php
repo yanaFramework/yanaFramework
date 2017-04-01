@@ -27,7 +27,7 @@
  * @ignore
  */
 
-namespace Yana\Security\Users\Logins;
+namespace Yana\Security\Logins;
 
 /**
  * <<abstract>> Login behavior.
@@ -39,7 +39,7 @@ namespace Yana\Security\Users\Logins;
  *
  * @ignore
  */
-abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Security\Users\Logins\IsBehavior
+abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Security\Logins\IsBehavior
 {
 
     /**
@@ -60,12 +60,6 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
      */
     public function __construct(\Yana\Security\Sessions\IsWrapper $session = null, \Yana\Security\Sessions\IsIdGenerator $generator = null)
     {
-        if (!isset($session)) {
-            $generator = new \Yana\Security\Sessions\Wrapper();
-        }
-        if (!isset($generator)) {
-            $generator = new \Yana\Security\Sessions\IdGenerator();
-        }
         $this->_session = $session;
         $this->_sessionIdGenerator = $generator;
     }
@@ -77,6 +71,9 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
      */
     protected function _getSession()
     {
+        if (!isset($this->_session)) {
+            $this->_session = new \Yana\Security\Sessions\Wrapper();
+        }
         return $this->_session;
     }
 
@@ -87,6 +84,9 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
      */
     protected function _getSessionIdGenerator()
     {
+        if (!isset($this->_sessionIdGenerator)) {
+            $this->_sessionIdGenerator = new \Yana\Security\Sessions\IdGenerator();
+        }
         return $this->_sessionIdGenerator;
     }
 

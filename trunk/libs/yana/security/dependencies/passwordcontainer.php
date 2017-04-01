@@ -41,11 +41,6 @@ class PasswordContainer extends \Yana\Core\Object implements \Yana\Security\User
 {
 
     /**
-     * @var  \Yana\Security\Passwords\Checks\IsCheck
-     */
-    private $_passwordCheck = null;
-
-    /**
      * @var  \Yana\Security\Passwords\Builders\Builder
      */
     private $_passwordAlgorithmBuilder = null;
@@ -103,23 +98,12 @@ class PasswordContainer extends \Yana\Core\Object implements \Yana\Security\User
     /**
      * 
      *
-     * @param   \Yana\Security\Users\Logins\IsBehavior  $loginBehavior  dependency
+     * @param   \Yana\Security\Logins\IsBehavior  $loginBehavior  dependency
      * @return  \Yana\Security\Dependencies\Container
      */
-    public function setLoginBehavior(\Yana\Security\Users\Logins\IsBehavior $loginBehavior)
+    public function setLoginBehavior(\Yana\Security\Logins\IsBehavior $loginBehavior)
     {
         $this->_loginBehavior = $loginBehavior;
-        return $this;
-    }
-
-    /**
-     * 
-     * @param   \Yana\Security\Passwords\Checks\IsCheck  $passwordCheck  dependency
-     * @return  \Yana\Security\Dependencies\Container
-     */
-    public function setPasswordCheck(\Yana\Security\Passwords\Checks\IsCheck $passwordCheck)
-    {
-        $this->_passwordCheck = $passwordCheck;
         return $this;
     }
 
@@ -181,25 +165,14 @@ class PasswordContainer extends \Yana\Core\Object implements \Yana\Security\User
     /**
      * Retrieve password behavior dependency.
      *
-     * @return  \Yana\Security\Users\Logins\IsBehavior
+     * @return  \Yana\Security\Logins\IsBehavior
      */
     public function getLoginBehavior()
     {
         if (!isset($this->_loginBehavior)) {
-            $this->_loginBehavior = new \Yana\Security\Users\Logins\Standard($this->getSession());
+            $this->_loginBehavior = new \Yana\Security\Logins\StandardBehavior($this->getSession());
         }
         return $this->_loginBehavior;
-    }
-
-    /**
-     * @return  \Yana\Security\Passwords\Checks\IsCheck
-     */
-    public function getPasswordCheck()
-    {
-        if (!isset($this->_passwordCheck)) {
-            $this->_passwordCheck = new \Yana\Security\Passwords\Checks\StandardCheck($this->getPasswordAlgorithm());
-        }
-        return $this->_passwordCheck;
     }
 
     /**
@@ -244,7 +217,7 @@ class PasswordContainer extends \Yana\Core\Object implements \Yana\Security\User
     {
         if (!isset($this->_passwordBehavior)) {
             $this->_passwordBehavior = new \Yana\Security\Passwords\Behaviors\StandardBehavior(
-                $this->getPasswordAlgorithm(), $this->getPasswordCheck(), $this->getPasswordGenerator()
+                $this->getPasswordAlgorithm(), $this->getPasswordGenerator()
             );
         }
         return $this->_passwordBehavior;

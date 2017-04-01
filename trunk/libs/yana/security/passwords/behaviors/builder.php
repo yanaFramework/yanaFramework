@@ -39,11 +39,6 @@ class Builder extends \Yana\Core\Object implements \Yana\Security\Passwords\Beha
 {
 
     /**
-     * @var  \Yana\Security\Passwords\Checks\IsCheck
-     */
-    private $_passwordCheck = null;
-
-    /**
      * @var  \Yana\Security\Passwords\Builders\Builder
      */
     private $_passwordAlgorithmBuilder = null;
@@ -59,22 +54,10 @@ class Builder extends \Yana\Core\Object implements \Yana\Security\Passwords\Beha
     private $_passwordGenerator = null;
 
     /**
-     * Set password checker dependency.
-     *
-     * @param   \Yana\Security\Passwords\Checks\IsCheck  $passwordCheck  dependency
-     * @return  \Yana\Security\Dependencies\Container
-     */
-    public function setPasswordCheck(\Yana\Security\Passwords\Checks\IsCheck $passwordCheck)
-    {
-        $this->_passwordCheck = $passwordCheck;
-        return $this;
-    }
-
-    /**
      * Set password algorithm builder dependency.
      *
      * @param   \Yana\Security\Passwords\Builders\Builder  $passwordAlgorithmBuilder  dependency
-     * @return  \Yana\Security\Dependencies\Container
+     * @return  self
      */
     public function setPasswordAlgorithmBuilder(\Yana\Security\Passwords\Builders\Builder $passwordAlgorithmBuilder)
     {
@@ -86,7 +69,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Security\Passwords\Beha
      * Set password algorithm dependency.
      *
      * @param   \Yana\Security\Passwords\IsAlgorithm  $passwordAlgorithm  dependency
-     * @return  \Yana\Security\Dependencies\Container
+     * @return  self
      */
     public function setPasswordAlgorithm(\Yana\Security\Passwords\IsAlgorithm $passwordAlgorithm)
     {
@@ -98,7 +81,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Security\Passwords\Beha
      * Set password generator dependency.
      *
      * @param   \Yana\Security\Passwords\Generators\IsAlgorithm  $passwordGenerator  dependency
-     * @return  \Yana\Security\Dependencies\Container
+     * @return  self
      */
     public function setPasswordGenerator(\Yana\Security\Passwords\Generators\IsAlgorithm $passwordGenerator)
     {
@@ -109,7 +92,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Security\Passwords\Beha
     /**
      * Retrieve password algorithm builder.
      *
-     * @return  \Yana\Security\Passwords\Builders\Builder
+     * @return  \Yana\Security\Passwords\Builders\IsBuilder
      */
     public function getPasswordAlgorithmBuilder()
     {
@@ -117,19 +100,6 @@ class Builder extends \Yana\Core\Object implements \Yana\Security\Passwords\Beha
             $this->_passwordAlgorithmBuilder = new \Yana\Security\Passwords\Builders\Builder();
         }
         return $this->_passwordAlgorithmBuilder;
-    }
-
-    /**
-     * Retrieve password checker dependency.
-     *
-     * @return  \Yana\Security\Passwords\Checks\IsCheck
-     */
-    public function getPasswordCheck()
-    {
-        if (!isset($this->_passwordCheck)) {
-            $this->_passwordCheck = new \Yana\Security\Passwords\Checks\StandardCheck($this->getPasswordAlgorithm());
-        }
-        return $this->_passwordCheck;
     }
 
     /**
@@ -143,10 +113,9 @@ class Builder extends \Yana\Core\Object implements \Yana\Security\Passwords\Beha
             $this->_passwordAlgorithm =
                 $this->getPasswordAlgorithmBuilder()
                     ->add(\Yana\Security\Passwords\Builders\Enumeration::BASIC)
-                    ->add(\Yana\Security\Passwords\Builders\Enumeration::BLOWFISH)
+                    ->add(\Yana\Security\Passwords\Builders\Enumeration::BCRYPT)
                     ->add(\Yana\Security\Passwords\Builders\Enumeration::SHA256)
                     ->add(\Yana\Security\Passwords\Builders\Enumeration::SHA512)
-                    ->add(\Yana\Security\Passwords\Builders\Enumeration::BCRYPT)
                     ->__invoke();
         }
         return $this->_passwordAlgorithm;
@@ -172,9 +141,7 @@ class Builder extends \Yana\Core\Object implements \Yana\Security\Passwords\Beha
      */
     public function __invoke()
     {
-        return new \Yana\Security\Passwords\Behaviors\StandardBehavior(
-            $this->getPasswordAlgorithm(), $this->getPasswordCheck(), $this->getPasswordGenerator()
-        );
+        return new \Yana\Security\Passwords\Behaviors\StandardBehavior($this->getPasswordAlgorithm(), $this->getPasswordGenerator());
     }
 
 }

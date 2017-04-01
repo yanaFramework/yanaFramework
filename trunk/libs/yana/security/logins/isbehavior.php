@@ -27,7 +27,7 @@
  * @ignore
  */
 
-namespace Yana\Security\Users\Logins;
+namespace Yana\Security\Logins;
 
 /**
  * <<interface>> Login manager.
@@ -62,7 +62,7 @@ interface IsBehavior
      * Returns bool(true) on success and bool(false) on error.
      *
      * @param   \Yana\Security\Users\IsUser  $user  entity
-     * @return  \Yana\Security\Users\Logins\IsBehavior
+     * @return  self
      * @throws  \Yana\Core\Exceptions\Security\InvalidLoginException  when access is denied
      */
     public function handleLogin(\Yana\Security\Users\IsUser $user);
@@ -71,7 +71,7 @@ interface IsBehavior
      * Destroy the current session and clear all session data.
      *
      * @param   \Yana\Security\Users\IsUser  $user  entity
-     * @return  \Yana\Security\Users\Logins\IsBehavior
+     * @return  self
      */
     public function handleLogout(\Yana\Security\Users\IsUser $user);
 

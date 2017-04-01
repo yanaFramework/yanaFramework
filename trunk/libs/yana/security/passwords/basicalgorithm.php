@@ -59,7 +59,7 @@ class BasicAlgorithm extends \Yana\Security\Passwords\AbstractAlgorithm
     {
         assert('is_scalar($password); // Wrong argument type for argument 2. String expected.');
 
-        return crypt($password);
+        return \password_hash($password, \PASSWORD_DEFAULT);
     }
 
     /**
@@ -73,22 +73,9 @@ class BasicAlgorithm extends \Yana\Security\Passwords\AbstractAlgorithm
      */
     public function isEqual($password, $hash)
     {
-        $isEqual = false;
-        $hashedInput = $this->__invoke($password);
-        if (function_exists('hash_equals')) {
-            $isEqual = hash_equals($hash, $hashedInput);
-
-        } elseif(strlen($hashedInput) === strlen($hash)) {
-            $string = $hash ^ $hashedInput;
-            $result = 0;
-            for ($i = strlen($string) - 1; $i >= 0; $i--)
-            {
-                $result |= ord($string[$i]);
-            }
-            $isEqual = !$result;
-        }
-
-        return $isEqual;
+        assert('is_string($password); // Wrong argument type for argument $password. String expected.');
+        assert('is_string($hash); // Wrong argument type for argument $hash. String expected.');
+        return \password_verify($password, $hash);
     }
 
 }

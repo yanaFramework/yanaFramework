@@ -27,31 +27,51 @@
  * @ignore
  */
 
-namespace Yana\Security\Passwords\Checks;
+namespace Yana\Security\Logins;
 
 /**
- * <<interface>> Password check.
+ * For test purposes only.
  *
  * @package     yana
  * @subpackage  security
  *
- * @deprecated
+ * @ignore
  */
-interface IsCheck
+class NullBehavior extends \Yana\Security\Logins\AbstractBehavior
 {
 
     /**
-     * Check username and password.
+     * Always returns true.
      *
-     * Returns bool(true) if username and password combination is valid and
-     * bool(false) otherwise.
-     *
-     * @param   \Yana\Security\Users\IsUser  $user      entity
-     * @param   string                       $userName  user name
-     * @param   string                       $password  password (clear text)
+     * @param   \Yana\Security\Users\IsUser  $user  entity
      * @return  bool
      */
-    public function __invoke(\Yana\Security\Users\IsUser $user, $userName, $password);
+    public function isLoggedIn(\Yana\Security\Users\IsUser $user)
+    {
+        return true;
+    }
+
+    /**
+     * Does nothing.
+     *
+     * @param   \Yana\Security\Users\IsUser  $user  entity
+     * @return  self
+     */
+    public function handleLogin(\Yana\Security\Users\IsUser $user)
+    {
+        return $this;
+    }
+
+    /**
+     * Does nothing.
+     *
+     * @param   \Yana\Security\Users\IsUser  $user  entity
+     * @return  self
+     */
+    public function handleLogout(\Yana\Security\Users\IsUser $user)
+    {
+        return $this;
+    }
 
 }
 

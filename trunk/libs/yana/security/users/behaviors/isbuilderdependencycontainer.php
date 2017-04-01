@@ -50,7 +50,7 @@ interface IsBuilderDependencyContainer
     /**
      * Retrieve login behavior dependency.
      *
-     * @return  \Yana\Security\Users\Logins\IsBehavior
+     * @return  \Yana\Security\Logins\IsBehavior
      */
     public function getLoginBehavior();
 

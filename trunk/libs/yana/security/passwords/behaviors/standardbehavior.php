@@ -77,7 +77,7 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
      */
     protected function _isUninitializedPassword(\Yana\Security\Users\IsUser $user)
     {
-        return \Yana\Util\String::compareToIgnoreCase($user->getPassword(), 'UNINITIALIZED') === 0;
+        return \strcasecmp($user->getPassword(), 'UNINITIALIZED') === 0;
     }
 
     /**
@@ -169,7 +169,7 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
     /**
      * Reset to new random password and return it.
      *
-     * A new random password is auto-generated, applied to the user and then returned.
+     * A new random 10 characters long password is generated, applied to the user and then returned.
      *
      * @return  string
      */

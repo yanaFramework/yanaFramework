@@ -37,7 +37,7 @@ namespace Yana\Security\Passwords;
  *
  * @ignore
  */
-class Sha256Algorithm extends \Yana\Security\Passwords\BasicAlgorithm
+class Sha256Algorithm extends \Yana\Security\Passwords\AbstractCryptAlgorithm
 {
 
     /**
@@ -54,8 +54,7 @@ class Sha256Algorithm extends \Yana\Security\Passwords\BasicAlgorithm
         assert('is_scalar($password); // Wrong argument type for argument 2. String expected.');
 
         if (CRYPT_SHA256 === 1) {
-            $salt = mcrypt_create_iv(16, \MCRYPT_DEV_URANDOM);
-            $hashString = crypt($password, '$5$rounds=5000$' . $salt . '$');
+            $hashString = crypt($password, '$5$rounds=5000$' . $this->_createSalt() . '$');
         } else {
             $hashString = $this->_getFallback()->__invoke($password);
         }

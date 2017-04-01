@@ -73,15 +73,10 @@ class UserBehaviorBuilderContainer extends \Yana\Core\Object implements \Yana\Se
     private $_session = null;
 
     /**
-     * @var  \Yana\Security\Users\Logins\IsBehavior
+     * @var  \Yana\Security\Logins\IsBehavior
      * @deprecated
      */
     private $_loginBehavior = null;
-
-    /**
-     * @var  \Yana\Security\Passwords\Checks\IsCheck
-     */
-    private $_passwordCheck = null;
 
     /**
      * @var  \Yana\Security\Passwords\Builders\Builder
@@ -183,23 +178,12 @@ class UserBehaviorBuilderContainer extends \Yana\Core\Object implements \Yana\Se
     /**
      * 
      *
-     * @param   \Yana\Security\Users\Logins\IsBehavior  $loginBehavior  dependency
+     * @param   \Yana\Security\Logins\IsBehavior  $loginBehavior  dependency
      * @return  \Yana\Security\Dependencies\Container
      */
-    public function setLoginBehavior(\Yana\Security\Users\Logins\IsBehavior $loginBehavior)
+    public function setLoginBehavior(\Yana\Security\Logins\IsBehavior $loginBehavior)
     {
         $this->_loginBehavior = $loginBehavior;
-        return $this;
-    }
-
-    /**
-     * 
-     * @param   \Yana\Security\Passwords\Checks\IsCheck  $passwordCheck  dependency
-     * @return  \Yana\Security\Dependencies\Container
-     */
-    public function setPasswordCheck(\Yana\Security\Passwords\Checks\IsCheck $passwordCheck)
-    {
-        $this->_passwordCheck = $passwordCheck;
         return $this;
     }
 
@@ -261,12 +245,12 @@ class UserBehaviorBuilderContainer extends \Yana\Core\Object implements \Yana\Se
     /**
      * Retrieve password behavior dependency.
      *
-     * @return  \Yana\Security\Users\Logins\IsBehavior
+     * @return  \Yana\Security\Logins\IsBehavior
      */
     public function getLoginBehavior()
     {
         if (!isset($this->_loginBehavior)) {
-            $this->_loginBehavior = new \Yana\Security\Users\Logins\Standard($this->getSession());
+            $this->_loginBehavior = new \Yana\Security\Logins\StandardBehavior($this->getSession());
         }
         return $this->_loginBehavior;
     }
