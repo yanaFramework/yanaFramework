@@ -29,7 +29,6 @@ class HelloWorldPlugin extends \Yana\Plugins\AbstractPlugin
      * The default event handler catches all events, whatever they might be.
      * If you don't need it, you may deactive it by adding an @ignore to the annotations below.
      *
-     * @access  public
      * @param   string  $event  name of the called event in lower-case
      * @param   array   $ARGS   array of arguments passed to the function
      * @return  bool
@@ -45,8 +44,6 @@ class HelloWorldPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * Call: index.php?action=exampleHelloWorld
      * Outputs: Hello World.
-     *
-     * @access  public
      */
     public function exampleHelloWorld()
     {
@@ -61,7 +58,6 @@ class HelloWorldPlugin extends \Yana\Plugins\AbstractPlugin
      * Call: index.php?action=exampleSum&a=1&b=1
      * Outputs: 2
      *
-     * @access  public
      * @param   int  $a  first operand
      * @param   int  $b  second operand
      * @return  int
@@ -85,8 +81,6 @@ class HelloWorldPlugin extends \Yana\Plugins\AbstractPlugin
      * - "template" selects the path to the used Smarty template.
      * )
      *
-     * @access    public
-     *
      * @menu      group: start
      * @title     Hello World
      *
@@ -99,7 +93,7 @@ class HelloWorldPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * Database usage example
+     * Database usage example.
      *
      * Call: index.php?action=exampleDatabase
      *
@@ -110,7 +104,6 @@ class HelloWorldPlugin extends \Yana\Plugins\AbstractPlugin
      * are granted to call this function.
      * )
      *
-     * @access    public
      * @user      group: registered, level: 1
      * @user      role: example
      */
