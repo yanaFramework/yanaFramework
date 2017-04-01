@@ -25,23 +25,25 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Security\Passwords\Checks;
+namespace Yana\Security\Passwords;
+
+require_once __DIR__ . '/AbstractAlgorithmTest.php';
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../../include.php';
+require_once __DIR__ . '/../../../../include.php';
 
 /**
  * Test-case
  *
  * @package  test
  */
-class NullCheckTest extends \PHPUnit_Framework_TestCase
+class Sha256AlgorithmTest extends AbstractAlgorithmTest
 {
 
     /**
-     * @var  \Yana\Security\Passwords\Checks\NullCheck
+     * @var  \Yana\Security\Passwords\Sha256Algorithm
      */
     protected $_object;
 
@@ -51,20 +53,8 @@ class NullCheckTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_object = new \Yana\Security\Passwords\Checks\NullCheck();
+        $this->_object = new \Yana\Security\Passwords\Sha256Algorithm();
     }
-
-    /**
-     * @test
-     */
-    public function testInvoke()
-    {
-        $this->assertTrue($this->_object->__invoke(new \Yana\Security\Users\Entity("Test"), "Test", "Password!"));
-        $this->assertTrue($this->_object->__invoke(new \Yana\Security\Users\Entity("Test"), "test", "Password!"));
-        $this->assertTrue($this->_object->__invoke(new \Yana\Security\Users\Entity("test"), "Test", "Password!"));
-        $this->assertTrue($this->_object->__invoke(new \Yana\Security\Users\Entity("Test"), "Rest", "Password!"));
-    }
-
 }
 
 ?>

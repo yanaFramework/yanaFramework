@@ -27,6 +27,8 @@
 
 namespace Yana\Security\Passwords;
 
+require_once __DIR__ . '/AbstractAlgorithmTest.php';
+
 /**
  * @ignore
  */
@@ -37,11 +39,11 @@ require_once __DIR__ . '/../../../../include.php';
  *
  * @package  test
  */
-class Sha1AlgorithmTest extends \PHPUnit_Framework_TestCase
+class Sha512AlgorithmTest extends AbstractAlgorithmTest
 {
 
     /**
-     * @var  \Yana\Security\Passwords\Sha1Algorithm
+     * @var  \Yana\Security\Passwords\Sha512Algorithm
      */
     protected $_object;
 
@@ -51,23 +53,8 @@ class Sha1AlgorithmTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_object = new \Yana\Security\Passwords\Sha1Algorithm();
+        $this->_object = new \Yana\Security\Passwords\Sha512Algorithm();
     }
-
-    /**
-     * @test
-     */
-    public function testInvoke()
-    {
-        $password = "Password!Äüß";
-        $this->assertEquals(sha1($password), $this->_object->__invoke("", $password));
-        // First 2 letters of user name should be used as salt
-        $this->assertEquals(sha1("12" . $password), $this->_object->__invoke("123", $password));
-        $this->assertEquals(sha1("AB" . $password), $this->_object->__invoke("abc", $password));
-        $this->assertEquals(sha1("Äß" . $password), $this->_object->__invoke("äßc", $password));
-        $this->assertNotEquals(sha1("ab" . $password), $this->_object->__invoke("abc", $password));
-    }
-
 }
 
 ?>
