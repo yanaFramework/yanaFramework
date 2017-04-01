@@ -37,11 +37,11 @@ require_once __DIR__ . '/../../../../include.php';
  *
  * @package  test
  */
-class NullRuleTest extends \PHPUnit_Framework_TestCase
+class RuleCollectionTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Security\Rules\NullRule
+     * @var \Yana\Security\Rules\RuleCollection
      */
     protected $object;
 
@@ -51,7 +51,7 @@ class NullRuleTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Security\Rules\NullRule();
+        $this->object = new \Yana\Security\Rules\RuleCollection();
     }
 
     /**
@@ -66,10 +66,38 @@ class NullRuleTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function test__invoke()
+    public function testOffsetSet()
     {
-        $user = new \Yana\Security\Users\Entity("userName");
-        $this->assertTrue($this->object->__invoke(new \Yana\Security\Rules\Requirements\Requirement("", "", 0), "profileId", "action", $user));
+        $rule = new \Yana\Security\Rules\NullRule();
+        $this->object->offsetSet(null, $rule);
+        $this->assertSame($rule, $this->object[0]);
+        $this->assertEquals(1, count($this->object));
+        $this->object->offsetSet(null, $rule);
+        $this->assertEquals(2, count($this->object));
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
+     */
+    public function testOffsetSetInvalidArgumentException()
+    {
+        $this->object->offsetSet(null, new \Yana\Core\Object());
+    }
+
+
+    /**
+     * @test
+     */
+    public function testCheckRules()
+    {
+        $rule = new \Yana\Security\Rules\NullRule();
+        $this->object->offsetSet(null, $rule);
+        $requirements = new \Yana\Security\Rules\Requirements\Collection();
+        $profileId = "test";
+        $action = "test";
+        $user = new \Yana\Security\Users\Entity("test");
+        $this->assertFalse($this->object->checkRules($requirements, $profileId, $action, $user), 'False must be default');
     }
 
 }
