@@ -40,10 +40,31 @@ namespace Yana\Security\Passwords\Builders;
 class Enumeration extends \Yana\Core\Object
 {
 
+    /**
+     * Uses the SHA-256 algorithm.
+     */
     const SHA256 = 'sha256';
+    /**
+     * Uses the SHA-512 algorithm.
+     */
     const SHA512 = 'sha512';
+    /**
+     * Uses the Blowfish algorithm.
+     *
+     * Alias of BCRYPT.
+     */
     const BLOWFISH = 'blowfish';
-    const BASIC = 'des';
+    /**
+     * Uses the default algorithm.
+     *
+     * Note! This may change from one version of PHP to the other.
+     */
+    const BASIC = 'default';
+    /**
+     * Uses the Blowfish algorithm
+     *
+     * Alias of BLOWFISH.
+     */
     const BCRYPT = 'bcrypt';
 
 }

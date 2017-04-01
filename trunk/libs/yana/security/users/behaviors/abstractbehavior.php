@@ -59,7 +59,7 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
     /**
      * Handles the login- and logout-functionality.
      *
-     * @var  \Yana\Security\Users\Logins\IsBehavior
+     * @var  \Yana\Security\Logins\IsBehavior
      */
     private $_loginBehavior = null;
 
@@ -92,11 +92,11 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
      *
      * @param  \Yana\Security\Users\IsUser                    $user             entity
      * @param  \Yana\Security\Passwords\Behaviors\IsBehavior  $passwords        behavior
-     * @param  \Yana\Security\Users\Logins\IsBehavior         $logins           behavior
+     * @param  \Yana\Security\Logins\IsBehavior         $logins           behavior
      * @param   int                                           $maxFailureCount  1 = block on first invalid password, 0 = never block user
      * @param   int                                           $maxFailureTime   in seconds (0 = keep blocked forever)
      */
-    public function __construct(\Yana\Security\Users\IsUser $user, \Yana\Security\Passwords\Behaviors\IsBehavior $passwords, \Yana\Security\Users\Logins\IsBehavior $logins, $maxFailureCount = 3, $maxFailureTime = 300)
+    public function __construct(\Yana\Security\Users\IsUser $user, \Yana\Security\Passwords\Behaviors\IsBehavior $passwords, \Yana\Security\Logins\IsBehavior $logins, $maxFailureCount = 3, $maxFailureTime = 300)
     {
         $this->_entity = $user;
         $this->_passwordBehavior = $passwords;

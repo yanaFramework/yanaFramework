@@ -56,11 +56,10 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
     private $_generator = null;
 
     /**
-     * Initialize dependencies
+     * Initialize dependencies.
      *
-     * @param  \Yana\Security\Passwords\IsAlgorithm             $algorithm
-     * @param  \Yana\Security\Passwords\Checks\IsCheck          $checker
-     * @param  \Yana\Security\Passwords\Generators\IsAlgorithm  $generator
+     * @param  \Yana\Security\Passwords\IsAlgorithm             $algorithm  to encode and compare passwords
+     * @param  \Yana\Security\Passwords\Generators\IsAlgorithm  $generator  to generade new random passwords
      */
     public function __construct(\Yana\Security\Passwords\IsAlgorithm $algorithm, \Yana\Security\Passwords\Generators\IsAlgorithm $generator)
     {

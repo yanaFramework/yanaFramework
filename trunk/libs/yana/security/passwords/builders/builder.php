@@ -37,7 +37,7 @@ namespace Yana\Security\Passwords\Builders;
  *
  * @ignore
  */
-class Builder extends \Yana\Core\Object
+class Builder extends \Yana\Core\Object implements \Yana\Security\Passwords\Builders\IsBuilder
 {
 
     /**
@@ -59,20 +59,24 @@ class Builder extends \Yana\Core\Object
             case \Yana\Security\Passwords\Builders\Enumeration::BASIC:
                 $this->_algorithm = new \Yana\Security\Passwords\BasicAlgorithm($this->_algorithm);
             break;
+
             case \Yana\Security\Passwords\Builders\Enumeration::BCRYPT:
+            case \Yana\Security\Passwords\Builders\Enumeration::BLOWFISH:
                 $this->_algorithm = new \Yana\Security\Passwords\BcryptAlgorithm($this->_algorithm);
             break;
-            case \Yana\Security\Passwords\Builders\Enumeration::BLOWFISH:
-                $this->_algorithm = new \Yana\Security\Passwords\BlowfishAlgorithm($this->_algorithm);
-            break;
+
             case \Yana\Security\Passwords\Builders\Enumeration::SHA256:
                 $this->_algorithm = new \Yana\Security\Passwords\Sha256Algorithm($this->_algorithm);
             break;
+
             case \Yana\Security\Passwords\Builders\Enumeration::SHA512:
                 $this->_algorithm = new \Yana\Security\Passwords\Sha512Algorithm($this->_algorithm);
             break;
+
+            default:
+                throw new \Yana\Core\Exceptions\NotImplementedException("No suitable hash algorithm found");
         }
-        throw new \Yana\Core\Exceptions\NotImplementedException("No suitable hash algorithm found");
+        return $this;
     }
 
     /**
@@ -84,7 +88,7 @@ class Builder extends \Yana\Core\Object
     public function __invoke()
     {
         if (!isset($this->_algorithm)) {
-            throw new \Yana\Core\Exceptions\NotImplementedException("No suitable hash algorithm found");
+            throw new \Yana\Core\Exceptions\NotImplementedException("Need to add hash algorithm first");
         }
         return $this->_algorithm;
     }

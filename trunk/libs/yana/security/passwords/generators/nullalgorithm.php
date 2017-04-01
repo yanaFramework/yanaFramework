@@ -27,33 +27,32 @@
  * @ignore
  */
 
-namespace Yana\Security\Passwords\Checks;
+namespace Yana\Security\Passwords\Generators;
 
 /**
- * Null-check for unit-tests.
+ * Password generator.
+ *
+ * Generates a random password.
  *
  * @package     yana
  * @subpackage  security
  *
- * @deprecated
+ * @ignore
  */
-class NullCheck extends \Yana\Security\Passwords\Checks\AbstractCheck
+class NullAlgorithm extends \Yana\Security\Passwords\Generators\AbstractAlgorithm
 {
 
     /**
-     * Check username and password.
+     * Always returns an empty string of the given length.
      *
-     * Returns bool(true) if username and password combination is valid and
-     * bool(false) otherwise.
-     *
-     * @param   \Yana\Security\Users\IsUser  $user      entity
-     * @param   string                       $userName  user name
-     * @param   string                       $password  password (clear text)
-     * @return  bool
+     * @param   int  $length  must be 8 or greater
+     * @return  string
      */
-    public function __invoke(\Yana\Security\Users\IsUser $user, $userName, $password)
+    public function __invoke($length = 8)
     {
-        return true;
+        assert('is_int($length); // Wrong argument type: $length. Integer expected');
+        assert('$length >= 8;  // Invalid argument value: $length. Must be 8 or greater');
+        return \str_repeat(" ", $length);
     }
 
 }

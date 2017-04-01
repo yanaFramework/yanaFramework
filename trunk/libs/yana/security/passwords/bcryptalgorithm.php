@@ -37,18 +37,8 @@ namespace Yana\Security\Passwords;
  *
  * @ignore
  */
-class BcryptAlgorithm extends \Yana\Security\Passwords\AbstractAlgorithm
+class BcryptAlgorithm extends \Yana\Security\Passwords\BasicAlgorithm
 {
-
-    /**
-     * Check wether to use this algorithm or the fallback.
-     *
-     * @return  bool
-     */
-    protected function _isAvailableAlgorithm()
-    {
-        return function_exists('password_hash') && function_exists('password_verify');
-    }
 
     /**
      * Calculate password.
@@ -63,37 +53,7 @@ class BcryptAlgorithm extends \Yana\Security\Passwords\AbstractAlgorithm
     {
         assert('is_scalar($password); // Wrong argument type for argument 2. String expected.');
 
-        $hashString = "";
-        if ($this->_isAvailableAlgorithm()) {
-            $hashString = password_hash($password, \PASSWORD_BCRYPT);
-
-        } else {
-            $hashString = $this->_getFallback()->__invoke($password);
-        }
-
-        return $hashString;
-    }
-
-    /**
-     * Compare hash with password.
-     *
-     * Returns bool(true) if the password matches the given hash and bool(false) otherwise.
-     *
-     * @param   string  $password  password (clear text)
-     * @param   string  $hash      hashed password
-     * @return  bool
-     */
-    public function isEqual($password, $hash)
-    {
-        $isEqual = false;
-        if ($this->_isAvailableAlgorithm()) {
-            $isEqual = \password_verify($password, $hash);
-
-        } else {
-            $isEqual = $this->_getFallback()->isEqual($password, $hash);
-        }
-
-        return $isEqual;
+        return \password_hash($password, \PASSWORD_BCRYPT);
     }
 
 }
