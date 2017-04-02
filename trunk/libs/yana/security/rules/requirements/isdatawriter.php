@@ -75,42 +75,6 @@ interface IsDataWriter
     public function flushActions();
 
     /**
-     * Extract action ids and titles from a collection of event configurations.
-     *
-     * @param   \Yana\Plugins\Configs\MethodCollection  $eventConfigurations  requirements information
-     * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if the new entries could not be inserted
-     * @return  array
-     */
-    public function extractActionTitles(\Yana\Plugins\Configs\MethodCollection $eventConfigurations);
-
-    /**
-     * Extract roles from a collection of event configurations.
-     *
-     * @param   \Yana\Plugins\Configs\MethodCollection  $eventConfigurations  requirements information
-     * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if the new entries could not be inserted
-     * @return  array
-     */
-    public function extractRoleNames(\Yana\Plugins\Configs\MethodCollection $eventConfigurations);
-
-    /**
-     * Extract groups from a collection of event configurations.
-     *
-     * @param   \Yana\Plugins\Configs\MethodCollection  $eventConfigurations  requirements information
-     * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if the new entries could not be inserted
-     * @return  array
-     */
-    public function extractGroupNames(\Yana\Plugins\Configs\MethodCollection $eventConfigurations);
-
-    /**
-     * Extract rows of requirements from a collection of event configurations.
-     *
-     * @param   \Yana\Plugins\Configs\MethodCollection  $eventConfigurations  requirements information
-     * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if the new entries could not be inserted
-     * @return  array
-     */
-    public function extractRequirements(\Yana\Plugins\Configs\MethodCollection $eventConfigurations);
-
-    /**
      * Insert rows into requirements table.
      *
      * @param   array  $rows  of requirement information to insert
