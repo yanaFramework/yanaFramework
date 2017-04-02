@@ -60,8 +60,6 @@ class DataReaderTest extends \PHPUnit_Framework_TestCase
         parent::__construct();
         \Yana\Db\Ddl\DDL::setDirectory(CWD . '/../../../config/db/');
         \Yana\Db\FileDb\Driver::setBaseDirectory(CWD . '/resources/db/');
-        // path to plugins configuration file
-        \Yana\Plugins\Manager::setPath(CWD . '/resources/plugins.cfg', CWD . '/../../../plugins/');
     }
 
     /**
@@ -72,8 +70,6 @@ class DataReaderTest extends \PHPUnit_Framework_TestCase
     {
         $this->emptyReader = new \Yana\Security\Rules\Requirements\DataReader(new \Yana\Db\NullConnection());
 
-        chdir(CWD . '/../../../');
-        \Yana\Db\Ddl\DDL::setDirectory('config/db/');
         $schema = \Yana\Files\XDDL::getDatabase('user');
         $database = new \Yana\Db\FileDb\Connection($schema);
         $this->filledReader = new \Yana\Security\Rules\Requirements\DataReader($database);
@@ -85,7 +81,6 @@ class DataReaderTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        chdir(CWD); 
     }
 
     /**
@@ -93,8 +88,12 @@ class DataReaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadRequirementsByAssociatedAction()
     {
-        $collection = $this->emptyReader->loadRequirementsByAssociatedAction("ABOUT");
+        $collection = $this->filledReader->loadRequirementsByAssociatedAction("ABOUT");
         $this->assertTrue($collection instanceof \Yana\Security\Rules\Requirements\Collection, 'Instance of Collection expected');
+        $this->assertCount(2, $collection);
+        $this->assertEquals('GUEST', $collection[0]->getGroup());
+        $this->assertEquals('DEFAULT', $collection[0]->getRole());
+        $this->assertEquals(100, $collection[0]->getLevel());
     }
 
     /**
@@ -104,7 +103,6 @@ class DataReaderTest extends \PHPUnit_Framework_TestCase
     public function testLoadRequirementsByAssociatedActionNotFoundException()
     {
         $this->emptyReader->loadRequirementsByAssociatedAction("");
-        $this->assertTrue($collection instanceof \Yana\Security\Rules\Requirements\Collection, 'Instance of Collection expected');
     }
 
     /**
@@ -112,8 +110,11 @@ class DataReaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadRequirementById()
     {
-        $collection = $this->filledReader->loadRequirementById(2091);
-        $this->assertTrue($collection instanceof \Yana\Security\Rules\Requirements\Requirement, 'Instance of Requirement expected');
+        $requirement = $this->filledReader->loadRequirementById(2091);
+        $this->assertTrue($requirement instanceof \Yana\Security\Rules\Requirements\Requirement, 'Instance of Requirement expected');
+        $this->assertEquals('GUEST', $requirement->getGroup());
+        $this->assertEquals('DEFAULT', $requirement->getRole());
+        $this->assertEquals(100, $requirement->getLevel());
     }
 
     /**

@@ -50,13 +50,16 @@ class DataWriter extends \Yana\Security\Rules\Requirements\AbstractDataObject im
      */
     public function __invoke(\Yana\Plugins\Configs\MethodCollection $eventConfigurations)
     {
+        assert('!isset($wrappedConfigurations); // Cannot redeclare var $wrappedConfigurations');
+        $wrappedConfigurations = new \Yana\Security\Rules\Requirements\DataWriterHelper($eventConfigurations);
+
         $this
             ->flushActions() // delete old entries first
-            ->insertActions($this->extractActionTitles($eventConfigurations)) // re-insert new actions
-            ->insertGroups($this->extractGroupNames($eventConfigurations)) // insert new groups
-            ->insertRoles($this->extractRoleNames($eventConfigurations)) // insert new roles
+            ->insertActions($wrappedConfigurations->getActionTitles()) // re-insert new actions
+            ->insertGroups($wrappedConfigurations->getGroupNames()) // insert new groups
+            ->insertRoles($wrappedConfigurations->getRoleNames()) // insert new roles
             ->flushRequirements() // delete old entries first
-            ->insertRequirements($this->extractRequirements($eventConfigurations)) // insert new security settings
+            ->insertRequirements($wrappedConfigurations->getRequirements()) // insert new security settings
             ->commitChanges();
 
         return $this;
@@ -111,144 +114,6 @@ class DataWriter extends \Yana\Security\Rules\Requirements\AbstractDataObject im
             throw new \Yana\Db\Queries\Exceptions\NotDeletedException("Unable to delete old entries.");
         }
         return $this;
-    }
-
-    /**
-     * Extract action ids and titles from a collection of event configurations.
-     *
-     * @param   \Yana\Plugins\Configs\MethodCollection  $eventConfigurations  requirements information
-     * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if the new entries could not be inserted
-     * @return  array
-     */
-    public function extractActionTitles(\Yana\Plugins\Configs\MethodCollection $eventConfigurations)
-    {
-        $actions = array();
-        /* @var $configuration \Yana\Plugins\Configs\MethodConfiguration */
-        foreach ($eventConfigurations as $configuration)
-        {
-            $name = $configuration->getMethodName();
-            $title = $configuration->getTitle();
-            /**
-             * @todo reactivate this when form creator is done
-             * if (!isset($actions[$name]) && !empty($title)) {
-             */
-            if (!isset($actions[$name]) || $actions[$name] == $name) {
-                if (empty($title)) {
-                    $title = $name;
-                }
-                $actions[$name] = $title;
-            }
-        }
-        return $actions;
-    }
-
-    /**
-     * Extract roles from a collection of event configurations.
-     *
-     * @param   \Yana\Plugins\Configs\MethodCollection  $eventConfigurations  requirements information
-     * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if the new entries could not be inserted
-     * @return  array
-     */
-    public function extractRoleNames(\Yana\Plugins\Configs\MethodCollection $eventConfigurations)
-    {
-        $roles = array();
-        /* @var $configuration \Yana\Plugins\Configs\MethodConfiguration */
-        foreach ($eventConfigurations as $configuration)
-        {
-            foreach ($configuration->getUserLevels() as $level)
-            {
-                if ($level->getRole() === "") {
-                    continue;
-                } else {
-                    $role = mb_strtolower($level->getRole());
-                    $roles[$role] = $role;
-                }
-            }
-        }
-
-        return $roles;
-    }
-
-    /**
-     * Extract groups from a collection of event configurations.
-     *
-     * @param   \Yana\Plugins\Configs\MethodCollection  $eventConfigurations  requirements information
-     * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if the new entries could not be inserted
-     * @return  array
-     */
-    public function extractGroupNames(\Yana\Plugins\Configs\MethodCollection $eventConfigurations)
-    {
-        $roles = array();
-        /* @var $configuration \Yana\Plugins\Configs\MethodConfiguration */
-        foreach ($eventConfigurations as $configuration)
-        {
-            foreach ($configuration->getUserLevels() as $level)
-            {
-                if ($level->getGroup() === "") {
-                    continue;
-                } else {
-                    $role = mb_strtolower($level->getGroup());
-                    $roles[$role] = $role;
-                }
-            }
-        }
-
-        return $roles;
-    }
-
-    /**
-     * Extract rows of requirements from a collection of event configurations.
-     *
-     * @param   \Yana\Plugins\Configs\MethodCollection  $eventConfigurations  requirements information
-     * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if the new entries could not be inserted
-     * @return  array
-     */
-    public function extractRequirements(\Yana\Plugins\Configs\MethodCollection $eventConfigurations)
-    {
-        $rows = array();
-        /* @var $configuration \Yana\Plugins\Configs\MethodConfiguration */
-        foreach ($eventConfigurations as $configuration)
-        {
-            assert('!isset($row); // Cannot redeclare var $row');
-            assert('!isset($level); // Cannot redeclare var $level');
-            foreach ($configuration->getUserLevels() as $level)
-            {
-                $row = $this->_extractRequirement($level, $configuration->getMethodName());
-                $rows[] = $row;
-            }
-            unset($level, $row);
-        }
-        unset($configuration);
-
-        return $rows;
-    }
-
-    /**
-     * Map information of given requirement to an array.
-     *
-     * @param   \Yana\Plugins\Configs\UserPermissionRule  $level  contains information about requirements
-     * @param   string                                    $name   
-     * @return  array
-     */
-    private function _extractRequirement(\Yana\Plugins\Configs\UserPermissionRule $level, $name)
-    {
-        assert('is_string($name); // Invalid argument type: $name. String expected');
-        /* @var $level \Yana\Plugins\Configs\UserPermissionRule */
-        $row = array(
-            \Yana\Security\Users\Tables\RequirementEnumeration::IS_PREDEFINED => true,
-            \Yana\Security\Users\Tables\RequirementEnumeration::ACTION => (string) $name
-        );
-        if ($level->getGroup() !== "") {
-            $row[\Yana\Security\Users\Tables\RequirementEnumeration::GROUP] = mb_strtolower($level->getGroup());
-        }
-        if ($level->getRole() !== "") {
-            $row[\Yana\Security\Users\Tables\RequirementEnumeration::ROLE] = mb_strtolower($level->getRole());
-        }
-        if ((int) $level->getLevel() !== 0) {
-            $row[\Yana\Security\Users\Tables\RequirementEnumeration::LEVEL] = (int) $level->getLevel();
-        }
-
-        return $row;
     }
 
     /**

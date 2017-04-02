@@ -48,10 +48,13 @@ class DataReader extends \Yana\Security\Rules\Requirements\AbstractDataObject im
      */
     protected function _mapRowFromDatabasetoEntity(array $row)
     {
+        $groupName = strtoupper(\Yana\Security\Users\Tables\RequirementEnumeration::GROUP);
+        $roleName = strtoupper(\Yana\Security\Users\Tables\RequirementEnumeration::ROLE);
+        $levelName = strtoupper(\Yana\Security\Users\Tables\RequirementEnumeration::LEVEL);
         return new \Yana\Security\Rules\Requirements\Requirement(
-            isset($row[\Yana\Security\Users\Tables\RequirementEnumeration::GROUP]) ? $row[\Yana\Security\Users\Tables\RequirementEnumeration::GROUP] : '',
-            isset($row[\Yana\Security\Users\Tables\RequirementEnumeration::ROLE]) ? $row[\Yana\Security\Users\Tables\RequirementEnumeration::ROLE] : '',
-            isset($row[\Yana\Security\Users\Tables\RequirementEnumeration::LEVEL]) ? (int) $row[\Yana\Security\Users\Tables\RequirementEnumeration::LEVEL] : 0
+            isset($row[$groupName]) ? $row[$groupName] : '',
+            isset($row[$roleName]) ? $row[$roleName] : '',
+            isset($row[$levelName]) ? (int) $row[$levelName] : 0
         );
     }
 
