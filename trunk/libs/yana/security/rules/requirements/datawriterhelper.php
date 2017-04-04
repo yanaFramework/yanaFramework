@@ -159,6 +159,9 @@ class DataWriterHelper extends \Yana\Core\Object
             assert('!isset($level); // Cannot redeclare var $level');
             foreach ($configuration->getUserLevels() as $level)
             {
+                if ($level->getGroup() === '' && $level->getRole() === '' && $level->getLevel() === 0) {
+                    continue;
+                }
                 $row = $this->_mapRequirement($level, $configuration->getMethodName());
                 $rows[] = $row;
             }
