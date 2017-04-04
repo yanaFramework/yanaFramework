@@ -30,7 +30,7 @@ namespace Yana\Plugins\Configs;
 /**
  * <<Collection>> Plugin configuration method collection.
  *
- * This class is a type-safe collection of instances of {@see PluginConfigurationMethod}.
+ * This class is a type-safe collection of instances of {@see \Yana\Plugins\Configs\MethodConfiguration}.
  *
  * @package     yana
  * @subpackage  plugins
@@ -77,14 +77,14 @@ class MethodCollection extends \Yana\Core\AbstractCollection implements \Yana\Re
     /**
      * Insert or replace item.
      *
-     * @param   string               $offset  ignored
-     * @param   MethodConfiguration  $value   newly added instance
+     * @param   string                                     $offset  ignored
+     * @param   \Yana\Plugins\Configs\MethodConfiguration  $value   newly added instance
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the value is not a valid item of the collection
      * @return  \Yana\Plugins\Configs\MethodConfiguration
      */
     public function offsetSet($offset, $value)
     {
-        if ($value instanceof MethodConfiguration) {
+        if ($value instanceof \Yana\Plugins\Configs\MethodConfiguration) {
             if (!is_string($offset)) {
                 $offset = $value->getMethodName();
             }

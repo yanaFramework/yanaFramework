@@ -154,7 +154,7 @@ class UserPermissionRule extends \Yana\Core\Object
      * You may translate this to 0-100 percent, where 0 is the lowest level of access and 100 is the
      * highest.
      *
-     * @param   string  $level  new value of this property
+     * @param   int  $level  new value of this property
      * @return  \Yana\Plugins\Configs\UserPermissionRule
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given security level is outside range [0,100]
      */
