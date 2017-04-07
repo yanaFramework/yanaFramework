@@ -59,47 +59,6 @@ class RuleCollection extends \Yana\Core\AbstractCollection
         return $this->_offsetSet($offset, $value);
     }
 
-    /**
-     * Check requirements against given rules.
-     *
-     * @param   \Yana\Security\Rules\Requirements\Collection  $requirements  list of required privileges
-     * @param   string                                        $profileId     profile id
-     * @param   string                                        $action        action name
-     * @param   \Yana\Security\Users\IsUser                   $user          user information to check
-     * @return  bool
-     */
-    public function checkRules(\Yana\Security\Rules\Requirements\Collection $requirements, $profileId, $action, \Yana\Security\Users\IsUser $user)
-    {
-        assert('is_string($profileId); // Wrong argument type argument 2. String expected');
-        assert('is_string($action); // Wrong argument type argument 3. String expected');
-
-        assert('!isset($result); // cannot redeclare $result');
-        $result = false; // By default we always deny permission
-
-        // loop through rules
-        assert('!isset($rule); // cannot redeclare $rule');
-        foreach ($this->toArray() as $rule)
-        {
-            assert('!isset($requirement); // cannot redeclare $requirement');
-            foreach ($requirements as $requirement)
-            {
-                switch ($rule($requirement, $profileId, $action, $user))
-                {
-                    case false:
-                        return false;
-                    case true:
-                        $result = true;
-                    // else: rule does not apply
-                }
-            }
-            unset($requirement);
-        }
-        unset($rule);
-
-        assert('is_bool($result); // return type should be boolean');
-        return $result;
-    }
-
 }
 
 ?>

@@ -30,7 +30,7 @@ namespace Yana\Security\Passwords\Builders;
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../include.php';
+require_once __DIR__ . '/../../../../../include.php';
 
 /**
  * Test-case

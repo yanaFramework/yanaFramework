@@ -115,7 +115,7 @@ class CacheableChecker extends \Yana\Security\Rules\Checker implements \Yana\Dat
          */
         if (!isset($cache["$profileId\\$userName\\$action"])) {
 
-            $cache["$profileId\\$userName\\$action"] = parent::checkPermission($profileId, $action, $user);
+            $cache["$profileId\\$userName\\$action"] = parent::checkRules($profileId, $action, $user);
         }
 
         assert('is_bool($cache["$profileId\\\\$userName\\\\$action"]); /* unexpected result in cached value */');
