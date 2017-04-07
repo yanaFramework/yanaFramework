@@ -30,7 +30,7 @@
 namespace Yana\Security\Rules\Requirements;
 
 /**
- * Helps with loading requirements from a data-source.
+ * For testing purposes only.
  *
  * @package     yana
  * @subpackage  security
@@ -78,9 +78,9 @@ class NullReader extends \Yana\Core\Object implements \Yana\Security\Rules\Requi
      */
     public function loadRequirementsByAssociatedAction($action)
     {
-        assert(is_string($action));
+        assert('is_string($action); // Invalid argument type: $action. String expected');
 
-        return new \Yana\Security\Rules\Requirements\Collection();
+        return $this->_getCollection();
     }
 
     /**
@@ -91,9 +91,13 @@ class NullReader extends \Yana\Core\Object implements \Yana\Security\Rules\Requi
      */
     public function loadRequirementById($id)
     {
-        assert(is_int($id));
+        assert('is_int($id); // Invalid argument type: $id. Integer expected');
 
-        return new \Yana\Security\Rules\Requirements\Requirement('', '', 0);
+        $requirement = new \Yana\Security\Rules\Requirements\Requirement('', '', 0);
+        if ($this->_getCollection()->offsetExists($id) > 0) {
+            $requirement = $this->_getCollection()->offsetGet($id);
+        }
+        return $requirement;
     }
 
     /**
@@ -103,7 +107,15 @@ class NullReader extends \Yana\Core\Object implements \Yana\Security\Rules\Requi
      */
     public function loadListOfGroups()
     {
-        return array();
+        $groups = array();
+        /* @var $requirement \Yana\Security\Rules\Requirements\IsRequirement */
+        foreach ($this->_getCollection()->toArray() as $requirement)
+        {
+            if ($requirement->getGroup()) {
+                $groups[] = $requirement->getGroup();
+            }
+        }
+        return $groups;
     }
 
     /**
@@ -113,7 +125,15 @@ class NullReader extends \Yana\Core\Object implements \Yana\Security\Rules\Requi
      */
     public function loadListOfRoles()
     {
-        return array();
+        $roles = array();
+        /* @var $requirement \Yana\Security\Rules\Requirements\IsRequirement */
+        foreach ($this->_getCollection()->toArray() as $requirement)
+        {
+            if ($requirement->getRole()) {
+                $roles[] = $requirement->getRole();
+            }
+        }
+        return $roles;
     }
 
 }

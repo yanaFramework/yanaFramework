@@ -77,6 +77,8 @@ class SecurityLevelRule extends \Yana\Security\Rules\AbstractRule
      * @param   string                                           $action     name of the action the user tries to execute
      * @param   \Yana\Security\Users\IsUser                      $user       user information to check
      * @return  bool
+     *
+     * @todo    Implement getSecurityLevel()
      */
     public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, $profileId, $action, \Yana\Security\Users\IsUser $user)
     {

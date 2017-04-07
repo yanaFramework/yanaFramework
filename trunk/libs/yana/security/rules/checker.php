@@ -84,28 +84,50 @@ class Checker extends \Yana\Security\Rules\AbstractChecker
 
         // find out what the required permission level is to perform the current action
         assert('!isset($requiredLevels); // Cannot redeclare var $requiredLevels');
-        $requiredLevels = $adapter->loadRequirementsByAssociatedAction($action); // may throw exception
+        $requiredLevels = $adapter->loadRequirementsByAssociatedAction($action); // May throw a NotFoundException if table is empty.
+        /**
+         * NotFoundException: Because For security reasons we consider an empty requirements table an illegal state
+         * and will not allow ANY operations rather than allowing ALL operations.
+         */
 
-        // if nothing else is defined, then the current event is public ...
+        // if nothing else is defined, then the current action is public ...
         if ($requiredLevels->count() === 0) {
             return true;
         }
 
-        // ... else check user permissions
-        assert('!isset($result); // Cannot redeclare var $result');
-        $result = false;
+        //  ... else check user permissions
         assert('!isset($requirement); // cannot redeclare $requirement');
         foreach ($requiredLevels as $requirement)
         {
-            if ($this->checkByRequirement($requirement, $profileId, $action, $user)) {
-                $result = true;
-                break;
+            switch ($this->_checkByRequirement($requirement, $profileId, $action, $user))
+            {
+                // requirement statements are connected via "OR", so we return TRUE if any of them is TRUE.
+                case 1:
+                    return true;
+                // default: we stick with FALSE
             }
         }
         unset($requirement);
 
-        assert('is_bool($result); // return type should be boolean');
-        return $result;
+
+        /**
+         * Deny all access by default.
+         *
+         * This means that even if an attacker somehow managed to deactivate all security rules,
+         * the attacker will from now on ALWAYS be denied access to ANY action that lists any security requirements at all.
+         *
+         * However, this also means that when setting up security requirements, the developer must ensure that there
+         * is always at least one active security rule that actually checks at least one of the given requirements.
+         *
+         * For example, if the developer defines an action using as the only requirement "@user group: ADMIN" and
+         * there is no security rule to check the user group, then the action will by default be denied no matter what
+         * the user group may be.
+         *
+         * In case the developer explicitly doesn't want this behavior, the developer is free to introduce a security
+         * rule that always returns bool(true) and thus changes the default value, BUT this must be done explicitly
+         * and intentionally by the developer and cannot be the default behavior.
+         */
+        return false;
     }
 
     /**
@@ -126,7 +148,50 @@ class Checker extends \Yana\Security\Rules\AbstractChecker
         assert('is_string($profileId); // Invalid argument type: $profileId. String expected');
         assert('is_string($action); // Invalid argument type: $action. String expected');
 
-        return (bool) $this->_getRules()->checkRules($requirement, $profileId, $action, $user);
+        /* Note: Altough we should always return bool(true) for an empty set of requirements,
+         * we don't check for an empty set of requirements here; because this function is explicitly given a requirement,
+         * and thus, by definition, the set cannot be empty.
+         */
+        return 1 === $this->_checkByRequirement($requirement, $profileId, $action, $user);
+    }
+
+    /**
+     * Check requirement.
+     *
+     * Returns 1 if the user may proceed, 2 if the user may not, and 0 if no given rule applies.
+     *
+     * @param   \Yana\Security\Rules\Requirements\IsRequirement  $requirement  to check for
+     * @param   string                                           $profileId    profile id in upper-case
+     * @param   string                                           $action       action parameter in lower-case
+     * @param   \Yana\Security\Users\IsUser                      $user         user information to check
+     * @return  int
+     */
+    private function _checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, \Yana\Security\Users\IsUser $user)
+    {
+        assert('is_string($profileId); // Invalid argument type: $profileId. String expected');
+        assert('is_string($action); // Invalid argument type: $action. String expected');
+
+        assert('!isset($result); // cannot redeclare $result');
+        $result = 0; // By default no rules do apply, so that this works for empty ruleset as well
+
+        // loop through rules
+        assert('!isset($rule); // cannot redeclare $rule');
+        foreach ($this->_getRules()->toArray() as $rule)
+        {
+            switch ($rule($requirement, $profileId, $action, $user)) // Can return TRUE, FALSE, or NULL.
+            {
+                case false:
+                    return -1; // access denied
+                case true:
+                    $result = 1; // access granted
+                // else: rule does not apply
+            }
+        }
+        unset($rule);
+
+        assert('is_int($result); // return type should be integer');
+        assert('$result === -1 || $result === 0 || $result === 1; // returned value must be either 0, 1, or -1');
+        return $result;
     }
 
 }

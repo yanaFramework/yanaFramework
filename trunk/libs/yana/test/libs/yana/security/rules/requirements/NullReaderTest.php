@@ -58,7 +58,7 @@ class NullReaderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->requirement = new \Yana\Security\Rules\Requirements\Requirement("", "", 0);
+        $this->requirement = new \Yana\Security\Rules\Requirements\Requirement("group", "role", 0);
         $this->object = new \Yana\Security\Rules\Requirements\NullReader($this->requirement);
     }
 
@@ -95,7 +95,7 @@ class NullReaderTest extends \PHPUnit_Framework_TestCase
     public function testLoadListOfGroups()
     {
         $this->assertInternalType('array', $this->object->loadListOfGroups());
-        $this->assertEmpty($this->object->loadListOfGroups());
+        $this->assertEquals(array("group"), $this->object->loadListOfGroups());
     }
 
     /**
@@ -104,7 +104,7 @@ class NullReaderTest extends \PHPUnit_Framework_TestCase
     public function testLoadListOfRoles()
     {
         $this->assertInternalType('array', $this->object->loadListOfRoles());
-        $this->assertEmpty($this->object->loadListOfRoles());
+        $this->assertEquals(array("role"), $this->object->loadListOfRoles());
     }
 
 }

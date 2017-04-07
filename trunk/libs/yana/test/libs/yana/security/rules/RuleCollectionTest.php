@@ -85,19 +85,4 @@ class RuleCollectionTest extends \PHPUnit_Framework_TestCase
         $this->object->offsetSet(null, new \Yana\Core\Object());
     }
 
-
-    /**
-     * @test
-     */
-    public function testCheckRules()
-    {
-        $rule = new \Yana\Security\Rules\NullRule();
-        $this->object->offsetSet(null, $rule);
-        $requirements = new \Yana\Security\Rules\Requirements\Collection();
-        $profileId = "test";
-        $action = "test";
-        $user = new \Yana\Security\Users\Entity("test");
-        $this->assertFalse($this->object->checkRules($requirements, $profileId, $action, $user), 'False must be default');
-    }
-
 }
