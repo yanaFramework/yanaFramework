@@ -60,6 +60,7 @@ class Entity extends \Yana\Security\Users\AbstractEntity
     /** @var string */ private $_sessionCheckSum = null;
     /** @var array  */ private $_groups = array();
     /** @var array  */ private $_roles = array();
+    /** @var array  */ private $_securityLevels = array();
 
     /**
      * Creates an user by name.
@@ -259,6 +260,20 @@ class Entity extends \Yana\Security\Users\AbstractEntity
     }
 
     /**
+     * Set user security levels.
+     *
+     * An array of integers, where the keys are the profile ids and the values the security levels.
+     *
+     * @param   array  $securityLevels  list of levels
+     * @return  \Yana\Security\Users\IsUser
+     */
+    public function setSecurityLevels(array $securityLevels)
+    {
+        $this->_securityLevels = $securityLevels;
+        return $this;
+    }
+
+    /**
      * Set session-checksum.
      *
      * The checksum should be a hexadecimal number represented as a string no longer than 32 chars.
@@ -321,6 +336,43 @@ class Entity extends \Yana\Security\Users\AbstractEntity
             $this->_roles = $this->_getDataAdapter()->getRoles($this->getId());
         }
         return $this->_roles;
+    }
+
+    /**
+     * Get security level.
+     *
+     * Returns the user's security level as an integer value.
+     * The default is 0.
+     *
+     * @param   string  $profileId  profile id
+     * @return  int
+     */
+    public function getSecurityLevel($profileId)
+    {
+        assert('is_string($profileId); // Invalid argument $profileId: string expected');
+
+        $upperProfileId = \mb_strtoupper($profileId);
+        $securityLevels = $this->getSecurityLevels();
+        $securityLevel = 0;
+        if (isset($securityLevels[$upperProfileId])) {
+            $securityLevel = $securityLevels[$upperProfileId];
+        }
+        return $securityLevel;
+    }
+
+    /**
+     * Get security levels.
+     *
+     * Returns all the user's security level as an array, where the keys are the profile names and the values are the levels.
+     *
+     * @return  array
+     */
+    public function getSecurityLevels()
+    {
+        if (count($this->_securityLevels) === 0 && $this->_hasDataAdapter()) {
+            $this->_securityLevels = $this->_getDataAdapter()->getSecurityLevels($this->getId());
+        }
+        return $this->_securityLevels;
     }
 
     /**

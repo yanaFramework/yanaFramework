@@ -45,17 +45,17 @@ abstract class AbstractEntity extends \Yana\Core\Object implements \Yana\Securit
     /**
      * data adapter used to load and save the entity's contents.
      *
-     * @var  \Yana\Data\Adapters\IsDataAdapter
+     * @var  \Yana\Security\Users\IsDataAdapter
      */
     private $_dataAdapter = null;
 
     /**
      * This sets the data adapter used to persist the entity
      *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $adapter  object that should be used
-     * @return  \Yana\Security\Users\IsUser
+     * @param   \Yana\Security\Users\IsDataAdapter  $adapter  object that should be used
+     * @return  self
      */
-    public function setDataAdapter(\Yana\Data\Adapters\IsDataAdapter $adapter)
+    public function setDataAdapter(\Yana\Security\Users\IsDataAdapter $adapter)
     {
         $this->_dataAdapter = $adapter;
         return $this;
@@ -66,7 +66,7 @@ abstract class AbstractEntity extends \Yana\Core\Object implements \Yana\Securit
      *
      * If there is none, the function returns NULL instead.
      *
-     * @return  \Yana\Data\Adapters\IsDataAdapter
+     * @return  \Yana\Security\Users\IsDataAdapter
      */
     protected function _getDataAdapter()
     {
@@ -82,7 +82,7 @@ abstract class AbstractEntity extends \Yana\Core\Object implements \Yana\Securit
      */
     protected function _hasDataAdapter()
     {
-        return $this->_getDataAdapter() instanceof \Yana\Data\Adapters\IsDataAdapter;
+        return $this->_getDataAdapter() instanceof \Yana\Security\Users\IsDataAdapter;
     }
 
     /**

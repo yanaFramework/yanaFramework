@@ -107,6 +107,26 @@ interface IsUser extends \Yana\Data\Adapters\IsEntity
     public function getRoles();
 
     /**
+     * Get security level.
+     *
+     * Returns the user's security level as an integer value.
+     * The default is 0.
+     *
+     * @param   string  $profileId  profile id
+     * @return  int
+     */
+    public function getSecurityLevel($profileId);
+
+    /**
+     * Get security levels.
+     *
+     * Returns all the user's security level as an array, where the keys are the profile names and the values are the levels.
+     *
+     * @return  array
+     */
+    public function getSecurityLevels();
+
+    /**
      * Get password hash.
      *
      * @return  string
@@ -411,6 +431,16 @@ interface IsUser extends \Yana\Data\Adapters\IsEntity
      * @return  \Yana\Security\Users\IsUser
      */
     public function setRoles(array $roles);
+
+    /**
+     * Set user security levels.
+     *
+     * An array of integers, where the keys are the profile ids and the values the security levels.
+     *
+     * @param   array  $securityLevels  list of levels
+     * @return  \Yana\Security\Users\IsUser
+     */
+    public function setSecurityLevels(array $securityLevels);
 
     /**
      * Set login password to $password.
