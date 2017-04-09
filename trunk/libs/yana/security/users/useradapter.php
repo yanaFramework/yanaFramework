@@ -360,21 +360,87 @@ class UserAdapter extends \Yana\Security\Users\AbstractUserAdapter
         assert('is_string($userId); // Wrong type for argument $userId. String expected');
         assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
 
+        assert('!isset($query); // Cannot redeclare var $query');
+        $query = $this->_buildQueryForSecurityLevels($userId, $profileId);
+        return (int) self::getDatasource()->select($query);
+    }
+
+    /**
+     * Get security levels.
+     *
+     * Returns all the user's security level as an array, where the keys are the profile names and the values are the levels.
+     *
+     * @param   string  $userId  user name
+     * @return  array
+     */
+    public function getSecurityLevels($userId)
+    {
+        assert('is_string($userId); // Wrong type for argument $userId. String expected');
+
+        assert('!isset($levelColumn); // Cannot redeclare var $levelColumn');
+        $levelColumn = \Yana\Util\String::toUpperCase(\Yana\Security\Users\Tables\LevelEnumeration::LEVEL);
+        assert('!isset($profileColumn); // Cannot redeclare var $profileColumn');
+        $profileColumn = \Yana\Util\String::toUpperCase(\Yana\Security\Users\Tables\LevelEnumeration::PROFILE);
+        assert('!isset($database); // Cannot redeclare var $database');
+        $database = self::getDatasource();
+
+        assert('!isset($securityLevels); // Cannot redeclare var $securityLevels');
+        $securityLevels = array();
+        assert('!isset($query); // Cannot redeclare var $query');
+        $query = $this->_buildQueryForSecurityLevels($userId);
+        assert('!isset($row); // Cannot redeclare var $row');
+        foreach ($database->select($query) as $row)
+        {
+            if (isset($row[$levelColumn]) && isset($row[$profileColumn])) {
+                $securityLevels[(string) $row[$profileColumn]] = (int) $row[$levelColumn];
+            }
+        }
+        unset($row);
+
+        return $securityLevels;
+    }
+
+    /**
+     * Build and return query to select all security levels.
+     *
+     * @param   string  $userId     user name
+     * @param   string  $profileId  profile id
+     * @return  \Yana\Db\Queries\Select
+     */
+    private function _buildQueryForSecurityLevels($userId, $profileId = '')
+    {
+        assert('is_string($userId); // Wrong type for argument $userId. String expected');
+        assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
+
+        assert('!isset($userIdUpperCase); // Cannot redeclare var $userIdUpperCase');
         $userIdUpperCase = \Yana\Util\String::toUpperCase($userId);
+        assert('!isset($profileIdUpperCase); // Cannot redeclare var $profileIdUpperCase');
         $profileIdUpperCase = \Yana\Util\String::toUpperCase($profileId);
 
-        $database = self::getDatasource();
-        // Select level from table where user = $1 and profile = $2 order by level desc limit 1
         $query = new \Yana\Db\Queries\Select($this->_getConnection());
-        $query->setKey(\Yana\Security\Users\Tables\LevelEnumeration::TABLE. '.*.' . \Yana\Security\Users\Tables\LevelEnumeration::LEVEL);
-        $query->setWhere(array(
-            array(\Yana\Security\Users\Tables\LevelEnumeration::USER, '=', $userIdUpperCase),
-            'and',
-            array(\Yana\Security\Users\Tables\LevelEnumeration::PROFILE, '=', $profileIdUpperCase)
-        ));
-        $query->setOrderBy(array(\Yana\Security\Users\Tables\LevelEnumeration::LEVEL), array(true));
-        $query->setLimit(1);
-        return (int) $database->select($query);
+        $query->setTable(\Yana\Security\Users\Tables\LevelEnumeration::TABLE);
+        if ($profileId === "") {
+
+            // Select level, profile from table where user = $1
+            $query->setColumns(
+                array(\Yana\Security\Users\Tables\LevelEnumeration::LEVEL, \Yana\Security\Users\Tables\LevelEnumeration::PROFILE)
+            );
+            $query->setWhere(array(\Yana\Security\Users\Tables\LevelEnumeration::USER, '=', $userIdUpperCase));
+
+        } else {
+
+            // Select level from table where user = $1 and profile = $2 order by level desc limit 1
+            $query->setColumn(\Yana\Security\Users\Tables\LevelEnumeration::LEVEL);
+            $query->setWhere(array(
+                array(\Yana\Security\Users\Tables\LevelEnumeration::USER, '=', $userIdUpperCase),
+                'and',
+                array(\Yana\Security\Users\Tables\LevelEnumeration::PROFILE, '=', $profileIdUpperCase)
+            ));
+            $query->setOrderBy(array(\Yana\Security\Users\Tables\LevelEnumeration::LEVEL), array(true));
+            $query->setLimit(1);
+        }
+
+        return $query;
     }
 
 }
