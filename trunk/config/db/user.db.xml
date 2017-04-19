@@ -168,6 +168,9 @@
                 <default>REMOTE_ADDR</default>
             </inet>
         </declaration>
+        <index unique="no" name="ix_newuser">
+            <column name="newuser_key"/>
+        </index>
     </table>
     <table name="securitylevel">
         <primarykey>security_id</primarykey>
@@ -235,6 +238,10 @@
                 <default>true</default>
             </bool>
         </declaration>
+        <index unique="yes" name="uq_securitylevel">
+            <column name="user_id"/>
+            <column name="profile"/>
+        </index>
     </table>
     <table name="securitygroup" title='{lang id="USER.OPTION.1"}'>
         <primarykey>group_id</primarykey>
