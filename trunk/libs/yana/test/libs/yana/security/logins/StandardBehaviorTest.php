@@ -69,7 +69,7 @@ class StandardBehaviorTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsLoggedIn()
     {
-        $user = new \Yana\Security\Users\Entity('test');
+        $user = new \Yana\Security\Data\Users\Entity('test');
         $this->assertFalse($this->object->isLoggedIn($user));
     }
 
@@ -78,7 +78,7 @@ class StandardBehaviorTest extends \PHPUnit_Framework_TestCase
      */
     public function testHandleLogin()
     {
-        $user = new \Yana\Security\Users\Entity('test');
+        $user = new \Yana\Security\Data\Users\Entity('test');
         $user->setActive(true);
         $this->object->handleLogin($user);
         $this->assertTrue($this->object->isLoggedIn($user));
@@ -89,7 +89,7 @@ class StandardBehaviorTest extends \PHPUnit_Framework_TestCase
      */
     public function testHandleLogout()
     {
-        $user = new \Yana\Security\Users\Entity('test');
+        $user = new \Yana\Security\Data\Users\Entity('test');
         $user->setActive(true);
         $this->assertFalse($this->object->handleLogin($user)->handleLogout($user)->isLoggedIn($user));
     }

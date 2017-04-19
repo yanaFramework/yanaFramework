@@ -152,11 +152,11 @@ class DataWriterHelperTest extends \PHPUnit_Framework_TestCase
             ->addUserLevel((new \Yana\Plugins\Configs\UserPermissionRule())->setRole('R3')->setLevel(3));
         $this->collection[] = (new \Yana\Plugins\Configs\MethodConfiguration())->setMethodName('N3')
             ->addUserLevel((new \Yana\Plugins\Configs\UserPermissionRule())->setGroup('G4')->setRole('R4'));
-        $action = \Yana\Security\Users\Tables\RequirementEnumeration::ACTION;
-        $predefined = \Yana\Security\Users\Tables\RequirementEnumeration::IS_PREDEFINED;
-        $group = \Yana\Security\Users\Tables\RequirementEnumeration::GROUP;
-        $role = \Yana\Security\Users\Tables\RequirementEnumeration::ROLE;
-        $level = \Yana\Security\Users\Tables\RequirementEnumeration::LEVEL;
+        $action = \Yana\Security\Data\Tables\RequirementEnumeration::ACTION;
+        $predefined = \Yana\Security\Data\Tables\RequirementEnumeration::IS_PREDEFINED;
+        $group = \Yana\Security\Data\Tables\RequirementEnumeration::GROUP;
+        $role = \Yana\Security\Data\Tables\RequirementEnumeration::ROLE;
+        $level = \Yana\Security\Data\Tables\RequirementEnumeration::LEVEL;
         $expected =
             array(
                 array($predefined => true, $action => 'N1', $group => 'g1', $role => 'r1', $level => 1),
