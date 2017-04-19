@@ -88,7 +88,7 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
         /**
          * @var DBStream $db
          */
-        $db = \Yana\Security\Users\SessionManager::getDatasource();
+        $db = \Yana\Security\Data\SessionManager::getDatasource();
 
         /**
          * get all Users Names
@@ -185,7 +185,7 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
             throw $warning->setField('rules/levels');
         }
 
-        $db = \Yana\Security\Users\SessionManager::getDatasource();
+        $db = \Yana\Security\Data\SessionManager::getDatasource();
         $defaultProfile = \Yana\Application::getDefault('profile');
         $currentUser = \Yana\User::getUserName();
 
@@ -246,7 +246,7 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
             }
         }
 
-        $session = \Yana\Security\Users\SessionManager::getInstance();
+        $session = \Yana\Security\Data\SessionManager::getInstance();
         foreach ($levels as $i => $profileId)
         {
 
@@ -336,7 +336,7 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
             $warning = new \Yana\Core\Exceptions\Forms\NothingSelectedException($message, $level);
             throw $warning->setField('rules/levels');
         }
-        $db = \Yana\Security\Users\SessionManager::getDatasource();
+        $db = \Yana\Security\Data\SessionManager::getDatasource();
         $currentUser = \Yana\User::getUserName();
 
         $where = array('USER_CREATED', '=', $currentUser);
@@ -389,7 +389,7 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
                 return false;
             }
             // get database connection
-            $database = \Yana\Security\Users\SessionManager::getDatasource();
+            $database = \Yana\Security\Data\SessionManager::getDatasource();
             // get current user-mode
             if ($database->select("user." . $currentUser . ".user_is_expert")) {
                 $this->isExpert = true;

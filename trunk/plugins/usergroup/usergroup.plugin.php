@@ -59,7 +59,7 @@ class UserGroupPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function __construct()
     {
-        \Yana\Security\Users\SessionManager::addSecurityRule(array(__CLASS__, 'checkGroupsAndRoles'));
+        \Yana\Security\Data\SessionManager::addSecurityRule(array(__CLASS__, 'checkGroupsAndRoles'));
         self::$defaultProfileId = \Yana\Application::getDefault('profile');
     }
 

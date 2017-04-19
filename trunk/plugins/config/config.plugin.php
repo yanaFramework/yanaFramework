@@ -232,7 +232,7 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
                 $userName = (string) $_SESSION['user_name'];
             }
             // get database connection
-            $database = \Yana\Security\Users\SessionManager::getDatasource();
+            $database = \Yana\Security\Data\SessionManager::getDatasource();
             // get current user-mode
             if ($database->select("user.$userName.user_is_expert")) {
                 $this->_isExpert = true;
@@ -342,7 +342,7 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
     {
         $pluginManager = \Yana\Plugins\Manager::getInstance();
         if ($pluginManager->refreshPluginFile()) {
-            \Yana\Security\Users\SessionManager::refreshPluginSecuritySettings();
+            \Yana\Security\Data\SessionManager::refreshPluginSecuritySettings();
             $builder = new \Yana\Plugins\Menus\Builder();
             $builder->clearMenuCache(); // uses session cache adapter by default
             return true;
@@ -411,7 +411,7 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
         /* this function expects no arguments */
 
         // get database connection
-        $database = \Yana\Security\Users\SessionManager::getDatasource();
+        $database = \Yana\Security\Data\SessionManager::getDatasource();
 
         // get current user name
         if (!isset($_SESSION['user_name'])) {
