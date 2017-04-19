@@ -85,11 +85,11 @@ class DataWriter extends \Yana\Security\Rules\Requirements\AbstractDataObject im
      */
     public function flushRequirements()
     {
-        $where = array(\Yana\Security\Users\Tables\RequirementEnumeration::IS_PREDEFINED, '=', true);
+        $where = array(\Yana\Security\Data\Tables\RequirementEnumeration::IS_PREDEFINED, '=', true);
         $database = $this->_getDatasource();
         try {
             // remove old predefined security settings
-            $database->remove(\Yana\Security\Users\Tables\RequirementEnumeration::TABLE, $where, 0);
+            $database->remove(\Yana\Security\Data\Tables\RequirementEnumeration::TABLE, $where, 0);
         } catch (\Yana\Core\Exceptions\NotWriteableException $e) {
             $database->rollback();
             throw new \Yana\Db\Queries\Exceptions\NotDeletedException("Unable to delete old entries.");
@@ -108,7 +108,7 @@ class DataWriter extends \Yana\Security\Rules\Requirements\AbstractDataObject im
         $database = $this->_getDatasource();
         try {
             // remove old actions
-            $database->remove(\Yana\Security\Users\Tables\ActionEnumeration::TABLE, array(), 0);
+            $database->remove(\Yana\Security\Data\Tables\ActionEnumeration::TABLE, array(), 0);
         } catch (\Yana\Core\Exceptions\NotWriteableException $e) {
             $database->rollback();
             throw new \Yana\Db\Queries\Exceptions\NotDeletedException("Unable to delete old entries.");
@@ -131,7 +131,7 @@ class DataWriter extends \Yana\Security\Rules\Requirements\AbstractDataObject im
         foreach ($rows as $row)
         {
             try {
-                $database->insert(\Yana\Security\Users\Tables\RequirementEnumeration::TABLE, $row);
+                $database->insert(\Yana\Security\Data\Tables\RequirementEnumeration::TABLE, $row);
             } catch (\Exception $e) {
                 $database->rollback();
                 throw new \Yana\Db\Queries\Exceptions\NotCreatedException("Unable to insert new security setting.");
@@ -147,7 +147,7 @@ class DataWriter extends \Yana\Security\Rules\Requirements\AbstractDataObject im
      *
      * Already existing entries are skipped, so that user-defined names are not overwritten.
      *
-     * @see     \Yana\Security\Users\Tables\RoleEnumeration
+     * @see     \Yana\Security\Data\Tables\RoleEnumeration
      * @param   array  $roles  rows for database table
      * @return  \Yana\Security\Rules\Requirements\DataWriter
      * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if the new entries could not be inserted
@@ -160,15 +160,15 @@ class DataWriter extends \Yana\Security\Rules\Requirements\AbstractDataObject im
         assert('!isset($role); // Cannot redeclare var $role');
         foreach (array_unique($roles) as $roleId)
         {
-            if ($database->exists(\Yana\Security\Users\Tables\RoleEnumeration::TABLE . "." . $roleId)) {
+            if ($database->exists(\Yana\Security\Data\Tables\RoleEnumeration::TABLE . "." . $roleId)) {
                 continue;
             }
             $role = array(
-                \Yana\Security\Users\Tables\RoleEnumeration::ID => $roleId,
-                \Yana\Security\Users\Tables\RoleEnumeration::NAME => $roleId
+                \Yana\Security\Data\Tables\RoleEnumeration::ID => $roleId,
+                \Yana\Security\Data\Tables\RoleEnumeration::NAME => $roleId
             );
             try {
-                $database->insert(\Yana\Security\Users\Tables\RoleEnumeration::TABLE . "." . $roleId, $role);
+                $database->insert(\Yana\Security\Data\Tables\RoleEnumeration::TABLE . "." . $roleId, $role);
             } catch (\Exception $e) {
                 $database->rollback();
                 throw new \Yana\Db\Queries\Exceptions\NotCreatedException("Unable to insert new role.");
@@ -184,7 +184,7 @@ class DataWriter extends \Yana\Security\Rules\Requirements\AbstractDataObject im
      *
      * Already existing entries are skipped, so that user-defined names are not overwritten.
      *
-     * @see     \Yana\Security\Users\Tables\GroupEnumeration
+     * @see     \Yana\Security\Data\Tables\GroupEnumeration
      * @param   array  $groups  rows for database table
      * @return  \Yana\Security\Rules\Requirements\DataWriter
      * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if the new entries could not be inserted
@@ -197,15 +197,15 @@ class DataWriter extends \Yana\Security\Rules\Requirements\AbstractDataObject im
         assert('!isset($group); // Cannot redeclare var $group');
         foreach (array_unique($groups) as $groupId)
         {
-            if ($database->exists(\Yana\Security\Users\Tables\GroupEnumeration::TABLE . "." . $groupId)) {
+            if ($database->exists(\Yana\Security\Data\Tables\GroupEnumeration::TABLE . "." . $groupId)) {
                 continue;
             }
             $group = array(
-                \Yana\Security\Users\Tables\GroupEnumeration::ID => $groupId,
-                \Yana\Security\Users\Tables\GroupEnumeration::NAME => $groupId
+                \Yana\Security\Data\Tables\GroupEnumeration::ID => $groupId,
+                \Yana\Security\Data\Tables\GroupEnumeration::NAME => $groupId
             );
             try {
-                $database->insert(\Yana\Security\Users\Tables\GroupEnumeration::TABLE . "." . $groupId, $group);
+                $database->insert(\Yana\Security\Data\Tables\GroupEnumeration::TABLE . "." . $groupId, $group);
             } catch (\Exception $e) {
                 $database->rollback();
                 throw new \Yana\Db\Queries\Exceptions\NotCreatedException("Unable to insert new group.");
@@ -221,7 +221,7 @@ class DataWriter extends \Yana\Security\Rules\Requirements\AbstractDataObject im
      *
      * Already existing entries are updated.
      *
-     * @see     \Yana\Security\Users\Tables\ActionEnumeration
+     * @see     \Yana\Security\Data\Tables\ActionEnumeration
      * @param   array  $actions  rows for database table
      * @return  \Yana\Security\Rules\Requirements\DataWriter
      * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if the new entries could not be inserted
@@ -236,11 +236,11 @@ class DataWriter extends \Yana\Security\Rules\Requirements\AbstractDataObject im
         foreach ($actions as $name => $title)
         {
             $action = array(
-                \Yana\Security\Users\Tables\ActionEnumeration::ID => $name,
-                \Yana\Security\Users\Tables\ActionEnumeration::TITLE => $title
+                \Yana\Security\Data\Tables\ActionEnumeration::ID => $name,
+                \Yana\Security\Data\Tables\ActionEnumeration::TITLE => $title
             );
             try {
-                $database->insert(\Yana\Security\Users\Tables\ActionEnumeration::TABLE, $action);
+                $database->insert(\Yana\Security\Data\Tables\ActionEnumeration::TABLE, $action);
             } catch (\Exception $e) {
                 $database->rollback();
                 throw new \Yana\Db\Queries\Exceptions\NotCreatedException("Unable to insert new action.");

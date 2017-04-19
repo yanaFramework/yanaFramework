@@ -92,11 +92,11 @@ class CacheableChecker extends \Yana\Security\Rules\Checker implements \Yana\Dat
      *
      * @param   string                       $profileId  profile id in upper-case
      * @param   string                       $action     action parameter in lower-case
-     * @param   \Yana\Security\Users\IsUser  $user       user information to check
+     * @param   \Yana\Security\Data\IsUser  $user       user information to check
      * @return  bool
      * @throws  \Yana\Security\Rules\Requirements\NotFoundException  when no requirements are found
      */
-    public function checkRules($profileId, $action, \Yana\Security\Users\IsUser $user)
+    public function checkRules($profileId, $action, \Yana\Security\Data\IsUser $user)
     {
         assert('is_string($profileId); // Invalid argument type: $profileId. String expected');
         assert('is_string($action); // Invalid argument type: $action. String expected');

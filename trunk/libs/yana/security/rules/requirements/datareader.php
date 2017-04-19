@@ -48,9 +48,9 @@ class DataReader extends \Yana\Security\Rules\Requirements\AbstractDataObject im
      */
     protected function _mapRowFromDatabasetoEntity(array $row)
     {
-        $groupName = strtoupper(\Yana\Security\Users\Tables\RequirementEnumeration::GROUP);
-        $roleName = strtoupper(\Yana\Security\Users\Tables\RequirementEnumeration::ROLE);
-        $levelName = strtoupper(\Yana\Security\Users\Tables\RequirementEnumeration::LEVEL);
+        $groupName = strtoupper(\Yana\Security\Data\Tables\RequirementEnumeration::GROUP);
+        $roleName = strtoupper(\Yana\Security\Data\Tables\RequirementEnumeration::ROLE);
+        $levelName = strtoupper(\Yana\Security\Data\Tables\RequirementEnumeration::LEVEL);
         return new \Yana\Security\Rules\Requirements\Requirement(
             isset($row[$groupName]) ? $row[$groupName] : '',
             isset($row[$roleName]) ? $row[$roleName] : '',
@@ -75,7 +75,7 @@ class DataReader extends \Yana\Security\Rules\Requirements\AbstractDataObject im
         assert('!isset($database); // Cannot redeclare var $database');
         $database = $this->_getDatasource();
 
-        if ($database->isEmpty(\Yana\Security\Users\Tables\RequirementEnumeration::TABLE)) {
+        if ($database->isEmpty(\Yana\Security\Data\Tables\RequirementEnumeration::TABLE)) {
             throw new \Yana\Security\Rules\Requirements\NotFoundException("No security settings found. Trying to auto-refresh table 'securityactionrules'.");
         }
 
@@ -84,14 +84,14 @@ class DataReader extends \Yana\Security\Rules\Requirements\AbstractDataObject im
 
         assert('!isset($whereClause); // Cannot redeclare var $whereClause');
         $whereClause = array(
-            array(\Yana\Security\Users\Tables\RequirementEnumeration::ACTION, '=', (string) $action),
+            array(\Yana\Security\Data\Tables\RequirementEnumeration::ACTION, '=', (string) $action),
             'and',
-            array(\Yana\Security\Users\Tables\RequirementEnumeration::IS_ACTIVE, '=', true)
+            array(\Yana\Security\Data\Tables\RequirementEnumeration::IS_ACTIVE, '=', true)
         );
 
         // find the required permission levels to perform the requested action
         assert('!isset($row); // Cannot redeclare var $row');
-        foreach ($database->select(\Yana\Security\Users\Tables\RequirementEnumeration::TABLE, $whereClause) as $row)
+        foreach ($database->select(\Yana\Security\Data\Tables\RequirementEnumeration::TABLE, $whereClause) as $row)
         {
             $requirements[] = $this->_mapRowFromDatabasetoEntity($row);
         }
@@ -112,8 +112,8 @@ class DataReader extends \Yana\Security\Rules\Requirements\AbstractDataObject im
         assert('is_int($id); // Invalid argument type: $id. Integer expected');
 
         assert('!isset($row); // Cannot redeclare var $row');
-        $row = $this->_getDatasource()->select(\Yana\Security\Users\Tables\RequirementEnumeration::TABLE . '.' . (string) $id,
-            array(\Yana\Security\Users\Tables\RequirementEnumeration::IS_ACTIVE, '=', true));
+        $row = $this->_getDatasource()->select(\Yana\Security\Data\Tables\RequirementEnumeration::TABLE . '.' . (string) $id,
+            array(\Yana\Security\Data\Tables\RequirementEnumeration::IS_ACTIVE, '=', true));
 
         if (empty($row)) {
             throw new \Yana\Security\Rules\Requirements\NotFoundException("No such rule found.");
@@ -135,7 +135,7 @@ class DataReader extends \Yana\Security\Rules\Requirements\AbstractDataObject im
     public function loadListOfGroups()
     {
         return $this->_getDatasource()
-            ->select(\Yana\Security\Users\Tables\GroupEnumeration::TABLE . '.*.' . \Yana\Security\Users\Tables\GroupEnumeration::NAME);
+            ->select(\Yana\Security\Data\Tables\GroupEnumeration::TABLE . '.*.' . \Yana\Security\Data\Tables\GroupEnumeration::NAME);
     }
 
     /**
@@ -151,7 +151,7 @@ class DataReader extends \Yana\Security\Rules\Requirements\AbstractDataObject im
     public function loadListOfRoles()
     {
         return $this->_getDatasource()
-            ->select(\Yana\Security\Users\Tables\RoleEnumeration::TABLE . '.*.' . \Yana\Security\Users\Tables\RoleEnumeration::NAME);
+            ->select(\Yana\Security\Data\Tables\RoleEnumeration::TABLE . '.*.' . \Yana\Security\Data\Tables\RoleEnumeration::NAME);
     }
 }
 

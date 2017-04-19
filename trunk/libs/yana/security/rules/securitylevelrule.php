@@ -75,12 +75,12 @@ class SecurityLevelRule extends \Yana\Security\Rules\AbstractRule
      * @param   \Yana\Security\Rules\Requirements\IsRequirement  $required   list of required permissions
      * @param   string                                           $profileId  current application-profile id
      * @param   string                                           $action     name of the action the user tries to execute
-     * @param   \Yana\Security\Users\IsUser                      $user       user information to check
+     * @param   \Yana\Security\Data\IsUser                       $user       user information to check
      * @return  bool
      *
      * @todo    Implement getSecurityLevel()
      */
-    public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, $profileId, $action, \Yana\Security\Users\IsUser $user)
+    public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, $profileId, $action, \Yana\Security\Data\IsUser $user)
     {
         if ($required->getLevel() < 0) {
             return null;
@@ -94,7 +94,7 @@ class SecurityLevelRule extends \Yana\Security\Rules\AbstractRule
             return false;
         }
 
-        $securityLevel = (int) \Yana\Security\Users\SessionManager::getInstance()->getSecurityLevel($userName, $profileId);
+        $securityLevel = (int) \Yana\Security\Data\SessionManager::getInstance()->getSecurityLevel($userName, $profileId);
 
         return $required->getLevel() <= $securityLevel;
     }
