@@ -88,7 +88,7 @@ interface IsDataWriter
      *
      * Already existing entries are skipped, so that user-defined names are not overwritten.
      *
-     * @see     \Yana\Security\Users\Tables\RoleEnumeration
+     * @see     \Yana\Security\Data\Tables\RoleEnumeration
      * @param   array  $roles  rows for database table
      * @return  \Yana\Security\Rules\Requirements\DataWriter
      * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if the new entries could not be inserted
@@ -100,7 +100,7 @@ interface IsDataWriter
      *
      * Already existing entries are skipped, so that user-defined names are not overwritten.
      *
-     * @see     \Yana\Security\Users\Tables\GroupEnumeration
+     * @see     \Yana\Security\Data\Tables\GroupEnumeration
      * @param   array  $groups  rows for database table
      * @return  \Yana\Security\Rules\Requirements\DataWriter
      * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if the new entries could not be inserted
@@ -112,7 +112,7 @@ interface IsDataWriter
      *
      * Already existing entries are updated.
      *
-     * @see     \Yana\Security\Users\Tables\ActionEnumeration
+     * @see     \Yana\Security\Data\Tables\ActionEnumeration
      * @param   array  $actions  rows for database table
      * @return  \Yana\Security\Rules\Requirements\DataWriter
      * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if the new entries could not be inserted

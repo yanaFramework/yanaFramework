@@ -184,17 +184,17 @@ class DataWriterHelper extends \Yana\Core\Object
         assert('is_string($name); // Invalid argument type: $name. String expected');
 
         $row = array(
-            \Yana\Security\Users\Tables\RequirementEnumeration::IS_PREDEFINED => true,
-            \Yana\Security\Users\Tables\RequirementEnumeration::ACTION => (string) $name
+            \Yana\Security\Data\Tables\RequirementEnumeration::IS_PREDEFINED => true,
+            \Yana\Security\Data\Tables\RequirementEnumeration::ACTION => (string) $name
         );
         if ($rule->getGroup() !== "") {
-            $row[\Yana\Security\Users\Tables\RequirementEnumeration::GROUP] = mb_strtolower($rule->getGroup());
+            $row[\Yana\Security\Data\Tables\RequirementEnumeration::GROUP] = mb_strtolower($rule->getGroup());
         }
         if ($rule->getRole() !== "") {
-            $row[\Yana\Security\Users\Tables\RequirementEnumeration::ROLE] = mb_strtolower($rule->getRole());
+            $row[\Yana\Security\Data\Tables\RequirementEnumeration::ROLE] = mb_strtolower($rule->getRole());
         }
         if ((int) $rule->getLevel() !== 0) {
-            $row[\Yana\Security\Users\Tables\RequirementEnumeration::LEVEL] = (int) $rule->getLevel();
+            $row[\Yana\Security\Data\Tables\RequirementEnumeration::LEVEL] = (int) $rule->getLevel();
         }
 
         return $row;

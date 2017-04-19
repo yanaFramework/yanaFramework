@@ -65,11 +65,11 @@ interface IsChecker
      *
      * @param   string                       $profileId  profile id in upper-case
      * @param   string                       $action     action parameter in lower-case
-     * @param   \Yana\Security\Users\IsUser  $user       user information to check
+     * @param   \Yana\Security\Data\IsUser   $user       user information to check
      * @return  bool
      * @throws  \Yana\Security\Rules\Requirements\NotFoundException  when no requirements are found
      */
-    public function checkRules($profileId, $action, \Yana\Security\Users\IsUser $user);
+    public function checkRules($profileId, $action, \Yana\Security\Data\IsUser $user);
 
     /**
      * Check rules by requirement.
@@ -81,10 +81,10 @@ interface IsChecker
      * @param   \Yana\Security\Rules\Requirements\IsRequirement  $requirement  to check for
      * @param   string                                           $profileId    profile id in upper-case
      * @param   string                                           $action       action parameter in lower-case
-     * @param   \Yana\Security\Users\IsUser                      $user         user information to check
+     * @param   \Yana\Security\Data\IsUser                       $user         user information to check
      * @return  bool
      */
-    public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, \Yana\Security\Users\IsUser $user);
+    public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, \Yana\Security\Data\IsUser $user);
 
 }
 
