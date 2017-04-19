@@ -73,7 +73,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
             $YANA->setVar("SESSION_ID", session_id());
             $YANA->setVar("SESSION_NAME", session_name());
         }
-        \Yana\Security\Users\SessionManager::addSecurityRule(array(__CLASS__, 'checkSecurityLevel'));
+        \Yana\Security\Data\SessionManager::addSecurityRule(array(__CLASS__, 'checkSecurityLevel'));
     }
 
     /**
@@ -189,7 +189,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
             return $requiredLevel <= self::$securityLevel;
         }
 
-        $securityLevel = (int) \Yana\Security\Users\SessionManager::getInstance()->getSecurityLevel($userName, $profileId);
+        $securityLevel = (int) \Yana\Security\Data\SessionManager::getInstance()->getSecurityLevel($userName, $profileId);
 
         return $requiredLevel <= $securityLevel;
     }
@@ -235,7 +235,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
     public function get_lost_pwd(array $ARGS)
     {
         $YANA = $this->_getApplication();
-        $database = \Yana\Security\Users\SessionManager::getDatasource();
+        $database = \Yana\Security\Data\SessionManager::getDatasource();
         // check captcha field
         if (\Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
             if ($YANA->callAction("security_check_image", $ARGS) === false) {
@@ -408,13 +408,13 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
     /**
      * Set new password
      *
-     * @param       \Yana\Security\Users\IsUser  $user         user instance
+     * @param       \Yana\Security\Data\IsUser   $user         user instance
      * @param       string                       $newPwd       new password
      * @param       string                       $repeatPwd    new password
      * @throws      \Yana\Core\Exceptions\Security\PasswordDoesNotMatchException  when the passwords don't match
      * @throws      \Yana\Core\Exceptions\Security\PasswordException              when the password was not saved
      */
-    private function _setPwd(\Yana\Security\Users\IsUser $user, $newPwd, $repeatPwd)
+    private function _setPwd(\Yana\Security\Data\IsUser $user, $newPwd, $repeatPwd)
     {
         if ($newPwd !== $repeatPwd) {
             $message ="The two new passwords entered do not match.";
@@ -442,7 +442,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
     {
         assert('is_string($recoveryId); // Invalid argument $recoveryId: string expected');
 
-        $database = \Yana\Security\Users\SessionManager::getDatasource();
+        $database = \Yana\Security\Data\SessionManager::getDatasource();
         $user = $database->select('user', array('user_recover_id', '=', $recoveryId));
 
         assert('is_array($user); // $user must be of type array');
@@ -539,12 +539,12 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * @param  string  $userName  identifies user
-     * @return  \Yana\Security\Users\IsUser
+     * @param   string  $userName  identifies user
+     * @return  \Yana\Security\Data\IsUser
      */
     private function _loadUser($userName = "")
     {
-        $builder = new \Yana\Security\Users\UserBuilder();
+        $builder = new \Yana\Security\Data\UserBuilder();
         if ($userName > "") {
             $user = $builder->buildFromUserName($userName);
         } else {

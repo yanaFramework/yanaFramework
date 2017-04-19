@@ -280,7 +280,7 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
         $userName = $newUser['user_id'];
 
         \Yana\User::createUser($userName, $newUser['user_mail']);
-        $db = \Yana\Security\Users\SessionManager::getDatasource();
+        $db = \Yana\Security\Data\SessionManager::getDatasource();
         try {
             $db->update("user.$userName", $newUser)
                 ->commit(); // may throw exception
