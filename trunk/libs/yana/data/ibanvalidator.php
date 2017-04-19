@@ -30,7 +30,7 @@ namespace Yana\Data;
 /**
  * Used for validating bank account information.
  *
- * This validator is based on the IBAN REGISTRY for ISO 13616 in version 50 issued September 2014.
+ * This validator is based on the IBAN REGISTRY for ISO 13616 in version 70 issued April 2017.
  * Note! It will need future updates (probably multiple times a year) when new versions are released.
  * New versions may bring additional valid formats for IBANs for excisting and new member countries.
  *
@@ -132,7 +132,22 @@ class IbanValidator extends \Yana\Data\AbstractValidator
     /**
      * Choose and return IBAN reg-exp based on country.
      *
-     * @param   string  $country  2 character country code based on ISO 13616 version 50
+     * {@internal{
+     * This section may need frequent (monthly) maintenance.
+     *
+     * 1) find the latest release of the "IBAN Registry" here: https://www.swift.com/standards/data-standards/iban
+     * 2) download and open the current PDF
+     * 3) check the document history using the version number mentioned in this documentation
+     * 4) open the coresponding changed pages, and apply the changes to the code below
+     * 5) update the version number in the documentation accordingly
+     *
+     * Example:
+     *
+     * - AL – Albania Documentation = BBAN structure: 8!n16!c 
+     * - Code: 'AL' => $n . '{8}' . $c . '{16}',
+     * }}
+     *
+     * @param   string  $country  2 character country code based on ISO 13616
      * @return  string
      * @throws  \Yana\Data\IbanCountryUnrecognizedException  when the country code is unknown (can be turned off)
      * @throws  \Yana\Data\IbanCountryDisallowedException    when the country code is not allowed (has to be turned on)
@@ -149,88 +164,114 @@ class IbanValidator extends \Yana\Data\AbstractValidator
         $c = '[A-Z0-9]';
         $n = '\d';
         $countryRegEx = array(
-            'AL' => $n . '{8}' . $c . '{16}',
-            'AD' => $n . '{4}' . $n . '{4}' . $c . '{12}',
-            'AT' => $n . '{5}' . $n . '{11}',
-            'AZ' => $a . '{4}' . $c . '{20}',
-            'BH' => $a . '{4}' . $c . '{14}',
-            'BE' => $n . '{3}' . $n . '{7}' . $n . '{2}',
-            'BA' => $n . '{3}' . $n . '{3}' . $n . '{8}' . $n . '{2}',
-            'BR' => $n . '{8}' . $n . '{5}' . $n . '{10}' . $a . '{1}' . $c . '{1}',
-            'BG' => $a . '{4}' . $n . '{4}' . $n . '{2}' . $c . '{8}',
-            'CR' => $n . '{3}' . $n . '{14}',
-            'HR' => $n . '{7}' . $n . '{10}',
-            'CY' => $n . '{3}' . $n . '{5}' . $c . '{16}',
-            'CZ' => $n . '{4}' . $n . '{6}' . $n . '{10}',
-            'DK' => $n . '{4}' . $n . '{9}' . $n . '{1}',
-            'FO' => $n . '{4}' . $n . '{9}' . $n . '{1}',
-            'GL' => $n . '{4}' . $n . '{9}' . $n . '{1}',
-            'DO' => $c . '{4}' . $n . '{20}',
-            'EE' => $n . '{2}' . $n . '{2}' . $n . '{11}' . $n . '{1}',
-            'FI' => $n . '{6}' . $n . '{7}' . $n . '{1}',
-            'FR' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}',
-            'GF' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}',
-            'GP' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}',
-            'MQ' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}',
-            'RE' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}',
-            'PF' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}',
-            'TF' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}',
-            'YT' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}',
-            'NC' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}',
-            'BL' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}',
-            'MF' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}',
-            'PM' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}',
-            'WF' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}',
-            'GE' => $a . '{2}' . $n . '{16}',
-            'DE' => $n . '{8}' . $n . '{10}',
-            'GI' => $a . '{4}' . $c . '{15}',
-            'GR' => $n . '{3}' . $n . '{4}' . $c . '{16}',
-            'GT' => $c . '{4}' . $c . '{20}',
-            'HU' => $n . '{3}' . $n . '{4}' . $n . '{1}' . $n . '{15}' . $n . '{1}',
-            'IS' => $n . '{4}' . $n . '{2}' . $n . '{6}' . $n . '{10}',
-            'IE' => $a . '{4}' . $n . '{6}' . $n . '{8}',
-            'IL' => $n . '{3}' . $n . '{3}' . $n . '{13}',
-            'IL' => $n . '{3}' . $n . '{3}' . $n . '{13}',
-            'IT' => $a . '{1}' . $n . '{5}' . $n . '{5}' . $c . '{12}',
-            'JO' => $a . '{4}' . $n . '{4}' . $c . '{18}',
-            'KZ' => $n . '{3}' . $c . '{13}',
-            'XK' => $n . '{4}' . $n . '{10}' . $n . '{2}',
-            'KW' => $a . '{4}' . $c . '{22}',
-            'LV' => $a . '{4}' . $c . '{13}',
-            'LB' => $n . '{4}' . $c . '{20}',
-            'LI' => $n . '{5}' . $c . '{12}',
-            'LT' => $n . '{5}' . $n . '{11}',
-            'LU' => $n . '{3}' . $c . '{13}',
-            'MK' => $n . '{3}' . $c . '{10}' . $n . '{2}',
-            'MT' => $a . '{4}' . $n . '{5}' . $c . '{18}',
-            'MR' => $n . '{5}' . $n . '{5}' . $n . '{11}' . $n . '{2}',
-            'MU' => $a . '{4}' . $n . '{2}' . $n . '{2}' . $n . '{12}' . $n . '{3}' . $a . '{3}',
-            'MD' => $c . '{2}' . $c . '{18}',
-            'MC' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}',
-            'ME' => $n . '{3}' . $n . '{13}' . $n . '{2}',
-            'NL' => $a . '{4}' . $n . '{10}',
-            'NO' => $n . '{4}' . $n . '{6}' . $n . '{1}',
-            'PK' => $a . '{4}' . $c . '{16}',
-            'PS' => $a . '{4}' . $c . '{21}',
-            'PL' => $n . '{8}' . $n . '{16}',
-            'PT' => $n . '{4}' . $n . '{4}' . $n . '{11}' . $n . '{2}',
-            'RO' => $a . '{4}' . $c . '{16}',
-            'QA' => $a . '{4}' . $c . '{21}',
-            'SM' => $a . '{1}' . $n . '{5}' . $n . '{5}' . $c . '{12}',
-            'SA' => $n . '{2}' . $c . '{18}',
-            'RS' => $n . '{3}' . $n . '{13}' . $n . '{2}',
-            'SK' => $n . '{4}' . $n . '{6}' . $n . '{10}',
-            'SI' => $n . '{5}' . $n . '{8}' . $n . '{2}',
-            'ES' => $n . '{4}' . $n . '{4}' . $n . '{1}' . $n . '{1}' . $n . '{10}',
-            'SE' => $n . '{3}' . $n . '{16}' . $n . '{1}',
-            'CH' => $n . '{5}' . $c . '{12}',
-            'TL' => $n . '{3}' . $n . '{14}' . $n . '{2}',
-            'TN' => $n . '{2}' . $n . '{3}' . $n . '{13}' . $n . '{2}',
-            'TR' => $n . '{5}' . $c . '{1}' . $c . '{16}',
-            'AE' => $n . '{3}' . $n . '{16}',
-            'GB' => $a . '{4}' . $n . '{6}' . $n . '{8}',
-            'VG' => $a . '{4}' . $n . '{16}'
+            'AD' => $n . '{4}' . $n . '{4}' . $c . '{12}', // Andorra
+            'AE' => $n . '{3}' . $n . '{16}', // United Arab Emirates
+            'AL' => $n . '{8}' . $c . '{16}', // Albania
+            'AT' => $n . '{5}' . $n . '{11}', // Austria
+            'AZ' => $a . '{4}' . $c . '{20}', // Azerbaijan
+            'BA' => $n . '{3}' . $n . '{3}' . $n . '{8}' . $n . '{2}', // Bosnia and Herzegovina
+            'BE' => $n . '{3}' . $n . '{7}' . $n . '{2}', // Belgium
+            'BG' => $a . '{4}' . $n . '{4}' . $n . '{2}' . $c . '{8}', // Bulgaria
+            'BH' => $a . '{4}' . $c . '{14}', // Bahrain
+            'BR' => $n . '{8}' . $n . '{5}' . $n . '{10}' . $a . '{1}' . $c . '{1}', // Brazil
+            'BY' => $c . '{4}' . $n . '{4}' . $c . '{16}', // Republic of Belarus
+            'CH' => $n . '{5}' . $c . '{12}', // Switzerland
+            'CR' => $n . '{4}' . $n . '{14}', // Costa Rica
+            'CY' => $n . '{3}' . $n . '{5}' . $c . '{16}', // Cyprus
+            'CZ' => $n . '{4}' . $n . '{6}' . $n . '{10}', // Czech Republic
+            'DE' => $n . '{8}' . $n . '{10}', // Germany
+            'DK' => $n . '{4}' . $n . '{9}' . $n . '{1}', // Denmark
+            'DO' => $c . '{4}' . $n . '{20}', // Dominican Republic
+            'EE' => $n . '{2}' . $n . '{2}' . $n . '{11}' . $n . '{1}', // Estonia
+            'ES' => $n . '{4}' . $n . '{4}' . $n . '{1}' . $n . '{1}' . $n . '{10}', // Spain
+            'FI' => $n . '{3}' . $n . '{11}', // Finland
+            'FO' => $n . '{4}' . $n . '{9}' . $n . '{1}', // Faroe Islands
+            'FR' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}', // France
+            'GB' => $a . '{4}' . $n . '{6}' . $n . '{8}', // United Kingdom
+            'GE' => $a . '{2}' . $n . '{16}', // Georgia
+            'GI' => $a . '{4}' . $c . '{15}', // Gibraltar
+            'GL' => $n . '{4}' . $n . '{9}' . $n . '{1}', // Greenland
+            'GR' => $n . '{3}' . $n . '{4}' . $c . '{16}', // Greece
+            'GT' => $c . '{4}' . $c . '{20}', // Guatemala
+            'HR' => $n . '{7}' . $n . '{10}', // Croatia
+            'HU' => $n . '{3}' . $n . '{4}' . $n . '{1}' . $n . '{15}' . $n . '{1}', // Hungary
+            'IE' => $a . '{4}' . $n . '{6}' . $n . '{8}', // Ireland
+            'IL' => $n . '{3}' . $n . '{3}' . $n . '{13}', // Israel
+            'IL' => $a . '{4}' . $n . '{3}' . $n . '{12}', // Iraq
+            'IS' => $n . '{4}' . $n . '{2}' . $n . '{6}' . $n . '{10}', // Iceland
+            'IT' => $a . '{1}' . $n . '{5}' . $n . '{5}' . $c . '{12}', // Italy
+            'JO' => $a . '{4}' . $n . '{4}' . $c . '{18}', // Jordan
+            'KW' => $a . '{4}' . $c . '{22}', // Kuwait
+            'KZ' => $n . '{3}' . $c . '{13}', // Kazakhstan
+            'LB' => $n . '{4}' . $c . '{20}', // Lebanon
+            'LC' => $a . '{4}' . $c . '{24}', // Saint Lucia
+            'LI' => $n . '{5}' . $c . '{12}', // Liechtenstein
+            'LT' => $n . '{5}' . $n . '{11}', // Lithuania
+            'LU' => $n . '{3}' . $c . '{13}', // Luxembourg
+            'LV' => $a . '{4}' . $c . '{13}', // Latvia
+            'MC' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}', // Monaco
+            'MD' => $c . '{2}' . $c . '{18}', // Moldova
+            'ME' => $n . '{3}' . $n . '{13}' . $n . '{2}', // Montenegro
+            'MK' => $n . '{3}' . $c . '{10}' . $n . '{2}', // Macedonia
+            'MR' => $n . '{5}' . $n . '{5}' . $n . '{11}' . $n . '{2}', // Mauritania
+            'MT' => $a . '{4}' . $n . '{5}' . $c . '{18}', // Malta
+            'MU' => $a . '{4}' . $n . '{2}' . $n . '{2}' . $n . '{12}' . $n . '{3}' . $a . '{3}', // Mauritius
+            'NL' => $a . '{4}' . $n . '{10}', // Netherlands
+            'NO' => $n . '{4}' . $n . '{6}' . $n . '{1}', // Norway
+            'PK' => $a . '{4}' . $c . '{16}', // Pakistan
+            'PL' => $n . '{8}' . $n . '{16}', // Poland
+            'PS' => $a . '{4}' . $c . '{21}', // Palestine
+            'PT' => $n . '{4}' . $n . '{4}' . $n . '{11}' . $n . '{2}', // Portugal
+            'QA' => $a . '{4}' . $c . '{21}', // Qatar
+            'RO' => $a . '{4}' . $c . '{16}', // Romania
+            'RS' => $n . '{3}' . $n . '{13}' . $n . '{2}', // Serbia
+            'SA' => $n . '{2}' . $c . '{18}', // Saudi Arabia
+            'SC' => $a . '{4}' . $n . '{2}' . $n . '{2}' . $n . '{16}' . $a . '{3}', // Seychelles
+            'SE' => $n . '{3}' . $n . '{16}' . $n . '{1}', // Sweden
+            'SI' => $n . '{5}' . $n . '{8}' . $n . '{2}', // Slovenia
+            'SK' => $n . '{4}' . $n . '{6}' . $n . '{10}', // Slovakia
+            'SM' => $a . '{1}' . $n . '{5}' . $n . '{5}' . $c . '{12}', // San Marino
+            'ST' => $n . '{4}' . $n . '{4}' . $c . '{11}' . $n . '{2}', // Sao Tome and Principe
+            'SV' => $a . '{4}' . $n . '{20}', // El Salvador
+            'TL' => $n . '{3}' . $n . '{14}' . $n . '{2}', // Timor-Leste
+            'TN' => $n . '{2}' . $n . '{3}' . $n . '{13}' . $n . '{2}', // Tunisia
+            'TR' => $n . '{5}' . $n . '{1}' . $c . '{16}', // Turkey
+            'UA' => $n . '{6}' . $c . '{19}', // Ukraine
+            'VG' => $a . '{4}' . $n . '{16}', // Virgin Islands
+            'XK' => $n . '{4}' . $n . '{10}' . $n . '{2}' // Kosovo
         );
+
+        // The following countries are not included in ISO 13616, but nevertheless accept IBANs
+        $unofficialCountriesRegEx = array(
+            'AO' => $n . '{6}' . $n . '{8}', // Aland Islands (unofficial)
+            'AX' => $n . '{21}', // Angola (unofficial)
+            'BF' => $n . '{23}', // Burkina Faso (unofficial)
+            'BI' => $n . '{12}', // Burundi (unofficial)
+            'BJ' => $a . '{1}' . $n . '{23}', // Benin (unofficial)
+            'BL' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}', // Saint Barthelemy (unofficial)
+            'CI' => $a . '{1}' . $n . '{23}', // Côte d'Ivoire (unofficial)
+            'CM' => $n . '{23}', // Cameroon (unofficial)
+            'CV' => $n . '{21}', // Cape Verde (unofficial)
+            'DZ' => $n . '{20}', // Algeria (unofficial)
+            'GF' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}', // French Guiana (unofficial)
+            'GP' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}', // Guadelope (unofficial)
+            'PF' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}', // French Polynesia (unofficial)
+            'TF' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}', // French Southern Territories (unofficial)
+            'IR' => $n . '{22}', // Iran (unofficial)
+            'MG' => $n . '{23}', // Madagascar (unofficial)
+            'ML' => $a . '{1}' . $n . '{23}', // Mali (unofficial)
+            'MQ' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}', // Martinique (unofficial)
+            'MZ' => $n . '{21}', // Mozambique (unofficial)
+            'NC' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}', // New Caledonia (unofficial)
+            'MF' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}', // Saint Martin (unofficial)
+            'PM' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}', // Saint Pierre et Miquelon (unofficial)
+            'RE' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}', // Reunion (unofficial)
+            'SN' => $a . '{1}' . $n . '{23}', // Senegal (unofficial)
+            'WF' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}', // Wallis and Futuna Islands (unofficial)
+            'YT' => $n . '{5}' . $n . '{5}' . $c . '{11}' . $n . '{2}', // Mayotte (unofficial)
+        );
+
+        $countryRegEx += $unofficialCountriesRegEx; // this adds the unofficial codes
 
         assert('!isset($regExp); // Cannot redeclare var $regExp');
         if (!isset($countryRegEx[$country])) {
@@ -255,7 +296,7 @@ class IbanValidator extends \Yana\Data\AbstractValidator
      *
      * @param   string  $iban  International bank account number
      * @return  string
-     * @link    http://www.swift.com/dsp/resources/documents/IBAN_Registry.pdf
+     * @link    https://www.swift.com/sites/default/files/resources/swift_standards_ibanregistry.pdf
      */
     private function _isStructureValid($iban)
     {
