@@ -68,7 +68,7 @@ class NullBehaviorTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsLoggedIn()
     {
-        $this->assertTrue($this->object->isLoggedIn(new \Yana\Security\Users\Entity('test')));
+        $this->assertTrue($this->object->isLoggedIn(new \Yana\Security\Data\Users\Entity('test')));
     }
 
     /**
@@ -76,7 +76,7 @@ class NullBehaviorTest extends \PHPUnit_Framework_TestCase
      */
     public function testHandleLogin()
     {
-        $this->assertTrue($this->object->handleLogin(new \Yana\Security\Users\Entity('test')) instanceof \Yana\Security\Logins\IsBehavior);
+        $this->assertTrue($this->object->handleLogin(new \Yana\Security\Data\Users\Entity('test')) instanceof \Yana\Security\Logins\IsBehavior);
     }
 
     /**
@@ -84,7 +84,7 @@ class NullBehaviorTest extends \PHPUnit_Framework_TestCase
      */
     public function testHandleLogout()
     {
-        $this->assertTrue($this->object->handleLogout(new \Yana\Security\Users\Entity('test')) instanceof \Yana\Security\Logins\IsBehavior);
+        $this->assertTrue($this->object->handleLogout(new \Yana\Security\Data\Users\Entity('test')) instanceof \Yana\Security\Logins\IsBehavior);
     }
 
 }

@@ -76,7 +76,7 @@ class NullWrapperTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetCurrentUserName()
     {
-        $user = new \Yana\Security\Users\Entity("Test äß");
+        $user = new \Yana\Security\Data\Users\Entity("Test äß");
         $this->assertEquals($user->getId(), $this->object->setCurrentUserName($user)->getCurrentUserName());
     }
 
