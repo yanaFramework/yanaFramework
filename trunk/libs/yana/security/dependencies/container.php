@@ -48,6 +48,20 @@ class Container extends \Yana\Core\Object
     private $_dataConnection = null;
 
     /**
+     * Level data adapter.
+     *
+     * @var  \Yana\Security\Data\SecurityLevels\Adapter
+     */
+    private $_levelsAdapter = null;
+
+    /**
+     * Rules data adapter.
+     *
+     * @var  \Yana\Security\Data\SecurityRules\Adapter
+     */
+    private $_rulesAdapter = null;
+
+    /**
      * @var  array
      */
     private $_defaultEventUser = null;
@@ -68,6 +82,8 @@ class Container extends \Yana\Core\Object
     private $_session = null;
 
     /**
+     * Handles the login- and logout-functionality.
+     *
      * @var  \Yana\Security\Logins\IsBehavior
      */
     private $_loginBehavior = null;
@@ -88,6 +104,8 @@ class Container extends \Yana\Core\Object
     private $_passwordGenerator = null;
 
     /**
+     * Handles the changing of passwords.
+     *
      * @var  \Yana\Security\Passwords\Behaviors\IsBehavior
      */
     private $_passwordBehavior = null;
@@ -296,6 +314,33 @@ class Container extends \Yana\Core\Object
         }
         return $this->_passwordBehavior;
     }
+
+    /**
+     * Retrieve levels data adapter.
+     * 
+     * @return  \Yana\Security\Data\SecurityLevels\Adapter
+     */
+    public function getLevelsAdapter()
+    {
+        if (!isset($this->_levelsAdapter)) {
+            $this->_levelsAdapter = new \Yana\Security\Data\SecurityLevels\Adapter($this->getDataConnection());
+        }
+        return $this->_levelsAdapter;
+    }
+
+    /**
+     * Retrieve rules data adapter.
+     *
+     * @return  \Yana\Security\Data\SecurityRules\Adapter
+     */
+    public function getRulesAdapter()
+    {
+        if (!isset($this->_rulesAdapter)) {
+            $this->_rulesAdapter = new \Yana\Security\Data\SecurityRules\Adapter($this->getDataConnection());
+        }
+        return $this->_rulesAdapter;
+    }
+
 
 }
 
