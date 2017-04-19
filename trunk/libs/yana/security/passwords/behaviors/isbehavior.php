@@ -95,17 +95,17 @@ interface IsBehavior
     /**
      * Get wrapped user.
      *
-     * @return  \Yana\Security\Users\IsUser
+     * @return  \Yana\Security\Data\IsUser
      */
     public function getUser();
 
     /**
      * Replaces currently wrapped user.
      *
-     * @param   \Yana\Security\Users\IsUser  $user  entity to wrap
+     * @param   \Yana\Security\Data\IsUser  $user  entity to wrap
      * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
      */
-    public function setUser(\Yana\Security\Users\IsUser $user);
+    public function setUser(\Yana\Security\Data\IsUser $user);
 
 }
 
