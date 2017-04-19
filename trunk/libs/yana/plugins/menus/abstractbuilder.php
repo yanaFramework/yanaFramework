@@ -190,7 +190,7 @@ abstract class AbstractBuilder extends \Yana\Core\Object implements \Yana\Plugin
         /* @var $menuEntry \Yana\Plugins\Menus\IsEntry */
         foreach ($pluginConfiguration->getMenuEntries() as $action => $menuEntry)
         {
-            if (!\Yana\Security\Users\SessionManager::getInstance()->checkPermission(null, $action)) {
+            if (!\Yana\Security\Data\SessionManager::getInstance()->checkPermission(null, $action)) {
                 continue;
             }
             $menu->setMenuEntry($action, $this->_completeMenuEntry($action, $menuEntry, $pluginConfiguration));
