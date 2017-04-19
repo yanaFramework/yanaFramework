@@ -46,7 +46,7 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
     private $_session = null;
 
     /**
-     * @var  \Yana\Security\Users\IsUser
+     * @var  \Yana\Security\Data\IsUser
      */
     private $_user = null;
 
@@ -82,12 +82,12 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
      * By defaults looks up the currently used user from the session.
      * Returns a GuestUser if none was found.
      *
-     * @return  \Yana\Security\Users\IsUser
+     * @return  \Yana\Security\Data\IsUser
      */
     public function getUser()
     {
         if (!isset($this->_user)) {
-            $userManager = new \Yana\Security\Users\UserBuilder();
+            $userManager = new \Yana\Security\Data\UserBuilder();
             $this->_user = $userManager->buildFromSession();
         }
         return $this->_user;
@@ -96,10 +96,10 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
     /**
      * Provide user information.
      *
-     * @param   \Yana\Security\Users\IsUser  $user  containing the current users active-state
+     * @param   \Yana\Security\Data\IsUser  $user  containing the current users active-state
      * @return   \Yana\Views\Helpers\PostFilters\SpamFilter
      */
-    public function setUser(\Yana\Security\Users\IsUser $user)
+    public function setUser(\Yana\Security\Data\IsUser $user)
     {
         $this->_user = $user;
         return $this;
