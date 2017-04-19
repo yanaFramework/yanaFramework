@@ -41,7 +41,7 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
 {
 
     /**
-     * @var  \Yana\Security\Users\IsUser
+     * @var  \Yana\Security\Data\IsUser
      */
     private $_user = null;
 
@@ -70,12 +70,12 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
     /**
      * Get wrapped user.
      *
-     * @return  \Yana\Security\Users\IsUser
+     * @return  \Yana\Security\Data\IsUser
      */
     public function getUser()
     {
         if (!isset($this->_user)) {
-            $this->_user = new \Yana\Security\Users\GuestUser();
+            $this->_user = new \Yana\Security\Data\Users\Guest();
         }
         return $this->_user;
     }
@@ -103,10 +103,10 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
     /**
      * Replaces currently wrapped user.
      *
-     * @param   \Yana\Security\Users\IsUser  $user  entity to wrap
+     * @param   \Yana\Security\Data\IsUser  $user  entity to wrap
      * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
      */
-    public function setUser(\Yana\Security\Users\IsUser $user)
+    public function setUser(\Yana\Security\Data\IsUser $user)
     {
         $this->_user = $user;
         return $this;
