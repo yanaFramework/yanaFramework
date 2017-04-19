@@ -37,7 +37,7 @@ namespace Yana\Security\Dependencies;
  *
  * @ignore
  */
-class PasswordContainer extends \Yana\Core\Object implements \Yana\Security\Users\Behaviors\IsBuilderDependencyContainer
+class PasswordContainer extends \Yana\Core\Object implements \Yana\Security\Data\Behaviors\IsBuilderDependencyContainer
 {
 
     /**

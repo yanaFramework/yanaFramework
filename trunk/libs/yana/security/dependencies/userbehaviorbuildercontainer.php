@@ -37,7 +37,7 @@ namespace Yana\Security\Dependencies;
  *
  * @ignore
  */
-class UserBehaviorBuilderContainer extends \Yana\Core\Object implements \Yana\Security\Users\Behaviors\IsBuilderDependencyContainer
+class UserBehaviorBuilderContainer extends \Yana\Core\Object implements \Yana\Security\Data\Behaviors\IsBuilderDependencyContainer
 {
 
     /**
