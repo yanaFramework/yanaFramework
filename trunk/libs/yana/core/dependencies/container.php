@@ -90,7 +90,7 @@ class Container extends \Yana\Core\Object
     /**
      * to read and write user data and permissions
      *
-     * @var  \Yana\Security\Users\SessionManager
+     * @var  \Yana\Security\Data\SessionManager
      */
     private $_session = null;
 
@@ -261,12 +261,12 @@ class Container extends \Yana\Core\Object
      * The SessionManager class is used to manage user information
      * and resolve permissions.
      * 
-     * @return \Yana\Security\Users\SessionManager
+     * @return \Yana\Security\Data\SessionManager
      */
     public function getSession()
     {
         if (!isset($this->_session)) {
-            $this->_session = \Yana\Security\Users\SessionManager::getInstance();
+            $this->_session = \Yana\Security\Data\SessionManager::getInstance();
         }
         return $this->_session;
     }
