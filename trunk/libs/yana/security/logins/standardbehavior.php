@@ -56,10 +56,10 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
      * Thus: if a session-id is shorter than 20 bytes (40 digits) this is an obvious hint that
      * either the user has not logged-in, or the session id is not valid.
      *
-     * @param   \Yana\Security\Users\IsUser  $user  entity
+     * @param   \Yana\Security\Data\IsUser  $user  entity
      * @return  bool
      */
-    public function isLoggedIn(\Yana\Security\Users\IsUser $user)
+    public function isLoggedIn(\Yana\Security\Data\IsUser $user)
     {
         assert('!isset($session); // Cannot redeclare var $session');
         $session = $this->_getSession();
@@ -88,11 +88,11 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
      *
      * Returns bool(true) on success and bool(false) on error.
      *
-     * @param   \Yana\Security\Users\IsUser  $user  entity
+     * @param   \Yana\Security\Data\IsUser  $user  entity
      * @return  self
      * @throws  \Yana\Core\Exceptions\Security\InvalidLoginException  when access is denied
      */
-    public function handleLogin(\Yana\Security\Users\IsUser $user)
+    public function handleLogin(\Yana\Security\Data\IsUser $user)
     {
         assert('!isset($session); // Cannot redeclare var $session');
         $session = $this->_getSession();
@@ -121,10 +121,10 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
      * Initializes session user id.
      *
      * @param   \Yana\Security\Sessions\IsWrapper  $session  some session wrapper
-     * @param   \Yana\Security\Users\IsUser        $user     which is to be logged in
+     * @param   \Yana\Security\Data\IsUser        $user     which is to be logged in
      * @return  \Yana\Security\Logins\StandardBehavior
      */
-    private function _setupSessionUserId(\Yana\Security\Sessions\IsWrapper $session, \Yana\Security\Users\IsUser $user)
+    private function _setupSessionUserId(\Yana\Security\Sessions\IsWrapper $session, \Yana\Security\Data\IsUser $user)
     {
         $sessionUserId = md5($session->getId());
         // save a copy to check validity of session against data-source later
@@ -139,10 +139,10 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
      * Initializes session values like prefered language.
      *
      * @param   \Yana\Security\Sessions\IsWrapper  $session  some session wrapper
-     * @param   \Yana\Security\Users\IsUser        $user     which is to be logged in
+     * @param   \Yana\Security\Data\IsUser        $user     which is to be logged in
      * @return  \Yana\Security\Logins\StandardBehavior
      */
-    private function _setupSessionDataOnLogin(\Yana\Security\Sessions\IsWrapper $session, \Yana\Security\Users\IsUser $user)
+    private function _setupSessionDataOnLogin(\Yana\Security\Sessions\IsWrapper $session, \Yana\Security\Data\IsUser $user)
     {
         $session->setCurrentUserName($user);
         $session->setApplicationUserId($this->_getSessionIdGenerator()->createApplicationUserId());
@@ -165,10 +165,10 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
     /**
      * Updates user entity with login time and login count.
      *
-     * @param   \Yana\Security\Users\IsUser  $user  which is to be logged in
+     * @param   \Yana\Security\Data\IsUser  $user  which is to be logged in
      * @return  \Yana\Security\Logins\StandardBehavior
      */
-    private function _updateUserDataOnLogin(\Yana\Security\Users\IsUser $user)
+    private function _updateUserDataOnLogin(\Yana\Security\Data\IsUser $user)
     {
         $user
             // set time of last login to current timestamp
@@ -183,10 +183,10 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
     /**
      * Destroy the current session and clear all session data.
      *
-     * @param   \Yana\Security\Users\IsUser  $user  entity
+     * @param   \Yana\Security\Data\IsUser  $user  entity
      * @return  self
      */
-    public function handleLogout(\Yana\Security\Users\IsUser $user)
+    public function handleLogout(\Yana\Security\Data\IsUser $user)
     {
         assert('!isset($session); // Cannot redeclare var $session');
         $session = $this->_getSession();
