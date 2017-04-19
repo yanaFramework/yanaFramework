@@ -47,14 +47,22 @@ class Facade extends \Yana\Core\Object
 {
 
     /**
-     * @var  \Yana\Security\Rules\CacheableChecker
+     * @var  \Yana\Security\Dependencies\Container
      */
-    private $_rulesChecker = null;
+    private $_container = null;
 
     /**
-     * @var  \Yana\Security\Sessions\IsWrapper
+     * Creates dependency container on demand and returns it.
+     *
+     * @return  \Yana\Security\Dependencies\Container
      */
-    private $_session = null;
+    protected function _getContainer()
+    {
+        if (!isset($this->_container)) {
+            $this->_container = new \Yana\Security\Dependencies\Container();
+        }
+        return $this->_container;
+    }
 
     /**
      * Creates a session wrapper on demand and returns it.
@@ -63,10 +71,7 @@ class Facade extends \Yana\Core\Object
      */
     protected function _getSession()
     {
-        if (!isset($this->_session)) {
-            $this->_session = new \Yana\Security\Sessions\Wrapper();
-        }
-        return $this->_session;
+        return $this->_getContainer()->getSession();
     }
 
     /**
@@ -76,16 +81,13 @@ class Facade extends \Yana\Core\Object
      */
     protected function _getRulesChecker()
     {
-        if (!isset($this->_rulesChecker)) {
-            $this->_rulesChecker = new \Yana\Security\Rules\CacheableChecker($this->_createDataReader());
-        }
-        return $this->_rulesChecker;
+        return $this->_getContainer()->getRulesChecker();
     }
 
     /**
      * @return \Yana\Security\Rules\Requirements\DataReader
      */
-    protected function _createDataReader()
+    private function _createDataReader()
     {
         $default = \Yana\Application::getDefault('event.user');
         if (!is_array($default)) {
@@ -95,24 +97,24 @@ class Facade extends \Yana\Core\Object
     }
 
     /**
-     * @return \Yana\Security\Users\UserAdapter
+     * @return \Yana\Security\Data\Users\Adapter
      */
     protected function _createUserAdapter()
     {
-        return new \Yana\Security\Users\UserAdapter($this->_getDataSource());
+        return new \Yana\Security\Data\Users\Adapter($this->_getDataSource());
     }
 
     /**
-     * @return \Yana\Security\Users\UserBuilder
+     * @return \Yana\Security\Data\UserBuilder
      */
     protected function _createUserBuilder()
     {
-        return new \Yana\Security\Users\UserBuilder($this->_createUserAdapter());
+        return new \Yana\Security\Data\UserBuilder($this->_createUserAdapter());
     }
 
     /**
      * @param   string  $userName  identifies user
-     * @return  \Yana\Security\Users\IsUser
+     * @return  \Yana\Security\Data\IsUser
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
      */
     protected function _buildUserEntity($userName = "")
@@ -260,7 +262,7 @@ class Facade extends \Yana\Core\Object
         }
 
         assert('!isset($user); // Cannot redeclare $user');
-        $user = empty($userName) ? new \Yana\Security\Users\GuestUser() : $this->_buildUserEntity((string) $userName);
+        $user = empty($userName) ? new \Yana\Security\Data\Users\Guest() : $this->_buildUserEntity((string) $userName);
 
         assert('!isset($e); // Cannot redeclare $e');
         try {
@@ -327,7 +329,7 @@ class Facade extends \Yana\Core\Object
     /**
      * 
      * @param   string  $userName  identifies user
-     * @return  \Yana\Security\Users\IsUser
+     * @return  \Yana\Security\Data\IsUser
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
      */
     public function loadUser($userName)
@@ -337,7 +339,7 @@ class Facade extends \Yana\Core\Object
         $passwords = new \Yana\Security\Passwords\Behaviors\StandardBehavior(
             //$this->_createPasswordAlgorithm(), $this->_createPasswordCheck(), $this->_createPasswordGenerator()
         );
-        $behavior = new \Yana\Security\Users\Behaviors\Standard($passwords, $logins);
+        $behavior = new \Yana\Security\Data\Behaviors\Standard($passwords, $logins);
         return $behavior;
     }
 
