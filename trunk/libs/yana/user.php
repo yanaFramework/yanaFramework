@@ -38,6 +38,7 @@ namespace Yana;
  * @subpackage  core
  *
  * @ignore
+ * @deprecated  since version 4.0
  */
 class User extends \Yana\Core\Object
 {
