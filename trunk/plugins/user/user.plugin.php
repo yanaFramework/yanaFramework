@@ -111,7 +111,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
              */
             $this->_addLoginMenuEntry();
             return true;
-        } elseif (!$this->_createLoginManager()->isLoggedIn($this->_loadUser())) {
+        } elseif (!$this->_loadUser()->isLoggedIn()) {
             /**
              * Access denied.
              *
@@ -142,7 +142,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
         $YANA = $this->_getApplication();
         // Where the menu entry should go to
         $action = "login";
-        if ($this->_createLoginManager()->isLoggedIn($this->_loadUser())) {
+        if ($this->_loadUser()->isLoggedIn()) {
             $action = "logout";
         }
         // What the name of the entry should be
@@ -408,13 +408,13 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
     /**
      * Set new password
      *
-     * @param       \Yana\Security\Data\IsUser   $user         user instance
-     * @param       string                       $newPwd       new password
-     * @param       string                       $repeatPwd    new password
+     * @param       \Yana\Security\Data\Users\IsEntity  $user         user instance
+     * @param       string                              $newPwd       new password
+     * @param       string                              $repeatPwd    new password
      * @throws      \Yana\Core\Exceptions\Security\PasswordDoesNotMatchException  when the passwords don't match
      * @throws      \Yana\Core\Exceptions\Security\PasswordException              when the password was not saved
      */
-    private function _setPwd(\Yana\Security\Data\IsUser $user, $newPwd, $repeatPwd)
+    private function _setPwd(\Yana\Security\Data\Behaviors\IsBehavior $user, $newPwd, $repeatPwd)
     {
         if ($newPwd !== $repeatPwd) {
             $message ="The two new passwords entered do not match.";
@@ -422,7 +422,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
             throw new \Yana\Core\Exceptions\Security\PasswordDoesNotMatchException($message, $level);
         }
         try {
-            $this->_getSecurityFacade()->changePassword($user, $newPwd);
+            $user->changePassword($newPwd)->saveEntity();
 
         } catch (\Exception $e) { // unable to set password
             $message = "Unable to set password.";
@@ -470,8 +470,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function logout()
     {
-        //$this->_getSecurityFacade()->logout();
-        $this->_createLoginManager()->handleLogout($this->_loadUser());
+        $this->_loadUser()->logout();
     }
 
     /**
@@ -531,20 +530,12 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * @return  \Yana\Security\Logins\StandardBehavior
-     */
-    private function _createLoginManager()
-    {
-        return new \Yana\Security\Logins\StandardBehavior();
-    }
-
-    /**
      * @param   string  $userName  identifies user
-     * @return  \Yana\Security\Data\IsUser
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
      */
     private function _loadUser($userName = "")
     {
-        $builder = new \Yana\Security\Data\UserBuilder();
+        $builder = new \Yana\Security\Data\Behaviors\Builder();
         if ($userName > "") {
             $user = $builder->buildFromUserName($userName);
         } else {
