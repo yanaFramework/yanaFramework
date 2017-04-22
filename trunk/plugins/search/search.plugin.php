@@ -901,7 +901,7 @@ class SearchPlugin extends \Yana\Plugins\AbstractPlugin
             foreach (glob($dir . "*", \GLOB_ONLYDIR) as $subdir)
             {
                 // ignore directories, which start with an underscore (some
-                if (\Yana\Util\String::startsWith(basename($subdir), '_')) {
+                if (\Yana\Util\Strings::startsWith(basename($subdir), '_')) {
                     continue;
                 }
                 $list = array_merge($list, $this->_getListOfFiles($dir . $subdir, $filter, true));

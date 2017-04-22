@@ -372,7 +372,7 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
         $profileDir = $YANA->getResource("system:/config/profiledir");
         $profileDir = $profileDir->getPath();
         // Make sure the file name is lower-case so that case doesn't matter later
-        $newProfile = new \Yana\Files\SML($profileDir . \Yana\Util\String::toLowerCase($id) . ".cfg", CASE_MIXED);
+        $newProfile = new \Yana\Files\SML($profileDir . \Yana\Util\Strings::toLowerCase($id) . ".cfg", CASE_MIXED);
         if ($newProfile->exists()) {
             $error = new \Yana\Core\Exceptions\AlreadyExistsException();
             throw $error->setId($id);

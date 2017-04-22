@@ -129,7 +129,7 @@ class ProjectPlugin extends \Yana\Plugins\AbstractPlugin
 
             $description = $language->getVar('PRJ.SUM.HOURS');
             $values = array('SUM' => 0, 'COUNT' => 0);
-            $description = \Yana\Util\String::replaceToken($description, $values);
+            $description = \Yana\Util\Strings::replaceToken($description, $values);
 
             exit($description);
         }
@@ -149,14 +149,14 @@ class ProjectPlugin extends \Yana\Plugins\AbstractPlugin
                             'COUNT' => count($rows),
                             'LOAN' => $loan,
                             'TOTAL' => ($sum * $loan));
-            $description = \Yana\Util\String::replaceToken($description, $values);
+            $description = \Yana\Util\Strings::replaceToken($description, $values);
 
             exit($description);
         } else {
 
             $description = $language->getVar('PRJ.SUM.HOURS');
             $values = array('SUM' => $sum, 'COUNT' => count($rows));
-            $description = \Yana\Util\String::replaceToken($description, $values);
+            $description = \Yana\Util\Strings::replaceToken($description, $values);
 
             exit($description);
         }
