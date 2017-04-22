@@ -179,7 +179,7 @@ class UrlFormatter extends \Yana\Core\Object implements \Yana\Views\Helpers\IsFo
         assert('!isset($urlPath); // Cannot redeclare var $urlPath');
         $urlPath = $this->_getBaseUrl() . '&' . $this->_encodeParameters($string);
         if ($asString === false) {
-            $urlPath = \Yana\Util\String::htmlSpecialChars($urlPath);
+            $urlPath = \Yana\Util\Strings::htmlSpecialChars($urlPath);
         }
         $url .= $urlPath;
 

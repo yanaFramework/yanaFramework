@@ -484,7 +484,7 @@ class Facade extends \Yana\Core\Object
             default:
                 $operator = 'LIKE';
                 $value = strtr($value, '*?', '%_'); // translate wildcards
-                $value = \Yana\Util\String::htmlSpecialChars($value);
+                $value = \Yana\Util\Strings::htmlSpecialChars($value);
                 $rightOperand = $value;
             break;
         }

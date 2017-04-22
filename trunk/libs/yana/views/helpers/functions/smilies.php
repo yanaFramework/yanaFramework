@@ -79,7 +79,7 @@ class Smilies extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana\Vi
         $count = 0;
         foreach ($iconLoader->getIcons() as $text => $icon)
         {
-            $text = \Yana\Util\String::htmlSpecialChars($text);
+            $text = \Yana\Util\Strings::htmlSpecialChars($text);
             if ($count % $width == 0 && $count > 0) {
                 $table .= '</tr><tr>';
             }

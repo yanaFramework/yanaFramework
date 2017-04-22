@@ -71,7 +71,7 @@ abstract class AbstractUploadWrapper extends \Yana\Core\Object implements \Yana\
     protected function _getEntry($key)
     {
         assert('is_string($key); // Invalid argument type: $key. String expected');
-        return \Yana\Util\Hashtable::get($this->_files, \Yana\Util\String::toLowerCase((string) $key));
+        return \Yana\Util\Hashtable::get($this->_files, \Yana\Util\Strings::toLowerCase((string) $key));
     }
 
     /**

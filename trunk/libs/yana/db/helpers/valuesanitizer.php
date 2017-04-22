@@ -284,7 +284,7 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
             break;
             case 'html':
                 if (is_string($value)) {
-                    $value = \Yana\Util\String::htmlSpecialChars($value);
+                    $value = \Yana\Util\Strings::htmlSpecialChars($value);
                     if ($length > 0) {
                         $value = mb_substr($value, 0, $length);
                     }

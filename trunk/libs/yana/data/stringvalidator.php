@@ -267,7 +267,7 @@ class StringValidator extends AbstractValidator
         // special filter CODED (complete conversion)
         if ($options & self::CODED) {
             $value = (string) ($value);
-            $value = \Yana\Util\String::htmlEntities($value);
+            $value = \Yana\Util\Strings::htmlEntities($value);
         }
         return $value;
     }

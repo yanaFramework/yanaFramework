@@ -46,7 +46,7 @@ class Mapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEntityMa
      * Creates an user entity based on a database row.
      *
      * @param   array  $databaseRow  row containing user info
-     * @return  \Yana\Security\Data\IsUser
+     * @return  \Yana\Security\Data\Users\IsEntity
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given user has no name
      */
     public function toEntity(array $databaseRow)
@@ -118,7 +118,7 @@ class Mapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEntityMa
         assert('!isset($row); // Cannot redeclare var $row');
         $row = array();
 
-        if ($user instanceof \Yana\Security\Data\IsUser) {
+        if ($user instanceof \Yana\Security\Data\Users\IsEntity) {
 
             $row = array(
                 \Yana\Security\Data\Tables\UserEnumeration::ID => $user->getId(),

@@ -97,7 +97,7 @@ class Adapter extends \Yana\Security\Data\AbstractAdapter
         assert('is_string($userId); // Wrong type for argument $userId. String expected');
 
         assert('!isset($profileColumn); // Cannot redeclare var $profileColumn');
-        $profileColumn = \Yana\Util\String::toUpperCase(\Yana\Security\Data\Tables\RuleEnumeration::PROFILE);
+        $profileColumn = \Yana\Util\Strings::toUpperCase(\Yana\Security\Data\Tables\RuleEnumeration::PROFILE);
 
         assert('!isset($entities); // Cannot redeclare var $entities');
         $entities = array();
@@ -127,13 +127,13 @@ class Adapter extends \Yana\Security\Data\AbstractAdapter
         assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
 
         assert('!isset($where); // Cannot redeclare var $where');
-        $where = array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '=', \Yana\Util\String::toUpperCase($userId));
+        $where = array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId));
         if ($profileId > "") {
 
             $where = array(
                 $where,
                 'and',
-                array(\Yana\Security\Data\Tables\RuleEnumeration::PROFILE, '=', \Yana\Util\String::toUpperCase($profileId))
+                array(\Yana\Security\Data\Tables\RuleEnumeration::PROFILE, '=', \Yana\Util\Strings::toUpperCase($profileId))
             );
         }
 
@@ -161,7 +161,7 @@ class Adapter extends \Yana\Security\Data\AbstractAdapter
         assert('is_string($userId); // Wrong type argument $userId. String expected.');
 
         $from = \Yana\Security\Data\Tables\RuleEnumeration::TABLE . ".*." . \Yana\Security\Data\Tables\RuleEnumeration::GROUP;
-        $where = array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '=', \Yana\Util\String::toUpperCase($userId));
+        $where = array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId));
         // The database API adds the profile-id to the where clause automatically. So there is not need for us to check for that here
         return $this->_getConnection()->select($from, $where);
     }
@@ -182,7 +182,7 @@ class Adapter extends \Yana\Security\Data\AbstractAdapter
         assert('is_string($userId); // Wrong type argument $userId. String expected.');
 
         $from = \Yana\Security\Data\Tables\RuleEnumeration::TABLE . ".*." . \Yana\Security\Data\Tables\RuleEnumeration::ROLE;
-        $where = array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '=', \Yana\Util\String::toUpperCase($userId));
+        $where = array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId));
         // The database API adds the profile-id to the where clause automatically. So there is not need for us to check for that here
         return $this->_getConnection()->select($from, $where);
     }

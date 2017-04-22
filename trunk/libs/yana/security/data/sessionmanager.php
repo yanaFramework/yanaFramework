@@ -46,6 +46,16 @@ class SessionManager extends \Yana\Core\AbstractSingleton
 {
 
     /**
+     * Returns the class name of the called class.
+     *
+     * @return string
+     */
+    protected static function _getClassName()
+    {
+        return __CLASS__;
+    }
+
+    /**
      * Set security level.
      *
      * Sets the user's security level to an integer value.

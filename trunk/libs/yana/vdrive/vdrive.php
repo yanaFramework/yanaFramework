@@ -187,7 +187,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
                 throw new \Yana\Core\Exceptions\NotReadableException($message, E_USER_WARNING);
             }
             /* apply default settings */
-            $content = \Yana\Util\String::replaceToken($rawContent, self::$_defaultSettings);
+            $content = \Yana\Util\Strings::replaceToken($rawContent, self::$_defaultSettings);
             unset($rawContent);
 
             /* create configuration */
@@ -346,7 +346,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
                 if (!isset($this->vars[$name])) {
                     // recursively replace vars
                     if (mb_strpos($value, YANA_LEFT_DELIMITER) !== false) {
-                        $value = \Yana\Util\String::replaceToken($value, $this->vars);
+                        $value = \Yana\Util\Strings::replaceToken($value, $this->vars);
                     }
                     // assign value
                     $this->vars[$name] = $value;
@@ -464,7 +464,7 @@ class VDrive extends \Yana\Files\AbstractResource implements \Yana\VDrive\IsVDri
         {
             $source = (string) $source;
             if (mb_strpos($source, YANA_LEFT_DELIMITER) !== false) {
-                $source = \Yana\Util\String::replaceToken($source, self::$_defaultSettings);
+                $source = \Yana\Util\Strings::replaceToken($source, self::$_defaultSettings);
             } else {
                 /* intentionally left blank */
             }

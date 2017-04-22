@@ -410,7 +410,7 @@ class HtmlBuilder extends \Yana\Views\Helpers\Html\AbstractHelper
         assert('is_string($mimeType); // Invalid argument $mimeType: string expected');
         $attr = $this->getAttr();
         if ($mimeType) {
-            $attr .= ' accept="' . \Yana\Util\String::htmlSpecialChars($mimeType) . '"';
+            $attr .= ' accept="' . \Yana\Util\Strings::htmlSpecialChars($mimeType) . '"';
         }
         if ($this->getMaxLength()) {
             $attr .= ' maxlength="' . (int) $this->getMaxLength() . '"';

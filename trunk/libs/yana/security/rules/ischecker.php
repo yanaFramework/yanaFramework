@@ -63,13 +63,13 @@ interface IsChecker
      * Returns bool(true) if the user's permission level is high enough to
      * execute the changes and bool(false) otherwise.
      *
-     * @param   string                       $profileId  profile id in upper-case
-     * @param   string                       $action     action parameter in lower-case
-     * @param   \Yana\Security\Data\IsUser   $user       user information to check
+     * @param   string                                     $profileId  profile id in upper-case
+     * @param   string                                     $action     action parameter in lower-case
+     * @param   \Yana\Security\Data\Behaviors\IsBehavior   $user       user information to check
      * @return  bool
      * @throws  \Yana\Security\Rules\Requirements\NotFoundException  when no requirements are found
      */
-    public function checkRules($profileId, $action, \Yana\Security\Data\IsUser $user);
+    public function checkRules($profileId, $action, \Yana\Security\Data\Behaviors\IsBehavior $user);
 
     /**
      * Check rules by requirement.
@@ -81,10 +81,10 @@ interface IsChecker
      * @param   \Yana\Security\Rules\Requirements\IsRequirement  $requirement  to check for
      * @param   string                                           $profileId    profile id in upper-case
      * @param   string                                           $action       action parameter in lower-case
-     * @param   \Yana\Security\Data\IsUser                       $user         user information to check
+     * @param   \Yana\Security\Data\Behaviors\IsBehavior         $user         user information to check
      * @return  bool
      */
-    public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, \Yana\Security\Data\IsUser $user);
+    public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, \Yana\Security\Data\Behaviors\IsBehavior $user);
 
 }
 

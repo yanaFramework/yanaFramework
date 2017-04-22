@@ -401,7 +401,7 @@ class Setup extends \Yana\Core\Object
         assert('is_string($value); // Wrong argument type argument 2. String expected');
         if (!empty($value)) {
             $value = strtr($value, '*?', '%_'); // translate wildcards
-            $value = \Yana\Util\String::htmlSpecialChars($value);
+            $value = \Yana\Util\Strings::htmlSpecialChars($value);
             $this->_filters[$columnName] = $value;
         } else {
             unset($this->_filters[$columnName]);

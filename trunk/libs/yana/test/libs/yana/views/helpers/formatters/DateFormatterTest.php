@@ -27,8 +27,6 @@
 
 namespace Yana\Views\Helpers\Formatters;
 
-use \Yana\Util\String;
-
 /**
  * @ignore
  */
@@ -49,8 +47,8 @@ class DateFormatterTest extends \PHPUnit_Framework_TestCase
         $time = strtotime('2000-01-01 0:0:0');
         $dateFormatter = new DateFormatter();
         $string = $dateFormatter($time);
-        $this->assertTrue(String::contains($string, 'new Date(' . $time . '000)'), 'Must contain JavaScript portion');
-        $this->assertTrue(String::contains($string, date('r', $time)), 'Must contain PHP fallback');
+        $this->assertTrue(\Yana\Util\Strings::contains($string, 'new Date(' . $time . '000)'), 'Must contain JavaScript portion');
+        $this->assertTrue(\Yana\Util\Strings::contains($string, date('r', $time)), 'Must contain PHP fallback');
     }
 
     /**
@@ -62,8 +60,8 @@ class DateFormatterTest extends \PHPUnit_Framework_TestCase
         $time = strtotime('2000-01-01 0:0:0');
         $dateFormatter = new DateFormatter();
         $string = $dateFormatter($time);
-        $this->assertTrue(String::contains($string, 'date.toLocaleTimeString()'), 'Must contain JavaScript value');
-        $this->assertTrue(String::contains($string, date('c', $time)), 'Must contain PHP formatted value');
+        $this->assertTrue(\Yana\Util\Strings::contains($string, 'date.toLocaleTimeString()'), 'Must contain JavaScript value');
+        $this->assertTrue(\Yana\Util\Strings::contains($string, date('c', $time)), 'Must contain PHP formatted value');
     }
 
 }

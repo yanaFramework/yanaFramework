@@ -251,7 +251,7 @@ class Builder extends \Yana\Core\Object
         );
         $lang = \Yana\Translations\Facade::getInstance();
         $header = $lang->getVar("DESCR_SHOW");
-        $header = \Yana\Util\String::replaceToken($header, $params);
+        $header = \Yana\Util\Strings::replaceToken($header, $params);
         $this->object->getContext('update')->setHeader($header);
         return $this;
     }

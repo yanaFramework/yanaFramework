@@ -73,7 +73,7 @@ class Adapter extends \Yana\Security\Data\AbstractAdapter implements \Yana\Secur
     {
         assert('is_string($userId); // Wrong type argument $userId. String expected.');
 
-        return \Yana\Security\Data\Tables\UserEnumeration::TABLE . '.' . \Yana\Util\String::toUpperCase($userId);
+        return \Yana\Security\Data\Tables\UserEnumeration::TABLE . '.' . \Yana\Util\Strings::toUpperCase($userId);
     }
 
     /**
@@ -93,7 +93,7 @@ class Adapter extends \Yana\Security\Data\AbstractAdapter implements \Yana\Secur
      * Loads and returns an user account from the database.
      *
      * @param   string  $userId  name of the account
-     * @return  \Yana\Security\Data\IsUser
+     * @return  \Yana\Security\Data\Users\IsEntity
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no such user exists
      */
     public function offsetGet($userId)
@@ -120,9 +120,9 @@ class Adapter extends \Yana\Security\Data\AbstractAdapter implements \Yana\Secur
     /**
      * Write an user entry to the database.
      *
-     * @param  string                       $userId      name of user account (can be NULL)
-     * @param  \Yana\Security\Data\IsUser  $userEntity  the account data
-     * @return \Yana\Security\Data\IsUser
+     * @param  string                              $userId      name of user account (can be NULL)
+     * @param  \Yana\Security\Data\Users\IsEntity  $userEntity  the account data
+     * @return \Yana\Security\Data\Users\IsEntity
      * @throws \Yana\Core\Exceptions\InvalidArgumentException  when the entity is invalid
      * @throws \Yana\Core\Exceptions\User\UserException        when there was a problem with the database
      */
@@ -130,9 +130,9 @@ class Adapter extends \Yana\Security\Data\AbstractAdapter implements \Yana\Secur
     {
         assert('is_string($userId); // Wrong type argument $userId. String expected.');
 
-        if (!($userEntity instanceof \Yana\Security\Data\IsUser)) {
+        if (!($userEntity instanceof \Yana\Security\Data\Users\IsEntity)) {
             assert('!isset($message); // Cannot redeclare var $message');
-            $message = "Instance of \Yana\Security\Data\IsUser expected. Found " . \get_class($userEntity) . " instead.";
+            $message = "Instance of \Yana\Security\Data\Users\IsEntity expected. Found " . \get_class($userEntity) . " instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
 
@@ -153,7 +153,7 @@ class Adapter extends \Yana\Security\Data\AbstractAdapter implements \Yana\Secur
             } else { // new user
                 $db->insert($this->_toDatabaseKey($userId), $userRow);
                 $db->insert(
-                    \Yana\Security\Data\Tables\ProfileEnumeration::TABLE . "." . \Yana\Util\String::toUpperCase($userId), // profile id
+                    \Yana\Security\Data\Tables\ProfileEnumeration::TABLE . "." . \Yana\Util\Strings::toUpperCase($userId), // profile id
                     array(\Yana\Security\Data\Tables\ProfileEnumeration::TIME_MODIFIED => time()) // profile row
                 );
 
@@ -188,7 +188,7 @@ class Adapter extends \Yana\Security\Data\AbstractAdapter implements \Yana\Secur
             throw new \Yana\Core\Exceptions\User\NotFoundException("No such user: '$userId'.", E_USER_WARNING);
         }
 
-        $upperCaseUserId = \Yana\Util\String::toUpperCase($userId);
+        $upperCaseUserId = \Yana\Util\Strings::toUpperCase($userId);
 
         assert('!isset($db); // Cannot redeclare var $db');
         $db = $this->_getConnection();

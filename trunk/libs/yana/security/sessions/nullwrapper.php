@@ -77,10 +77,10 @@ class NullWrapper extends \Yana\Core\Sessions\NullWrapper implements \Yana\Secur
      *
      * Note that this function does not check if the user is actually logged in!
      *
-     * @param   \Yana\Security\Data\IsUser $user  entity
+     * @param   \Yana\Security\Data\Users\IsEntity $user  entity
      * @return  \Yana\Security\Sessions\IsWrapper
      */
-    public function setCurrentUserName(\Yana\Security\Data\IsUser $user)
+    public function setCurrentUserName(\Yana\Security\Data\Users\IsEntity $user)
     {
         $this->offsetSet($this->_userNameKey, $user->getId());
         return $this;

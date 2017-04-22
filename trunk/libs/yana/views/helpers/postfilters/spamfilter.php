@@ -46,7 +46,7 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
     private $_session = null;
 
     /**
-     * @var  \Yana\Security\Data\IsUser
+     * @var  \Yana\Security\Data\Behaviors\IsBehavior
      */
     private $_user = null;
 
@@ -82,12 +82,12 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
      * By defaults looks up the currently used user from the session.
      * Returns a GuestUser if none was found.
      *
-     * @return  \Yana\Security\Data\IsUser
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
      */
     public function getUser()
     {
         if (!isset($this->_user)) {
-            $userManager = new \Yana\Security\Data\UserBuilder();
+            $userManager = new \Yana\Security\Data\Behaviors\Builder();
             $this->_user = $userManager->buildFromSession();
         }
         return $this->_user;
@@ -96,10 +96,10 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
     /**
      * Provide user information.
      *
-     * @param   \Yana\Security\Data\IsUser  $user  containing the current users active-state
-     * @return   \Yana\Views\Helpers\PostFilters\SpamFilter
+     * @param   \Yana\Security\Data\Behaviors\IsBehavior  $user  containing the current users active-state
+     * @return  \Yana\Views\Helpers\PostFilters\SpamFilter
      */
-    public function setUser(\Yana\Security\Data\IsUser $user)
+    public function setUser(\Yana\Security\Data\Behaviors\IsBehavior $user)
     {
         $this->_user = $user;
         return $this;
@@ -118,26 +118,12 @@ class SpamFilter extends \Yana\Views\Helpers\AbstractViewHelper implements \Yana
     {
         assert('is_string($source); // Wrong type for argument 1. String expected');
 
-        if (!$this->_isUserLoggedIn()) {
+        if (!$this->getUser()->isLoggedIn()) {
             $replace = "<span class=\"yana_button\"><input type=\"text\" name=\"yana_url\"/></span>\n</form>";
             $source = str_replace("</form>", $replace, $source);
         }
 
         return $source;
-    }
-
-    /**
-     * Checks if the user is currently logged in.
-     *
-     * Returns bool(true) on "yes" and bool(false) otherwise.
-     *
-     * @return  bool
-     */
-    protected function _isUserLoggedIn()
-    {
-        $loginManager = new \Yana\Security\Logins\StandardBehavior();
-        $user = $this->getUser();
-        return $loginManager->isLoggedIn($user);
     }
 
 }

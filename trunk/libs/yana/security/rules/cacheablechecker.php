@@ -90,13 +90,13 @@ class CacheableChecker extends \Yana\Security\Rules\Checker implements \Yana\Dat
      * Returns bool(true) if the user's permission level is high enough to
      * execute the changes and bool(false) otherwise.
      *
-     * @param   string                       $profileId  profile id in upper-case
-     * @param   string                       $action     action parameter in lower-case
-     * @param   \Yana\Security\Data\IsUser  $user       user information to check
+     * @param   string                                    $profileId  profile id in upper-case
+     * @param   string                                    $action     action parameter in lower-case
+     * @param   \Yana\Security\Data\Behaviors\IsBehavior  $user       user information to check
      * @return  bool
      * @throws  \Yana\Security\Rules\Requirements\NotFoundException  when no requirements are found
      */
-    public function checkRules($profileId, $action, \Yana\Security\Data\IsUser $user)
+    public function checkRules($profileId, $action, \Yana\Security\Data\Behaviors\IsBehavior $user)
     {
         assert('is_string($profileId); // Invalid argument type: $profileId. String expected');
         assert('is_string($action); // Invalid argument type: $action. String expected');

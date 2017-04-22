@@ -261,7 +261,7 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
                 if ($language->isVar($id . ".h")) {
                     $this->header = (string) $language->getVar($id . ".h");
                     if (!empty($this->data)) {
-                        $this->header = \Yana\Util\String::replaceToken($this->header, $this->data);
+                        $this->header = \Yana\Util\Strings::replaceToken($this->header, $this->data);
                         $this->header = $language->replaceToken($this->header);
                     }
                 }
@@ -292,7 +292,7 @@ abstract class AbstractException extends \Exception implements \Yana\Core\Except
                 if ($language->isVar($id . ".p")) {
                     $this->text = (string) $language->getVar($id . ".p");
                     if (!empty($this->data)) {
-                        $this->text = \Yana\Util\String::replaceToken($this->text, $this->data);
+                        $this->text = \Yana\Util\Strings::replaceToken($this->text, $this->data);
                         $this->text = $language->replaceToken($this->text);
                     }
                 } elseif (!empty($this->message)) {

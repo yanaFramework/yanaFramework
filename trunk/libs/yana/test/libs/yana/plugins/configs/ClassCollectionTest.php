@@ -42,7 +42,7 @@ class ClassCollectionTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var ClassCollection
+     * @var \Yana\Plugins\Configs\ClassCollection
      */
     protected $object;
 
@@ -52,7 +52,7 @@ class ClassCollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new ClassCollection();
+        $this->object = new \Yana\Plugins\Configs\ClassCollection();
     }
 
     /**
@@ -69,10 +69,10 @@ class ClassCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testOffsetSet()
     {
-        $o = new ClassConfiguration();
+        $o = new \Yana\Plugins\Configs\ClassConfiguration();
         $o->setClassName('Plugin_ClassName');
         $this->object['test'] = $o;
-        $this->assertTrue($this->object['test'] instanceof ClassConfiguration, 'Instance was not added.');
+        $this->assertTrue($this->object['test'] instanceof \Yana\Plugins\Configs\ClassConfiguration, 'Instance was not added.');
         $this->assertEquals($this->object['test']->getClassName(), $o->getClassName());
     }
 
@@ -81,10 +81,10 @@ class ClassCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testOffsetUnset()
     {
-        $o = new ClassConfiguration();
+        $o = new \Yana\Plugins\Configs\ClassConfiguration();
         $o->setClassName('Plugin_ClassName');
         $this->object['test'] = $o;
-        $this->assertTrue($this->object['test'] instanceof ClassConfiguration, 'Instance was not added.');
+        $this->assertTrue($this->object['test'] instanceof \Yana\Plugins\Configs\ClassConfiguration, 'Instance was not added.');
         unset($this->object['test']);
         $this->assertTrue($this->object['test'] === null, 'Instance was not unset.');
     }
@@ -94,11 +94,11 @@ class ClassCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testOffsetSetAutodetect()
     {
-        $o = new ClassConfiguration();
+        $o = new \Yana\Plugins\Configs\ClassConfiguration();
         $o->setClassName('Plugin_ClassName');
         $this->object[] = $o;
-        $this->assertTrue($this->object['classname'] instanceof ClassConfiguration, 'Instance was not added.');
-        $this->assertEquals($this->object['classname']->getClassName(), $o->getClassName());
+        $this->assertTrue($this->object['Plugin_ClassName'] instanceof \Yana\Plugins\Configs\ClassConfiguration, 'Instance was not added.');
+        $this->assertEquals($this->object['Plugin_ClassName']->getClassName(), $o->getClassName());
     }
 
     /**
@@ -107,7 +107,7 @@ class ClassCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testOffsetSetInvalidArgumentException()
     {
-        $this->object[] = new MethodConfiguration();
+        $this->object[] = new \Yana\Plugins\Configs\MethodConfiguration();
     }
 
 }

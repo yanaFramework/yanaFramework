@@ -45,10 +45,10 @@ class NullRule extends \Yana\Security\Rules\AbstractRule
      * @param   \Yana\Security\Rules\Requirements\IsRequirement  $required   list of required permissions
      * @param   string                                           $profileId  current application-profile id
      * @param   string                                           $action     name of the action the user tries to execute
-     * @param   \Yana\Security\Data\IsUser                       $user       user information to check
+     * @param   \Yana\Security\Data\Behaviors\IsBehavior         $user       user information to check
      * @return  bool
      */
-    public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, $profileId, $action, \Yana\Security\Data\IsUser $user)
+    public function __invoke(\Yana\Security\Rules\Requirements\IsRequirement $required, $profileId, $action, \Yana\Security\Data\Behaviors\IsBehavior $user)
     {
         return true;
     }

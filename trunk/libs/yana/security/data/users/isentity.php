@@ -39,7 +39,7 @@ namespace Yana\Security\Data\Users;
  *
  * @ignore
  */
-interface IsEntity
+interface IsEntity extends \Yana\Data\Adapters\IsEntity
 {
 
     /**

@@ -46,16 +46,6 @@ abstract class AbstractEntity extends \Yana\Core\Object implements \Yana\Data\Ad
     private $_adapter = null;
 
     /**
-     * Initializes the adapter with a dummy implementation.
-     *
-     * @ignore
-     */
-    public function __construct()
-    {
-        $this->setDataAdapter(new \Yana\Data\Adapters\ArrayAdapter());
-    }
-
-    /**
      * This sets the data adapter used to persist the entity
      *
      * @param  \Yana\Data\Adapters\IsDataAdapter  $adapter  object that should be used
@@ -76,6 +66,9 @@ abstract class AbstractEntity extends \Yana\Core\Object implements \Yana\Data\Ad
      */
     protected function _getDataAdapter()
     {
+        if (!isset($this->_adapter)) {
+            $this->_adapter = new \Yana\Data\Adapters\ArrayAdapter();
+        }
         return $this->_adapter;
     }
 
