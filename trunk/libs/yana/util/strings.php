@@ -28,7 +28,7 @@
 namespace Yana\Util;
 
 /**
- * <<Utility>> String
+ * <<Utility>> Static string functions.
  *
  * This is an OO-wrapper for the string functions of PHP.
  *
@@ -44,7 +44,7 @@ namespace Yana\Util;
  * @package     yana
  * @subpackage  util
  */
-class String extends \Yana\Core\AbstractUtility
+class Strings extends \Yana\Core\AbstractUtility
 {
 
     /**#@+
@@ -65,7 +65,7 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $string  value to convert
      * @return  int|bool(false)
      *
-     * @name    String::toInt()
+     * @name    Strings::toInt()
      *
      * @assert ("1") == 1
      * @assert ("1.5") == 1
@@ -89,7 +89,7 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $string  value to convert
      * @return  float|bool(false)
      *
-     * @name    String::toFloat()
+     * @name    Strings::toFloat()
      *
      * @assert ("1") == 1.0
      * @assert ("1.5") == 1.5
@@ -125,7 +125,7 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $string  value to convert
      * @return  bool
      *
-     * @name    String::toBool()
+     * @name    Strings::toBool()
      *
      * @assert ("True") == true
      * @assert ("False") == false
@@ -148,7 +148,7 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $charlist  a string of characters that should be escaped
      * @return  string
      *
-     * @name    String::addSlashes()
+     * @name    Strings::addSlashes()
      *
      * @assert ("a", "a") == '\a'
      * @assert ("a", "b") == 'a'
@@ -171,7 +171,7 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $string     string
      * @return  string
      *
-     * @name    String::removeSlashes()
+     * @name    Strings::removeSlashes()
      *
      * @assert ("a") == 'a'
      * @assert ('\a') == 'a'
@@ -195,7 +195,7 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $string string
      * @param   int     $index  position of the character (starting with 0)
      *
-     * @name    String::charAt()
+     * @name    Strings::charAt()
      *
      * @assert ("Test", 0) == "T"
      * @assert ("Test", 3) == "t"
@@ -221,11 +221,11 @@ class String extends \Yana\Core\AbstractUtility
      * @param   int     $type    may be one of
      * @return  string
      *
-     * @name    String::trim()
+     * @name    Strings::trim()
      *
      * @assert (" test ") == "test"
-     * @assert (" test ", String::LEFT) == "test "
-     * @assert (" test ", String::RIGHT) == " test"
+     * @assert (" test ", Strings::LEFT) == "test "
+     * @assert (" test ", Strings::RIGHT) == " test"
      */
     public static function trim($string, $type = self::BOTH)
     {
@@ -300,8 +300,8 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $salt        only used for certain encryption types
      * @return  string
      *
-     * @name    String::encrypt()
-     * @see     String::encode()
+     * @name    Strings::encrypt()
+     * @see     Strings::encode()
      *
      * @assert ("test", "crc32") == -662733300
      * @assert ("test", "md5") == "098f6bcd4621d373cade4e832627b4f6"
@@ -309,7 +309,7 @@ class String extends \Yana\Core\AbstractUtility
      * @assert ("test", "crypt", "pass") == "pawpU97AVNPO6"
      * @assert ("test", "des") == NULL
      * @assert ("test", "des", "pass") == "pawpU97AVNPO6"
-     * @assert ("test", "blowfish", "passwordpassword") == '$2vU67iv49YBo'
+     * @assert ("test", "blowfish", "passwordpasswordpassword") == '$2y$10$passwordpasswordpasswe5CTNQfLGuOENdWfsXOxrnwUshKsXqmu'
      * @assert ("test", "soundex") == "T230"
      * @assert ("test", "metaphone") == "TST"
      * @assert ("aaaa", "xor", "    ") == "AAAA"
@@ -369,11 +369,15 @@ class String extends \Yana\Core\AbstractUtility
                     }
                 }
             break;
+            case 'bcrypt':
+                // auto-generates salt, will return different string each time
+                return \password_hash($salt . $string, \PASSWORD_BCRYPT);
+            break;
             case 'blowfish':
-                if (CRYPT_BLOWFISH != 1 || mb_strlen($salt) < 12) {
+                if (CRYPT_BLOWFISH != 1 || mb_strlen($salt) < 22) {
                     return NULL;
                 } else {
-                    return crypt($string, '$2a$' . mb_substr($salt, 0, 12));
+                    return crypt($string, '$2y$10$' . mb_substr($salt, 0, 22));
                 }
             break;
             case 'soundex':
@@ -456,9 +460,9 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $charset   used for entity conversion
      * @return  string
      *
-     * @name    String::encode()
-     * @see     String::encrypt()
-     * @see     String::decode()
+     * @name    Strings::encode()
+     * @see     Strings::encrypt()
+     * @see     Strings::decode()
      */
     public static function encode($string, $encoding, $style = ENT_COMPAT, $charset = "UTF-8")
     {
@@ -521,9 +525,9 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $charset   (optional)
      * @return  string
      *
-     * @name    String::decode()
-     * @see     String::encrypt()
-     * @see     String::encode()
+     * @name    Strings::decode()
+     * @see     Strings::encrypt()
+     * @see     Strings::encode()
      */
     public static function decode($string, $encoding, $style = ENT_COMPAT, $charset = "")
     {
@@ -572,8 +576,8 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $string  text in mixed case
      * @return  string
      *
-     * @name    String::toLowerCase()
-     * @see     String::toUpperCase()
+     * @name    Strings::toLowerCase()
+     * @see     Strings::toUpperCase()
      *
      * @assert ("AbC") == "abc"
      */
@@ -589,8 +593,8 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $string  text in mixed case
      * @return  string
      *
-     * @name    String::toUpperCase()
-     * @see     String::toLowerCase()
+     * @name    Strings::toUpperCase()
+     * @see     Strings::toLowerCase()
      *
      * @assert ("AbC") == "ABC"
      */
@@ -612,7 +616,7 @@ class String extends \Yana\Core\AbstractUtility
      * @param   int     $length  number of characters to return (0 = all)
      * @return  string
      *
-     * @name    String::substring()
+     * @name    Strings::substring()
      *
      * @assert ("abc", 1) == "bc"
      * @assert ("abc", 1, 1) == "b"
@@ -647,8 +651,8 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $anotherString  some other string
      * @return  int(+1)|int(0)|int(-1)
      *
-     * @name    String::compareTo()
-     * @see     String::compareToIgnoreCase()
+     * @name    Strings::compareTo()
+     * @see     Strings::compareToIgnoreCase()
      *
      * @assert ("a", "b") == -1
      * @assert ("a", "a") == 0
@@ -678,8 +682,8 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $anotherString  some other string
      * @return  int(+1)|int(0)|int(-1)
      *
-     * @name    String::compareToIgnoreCase()
-     * @see     String::compareTo()
+     * @name    Strings::compareToIgnoreCase()
+     * @see     Strings::compareTo()
      *
      * @assert ("a", "b") == -1
      * @assert ("a", "a") == 0
@@ -704,8 +708,8 @@ class String extends \Yana\Core\AbstractUtility
      * @param   int     &$count              returns number of times the expression matches
      * @return  array|bool(false)
      *
-     * @name    String::match()
-     * @see     String::matchAll()
+     * @name    Strings::match()
+     * @see     Strings::matchAll()
      * @assert  ("b", "/a/") == false
      * @assert  ("abc", "/a(b)c/") == array("abc", "b")
      */
@@ -734,8 +738,8 @@ class String extends \Yana\Core\AbstractUtility
      * @param   int     &$count              returns number of times the expression matches
      * @return  array|bool(false)
      *
-     * @name    String::matchAll()
-     * @see     String::match()
+     * @name    Strings::matchAll()
+     * @see     Strings::match()
      * @assert  ("b", "/a/") == false
      * @assert  ("abcab", "/a(b)/") == array(array("ab", "ab"), array("b", "b"))
      */
@@ -762,8 +766,8 @@ class String extends \Yana\Core\AbstractUtility
      * @param   int     &$count      number of times the string is replaced
      * @return  string
      *
-     * @name    String::replace()
-     * @see     String::replaceRegExp()
+     * @name    Strings::replace()
+     * @see     Strings::replaceRegExp()
      * @assert  ("a", "b") == "a"
      * @assert  ("a", "a", "b") == "b"
      */
@@ -803,8 +807,8 @@ class String extends \Yana\Core\AbstractUtility
      * @param   int     &$count             number of times the string is replaced
      * @return  int
      *
-     * @name    String::replaceRegExp()
-     * @see     String::replace()
+     * @name    Strings::replaceRegExp()
+     * @see     Strings::replace()
      * @assert  ("a", "/b/") == "a"
      * @assert  ("a", "/a/", "b") == "b"
      */
@@ -834,7 +838,7 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $string   string
      * @return  int
      *
-     * @name    String::length()
+     * @name    Strings::length()
      * @assert  ("") == 0
      * @assert  ("a") == 1
      * @assert  ("ä") == 1
@@ -853,8 +857,8 @@ class String extends \Yana\Core\AbstractUtility
      * @param   int     $limit      maximum number of chunks
      * @return  array
      *
-     * @name    String::split()
-     * @see     String::splitRegExp()
+     * @name    Strings::split()
+     * @see     Strings::splitRegExp()
      * @assert  ("a", "|") == array("a")
      * @assert  ("a|b", "|") == array("a", "b")
      * @assert  ("a|b|c", "|", 2) == array("a", "b|c")
@@ -880,8 +884,8 @@ class String extends \Yana\Core\AbstractUtility
      * @param   int     $limit      maximum number of chunks
      * @return  array
      *
-     * @name    String::splitRegExp()
-     * @see     String::split()
+     * @name    Strings::splitRegExp()
+     * @see     Strings::split()
      * @assert  ("a", "/\|/") == array("a")
      * @assert  ("a|b", "/\|/") == array("a", "b")
      * @assert  ("a|b|c", "/\|/", 2) == array("a", "b|c")
@@ -918,7 +922,7 @@ class String extends \Yana\Core\AbstractUtility
      * @param   int     $offset  character position from which to start searching
      * @return  int
      *
-     * @name    String::indexOf()
+     * @name    Strings::indexOf()
      * @assert  ("a", "b") == -1
      * @assert  ("ab", "a", 1) == -1
      * @assert  ("ab", "b") == 1
@@ -951,7 +955,7 @@ class String extends \Yana\Core\AbstractUtility
      * @param   bool    $cut      true = hard cut (cut through words), false = soft cut (keep last word intact)
      * @return  string
      *
-     * @name    String::wrap()
+     * @name    Strings::wrap()
      * @assert  ("test abc", 3, ",", false) == "test,abc"
      * @assert  ("test test", 3, ",", true) == "tes,t,abc"
      */
@@ -973,7 +977,7 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $string     string
      * @return  string
      *
-     * @name    String::shuffle()
+     * @name    Strings::shuffle()
      * @assert  ("ä") == "ä"
      */
     public static function shuffle($string)
@@ -995,7 +999,7 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $string  text to reverse
      * @return  string
      *
-     * @name    String::reverse()
+     * @name    Strings::reverse()
      * @assert  ("ä") == "ä"
      * @assert  ("abc") == "cba"
      */
@@ -1015,8 +1019,8 @@ class String extends \Yana\Core\AbstractUtility
      * @param   string  $string  text to convert
      * @return  string
      *
-     * @name    String::htmlEntities()
-     * @see     String::encode()
+     * @name    Strings::htmlEntities()
+     * @see     Strings::encode()
      * @assert  (" ä") == "&#32;&#228;"
      */
     public static function htmlEntities($string)
