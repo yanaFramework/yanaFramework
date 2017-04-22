@@ -333,7 +333,7 @@ class Facade extends \Yana\Core\AbstractSingleton implements \Serializable, \Yan
      * // assume the token {$foo} is set to 'World'
      * $text = 'Hello {$foo}.';
      * // prints 'Hello World.'
-     * print \Yana\Util\String::replaceToken($string);
+     * print \Yana\Util\Strings::replaceToken($string);
      * </code>
      *
      * @param   string  $string   sting text (look example)

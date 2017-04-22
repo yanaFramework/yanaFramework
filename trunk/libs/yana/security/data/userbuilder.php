@@ -118,7 +118,7 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
      * Returns an \Yana\Security\Data\User otherwise.
      *
      * @param   \Yana\Security\Sessions\IsWrapper  $session  with the user name at index 'user_name'
-     * @return  \Yana\Security\Data\IsUser
+     * @return  \Yana\Security\Data\Users\IsEntity
      * @throws  \Yana\Core\Exceptions\NotFoundException  if no such user is found in the database
      */
     public function buildFromSession(\Yana\Security\Sessions\IsWrapper $session = null)
@@ -134,7 +134,7 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
 
         assert('!isset($userAccount); // Cannot redeclare var $userAccount');
         $userAccount = $this->buildFromUserName($userName);
-        assert('$userAccount instanceof \Yana\Security\Data\IsUser; // Return value must be an instance of IsUser');
+        assert('$userAccount instanceof \Yana\Security\Data\Users\IsEntity; // Return value must be an instance of IsUser');
 
         return $userAccount;
     }
@@ -143,7 +143,7 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
      * Build an user object based on a given name.
      *
      * @param   string  $userId  the name/id of the user as it is stored in the database
-     * @return  \Yana\Security\Data\IsUser
+     * @return  \Yana\Security\Data\Users\IsEntity
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
      */
     public function buildFromUserName($userId)
@@ -159,7 +159,7 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
         assert('!isset($userAccount); // Cannot redeclare var $userAccount');
         $userAccount = $adapter[$userId];
 
-        assert('$userAccount instanceof \Yana\Security\Data\IsUser; // Return value must be an instance of IsUser');
+        assert('$userAccount instanceof \Yana\Security\Data\Users\IsEntity; // Return value must be an instance of IsUser');
         return $userAccount;
     }
 
@@ -168,7 +168,7 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
      *
      * @param   string  $userId  the name/id of the user as it is stored in the database
      * @param   string  $mail    the user's e-mail address (must be unique)
-     * @return  \Yana\Security\Data\IsUser
+     * @return  \Yana\Security\Data\Users\IsEntity
      */
     public function buildNewUser($userId, $mail)
     {
@@ -182,7 +182,7 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
             );
         }
 
-        $user = new \Yana\Security\Data\Users\Entity(\Yana\Util\String::toUpperCase((string) $userId));
+        $user = new \Yana\Security\Data\Users\Entity(\Yana\Util\Strings::toUpperCase((string) $userId));
         $user->setMail((string) $mail);
         $user->setDataAdapter($this->_getUserAdapter());
         return $user;

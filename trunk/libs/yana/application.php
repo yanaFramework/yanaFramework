@@ -1110,7 +1110,7 @@ final class Application extends \Yana\Core\AbstractSingleton
         if (!empty(self::$_config->default->event->$_template)) {
             $baseTemplate = (string) self::$_config->default->event->$_template;
         }
-        if (!is_file($template) && !\Yana\Util\String::startsWith($template, 'id:')) {
+        if (!is_file($template) && !\Yana\Util\Strings::startsWith($template, 'id:')) {
             $template = "id:{$template}";
         }
         /* register templates with view sub-system */

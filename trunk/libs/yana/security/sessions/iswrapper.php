@@ -54,10 +54,10 @@ interface IsWrapper extends \Yana\Core\Sessions\IsWrapper
      *
      * Note that this function does not check if the user is actually logged in!
      *
-     * @param   \Yana\Security\Data\IsUser  $user  entity
+     * @param   \Yana\Security\Data\Users\IsEntity  $user  entity
      * @return  \Yana\Security\Sessions\IsWrapper
      */
-    public function setCurrentUserName(\Yana\Security\Data\IsUser $user);
+    public function setCurrentUserName(\Yana\Security\Data\Users\IsEntity $user);
 
     /**
      * Retrieve the current user's application id.

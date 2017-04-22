@@ -48,18 +48,17 @@ class NameMapper extends \StdClass implements \Yana\Files\Streams\Wrappers\IsStr
      *
      * @return  array
      */
-    public static function getMethodMappings()
+    public function getMethodMappings()
     {
         if (empty(self::$_mappings)) {
-            $object = new self();
-            $reflection = new \ReflectionObject($object);
+            $reflection = new \ReflectionObject($this);
             $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
             foreach ($methods as $method)
             {
                 /* @var $method \ReflectionMethod */
                 $internalName = $method->getName();
                 if ($internalName !== __FUNCTION__) {
-                    $externalName = $method->invoke($object);
+                    $externalName = $method->invoke($this);
                     self::$_mappings[$externalName] = $internalName;
                 }
             }

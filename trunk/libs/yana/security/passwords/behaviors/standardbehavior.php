@@ -46,9 +46,9 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
      * Resets the number of times the user entered an invalid password back to 0.
      * Use this, when the maximum failure time has expired.
      *
-     * @param  \Yana\Security\Data\IsUser  $user  the user to operate on
+     * @param  \Yana\Security\Data\Users\IsEntity  $user  the user to operate on
      */
-    protected function _resetFailureCount(\Yana\Security\Data\IsUser $user)
+    protected function _resetFailureCount(\Yana\Security\Data\Users\IsEntity $user)
     {
         $user
             ->setFailureCount(0)
@@ -60,9 +60,9 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
      *
      * Call this if the user failed to authenticate correctly.
      *
-     * @param  \Yana\Security\Data\IsUser  $user  the user to operate on
+     * @param  \Yana\Security\Data\Users\IsEntity  $user  the user to operate on
      */
-    protected function _increaseFailureCount(\Yana\Security\Data\IsUser $user)
+    protected function _increaseFailureCount(\Yana\Security\Data\Users\IsEntity $user)
     {
         $user
             ->setFailureCount($this->getUser()->getFailureCount() + 1)
@@ -72,10 +72,10 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
     /**
      * Check if password is 'uninitialized'.
      *
-     * @param   \Yana\Security\Data\IsUser  $user  entity
+     * @param   \Yana\Security\Data\Users\IsEntity  $user  entity
      * @return  bool
      */
-    protected function _isUninitializedPassword(\Yana\Security\Data\IsUser $user)
+    protected function _isUninitializedPassword(\Yana\Security\Data\Users\IsEntity $user)
     {
         return \strcasecmp($user->getPassword(), 'UNINITIALIZED') === 0;
     }

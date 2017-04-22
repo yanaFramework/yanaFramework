@@ -45,7 +45,7 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
     /**
      * User entity.
      *
-     * @var  \Yana\Security\Data\IsUser
+     * @var  \Yana\Security\Data\Users\IsEntity
      */
     private $_entity = null;
 
@@ -84,11 +84,11 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
      * Creates an user by name.
      *
      * @param  \Yana\Security\Dependencies\Container  $container        dependency container
-     * @param  \Yana\Security\Data\IsUser             $user             entity to wrap
+     * @param  \Yana\Security\Data\Users\IsEntity     $user             entity to wrap
      * @param   int                                   $maxFailureCount  1 = block on first invalid password, 0 = never block user
      * @param   int                                   $maxFailureTime   in seconds (0 = keep blocked forever)
      */
-    public function __construct(\Yana\Security\Dependencies\Container $container, \Yana\Security\Data\IsUser $user, $maxFailureCount = 3, $maxFailureTime = 300)
+    public function __construct(\Yana\Security\Dependencies\Container $container, \Yana\Security\Data\Users\IsEntity $user, $maxFailureCount = 3, $maxFailureTime = 300)
     {
         $this->_entity = $user;
         $this->_container = $container;
@@ -99,7 +99,7 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
     /**
      * Returns User entity.
      *
-     * @return  \Yana\Security\Data\IsUser
+     * @return  \Yana\Security\Data\Users\IsEntity
      */
     protected function _getEntity()
     {

@@ -139,7 +139,7 @@ class ExceptionLogger extends \Yana\Log\AbstactLogger
         }
 
         if (empty($viewMessage)) {
-            $text = \Yana\Util\String::htmlEntities($exception->getMessage() . "; " . print_r($exception->getData(), true));
+            $text = \Yana\Util\Strings::htmlEntities($exception->getMessage() . "; " . print_r($exception->getData(), true));
             $viewMessage->setText($text);
         }
         return $viewMessage;

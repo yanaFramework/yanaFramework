@@ -105,7 +105,7 @@ class Adapter extends \Yana\Security\Data\AbstractAdapter
         assert('is_string($userId); // Wrong type for argument $userId. String expected');
 
         assert('!isset($profileColumn); // Cannot redeclare var $profileColumn');
-        $profileColumn = \Yana\Util\String::toUpperCase(\Yana\Security\Data\Tables\LevelEnumeration::PROFILE);
+        $profileColumn = \Yana\Util\Strings::toUpperCase(\Yana\Security\Data\Tables\LevelEnumeration::PROFILE);
 
         assert('!isset($entities); // Cannot redeclare var $entities');
         $entities = array();
@@ -140,13 +140,13 @@ class Adapter extends \Yana\Security\Data\AbstractAdapter
         assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
 
         assert('!isset($where); // Cannot redeclare var $where');
-        $where = array(\Yana\Security\Data\Tables\LevelEnumeration::USER, '=', \Yana\Util\String::toUpperCase($userId));
+        $where = array(\Yana\Security\Data\Tables\LevelEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId));
         if ($profileId > "") {
 
             $where = array(
                 $where,
                 'and',
-                array(\Yana\Security\Data\Tables\LevelEnumeration::PROFILE, '=', \Yana\Util\String::toUpperCase($profileId))
+                array(\Yana\Security\Data\Tables\LevelEnumeration::PROFILE, '=', \Yana\Util\Strings::toUpperCase($profileId))
             );
         }
 

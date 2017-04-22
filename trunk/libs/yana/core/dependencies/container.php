@@ -508,7 +508,7 @@ class Container extends \Yana\Core\Object
     {
         if (!isset($this->_id)) {
             if (!$this->getRequest()->all()->value('id')->isEmpty()) {
-                $this->_id = \Yana\Util\String::toLowerCase($this->getRequest()->all()->value('id')->asSafeString());
+                $this->_id = \Yana\Util\Strings::toLowerCase($this->getRequest()->all()->value('id')->asSafeString());
 
             } elseif (!empty($this->_configuration->default->profile)) {
                 $this->_id = (string) $this->_configuration->default->profile;

@@ -43,10 +43,10 @@ class NullBehavior extends \Yana\Security\Logins\AbstractBehavior
     /**
      * Always returns true.
      *
-     * @param   \Yana\Security\Data\IsUser  $user  entity
+     * @param   \Yana\Security\Data\Users\IsEntity  $user  entity
      * @return  bool
      */
-    public function isLoggedIn(\Yana\Security\Data\IsUser $user)
+    public function isLoggedIn(\Yana\Security\Data\Users\IsEntity $user)
     {
         return true;
     }
@@ -54,10 +54,10 @@ class NullBehavior extends \Yana\Security\Logins\AbstractBehavior
     /**
      * Does nothing.
      *
-     * @param   \Yana\Security\Data\IsUser  $user  entity
+     * @param   \Yana\Security\Data\Users\IsEntity  $user  entity
      * @return  self
      */
-    public function handleLogin(\Yana\Security\Data\IsUser $user)
+    public function handleLogin(\Yana\Security\Data\Users\IsEntity $user)
     {
         return $this;
     }
@@ -65,10 +65,10 @@ class NullBehavior extends \Yana\Security\Logins\AbstractBehavior
     /**
      * Does nothing.
      *
-     * @param   \Yana\Security\Data\IsUser  $user  entity
+     * @param   \Yana\Security\Data\Users\IsEntity  $user  entity
      * @return  self
      */
-    public function handleLogout(\Yana\Security\Data\IsUser $user)
+    public function handleLogout(\Yana\Security\Data\Users\IsEntity $user)
     {
         return $this;
     }

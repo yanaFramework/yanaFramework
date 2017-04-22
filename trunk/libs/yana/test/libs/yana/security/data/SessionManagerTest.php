@@ -112,6 +112,7 @@ class SessionManagerTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        $this->markTestSkipped('base class is deprecated');
         chdir(CWD . '/../../../');
         \Yana\Db\Ddl\DDL::setDirectory('config/db/');
         $schema = \Yana\Files\XDDL::getDatabase('user');

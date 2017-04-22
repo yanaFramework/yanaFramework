@@ -373,6 +373,13 @@ interface IsBehavior
      * @return  bool
      */
     public function isLoggedIn();
+
+    /**
+     * Saves all changes to the user.
+     *
+     * @return  self
+     */
+    public function saveChanges();
 }
 
 ?>

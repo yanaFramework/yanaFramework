@@ -37,19 +37,61 @@ namespace Yana\Security\Data\Behaviors;
  *
  * @ignore
  */
-class Builder extends \Yana\Core\Object implements \Yana\Security\Data\Behaviors\IsBuilder
+class Builder extends \Yana\Security\Data\UserBuilder implements \Yana\Security\Data\Behaviors\IsBuilder
 {
 
     /**
      * Build new user behavior facade.
      *
-     * @param   \Yana\Security\Data\IsUser  $user  entity
+     * @param   \Yana\Security\Data\Users\IsEntity  $user  entity
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
      */
-    public function __invoke(\Yana\Security\Data\IsUser $user)
+    public function __invoke(\Yana\Security\Data\Users\IsEntity $user)
     {
         return new \Yana\Security\Data\Behaviors\Standard(new \Yana\Security\Dependencies\Container(), $user);
+    }
+
+    /**
+     * Build an user object from the current user name saved in the session data.
+     *
+     * Returns a \Yana\Security\Data\GuestUser if the session contains no username.
+     * Returns an \Yana\Security\Data\User otherwise.
+     *
+     * @param   \Yana\Security\Sessions\IsWrapper  $session  with the user name at index 'user_name'
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
+     * @throws  \Yana\Core\Exceptions\NotFoundException  if no such user is found in the database
+     */
+    public function buildFromSession(\Yana\Security\Sessions\IsWrapper $session = null)
+    {
+        $entity = parent::buildFromSession($session);
+        return $this($entity);
+    }
+
+    /**
+     * Build an user object based on a given name.
+     *
+     * @param   string  $userId  the name/id of the user as it is stored in the database
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
+     */
+    public function buildFromUserName($userId)
+    {
+        $entity = parent::buildFromUserName($userId);
+        return $this($entity);
+    }
+
+    /**
+     * Build an user object based on a given name.
+     *
+     * @param   string  $userId  the name/id of the user as it is stored in the database
+     * @param   string  $mail    the user's e-mail address (must be unique)
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
+     */
+    public function buildNewUser($userId, $mail)
+    {
+        $entity = parent::buildNewUser($userId, $mail);
+        return $this($entity);
     }
 
 }

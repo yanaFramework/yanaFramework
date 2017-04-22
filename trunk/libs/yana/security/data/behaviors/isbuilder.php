@@ -43,11 +43,11 @@ interface IsBuilder
     /**
      * Build new user behavior facade.
      *
-     * @param   \Yana\Security\Data\IsUser  $user  entity
+     * @param   \Yana\Security\Data\Users\IsEntity  $user  entity
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
      */
-    public function __invoke(\Yana\Security\Data\IsUser $user);
+    public function __invoke(\Yana\Security\Data\Users\IsEntity $user);
 
 }
 

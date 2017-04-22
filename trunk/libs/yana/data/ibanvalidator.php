@@ -197,7 +197,7 @@ class IbanValidator extends \Yana\Data\AbstractValidator
             'HU' => $n . '{3}' . $n . '{4}' . $n . '{1}' . $n . '{15}' . $n . '{1}', // Hungary
             'IE' => $a . '{4}' . $n . '{6}' . $n . '{8}', // Ireland
             'IL' => $n . '{3}' . $n . '{3}' . $n . '{13}', // Israel
-            'IL' => $a . '{4}' . $n . '{3}' . $n . '{12}', // Iraq
+            'IQ' => $a . '{4}' . $n . '{3}' . $n . '{12}', // Iraq
             'IS' => $n . '{4}' . $n . '{2}' . $n . '{6}' . $n . '{10}', // Iceland
             'IT' => $a . '{1}' . $n . '{5}' . $n . '{5}' . $c . '{12}', // Italy
             'JO' => $a . '{4}' . $n . '{4}' . $c . '{18}', // Jordan
@@ -243,8 +243,8 @@ class IbanValidator extends \Yana\Data\AbstractValidator
 
         // The following countries are not included in ISO 13616, but nevertheless accept IBANs
         $unofficialCountriesRegEx = array(
-            'AO' => $n . '{6}' . $n . '{8}', // Aland Islands (unofficial)
-            'AX' => $n . '{21}', // Angola (unofficial)
+            'AO' => $n . '{21}', // Angola(unofficial)
+            'AX' => $n . '{6}' . $n . '{8}', // Aland Islands (unofficial)
             'BF' => $n . '{23}', // Burkina Faso (unofficial)
             'BI' => $n . '{12}', // Burundi (unofficial)
             'BJ' => $a . '{1}' . $n . '{23}', // Benin (unofficial)

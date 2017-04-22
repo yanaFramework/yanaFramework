@@ -43,6 +43,17 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
 {
 
     /**
+     * Saves all changes to the user.
+     *
+     * @return  self
+     */
+    public function saveChanges()
+    {
+        $this->_getEntity()->saveEntity();
+        return $this;
+    }
+
+    /**
      * Get the name of the user as a string.
      *
      * @return  string

@@ -68,7 +68,8 @@ class NullRuleTest extends \PHPUnit_Framework_TestCase
      */
     public function test__invoke()
     {
-        $user = new \Yana\Security\Data\Users\Entity("userName");
+        $builder = new \Yana\Security\Data\Behaviors\Builder();
+        $user = $builder(new \Yana\Security\Data\Users\Entity("userName"));
         $this->assertTrue($this->object->__invoke(new \Yana\Security\Rules\Requirements\Requirement("", "", 0), "profileId", "action", $user));
     }
 

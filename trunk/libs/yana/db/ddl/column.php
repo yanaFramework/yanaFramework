@@ -1927,7 +1927,7 @@ class Column extends \Yana\Db\Ddl\AbstractNamedObject
                 self::_serializeOptions($optgroup, $item);
                 unset($optgroup);
             } else {
-                $option = $node->addChild('option', \Yana\Util\String::htmlEntities($item));
+                $option = $node->addChild('option', \Yana\Util\Strings::htmlEntities($item));
                 if ($key !== $item) {
                     $option->addAttribute('value', $key);
                 }

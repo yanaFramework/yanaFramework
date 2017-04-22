@@ -39,7 +39,7 @@ require_once __Dir__ . '/../../../include.php';
  *
  * @package  test
  */
-class StringTest extends \PHPUnit_Framework_TestCase
+class StringsTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -65,7 +65,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testToInt()
     {
         $this->assertEquals(
-            1, \Yana\Util\String::toInt("1")
+            1, \Yana\Util\Strings::toInt("1")
         );
     }
 
@@ -75,7 +75,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testToInt2()
     {
         $this->assertEquals(
-            1, \Yana\Util\String::toInt("1.5")
+            1, \Yana\Util\Strings::toInt("1.5")
         );
     }
 
@@ -85,7 +85,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testToInt3()
     {
         $this->assertFalse(
-            \Yana\Util\String::toInt("a")
+            \Yana\Util\Strings::toInt("a")
         );
     }
 
@@ -95,7 +95,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testToFloat()
     {
         $this->assertEquals(
-            1.0, \Yana\Util\String::toFloat("1")
+            1.0, \Yana\Util\Strings::toFloat("1")
         );
     }
 
@@ -105,7 +105,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testToFloat2()
     {
         $this->assertEquals(
-            1.5, \Yana\Util\String::toFloat("1.5")
+            1.5, \Yana\Util\Strings::toFloat("1.5")
         );
     }
 
@@ -115,7 +115,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testToFloat3()
     {
         $this->assertFalse(
-            \Yana\Util\String::toFloat("a")
+            \Yana\Util\Strings::toFloat("a")
         );
     }
 
@@ -125,7 +125,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testToBool()
     {
         $this->assertTrue(
-            \Yana\Util\String::toBool("True")
+            \Yana\Util\Strings::toBool("True")
         );
     }
 
@@ -135,7 +135,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testToBool2()
     {
         $this->assertFalse(
-            \Yana\Util\String::toBool("False")
+            \Yana\Util\Strings::toBool("False")
         );
     }
 
@@ -145,7 +145,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testToBool3()
     {
         $this->assertFalse(
-            \Yana\Util\String::toBool("0")
+            \Yana\Util\Strings::toBool("0")
         );
     }
 
@@ -155,7 +155,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testToBool4()
     {
         $this->assertTrue(
-            \Yana\Util\String::toBool("1")
+            \Yana\Util\Strings::toBool("1")
         );
     }
 
@@ -165,7 +165,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testToBool5()
     {
         $this->assertFalse(
-            \Yana\Util\String::toBool("")
+            \Yana\Util\Strings::toBool("")
         );
     }
 
@@ -175,7 +175,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testToBool6()
     {
         $this->assertFalse(
-            \Yana\Util\String::toBool("a")
+            \Yana\Util\Strings::toBool("a")
         );
     }
 
@@ -185,7 +185,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testAddSlashes()
     {
         $this->assertEquals(
-            '\a', \Yana\Util\String::addSlashes("a", "a")
+            '\a', \Yana\Util\Strings::addSlashes("a", "a")
         );
     }
 
@@ -195,7 +195,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testAddSlashes2()
     {
         $this->assertEquals(
-            'a', \Yana\Util\String::addSlashes("a", "b")
+            'a', \Yana\Util\Strings::addSlashes("a", "b")
         );
     }
 
@@ -205,7 +205,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testAddSlashes3()
     {
         $this->assertEquals(
-            '\\\\a', \Yana\Util\String::addSlashes('\\a')
+            '\\\\a', \Yana\Util\Strings::addSlashes('\\a')
         );
     }
 
@@ -215,7 +215,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testRemoveSlashes()
     {
         $this->assertEquals(
-            'a', \Yana\Util\String::removeSlashes("a")
+            'a', \Yana\Util\Strings::removeSlashes("a")
         );
     }
 
@@ -225,7 +225,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testRemoveSlashes2()
     {
         $this->assertEquals(
-            'a', \Yana\Util\String::removeSlashes('\a')
+            'a', \Yana\Util\Strings::removeSlashes('\a')
         );
     }
 
@@ -235,7 +235,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testRemoveSlashes3()
     {
         $this->assertEquals(
-            '\\a', \Yana\Util\String::removeSlashes('\\\\a')
+            '\\a', \Yana\Util\Strings::removeSlashes('\\\\a')
         );
     }
 
@@ -245,7 +245,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testCharAt()
     {
         $this->assertEquals(
-            "T", \Yana\Util\String::charAt("Test", 0)
+            "T", \Yana\Util\Strings::charAt("Test", 0)
         );
     }
 
@@ -255,7 +255,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testCharAt2()
     {
         $this->assertEquals(
-            "t", \Yana\Util\String::charAt("Test", 3)
+            "t", \Yana\Util\Strings::charAt("Test", 3)
         );
     }
 
@@ -265,7 +265,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testTrim()
     {
         $this->assertEquals(
-            "test", \Yana\Util\String::trim(" test ")
+            "test", \Yana\Util\Strings::trim(" test ")
         );
     }
 
@@ -275,7 +275,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testTrim2()
     {
         $this->assertEquals(
-            "test ", \Yana\Util\String::trim(" test ", String::LEFT)
+            "test ", \Yana\Util\Strings::trim(" test ", Strings::LEFT)
         );
     }
 
@@ -285,7 +285,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testTrim3()
     {
         $this->assertEquals(
-            " test", \Yana\Util\String::trim(" test ", String::RIGHT)
+            " test", \Yana\Util\Strings::trim(" test ", Strings::RIGHT)
         );
     }
 
@@ -295,7 +295,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testEncrypt()
     {
         $this->assertEquals(
-            -662733300, \Yana\Util\String::encrypt("test", "crc32")
+            -662733300, \Yana\Util\Strings::encrypt("test", "crc32")
         );
     }
 
@@ -305,7 +305,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testEncrypt2()
     {
         $this->assertEquals(
-            "098f6bcd4621d373cade4e832627b4f6", \Yana\Util\String::encrypt("test", "md5")
+            "098f6bcd4621d373cade4e832627b4f6", \Yana\Util\Strings::encrypt("test", "md5")
         );
     }
 
@@ -315,7 +315,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testEncrypt3()
     {
         $this->assertEquals(
-            "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3", \Yana\Util\String::encrypt("test", "sha")
+            "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3", \Yana\Util\Strings::encrypt("test", "sha")
         );
     }
 
@@ -325,7 +325,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testEncrypt4()
     {
         $this->assertEquals(
-            "pawpU97AVNPO6", \Yana\Util\String::encrypt("test", "crypt", "pass")
+            "pawpU97AVNPO6", \Yana\Util\Strings::encrypt("test", "crypt", "pass")
         );
     }
 
@@ -335,7 +335,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testEncrypt5()
     {
         $this->assertEquals(
-            NULL, \Yana\Util\String::encrypt("test", "des")
+            NULL, \Yana\Util\Strings::encrypt("test", "des")
         );
     }
 
@@ -345,7 +345,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testEncrypt6()
     {
         $this->assertEquals(
-            "pawpU97AVNPO6", \Yana\Util\String::encrypt("test", "des", "pass")
+            "pawpU97AVNPO6", \Yana\Util\Strings::encrypt("test", "des", "pass")
         );
     }
 
@@ -355,7 +355,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testEncrypt7()
     {
         $this->assertEquals(
-            '$2rcByx51ejoM', \Yana\Util\String::encrypt("test", "blowfish", "passwordpassword")
+            '$2y$10$passwordpasswordpasswe5CTNQfLGuOENdWfsXOxrnwUshKsXqmu', \Yana\Util\Strings::encrypt("test", "blowfish", "passwordpasswordpassword")
         );
     }
 
@@ -365,7 +365,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testEncrypt8()
     {
         $this->assertEquals(
-            "T230", \Yana\Util\String::encrypt("test", "soundex")
+            "T230", \Yana\Util\Strings::encrypt("test", "soundex")
         );
     }
 
@@ -375,7 +375,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testEncrypt9()
     {
         $this->assertEquals(
-            "TST", \Yana\Util\String::encrypt("test", "metaphone")
+            "TST", \Yana\Util\Strings::encrypt("test", "metaphone")
         );
     }
 
@@ -385,7 +385,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testEncrypt10()
     {
         $this->assertEquals(
-            "AAAA", \Yana\Util\String::encrypt("aaaa", "xor", "    ")
+            "AAAA", \Yana\Util\Strings::encrypt("aaaa", "xor", "    ")
         );
     }
 
@@ -395,7 +395,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testToLowerCase()
     {
         $this->assertEquals(
-            "abc", \Yana\Util\String::toLowerCase("AbC")
+            "abc", \Yana\Util\Strings::toLowerCase("AbC")
         );
     }
 
@@ -405,7 +405,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testToUpperCase()
     {
         $this->assertEquals(
-            "ABC", \Yana\Util\String::toUpperCase("AbC")
+            "ABC", \Yana\Util\Strings::toUpperCase("AbC")
         );
     }
 
@@ -415,7 +415,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testSubstring()
     {
         $this->assertEquals(
-            "bc", \Yana\Util\String::substring("abc", 1)
+            "bc", \Yana\Util\Strings::substring("abc", 1)
         );
     }
 
@@ -425,7 +425,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testSubstring2()
     {
         $this->assertEquals(
-            "b", \Yana\Util\String::substring("abc", 1, 1)
+            "b", \Yana\Util\Strings::substring("abc", 1, 1)
         );
     }
 
@@ -435,7 +435,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testSubstring3()
     {
         $this->assertEquals(
-            "ab", \Yana\Util\String::substring("abc", 0, -1)
+            "ab", \Yana\Util\Strings::substring("abc", 0, -1)
         );
     }
 
@@ -445,7 +445,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testCompareTo()
     {
         $this->assertEquals(
-            -1, \Yana\Util\String::compareTo("a", "b")
+            -1, \Yana\Util\Strings::compareTo("a", "b")
         );
     }
 
@@ -455,7 +455,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testCompareTo2()
     {
         $this->assertEquals(
-            0, \Yana\Util\String::compareTo("a", "a")
+            0, \Yana\Util\Strings::compareTo("a", "a")
         );
     }
 
@@ -465,7 +465,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testCompareTo3()
     {
         $this->assertEquals(
-            +1, \Yana\Util\String::compareTo("a", "A")
+            +1, \Yana\Util\Strings::compareTo("a", "A")
         );
     }
 
@@ -475,7 +475,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testCompareTo4()
     {
         $this->assertEquals(
-            +1, \Yana\Util\String::compareTo("b", "a")
+            +1, \Yana\Util\Strings::compareTo("b", "a")
         );
     }
 
@@ -485,7 +485,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testCompareToIgnoreCase()
     {
         $this->assertEquals(
-            -1, \Yana\Util\String::compareToIgnoreCase("a", "b")
+            -1, \Yana\Util\Strings::compareToIgnoreCase("a", "b")
         );
     }
 
@@ -495,7 +495,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testCompareToIgnoreCase2()
     {
         $this->assertEquals(
-            0, \Yana\Util\String::compareToIgnoreCase("a", "a")
+            0, \Yana\Util\Strings::compareToIgnoreCase("a", "a")
         );
     }
 
@@ -505,7 +505,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testCompareToIgnoreCase3()
     {
         $this->assertEquals(
-            0, \Yana\Util\String::compareToIgnoreCase("a", "A")
+            0, \Yana\Util\Strings::compareToIgnoreCase("a", "A")
         );
     }
 
@@ -515,7 +515,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testCompareToIgnoreCase4()
     {
         $this->assertEquals(
-            +1, \Yana\Util\String::compareToIgnoreCase("b", "a")
+            +1, \Yana\Util\Strings::compareToIgnoreCase("b", "a")
         );
     }
 
@@ -525,7 +525,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testMatch()
     {
         $this->assertFalse(
-            \Yana\Util\String::match("b", "/a/")
+            \Yana\Util\Strings::match("b", "/a/")
         );
     }
 
@@ -535,7 +535,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testMatch2()
     {
         $this->assertEquals(
-            array("abc", "b"), \Yana\Util\String::match("abc", "/a(b)c/")
+            array("abc", "b"), \Yana\Util\Strings::match("abc", "/a(b)c/")
         );
     }
 
@@ -545,7 +545,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testMatchAll()
     {
         $this->assertFalse(
-            \Yana\Util\String::matchAll("b", "/a/")
+            \Yana\Util\Strings::matchAll("b", "/a/")
         );
     }
 
@@ -555,7 +555,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testMatchAll2()
     {
         $this->assertEquals(
-            array(array("ab", "ab"), array("b", "b")), \Yana\Util\String::matchAll("abcab", "/a(b)/")
+            array(array("ab", "ab"), array("b", "b")), \Yana\Util\Strings::matchAll("abcab", "/a(b)/")
         );
     }
 
@@ -565,7 +565,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testReplace()
     {
         $this->assertEquals(
-            "a", \Yana\Util\String::replace("a", "b")
+            "a", \Yana\Util\Strings::replace("a", "b")
         );
     }
 
@@ -575,7 +575,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testReplace2()
     {
         $this->assertEquals(
-            "b", \Yana\Util\String::replace("a", "a", "b")
+            "b", \Yana\Util\Strings::replace("a", "a", "b")
         );
     }
 
@@ -585,7 +585,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testReplaceRegExp()
     {
         $this->assertEquals(
-            "a", \Yana\Util\String::replaceRegExp("a", "/b/")
+            "a", \Yana\Util\Strings::replaceRegExp("a", "/b/")
         );
     }
 
@@ -595,7 +595,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testReplaceRegExp2()
     {
         $this->assertEquals(
-            "b", \Yana\Util\String::replaceRegExp("a", "/a/", "b")
+            "b", \Yana\Util\Strings::replaceRegExp("a", "/a/", "b")
         );
     }
 
@@ -605,7 +605,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testLength()
     {
         $this->assertEquals(
-            0, \Yana\Util\String::length("")
+            0, \Yana\Util\Strings::length("")
         );
     }
 
@@ -615,7 +615,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testLength2()
     {
         $this->assertEquals(
-            1, \Yana\Util\String::length("a")
+            1, \Yana\Util\Strings::length("a")
         );
     }
 
@@ -625,7 +625,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testLength3()
     {
         $this->assertEquals(
-            1, \Yana\Util\String::length("ä")
+            1, \Yana\Util\Strings::length("ä")
         );
     }
 
@@ -635,7 +635,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testSplit()
     {
         $this->assertEquals(
-            array("a"), \Yana\Util\String::split("a", "|")
+            array("a"), \Yana\Util\Strings::split("a", "|")
         );
     }
 
@@ -645,7 +645,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testSplit2()
     {
         $this->assertEquals(
-            array("a", "b"), \Yana\Util\String::split("a|b", "|")
+            array("a", "b"), \Yana\Util\Strings::split("a|b", "|")
         );
     }
 
@@ -655,7 +655,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testSplit3()
     {
         $this->assertEquals(
-            array("a", "b|c"), \Yana\Util\String::split("a|b|c", "|", 2)
+            array("a", "b|c"), \Yana\Util\Strings::split("a|b|c", "|", 2)
         );
     }
 
@@ -665,7 +665,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testSplitRegExp()
     {
         $this->assertEquals(
-            array("a"), \Yana\Util\String::splitRegExp("a", "/\|/")
+            array("a"), \Yana\Util\Strings::splitRegExp("a", "/\|/")
         );
     }
 
@@ -675,7 +675,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testSplitRegExp2()
     {
         $this->assertEquals(
-            array("a", "b"), \Yana\Util\String::splitRegExp("a|b", "/\|/")
+            array("a", "b"), \Yana\Util\Strings::splitRegExp("a|b", "/\|/")
         );
     }
 
@@ -685,7 +685,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testSplitRegExp3()
     {
         $this->assertEquals(
-            array("a", "b|c"), \Yana\Util\String::splitRegExp("a|b|c", "/\|/", 2)
+            array("a", "b|c"), \Yana\Util\Strings::splitRegExp("a|b|c", "/\|/", 2)
         );
     }
 
@@ -695,7 +695,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testIndexOf()
     {
         $this->assertEquals(
-            -1, \Yana\Util\String::indexOf("a", "b")
+            -1, \Yana\Util\Strings::indexOf("a", "b")
         );
     }
 
@@ -705,7 +705,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testIndexOf2()
     {
         $this->assertEquals(
-            -1, \Yana\Util\String::indexOf("ab", "a", 1)
+            -1, \Yana\Util\Strings::indexOf("ab", "a", 1)
         );
     }
 
@@ -715,7 +715,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testIndexOf3()
     {
         $this->assertEquals(
-            1, \Yana\Util\String::indexOf("ab", "b")
+            1, \Yana\Util\Strings::indexOf("ab", "b")
         );
     }
 
@@ -725,7 +725,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testIndexOf4()
     {
         $this->assertEquals(
-            1, \Yana\Util\String::indexOf("ab", "b", 1)
+            1, \Yana\Util\Strings::indexOf("ab", "b", 1)
         );
     }
 
@@ -735,7 +735,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testIndexOf5()
     {
         $this->assertEquals(
-            1, \Yana\Util\String::indexOf("aä", "ä")
+            1, \Yana\Util\Strings::indexOf("aä", "ä")
         );
     }
 
@@ -745,7 +745,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testShuffle()
     {
         $this->assertEquals(
-            "ä", \Yana\Util\String::shuffle("ä")
+            "ä", \Yana\Util\Strings::shuffle("ä")
         );
     }
 
@@ -755,7 +755,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testReverse()
     {
         $this->assertEquals(
-            "ä", \Yana\Util\String::reverse("ä")
+            "ä", \Yana\Util\Strings::reverse("ä")
         );
     }
 
@@ -765,7 +765,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testReverse2()
     {
         $this->assertEquals(
-            "cba", \Yana\Util\String::reverse("abc")
+            "cba", \Yana\Util\Strings::reverse("abc")
         );
     }
 
@@ -775,7 +775,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testHtmlEntities()
     {
         $this->assertEquals(
-            "&#32;&#228;", \Yana\Util\String::htmlEntities(" ä")
+            "&#32;&#228;", \Yana\Util\Strings::htmlEntities(" ä")
         );
     }
 
@@ -785,7 +785,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testHtmlSpecialChars()
     {
         $this->assertEquals(
-            "&lt;ä id=&quot;&quot; title=''&gt;", \Yana\Util\String::htmlSpecialChars("<ä id=\"\" title=''>")
+            "&lt;ä id=&quot;&quot; title=''&gt;", \Yana\Util\Strings::htmlSpecialChars("<ä id=\"\" title=''>")
         );
     }
 
@@ -795,7 +795,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testStartsWith()
     {
         $this->assertTrue(
-            \Yana\Util\String::startsWith("test", "te")
+            \Yana\Util\Strings::startsWith("test", "te")
         );
     }
 
@@ -805,7 +805,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testStartsWith2()
     {
         $this->assertFalse(
-            \Yana\Util\String::startsWith("test", "T")
+            \Yana\Util\Strings::startsWith("test", "T")
         );
     }
 
@@ -815,7 +815,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testStartsWith3()
     {
         $this->assertFalse(
-            \Yana\Util\String::startsWith("test", "a")
+            \Yana\Util\Strings::startsWith("test", "a")
         );
     }
 
@@ -825,7 +825,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testEndsWith()
     {
         $this->assertTrue(
-            \Yana\Util\String::endsWith("test", "st")
+            \Yana\Util\Strings::endsWith("test", "st")
         );
     }
 
@@ -835,7 +835,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testEndsWith2()
     {
         $this->assertFalse(
-            \Yana\Util\String::endsWith("test", "T")
+            \Yana\Util\Strings::endsWith("test", "T")
         );
     }
 
@@ -845,14 +845,14 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testEndsWith3()
     {
         $this->assertFalse(
-            \Yana\Util\String::endsWith("test", "a")
+            \Yana\Util\Strings::endsWith("test", "a")
         );
     }
 
     /**
      * testEncode().
-     * @covers \Yana\Util\String::encode
-     * @covers \Yana\Util\String::decode
+     * @covers \Yana\Util\Strings::encode
+     * @covers \Yana\Util\Strings::decode
      *
      * @test
      */
@@ -869,10 +869,10 @@ class StringTest extends \PHPUnit_Framework_TestCase
                           'rot13',);
         foreach($encoding as $code)
         {  
-            $encode = \Yana\Util\String::encode('this is a test string äöü', $code, ENT_COMPAT, 'UTF-8');
+            $encode = \Yana\Util\Strings::encode('this is a test string äöü', $code, ENT_COMPAT, 'UTF-8');
             $this->assertNotEquals('this is a test string äöü', $code, 'assert failed, expected two different strings for encoding '.$code.', result can not be equal');
             if($code != 'quote') {
-                $decode = \Yana\Util\String::decode($encode, $code, ENT_COMPAT, 'UTF-8');
+                $decode = \Yana\Util\Strings::decode($encode, $code, ENT_COMPAT, 'UTF-8');
                 $this->assertEquals('this is a test string äöü', $decode, 'assert failed, the expected result must be equal for decoding '.$code);
             }
         }
@@ -895,7 +895,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
             "test,abc",
-            \Yana\Util\String::wrap("test abc", 3, ",", false)
+            \Yana\Util\Strings::wrap("test abc", 3, ",", false)
         );
     }
 
@@ -906,7 +906,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
             "tes,t,abc",
-            \Yana\Util\String::wrap("test abc", 3, ",", true)
+            \Yana\Util\Strings::wrap("test abc", 3, ",", true)
         );
     }
 
@@ -916,7 +916,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testContains()
     {
         $this->assertTrue(
-            \Yana\Util\String::contains("abc", "a")
+            \Yana\Util\Strings::contains("abc", "a")
         );
     }
     /**
@@ -925,7 +925,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testContains2()
     {
         $this->assertFalse(
-            \Yana\Util\String::contains("abc", "A")
+            \Yana\Util\Strings::contains("abc", "A")
         );
     }
     /**
@@ -934,7 +934,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testContains3()
     {
         $this->assertFalse(
-            \Yana\Util\String::contains("abc", "d")
+            \Yana\Util\Strings::contains("abc", "d")
         );
     }
 

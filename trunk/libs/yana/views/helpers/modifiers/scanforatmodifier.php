@@ -59,7 +59,7 @@ class ScanForAtModifier extends \Yana\Views\Helpers\AbstractViewHelper implement
                 assert('!isset($exceptionMatch); // $exceptionMatch already declared');
                 assert('!isset($encodedMatch); // $encodedMatch already declared');
 
-                $encodedMatch = \Yana\Util\String::htmlEntities($match); // the replacement string
+                $encodedMatch = \Yana\Util\Strings::htmlEntities($match); // the replacement string
 
                 // encode all mail addresses
                 $source = str_replace($match, $encodedMatch, $source);

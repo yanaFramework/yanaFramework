@@ -105,16 +105,16 @@ class Facade extends \Yana\Core\Object
     }
 
     /**
-     * @return \Yana\Security\Data\UserBuilder
+     * @return \Yana\Security\Data\Behaviors\Builder
      */
     protected function _createUserBuilder()
     {
-        return new \Yana\Security\Data\UserBuilder($this->_createUserAdapter());
+        return new \Yana\Security\Data\Behaviors\Builder($this->_createUserAdapter());
     }
 
     /**
      * @param   string  $userName  identifies user
-     * @return  \Yana\Security\Data\IsUser
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
      */
     protected function _buildUserEntity($userName = "")
@@ -237,7 +237,7 @@ class Facade extends \Yana\Core\Object
         }
         assert('is_string($profileId);');
         assert('!isset($uppderCaseProfileId); // Cannot redeclare $uppderCaseProfileId');
-        $uppderCaseProfileId = \Yana\Util\String::toUpperCase((string) $profileId);
+        $uppderCaseProfileId = \Yana\Util\Strings::toUpperCase((string) $profileId);
 
         /* Argument 2 */
         if (empty($action)) {
@@ -249,7 +249,7 @@ class Facade extends \Yana\Core\Object
         }
         assert('is_string($action);');
         assert('!isset($lowerCaseAction); // Cannot redeclare $lowerCaseAction');
-        $lowerCaseAction = \Yana\Util\String::toLowerCase((string) $action);
+        $lowerCaseAction = \Yana\Util\Strings::toLowerCase((string) $action);
 
         /* Argument 3 */
         /**
@@ -329,18 +329,12 @@ class Facade extends \Yana\Core\Object
     /**
      * 
      * @param   string  $userName  identifies user
-     * @return  \Yana\Security\Data\IsUser
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
      */
     public function loadUser($userName)
     {
-        $entity = $this->_buildUserEntity($userName);
-        
-        $passwords = new \Yana\Security\Passwords\Behaviors\StandardBehavior(
-            //$this->_createPasswordAlgorithm(), $this->_createPasswordCheck(), $this->_createPasswordGenerator()
-        );
-        $behavior = new \Yana\Security\Data\Behaviors\Standard($passwords, $logins);
-        return $behavior;
+        return $this->_buildUserEntity($userName);
     }
 
     /**
@@ -383,7 +377,7 @@ class Facade extends \Yana\Core\Object
     public function removeUser($userName)
     {
         assert('is_string($userName); // Wrong type for argument $userName. String expected');
-        $upperCaseUserName = \Yana\Util\String::toUpperCase($userName);
+        $upperCaseUserName = \Yana\Util\Strings::toUpperCase($userName);
         // user should not delete himself
         if ($this->_buildUserEntity($upperCaseUserName)->isLoggedIn()) { // throws NotFoundException
             throw new \Yana\Core\Exceptions\User\DeleteSelfException();

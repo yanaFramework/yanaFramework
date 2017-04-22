@@ -152,7 +152,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
             $value = $column->getAutoValue();
         }
         if (is_string($value)) {
-            $value = \Yana\Util\String::htmlSpecialChars($value);
+            $value = \Yana\Util\Strings::htmlSpecialChars($value);
         }
 
         $this->setAttr($this->createJavascriptEvents($field) . $this->getAttr()); // get javascript events
@@ -522,7 +522,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                 {
                     case 'javascript':
                         assert('!isset($actionId);');
-                        $actionId = \Yana\Util\String::htmlSpecialChars($event->getAction());
+                        $actionId = \Yana\Util\Strings::htmlSpecialChars($event->getAction());
                         $href = 'href="javascript://" ' . $event->getName() . '="' . $actionId . '"';
                         unset($actionId);
                     break;
@@ -580,7 +580,7 @@ class AutomatedHtmlBuilder extends \Yana\Forms\Fields\HtmlBuilder
                     continue; // these are links - ignore!
                 }
                 $name = $event->getName();
-                $code = \Yana\Util\String::htmlSpecialChars($event->getAction());
+                $code = \Yana\Util\Strings::htmlSpecialChars($event->getAction());
                 $eventsAsHtml .= " $name=\"$code\"";
             } // end foreach
         }
