@@ -75,6 +75,13 @@ final class Application extends \Yana\Core\AbstractSingleton
     private static $_action = null;
 
     /**
+     * HTTP request facade
+     *
+     * @var  \Yana\Http\IsFacade
+     */
+    private static $_request = null;
+
+    /**
      * safe-mode settings
      *
      * false = default-mode (use profile settings)
@@ -204,6 +211,16 @@ final class Application extends \Yana\Core\AbstractSingleton
     }
 
     /**
+     * Returns an HTTP request facade.
+     *
+     * @return \Yana\Http\IsFacade
+     */
+    protected static function _getRequest()
+    {
+        return self::$_request;
+    }
+
+    /**
      * <<Singleton>> Constructor
      *
      * This function creates a new instance of the framework.
@@ -306,7 +323,7 @@ final class Application extends \Yana\Core\AbstractSingleton
             $action = $this->_getAction();
         }
         if (is_null($args)) {
-            $args = \Yana\Http\Requests\Builder::buildFromSuperGlobals()->all()->asArrayOfStrings();
+            $args = self::_getRequest()->all()->asArrayOfStrings();
         }
 
         /**
@@ -452,7 +469,7 @@ final class Application extends \Yana\Core\AbstractSingleton
     protected function _getAction()
     {
         if (!isset(self::$_action)) {
-            $action = \Yana\Http\Requests\Builder::buildFromSuperGlobals()->all()->value('action')->asSafeString();
+            $action = self::_getRequest()->getActionArgument();
             // work-around for IE-bug
             if (is_array($action)) {
                 if (count($action) === 1) {
@@ -461,15 +478,16 @@ final class Application extends \Yana\Core\AbstractSingleton
                     $action = key($action); // get first key
                 }
             }
+
             // error checking
             switch (true)
             {
-                case isset($action) && !is_string($action):
-                case isset($action) && !$this->getPlugins()->isEvent($action):
+                case !is_string($action):
+                case !$this->getPlugins()->isEvent($action):
                     $error = new \Yana\Core\Exceptions\InvalidActionException();
                     $error->setAction($action);
                 // fall through
-                case empty($action):
+                case $action === "":
                     assert('!empty(self::$_config->default->homepage); // Configuration missing default homepage.');
                     $action = (string) self::$_config->default->homepage;
                 // fall through
@@ -525,7 +543,7 @@ final class Application extends \Yana\Core\AbstractSingleton
                 $this->_registry->setVar("ID", self::getId());
                 $this->_registry->mergeVars('*', \Yana\Util\Hashtable::changeCase(self::$_config->toArray(), \CASE_UPPER));
             }
-            $request = \Yana\Http\Requests\Builder::buildFromSuperGlobals()->all()->asArrayOfStrings();
+            $request = self::_getRequest()->all()->asArrayOfStrings();
             $this->_registry->mergeVars('*', $request);
             $this->_registry->setAsGlobal();
 
@@ -718,13 +736,11 @@ final class Application extends \Yana\Core\AbstractSingleton
     public static function getId()
     {
         if (!isset(self::$_id)) {
-            $id = \Yana\Http\Requests\Builder::buildFromSuperGlobals()->all()->value('id')->asSafeString();
-            if (!empty($id)) {
-                self::$_id = mb_strtolower($id);
+            $id = self::_getRequest()->getProfileArgument();
+            if ($id > "") {
+                self::$_id = $id;
             } elseif (!empty(self::$_config->default->profile)) {
                 self::$_id = (string) self::$_config->default->profile;
-            } elseif (!empty($_REQUEST['id'])) {
-                self::$_id = mb_strtolower($_REQUEST['id']);
             } else {
                 self::$_id = 'default';
             }
@@ -941,7 +957,7 @@ final class Application extends \Yana\Core\AbstractSingleton
         /**
          * is an AJAX request
          */
-        if (\Yana\Http\Requests\Builder::buildFromSuperGlobals()->isAjaxRequest()) {
+        if ($this->_getRequest()->isAjaxRequest()) {
             $event = 'null';
             $templateName = 'id:STDOUT';
         }

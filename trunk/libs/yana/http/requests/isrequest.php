@@ -44,7 +44,7 @@ interface IsRequest
      * This is as a combination of "get" and "post" vars, where "post" vars take precedence over "get" vars.
      * It doesn't include "cookie" vars.
      *
-     * For command-line calls this be set to the "argv" array, presented as key-value pairs.
+     * For command-line calls this is set to the "argv" array, presented as key-value pairs.
      *
      * @return  \Yana\Http\Requests\ValueWrapper
      */

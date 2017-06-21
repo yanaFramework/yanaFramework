@@ -35,7 +35,7 @@ namespace Yana\Http;
  * @package     yana
  * @subpackage  http
  */
-class Facade extends \Yana\Core\Object implements \Yana\Http\Requests\IsRequest
+class Facade extends \Yana\Core\Object implements \Yana\Http\IsFacade
 {
 
     /**
@@ -207,6 +207,70 @@ class Facade extends \Yana\Core\Object implements \Yana\Http\Requests\IsRequest
     public function uri()
     {
         return $this->_getUri()->__invoke();
+    }
+
+    /**
+     * Returns value of the "action" parameter.
+     *
+     * Checks both GET and POST parameters and returns an empty string if there is none.
+     *
+     * @return  string
+     */
+    public function getActionArgument()
+    {
+        assert('!isset($actionName); // Cannot redeclare var $actionName');
+        $actionName = "";
+
+        assert('!isset($collection); // Cannot redeclare var $collection');
+        $collection = $this->_getRequest()->all();
+
+        if ($collection->has('action')) {
+
+            assert('!isset($action); // Cannot redeclare var $action');
+            $action = $collection->value('action');
+
+            // work-around for IE-bug
+            if ($action->isArray()) {
+
+                assert('!isset($actions); // Cannot redeclare var $actions');
+                $actions = $action->all()->asArrayOfStrings();
+                if (count($actions) === 1) {
+                    // action[name]=1 -> action=name
+                    reset($actions); // rewind iterator
+                    $actionName = (string) key($actions); // get first key
+                }
+                unset($actions);
+
+            } else {
+                $actionName = $action->asSafeString();
+            }
+            $actionName = mb_strtolower($actionName);
+        }
+
+        return $actionName;
+    }
+
+    /**
+     * Returns value of the "action" parameter.
+     *
+     * Checks both GET and POST parameters and returns an empty string if there is none.
+     *
+     * @return  string
+     */
+    public function getProfileArgument()
+    {
+        assert('!isset($profileId); // Cannot redeclare var $profileId');
+        $profileId = "";
+
+        assert('!isset($collection); // Cannot redeclare var $collection');
+        $collection = $this->_getRequest()->all();
+
+        if ($collection->has('id')) {
+
+            $profileId = mb_strtolower($collection->value('id')->asSafeString());
+        }
+
+        return $profileId;
     }
 
 }
