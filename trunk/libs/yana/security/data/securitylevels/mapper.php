@@ -39,49 +39,31 @@ namespace Yana\Security\Data\SecurityLevels;
  *
  * @ignore
  */
-class Mapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEntityMapper
+class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityLevels\IsMapper
 {
 
     /**
      * Creates an entity based on a database row.
      *
      * @param   array  $databaseRow  row containing user info
-     * @return  \Yana\Security\Data\SecurityLevels\Level
+     * @return  \Yana\Security\Data\SecurityLevels\IsLevel
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given user has no name
      */
     public function toEntity(array $databaseRow)
     {
         assert('!isset($level); // Cannot redeclare var $level');
+        $databaseRowLower = \Yana\Util\Hashtable::changeCase($databaseRow, \CASE_LOWER);
         $level = 0;
-        if (isset($databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::LEVEL])) {
-            $level = (int) $databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::LEVEL];
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::LEVEL])) {
+            $level = (int) $databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::LEVEL];
         }
         assert('!isset($isProxy); // Cannot redeclare var $isProxy');
         $isProxy = true;
-        if (isset($databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY])) {
-            $isProxy = (bool) $databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY];
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY])) {
+            $isProxy = (bool) $databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY];
         }
 
         return new \Yana\Security\Data\SecurityLevels\Level($level, $isProxy);
-    }
-
-    /**
-     * Creates a database row based on an entity.
-     *
-     * @param   \Yana\Security\Data\SecurityLevels\Level  $entity  entity containing user info
-     * @return  array
-     */
-    public function toDatabaseRow(\Yana\Data\Adapters\IsEntity $entity)
-    {
-        assert('!isset($row); // Cannot redeclare var $row');
-        $row = array();
-
-        if ($entity instanceof \Yana\Security\Data\SecurityLevels\Level) {
-
-            $row[\Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY] = $entity->isUserProxyActive();
-            $row[\Yana\Security\Data\Tables\LevelEnumeration::LEVEL] = $entity->getSecurityLevel();
-        }
-        return $row;
     }
 
 }

@@ -27,52 +27,42 @@
  * @ignore
  */
 
-namespace Yana\Security\Data;
+namespace Yana\Security\Data\SecurityRules;
 
 /**
- * <<abstract>> entity manager.
- *
- * This persistent class provides access to user data and function to set logins and passwords.
+ * <<interface>> Security rule.
  *
  * @package     yana
  * @subpackage  security
- *
- * @ignore
  */
-abstract class AbstractAdapter extends \Yana\Core\Object
+interface IsRule
 {
 
     /**
-     * Connection to database.
+     * Get associated user group.
      *
-     * @var  \Yana\Db\IsConnection
+     * @return  string
      */
-    private $_connection = null;
+    public function getGroup();
 
     /**
-     * <<construct>> Creates a new user-manager.
+     * Get associated user role.
      *
-     * To create the required connection you may use the following short-hand function:
-     * <code>
-     * $connection = \Yana\Application::connect("user");
-     * </code>
-     *
-     * @param  \Yana\Db\IsConnection  $connection  database connection to table user
+     * @return  string
      */
-    public function __construct(\Yana\Db\IsConnection $connection)
-    {
-        $this->_connection = $connection;
-    }
+    public function getRole();
 
     /**
-     * Returns the connection to the user database.
+     * Check proxy settings.
      *
-     * @return  \Yana\Db\IsConnection
+     * Returns bool(true) if this user should be allowed to forward this security setting
+     * to another user named to act as a temporary proxy and bool(false) otherwise.
+     *
+     * Note: this is just a setting. The actual proxy implementation needs to be done by plugins.
+     *
+     * @return  bool
      */
-    protected function _getConnection()
-    {
-        return $this->_connection;
-    }
+    public function isUserProxyActive();
 
 }
 

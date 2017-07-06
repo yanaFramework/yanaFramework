@@ -55,16 +55,16 @@ class Mapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEntityMa
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Given user has no name.");
         }
 
-        $user = new \Yana\Security\Data\Users\Entity($databaseRow[\Yana\Security\Data\Tables\UserEnumeration::ID]);
+        $user = new \Yana\Security\Data\Users\Entity((string) $databaseRow[\Yana\Security\Data\Tables\UserEnumeration::ID]);
 
         if (isset($databaseRow[\Yana\Security\Data\Tables\UserEnumeration::LANGUAGE])) {
-            $user->setLanguage($databaseRow[\Yana\Security\Data\Tables\UserEnumeration::LANGUAGE]);
+            $user->setLanguage((string) $databaseRow[\Yana\Security\Data\Tables\UserEnumeration::LANGUAGE]);
         }
         if (isset($databaseRow[\Yana\Security\Data\Tables\UserEnumeration::PASSWORD])) {
-            $user->setPassword($databaseRow[\Yana\Security\Data\Tables\UserEnumeration::PASSWORD]);
+            $user->setPassword((string) $databaseRow[\Yana\Security\Data\Tables\UserEnumeration::PASSWORD]);
         }
         if (isset($databaseRow[\Yana\Security\Data\Tables\UserEnumeration::MAIL])) {
-            $user->setMail($databaseRow[\Yana\Security\Data\Tables\UserEnumeration::MAIL]);
+            $user->setMail((string) $databaseRow[\Yana\Security\Data\Tables\UserEnumeration::MAIL]);
         }
         if (isset($databaseRow[\Yana\Security\Data\Tables\UserEnumeration::IS_ACTIVE])) {
             $user->setActive((bool) $databaseRow[\Yana\Security\Data\Tables\UserEnumeration::IS_ACTIVE]);
@@ -85,13 +85,13 @@ class Mapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEntityMa
             $user->setExpert((bool) $databaseRow[\Yana\Security\Data\Tables\UserEnumeration::IS_EXPERT_MODE]);
         }
         if (isset($databaseRow[\Yana\Security\Data\Tables\UserEnumeration::PASSWORD_RECOVERY_ID])) {
-            $user->setPasswordRecoveryId((int) $databaseRow[\Yana\Security\Data\Tables\UserEnumeration::PASSWORD_RECOVERY_ID]);
+            $user->setPasswordRecoveryId((string) $databaseRow[\Yana\Security\Data\Tables\UserEnumeration::PASSWORD_RECOVERY_ID]);
         }
         if (isset($databaseRow[\Yana\Security\Data\Tables\UserEnumeration::PASSWORD_RECOVERY_TIME])) {
             $user->setPasswordRecoveryTime((int) $databaseRow[\Yana\Security\Data\Tables\UserEnumeration::PASSWORD_RECOVERY_TIME]);
         }
         if (isset($databaseRow[\Yana\Security\Data\Tables\UserEnumeration::PASSWORD_TIME])) {
-            $user->setPasswordTime((int) $databaseRow[\Yana\Security\Data\Tables\UserEnumeration::PASSWORD_TIME]);
+            $user->setPasswordChangedTime((int) $databaseRow[\Yana\Security\Data\Tables\UserEnumeration::PASSWORD_TIME]);
         }
         if (isset($databaseRow[\Yana\Security\Data\Tables\UserEnumeration::RECENT_PASSWORDS])) {
             $user->setRecentPasswords((array) $databaseRow[\Yana\Security\Data\Tables\UserEnumeration::RECENT_PASSWORDS]);

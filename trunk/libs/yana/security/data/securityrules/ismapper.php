@@ -27,52 +27,27 @@
  * @ignore
  */
 
-namespace Yana\Security\Data;
+namespace Yana\Security\Data\SecurityRules;
 
 /**
- * <<abstract>> entity manager.
- *
- * This persistent class provides access to user data and function to set logins and passwords.
+ * <<interface>> entity mapper.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-abstract class AbstractAdapter extends \Yana\Core\Object
+interface IsMapper
 {
 
     /**
-     * Connection to database.
+     * Creates an entity based on a database row.
      *
-     * @var  \Yana\Db\IsConnection
+     * @param   array  $databaseRow  row containing user info
+     * @return  \Yana\Security\Data\SecurityRules\IsRule
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given user has no name
      */
-    private $_connection = null;
-
-    /**
-     * <<construct>> Creates a new user-manager.
-     *
-     * To create the required connection you may use the following short-hand function:
-     * <code>
-     * $connection = \Yana\Application::connect("user");
-     * </code>
-     *
-     * @param  \Yana\Db\IsConnection  $connection  database connection to table user
-     */
-    public function __construct(\Yana\Db\IsConnection $connection)
-    {
-        $this->_connection = $connection;
-    }
-
-    /**
-     * Returns the connection to the user database.
-     *
-     * @return  \Yana\Db\IsConnection
-     */
-    protected function _getConnection()
-    {
-        return $this->_connection;
-    }
+    public function toEntity(array $databaseRow);
 
 }
 

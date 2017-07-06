@@ -30,14 +30,14 @@
 namespace Yana\Security\Data\SecurityRules;
 
 /**
- * Security level.
+ * Security rule.
  *
- * Readonly information about the user's security level.
+ * Readonly information representing a security rule.
  *
  * @package     yana
  * @subpackage  security
  */
-class Rule extends \Yana\Core\Object
+class Rule extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRules\IsRule
 {
 
     /**

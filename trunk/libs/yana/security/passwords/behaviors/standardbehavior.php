@@ -156,7 +156,7 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
         $user
             // replace password hash
             ->setPassword($newPassword)
-            ->setPasswordTime(time())
+            ->setPasswordChangedTime(time())
             // update list of recently used passwords
             ->setRecentPasswords($recentPasswords)
             // reset password recovery id if there is any

@@ -37,7 +37,7 @@ namespace Yana\Security\Data\SecurityLevels;
  * @package     yana
  * @subpackage  security
  */
-class Level extends \Yana\Core\Object
+class Level extends \Yana\Core\Object implements \Yana\Security\Data\SecurityLevels\IsLevel
 {
 
     /**

@@ -46,6 +46,7 @@ class RuleEnumeration extends \Yana\Core\AbstractEnumeration
     const GROUP = 'group_id';
     const ROLE = 'role_id';
     const PROFILE = 'profile';
+    const IS_PROXY = 'user_proxy_active';
 
 }
 

@@ -54,7 +54,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
     /** @var bool   */ private $_isExpert = false;
     /** @var string */ private $_passwordRecoveryId = null;
     /** @var int    */ private $_passwordRecoveryTime = null;
-    /** @var int    */ private $_passwordTime = null;
+    /** @var int    */ private $_passwordChangedTime = null;
     /** @var array  */ private $_recentPasswords = array();
     /** @var int    */ private $_timeCreated = null;
     /** @var string */ private $_sessionCheckSum = null;
@@ -187,13 +187,13 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
     /**
      * Set time when the user last changed his password.
      *
-     * @param   int  $passwordTime  a valid timestamp
+     * @param   int  $passwordChangedTime  a valid timestamp
      * @return  self
      */
-    public function setPasswordTime($passwordTime)
+    public function setPasswordChangedTime($passwordChangedTime)
     {
-        assert('is_int($passwordTime); // Wrong type for argument 1. Integer expected');
-        $this->_passwordTime = (int) $passwordTime;
+        assert('is_int($passwordChangedTime); // Wrong type for argument 1. Integer expected');
+        $this->_passwordChangedTime = (int) $passwordChangedTime;
         return $this;
     }
 
@@ -285,12 +285,14 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * Sets prefered language of the user, that is used to provide translates GUI elements.
      *
      * @param   string  $language  language or locale string
+     * @return  self
      */
     public function setLanguage($language)
     {
         assert('is_string($language); // Wrong type for argument 1. String expected');
 
         $this->_language = "$language";
+        return $this;
     }
 
     /**
@@ -410,7 +412,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      * Returns bool(true) if the user prefers to see expert applications settings and bool(false)
      * if a simpler GUI is prefered.
      *
-     * @return  string
+     * @return  bool
      */
     public function isExpert()
     {
@@ -469,7 +471,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
      */
     public function getPasswordChangedTime()
     {
-        return (int) $this->_passwordTime;
+        return (int) $this->_passwordChangedTime;
     }
 
     /**

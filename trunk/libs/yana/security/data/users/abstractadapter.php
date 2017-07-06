@@ -27,10 +27,10 @@
  * @ignore
  */
 
-namespace Yana\Security\Data;
+namespace Yana\Security\Data\Users;
 
 /**
- * <<abstract>> entity manager.
+ * <<abstract>> User data-adapter.
  *
  * This persistent class provides access to user data and function to set logins and passwords.
  *
@@ -39,15 +39,15 @@ namespace Yana\Security\Data;
  *
  * @ignore
  */
-abstract class AbstractAdapter extends \Yana\Core\Object
+abstract class AbstractAdapter extends \Yana\Security\Data\AbstractAdapter
 {
 
     /**
-     * Connection to database.
+     * Basic ORM helper object.
      *
-     * @var  \Yana\Db\IsConnection
+     * @var  \Yana\Data\Adapters\IsEntityMapper
      */
-    private $_connection = null;
+    private $_entityMapper = null;
 
     /**
      * <<construct>> Creates a new user-manager.
@@ -57,21 +57,28 @@ abstract class AbstractAdapter extends \Yana\Core\Object
      * $connection = \Yana\Application::connect("user");
      * </code>
      *
-     * @param  \Yana\Db\IsConnection  $connection  database connection to table user
+     * @param  \Yana\Db\IsConnection               $connection  database connection to table user
+     * @param  \Yana\Data\Adapters\IsEntityMapper  $mapper      simple OR-mapper to convert database entries to objects
      */
-    public function __construct(\Yana\Db\IsConnection $connection)
+    public function __construct(\Yana\Db\IsConnection $connection, \Yana\Data\Adapters\IsEntityMapper $mapper = null)
     {
-        $this->_connection = $connection;
+        parent::__construct($connection);
+        $this->_entityMapper = $mapper;
     }
 
     /**
-     * Returns the connection to the user database.
+     * Returns an instance of an OR-mappinging class.
      *
-     * @return  \Yana\Db\IsConnection
+     * Use this to map database entries to objects and vice-versa.
+     *
+     * @return  \Yana\Data\Adapters\IsEntityMapper
      */
-    protected function _getConnection()
+    protected function _getEntityMapper()
     {
-        return $this->_connection;
+        if (!isset($this->_entityMapper)) {
+            $this->_entityMapper = new \Yana\Security\Data\Users\Mapper();
+        }
+        return $this->_entityMapper;
     }
 
 }

@@ -201,7 +201,7 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
      * Returns bool(true) if the user prefers to see expert applications settings and bool(false)
      * if a simpler GUI is prefered.
      *
-     * @return  string
+     * @return  bool
      */
     public function isExpert();
 
@@ -343,10 +343,10 @@ interface IsEntity extends \Yana\Data\Adapters\IsEntity
     /**
      * Set time when the user last changed his password.
      *
-     * @param   int  $passwordTime  a valid timestamp
+     * @param   int  $passwordChangedTime  a valid timestamp
      * @return  self
      */
-    public function setPasswordTime($passwordTime);
+    public function setPasswordChangedTime($passwordChangedTime);
 
     /**
      * Set a list of recent passwords.

@@ -27,52 +27,35 @@
  * @ignore
  */
 
-namespace Yana\Security\Data;
+namespace Yana\Security\Data\SecurityLevels;
 
 /**
- * <<abstract>> entity manager.
- *
- * This persistent class provides access to user data and function to set logins and passwords.
+ * <<interface>> Security level.
  *
  * @package     yana
  * @subpackage  security
- *
- * @ignore
  */
-abstract class AbstractAdapter extends \Yana\Core\Object
+interface IsLevel
 {
 
     /**
-     * Connection to database.
+     * Get granted security level between 0 and 100.
      *
-     * @var  \Yana\Db\IsConnection
+     * @return  int
      */
-    private $_connection = null;
+    public function getSecurityLevel();
 
     /**
-     * <<construct>> Creates a new user-manager.
+     * Check proxy settings.
      *
-     * To create the required connection you may use the following short-hand function:
-     * <code>
-     * $connection = \Yana\Application::connect("user");
-     * </code>
+     * Returns bool(true) if this user should be allowed to forward this security setting
+     * to another user named to act as a temporary proxy and bool(false) otherwise.
      *
-     * @param  \Yana\Db\IsConnection  $connection  database connection to table user
+     * Note: this is just a setting. The actual proxy implementation needs to be done by plugins.
+     *
+     * @return  bool
      */
-    public function __construct(\Yana\Db\IsConnection $connection)
-    {
-        $this->_connection = $connection;
-    }
-
-    /**
-     * Returns the connection to the user database.
-     *
-     * @return  \Yana\Db\IsConnection
-     */
-    protected function _getConnection()
-    {
-        return $this->_connection;
-    }
+    public function isUserProxyActive();
 
 }
 

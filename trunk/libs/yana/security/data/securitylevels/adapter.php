@@ -39,29 +39,8 @@ namespace Yana\Security\Data\SecurityLevels;
  *
  * @ignore
  */
-class Adapter extends \Yana\Security\Data\AbstractAdapter
+class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
 {
-
-    /**
-     * <<construct>> Creates a new entity-manager.
-     *
-     * To create the required connection you may use the following short-hand function:
-     * <code>
-     * $connection = \Yana\Application::connect("user");
-     * </code>
-     *
-     * If no mapper is given, this function creates and uses an instance of \Yana\Security\Data\SecurityLevels\Mapper
-     *
-     * @param  \Yana\Db\IsConnection               $connection  database connection to table user
-     * @param  \Yana\Data\Adapters\IsEntityMapper  $mapper      simple OR-mapper to convert database entries to objects
-     */
-    public function __construct(\Yana\Db\IsConnection $connection, \Yana\Data\Adapters\IsEntityMapper $mapper = null)
-    {
-        if (\is_null($mapper)) {
-            $mapper = new \Yana\Security\Data\SecurityLevels\Mapper();
-        }
-        parent::__construct($connection, $mapper);
-    }
 
     /**
      * Get security level.
@@ -71,7 +50,7 @@ class Adapter extends \Yana\Security\Data\AbstractAdapter
      *
      * @param   string  $userId     user name
      * @param   string  $profileId  profile id
-     * @return  \Yana\Security\Data\SecurityLevels\Level
+     * @return  \Yana\Security\Data\SecurityLevels\IsLevel
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no matching level is found
      */
     public function findEntity($userId, $profileId)
@@ -79,14 +58,15 @@ class Adapter extends \Yana\Security\Data\AbstractAdapter
         assert('is_string($userId); // Wrong type for argument $userId. String expected');
         assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
 
+        assert('!isset($query); // Cannot redeclare var $query');
         $query = $this->_buildQuery($userId, $profileId);
         assert('!isset($rows); // Cannot redeclare var $rows');
         $rows = $this->_getConnection()->select($query);
-        if (!is_array($rows) || count($rows) === 1) {
+        if (!is_array($rows) || count($rows) !== 1) {
             throw new \Yana\Core\Exceptions\User\NotFoundException();
         }
         assert('!isset($entity); // Cannot redeclare var $entity');
-        $entity = new \Yana\Security\Data\SecurityLevels\Level(0, true);
+        $entity = $this->_getEntityMapper()->toEntity(current($rows));
 
         return $entity;
     }
@@ -97,7 +77,7 @@ class Adapter extends \Yana\Security\Data\AbstractAdapter
      * Returns all the user's security level as an array, where the keys are the profile names and the values are the levels.
      *
      * @param   string  $userId  user name
-     * @return  \Yana\Security\Data\SecurityLevels\Level[]
+     * @return  \Yana\Security\Data\SecurityLevels\IsLevel[]
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no matching level is found
      */
     public function findEntities($userId)

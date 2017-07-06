@@ -39,7 +39,7 @@ namespace Yana\Security\Data\Users;
  *
  * @ignore
  */
-class Adapter extends \Yana\Security\Data\AbstractAdapter implements \Yana\Security\Data\IsDataAdapter
+class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana\Security\Data\IsDataAdapter
 {
 
     /**

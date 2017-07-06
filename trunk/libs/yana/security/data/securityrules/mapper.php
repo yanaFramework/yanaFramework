@@ -39,55 +39,36 @@ namespace Yana\Security\Data\SecurityRules;
  *
  * @ignore
  */
-class Mapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEntityMapper
+class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRules\IsMapper
 {
 
     /**
      * Creates an entity based on a database row.
      *
      * @param   array  $databaseRow  row containing user info
-     * @return  \Yana\Security\Data\SecurityRules\Rule
+     * @return  \Yana\Security\Data\SecurityLevels\IsLevel
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given user has no name
      */
     public function toEntity(array $databaseRow)
     {
+        $databaseRowLower = \Yana\Util\Hashtable::changeCase($databaseRow, \CASE_LOWER);
         assert('!isset($group); // Cannot redeclare var $group');
         $group = "";
-        if (isset($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::GROUP])) {
-            $group = (string) $databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::GROUP];
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::GROUP])) {
+            $group = (string) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::GROUP];
         }
         assert('!isset($role); // Cannot redeclare var $role');
         $role = "";
-        if (isset($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::ROLE])) {
-            $role = (string) $databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::ROLE];
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::ROLE])) {
+            $role = (string) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::ROLE];
         }
         assert('!isset($isProxy); // Cannot redeclare var $isProxy');
         $isProxy = true;
-        if (isset($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY])) {
-            $isProxy = (bool) $databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY];
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY])) {
+            $isProxy = (bool) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY];
         }
 
         return new \Yana\Security\Data\SecurityRules\Rule($group, $role, $isProxy);
-    }
-
-    /**
-     * Creates a database row based on an entity.
-     *
-     * @param   \Yana\Security\Data\SecurityRules\Rule  $entity  entity containing user info
-     * @return  array
-     */
-    public function toDatabaseRow(\Yana\Data\Adapters\IsEntity $entity)
-    {
-        assert('!isset($row); // Cannot redeclare var $row');
-        $row = array();
-
-        if ($entity instanceof \Yana\Security\Data\SecurityRules\Rule) {
-
-            $row[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY] = $entity->isUserProxyActive();
-            $row[\Yana\Security\Data\Tables\RuleEnumeration::GROUP] = $entity->getGroup();
-            $row[\Yana\Security\Data\Tables\RuleEnumeration::ROLE] = $entity->getRole();
-        }
-        return $row;
     }
 
 }
