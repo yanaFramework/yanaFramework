@@ -1822,7 +1822,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
             return true; // the table is not checked - used for ON-clause during outer joins
         }
         /* handle non-scalar values */
-        if (!is_scalar($value)) {
+        if (!is_null($value) && !is_scalar($value)) {
             $value = \Yana\Files\SML::encode($value);
         }
         /* switch by operator */

@@ -262,7 +262,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      * and reuse it without creating another one. This can
      * help to improve the performance of your application.
      *
-     * @return  \Yana\Db\Queries\AbstractQuery 
+     * @return  \Yana\Db\Queries\AbstractQuery
      */
     public function resetQuery()
     {
@@ -425,7 +425,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
      * @param   \Yana\Db\Ddl\Table  $table          table definition
      * @param   \Yana\Db\Ddl\Table  $parentTable    parent table
      * @since   2.9.6
-     * @return  \Yana\Db\Queries\AbstractQuery 
+     * @return  \Yana\Db\Queries\AbstractQuery
      */
     private function _setParentTable(\Yana\Db\Ddl\Table $table, \Yana\Db\Ddl\Table $parentTable)
     {
