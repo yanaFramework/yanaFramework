@@ -61,6 +61,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function __construct()
     {
+        /* @var $YANA \Yana\Application */
         global $YANA;
         if (isset($YANA)) {
             self::$userName = \Yana\User::getUserName();
