@@ -384,37 +384,16 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
     }
 
     /**
-     * Get user groups.
+     * Get valid combination of user groups and roles.
      *
-     * Returns an array of group names, where the keys are the group ids and the values are
-     * the human-readable group names.
+     * Result is empty if there are no entries.
      *
-     * Returns an empty array, if there are no entries.
-     *
-     * @return  array
+     * @param   string  $profileId  profile id
+     * @return  \Yana\Security\Data\SecurityRules\Collection
      */
-    public function getGroups()
+    public function getSecurityGroupsAndRoles($profileId)
     {
-        $groups = $this->_getDependencies()->getRulesAdapter()->getGroups($this->getId());
-        assert('is_array($groups); // Invalid return type: Array expected');
-        return (array) $groups;
-    }
-
-    /**
-     * Get user roles.
-     *
-     * Returns an array of role names, where the keys are the group ids and the values are
-     * the human-readable role names.
-     *
-     * Returns an empty array, if there are no entries.
-     *
-     * @return  array
-     */
-    public function getRoles()
-    {
-        $roles = $this->_getDependencies()->getRulesAdapter()->getRoles($this->getId());
-        assert('is_array($roles); // Invalid return type: Array expected');
-        return (array) $roles;
+        return $this->_getDependencies()->getRulesAdapter()->findEntities($this->getId(), $profileId);
     }
 
     /**
@@ -431,31 +410,13 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
         assert('is_string($profileId); // Invalid argument $profileId: string expected');
 
         try {
-            $securityLevelEntity = $this->_getDependencies()->getLevelsAdapter()->findEntity($this->getId(), (string) $profileId);
+            $securityLevelEntity = $this->_getDependencies()->getLevelsAdapter()
+                ->findEntity($this->getId(), $profileId);
         } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
             $securityLevelEntity = new \Yana\Security\Data\SecurityLevels\Level(0, true); // 0 is default
             unset($e);
         }
         return (int) $securityLevelEntity->getSecurityLevel();
-    }
-
-    /**
-     * Get security levels.
-     *
-     * Returns all the user's security level as an array, where the keys are the profile names and the values are the levels.
-     *
-     * @return  array
-     */
-    public function getSecurityLevels()
-    {
-        try {
-            $securityLevels = $this->_getDependencies()->getLevelsAdapter()->findEntities($this->getId());
-        } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
-            $securityLevels = array(); // 0 is default
-            unset($e);
-        }
-        assert('is_array($securityLevels); // Invalid return type: Array expected');
-        return $securityLevels;
     }
 
     /**

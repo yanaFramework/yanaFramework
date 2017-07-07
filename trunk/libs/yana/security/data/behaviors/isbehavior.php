@@ -287,28 +287,14 @@ interface IsBehavior
     public function generateRandomPassword();
 
     /**
-     * Get user groups.
+     * Get valid combination of user groups and roles.
      *
-     * Returns an array of group names, where the keys are the group ids and the values are
-     * the human-readable group names.
+     * Result is empty if there are no entries.
      *
-     * Returns an empty array, if there are no entries.
-     *
-     * @return  array
+     * @param   string  $profileId  profile id
+     * @return  \Yana\Security\Data\SecurityRules\Collection
      */
-    public function getGroups();
-
-    /**
-     * Get user roles.
-     *
-     * Returns an array of role names, where the keys are the group ids and the values are
-     * the human-readable role names.
-     *
-     * Returns an empty array, if there are no entries.
-     *
-     * @return  array
-     */
-    public function getRoles();
+    public function getSecurityGroupsAndRoles($profileId);
 
     /**
      * Create new password recovery id.
@@ -333,15 +319,6 @@ interface IsBehavior
      * @return  int
      */
     public function getSecurityLevel($profileId);
-
-    /**
-     * Get security levels.
-     *
-     * Returns all the user's security level as an array, where the keys are the profile names and the values are the levels.
-     *
-     * @return  array
-     */
-    public function getSecurityLevels();
 
     /**
      * Handle user logins.

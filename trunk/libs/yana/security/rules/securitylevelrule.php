@@ -88,15 +88,11 @@ class SecurityLevelRule extends \Yana\Security\Rules\AbstractRule
         if ($required->getLevel() === 0) {
             return true;
         }
-
-        $session = $this->_getSession();
-        if (!$session->get) {
+        if (!$user->isLoggedIn()) {
             return false;
         }
 
-        $securityLevel = (int) $user->getSecurityLevel($profileId);
-
-        return $required->getLevel() <= $securityLevel;
+        return $required->getLevel() <= (int) $user->getSecurityLevel($profileId);
     }
 
 }

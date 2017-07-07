@@ -43,56 +43,28 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
 {
 
     /**
-     * Get security level.
-     *
-     * Returns the user's security level as an integer value.
-     * The default is 0.
-     *
-     * @param   string  $userId     user name
-     * @param   string  $profileId  profile id
-     * @return  \Yana\Security\Data\SecurityRules\IsRule
-     */
-    public function findEntity($userId, $profileId)
-    {
-        assert('is_string($userId); // Wrong type for argument $userId. String expected');
-        assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
-
-        assert('!isset($query); // Cannot redeclare var $query');
-        $query = $this->_buildQuery($userId, $profileId);
-        assert('!isset($rows); // Cannot redeclare var $rows');
-        $rows = $this->_getConnection()->select($query);
-        if (!is_array($rows) || count($rows) !== 1) {
-            throw new \Yana\Core\Exceptions\User\NotFoundException();
-        }
-        assert('!isset($entity); // Cannot redeclare var $entity');
-        $entity = $this->_getEntityMapper()->toEntity(current($rows));
-        return $entity;
-    }
-
-    /**
      * Get security levels.
      *
      * Returns all the user's security level as an array, where the keys are the profile names and the values are the levels.
      *
-     * @param   string  $userId  user name
-     * @return  array
+     * @param   string  $userId     user name
+     * @param   string  $profileId  profile id
+     * @return  \Yana\Security\Data\SecurityRules\Collection
      */
-    public function findEntities($userId)
+    public function findEntities($userId, $profileId)
     {
         assert('is_string($userId); // Wrong type for argument $userId. String expected');
-
-        assert('!isset($profileColumn); // Cannot redeclare var $profileColumn');
-        $profileColumn = \Yana\Util\Strings::toUpperCase(\Yana\Security\Data\Tables\RuleEnumeration::PROFILE);
+        assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
 
         assert('!isset($entities); // Cannot redeclare var $entities');
-        $entities = array();
+        $entities = new \Yana\Security\Data\SecurityRules\Collection();
 
         assert('!isset($query); // Cannot redeclare var $query');
-        $query = $this->_buildQuery($userId);
+        $query = $this->_buildQuery($userId, $profileId);
         assert('!isset($row); // Cannot redeclare var $row');
-        foreach ($this->_getConnection()->select($query) as $row)
+        foreach ($query->getResults() as $row)
         {
-            $entities[(string) $row[$profileColumn]] = $this->_getEntityMapper()->toEntity($row);
+            $entities[] = $this->_getEntityMapper()->toEntity($row);
         }
         unset($row);
 
@@ -106,21 +78,17 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
      * @param   string  $profileId  profile id
      * @return  \Yana\Db\Queries\Select
      */
-    private function _buildQuery($userId, $profileId = "")
+    private function _buildQuery($userId, $profileId)
     {
         assert('is_string($userId); // Wrong type for argument $userId. String expected');
         assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
 
         assert('!isset($where); // Cannot redeclare var $where');
-        $where = array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId));
-        if ($profileId > "") {
-
-            $where = array(
-                $where,
-                'and',
-                array(\Yana\Security\Data\Tables\RuleEnumeration::PROFILE, '=', \Yana\Util\Strings::toUpperCase($profileId))
-            );
-        }
+        $where = array(
+            array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId)),
+            'and',
+            array(\Yana\Security\Data\Tables\RuleEnumeration::PROFILE, '=', \Yana\Util\Strings::toUpperCase($profileId))
+        );
 
         assert('!isset($query); // Cannot redeclare var $query');
         $query = new \Yana\Db\Queries\Select($this->_getConnection());
@@ -129,47 +97,6 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
                 ->setWhere($where);
 
         return $query;
-    }
-
-    /**
-     * Get user groups.
-     *
-     * Returns an array of group names, where the keys are the group ids and the values are
-     * the human-readable group names.
-     *
-     * Returns an empty array, if there are no entries.
-     *
-     * @return  array
-     */
-    public function getGroups($userId)
-    {
-        assert('is_string($userId); // Wrong type argument $userId. String expected.');
-
-        $from = \Yana\Security\Data\Tables\RuleEnumeration::TABLE . ".*." . \Yana\Security\Data\Tables\RuleEnumeration::GROUP;
-        $where = array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId));
-        // The database API adds the profile-id to the where clause automatically. So there is not need for us to check for that here
-        return $this->_getConnection()->select($from, $where);
-    }
-
-    /**
-     * Get user roles.
-     *
-     * Returns an array of role names, where the keys are the group ids and the values are
-     * the human-readable role names.
-     *
-     * Returns an empty array, if there are no entries.
-     *
-     * @param   string  $userId  
-     * @return  array
-     */
-    public function getRoles($userId)
-    {
-        assert('is_string($userId); // Wrong type argument $userId. String expected.');
-
-        $from = \Yana\Security\Data\Tables\RuleEnumeration::TABLE . ".*." . \Yana\Security\Data\Tables\RuleEnumeration::ROLE;
-        $where = array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId));
-        // The database API adds the profile-id to the where clause automatically. So there is not need for us to check for that here
-        return $this->_getConnection()->select($from, $where);
     }
 
 }
