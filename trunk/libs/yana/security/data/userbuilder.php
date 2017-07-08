@@ -133,9 +133,33 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
         }
 
         assert('!isset($userAccount); // Cannot redeclare var $userAccount');
-        $userAccount = $this->buildFromUserName($userName);
-        assert('$userAccount instanceof \Yana\Security\Data\Users\IsEntity; // Return value must be an instance of IsUser');
+        $userAccount = $this->_buildFromUserName($userName);
+        assert('$userAccount instanceof \Yana\Security\Data\Users\IsEntity; // Return value must be an instance of IsEntity');
 
+        return $userAccount;
+    }
+
+    /**
+     * Build an user object based on a given name.
+     *
+     * @param   string  $userId  the name/id of the user as it is stored in the database
+     * @return  \Yana\Security\Data\Users\IsEntity
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
+     */
+    private function _buildFromUserName($userId)
+    {
+        assert('is_string($userId); // Invalid argument $userId: string expected');
+
+        assert('!isset($adapter); // Cannot redeclare var $adapter');
+        $adapter = $this->_getUserAdapter();
+
+        if (!$this->isExistingUserName($userId)) {
+            throw new \Yana\Core\Exceptions\User\NotFoundException("User '" . $userId . "' not found.");;
+        }
+        assert('!isset($userAccount); // Cannot redeclare var $userAccount');
+        $userAccount = $adapter[$userId];
+
+        assert('$userAccount instanceof \Yana\Security\Data\Users\IsEntity; // Return value must be an instance of IsEntity');
         return $userAccount;
     }
 
@@ -149,18 +173,7 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
     public function buildFromUserName($userId)
     {
         assert('is_string($userId); // Invalid argument $userId: string expected');
-
-        assert('!isset($adapter); // Cannot redeclare var $adapter');
-        $adapter = $this->_getUserAdapter();
-
-        if (!$this->isExistingUserName($userId)) {
-            throw new \Yana\Core\Exceptions\User\NotFoundException("User '" . $userId . "' not found.");;
-        }
-        assert('!isset($userAccount); // Cannot redeclare var $userAccount');
-        $userAccount = $adapter[$userId];
-
-        assert('$userAccount instanceof \Yana\Security\Data\Users\IsEntity; // Return value must be an instance of IsUser');
-        return $userAccount;
+        return $this->_buildFromUserName((string) $userId);
     }
 
     /**
