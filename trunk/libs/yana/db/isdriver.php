@@ -135,7 +135,7 @@ interface IsDriver extends \Yana\Core\IsObject
      *
      * @param   int $limit  set the limit for query
      * @param   int $offset set the offset for query
-     * @return  bool
+     * @return  self
      */
     public function setLimit($limit, $offset = null);
 

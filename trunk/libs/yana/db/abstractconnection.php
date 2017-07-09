@@ -216,7 +216,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
     /**
      * Commit current transaction and write all changes to the database.
      *
-     * @return  \Yana\Db\AbstractConnection
+     * @return  self
      * @throws  \Yana\Core\Exceptions\NotWriteableException  when the database or table is locked
      * @throws  \Yana\Db\CommitFailedException               when the commit failed
      */
@@ -254,7 +254,7 @@ abstract class AbstractConnection extends \Yana\Core\Object implements \Serializ
      * Otherwise it will fall back to the default behavior.
      *
      * @param   \Yana\Db\IsTransaction   $transaction  your custom transaction handling class
-     * @return  \Yana\Db\AbstractConnection
+     * @return  self
      * @ignore
      */
     public function setTransactionHandler(\Yana\Db\IsTransaction $transaction)

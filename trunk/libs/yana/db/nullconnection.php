@@ -73,7 +73,7 @@ class NullConnection extends \Yana\Core\Object implements \Yana\Db\IsConnection
     /**
      * Commits the current transaction.
      *
-     * @return  bool
+     * @return  \Yana\Db\IsConnection
      */
     public function commit()
     {

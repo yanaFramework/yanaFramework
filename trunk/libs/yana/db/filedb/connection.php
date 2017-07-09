@@ -136,7 +136,7 @@ class Connection extends \Yana\Db\AbstractConnection
     }
 
     /**
-     * get database connection
+     * Get database connection.
      *
      * @return  \Yana\Db\FileDb\Driver
      * @ignore
@@ -147,6 +147,20 @@ class Connection extends \Yana\Db\AbstractConnection
             $this->_database = new \Yana\Db\FileDb\Driver($this->getSchema());
         }
         return $this->_database;
+    }
+
+
+    /**
+     * Set database connection.
+     *
+     * @param   \Yana\Db\IsDriver  $driver
+     * @return  self
+     * @ignore
+     */
+    protected function _setConnection(\Yana\Db\IsDriver $driver)
+    {
+        $this->_database = $driver;
+        return $this;
     }
 
 }

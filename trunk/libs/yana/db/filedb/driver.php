@@ -39,33 +39,8 @@ namespace Yana\Db\FileDb;
  * @package     yana
  * @subpackage  db
  */
-class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
+class Driver extends \Yana\Db\FileDb\AbstractDriver
 {
-
-    /**
-     * @var \Yana\Db\FileDb\Counter
-     */
-    private $_autoIncrement = null;
-
-    /**
-     * @var \Yana\Db\Ddl\Database
-     */
-    private $_schema = null;
-
-    /**
-     * @var string
-     */
-    private $_database = "";
-
-    /**
-     * @var \Yana\Db\Ddl\Table
-     */
-    private $_table = null;
-
-    /**
-     * @var string
-     */
-    private $_tableName = "";
 
     /**
      * @var \Yana\Files\SML[][]
@@ -77,39 +52,9 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     private $_idx = array();
 
-    /**
-     * @var string
-     */
-    private $_sort = "";
-
-    /**
-     * @var bool
-     */
-    private $_desc = false;
-
-    /**
-     * @var bool
-     */
-    private $_autoCommit = true;
-
     /** @var array
      */
     private $_cache = array();
-
-    /**
-     * @var \Yana\Db\Queries\AbstractQuery
-     */
-    private $_query = null;
-
-    /**
-     * @var int
-     */
-    private $_limit = 0;
-
-    /**
-     * @var int
-     */
-    private $_offset = 0;
 
     /**
      * @var string
@@ -127,13 +72,14 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
             self::setBaseDirectory();
         }
 
-        $this->_schema = $schema;
-        $this->_database = $schema->getName();
-        assert('!empty($this->_database); // database name must not be empty');
+        $this->_setSchema($schema);
+        $databaseName = $schema->getName();
+        assert('$databaseName > ""; // database name must not be empty');
+        $this->_setDatabaseName($databaseName);
 
-        if (!is_dir(self::$_baseDir . $this->_database)) {
-            mkdir(self::$_baseDir . $this->_database);
-            chmod(self::$_baseDir . $this->_database, 0700);
+        if (!is_dir(self::$_baseDir . $this->_getDatabaseName())) {
+            mkdir(self::$_baseDir . $this->_getDatabaseName());
+            chmod(self::$_baseDir . $this->_getDatabaseName(), 0700);
         }
         $this->rollback();
     }
@@ -161,7 +107,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     protected function _newSqlParser()
     {
-        return \Yana\Db\Queries\Parser(\Yana\Application::connect($this->_database));
+        return \Yana\Db\Queries\Parser(\Yana\Application::connect($this->_getDatabaseName()));
     }
 
     /**
@@ -173,7 +119,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     public function beginTransaction()
     {
-        $this->_autoCommit = false;
+        $this->_setAutoCommit(false);
         return true;
     }
 
@@ -185,8 +131,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
     public function rollback()
     {
         $this->_cache = array();
-        $this->_src[$this->_database] = array();
-        $this->_idx[$this->_database] = array();
+        $this->_src[$this->_getDatabaseName()] = array();
+        $this->_idx[$this->_getDatabaseName()] = array();
         return true;
     }
 
@@ -218,7 +164,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     public function listTables($database = null)
     {
-        return $this->_schema->getTableNames();
+        return $this->_getSchema()->getTableNames();
     }
 
     /**
@@ -228,7 +174,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     public function listFunctions()
     {
-        return $this->_schema->getFunctionNames();
+        return $this->_getSchema()->getFunctionNames();
     }
 
     /**
@@ -239,7 +185,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     public function listSequences($database = null)
     {
-        return $this->_schema->getSequenceNames();
+        return $this->_getSchema()->getSequenceNames();
     }
 
     /**
@@ -250,7 +196,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     public function listTableFields($table)
     {
-        $table = $this->_schema->getTable($table);
+        $table = $this->_getSchema()->getTable($table);
         $columns = array();
         if ($table instanceof \Yana\Db\Ddl\Table) {
             $columns = $table->getColumnNames();
@@ -266,7 +212,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     public function listTableIndexes($table)
     {
-        $table = $this->_schema->getTable($table);
+        $table = $this->_getSchema()->getTable($table);
         $indexes = array();
         if ($table instanceof \Yana\Db\Ddl\Table) {
             foreach ($table->getIndexes() as $name)
@@ -295,7 +241,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
          * error_log((string) $query . "\n", 3, 'test.log');
          */
 
-        $this->_query = $query;
+        $this->_setQuery($query);
 
         switch (true)
         {
@@ -376,7 +322,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
             $isPartialMatch = !is_null($columnName) || $foreign->getMatch() === \Yana\Db\Ddl\KeyMatchStrategyEnumeration::PARTIAL;
             $isFullMatch = is_null($columnName) && $foreign->getMatch() === \Yana\Db\Ddl\KeyMatchStrategyEnumeration::FULL;
             $targetTable = mb_strtolower($foreign->getTargetTable());
-            $fTable = $this->_schema->getTable($targetTable);
+            $fTable = $this->_getSchema()->getTable($targetTable);
             if ($fTable instanceof \Yana\Db\Ddl\Table) {
                 foreach ($foreign->getColumns() as $sourceColumn => $targetColumn)
                 {
@@ -401,13 +347,13 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
                         $database = $this->_getSourceDatabaseNameForTable($fTable);
 
                         // load tablespace
-                        if (!isset($this->_src[$this->_database][$targetTable])) {
+                        if (!isset($this->_src[$this->_getDatabaseName()][$targetTable])) {
                             $filename = $this->_getFilename($database, 'sml', $targetTable);
                             $sml = $this->_createSmlFile($filename);
                             $sml->failSafeRead();
-                            $this->_src[$this->_database][$targetTable] = $sml;
+                            $this->_src[$this->_getDatabaseName()][$targetTable] = $sml;
                         }
-                        $sml = $this->_src[$this->_database][$targetTable];
+                        $sml = $this->_src[$this->_getDatabaseName()][$targetTable];
                         assert($sml instanceof \Yana\Files\SML);
 
                         assert('isset($row[$sourceColumn]);');
@@ -484,8 +430,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         /*
          * 1.2.1) analyse query object
          */
-        $this->_sort = $query->getOrderBy();
-        $this->_desc = $query->getDescending();
+        $this->_setSortColumns($query->getOrderBy());
+        $this->_setDescendingSortColumns($query->getDescending());
         $columns = $query->getColumns();
         $where = $query->getWhere();
         $having = $query->getHaving();
@@ -525,7 +471,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
             $listOfResultSets = array();
             foreach ($joins as $tableB => $clause)
             {
-                $resultset = $this->_join($this->_tableName, $tableB, $clause[0], $clause[1], $columns, $where, $clause[2]);
+                $resultset = $this->_join($this->_getTableName(), $tableB, $clause[0], $clause[1], $columns, $where, $clause[2]);
                 if (!empty($resultset)) {
                     $listOfResultSets[] = $resultset;
                 }
@@ -671,8 +617,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         $this->_select($query->getTable()); // throws exception
         $set = $query->getValues();
 
-        $this->_sort = $query->getOrderBy();
-        $this->_desc = $query->getDescending();
+        $this->_setSortColumns($query->getOrderBy());
+        $this->_setDescendingSortColumns($query->getDescending());
 
         $row = mb_strtoupper($query->getRow());
         if ($row === '*') {
@@ -680,8 +626,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
             throw new \Yana\Db\Queries\Exceptions\InvalidPrimaryKeyException($message);
         }
 
-        if (!$this->_checkForeignKeys($this->_table, $set, $query->getColumn())) {
-            $message = "Foreign key check failed on table '{$this->_table->getName()}' for " .
+        if (!$this->_checkForeignKeys($this->_getTable(), $set, $query->getColumn())) {
+            $message = "Foreign key check failed on table '{$this->_getTable()->getName()}' for " .
                     "row " . print_r($set, true);
             throw new \Yana\Db\Queries\Exceptions\ConstraintException($message);
         }
@@ -702,7 +648,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         }
 
         assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
-        $primaryKey = mb_strtoupper($this->_table->getPrimaryKey());
+        $primaryKey = mb_strtoupper($this->_getTable()->getPrimaryKey());
 
         /* get reference to Index file */
         assert('!isset($idxfile); // Cannot redeclare var $idxfile');
@@ -710,7 +656,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
 
         assert('!isset($columnName); // Cannot redeclare var $columnName');
         assert('!isset($column); // Cannot redeclare var $column');
-        foreach ($this->_table->getColumns() as $column)
+        foreach ($this->_getTable()->getColumns() as $column)
         {
             $columnName = mb_strtoupper($column->getName());
             if (isset($set[$columnName])) {
@@ -816,20 +762,20 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         $this->_select($query->getTable());
         $set = $query->getValues();
 
-        if (!$this->_checkForeignKeys($this->_table, $set)) {
-            $message = "Foreign key check failed on table '{$this->_table->getName()}' for " .
+        if (!$this->_checkForeignKeys($this->_getTable(), $set)) {
+            $message = "Foreign key check failed on table '{$this->_getTable()->getName()}' for " .
                     "row " . print_r($set, true);
             throw new \Yana\Db\Queries\Exceptions\InconsistencyException($message);
         }
 
         assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
-        $primaryKey = $this->_table->getPrimaryKey();
+        $primaryKey = $this->_getTable()->getPrimaryKey();
         if (empty($set)) {
             $message = 'The statement contains illegal values.';
             throw new \Yana\Db\Queries\Exceptions\InvalidSyntaxException($message);
         }
 
-        if ($this->_table->getColumn($primaryKey)->isAutoIncrement()) {
+        if ($this->_getTable()->getColumn($primaryKey)->isAutoIncrement()) {
             $this->_increment($set);
         }
 
@@ -854,7 +800,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         /* create column */
         assert('!isset($column); // Cannot redeclare var $column');
         assert('!isset($columnName); // Cannot redeclare var $columnName');
-        foreach ($this->_table->getColumns() as $column)
+        foreach ($this->_getTable()->getColumns() as $column)
         {
             $columnName = mb_strtoupper($column->getName());
             if (isset($set[$columnName])) {
@@ -930,15 +876,15 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         $this->_select($query->getTable()); // throws exception
 
         $where = $query->getWhere();
-        $this->_sort = $query->getOrderBy();
-        $this->_desc = $query->getDescending();
+        $this->_setSortColumns($query->getOrderBy());
+        $this->_setDescendingSortColumns($query->getDescending());
         $limit = $query->getLimit();
 
         $smlfile = $this->_getSmlFile();
         $idxfile = $this->_getIndexFile();
 
         assert('!isset($rows); // Cannot redeclare var $rows');
-        $rows = $this->_get(array($this->_table->getPrimaryKey()), $where, array(), 0, $limit);
+        $rows = $this->_get(array($this->_getTable()->getPrimaryKey()), $where, array(), 0, $limit);
 
         if (empty($rows)) {
             /* error */
@@ -951,7 +897,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         }
 
         assert('!isset($primaryKey); // Cannot redeclare var $primaryKey');
-        $primaryKey = mb_strtoupper($this->_table->getPrimaryKey());
+        $primaryKey = mb_strtoupper($this->_getTable()->getPrimaryKey());
         assert('!isset($row); // Cannot redeclare var $row');
         foreach ($rows as $row)
         {
@@ -1000,9 +946,9 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
     public function sendQueryString($sqlStmt)
     {
         assert('is_string($sqlStmt); // Wrong type for argument 1. String expected');
-        $offset = (int) $this->_offset;
-        $limit = (int) $this->_limit;
-        $this->_offset = $this->_limit = 0; // reset for next query
+        $offset = (int) $this->_getOffset();
+        $limit = (int) $this->_getLimit();
+        $this->_resetOffsetAndLimit();
 
         // parse SQL
         $queryParser = $this->_newSqlParser();
@@ -1012,29 +958,6 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         $dbQuery->setOffset($offset);
         $dbQuery->setLimit($limit);
         return $this->sendQueryObject($dbQuery);
-    }
-
-    /**
-     * Set the limit and offset for next query
-     *
-     * This sets the limit and offset values for the next query.
-     * After the query is executed, these values will be reset to 0.
-     *
-     * @param   int $limit  set the limit for query
-     * @param   int $offset set the offset for query
-     * @return  bool
-     */
-    public function setLimit($limit, $offset = null)
-    {
-        assert('is_string($limit); // Wrong type for argument 1. Integer expected');
-        assert('is_null($offset) || is_int($offset); // Wrong type for argument 2. Integer expected');
-        if ($limit >= 0) {
-            $this->_limit = (int) $limit;
-        }
-        if (!is_null($offset) && $offset >= 0) {
-            $this->_offset = (int) $offset;
-        }
-        return true;
     }
 
     /**
@@ -1084,10 +1007,11 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         $tableName = mb_strtolower(trim("$tableName"));
 
         // if is cached, set current table from cache
-        if (isset($this->_src[$this->_database][$tableName])) {
-            $this->_tableName = $tableName;
-            $this->_table = $this->_schema->getTable($tableName);
-            assert('$this->_table instanceof \Yana\Db\Ddl\Table; // Table not found in Schema');
+        if (isset($this->_src[$this->_getDatabaseName()][$tableName])) {
+            $this->_setTableName($tableName);
+            $table = $this->_getSchema()->getTable($tableName);
+            assert('$table instanceof \Yana\Db\Ddl\Table; // Table not found in Schema');
+            $this->_setTable($table);
             return $this;
         }
 
@@ -1095,7 +1019,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
          * get associated data-source for selected table
          */
         assert('!isset($table); // Cannot redeclare $table');
-        $table = $this->_schema->getTable($tableName);
+        $table = $this->_getSchema()->getTable($tableName);
 
         if (!$table instanceof \Yana\Db\Ddl\Table) {
             throw new \Yana\Db\Queries\Exceptions\TableNotFoundException("No such table '$tableName'.");
@@ -1103,8 +1027,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         $database = $this->_getSourceDatabaseNameForTable($table);
 
         // set current table
-        $this->_tableName = $tableName;
-        $this->_table = $table;
+        $this->_setTableName($tableName);
+        $this->_setTable($table);
 
         /*
          * open source file(s)
@@ -1112,9 +1036,9 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         $this->_setSmlFile($database);
         $this->_setIndexFile($database);
 
-        assert('$this->_table instanceof \Yana\Db\Ddl\Table; // Table not found in Schema');
-        assert('is_string($this->_tableName); // Unexpected result: $this->_tableName must be a string');
-        assert('$this->_tableName !== ""; // Unexpected result: $this->_tableName must not be empty');
+        assert('$table instanceof \Yana\Db\Ddl\Table; // Table not found in Schema');
+        assert('is_string($tableName); // Unexpected result: $tableName must be a string');
+        assert('$tableName > ""; // Unexpected result: $tableName must not be empty');
         return $this;
     }
 
@@ -1140,12 +1064,12 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         $parent = $table->getParent();
         assert('!isset($database); // Cannot redeclare $database');
         // get data source from parent (if it exists)
-        $databaseName = ($parent instanceof \Yana\Db\Ddl\Database) ? $parent->getName() : $this->_schema->getName();
+        $databaseName = ($parent instanceof \Yana\Db\Ddl\Database) ? $parent->getName() : $this->_getSchema()->getName();
         unset($parent);
 
         if (is_null($databaseName)) {
-            assert('!empty($this->_database); // Unexpected result: $database must not be empty');
-            $databaseName = $this->_database;
+            $databaseName = $this->_getDatabaseName();
+            assert('!empty($databaseName); // Unexpected result: $database must not be empty');
         }
         assert('is_string($databaseName); // Unexpected result: $databaseName must be a string');
         return $databaseName;
@@ -1162,8 +1086,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         /*
          * 1) initialize counter
          */
-        if (is_null($this->_autoIncrement)) {
-            $name = __CLASS__ . '\\' . $this->_database . '\\' . $this->_tableName;
+        if (is_null($this->_getAutoIncrement())) {
+            $name = __CLASS__ . '\\' . $this->_getDatabaseName() . '\\' . $this->_getTableName();
             try {
                 $sequence = new \Yana\Db\FileDb\Sequence($name);
             } catch (\Yana\Db\Queries\Exceptions\NotFoundException $e) {
@@ -1172,15 +1096,15 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
                 unset($e);
             }
             unset($name);
-            $this->_autoIncrement = $sequence;
+            $this->_setAutoIncrement($sequence);
         }
 
         /*
          * 2) simulate auto-increment
          */
-        $primaryKey = $this->_table->getPrimaryKey();
+        $primaryKey = $this->_getTable()->getPrimaryKey();
         if (empty($set[$primaryKey])) {
-            $index = $this->_autoIncrement->getNextValue();
+            $index = $this->_getAutoIncrement()->getNextValue();
             $set[$primaryKey] = $index;
         }
     }
@@ -1194,16 +1118,16 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
     private function _length(array $where)
     {
         /* if table does not exist, then there is nothing to get */
-        if (!isset($this->_src[$this->_database][$this->_tableName])) {
+        if (!isset($this->_src[$this->_getDatabaseName()][$this->_getTableName()])) {
             return 0;
         }
 
         if (empty($where)) {
-            $smlfile =& $this->_src[$this->_database][$this->_tableName];
+            $smlfile =& $this->_src[$this->_getDatabaseName()][$this->_getTableName()];
             /*
              * note: the first index is the primary key - NOT the table name
              */
-            return $smlfile->length($this->_table->getPrimaryKey());
+            return $smlfile->length($this->_getTable()->getPrimaryKey());
         } else {
             $result = $this->_get(array(), $where);
             return count($result);
@@ -1231,14 +1155,14 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         $offset = (int) $offset;
 
         // if table does not exist, then there is nothing to get
-        if (!isset($this->_src[$this->_database][$this->_tableName])) {
+        if (!isset($this->_src[$this->_getDatabaseName()][$this->_getTableName()])) {
             return array();
         }
 
         // initialize vars
         $result     = array();
         $smlfile    = $this->_getSmlFile();
-        $primaryKey = mb_strtoupper($this->_table->getPrimaryKey($this->_tableName));
+        $primaryKey = mb_strtoupper($this->_getTable()->getPrimaryKey($this->_getTableName()));
         $data       = $smlfile->getVar($primaryKey);
 
         // if the target table is empty ...
@@ -1259,7 +1183,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         $this->_doSort($data);
 
         // 3) apply where clause
-        switch ($this->_query->getExpectedResult())
+        switch ($this->_getQuery()->getExpectedResult())
         {
             case \Yana\Db\ResultEnumeration::TABLE:
             case \Yana\Db\ResultEnumeration::COLUMN:
@@ -1356,13 +1280,13 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
          * in which the entries where inserted. If descending order is requested, the
          * order will be reversed, so the latest entries will come first and the oldest last.
          */
-        if (!empty($this->_desc) && empty($this->_sort)) {
+        if (count($this->_getDescendingSortColumns()) > 0 && count($this->_getSortColumns()) === 0) {
             $result = array_reverse($result);
         /*
          * If a column has been provided to sort entries by, then the resultset will get sorted
          * by it.
          */
-        } elseif (!empty($this->_sort)) {
+        } elseif (count($this->_getSortColumns()) > 0) {
             uasort($result, array($this, '_sort'));
         }
     }
@@ -1379,10 +1303,10 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
     private function _sort(array $a, array $b, array $columns = null, array $desc = null)
     {
         if (is_null($columns)) {
-            $columns = $this->_sort;
+            $columns = $this->_getSortColumns();
         }
         if (is_null($desc)) {
-            $desc = $this->_desc;
+            $desc = $this->_getDescendingSortColumns();
         }
         if (count($columns) === 0 || !is_array($a) || !is_array($b)) {
             return 0;
@@ -1452,12 +1376,12 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
     }
 
     /**
-     * commit transaction
+     * Commit transaction.
      *
      * @param   bool  $commit on / off
      * @return  \Yana\Db\FileDb\Result
      */
-    private function _write($commit = false)
+    protected function _write($commit = false)
     {
         /* pessimistic scanning */
         assert('is_bool($commit); // Wrong argument type for argument 1. Boolean expected.');
@@ -1469,12 +1393,12 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         $this->_cache = array();
 
         /* wait for commit */
-        if (!$commit && !$this->_autoCommit) {
+        if (!$commit && !$this->_isAutoCommit()) {
             return new \Yana\Db\FileDb\Result(array());
         }
 
         /* commit */
-        foreach ($this->_src[$this->_database] as $table)
+        foreach ($this->_src[$this->_getDatabaseName()] as $table)
         {
             /* @var $table \SML */
             if (!$table->exists()) {
@@ -1529,7 +1453,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         /* get a cursor on A */
         try {
             $this->_select($tableA); // may throw NotFoundException
-            $tableADef = $this->_schema->getTable($tableA);
+            $tableADef = $this->_getSchema()->getTable($tableA);
             $columnADef = $tableADef->getColumn($columnA);
             $aIsPk = $columnADef->isPrimaryKey();
             $pkA = mb_strtoupper($tableADef->getPrimaryKey());
@@ -1545,7 +1469,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         /* get a cursor on B */
         try {
             $this->_select($tableB); // may throw NotFoundException
-            $tableBDef = $this->_schema->getTable($tableB);
+            $tableBDef = $this->_getSchema()->getTable($tableB);
             $columnBDef = $tableBDef->getColumn($columnB);
             $bIsPk = $columnBDef->isPrimaryKey();
             $pkB = mb_strtoupper($tableBDef->getPrimaryKey());
@@ -1569,10 +1493,10 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         /* @var $indexB \FileDbIndex */
         $indexB =  null;
         if ($columnADef->hasIndex()) {
-            $indexA =& $this->_idx[$this->_database][$this->_tableName];
+            $indexA =& $this->_idx[$this->_getDatabaseName()][$this->_getTableName()];
         }
         if ($columnBDef->hasIndex()) {
-            $indexB =& $this->_idx[$this->_database][$this->_tableName];
+            $indexB =& $this->_idx[$this->_getDatabaseName()][$this->_getTableName()];
         }
 
         if (empty($columns)) {
@@ -1808,11 +1732,11 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         if (is_array($leftOperand)) { // content is: table.column
             $tableName = array_shift($leftOperand); // get table name
             $leftOperand = array_shift($leftOperand); // get just the column
-            $table = $this->_schema->getTable($tableName);
+            $table = $this->_getSchema()->getTable($tableName);
             assert('$table instanceof \Yana\Db\Ddl\Table; // Table not found: ' . $tableName);
             unset($tableName);
         } else {
-            $table = $this->_table;
+            $table = $this->_getTable();
         }
         if (isset($current[mb_strtoupper($leftOperand)])) {
             $value = $current[mb_strtoupper($leftOperand)];
@@ -1894,11 +1818,12 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     private function _getIndexFile()
     {
-        if (!isset($this->_idx[$this->_database][$this->_tableName])) {
-            $message = "Index-file not found for databae {$this->_database} table {$this->_tableName}. Is the directory writable?";
+        if (!isset($this->_idx[$this->_getDatabaseName()][$this->_getTableName()])) {
+            $message = "Index-file not found for databae " . $this->_getDatabaseName() .
+                " table " . $this->_getTableName() . ". Is the directory writable?";
             throw new \Yana\Db\DatabaseException($message, E_USER_ERROR);
         }
-        return $this->_idx[$this->_database][$this->_tableName];
+        return $this->_idx[$this->_getDatabaseName()][$this->_getTableName()];
     }
 
     /**
@@ -1910,8 +1835,8 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
     {
         $filename = $this->_getFilename($database, 'idx');
         $smlfile = $this->_getSmlFile();
-        $idxfile = new \Yana\Db\FileDb\Index($this->_table, $smlfile, $filename);
-        $this->_idx[$this->_database][$this->_tableName] = $idxfile;
+        $idxfile = new \Yana\Db\FileDb\Index($this->_getTable(), $smlfile, $filename);
+        $this->_idx[$this->_getDatabaseName()][$this->_getTableName()] = $idxfile;
     }
 
     /**
@@ -1921,7 +1846,7 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     private function _getSmlFile()
     {
-        return $this->_src[$this->_database][$this->_tableName];
+        return $this->_src[$this->_getDatabaseName()][$this->_getTableName()];
     }
 
     /**
@@ -1932,17 +1857,17 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
      */
     private function _setSmlFile($database)
     {
-        if (!isset($this->_src[$this->_database][$this->_tableName])) {
+        if (!isset($this->_src[$this->_getDatabaseName()][$this->_getTableName()])) {
             $filename = $this->_getFilename($database, 'sml');
             $isCreated = false;
             $smlfile = $this->_createSmlFile($filename, $isCreated);
-            if ($isCreated && $database != $this->_database) {
-                $filename = $this->_getFilename($this->_database, 'sml');
+            if ($isCreated && $database != $this->_getDatabaseName()) {
+                $filename = $this->_getFilename($this->_getDatabaseName(), 'sml');
                 $smlfile = $this->_createSmlFile($filename);
             }
             $smlfile->failSafeRead();
 
-            $this->_src[$this->_database][$this->_tableName] = $smlfile;
+            $this->_src[$this->_getDatabaseName()][$this->_getTableName()] = $smlfile;
         }
     }
 
@@ -1982,34 +1907,10 @@ class Driver extends \Yana\Core\Object implements \Yana\Db\IsDriver
         assert('is_string($tableName); // Invalid argument $tableName: string expected');
 
         if (empty($tableName)) {
-            $tableName = $this->_tableName;
+            $tableName = $this->_getTableName();
         }
 
         return realpath(self::$_baseDir) . '/' . $database . '/' . $tableName . '.' . $extension;
-    }
-
-    /**
-     * Compare with another object.
-     *
-     * Returns bool(true) if this object and $anotherObject
-     * are equal and bool(false) otherwise.
-     *
-     * Two instances are considered equal if and only if
-     * they are both objects of the same class and they both
-     * refer to the same structure file.
-     *
-     * @param    \Yana\Core\IsObject  $anotherObject object to compare
-     * @return   string
-     */
-    public function equals(\Yana\Core\IsObject $anotherObject)
-    {
-        if ($anotherObject instanceof $this) {
-            if (!isset($this->_schema) || !isset($anotherObject->_schema)) {
-                return isset($this->_schema) === isset($anotherObject->_schema);
-            }
-            return (bool) $this->_schema->equals($anotherObject->_schema);
-        }
-        return false;
     }
 
 }
