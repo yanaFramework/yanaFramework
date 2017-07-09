@@ -111,6 +111,13 @@ class Container extends \Yana\Core\Object
     private $_passwordBehavior = null;
 
     /**
+     * User Entity
+     *
+     * @var  \Yana\Security\Data\Users\IsEntity
+     */
+    private $_userEntity = null;
+
+    /**
      * 
      * @return  \Yana\Db\IsConnection
      */
@@ -312,6 +319,7 @@ class Container extends \Yana\Core\Object
                 $this->getPasswordAlgorithm(), $this->getPasswordGenerator()
             );
         }
+        $this->_passwordBehavior->setUser($this->getUserEntity());
         return $this->_passwordBehavior;
     }
 
@@ -341,6 +349,32 @@ class Container extends \Yana\Core\Object
         return $this->_rulesAdapter;
     }
 
+    /**
+     * Get currently logged in user.
+     *
+     * If no user has been selected, returns an anonymous guest user instead.
+     *
+     * @return  \Yana\Security\Data\Users\IsEntity
+     */
+    public function getUserEntity()
+    {
+        if (!isset($this->_userEntity)) {
+            $this->_userEntity = new \Yana\Security\Data\Users\Guest();
+        }
+        return $this->_userEntity;
+    }
+
+    /**
+     * Set currently logged in user.
+     *
+     * @param   \Yana\Security\Data\Users\Entity  $user  entity of currently logged in user
+     * @return  self
+     */
+    public function setUserEntity(\Yana\Security\Data\Users\IsEntity $user)
+    {
+        $this->_userEntity = $user;
+        return $this;
+    }
 
 }
 

@@ -62,7 +62,7 @@ abstract class AbstractEntity extends \Yana\Core\Object implements \Yana\Data\Ad
      *
      * This returns the adapter selected via setDataAdapter() or a default dummy implementation if no other is selected.
      * 
-     * @return  \Yana\Data\Adapters\ArrayAdapter
+     * @return  \Yana\Data\Adapters\IsDataAdapter
      */
     protected function _getDataAdapter()
     {

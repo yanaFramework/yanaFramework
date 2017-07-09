@@ -87,7 +87,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
     public function setLanguage($language)
     {
         assert('is_string($language); // Wrong type for argument: $language. String expected');
-        $this->_getEntity()->setPassword((string) $language);
+        $this->_getEntity()->setLanguage((string) $language);
         return $this;
     }
 
@@ -270,19 +270,6 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
     }
 
     /**
-     * get password recovery id
-     *
-     * When the user requests a new password, a recovery id is created and sent to his mail address.
-     * This is to ensure that the user is a allowed to reset the password.
-     *
-     * @return  string
-     */
-    public function getPasswordRecoveryId()
-    {
-        return (string) $this->_getEntity()->getPasswordRecoveryId();
-    }
-
-    /**
      * Get password recovery time.
      *
      * When the user requests a new password, the time is stored.
@@ -310,7 +297,8 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      */
     public function generatePasswordRecoveryId()
     {
-        return (string) $this->_getDependencies()->getPasswordBehavior()->generatePasswordRecoveryId();
+        $passwordRecoveryId = (string) $this->_getDependencies()->getPasswordBehavior()->generatePasswordRecoveryId();
+        return $passwordRecoveryId;
     }
 
     /**
@@ -333,10 +321,14 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * @param   string  $mail  e-mail address
      * @return  self
+     * @throws  \Yana\Core\Exceptions\Mails\InvalidMailException  when given e-mail address isn't valid
      */
     public function setMail($mail)
     {
         assert('is_string($mail); // Wrong type for argument: $mail. String expected');
+        if (\Yana\Data\MailValidator::validate($mail) === false) {
+            throw new \Yana\Core\Exceptions\Mails\InvalidMailException('Given e-mail address is not valid');
+        }
         $this->_getEntity()->setMail((string) $mail);
         return $this;
     }
@@ -433,7 +425,6 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      */
     public function login($password)
     {
-        assert('is_string($userName); // Invalid argument $userName: string expected');
         assert('is_string($password); // Invalid argument $password: string expected');
 
         assert('!isset($user); // Cannot redeclare var $userEntity');
@@ -441,7 +432,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
 
         /* 1. reset failure count if failure time has expired */
         if ($this->_getMaxFailureTime() > 0 && $user->getFailureTime() < time() - $this->_getMaxFailureTime()) {
-            $user->resetFailureCount();
+            $user->setFailureCount(0)->setFailureTime(0);
         }
         /* 2. exit if the user has 3 times tried to login with a wrong password in last 5 minutes */
         if ($this->_getMaxFailureCount() > 0 && $user->getFailureCount() >= $this->_getMaxFailureCount()) {
@@ -482,24 +473,6 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
     public function isLoggedIn()
     {
         return $this->_getDependencies()->getLoginBehavior()->isLoggedIn($this->_getEntity());
-    }
-
-    /**
-     * Create new password recovery id.
-     *
-     * When the user requests a new password, a recovery id is created and the time is stored.
-     * This is to ensure that the user is a allowed to reset the password and determine, when the
-     * request has expired.
-     *
-     * Returns the new recovery id.
-     *
-     * @return  string
-     */
-    public function createPasswordRecoveryId()
-    {
-        $this->setPasswordRecoveryId(uniqid(substr(md5($this->getMail()), 0, 3)));
-        $this->setPasswordRecoveryTime(time());
-        return $this->_passwordRecoveryId;
     }
 
 }

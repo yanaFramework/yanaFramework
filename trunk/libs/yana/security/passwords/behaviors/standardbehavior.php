@@ -93,7 +93,7 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
         assert('is_string($recoveryId); // Wrong type for argument $userPwd. String expected');
 
         $user = $this->getUser();
-        $isCorrect = $this->_getAlgorithm()->isEqual($recoveryId, $user->getPasswordRecoveryId());
+        $isCorrect = $this->_getAlgorithm()->isEqual($recoveryId, (string) $user->getPasswordRecoveryId());
 
         if ($isCorrect) {
             // reset failure count
@@ -117,7 +117,8 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
         assert('is_string($userPwd); // Wrong type for argument $userPwd. String expected');
 
         $user = $this->getUser();
-        $isCorrect = $this->_isUninitializedPassword($user) || $this->_getAlgorithm()->isEqual($userPwd, $user->getPassword());
+        $isCorrect = $this->_isUninitializedPassword($user) ||
+            $this->_getAlgorithm()->isEqual($userPwd, (string) $user->getPassword()); // getPassword may return NULL
 
         if ($isCorrect) {
             // reset failure count

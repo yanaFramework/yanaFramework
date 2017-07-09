@@ -205,16 +205,6 @@ interface IsBehavior
     public function getRecentPasswords();
 
     /**
-     * get password recovery id
-     *
-     * When the user requests a new password, a recovery id is created and sent to his mail address.
-     * This is to ensure that the user is a allowed to reset the password.
-     *
-     * @return  string
-     */
-    public function getPasswordRecoveryId();
-
-    /**
      * Get password recovery time.
      *
      * When the user requests a new password, the time is stored.
@@ -295,19 +285,6 @@ interface IsBehavior
      * @return  \Yana\Security\Data\SecurityRules\Collection
      */
     public function getSecurityGroupsAndRoles($profileId);
-
-    /**
-     * Create new password recovery id.
-     *
-     * When the user requests a new password, a recovery id is created and the time is stored.
-     * This is to ensure that the user is a allowed to reset the password and determine, when the
-     * request has expired.
-     *
-     * Returns the new recovery id.
-     *
-     * @return  string
-     */
-    public function createPasswordRecoveryId();
 
     /**
      * Get security level.
