@@ -118,7 +118,8 @@ class Container extends \Yana\Core\Object
     private $_userEntity = null;
 
     /**
-     * 
+     * Get database connection.
+     *
      * @return  \Yana\Db\IsConnection
      */
     public function getDataConnection()
@@ -130,7 +131,20 @@ class Container extends \Yana\Core\Object
     }
 
     /**
-     * 
+     * Set connection to user database.
+     *
+     * @param   \Yana\Db\IsConnection  $dataConnection  connection to user database
+     * @return  self
+     */
+    public function setDataConnection(\Yana\Db\IsConnection $dataConnection)
+    {
+        $this->_dataConnection = $dataConnection;
+        return $this;
+    }
+
+    /**
+     * Get default user settings.
+     *
      * @return  array
      */
     public function getDefaultEventUser()
