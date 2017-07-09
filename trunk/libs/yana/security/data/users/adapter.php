@@ -113,7 +113,7 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
 
             $message = "No user found with id: " . \htmlentities($userId);
             $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \Yana\Core\Exceptions\User\NotFoundException($level, $message, $e);
+            throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level, $e);
         }
     }
 
@@ -128,11 +128,13 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
      */
     public function offsetSet($userId, $userEntity)
     {
-        assert('is_string($userId); // Wrong type argument $userId. String expected.');
+        assert('is_string($userId) || is_null($userId); // Wrong type argument $userId. String expected.');
 
         if (!($userEntity instanceof \Yana\Security\Data\Users\IsEntity)) {
+            assert('!isset($className); // Cannot redeclare var $className');
+            $className = \is_object($userEntity) ? \get_class($userEntity) : \gettype($userEntity);
             assert('!isset($message); // Cannot redeclare var $message');
-            $message = "Instance of \Yana\Security\Data\Users\IsEntity expected. Found " . \get_class($userEntity) . " instead.";
+            $message = "Instance of \Yana\Security\Data\Users\IsEntity expected. Found " . $className . " instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
 
@@ -194,23 +196,51 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
         $db = $this->_getConnection();
         try {
 
-            $db // delete profile
-                ->remove(\Yana\Security\Data\Tables\ProfileEnumeration::TABLE . "." . $upperCaseUserId)
-                // delete user's security level
-                ->remove(\Yana\Security\Data\Tables\LevelEnumeration::TABLE,
+            // delete profile (if any)
+            try {
+                $db->remove(\Yana\Security\Data\Tables\ProfileEnumeration::TABLE . "." . $upperCaseUserId)
+                    ->commit(); // may throw exception
+
+            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
+
+                $db->rollback(); // don't try to commit this statement again
+            }
+            // delete user's security level (if any)
+            try {
+                $db->remove(\Yana\Security\Data\Tables\LevelEnumeration::TABLE,
                     array(\Yana\Security\Data\Tables\LevelEnumeration::USER, "=", $upperCaseUserId), 0)
-                // delete access permissions (temporarily) granted by this user
-                ->remove(\Yana\Security\Data\Tables\RuleEnumeration::TABLE,
+                    ->commit(); // may throw exception
+
+            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
+
+                $db->rollback(); // don't try to commit this statement again
+            }
+            // delete access permissions (temporarily) granted by this user (if any)
+            try {
+                $db->remove(\Yana\Security\Data\Tables\RuleEnumeration::TABLE,
                     array(\Yana\Security\Data\Tables\RuleEnumeration::GRANTED_BY_USER, "=", $upperCaseUserId), 0)
-                ->remove(\Yana\Security\Data\Tables\LevelEnumeration::TABLE . ".*",
+                    ->commit(); // may throw exception
+
+            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
+
+                $db->rollback(); // don't try to commit this statement again
+            }
+            try {
+                $db->remove(\Yana\Security\Data\Tables\LevelEnumeration::TABLE . ".*",
                     array(\Yana\Security\Data\Tables\LevelEnumeration::GRANTED_BY_USER, "=", $upperCaseUserId), 0)
-                // delete user settings
-                ->remove($this->_toDatabaseKey($upperCaseUserId))
-                // commit changes
+                    ->commit(); // may throw exception
+
+            } catch (\Yana\Core\Exceptions\NotFoundException $e) {
+
+                $db->rollback(); // don't try to commit this statement again
+            }
+            // delete user settings
+            $db->remove($this->_toDatabaseKey($upperCaseUserId))
                 ->commit(); // may throw exception
 
         } catch (\Exception $e) {
 
+            $db->rollback(); // don't try to commit the faulty statement again
             $message = "Unable to commit changes to the database server while trying to remove".
                 "user '{$userId}'.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
