@@ -115,7 +115,9 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     public function testFindEntities()
     {
         $enities = $this->object->findEntities('administrator');
-        $this->assertSame(4, count($enities));
+        $enities = $this->object->findEntities('administrator');
+        $this->assertTrue($enities instanceof \Yana\Security\Data\SecurityLevels\Collection);
+        $this->assertCount(4, $enities);
         $this->assertSame(100, $enities['NG']->getSecurityLevel());
         $this->assertSame(100, $enities['BAR']->getSecurityLevel());
         $this->assertSame(100, $enities['DEFAULT']->getSecurityLevel());

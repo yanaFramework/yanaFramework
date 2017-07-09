@@ -77,7 +77,7 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
      * Returns all the user's security level as an array, where the keys are the profile names and the values are the levels.
      *
      * @param   string  $userId  user name
-     * @return  \Yana\Security\Data\SecurityLevels\IsLevel[]
+     * @return  \Yana\Security\Data\SecurityLevels\Collection
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no matching level is found
      */
     public function findEntities($userId)
@@ -88,7 +88,7 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
         $profileColumn = \Yana\Util\Strings::toUpperCase(\Yana\Security\Data\Tables\LevelEnumeration::PROFILE);
 
         assert('!isset($entities); // Cannot redeclare var $entities');
-        $entities = array();
+        $entities = new \Yana\Security\Data\SecurityLevels\Collection();
 
         assert('!isset($query); // Cannot redeclare var $query');
         $query = $this->_buildQuery($userId);
