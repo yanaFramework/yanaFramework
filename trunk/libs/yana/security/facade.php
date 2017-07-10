@@ -109,7 +109,9 @@ class Facade extends \Yana\Core\Object
      */
     protected function _createUserBuilder()
     {
-        return new \Yana\Security\Data\Behaviors\Builder($this->_createUserAdapter());
+        $builder = new \Yana\Security\Data\Behaviors\Builder($this->_createUserAdapter());
+        $builder->setDependencyContainer($this->_getContainer());
+        return $builder;
     }
 
     /**
