@@ -52,7 +52,7 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
     /**
      * Dependency container.
      *
-     * @var  \Yana\Security\Dependencies\Container
+     * @var  \Yana\Security\Dependencies\IsContainer
      */
     private $_container = null;
 
@@ -83,12 +83,12 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
     /**
      * Creates an user by name.
      *
-     * @param  \Yana\Security\Dependencies\Container  $container        dependency container
-     * @param  \Yana\Security\Data\Users\IsEntity     $user             entity to wrap
-     * @param   int                                   $maxFailureCount  1 = block on first invalid password, 0 = never block user
-     * @param   int                                   $maxFailureTime   in seconds (0 = keep blocked forever)
+     * @param  \Yana\Security\Dependencies\IsContainer  $container        dependency container
+     * @param  \Yana\Security\Data\Users\IsEntity       $user             entity to wrap
+     * @param   int                                     $maxFailureCount  1 = block on first invalid password, 0 = never block user
+     * @param   int                                     $maxFailureTime   in seconds (0 = keep blocked forever)
      */
-    public function __construct(\Yana\Security\Dependencies\Container $container, \Yana\Security\Data\Users\IsEntity $user, $maxFailureCount = 3, $maxFailureTime = 300)
+    public function __construct(\Yana\Security\Dependencies\IsContainer $container, \Yana\Security\Data\Users\IsEntity $user, $maxFailureCount = 3, $maxFailureTime = 300)
     {
         $this->_entity = $user;
         $this->_container = $container;
@@ -109,7 +109,7 @@ abstract class AbstractBehavior extends \Yana\Core\Object implements \Yana\Secur
     /**
      * Returns dependency containe.
      *
-     * @return  \Yana\Security\Dependencies\Container
+     * @return  \Yana\Security\Dependencies\IsContainer
      */
     protected function _getDependencies()
     {

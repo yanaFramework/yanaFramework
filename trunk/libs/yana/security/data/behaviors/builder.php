@@ -41,6 +41,38 @@ class Builder extends \Yana\Security\Data\UserBuilder implements \Yana\Security\
 {
 
     /**
+     * @var  \Yana\Security\Dependencies\IsContainer
+     */
+    private $_dependencyContainer;
+
+    /**
+     * Inject dependency container.
+     *
+     * @param   \Yana\Security\Dependencies\IsContainer  $container  instance to be injected
+     * @return  self
+     */
+    public function setDependencyContainer(\Yana\Security\Dependencies\IsContainer $container)
+    {
+        $this->_dependencyContainer = $container;
+        return $this;
+    }
+
+    /**
+     * Get injected dependency container.
+     *
+     * Creates a container with default settings if none is given.
+     *
+     * @return  \Yana\Security\Dependencies\IsContainer
+     */
+    public function getDependencyContainer()
+    {
+        if (!isset($this->_dependencyContainer)) {
+            $this->_dependencyContainer = new \Yana\Security\Dependencies\Container();
+        }
+        return $this->_dependencyContainer;
+    }
+
+    /**
      * Build new user behavior facade.
      *
      * @param   \Yana\Security\Data\Users\IsEntity  $user  entity
@@ -49,7 +81,7 @@ class Builder extends \Yana\Security\Data\UserBuilder implements \Yana\Security\
      */
     public function __invoke(\Yana\Security\Data\Users\IsEntity $user)
     {
-        return new \Yana\Security\Data\Behaviors\Standard(new \Yana\Security\Dependencies\Container(), $user);
+        return new \Yana\Security\Data\Behaviors\Standard($this->getDependencyContainer(), $user);
     }
 
     /**

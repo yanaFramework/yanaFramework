@@ -41,11 +41,11 @@ class CacheableChecker extends \Yana\Security\Rules\Checker implements \Yana\Dat
 {
 
     /**
-     * result cache.
+     * Result cache.
      *
-     * @var  array
+     * @var  \Yana\Data\Adapters\IsDataAdapter
      */
-    private $_cache = array();
+    private $_cache = null;
 
     /**
      * Replace the cache adapter.
@@ -59,7 +59,7 @@ class CacheableChecker extends \Yana\Security\Rules\Checker implements \Yana\Dat
      * Note that this may also replace the cache contents.
      *
      * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  new cache adapter
-     * @return  \Yana\Data\Adapters\IsCacheable
+     * @return  self
      * @ignore
      */
     public function setCache(\Yana\Data\Adapters\IsDataAdapter $cache)

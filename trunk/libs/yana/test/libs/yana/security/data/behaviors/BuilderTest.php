@@ -81,6 +81,23 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->object->__invoke($entity));
     }
 
+    /**
+     * @test
+     */
+    public function testGetDependencyContainer()
+    {
+        $container = new \Yana\Security\Dependencies\Container();
+        $this->assertEquals($container, $this->object->getDependencyContainer());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetDependencyContainer()
+    {
+        $container = new \Yana\Security\Dependencies\Container();
+        $this->assertSame($container, $this->object->setDependencyContainer($container)->getDependencyContainer());
+    }
 
     /**
      * @test

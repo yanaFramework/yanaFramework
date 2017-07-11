@@ -30,14 +30,17 @@
 namespace Yana\Security\Dependencies;
 
 /**
- * <<abstract>> Helps building the behavior facade.
+ * Dependency container.
+ *
+ * With default settings, creates the required instances automatically.
+ * Otherwise allowing them to be overwritten.
  *
  * @package     yana
  * @subpackage  security
  *
  * @ignore
  */
-class Container extends \Yana\Core\Object
+class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies\IsContainer, \Yana\Data\Adapters\IsCacheable
 {
 
     /**
@@ -72,7 +75,7 @@ class Container extends \Yana\Core\Object
     private $_requirementsDataReader = null;
 
     /**
-     * @var  \Yana\Security\Rules\CacheableChecker
+     * @var  \Yana\Security\Rules\IsChecker
      */
     private $_rulesChecker = null;
 
@@ -118,6 +121,47 @@ class Container extends \Yana\Core\Object
     private $_userEntity = null;
 
     /**
+     * @var  \Yana\Data\Adapters\IsDataAdapter
+     */
+    private $_cache = null;
+
+    /**
+     * Replace the cache adapter.
+     *
+     * This class uses an ArrayAdapter by default.
+     * Overwrite only for unit-tests, or if you are absolutely sure you need to
+     * and know what you are doing.
+     * Replacing this by the wrong adapter might introduce a security risk,
+     * unless you are in a very specific usage scenario.
+     *
+     * Note that this may also replace the cache contents.
+     *
+     * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  new cache adapter
+     * @return  \Yana\Data\Adapters\IsCacheable
+     * @ignore
+     */
+    public function setCache(\Yana\Data\Adapters\IsDataAdapter $cache)
+    {
+        $this->_cache = $cache;
+        return $this;
+    }
+
+    /**
+     * Get cache-adapter.
+     *
+     * Uses an ArrayAdapter by default.
+     *
+     * @return  \Yana\Data\Adapters\IsDataAdapter
+     */
+    public function getCache()
+    {
+        if (!isset($this->_cache)) {
+            $this->_cache = new \Yana\Data\Adapters\ArrayAdapter();
+        }
+        return $this->_cache;
+    }
+
+    /**
      * Get database connection.
      *
      * @return  \Yana\Db\IsConnection
@@ -161,20 +205,38 @@ class Container extends \Yana\Core\Object
     }
 
     /**
+     * Set default user settings.
+     *
+     * @param   array  $defaultUser  settings
+     * @return  self
+     */
+    public function setDefaultEventUser(array $defaultUser)
+    {
+        $this->_defaultEventUser = $defaultUser;
+        return $this;
+    }
+
+    /**
      * Builds and returns a rule-checker object.
      *
-     * @return  \Yana\Security\Rules\CacheableChecker
+     * @return  \Yana\Security\Rules\IsChecker
      */
     public function getRulesChecker()
     {
         if (!isset($this->_rulesChecker)) {
-            $this->_rulesChecker = new \Yana\Security\Rules\CacheableChecker($this->getRequirementsDataReader());
+            $rulesChecker = new \Yana\Security\Rules\CacheableChecker($this->getRequirementsDataReader());
+            $rulesChecker->setCache($this->getCache());
+            $this->_rulesChecker = $rulesChecker;
         }
         return $this->_rulesChecker;
     }
 
     /**
-     * @return \Yana\Security\Rules\Requirements\DataReader
+     * Builds and returns a default data reader.
+     *
+     * The purpose of the data reader is to retrieve requirements data from the database and build corresponding entities.
+     *
+     * @return \Yana\Security\Rules\Requirements\IsDataReader
      */
     public function getRequirementsDataReader()
     {
@@ -186,7 +248,8 @@ class Container extends \Yana\Core\Object
     }
 
     /**
-     * 
+     * Retrieve session wrapper.
+     *
      * @return  \Yana\Security\Sessions\IsWrapper
      */
     public function getSession()
@@ -198,9 +261,10 @@ class Container extends \Yana\Core\Object
     }
 
     /**
-     * 
+     * Inject session wrapper.
+     *
      * @param   \Yana\Security\Sessions\IsWrapper  $session  dependency
-     * @return  \Yana\Security\Dependencies\Container
+     * @return  self
      */
     public function setSession(\Yana\Security\Sessions\IsWrapper $session)
     {
@@ -209,10 +273,10 @@ class Container extends \Yana\Core\Object
     }
 
     /**
-     * 
+     * Inject login behavior instance.
      *
      * @param   \Yana\Security\Logins\IsBehavior  $loginBehavior  dependency
-     * @return  \Yana\Security\Dependencies\Container
+     * @return  self
      */
     public function setLoginBehavior(\Yana\Security\Logins\IsBehavior $loginBehavior)
     {
@@ -221,9 +285,10 @@ class Container extends \Yana\Core\Object
     }
 
     /**
-     * 
+     * Inject password algorithm builder instance.
+     *
      * @param   \Yana\Security\Passwords\Builders\Builder  $passwordAlgorithmBuilder  dependency
-     * @return  \Yana\Security\Dependencies\Container
+     * @return  self
      */
     public function setPasswordAlgorithmBuilder(\Yana\Security\Passwords\Builders\Builder $passwordAlgorithmBuilder)
     {
@@ -232,9 +297,10 @@ class Container extends \Yana\Core\Object
     }
 
     /**
-     * 
+     * Inject specific password algorithm.
+     *
      * @param   \Yana\Security\Passwords\IsAlgorithm  $passwordAlgorithm  dependency
-     * @return  \Yana\Security\Dependencies\Container
+     * @return  self
      */
     public function setPasswordAlgorithm(\Yana\Security\Passwords\IsAlgorithm $passwordAlgorithm)
     {
@@ -243,9 +309,10 @@ class Container extends \Yana\Core\Object
     }
 
     /**
-     * 
+     * Inject password generator.
+     *
      * @param   \Yana\Security\Passwords\Generators\IsAlgorithm  $passwordGenerator  dependency
-     * @return  \Yana\Security\Dependencies\Container
+     * @return  self
      */
     public function setPasswordGenerator(\Yana\Security\Passwords\Generators\IsAlgorithm $passwordGenerator)
     {
@@ -254,9 +321,10 @@ class Container extends \Yana\Core\Object
     }
 
     /**
-     * 
+     * Inject password checking behavior.
+     *
      * @param   \Yana\Security\Passwords\Behaviors\IsBehavior  $passwordBehavior  dependency
-     * @return  \Yana\Security\Dependencies\Container
+     * @return  self
      */
     public function setPasswordBehavior(\Yana\Security\Passwords\Behaviors\IsBehavior $passwordBehavior)
     {
@@ -265,7 +333,11 @@ class Container extends \Yana\Core\Object
     }
 
     /**
-     * @return  \Yana\Security\Passwords\Builders\Builder
+     * Retrieve algorithm builder.
+     *
+     * The builder's purpose is to select and create instances of hashing algorithms used to create and compare password hashes.
+     *
+     * @return  \Yana\Security\Passwords\Builders\IsBuilder
      */
     public function getPasswordAlgorithmBuilder()
     {
@@ -339,7 +411,7 @@ class Container extends \Yana\Core\Object
 
     /**
      * Retrieve levels data adapter.
-     * 
+     *
      * @return  \Yana\Security\Data\SecurityLevels\Adapter
      */
     public function getLevelsAdapter()

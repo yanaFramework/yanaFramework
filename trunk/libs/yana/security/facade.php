@@ -47,14 +47,32 @@ class Facade extends \Yana\Core\Object
 {
 
     /**
-     * @var  \Yana\Security\Dependencies\Container
+     * @var  \Yana\Data\Adapters\IsDataAdapter
+     */
+    private $_cache = null;
+
+    /**
+     * @var  \Yana\Security\Dependencies\IsContainer
      */
     private $_container = null;
+
+
+    /**
+     * Initialize dependencies.
+     *
+     * @param   \Yana\Security\Dependencies\IsContainer  $container  dependency container
+     * @param   \Yana\Data\Adapters\IsDataAdapter        $cache      will be used by rule checker to cache results
+     */
+    public function __construct(\Yana\Security\Dependencies\IsContainer $container = null, \Yana\Data\Adapters\IsDataAdapter $cache = null)
+    {
+        $this->_container = $container;
+        $this->_cache = $cache;
+    }
 
     /**
      * Creates dependency container on demand and returns it.
      *
-     * @return  \Yana\Security\Dependencies\Container
+     * @return  \Yana\Security\Dependencies\IsContainer
      */
     protected function _getContainer()
     {
@@ -77,7 +95,7 @@ class Facade extends \Yana\Core\Object
     /**
      * Builds and returns a rule-checker object.
      *
-     * @return  \Yana\Security\Rules\CacheableChecker
+     * @return  \Yana\Security\Rules\IsChecker
      */
     protected function _getRulesChecker()
     {
@@ -109,7 +127,9 @@ class Facade extends \Yana\Core\Object
      */
     protected function _createUserBuilder()
     {
-        return new \Yana\Security\Data\Behaviors\Builder($this->_createUserAdapter());
+        $builder = new \Yana\Security\Data\Behaviors\Builder($this->_createUserAdapter());
+        $builder->setDependencyContainer($this->_getContainer());
+        return $builder;
     }
 
     /**
@@ -130,7 +150,7 @@ class Facade extends \Yana\Core\Object
     }
 
     /**
-     * Replace the cache adapter.
+     * Get cache-adapter.
      *
      * This class uses an ArrayAdapter by default.
      * Overwrite only for unit-tests, or if you are absolutely sure you need to
@@ -139,19 +159,6 @@ class Facade extends \Yana\Core\Object
      * unless you are in a very specific usage scenario.
      *
      * Note that this may also replace the cache contents.
-     *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  new cache adapter
-     * @return  \Yana\Data\Adapters\IsCacheable
-     * @ignore
-     */
-    public function setCache(\Yana\Data\Adapters\IsDataAdapter $cache)
-    {
-        $this->_cache = $cache;
-        return $this;
-    }
-
-    /**
-     * Get cache-adapter
      *
      * @return  \Yana\Data\Adapters\IsDataAdapter
      * @ignore

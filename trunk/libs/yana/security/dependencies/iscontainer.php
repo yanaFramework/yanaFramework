@@ -27,7 +27,7 @@
  * @ignore
  */
 
-namespace Yana\Security\Data\Behaviors;
+namespace Yana\Security\Dependencies;
 
 /**
  * <<interface>> Defines dependencies required by behavior-builder.
@@ -37,8 +37,15 @@ namespace Yana\Security\Data\Behaviors;
  *
  * @ignore
  */
-interface IsBuilderDependencyContainer
+interface IsContainer
 {
+
+    /**
+     * Retrieve session wrapper.
+     *
+     * @return  \Yana\Security\Sessions\IsWrapper
+     */
+    public function getSession();
 
     /**
      * Retrieve password behavior dependency.
@@ -53,6 +60,20 @@ interface IsBuilderDependencyContainer
      * @return  \Yana\Security\Logins\IsBehavior
      */
     public function getLoginBehavior();
+
+    /**
+     * Retrieve levels data adapter.
+     *
+     * @return  \Yana\Security\Data\SecurityLevels\Adapter
+     */
+    public function getLevelsAdapter();
+
+    /**
+     * Retrieve rules data adapter.
+     *
+     * @return  \Yana\Security\Data\SecurityRules\Adapter
+     */
+    public function getRulesAdapter();
 
 }
 
