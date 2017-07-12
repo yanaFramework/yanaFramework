@@ -79,7 +79,7 @@ abstract class AbstractSingleton extends \Yana\Core\Object implements \Yana\Core
      * but takes no arguments, the constructor must also not
      * take any input arguments, unless they are static.
      *
-     * @return  \Yana\Core\AbstractSingleton
+     * @return  self
      */
     public static function getInstance()
     {

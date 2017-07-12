@@ -40,7 +40,7 @@ namespace Yana\Security\Dependencies;
  *
  * @ignore
  */
-class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies\IsContainer, \Yana\Data\Adapters\IsCacheable
+class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies\IsFacadeContainer, \Yana\Data\Adapters\IsCacheable
 {
 
     /**
@@ -124,6 +124,26 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      * @var  \Yana\Data\Adapters\IsDataAdapter
      */
     private $_cache = null;
+
+    /**
+     * @var  \Yana\Plugins\Configs\MethodCollection
+     */
+    private $_eventConfigurationsForPlugins = null;
+
+    /**
+     * @var  \Yana\Log\IsLogHandler 
+     */
+    private $_logger = null;
+
+    /**
+     * @var  string
+     */
+    private $_profileId = "";
+
+    /**
+     * @var  string
+     */
+    private $_action = "";
 
     /**
      * Replace the cache adapter.
@@ -459,6 +479,112 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     public function setUserEntity(\Yana\Security\Data\Users\IsEntity $user)
     {
         $this->_userEntity = $user;
+        return $this;
+    }
+
+    /**
+     * Set list of events for plugins.
+     *
+     * @param   \Yana\Plugins\Configs\MethodCollection  $eventConfigurationsForPlugins  provided by Plugins\Manager
+     * @return  self
+     */
+    public function setEventConfigurationsForPlugins(\Yana\Plugins\Configs\MethodCollection $eventConfigurationsForPlugins)
+    {
+        $this->_eventConfigurationsForPlugins = $eventConfigurationsForPlugins;
+        return $this;
+    }
+
+    /**
+     * Returns the stored list of events for plugins.
+     *
+     * If none was given, tries to autoload them.
+     *
+     * @return  \Yana\Plugins\Configs\MethodCollection
+     */
+    public function getEventConfigurationsForPlugins()
+    {
+        if (!isset($this->_eventConfigurationsForPlugins)) {
+            $this->_eventConfigurationsForPlugins = \Yana\Plugins\Manager::getInstance()->getEventConfigurations();
+        }
+        return $this->_eventConfigurationsForPlugins;
+    }
+
+    /**
+     * Set event logger.
+     *
+     * @param   \Yana\Log\IsLogHandler  $logger  usually provided by the application
+     * @return  self
+     */
+    public function setLogger(\Yana\Log\IsLogHandler $logger)
+    {
+        $this->_logger = $logger;
+        return $this;
+    }
+
+    /**
+     * Get event logger.
+     *
+     * Retrieves a default logger if none was defined.
+     *
+     * @return  \Yana\Log\IsLogHandler
+     */
+    public function getLogger()
+    {
+        if (!isset($this->_logger)) {
+            $this->_logger = \Yana\Log\LogManager::getLogger();
+        }
+        return $this->_logger;
+    }
+
+    /**
+     * Get profile id for current request.
+     *
+     * @return  string
+     */
+    public function getProfileId()
+    {
+        if ($this->_profileId === "") {
+            $this->_profileId = \Yana\Application::getId();
+        }
+        return $this->_profileId;
+    }
+
+    /**
+     * Get action for current request.
+     *
+     * @return  string
+     */
+    public function getLastPluginAction()
+    {
+        if ($this->_action === "") {
+            $this->_action = \Yana\Plugins\Manager::getLastEvent();
+        }
+        return $this->_action;
+    }
+
+    /**
+     * Set profile id for current request.
+     *
+     * @param   string  $profileId  from request to application
+     * @return  self
+     */
+    public function setProfileId($profileId)
+    {
+        assert('is_string($profileId); // $profileId expected to be String');
+        $this->_profileId = (string) $profileId;
+        return $this;
+    }
+
+    /**
+     * Set action for current request.
+     *
+     * @param   string  $action  from request to application
+     * @return  self
+     */
+    public function setAction($action)
+    {
+        assert('is_string($action); // $action expected to be String');
+        $this->_action = (string) $action;
         return $this;
     }
 

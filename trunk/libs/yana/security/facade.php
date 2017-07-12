@@ -52,18 +52,17 @@ class Facade extends \Yana\Core\Object
     private $_cache = null;
 
     /**
-     * @var  \Yana\Security\Dependencies\IsContainer
+     * @var  \Yana\Security\Dependencies\IsFacadeContainer
      */
     private $_container = null;
-
 
     /**
      * Initialize dependencies.
      *
-     * @param   \Yana\Security\Dependencies\IsContainer  $container  dependency container
-     * @param   \Yana\Data\Adapters\IsDataAdapter        $cache      will be used by rule checker to cache results
+     * @param   \Yana\Security\Dependencies\IsFacadeContainer  $container  dependency container
+     * @param   \Yana\Data\Adapters\IsDataAdapter              $cache      will be used by rule checker to cache results
      */
-    public function __construct(\Yana\Security\Dependencies\IsContainer $container = null, \Yana\Data\Adapters\IsDataAdapter $cache = null)
+    public function __construct(\Yana\Security\Dependencies\IsFacadeContainer $container = null, \Yana\Data\Adapters\IsDataAdapter $cache = null)
     {
         $this->_container = $container;
         $this->_cache = $cache;
@@ -72,7 +71,7 @@ class Facade extends \Yana\Core\Object
     /**
      * Creates dependency container on demand and returns it.
      *
-     * @return  \Yana\Security\Dependencies\IsContainer
+     * @return  \Yana\Security\Dependencies\IsFacadeContainer
      */
     protected function _getContainer()
     {
@@ -83,35 +82,20 @@ class Facade extends \Yana\Core\Object
     }
 
     /**
-     * Creates a session wrapper on demand and returns it.
-     *
-     * @return  \Yana\Security\Sessions\IsWrapper
-     */
-    protected function _getSession()
-    {
-        return $this->_getContainer()->getSession();
-    }
-
-    /**
-     * Builds and returns a rule-checker object.
-     *
-     * @return  \Yana\Security\Rules\IsChecker
-     */
-    protected function _getRulesChecker()
-    {
-        return $this->_getContainer()->getRulesChecker();
-    }
-
-    /**
      * @return \Yana\Security\Rules\Requirements\DataReader
      */
-    private function _createDataReader()
+    protected function _createDataReader()
     {
-        $default = \Yana\Application::getDefault('event.user');
-        if (!is_array($default)) {
-            $default = array();
-        }
-        return new \Yana\Security\Rules\Requirements\DefaultableDataReader($this->_getDataSource(), $default);
+        $container = $this->_getContainer();
+        return new \Yana\Security\Rules\Requirements\DefaultableDataReader($container->getDataConnection(), $container->getDefaultEventUser());
+    }
+
+    /**
+     * @return \Yana\Security\Rules\Requirements\DataWriter
+     */
+    protected function _createDataWriter()
+    {
+        return new \Yana\Security\Rules\Requirements\DataWriter($this->_getContainer()->getDataConnection());
     }
 
     /**
@@ -119,7 +103,7 @@ class Facade extends \Yana\Core\Object
      */
     protected function _createUserAdapter()
     {
-        return new \Yana\Security\Data\Users\Adapter($this->_getDataSource());
+        return new \Yana\Security\Data\Users\Adapter($this->_getContainer()->getDataConnection());
     }
 
     /**
@@ -144,7 +128,7 @@ class Facade extends \Yana\Core\Object
         if ($userName > "") {
             $user = $builder->buildFromUserName($userName);
         } else {
-            $user = $builder->buildFromSession($this->_getSession());
+            $user = $builder->buildFromSession($this->_getContainer()->getSession());
         }
         return $user;
     }
@@ -176,11 +160,13 @@ class Facade extends \Yana\Core\Object
      *
      * @throws  \Yana\Db\Queries\Exceptions\NotCreatedException  if new entries could not be inserted
      * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  if existing entries could not be deleted
+     * @return  self
      */
     public function refreshPluginSecurityRules()
     {
-        $refreshRequirements = new \Yana\Security\Rules\Requirements\DataWriter($this->_getDatasource());
-        $refreshRequirements(\Yana\Plugins\Manager::getInstance()->getEventConfigurations());
+        $refreshRequirements = $this->_createDataWriter();
+        $refreshRequirements($this->_getContainer()->getEventConfigurationsForPlugins());
+        return $this;
     }
 
     /**
@@ -211,11 +197,13 @@ class Facade extends \Yana\Core\Object
      * The code above returns true, if the user's security level is higher or equal the required
      * level. The check is added when the plugin is created.
      *
-     * @param  \Yana\Security\Rules\IsRule  $rule  to be validated
+     * @param   \Yana\Security\Rules\IsRule  $rule  to be validated
+     * @return  self
      */
     public function addSecurityRule(\Yana\Security\Rules\IsRule $rule)
     {
-        $this->_getRulesChecker()->addSecurityRule($rule);
+        $this->_getContainer()->getRulesChecker()->addSecurityRule($rule);
+        return $this;
     }
 
     /**
@@ -240,7 +228,7 @@ class Facade extends \Yana\Core\Object
 
         /* Argument 1 */
         if (empty($profileId)) {
-            $profileId = \Yana\Application::getId();
+            $profileId = $this->_getContainer()->getProfileId();
         }
         assert('is_string($profileId);');
         assert('!isset($uppderCaseProfileId); // Cannot redeclare $uppderCaseProfileId');
@@ -248,7 +236,7 @@ class Facade extends \Yana\Core\Object
 
         /* Argument 2 */
         if (empty($action)) {
-            $action = \Yana\Plugins\Manager::getLastEvent();
+            $action = $this->_getContainer()->getLastPluginAction();
             // security restriction on undefined event
             if (empty($action)) {
                 return false;
@@ -265,7 +253,7 @@ class Facade extends \Yana\Core\Object
          * }}
          */
         if (empty($userName)) {
-            $userName = $this->_getSession()->getCurrentUserName();
+            $userName = $this->_getContainer()->getSession()->getCurrentUserName();
         }
 
         assert('!isset($user); // Cannot redeclare $user');
@@ -275,10 +263,10 @@ class Facade extends \Yana\Core\Object
         try {
 
             assert('!isset($result); // Cannot redeclare $result');
-            $result = $this->_getRulesChecker()->checkRules($uppderCaseProfileId, $lowerCaseAction, $user);
+            $result = $this->_getContainer()->getRulesChecker()->checkRules($uppderCaseProfileId, $lowerCaseAction, $user);
 
         } catch (\Yana\Security\Rules\Requirements\NotFoundException $e) {
-            \Yana\Log\LogManager::getLogger()->addLog($e->getMessage());
+            $this->_getContainer()->getLogger()->addLog($e->getMessage());
             $result = false;
             unset($e);
         }
@@ -302,7 +290,7 @@ class Facade extends \Yana\Core\Object
         assert('is_string($action); // Wrong type for argument $action. String expected');
         assert('is_string($userName); // Wrong type for argument $userName. String expected');
 
-        return (bool) $this->_getRulesChecker()->checkByRequirement($requirement, $profileId, $action, $this->_buildUserEntity($userName));
+        return (bool) $this->_getContainer()->getRulesChecker()->checkByRequirement($requirement, $profileId, $action, $this->_buildUserEntity($userName));
     }
 
     /**
@@ -334,7 +322,7 @@ class Facade extends \Yana\Core\Object
     }
 
     /**
-     * 
+     *
      * @param   string  $userName  identifies user
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
@@ -349,6 +337,7 @@ class Facade extends \Yana\Core\Object
      *
      * @param   string  $userName  user name
      * @param   string  $mail      e-mail address
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\MissingNameException    when no user name is given
      * @throws  \Yana\Core\Exceptions\User\AlreadyExistsException  if another user with the same name already exists
      * @throws  \Yana\Db\CommitFailedException                     when the database entry could not be created
@@ -362,14 +351,18 @@ class Facade extends \Yana\Core\Object
             throw new \Yana\Core\Exceptions\User\MissingNameException("No user name given.", \Yana\Log\TypeEnumeration::WARNING);
         }
 
+        $user = $this->_createUserBuilder()->buildNewUser($userName, $mail);
+        assert($user instanceof \Yana\Security\Data\Behaviors\IsBehavior);
+
         try {
-            $this->_createUserBuilder()->buildNewUser($userName, $mail)->saveEntity(); // may throw exception
+            $user->saveChanges(); // may throw exception
 
         } catch (\Exception $e) {
             $message = "Unable to commit changes to the database server while trying to update settings for user '{$userName}'.";
             $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Db\CommitFailedException($message, $level, $e);
         }
+        return $user;
     }
 
     /**

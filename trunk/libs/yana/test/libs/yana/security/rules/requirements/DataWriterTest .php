@@ -81,9 +81,7 @@ class DataWriterTest extends \PHPUnit_Framework_TestCase
     public function test__invoke()
     {
         $eventConfigurations = new \Yana\Plugins\Configs\MethodCollection();
-        $this->emptyWriter->__invoke($eventConfigurations);
-
-        return $this;
+        $this->assertTrue($this->emptyWriter->__invoke($eventConfigurations) instanceof $this->emptyWriter);
     }
 
     /**

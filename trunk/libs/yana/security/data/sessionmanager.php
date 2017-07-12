@@ -106,7 +106,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
         }
 
         if (empty($userName) || !\Yana\User::isUser($userName)) {
-            throw new \Yana\Core\Exceptions\NotFoundException("No such user '$userName'.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\NotFoundException("No such user '$userName'.", \Yana\Log\TypeEnumeration::WARNING);
         }
 
         try {

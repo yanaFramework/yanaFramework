@@ -37,36 +37,62 @@ namespace Yana\Security\Dependencies;
  *
  * @ignore
  */
-interface IsContainer
+interface IsFacadeContainer extends \Yana\Security\Dependencies\IsContainer
 {
 
     /**
-     * Retrieve password behavior dependency.
+     * Retrieve session wrapper.
      *
-     * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
+     * @return  \Yana\Security\Sessions\IsWrapper
      */
-    public function getPasswordBehavior();
+    public function getSession();
 
     /**
-     * Retrieve login behavior dependency.
+     * Get database connection.
      *
-     * @return  \Yana\Security\Logins\IsBehavior
+     * @return  \Yana\Db\IsConnection
      */
-    public function getLoginBehavior();
+    public function getDataConnection();
 
     /**
-     * Retrieve levels data adapter.
+     * Returns the stored list of events for plugins.
      *
-     * @return  \Yana\Security\Data\SecurityLevels\Adapter
+     * If none was given, tries to autoload them.
+     *
+     * @return  \Yana\Plugins\Configs\MethodCollection
      */
-    public function getLevelsAdapter();
+    public function getEventConfigurationsForPlugins();
 
     /**
-     * Retrieve rules data adapter.
+     * Get default user settings.
      *
-     * @return  \Yana\Security\Data\SecurityRules\Adapter
+     * @return  array
      */
-    public function getRulesAdapter();
+    public function getDefaultEventUser();
+
+    /**
+     * Get event logger.
+     *
+     * Retrieves a default logger if none was defined.
+     *
+     * @return  \Yana\Log\IsLogHandler
+     */
+    public function getLogger();
+
+
+    /**
+     * Get profile id for current request.
+     *
+     * @return  string
+     */
+    public function getProfileId();
+
+    /**
+     * Get action for current request.
+     *
+     * @return  string
+     */
+    public function getLastPluginAction();
 
 }
 

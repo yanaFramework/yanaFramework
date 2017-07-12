@@ -292,4 +292,21 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($user, $this->object->setUserEntity($user)->getUserEntity());
     }
 
+    /**
+     * @test
+     */
+    public function testGetEventConfigurationsForPlugins()
+    {
+        $this->assertTrue($this->object->getEventConfigurationsForPlugins() instanceof \Yana\Plugins\Configs\MethodCollection);
+    }
+
+    /**
+     * @test
+     */
+    public function testSetEventConfigurationsForPlugins()
+    {
+        $object = new \Yana\Plugins\Configs\MethodCollection();
+        $this->assertSame($object, $this->object->setEventConfigurationsForPlugins($object)->getEventConfigurationsForPlugins());
+    }
+
 }

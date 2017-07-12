@@ -52,11 +52,6 @@ abstract class AbstractAdapter extends \Yana\Security\Data\AbstractAdapter
     /**
      * <<construct>> Creates a new user-manager.
      *
-     * To create the required connection you may use the following short-hand function:
-     * <code>
-     * $connection = \Yana\Application::connect("user");
-     * </code>
-     *
      * If no mapper is given, this function creates and uses an instance of \Yana\Security\Data\UserMapper.
      *
      * @param  \Yana\Db\IsConnection                        $connection  database connection to table user

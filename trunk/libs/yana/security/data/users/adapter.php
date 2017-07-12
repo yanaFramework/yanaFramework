@@ -45,11 +45,6 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
     /**
      * <<construct>> Creates a new user-manager.
      *
-     * To create the required connection you may use the following short-hand function:
-     * <code>
-     * $connection = \Yana\Application::connect("user");
-     * </code>
-     *
      * If no mapper is given, this function creates and uses an instance of \Yana\Security\Data\UserMapper.
      *
      * @param  \Yana\Db\IsConnection               $connection  database connection to table user
@@ -187,7 +182,7 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
 
         // user does not exist
         if (!$this->offsetExists($userId)) {
-            throw new \Yana\Core\Exceptions\User\NotFoundException("No such user: '$userId'.", E_USER_WARNING);
+            throw new \Yana\Core\Exceptions\User\NotFoundException("No such user: '$userId'.", \Yana\Log\TypeEnumeration::WARNING);
         }
 
         $upperCaseUserId = \Yana\Util\Strings::toUpperCase($userId);

@@ -46,12 +46,34 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     protected $object;
 
     /**
+     * @var \Yana\Security\Dependencies\Container
+     */
+    protected $container;
+
+    /**
+     * Constructor
+     *
+     * @ignore
+     */
+    public function __construct()
+    {
+        \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
+    }
+
+    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Security\Facade();
+        \Yana\Db\FileDb\Driver::setBaseDirectory(CWD. 'resources/db/');
+        \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
+        $schema = \Yana\Files\XDDL::getDatabase('user');
+        restore_error_handler();
+        $this->container = new \Yana\Security\Dependencies\Container();
+        $this->container->setDataConnection(new \Yana\Db\FileDb\NullConnection($schema))
+                ->setEventConfigurationsForPlugins(new \Yana\Plugins\Configs\MethodCollection());
+        $this->object = new \Yana\Security\Facade($this->container);
     }
 
     /**
@@ -68,10 +90,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testRefreshPluginSecurityRules()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->object->refreshPluginSecurityRules();
     }
 
     /**
@@ -79,10 +98,8 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddSecurityRule()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        // rules checker has its own unit tests, so we won't test this again here and instead just check the return value
+        $this->assertTrue($this->object->addSecurityRule(new \Yana\Security\Rules\NullRule()) instanceof \Yana\Security\Facade);
     }
 
     /**
@@ -90,10 +107,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheckRules()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->object->checkRules();
     }
 
     /**
@@ -101,10 +115,8 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheckByRequirement()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $requirement = new \Yana\Security\Rules\Requirements\Requirement('group', 'role', 0);
+        $this->object->checkByRequirement($requirement, 'default', 'sitemap', 'administrator');
     }
 
     /**
@@ -112,10 +124,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadListOfGroups()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->object->loadListOfGroups();
     }
 
     /**
@@ -123,10 +132,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadListOfRoles()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->object->loadListOfRoles();
     }
 
     /**
@@ -134,10 +140,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadUser()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->object->loadUser('Administrator');
     }
 
     /**
@@ -145,10 +148,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateUser()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->object->createUser('Test', 'mail@domain.tld');
     }
 
     /**
@@ -156,10 +156,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testRemoveUser()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->object->removeUser('TestUser');
     }
 
     /**
@@ -167,10 +164,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsExistingUserName()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->object->isExistingUserName('Administrator');
     }
 
 }

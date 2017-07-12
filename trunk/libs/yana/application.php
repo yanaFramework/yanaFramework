@@ -48,6 +48,7 @@ namespace Yana;
  * @package     yana
  * @subpackage  core
  * @method \Yana\Application getInstance() Returns the only instance of this class
+ * @todo        Add Dependency container from Yana\Core\Dependencies\Container
  */
 final class Application extends \Yana\Core\AbstractSingleton
     implements \Yana\Report\IsReportable, \Yana\Log\IsLogable, \Yana\Core\IsVarContainer, \Yana\Data\Adapters\IsCacheable
@@ -217,6 +218,9 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     protected static function _getRequest()
     {
+        if (!isset(self::$_request)) {
+            self::$_request = new \Yana\Http\Facade();
+        }
         return self::$_request;
     }
 
