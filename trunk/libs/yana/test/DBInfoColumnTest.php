@@ -54,7 +54,7 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
         /**
          * @ignore
          */
-        include_once dirname(__FILE__) . '/../../../plugins/db_tools/dbinfocolumn.php';
+        include_once dirname(__FILE__) . '/../../../plugins/dbtools/infocolumn.php';
     }
 
     /**
@@ -63,7 +63,7 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->dbinfocolumn = new Plugins\DbTools\InfoColumn('columnname');
+        $this->dbinfocolumn = new \Plugins\DbTools\InfoColumn('columnname');
     }
 
     /**
@@ -78,8 +78,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * setType
      *
-     * @covers DbInfoColumn::setType
-     * @covers DbInfoColumn::getType
+     * @covers \Plugins\DbTools\InfoColumn::setType
+     * @covers \Plugins\DbTools\InfoColumn::getType
      *
      * @test
      */
@@ -103,8 +103,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * setNullable
      *
-     * @covers DbInfoColumn::setNullable
-     * @covers DbInfoColumn::isNullable
+     * @covers \Plugins\DbTools\InfoColumn::setNullable
+     * @covers \Plugins\DbTools\InfoColumn::isNullable
      *
      * @test
      */
@@ -132,8 +132,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * setPrimaryKey
      *
-     * @covers DbInfoColumn::setPrimaryKey
-     * @covers DbInfoColumn::isPrimaryKey
+     * @covers \Plugins\DbTools\InfoColumn::setPrimaryKey
+     * @covers \Plugins\DbTools\InfoColumn::isPrimaryKey
      *
      * @test
      */
@@ -162,8 +162,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * setForeignKey
      *
-     * @covers DbInfoColumn::setForeignKey
-     * @covers DbInfoColumn::isForeignKey
+     * @covers \Plugins\DbTools\InfoColumn::setForeignKey
+     * @covers \Plugins\DbTools\InfoColumn::isForeignKey
      *
      * @test
      */
@@ -191,8 +191,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * setUnique
      *
-     * @covers DbInfoColumn::setUnique
-     * @covers DbInfoColumn::isUnique
+     * @covers \Plugins\DbTools\InfoColumn::setUnique
+     * @covers \Plugins\DbTools\InfoColumn::isUnique
      *
      * @test
      */
@@ -220,8 +220,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * setIndex
      *
-     * @covers DbInfoColumn::setIndex
-     * @covers DbInfoColumn::hasIndex
+     * @covers \Plugins\DbTools\InfoColumn::setIndex
+     * @covers \Plugins\DbTools\InfoColumn::hasIndex
      *
      * @test
      */
@@ -249,8 +249,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * setAuto
      *
-     * @covers DbInfoColumn::setAuto
-     * @covers DbInfoColumn::isAuto
+     * @covers \Plugins\DbTools\InfoColumn::setAuto
+     * @covers \Plugins\DbTools\InfoColumn::isAuto
      *
      * @test
      */
@@ -280,8 +280,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * setUpdate
      *
-     * @covers DbInfoColumn::setUpdate
-     * @covers DbInfoColumn::isUpdatable
+     * @covers \Plugins\DbTools\InfoColumn::setUpdate
+     * @covers \Plugins\DbTools\InfoColumn::isUpdatable
      *
      * @test
      */
@@ -309,8 +309,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * setSelect
      *
-     * @covers DbInfoColumn::setSelect
-     * @covers DbInfoColumn::isSelectable
+     * @covers \Plugins\DbTools\InfoColumn::setSelect
+     * @covers \Plugins\DbTools\InfoColumn::isSelectable
      *
      * @test
      */
@@ -338,8 +338,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * setInsert
      *
-     * @covers DbInfoColumn::setInsert
-     * @covers DbInfoColumn::isInsertable
+     * @covers \Plugins\DbTools\InfoColumn::setInsert
+     * @covers \Plugins\DbTools\InfoColumn::isInsertable
      *
      * @test
      */
@@ -367,8 +367,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * setUnsigned
      *
-     * @covers DbInfoColumn::setUnsigned
-     * @covers DbInfoColumn::isUnsigned
+     * @covers \Plugins\DbTools\InfoColumn::setUnsigned
+     * @covers \Plugins\DbTools\InfoColumn::isUnsigned
      *
      * @test
      */
@@ -396,8 +396,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * setZerofill
      *
-     * @covers DbInfoColumn::setZerofill
-     * @covers DbInfoColumn::isZerofill
+     * @covers \Plugins\DbTools\InfoColumn::setZerofill
+     * @covers \Plugins\DbTools\InfoColumn::isZerofill
      *
      * @test
      */
@@ -425,8 +425,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * setTable
      *
-     * @covers DbInfoColumn::setTable
-     * @covers DbInfoColumn::getTable
+     * @covers \Plugins\DbTools\InfoColumn::setTable
+     * @covers \Plugins\DbTools\InfoColumn::getTable
      *
      * @test
      */
@@ -450,8 +450,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * setName
      *
-     * @covers DbInfoColumn::setName
-     * @covers DbInfoColumn::getName
+     * @covers \Plugins\DbTools\InfoColumn::setName
+     * @covers \Plugins\DbTools\InfoColumn::getName
      *
      * @test
      */
@@ -475,8 +475,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * getDefault
      *
-     * @covers DbInfoColumn::getDefault
-     * @covers DbInfoColumn::setDefault
+     * @covers \Plugins\DbTools\InfoColumn::getDefault
+     * @covers \Plugins\DbTools\InfoColumn::setDefault
      *
      * @test
      */
@@ -503,8 +503,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * getComment
      *
-     * @covers DbInfoColumn::getComment
-     * @covers DbInfoColumn::setComment
+     * @covers \Plugins\DbTools\InfoColumn::getComment
+     * @covers \Plugins\DbTools\InfoColumn::setComment
      *
      * @test
      */
@@ -528,8 +528,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * getLength
      *
-     * @covers DbInfoColumn::getLength
-     * @covers DbInfoColumn::setLength
+     * @covers \Plugins\DbTools\InfoColumn::getLength
+     * @covers \Plugins\DbTools\InfoColumn::setLength
      *
      * @test
      */
@@ -557,8 +557,8 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * getReference
      *
-     * @covers DbInfoColumn::getReference
-     * @covers DbInfoColumn::setReference
+     * @covers \Plugins\DbTools\InfoColumn::getReference
+     * @covers \Plugins\DbTools\InfoColumn::setReference
      *
      * @test
      */
@@ -583,7 +583,7 @@ class DbInfoColumnTest extends PHPUnit_Framework_TestCase
     /**
      * toArray
      *
-     * @covers DbInfoColumn::toArray
+     * @covers \Plugins\DbTools\InfoColumn::toArray
      *
      * @test
      */

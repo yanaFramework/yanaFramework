@@ -105,7 +105,7 @@ class SXMLTest extends \PHPUnit_Framework_TestCase
         $testSource = file_get_contents(CWD . $this->source);
         $testArray = array("tag" => "text", "othertag" => "more text");
         $testString = SXML::encode($testArray, "root");
-        $this->assertEquals($testString, $testSource, "Test: encode SXML-file failed");
+        $this->assertEquals(preg_replace('/\s/', '', $testString), preg_replace('/\s/', '', $testSource), "Test: encode SXML-file failed");
 
         // try with upper case / lower case
         $upperCaseEncode = SXML::encode($testArray, 'tree', CASE_UPPER);

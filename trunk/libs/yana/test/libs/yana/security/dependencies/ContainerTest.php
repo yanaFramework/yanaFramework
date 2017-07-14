@@ -276,25 +276,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testGetUserEntity()
-    {
-        $this->assertTrue($this->object->getUserEntity() instanceof \Yana\Security\Data\Users\IsEntity);
-        $this->assertTrue($this->object->getUserEntity() instanceof \Yana\Security\Data\Users\Entity);
-        $this->assertTrue($this->object->getUserEntity() instanceof \Yana\Security\Data\Users\Guest);
-    }
-
-    /**
-     * @test
-     */
-    public function testSetUserEntity()
-    {
-        $user = new \Yana\Security\Data\Users\Entity("test");
-        $this->assertSame($user, $this->object->setUserEntity($user)->getUserEntity());
-    }
-
-    /**
-     * @test
-     */
     public function testGetEventConfigurationsForPlugins()
     {
         $this->assertTrue($this->object->getEventConfigurationsForPlugins() instanceof \Yana\Plugins\Configs\MethodCollection);

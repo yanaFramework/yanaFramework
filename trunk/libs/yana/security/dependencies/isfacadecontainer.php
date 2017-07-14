@@ -94,6 +94,13 @@ interface IsFacadeContainer extends \Yana\Security\Dependencies\IsContainer
      */
     public function getLastPluginAction();
 
+    /**
+     * Builds and returns a rule-checker object.
+     *
+     * @return  \Yana\Security\Rules\IsChecker
+     */
+    public function getRulesChecker();
+
 }
 
 ?>

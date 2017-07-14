@@ -269,13 +269,13 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testStringValidatorText()
     {
-        $text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                 Nullam placerat, leo sit amet volutpat ullamcorper,
-                 sem tellus pellentesque leo, ac tempus massa nulla in ligula.
-                 Integer placerat egestas cursus. Suspendisse ut porttitor elit.
-                 Nullam at nisi ut odio viverra euismod. In faucibus fermentum auctor.
-                 Phasellus rutrum consectetur massa, sed mattis ante imperdiet ultricies.
-                 Aliquam sapien odio, elementum et sagittis non, adipiscing quis tellus. ';
+        $text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n" .
+                "   Nullam placerat, leo sit amet volutpat ullamcorper,\n" .
+                "   sem tellus pellentesque leo, ac tempus massa nulla in ligula.\n" .
+                "   Integer placerat egestas cursus. Suspendisse ut porttitor elit.\n" .
+                "   Nullam at nisi ut odio viverra euismod. In faucibus fermentum auctor.\n" .
+                "   Phasellus rutrum consectetur massa, sed mattis ante imperdiet ultricies.\n" .
+                "   Aliquam sapien odio, elementum et sagittis non, adipiscing quis tellus. ";
         $untaintInput = StringValidator::sanitize($text, 1000, StringValidator::USERTEXT);
         $this->assertEquals(trim(str_replace("\n", "[br]", $text)), $untaintInput);
 

@@ -8,12 +8,16 @@ and open the template in the editor.
 <!-- To regenerate this file, simply delete it and run any PHPUnit test. -->
 
 <!-- see http://www.phpunit.de/wiki/Documentation -->
-<!--phpunit bootstrap="/path/to/bootstrap.php"
+<phpunit bootstrap="include.php"
+         
          colors="false"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          stopOnFailure="true">
-</phpunit-->
-
-<phpunit colors="false" />
+    <filter>
+        <whitelist>
+            <directory suffix="php">../</directory>
+        </whitelist>
+    </filter>
+</phpunit>

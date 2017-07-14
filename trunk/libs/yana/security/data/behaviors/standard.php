@@ -439,7 +439,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
             throw new \Yana\Core\Exceptions\Security\PermissionDeniedException();
         }
         /* 3. error - login has failed */
-        if (!$this->_getDependencies()->getPasswordBehavior()->checkPassword($password)) {
+        if (!$this->_getDependencies()->getPasswordBehavior()->setUser($user)->checkPassword($password)) {
 
             throw new \Yana\Core\Exceptions\Security\InvalidLoginException();
         }

@@ -51,7 +51,7 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
     public function __construct()
     {
         /** @ignore */
-        include_once CWD . '/../../../plugins/db_tools/dbinfotable.php';
+        include_once CWD . '/../../../plugins/dbtools/infotable.php';
     }
 
     /**
@@ -60,7 +60,7 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        if (!class_exists("DbInfoTable")) {
+        if (!class_exists('\Plugins\DbTools\InfoTable')) {
             $this->markTestSkipped();
         } else {
             $this->dbinfotable = new \Plugins\DbTools\InfoTable('foo');
@@ -102,8 +102,8 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
     /**
      * set initialization record
      *
-     * @covers DbInfoTable::setInit
-     * @covers DbInfoTable::getInit
+     * @covers \Plugins\DbTools\InfoTable::setInit
+     * @covers \Plugins\DbTools\InfoTable::getInit
      *
      * @test
      */
@@ -125,8 +125,8 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
     /**
      * set comment
      *
-     * @covers DbInfoTable::setComment
-     * @covers DbInfoTable::getComment
+     * @covers \Plugins\DbTools\InfoTable::setComment
+     * @covers \Plugins\DbTools\InfoTable::getComment
      *
      * @test
      */
@@ -157,8 +157,8 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
     /**
      * set primary key
      *
-     * @covers DbInfoTable::setPrimaryKey
-     * @covers DbInfoTable::getPrimaryKey
+     * @covers \Plugins\DbTools\InfoTable::setPrimaryKey
+     * @covers \Plugins\DbTools\InfoTable::getPrimaryKey
      *
      * @test
      */
@@ -171,7 +171,7 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
     /**
      * set primaryKey Invalid Argument
      *
-     * @covers DbInfoTable::setPrimaryKey
+     * @covers \Plugins\DbTools\InfoTable::setPrimaryKey
      *
      * @test
      */
@@ -193,8 +193,8 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
     /**
      * set a foreign key constraint
      *
-     * @covers DbInfoTable::setForeignKey
-     * @covers DbInfoTable::getForeignKeys
+     * @covers \Plugins\DbTools\InfoTable::setForeignKey
+     * @covers \Plugins\DbTools\InfoTable::getForeignKeys
      *
      * @test
      */
@@ -206,20 +206,19 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
     /**
      * set ForeignKey Invalid Argument
      *
-     * @covers DbInfoTable::setForeignKey
+     * @covers \Plugins\DbTools\InfoTable::setForeignKey
      *
-     * @expectedException PHPUnit_Framework_Error
      * @test
      */
     function testSetForeignKeyInvalidArgument()
     {
-        $this->dbinfotable->setForeignKey('barfoo');
+        $this->assertFalse($this->dbinfotable->setForeignKey('barfoo', ''));
     }
 
     /**
      * set ForeignKey Invalid Argument1
      *
-     * @covers DbInfoTable::setForeignKey
+     * @covers \Plugins\DbTools\InfoTable::setForeignKey
      *
      * @test
      */
@@ -232,7 +231,7 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
     /**
      * add column object
      *
-     * @covers DbInfoTable::addColumn
+     * @covers \Plugins\DbTools\InfoTable::addColumn
      *
      * @test
      */
@@ -244,7 +243,7 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
     /**
      * export object as associative array
      *
-     * @covers DbInfoTable::toArray
+     * @covers \Plugins\DbTools\InfoTable::toArray
      *
      * @test
      */
@@ -256,14 +255,14 @@ class DbInfoTableTest extends PHPUnit_Framework_TestCase
     /**
      * test 1
      *
-     * @covers DbInfoTable::setInit
-     * @covers DbInfoTable::getInit
-     * @covers DbInfoTable::setPrimaryKey
-     * @covers DbInfoTable::getPrimaryKey
-     * @covers DbInfoTable::setForeignKey
-     * @covers DbInfoTable::getForeignKeys
-     * @covers DbInfoTable::addColumn
-     * @covers DbInfoTable::toArray
+     * @covers \Plugins\DbTools\InfoTable::setInit
+     * @covers \Plugins\DbTools\InfoTable::getInit
+     * @covers \Plugins\DbTools\InfoTable::setPrimaryKey
+     * @covers \Plugins\DbTools\InfoTable::getPrimaryKey
+     * @covers \Plugins\DbTools\InfoTable::setForeignKey
+     * @covers \Plugins\DbTools\InfoTable::getForeignKeys
+     * @covers \Plugins\DbTools\InfoTable::addColumn
+     * @covers \Plugins\DbTools\InfoTable::toArray
      *
      * @test
      */

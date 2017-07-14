@@ -89,6 +89,18 @@ class StandardBehaviorTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testCheckPasswordUninitialized()
+    {
+        $this->object->getUser()->setPassword('UNINITIALIZED');
+        $this->assertTrue($this->object->checkPassword(''));
+        $this->assertTrue($this->object->checkPassword('Test'));
+        $this->object->getUser()->setPassword('');
+        $this->assertFalse($this->object->checkPassword('Test'));
+    }
+
+    /**
+     * @test
+     */
     public function testChangePassword()
     {
         $password = "12345678";

@@ -235,10 +235,10 @@ class Facade extends \Yana\Core\Object
         $uppderCaseProfileId = \Yana\Util\Strings::toUpperCase((string) $profileId);
 
         /* Argument 2 */
-        if (empty($action)) {
+        if (is_null($action) || $action === "") {
             $action = $this->_getContainer()->getLastPluginAction();
             // security restriction on undefined event
-            if (empty($action)) {
+            if (!($action > "")) {
                 return false;
             }
         }
@@ -339,6 +339,7 @@ class Facade extends \Yana\Core\Object
      * @param   string  $mail      e-mail address
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\MissingNameException    when no user name is given
+     * @throws  \Yana\Core\Exceptions\User\MissingMailException    when no mail address is given
      * @throws  \Yana\Core\Exceptions\User\AlreadyExistsException  if another user with the same name already exists
      * @throws  \Yana\Db\CommitFailedException                     when the database entry could not be created
      */
@@ -349,6 +350,10 @@ class Facade extends \Yana\Core\Object
 
         if (empty($userName)) {
             throw new \Yana\Core\Exceptions\User\MissingNameException("No user name given.", \Yana\Log\TypeEnumeration::WARNING);
+        }
+
+        if (empty($mail)) {
+            throw new \Yana\Core\Exceptions\User\MissingMailException("No mail address given.", \Yana\Log\TypeEnumeration::WARNING);
         }
 
         $user = $this->_createUserBuilder()->buildNewUser($userName, $mail);

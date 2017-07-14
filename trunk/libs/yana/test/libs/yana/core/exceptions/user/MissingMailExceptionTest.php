@@ -25,21 +25,21 @@
  * @license  http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Yana\Http\Requests;
+namespace Yana\Core\Exceptions\User;
 
 /**
  * @ignore
  */
-require_once __DIR__ . '/../../../../include.php';
+require_once __DIR__ . '/../../../../../include.php';
 
 /**
- * @package  test
+ * @package test
  */
-class BuilderTest extends \PHPUnit_Framework_TestCase
+class MissingMailExceptionTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Http\Requests\Builder
+     * @var \Yana\Core\Exceptions\User\MissingMailException
      */
     protected $object;
 
@@ -49,7 +49,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Yana\Http\Requests\Builder();
+        $this->object = new \Yana\Core\Exceptions\User\MissingMailException();
     }
 
     /**
@@ -64,9 +64,18 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testBuildFromSuperGlobals()
+    public function testCode()
     {
-        $this->assertTrue(\Yana\Http\Requests\Builder::buildFromSuperGlobals() instanceof \Yana\Http\Requests\IsRequest);
+        $this->assertEquals(\Yana\Log\TypeEnumeration::WARNING, $this->object->getCode());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetData()
+    {
+        $this->assertEquals('Test.äß', $this->object->setData('Test.äß')->getData());
+        $this->assertEquals(array(1), $this->object->setData(array(1))->getData());
     }
 
 }

@@ -92,8 +92,13 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
     {
         assert('is_string($recoveryId); // Wrong type for argument $userPwd. String expected');
 
+        assert('!isset($user); // Cannot redeclare variable $user');
         $user = $this->getUser();
-        $isCorrect = $this->_getAlgorithm()->isEqual($recoveryId, (string) $user->getPasswordRecoveryId());
+        assert('!isset($isCorrect); // Cannot redeclare variable $isCorrect');
+        $isCorrect = false;
+        if ($recoveryId > "") {
+            $isCorrect = $this->_getAlgorithm()->isEqual($recoveryId, (string) $user->getPasswordRecoveryId());
+        }
 
         if ($isCorrect) {
             // reset failure count
@@ -116,9 +121,16 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
     {
         assert('is_string($userPwd); // Wrong type for argument $userPwd. String expected');
 
+        assert('!isset($user); // Cannot redeclare variable $user');
         $user = $this->getUser();
-        $isCorrect = $this->_isUninitializedPassword($user) ||
-            $this->_getAlgorithm()->isEqual($userPwd, (string) $user->getPassword()); // getPassword may return NULL
+        assert('!isset($isCorrect); // Cannot redeclare variable $isCorrect');
+        $isCorrect = false;
+        switch (true)
+        {
+            case $this->_isUninitializedPassword($user):
+            case $userPwd > "" && $this->_getAlgorithm()->isEqual($userPwd, (string) $user->getPassword()): // getPassword may return NULL
+                $isCorrect = true;
+        }
 
         if ($isCorrect) {
             // reset failure count

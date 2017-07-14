@@ -51,6 +51,11 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     protected $container;
 
     /**
+     * @var \Yana\Db\Ddl\Database
+     */
+    protected $schema;
+
+    /**
      * Constructor
      *
      * @ignore
@@ -68,10 +73,10 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     {
         \Yana\Db\FileDb\Driver::setBaseDirectory(CWD. 'resources/db/');
         \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
-        $schema = \Yana\Files\XDDL::getDatabase('user');
+        $this->schema = \Yana\Files\XDDL::getDatabase('user');
         restore_error_handler();
         $this->container = new \Yana\Security\Dependencies\Container();
-        $this->container->setDataConnection(new \Yana\Db\FileDb\NullConnection($schema))
+        $this->container->setDataConnection(new \Yana\Db\FileDb\NullConnection($this->schema))
                 ->setEventConfigurationsForPlugins(new \Yana\Plugins\Configs\MethodCollection());
         $this->object = new \Yana\Security\Facade($this->container);
     }
@@ -82,7 +87,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
+        $this->schema->setReadonly(false); // all schema instances are cached. So this needs to be reset
     }
 
     /**
@@ -90,7 +95,8 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testRefreshPluginSecurityRules()
     {
-        $this->object->refreshPluginSecurityRules();
+        // data write has its own unit tests, so we won't test this again here and instead just check the return value
+        $this->assertTrue($this->object->refreshPluginSecurityRules() instanceof \Yana\Security\Facade);
     }
 
     /**
@@ -107,7 +113,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheckRules()
     {
-        $this->object->checkRules();
+        $this->assertFalse($this->object->checkRules(null, ""), 'Must return false if provided action is empty');
     }
 
     /**
@@ -115,8 +121,11 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheckByRequirement()
     {
+        // rules checker has its own unit tests, so we won't test this again here and instead just check the return value
         $requirement = new \Yana\Security\Rules\Requirements\Requirement('group', 'role', 0);
-        $this->object->checkByRequirement($requirement, 'default', 'sitemap', 'administrator');
+        $this->assertFalse($this->object->checkByRequirement($requirement, 'default', 'sitemap', 'administrator'), 'Must return false if there are no rules');
+        $this->object->addSecurityRule(new \Yana\Security\Rules\NullRule());
+        $this->assertTrue($this->object->checkByRequirement($requirement, 'default', 'sitemap', 'administrator'), 'Must return true if rule returns true');
     }
 
     /**
@@ -124,7 +133,8 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadListOfGroups()
     {
-        $this->object->loadListOfGroups();
+        // data reader has its own unit tests, so we won't test this again here and instead just check the return value
+        $this->assertInternalType('array', $this->object->loadListOfGroups());
     }
 
     /**
@@ -132,7 +142,8 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadListOfRoles()
     {
-        $this->object->loadListOfRoles();
+        // data reader has its own unit tests, so we won't test this again here and instead just check the return value
+        $this->assertInternalType('array', $this->object->loadListOfRoles());
     }
 
     /**
@@ -145,10 +156,53 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \Yana\Core\Exceptions\User\MissingNameException
+     */
+    public function testCreateUserMissingNameException()
+    {
+        $this->object->createUser('', 'mail@domain.tld');
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\MissingMailException
+     */
+    public function testCreateUserMissingMailException()
+    {
+        $this->object->createUser('Test', '');
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Db\CommitFailedException
+     */
+    public function testCreateUserCommitFailedException()
+    {
+        $this->schema->setReadonly(true);
+        $this->object->createUser('Test', 'mail@domain.tld');
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\AlreadyExistsException
+     */
+    public function testCreateUserAlreadyExistsException()
+    {
+        $this->object->createUser('Administrator', 'mail@domain.tld');
+    }
+
+    /**
+     * @test
      */
     public function testCreateUser()
     {
-        $this->object->createUser('Test', 'mail@domain.tld');
+        $user = $this->object->createUser('Test', 'mail@domain.tld');
+        $this->assertTrue($user instanceof \Yana\Security\Data\Behaviors\IsBehavior);
+        $actualUser = $this->object->loadUser('Test');
+        $this->assertEquals('TEST', $user->getId());
+        $this->assertEquals('mail@domain.tld', $user->getMail());
+        $this->assertEquals('TEST', $actualUser->getId());
+        $this->assertEquals('mail@domain.tld', $actualUser->getMail());
     }
 
     /**
@@ -156,7 +210,21 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testRemoveUser()
     {
-        $this->object->removeUser('TestUser');
+        $this->assertTrue($this->object->isExistingUserName('TestUser'));
+        $this->assertFalse($this->object->removeUser('TestUser')->isExistingUserName('TestUser'));
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\DeleteSelfException
+     */
+    public function testRemoveUserDeleteSelfException()
+    {
+        $user = $this->object->loadUser('Manager');
+        $user->setActive(true);
+        @$user->login('');
+        $this->assertTrue($user->isLoggedIn());
+        $this->object->removeUser('Manager');
     }
 
     /**
@@ -164,7 +232,8 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsExistingUserName()
     {
-        $this->object->isExistingUserName('Administrator');
+        $this->assertFalse($this->object->isExistingUserName('non-existing user'));
+        $this->assertTrue($this->object->isExistingUserName('Administrator'));
     }
 
 }

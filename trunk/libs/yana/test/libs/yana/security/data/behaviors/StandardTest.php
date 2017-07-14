@@ -71,7 +71,6 @@ class StandardTest extends \PHPUnit_Framework_TestCase
     {
         $this->entity = new \Yana\Security\Data\Users\Entity('Test');
         $container = new \Yana\Security\Dependencies\Container();
-        $container->setUserEntity($this->entity);
         $container->setSession(new \Yana\Security\Sessions\NullWrapper());
 
         $schema = \Yana\Files\XDDL::getDatabase('user');
