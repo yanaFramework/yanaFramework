@@ -221,8 +221,7 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     public function testRemoveUserDeleteSelfException()
     {
         $user = $this->object->loadUser('Manager');
-        $user->setActive(true);
-        @$user->login('');
+        @$user->login(''); // Mute operator used because this will throw an E_NOTICE that cookies cannot be set
         $this->assertTrue($user->isLoggedIn());
         $this->object->removeUser('Manager');
     }

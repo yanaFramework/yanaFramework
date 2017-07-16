@@ -384,7 +384,7 @@ class Facade extends \Yana\Core\Object
         assert('is_string($userName); // Wrong type for argument $userName. String expected');
         $upperCaseUserName = \Yana\Util\Strings::toUpperCase($userName);
         // user should not delete himself
-        if ($this->_buildUserEntity($upperCaseUserName)->isLoggedIn()) { // throws NotFoundException
+        if ($this->_buildUserEntity($userName)->isLoggedIn()) { // throws NotFoundException
             throw new \Yana\Core\Exceptions\User\DeleteSelfException();
         }
 

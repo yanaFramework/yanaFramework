@@ -90,7 +90,8 @@ class CacheableCheckerTest extends \PHPUnit_Framework_TestCase
 
         $profileId = "test";
         $action = "test";
-        $user = (new \Yana\Security\Data\Behaviors\Builder())(new \Yana\Security\Data\Users\Entity("test"));
+        $builder = new \Yana\Security\Data\Behaviors\Builder();
+        $user = $builder(new \Yana\Security\Data\Users\Entity("test"));
 
         $this->assertTrue($this->emptyChecker->checkRules($profileId, $action, $user), 'Excpecting to write TRUE to cache');
 

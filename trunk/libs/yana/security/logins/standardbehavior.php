@@ -111,8 +111,8 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
         /* initiate session and user database entry */
         $this
             ->_setupSessionDataOnLogin($session, $user)
-            ->_updateUserDataOnLogin($user, $session->getSessionUserId())
-            ->_setupSessionUserId($session, $user);
+            ->_setupSessionUserId($session)
+            ->_updateUserDataOnLogin($user, $session->getSessionUserId());
 
         return $this;
     }
@@ -121,16 +121,13 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
      * Initializes session user id.
      *
      * @param   \Yana\Security\Sessions\IsWrapper   $session  some session wrapper
-     * @param   \Yana\Security\Data\Users\IsEntity  $user     which is to be logged in
      * @return  \Yana\Security\Logins\StandardBehavior
      */
-    private function _setupSessionUserId(\Yana\Security\Sessions\IsWrapper $session, \Yana\Security\Data\Users\IsEntity $user)
+    private function _setupSessionUserId(\Yana\Security\Sessions\IsWrapper $session)
     {
         $sessionUserId = md5($session->getId());
         // save a copy to check validity of session against data-source later
         $session->setSessionUserId($sessionUserId);
-        // mark user as logged-in in database
-        $user->setSessionCheckSum($sessionUserId);
 
         return $this;
     }
@@ -171,6 +168,8 @@ class StandardBehavior extends \Yana\Security\Logins\AbstractBehavior
     private function _updateUserDataOnLogin(\Yana\Security\Data\Users\IsEntity $user)
     {
         $user
+            // mark user as logged-in in database
+            ->setSessionCheckSum($this->_getSession()->getSessionUserId())
             // set time of last login to current timestamp
             ->setLoginTime(time())
             // increment login count

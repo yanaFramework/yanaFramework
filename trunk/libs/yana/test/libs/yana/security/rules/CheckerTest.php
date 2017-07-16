@@ -87,7 +87,8 @@ class CheckerTest extends \PHPUnit_Framework_TestCase
     {
         $profileId = "test";
         $action = "test";
-        $user = (new \Yana\Security\Data\Behaviors\Builder())(new \Yana\Security\Data\Users\Entity("test"));
+        $builder = new \Yana\Security\Data\Behaviors\Builder();
+        $user = $builder(new \Yana\Security\Data\Users\Entity("test"));
         $this->assertTrue($this->emptyChecker->checkRules($profileId, $action, $user), 'If there are no requirements than true must be returned');
     }
 
@@ -98,7 +99,8 @@ class CheckerTest extends \PHPUnit_Framework_TestCase
     {
         $profileId = "test";
         $action = "test";
-        $user = (new \Yana\Security\Data\Behaviors\Builder())(new \Yana\Security\Data\Users\Entity("test"));
+        $builder = new \Yana\Security\Data\Behaviors\Builder();
+        $user = $builder(new \Yana\Security\Data\Users\Entity("test"));
         $this->assertFalse($this->filledChecker->checkRules($profileId, $action, $user), 'False must be the default');
     }
 
@@ -110,7 +112,8 @@ class CheckerTest extends \PHPUnit_Framework_TestCase
         $this->filledChecker->addSecurityRule(new \Yana\Security\Rules\NullRule()); // always returns TRUE
         $profileId = "test";
         $action = "test";
-        $user = (new \Yana\Security\Data\Behaviors\Builder())(new \Yana\Security\Data\Users\Entity("test"));
+        $builder = new \Yana\Security\Data\Behaviors\Builder();
+        $user = $builder(new \Yana\Security\Data\Users\Entity("test"));
         $this->assertTrue($this->filledChecker->checkRules($profileId, $action, $user), 'Must return TRUE if rule returns TRUE');
     }
 

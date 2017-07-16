@@ -43,6 +43,16 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
 {
 
     /**
+     * Initializes and returns password behavior facade.
+     *
+     * @return  \Yana\Security\Passwords\Behaviors\IsBehavior
+     */
+    protected function _getPasswordBehavior()
+    {
+        return $this->_getDependencies()->getPasswordBehavior()->setUser($this->_getEntity());
+    }
+
+    /**
      * Saves all changes to the user.
      *
      * @return  self
@@ -297,7 +307,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      */
     public function generatePasswordRecoveryId()
     {
-        $passwordRecoveryId = (string) $this->_getDependencies()->getPasswordBehavior()->generatePasswordRecoveryId();
+        $passwordRecoveryId = (string) $this->_getPasswordBehavior()->generatePasswordRecoveryId();
         return $passwordRecoveryId;
     }
 
@@ -310,7 +320,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
     public function changePassword($password)
     {
         assert('is_string($password); // Wrong type for argument: $password. String expected');
-        $this->_getDependencies()->getPasswordBehavior()->changePassword((string) $password);
+        $this->_getPasswordBehavior()->changePassword((string) $password);
         return $this;
     }
 
@@ -344,7 +354,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
     public function checkPassword($plainText)
     {
         assert('is_string($plainText); // Wrong type for argument: $plainText. String expected');
-        return (bool) $this->_getDependencies()->getPasswordBehavior()->checkPassword((string) $plainText);
+        return (bool) $this->_getPasswordBehavior()->checkPassword((string) $plainText);
     }
 
     /**
@@ -358,7 +368,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
     public function checkRecoveryId($recoveryId)
     {
         assert('is_string($recoveryId); // Wrong type for argument: $recoveryId. String expected');
-        return (bool) $this->_getDependencies()->getPasswordBehavior()->checkRecoveryId((string) $recoveryId);
+        return (bool) $this->_getPasswordBehavior()->checkRecoveryId((string) $recoveryId);
     }
 
     /**
@@ -370,7 +380,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      */
     public function generateRandomPassword()
     {
-        $randomPassword = $this->_getDependencies()->getPasswordBehavior()->generateRandomPassword();
+        $randomPassword = $this->_getPasswordBehavior()->generateRandomPassword();
         assert('is_string($randomPassword); // Invalid return type: String expected');
         return (string) $randomPassword;
     }
@@ -439,13 +449,10 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
             throw new \Yana\Core\Exceptions\Security\PermissionDeniedException();
         }
         /* 3. error - login has failed */
-        if (!$this->_getDependencies()->getPasswordBehavior()->setUser($user)->checkPassword($password)) {
+        if (!$this->_getPasswordBehavior()->checkPassword($password)) {
 
             throw new \Yana\Core\Exceptions\Security\InvalidLoginException();
         }
-        /* 4. increase login count */
-        $user->setLoginCount($user->getLoginCount() + 1);
-        $user->setLoginTime(time());
 
         $this->_getDependencies()->getLoginBehavior()->handleLogin($user); // creates new session
         return $this;
