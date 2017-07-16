@@ -30,7 +30,7 @@
 namespace Yana\Security;
 
 /**
- * <<facade>> Simplifies dealing with user information.
+ * <<interface>> Simplifies dealing with user information.
  *
  * This facade implements a standard behavior to be used for handling user logins, creating and updating users aso.
  * and hides the complexity of creating the necessary classes and handing over the correct parameters required.
@@ -43,7 +43,7 @@ namespace Yana\Security;
  * @package     yana
  * @subpackage  security
  */
-class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsFacade
+interface IsFacade
 {
 
     /**
@@ -53,12 +53,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  if existing entries could not be deleted
      * @return  self
      */
-    public function refreshPluginSecurityRules()
-    {
-        $refreshRequirements = $this->_createDataWriter();
-        $refreshRequirements($this->_getContainer()->getEventConfigurationsForPlugins());
-        return $this;
-    }
+    public function refreshPluginSecurityRules();
 
     /**
      * Add security rule.
@@ -91,11 +86,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @param   \Yana\Security\Rules\IsRule  $rule  to be validated
      * @return  self
      */
-    public function addSecurityRule(\Yana\Security\Rules\IsRule $rule)
-    {
-        $this->_getContainer()->getRulesChecker()->addSecurityRule($rule);
-        return $this;
-    }
+    public function addSecurityRule(\Yana\Security\Rules\IsRule $rule);
 
     /**
      * Check permission.
@@ -111,60 +102,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @param   string  $userName   user name
      * @return  bool
      */
-    public function checkRules($profileId = null, $action = null, $userName = "")
-    {
-        assert('is_null($profileId) || is_string($profileId); // Wrong type for argument $profileId. String expected');
-        assert('is_null($action) || is_string($action); // Wrong type for argument $action. String expected');
-        assert('is_string($userName); // Wrong type for argument $userName. String expected');
-
-        /* Argument 1 */
-        if (empty($profileId)) {
-            $profileId = $this->_getContainer()->getProfileId();
-        }
-        assert('is_string($profileId);');
-        assert('!isset($uppderCaseProfileId); // Cannot redeclare $uppderCaseProfileId');
-        $uppderCaseProfileId = \Yana\Util\Strings::toUpperCase((string) $profileId);
-
-        /* Argument 2 */
-        if (is_null($action) || $action === "") {
-            $action = $this->_getContainer()->getLastPluginAction();
-            // security restriction on undefined event
-            if (!($action > "")) {
-                return false;
-            }
-        }
-        assert('is_string($action);');
-        assert('!isset($lowerCaseAction); // Cannot redeclare $lowerCaseAction');
-        $lowerCaseAction = \Yana\Util\Strings::toLowerCase((string) $action);
-
-        /* Argument 3 */
-        /**
-         * {@internal
-         * The user id is resolved by the "user" plugin and stored in a session var, so other plugins can look it up.
-         * }}
-         */
-        if (empty($userName)) {
-            $userName = $this->_getContainer()->getSession()->getCurrentUserName();
-        }
-
-        assert('!isset($user); // Cannot redeclare $user');
-        $user = empty($userName) ? new \Yana\Security\Data\Users\Guest() : $this->_buildUserEntity((string) $userName);
-
-        assert('!isset($e); // Cannot redeclare $e');
-        try {
-
-            assert('!isset($result); // Cannot redeclare $result');
-            $result = $this->_getContainer()->getRulesChecker()->checkRules($uppderCaseProfileId, $lowerCaseAction, $user);
-
-        } catch (\Yana\Security\Rules\Requirements\NotFoundException $e) {
-            $this->_getContainer()->getLogger()->addLog($e->getMessage());
-            $result = false;
-            unset($e);
-        }
-
-        assert('is_bool($result);');
-        return $result;
-    }
+    public function checkRules($profileId = null, $action = null, $userName = "");
 
     /**
      * Check requirements against given rules.
@@ -175,14 +113,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @param   string                                           $userName     user name
      * @return  bool
      */
-    public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, $userName)
-    {
-        assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
-        assert('is_string($action); // Wrong type for argument $action. String expected');
-        assert('is_string($userName); // Wrong type for argument $userName. String expected');
-
-        return (bool) $this->_getContainer()->getRulesChecker()->checkByRequirement($requirement, $profileId, $action, $this->_buildUserEntity($userName));
-    }
+    public function checkByRequirement(\Yana\Security\Rules\Requirements\IsRequirement $requirement, $profileId, $action, $userName);
 
     /**
      * Get user groups.
@@ -193,10 +124,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      *
      * @return  array
      */
-    public function loadListOfGroups()
-    {
-        return $this->_createDataReader()->loadListOfGroups();
-    }
+    public function loadListOfGroups();
 
     /**
      * Get user roles.
@@ -207,10 +135,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      *
      * @return  array
      */
-    public function loadListOfRoles()
-    {
-        return $this->_createDataReader()->loadListOfRoles();
-    }
+    public function loadListOfRoles();
 
     /**
      *
@@ -218,10 +143,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
      */
-    public function loadUser($userName)
-    {
-        return $this->_buildUserEntity($userName);
-    }
+    public function loadUser($userName);
 
     /**
      * Create a new user.
@@ -234,32 +156,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @throws  \Yana\Core\Exceptions\User\AlreadyExistsException  if another user with the same name already exists
      * @throws  \Yana\Db\CommitFailedException                     when the database entry could not be created
      */
-    public function createUser($userName, $mail)
-    {
-        assert('is_string($userName); // Wrong type for argument $userName. String expected');
-        assert('is_string($mail); // Wrong type for argument $mail. String expected');
-
-        if (empty($userName)) {
-            throw new \Yana\Core\Exceptions\User\MissingNameException("No user name given.", \Yana\Log\TypeEnumeration::WARNING);
-        }
-
-        if (empty($mail)) {
-            throw new \Yana\Core\Exceptions\User\MissingMailException("No mail address given.", \Yana\Log\TypeEnumeration::WARNING);
-        }
-
-        $user = $this->_createUserBuilder()->buildNewUser($userName, $mail);
-        assert($user instanceof \Yana\Security\Data\Behaviors\IsBehavior);
-
-        try {
-            $user->saveChanges(); // may throw exception
-
-        } catch (\Exception $e) {
-            $message = "Unable to commit changes to the database server while trying to update settings for user '{$userName}'.";
-            $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \Yana\Db\CommitFailedException($message, $level, $e);
-        }
-        return $user;
-    }
+    public function createUser($userName, $mail);
 
     /**
      * Remove the chosen user from the database.
@@ -272,28 +169,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @throws  \Yana\Core\Exceptions\NotFoundException          when the given user does not exist
      * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  when the user may not be deleted for other reasons
      */
-    public function removeUser($userName, $allowUserToDeleteSelf = false)
-    {
-        assert('is_string($userName); // Wrong type for argument $userName. String expected');
-        assert('is_bool($allowUserToDeleteSelf); // Invalid argument $allowUserToDeleteSelf: bool expected');
-
-        $upperCaseUserName = \Yana\Util\Strings::toUpperCase($userName);
-        $user = $this->_buildUserEntity($upperCaseUserName); // throws NotFoundException
-        // user should not delete himself
-        switch (true)
-        {
-            case $upperCaseUserName === 'ADMINISTRATOR':
-                $message = 'Administrator account must not be deleted. This might cause the application to become inaccessible.';
-                throw new \Yana\Core\Exceptions\User\DeleteAdminException($message, \Yana\Log\TypeEnumeration::WARNING);
-
-            case !$allowUserToDeleteSelf && $user->isLoggedIn():
-                $message = 'Current settings don\'t allow you to delete your own account.';
-                throw new \Yana\Core\Exceptions\User\DeleteSelfException($message, \Yana\Log\TypeEnumeration::WARNING);
-        }
-
-        $this->_createUserAdapter()->offsetUnset($upperCaseUserName); // throws NotDeletedException
-        return $this;
-    }
+    public function removeUser($userName, $allowUserToDeleteSelf = false);
 
     /**
      * Check if user exists.
@@ -304,12 +180,7 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      * @param   string  $userName   user name
      * @return  bool
      */
-    public function isExistingUserName($userName)
-    {
-        assert('is_string($userName); // Wrong type for argument 1. String expected');
-
-        return $this->_createUserBuilder()->isExistingUserName($userName);
-    }
+    public function isExistingUserName($userName);
 
 }
 

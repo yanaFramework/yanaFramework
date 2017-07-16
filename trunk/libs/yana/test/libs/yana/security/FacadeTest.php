@@ -229,6 +229,29 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testRemoveUserDeleteSelfAllowed()
+    {
+        $user = $this->object->loadUser('Manager');
+        @$user->login(''); // Mute operator used because this will throw an E_NOTICE that cookies cannot be set
+        $this->assertTrue($user->isLoggedIn());
+        $this->assertFalse($this->object->removeUser('Manager', true)->isExistingUserName('Manager'));
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\DeleteAdminException
+     */
+    public function testRemoveUserDeleteAdminException()
+    {
+        $user = $this->object->loadUser('Manager');
+        @$user->login(''); // Mute operator used because this will throw an E_NOTICE that cookies cannot be set
+        $this->assertTrue($user->isLoggedIn());
+        $this->object->removeUser('Administrator');
+    }
+
+    /**
+     * @test
+     */
     public function testIsExistingUserName()
     {
         $this->assertFalse($this->object->isExistingUserName('non-existing user'));
