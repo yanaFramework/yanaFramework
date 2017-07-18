@@ -42,11 +42,6 @@ abstract class AbstractFacade extends \Yana\Core\Object implements \Yana\Securit
 {
 
     /**
-     * @var  \Yana\Data\Adapters\IsDataAdapter
-     */
-    private $_cache = null;
-
-    /**
      * @var  \Yana\Security\Dependencies\IsFacadeContainer
      */
     private $_container = null;
@@ -55,12 +50,10 @@ abstract class AbstractFacade extends \Yana\Core\Object implements \Yana\Securit
      * Initialize dependencies.
      *
      * @param   \Yana\Security\Dependencies\IsFacadeContainer  $container  dependency container
-     * @param   \Yana\Data\Adapters\IsDataAdapter              $cache      will be used by rule checker to cache results
      */
-    public function __construct(\Yana\Security\Dependencies\IsFacadeContainer $container = null, \Yana\Data\Adapters\IsDataAdapter $cache = null)
+    public function __construct(\Yana\Security\Dependencies\IsFacadeContainer $container = null)
     {
         $this->_container = $container;
-        $this->_cache = $cache;
     }
 
     /**
@@ -126,28 +119,6 @@ abstract class AbstractFacade extends \Yana\Core\Object implements \Yana\Securit
             $user = $builder->buildFromSession($this->_getContainer()->getSession());
         }
         return $user;
-    }
-
-    /**
-     * Get cache-adapter.
-     *
-     * This class uses an ArrayAdapter by default.
-     * Overwrite only for unit-tests, or if you are absolutely sure you need to
-     * and know what you are doing.
-     * Replacing this by the wrong adapter might introduce a security risk,
-     * unless you are in a very specific usage scenario.
-     *
-     * Note that this may also replace the cache contents.
-     *
-     * @return  \Yana\Data\Adapters\IsDataAdapter
-     * @ignore
-     */
-    protected function _getCache()
-    {
-        if (!isset($this->_cache)) {
-            $this->_cache = new \Yana\Data\Adapters\ArrayAdapter();
-        }
-        return $this->_cache;
     }
 
 }

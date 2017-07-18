@@ -95,9 +95,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testGetSession()
+    public function testGetSecurity()
     {
-        $this->assertTrue($this->object->getSession() instanceof \Yana\Security\Data\SessionManager);
+        $this->assertTrue($this->object->getSecurity() instanceof \Yana\Security\IsFacade);
     }
 
     /**

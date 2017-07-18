@@ -61,7 +61,7 @@ class DependencyContainer extends \Yana\Plugins\AbstractDependencyContainer
     /**
      * Get session data.
      *
-     * @return  \Yana\Core\Sessions\IsWrapper
+     * @return  \Yana\Security\Sessions\IsWrapper
      */
     public function getSession()
     {

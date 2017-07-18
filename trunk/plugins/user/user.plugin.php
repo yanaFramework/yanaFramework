@@ -66,7 +66,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
         if (isset($YANA)) {
             self::$userName = \Yana\User::getUserName();
             if (!empty(self::$userName)) {
-                self::$securityLevel = $YANA->getSession()->getSecurityLevel(self::$userName);
+                self::$securityLevel = $YANA->getSecurity()->getSecurityLevel(self::$userName);
                 self::$profileId = \Yana\Application::getId();
                 $YANA->setVar("SESSION_USER_ID", self::$userName);
                 $YANA->setVar("PERMISSION", self::$securityLevel);
@@ -74,7 +74,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
             $YANA->setVar("SESSION_ID", session_id());
             $YANA->setVar("SESSION_NAME", session_name());
         }
-        \Yana\Security\Data\SessionManager::addSecurityRule(array(__CLASS__, 'checkSecurityLevel'));
+        $this->_getSecurityFacade()->addSecurityRule(new \Yana\Security\Rules\SecurityLevelRule($this->_getSession()));
     }
 
     /**
@@ -156,43 +156,6 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
         $builder = new \Yana\Plugins\Menus\Builder();
         $builder->buildMenu() // using default settings
             ->setMenuEntry($action, $menuEntry);
-    }
-
-    /**
-     * check security level
-     *
-     * @param   \Yana\Db\IsConnection   $database    database
-     * @param   array                   $required    required level
-     * @param   string                  $profileId   profile id
-     * @param   string                  $action      action
-     * @param   string                  $userName    user name
-     * @return  bool
-     *
-     * @ignore
-     */
-    public static function checkSecurityLevel(\Yana\Db\IsConnection $database, array $required, $profileId, $action, $userName)
-    {
-        if (!isset($required[\Yana\Plugins\Annotations\Enumeration::LEVEL])) {
-            return null;
-        }
-        // skip if nothing to check
-        if (empty($required[\Yana\Plugins\Annotations\Enumeration::LEVEL])) {
-            return true;
-        }
-
-        $requiredLevel = (int) $required[\Yana\Plugins\Annotations\Enumeration::LEVEL];
-
-        if (!\Yana\User::isLoggedIn()) {
-            return false;
-        }
-
-        if ($userName == self::$userName && self::$profileId == $profileId) {
-            return $requiredLevel <= self::$securityLevel;
-        }
-
-        $securityLevel = (int) \Yana\Security\Data\SessionManager::getInstance()->getSecurityLevel($userName, $profileId);
-
-        return $requiredLevel <= $securityLevel;
     }
 
     /**

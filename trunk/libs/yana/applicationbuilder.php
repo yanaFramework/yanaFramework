@@ -80,7 +80,7 @@ class ApplicationBuilder extends \Yana\Core\Object
      *
      * @param  string  $logging  examples: YANA_ERROR_OFF, YANA_ERROR_LOG,
      *                           YANA_ERROR_ON or E_ALL, E_ALL & ~E_NOTICE
-     * @return ApplicationBuilder 
+     * @return ApplicationBuilder
      */
     public function setErrorReporting($logging)
     {
@@ -141,7 +141,7 @@ class ApplicationBuilder extends \Yana\Core\Object
     /**
      * Returns TRUE if application was called from the command line.
      *
-     * @return bool 
+     * @return bool
      */
     private function _isCommandLineCall()
     {
@@ -151,7 +151,7 @@ class ApplicationBuilder extends \Yana\Core\Object
     /**
      * This builds and runs a Yana application.
      *
-     * @return ApplicationBuilder 
+     * @return ApplicationBuilder
      */
     public function execute()
     {
@@ -277,33 +277,17 @@ class ApplicationBuilder extends \Yana\Core\Object
     private function _createApplication()
     {
         $configuration = $this->_loadConfiguration();
+        $dependencyContainer = new \Yana\Core\Dependencies\Container($configuration);
         \Yana\Application::setConfiguration($configuration);
         $application = \Yana\Application::getInstance(); // Get a yana-instance
-        $application->setCache($this->_loadApplicationCache($configuration));
         return $application;
-    }
-
-    /**
-     * Create file cache in a temporary directory.
-     * 
-     * @return  \Yana\Data\Adapters\IsDataAdapter
-     */
-    private function _loadApplicationCache(\Yana\Util\XmlArray $configuration)
-    {
-        if (!empty($configuration->tempdir) && is_dir((string) $configuration->tempdir)) {
-            $temporaryDirectory = new \Yana\Files\Dir((string) $configuration->tempdir);
-            $adapter = new \Yana\Data\Adapters\FileCacheAdapter($temporaryDirectory);
-        } else {
-            $adapter = new \Yana\Data\Adapters\ArrayAdapter();
-        }
-        return $adapter;
     }
 
     /**
      * Load a system configuration file.
      *
      * Also uses the file (if found) to initialize some default directories important to the application.
-     * 
+     *
      * @return  \Yana\Util\XmlArray
      */
     private function _loadConfiguration()

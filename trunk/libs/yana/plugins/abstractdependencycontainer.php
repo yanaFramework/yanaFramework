@@ -56,7 +56,7 @@ abstract class AbstractDependencyContainer extends \Yana\Core\Object
     private $_connectionFactory = null;
 
     /**
-     * @var  \Yana\Core\Sessions\IsWrapper
+     * @var  \Yana\Security\Sessions\IsWrapper
      */
     private $_session = null;
 
@@ -92,10 +92,10 @@ abstract class AbstractDependencyContainer extends \Yana\Core\Object
     /**
      * Add session object.
      *
-     * @param   \Yana\Core\Sessions\IsWrapper  $session  to access session data
+     * @param   \Yana\Security\Sessions\IsWrapper  $session  to access session data
      * @return  \Yana\Plugins\AbstractDependencyContainer
      */
-    protected function _setSessionWrapper(\Yana\Core\Sessions\IsWrapper $session)
+    protected function _setSessionWrapper(\Yana\Security\Sessions\IsWrapper $session)
     {
         $this->_session = $session;
         return $this;
@@ -104,10 +104,10 @@ abstract class AbstractDependencyContainer extends \Yana\Core\Object
     /**
      * Add security facade.
      *
-     * @param   \Yana\Security\Facade  $facade  to access user data
+     * @param   \Yana\Security\IsFacade  $facade  to access user data
      * @return  \Yana\Plugins\AbstractDependencyContainer
      */
-    protected function _setSecurityFacade(\Yana\Security\Facade $facade)
+    protected function _setSecurityFacade(\Yana\Security\IsFacade $facade)
     {
         $this->_securityFacade = $facade;
         return $this;
@@ -142,12 +142,12 @@ abstract class AbstractDependencyContainer extends \Yana\Core\Object
     /**
      * Get a session object.
      *
-     * @return  \Yana\Core\Sessions\IsWrapper
+     * @return  \Yana\Security\Sessions\IsWrapper
      */
     protected function _getSessionWrapper()
     {
         if (!isset($this->_session)) {
-            $this->_session = new \Yana\Core\Sessions\Wrapper();
+            $this->_session = new \Yana\Security\Sessions\Wrapper();
         }
         return $this->_session;
     }
@@ -160,7 +160,7 @@ abstract class AbstractDependencyContainer extends \Yana\Core\Object
     protected function _getSecurityFacade()
     {
         if (!isset($this->_securityFacade)) {
-            $this->_securityFacade = \Yana\Security\Facade::getInstance();
+            $this->_securityFacade = $this->_getApplication()->getSecurity();
         }
         return $this->_securityFacade;
     }

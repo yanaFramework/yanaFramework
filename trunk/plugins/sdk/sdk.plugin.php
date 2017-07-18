@@ -91,8 +91,8 @@ class SdkPlugin extends \Yana\Plugins\AbstractPlugin
         if (isset($_SESSION[__CLASS__])) {
             $yana->setVar('PLUGIN', unserialize($_SESSION[__CLASS__]));
         }
-        $yana->setVar('GROUPS', \Yana\Security\Data\SessionManager::getGroups());
-        $yana->setVar('ROLES', \Yana\Security\Data\SessionManager::getRoles());
+        $yana->setVar('GROUPS', $this->_getSecurityFacade()->loadListOfGroups());
+        $yana->setVar('ROLES', $this->_getSecurityFacade()->loadListOfRoles());
 
         $yana->setVar('LIST_OF_DBMS', self::$_listOfDBMS);
     }

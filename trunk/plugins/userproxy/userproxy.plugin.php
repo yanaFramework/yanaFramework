@@ -84,7 +84,7 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
         // check user expert setting
         $YANA->setVar('USER_IS_EXPERT', $this->_getIsExpert());
 
-        $currentUser = \Yana\User::getUserName();
+        $currentUser = $this->_getSession()->getCurrentUserName();
         /**
          * @var DBStream $db
          */

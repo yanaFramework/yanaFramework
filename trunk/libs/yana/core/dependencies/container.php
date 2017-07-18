@@ -35,7 +35,7 @@ namespace Yana\Core\Dependencies;
  * @package     yana
  * @subpackage  core
  */
-class Container extends \Yana\Core\Object
+class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsApplicationContainer
 {
 
     /**
@@ -90,9 +90,9 @@ class Container extends \Yana\Core\Object
     /**
      * to read and write user data and permissions
      *
-     * @var  \Yana\Security\Data\SessionManager
+     * @var  \Yana\Security\IsFacade
      */
-    private $_session = null;
+    private $_security = null;
 
     /**
      * the currently selected template
@@ -224,21 +224,15 @@ class Container extends \Yana\Core\Object
      * @return  string
      * @throws  \Yana\Core\Exceptions\InvalidActionException  when the event is undefined
      */
-    protected function _getAction()
+    public function getAction()
     {
         if (!isset($this->_action)) {
-            $action = $this->getRequest()->all()->value('action')->asSafeString();
-            // work-around for IE-bug
-            if (is_array($action) && count($action) === 1) {
-                // action[name]=1 -> action=name
-                reset($action); // rewind iterator
-                $action = key($action); // get first key
-            }
+            $action = $this->getRequest()->getActionArgument();
+
             // error checking
             switch (true)
             {
-                case isset($action) && !is_string($action):
-                case isset($action) && !$this->getPlugins()->isEvent($action):
+                case !$this->getPlugins()->isEvent($action):
                     $error = new \Yana\Core\Exceptions\InvalidActionException();
                     $error->setAction($action);
                 // fall through
@@ -256,19 +250,19 @@ class Container extends \Yana\Core\Object
     }
 
     /**
-     * Get session manager instance.
+     * Get security facade.
      *
-     * The SessionManager class is used to manage user information
-     * and resolve permissions.
+     * This facade is used to manage user information and check permissions.
      * 
-     * @return \Yana\Security\Data\SessionManager
+     * @return \Yana\Security\IsFacade
      */
-    public function getSession()
+    public function getSecurity()
     {
-        if (!isset($this->_session)) {
-            $this->_session = \Yana\Security\Data\SessionManager::getInstance();
+        if (!isset($this->_security)) {
+            $container = new \Yana\Security\Dependencies\Container();
+            $this->_security = new \Yana\Security\Facade($container);
         }
-        return $this->_session;
+        return $this->_security;
     }
 
     /**
@@ -276,10 +270,10 @@ class Container extends \Yana\Core\Object
      *
      * @return  bool
      */
-    protected function _isSafemode()
+    public function isSafemode()
     {
         if (!isset($this->_isSafemode)) {
-            $eventConfiguration = $this->getPlugins()->getEventConfiguration($this->_getAction());
+            $eventConfiguration = $this->getPlugins()->getEventConfiguration($this->getAction());
             if ($eventConfiguration instanceof \Yana\Plugins\Configs\MethodConfiguration) {
                 $this->_isSafeMode = ($eventConfiguration->getSafemode() === true);
             } else {
@@ -307,7 +301,7 @@ class Container extends \Yana\Core\Object
             $cacheFile = (string) $this->_configuration->tempdir . 'registry_' . $this->getId() . '.tmp';
 
             // get configuration mode
-            \Yana\VDrive\Registry::useDefaults($this->_isSafemode());
+            \Yana\VDrive\Registry::useDefaults($this->isSafemode());
 
             if (YANA_CACHE_ACTIVE === true && file_exists($cacheFile)) {
                 $this->_registry = unserialize(file_get_contents($cacheFile));
@@ -363,11 +357,13 @@ class Container extends \Yana\Core\Object
      * This returns the plugin manager. If none exists, a new instance is created.
      * The pluginManager holds repositories for interfaces and implementations of plugins.
      *
+     * @param   \Yana\Application  $application  necessary to initialize dependency container
      * @return  \Yana\Plugins\Manager
      */
-    public function getPlugins()
+    public function getPlugins(\Yana\Application $application)
     {
         if (!isset($this->_plugins)) {
+//            $cacheFile = (string) self::$_config->plugincache;
             $cacheFile = YANA_INSTALL_DIR . (string) $this->_configuration->plugincache;
 
             if (YANA_CACHE_ACTIVE === true && file_exists($cacheFile)) {
@@ -376,9 +372,11 @@ class Container extends \Yana\Core\Object
 
             } else {
                 $this->_plugins = \Yana\Plugins\Manager::getInstance();
-//                if (!is_file(\Yana\Plugins\Manager::getConfigFilePath())) {
-//                    $this->_plugins->refreshPluginFile();
-//                }
+                $factory = new \Yana\Plugins\DependencyContainerFactory($application);
+                $this->_plugins->attachDependencies($factory->createDependencies());
+                if (!is_file(\Yana\Plugins\Manager::getConfigFilePath())) {
+                    $this->_plugins->refreshPluginFile();
+                }
                 file_put_contents($cacheFile, serialize($this->_plugins));
             }
         }
@@ -398,7 +396,7 @@ class Container extends \Yana\Core\Object
         if (!isset($this->_view)) {
             $factory = new \Yana\Views\EngineFactory($this->_configuration->templates);
             $this->_view = $factory->createInstance();
-            $this->getRegistry()->setVar("ACTION", $this->_getAction());
+            $this->getRegistry()->setVar("ACTION", $this->getAction());
         }
         return $this->_view;
     }
@@ -507,8 +505,9 @@ class Container extends \Yana\Core\Object
     public function getId()
     {
         if (!isset($this->_id)) {
-            if (!$this->getRequest()->all()->value('id')->isEmpty()) {
-                $this->_id = \Yana\Util\Strings::toLowerCase($this->getRequest()->all()->value('id')->asSafeString());
+            $id = $this->getRequest()->getProfileArgument();
+            if ($id > "") {
+                $this->_id = $id;
 
             } elseif (!empty($this->_configuration->default->profile)) {
                 $this->_id = (string) $this->_configuration->default->profile;

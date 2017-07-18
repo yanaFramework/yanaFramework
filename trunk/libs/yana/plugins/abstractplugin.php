@@ -96,7 +96,7 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
     }
 
     /**
-     * @return  \Yana\Core\Sessions\IsWrapper
+     * @return  \Yana\Security\Sessions\IsWrapper
      */
     protected function _getSession()
     {
@@ -104,7 +104,7 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
     }
 
     /**
-     * @return  \Yana\Security\Facade
+     * @return  \Yana\Security\IsFacade
      */
     protected function _getSecurityFacade()
     {
@@ -120,13 +120,15 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
      * $db = $this->_createConnection('user');
      * </code>
      *
-     * @param   string|\Yana\Db\Ddl\Database  $schema  name of the database schema file (see config/db/*.xml),
-     *                                                 or instance of \Yana\Db\Ddl\Database
+     * @param   string  $schema  name of the database schema file (see config/db/*.xml),
+     *                           or instance of \Yana\Db\Ddl\Database
      * @return  \Yana\Db\IsConnection
      */
     protected function _connectToDatabase($schema)
     {
-        return $this->_dependencyContainer->getConnectionFactory()->createConnection($schema);
+        assert('is_string($schema); // Invalid argument $schema: string expected');
+
+        return $this->_dependencyContainer->getConnectionFactory()->createConnection((string) $schema);
     }
 
     /**

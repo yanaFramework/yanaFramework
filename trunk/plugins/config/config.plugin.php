@@ -220,25 +220,16 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
      * @access  private
      * @return  bool
      * @ignore
-     * @todo    review and replace this function when refactoring user management classes
      */
     private function _getIsExpert()
     {
         if (!isset($this->_isExpert)) {
             // get current user name
-            if (!isset($_SESSION['user_name'])) {
+            $userName = $this->_getSession()->getCurrentUserName();
+            if ($userName === "") {
                 return false;
-            } else {
-                $userName = (string) $_SESSION['user_name'];
             }
-            // get database connection
-            $database = \Yana\Security\Data\SessionManager::getDatasource();
-            // get current user-mode
-            if ($database->select("user.$userName.user_is_expert")) {
-                $this->_isExpert = true;
-            } else {
-                $this->_isExpert = false;
-            }
+            $this->_isExpert = (bool) $this->_getSecurityFacade()->loadUser($userName)->isExpert();
         }
         return $this->_isExpert;
     }
@@ -342,7 +333,7 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
     {
         $pluginManager = \Yana\Plugins\Manager::getInstance();
         if ($pluginManager->refreshPluginFile()) {
-            \Yana\Security\Data\SessionManager::refreshPluginSecuritySettings();
+            $this->_getSecurityFacade()->refreshPluginSecurityRules();
             $builder = new \Yana\Plugins\Menus\Builder();
             $builder->clearMenuCache(); // uses session cache adapter by default
             return true;
@@ -410,35 +401,19 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
     {
         /* this function expects no arguments */
 
-        // get database connection
-        $database = \Yana\Security\Data\SessionManager::getDatasource();
-
-        // get current user name
-        if (!isset($_SESSION['user_name'])) {
+        $userName = $this->_getSession()->getCurrentUserName();
+        if ($userName === "") {
             return false;
-        } else {
-            $userName = (string) $_SESSION['user_name'];
         }
 
-        // get current user-mode
-        $userMode = $database->select("user.$userName.user_is_expert");
-
-        // negate current user-mode setting
-        if (!empty($userMode)) {
-            $userMode = false;
-        } else {
-            $userMode = true;
-        }
-
-        // error - update operation failed
         try {
-            $database->update("user.$userName.user_is_expert", $userMode)
-                ->commit();
-        } catch (Exception $e) {
+            $user = $this->_getSecurityFacade()->loadUser($userName); // may throw exception
+            $user->setExpert(!$user->isExpert()); // negate current user-mode setting
+            $user->saveChanges(); // may throw exception
 
-            // error - unable to write changes
-            $database->rollback();
-            \Yana\Log\LogManager::getLogger()->addLog("Unable to update user '$userName'.");
+        } catch (Exception $e) { // error - update operation failed
+
+            $this->_getApplication()->getLogger()->addLog("Unable to update user '$userName'.");
             return false;
         }
 

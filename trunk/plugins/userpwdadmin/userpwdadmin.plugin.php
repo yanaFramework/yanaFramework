@@ -95,7 +95,6 @@ class UserPwdAdminPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function check_login($user, $pass = "")
     {
-        /* @var $YANA \Yana\Application */
         assert('!isset($YANA); // Cannot redeclare var $YANA');
         $YANA = $this->_getApplication();
         $timeDuration = (int) $YANA->getVar("PROFILE.USER.PASSWORD.TIME");
@@ -207,7 +206,7 @@ class UserPwdAdminPlugin extends \Yana\Plugins\AbstractPlugin
         }
         /* calculate the password strength */
         $pwd_strength = ($level / $maxSecurityLevel) * 100;
-         
+
         /* check if password strength (quality) is out of range */
         if ($pwd_strength < 0) {
             $pwd_strength = 0;
@@ -233,10 +232,9 @@ class UserPwdAdminPlugin extends \Yana\Plugins\AbstractPlugin
         assert('is_string($userName); // $userName must be of type string');
         assert('!empty($userName); // $userName can not be empty');
         assert('is_int($timeDuration); // $timeDuration must be of type int');
-        $db = \Yana\Security\Data\SessionManager::getDatasource();
 
         /* get the current user password expiry time */
-        $time = $db->select("user.$userName.user_pwd_time");
+        $time = $this->_getSecurityFacade()->loadUser($userName)->getPasswordChangedTime();
         $currentTime = time();
         $expiryTime = $currentTime;
         if (!empty($time)) {
@@ -263,62 +261,31 @@ class UserPwdAdminPlugin extends \Yana\Plugins\AbstractPlugin
     {
         assert('is_string($new_password); // $new_password must be of type string');
         assert('!empty($new_password); // $new_password can not be empty');
-        $YANA = $this->_getApplication();
-        $db = \Yana\Security\Data\SessionManager::getDatasource();
-        
-        /* get information how many passwords which was allready used will be needed for checking with the new one */
-        $count_pwd = (int) $YANA->getVar("PROFILE.USER.PASSWORD.COUNT");
 
-        /* get the current user from session*/
-        $user = $_SESSION['user_name'];
-         
         /* get the database information from the user table for the curren user */
-        $currentUserInformation = $db->select('user', array('USER_ID', '=', $user));
-
-        $currentUserInformation = array_pop($currentUserInformation);
-        $new_password = $this->_getSecurityFacade()->calculatePassword($user, $new_password);
-        /* needed for equal with the actually password */
-        $old_password = $this->_getSecurityFacade()->calculatePassword($user, $old_password);
-         
-        assert('is_array($currentUserInformation); // the value must be of type array');
-        assert('!empty($currentUserInformation); //   the value can not be empty');
+        $userEntity = $this->_getSecurityFacade()->loadUser($this->_getSession()->getCurrentUserName());
 
         /* check if the old password is correct */
-        if (isset($currentUserInformation['USER_PWD']) && $currentUserInformation['USER_PWD'] != $old_password) {
-            if ($currentUserInformation['USER_PWD'] != 'UNINITIALIZED') {
-                $message = "Invalid name or password.";
-                $level = \Yana\Log\TypeEnumeration::ERROR;
-                throw new \Yana\Core\Exceptions\Security\InvalidLoginException($message, $level);
-            }
+        if (false === $userEntity->checkPassword($old_password)) {
+            $message = "Invalid name or password.";
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\Security\InvalidLoginException($message, $level);
         }
-        /* check if the new password is the same like the last one */
-        if (isset($currentUserInformation['USER_PWD']) && $currentUserInformation['USER_PWD'] == $new_password) {
+        /* check if the new password is the same as the last one */
+        if ($old_password === $new_password) {
             $message = "Password is the same that you have used before. Please select another one.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Core\Exceptions\Security\PasswordDoesNotMatchException($message, $level);
         }
         /* check if the new password is the same like the last (max. 5)*/
-        $currentPWDList = $currentUserInformation['USER_PWD_LIST'];
-        if (isset($currentPWDList)) {
-            if (in_array($new_password, $currentPWDList)) {
-                $message = "Password is the same that you have used before. Please select another one.";
-                $level = \Yana\Log\TypeEnumeration::WARNING;
-                throw new \Yana\Core\Exceptions\Security\PasswordUsedBeforeException($message, $level);
-            }
-            array_push($currentPWDList, $currentUserInformation['USER_PWD']);
-            // update the user password list or insert the list if does not exist
-            if (count($currentPWDList) >= $count_pwd) {
-                $currentPWDList = array_splice($currentPWDList, count($currentPWDList) - $count_pwd);
-            }
-        } else {
-            // create the list with the password
-            $currentPWDList = array($currentUserInformation['USER_PWD']);
+        $currentPWDList = $userEntity->getRecentPasswords();
+        if (in_array($new_password, $currentPWDList)) {
+            $message = "You have used this password before. Please select another one.";
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\Security\PasswordUsedBeforeException($message, $level);
         }
         try {
-            $db->update("USER.$user.USER_PWD_LIST", $currentPWDList);
-            /* set pwd create date if not exist or update */
-            $db->update("USER.$user.USER_PWD_TIME", mktime());
-            $db->commit(); // may throw exception
+            $userEntity->changePassword($new_password);
             return true;
         } catch (\Exception $e) {
             return false;

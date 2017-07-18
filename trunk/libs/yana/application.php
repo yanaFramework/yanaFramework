@@ -51,7 +51,7 @@ namespace Yana;
  * @todo        Add Dependency container from Yana\Core\Dependencies\Container
  */
 final class Application extends \Yana\Core\AbstractSingleton
-    implements \Yana\Report\IsReportable, \Yana\Log\IsLogable, \Yana\Core\IsVarContainer, \Yana\Data\Adapters\IsCacheable
+    implements \Yana\Report\IsReportable, \Yana\Core\IsVarContainer
 {
 
     /**
@@ -62,94 +62,6 @@ final class Application extends \Yana\Core\AbstractSingleton
     private static $_config = null;
 
     /**
-     * profile id
-     *
-     * @var  string
-     */
-    private static $_id = null;
-
-    /**
-     * action parameter
-     *
-     * @var  string
-     */
-    private static $_action = null;
-
-    /**
-     * HTTP request facade
-     *
-     * @var  \Yana\Http\IsFacade
-     */
-    private static $_request = null;
-
-    /**
-     * safe-mode settings
-     *
-     * false = default-mode (use profile settings)
-       true  = safe-mode    (use default profile)
-     *
-     * @var  bool
-     * @ignore
-     */
-    protected $_isSafeMode = null;
-
-    /**
-     * to communicate with plugins
-     *
-     * @var  \Yana\Plugins\Manager
-     */
-    private $_plugins = null;
-
-    /**
-     * to load language strings
-     *
-     * @var  \Yana\Translations\Facade
-     */
-    private $_language = null;
-
-    /**
-     * to load skins and templates
-     *
-     * @var  \Yana\Views\Skins\Skin
-     */
-    private $_skin = null;
-
-    /**
-     * to read and write data to the global registry
-     *
-     * @var  \Yana\VDrive\Registry
-     */
-    private $_registry = null;
-
-    /**
-     * to read and write user data and permissions
-     *
-     * @var  \Yana\Security\Data\SessionManager
-     */
-    private $_session = null;
-
-    /**
-     * the currently selected template
-     *
-     * @var  \Yana\Views\Managers\IsManager
-     */
-    private $_view = null;
-
-    /**
-     * Collection of logger classes.
-     *
-     * @var  \Yana\Log\LoggerCollection
-     */
-    private $_loggers = null;
-
-    /**
-     * Tracks and prepares output messages.
-     *
-     * @var  \Yana\Log\ExceptionLogger
-     */
-    private $_exceptionLogger = null;
-
-    /**
      * caches database connections
      *
      * @var  \Yana\Db\IsConnection[]
@@ -157,11 +69,23 @@ final class Application extends \Yana\Core\AbstractSingleton
     private static $_connections = array();
 
     /**
-     * file cache in temporary directory
+     * Contains code to initialize and return sub-modules.
      *
-     * @var  \Yana\Data\Adapters\IsDataAdapter
+     * @var  \Yana\Core\Dependencies\IsApplicationContainer
      */
-    private $_cache = null;
+    private $_dependencyContainer = null;
+
+    /**
+     * Returns the container.
+     *
+     * The dependency container contains code to initialize and return sub-modules.
+     *
+     * @return  \Yana\Core\Dependencies\IsApplicationContainer
+     */
+    protected function _getDependencyContainer()
+    {
+        return $this->_dependencyContainer;
+    }
 
     /**
      * Creates an instance if there is none.
@@ -212,44 +136,6 @@ final class Application extends \Yana\Core\AbstractSingleton
     }
 
     /**
-     * Returns an HTTP request facade.
-     *
-     * @return \Yana\Http\IsFacade
-     */
-    protected static function _getRequest()
-    {
-        if (!isset(self::$_request)) {
-            self::$_request = new \Yana\Http\Facade();
-        }
-        return self::$_request;
-    }
-
-    /**
-     * <<Singleton>> Constructor
-     *
-     * This function creates a new instance of the framework.
-     * Note that you may only operate one instance at a time.
-     */
-    protected function __construct()
-    {
-        $this->_loggers = new \Yana\Log\LoggerCollection();
-    }
-
-    /**
-     * Replace the cache adapter.
-     *
-     * Note that this may also replace the cache contents.
-     *
-     * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  new cache adapter
-     * @return  \Yana\Application
-     */
-    public function setCache(\Yana\Data\Adapters\IsDataAdapter $cache)
-    {
-        $this->_cache = $cache;
-        return $this;
-    }
-
-    /**
      * Get the application cache.
      *
      * By default this will be a file-cache in the temporary directory of the framework.
@@ -258,26 +144,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     public function getCache()
     {
-        return $this->_cache;
-    }
-
-    /**
-     * application is in safe-mode
-     *
-     * @return  bool
-     * @ignore
-     */
-    protected function isSafemode()
-    {
-        if (!isset($this->_isSafemode)) {
-            $eventConfiguration = $this->getPlugins()->getEventConfiguration($this->_getAction());
-            if ($eventConfiguration instanceof \Yana\Plugins\Configs\MethodConfiguration) {
-                $this->_isSafeMode = ($eventConfiguration->getSafemode() === true);
-            } else {
-                $this->_isSafeMode = !empty(self::$_config->default->event->{\Yana\Plugins\Annotations\Enumeration::SAFEMODE});
-            }
-        }
-        return $this->_isSafeMode;
+        return $this->_getDependencyContainer()->getCache();
     }
 
     /**
@@ -324,10 +191,10 @@ final class Application extends \Yana\Core\AbstractSingleton
          * 1) check for default arguments
          */
         if (empty($action)) {
-            $action = $this->_getAction();
+            $action = $this->_getDependencyContainer()->getAction();
         }
         if (is_null($args)) {
-            $args = self::_getRequest()->all()->asArrayOfStrings();
+            $args = $this->_getDependencyContainer()->getRequest()->all()->asArrayOfStrings();
         }
 
         /**
@@ -436,72 +303,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     protected function _getExceptionLogger()
     {
-        if (!isset($this->_exceptionLogger)) {
-            $languageManager = $this->getLanguage();
-            $languageManager->loadTranslations('message');
-            $this->_exceptionLogger = new \Yana\Log\ExceptionLogger($languageManager->getTranslations());
-        }
-        return $this->_exceptionLogger;
-    }
-
-    /**
-     * Get current action.
-     *
-     * @internal This also checks the action parameter for validity.
-     *
-     * Work-around for IE-bug.
-     *
-     * Example:
-     * <code>
-     * <form><button type="submit" name="a" value="1">2</button></form>
-     * </code>
-     *
-     * IE sends a=2 instead of a=1. This is because IE automatically
-     * handles button-tags as input tags and copies the caption text
-     * to the value attribute. This is WRONG according to W3C.
-     *
-     * Solution:
-     * <code>
-     * <form><input type="submit" name="a[1]" value="2"/></form>
-     * if ($a[1]) $a = 1;
-     * </code>
-     *
-     * @return  string
-     * @throws  \Yana\Core\Exceptions\InvalidActionException  when the event is undefined
-     * @ignore
-     */
-    protected function _getAction()
-    {
-        if (!isset(self::$_action)) {
-            $action = self::_getRequest()->getActionArgument();
-            // work-around for IE-bug
-            if (is_array($action)) {
-                if (count($action) === 1) {
-                    // action[name]=1 -> action=name
-                    reset($action); // rewind iterator
-                    $action = key($action); // get first key
-                }
-            }
-
-            // error checking
-            switch (true)
-            {
-                case !is_string($action):
-                case !$this->getPlugins()->isEvent($action):
-                    $error = new \Yana\Core\Exceptions\InvalidActionException();
-                    $error->setAction($action);
-                // fall through
-                case $action === "":
-                    assert('!empty(self::$_config->default->homepage); // Configuration missing default homepage.');
-                    $action = (string) self::$_config->default->homepage;
-                // fall through
-                default:
-                    $action = mb_strtolower($action);
-                break;
-            }
-            self::$_action = $action;
-        }
-        return self::$_action;
+        return $this->_getDependencyContainer()->getExceptionLogger();
     }
 
     /**
@@ -510,14 +312,11 @@ final class Application extends \Yana\Core\AbstractSingleton
      * The SessionManager class is used to manage user information
      * and resolve permissions.
      * 
-     * @return \Yana\Security\Data\SessionManager
+     * @return \Yana\Security\IsFacade
      */
-    public function getSession()
+    public function getSecurity()
     {
-        if (!isset($this->_session)) {
-            $this->_session = \Yana\Security\Data\SessionManager::getInstance();
-        }
-        return $this->_session;
+        return $this->_getDependencyContainer()->getSecurity();
     }
 
     /**
@@ -532,59 +331,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     public function getRegistry()
     {
-        if (!isset($this->_registry)) {
-            // path to cache file
-            $cacheFile = (string) self::$_config->tempdir . 'registry_' . self::getId() . '.tmp';
-
-            // get configuration mode
-            \Yana\VDrive\Registry::useDefaults($this->isSafemode());
-
-            if (YANA_CACHE_ACTIVE === true && file_exists($cacheFile)) {
-                $this->_registry = unserialize(file_get_contents($cacheFile));
-                assert('$this->_registry instanceof \Yana\VDrive\Registry;');
-            } else {
-                $this->_registry = new \Yana\VDrive\Registry((string) self::$_config->configdrive, "");
-                $this->_registry->setVar("ID", self::getId());
-                $this->_registry->mergeVars('*', \Yana\Util\Hashtable::changeCase(self::$_config->toArray(), \CASE_UPPER));
-            }
-            $request = self::_getRequest()->all()->asArrayOfStrings();
-            $this->_registry->mergeVars('*', $request);
-            $this->_registry->setAsGlobal();
-
-            // set user name
-            if (!empty($_SESSION['user_name'])) {
-                $this->_registry->setVar("SESSION_USER_ID", $_SESSION['user_name']);
-            }
-
-            // set CD-ROM temp-dir
-            if (YANA_CDROM === true) {
-                $this->_registry->setVar('YANA_CDROM_DIR', YANA_CDROM_DIR);
-            }
-
-            $this->_registry->read();
-
-            // create cache file
-            if (YANA_CACHE_ACTIVE === true && !file_exists($cacheFile)) {
-                file_put_contents($cacheFile, serialize($this->_registry));
-            }
-
-            if (!empty($request['page'])) {
-                $this->_registry->setVar('PAGE', (int) $request['page']);
-            }
-            if (!empty($request['target'])) {
-                $this->_registry->setVar('TARGET', (string) $request['target']);
-            }
-            if (!empty($_SERVER['REMOTE_ADDR'])) {
-                $this->_registry->setVar('REMOTE_ADDR', $_SERVER['REMOTE_ADDR']);
-            } else {
-                $this->_registry->setVar('REMOTE_ADDR', '0.0.0.0');
-            }
-            if (!empty($_SERVER['HTTP_REFERER'])) {
-                $referer = preg_replace("/(.*\/).*(\?.*)?/", "\\1", $_SERVER['HTTP_REFERER']);
-                $this->_registry->setVar("REFERER", $referer);
-            }
-        }
-        return $this->_registry;
+        return $this->_getDependencyContainer()->getRegistry();
     }
 
     /**
@@ -597,24 +344,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     public function getPlugins()
     {
-        if (!isset($this->_plugins)) {
-            $cacheFile = (string) self::$_config->plugincache;
-
-            if (YANA_CACHE_ACTIVE === true && file_exists($cacheFile)) {
-                $this->_plugins = unserialize(file_get_contents($cacheFile));
-                assert($this->_plugins instanceof \Yana\Plugins\Manager);
-
-            } else {
-                $this->_plugins = \Yana\Plugins\Manager::getInstance();
-                $factory = new \Yana\Plugins\DependencyContainerFactory($this);
-                $this->_plugins->attachDependencies($factory->createDependencies());
-                if (!is_file(\Yana\Plugins\Manager::getConfigFilePath())) {
-                    $this->_plugins->refreshPluginFile();
-                }
-                file_put_contents($cacheFile, serialize($this->_plugins));
-            }
-        }
-        return $this->_plugins;
+        return $this->_getDependencyContainer()->getPlugins($this);
     }
 
     /**
@@ -627,12 +357,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     public function getView()
     {
-        if (!isset($this->_view)) {
-            $factory = new \Yana\Views\EngineFactory(self::$_config->templates);
-            $this->_view = $factory->createInstance();
-            $this->setVar("ACTION", $this->_getAction());
-        }
-        return $this->_view;
+        return $this->_getDependencyContainer()->getView();
     }
 
     /**
@@ -644,37 +369,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     public function getLanguage()
     {
-        if (!isset($this->_language)) {
-            $languageDir = $this->getVar('LANGUAGEDIR');
-            $defaultProvider = new \Yana\Translations\TextData\XliffDataProvider(new \Yana\Files\Dir($languageDir));
-            $this->_language = \Yana\Translations\Facade::getInstance();
-            $this->_language->addTextDataProvider($defaultProvider);
-            unset($defaultProvider);
-
-            $this->_language->setLocale((string) self::$_config->default->language);
-            if (isset($_SESSION['language'])) {
-                try {
-                    $this->_language->setLocale($_SESSION['language']);
-                } catch (\Yana\Core\Exceptions\InvalidArgumentException $e){
-                    unset($_SESSION['language']);
-                }
-            }
-            try {
-                $this->_language->loadTranslations('default');
-            } catch (\Yana\Core\Exceptions\InvalidArgumentException $e){
-                unset($_SESSION['language']);
-            }
-            $array = array();
-            foreach (glob("$languageDir*", GLOB_ONLYDIR) as $dir)
-            {
-                $array[basename($dir)] = 1;
-            }
-            $this->setVar('INSTALLED_LANGUAGES', $array);
-            if (isset($_SESSION['language'])) {
-                $this->setVar('SELECTED_LANGUAGE', $_SESSION['language']);
-            }
-        }
-        return $this->_language;
+        return $this->_getDependencyContainer()->getLanguage();
     }
 
     /**
@@ -686,27 +381,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     public function getSkin()
     {
-        if (!isset($this->_skin)) {
-            $registry = $this->getRegistry();
-            $registry->mount('system:/skincache.text');
-            $cacheFile = $registry->getResource('system:/skincache.text');
-
-            if (YANA_CACHE_ACTIVE === true && $cacheFile->exists()) {
-                assert('!isset($skin); // Cannot redeclare var $skin');
-                $this->_skin = unserialize(file_get_contents($cacheFile->getPath()));
-                assert('$this->_skin instanceof Skin;');
-
-            } else {
-                $this->_skin = new \Yana\Views\Skins\Skin($this->getVar('PROFILE.SKIN'));
-
-                if (YANA_CACHE_ACTIVE === true) {
-                    $cacheFile->create();
-                    $cacheFile->setContent(serialize($this->_skin));
-                    $cacheFile->write();
-                }
-            }
-        }
-        return $this->_skin;
+        return $this->_getDependencyContainer()->getSkin();
     }
 
     /**
@@ -739,17 +414,7 @@ final class Application extends \Yana\Core\AbstractSingleton
      */
     public static function getId()
     {
-        if (!isset(self::$_id)) {
-            $id = self::_getRequest()->getProfileArgument();
-            if ($id > "") {
-                self::$_id = $id;
-            } elseif (!empty(self::$_config->default->profile)) {
-                self::$_id = (string) self::$_config->default->profile;
-            } else {
-                self::$_id = 'default';
-            }
-        }
-        return self::$_id;
+        return $this->_getDependencyContainer()->getId();
     }
 
     /**
@@ -961,7 +626,7 @@ final class Application extends \Yana\Core\AbstractSingleton
         /**
          * is an AJAX request
          */
-        if ($this->_getRequest()->isAjaxRequest()) {
+        if ($this->_getDependencyContainer()->getRequest()->isAjaxRequest()) {
             $event = 'null';
             $templateName = 'id:STDOUT';
         }
@@ -1444,25 +1109,13 @@ final class Application extends \Yana\Core\AbstractSingleton
     }
 
     /**
-     * Adds a logger to the class.
-     *
-     * @param  \Yana\Log\IsLogger  $logger  instance that will handle the logging
-     */
-    public function attachLogger(\Yana\Log\IsLogger $logger)
-    {
-        $this->_loggers[] = $logger;
-        // inherit loggers to included classes
-        $this->getLanguage()->attachLogger($logger);
-    }
-
-    /**
      * Returns the attached loggers.
      *
      * @return  \Yana\Log\IsLogHandler
      */
     public function getLogger()
     {
-        return $this->_loggers;
+        return $this->_getDependencyContainer()->getLogger();
     }
 
 }

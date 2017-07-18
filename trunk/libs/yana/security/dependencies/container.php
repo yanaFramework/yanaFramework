@@ -114,13 +114,6 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     private $_passwordBehavior = null;
 
     /**
-     * User Entity
-     *
-     * @var  \Yana\Security\Data\Users\IsEntity
-     */
-    private $_userEntity = null;
-
-    /**
      * @var  \Yana\Data\Adapters\IsDataAdapter
      */
     private $_cache = null;
@@ -158,7 +151,6 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      *
      * @param   \Yana\Data\Adapters\IsDataAdapter  $cache  new cache adapter
      * @return  \Yana\Data\Adapters\IsCacheable
-     * @ignore
      */
     public function setCache(\Yana\Data\Adapters\IsDataAdapter $cache)
     {
@@ -170,6 +162,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
      * Get cache-adapter.
      *
      * Uses an ArrayAdapter by default.
+     * The cache-adapter is passed on to the security rule manager.
      *
      * @return  \Yana\Data\Adapters\IsDataAdapter
      */
@@ -531,7 +524,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
         if ($this->_action === "") {
             $this->_action = \Yana\Plugins\Manager::getLastEvent();
         }
-        return $this->_action;
+        return (string) $this->_action;
     }
 
     /**
