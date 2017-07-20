@@ -49,13 +49,13 @@ class CounterPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function catchAll($event, array $ARGS)
     {
-        self::$_id = __CLASS__ . '\\' . \Yana\Application::getId();
+        self::$_id = __CLASS__ . '\\' . $this->_getApplication()->getProfileId();
         if (!\Yana\Db\FileDb\Counter::exists(self::$_id)) {
             \Yana\Db\FileDb\Counter::create(self::$_id);
         }
         self::$_counter = new \Yana\Db\FileDb\Counter(self::$_id);
         self::$_counter->getNextValue();
-        $this->_getApplication()->getView()->setFunction('visitorCount', array(__CLASS__, 'visitorCount'));
+        $this->_getApplication()->getView()->setFunction('visitorCount', array($this, 'visitorCount'));
         return true;
     }
 
@@ -67,11 +67,10 @@ class CounterPlugin extends \Yana\Plugins\AbstractPlugin
      * @param   array   $params   params
      * @return  string
      */
-    public static function visitorCount(array $params)
+    public function visitorCount(array $params)
     {
-        global $YANA;
         $count = self::$_counter->getCurrentValue();
-        $text = $YANA->getLanguage()->getVar("VISITOR_COUNT");
+        $text = $this->_getApplication()->getLanguage()->getVar("VISITOR_COUNT");
 
         return $text . ' <span style="font-weight: bold;">' . $count . '</span>';
     }

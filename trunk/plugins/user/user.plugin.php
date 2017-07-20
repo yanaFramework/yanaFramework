@@ -36,45 +36,26 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
-     * @access  private
-     * @static
-     * @var     string
-     */
-    private static $userName = "";
-    /**
-     * @access  private
-     * @static
-     * @var     string
-     */
-    private static $profileId = "";
-    /**
-     * @access  private
-     * @static
-     * @var     int
-     */
-    private static $securityLevel = 0;
-
-    /**
      * Constructor
      *
      * @ignore
      */
     public function __construct()
     {
-        /* @var $YANA \Yana\Application */
-        global $YANA;
+        $security = $this->_getSecurityFacade();
+        $session = $this->_getSession();
+        $security->addSecurityRule(new \Yana\Security\Rules\SecurityLevelRule($session));
+
+        $YANA = $this->_getApplication();
         if (isset($YANA)) {
-            self::$userName = \Yana\User::getUserName();
-            if (!empty(self::$userName)) {
-                self::$securityLevel = $YANA->getSecurity()->getSecurityLevel(self::$userName);
-                self::$profileId = \Yana\Application::getId();
-                $YANA->setVar("SESSION_USER_ID", self::$userName);
-                $YANA->setVar("PERMISSION", self::$securityLevel);
+            $userName = $session->getCurrentUserName();
+            if ($userName > "") {
+                $YANA->setVar("SESSION_USER_ID", $userName);
+                $YANA->setVar("PERMISSION", $security->loadUser($userName)->getSecurityLevel($YANA->getProfileId()));
             }
-            $YANA->setVar("SESSION_ID", session_id());
-            $YANA->setVar("SESSION_NAME", session_name());
+            $YANA->setVar("SESSION_ID", $session->getId());
+            $YANA->setVar("SESSION_NAME", $session->getName());
         }
-        $this->_getSecurityFacade()->addSecurityRule(new \Yana\Security\Rules\SecurityLevelRule($this->_getSession()));
     }
 
     /**
@@ -102,7 +83,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
             $message = $e->getMessage();
             $level = \Yana\Log\TypeEnumeration::WARNING;
             $data = $e->getData();
-            \Yana\Log\LogManager::getLogger()->addLog($message, $level, $data);
+            $YANA->getLogger()->addLog($message, $level, $data);
             unset($e);
         }
 
@@ -112,7 +93,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
              */
             $this->_addLoginMenuEntry();
             return true;
-        } elseif (!$this->_loadUser()->isLoggedIn()) {
+        } elseif (!$this->_getSecurityFacade()->loadUser()->isLoggedIn()) {
             /**
              * Access denied.
              *
@@ -143,7 +124,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
         $YANA = $this->_getApplication();
         // Where the menu entry should go to
         $action = "login";
-        if ($this->_loadUser()->isLoggedIn()) {
+        if ($this->_getSecurityFacade()->loadUser()->isLoggedIn()) {
             $action = "logout";
         }
         // What the name of the entry should be
@@ -217,6 +198,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
         }
 
         // check if user exist in the database (select * from user where user_mail = ?)
+        $user = $this->_getSecurityFacade()->loadUser();
         $user = $database->select('user', array('USER_MAIL', '=', $userMail));
 
         // e-mail is not found in the db
@@ -317,10 +299,10 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
         $isSuccess = true;
         try {
 
-            $user = $this->_loadUser($userName);
+            $user = $this->_getSecurityFacade()->loadUser($userName);
             $this->_setPwd($user, $new_pwd, $repeat_pwd); // may throw exception
 
-        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
+    } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
             unset($e);
             $isSuccess = false;
         }
@@ -348,7 +330,8 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
         $isSuccess = true;
         try {
 
-            if (!\Yana\User::getInstance()->checkPassword($old_pwd)) {
+            $user = $this->_getSecurityFacade()->loadUser();
+            if (!$user->checkPassword($old_pwd)) {
                 $message = "Invalid name or password.";
                 $level = \Yana\Log\TypeEnumeration::ERROR;
                 throw new \Yana\Core\Exceptions\Security\InvalidLoginException($message, $level);
@@ -359,10 +342,9 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
                  * that it is false.
                  */
             }
-            $user = $this->_loadUser();
             $this->_setPwd($user, $new_pwd, $repeat_pwd); // may throw exception
 
-        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
+        } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
             unset($e);
             $isSuccess = false;
         }
@@ -386,7 +368,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
             throw new \Yana\Core\Exceptions\Security\PasswordDoesNotMatchException($message, $level);
         }
         try {
-            $user->changePassword($newPwd)->saveEntity();
+            $user->changePassword($newPwd);
 
         } catch (\Exception $e) { // unable to set password
             $message = "Unable to set password.";
@@ -434,7 +416,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function logout()
     {
-        $this->_loadUser()->logout();
+        $this->_getSecurityFacade()->loadUser()->logout();
     }
 
     /**
@@ -454,14 +436,14 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
         assert('!isset($session); // Cannot redeclare var $nextAction');
         $session = $this->_getSession();
         try {
-            $this->_getSecurityFacade()->login($user, $pass);
+            $this->_getSecurityFacade()->loadUser($user)->login($pass);
 
-        } catch (\Yana\Core\Exceptions\NotFoundException $e) {
+        } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
 
             $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\Security\InvalidLoginException("Invalid name or password.", $level);
 
-        } catch (\Yana\Core\Exceptions\InvalidLoginException $e) {
+        } catch (\Yana\Core\Exceptions\Security\InvalidLoginException $e) {
 
             // delay output if attempt failed to make brute-force attacks more difficult to commit
             if (isset($session['on_login_goto'])) {
@@ -469,7 +451,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
             }
 
             /* create a log for each failed login attempt */
-            \Yana\Log\LogManager::getLogger()->addLog("Login attempt failed for user '{$user}'. Invalid password.");
+            $this->_getApplication()->getLogger()->addLog("Login attempt failed for user '{$user}'. Invalid password.");
 
             /* The sleep-command is introduced for security reasons,
              * to make brute-force attacks on password forms harder.
@@ -478,8 +460,6 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
             $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\Security\InvalidLoginException("Invalid name or password.", $level);
         }
-
-        self::$userName = $user;
 
         /* route next action */
         if (isset($session['on_login_goto']) && is_string($session['on_login_goto']) && $session['on_login_goto'] > "") {
@@ -491,21 +471,6 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
         }
 
         return true;
-    }
-
-    /**
-     * @param   string  $userName  identifies user
-     * @return  \Yana\Security\Data\Behaviors\IsBehavior
-     */
-    private function _loadUser($userName = "")
-    {
-        $builder = new \Yana\Security\Data\Behaviors\Builder();
-        if ($userName > "") {
-            $user = $builder->buildFromUserName($userName);
-        } else {
-            $user = $builder->buildFromSession($this->_getSession());
-        }
-        return $user;
     }
 
 }

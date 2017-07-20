@@ -106,6 +106,7 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
         } else {
             $this->_increaseFailureCount($user);
         }
+        $user->saveEntity();
         return (bool) $isCorrect;
     }
 
@@ -138,6 +139,7 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
         } else {
             $this->_increaseFailureCount($user);
         }
+        $user->saveEntity();
         return (bool) $isCorrect;
     }
 
@@ -174,7 +176,8 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
             ->setRecentPasswords($recentPasswords)
             // reset password recovery id if there is any
             ->setPasswordRecoveryId("")
-            ->setPasswordRecoveryTime(0);
+            ->setPasswordRecoveryTime(0)
+            ->saveEntity();
 
         return $this;
     }
@@ -213,7 +216,8 @@ class StandardBehavior extends \Yana\Security\Passwords\Behaviors\AbstractBehavi
 
         $this->getUser()
             ->setPasswordRecoveryId($recoveryIdHash)
-            ->setPasswordRecoveryTime(time());
+            ->setPasswordRecoveryTime(time())
+            ->saveEntity();
 
         return $recoveryId;
     }

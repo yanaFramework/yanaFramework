@@ -91,7 +91,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function __construct()
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         if (isset($YANA)) {
             /* Plugin-specific addities */
             $YANA->setVar('ACTION_ENTRY',         $this->actionEntry);
@@ -410,10 +410,10 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
         );
 
         /* set profile id (overwrite if already exists */
-        $entry['profile_id'] = \Yana\Application::getId();
+        $entry['profile_id'] = $YANA->getProfileId();
 
         /* mark registered users */
-        if (strcasecmp(\Yana\User::getUserName(), $name) === 0) {
+        if (strcasecmp($this->_getSession()->getCurrentUserName(), $name) === 0) {
             $entry['guestbook_is_registered'] = 1;
         }
 
@@ -430,7 +430,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
             throw new \Yana\Core\Exceptions\Forms\FloodException($message, $code);
         }
         assert('!isset($where); // Cannot redeclare var $where');
-        $where = array('profile_id', '=', \Yana\Application::getId());
+        $where = array('profile_id', '=', $YANA->getProfileId());
         $recent_entry = $database->select("guestbook.?.guestbook_message", $where);
         unset($where);
         if (!empty($entry['guestbook_message']) && $recent_entry == $entry['guestbook_message']) {
@@ -536,7 +536,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
         $YANA->setVar('ROWS', $rows);
         $YANA->setVar('DESCRIPTION', $YANA->getLanguage()->getVar('descr_show'));
         $useCaptcha = \Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA") &&
-            !\Yana\User::isLoggedIn();
+            !$this->_getSecurityFacade()->loadUser()->isLoggedIn();
         $YANA->setVar('USE_CAPTCHA', $useCaptcha);
     }
 
@@ -625,7 +625,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
             $entPerPage = 10;
         }
 
-        $where = array("profile_id", "=", \Yana\Application::getId());
+        $where = array("profile_id", "=", $YANA->getProfileId());
         $sortBy = "guestbook_date";
         $desc = true;
         /* get rows from database */
@@ -701,7 +701,7 @@ class GuestbookPlugin extends \Yana\Plugins\AbstractPlugin
     private function _securityCheck()
     {
         $YANA = $this->_getApplication();
-        $id = \Yana\Application::getId();
+        $id = $YANA->getProfileId();
         /* do not show new guestbooks, if Auto-Option is deactivated */
         $dir = $YANA->getResource('system:/config/profiledir');
         $file = new \Yana\Files\Readonly($dir->getPath() . $id . '.cfg');

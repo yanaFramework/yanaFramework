@@ -51,8 +51,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function __construct()
     {
-        global $YANA;
-        $categories = $YANA->getPlugins()->calendar->getVar('categories');
+        $categories = $this->_getApplication()->getPlugins()->calendar->getVar('categories');
         $result = array();
         if (!empty($categories['category'])) {
             $category = $categories['category'];
@@ -94,7 +93,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
                 $where = array(
                     array('calendar_default', '=', true),
                     'AND',
-                    array('user_created', '=', \Yana\User::getUserName())
+                    array('user_created', '=', $this->_getSession()->getCurrentUserName())
                 );
                 $_SESSION[__CLASS__]['calendar_id'] = $this->_getDatabase()->select("calendar.?.calendar_id", $where);
                 unset($where);
@@ -425,7 +424,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
             }
         }
         //add user created
-        $eventData['created_by'] = \Yana\User::getUserName();
+        $eventData['created_by'] = $this->_getSession()->getCurrentUserName();
 
         // this contain the calendar ids which are updated too
         $calendarIDs = array();
@@ -657,7 +656,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
     {
         // check if selected calendar exists and the crrent user is it's owner
         $db = $this->_getDatabase();
-        $row = $db->select("calendar.$current_calendar", array('user_created', '=', \Yana\User::getUserName()));
+        $row = $db->select("calendar.$current_calendar", array('user_created', '=', $this->_getSession()->getCurrentUserName()));
         if (empty($row)) {
             return false; // error - the calendar does not exist, or the user has no permission to view it
         } else {
@@ -676,7 +675,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      */
     protected function getCalendarList()
     {
-        $where = array('user_created', '=', \Yana\User::getUserName());
+        $where = array('user_created', '=', $this->_getSession()->getCurrentUserName());
         $db = $this->_getDatabase();
         $calendarList = $db->select("calendar", $where);
 
@@ -714,7 +713,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
      */
     protected function insertCalendar($name, $filename, $url = "", $subscribe = false)
     {
-        $user = \Yana\User::getUserName();
+        $user = $this->_getSession()->getCurrentUserName();
         if (empty($user)) {
             return false;
         }
@@ -766,7 +765,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
     {
         $YANA = $this->_getApplication();
         $db = $this->_getDatabase();
-        $data = $db->select("calendar.$key", array('user_created', '=', \Yana\User::getUserName()));
+        $data = $db->select("calendar.$key", array('user_created', '=', $this->_getSession()->getCurrentUserName()));
         if (empty($data) || !isset($data['CALENDAR_URL']) || !isset($data['CALENDAR_FILENAME'])) {
             return false; // has no URL - nothing to refresh
         }
@@ -880,7 +879,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
     {
         $calendarID = $key;
         $this->removeCalendarFile($calendarID);
-        $where = array('user_created', '=', \Yana\User::getUserName());
+        $where = array('user_created', '=', $this->_getSession()->getCurrentUserName());
         $db = $this->_getDatabase();
         /* remove the row */
         try {
@@ -1205,7 +1204,7 @@ class CalendarPlugin extends \Yana\Plugins\AbstractPlugin
         $YANA = $this->_getApplication();
         $db = $this->_getDatabase();
         if ($datasetID != null && is_int($datasetID)) {
-            $where = array('user_created', '=', \Yana\User::getUserName());
+            $where = array('user_created', '=', $this->_getSession()->getCurrentUserName());
             $row = $db->select("calendar.{$datasetID}", $where);
 
             if (empty($row)) {

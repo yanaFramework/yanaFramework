@@ -202,14 +202,14 @@ class IpBlockAdminPlugin extends \Yana\Plugins\AbstractPlugin
         $blacklistFile = self::_getBlacklist();
 
         if (!$whitelistFile->exists()) {
-            $whitelistFile = new \Yana\Files\Block(dirname($whitelistFile->getPath()) . '/' . \Yana\Application::getId() . '.whitelist');
+            $whitelistFile = new \Yana\Files\Block(dirname($whitelistFile->getPath()) . '/' . $this->_getApplication()->getProfileId() . '.whitelist');
             $whitelistFile->create();
         } else {
             $whitelistFile->read();
         }
 
         if (!$blacklistFile->exists()) {
-            $blacklistFile = new \Yana\Files\Block(dirname($blacklistFile->getPath()) . '/' . \Yana\Application::getId() . '.blacklist');
+            $blacklistFile = new \Yana\Files\Block(dirname($blacklistFile->getPath()) . '/' . $this->_getApplication()->getProfileId() . '.blacklist');
             $blacklistFile->create();
         } else {
             $blacklistFile->read();

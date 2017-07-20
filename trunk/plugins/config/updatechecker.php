@@ -119,7 +119,7 @@ class UpdateChecker extends \Yana\Core\Object implements \Yana\Views\Helpers\IsF
         }
 
         /* create link to check for new version */
-        $url = \Yana\Application::getDefault('UPDATE_SERVER');
+        $url = \Yana\Application::getInstance()->getDefault('UPDATE_SERVER');
         $url = str_replace(YANA_LEFT_DELIMITER . '$VERSION' . YANA_RIGHT_DELIMITER, YANA_VERSION, $url);
         $url = str_replace(YANA_LEFT_DELIMITER . '$IS_STABLE' . YANA_RIGHT_DELIMITER, YANA_IS_STABLE, $url);
         $url = str_replace(YANA_LEFT_DELIMITER . '$LANG' . YANA_RIGHT_DELIMITER, @$_SESSION['language'], $url);

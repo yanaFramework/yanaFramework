@@ -57,7 +57,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->adapter = new \Yana\Data\Adapters\ArrayAdapter();
+        $this->adapter = new \Yana\Security\Data\Users\ArrayAdapter();
         $this->object = new \Yana\Security\Data\Behaviors\Builder($this->adapter);
     }
 
@@ -161,6 +161,19 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($user instanceof \Yana\Security\Data\Behaviors\Standard);
         $this->assertEquals('TEST', $user->getId());
         $this->assertEquals('mail', $user->getMail());
+    }
+
+    /**
+     * @test
+     */
+    public function testBuildFromUserMail()
+    {
+        $entity = new \Yana\Security\Data\Users\Entity('test');
+        $entity->setMail('test@domain.tld');
+        $this->adapter['test'] = $entity;
+        $container = new \Yana\Security\Dependencies\Container();
+        $expected = new \Yana\Security\Data\Behaviors\Standard($container, $entity);
+        $this->assertEquals($expected, $this->object->buildFromUserMail('test@domain.tld'));
     }
 
 }

@@ -162,7 +162,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetId()
     {
-        $this->assertTrue(is_string($this->object->getId()));
+        $this->assertTrue(is_string($this->object->getProfileId()));
     }
 
     /**

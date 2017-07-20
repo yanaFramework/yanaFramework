@@ -240,14 +240,13 @@ class UserRegistrationPlugin extends \Yana\Plugins\AbstractPlugin
         }
 
         // try to create user
-        \Yana\User::createUser($entry['NEWUSER_NAME'], $entry['NEWUSER_MAIL']);
-        $user = \Yana\User::getInstance($entry['NEWUSER_NAME']);
-        $password = $user->setPassword();
+        $user = $this->_getSecurityFacade()->createUser($entry['NEWUSER_NAME'], $entry['NEWUSER_MAIL']);
+        $password = $user->generateRandomPassword();
 
         // send password to user's mail account
         $YANA = $this->_getApplication();
         $YANA->setVar('PASSWORT', $password);
-        $YANA->setVar('NAME', $user->getName());
+        $YANA->setVar('NAME', $user->getId());
 
         $template = $YANA->getView()->createContentTemplate("id:USER_PASSWORD_MAIL");
         $sender = $YANA->getVar("PROFILE.MAIL");

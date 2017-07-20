@@ -809,7 +809,7 @@ abstract class AbstractQuery extends \Yana\Core\Object implements \Serializable
         // Auto-attach profile check to where clause if profile constraint is present.
         $this->profile = array();
         if ($table->hasProfile()) {
-            $this->profile = array('profile_id', '=', \Yana\Application::getId());
+            $this->profile = array('profile_id', '=', \Yana\Application::getInstance()->getProfileId());
         }
 
         // We expect the result to be a table.

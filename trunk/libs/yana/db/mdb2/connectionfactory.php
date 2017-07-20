@@ -125,7 +125,7 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
         if (!class_exists('\MDB2')) {
             /* error handling */
             $message = "Unable to open connection to database using PEAR-DB. Might not be installed.";
-            \Yana\Log\LogManager::getLogger()->addLog($message);
+            \Yana\Application::getInstance()->getLogger()->addLog($message);
             throw new \Yana\Db\Mdb2\PearDbException();
         }
 
@@ -134,14 +134,14 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
          */
 
         // get list of ODBC-settings
-        $requireOdbc = \Yana\Application::getDefault('database.require_odbc');
+        $requireOdbc = \Yana\Application::getInstance()->getDefault('database.require_odbc');
         if (!is_array($requireOdbc)) {
             // no ODBC-settings available
             $requireOdbc = array();
         }
 
         // get list of default connection options
-        $this->_options = \Yana\Application::getDefault('database.options');
+        $this->_options = \Yana\Application::getInstance()->getDefault('database.options');
         if (!is_array($this->_options)) {
             // no default options available
             $this->_options = array();
@@ -237,7 +237,7 @@ class ConnectionFactory extends \Yana\Core\Object implements \Yana\Db\Mdb2\IsCon
             $data = $connection->getMessage() . "\nUsing DSN:\n" . print_r($dsn, true);
 
             // add an entry to the logs
-            \Yana\Log\LogManager::getLogger()->addLog($_message, \E_USER_ERROR, $data);
+            \Yana\Application::getInstance()->getLogger()->addLog($_message, \E_USER_ERROR, $data);
 
             throw new \Yana\Db\ConnectionException($_message . ': ' . $data, \E_USER_ERROR);
         }

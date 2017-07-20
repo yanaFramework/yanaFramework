@@ -283,6 +283,65 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
         $this->offsetSet(null, $entity);
     }
 
+    /**
+     * Loads and returns an user account from the database.
+     *
+     * @param   string  $mail  unique mail address
+     * @return  \Yana\Security\Data\Users\IsEntity
+     * @throws  \Yana\Core\Exceptions\User\MailNotFoundException  when no such user exists
+     */
+    public function findUserByMail($mail)
+    {
+        assert('is_string($mail); // Wrong type argument $mail. String expected.');
+
+        assert('!isset($where); // Cannot redeclare var $where');
+        $where = array(\Yana\Security\Data\Tables\UserEnumeration::MAIL, '=', (string) $mail);
+
+        try {
+            return $this->_findUser($where);
+
+        } catch (\Exception $e) {
+
+            $message = "No user found with mail: " . \htmlentities($mail);
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\User\MailNotFoundException($message, $level, $e);
+        }
+    }
+
+    /**
+     * Loads and returns an user account from the database.
+     *
+     * @param  array  $where  to use in Select statement
+     * @return  \Yana\Security\Data\Users\IsEntity
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  when the result set is empty or returns more than one match
+     */
+    private function _findUser(array $where)
+    {
+        assert('is_string($mail); // Wrong type argument $mail. String expected.');
+
+        assert('!isset($rows); // Cannot redeclare var $rows');
+        $rows = $this->_getConnection()->select(\Yana\Security\Data\Tables\UserEnumeration::TABLE, $where);
+
+        if (count($rows) !== 1) {
+            $message = "No such user";
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
+        }
+
+        try {
+            assert('!isset($entity); // Cannot redeclare var $entity');
+            $entity = $this->_getEntityMapper()->toEntity(current($rows));
+            $entity->setDataAdapter($this);
+            return $entity;
+
+        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
+
+            $message = "No such user";
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level, $e);
+        }
+    }
+
 }
 
 ?>

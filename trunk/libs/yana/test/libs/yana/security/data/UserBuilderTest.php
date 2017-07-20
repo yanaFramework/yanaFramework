@@ -56,7 +56,7 @@ class UserBuilderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->adapter = new \Yana\Data\Adapters\ArrayAdapter();
+        $this->adapter = new \Yana\Security\Data\Users\ArrayAdapter();
         $this->object = new \Yana\Security\Data\UserBuilder($this->adapter);
     }
 
@@ -113,6 +113,17 @@ class UserBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $this->adapter['test'] = new \Yana\Security\Data\Users\Entity('test');
         $this->assertSame($this->adapter['test'], $this->object->buildFromUserName('test'));
+    }
+
+    /**
+     * @test
+     */
+    public function testBuildFromUserMail()
+    {
+        $entity = new \Yana\Security\Data\Users\Entity('test');
+        $entity->setMail('test@domain.tld');
+        $this->adapter['test'] = $entity;
+        $this->assertSame($this->adapter['test'], $this->object->buildFromUserMail('test@domain.tld'));
     }
 
     /**

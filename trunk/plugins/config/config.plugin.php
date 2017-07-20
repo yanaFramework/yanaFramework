@@ -124,7 +124,7 @@ class ConfigPlugin extends \Yana\Plugins\AbstractPlugin
         $yana = $this->_getApplication();
 
         /* current state vars */
-        $isDefault = \Yana\Application::getId() === \Yana\Application::getDefault('profile');
+        $isDefault = $yana->getProfileId() === $yana->getDefault('profile');
         $pluginManager = $yana->getPlugins();
 
         /**

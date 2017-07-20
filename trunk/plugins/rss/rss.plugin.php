@@ -60,7 +60,7 @@ class RssPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function __construct()
     {
-        global $YANA;
+        $YANA = $this->_getApplication();
         if (isset($YANA)) {
             $this->file = $YANA->getVar("PROFILE.RSS.FILE");
             $this->max  = $YANA->getVar("PROFILE.RSS.MAX");

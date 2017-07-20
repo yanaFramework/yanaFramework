@@ -71,6 +71,15 @@ interface IsUserBuilder
      */
     public function buildFromUserName($userId);
 
+    /**
+     * Build an user object based on a given mail address.
+     *
+     * @param   string  $mail  an unique mail address
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
+     * @throws  \Yana\Core\Exceptions\User\MailNotFoundException  if no such user is found in the database
+     */
+    public function buildFromUserMail($mail);
+
 }
 
 ?>

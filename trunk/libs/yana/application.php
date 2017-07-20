@@ -373,7 +373,7 @@ final class Application extends \Yana\Core\AbstractSingleton
     }
 
     /**
-     * get skin
+     * Get skin facade.
      *
      * This returns the skin component. If none exists, a new instance is created.
      *
@@ -385,7 +385,7 @@ final class Application extends \Yana\Core\AbstractSingleton
     }
 
     /**
-     * get current profile id
+     * Get current profile id.
      *
      * Returns the id of the profile the data of the current profile is to be associated with.
      *
@@ -412,9 +412,9 @@ final class Application extends \Yana\Core\AbstractSingleton
      *
      * @return  string
      */
-    public static function getId()
+    public function getProfileId()
     {
-        return $this->_getDependencyContainer()->getId();
+        return $this->_getDependencyContainer()->getProfileId();
     }
 
     /**
@@ -637,7 +637,7 @@ final class Application extends \Yana\Core\AbstractSingleton
          *   2) the template explicitely requests a message, OR
          *   3) the special 'NULL-event' (no event) is requested.
          */
-        if ($event === 'null' || self::getDefault('MESSAGE') === true || headers_sent() === true) {
+        if ($event === 'null' || $this->getDefault('MESSAGE') === true || headers_sent() === true) {
 
             $template = $view->createLayoutTemplate($templateName, '', $this->getVars());
             $template->setVar('ACTION', mb_strtolower("$event"));
@@ -770,7 +770,7 @@ final class Application extends \Yana\Core\AbstractSingleton
         }
         if (empty($target)) {
             // if no other destination is defined, route back to default homepage
-            $target = self::getDefault("homepage");
+            $target = $this->getDefault("homepage");
             assert('!empty($target); // Configuration error: No default homepage set.');
             assert('is_string($target); // Configuration error: Default homepage invalid.');
         }
@@ -836,31 +836,10 @@ final class Application extends \Yana\Core\AbstractSingleton
      * @param   string  $key  adress of data in memory (case insensitive)
      * @return  mixed
      */
-    public static function getDefault($key)
+    public function getDefault($key)
     {
         assert('is_scalar($key); // Invalid argument $key: scalar expected');
-        $result = null;
-        if (isset(self::$_config->default)) {
-            $key = mb_strtolower("$key");
-            if (isset(self::$_config->default->$key)) {
-                $result = self::$_config->default->$key;
-            } else {
-                $values = self::$_config->default;
-                foreach (explode('.', $key) as $i)
-                {
-                    if (!isset($values->$i)) {
-                        return null;
-                    }
-                    $values = $values->$i;
-                }
-                unset($i);
-                $result = $values;
-            }
-        }
-        if ($result instanceof \Yana\Util\XmlArray) {
-            $result = $result->toArray();
-        }
-        return $result;
+        return $this->_getDependencyContainer()->getDefault($key);
     }
 
     /**
@@ -993,7 +972,7 @@ final class Application extends \Yana\Core\AbstractSingleton
         $report->addNotice("installed version of Yana Framework is: " . YANA_VERSION);
         $report->addNotice("installed version of PHP is: " . PHP_VERSION);
         $report->addNotice("current server time is: " . date("r", time()));
-        $report->addNotice("running diagnostics on profile: " . self::getId());
+        $report->addNotice("running diagnostics on profile: " . $this->getProfileId());
 
         $subreport = $report->addReport("Testing installation");
 

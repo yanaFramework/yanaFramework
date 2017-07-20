@@ -207,7 +207,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     public function getDefaultEventUser()
     {
         if (!isset($this->_defaultEventUser)) {
-            $default = \Yana\Application::getDefault('event.user');
+            $default = \Yana\Application::getInstance()->getDefault('event.user');
             if (!is_array($default)) {
                 $default = array();
             }
@@ -509,7 +509,7 @@ class Container extends \Yana\Core\Object implements \Yana\Security\Dependencies
     public function getProfileId()
     {
         if ($this->_profileId === "") {
-            $this->_profileId = \Yana\Application::getId();
+            $this->_profileId = \Yana\Application::getInstance()->getProfileId();
         }
         return $this->_profileId;
     }

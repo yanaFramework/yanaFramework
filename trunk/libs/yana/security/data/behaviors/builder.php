@@ -126,6 +126,21 @@ class Builder extends \Yana\Security\Data\UserBuilder implements \Yana\Security\
         return $this($entity);
     }
 
+    /**
+     * Build an user object based on a given mail address.
+     *
+     * @param   string  $mail  an unique mail address
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
+     * @throws  \Yana\Core\Exceptions\User\MailNotFoundException  if no such user is found in the database
+     */
+    public function buildFromUserMail($mail)
+    {
+        assert('is_string($mail); // Invalid argument $mail: string expected');
+
+        $entity = parent::buildFromUserMail($mail); // may throw exception
+        return $this($entity);
+    }
+
 }
 
 ?>

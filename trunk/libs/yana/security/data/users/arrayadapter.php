@@ -27,10 +27,10 @@
  * @ignore
  */
 
-namespace Yana\Security\Data;
+namespace Yana\Security\Data\Users;
 
 /**
- * <<interface>> User data-adapter.
+ * User data-adapter.
  *
  * This persistent class provides access to user data and function to set logins and passwords.
  *
@@ -39,7 +39,7 @@ namespace Yana\Security\Data;
  *
  * @ignore
  */
-interface IsDataAdapter extends \Yana\Data\Adapters\IsDataAdapter
+class ArrayAdapter extends \Yana\Data\Adapters\ArrayAdapter implements \Yana\Security\Data\IsDataAdapter
 {
 
     /**
@@ -49,7 +49,20 @@ interface IsDataAdapter extends \Yana\Data\Adapters\IsDataAdapter
      * @return  \Yana\Security\Data\Users\IsEntity
      * @throws  \Yana\Core\Exceptions\User\MailNotFoundException  when no such user exists
      */
-    public function findUserByMail($mail);
+    public function findUserByMail($mail)
+    {
+        foreach ($this->_getItems() as $item)
+        {
+            /* @var $item \Yana\Security\Data\Users\IsEntity */
+            if (\strcasecmp($item->getMail(), $mail) === 0) {
+                return $item;
+            }
+        }
+
+        $message = "No user found with mail: " . \htmlentities($mail);
+        $level = \Yana\Log\TypeEnumeration::ERROR;
+        throw new \Yana\Core\Exceptions\User\MailNotFoundException($message, $level, $e);
+    }
 
 }
 

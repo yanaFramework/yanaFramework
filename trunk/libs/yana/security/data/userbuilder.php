@@ -65,16 +65,16 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
 {
 
     /**
-     * @var  \Yana\Data\Adapters\IsDataAdapter
+     * @var  \Yana\Security\Data\IsDataAdapter
      */
     private $_userAdapter = null;
 
     /**
      * <<constructor>> Set up and initialize user adapter.
      *
-     * @param  \Yana\Data\Adapters\IsDataAdapter  $userAdapter  inject a NULL-adapter for Unit-tests
+     * @param  \Yana\Security\Data\IsDataAdapter  $userAdapter  inject a NULL-adapter for Unit-tests
      */
-    public function __construct(\Yana\Data\Adapters\IsDataAdapter $userAdapter = null)
+    public function __construct(\Yana\Security\Data\IsDataAdapter $userAdapter = null)
     {
         $this->_userAdapter = $userAdapter;
     }
@@ -84,7 +84,7 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
      *
      * If there is none, it will create a fitting adapter automatically.
      *
-     * @return  \Yana\Data\Adapters\IsDataAdapter
+     * @return  \Yana\Security\Data\IsDataAdapter
      */
     protected function _getUserAdapter()
     {
@@ -174,6 +174,20 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
     {
         assert('is_string($userId); // Invalid argument $userId: string expected');
         return $this->_buildFromUserName((string) $userId);
+    }
+
+    /**
+     * Build an user object based on a given mail address.
+     *
+     * @param   string  $mail  an unique mail address
+     * @return  \Yana\Security\Data\Users\IsEntity
+     * @throws  \Yana\Core\Exceptions\User\MailNotFoundException  if no such user is found in the database
+     */
+    public function buildFromUserMail($mail)
+    {
+        assert('is_string($mail); // Invalid argument $mail: string expected');
+
+        return $this->_getUserAdapter()->findUserByMail($mail); // may throw exception
     }
 
     /**

@@ -76,23 +76,6 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
     private $visibleColumns = array('user_id', 'user_mail', 'user_active', 'user_inserted', 'user_login_last');
 
     /**
-     * @var  string
-     */
-    private static $userName = "";
-
-    /**
-     * Constructor
-     *
-     * @ignore
-     */
-    public function __construct()
-    {
-        if (isset($_SESSION['user_name'])) {
-            self::$userName = $_SESSION['user_name'];
-        }
-    }
-
-    /**
      * Default event handler
      *
      * returns bool(true) on success and bool(false) on error
@@ -130,19 +113,18 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
 
         $YANA = $this->_getApplication();
 
-        $userName = (string) $target['user_id'];
         try {
-            $user = \Yana\User::getInstance($userName);
-        } catch (\Yana\Core\Exceptions\NotFoundException $e) { // user not found
+            $user = $this->_getSecurityFacade()->loadUser((string) $target['user_id']);
+        } catch (\Yana\Core\Exceptions\User\NotFoundException $e) { // user not found
             return false;
         }
-        $password = $user->setPassword();
+        $password = $user->generateRandomPassword();
 
         if (!$password) {
             return false;
         }
         $YANA->setVar('PASSWORT', $password);
-        $YANA->setVar('NAME', $user->getName());
+        $YANA->setVar('NAME', $user->getId());
         if (filter_var($user->getMail(), FILTER_VALIDATE_EMAIL)) {
             assert('!isset($sender); // Cannot redeclare var $sender');
             $sender = $YANA->getVar("PROFILE.MAIL");
@@ -197,8 +179,9 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
         $form = self::getUserForm();
         $worker = new \Yana\Forms\Worker($this->_connectToDatabase('user_admin'), $form);
         $visibleColumns = $this->visibleColumns;
+        $securityFacade = $this->_getSecurityFacade();
         $worker->beforeUpdate(
-            function ($id, $entry) use ($visibleColumns)
+            function ($id, $entry) use ($visibleColumns, $securityFacade)
             {
                 $id = mb_strtolower($id);
 
@@ -210,7 +193,7 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
                 }
 
                 // before doing anything, check if entry exists
-                if (!\Yana\User::isUser($id)) {
+                if (!$securityFacade->isExistingUserName($id)) {
                     $message = "No user found with id: " . \htmlentities($id);
                     $level = \Yana\Log\TypeEnumeration::ERROR;
                     throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
@@ -244,13 +227,8 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
         /* remove entry from database */
         foreach ($selected_entries as $id)
         {
-            // Administrator account should not be deleted
-            if (strtoupper($id) == "ADMINISTRATOR") {
-                throw new \Yana\Core\Exceptions\User\DeleteAdminException();
-            }
-
             // try to remove user
-            \Yana\User::removeUser($id);
+            $this->_getSecurityFacade()->removeUser($id); // may throw exception
         }
         return true;
     }
@@ -274,12 +252,12 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
     {
         $YANA = $this->_getApplication();
         // reset Id-setting (just in case some plugin changed this)
-        $YANA->setVar('ID', \Yana\Application::getId());
+        $YANA->setVar('ID', $YANA->getProfileId());
 
         $newUser = self::getUserForm()->getInsertValues();
         $userName = $newUser['user_id'];
 
-        \Yana\User::createUser($userName, $newUser['user_mail']);
+        $user = $this->_getSecurityFacade()->createUser($userName, $newUser['user_mail']);
         $db = \Yana\Security\Data\SessionManager::getDatasource();
         try {
             $db->update("user.$userName", $newUser)

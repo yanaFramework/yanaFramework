@@ -43,7 +43,7 @@ class MediaDbPlugin extends \Yana\Plugins\AbstractPlugin
     private static function _getWhere()
     {
         return array(
-            array('user_created', '=', \Yana\User::getUserName()),
+            array('user_created', '=', $this->_getSession()->getCurrentUserName()),
             'or',
             array('public', '=', true)
         );

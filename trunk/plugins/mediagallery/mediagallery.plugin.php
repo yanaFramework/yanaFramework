@@ -92,7 +92,7 @@ class MediaGalleryPlugin extends \Yana\Plugins\AbstractPlugin
         $builder->setEntries(25);
         $builder->setLayout(6);
         $where = array(
-            array('user_created', '=', \Yana\User::getUserName()),
+            array('user_created', '=', $this->_getSession()->getCurrentUserName()),
             'or',
             array('public', '=', true)
         );

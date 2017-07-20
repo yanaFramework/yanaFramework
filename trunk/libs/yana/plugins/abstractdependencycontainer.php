@@ -122,6 +122,14 @@ abstract class AbstractDependencyContainer extends \Yana\Core\Object
     {
         if (!isset($this->_application)) {
             $this->_application = \Yana\Application::getInstance();
+            $session = $this->_getSessionWrapper();
+            $userName = $session->getCurrentUserName();
+            if ($userName > "") {
+                $this->_application->setVar("SESSION_USER_ID", $userName);
+                $this->_application->setVar("PERMISSION", $this->_application->getSecurity()->loadUser()->getSecurityLevel(\Yana\Application::getInstance()->getProfileId()));
+            }
+            $this->_application->setVar("SESSION_ID", $session->getId());
+            $this->_application->setVar("SESSION_NAME", $session->getName());
         }
         return $this->_application;
     }

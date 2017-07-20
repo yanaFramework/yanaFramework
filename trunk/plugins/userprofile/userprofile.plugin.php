@@ -91,12 +91,12 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
     {
         $YANA = $this->_getApplication();
         $YANA->setVar("DESCRIPTION", $YANA->getLanguage()->getVar("DESCR_USER_EDIT"));
-        $YANA->setVar("USERNAME", \Yana\User::getUserName());
+        $YANA->setVar("USERNAME", $this->_getSession()->getCurrentUserName());
         $builder = new \Yana\Forms\Builder('user_admin');
         $builder->setId('userdetails')
             ->setEntries(1)
             ->setLayout(1)
-            ->setWhere(array('USER_ID', '=', \Yana\User::getUserName()));
+            ->setWhere(array('USER_ID', '=', $this->_getSession()->getCurrentUserName()));
         $YANA->setVar("USERFORM", $builder->__invoke());
     }
 
@@ -126,7 +126,7 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
         $worker->beforeCreate(
             function (&$id)
             {
-                $id = \Yana\User::getUserName();
+                $id = $this->_getSession()->getCurrentUserName();
             }
         );
         return $worker->update();
@@ -191,9 +191,9 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
         } elseif (isset($_SESSION['user'][__FUNCTION__])) {
             $userId = $_SESSION['user'][__FUNCTION__];
         } else {
-            $userId = \Yana\User::getUserName();
+            $userId = $this->_getSession()->getCurrentUserName();
         }
-        if (\Yana\User::isUser($userId)) {
+        if ($this->_getSecurityFacade()->isExistingUserName($userId)) {
             $message = "No user found with id: " . \htmlentities($userId);
             $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
@@ -232,7 +232,7 @@ class UserProfilePlugin extends \Yana\Plugins\AbstractPlugin
             throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
         }
 
-        $isOwnProfile = strcasecmp($target, \Yana\User::getUserName()) === 0;
+        $isOwnProfile = strcasecmp($target, $this->_getSession()->getCurrentUserName()) === 0;
         if (!empty($userData['USER_IMAGE']) && ($isOwnProfile || $userData['USER_IMAGE_ACTIVE'])) {
             if (!$thumb) {
                 $image = new \Yana\Media\Image($userData['USER_IMAGE']);

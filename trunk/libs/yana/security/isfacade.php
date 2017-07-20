@@ -138,12 +138,22 @@ interface IsFacade
     public function loadListOfRoles();
 
     /**
+     * Build a user object from database and return it.
      *
-     * @param   string  $userName  identifies user
+     * @param   string  $userName  identifies user, retrieves user name from session if left empty
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  if no such user is found in the database
      */
-    public function loadUser($userName);
+    public function loadUser($userName = "");
+
+    /**
+     * Loads and returns an user account from the database.
+     *
+     * @param   string  $mail  unique mail address
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
+     * @throws  \Yana\Core\Exceptions\User\MailNotFoundException  when no such user exists
+     */
+    public function findUserByMail($mail);
 
     /**
      * Create a new user.

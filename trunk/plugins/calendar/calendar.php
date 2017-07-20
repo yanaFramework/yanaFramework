@@ -147,7 +147,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * Returns an unique identifier for this calendar, that can be used in a database.
      * Returns an empty string if none has been defined.
      *
-     * @access  public
      * @return  string
      */
     public function getId()
@@ -161,7 +160,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * This function set the calendar css class.
      * If none is set, the default category colors will be used.
      *
-     * @access  public
      * @param   string  $className  event calendar css class
      */
     public function setColor($className)
@@ -175,7 +173,6 @@ class Calendar extends \Yana\Files\AbstractResource
      *
      * This function returns the calendar's css class.
      *
-     * @access  public
      * @return  string
      */
     public function getColor()
@@ -189,7 +186,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * This function set the events as disabled.
      * Use this function only if u want the events as readonly
      *
-     * @access  public
      * @param   bool   $readonly  set to true if the events should be only for read
      * @return  bool
      */
@@ -205,7 +201,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * This function sets the events as disabled.
      * Use this function only if u want the events as readonly
      *
-     * @access  public
      * @return  bool
      */
     public function getDisableEvents()
@@ -219,8 +214,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * This function merges the list of scanned elements in the ICal-file with
      * additional elements provided in the list $additionalEventKeys.
      *
-     * @access  public
-     * @static
      * @param   array  $additionalEventKeys  list of additional ICal elements
      */
     public static function setAdditionalEventKeys(array $additionalEventKeys)
@@ -234,8 +227,6 @@ class Calendar extends \Yana\Files\AbstractResource
      *
      * This function set the categories list, this is needed for calculate the events color
      *
-     * @access  public
-     * @static
      * @param   array  $categories  categories list
      */
     public static function setCategories(array $categories)
@@ -253,8 +244,6 @@ class Calendar extends \Yana\Files\AbstractResource
      *
      * This function get the categories list
      *
-     * @access  public
-     * @static
      * @return  array
      */
     public static function getCategories()
@@ -270,7 +259,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * You only need to know is the other User current Name.
      * Execute this function after you get the calendar instance.
      *
-     * @access  public
      * @param   string  $user  user name
      */
     public function setOwner($user)
@@ -280,21 +268,15 @@ class Calendar extends \Yana\Files\AbstractResource
     }
 
     /**
-     * get owner
+     * Get owner.
      *
-     * This function get the name of the calendar User.
-     * If no calendar User is set the default user will be taken.
+     * This function get the name of the calendar user, if there is any.
      *
-     * @access  public
      * @return  string
      */
     public function getOwner()
     {
-        if (empty($this->owner)) {
-            return \Yana\User::getUserName();
-        } else {
-            return $this->owner;
-        }
+        return $this->owner;
     }
 
     /**
@@ -302,7 +284,6 @@ class Calendar extends \Yana\Files\AbstractResource
      *
      * This function sets the name of the current calendar
      *
-     * @access  public
      * @param   string  $name  calendar name
      * @return  string
      */
@@ -317,7 +298,6 @@ class Calendar extends \Yana\Files\AbstractResource
      *
      * This function get the name of the current calendar
      *
-     * @access  public
      * @return  string
      */
     public function getName()
@@ -332,7 +312,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * The expected param is an array with the events informations.
      * This steep is setting the recurencerule object and calculate the additional keys when they set.
      *
-     * @access  private
      * @param   \SimpleXMLElement  $xml  event dataset
      */
     private function _addEventFromXML(\SimpleXMLElement $xml)
@@ -416,7 +395,6 @@ class Calendar extends \Yana\Files\AbstractResource
      *
      * This function get all Events
      *
-     * @access  public
      * @return  array
      */
     public function getEvents()
@@ -439,8 +417,6 @@ class Calendar extends \Yana\Files\AbstractResource
      *
      * This function get all merged Events
      *
-     * @access  public
-     * @static
      * @return  array
      */
     public function getMergedEvents()
@@ -460,7 +436,6 @@ class Calendar extends \Yana\Files\AbstractResource
      *
      * This function get the content of the current calendar.
      *
-     * @access  protected
      * @return  \SimpleXmlElement
      */
     protected function getContent()
@@ -480,7 +455,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * If there are none, the returned array will be empty. Otherwise the list will contain \SimpleXMLElements,
      * each with an attribute "name" and a value.
      *
-     * @access  public
      * @return  array
      */
     public function getVendorSettings()
@@ -495,7 +469,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * (In ICal these are marked by a "X" character, followed by a vendor specific name.)
      * You may provide a scalar or an array of scalars as value.
      *
-     * @access  public
      * @param   string  $name    name of element
      * @param   array   $values  element values
      */
@@ -516,14 +489,13 @@ class Calendar extends \Yana\Files\AbstractResource
      *
      * This function looks up and deletes any settings with the given name (and value, if provided).
      *
-     * @access  public
      * @param   string  $name   name of element
      * @param   string  $value  element value
      */
     public function dropVendorSetting($name, $value = null)
     {
         $calendar = $this->getContent();
-        $xapth = "//x[@name = '$name' and (. = '$value' or '' = '$value')]";
+        $xpath = "//x[@name = '$name' and (. = '$value' or '' = '$value')]";
         foreach ($calendar->xpath($xpath) as $node)
         {
             $node = null;
@@ -754,7 +726,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * The expected param is a string with the number or some digits which identify the event.
      * If more than one event has the same id than all be removed.
      *
-     * @access  public
      * @param   string  $eventID  event id
      * @return  bool    (true = event removed, false otherweise)
      */
@@ -782,7 +753,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * This function is used to remove an event by Event ID.
      * If more than one event has the same id than all will be removed.
      *
-     * @access  public
      * @param   string  $eventID  number that identifies the event
      */
     public function setEventById($eventID)
@@ -816,8 +786,7 @@ class Calendar extends \Yana\Files\AbstractResource
      * The expected param is a string with the number or some digits which identify the event.
      * If more than one event has the same id than all be removed.
      *
-     * @access      public
-     * @return      string
+     * @return  string
      */
     public function getEventById()
     {
@@ -830,7 +799,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * This function insert a event into calendar.
      * This function is called when the current user update an event for more users.
      *
-     * @access  public
      * @param   \SimpleXMLElement  $content  xml content for insert
      * @return  bool
      */
@@ -867,7 +835,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * This step expected the event ID and the start date of this event.
      * The changes will be written into the current calendar file.
      *
-     * @access      public
      * @param       string   $eventID     event id
      * @param       string   $date        date
      * @return      bool     (true = exdate is set, false otherweise)
@@ -917,7 +884,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * This function expected an array with events which are send from the js calendar.
      * It prepair the dataset and return an array with the expected current event informations.
      *
-     * @access  protected
      * @param   array  $event  expected an array with event options
      * @return  array  get modefied event dataset too save
      */
@@ -1088,9 +1054,8 @@ class Calendar extends \Yana\Files\AbstractResource
      * This steep prepair the calendar entries and get only the structure with the current event informations and
      * return this as an xml string for download.
      *
-     * @access      public
-     * @param       array    $eventData   expected an array with event options
-     * @return      string
+     * @param   array  $eventData  expected an array with event options
+     * @return  string
      */
     public function send(array $eventData)
     {
@@ -1124,7 +1089,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * If an event is given which contains an event ID than the update action will be call otherwise insert will be
      * executed. The changes will be written into the current calendar file.
      *
-     * @access  public
      * @param   array  $event  list of events
      * @return  bool
      */
@@ -1154,7 +1118,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * This function get the current calendar and add the new event into.
      * After the modification an xml string will be returned.
      *
-     * @access  protected
      * @param   array  $eventData  event information
      * @return  string
      */
@@ -1171,7 +1134,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * This function gets the current calendar and updates the event with the expected changes.
      * After the modification an xml string will be returned.
      *
-     * @access  protected
      * @param   array   $eventData  expected an array with event options
      * @param   string  $uid        unique id
      * @return  string
@@ -1258,7 +1220,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * The dataset will be prepaired and an event update will be execute.
      * The changes will be written into the current calendar file.
      *
-     * @access  public
      * @param   string  $id      event id
      * @param   int     $resize  ammount of days to resize
      * @param   int     $min     ammount of minutes to resize
@@ -1284,7 +1245,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * The dataset will be prepaired and an event update will be execute.
      * The changes will be written into the current calendar file.
      *
-     * @access  public
      * @param   string  $id      event id
      * @param   int     $resize  ammount of days to resize
      * @param   int     $min     ammount of minutes to resize
@@ -1309,8 +1269,6 @@ class Calendar extends \Yana\Files\AbstractResource
      *
      * This function takes a time string an converts it to a timestamp.
      *
-     * @access  private
-     * @static
      * @param   string  $string        string to parse
      * @param   int     $dayOffset     number of days to move date
      * @param   int     $minuteOffset  number of minutes to move date
@@ -1343,8 +1301,6 @@ class Calendar extends \Yana\Files\AbstractResource
      *
      * This function takes an array with time settings an converts it to a timestamp.
      *
-     * @access  private
-     * @static
      * @param   array  $array         string to parse
      * @param   int    $dayOffset     number of days to move date
      * @param   int    $minuteOffset  number of minutes to move date
@@ -1369,8 +1325,6 @@ class Calendar extends \Yana\Files\AbstractResource
     /**
      * add date node to event element
      *
-     * @access  private
-     * @static
      * @param   \SimpleXMLElement  $event  event node
      * @param   string             $name   name of date node
      * @param   mixed              $value  date value to parse
@@ -1424,8 +1378,6 @@ class Calendar extends \Yana\Files\AbstractResource
     /**
      * add event node to XML
      *
-     * @access  private
-     * @static
      * @param  \SimpleXmlElement  $xml   calendar node
      * @param   array             $data  event information
      */
@@ -1464,7 +1416,6 @@ class Calendar extends \Yana\Files\AbstractResource
      *
      * This function get the current start and end date of the event
      *
-     * @access  public
      * @param   string  $uid  event ID
      * @return  array
      */
@@ -1500,7 +1451,6 @@ class Calendar extends \Yana\Files\AbstractResource
      * This function calculate the new date and time for an event that would be dragging or resize.
      * The result is an array with the current date informations (start, end)
      *
-     * @access      protected
      * @param       string|int   $hour           hour
      * @param       string|int   $minutes        minutes
      * @param       string|int   $minToResize    minutes to resize
@@ -1575,7 +1525,6 @@ class Calendar extends \Yana\Files\AbstractResource
      *
      * This function write the changes into the expected xml file
      *
-     * @access  public
      * @param   string  $content  XML content
      * @return  bool
      */
@@ -1604,8 +1553,6 @@ class Calendar extends \Yana\Files\AbstractResource
      *
      * Returns bool(true) if the calendar file has no events and bool(false) otherwise.
      *
-     * @abstract
-     * @access  public
      * @return  bool
      */
     public function isEmpty()

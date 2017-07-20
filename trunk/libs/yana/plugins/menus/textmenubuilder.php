@@ -183,7 +183,7 @@ class TextMenuBuilder extends \Yana\Core\Object implements \Yana\Plugins\Menus\I
     public function getTextMenu(\Yana\Plugins\Menus\IsMenu $menuConfiguration)
     {
         $pluginManager = \Yana\Plugins\Manager::getInstance();
-        $isSafemode = \Yana\Application::getId() === \Yana\Application::getDefault('profile');
+        $isSafemode = \Yana\Application::getInstance()->getProfileId() === \Yana\Application::getInstance()->getDefault('profile');
         $textMenu = array();
 
         foreach ($menuConfiguration->getMenuEntries() as $menuId => $menuEntries)

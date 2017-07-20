@@ -77,7 +77,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
         assert('is_string($profileId); // Wrong type for argument 3. String expected');
 
         if (empty($profileId)) {
-            $profileId = mb_strtoupper(\Yana\Application::getId());
+            $profileId = mb_strtoupper(\Yana\Application::getInstance()->getProfileId());
         } else {
             $profileId = mb_strtoupper($profileId);
         }
@@ -153,7 +153,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
         assert('is_string($profileId); // Wrong type for argument 2. String expected');
         /* Argument 1 */
         if (empty($profileId)) {
-            $profileId = \Yana\Application::getId();
+            $profileId = \Yana\Application::getInstance()->getProfileId();
         }
         $profileId = mb_strtoupper($profileId);
 
@@ -196,7 +196,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
 
             // 3) fall-back to default security level
             if (empty($level) || !is_array($level)) {
-                return (int) \Yana\Application::getDefault('user.level');
+                return (int) \Yana\Application::getInstance()->getDefault('user.level');
             }
 
             $level = array_pop($level);
@@ -204,7 +204,7 @@ class SessionManager extends \Yana\Core\AbstractSingleton
             return (int) $level;
 
         } else {
-            return (int) \Yana\Application::getDefault('user.level');
+            return (int) \Yana\Application::getInstance()->getDefault('user.level');
 
         }
     }

@@ -151,7 +151,15 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadUser()
     {
-        $this->object->loadUser('Administrator');
+        $this->assertTrue($this->object->loadUser('Administrator') instanceof \Yana\Security\Data\Behaviors\IsBehavior);
+    }
+
+    /**
+     * @test
+     */
+    public function testFindUserByMail()
+    {
+        $this->assertTrue($this->object->findUserByMail('anymail@domain.tld') instanceof \Yana\Security\Data\Behaviors\IsBehavior);
     }
 
     /**

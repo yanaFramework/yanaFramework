@@ -94,6 +94,32 @@ interface IsApplicationContainer
     public function getAction();
 
     /**
+     * Get default configuration value.
+     *
+     * Returns the default value for a given var if any,
+     * returns NULL (not false!) if there is none.
+     *
+     * Example 1:
+     * <code>
+     * \Yana\Application::getDefault('CONTAINER1.CONTAINER2.DATA');
+     * </code>
+     *
+     * Example 2:
+     * <code>
+     * if (!isset($foo)) {
+     *     $foo = \Yana\Application::getDefault('FOO');
+     * }
+     * </code>
+     *
+     * Note: system default values are typically defined in the
+     * 'default' section of the 'config/system.config' configurations file.
+     *
+     * @param   string  $key  adress of data in memory (case insensitive)
+     * @return  mixed
+     */
+    public function getDefault($key);
+
+    /**
      * Get security facade.
      *
      * This facade is used to manage user information and check permissions.
@@ -187,7 +213,7 @@ interface IsApplicationContainer
      *
      * @return  string
      */
-    public function getId();
+    public function getProfileId();
 
     /**
      * Returns the attached loggers.

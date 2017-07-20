@@ -39,41 +39,13 @@ namespace Yana\Plugins;
  * @package     yana
  * @subpackage  plugins
  */
-abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugin
+abstract class AbstractDependencyWrapper extends \Yana\Core\Object implements \Yana\IsPlugin
 {
 
     /**
      * @var  \Yana\Plugins\DependencyContainer
      */
-    private static $_fallbackDependencyContainer = null;
-
-    /**
-     * @var  \Yana\Plugins\DependencyContainer
-     */
     private $_dependencyContainer = null;
-
-    /**
-     * <<construct>> Empty constructor.
-     *
-     * This is only here so that derived classes get a warning when they overwrite this and introduce new mandatory parameters.
-     */
-    public function __construct()
-    {
-        //dummy
-    }
-
-    /**
-     * Hack to ensure there will always be a depdency container, even before the constructor is called for the first time.
-     *
-     * @return  \Yana\Plugins\DependencyContainer
-     */
-    private function _getDependencyContainer()
-    {
-        if (!isset($this->_dependencyContainer)) {
-            $this->_dependencyContainer = self::$_fallbackDependencyContainer;
-        }
-        return $this->_dependencyContainer;
-    }
 
     /**
      * <<factory>> Load plugin.
@@ -105,19 +77,11 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
         if (!class_exists($className)) {
             throw new \Yana\Core\Exceptions\NotFoundException("Plugin base-class not found: " . $className);
         }
-        // Pre-initialize the depdency-container before calling the constructor.
-        // Just in case somebody used the constructor for something "interesting".
-        self::$_fallbackDependencyContainer = $container;
-        // With the dependencies already injected, we now call the custom constructor.
         $plugin = new $className();
 
-        // Since the Plugin-Manager only insists on the interface
         if ($plugin instanceof self) {
-            // This initializes the dependency container in case _getDependencyContainer() was not called by the constructor
             $plugin->_dependencyContainer = $container;
         }
-        // We don't need the fallback anymore, so we get rid of it. Just in case somebody is counting references.
-        self::$_fallbackDependencyContainer = null;
 
         assert($plugin instanceof \Yana\IsPlugin);
         return $plugin;
@@ -128,7 +92,7 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
      */
     protected function _getApplication()
     {
-        return $this->_getDependencyContainer()->getApplication();
+        return $this->_dependencyContainer->getApplication();
     }
 
     /**
@@ -136,7 +100,7 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
      */
     protected function _getSession()
     {
-        return $this->_getDependencyContainer()->getSession();
+        return $this->_dependencyContainer->getSession();
     }
 
     /**
@@ -144,7 +108,7 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
      */
     protected function _getSecurityFacade()
     {
-        return $this->_getDependencyContainer()->getSecurityFacade();
+        return $this->_dependencyContainer->getSecurityFacade();
     }
 
     /**
@@ -164,7 +128,7 @@ abstract class AbstractPlugin extends \Yana\Core\Object implements \Yana\IsPlugi
     {
         assert('is_string($schema); // Invalid argument $schema: string expected');
 
-        return $this->_getDependencyContainer()->getConnectionFactory()->createConnection((string) $schema);
+        return $this->_dependencyContainer->getConnectionFactory()->createConnection((string) $schema);
     }
 
     /**

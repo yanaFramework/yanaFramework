@@ -115,6 +115,7 @@ class SdkPlugin extends \Yana\Plugins\AbstractPlugin
         $pluginBuilder = new \Plugins\SDK\ConfigurationBuilder();
         $pluginBuilder->createNewConfiguration();
         $pluginBuilder->setSdkConfiguration($ARGS);
+        /* @var $plugin \Yana\Plugins\Configs\ClassConfiguration */
         $plugin = $pluginBuilder->getPluginConfigurationClass();
 
         if (!empty($ARGS['image'])) {

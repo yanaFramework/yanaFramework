@@ -186,14 +186,14 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
         }
 
         $db = \Yana\Security\Data\SessionManager::getDatasource();
-        $defaultProfile = \Yana\Application::getDefault('profile');
-        $currentUser = \Yana\User::getUserName();
+        $defaultProfile = $this->_getApplication()->getDefault('profile');
+        $currentUser = $this->_getSession()->getCurrentUserName();
 
         foreach ($rules as $i => $ruleId)
         {
             if (is_numeric($ruleId)) {
                 $where = array(
-                    array("USER_ID", '=', \Yana\User::getUserName()),
+                    array("USER_ID", '=', $currentUser),
                     'and',
                     array('USER_PROXY_ACTIVE', '=', true)
                 );
@@ -246,7 +246,7 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
             }
         }
 
-        $session = \Yana\Security\Data\SessionManager::getInstance();
+        $securityFacade = $this->_getSecurityFacade();
         foreach ($levels as $i => $profileId)
         {
 
@@ -254,7 +254,7 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
                 $profileId = $defaultProfile;
             }
 
-            $level = $session->getSecurityLevel($currentUser, $profileId);
+            $level = $securityFacade->loadUser($currentUser)->getSecurityLevel($profileId);
             $row = array();
             if (is_int($level)) {
                 $row = array(
@@ -337,7 +337,7 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
             throw $warning->setField('rules/levels');
         }
         $db = \Yana\Security\Data\SessionManager::getDatasource();
-        $currentUser = \Yana\User::getUserName();
+        $currentUser = $this->_getSession()->getCurrentUserName();
 
         $where = array('USER_CREATED', '=', $currentUser);
         if (!empty($user)) {
@@ -377,44 +377,33 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
     /**
      * get user expert mode
      *
-     * @access  private
      * @return  bool
-     * @ignore
      */
     private function _getIsExpert()
     {
-        if (!isset($this->isExpert)) {
-            $currentUser = \Yana\User::getUserName();
-            if (empty($currentUser)) {
+        if (!isset($this->_isExpert)) {
+            // get current user name
+            $userName = $this->_getSession()->getCurrentUserName();
+            if ($userName === "") {
                 return false;
             }
-            // get database connection
-            $database = \Yana\Security\Data\SessionManager::getDatasource();
-            // get current user-mode
-            if ($database->select("user." . $currentUser . ".user_is_expert")) {
-                $this->isExpert = true;
-            } else {
-                $this->isExpert = false;
-            }
+            $this->_isExpert = (bool) $this->_getSecurityFacade()->loadUser($userName)->isExpert();
         }
-        return $this->isExpert;
+        return $this->_isExpert;
     }
 
     /**
      * get security levels
      *
-     * @access  private
-     * @static
      * @param   array  $rows       rows
      * @param   array  &$profiles  profiles
      * @param   array  &$users     users
      * @return  array
-     * @ignore
      */
     private static function _getLevels(array $rows, array &$profiles, &$users = false)
     {
         $userLevels = array();
-        $defaultProfile = \Yana\Application::getDefault('profile');
+        $defaultProfile = $this->_getApplication()->getDefault('profile');
         foreach ($rows as $item)
         {
             if (!empty($item['PROFILE'])) {
@@ -460,7 +449,7 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
     private static function _getRules(array $rows, array &$profiles, &$users = false)
     {
         $userRules = array();
-        $defaultProfile = \Yana\Application::getDefault('profile');
+        $defaultProfile = $this->_getApplication()->getDefault('profile');
         foreach ($rows as $key => $item)
         {
             if (!empty($item['PROFILE'])) {

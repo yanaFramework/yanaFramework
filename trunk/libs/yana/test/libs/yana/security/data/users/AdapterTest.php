@@ -118,6 +118,32 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     */
+    public function testFindUserByMail()
+    {
+        $this->assertTrue($this->object->findUserByMail('anymail@domain.tld') instanceof \Yana\Security\Data\Users\Entity);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\MailNotFoundException
+     */
+    public function testFindUserByMailNotUnique()
+    {
+        $this->object->findUserByMail('mail@domain.tld');
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\MailNotFoundException
+     */
+    public function testFindUserByMailNotFoundException()
+    {
+        $this->object->findUserByMail('noSuchMail@domain.tld');
+    }
+
+    /**
+     * @test
      * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function testOffsetSetInvalidArgumentException()

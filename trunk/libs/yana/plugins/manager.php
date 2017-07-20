@@ -656,7 +656,7 @@ class Manager extends \Yana\Core\AbstractSingleton implements \Yana\Report\IsRep
             /* String */ $type = $methodsConfig[$eventName]->getType();
         } else {
             assert('!isset($defaultEvent); // Cannot redeclare var $defaultEvent');
-            /* array */ $defaultEvent = \Yana\Application::getDefault("EVENT");
+            /* array */ $defaultEvent = \Yana\Application::getInstance()->getDefault("EVENT");
             assert('is_array($defaultEvent);');
             if (is_array($defaultEvent) && isset($defaultEvent[\Yana\Plugins\Annotations\Enumeration::TYPE])) {
                 /* string */ $type = $defaultEvent[\Yana\Plugins\Annotations\Enumeration::TYPE];

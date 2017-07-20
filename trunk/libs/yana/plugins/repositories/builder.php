@@ -194,7 +194,7 @@ class Builder extends \Yana\Plugins\Repositories\AbstractBuilder
         /**
          * plugin multicast-groups configuration
          */
-        $mulitcastGroups = \Yana\Application::getDefault("multicast_groups");
+        $mulitcastGroups = \Yana\Application::getInstance()->getDefault("multicast_groups");
         assert('is_array($mulitcastGroups);');
         // default value
         if (empty($mulitcastGroups)) {

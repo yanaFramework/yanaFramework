@@ -38,6 +38,15 @@ namespace Yana;
  */
 interface IsPlugin
 {
+
+    /**
+     * <<construct>> For whatever needs to run whenever the plugin is loaded.
+     *
+     * This is only part of the interface so that derived classes get a warning when they overwrite this and introduce new mandatory parameters.
+     * Because doing so would cause trouble, since the plugin factory doesn't expect the constructor to take any arguments.
+     */
+    public function __construct();
+
     /**
      * default event handler
      *

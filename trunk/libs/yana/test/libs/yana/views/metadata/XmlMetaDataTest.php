@@ -134,6 +134,7 @@ class XmlMetaDataTest extends \PHPUnit_Framework_TestCase
         $templates = $this->object->getTemplates();
         $this->assertEquals(1, count($templates));
         $this->assertArrayHasKey('FOO', $templates);
+        /* @var $template \Yana\Views\MetaData\IsTemplateMetaData */
         $template = $templates['FOO'];
         $this->assertEquals('FOO', $template->getId());
         $this->assertEquals('null://file.tpl', $template->getFile());

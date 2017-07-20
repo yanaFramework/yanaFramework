@@ -298,7 +298,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
     {
         if (!isset($this->_registry)) {
             // path to cache file
-            $cacheFile = (string) $this->_configuration->tempdir . 'registry_' . $this->getId() . '.tmp';
+            $cacheFile = (string) $this->_configuration->tempdir . 'registry_' . $this->getProfileId() . '.tmp';
 
             // get configuration mode
             \Yana\VDrive\Registry::useDefaults($this->isSafemode());
@@ -491,7 +491,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
      *     to changes by some plugin, e.g. to switch between
      *     profiles.
      *   </li>
-     *   <li> $container->getId():
+     *   <li> $container->getProfileId():
      *     Always returns the original value, regardless of
      *     changes by plugins.
      *   </li>
@@ -502,7 +502,7 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
      *
      * @return  string
      */
-    public function getId()
+    public function getProfileId()
     {
         if (!isset($this->_id)) {
             $id = $this->getRequest()->getProfileArgument();
@@ -530,6 +530,57 @@ class Container extends \Yana\Core\Object implements \Yana\Core\Dependencies\IsA
             $this->_loggers = new \Yana\Log\LoggerCollection();
         }
         return $this->_loggers;
+    }
+
+    /**
+     * Get default configuration value.
+     *
+     * Returns the default value for a given var if any,
+     * returns NULL (not false!) if there is none.
+     *
+     * Example 1:
+     * <code>
+     * \Yana\Application::getDefault('CONTAINER1.CONTAINER2.DATA');
+     * </code>
+     *
+     * Example 2:
+     * <code>
+     * if (!isset($foo)) {
+     *     $foo = \Yana\Application::getDefault('FOO');
+     * }
+     * </code>
+     *
+     * Note: system default values are typically defined in the
+     * 'default' section of the 'config/system.config' configurations file.
+     *
+     * @param   string  $key  adress of data in memory (case insensitive)
+     * @return  mixed
+     */
+    public function getDefault($key)
+    {
+        assert('is_scalar($key); // Invalid argument $key: scalar expected');
+        $result = null;
+        if (isset($this->_configuration->default)) {
+            $key = mb_strtolower("$key");
+            if (isset($this->_configuration->default->$key)) {
+                $result = $this->_configuration->default->$key;
+            } else {
+                $values = $this->_configuration->default;
+                foreach (explode('.', $key) as $i)
+                {
+                    if (!isset($values->$i)) {
+                        return null;
+                    }
+                    $values = $values->$i;
+                }
+                unset($i);
+                $result = $values;
+            }
+        }
+        if ($result instanceof \Yana\Util\XmlArray) {
+            $result = $result->toArray();
+        }
+        return $result;
     }
 
 }

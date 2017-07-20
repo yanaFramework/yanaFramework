@@ -263,7 +263,7 @@ class UserPwdAdminPlugin extends \Yana\Plugins\AbstractPlugin
         assert('!empty($new_password); // $new_password can not be empty');
 
         /* get the database information from the user table for the curren user */
-        $userEntity = $this->_getSecurityFacade()->loadUser($this->_getSession()->getCurrentUserName());
+        $userEntity = $this->_getSecurityFacade()->loadUser();
 
         /* check if the old password is correct */
         if (false === $userEntity->checkPassword($old_password)) {
