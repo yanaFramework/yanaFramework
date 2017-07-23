@@ -37,7 +37,7 @@ namespace Yana\Security\Data\SecurityRules;
  *
  * @ignore
  */
-class Collection extends \Yana\Core\AbstractCollection
+class Collection extends \Yana\Core\AbstractCollection implements \Yana\Security\Data\SecurityRules\IsCollection
 {
 
     /**
@@ -59,6 +59,74 @@ class Collection extends \Yana\Core\AbstractCollection
         return $this->_offsetSet($offset, $value);
     }
 
+    /**
+     * Check for group+role combination.
+     *
+     * Returns bool(true) if the collection contains a rule that has a combination
+     * of this group and role.
+     *
+     * Returns bool(false) otherwise.
+     *
+     * @param   string  $group  user group
+     * @param   string  $role   user role
+     * @return  bool
+     */
+    public function hasGroupAndRole($group, $role)
+    {
+        /* @var $rule \Yana\Security\Data\SecurityRules\IsRule */
+        foreach ($this->toArray() as $rule)
+        {
+            if (0 === \strcasecmp($rule->getRole(), $role) && 0 === \strcasecmp($rule->getGroup(), $group)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check for role.
+     *
+     * Returns bool(true) if the collection contains a rule that has the role.
+     *
+     * Returns bool(false) otherwise.
+     *
+     * @param   string  $role  user role
+     * @return  bool
+     */
+    public function hasRole($role)
+    {
+        /* @var $rule \Yana\Security\Data\SecurityRules\IsRule */
+        foreach ($this->toArray() as $rule)
+        {
+            if (0 === \strcasecmp($rule->getRole(), $role)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check for group.
+     *
+     * Returns bool(true) if the collection contains a rule that has the group.
+     *
+     * Returns bool(false) otherwise.
+     *
+     * @param   string  $group  user group
+     * @return  bool
+     */
+    public function hasGroup($group)
+    {
+        /* @var $rule \Yana\Security\Data\SecurityRules\IsRule */
+        foreach ($this->toArray() as $rule)
+        {
+            if (0 === \strcasecmp($rule->getGroup(), $group)) {
+                return true;
+            }
+        }
+        return false;
+    }
+            
 }
 
 ?>
