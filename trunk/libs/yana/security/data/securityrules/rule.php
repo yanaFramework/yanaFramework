@@ -41,6 +41,11 @@ class Rule extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRule
 {
 
     /**
+     * @var int
+     */
+    private $_id = 0;
+
+    /**
      * @var string
      */
     private $_group = "";
@@ -56,20 +61,42 @@ class Rule extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRule
     private $_userProxyActive = true;
 
     /**
+     * @var string
+     */
+    private $_profile = "";
+
+    /**
      * Initalize properties.
      *
+     * @param  int     $id       database id
      * @param  string  $group    id
      * @param  string  $role     id
      * @param  bool    $isProxy  is proxy for another user
+     * @param  string  $profile  id
      */
-    public function __construct($group, $role, $isProxy)
+    public function __construct($id, $group, $role, $isProxy, $profile = "")
     {
+        assert('is_int($id); // Invalid argument $id: int expected');
         assert('is_string($group); // Wrong type for argument $group. String expected');
         assert('is_string($role); // Wrong type for argument $role. String expected');
         assert('is_bool($isProxy); // Wrong type for argument $isProxy. Boolean expected');
+        assert('is_string($profile); // Invalid argument $profile: string expected');
+
+        $this->_id = (int) $id;
         $this->_group = (string) $group;
         $this->_role = (string) $role;
         $this->_userProxyActive = (bool) $isProxy;
+        $this->_profile = (string) $profile;
+    }
+
+    /**
+     * Get database id for this entry.
+     *
+     * @return  int
+     */
+    public function getId()
+    {
+        return $this->_id;
     }
 
     /**
@@ -105,6 +132,16 @@ class Rule extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRule
     public function isUserProxyActive()
     {
         return $this->_userProxyActive;
+    }
+
+    /**
+     * Get associated application profile.
+     *
+     * @return  string
+     */
+    public function getProfile()
+    {
+        return $this->_profile;
     }
 
 }

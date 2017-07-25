@@ -51,7 +51,7 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
      * @param   string  $profileId  profile id
      * @return  \Yana\Security\Data\SecurityRules\Collection
      */
-    public function findEntities($userId, $profileId)
+    public function findEntities($userId, $profileId = "")
     {
         assert('is_string($userId); // Wrong type for argument $userId. String expected');
         assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
@@ -84,11 +84,14 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
         assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
 
         assert('!isset($where); // Cannot redeclare var $where');
-        $where = array(
-            array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId)),
-            'and',
-            array(\Yana\Security\Data\Tables\RuleEnumeration::PROFILE, '=', \Yana\Util\Strings::toUpperCase($profileId))
-        );
+        $where = array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId));
+        if ($profileId > "") {
+            $where = array(
+                $where,
+                'and',
+                array(\Yana\Security\Data\Tables\RuleEnumeration::PROFILE, '=', \Yana\Util\Strings::toUpperCase($profileId))
+            );
+        }
 
         assert('!isset($query); // Cannot redeclare var $query');
         $query = new \Yana\Db\Queries\Select($this->_getConnection());

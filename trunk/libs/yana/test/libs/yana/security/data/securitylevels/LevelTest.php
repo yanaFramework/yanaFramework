@@ -62,9 +62,9 @@ class LevelTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object1 = new \Yana\Security\Data\SecurityLevels\Level(0, true);
-        $this->object2 = new \Yana\Security\Data\SecurityLevels\Level(10, false);
-        $this->object3 = new \Yana\Security\Data\SecurityLevels\Level(100, false);
+        $this->object1 = new \Yana\Security\Data\SecurityLevels\Level(0, 0, true);
+        $this->object2 = new \Yana\Security\Data\SecurityLevels\Level(1, 10, false);
+        $this->object3 = new \Yana\Security\Data\SecurityLevels\Level(2, 100, false);
     }
 
     /**
@@ -74,6 +74,16 @@ class LevelTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         
+    }
+
+    /**
+     * @test
+     */
+    public function testGetId()
+    {
+        $this->assertSame(0, $this->object1->getId());
+        $this->assertSame(1, $this->object2->getId());
+        $this->assertSame(2, $this->object3->getId());
     }
 
     /**

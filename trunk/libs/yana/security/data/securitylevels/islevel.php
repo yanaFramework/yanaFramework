@@ -39,6 +39,13 @@ interface IsLevel
 {
 
     /**
+     * Get database id for this entry.
+     *
+     * @return  int
+     */
+    public function getId();
+
+    /**
      * Get granted security level between 0 and 100.
      *
      * @return  int

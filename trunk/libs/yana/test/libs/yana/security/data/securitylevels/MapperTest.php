@@ -70,10 +70,12 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     public function testToEntity()
     {
         $databaseRow = array(
+            \Yana\Security\Data\Tables\LevelEnumeration::ID => 10,
             \Yana\Security\Data\Tables\LevelEnumeration::LEVEL => 100,
             \Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY => false
         );
         $entity = $this->object->toEntity($databaseRow);
+        $this->assertSame($databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::ID], $entity->getId());
         $this->assertSame($databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::LEVEL], $entity->getSecurityLevel());
         $this->assertSame($databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY], $entity->isUserProxyActive());
     }

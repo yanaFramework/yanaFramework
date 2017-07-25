@@ -138,6 +138,15 @@ interface IsFacade
     public function loadListOfRoles();
 
     /**
+     * Returns a list of all users.
+     *
+     * Returned array will have the user id and names as keys and values respectively.
+     *
+     * @return  array
+     */
+    public function loadListOfUsers();
+
+    /**
      * Build a user object from database and return it.
      *
      * @param   string  $userName  identifies user, retrieves user name from session if left empty

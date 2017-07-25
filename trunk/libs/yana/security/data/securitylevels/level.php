@@ -43,6 +43,11 @@ class Level extends \Yana\Core\Object implements \Yana\Security\Data\SecurityLev
     /**
      * @var int
      */
+    private $_id = 0;
+
+    /**
+     * @var int
+     */
     private $_securityLevel = 0;
 
     /**
@@ -53,16 +58,30 @@ class Level extends \Yana\Core\Object implements \Yana\Security\Data\SecurityLev
     /**
      * Initalize properties.
      *
+     * @param  int   $id       database id
      * @param  int   $level    integer between 0 and 100
      * @param  bool  $isProxy  is proxy for another user
      */
-    public function __construct($level, $isProxy)
+    public function __construct($id, $level, $isProxy)
     {
+        assert('is_int($id); // Invalid argument $id: int expected');
+
         assert('is_int($level); // Wrong type for argument $level. Integer expected');
         assert('$level >= 0 && $level <= 100; // Invalid argument $level. Must be between 0 and 100');
         assert('is_bool($isProxy); // Wrong type for argument $isProxy. Boolean expected');
+        $this->_id = (int) $id;
         $this->_securityLevel = (int) $level;
         $this->_userProxyActive = (bool) $isProxy;
+    }
+
+    /**
+     * Get database id for this entry.
+     *
+     * @return  int
+     */
+    public function getId()
+    {
+        return $this->_id;
     }
 
     /**

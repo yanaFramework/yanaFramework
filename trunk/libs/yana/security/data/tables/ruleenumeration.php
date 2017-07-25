@@ -41,6 +41,7 @@ class RuleEnumeration extends \Yana\Core\AbstractEnumeration
 {
 
     const TABLE = 'securityrules';
+    const ID = 'rule_id';
     const GRANTED_BY_USER = 'user_created';
     const USER = 'user_id';
     const GROUP = 'group_id';

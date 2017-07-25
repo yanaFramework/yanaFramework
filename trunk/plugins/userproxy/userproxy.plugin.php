@@ -40,14 +40,6 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
 {
 
     /**
-     * is user expert mode
-     *
-     * @access  private
-     * @var     bool
-     */
-    private $isExpert = null;
-
-    /**
      * Default event handler
      *
      * returns bool(true) on success and bool(false) on error
@@ -82,55 +74,82 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
         $YANA = $this->_getApplication();
 
         // check user expert setting
-        $YANA->setVar('USER_IS_EXPERT', $this->_getIsExpert());
+        $YANA->setVar('USER_IS_EXPERT', (bool) $this->_getSecurityFacade()->loadUser()->isExpert());
 
-        $currentUser = $this->_getSession()->getCurrentUserName();
-        /**
-         * @var DBStream $db
-         */
-        $db = \Yana\Security\Data\SessionManager::getDatasource();
+        $currentUser = \Yana\Util\Strings::toUpperCase($this->_getSession()->getCurrentUserName());
 
         /**
          * get all Users Names
          */
-        $where = array('USER_ID', '!=', $currentUser);
-        $users = $db->select('user.*.user_id', $where);
+        $users = $this->_getSecurityFacade()->loadListOfUsers();
+        if (isset($users[$currentUser])) {
+            unset($users[$currentUser]);
+        }
         $YANA->setVar("USERLIST", $users);
-        unset($where, $users);
-
-        $profiles = array();
+        unset($users);
 
         /**
          * get security levels
          */
-        $where = array(
-            array('USER_ID', '=', $currentUser),
-            'and',
-            array('USER_PROXY_ACTIVE', '=', true)
-        );
-        $rows = $db->select('securitylevel', $where, array("profile", "security_level"), 0, 0, true);
-        $YANA->setVar("LEVELS", self::_getLevels($rows, $profiles));
-        unset($rows);
-        // WHERE clause will be reused
+        $user = $this->_getSecurityFacade()->loadUser($currentUser);
+        assert('!isset($levels); // Cannot redeclare var $levels');
+        $levels = array();
+        assert('!isset($profileId); // Cannot redeclare var $profileId');
+        assert('!isset($level); // Cannot redeclare var $level');
+        foreach ($user->getAllSecurityLevels() as $profileId => $level)
+        {
+            /* @var $level \Yana\Security\Data\SecurityLevels\IsLevel */
+
+            if (!$level->isUserProxyActive()) {
+                continue;
+            }
+            $levels[$profileId] = array(
+                "SECURITY_ID" => $level->getId(),
+                "SECURITY_LEVEL" => $level->getSecurityLevel()
+            );
+        }
+        unset($profileId, $level);
+        $YANA->setVar("LEVELS", $levels);
+        unset($levels);
 
         /**
-         * get groups
+         * get security rules
          */
-        $rows = $db->select('securityrules', $where);
-        $YANA->setVar("RULES", $this->_getRules($rows, $profiles));
-        unset($where, $rows);
+        assert('!isset($profiles); // Cannot redeclare var $profiles');
+        $profiles = array();
+        assert('!isset($defaultProfile); // Cannot redeclare var $defaultProfile');
+        $defaultProfile = $YANA->getDefault('profile');
+        assert('!isset($levels); // Cannot redeclare var $levels');
+        $rules = array();
+        assert('!isset($rule); // Cannot redeclare var $rule');
+        assert('!isset($profileId); // Cannot redeclare var $profileId');
+        foreach ($user->getAllSecurityGroupsAndRoles() as $rule)
+        {
+            /* @var $rule \Yana\Security\Data\SecurityRules\IsRule */
 
-        /**
-         * set profiles
-         */
-        $YANA->setVar("PROFILES", $profiles);
-        unset($profiles);
+            if (!$rule->isUserProxyActive()) {
+                continue;
+            }
+            $profileId = $rule->getProfile() > "" ? $rule->getProfile() : $defaultProfile;
+            if (!isset($rules[$profileId])) {
+                $rules[$profileId] = array();
+            }
+            $rules[$profileId][$rule->getId()] = array(
+                "GROUP_ID" => $rule->getGroup(),
+                "ROLE_ID" => $rule->getRole()
+            );
+        }
+        unset($rule, $profileId);
+        $YANA->setVar("RULES", $rules);
+        $YANA->setVar("PROFILES", array_keys($rules)); // set profiles
+        unset($profiles, $rules);
 
         // collect users who are granted security privileges
         $users = array();
         // collect profiles
         $profiles = array();
 
+        $db = \Yana\Security\Data\SessionManager::getDatasource();
         /**
          * get security levels
          */
@@ -375,39 +394,22 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * get user expert mode
+     * Get security levels.
      *
-     * @return  bool
-     */
-    private function _getIsExpert()
-    {
-        if (!isset($this->_isExpert)) {
-            // get current user name
-            $userName = $this->_getSession()->getCurrentUserName();
-            if ($userName === "") {
-                return false;
-            }
-            $this->_isExpert = (bool) $this->_getSecurityFacade()->loadUser($userName)->isExpert();
-        }
-        return $this->_isExpert;
-    }
-
-    /**
-     * get security levels
-     *
-     * @param   array  $rows       rows
-     * @param   array  &$profiles  profiles
-     * @param   array  &$users     users
+     * @param   \Yana\Security\Data\SecurityLevels\Collection  $levels     collection
+     * @param   array                                          &$profiles  profiles
+     * @param   array                                          &$users     users
      * @return  array
      */
-    private static function _getLevels(array $rows, array &$profiles, &$users = false)
+    private static function _getLevels(\Yana\Security\Data\SecurityLevels\Collection $levels, array &$profiles, &$users = false)
     {
         $userLevels = array();
         $defaultProfile = $this->_getApplication()->getDefault('profile');
-        foreach ($rows as $item)
+        foreach ($levels as $profile => $item)
         {
-            if (!empty($item['PROFILE'])) {
-                $profile = mb_strtoupper($item['PROFILE']);
+            /* @var $item \Yana\Security\Data\SecurityLevels\IsLevel */
+            if ($profile > "") {
+                $profile = mb_strtoupper($profile);
             } else {
                 $profile = $defaultProfile;
             }
@@ -415,8 +417,8 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
                 $userName = $item['USER_ID'];
             }
             $entry = array(
-                "SECURITY_ID" => $item["SECURITY_ID"],
-                "SECURITY_LEVEL" => $item["SECURITY_LEVEL"]
+                "SECURITY_ID" => $item->getId(),
+                "SECURITY_LEVEL" => $item->getSecurityLevel()
             );
             if (isset($userName) && !isset($userLevels[$profile][$userName])) {
                 if (!in_array($userName, $users)) {
@@ -440,13 +442,13 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
      *
      * @access  private
      * @static
-     * @param   array  $rows       rows
+     * @param   \Yana\Security\Data\SecurityRules\Collection  $rows  rows
      * @param   array  &$profiles  profiles
      * @param   array  &$users     users
      * @return  array
      * @ignore
      */
-    private static function _getRules(array $rows, array &$profiles, &$users = false)
+    private static function _getRules(\Yana\Security\Data\SecurityRules\Collection $rows, array &$profiles, &$users = false)
     {
         $userRules = array();
         $defaultProfile = $this->_getApplication()->getDefault('profile');

@@ -53,6 +53,11 @@ class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRu
     {
         $databaseRowLower = \Yana\Util\Hashtable::changeCase($databaseRow, \CASE_LOWER);
         assert('!isset($group); // Cannot redeclare var $group');
+        $id = 0;
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::ID])) {
+            $id = (int) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::ID];
+        }
+        assert('!isset($group); // Cannot redeclare var $group');
         $group = "";
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::GROUP])) {
             $group = (string) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::GROUP];
@@ -67,8 +72,13 @@ class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRu
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY])) {
             $isProxy = (bool) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY];
         }
+        assert('!isset($profile); // Cannot redeclare var $profile');
+        $profile = "";
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::PROFILE])) {
+            $profile = (string) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::PROFILE];
+        }
 
-        return new \Yana\Security\Data\SecurityRules\Rule($group, $role, $isProxy);
+        return new \Yana\Security\Data\SecurityRules\Rule($id, $group, $role, $isProxy, $profile);
     }
 
 }

@@ -62,9 +62,9 @@ class RuleTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object1 = new \Yana\Security\Data\SecurityRules\Rule('Group1', 'Role1', true);
-        $this->object2 = new \Yana\Security\Data\SecurityRules\Rule('Group2', 'Role2', false);
-        $this->object3 = new \Yana\Security\Data\SecurityRules\Rule('', '', false);
+        $this->object1 = new \Yana\Security\Data\SecurityRules\Rule(1, 'Group1', 'Role1', true, 'Profile1');
+        $this->object2 = new \Yana\Security\Data\SecurityRules\Rule(2, 'Group2', 'Role2', false, 'Profile2');
+        $this->object3 = new \Yana\Security\Data\SecurityRules\Rule(3, '', '', false);
     }
 
     /**
@@ -104,6 +104,26 @@ class RuleTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(true, $this->object1->isUserProxyActive());
         $this->assertSame(false, $this->object2->isUserProxyActive());
         $this->assertSame(false, $this->object3->isUserProxyActive());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetProfile()
+    {
+        $this->assertSame('Profile1', $this->object1->getProfile());
+        $this->assertSame('Profile2', $this->object2->getProfile());
+        $this->assertSame('', $this->object3->getProfile());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetId()
+    {
+        $this->assertSame(1, $this->object1->getId());
+        $this->assertSame(2, $this->object2->getId());
+        $this->assertSame(3, $this->object3->getId());
     }
 
 }

@@ -39,6 +39,13 @@ interface IsRule
 {
 
     /**
+     * Get database id for this entry.
+     *
+     * @return  int
+     */
+    public function getId();
+
+    /**
      * Get associated user group.
      *
      * @return  string
@@ -51,6 +58,13 @@ interface IsRule
      * @return  string
      */
     public function getRole();
+
+    /**
+     * Get associated application profile.
+     *
+     * @return  string
+     */
+    public function getProfile();
 
     /**
      * Check proxy settings.

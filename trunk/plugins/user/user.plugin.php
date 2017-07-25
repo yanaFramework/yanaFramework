@@ -180,7 +180,6 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
     public function get_lost_pwd(array $ARGS)
     {
         $YANA = $this->_getApplication();
-        $database = \Yana\Security\Data\SessionManager::getDatasource();
         // check captcha field
         if (\Yana\Plugins\Manager::getInstance()->isActive('antispam') && $YANA->getVar("PROFILE.SPAM.CAPTCHA")) {
             if ($YANA->callAction("security_check_image", $ARGS) === false) {
@@ -198,43 +197,26 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
         }
 
         // check if user exist in the database (select * from user where user_mail = ?)
-        $user = $this->_getSecurityFacade()->loadUser();
-        $user = $database->select('user', array('USER_MAIL', '=', $userMail));
-
-        // e-mail is not found in the db
-        if (count($user) !== 1) {
-            $message = "No user found with mail " . $userMail;
-            $level = \Yana\Log\TypeEnumeration::WARNING;
-            throw new \Yana\Core\Exceptions\User\MailNotFoundException($message, $level);
-        }
-        unset($userMail);
+        // may throw \Yana\Core\Exceptions\User\MailNotFoundException
+        $user = $this->_getSecurityFacade()->findUserByMail($userMail);
 
         /* Get user name and mail.
          *
          * Note that for security reasosns you should not trust the mail address the user
          * entered himself.
          */
-        $user = array_pop($user);
-        $userName = $user['USER_ID'];
-        $recipient = $user['USER_MAIL'];
-        unset($user);
+        $userName = $user->getId();
+        $recipient = $user->getMail();
         assert('is_string($userName); // $userName must be of type String');
         assert('is_string($recipient); // $recipient must be of type String');
         assert('filter_var($recipient, FILTER_VALIDATE_EMAIL); // $recipient not a valid e-mail');
 
-        // calculate unique recovery-key
-        $uniqueKey = uniqid(substr(md5($recipient), 0, 3));
-
-        // update the user record with time() and uniqueID for verification
-        assert('!isset($recovery) // Cannot redeclare var $recovery');
-        $recovery = array("user_recover_id" => $uniqueKey, "user_recover_utc" => time());
+        // calculate unique recovery-key and update the user record with time() and uniqueID for verification
         try {
-            $database->update("user.{$userName}", $recovery)
-                ->commit();
+            $uniqueKey = $user->generatePasswordRecoveryId();
         } catch (\Exception $e) {
             return false; // unsuccessful user record update
         }
-        unset($recovery);
 
         assert('isset($userName); // variable $userName is not set');
 

@@ -287,6 +287,15 @@ interface IsBehavior
     public function getSecurityGroupsAndRoles($profileId);
 
     /**
+     * Get all combinations of user groups and roles.
+     *
+     * Result is empty if there are no entries.
+     *
+     * @return  \Yana\Security\Data\SecurityRules\Collection
+     */
+    public function getAllSecurityGroupsAndRoles();
+
+    /**
      * Get security level.
      *
      * Returns the user's security level as an integer value.
@@ -296,6 +305,16 @@ interface IsBehavior
      * @return  int
      */
     public function getSecurityLevel($profileId);
+
+    /**
+     * Get security levels.
+     *
+     * Returns a collection of all security levels associated with this user.
+     *
+     * @param   string  $profileId  profile id
+     * @return  \Yana\Security\Data\SecurityLevels\Collection
+     */
+    public function getAllSecurityLevels();
 
     /**
      * Handle user logins.

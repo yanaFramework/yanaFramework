@@ -96,9 +96,22 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     {
         $entities = $this->object->findEntities('administrator', 'default');
         $this->assertCount(3, $entities);
-        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'DEFAULT', true)), $entities[0]);
-        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule('', 'PRINT', true)), $entities[1]);
-        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'ADMIN', true)), $entities[2]);
+        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule(0, 'ADMIN', 'DEFAULT', true, 'DEFAULT')), $entities[0]);
+        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule(2, '', 'PRINT', true, 'DEFAULT')), $entities[1]);
+        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule(10, 'ADMIN', 'ADMIN', true, 'DEFAULT')), $entities[2]);
+    }
+
+    /**
+     * @test
+     */
+    public function testFindEntitiesWithoutProfile()
+    {
+        $entities = $this->object->findEntities('administrator');
+        $this->assertCount(4, $entities);
+        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule(0, 'ADMIN', 'DEFAULT', true, 'DEFAULT')), $entities[0]);
+        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule(1, 'MOD', 'DEFAULT', true, 'foo')), $entities[1]);
+        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule(2, '', 'PRINT', true, 'DEFAULT')), $entities[2]);
+        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule(10, 'ADMIN', 'ADMIN', true, 'DEFAULT')), $entities[3]);
     }
 
 }

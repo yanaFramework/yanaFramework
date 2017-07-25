@@ -51,8 +51,13 @@ class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityLe
      */
     public function toEntity(array $databaseRow)
     {
-        assert('!isset($level); // Cannot redeclare var $level');
         $databaseRowLower = \Yana\Util\Hashtable::changeCase($databaseRow, \CASE_LOWER);
+        assert('!isset($id); // Cannot redeclare var $id');
+        $id = -1;
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::ID])) {
+            $id = (int) $databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::ID];
+        }
+        assert('!isset($level); // Cannot redeclare var $level');
         $level = 0;
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::LEVEL])) {
             $level = (int) $databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::LEVEL];
@@ -63,7 +68,7 @@ class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityLe
             $isProxy = (bool) $databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY];
         }
 
-        return new \Yana\Security\Data\SecurityLevels\Level($level, $isProxy);
+        return new \Yana\Security\Data\SecurityLevels\Level($id, $level, $isProxy);
     }
 
 }

@@ -225,6 +225,18 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
     }
 
     /**
+     * Returns a list of all users.
+     *
+     * Returned array will have the user id and names as keys and values respectively.
+     *
+     * @return  array
+     */
+    public function loadListOfUsers()
+    {
+        return $this->_createUserAdapter()->getIds();
+    }
+
+    /**
      * Loads and returns an user account from the database.
      *
      * @param   string  $mail  unique mail address

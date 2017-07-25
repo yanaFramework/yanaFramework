@@ -68,7 +68,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testOffsetSet()
     {
-        $rule = new \Yana\Security\Data\SecurityRules\Rule('group', 'role', true);
+        $rule = new \Yana\Security\Data\SecurityRules\Rule(1, 'group', 'role', true, 'DEFAULT');
         $this->object->offsetSet(null, $rule);
         $this->assertSame($rule, $this->object[0]);
         $this->assertEquals(1, count($this->object));

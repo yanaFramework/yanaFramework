@@ -399,6 +399,18 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
     }
 
     /**
+     * Get all combinations of user groups and roles.
+     *
+     * Result is empty if there are no entries.
+     *
+     * @return  \Yana\Security\Data\SecurityRules\Collection
+     */
+    public function getAllSecurityGroupsAndRoles()
+    {
+        return $this->_getDependencies()->getRulesAdapter()->findEntities($this->getId());
+    }
+
+    /**
      * Get security level.
      *
      * Returns the user's security level as an integer value.
@@ -415,10 +427,31 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
             $securityLevelEntity = $this->_getDependencies()->getLevelsAdapter()
                 ->findEntity($this->getId(), $profileId);
         } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
-            $securityLevelEntity = new \Yana\Security\Data\SecurityLevels\Level(0, true); // 0 is default
+            $securityLevelEntity = new \Yana\Security\Data\SecurityLevels\Level(-1, 0, true); // 0 is default
             unset($e);
         }
         return (int) $securityLevelEntity->getSecurityLevel();
+    }
+
+    /**
+     * Get security levels.
+     *
+     * Returns a collection of all security levels associated with this user.
+     *
+     * @param   string  $profileId  profile id
+     * @return  \Yana\Security\Data\SecurityLevels\Collection
+     */
+    public function getAllSecurityLevels()
+    {
+        try {
+            $securityLevelEntities = $this->_getDependencies()->getLevelsAdapter()
+                ->findEntities($this->getId());
+        } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
+            $securityLevelEntities = new \Yana\Security\Data\SecurityLevels\Collection();
+            $securityLevelEntities[] = new \Yana\Security\Data\SecurityLevels\Level(-1, 0, true); // 0 is default
+            unset($e);
+        }
+        return $securityLevelEntities;
     }
 
     /**
