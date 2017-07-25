@@ -282,7 +282,7 @@ interface IsBehavior
      * Result is empty if there are no entries.
      *
      * @param   string  $profileId  profile id
-     * @return  \Yana\Security\Data\SecurityRules\Collection
+     * @return  \Yana\Security\Data\SecurityRules\IsCollection
      */
     public function getSecurityGroupsAndRoles($profileId);
 

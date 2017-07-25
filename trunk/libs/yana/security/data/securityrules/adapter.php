@@ -49,7 +49,7 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
      *
      * @param   string  $userId     user name
      * @param   string  $profileId  profile id
-     * @return  \Yana\Security\Data\SecurityRules\Collection
+     * @return  \Yana\Security\Data\SecurityRules\IsCollection
      */
     public function findEntities($userId, $profileId = "")
     {

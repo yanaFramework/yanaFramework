@@ -41,7 +41,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Yana\Security\Data\SecurityRules\Collection
+     * @var \Yana\Security\Data\SecurityLevels\Collection
      */
     protected $object;
 
