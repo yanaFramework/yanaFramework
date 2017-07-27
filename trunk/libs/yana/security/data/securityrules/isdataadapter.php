@@ -30,46 +30,28 @@
 namespace Yana\Security\Data\SecurityRules;
 
 /**
- * <<interface>> Security rule.
+ * <<interface>> Security level rule data-adapter.
+ *
+ * Provides access to security data.
  *
  * @package     yana
  * @subpackage  security
+ *
+ * @ignore
  */
-interface IsRule extends \Yana\Data\Adapters\IsEntity
+interface IsDataAdapter extends \Yana\Data\Adapters\IsDataAdapter
 {
 
     /**
-     * Get associated user group.
+     * Get security levels.
      *
-     * @return  string
+     * Returns all the user's security level as an array, where the keys are the profile names and the values are the levels.
+     *
+     * @param   string  $userId     user name
+     * @param   string  $profileId  profile id
+     * @return  \Yana\Security\Data\SecurityRules\IsCollection
      */
-    public function getGroup();
-
-    /**
-     * Get associated user role.
-     *
-     * @return  string
-     */
-    public function getRole();
-
-    /**
-     * Get associated application profile.
-     *
-     * @return  string
-     */
-    public function getProfile();
-
-    /**
-     * Check proxy settings.
-     *
-     * Returns bool(true) if this user should be allowed to forward this security setting
-     * to another user named to act as a temporary proxy and bool(false) otherwise.
-     *
-     * Note: this is just a setting. The actual proxy implementation needs to be done by plugins.
-     *
-     * @return  bool
-     */
-    public function isUserProxyActive();
+    public function findEntities($userId, $profileId = "");
 
 }
 

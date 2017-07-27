@@ -37,7 +37,7 @@ namespace Yana\Security\Data\SecurityRules;
  * @package     yana
  * @subpackage  security
  */
-class Rule extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRules\IsRule
+class Rule extends \Yana\Security\Data\SecurityRules\AbstractRule
 {
 
     /**
@@ -87,6 +87,19 @@ class Rule extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRule
         $this->_role = (string) $role;
         $this->_userProxyActive = (bool) $isProxy;
         $this->_profile = (string) $profile;
+    }
+
+    /**
+     * Set the identifying value for this entity.
+     *
+     * @param   int  $id  numeric id
+     * @return  self
+     */
+    public function setId($id)
+    {
+        assert('is_numeric($id); // Invalid argument type: $id. Integer expected');
+        $this->_id = (int) $id;
+        return $this;
     }
 
     /**
