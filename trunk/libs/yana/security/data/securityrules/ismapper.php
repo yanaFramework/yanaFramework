@@ -37,17 +37,10 @@ namespace Yana\Security\Data\SecurityRules;
  *
  * @ignore
  */
-interface IsMapper
+interface IsMapper extends \Yana\Data\Adapters\IsEntityMapper
 {
 
-    /**
-     * Creates an entity based on a database row.
-     *
-     * @param   array  $databaseRow  row containing user info
-     * @return  \Yana\Security\Data\SecurityRules\IsRule
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given user has no name
-     */
-    public function toEntity(array $databaseRow);
+    // intentionally left blank
 
 }
 

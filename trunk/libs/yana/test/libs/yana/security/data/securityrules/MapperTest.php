@@ -74,7 +74,9 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             \Yana\Security\Data\Tables\RuleEnumeration::GROUP => 'GroupÄö@',
             \Yana\Security\Data\Tables\RuleEnumeration::ROLE => 'RoleÄö@',
             \Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY => false,
-            \Yana\Security\Data\Tables\RuleEnumeration::PROFILE => 'ProfileÄö@'
+            \Yana\Security\Data\Tables\RuleEnumeration::PROFILE => 'ProfileÄö@',
+            \Yana\Security\Data\Tables\RuleEnumeration::USER => 'UserÄö@',
+            \Yana\Security\Data\Tables\RuleEnumeration::GRANTED_BY_USER => 'GrantedÄö@'
         );
         $entity = $this->object->toEntity($databaseRow);
         $this->assertSame($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::ID], $entity->getId());
@@ -82,6 +84,34 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::ROLE], $entity->getRole());
         $this->assertSame($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY], $entity->isUserProxyActive());
         $this->assertSame($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::PROFILE], $entity->getProfile());
+        $this->assertSame($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::USER], $entity->getUserName());
+        $this->assertSame($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::GRANTED_BY_USER], $entity->getGrantedByUser());
+    }
+
+    /**
+     * @test
+     */
+    public function testToDatabaseRow()
+    {
+        $databaseRow = array(
+            \Yana\Security\Data\Tables\RuleEnumeration::ID => -1,
+            \Yana\Security\Data\Tables\RuleEnumeration::GROUP => 'GroupÄö@',
+            \Yana\Security\Data\Tables\RuleEnumeration::ROLE => 'RoleÄö@',
+            \Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY => false,
+            \Yana\Security\Data\Tables\RuleEnumeration::PROFILE => 'ProfileÄö@',
+            \Yana\Security\Data\Tables\RuleEnumeration::USER => 'UserÄö@',
+            \Yana\Security\Data\Tables\RuleEnumeration::GRANTED_BY_USER => 'GrantedÄö@'
+        );
+        $entity = new \Yana\Security\Data\SecurityRules\Rule(
+            $databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::GROUP],
+            $databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::ROLE],
+            $databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY],
+            $databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::PROFILE]);
+        $entity
+            ->setId($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::ID])
+            ->setUserName($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::USER])
+            ->setGrantedByUser($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::GRANTED_BY_USER]);
+        $this->assertEquals($databaseRow, $this->object->toDatabaseRow($entity));
     }
 
 }

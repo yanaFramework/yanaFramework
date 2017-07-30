@@ -35,42 +35,38 @@ namespace Yana\Security\Data\SecurityRules;
  * @package     yana
  * @subpackage  security
  */
-interface IsRule
+interface IsRuleEntity extends \Yana\Security\Data\SecurityRules\IsRule, \Yana\Data\Adapters\IsEntity
 {
 
     /**
-     * Get associated user group.
+     * Get the id of the user this rule applies to.
      *
      * @return  string
      */
-    public function getGroup();
+    public function getUserName();
 
     /**
-     * Get associated user role.
+     * Get the id of the user who created this rule.
      *
      * @return  string
      */
-    public function getRole();
+    public function getGrantedByUser();
 
     /**
-     * Get associated application profile.
+     * Set the id of the user this rule applies to.
      *
-     * @return  string
+     * @param   string  $userName  id referencing user table
+     * @return  self
      */
-    public function getProfile();
+    public function setUserName($userName);
 
     /**
-     * Check proxy settings.
+     * Set the id of the user who created this rule.
      *
-     * Returns bool(true) if this user should be allowed to forward this security setting
-     * to another user named to act as a temporary proxy and bool(false) otherwise.
-     *
-     * Note: this is just a setting. The actual proxy implementation needs to be done by plugins.
-     *
-     * @return  bool
+     * @param   string  $createdByUser  id referencing user table
+     * @return  self
      */
-    public function isUserProxyActive();
-
+    public function setGrantedByUser($createdByUser);
 }
 
 ?>

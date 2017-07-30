@@ -27,50 +27,17 @@
  * @ignore
  */
 
-namespace Yana\Security\Data\SecurityRules;
+namespace Yana\Security\Data\SecurityLevels;
 
 /**
- * <<interface>> Security rule.
+ * <<interface>> Security level.
  *
  * @package     yana
  * @subpackage  security
  */
-interface IsRule
+interface IsLevelEntity extends \Yana\Security\Data\SecurityLevels\IsLevel, \Yana\Data\Adapters\IsEntity
 {
-
-    /**
-     * Get associated user group.
-     *
-     * @return  string
-     */
-    public function getGroup();
-
-    /**
-     * Get associated user role.
-     *
-     * @return  string
-     */
-    public function getRole();
-
-    /**
-     * Get associated application profile.
-     *
-     * @return  string
-     */
-    public function getProfile();
-
-    /**
-     * Check proxy settings.
-     *
-     * Returns bool(true) if this user should be allowed to forward this security setting
-     * to another user named to act as a temporary proxy and bool(false) otherwise.
-     *
-     * Note: this is just a setting. The actual proxy implementation needs to be done by plugins.
-     *
-     * @return  bool
-     */
-    public function isUserProxyActive();
-
+    
 }
 
 ?>

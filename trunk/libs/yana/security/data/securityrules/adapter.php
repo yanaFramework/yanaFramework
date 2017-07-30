@@ -41,6 +41,7 @@ namespace Yana\Security\Data\SecurityRules;
  */
 class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
 {
+
     /**
      * Returns bool(true) if an entry with the given id exists.
      *
@@ -80,14 +81,102 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
         return $this->_getEntityMapper()->toEntity($query->getResults());
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $entity)
     {
-        
+        assert('is_int($offset) || is_null($offset); // Wrong type argument $offset. Integer expected.');
+
+        if (!($entity instanceof \Yana\Security\Data\SecurityRules\IsRuleEntity)) {
+            assert('!isset($className); // Cannot redeclare var $className');
+            $className = \is_object($entity) ? \get_class($entity) : \gettype($entity);
+            assert('!isset($message); // Cannot redeclare var $message');
+            $message = "Instance of \Yana\Security\Data\SecurityRules\IsRuleEntity expected. Found " . $className . " instead.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
+        }
+
+        if (is_null($offset) || $offset == 0) {
+            $offset = $entity->getId();
+        }
+
+        assert('!isset($db); // Cannot redeclare var $db');
+        $db = $this->_getConnection();
+        assert('!isset($row); // Cannot redeclare var $row');
+        $row = $this->_getEntityMapper()->toDatabaseRow($entity);
+
+        try {
+            if ($this->offsetExists($offset)) { // entry exists
+                $db->update($this->_toDatabaseKey($offset), $row);
+
+            } else { // new user
+                $db->insert($this->_toDatabaseKey($offset), $row);
+                $db->insert(
+                    \Yana\Security\Data\Tables\ProfileEnumeration::TABLE . "." . \Yana\Util\Strings::toUpperCase($offset), // profile id
+                    array(\Yana\Security\Data\Tables\ProfileEnumeration::TIME_MODIFIED => time()) // profile row
+                );
+
+            }
+            $db->commit(); // may throw exception
+
+        } catch (\Yana\Db\DatabaseException $e) {
+
+            assert('!isset($message); // Cannot redeclare var $message');
+            $message = "User not saved due to a database error.";
+            assert('!isset($level); // Cannot redeclare var $level');
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\User\UserException($level, $message, $e);
+        }
+
+        return $entity;
+
+        assert('!isset($mapper); // Cannot redeclare var $mapper');
+        $mapper = $this->_getEntityMapper();
+        $row = $mapper->toDatabaseRow($entity);
+        $db = $this->_getConnection();
+        try {
+            $db->insertOrUpdate($key, $row)->commit();
+
+        } catch (\Exception $e) {
+            $db->rollback();
+        }
     }
 
+    /**
+     * Tries to delete the rule from the database.
+     *
+     * @param   int  $offset  rule id
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException     when no such rule exists
+     * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  when there was a problem with the database
+     */
     public function offsetUnset($offset)
     {
-        
+        assert('is_int($offset); // Invalid argument $offset: int expected');
+
+        // entry does not exist
+        if (!$this->offsetExists($offset)) {
+            assert('!isset($message); // Cannot redeclare var $message');
+            $message = "No such rule: '$offset'.";
+            assert('!isset($level); // Cannot redeclare var $level');
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
+        }
+
+        assert('!isset($db); // Cannot redeclare var $db');
+        $db = $this->_getConnection();
+        try {
+            assert('!isset($query); // Cannot redeclare var $query');
+            $query = new \Yana\Db\Queries\Delete($db);
+            $query->setTable(\Yana\Security\Data\Tables\RuleEnumeration::TABLE)->setRow($offset);
+            $db->remove($query);
+            $db->commit(); // may throw exception
+
+        } catch (\Exception $e) {
+
+            $db->rollback(); // don't try to commit the faulty statement again
+            assert('!isset($message); // Cannot redeclare var $message');
+            $message = "Unable to commit changes to the database server while trying to remove rule '{$offset}'.";
+            assert('!isset($level); // Cannot redeclare var $level');
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level, $e);
+        }
     }
 
     /**
@@ -117,9 +206,16 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
         return $query->getResults();
     }
 
+    /**
+     * Saves the rule data to the database.
+     *
+     * @param  \Yana\Data\Adapters\IsEntity  $entity  object to persist
+     * @throws \Yana\Core\Exceptions\InvalidArgumentException  when the entity is invalid
+     * @throws \Yana\Core\Exceptions\User\UserException        when there was a problem with the database
+     */
     public function saveEntity(\Yana\Data\Adapters\IsEntity $entity)
     {
-        
+        $this->offsetSet(null, $entity);
     }
 
     /**

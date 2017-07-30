@@ -96,9 +96,15 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     {
         $entities = $this->object->findEntities('administrator', 'default');
         $this->assertCount(3, $entities);
-        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule(0, 'ADMIN', 'DEFAULT', true, 'DEFAULT')), $entities[0]);
-        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule(2, '', 'PRINT', true, 'DEFAULT')), $entities[1]);
-        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule(10, 'ADMIN', 'ADMIN', true, 'DEFAULT')), $entities[2]);
+        $entity0 = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'DEFAULT', true, 'DEFAULT');
+        $entity0->setUserName('ADMINISTRATOR');
+        $this->assertEquals($entity0->setId(0), $entities[0]);
+        $entity1 = new \Yana\Security\Data\SecurityRules\Rule('', 'PRINT', true, 'DEFAULT');
+        $entity1->setUserName('ADMINISTRATOR');
+        $this->assertEquals($entity1->setId(2), $entities[1]);
+        $entity2 = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'ADMIN', true, 'DEFAULT');
+        $entity2->setUserName('ADMINISTRATOR');
+        $this->assertEquals($entity2->setId(10), $entities[2]);
     }
 
     /**
@@ -108,10 +114,18 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     {
         $entities = $this->object->findEntities('administrator');
         $this->assertCount(4, $entities);
-        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule(0, 'ADMIN', 'DEFAULT', true, 'DEFAULT')), $entities[0]);
-        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule(1, 'MOD', 'DEFAULT', true, 'foo')), $entities[1]);
-        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule(2, '', 'PRINT', true, 'DEFAULT')), $entities[2]);
-        $this->assertEquals((new \Yana\Security\Data\SecurityRules\Rule(10, 'ADMIN', 'ADMIN', true, 'DEFAULT')), $entities[3]);
+        $entity0 = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'DEFAULT', true, 'DEFAULT');
+        $entity0->setUserName('ADMINISTRATOR');
+        $this->assertEquals($entity0->setId(0), $entities[0]);
+        $entity1 = new \Yana\Security\Data\SecurityRules\Rule('MOD', 'DEFAULT', true, 'foo');
+        $entity1->setUserName('ADMINISTRATOR');
+        $this->assertEquals($entity1->setId(1), $entities[1]);
+        $entity2 = new \Yana\Security\Data\SecurityRules\Rule('', 'PRINT', true, 'DEFAULT');
+        $entity2->setUserName('ADMINISTRATOR');
+        $this->assertEquals($entity2->setId(2), $entities[2]);
+        $entity3 = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'ADMIN', true, 'DEFAULT');
+        $entity3->setUserName('ADMINISTRATOR');
+        $this->assertEquals($entity3->setId(10), $entities[3]);
     }
 
 }

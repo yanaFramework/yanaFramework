@@ -37,7 +37,7 @@ namespace Yana\Security\Data\SecurityLevels;
  * @package     yana
  * @subpackage  security
  */
-class Level extends \Yana\Core\Object implements \Yana\Security\Data\SecurityLevels\IsLevel
+class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
 {
 
     /**
@@ -58,18 +58,14 @@ class Level extends \Yana\Core\Object implements \Yana\Security\Data\SecurityLev
     /**
      * Initalize properties.
      *
-     * @param  int   $id       database id
      * @param  int   $level    integer between 0 and 100
      * @param  bool  $isProxy  is proxy for another user
      */
-    public function __construct($id, $level, $isProxy)
+    public function __construct($level, $isProxy)
     {
-        assert('is_int($id); // Invalid argument $id: int expected');
-
         assert('is_int($level); // Wrong type for argument $level. Integer expected');
         assert('$level >= 0 && $level <= 100; // Invalid argument $level. Must be between 0 and 100');
         assert('is_bool($isProxy); // Wrong type for argument $isProxy. Boolean expected');
-        $this->_id = (int) $id;
         $this->_securityLevel = (int) $level;
         $this->_userProxyActive = (bool) $isProxy;
     }
@@ -82,6 +78,19 @@ class Level extends \Yana\Core\Object implements \Yana\Security\Data\SecurityLev
     public function getId()
     {
         return $this->_id;
+    }
+
+    /**
+     * Set the identifying value for this entity.
+     *
+     * @param   int  $id  numeric id
+     * @return  self
+     */
+    public function setId($id)
+    {
+        assert('is_numeric($id); // Invalid argument type: $id. Integer expected');
+        $this->_id = (int) $id;
+        return $this;
     }
 
     /**

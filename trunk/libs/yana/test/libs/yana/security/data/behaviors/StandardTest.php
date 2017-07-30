@@ -343,7 +343,7 @@ class StandardTest extends \PHPUnit_Framework_TestCase
     public function testGetAllSecurityLevels()
     {
         $expected = new \Yana\Security\Data\SecurityLevels\Collection();
-        $expected[] = new \Yana\Security\Data\SecurityLevels\Level(-1, 0, true);
+        $expected[] = new \Yana\Security\Data\SecurityLevels\Level(0, true);
         $this->assertEquals($expected, $this->object->getAllSecurityLevels());
     }
 

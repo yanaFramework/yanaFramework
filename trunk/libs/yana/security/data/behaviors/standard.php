@@ -427,7 +427,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
             $securityLevelEntity = $this->_getDependencies()->getLevelsAdapter()
                 ->findEntity($this->getId(), $profileId);
         } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
-            $securityLevelEntity = new \Yana\Security\Data\SecurityLevels\Level(-1, 0, true); // 0 is default
+            $securityLevelEntity = new \Yana\Security\Data\SecurityLevels\Level(0, true); // 0 is default
             unset($e);
         }
         return (int) $securityLevelEntity->getSecurityLevel();
@@ -448,7 +448,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
                 ->findEntities($this->getId());
         } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
             $securityLevelEntities = new \Yana\Security\Data\SecurityLevels\Collection();
-            $securityLevelEntities[] = new \Yana\Security\Data\SecurityLevels\Level(-1, 0, true); // 0 is default
+            $securityLevelEntities[] = new \Yana\Security\Data\SecurityLevels\Level(0, true); // 0 is default
             unset($e);
         }
         return $securityLevelEntities;

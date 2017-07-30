@@ -66,23 +66,30 @@ class Rule extends \Yana\Security\Data\SecurityRules\AbstractRule
     private $_profile = "";
 
     /**
+     * @var string
+     */
+    private $_userName = "";
+
+    /**
+     * @var string
+     */
+    private $_grantedByUser = "";
+
+    /**
      * Initalize properties.
      *
-     * @param  int     $id       database id
      * @param  string  $group    id
      * @param  string  $role     id
      * @param  bool    $isProxy  is proxy for another user
      * @param  string  $profile  id
      */
-    public function __construct($id, $group, $role, $isProxy, $profile = "")
+    public function __construct($group, $role, $isProxy, $profile = "")
     {
-        assert('is_int($id); // Invalid argument $id: int expected');
         assert('is_string($group); // Wrong type for argument $group. String expected');
         assert('is_string($role); // Wrong type for argument $role. String expected');
         assert('is_bool($isProxy); // Wrong type for argument $isProxy. Boolean expected');
         assert('is_string($profile); // Invalid argument $profile: string expected');
 
-        $this->_id = (int) $id;
         $this->_group = (string) $group;
         $this->_role = (string) $role;
         $this->_userProxyActive = (bool) $isProxy;
@@ -155,6 +162,54 @@ class Rule extends \Yana\Security\Data\SecurityRules\AbstractRule
     public function getProfile()
     {
         return $this->_profile;
+    }
+
+    /**
+     * Get the id of the user this rule applies to.
+     *
+     * @return  string
+     */
+    public function getUserName()
+    {
+        return $this->_userName;
+    }
+
+    /**
+     * Get the id of the user who created this rule.
+     *
+     * @return  string
+     */
+    public function getGrantedByUser()
+    {
+        return $this->_grantedByUser;
+    }
+
+    /**
+     * Set the id of the user this rule applies to.
+     *
+     * @param   string  $userName  id referencing user table
+     * @return  self
+     */
+    public function setUserName($userName)
+    {
+        assert('is_string($userName); // Invalid argument $userName: string expected');
+
+        $this->_userName = (string) $userName;
+        return $this;
+    }
+
+    /**
+     * Set the id of the user who created this rule.
+     *
+     * @param   string  $createdByUser  id referencing user table
+     * @return  self
+     */
+    public function setGrantedByUser($createdByUser)
+    {
+        assert('is_string($createdByUser); // Invalid argument $createdByUser: string expected');
+
+        $this->_grantedByUser = (string) $createdByUser;
+        return $this;
     }
 
 }

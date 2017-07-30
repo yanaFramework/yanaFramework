@@ -62,9 +62,9 @@ class RuleTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object1 = new \Yana\Security\Data\SecurityRules\Rule(1, 'Group1', 'Role1', true, 'Profile1');
-        $this->object2 = new \Yana\Security\Data\SecurityRules\Rule(2, 'Group2', 'Role2', false, 'Profile2');
-        $this->object3 = new \Yana\Security\Data\SecurityRules\Rule(3, '', '', false);
+        $this->object1 = new \Yana\Security\Data\SecurityRules\Rule('Group1', 'Role1', true, 'Profile1');
+        $this->object2 = new \Yana\Security\Data\SecurityRules\Rule('Group2', 'Role2', false, 'Profile2');
+        $this->object3 = new \Yana\Security\Data\SecurityRules\Rule('', '', false);
     }
 
     /**
@@ -121,9 +121,17 @@ class RuleTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetId()
     {
-        $this->assertSame(1, $this->object1->getId());
-        $this->assertSame(2, $this->object2->getId());
-        $this->assertSame(3, $this->object3->getId());
+        $this->assertSame(0, $this->object1->getId());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetId()
+    {
+        $this->assertSame(1, $this->object1->setId(1)->getId());
+        $this->assertSame(2, $this->object2->setId(2)->getId());
+        $this->assertSame(3, $this->object3->setId(3)->getId());
     }
 
 }

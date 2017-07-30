@@ -182,9 +182,14 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
 
         // user does not exist
         if (!$this->offsetExists($userId)) {
-            throw new \Yana\Core\Exceptions\User\NotFoundException("No such user: '$userId'.", \Yana\Log\TypeEnumeration::WARNING);
+            assert('!isset($message); // Cannot redeclare var $message');
+            $message = "No such user: '$userId'.";
+            assert('!isset($level); // Cannot redeclare var $level');
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
         }
 
+        assert('!isset($upperCaseUserId); // Cannot redeclare var $upperCaseUserId');
         $upperCaseUserId = \Yana\Util\Strings::toUpperCase($userId);
 
         assert('!isset($db); // Cannot redeclare var $db');
@@ -236,8 +241,7 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
         } catch (\Exception $e) {
 
             $db->rollback(); // don't try to commit the faulty statement again
-            $message = "Unable to commit changes to the database server while trying to remove".
-                "user '{$userId}'.";
+            $message = "Unable to commit changes to the database server while trying to remove user '{$userId}'.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level, $e);
         }

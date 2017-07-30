@@ -27,17 +27,17 @@
  * @ignore
  */
 
-namespace Yana\Security\Data\SecurityRules;
+namespace Yana\Security\Data\SecurityLevels;
 
 /**
- * <<abstract>> Security rule.
+ * <<abstract>> Security level.
  *
- * Readonly information representing a security rule.
+ * Readonly information about the user's security level.
  *
  * @package     yana
  * @subpackage  security
  */
-abstract class AbstractRule extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRules\IsRuleEntity
+abstract class AbstractLevel extends \Yana\Core\Object implements \Yana\Security\Data\SecurityLevels\IsLevelEntity
 {
 
     /**

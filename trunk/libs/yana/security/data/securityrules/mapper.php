@@ -46,17 +46,12 @@ class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRu
      * Creates an entity based on a database row.
      *
      * @param   array  $databaseRow  row containing user info
-     * @return  \Yana\Security\Data\SecurityLevels\IsLevel
+     * @return  \Yana\Security\Data\SecurityRules\IsRuleEntity
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given user has no name
      */
     public function toEntity(array $databaseRow)
     {
         $databaseRowLower = \Yana\Util\Hashtable::changeCase($databaseRow, \CASE_LOWER);
-        assert('!isset($group); // Cannot redeclare var $group');
-        $id = 0;
-        if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::ID])) {
-            $id = (int) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::ID];
-        }
         assert('!isset($group); // Cannot redeclare var $group');
         $group = "";
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::GROUP])) {
@@ -78,7 +73,40 @@ class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRu
             $profile = (string) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::PROFILE];
         }
 
-        return new \Yana\Security\Data\SecurityRules\Rule($id, $group, $role, $isProxy, $profile);
+        assert('!isset($entity); // Cannot redeclare var $entity');
+        $entity = new \Yana\Security\Data\SecurityRules\Rule($group, $role, $isProxy, $profile);
+
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::ID])) {
+            $entity->setId((int) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::ID]);
+        }
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::GRANTED_BY_USER])) {
+            $entity->setGrantedByUser((string) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::GRANTED_BY_USER]);
+        }
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::USER])) {
+            $entity->setUserName((string) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::USER]);
+        }
+        return $entity;
+    }
+
+    /**
+     * Creates a database row based on an entity.
+     *
+     * @param   \Yana\Data\Adapters\IsEntity  $entity  entity containing the information you wish to map
+     * @return  array
+     */
+    public function toDatabaseRow(\Yana\Data\Adapters\IsEntity $entity)
+    {
+        assert('!isset($row); // Cannot redeclare var $row');
+        $row = array(\Yana\Security\Data\Tables\RuleEnumeration::ID => $entity->getId());
+        if ($entity instanceof \Yana\Security\Data\SecurityRules\IsRuleEntity) {
+            $row[\Yana\Security\Data\Tables\RuleEnumeration::GROUP] = $entity->getGroup();
+            $row[\Yana\Security\Data\Tables\RuleEnumeration::ROLE] = $entity->getRole();
+            $row[\Yana\Security\Data\Tables\RuleEnumeration::PROFILE] = $entity->getProfile();
+            $row[\Yana\Security\Data\Tables\RuleEnumeration::GRANTED_BY_USER] = $entity->getGrantedByUser();
+            $row[\Yana\Security\Data\Tables\RuleEnumeration::USER] = $entity->getUserName();
+            $row[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY] = $entity->isUserProxyActive();
+        }
+        return $row;
     }
 
 }
