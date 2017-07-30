@@ -116,4 +116,60 @@ class LevelTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(false, $this->object3->isUserProxyActive());
     }
 
+    /**
+     * @test
+     */
+    public function testGetGrantedByUser()
+    {
+        $this->assertSame("", $this->object1->getGrantedByUser());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetGrantedByUser()
+    {
+        $this->assertSame("b", $this->object1->setGrantedByUser("a")->setGrantedByUser("b")->getGrantedByUser());
+        $this->assertSame("User@Näme!", $this->object2->setGrantedByUser("User@Näme!")->getGrantedByUser());
+        $this->assertSame("", $this->object3->setGrantedByUser("")->getGrantedByUser());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetUserName()
+    {
+        $this->assertSame("", $this->object1->getUserName());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetUserName()
+    {
+        $this->assertSame("b", $this->object1->setUserName("a")->setUserName("b")->getUserName());
+        $this->assertSame("User@Näme!", $this->object2->setUserName("User@Näme!")->getUserName());
+        $this->assertSame("", $this->object3->setUserName("")->getUserName());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetProfile()
+    {
+        $this->assertSame('', $this->object1->getProfile());
+        $this->assertSame('', $this->object2->getProfile());
+        $this->assertSame('', $this->object3->getProfile());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetProfile()
+    {
+        $this->assertSame('Profile0', $this->object1->setProfile('Profile0')->getProfile());
+        $this->assertSame('Profile1', $this->object2->setProfile('Profile1')->getProfile());
+        $this->assertSame('', $this->object3->setProfile('')->getProfile());
+    }
+
 }

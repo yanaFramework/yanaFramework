@@ -161,4 +161,23 @@ class RuleTest extends \PHPUnit_Framework_TestCase
         $this->assertSame("User@Näme!", $this->object2->setGrantedByUser("User@Näme!")->getGrantedByUser());
         $this->assertSame("", $this->object3->setGrantedByUser("")->getGrantedByUser());
     }
+
+    /**
+     * @test
+     */
+    public function testGetUserName()
+    {
+        $this->assertSame("", $this->object1->getUserName());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetUserName()
+    {
+        $this->assertSame("b", $this->object1->setUserName("a")->setUserName("b")->getUserName());
+        $this->assertSame("User@Näme!", $this->object2->setUserName("User@Näme!")->getUserName());
+        $this->assertSame("", $this->object3->setUserName("")->getUserName());
+    }
+
 }
