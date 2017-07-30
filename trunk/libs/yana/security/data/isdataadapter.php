@@ -51,6 +51,15 @@ interface IsDataAdapter extends \Yana\Data\Adapters\IsDataAdapter
      */
     public function findUserByMail($mail);
 
+    /**
+     * Loads and returns an user account from the database.
+     *
+     * @param   string  $recoveryId  unique identifier
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no such user exists
+     */
+    public function findUserByRecoveryId($recoveryId);
+
 }
 
 ?>

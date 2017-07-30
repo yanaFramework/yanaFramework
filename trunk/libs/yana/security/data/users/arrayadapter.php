@@ -64,6 +64,28 @@ class ArrayAdapter extends \Yana\Data\Adapters\ArrayAdapter implements \Yana\Sec
         throw new \Yana\Core\Exceptions\User\MailNotFoundException($message, $level, $e);
     }
 
+    /**
+     * Loads and returns an user account from the database.
+     *
+     * @param   string  $recoveryId  unique identifier
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no such user exists
+     */
+    public function findUserByRecoveryId($recoveryId)
+    {
+        foreach ($this->_getItems() as $item)
+        {
+            /* @var $item \Yana\Security\Data\Users\IsEntity */
+            if (\strcasecmp($item->getPasswordRecoveryId(), $recoveryId) === 0) {
+                return $item;
+            }
+        }
+
+        $message = "No user found with recovery id: " . \htmlentities($recoveryId);
+        $level = \Yana\Log\TypeEnumeration::ERROR;
+        throw new \Yana\Core\Exceptions\User\MailNotFoundException($message, $level);
+    }
+
 }
 
 ?>

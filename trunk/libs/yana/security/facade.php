@@ -237,7 +237,9 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
     }
 
     /**
-     * Loads and returns an user account from the database.
+     * Finds and returns an user account from the database.
+     *
+     * Use this function if, for example, you need to send a user an e-mail during the password recovery process.
      *
      * @param   string  $mail  unique mail address
      * @return  \Yana\Security\Data\Behaviors\IsBehavior
@@ -245,7 +247,25 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
      */
     public function findUserByMail($mail)
     {
+        assert('is_string($mail); // Invalid argument $mail: string expected');
+
         return $this->_createUserBuilder()->buildFromUserMail($mail);
+    }
+
+    /**
+     * Finds and returns an user account from the database.
+     *
+     * Use this function if, for example, you need to recover a user based on and id, during the password recovery process.
+     *
+     * @param   string  $recoveryId  unique identifier provided by user input
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no such user exists
+     */
+    public function findUserByRecoveryId($recoveryId)
+    {
+        assert('is_string($recoveryId); // Invalid argument $recoveryId: string expected');
+
+        return $this->_createUserBuilder()->buildFromRecoveryId($recoveryId);
     }
 
     /**

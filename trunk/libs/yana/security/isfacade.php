@@ -165,6 +165,17 @@ interface IsFacade
     public function findUserByMail($mail);
 
     /**
+     * Finds and returns an user account from the database.
+     *
+     * Use this function if, for example, you need to recover a user based on and id, during the password recovery process.
+     *
+     * @param   string  $recoveryId  unique identifier provided by user input
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no such user exists
+     */
+    public function findUserByRecoveryId($recoveryId);
+
+    /**
      * Create a new user.
      *
      * @param   string  $userName  user name

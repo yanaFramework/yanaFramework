@@ -315,6 +315,31 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
     /**
      * Loads and returns an user account from the database.
      *
+     * @param   string  $recoveryId  unique identifier
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no such user exists
+     */
+    public function findUserByRecoveryId($recoveryId)
+    {
+        assert('is_string($recoveryId); // Invalid argument $recoveryId: string expected');
+
+        assert('!isset($where); // Cannot redeclare var $where');
+        $where = array(\Yana\Security\Data\Tables\UserEnumeration::PASSWORD_RECOVERY_ID, '=', (string) $recoveryId);
+
+        try {
+            return $this->_findUser($where);
+
+        } catch (\Exception $e) {
+
+            $message = "No user found with recovery id: " . \htmlentities($recoveryId);
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\User\MailNotFoundException($message, $level, $e);
+        }
+    }
+
+    /**
+     * Loads and returns an user account from the database.
+     *
      * @param  array  $where  to use in Select statement
      * @return  \Yana\Security\Data\Users\IsEntity
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  when the result set is empty or returns more than one match

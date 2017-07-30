@@ -191,6 +191,20 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
     }
 
     /**
+     * Build an user object based on a given recovery id.
+     *
+     * @param   string  $recoveryId  unique identifier provided by user input
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no such user exists
+     */
+    public function buildFromRecoveryId($recoveryId)
+    {
+        assert('is_string($recoveryId); // Invalid argument $recoveryId: string expected');
+
+        return $this->_getUserAdapter()->findUserByRecoveryId($recoveryId); // may throw exception
+    }
+
+    /**
      * Build an user object based on a given name.
      *
      * @param   string  $userId  the name/id of the user as it is stored in the database

@@ -80,6 +80,15 @@ interface IsUserBuilder
      */
     public function buildFromUserMail($mail);
 
+    /**
+     * Build an user object based on a given recovery id.
+     *
+     * @param   string  $recoveryId  unique identifier provided by user input
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no such user exists
+     */
+    public function buildFromRecoveryId($recoveryId);
+
 }
 
 ?>

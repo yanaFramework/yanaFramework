@@ -141,6 +141,21 @@ class Builder extends \Yana\Security\Data\UserBuilder implements \Yana\Security\
         return $this($entity);
     }
 
+    /**
+     * Build an user object based on a given recovery id.
+     *
+     * @param   string  $recoveryId  unique identifier provided by user input
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no such user exists
+     */
+    public function buildFromRecoveryId($recoveryId)
+    {
+        assert('is_string($recoveryId); // Invalid argument $recoveryId: string expected');
+
+        $entity = parent::buildFromRecoveryId($recoveryId); // may throw exception
+        return $this($entity);
+    }
+
 }
 
 ?>
