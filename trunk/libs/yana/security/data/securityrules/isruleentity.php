@@ -39,6 +39,13 @@ interface IsRuleEntity extends \Yana\Security\Data\SecurityRules\IsRule, \Yana\D
 {
 
     /**
+     * Get associated application profile.
+     *
+     * @return  string
+     */
+    public function getProfile();
+
+    /**
      * Get the id of the user this rule applies to.
      *
      * @return  string
@@ -51,6 +58,14 @@ interface IsRuleEntity extends \Yana\Security\Data\SecurityRules\IsRule, \Yana\D
      * @return  string
      */
     public function getGrantedByUser();
+
+    /**
+     * Set associated application profile.
+     *
+     * @param   string  $profileName  application profile id
+     * @return  self
+     */
+    public function setProfile($profileName);
 
     /**
      * Set the id of the user this rule applies to.

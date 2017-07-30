@@ -62,8 +62,8 @@ class RuleTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object1 = new \Yana\Security\Data\SecurityRules\Rule('Group1', 'Role1', true, 'Profile1');
-        $this->object2 = new \Yana\Security\Data\SecurityRules\Rule('Group2', 'Role2', false, 'Profile2');
+        $this->object1 = new \Yana\Security\Data\SecurityRules\Rule('Group1', 'Role1', true);
+        $this->object2 = new \Yana\Security\Data\SecurityRules\Rule('Group2', 'Role2', false);
         $this->object3 = new \Yana\Security\Data\SecurityRules\Rule('', '', false);
     }
 
@@ -111,9 +111,19 @@ class RuleTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetProfile()
     {
-        $this->assertSame('Profile1', $this->object1->getProfile());
-        $this->assertSame('Profile2', $this->object2->getProfile());
+        $this->assertSame('', $this->object1->getProfile());
+        $this->assertSame('', $this->object2->getProfile());
         $this->assertSame('', $this->object3->getProfile());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetProfile()
+    {
+        $this->assertSame('Profile0', $this->object1->setProfile('Profile0')->getProfile());
+        $this->assertSame('Profile1', $this->object2->setProfile('Profile1')->getProfile());
+        $this->assertSame('', $this->object3->setProfile('')->getProfile());
     }
 
     /**
@@ -121,7 +131,7 @@ class RuleTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetId()
     {
-        $this->assertSame(0, $this->object1->getId());
+        $this->assertSame(-1, $this->object1->getId());
     }
 
     /**
@@ -134,4 +144,21 @@ class RuleTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(3, $this->object3->setId(3)->getId());
     }
 
+    /**
+     * @test
+     */
+    public function testGetGrantedByUser()
+    {
+        $this->assertSame("", $this->object1->getGrantedByUser());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetGrantedByUser()
+    {
+        $this->assertSame("b", $this->object1->setGrantedByUser("a")->setGrantedByUser("b")->getGrantedByUser());
+        $this->assertSame("User@Näme!", $this->object2->setGrantedByUser("User@Näme!")->getGrantedByUser());
+        $this->assertSame("", $this->object3->setGrantedByUser("")->getGrantedByUser());
+    }
 }

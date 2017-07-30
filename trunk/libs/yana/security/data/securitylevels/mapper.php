@@ -46,7 +46,7 @@ class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityLe
      * Creates an entity based on a database row.
      *
      * @param   array  $databaseRow  row containing user info
-     * @return  \Yana\Security\Data\SecurityLevels\IsLevel
+     * @return  \Yana\Security\Data\SecurityLevels\IsLevelEntity
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given user has no name
      */
     public function toEntity(array $databaseRow)
@@ -69,7 +69,46 @@ class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityLe
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::ID])) {
             $entity->setId((int) $databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::ID]);
         }
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::GRANTED_BY_USER])) {
+            $entity->setGrantedByUser((string) $databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::GRANTED_BY_USER]);
+        }
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::PROFILE])) {
+            $entity->setProfile((string) $databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::PROFILE]);
+        }
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::USER])) {
+            $entity->setUserName((string) $databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::USER]);
+        }
         return $entity;
+    }
+
+    /**
+     * Creates a database row based on an entity.
+     *
+     * @param   \Yana\Data\Adapters\IsEntity  $entity  entity containing the information you wish to map
+     * @return  array
+     */
+    public function toDatabaseRow(\Yana\Data\Adapters\IsEntity $entity)
+    {
+        assert('!isset($row); // Cannot redeclare var $row');
+        $row = array();
+        if ($entity->getId() >= 0) {
+            // We will not add the ID when none has been set (to allow AUTO-INCREMENT to do its job)
+            $row[\Yana\Security\Data\Tables\LevelEnumeration::ID] = $entity->getId();
+        }
+        if ($entity instanceof \Yana\Security\Data\SecurityLevels\IsLevelEntity) {
+            $row[\Yana\Security\Data\Tables\LevelEnumeration::LEVEL] = $entity->getSecurityLevel();
+            $row[\Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY] = $entity->isUserProxyActive();
+            if ($entity->getProfile() > "") {
+                $row[\Yana\Security\Data\Tables\LevelEnumeration::PROFILE] = $entity->getProfile();
+            }
+            if ($entity->getGrantedByUser() > "") {
+                $row[\Yana\Security\Data\Tables\LevelEnumeration::GRANTED_BY_USER] = $entity->getGrantedByUser();
+            }
+            if ($entity->getUserName() > "") {
+                $row[\Yana\Security\Data\Tables\LevelEnumeration::USER] = $entity->getUserName();
+            }
+        }
+        return $row;
     }
 
 }

@@ -105,12 +105,12 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $entity = new \Yana\Security\Data\SecurityRules\Rule(
             $databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::GROUP],
             $databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::ROLE],
-            $databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY],
-            $databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::PROFILE]);
+            $databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY]);
         $entity
             ->setId($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::ID])
             ->setUserName($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::USER])
-            ->setGrantedByUser($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::GRANTED_BY_USER]);
+            ->setGrantedByUser($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::GRANTED_BY_USER])
+            ->setProfile($databaseRow[\Yana\Security\Data\Tables\RuleEnumeration::PROFILE]);
         $this->assertEquals($databaseRow, $this->object->toDatabaseRow($entity));
     }
 

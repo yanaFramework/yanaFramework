@@ -67,14 +67,9 @@ class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRu
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY])) {
             $isProxy = (bool) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY];
         }
-        assert('!isset($profile); // Cannot redeclare var $profile');
-        $profile = "";
-        if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::PROFILE])) {
-            $profile = (string) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::PROFILE];
-        }
 
         assert('!isset($entity); // Cannot redeclare var $entity');
-        $entity = new \Yana\Security\Data\SecurityRules\Rule($group, $role, $isProxy, $profile);
+        $entity = new \Yana\Security\Data\SecurityRules\Rule($group, $role, $isProxy);
 
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::ID])) {
             $entity->setId((int) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::ID]);
@@ -84,6 +79,9 @@ class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRu
         }
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::USER])) {
             $entity->setUserName((string) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::USER]);
+        }
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::PROFILE])) {
+            $entity->setProfile((string) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::PROFILE]);
         }
         return $entity;
     }
@@ -97,14 +95,24 @@ class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRu
     public function toDatabaseRow(\Yana\Data\Adapters\IsEntity $entity)
     {
         assert('!isset($row); // Cannot redeclare var $row');
-        $row = array(\Yana\Security\Data\Tables\RuleEnumeration::ID => $entity->getId());
+        $row = array();
+        if ($entity->getId() >= 0) {
+            // We will not add the ID when none has been set (to allow AUTO-INCREMENT to do its job)
+            $row[\Yana\Security\Data\Tables\RuleEnumeration::ID] = $entity->getId();
+        }
         if ($entity instanceof \Yana\Security\Data\SecurityRules\IsRuleEntity) {
             $row[\Yana\Security\Data\Tables\RuleEnumeration::GROUP] = $entity->getGroup();
             $row[\Yana\Security\Data\Tables\RuleEnumeration::ROLE] = $entity->getRole();
-            $row[\Yana\Security\Data\Tables\RuleEnumeration::PROFILE] = $entity->getProfile();
-            $row[\Yana\Security\Data\Tables\RuleEnumeration::GRANTED_BY_USER] = $entity->getGrantedByUser();
-            $row[\Yana\Security\Data\Tables\RuleEnumeration::USER] = $entity->getUserName();
             $row[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY] = $entity->isUserProxyActive();
+            if ($entity->getProfile() > "") {
+                $row[\Yana\Security\Data\Tables\RuleEnumeration::PROFILE] = $entity->getProfile();
+            }
+            if ($entity->getGrantedByUser() > "") {
+                $row[\Yana\Security\Data\Tables\RuleEnumeration::GRANTED_BY_USER] = $entity->getGrantedByUser();
+            }
+            if ($entity->getUserName() > "") {
+                $row[\Yana\Security\Data\Tables\RuleEnumeration::USER] = $entity->getUserName();
+            }
         }
         return $row;
     }

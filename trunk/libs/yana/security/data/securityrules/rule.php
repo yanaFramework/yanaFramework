@@ -41,9 +41,11 @@ class Rule extends \Yana\Security\Data\SecurityRules\AbstractRule
 {
 
     /**
+     * Default is -1, which is an invalid ID and will be mapped to NULL.
+     *
      * @var int
      */
-    private $_id = 0;
+    private $_id = -1;
 
     /**
      * @var string
@@ -81,19 +83,16 @@ class Rule extends \Yana\Security\Data\SecurityRules\AbstractRule
      * @param  string  $group    id
      * @param  string  $role     id
      * @param  bool    $isProxy  is proxy for another user
-     * @param  string  $profile  id
      */
-    public function __construct($group, $role, $isProxy, $profile = "")
+    public function __construct($group, $role, $isProxy)
     {
         assert('is_string($group); // Wrong type for argument $group. String expected');
         assert('is_string($role); // Wrong type for argument $role. String expected');
         assert('is_bool($isProxy); // Wrong type for argument $isProxy. Boolean expected');
-        assert('is_string($profile); // Invalid argument $profile: string expected');
 
         $this->_group = (string) $group;
         $this->_role = (string) $role;
         $this->_userProxyActive = (bool) $isProxy;
-        $this->_profile = (string) $profile;
     }
 
     /**
@@ -111,6 +110,17 @@ class Rule extends \Yana\Security\Data\SecurityRules\AbstractRule
 
     /**
      * Get database id for this entry.
+     *
+     * Note: the default is -1.
+     * An ID of -1 translates to "unknown".
+     *
+     * It doesn't mean that there is a database entry with the ID -1.
+     * And it doesn't mean that there this entry is not in the database either.
+     * It simply means precisely what it says: the real Id is unknown.
+     *
+     * This may be the case if the case (for example) if the entry is new,
+     * and either has not been assigned an ID, or if the entry was saved using auto-increment
+     * and we simply don't know what ID has been assigned to it.
      *
      * @return  int
      */
@@ -182,6 +192,19 @@ class Rule extends \Yana\Security\Data\SecurityRules\AbstractRule
     public function getGrantedByUser()
     {
         return $this->_grantedByUser;
+    }
+
+    /**
+     * Set associated application profile.
+     *
+     * @param   string  $profileName  application profile id
+     * @return  self
+     */
+    public function setProfile($profileName)
+    {
+        assert('is_string($profileName); // Invalid argument $profileName: string expected');
+        $this->_profile = (string) $profileName;
+        return $this;
     }
 
     /**

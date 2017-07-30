@@ -37,7 +37,51 @@ namespace Yana\Security\Data\SecurityLevels;
  */
 interface IsLevelEntity extends \Yana\Security\Data\SecurityLevels\IsLevel, \Yana\Data\Adapters\IsEntity
 {
-    
+
+    /**
+     * Set associated application profile.
+     *
+     * @param   string  $profileName  application profile id
+     * @return  self
+     */
+    public function setProfile($profileName);
+
+    /**
+     * Get associated application profile.
+     *
+     * @return  string
+     */
+    public function getProfile();
+
+    /**
+     * Get the id of the user this rule applies to.
+     *
+     * @return  string
+     */
+    public function getUserName();
+
+    /**
+     * Get the id of the user who created this rule.
+     *
+     * @return  string
+     */
+    public function getGrantedByUser();
+
+    /**
+     * Set the id of the user this rule applies to.
+     *
+     * @param   string  $userName  id referencing user table
+     * @return  self
+     */
+    public function setUserName($userName);
+
+    /**
+     * Set the id of the user who created this rule.
+     *
+     * @param   string  $createdByUser  id referencing user table
+     * @return  self
+     */
+    public function setGrantedByUser($createdByUser);
 }
 
 ?>

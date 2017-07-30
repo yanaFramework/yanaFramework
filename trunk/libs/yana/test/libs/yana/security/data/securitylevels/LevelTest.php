@@ -81,9 +81,9 @@ class LevelTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetId()
     {
-        $this->assertSame(0, $this->object1->getId());
-        $this->assertSame(0, $this->object2->getId());
-        $this->assertSame(0, $this->object3->getId());
+        $this->assertSame(-1, $this->object1->getId());
+        $this->assertSame(-1, $this->object2->getId());
+        $this->assertSame(-1, $this->object3->getId());
     }
 
     /**

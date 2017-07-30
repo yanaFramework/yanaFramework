@@ -41,9 +41,11 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
 {
 
     /**
+     * Default is -1, which is an invalid ID and will be mapped to NULL.
+     *
      * @var int
      */
-    private $_id = 0;
+    private $_id = -1;
 
     /**
      * @var int
@@ -54,6 +56,21 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
      * @var bool
      */
     private $_userProxyActive = true;
+
+    /**
+     * @var string
+     */
+    private $_profile = "";
+
+    /**
+     * @var string
+     */
+    private $_userName = "";
+
+    /**
+     * @var string
+     */
+    private $_grantedByUser = "";
 
     /**
      * Initalize properties.
@@ -72,6 +89,17 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
 
     /**
      * Get database id for this entry.
+     *
+     * Note: the default is -1.
+     * An ID of -1 translates to "unknown".
+     *
+     * It doesn't mean that there is a database entry with the ID -1.
+     * And it doesn't mean that there this entry is not in the database either.
+     * It simply means precisely what it says: the real Id is unknown.
+     *
+     * This may be the case if the case (for example) if the entry is new,
+     * and either has not been assigned an ID, or if the entry was saved using auto-increment
+     * and we simply don't know what ID has been assigned to it.
      *
      * @return  int
      */
@@ -116,6 +144,77 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
     public function isUserProxyActive()
     {
         return $this->_userProxyActive;
+    }
+
+    /**
+     * Set associated application profile.
+     *
+     * @param   string  $profileName  application profile id
+     * @return  self
+     */
+    public function setProfile($profileName)
+    {
+        assert('is_string($profileName); // Invalid argument $profileName: string expected');
+        $this->_profile = (string) $profileName;
+        return $this;
+    }
+
+    /**
+     * Get associated application profile.
+     *
+     * @return  string
+     */
+    public function getProfile()
+    {
+        return $this->_profile;
+    }
+
+    /**
+     * Get the id of the user this rule applies to.
+     *
+     * @return  string
+     */
+    public function getUserName()
+    {
+        return $this->_userName;
+    }
+
+    /**
+     * Get the id of the user who created this rule.
+     *
+     * @return  string
+     */
+    public function getGrantedByUser()
+    {
+        return $this->_grantedByUser;
+    }
+
+    /**
+     * Set the id of the user this rule applies to.
+     *
+     * @param   string  $userName  id referencing user table
+     * @return  self
+     */
+    public function setUserName($userName)
+    {
+        assert('is_string($userName); // Invalid argument $userName: string expected');
+
+        $this->_userName = (string) $userName;
+        return $this;
+    }
+
+    /**
+     * Set the id of the user who created this rule.
+     *
+     * @param   string  $createdByUser  id referencing user table
+     * @return  self
+     */
+    public function setGrantedByUser($createdByUser)
+    {
+        assert('is_string($createdByUser); // Invalid argument $createdByUser: string expected');
+
+        $this->_grantedByUser = (string) $createdByUser;
+        return $this;
     }
 
 }

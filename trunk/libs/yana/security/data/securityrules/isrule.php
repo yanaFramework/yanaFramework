@@ -53,13 +53,6 @@ interface IsRule
     public function getRole();
 
     /**
-     * Get associated application profile.
-     *
-     * @return  string
-     */
-    public function getProfile();
-
-    /**
      * Check proxy settings.
      *
      * Returns bool(true) if this user should be allowed to forward this security setting
