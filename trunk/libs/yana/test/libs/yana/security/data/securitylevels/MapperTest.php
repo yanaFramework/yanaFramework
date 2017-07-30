@@ -80,4 +80,28 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY], $entity->isUserProxyActive());
     }
 
+    /**
+     * @test
+     */
+    public function testToDatabaseRow()
+    {
+        $databaseRow = array(
+            \Yana\Security\Data\Tables\LevelEnumeration::ID => 1,
+            \Yana\Security\Data\Tables\LevelEnumeration::LEVEL => 10,
+            \Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY => false,
+            \Yana\Security\Data\Tables\LevelEnumeration::PROFILE => 'ProfileÄö@',
+            \Yana\Security\Data\Tables\LevelEnumeration::USER => 'UserÄö@',
+            \Yana\Security\Data\Tables\LevelEnumeration::GRANTED_BY_USER => 'GrantedÄö@'
+        );
+        $entity = new \Yana\Security\Data\SecurityLevels\Level(
+            $databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::LEVEL],
+            $databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY]);
+        $entity
+            ->setId($databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::ID])
+            ->setUserName($databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::USER])
+            ->setGrantedByUser($databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::GRANTED_BY_USER])
+            ->setProfile($databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::PROFILE]);
+        $this->assertEquals($databaseRow, $this->object->toDatabaseRow($entity));
+    }
+
 }

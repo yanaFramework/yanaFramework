@@ -94,7 +94,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     public function testToDatabaseRow()
     {
         $databaseRow = array(
-            \Yana\Security\Data\Tables\RuleEnumeration::ID => -1,
+            \Yana\Security\Data\Tables\RuleEnumeration::ID => 1,
             \Yana\Security\Data\Tables\RuleEnumeration::GROUP => 'GroupÄö@',
             \Yana\Security\Data\Tables\RuleEnumeration::ROLE => 'RoleÄö@',
             \Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY => false,
