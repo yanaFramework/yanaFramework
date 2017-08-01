@@ -87,11 +87,19 @@ abstract class AbstractFacade extends \Yana\Core\Object implements \Yana\Securit
     }
 
     /**
+     * @return \Yana\Security\Data\Users\Mapper
+     */
+    protected function _createUserMapper()
+    {
+        return new \Yana\Security\Data\Users\Mapper();
+    }
+
+    /**
      * @return \Yana\Security\Data\Users\Adapter
      */
     protected function _createUserAdapter()
     {
-        return new \Yana\Security\Data\Users\Adapter($this->_getContainer()->getDataConnection());
+        return new \Yana\Security\Data\Users\Adapter($this->_getContainer()->getDataConnection(), $this->_createUserMapper());
     }
 
     /**

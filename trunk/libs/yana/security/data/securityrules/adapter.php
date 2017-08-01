@@ -226,8 +226,9 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
      * @param   string  $userId     user name
      * @param   string  $profileId  profile id
      * @return  \Yana\Security\Data\SecurityRules\IsCollection
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no matching rule is found
      */
-    public function findEntities($userId, $profileId = "")
+    public function findEntitiesOwnedByUser($userId, $profileId = "")
     {
         assert('is_string($userId); // Wrong type for argument $userId. String expected');
         assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
@@ -236,9 +237,59 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
         $entities = new \Yana\Security\Data\SecurityRules\Collection();
 
         assert('!isset($query); // Cannot redeclare var $query');
-        $query = $this->_buildQuery($userId, $profileId);
+        assert('!isset($query); // Cannot redeclare var $query');
+        $query = $this->_buildQuery(
+            array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId)),
+            $profileId
+        );
+        $rows = $query->getResults();
+        if (!is_array($rows) || count($rows) === 0) {
+            throw new \Yana\Core\Exceptions\User\NotFoundException();
+        }
         assert('!isset($row); // Cannot redeclare var $row');
-        foreach ($query->getResults() as $row)
+        foreach ($rows as $row)
+        {
+            $entities[] = $this->_getEntityMapper()->toEntity($row);
+        }
+        unset($row);
+
+        return $entities;
+    }
+
+    /**
+     * Get security levels the user created but does not own.
+     *
+     * Returns all entries this user granted to other users.
+     *
+     * @param   string  $userId     user name
+     * @param   string  $profileId  profile id
+     * @return  \Yana\Security\Data\SecurityRules\IsCollection
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no matching rule is found
+     */
+    public function findEntitiesGrantedByUser($userId, $profileId = "")
+    {
+        assert('is_string($userId); // Wrong type for argument $userId. String expected');
+        assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
+
+        assert('!isset($entities); // Cannot redeclare var $entities');
+        $entities = new \Yana\Security\Data\SecurityRules\Collection();
+
+        assert('!isset($query); // Cannot redeclare var $query');
+        $query = $this->_buildQuery(
+            array(
+                array(\Yana\Security\Data\Tables\RuleEnumeration::GRANTED_BY_USER, '=', \Yana\Util\Strings::toUpperCase($userId)),
+                'AND',
+                array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '!=', \Yana\Util\Strings::toUpperCase($userId))
+            ),
+            $profileId
+        );
+        assert('!isset($rows); // Cannot redeclare var $rows');
+        $rows = $query->getResults();
+        if (!is_array($rows) || count($rows) === 0) {
+            throw new \Yana\Core\Exceptions\User\NotFoundException();
+        }
+        assert('!isset($row); // Cannot redeclare var $row');
+        foreach ($rows as $row)
         {
             $entities[] = $this->_getEntityMapper()->toEntity($row);
         }
@@ -250,17 +301,14 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
     /**
      * Build and return query to select all security levels.
      *
-     * @param   string  $userId     user name
+     * @param   array   $where      clause
      * @param   string  $profileId  profile id
      * @return  \Yana\Db\Queries\Select
      */
-    private function _buildQuery($userId, $profileId = "")
+    private function _buildQuery(array $where, $profileId = "")
     {
-        assert('is_string($userId); // Wrong type for argument $userId. String expected');
         assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
 
-        assert('!isset($where); // Cannot redeclare var $where');
-        $where = array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId));
         if ($profileId > "") {
             $where = array(
                 $where,

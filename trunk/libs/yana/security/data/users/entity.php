@@ -68,7 +68,7 @@ class Entity extends \Yana\Data\Adapters\AbstractEntity implements \Yana\Securit
     {
         assert('is_string($userName); // Wrong type for argument 1. String expected');
 
-        $this->_id = (string) $userName;
+        $this->setId((string) $userName);
     }
 
     /**

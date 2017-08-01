@@ -292,7 +292,16 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
             throw new \Yana\Core\Exceptions\User\MissingMailException("No mail address given.", \Yana\Log\TypeEnumeration::WARNING);
         }
 
-        $user = $this->_createUserBuilder()->buildNewUser($userName, $mail);
+        assert('!isset($builder); // $builder already declared');
+        $builder = $this->_createUserBuilder();
+
+        if ($builder->isExistingUserName($userName)) {
+            throw new \Yana\Core\Exceptions\User\AlreadyExistsException(
+                "A user with the name '$userName' already exists.", \Yana\Log\TypeEnumeration::WARNING
+            );
+        }
+
+        $user = $builder->buildNewUser($userName, $mail);
         assert($user instanceof \Yana\Security\Data\Behaviors\IsBehavior);
 
         try {
@@ -300,6 +309,51 @@ class Facade extends \Yana\Security\AbstractFacade implements \Yana\Security\IsF
 
         } catch (\Exception $e) {
             $message = "Unable to commit changes to the database server while trying to update settings for user '{$userName}'.";
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Db\CommitFailedException($message, $level, $e);
+        }
+        return $user;
+    }
+
+    /**
+     * Create a new user using form data.
+     *
+     * @param   array  $formData  needs to match the form described in the user database
+     * @return  \Yana\Security\Data\Behaviors\IsBehavior
+     * @throws  \Yana\Core\Exceptions\User\MissingNameException    when no user name is given
+     * @throws  \Yana\Core\Exceptions\User\MissingMailException    when no mail address is given
+     * @throws  \Yana\Core\Exceptions\User\AlreadyExistsException  if another user with the same name already exists
+     * @throws  \Yana\Db\CommitFailedException                     when the database entry could not be created
+     */
+    public function createUserByFormData(array $formData)
+    {
+        assert('!isset($entity); // $entity already declared');
+        $entity = $this->_createUserMapper()->toEntity($formData);
+        $entity->setDataAdapter($this->_createUserAdapter());
+        assert('!isset($builder); // $builder already declared');
+        $builder = $this->_createUserBuilder();
+        assert('!isset($user); // $user already declared');
+        $user = $builder->__invoke($entity);
+
+        if ($user->getId() === "") {
+            throw new \Yana\Core\Exceptions\User\MissingNameException("No user name given.", \Yana\Log\TypeEnumeration::WARNING);
+        }
+
+        if ($user->getMail() === "") {
+            throw new \Yana\Core\Exceptions\User\MissingMailException("No mail address given.", \Yana\Log\TypeEnumeration::WARNING);
+        }
+
+        if ($builder->isExistingUserName($user->getId())) {
+            throw new \Yana\Core\Exceptions\User\AlreadyExistsException(
+                "A user with the name '$userName' already exists.", \Yana\Log\TypeEnumeration::WARNING
+            );
+        }
+
+        try {
+            $user->saveChanges(); // may throw exception
+
+        } catch (\Exception $e) {
+            $message = "Unable to commit changes to the database server while trying to update settings for user '{$user->getId()}'.";
             $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Db\CommitFailedException($message, $level, $e);
         }

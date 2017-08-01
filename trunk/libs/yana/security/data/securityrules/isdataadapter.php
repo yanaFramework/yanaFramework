@@ -50,8 +50,22 @@ interface IsDataAdapter extends \Yana\Data\Adapters\IsDataAdapter
      * @param   string  $userId     user name
      * @param   string  $profileId  profile id
      * @return  \Yana\Security\Data\SecurityRules\IsCollection
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no matching rule is found
      */
-    public function findEntities($userId, $profileId = "");
+    public function findEntitiesOwnedByUser($userId, $profileId = "");
+
+
+    /**
+     * Get security levels the user created but does not own.
+     *
+     * Returns all entries this user granted to other users.
+     *
+     * @param   string  $userId     user name
+     * @param   string  $profileId  profile id
+     * @return  \Yana\Security\Data\SecurityRules\IsCollection
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no matching rule is found
+     */
+    public function findEntitiesGrantedByUser($userId, $profileId = "");
 
 }
 

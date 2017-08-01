@@ -111,23 +111,36 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
             return false;
         }
 
-        $YANA = $this->_getApplication();
-
         try {
             $user = $this->_getSecurityFacade()->loadUser((string) $target['user_id']);
+            return $this->_generateRandomPassword($user);
         } catch (\Yana\Core\Exceptions\User\NotFoundException $e) { // user not found
             return false;
         }
+    }
+
+    /**
+     * Generate a random password, sumbit changes, and send an e-mail.
+     *
+     * @param   \Yana\Security\Data\Behaviors\IsBehavior  $user  entity
+     * @return  bool
+     */
+    private function _generateRandomPassword(\Yana\Security\Data\Behaviors\IsBehavior $user)
+    {
+        assert('!isset($password); // $password already declared');
         $password = $user->generateRandomPassword();
 
         if (!$password) {
             return false;
         }
+
+        assert('!isset($YANA); // $YANA already declared');
+        $YANA = $this->_getApplication();
         $YANA->setVar('PASSWORT', $password);
         $YANA->setVar('NAME', $user->getId());
         if (filter_var($user->getMail(), FILTER_VALIDATE_EMAIL)) {
             assert('!isset($sender); // Cannot redeclare var $sender');
-            $sender = $YANA->getVar("PROFILE.MAIL");
+            $sender = (string) $YANA->getVar("PROFILE.MAIL");
             if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
                 $template = $YANA->getView()->createContentTemplate("id:USER_PASSWORD_MAIL");
                 $templateMailer = new \Yana\Mails\TemplateMailer($template);
@@ -254,19 +267,16 @@ class UserAdminPlugin extends \Yana\Plugins\AbstractPlugin
         // reset Id-setting (just in case some plugin changed this)
         $YANA->setVar('ID', $YANA->getProfileId());
 
-        $newUser = self::getUserForm()->getInsertValues();
-        $userName = $newUser['user_id'];
-
-        $user = $this->_getSecurityFacade()->createUser($userName, $newUser['user_mail']);
-        $db = \Yana\Security\Data\SessionManager::getDatasource();
+        assert('!isset($user); // $user already declared');
+        $user = $this->_getSecurityFacade()->createUserByFormData(self::getUserForm()->getInsertValues());
         try {
-            $db->update("user.$userName", $newUser)
-                ->commit(); // may throw exception
+            $user->saveChanges();
+            return $this->_generateRandomPassword($user);
+
         } catch (\Exception $e) {
-            $db->rollback();
+
             return false;
         }
-        return $this->set_user_pwd(array('target' => array('user_id' => $userName)));
     }
 
     /**

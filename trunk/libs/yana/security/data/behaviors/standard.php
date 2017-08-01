@@ -395,7 +395,16 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      */
     public function getSecurityGroupsAndRoles($profileId)
     {
-        return $this->_getDependencies()->getRulesAdapter()->findEntities($this->getId(), $profileId);
+        try {
+            $entities = $this->_getDependencies()->getRulesAdapter()
+                ->findEntitiesOwnedByUser($this->getId(), $profileId);
+
+        } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
+
+            $entities = new \Yana\Security\Data\SecurityRules\Collection();
+            unset($e);
+        }
+        return $entities;
     }
 
     /**
@@ -407,7 +416,40 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      */
     public function getAllSecurityGroupsAndRoles()
     {
-        return $this->_getDependencies()->getRulesAdapter()->findEntities($this->getId());
+        try {
+            $entities = $this->_getDependencies()->getRulesAdapter()
+                ->findEntitiesOwnedByUser($this->getId());
+
+        } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
+
+            $entities = new \Yana\Security\Data\SecurityRules\Collection();
+            unset($e);
+        }
+        return $entities;
+    }
+
+    /**
+     * Find all security rules given to other users.
+     *
+     * This finds and returns all groups and roles this user owns and has granted to other users.
+     *
+     * Meaning, all security permissions created by the current user,
+     * where the owner of the permission is somebody else.
+     *
+     * @return  \Yana\Security\Data\SecurityRules\Collection
+     */
+    public function getAllSecurityGroupsAndRolesGrantedToOthers()
+    {
+        try {
+            $entities = $this->_getDependencies()->getRulesAdapter()
+                ->findEntitiesGrantedByUser($this->getId());
+
+        } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
+
+            $entities = new \Yana\Security\Data\SecurityRules\Collection();
+            unset($e);
+        }
+        return $entities;
     }
 
     /**
@@ -426,7 +468,9 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
         try {
             $securityLevelEntity = $this->_getDependencies()->getLevelsAdapter()
                 ->findEntity($this->getId(), $profileId);
+
         } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
+
             $securityLevelEntity = new \Yana\Security\Data\SecurityLevels\Level(0, true); // 0 is default
             unset($e);
         }
@@ -438,10 +482,34 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * Returns a collection of all security levels associated with this user.
      *
-     * @param   string  $profileId  profile id
      * @return  \Yana\Security\Data\SecurityLevels\Collection
      */
     public function getAllSecurityLevels()
+    {
+        try {
+            $securityLevelEntities = $this->_getDependencies()->getLevelsAdapter()
+                ->findEntities($this->getId());
+
+        } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
+
+            $securityLevelEntities = new \Yana\Security\Data\SecurityLevels\Collection();
+            $securityLevelEntities[] = new \Yana\Security\Data\SecurityLevels\Level(0, true); // 0 is default
+            unset($e);
+        }
+        return $securityLevelEntities;
+    }
+
+    /**
+     * Find all security levels given to other users.
+     *
+     * This finds and returns all security permissions this user has granted to other users.
+     *
+     * Meaning, all security permissions created by the current user,
+     * where the owner of the permission is somebody else.
+     *
+     * @return  \Yana\Security\Data\SecurityLevels\Collection
+     */
+    public function getAllSecurityLevelsGrantedToOthers()
     {
         try {
             $securityLevelEntities = $this->_getDependencies()->getLevelsAdapter()

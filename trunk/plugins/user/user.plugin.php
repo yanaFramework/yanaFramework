@@ -253,7 +253,7 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function set_reset_pwd($key)
     {
-        $this->_getUserId($key);
+        $this->_getSecurityFacade()->findUserByRecoveryId($key);
         return true;
     }
 
@@ -274,17 +274,14 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function reset_pwd($key, $new_pwd, $repeat_pwd)
     {
-        // check if user exist in the database
-        $userName = $this->_getUserId($key);
-        assert('is_string($userName);');
-
+        assert('!isset($isSuccess); // $isSuccess already declared');
         $isSuccess = true;
         try {
 
-            $user = $this->_getSecurityFacade()->loadUser($userName);
+            $user = $this->_getSecurityFacade()->findUserByRecoveryId($key);
             $this->_setPwd($user, $new_pwd, $repeat_pwd); // may throw exception
 
-    } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
+        } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
             unset($e);
             $isSuccess = false;
         }
@@ -357,36 +354,6 @@ class UserPlugin extends \Yana\Plugins\AbstractPlugin
             $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\Security\PasswordException($message, $level, $e);
         }
-    }
-
-    /**
-     * Check Password reset ticket.
-     *
-     * @param   string  $recoveryId recovery id
-     * @return  array
-     * @throws  \Yana\Core\Exceptions\Security\PasswordExpiredException  when the user's password has expired
-     */
-    private function _getUserId($recoveryId)
-    {
-        assert('is_string($recoveryId); // Invalid argument $recoveryId: string expected');
-
-        $database = \Yana\Security\Data\SessionManager::getDatasource();
-        $user = $database->select('user', array('user_recover_id', '=', $recoveryId));
-
-        assert('is_array($user); // $user must be of type array');
-        if (count($user) !== 1) {
-            $message = "No user found with with recovery id: " . \htmlentities($recoveryId);
-            $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
-        }
-
-        $user = array_pop($user);
-        // Note: 14400 = 4h
-        if (!isset($user['USER_RECOVER_UTC']) || $user['USER_RECOVER_UTC'] + 14400 < time()) {
-            throw new \Yana\Core\Exceptions\Security\PasswordExpiredException();
-        }
-
-        return $user['USER_ID'];
     }
 
     /**

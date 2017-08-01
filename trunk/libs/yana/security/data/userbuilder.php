@@ -216,13 +216,6 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
         assert('is_string($userId); // Invalid argument $userId: string expected');
         assert('is_string($mail); // Invalid argument $mail: string expected');
 
-
-        if ($this->isExistingUserName($userId)) {
-            throw new \Yana\Core\Exceptions\User\AlreadyExistsException(
-                "A user with the name '$userId' already exists.", \Yana\Log\TypeEnumeration::WARNING
-            );
-        }
-
         $user = new \Yana\Security\Data\Users\Entity(\Yana\Util\Strings::toUpperCase((string) $userId));
         $user->setMail((string) $mail);
         $user->setDataAdapter($this->_getUserAdapter());

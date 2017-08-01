@@ -45,17 +45,21 @@ class Mapper extends \Yana\Core\Object implements \Yana\Data\Adapters\IsEntityMa
     /**
      * Creates an user entity based on a database row.
      *
-     * @param   array  $databaseRow  row containing user info
+     * @param   array                               $databaseRow  row containing user info
+     * @param   \Yana\Security\Data\Users\IsEntity  $user         optional entity
      * @return  \Yana\Security\Data\Users\IsEntity
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when given user has no name
      */
-    public function toEntity(array $databaseRow)
+    public function toEntity(array $databaseRow, \Yana\Security\Data\Users\IsEntity $user = null)
     {
         if (!isset($databaseRow[\Yana\Security\Data\Tables\UserEnumeration::ID])) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException("Given user has no name.");
         }
 
-        $user = new \Yana\Security\Data\Users\Entity((string) $databaseRow[\Yana\Security\Data\Tables\UserEnumeration::ID]);
+        if (is_null($user)) {
+            $user = new \Yana\Security\Data\Users\Entity((string) $databaseRow[\Yana\Security\Data\Tables\UserEnumeration::ID]);
+        }
+        $user->setId((string) $databaseRow[\Yana\Security\Data\Tables\UserEnumeration::ID]);
 
         if (isset($databaseRow[\Yana\Security\Data\Tables\UserEnumeration::LANGUAGE])) {
             $user->setLanguage((string) $databaseRow[\Yana\Security\Data\Tables\UserEnumeration::LANGUAGE]);

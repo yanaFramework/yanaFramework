@@ -79,9 +79,9 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
         $currentUser = \Yana\Util\Strings::toUpperCase($this->_getSession()->getCurrentUserName());
 
         /**
-         * get all Users Names
+         * get all usernames
          */
-        $users = $this->_getSecurityFacade()->loadListOfUsers();
+        $users = \Yana\Util\Hashtable::changeCase($this->_getSecurityFacade()->loadListOfUsers(), \CASE_UPPER);
         if (isset($users[$currentUser])) {
             unset($users[$currentUser]);
         }
@@ -94,21 +94,20 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
         $user = $this->_getSecurityFacade()->loadUser($currentUser);
         assert('!isset($levels); // Cannot redeclare var $levels');
         $levels = array();
-        assert('!isset($profileId); // Cannot redeclare var $profileId');
         assert('!isset($level); // Cannot redeclare var $level');
-        foreach ($user->getAllSecurityLevels() as $profileId => $level)
+        foreach ($user->getAllSecurityLevels() as $level)
         {
-            /* @var $level \Yana\Security\Data\SecurityLevels\IsLevel */
+            /* @var $level \Yana\Security\Data\SecurityLevels\IsLevelEntity */
 
             if (!$level->isUserProxyActive()) {
                 continue;
             }
-            $levels[$profileId] = array(
+            $levels[$level->getProfile()] = array(
                 "SECURITY_ID" => $level->getId(),
                 "SECURITY_LEVEL" => $level->getSecurityLevel()
             );
         }
-        unset($profileId, $level);
+        unset($level);
         $YANA->setVar("LEVELS", $levels);
         unset($levels);
 

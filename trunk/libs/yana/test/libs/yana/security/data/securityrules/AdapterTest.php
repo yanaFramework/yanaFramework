@@ -92,9 +92,9 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testFindEntities()
+    public function testFindEntitiesOwnedByUser()
     {
-        $entities = $this->object->findEntities('administrator', 'default');
+        $entities = $this->object->findEntitiesOwnedByUser('administrator', 'default');
         $this->assertCount(3, $entities);
         $entity0 = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'DEFAULT', true);
         $entity0->setUserName('ADMINISTRATOR')
@@ -112,10 +112,28 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \Yana\Core\Exceptions\User\NotFoundException
+     */
+    public function testFindEntitiesOwnedByUserNotFoundExceptionInvalidUser()
+    {
+        $this->object->findEntitiesOwnedByUser('no-such-thing', 'default');
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\NotFoundException
+     */
+    public function testFindEntitiesOwnedByUserNotFoundExceptionInvalidProfile()
+    {
+        $this->object->findEntitiesOwnedByUser('administrator', 'no-such-thing');
+    }
+
+    /**
+     * @test
      */
     public function testFindEntitiesWithoutProfile()
     {
-        $entities = $this->object->findEntities('administrator');
+        $entities = $this->object->findEntitiesOwnedByUser('administrator');
         $this->assertCount(4, $entities);
         $entity0 = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'DEFAULT', true);
         $entity0->setUserName('ADMINISTRATOR')
@@ -133,6 +151,60 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
         $entity3->setUserName('ADMINISTRATOR')
             ->setProfile('DEFAULT');
         $this->assertEquals($entity3->setId(10), $entities[3]);
+    }
+
+    /**
+     * @test
+     */
+    public function testFindEntitiesGrantedByUser()
+    {
+        $entities = $this->object->findEntitiesGrantedByUser('grant_test', 'default');
+        $this->assertCount(1, $entities);
+        $entity0 = new \Yana\Security\Data\SecurityRules\Rule('', 'TESTROLE', true);
+        $entity0->setId(17)
+            ->setUserName('TARGET')
+            ->setGrantedByUser('GRANT_TEST')
+            ->setProfile('DEFAULT');
+        $this->assertEquals($entity0, $entities[0]);
+    }
+
+    /**
+     * @test
+     */
+    public function testFindEntitiesGrantedByUserProfile()
+    {
+        $entities = $this->object->findEntitiesGrantedByUser('grant_test');
+        $this->assertCount(2, $entities);
+        $entity0 = new \Yana\Security\Data\SecurityRules\Rule('', 'TESTROLE', true);
+        $entity0->setId(17)
+            ->setUserName('TARGET')
+            ->setGrantedByUser('GRANT_TEST')
+            ->setProfile('DEFAULT');
+        $this->assertEquals($entity0, $entities[0]);
+        $entity1 = new \Yana\Security\Data\SecurityRules\Rule('TESTGROUP', '', true);
+        $entity1->setId(18)
+            ->setUserName('TARGET')
+            ->setGrantedByUser('GRANT_TEST')
+            ->setProfile('OTHER');
+        $this->assertEquals($entity1, $entities[1]);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\NotFoundException
+     */
+    public function testFindEntitiesGrantedByUserNotFoundExceptionInvalidUser()
+    {
+        $this->object->findEntitiesOwnedByUser('no-such-thing', 'default');
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\NotFoundException
+     */
+    public function testFindEntitiesGrantedByUserNotFoundExceptionInvalidProfile()
+    {
+        $this->object->findEntitiesOwnedByUser('administrator', 'no-such-thing');
     }
 
 }

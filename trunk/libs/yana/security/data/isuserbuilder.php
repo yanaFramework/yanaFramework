@@ -89,6 +89,15 @@ interface IsUserBuilder
      */
     public function buildFromRecoveryId($recoveryId);
 
+    /**
+     * Build an user object based on a given name.
+     *
+     * @param   string  $userId  the name/id of the user as it is stored in the database
+     * @param   string  $mail    the user's e-mail address (must be unique)
+     * @return  \Yana\Security\Data\Users\IsEntity
+     */
+    public function buildNewUser($userId, $mail);
+
 }
 
 ?>
