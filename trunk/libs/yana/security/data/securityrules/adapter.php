@@ -81,6 +81,14 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
         return $this->_getEntityMapper()->toEntity($query->getResults());
     }
 
+    /**
+     * Insert or replace entity.
+     *
+     * @param   scalar                                          $offset  index of item to replace
+     * @param   \Yana\Security\Data\SecurityRules\IsRuleEntity  $entity  this will go to the database
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the value is not a valid entity
+     * @return  mixed
+     */
     public function offsetSet($offset, $entity)
     {
         assert('is_int($offset) || is_null($offset); // Wrong type argument $offset. Integer expected.');
@@ -126,17 +134,6 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
         }
 
         return $entity;
-
-        assert('!isset($mapper); // Cannot redeclare var $mapper');
-        $mapper = $this->_getEntityMapper();
-        $row = $mapper->toDatabaseRow($entity);
-        $db = $this->_getConnection();
-        try {
-            $db->insertOrUpdate($key, $row)->commit();
-
-        } catch (\Exception $e) {
-            $db->rollback();
-        }
     }
 
     /**

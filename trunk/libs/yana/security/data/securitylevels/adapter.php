@@ -43,6 +43,45 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
 {
 
     /**
+     * Returns a list of database ids.
+     *
+     * @return  int[]
+     */
+    public function getIds()
+    {
+        assert('!isset($query); // Cannot redeclare var $query');
+        $query = new \Yana\Db\Queries\Select($this->_getConnection());
+        $query
+            ->setTable(\Yana\Security\Data\Tables\LevelEnumeration::TABLE)
+            ->setColumn(\Yana\Security\Data\Tables\LevelEnumeration::ID);
+        return $query->getResults();
+    }
+
+    /**
+     * Returns the number of entries in the table.
+     *
+     * @return  int
+     */
+    public function count()
+    {
+        assert('!isset($query); // Cannot redeclare var $query');
+        $query = new \Yana\Db\Queries\SelectCount($this->_getConnection());
+        return $query->setTable(\Yana\Security\Data\Tables\LevelEnumeration::TABLE)->countResults();
+    }
+
+    /**
+     * Saves the rule data to the database.
+     *
+     * @param  \Yana\Data\Adapters\IsEntity  $entity  object to persist
+     * @throws \Yana\Core\Exceptions\InvalidArgumentException  when the entity is invalid
+     * @throws \Yana\Core\Exceptions\User\UserException        when there was a problem with the database
+     */
+    public function saveEntity(\Yana\Data\Adapters\IsEntity $entity)
+    {
+        $this->offsetSet(null, $entity);
+    }
+
+    /**
      * Get security level.
      *
      * Returns the user's security level as an integer value.
