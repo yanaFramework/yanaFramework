@@ -46,7 +46,7 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     protected $connection;
 
     /**
-     * @var Adapter
+     * @var \Yana\Security\Data\SecurityRules\Adapter
      */
     protected $object;
 
@@ -71,7 +71,7 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
             \Yana\Db\FileDb\Driver::setBaseDirectory(CWD. 'resources/db/');
             \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
             $schema = \Yana\Files\XDDL::getDatabase('user');
-            $this->connection = new \Yana\Db\FileDb\Connection($schema);
+            $this->connection = new \Yana\Db\FileDb\NullConnection($schema);
             restore_error_handler();
 
         } catch (\Exception $e) {
@@ -205,6 +205,62 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     public function testFindEntitiesGrantedByUserNotFoundExceptionInvalidProfile()
     {
         $this->object->findEntitiesOwnedByUser('administrator', 'no-such-thing');
+    }
+
+    /**
+     * @test
+     */
+    public function testGetIds()
+    {
+        $ids = $this->object->getIds();
+        $this->assertCount(20, $ids);
+        $this->assertSame(0, current($ids));
+        $this->assertSame(1, $ids[1]);
+        $this->assertSame(2, $ids[2]);
+    }
+
+    /**
+     * @test
+     */
+    public function testOffsetExists()
+    {
+        $this->assertFalse($this->object->offsetExists(-1));
+        $this->assertTrue($this->object->offsetExists(0));
+        $this->assertTrue($this->object->offsetExists(1));
+        $this->assertTrue($this->object->offsetExists(2));
+    }
+
+    /**
+     * @test
+     */
+    public function testOffsetGet()
+    {
+        $expected = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'DEFAULT', true);
+        $expected->setUserName('ADMINISTRATOR')
+            ->setProfile('DEFAULT')
+            ->setId(0);
+
+        $entity = $this->object->offsetGet(0);
+        $this->assertEquals($expected, $entity);
+    }
+
+    /**
+     * @test
+     */
+    public function testOffsetSet()
+    {
+        $expected = new \Yana\Security\Data\SecurityRules\Rule('TestGroup', 'TestRole', true);
+        $expected->setUserName('ADMINISTRATOR')
+            ->setProfile('Profile')
+            ->setGrantedByUser('ADMINISTRATOR')
+            ->setId(1);
+
+        $entity = $this->object->offsetSet(0, $expected);
+        $this->assertSame($expected, $entity);
+        $this->assertSame(0, $entity->getId());
+        $actual = $this->object->offsetGet(0);
+        $this->assertSame(0, $actual->getId());
+        $this->assertEquals($expected, $entity);
     }
 
 }

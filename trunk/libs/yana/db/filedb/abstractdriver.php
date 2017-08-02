@@ -43,7 +43,7 @@ abstract class AbstractDriver extends \Yana\Core\Object implements \Yana\Db\IsDr
 {
 
     /**
-     * @var \Yana\Db\FileDb\Counter
+     * @var \Yana\Db\FileDb\Sequence
      */
     private $_autoIncrement = null;
 
@@ -100,7 +100,7 @@ abstract class AbstractDriver extends \Yana\Core\Object implements \Yana\Db\IsDr
     /**
      * Return auto-increment sequence counter.
      *
-     * @return  \Yana\Db\FileDb\Counter
+     * @return  \Yana\Db\FileDb\Sequence
      */
     protected function _getAutoIncrement()
     {
@@ -210,10 +210,10 @@ abstract class AbstractDriver extends \Yana\Core\Object implements \Yana\Db\IsDr
     /**
      * Set auto-increment sequence counter.
      *
-     * @param   \Yana\Db\FileDb\Counter  $autoIncrement
+     * @param   \Yana\Db\FileDb\Sequence  $autoIncrement
      * @return  self
      */
-    protected function _setAutoIncrement(\Yana\Db\FileDb\Counter $autoIncrement)
+    protected function _setAutoIncrement(\Yana\Db\FileDb\Sequence $autoIncrement)
     {
         $this->_autoIncrement = $autoIncrement;
         return $this;

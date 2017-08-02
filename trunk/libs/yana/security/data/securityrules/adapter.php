@@ -43,6 +43,19 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
 {
 
     /**
+     * Returns the database key for the user as: table.id.
+     *
+     * @param   int  $id  primary key
+     * @return  string
+     */
+    protected function _toDatabaseKey($id)
+    {
+        assert('is_string($id); // Wrong type argument $id. Integer expected.');
+
+        return \Yana\Security\Data\Tables\RuleEnumeration::TABLE . '.' . (int) $id;
+    }
+
+    /**
      * Returns bool(true) if an entry with the given id exists.
      *
      * @param   int  $offset  primary key
@@ -112,25 +125,20 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
 
         try {
             if ($this->offsetExists($offset)) { // entry exists
-                $db->update($this->_toDatabaseKey($offset), $row);
-
-            } else { // new user
-                $db->insert($this->_toDatabaseKey($offset), $row);
-                $db->insert(
-                    \Yana\Security\Data\Tables\ProfileEnumeration::TABLE . "." . \Yana\Util\Strings::toUpperCase($offset), // profile id
-                    array(\Yana\Security\Data\Tables\ProfileEnumeration::TIME_MODIFIED => time()) // profile row
-                );
-
+                $db->remove($this->_toDatabaseKey($offset));
             }
+            $db->insert($this->_toDatabaseKey($offset), $row);
             $db->commit(); // may throw exception
 
-        } catch (\Yana\Db\DatabaseException $e) {
+        } catch (\Exception $e) {
 
+            $db->rollback(); // don't try to commit the faulty statement again
             assert('!isset($message); // Cannot redeclare var $message');
-            $message = "User not saved due to a database error.";
+            $message = "Rule not saved due to a database error.";
             assert('!isset($level); // Cannot redeclare var $level');
             $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \Yana\Core\Exceptions\User\UserException($level, $message, $e);
+            throw $e;
+            throw new \Yana\Core\Exceptions\User\UserException($message, $level, $e);
         }
 
         return $entity;
@@ -159,10 +167,7 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
         assert('!isset($db); // Cannot redeclare var $db');
         $db = $this->_getConnection();
         try {
-            assert('!isset($query); // Cannot redeclare var $query');
-            $query = new \Yana\Db\Queries\Delete($db);
-            $query->setTable(\Yana\Security\Data\Tables\RuleEnumeration::TABLE)->setRow($offset);
-            $db->remove($query);
+            $db->remove($this->_toDatabaseKey($offset));
             $db->commit(); // may throw exception
 
         } catch (\Exception $e) {

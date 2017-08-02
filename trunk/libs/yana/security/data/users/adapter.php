@@ -163,7 +163,7 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
             $message = "User not saved due to a database error.";
             assert('!isset($level); // Cannot redeclare var $level');
             $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \Yana\Core\Exceptions\User\UserException($level, $message, $e);
+            throw new \Yana\Core\Exceptions\User\UserException($message, $level, $e);
         }
 
         return $userEntity;

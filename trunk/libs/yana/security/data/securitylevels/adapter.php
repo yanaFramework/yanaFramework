@@ -43,6 +43,19 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
 {
 
     /**
+     * Returns the database key for the user as: table.id.
+     *
+     * @param   int  $id  primary key
+     * @return  string
+     */
+    protected function _toDatabaseKey($id)
+    {
+        assert('is_string($id); // Wrong type argument $id. Integer expected.');
+
+        return \Yana\Security\Data\Tables\LevelEnumeration::TABLE . '.' . (int) $id;
+    }
+
+    /**
      * Returns a list of database ids.
      *
      * @return  int[]
