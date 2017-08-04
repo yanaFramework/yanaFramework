@@ -65,16 +65,16 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
 {
 
     /**
-     * @var  \Yana\Security\Data\IsDataAdapter
+     * @var  \Yana\Security\Data\Users\IsDataAdapter
      */
     private $_userAdapter = null;
 
     /**
      * <<constructor>> Set up and initialize user adapter.
      *
-     * @param  \Yana\Security\Data\IsDataAdapter  $userAdapter  inject a NULL-adapter for Unit-tests
+     * @param  \Yana\Security\Data\Users\IsDataAdapter  $userAdapter  inject a NULL-adapter for Unit-tests
      */
-    public function __construct(\Yana\Security\Data\IsDataAdapter $userAdapter = null)
+    public function __construct(\Yana\Security\Data\Users\IsDataAdapter $userAdapter = null)
     {
         $this->_userAdapter = $userAdapter;
     }
@@ -84,7 +84,7 @@ class UserBuilder extends \Yana\Core\Object implements \Yana\Security\Data\IsUse
      *
      * If there is none, it will create a fitting adapter automatically.
      *
-     * @return  \Yana\Security\Data\IsDataAdapter
+     * @return  \Yana\Security\Data\Users\IsDataAdapter
      */
     protected function _getUserAdapter()
     {

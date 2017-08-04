@@ -58,7 +58,7 @@ class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityLe
             $level = (int) $databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::LEVEL];
         }
         assert('!isset($isProxy); // Cannot redeclare var $isProxy');
-        $isProxy = true;
+        $isProxy = false; // when the database value is NULL, it must be mapped to false
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY])) {
             $isProxy = (bool) $databaseRowLower[\Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY];
         }

@@ -72,7 +72,7 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
             \Yana\Db\FileDb\Driver::setBaseDirectory(CWD. 'resources/db/');
             \Yana\Db\Ddl\DDL::setDirectory(CWD. 'resources/');
             $schema = \Yana\Files\XDDL::getDatabase('user');
-            $this->connection = new \Yana\Db\FileDb\Connection($schema);
+            $this->connection = new \Yana\Db\FileDb\NullConnection($schema);
             restore_error_handler();
 
         } catch (\Exception $e) {
@@ -106,7 +106,7 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     {
         $enity = $this->object->findEntity('testuser1', 'default');
         $this->assertSame(80, $enity->getSecurityLevel());
-        $this->assertSame(true, $enity->isUserProxyActive());
+        $this->assertSame(false, $enity->isUserProxyActive());
     }
 
     /**
@@ -115,13 +115,100 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     public function testFindEntities()
     {
         $enities = $this->object->findEntities('administrator');
-        $enities = $this->object->findEntities('administrator');
         $this->assertTrue($enities instanceof \Yana\Security\Data\SecurityLevels\Collection);
         $this->assertCount(4, $enities);
         $this->assertSame(100, $enities['NG']->getSecurityLevel());
         $this->assertSame(100, $enities['BAR']->getSecurityLevel());
         $this->assertSame(100, $enities['DEFAULT']->getSecurityLevel());
         $this->assertSame(100, $enities['TT']->getSecurityLevel());
+    }
+
+    /**
+     * @test
+     */
+    public function testGetIds()
+    {
+        $ids = $this->object->getIds();
+        $this->assertCount(14, $ids);
+        $this->assertSame(1, current($ids));
+        $this->assertSame(1, $ids[1]);
+        $this->assertSame(2, $ids[2]);
+    }
+
+    /**
+     * @test
+     */
+    public function testOffsetExists()
+    {
+        $this->assertFalse($this->object->offsetExists(-1));
+        $this->assertTrue($this->object->offsetExists(1));
+        $this->assertTrue($this->object->offsetExists(2));
+    }
+
+    /**
+     * @test
+     */
+    public function testOffsetGet()
+    {
+        $expected = new \Yana\Security\Data\SecurityLevels\Level(80, false);
+        $expected->setUserName('TESTUSER1')
+            ->setProfile('DEFAULT')
+            ->setId(1)
+            ->setGrantedByUser('TESTUSER1')
+            ->setDataAdapter($this->object);
+
+        $entity = $this->object->offsetGet(1);
+        $this->assertEquals($expected, $entity);
+    }
+
+    /**
+     * @test
+     */
+    public function testOffsetSet()
+    {
+        $expected = new \Yana\Security\Data\SecurityLevels\Level(10, true);
+        $expected->setUserName('ADMINISTRATOR')
+            ->setProfile('Profile')
+            ->setGrantedByUser('ADMINISTRATOR')
+            ->setId(1);
+
+        $entity = $this->object->offsetSet(null, $expected);
+        $this->assertSame($expected, $entity);
+        $this->assertSame(1, $entity->getId());
+        $actual = $this->object->offsetGet(1);
+        $this->assertSame(1, $actual->getId());
+        $this->assertEquals($expected, $entity);
+    }
+
+    /**
+     * @test
+     */
+    public function testOffsetUnset()
+    {
+        $this->assertTrue($this->object->offsetExists(1));
+        $this->object->offsetUnset(1);
+        $this->assertFalse($this->object->offsetExists(1));
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\NotFoundException
+     */
+    public function testOffsetUnsetNotFoundException()
+    {
+        $this->object->offsetUnset(-1);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Db\Queries\Exceptions\NotDeletedException
+     */
+    public function testOffsetUnsetNotDeletedException()
+    {
+        $this->connection
+            ->getSchema()
+            ->setReadonly(true);
+        $this->object->offsetUnset(1);
     }
 
 }

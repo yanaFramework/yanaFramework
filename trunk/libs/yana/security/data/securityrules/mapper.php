@@ -63,7 +63,7 @@ class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRu
             $role = (string) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::ROLE];
         }
         assert('!isset($isProxy); // Cannot redeclare var $isProxy');
-        $isProxy = true;
+        $isProxy = false; // when the database value is NULL, it must be mapped to false
         if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY])) {
             $isProxy = (bool) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY];
         }

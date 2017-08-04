@@ -39,7 +39,7 @@ namespace Yana\Security\Data\Users;
  *
  * @ignore
  */
-class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana\Security\Data\IsDataAdapter
+class Adapter extends \Yana\Security\Data\Users\AbstractAdapter
 {
 
     /**
@@ -59,29 +59,38 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
     }
 
     /**
-     * Returns the database key for the user as: table.userId.
+     * Returns the name of the target table.
      *
-     * @param   string  $userId  name of the account
      * @return  string
      */
-    protected function _toDatabaseKey($userId)
+    protected function _getTableName()
     {
-        assert('is_string($userId); // Wrong type argument $userId. String expected.');
-
-        return \Yana\Security\Data\Tables\UserEnumeration::TABLE . '.' . \Yana\Util\Strings::toUpperCase($userId);
+        return \Yana\Security\Data\Tables\UserEnumeration::TABLE;
     }
 
     /**
-     * Returns bool(true) if a user by that name exists and bool(false) otherwise.
+     * Serializes the entity object to a table-row.
      *
-     * @param   string  $userId  name of the account
-     * @return  bool
+     * @param   \Yana\Data\Adapters\IsEntity  $entity  object to convert
+     * @return  array
      */
-    public function offsetExists($userId)
+    protected function _serializeEntity(\Yana\Data\Adapters\IsEntity $entity)
     {
-        assert('is_string($userId); // Wrong type argument $userId. String expected.');
+        return $this->_getEntityMapper()->toDatabaseRow($entity);
+    }
 
-        return $this->_getConnection()->exists($this->_toDatabaseKey($userId));
+    /**
+     * Unserializes the table-row to an entity object.
+     *
+     * @param   array  $dataSet  table row to convert
+     * @return  \Yana\Data\Adapters\IsEntity
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given data is invalid
+     */
+    protected function _unserializeEntity(array $dataSet)
+    {
+        $entity = $this->_getEntityMapper()->toEntity($dataSet);
+        $entity->setDataAdapter($this);
+        return $entity;
     }
 
     /**
@@ -95,18 +104,12 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
     {
         assert('is_string($userId); // Wrong type argument $userId. String expected.');
 
-        assert('!isset($row); // Cannot redeclare var $row');
-        $row = $this->_getConnection()->select($this->_toDatabaseKey($userId));
-
         try {
-            assert('!isset($entity); // Cannot redeclare var $entity');
-            $entity = $this->_getEntityMapper()->toEntity($row);
-            $entity->setDataAdapter($this);
-            return $entity;
+            return parent::offsetGet(\Yana\Util\Strings::toUpperCase((string) $userId));
 
         } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
 
-            $message = "No user found with id: " . \htmlentities($userId);
+            $message = "No user found with id: " . \htmlentities((string) $userId);
             $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level, $e);
         }
@@ -133,29 +136,12 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
 
-        if (is_null($userId) || $userId == '') {
-            $userId = $userEntity->getId();
+        if (!is_null($userId)) {
+            $userId = \Yana\Util\Strings::toUpperCase((string) $userId);
         }
 
-        assert('!isset($db); // Cannot redeclare var $db');
-        assert('!isset($userRow); // Cannot redeclare var $userRow');
-
-        $db = $this->_getConnection();
-        $userRow = $this->_getEntityMapper()->toDatabaseRow($userEntity);
-
         try {
-            if ($this->offsetExists($userId)) { // user exists
-                $db->update($this->_toDatabaseKey($userId), $userRow);
-
-            } else { // new user
-                $db->insert($this->_toDatabaseKey($userId), $userRow);
-                $db->insert(
-                    \Yana\Security\Data\Tables\ProfileEnumeration::TABLE . "." . \Yana\Util\Strings::toUpperCase($userId), // profile id
-                    array(\Yana\Security\Data\Tables\ProfileEnumeration::TIME_MODIFIED => time()) // profile row
-                );
-
-            }
-            $db->commit(); // may throw exception
+            parent::offsetSet($userId, $userEntity);
 
         } catch (\Yana\Db\DatabaseException $e) {
 
@@ -167,6 +153,27 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
         }
 
         return $userEntity;
+    }
+
+    /**
+     * Triggered when offsetSet() is called and the offset doesn't exists.
+     *
+     * This function adds an additional empty user profile.
+     *
+     * @param   \Yana\Data\Adapters\IsEntity  $entity      object to be stored
+     * @param   scalar                        $optionalId  primary key
+     * @return  scalar
+     */
+    protected function _onInsert(\Yana\Data\Adapters\IsEntity $entity, $optionalId = null)
+    {
+        $id = parent::_onInsert($entity, $optionalId);
+        $db = $this->_getDatabaseConnection();
+        // There is a 1:1 connection between profile and user. Ergo, the primary keys are the same.
+        $db->insert(
+            \Yana\Security\Data\Tables\ProfileEnumeration::TABLE . "." . \Yana\Util\Strings::toUpperCase($id), // profile id
+            array(\Yana\Security\Data\Tables\ProfileEnumeration::TIME_MODIFIED => time()) // empty profile row
+        );
+        return $id;
     }
 
     /**
@@ -193,7 +200,7 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
         $upperCaseUserId = \Yana\Util\Strings::toUpperCase($userId);
 
         assert('!isset($db); // Cannot redeclare var $db');
-        $db = $this->_getConnection();
+        $db = $this->_getDatabaseConnection();
         try {
 
             // delete profile (if any)
@@ -235,12 +242,10 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
                 $db->rollback(); // don't try to commit this statement again
             }
             // delete user settings
-            $db->remove($this->_toDatabaseKey($upperCaseUserId))
-                ->commit(); // may throw exception
+            parent::offsetUnset($upperCaseUserId); // may throw exception
 
         } catch (\Exception $e) {
 
-            $db->rollback(); // don't try to commit the faulty statement again
             $message = "Unable to commit changes to the database server while trying to remove user '{$userId}'.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level, $e);
@@ -260,7 +265,7 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
      */
     public function count()
     {
-        return $this->_getConnection()->length(\Yana\Security\Data\Tables\UserEnumeration::TABLE);
+        return $this->_getDatabaseConnection()->length($this->_getTableName());
     }
 
     /**
@@ -271,8 +276,8 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
     public function getIds()
     {
         assert('!isset($key); // Cannot redeclare var $key');
-        $key = \Yana\Security\Data\Tables\UserEnumeration::TABLE . '.*.' . \Yana\Security\Data\Tables\UserEnumeration::ID;
-        return $this->_getConnection()->select($key);
+        $key = $this->_getTableName() . '.*.' . \Yana\Security\Data\Tables\UserEnumeration::ID;
+        return $this->_getDatabaseConnection()->select($key);
     }
 
     /**
@@ -298,18 +303,19 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
     {
         assert('is_string($mail); // Wrong type argument $mail. String expected.');
 
-        assert('!isset($where); // Cannot redeclare var $where');
-        $where = array(\Yana\Security\Data\Tables\UserEnumeration::MAIL, '=', (string) $mail);
+        assert('!isset($entities); // Cannot redeclare var $entities');
+        $entities = parent::_findEntitiesByColumn(\Yana\Security\Data\Tables\UserEnumeration::MAIL, (string) $mail);
 
-        try {
-            return $this->_findUser($where);
-
-        } catch (\Exception $e) {
-
+        if (count($entities) !== 1) {
             $message = "No user found with mail: " . \htmlentities($mail);
             $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \Yana\Core\Exceptions\User\MailNotFoundException($message, $level, $e);
+            throw new \Yana\Core\Exceptions\User\MailNotFoundException($message, $level);
         }
+
+        assert('!isset($entity); // Cannot redeclare var $entity');
+        $entity = current($entities);
+        assert($entity instanceof \Yana\Security\Data\Users\IsEntity);
+        return $entity;
     }
 
     /**
@@ -323,52 +329,18 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter implements \Yana
     {
         assert('is_string($recoveryId); // Invalid argument $recoveryId: string expected');
 
-        assert('!isset($where); // Cannot redeclare var $where');
-        $where = array(\Yana\Security\Data\Tables\UserEnumeration::PASSWORD_RECOVERY_ID, '=', (string) $recoveryId);
+        $entities = parent::_findEntitiesByColumn(\Yana\Security\Data\Tables\UserEnumeration::PASSWORD_RECOVERY_ID, (string) $recoveryId);
 
-        try {
-            return $this->_findUser($where);
-
-        } catch (\Exception $e) {
-
+        if (count($entities) !== 1) {
             $message = "No user found with recovery id: " . \htmlentities($recoveryId);
-            $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \Yana\Core\Exceptions\User\MailNotFoundException($message, $level, $e);
-        }
-    }
-
-    /**
-     * Loads and returns an user account from the database.
-     *
-     * @param  array  $where  to use in Select statement
-     * @return  \Yana\Security\Data\Users\IsEntity
-     * @throws  \Yana\Core\Exceptions\User\NotFoundException  when the result set is empty or returns more than one match
-     */
-    private function _findUser(array $where)
-    {
-        assert('is_string($mail); // Wrong type argument $mail. String expected.');
-
-        assert('!isset($rows); // Cannot redeclare var $rows');
-        $rows = $this->_getConnection()->select(\Yana\Security\Data\Tables\UserEnumeration::TABLE, $where);
-
-        if (count($rows) !== 1) {
-            $message = "No such user";
             $level = \Yana\Log\TypeEnumeration::ERROR;
             throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
         }
 
-        try {
-            assert('!isset($entity); // Cannot redeclare var $entity');
-            $entity = $this->_getEntityMapper()->toEntity(current($rows));
-            $entity->setDataAdapter($this);
-            return $entity;
-
-        } catch (\Yana\Core\Exceptions\InvalidArgumentException $e) {
-
-            $message = "No such user";
-            $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level, $e);
-        }
+        assert('!isset($entity); // Cannot redeclare var $entity');
+        $entity = current($entities);
+        assert($entity instanceof \Yana\Security\Data\Users\IsEntity);
+        return $entity;
     }
 
 }

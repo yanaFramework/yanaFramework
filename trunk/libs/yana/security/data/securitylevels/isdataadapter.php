@@ -39,7 +39,7 @@ namespace Yana\Security\Data\SecurityLevels;
  *
  * @ignore
  */
-interface IsDataAdapter extends \Yana\Data\Adapters\IsDataAdapter
+interface IsDataAdapter extends \Yana\Data\Adapters\IsDataBaseAdapter
 {
 
     /**

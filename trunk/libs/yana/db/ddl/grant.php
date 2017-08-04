@@ -121,22 +121,26 @@ class Grant extends \Yana\Db\Ddl\DDL
     /**
      * @var  bool
      * @ignore
-     */protected $insert = true;
+     */
+    protected $insert = true;
 
     /**
      * @var  bool
      * @ignore
-     */protected $update = true;
+     */
+    protected $update = true;
 
     /**
      * @var  bool
      * @ignore
-     */protected $delete = true;
+     */
+    protected $delete = true;
 
     /**
      * @var  bool
      * @ignore
-     */protected $grant = true;
+     */
+    protected $grant = true;
 
     /**
      * Get user role.

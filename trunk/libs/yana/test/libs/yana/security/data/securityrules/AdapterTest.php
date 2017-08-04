@@ -96,17 +96,20 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     {
         $entities = $this->object->findEntitiesOwnedByUser('administrator', 'default');
         $this->assertCount(3, $entities);
-        $entity0 = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'DEFAULT', true);
+        $entity0 = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'DEFAULT', false);
         $entity0->setUserName('ADMINISTRATOR')
-            ->setProfile('DEFAULT');
+            ->setProfile('DEFAULT')
+            ->setDataAdapter($this->object);
         $this->assertEquals($entity0->setId(0), $entities[0]);
-        $entity1 = new \Yana\Security\Data\SecurityRules\Rule('', 'PRINT', true);
+        $entity1 = new \Yana\Security\Data\SecurityRules\Rule('', 'PRINT', false);
         $entity1->setUserName('ADMINISTRATOR')
-            ->setProfile('DEFAULT');
+            ->setProfile('DEFAULT')
+            ->setDataAdapter($this->object);
         $this->assertEquals($entity1->setId(2), $entities[1]);
-        $entity2 = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'ADMIN', true);
+        $entity2 = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'ADMIN', false);
         $entity2->setUserName('ADMINISTRATOR')
-            ->setProfile('DEFAULT');
+            ->setProfile('DEFAULT')
+            ->setDataAdapter($this->object);
         $this->assertEquals($entity2->setId(10), $entities[2]);
     }
 
@@ -135,21 +138,25 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     {
         $entities = $this->object->findEntitiesOwnedByUser('administrator');
         $this->assertCount(4, $entities);
-        $entity0 = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'DEFAULT', true);
+        $entity0 = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'DEFAULT', false);
         $entity0->setUserName('ADMINISTRATOR')
-            ->setProfile('DEFAULT');
+            ->setProfile('DEFAULT')
+            ->setDataAdapter($this->object);
         $this->assertEquals($entity0->setId(0), $entities[0]);
-        $entity1 = new \Yana\Security\Data\SecurityRules\Rule('MOD', 'DEFAULT', true);
+        $entity1 = new \Yana\Security\Data\SecurityRules\Rule('MOD', 'DEFAULT', false);
         $entity1->setUserName('ADMINISTRATOR')
-            ->setProfile('foo');
+            ->setProfile('foo')
+            ->setDataAdapter($this->object);
         $this->assertEquals($entity1->setId(1), $entities[1]);
-        $entity2 = new \Yana\Security\Data\SecurityRules\Rule('', 'PRINT', true);
+        $entity2 = new \Yana\Security\Data\SecurityRules\Rule('', 'PRINT', false);
         $entity2->setUserName('ADMINISTRATOR')
-            ->setProfile('DEFAULT');
+            ->setProfile('DEFAULT')
+            ->setDataAdapter($this->object);
         $this->assertEquals($entity2->setId(2), $entities[2]);
-        $entity3 = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'ADMIN', true);
+        $entity3 = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'ADMIN', false);
         $entity3->setUserName('ADMINISTRATOR')
-            ->setProfile('DEFAULT');
+            ->setProfile('DEFAULT')
+            ->setDataAdapter($this->object);
         $this->assertEquals($entity3->setId(10), $entities[3]);
     }
 
@@ -160,11 +167,12 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     {
         $entities = $this->object->findEntitiesGrantedByUser('grant_test', 'default');
         $this->assertCount(1, $entities);
-        $entity0 = new \Yana\Security\Data\SecurityRules\Rule('', 'TESTROLE', true);
+        $entity0 = new \Yana\Security\Data\SecurityRules\Rule('', 'TESTROLE', false);
         $entity0->setId(17)
             ->setUserName('TARGET')
             ->setGrantedByUser('GRANT_TEST')
-            ->setProfile('DEFAULT');
+            ->setProfile('DEFAULT')
+            ->setDataAdapter($this->object);
         $this->assertEquals($entity0, $entities[0]);
     }
 
@@ -175,17 +183,19 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     {
         $entities = $this->object->findEntitiesGrantedByUser('grant_test');
         $this->assertCount(2, $entities);
-        $entity0 = new \Yana\Security\Data\SecurityRules\Rule('', 'TESTROLE', true);
+        $entity0 = new \Yana\Security\Data\SecurityRules\Rule('', 'TESTROLE', false);
         $entity0->setId(17)
             ->setUserName('TARGET')
             ->setGrantedByUser('GRANT_TEST')
-            ->setProfile('DEFAULT');
+            ->setProfile('DEFAULT')
+            ->setDataAdapter($this->object);
         $this->assertEquals($entity0, $entities[0]);
-        $entity1 = new \Yana\Security\Data\SecurityRules\Rule('TESTGROUP', '', true);
+        $entity1 = new \Yana\Security\Data\SecurityRules\Rule('TESTGROUP', '', false);
         $entity1->setId(18)
             ->setUserName('TARGET')
             ->setGrantedByUser('GRANT_TEST')
-            ->setProfile('OTHER');
+            ->setProfile('OTHER')
+            ->setDataAdapter($this->object);
         $this->assertEquals($entity1, $entities[1]);
     }
 
@@ -235,10 +245,11 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
      */
     public function testOffsetGet()
     {
-        $expected = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'DEFAULT', true);
+        $expected = new \Yana\Security\Data\SecurityRules\Rule('ADMIN', 'DEFAULT', false);
         $expected->setUserName('ADMINISTRATOR')
             ->setProfile('DEFAULT')
-            ->setId(0);
+            ->setId(0)
+            ->setDataAdapter($this->object);
 
         $entity = $this->object->offsetGet(0);
         $this->assertEquals($expected, $entity);
@@ -255,12 +266,43 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
             ->setGrantedByUser('ADMINISTRATOR')
             ->setId(1);
 
-        $entity = $this->object->offsetSet(0, $expected);
+        $entity = $this->object->offsetSet(null, $expected);
         $this->assertSame($expected, $entity);
-        $this->assertSame(0, $entity->getId());
-        $actual = $this->object->offsetGet(0);
-        $this->assertSame(0, $actual->getId());
+        $this->assertSame(1, $entity->getId());
+        $actual = $this->object->offsetGet(1);
+        $this->assertSame(1, $actual->getId());
         $this->assertEquals($expected, $entity);
+    }
+
+    /**
+     * @test
+     */
+    public function testOffsetUnset()
+    {
+        $this->assertTrue($this->object->offsetExists(1));
+        $this->object->offsetUnset(1);
+        $this->assertFalse($this->object->offsetExists(1));
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\NotFoundException
+     */
+    public function testOffsetUnsetNotFoundException()
+    {
+        $this->object->offsetUnset(-1);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Db\Queries\Exceptions\NotDeletedException
+     */
+    public function testOffsetUnsetNotDeletedException()
+    {
+        $this->connection
+            ->getSchema()
+            ->setReadonly(true);
+        $this->object->offsetUnset(1);
     }
 
 }

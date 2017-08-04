@@ -27,7 +27,7 @@
  * @ignore
  */
 
-namespace Yana\Security\Data;
+namespace Yana\Security\Data\Users;
 
 /**
  * <<interface>> User data-adapter.
@@ -39,7 +39,7 @@ namespace Yana\Security\Data;
  *
  * @ignore
  */
-interface IsDataAdapter extends \Yana\Data\Adapters\IsDataAdapter
+interface IsDataAdapter extends \Yana\Data\Adapters\IsDataBaseAdapter
 {
 
     /**

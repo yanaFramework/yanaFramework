@@ -91,6 +91,23 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testToEntityWithNullValues()
+    {
+        $databaseRow = array(
+            \Yana\Security\Data\Tables\RuleEnumeration::ID => -1,
+            \Yana\Security\Data\Tables\RuleEnumeration::GROUP => 'GroupÄö@',
+            \Yana\Security\Data\Tables\RuleEnumeration::ROLE => 'RoleÄö@',
+            \Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY => false,
+            \Yana\Security\Data\Tables\RuleEnumeration::PROFILE => 'ProfileÄö@',
+            \Yana\Security\Data\Tables\RuleEnumeration::USER => 'UserÄö@'
+        );
+        $entity = $this->object->toEntity($databaseRow);
+        $this->assertSame(false, $entity->isUserProxyActive());
+    }
+
+    /**
+     * @test
+     */
     public function testToDatabaseRow()
     {
         $databaseRow = array(

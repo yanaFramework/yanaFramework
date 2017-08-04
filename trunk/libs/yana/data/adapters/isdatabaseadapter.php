@@ -43,44 +43,9 @@ interface IsDataBaseAdapter extends \Yana\Data\Adapters\IsDataAdapter
     /**
      * Removes the given entity from the database.
      *
-     * @param   \Yana\Data\Adapters\IsEntity  $entity  compose the where clause based on this object
+     * @param  \Yana\Data\Adapters\IsEntity  $entity  compose the where clause based on this object
      */
     public function delete(\Yana\Data\Adapters\IsEntity $entity);
-
-    /**
-     * DELETE all entries WHERE "column" = 'value'.
-     *
-     * @param   string  $columnName  name of column to search in
-     * @param   scalar  $value       used for where clause
-     * @return  int
-     */
-    public function deleteByColumn($columnName, $value);
-
-    /**
-     * SELECTs all entries WHERE "column" = 'value'.
-     *
-     * @param   string  $columnName  name of column to search in
-     * @param   scalar  $value       used for where clause
-     * @return  \Yana\Data\Adapters\IsEntity[]
-     */
-    public function findItemsByColumn($columnName, $value);
-
-    /**
-     * Analyzes the given entity and returns all items with similar properties.
-     *
-     * What is considered "similar" depends on the implementation.
-     *
-     * @param   \Yana\Data\Adapters\IsEntity  $entity  compose the where clause based on this object
-     * @return  \Yana\Data\Adapters\IsEntity[]
-     */
-    public function findSimilarItems(\Yana\Data\Adapters\IsEntity $entity);
-
-    /**
-     * SELECTs all entries WHERE "column" = 'value'.
-     *
-     * @return  \Yana\Data\Adapters\IsEntity[]
-     */
-    public function getAllItems();
 
 }
 

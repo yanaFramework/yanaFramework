@@ -46,27 +46,13 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yan
     private $_databaseConnection = null;
 
     /**
-     * selected database table
-     *
-     * @var  string
-     */
-    private $_tableName = "";
-
-    /**
      * constructor
      *
-     * @param   string  $index  where to store session data $_SESSION[$index]
-     * @throws  \Yana\Core\Exceptions\NotFoundException  when the table is not registered in the database
+     * @param   \Yana\Db\IsConnection $db
      */
-    public function __construct(\Yana\Db\IsConnection $db, $table)
+    public function __construct(\Yana\Db\IsConnection $db)
     {
-        assert('is_string($table); // Wrong argument type argument 1. String expected');
-        if (!$db->getSchema()->isTable($table)) {
-            $message = "Table not found: '$table' in database '{$db->schema->getName()}'.";
-            throw new \Yana\Core\Exceptions\NotFoundException($message);
-        }
         $this->_databaseConnection = $db;
-        $this->_tableName = mb_strtolower("$table");
     }
 
     /**
@@ -74,10 +60,7 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yan
      *
      * @return  string
      */
-    protected function _getTableName()
-    {
-        return $this->_tableName;
-    }
+    abstract protected function _getTableName();
 
     /**
      * Returns the current open connection to the database.
@@ -102,6 +85,7 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yan
      *
      * @param   array  $dataSet  table row to convert
      * @return  \Yana\Data\Adapters\IsEntity
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given data is invalid
      */
     abstract protected function _unserializeEntity(array $dataSet);
 
@@ -114,6 +98,7 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yan
      */
     public function count()
     {
+        assert('!isset($query); // Cannot redeclare var $query');
         $query = new \Yana\Db\Queries\SelectCount($this->_getDatabaseConnection());
         $query->setTable($this->_getTableName());
         return $query->countResults();
@@ -133,6 +118,7 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yan
      */
     public function offsetExists($offset)
     {
+        assert('!isset($query); // Cannot redeclare var $query');
         $query = new \Yana\Db\Queries\SelectExist($this->_getDatabaseConnection());
         $query->setTable($this->_getTableName());
         $query->setRow($offset);
@@ -153,10 +139,13 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yan
      */
     public function offsetGet($offset)
     {
+        assert('!isset($query); // Cannot redeclare var $query');
         $query = new \Yana\Db\Queries\Select($this->_getDatabaseConnection());
         $query->setTable($this->_getTableName());
         $query->setRow($offset);
+        assert('!isset($dataSet); // Cannot redeclare var $dataSet');
         $dataSet = $query->getResults();
+        assert('!isset($entity); // Cannot redeclare var $entity');
         $entity = $this->_unserializeEntity($dataSet);
         return $entity;
     }
@@ -185,6 +174,7 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yan
      * @param   scalar                      $offset  index of item to replace
      * @param   \Yana\Data\Adapters\IsEntity  $entity  save this entity
      * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the value is not a valid collection item
+     * @throws  \Yana\Db\DatabaseException                      if the commit statement failed
      * @return  \Yana\Data\Adapters\IsEntity
      */
     public function offsetSet($offset, $entity)
@@ -192,23 +182,95 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yan
         if (!$entity instanceof \Yana\Data\Adapters\IsEntity) {
             throw new \Yana\Core\Exceptions\InvalidArgumentException('Instance of "IsEntity" expected.');
         }
-        if ($offset !== null && $offset !== $entity->getId()) {
-            $entity->setId($offset);
+
+        if (is_null($offset)) {
+            $offset = $entity->getId();
         }
 
-        if ($offset && $this->offsetExists($offset)) {
-            $query = new \Yana\Db\Queries\Update($this->_getDatabaseConnection());
-        } else {
-            $query = new \Yana\Db\Queries\Insert($this->_getDatabaseConnection());
+        try {
+            if ($offset && $this->offsetExists($offset)) {
+                $this->_onUpdate($entity, $offset);
+            } else {
+                $this->_onInsert($entity, $offset);
+            }
+            $this->_getDatabaseConnection()->commit(); // may throw exception
+
+        } catch (\Exception $e) {
+            $this->_getDatabaseConnection()->rollback(); // if it failed, don't try it again
+            throw $e; // rethrow exception, so that it can be caught upstream
         }
+        return $entity;
+    }
+
+    /**
+     * Selects whether the optional ID or the entity ID will be taken.
+     *
+     * @param   \Yana\Data\Adapters\IsEntity  $entity      holds the ID
+     * @param   scalar                        $optionalId  can be null
+     * @return  scalar
+     */
+    private function _selectId(\Yana\Data\Adapters\IsEntity $entity, $optionalId)
+    {
+        assert('!isset($id); // Cannot redeclare var $id');
+        $id = $optionalId;
+        if (is_null($id) || !is_scalar($id)) {
+            $id = $entity->getId();
+        }
+        return $id;
+    }
+
+    /**
+     * Triggered when offsetSet() is called and the offset doesn't exists.
+     *
+     * Returns the Id used.
+     * Note! This doesn't commit the query!
+     *
+     * @param   \Yana\Data\Adapters\IsEntity  $entity      object to be stored
+     * @param   scalar                        $optionalId  primary key
+     * @return  scalar
+     */
+    protected function _onInsert(\Yana\Data\Adapters\IsEntity $entity, $optionalId = null)
+    {
+        assert('!isset($id); // Cannot redeclare var $id');
+        $id = $this->_selectId($entity, $optionalId);
+
+        $query = new \Yana\Db\Queries\Insert($this->_getDatabaseConnection());
         $query->setTable($this->_getTableName());
-        if ($offset) {
-            $query->setRow($offset);
+
+        if ((int) $id > 0) {
+            $query->setRow($id); // only set Id if it is given, so that auto-increment can still be used
         }
+
+        $query->setTable($this->_getTableName());
         $values = $this->_serializeEntity($entity);
         $query->setValues($values);
         $query->sendQuery();
-        return $entity;
+        return $id;
+    }
+
+    /**
+     * Triggered when offsetSet() is called and the offset already exists.
+     *
+     * Returns the Id used.
+     * Note! This doesn't commit the query!
+     *
+     * @param   \Yana\Data\Adapters\IsEntity  $entity      object to be stored
+     * @param   scalar                        $optionalId  primary key
+     * @return  scalar
+     */
+    protected function _onUpdate(\Yana\Data\Adapters\IsEntity $entity, $optionalId = null)
+    {
+        assert('!isset($id); // Cannot redeclare var $id');
+        $id = $this->_selectId($entity, $optionalId);
+
+        $query = new \Yana\Db\Queries\Update($this->_getDatabaseConnection());
+        $query->setTable($this->_getTableName());
+        $query->setRow($id);
+        $query->setTable($this->_getTableName());
+        $values = $this->_serializeEntity($entity);
+        $query->setValues($values);
+        $query->sendQuery();
+        return $id;
     }
 
     /**
@@ -226,10 +288,17 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yan
      */
     public function offsetUnset($offset)
     {
-        $query = new \Yana\Db\Queries\Delete($this->_getDatabaseConnection());
-        $query->setTable($this->_getTableName());
-        $query->setRow($offset);
-        $query->sendQuery();
+        try {
+            $query = new \Yana\Db\Queries\Delete($this->_getDatabaseConnection());
+            $query->setTable($this->_getTableName());
+            $query->setRow($offset);
+            $query->sendQuery();
+            $this->_getDatabaseConnection()->commit(); // may throw exception
+
+        } catch (\Exception $e) {
+            $this->_getDatabaseConnection()->rollback(); // if it failed, don't try it again
+            throw $e; // rethrow exception, so that it can be caught upstream
+        }
     }
 
     /**
@@ -267,29 +336,12 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yan
      *
      * @param   \Yana\Data\Adapters\IsEntity  $entity  compose the where clause based on this object
      */
-    public function deleteEntity(\Yana\Data\Adapters\IsEntity $entity)
+    public function delete(\Yana\Data\Adapters\IsEntity $entity)
     {
         $this->offsetUnset($entity->getId());
     }
 
     /**
-     * DELETE all entries WHERE "column" = 'value'.
-     *
-     * @param   string  $columnName  name of column to search in
-     * @param   scalar  $value       used for where clause
-     * @return  int
-     * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  when the used column is not known
-     */
-    public function deleteEntities($columnName, $value)
-    {
-        $query = new \Yana\Db\Queries\Delete($this->_getDatabaseConnection());
-        $query->setTable($this->_getTableName());
-        $query->setWhere(array($columnName, '=', $value));
-        $query->setLimit(0);
-        $query->sendQuery();
-    }
-
-    /**
      * SELECTs all entries WHERE "column" = 'value'.
      *
      * @param   string  $columnName  name of column to search in
@@ -297,34 +349,10 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yan
      * @return  \Yana\Data\Adapters\IsEntity[]
      * @throws  \Yana\Db\Queries\Exceptions\ColumnNotFoundException  when the used column is not known
      */
-    public function findEntities($columnName, $value)
+    protected function _findEntitiesByColumn($columnName, $value)
     {
         $where = array($columnName, '=', $value);
         return $this->_getEntities($where);
-    }
-
-    /**
-     * Analyzes the given entity and returns all items with similar properties.
-     *
-     * What is considered "similar" depends on the implementation.
-     *
-     * @param   \Yana\Data\Adapters\IsEntity  $entity  compose the where clause based on this object
-     * @return  \Yana\Data\Adapters\IsEntity[]
-     */
-    public function findSimilarEntities(\Yana\Data\Adapters\IsEntity $entity)
-    {
-        $where = $this->_buildWhereClause($entity);
-        return $this->_getEntities($where);
-    }
-
-    /**
-     * SELECTs all entries WHERE "column" = 'value'.
-     *
-     * @return  \Yana\Data\Adapters\IsEntity[]
-     */
-    public function getAllEntities()
-    {
-        return $this->_getEntities();
     }
 
     /**
@@ -346,23 +374,6 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yan
         return $items;
     }
 
-    /**
-     * Build a where clause based on the properties of the given entity.
-     *
-     * @param   \Yana\Data\Adapters\IsEntity  $entity  object to convert
-     * @return array 
-     */
-    protected function _buildWhereClause(\Yana\Data\Adapters\IsEntity $entity)
-    {
-        $dataSet = $this->_serializeEntity($entity);
-        $where = array();
-        foreach ($dataSet as $columnName => $value)
-        {
-            $_clause = array($columnName, '=', $value);
-            $where = (empty($where)) ? $_clause : array($_clause, 'AND', $where);
-        }
-        return $where;
-    }
 }
 
 ?>

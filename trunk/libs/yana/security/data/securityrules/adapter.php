@@ -43,55 +43,62 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
 {
 
     /**
-     * Returns the database key for the user as: table.id.
+     * Returns the name of the target table.
      *
-     * @param   int  $id  primary key
      * @return  string
      */
-    protected function _toDatabaseKey($id)
+    protected function _getTableName()
     {
-        assert('is_string($id); // Wrong type argument $id. Integer expected.');
-
-        return \Yana\Security\Data\Tables\RuleEnumeration::TABLE . '.' . (int) $id;
+        return \Yana\Security\Data\Tables\RuleEnumeration::TABLE;
     }
 
     /**
-     * Returns bool(true) if an entry with the given id exists.
+     * Serializes the entity object to a table-row.
      *
-     * @param   int  $offset  primary key
-     * @return  bool
+     * @param   \Yana\Data\Adapters\IsEntity  $entity  object to convert
+     * @return  array
      */
-    public function offsetExists($offset)
+    protected function _serializeEntity(\Yana\Data\Adapters\IsEntity $entity)
     {
-        assert('is_int($offset); // Invalid argument $offset: int expected');
-
-        assert('!isset($query); // Cannot redeclare var $query');
-        $query = new \Yana\Db\Queries\SelectExist($this->_getConnection());
-        $query
-            ->setTable(\Yana\Security\Data\Tables\RuleEnumeration::TABLE)
-            ->setRow((int) $offset);
-        return $query->doesExist();
+        return $this->_getEntityMapper()->toDatabaseRow($entity);
     }
 
     /**
-     * Find and return the requested entity.
+     * Unserializes the table-row to an entity object.
      *
-     * When there is none, returns NULL instead.
-     *
-     * @param   int  $offset  primary key
-     * @return  \Yana\Security\Data\SecurityRules\IsRule
+     * @param   array  $dataSet  table row to convert
+     * @return  \Yana\Data\Adapters\IsEntity
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given data is invalid
      */
-    public function offsetGet($offset)
+    protected function _unserializeEntity(array $dataSet)
     {
-        assert('is_int($offset); // Invalid argument $offset: int expected');
+        $entity = $this->_getEntityMapper()->toEntity($dataSet);
+        $entity->setDataAdapter($this);
+        return $entity;
+    }
 
-        assert('!isset($query); // Cannot redeclare var $query');
-        $query = new \Yana\Db\Queries\Select($this->_getConnection());
-        $query
-            ->setTable(\Yana\Security\Data\Tables\RuleEnumeration::TABLE)
-            ->setRow((int) $offset);
-        assert('!isset($row); // Cannot redeclare var $row');
-        return $this->_getEntityMapper()->toEntity($query->getResults());
+    /**
+     * Triggered when offsetSet() is called and the offset already exists.
+     *
+     * Returns the Id used.
+     * Note! This doesn't commit the query!
+     *
+     * @param   \Yana\Data\Adapters\IsEntity  $entity      object to be stored
+     * @param   scalar                        $optionalId  primary key
+     * @return  scalar
+     */
+    protected function _onUpdate(\Yana\Data\Adapters\IsEntity $entity, $optionalId = null)
+    {
+        if (is_null($optionalId) || $optionalId == 0) {
+            $optionalId = $entity->getId();
+        }
+        $db = $this->_getDatabaseConnection();
+        if ($this->offsetExists($optionalId)) { // entry exists
+            $db->remove($this->_getTableName() . '.' . $optionalId);
+        }
+        $db->insert($this->_getTableName() . '.' . $optionalId, $this->_serializeEntity($entity));
+        $db->commit(); // may throw exception
+        return $optionalId;
     }
 
     /**
@@ -114,25 +121,11 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
 
-        if (is_null($offset) || $offset == 0) {
-            $offset = $entity->getId();
-        }
-
-        assert('!isset($db); // Cannot redeclare var $db');
-        $db = $this->_getConnection();
-        assert('!isset($row); // Cannot redeclare var $row');
-        $row = $this->_getEntityMapper()->toDatabaseRow($entity);
-
         try {
-            if ($this->offsetExists($offset)) { // entry exists
-                $db->remove($this->_toDatabaseKey($offset));
-            }
-            $db->insert($this->_toDatabaseKey($offset), $row);
-            $db->commit(); // may throw exception
+            parent::offsetSet($offset, $entity);
 
         } catch (\Exception $e) {
 
-            $db->rollback(); // don't try to commit the faulty statement again
             assert('!isset($message); // Cannot redeclare var $message');
             $message = "Rule not saved due to a database error.";
             assert('!isset($level); // Cannot redeclare var $level');
@@ -164,60 +157,17 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
             throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
         }
 
-        assert('!isset($db); // Cannot redeclare var $db');
-        $db = $this->_getConnection();
         try {
-            $db->remove($this->_toDatabaseKey($offset));
-            $db->commit(); // may throw exception
+            parent::offsetUnset($offset);
 
         } catch (\Exception $e) {
 
-            $db->rollback(); // don't try to commit the faulty statement again
             assert('!isset($message); // Cannot redeclare var $message');
             $message = "Unable to commit changes to the database server while trying to remove rule '{$offset}'.";
             assert('!isset($level); // Cannot redeclare var $level');
             $level = \Yana\Log\TypeEnumeration::WARNING;
             throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level, $e);
         }
-    }
-
-    /**
-     * Returns the number of entries in the table.
-     *
-     * @return  int
-     */
-    public function count()
-    {
-        assert('!isset($query); // Cannot redeclare var $query');
-        $query = new \Yana\Db\Queries\SelectCount($this->_getConnection());
-        return $query->setTable(\Yana\Security\Data\Tables\RuleEnumeration::TABLE)->countResults();
-    }
-
-    /**
-     * Returns a list of database ids.
-     *
-     * @return  int[]
-     */
-    public function getIds()
-    {
-        assert('!isset($query); // Cannot redeclare var $query');
-        $query = new \Yana\Db\Queries\Select($this->_getConnection());
-        $query
-            ->setTable(\Yana\Security\Data\Tables\RuleEnumeration::TABLE)
-            ->setColumn(\Yana\Security\Data\Tables\RuleEnumeration::ID);
-        return $query->getResults();
-    }
-
-    /**
-     * Saves the rule data to the database.
-     *
-     * @param  \Yana\Data\Adapters\IsEntity  $entity  object to persist
-     * @throws \Yana\Core\Exceptions\InvalidArgumentException  when the entity is invalid
-     * @throws \Yana\Core\Exceptions\User\UserException        when there was a problem with the database
-     */
-    public function saveEntity(\Yana\Data\Adapters\IsEntity $entity)
-    {
-        $this->offsetSet(null, $entity);
     }
 
     /**
@@ -238,22 +188,16 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
         assert('!isset($entities); // Cannot redeclare var $entities');
         $entities = new \Yana\Security\Data\SecurityRules\Collection();
 
-        assert('!isset($query); // Cannot redeclare var $query');
-        assert('!isset($query); // Cannot redeclare var $query');
-        $query = $this->_buildQuery(
-            array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId)),
-            $profileId
+        $entities->setItems( // From Table ...
+            $this->_getEntities( // Where ...
+                array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId)),
+                $profileId
+            )
         );
-        $rows = $query->getResults();
-        if (!is_array($rows) || count($rows) === 0) {
+
+        if ($entities->count() === 0) {
             throw new \Yana\Core\Exceptions\User\NotFoundException();
         }
-        assert('!isset($row); // Cannot redeclare var $row');
-        foreach ($rows as $row)
-        {
-            $entities[] = $this->_getEntityMapper()->toEntity($row);
-        }
-        unset($row);
 
         return $entities;
     }
@@ -276,56 +220,45 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
         assert('!isset($entities); // Cannot redeclare var $entities');
         $entities = new \Yana\Security\Data\SecurityRules\Collection();
 
-        assert('!isset($query); // Cannot redeclare var $query');
-        $query = $this->_buildQuery(
-            array(
-                array(\Yana\Security\Data\Tables\RuleEnumeration::GRANTED_BY_USER, '=', \Yana\Util\Strings::toUpperCase($userId)),
-                'AND',
-                array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '!=', \Yana\Util\Strings::toUpperCase($userId))
-            ),
-            $profileId
+        $entities->setItems( // From Table ...
+            $this->_getEntities( // Where ...
+                array(
+                    array(\Yana\Security\Data\Tables\RuleEnumeration::GRANTED_BY_USER, '=', \Yana\Util\Strings::toUpperCase($userId)),
+                    'AND',
+                    array(\Yana\Security\Data\Tables\RuleEnumeration::USER, '!=', \Yana\Util\Strings::toUpperCase($userId))
+                ),
+                $profileId
+            )
         );
-        assert('!isset($rows); // Cannot redeclare var $rows');
-        $rows = $query->getResults();
-        if (!is_array($rows) || count($rows) === 0) {
+
+        if ($entities->count() === 0) {
             throw new \Yana\Core\Exceptions\User\NotFoundException();
         }
-        assert('!isset($row); // Cannot redeclare var $row');
-        foreach ($rows as $row)
-        {
-            $entities[] = $this->_getEntityMapper()->toEntity($row);
-        }
-        unset($row);
 
         return $entities;
     }
 
     /**
-     * Build and return query to select all security levels.
-     *
-     * @param   array   $where      clause
-     * @param   string  $profileId  profile id
-     * @return  \Yana\Db\Queries\Select
+     * Finds and returns all entities based on the given where clause.
+     * 
+     * @param   array  $where  where clause to use in SELECT statement
+     * @return  \Yana\Data\Adapters\IsEntity[]
      */
-    private function _buildQuery(array $where, $profileId = "")
+    protected function _getEntities(array $where = array(), $profileId = "")
     {
-        assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
-
         if ($profileId > "") {
-            $where = array(
-                $where,
-                'and',
-                array(\Yana\Security\Data\Tables\RuleEnumeration::PROFILE, '=', \Yana\Util\Strings::toUpperCase($profileId))
-            );
+            $profileClause = array(\Yana\Security\Data\Tables\RuleEnumeration::PROFILE, '=', \Yana\Util\Strings::toUpperCase($profileId));
+            if (!empty($where)) {
+                $where = array(
+                    $where,
+                    'and',
+                    $profileClause
+                );
+            } else {
+                $where = $profileClause;
+            }
         }
-
-        assert('!isset($query); // Cannot redeclare var $query');
-        $query = new \Yana\Db\Queries\Select($this->_getConnection());
-        $query
-                ->setTable(\Yana\Security\Data\Tables\RuleEnumeration::TABLE)
-                ->setWhere($where);
-
-        return $query;
+        return parent::_getEntities($where);
     }
 
 }

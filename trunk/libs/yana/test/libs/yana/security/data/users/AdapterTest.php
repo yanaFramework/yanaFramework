@@ -144,6 +144,32 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     */
+    public function testFindUserByRecoveryId()
+    {
+        $this->assertTrue($this->object->findUserByRecoveryId('RecoveryID') instanceof \Yana\Security\Data\Users\Entity);
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\MailNotFoundException
+     */
+    public function testFindUserByRecoveryIdNotUnique()
+    {
+        $this->object->findUserByMail('not-unique');
+    }
+
+    /**
+     * @test
+     * @expectedException \Yana\Core\Exceptions\User\MailNotFoundException
+     */
+    public function testFindUserByRecoveryIdNotFoundException()
+    {
+        $this->object->findUserByMail('noSuchRecoveryId');
+    }
+
+    /**
+     * @test
      * @expectedException \Yana\Core\Exceptions\InvalidArgumentException
      */
     public function testOffsetSetInvalidArgumentException()

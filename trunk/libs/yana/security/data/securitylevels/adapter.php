@@ -43,55 +43,62 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
 {
 
     /**
-     * Returns the database key for the user as: table.id.
+     * Returns the name of the target table.
      *
-     * @param   int  $id  primary key
      * @return  string
      */
-    protected function _toDatabaseKey($id)
+    protected function _getTableName()
     {
-        assert('is_string($id); // Wrong type argument $id. Integer expected.');
-
-        return \Yana\Security\Data\Tables\LevelEnumeration::TABLE . '.' . (int) $id;
+        return \Yana\Security\Data\Tables\LevelEnumeration::TABLE;
     }
 
     /**
-     * Returns a list of database ids.
+     * Serializes the entity object to a table-row.
      *
-     * @return  int[]
+     * @param   \Yana\Data\Adapters\IsEntity  $entity  object to convert
+     * @return  array
      */
-    public function getIds()
+    protected function _serializeEntity(\Yana\Data\Adapters\IsEntity $entity)
     {
-        assert('!isset($query); // Cannot redeclare var $query');
-        $query = new \Yana\Db\Queries\Select($this->_getConnection());
-        $query
-            ->setTable(\Yana\Security\Data\Tables\LevelEnumeration::TABLE)
-            ->setColumn(\Yana\Security\Data\Tables\LevelEnumeration::ID);
-        return $query->getResults();
+        return $this->_getEntityMapper()->toDatabaseRow($entity);
     }
 
     /**
-     * Returns the number of entries in the table.
+     * Unserializes the table-row to an entity object.
      *
-     * @return  int
+     * @param   array  $dataSet  table row to convert
+     * @return  \Yana\Data\Adapters\IsEntity
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  when the given data is invalid
      */
-    public function count()
+    protected function _unserializeEntity(array $dataSet)
     {
-        assert('!isset($query); // Cannot redeclare var $query');
-        $query = new \Yana\Db\Queries\SelectCount($this->_getConnection());
-        return $query->setTable(\Yana\Security\Data\Tables\LevelEnumeration::TABLE)->countResults();
+        $entity = $this->_getEntityMapper()->toEntity($dataSet);
+        $entity->setDataAdapter($this);
+        return $entity;
     }
 
     /**
-     * Saves the rule data to the database.
+     * Triggered when offsetSet() is called and the offset already exists.
      *
-     * @param  \Yana\Data\Adapters\IsEntity  $entity  object to persist
-     * @throws \Yana\Core\Exceptions\InvalidArgumentException  when the entity is invalid
-     * @throws \Yana\Core\Exceptions\User\UserException        when there was a problem with the database
+     * Returns the Id used.
+     * Note! This doesn't commit the query!
+     *
+     * @param   \Yana\Data\Adapters\IsEntity  $entity      object to be stored
+     * @param   scalar                        $optionalId  primary key
+     * @return  scalar
      */
-    public function saveEntity(\Yana\Data\Adapters\IsEntity $entity)
+    protected function _onUpdate(\Yana\Data\Adapters\IsEntity $entity, $optionalId = null)
     {
-        $this->offsetSet(null, $entity);
+        if (is_null($optionalId) || $optionalId == 0) {
+            $optionalId = $entity->getId();
+        }
+        $db = $this->_getDatabaseConnection();
+        if ($this->offsetExists($optionalId)) { // entry exists
+            $db->remove($this->_getTableName() . '.' . $optionalId);
+        }
+        $db->insert($this->_getTableName() . '.' . $optionalId, $this->_serializeEntity($entity));
+        $db->commit(); // may throw exception
+        return $optionalId;
     }
 
     /**
@@ -113,7 +120,7 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
         assert('!isset($query); // Cannot redeclare var $query');
         $query = $this->_buildQuery($userId, $profileId);
         assert('!isset($rows); // Cannot redeclare var $rows');
-        $rows = $this->_getConnection()->select($query);
+        $rows = $this->_getDatabaseConnection()->select($query);
         if (!is_array($rows) || count($rows) !== 1) {
             throw new \Yana\Core\Exceptions\User\NotFoundException();
         }
@@ -145,7 +152,7 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
         assert('!isset($query); // Cannot redeclare var $query');
         $query = $this->_buildQuery($userId);
         assert('!isset($rows); // Cannot redeclare var $rows');
-        $rows = $this->_getConnection()->select($query);
+        $rows = $this->_getDatabaseConnection()->select($query);
         if (!is_array($rows) || count($rows) === 0) {
             throw new \Yana\Core\Exceptions\User\NotFoundException();
         }
@@ -183,12 +190,45 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
         }
 
         assert('!isset($query); // Cannot redeclare var $query');
-        $query = new \Yana\Db\Queries\Select($this->_getConnection());
+        $query = new \Yana\Db\Queries\Select($this->_getDatabaseConnection());
         $query
                 ->setTable(\Yana\Security\Data\Tables\LevelEnumeration::TABLE)
                 ->setWhere($where);
 
         return $query;
+    }
+
+    /**
+     * Tries to delete the rule from the database.
+     *
+     * @param   int  $offset  rule id
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException     when no such rule exists
+     * @throws  \Yana\Db\Queries\Exceptions\NotDeletedException  when there was a problem with the database
+     */
+    public function offsetUnset($offset)
+    {
+        assert('is_int($offset); // Invalid argument $offset: int expected');
+
+        // entry does not exist
+        if (!$this->offsetExists($offset)) {
+            assert('!isset($message); // Cannot redeclare var $message');
+            $message = "No such level: '$offset'.";
+            assert('!isset($level); // Cannot redeclare var $level');
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\User\NotFoundException($message, $level);
+        }
+
+        try {
+            parent::offsetUnset($offset);
+
+        } catch (\Exception $e) {
+
+            assert('!isset($message); // Cannot redeclare var $message');
+            $message = "Unable to commit changes to the database server while trying to remove level '{$offset}'.";
+            assert('!isset($level); // Cannot redeclare var $level');
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Db\Queries\Exceptions\NotDeletedException($message, $level, $e);
+        }
     }
 
 }
