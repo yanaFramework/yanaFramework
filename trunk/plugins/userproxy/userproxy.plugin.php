@@ -67,7 +67,7 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
      * @menu        group: setup
      * @title       {lang id="user.32"}
      *
-     * @access      public
+     * @todo  As of yet, this code has been migrated but not tested. Tests required.
      */
     public function get_user_proxy()
     {
@@ -89,42 +89,45 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
         unset($users);
 
         /**
+         * Will be using the default profile id as fallback if none was provided.
+         */
+        assert('!isset($defaultProfile); // Cannot redeclare var $defaultProfile');
+        $defaultProfile = $YANA->getDefault('profile');
+
+        /**
          * get security levels
          */
         $user = $this->_getSecurityFacade()->loadUser($currentUser);
-        assert('!isset($levels); // Cannot redeclare var $levels');
-        $levels = array();
+        assert('!isset($grantableLevels); // Cannot redeclare var $grantableLevels');
+        $grantableLevels = array();
         assert('!isset($level); // Cannot redeclare var $level');
         foreach ($user->getAllSecurityLevels() as $level)
         {
             /* @var $level \Yana\Security\Data\SecurityLevels\IsLevelEntity */
 
             if (!$level->isUserProxyActive()) {
-                continue;
+                continue; // If this level can't be granted to other users, we ignore it.
             }
-            $levels[$level->getProfile()] = array(
+            $profileId = $level->getProfile() > "" ? $level->getProfile() : $defaultProfile;
+            $grantableLevels[$profileId] = array(
                 "SECURITY_ID" => $level->getId(),
                 "SECURITY_LEVEL" => $level->getSecurityLevel()
             );
         }
         unset($level);
-        $YANA->setVar("LEVELS", $levels);
-        unset($levels);
+        $YANA->setVar("LEVELS", $grantableLevels);
+        unset($grantableLevels);
 
         /**
          * get security rules
          */
-        assert('!isset($profiles); // Cannot redeclare var $profiles');
-        $profiles = array();
-        assert('!isset($defaultProfile); // Cannot redeclare var $defaultProfile');
-        $defaultProfile = $YANA->getDefault('profile');
-        assert('!isset($levels); // Cannot redeclare var $levels');
+        assert('!isset($rules); // Cannot redeclare var $rules');
         $rules = array();
         assert('!isset($rule); // Cannot redeclare var $rule');
         assert('!isset($profileId); // Cannot redeclare var $profileId');
         foreach ($user->getAllSecurityGroupsAndRoles() as $rule)
         {
-            /* @var $rule \Yana\Security\Data\SecurityRules\IsRule */
+            /* @var $rule \Yana\Security\Data\SecurityRules\IsRuleEntity */
 
             if (!$rule->isUserProxyActive()) {
                 continue;
@@ -141,40 +144,72 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
         unset($rule, $profileId);
         $YANA->setVar("RULES", $rules);
         $YANA->setVar("PROFILES", array_keys($rules)); // set profiles
-        unset($profiles, $rules);
+        unset($rules);
 
         // collect users who are granted security privileges
         $users = array();
-        // collect profiles
+        // collect profiles that users are granted access to
+        assert('!isset($profiles); // Cannot redeclare var $profiles');
         $profiles = array();
 
-        $db = \Yana\Security\Data\SessionManager::getDatasource();
+        $user->getAllSecurityLevelsGrantedToOthers();
         /**
          * get security levels
          */
-        assert('!isset($where); // Cannot redeclare var $where');
-        $where = array(
-            array('USER_CREATED', '=', $currentUser),
-            'and',
-            array('USER_ID', '!=', $currentUser)
-        );
-        $rows = $db->select('securitylevel', $where, array("profile", "security_level"), 0, 0, true);
-        $YANA->setVar("GRANTED_LEVELS", self::_getLevels($rows, $profiles, $users));
-        unset($rows);
-        // WHERE clause will be reused
+        assert('!isset($grantedLevels); // Cannot redeclare var $grantedLevels');
+        $grantedLevels = array();
+        assert('!isset($level); // Cannot redeclare var $level');
+        foreach ($user->getAllSecurityLevels() as $level)
+        {
+            /* @var $level \Yana\Security\Data\SecurityLevels\IsLevelEntity */
+            $profileId = $level->getProfile() > "" ? $level->getProfile() : $defaultProfile;
+            if (!isset($grantedLevels[$profileId])) {
+                $grantedLevels[$profileId] = array();
+            }
+            $grantedLevels[$profileId][$level->getUserName()] = array(
+                "SECURITY_ID" => $level->getId(),
+                "SECURITY_LEVEL" => $level->getSecurityLevel()
+            );
+            $users[] = $level->getUserName();
+            $profiles[] = $profileId;
+        }
+        unset($level);
+        $YANA->setVar("GRANTED_LEVELS", $grantedLevels);
+        unset($grantedLevels);
 
         /**
          * get groups
          */
-        $rows = $db->select('securityrules', $where, array("user_id"));
-        $YANA->setVar("GRANTED_RULES", self::_getRules($rows, $profiles, $users));
-        unset($where, $rows);
+        assert('!isset($grantedRules); // Cannot redeclare var $grantedRules');
+        $grantedRules = array();
+        assert('!isset($rule); // Cannot redeclare var $rule');
+        assert('!isset($profileId); // Cannot redeclare var $profileId');
+        foreach ($user->getAllSecurityGroupsAndRolesGrantedToOthers() as $rule)
+        {
+            /* @var $rule \Yana\Security\Data\SecurityRules\IsRuleEntity */
+            $profileId = $rule->getProfile() > "" ? $rule->getProfile() : $defaultProfile;
+            if (!isset($grantedRules[$profileId])) {
+                $grantedRules[$profileId] = array();
+            }
+            if (!isset($grantedRules[$profileId][$rule->getUserName()])) {
+                $grantedRules[$profileId][$rule->getUserName()] = array();
+            }
+            $grantedRules[$profileId][$rule->getUserName()][$rule->getId()] = array(
+                "GROUP_ID" => $rule->getGroup(),
+                "ROLE_ID" => $rule->getRole()
+            );
+            $profiles[] = $profileId;
+            $users[] = $rule->getUserName();
+        }
+        unset($rule, $profileId);
+        $YANA->setVar("GRANTED_RULES", $grantedRules);
+        unset($grantedRules);
 
         // store list of users with grants
-        $YANA->setVar("GRANTED_USERS", $users);
+        $YANA->setVar("GRANTED_USERS", \array_unique($users));
 
         // store list of profiles with grants
-        $YANA->setVar("GRANTED_PROFILES", $profiles);
+        $YANA->setVar("GRANTED_PROFILES", \array_unique($profiles));
 
         return true;
     }
@@ -390,102 +425,6 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
             return false;
         }
         return true;
-    }
-
-    /**
-     * Get security levels.
-     *
-     * @param   \Yana\Security\Data\SecurityLevels\Collection  $levels     collection
-     * @param   array                                          &$profiles  profiles
-     * @param   array                                          &$users     users
-     * @return  array
-     */
-    private static function _getLevels(\Yana\Security\Data\SecurityLevels\Collection $levels, array &$profiles, &$users = false)
-    {
-        $userLevels = array();
-        $defaultProfile = $this->_getApplication()->getDefault('profile');
-        foreach ($levels as $profile => $item)
-        {
-            /* @var $item \Yana\Security\Data\SecurityLevels\IsLevel */
-            if ($profile > "") {
-                $profile = mb_strtoupper($profile);
-            } else {
-                $profile = $defaultProfile;
-            }
-            if ($users !== false) {
-                $userName = $item['USER_ID'];
-            }
-            $entry = array(
-                "SECURITY_ID" => $item->getId(),
-                "SECURITY_LEVEL" => $item->getSecurityLevel()
-            );
-            if (isset($userName) && !isset($userLevels[$profile][$userName])) {
-                if (!in_array($userName, $users)) {
-                    $users[] = $userName;
-                }
-                if (!in_array($profile, $profiles)) {
-                    $profiles[] = $profile;
-                }
-                $userLevels[$profile][$userName] = $entry;
-
-            } elseif (!isset($userLevels[$profile])) {
-                $profiles[] = $profile;
-                $userLevels[$profile] = $entry;
-            }
-        }
-        return $userLevels;
-    }
-
-    /**
-     * get security rules
-     *
-     * @access  private
-     * @static
-     * @param   \Yana\Security\Data\SecurityRules\Collection  $rows  rows
-     * @param   array  &$profiles  profiles
-     * @param   array  &$users     users
-     * @return  array
-     * @ignore
-     */
-    private static function _getRules(\Yana\Security\Data\SecurityRules\Collection $rows, array &$profiles, &$users = false)
-    {
-        $userRules = array();
-        $defaultProfile = $this->_getApplication()->getDefault('profile');
-        foreach ($rows as $key => $item)
-        {
-            if (!empty($item['PROFILE'])) {
-                $profile = mb_strtoupper($item['PROFILE']);
-            } else {
-                $profile = $defaultProfile;
-            }
-            if (!in_array($profile, $profiles)) {
-                $profiles[] = $profile;
-            }
-            if ($users !== false) {
-                $userName = $item['USER_ID'];
-                if (!in_array($userName, $users)) {
-                    $users[] = $userName;
-                }
-            }
-            if (isset($item['GROUP_ID'])) {
-                $groupId = $item['GROUP_ID'];
-            } else {
-                $groupId = '';
-            }
-            if (isset($item['ROLE_ID'])) {
-                $roleId = $item['ROLE_ID'];
-            } else {
-                $roleId = '';
-            }
-            if (isset($userName)) {
-                $userRules[$profile][$userName][$key]['GROUP_ID'] = $groupId;
-                $userRules[$profile][$userName][$key]['ROLE_ID'] = $roleId;
-            } else {
-                $userRules[$profile][$key]['GROUP_ID'] = $groupId;
-                $userRules[$profile][$key]['ROLE_ID'] = $roleId;
-            }
-        }
-        return $userRules;
     }
 
 }

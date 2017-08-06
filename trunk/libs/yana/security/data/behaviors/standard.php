@@ -431,7 +431,8 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
     /**
      * Find all security rules given to other users.
      *
-     * This finds and returns all groups and roles this user owns and has granted to other users.
+     * This finds and returns all groups and roles this user owns and
+     * has granted to other users.
      *
      * Meaning, all security permissions created by the current user,
      * where the owner of the permission is somebody else.
@@ -502,7 +503,8 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
     /**
      * Find all security levels given to other users.
      *
-     * This finds and returns all security permissions this user has granted to other users.
+     * This finds and returns all security permissions this user
+     * has granted to other users.
      *
      * Meaning, all security permissions created by the current user,
      * where the owner of the permission is somebody else.
