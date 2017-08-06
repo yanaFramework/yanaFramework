@@ -157,14 +157,13 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
         assert('!isset($profiles); // Cannot redeclare var $profiles');
         $profiles = array();
 
-        $user->getAllSecurityLevelsGrantedToOthers();
         /**
          * get security levels
          */
         assert('!isset($grantedLevels); // Cannot redeclare var $grantedLevels');
         $grantedLevels = array();
         assert('!isset($level); // Cannot redeclare var $level');
-        foreach ($user->getAllSecurityLevels() as $level)
+        foreach ($user->getAllSecurityLevelsGrantedToOthers() as $level)
         {
             /* @var $level \Yana\Security\Data\SecurityLevels\IsLevelEntity */
             $profileId = $level->getProfile() > "" ? $level->getProfile() : $defaultProfile;
