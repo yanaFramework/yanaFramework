@@ -82,6 +82,17 @@ interface IsRuleEntity extends \Yana\Security\Data\SecurityRules\IsRule, \Yana\D
      * @return  self
      */
     public function setGrantedByUser($createdByUser);
+
+    /**
+     * Grant this permission to another user.
+     *
+     * @param   string  $userName  user id (will trigger database exception if not valid)
+     * @return  self
+     * @throws  \Yana\Core\Exceptions\User\NotGrantableException  when the permission has no grant option
+     * @throws  \Yana\Db\DatabaseException                        when the new permission can't be saved
+     */
+    public function grantTo($userName);
+
 }
 
 ?>

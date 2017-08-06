@@ -244,65 +244,87 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
             $warning = new \Yana\Core\Exceptions\Forms\NothingSelectedException($message, $level);
             throw $warning->setField('rules/levels');
         }
+        if (!$this->_getSecurityFacade()->isExistingUserName($user)) {
+            $message = "No such user: " . $user;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            $warning = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $level);
+            throw $warning->setField('user');
+        }
+
+        $user = $this->_getSecurityFacade()->loadUser();
+        $defaultProfile = $this->_getApplication()->getDefault('profile');
+        $currentUser = $user->getId();
+        if (!empty($levels)) {
+            foreach ($user->getAllSecurityLevels() as $level)
+            {
+                /* @var $level \Yana\Security\Data\SecurityLevels\IsLevelEntity */
+                if (!$level->isUserProxyActive()) {
+                    continue; // Cannot be granted to other users: skip
+                }
+                if (!\in_array($level->getId(), $levels)) {
+                    continue; // Not in the list of permissions to grant: skip
+                }
+                try {
+                    $level->grantTo($user); // may throw exception
+                } catch (\Exception $e) {
+                    return false;
+                }
+            }
+            unset($level);
+        }
+        if (!empty($rules)) {
+            foreach ($user->getAllSecurityGroupsAndRoles() as $rule)
+            {
+                /* @var $rule \Yana\Security\Data\SecurityRules\IsRuleEntity */
+                if (!$rule->isUserProxyActive()) {
+                    continue; // Cannot be granted to other users: skip
+                }
+                if (!\in_array($rule->getId(), $rules)) {
+                    continue; // Not in the list of permissions to grant: skip
+                }
+                try {
+                    $rule->grantTo($user); // may throw exception
+                } catch (\Exception $e) {
+                    return false;
+                }
+            }
+            unset($rule);
+        }
 
         $db = \Yana\Security\Data\SessionManager::getDatasource();
-        $defaultProfile = $this->_getApplication()->getDefault('profile');
-        $currentUser = $this->_getSession()->getCurrentUserName();
-
         foreach ($rules as $i => $ruleId)
         {
-            if (is_numeric($ruleId)) {
-                $where = array(
-                    array("USER_ID", '=', $currentUser),
-                    'and',
-                    array('USER_PROXY_ACTIVE', '=', true)
-                );
-                $rule = $db->select("securityrules.{$ruleId}", $where);
+            // get all entries where user created is the logged user
+            $get = $db->select('securityrules', array('USER_CREATED', '=', $currentUser));
 
-                if (empty($rule)) {
-                    unset($rules[$i]);
-                    continue;
-                }
-                unset($rule['RULE_ID']);
-
-                $rule['USER_ID'] = $user;
-                $rule['USER_CREATED'] = $currentUser;
-                $rule['USER_PROXY_ACTIVE'] = false;
-
-                // get all entries where user created is the logged user
-                $get = $db->select('securityrules', array('USER_CREATED', '=', $currentUser));
-
-                if (!empty($get)) {
-                    foreach ($get as $key)
+            if (!empty($get)) {
+                foreach ($get as $key)
+                {
+                    // check if entry already exist
+                    switch (true)
                     {
-                        // check if entry already exist
-                        switch (true)
-                        {
-                            case $key['USER_ID'] != $user:
-                            case $key['GROUP_ID'] != $rule['GROUP_ID']:
-                            case $key['ROLE_ID'] != $rule['ROLE_ID']:
-                            case $key['PROFILE'] != $rule['PROFILE']:
-                                // does not match
-                                continue;
-                                break;
-                            default:
-                                // entry is the same
-                                unset($rule);
-                                break;
-                        }
+                        case $key['USER_ID'] != $user:
+                        case $key['GROUP_ID'] != $rule['GROUP_ID']:
+                        case $key['ROLE_ID'] != $rule['ROLE_ID']:
+                        case $key['PROFILE'] != $rule['PROFILE']:
+                            // does not match
+                            continue;
+                            break;
+                        default:
+                            // entry is the same
+                            unset($rule);
+                            break;
                     }
                 }
-                unset($get, $key);
+            }
+            unset($get, $key);
 
-                if (isset($rule)) {
-                    try {
-                        $db->insert("securityrules", $rule);
-                    } catch (\Exception $e) {
-                        return false;
-                    }
+            if (isset($rule)) {
+                try {
+                    $db->insert("securityrules", $rule);
+                } catch (\Exception $e) {
+                    return false;
                 }
-            } else {
-                unset($rules[$i]);
             }
         }
 

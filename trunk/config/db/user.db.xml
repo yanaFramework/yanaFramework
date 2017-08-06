@@ -175,8 +175,11 @@
     </table>
     <table name="securitylevel">
         <primarykey>security_id</primarykey>
-        <foreign table="user">
+        <foreign table="user" ondelete="cascade">
             <key name="user_id"/>
+        </foreign>
+        <foreign table="user" ondelete="cascade">
+            <key name="user_created" column="user_id"/>
         </foreign>
         <declaration>
             <integer
@@ -222,17 +225,18 @@
                 </DISPLAY>
 -->
             </string>
-            <string
+            <reference
                 name="user_created"
-                length="128"
-                notnull="yes"
-                title='{lang id="USER.OPTION.28"}'>
+                title='{lang id="USER.OPTION.28"}'
+                column="user_id"
+                table="user"
+                notnull="yes">
 <!--
                 <DISPLAY>
                     <READONLY>100</READONLY>
                 </DISPLAY>
 -->
-            </string>
+            </reference>
             <bool
                 name="user_proxy_active"
                 title='{lang id="USER.36"}'>
@@ -241,6 +245,7 @@
         </declaration>
         <index unique="yes" name="uq_securitylevel">
             <column name="user_id"/>
+            <column name="user_created"/>
             <column name="profile"/>
         </index>
     </table>
@@ -334,18 +339,31 @@
                 length="32"
                 title='{lang id="PROFILE_ID"}'>
             </string>
-            <string
+            <reference
                 name="user_created"
-                length="128"
-                notnull="yes"
-                title='{lang id="USER.OPTION.28"}'>
-            </string>
+                title='{lang id="USER.OPTION.28"}'
+                column="user_id"
+                table="user"
+                notnull="yes">
+<!--
+                <DISPLAY>
+                    <READONLY>100</READONLY>
+                </DISPLAY>
+-->
+            </reference>
             <bool
                 name="user_proxy_active"
                 title='{lang id="USER.36"}'>
                 <default>true</default>
             </bool>
         </declaration>
+        <index unique="yes" name="uq_securityrule">
+            <column name="user_id"/>
+            <column name="user_created"/>
+            <column name="profile"/>
+            <column name="group_id"/>
+            <column name="role_id"/>
+        </index>
     </table>
       <table name="securityactionrules">
         <primarykey>actionrule_id</primarykey>

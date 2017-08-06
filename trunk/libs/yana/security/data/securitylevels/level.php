@@ -217,6 +217,32 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
         return $this;
     }
 
+    /**
+     * Grant this permission to another user.
+     *
+     * @param   string  $userName  user id (will trigger database exception if not valid)
+     * @return  self
+     * @throws  \Yana\Core\Exceptions\User\NotGrantableException  when the permission has no grant option
+     * @throws  \Yana\Db\DatabaseException                        when the new permission can't be saved
+     */
+    public function grantTo($userName)
+    {
+        assert('is_string($userName); // Invalid argument $userName: string expected');
+        if (!$this->isUserProxyActive()) {
+            $message = "This permission cannot be granted to another user.";
+            $code = \Yana\Log\TypeEnumeration::WARNING;
+            throw new \Yana\Core\Exceptions\User\NotGrantableException($message, $code);
+        }
+        $permission = new self($this->getSecurityLevel(), false);
+        $permission
+            ->setDataAdapter($this->_getDataAdapter())
+            ->setUserName((string) $userName)
+            ->setGrantedByUser($this->getUserName())
+            ->setProfile($this->getProfile())
+            ->saveEntity(); // may throw exception
+        return $this;
+    }
+
 }
 
 ?>

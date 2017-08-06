@@ -104,8 +104,7 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
     /**
      * Get security level.
      *
-     * Returns the user's security level as an integer value.
-     * The default is 0.
+     * Returns the user's highest security level.
      *
      * @param   string  $userId     user name
      * @param   string  $profileId  profile id
@@ -122,13 +121,22 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
             array(\Yana\Security\Data\Tables\LevelEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId)),
             $profileId
         );
-        if (!is_array($listOfEntities) || count($listOfEntities) !== 1) {
+        if (!is_array($listOfEntities) || count($listOfEntities) === 0) {
             throw new \Yana\Core\Exceptions\User\NotFoundException();
         }
+        assert('!isset($maxEntity); // Cannot redeclare var $maxEntity');
+        $maxEntity = current($listOfEntities);
         assert('!isset($entity); // Cannot redeclare var $entity');
-        $entity = current($listOfEntities);
+        foreach ($listOfEntities as $entity)
+        {
+            /* @var $entity \Yana\Security\Data\SecurityLevels\IsLevel */
+            if ($entity->getSecurityLevel() > $maxEntity->getSecurityLevel()) {
+                $maxEntity = $entity;
+            }
+        }
+        unset($entity);
 
-        return $entity;
+        return $maxEntity;
     }
 
     /**
