@@ -117,15 +117,16 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
         assert('is_string($userId); // Wrong type for argument $userId. String expected');
         assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
 
-        assert('!isset($query); // Cannot redeclare var $query');
-        $query = $this->_buildQuery($userId, $profileId);
-        assert('!isset($rows); // Cannot redeclare var $rows');
-        $rows = $this->_getDatabaseConnection()->select($query);
-        if (!is_array($rows) || count($rows) !== 1) {
+        assert('!isset($listOfEntities); // Cannot redeclare var $listOfEntities');
+        $listOfEntities = $this->_getEntities(
+            array(\Yana\Security\Data\Tables\LevelEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId)),
+            $profileId
+        );
+        if (!is_array($listOfEntities) || count($listOfEntities) !== 1) {
             throw new \Yana\Core\Exceptions\User\NotFoundException();
         }
         assert('!isset($entity); // Cannot redeclare var $entity');
-        $entity = $this->_getEntityMapper()->toEntity(current($rows));
+        $entity = current($listOfEntities);
 
         return $entity;
     }
@@ -133,7 +134,7 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
     /**
      * Get security levels.
      *
-     * Returns all the user's security level as an array, where the keys are the profile names and the values are the levels.
+     * Returns all the user's security level as a collection.
      *
      * @param   string  $userId  user name
      * @return  \Yana\Security\Data\SecurityLevels\IsCollection
@@ -143,59 +144,74 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
     {
         assert('is_string($userId); // Wrong type for argument $userId. String expected');
 
-        assert('!isset($profileColumn); // Cannot redeclare var $profileColumn');
-        $profileColumn = \Yana\Util\Strings::toUpperCase(\Yana\Security\Data\Tables\LevelEnumeration::PROFILE);
-
-        assert('!isset($entities); // Cannot redeclare var $entities');
-        $entities = new \Yana\Security\Data\SecurityLevels\Collection();
-
-        assert('!isset($query); // Cannot redeclare var $query');
-        $query = $this->_buildQuery($userId);
-        assert('!isset($rows); // Cannot redeclare var $rows');
-        $rows = $this->_getDatabaseConnection()->select($query);
-        if (!is_array($rows) || count($rows) === 0) {
+        assert('!isset($listOfEntities); // Cannot redeclare var $listOfEntities');
+        $listOfEntities = $this->_getEntities(
+            array(\Yana\Security\Data\Tables\LevelEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId))
+        );
+        if (!is_array($listOfEntities) || count($listOfEntities) === 0) {
             throw new \Yana\Core\Exceptions\User\NotFoundException();
         }
-        assert('!isset($row); // Cannot redeclare var $row');
-        foreach ($rows as $row)
-        {
-            $entities[(string) $row[$profileColumn]] = $this->_getEntityMapper()->toEntity($row);
-        }
-        unset($row);
+        assert('!isset($entities); // Cannot redeclare var $entities');
+        $entities = new \Yana\Security\Data\SecurityLevels\Collection();
+        $entities->setItems($listOfEntities);
 
         return $entities;
     }
 
     /**
-     * Build and return query to select all security levels.
+     * Get security levels the user created but does not own.
+     *
+     * Returns all entries this user granted to other users.
      *
      * @param   string  $userId     user name
      * @param   string  $profileId  profile id
-     * @return  \Yana\Db\Queries\Select
+     * @return  \Yana\Security\Data\SecurityLevels\IsCollection
+     * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no matching rule is found
      */
-    private function _buildQuery($userId, $profileId = "")
+    public function findEntitiesGrantedByUser($userId, $profileId = "")
     {
         assert('is_string($userId); // Wrong type for argument $userId. String expected');
-        assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
 
-        assert('!isset($where); // Cannot redeclare var $where');
-        $where = array(\Yana\Security\Data\Tables\LevelEnumeration::USER, '=', \Yana\Util\Strings::toUpperCase($userId));
-        if ($profileId > "") {
-
-            $where = array(
-                $where,
-                'and',
-                array(\Yana\Security\Data\Tables\LevelEnumeration::PROFILE, '=', \Yana\Util\Strings::toUpperCase($profileId))
-            );
+        assert('!isset($listOfEntities); // Cannot redeclare var $listOfEntities');
+        $listOfEntities = $this->_getEntities(
+            array(
+                array(\Yana\Security\Data\Tables\LevelEnumeration::USER, '!=', \Yana\Util\Strings::toUpperCase($userId)),
+                'AND',
+                array(\Yana\Security\Data\Tables\LevelEnumeration::GRANTED_BY_USER, '=', \Yana\Util\Strings::toUpperCase($userId))
+            ),
+            $profileId
+        );
+        if (!is_array($listOfEntities) || count($listOfEntities) === 0) {
+            throw new \Yana\Core\Exceptions\User\NotFoundException();
         }
+        assert('!isset($entities); // Cannot redeclare var $entities');
+        $entities = new \Yana\Security\Data\SecurityLevels\Collection();
+        $entities->setItems($listOfEntities);
 
-        assert('!isset($query); // Cannot redeclare var $query');
-        $query = new \Yana\Db\Queries\Select($this->_getDatabaseConnection());
-        $query
-                ->setTable(\Yana\Security\Data\Tables\LevelEnumeration::TABLE)
-                ->setWhere($where);
+        return $entities;
+    }
 
-        return $query;
+    /**
+     * Finds and returns all entities based on the given where clause.
+     * 
+     * @param   array  $where  where clause to use in SELECT statement
+     * @return  \Yana\Data\Adapters\IsEntity[]
+     */
+    protected function _getEntities(array $where = array(), $profileId = "")
+    {
+        if ($profileId > "") {
+            $profileClause = array(\Yana\Security\Data\Tables\LevelEnumeration::PROFILE, '=', \Yana\Util\Strings::toUpperCase($profileId));
+            if (!empty($where)) {
+                $where = array(
+                    $where,
+                    'and',
+                    $profileClause
+                );
+            } else {
+                $where = $profileClause;
+            }
+        }
+        return parent::_getEntities($where);
     }
 
     /**

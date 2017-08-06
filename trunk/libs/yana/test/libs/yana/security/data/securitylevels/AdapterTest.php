@@ -112,15 +112,39 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testFindEntities()
+    public function testFindEntitiesOwnedByUser()
     {
         $enities = $this->object->findEntitiesOwnedByUser('administrator');
         $this->assertTrue($enities instanceof \Yana\Security\Data\SecurityLevels\IsCollection);
-        $this->assertCount(4, $enities);
-        $this->assertSame(100, $enities['NG']->getSecurityLevel());
-        $this->assertSame(100, $enities['BAR']->getSecurityLevel());
-        $this->assertSame(100, $enities['DEFAULT']->getSecurityLevel());
-        $this->assertSame(100, $enities['TT']->getSecurityLevel());
+        $this->assertCount(5, $enities);
+        $this->assertSame(8, $enities[0]->getId());
+        $this->assertSame(9, $enities[1]->getId());
+        $this->assertSame(10, $enities[2]->getId());
+        $this->assertSame(170, $enities[3]->getId());
+        $this->assertSame(173, $enities[4]->getId());
+    }
+
+    /**
+     * @test
+     */
+    public function testFindEntitiesGratnedByUser()
+    {
+        $enities = $this->object->findEntitiesGrantedByUser('grant_test');
+        $this->assertTrue($enities instanceof \Yana\Security\Data\SecurityLevels\IsCollection);
+        $this->assertCount(2, $enities);
+        $this->assertSame(217, $enities[0]->getId());
+        $this->assertSame(218, $enities[1]->getId());
+    }
+
+    /**
+     * @test
+     */
+    public function testFindEntitiesGratnedByUserWithProfile()
+    {
+        $enities = $this->object->findEntitiesGrantedByUser('grant_test', 'default');
+        $this->assertTrue($enities instanceof \Yana\Security\Data\SecurityLevels\IsCollection);
+        $this->assertCount(1, $enities);
+        $this->assertSame(17, $enities[0]->getSecurityLevel());
     }
 
     /**
@@ -129,7 +153,7 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
     public function testGetIds()
     {
         $ids = $this->object->getIds();
-        $this->assertCount(14, $ids);
+        $this->assertCount(18, $ids);
         $this->assertSame(1, current($ids));
         $this->assertSame(1, $ids[1]);
         $this->assertSame(2, $ids[2]);
