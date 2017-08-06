@@ -112,7 +112,7 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
      * @return  \Yana\Security\Data\SecurityLevels\IsLevel
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no matching level is found
      */
-    public function findEntity($userId, $profileId)
+    public function findEntityOwnedByUser($userId, $profileId)
     {
         assert('is_string($userId); // Wrong type for argument $userId. String expected');
         assert('is_string($profileId); // Wrong type for argument $profileId. String expected');
@@ -136,10 +136,10 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
      * Returns all the user's security level as an array, where the keys are the profile names and the values are the levels.
      *
      * @param   string  $userId  user name
-     * @return  \Yana\Security\Data\SecurityLevels\Collection
+     * @return  \Yana\Security\Data\SecurityLevels\IsCollection
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no matching level is found
      */
-    public function findEntities($userId)
+    public function findEntitiesOwnedByUser($userId)
     {
         assert('is_string($userId); // Wrong type for argument $userId. String expected');
 

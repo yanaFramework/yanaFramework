@@ -37,7 +37,7 @@ namespace Yana\Security\Data\SecurityLevels;
  *
  * @ignore
  */
-class Collection extends \Yana\Core\AbstractCollection
+class Collection extends \Yana\Core\AbstractCollection implements \Yana\Security\Data\SecurityLevels\IsCollection
 {
 
     /**

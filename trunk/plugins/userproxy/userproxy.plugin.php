@@ -57,9 +57,14 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * Create edit form
+     * Create edit form.
      *
-     * this action expects no arguments
+     * This presents a form that shows all security levels, groups,
+     * and roles this user can grant to others users.
+     * As well as all security levels, groups, and roles this user has already
+     * granted to others.
+     *
+     * This action expects no arguments.
      *
      * @type        config
      * @user        group: admin, level: 100
@@ -215,7 +220,10 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
     }
 
     /**
-     * set new user proxy
+     * Set new user proxy.
+     *
+     * This action takes a list of selected security rules and levels as IDs
+     * and grants them to the given user.
      *
      * @type        config
      * @template    MESSAGE

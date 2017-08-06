@@ -291,7 +291,7 @@ interface IsBehavior
      *
      * Result is empty if there are no entries.
      *
-     * @return  \Yana\Security\Data\SecurityRules\Collection
+     * @return  \Yana\Security\Data\SecurityRules\IsCollection
      */
     public function getAllSecurityGroupsAndRoles();
 
@@ -303,7 +303,7 @@ interface IsBehavior
      * Meaning, all security permissions created by the current user,
      * where the owner of the permission is somebody else.
      *
-     * @return  \Yana\Security\Data\SecurityRules\Collection
+     * @return  \Yana\Security\Data\SecurityRules\IsCollection
      */
     public function getAllSecurityGroupsAndRolesGrantedToOthers();
 
@@ -324,7 +324,7 @@ interface IsBehavior
      * Returns a collection of all security levels associated with this user.
      *
      * @param   string  $profileId  profile id
-     * @return  \Yana\Security\Data\SecurityLevels\Collection
+     * @return  \Yana\Security\Data\SecurityLevels\IsCollection
      */
     public function getAllSecurityLevels();
 
@@ -337,7 +337,7 @@ interface IsBehavior
      * Meaning, all security permissions created by the current user,
      * where the owner of the permission is somebody else.
      *
-     * @return  \Yana\Security\Data\SecurityLevels\Collection
+     * @return  \Yana\Security\Data\SecurityLevels\IsCollection
      */
     public function getAllSecurityLevelsGrantedToOthers();
 

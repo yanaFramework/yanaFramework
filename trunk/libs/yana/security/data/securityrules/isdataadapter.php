@@ -43,9 +43,9 @@ interface IsDataAdapter extends \Yana\Data\Adapters\IsDataBaseAdapter
 {
 
     /**
-     * Get security levels.
+     * Get security rules.
      *
-     * Returns all the user's security level as an array, where the keys are the profile names and the values are the levels.
+     * Returns a collection of all the user's security rules.
      *
      * @param   string  $userId     user name
      * @param   string  $profileId  profile id
@@ -56,9 +56,9 @@ interface IsDataAdapter extends \Yana\Data\Adapters\IsDataBaseAdapter
 
 
     /**
-     * Get security levels the user created but does not own.
+     * Get security rules the user created but does not own.
      *
-     * Returns all entries this user granted to other users.
+     * Returns a collection of all the user's security rules granted to others.
      *
      * @param   string  $userId     user name
      * @param   string  $profileId  profile id

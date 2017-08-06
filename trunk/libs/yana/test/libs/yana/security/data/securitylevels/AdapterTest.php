@@ -96,7 +96,7 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
      */
     public function testFindEntityNotFoundException()
     {
-        $this->object->findEntity('non-existing-user', 'default');
+        $this->object->findEntityOwnedByUser('non-existing-user', 'default');
     }
 
     /**
@@ -104,7 +104,7 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
      */
     public function testFindEntity()
     {
-        $enity = $this->object->findEntity('testuser1', 'default');
+        $enity = $this->object->findEntityOwnedByUser('testuser1', 'default');
         $this->assertSame(80, $enity->getSecurityLevel());
         $this->assertSame(false, $enity->isUserProxyActive());
     }
@@ -114,8 +114,8 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
      */
     public function testFindEntities()
     {
-        $enities = $this->object->findEntities('administrator');
-        $this->assertTrue($enities instanceof \Yana\Security\Data\SecurityLevels\Collection);
+        $enities = $this->object->findEntitiesOwnedByUser('administrator');
+        $this->assertTrue($enities instanceof \Yana\Security\Data\SecurityLevels\IsCollection);
         $this->assertCount(4, $enities);
         $this->assertSame(100, $enities['NG']->getSecurityLevel());
         $this->assertSame(100, $enities['BAR']->getSecurityLevel());

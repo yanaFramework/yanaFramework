@@ -412,7 +412,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * Result is empty if there are no entries.
      *
-     * @return  \Yana\Security\Data\SecurityRules\Collection
+     * @return  \Yana\Security\Data\SecurityRules\IsCollection
      */
     public function getAllSecurityGroupsAndRoles()
     {
@@ -437,7 +437,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      * Meaning, all security permissions created by the current user,
      * where the owner of the permission is somebody else.
      *
-     * @return  \Yana\Security\Data\SecurityRules\Collection
+     * @return  \Yana\Security\Data\SecurityRules\IsCollection
      */
     public function getAllSecurityGroupsAndRolesGrantedToOthers()
     {
@@ -468,7 +468,7 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
 
         try {
             $securityLevelEntity = $this->_getDependencies()->getLevelsAdapter()
-                ->findEntity($this->getId(), $profileId);
+                ->findEntityOwnedByUser($this->getId(), $profileId);
 
         } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
 
@@ -483,13 +483,13 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      *
      * Returns a collection of all security levels associated with this user.
      *
-     * @return  \Yana\Security\Data\SecurityLevels\Collection
+     * @return  \Yana\Security\Data\SecurityLevels\IsCollection
      */
     public function getAllSecurityLevels()
     {
         try {
             $securityLevelEntities = $this->_getDependencies()->getLevelsAdapter()
-                ->findEntities($this->getId());
+                ->findEntitiesOwnedByUser($this->getId());
 
         } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
 
@@ -509,13 +509,13 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
      * Meaning, all security permissions created by the current user,
      * where the owner of the permission is somebody else.
      *
-     * @return  \Yana\Security\Data\SecurityLevels\Collection
+     * @return  \Yana\Security\Data\SecurityLevels\IsCollection
      */
     public function getAllSecurityLevelsGrantedToOthers()
     {
         try {
             $securityLevelEntities = $this->_getDependencies()->getLevelsAdapter()
-                ->findEntities($this->getId());
+                ->findEntitiesOwnedByUser($this->getId());
         } catch (\Yana\Core\Exceptions\User\NotFoundException $e) {
             $securityLevelEntities = new \Yana\Security\Data\SecurityLevels\Collection();
             $securityLevelEntities[] = new \Yana\Security\Data\SecurityLevels\Level(0, true); // 0 is default
