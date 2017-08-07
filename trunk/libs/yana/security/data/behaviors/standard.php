@@ -454,6 +454,58 @@ class Standard extends \Yana\Security\Data\Behaviors\AbstractBehavior
     }
 
     /**
+     * Check and delete the given rule.
+     *
+     * Warning! This doesn't check if the given entity is actually current.
+     *
+     * @param   \Yana\Security\Data\SecurityRules\IsRuleEntity  $rule  the entity that should be deleted
+     * @return  self
+     * @throws  \Yana\Core\Exceptions\User\RuleNotRevokedException  when there is some logical problem with this rule
+     * @throws  \Yana\Core\Exceptions\User\RuleNotDeletedException  when there was some problem with the database
+     */
+    public function revokePreviouslyGrantedSecurityGroupOrRole(\Yana\Security\Data\SecurityRules\IsRuleEntity $rule)
+    {
+        if (\Yana\Util\Strings::compareToIgnoreCase($rule->getGrantedByUser(), $this->getId()) !== 0) {
+            throw new \Yana\Core\Exceptions\User\RuleNotRevokedException("Can't revoke a rule that the user didn't grant.");
+        }
+        if (\Yana\Util\Strings::compareToIgnoreCase($rule->getUserName(), $this->getId()) === 0) {
+            throw new \Yana\Core\Exceptions\User\RuleNotRevokedException("Can't revoke a rule the user owns.");
+        }
+        try {
+            $this->_getDependencies()->getRulesAdapter()->delete($rule); // may throw exception
+        } catch (\Exception $e) {
+            throw new \Yana\Core\Exceptions\User\RuleNotDeletedException();
+        }
+        return $this;
+    }
+
+    /**
+     * Check and delete the given level.
+     *
+     * Warning! This doesn't check if the given entity is actually current.
+     *
+     * @param   \Yana\Security\Data\SecurityRules\IsRuleEntity  $level  the entity that should be deleted
+     * @return  self
+     * @throws  \Yana\Core\Exceptions\User\LevelNotRevokedException  when there is some logical problem with this level
+     * @throws  \Yana\Core\Exceptions\User\LevelNotDeletedException  when there was some problem with the database
+     */
+    public function revokePreviouslyGrantedSecurityLevel(\Yana\Security\Data\SecurityRules\IsLevelEntity $level)
+    {
+        if (\Yana\Util\Strings::compareToIgnoreCase($level->getGrantedByUser(), $this->getId()) !== 0) {
+            throw new \Yana\Core\Exceptions\User\LevelNotRevokedException("Can't revoke a level that the user didn't grant.");
+        }
+        if (\Yana\Util\Strings::compareToIgnoreCase($level->getUserName(), $this->getId()) === 0) {
+            throw new \Yana\Core\Exceptions\User\LevelNotRevokedException("Can't revoke a level the user owns.");
+        }
+        try {
+            $this->_getDependencies()->getLevelsAdapter()->delete($level); // may throw exception
+        } catch (\Exception $e) {
+            throw new \Yana\Core\Exceptions\User\LevelNotDeletedException();
+        }
+        return $this;
+    }
+
+    /**
      * Get security level.
      *
      * Returns the user's security level as an integer value.

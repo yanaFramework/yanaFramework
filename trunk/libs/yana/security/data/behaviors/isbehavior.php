@@ -308,6 +308,18 @@ interface IsBehavior
     public function getAllSecurityGroupsAndRolesGrantedToOthers();
 
     /**
+     * Check and delete the given rule.
+     *
+     * Warning! This doesn't check if the given entity is actually current.
+     *
+     * @param   \Yana\Security\Data\SecurityRules\IsRuleEntity  $rule  the entity that should be deleted
+     * @return  self
+     * @throws  \Yana\Core\Exceptions\User\RuleNotRevokedException  when there is some logical problem with this rule
+     * @throws  \Yana\Core\Exceptions\User\RuleNotDeletedException  when there was some problem with the database
+     */
+    public function revokePreviouslyGrantedSecurityGroupOrRole(\Yana\Security\Data\SecurityRules\IsRuleEntity $rule);
+
+    /**
      * Get security level.
      *
      * Returns the user's security level as an integer value.
@@ -340,6 +352,18 @@ interface IsBehavior
      * @return  \Yana\Security\Data\SecurityLevels\IsCollection
      */
     public function getAllSecurityLevelsGrantedToOthers();
+
+    /**
+     * Check and delete the given level.
+     *
+     * Warning! This doesn't check if the given entity is actually current.
+     *
+     * @param   \Yana\Security\Data\SecurityRules\IsRuleEntity  $level  the entity that should be deleted
+     * @return  self
+     * @throws  \Yana\Core\Exceptions\User\LevelNotRevokedException  when there is some logical problem with this level
+     * @throws  \Yana\Core\Exceptions\User\LevelNotDeletedException  when there was some problem with the database
+     */
+    public function revokePreviouslyGrantedSecurityLevel(\Yana\Security\Data\SecurityRules\IsLevelEntity $level);
 
     /**
      * Handle user logins.
