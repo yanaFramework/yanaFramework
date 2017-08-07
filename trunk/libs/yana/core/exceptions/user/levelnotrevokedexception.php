@@ -30,12 +30,12 @@ namespace Yana\Core\Exceptions\User;
 /**
  * <<exception>> User management issue.
  *
- * Thrown when trying to create a security rule that already exists.
+ * Thrown a security level can't be revoked (for example, because it has never been granted).
  *
  * @package     yana
  * @subpackage  core
  */
-class RuleAlreadyExistsException extends \Yana\Core\Exceptions\User\AlreadyExistsException
+class LevelNotRevokedException extends \Yana\Core\Exceptions\User\NotRevokedException
 {
     // intentionally left blank
 }

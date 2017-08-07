@@ -30,14 +30,26 @@ namespace Yana\Core\Exceptions\User;
 /**
  * <<exception>> User management issue.
  *
- * Thrown when trying to create a security rule that already exists.
+ * Thrown a security setting can't be revoked (for example, because it has never been granted).
  *
  * @package     yana
  * @subpackage  core
  */
-class RuleAlreadyExistsException extends \Yana\Core\Exceptions\User\AlreadyExistsException
+class NotRevokedException extends \Yana\Core\Exceptions\User\UserException
 {
-    // intentionally left blank
+
+    /**
+     * Create a new instance.
+     *
+     * @param  string      $message   the message that should be reported
+     * @param  int         $code      optional error code
+     * @param  \Exception  $previous  use this when you need to rethrow a catched exception
+     */
+    public function __construct($message = "", $code = \E_USER_WARNING, \Exception $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
+
 }
 
 ?>

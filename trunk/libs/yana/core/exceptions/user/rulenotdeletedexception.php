@@ -37,19 +37,7 @@ namespace Yana\Core\Exceptions\User;
  */
 class RuleNotDeletedException extends \Yana\Core\Exceptions\User\NotDeletedException
 {
-
-    /**
-     * Create a new instance.
-     *
-     * @param  string      $message   the message that should be reported
-     * @param  int         $code      optional error code
-     * @param  \Exception  $previous  use this when you need to rethrow a catched exception
-     */
-    public function __construct($message = "", $code = \E_USER_ERROR, \Exception $previous = null)
-    {
-        parent::__construct($message, $code, $previous);
-    }
-
+    // intentionally left blank
 }
 
 ?>
