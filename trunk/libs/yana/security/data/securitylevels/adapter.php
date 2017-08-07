@@ -102,6 +102,28 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
     }
 
     /**
+     * Triggered when offsetSet() is called and the offset doesn't exists.
+     *
+     * Returns the Id used.
+     * Note! This doesn't commit the query!
+     *
+     * @param   \Yana\Data\Adapters\IsEntity  $entity      object to be stored
+     * @param   scalar                        $optionalId  primary key
+     * @return  scalar
+     * @throws  \Yana\Core\Exceptions\User\LevelAlreadyExistsException  if a similar entry already exists
+     */
+    protected function _onInsert(\Yana\Data\Adapters\IsEntity $entity, $optionalId = null)
+    {
+        if ($this->hasEntitiesLike($entity)) {
+            assert('!isset($message); // Cannot redeclare var $message');
+            $message = "A similar entry does already exists. " .
+                "Can't save entity, as this would violate the unique constraint.";
+            throw new \Yana\Core\Exceptions\User\LevelAlreadyExistsException($message);
+        }
+        return parent::_onInsert($entity, $optionalId);
+    }
+
+    /**
      * Get security level.
      *
      * Returns the user's highest security level.
@@ -282,6 +304,9 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
             if ($columnName === \Yana\Security\Data\Tables\LevelEnumeration::ID) {
                 continue;
             }
+            if ($columnName === \Yana\Security\Data\Tables\LevelEnumeration::HAS_GRANT_OPTION) {
+                continue; // The grant option is not part of the unique constraint
+            }
             $clause = array($columnName, '=', $value);
             if (empty($where)) {
                 $where = $clause;
@@ -318,13 +343,6 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
             assert('!isset($message); // Cannot redeclare var $message');
             $message = "Instance of IsLevelEntity expected. Found " . $className . " instead.";
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
-        }
-
-        if ($this->hasEntitiesLike($entity)) {
-            assert('!isset($message); // Cannot redeclare var $message');
-            $message = "A similar entry does already exists. " .
-                "Can't save entity, as this would violate the unique constraint.";
-            throw new \Yana\Core\Exceptions\User\LevelAlreadyExistsException($message);
         }
 
         try {

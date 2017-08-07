@@ -72,12 +72,12 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $databaseRow = array(
             \Yana\Security\Data\Tables\LevelEnumeration::ID => 10,
             \Yana\Security\Data\Tables\LevelEnumeration::LEVEL => 100,
-            \Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY => true
+            \Yana\Security\Data\Tables\LevelEnumeration::HAS_GRANT_OPTION => true
         );
         $entity = $this->object->toEntity($databaseRow);
         $this->assertSame($databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::ID], $entity->getId());
         $this->assertSame($databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::LEVEL], $entity->getSecurityLevel());
-        $this->assertSame($databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY], $entity->isUserProxyActive());
+        $this->assertSame($databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::HAS_GRANT_OPTION], $entity->isUserProxyActive());
     }
 
     /**
@@ -101,14 +101,14 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $databaseRow = array(
             \Yana\Security\Data\Tables\LevelEnumeration::ID => 1,
             \Yana\Security\Data\Tables\LevelEnumeration::LEVEL => 10,
-            \Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY => false,
+            \Yana\Security\Data\Tables\LevelEnumeration::HAS_GRANT_OPTION => false,
             \Yana\Security\Data\Tables\LevelEnumeration::PROFILE => 'ProfileÄö@',
             \Yana\Security\Data\Tables\LevelEnumeration::USER => 'UserÄö@',
             \Yana\Security\Data\Tables\LevelEnumeration::GRANTED_BY_USER => 'GrantedÄö@'
         );
         $entity = new \Yana\Security\Data\SecurityLevels\Level(
             $databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::LEVEL],
-            $databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::IS_PROXY]);
+            $databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::HAS_GRANT_OPTION]);
         $entity
             ->setId($databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::ID])
             ->setUserName($databaseRow[\Yana\Security\Data\Tables\LevelEnumeration::USER])

@@ -64,8 +64,8 @@ class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRu
         }
         assert('!isset($isProxy); // Cannot redeclare var $isProxy');
         $isProxy = false; // when the database value is NULL, it must be mapped to false
-        if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY])) {
-            $isProxy = (bool) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY];
+        if (isset($databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::HAS_GRANT_OPTION])) {
+            $isProxy = (bool) $databaseRowLower[\Yana\Security\Data\Tables\RuleEnumeration::HAS_GRANT_OPTION];
         }
 
         assert('!isset($entity); // Cannot redeclare var $entity');
@@ -103,7 +103,7 @@ class Mapper extends \Yana\Core\Object implements \Yana\Security\Data\SecurityRu
         if ($entity instanceof \Yana\Security\Data\SecurityRules\IsRuleEntity) {
             $row[\Yana\Security\Data\Tables\RuleEnumeration::GROUP] = $entity->getGroup();
             $row[\Yana\Security\Data\Tables\RuleEnumeration::ROLE] = $entity->getRole();
-            $row[\Yana\Security\Data\Tables\RuleEnumeration::IS_PROXY] = $entity->isUserProxyActive();
+            $row[\Yana\Security\Data\Tables\RuleEnumeration::HAS_GRANT_OPTION] = $entity->isUserProxyActive();
             if ($entity->getProfile() > "") {
                 $row[\Yana\Security\Data\Tables\RuleEnumeration::PROFILE] = $entity->getProfile();
             }
