@@ -266,6 +266,12 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
                 }
                 try {
                     $level->grantTo($user); // may throw exception
+
+                } catch (\Yana\Core\Exceptions\User\LevelAlreadyExistsException $e) {
+                    // If we don't actually need the level since the user already has it,
+                    // we may savely skip it.
+                    continue;
+
                 } catch (\Exception $e) {
                     return false;
                 }
@@ -284,102 +290,18 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
                 }
                 try {
                     $rule->grantTo($user); // may throw exception
+
+                } catch (\Yana\Core\Exceptions\User\RuleAlreadyExistsException $e) {
+                    // If we don't actually need the rule since the user already has it,
+                    // we may savely skip it.
+                    continue;
+
                 } catch (\Exception $e) {
                     return false;
                 }
             }
             unset($rule);
         }
-
-        $db = \Yana\Security\Data\SessionManager::getDatasource();
-        foreach ($rules as $i => $ruleId)
-        {
-            // get all entries where user created is the logged user
-            $get = $db->select('securityrules', array('USER_CREATED', '=', $currentUser));
-
-            if (!empty($get)) {
-                foreach ($get as $key)
-                {
-                    // check if entry already exist
-                    switch (true)
-                    {
-                        case $key['USER_ID'] != $user:
-                        case $key['GROUP_ID'] != $rule['GROUP_ID']:
-                        case $key['ROLE_ID'] != $rule['ROLE_ID']:
-                        case $key['PROFILE'] != $rule['PROFILE']:
-                            // does not match
-                            continue;
-                            break;
-                        default:
-                            // entry is the same
-                            unset($rule);
-                            break;
-                    }
-                }
-            }
-            unset($get, $key);
-
-            if (isset($rule)) {
-                try {
-                    $db->insert("securityrules", $rule);
-                } catch (\Exception $e) {
-                    return false;
-                }
-            }
-        }
-
-        $securityFacade = $this->_getSecurityFacade();
-        foreach ($levels as $i => $profileId)
-        {
-
-            if (empty($profileId)) {
-                $profileId = $defaultProfile;
-            }
-
-            $level = $securityFacade->loadUser($currentUser)->getSecurityLevel($profileId);
-            $row = array();
-            if (is_int($level)) {
-                $row = array(
-                    'USER_ID' => $user,
-                    'PROFILE' => $profileId,
-                    'SECURITY_LEVEL' => $level,
-                    'USER_CREATED' => $currentUser,
-                    'USER_PROXY_ACTIVE' => false
-                );
-                // get all entries where user created is the logged user
-                $get = $db->select('securitylevel', array('USER_CREATED', '=', $currentUser));
-                if (!empty($get) && isset($row)) {
-                    foreach ($get as $key)
-                    {
-                        // check if entry already exist
-                        switch (true)
-                        {
-                            case $key['USER_ID'] != $user:
-                            case $key['SECURITY_LEVEL'] != $row['SECURITY_LEVEL']:
-                            case $key['PROFILE'] != $row['PROFILE']:
-                                // does not match
-                                continue;
-                                break;
-                            default:
-                                // entry is the same
-                                unset($row);
-                                break;
-                        }
-                    }
-                }
-                unset($get, $key);
-                if (isset($row)) {
-                    try {
-                        $db->insert("securitylevel", $row);
-                    } catch (\Exception $e) {
-                        return false;
-                    }
-                }
-            } else {
-                unset($levels[$i]);
-            }
-        }
-        $db->commit(); // may throw exception
         return true;
     }
 
