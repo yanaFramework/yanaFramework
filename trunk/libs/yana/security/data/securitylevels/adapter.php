@@ -255,6 +255,47 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
         }
     }
 
+    /**
+     * Checks if a similar entry exists and if so, returns bool(true).
+     *
+     * This only takes into account the parts of the entity that have non-empty
+     * values, and ignores the primary key.
+     *
+     * If you have to check a primary key, use offsetExists() instead.
+     *
+     * @param   \Yana\Security\Data\SecurityLevels\IsLevelEntity  $level  compare to this entity
+     * @return  bool
+     */
+    public function hasEntitiesLike(\Yana\Security\Data\SecurityLevels\IsLevelEntity $level)
+    {
+        assert('!isset($where); // Cannot redeclare var $where');
+        $where = array();
+        assert('!isset($columnName); // Cannot redeclare var $columnName');
+        assert('!isset($value); // Cannot redeclare var $value');
+        assert('!isset($clause); // Cannot redeclare var $clause');
+        foreach ($this->_serializeEntity($level) as $columnName => $value)
+        {
+            // We skip the empty entries
+            if ($value === "") {
+                continue;
+            }
+            if ($columnName === \Yana\Security\Data\Tables\LevelEnumeration::ID) {
+                continue;
+            }
+            $clause = array($columnName, '=', $value);
+            if (empty($where)) {
+                $where = $clause;
+            } else {
+                $where = array($where, 'AND', $clause);
+            }
+        }
+        unset($columnName, $value, $clause);
+        assert('!isset($query); // Cannot redeclare var $query');
+        $query = new \Yana\Db\Queries\SelectExist($this->_getDatabaseConnection());
+        $query->setTable($this->_getTableName())->setWhere($where);
+        return $query->doesExist();
+    }
+
 }
 
 ?>

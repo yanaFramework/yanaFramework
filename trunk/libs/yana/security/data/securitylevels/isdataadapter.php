@@ -45,8 +45,7 @@ interface IsDataAdapter extends \Yana\Data\Adapters\IsDataBaseAdapter
     /**
      * Get security level.
      *
-     * Returns the user's security level as an integer value.
-     * The default is 0.
+     * Returns the user's highest security level.
      *
      * @param   string  $userId     user name
      * @param   string  $profileId  profile id
@@ -77,6 +76,19 @@ interface IsDataAdapter extends \Yana\Data\Adapters\IsDataBaseAdapter
      * @throws  \Yana\Core\Exceptions\User\NotFoundException  when no matching rule is found
      */
     public function findEntitiesGrantedByUser($userId, $profileId = "");
+
+    /**
+     * Checks if a similar entry exists and if so, returns bool(true).
+     *
+     * This only takes into account the parts of the entity that have non-empty
+     * values, and ignores the primary key.
+     *
+     * If you have to check a primary key, use offsetExists() instead.
+     *
+     * @param   \Yana\Security\Data\SecurityLevels\IsLevelEntity $level  compare to this entity
+     * @return  bool
+     */
+    public function hasEntitiesLike(\Yana\Security\Data\SecurityLevels\IsLevelEntity $level);
 
 }
 
