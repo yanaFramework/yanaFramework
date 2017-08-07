@@ -251,11 +251,9 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
             throw $warning->setField('user');
         }
 
-        $user = $this->_getSecurityFacade()->loadUser();
-        $defaultProfile = $this->_getApplication()->getDefault('profile');
-        $currentUser = $user->getId();
+        $currentUser = $this->_getSecurityFacade()->loadUser();
         if (!empty($levels)) {
-            foreach ($user->getAllSecurityLevels() as $level)
+            foreach ($currentUser->getAllSecurityLevels() as $level)
             {
                 /* @var $level \Yana\Security\Data\SecurityLevels\IsLevelEntity */
                 if (!$level->isUserProxyActive()) {
@@ -279,7 +277,7 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
             unset($level);
         }
         if (!empty($rules)) {
-            foreach ($user->getAllSecurityGroupsAndRoles() as $rule)
+            foreach ($currentUser->getAllSecurityGroupsAndRoles() as $rule)
             {
                 /* @var $rule \Yana\Security\Data\SecurityRules\IsRuleEntity */
                 if (!$rule->isUserProxyActive()) {
@@ -313,9 +311,7 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
      * - array   $levels   List of ids (table: securitylevel)
      * - string  $user     name of a user to limit changes to
      *
-     * Either
-     *
-     * Constraint: for all removed entries, the user who created the entry must equal
+     * Constraint: for all removed entries, the user who created the entry must be
      * the current user.
      *
      * @type        config
@@ -332,49 +328,62 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
      */
     public function remove_user_proxy($user = "", array $rules = array(), array $levels = array())
     {
-        $user = mb_strtoupper($user);
-
         if (empty($rules) && empty($levels)) {
             $message = "Nothing to do: no entry selected to operate on.";
             $level = \Yana\Log\TypeEnumeration::WARNING;
             $warning = new \Yana\Core\Exceptions\Forms\NothingSelectedException($message, $level);
             throw $warning->setField('rules/levels');
         }
-        $db = \Yana\Security\Data\SessionManager::getDatasource();
-        $currentUser = $this->_getSession()->getCurrentUserName();
+        if ($user > "" && !$this->_getSecurityFacade()->isExistingUserName($user)) {
+            $message = "No such user: " . $user;
+            $level = \Yana\Log\TypeEnumeration::WARNING;
+            $warning = new \Yana\Core\Exceptions\Forms\InvalidValueException($message, $level);
+            throw $warning->setField('user');
+        }
+        $currentUser = $this->_getSecurityFacade()->loadUser();
 
-        $where = array('USER_CREATED', '=', $currentUser);
         if (!empty($user)) {
-            if ($user === $currentUser) {
+            if (\strcasecmp($user, $currentUser->getId()) === 0) {
                 throw new \Yana\Core\Exceptions\User\DeleteSelfException();
             }
-            $where = array($where, 'and', array('USER_ID', '=', $user));
         }
-        foreach ($rules as $key)
-        {
-            try {
-                $db->remove('securityrules.' . $key, $where);
-            } catch (\Exception $ex) {
-                return false;
+        if (!empty($rules)) {
+            foreach ($currentUser->getAllSecurityGroupsAndRolesGrantedToOthers() as $rule)
+            {
+                /* @var $rule \Yana\Security\Data\SecurityRules\IsRuleEntity */
+                if (!empty($user) && \strcasecmp($user, $rule->getUserName()) !== 0) {
+                    continue;
+                }
+                if (!\in_array($rule->getId(), $rules)) {
+                    continue;
+                }
+                try {
+                    $currentUser->revokePreviouslyGrantedSecurityGroupOrRole($rule);
+                } catch (\Exception $ex) {
+                    return false;
+                }
             }
+            unset($rule);
         }
-        unset($key);
-
-        foreach ($levels as $key)
-        {
-            try {
-                $db->remove('securitylevel.' . $key, $where);
-            } catch (\Exception $ex) {
-                return false;
+        if (!empty($levels)) {
+            foreach ($currentUser->getAllSecurityLevelsGrantedToOthers() as $level)
+            {
+                /* @var $level \Yana\Security\Data\SecurityLevels\IsLevelEntity */
+                if (!empty($user) && \strcasecmp($user, $level->getUserName()) !== 0) {
+                    continue;
+                }
+                if (!\in_array($level->getId(), $levels)) {
+                    continue;
+                }
+                try {
+                    $currentUser->revokePreviouslyGrantedSecurityLevel($level);
+                } catch (\Exception $ex) {
+                    return false;
+                }
             }
+            unset($level);
         }
-        unset($key);
 
-        try {
-            $db->commit(); // may throw exception
-        } catch (\Exception $e) {
-            return false;
-        }
         return true;
     }
 
