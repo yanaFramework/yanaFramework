@@ -106,7 +106,8 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
      *
      * @param   scalar                                          $offset  index of item to replace
      * @param   \Yana\Security\Data\SecurityRules\IsRuleEntity  $entity  this will go to the database
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the value is not a valid entity
+     * @throw   \Yana\Core\Exceptions\User\RuleAlreadyExistsException  if a similar entry already exists
+     * @throws  \Yana\Core\Exceptions\User\RuleNotSavedException       if the value is not a valid entity
      * @return  mixed
      */
     public function offsetSet($offset, $entity)
@@ -121,8 +122,15 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
             throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
         }
 
+        if ($this->hasEntitiesLike($entity)) {
+            assert('!isset($message); // Cannot redeclare var $message');
+            $message = "A similar entry does already exists. " .
+                "Can't save entity, as this would violate the unique constraint.";
+            throw new \Yana\Core\Exceptions\User\RuleAlreadyExistsException($message);
+        }
+
         try {
-            parent::offsetSet($offset, $entity);
+            return parent::offsetSet($offset, $entity);
 
         } catch (\Exception $e) {
 
@@ -130,11 +138,8 @@ class Adapter extends \Yana\Security\Data\SecurityRules\AbstractAdapter
             $message = "Rule not saved due to a database error.";
             assert('!isset($level); // Cannot redeclare var $level');
             $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw $e;
-            throw new \Yana\Core\Exceptions\User\UserException($message, $level, $e);
+            throw new \Yana\Core\Exceptions\User\RuleNotSavedException($message, $level, $e);
         }
-
-        return $entity;
     }
 
     /**

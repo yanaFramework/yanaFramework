@@ -122,7 +122,7 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter
      * @param  \Yana\Security\Data\Users\IsEntity  $userEntity  the account data
      * @return \Yana\Security\Data\Users\IsEntity
      * @throws \Yana\Core\Exceptions\InvalidArgumentException  when the entity is invalid
-     * @throws \Yana\Core\Exceptions\User\UserException        when there was a problem with the database
+     * @throws \Yana\Core\Exceptions\User\NotSavedException    when there was a problem with the database
      */
     public function offsetSet($userId, $userEntity)
     {
@@ -141,7 +141,7 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter
         }
 
         try {
-            parent::offsetSet($userId, $userEntity);
+            return parent::offsetSet($userId, $userEntity);
 
         } catch (\Yana\Db\DatabaseException $e) {
 
@@ -149,10 +149,8 @@ class Adapter extends \Yana\Security\Data\Users\AbstractAdapter
             $message = "User not saved due to a database error.";
             assert('!isset($level); // Cannot redeclare var $level');
             $level = \Yana\Log\TypeEnumeration::ERROR;
-            throw new \Yana\Core\Exceptions\User\UserException($message, $level, $e);
+            throw new \Yana\Core\Exceptions\User\NotSavedException($message, $level, $e);
         }
-
-        return $userEntity;
     }
 
     /**

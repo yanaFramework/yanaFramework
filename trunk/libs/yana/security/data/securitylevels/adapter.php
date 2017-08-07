@@ -296,6 +296,50 @@ class Adapter extends \Yana\Security\Data\SecurityLevels\AbstractAdapter
         return $query->doesExist();
     }
 
+    /**
+     * Insert or replace item.
+     *
+     * The method returns the used entity to allow chained assignments (like this: $a = $b[1] = $c).
+     *
+     * @param   scalar                                            $offset  index of item to replace
+     * @param   \Yana\Security\Data\SecurityLevels\IsLevelEntity  $entity  save this entity
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException          if the value is not a valid entity
+     * @throws  \Yana\Core\Exceptions\User\LevelAlreadyExistsException  if a similar entry already exists
+     * @throws  \Yana\Core\Exceptions\User\LevelNotSavedException       if the commit statement failed
+     * @return  \Yana\Security\Data\SecurityLevels\IsLevelEntity
+     */
+    public function offsetSet($offset, $entity)
+    {
+        assert('is_int($offset) || is_null($offset); // Wrong type argument $offset. Integer expected.');
+
+        if (!($entity instanceof \Yana\Security\Data\SecurityLevels\IsLevelEntity)) {
+            assert('!isset($className); // Cannot redeclare var $className');
+            $className = \is_object($entity) ? \get_class($entity) : \gettype($entity);
+            assert('!isset($message); // Cannot redeclare var $message');
+            $message = "Instance of IsLevelEntity expected. Found " . $className . " instead.";
+            throw new \Yana\Core\Exceptions\InvalidArgumentException($message);
+        }
+
+        if ($this->hasEntitiesLike($entity)) {
+            assert('!isset($message); // Cannot redeclare var $message');
+            $message = "A similar entry does already exists. " .
+                "Can't save entity, as this would violate the unique constraint.";
+            throw new \Yana\Core\Exceptions\User\LevelAlreadyExistsException($message);
+        }
+
+        try {
+            return parent::offsetSet($offset, $entity);
+
+        } catch (\Yana\Db\DatabaseException $e) {
+
+            assert('!isset($message); // Cannot redeclare var $message');
+            $message = "Entity not saved due to a database error.";
+            assert('!isset($level); // Cannot redeclare var $level');
+            $level = \Yana\Log\TypeEnumeration::ERROR;
+            throw new \Yana\Core\Exceptions\User\LevelNotSavedException($message, $level, $e);
+        }
+    }
+
 }
 
 ?>
