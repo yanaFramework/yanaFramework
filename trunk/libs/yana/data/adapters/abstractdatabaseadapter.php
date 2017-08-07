@@ -155,25 +155,17 @@ abstract class AbstractDatabaseAdapter extends \Yana\Core\Object implements \Yan
      *
      * Implement this function in your sub-class as follows:
      * <code>
-     * if ($yourTypeCheckHere) {
-     *     $this->_offsetSet($offset, $item);
-     * } else {
+     * if (!$yourTypeCheckHere instanceof ExpectedClass) {
      *     throw new \Yana\Core\Exceptions\InvalidArgumentException();
      * }
-     * </code>
-     * 
-     *
-     * Example:
-     * <code>
-     * $collection[$offset] = $item;
-     * parent::_offsetSet($offset, $item);
+     * return parent::offsetSet($offset, $item);
      * </code>
      *
      * The method returns the used entity to allow chained assignments (like this: $a = $b[1] = $c).
      *
      * @param   scalar                      $offset  index of item to replace
      * @param   \Yana\Data\Adapters\IsEntity  $entity  save this entity
-     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the value is not a valid collection item
+     * @throws  \Yana\Core\Exceptions\InvalidArgumentException  if the value is not a valid entity
      * @throws  \Yana\Db\DatabaseException                      if the commit statement failed
      * @return  \Yana\Data\Adapters\IsEntity
      */
