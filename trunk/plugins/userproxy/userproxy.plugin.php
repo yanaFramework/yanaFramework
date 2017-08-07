@@ -235,6 +235,8 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
      * @param       string  $user    user id
      * @param       array   $rules   list of rules to apply
      * @param       array   $levels  list of profile ids
+     *
+     * @todo  As of yet, this code has been migrated but not tested. Tests required.
      */
     public function set_user_proxy($user, array $rules = array(), array $levels = array())
     {
@@ -325,6 +327,8 @@ class UserProxyPlugin extends \Yana\Plugins\AbstractPlugin
      * @param       string  $user    user id
      * @param       array   $rules   list of rules to apply
      * @param       array   $levels  list of profile ids
+     *
+     * @todo  As of yet, this code has been migrated but not tested. Tests required.
      */
     public function remove_user_proxy($user = "", array $rules = array(), array $levels = array())
     {
