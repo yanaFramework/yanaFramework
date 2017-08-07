@@ -67,6 +67,19 @@ interface IsDataAdapter extends \Yana\Data\Adapters\IsDataBaseAdapter
      */
     public function findEntitiesGrantedByUser($userId, $profileId = "");
 
+    /**
+     * Checks if a similar entry exists and if so, returns bool(true).
+     *
+     * This only takes into account the parts of the entity that have non-empty
+     * values, and ignores the primary key.
+     *
+     * If you have to check a primary key, use offsetExists() instead.
+     *
+     * @param   \Yana\Security\Data\SecurityRules\IsRuleEntity  $rule  compare to this entity
+     * @return  bool
+     */
+    public function hasEntitiesLike(\Yana\Security\Data\SecurityRules\IsRuleEntity $rule);
+
 }
 
 ?>
