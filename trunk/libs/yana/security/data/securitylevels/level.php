@@ -222,8 +222,9 @@ class Level extends \Yana\Security\Data\SecurityLevels\AbstractLevel
      *
      * @param   string  $userName  user id (will trigger database exception if not valid)
      * @return  self
-     * @throws  \Yana\Core\Exceptions\User\NotGrantableException  when the permission has no grant option
-     * @throws  \Yana\Db\DatabaseException                        when the new permission can't be saved
+     * @throws  \Yana\Core\Exceptions\User\NotGrantableException        when the permission has no grant option
+     * @throws  \Yana\Core\Exceptions\User\LevelNotSavedException       when the new permission can't be saved
+     * @throws  \Yana\Core\Exceptions\User\LevelAlreadyExistsException  when a similar entry already exists
      */
     public function grantTo($userName)
     {
