@@ -382,7 +382,9 @@ class ValueSanitizer extends \Yana\Core\Object implements \Yana\Db\Helpers\IsSan
             break;
             default:
                 assert('!in_array($value, self::getSupportedTypes()); // Unhandled column type. ');
-                throw new \Yana\Core\Exceptions\NotImplementedException("Type '$type' not implemented.", E_USER_ERROR);
+                throw new \Yana\Core\Exceptions\NotImplementedException(
+                    "Type '$type' not implemented.", \Yana\Log\TypeEnumeration::ERROR
+                );
         }
         $error = new \Yana\Core\Exceptions\Forms\InvalidValueException();
         $error->setField($title);
